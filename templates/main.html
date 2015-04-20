@@ -1,0 +1,162 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>{% block title %}{{title}}{% endblock %}</title>
+<link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+<link rel="stylesheet" media="(max-width: 1279px)" href="/assets/css/small.css">
+<link rel="stylesheet" media="(max-width: 800px)" href="/assets/css/mobile.css">
+<link rel="shortcut icon" href="assets/images/favicon.ico">
+
+<meta name="author" content="Dr. Dos">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</head>
+
+<body>
+
+<header>
+    <img id="logo" src="{% static "images/z2_logo.gif" %}" alt="z2"><br>
+    <nav>
+        <ul>
+            <li><a href="">Main</a></li>
+            <li><a href="">About ZZT</a></li>
+            <li><a href="">Upload</a></li>
+            <li><a href="">Wiki</a></li>
+            <li><a href="">Forums</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="flex-container">
+<section id="sidebar-left" class="col sidebar">
+    <div id="featured" class="block">
+        <h1>Featured Game</h1>
+        <a href="">Pepper Bolette</a>
+        <br>
+        <a href="/"><img src="{% static "images/mockup/fg.gif" %}" alt="z2"></a>
+        <br>
+        by <a href="">Jur</a>
+        <br>
+        <a href="">Featured Games</a>
+    </div>
+    
+    <div class="block">
+        <h1>Worlds</h1>
+        <div id="letters">
+            <a href="">#</a>
+            <a href="">A</a>
+            <a href="">B</a>
+            <a href="">C</a>
+            <a href="">D</a>
+            <a href="">E</a>
+            <a href="">F</a>
+            <a href="">G</a>
+            <a href="">H</a>
+            <br>
+            <a href="">I</a>
+            <a href="">J</a>
+            <a href="">K</a>
+            <a href="">L</a>
+            <a href="">M</a>
+            <a href="">N</a>
+            <a href="">O</a>
+            <a href="">P</a>
+            <a href="">Q</a>
+            <br>
+            <a href="">R</a>
+            <a href="">S</a>
+            <a href="">T</a>
+            <a href="">U</a>
+            <a href="">V</a>
+            <a href="">W</a>
+            <a href="">X</a>
+            <a href="">Y</a>
+            <a href="">Z</a>
+        </div>
+        
+        <div>
+            <a href="">Random ZZT World</a><br>
+            <a href="">Mass Downloads</a>
+        </div>
+        
+        <div>
+            Search:
+            <form method="GET" action="/search">
+            <input name="q"><input type="submit" value="Go">
+            <br>
+            <a href="">Advanced Search</a>
+            </form>
+        </div>
+    </div>
+    
+    <div class="block">
+        <h1>Downloads</h1>
+        <a href="">ZZT</a><br>
+        <a href="">Dosbox</a><br>
+        <a href="">Kev-Edit</a><br>
+        <a href="">ZZT Clones</a><br>
+        <a href="">Utilities</a><br>
+        <a href="">Upload Queue</a>
+    </div>
+    
+    <div class="block">
+        <h1>Contests</h1>
+        <a href="">Featured Games</a><br>
+        <a href="">(Classic) Game of the Month</a><br>
+        <a href="">MadTom's Pick</a><br>
+        <a href="">24 Hours of ZZT</a><br>
+        <a href="">Weekend of ZZT</a>
+    </div>
+</section>
+
+
+{% block content %}
+<section id="content" class="col">
+</section>
+{% endblock %}
+
+<section id="sidebar-right" class="col sidebar">
+    <div class="block">
+        <h1>Forum login stuff</h1>
+        <a href=""></a>
+    </div>
+    
+    <div class="block">
+        <h1>Help</h1>
+        <a href="">Getting Started With ZZT</a><br>
+        <a href="">ASCII Character Reference</a><br>
+        <a href="">Walkthroughs</a><br>
+    </div>
+    
+    <div class="block">
+        <h1>Community</h1>
+        <a href="">About the Community</a><br>
+        <a href="">IRC</a><br>
+        <a href="">Ircman</a><br>
+        <a href="">Links</a><br>
+        <a href="">Link to z2</a><br>
+    </div>
+    
+    <div class="block">
+        <h1>Historical</h1>
+        <a href="">Message Board Logs</a><br>
+        <a href="">Old News</a><br>
+        <a href="">ZZTers' First Games</a><br>
+    </div>
+    
+</section>
+</div>
+
+<footer>
+- z2 -
+</footer>
+
+</body>
+
+{% block scripts %}
+{% endblock %}
+</html>

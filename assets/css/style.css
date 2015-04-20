@@ -1,0 +1,194 @@
+a:visited
+{
+    color:#00F;
+}
+
+body
+{
+    font-family:sans-serif;
+    background:#CCC;
+    max-width:95%;
+    margin:auto;
+    margin-top:1em;
+}
+
+.col
+{
+    display:inline-block;
+    vertical-align:top;
+}
+
+section
+{
+}
+
+#logo
+{
+    float:left;
+    clear:both;
+}
+
+nav
+{
+    text-align:center;
+}
+
+nav li
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+
+    width:125px;
+    height:25px;
+    font-size:16pt;
+    text-align:center;
+}
+
+.sidebar
+{
+    /*min-width:200px;*/
+    max-width:20%;
+    flex-grow:1;
+}
+
+.sidebar h1
+{
+    text-align:center;
+    margin:0;
+    margin-bottom:0.5em;
+}
+
+#sidebar-right
+{
+    order:3;
+}
+
+#content
+{
+    flex-grow:2;
+    order:2;
+    min-width:50%;
+    /*max-width:1024px;*/
+    
+}
+
+.flex-container
+{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    justify-content:space-between;
+}
+
+.block
+{
+    padding:0.5em;
+    margin:0.5em;
+    background:#FFF;
+    border:1px solid #000;
+}
+
+footer
+{
+    text-align:center;
+}
+
+/* Left sidebar */
+#sidebar-left
+{
+    order:1;
+    text-align:center;
+}
+
+#featured
+{
+    
+}
+
+#featured img
+{
+    width:80%;
+}
+
+#letters
+{
+    width:100%;
+    text-align:center;
+    margin:auto;
+}
+
+#letters a
+{
+    font-family:monospace;
+    display:inline-block;
+    width:8%;
+    margin-bottom:0.25em;
+    text-decoration:none;
+    font-size:larger;
+}
+
+#letters a:hover
+{
+    text-decoration:underline;
+    background:#CCC;
+}
+
+/* End Left sidebar */
+
+/* Game blocks */
+.game-block
+{
+    width:100%;
+    border:1px solid #000;
+    margin-bottom:1em;
+}
+
+.game-block img
+{
+    max-width:240px;
+}
+
+.game-block div
+{
+}
+
+.game-block > div
+{
+    height:175px;
+    border:1px solid #000;
+    padding:1em;
+}
+
+.game-info
+{
+    flex-grow:2;
+}
+
+.game-info h1
+{
+    margin:0;
+    margin-bottom:0.5em;
+}
+
+div.game-links
+{
+    flex-basis:100%;
+    height:auto;
+    padding:0.25em;
+}
+
+div.game-links ul
+{
+    margin:0;
+}
+
+.game-links li
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    width:24%;
+    text-align:center;
+}
+/* End Game blocks */

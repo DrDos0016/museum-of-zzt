@@ -1,0 +1,35 @@
+﻿{% extends "main.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Browse</h1>
+
+{% for game in games %}
+<div class="game-block flex-container">
+    <div class="col">
+        <img src="{% static 'images/mockup/town.png' %}" class="titlescreen">
+    </div><div class="game-info col">
+        <h1>Town of ZZT</h1>
+        
+        <div class="col">
+        Author: Tim Sweeney<br>
+        Filename: TOWN.zip<br>
+        Released: Jan. 1, 1991<br>
+        Genre: Adventure!<br>
+        Size: 27.4 KB<br>
+        Rating: 9.7/10
+        </div>
+        
+    </div>
+    <div class="col">
+        * ZZT World<br>
+        * Featured Game<br>
+        * MS-DOS Program
+        </div>
+    <div class="game-links"><ul><li>Download</li><li>Review</li><li>View Files</li><li>Wiki</li></ul></div>
+</div>
+{% endfor %}
+
+</section>
+{% endblock %}
