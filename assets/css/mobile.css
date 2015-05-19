@@ -1,0 +1,17 @@
+#content
+{
+    order:1;
+    width:100%;
+}
+
+#sidebar-left
+{
+    order:2;
+    width:50%;
+}
+
+#sidebar-right
+{
+    order:3;
+    width:50%;
+}

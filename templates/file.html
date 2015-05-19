@@ -1,0 +1,28 @@
+{% extends "main.html" %}
+
+{% block scripts %}
+<script>
+var letter = "{{letter}}";
+var zip = "{{file.filename}}";
+</script>
+<script async src="/assets/js/file_viewer.js"></script>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>[{{file.filename}}] - {{file.title}}</h1>
+
+<div id="details">
+<img src="/assets/images/screenshots/no_screenshot.png">
+</div>
+<div id="file_list" class="">
+<ul>
+<li>Title Screen</li>
+{% for file in files %}
+<li>{{file}}</li>
+{% endfor %}
+</ul>
+</div>
+Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda 
+</section>
+{% endblock %}

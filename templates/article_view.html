@@ -1,0 +1,17 @@
+{% extends "main.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<section id="content" class="col block">
+
+<h1>{{article.title}}</h1>
+
+<article>
+{{article.content|safe}}
+</article>
+
+<br>
+<a href="/article">Return to articles</a><br>
+<a href="/">Return to the main page</a>
+</section>
+{% endblock %}
