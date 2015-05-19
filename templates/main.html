@@ -4,29 +4,31 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>{% block title %}{{title}}{% endblock %}</title>
+<title>z2 - {% block title %}{{title|default:"The ZZT Archive"}}{% endblock %}</title>
 <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
-<link rel="stylesheet" media="(max-width: 1279px)" href="/assets/css/small.css">
+<link rel="stylesheet" media="(max-width: 1023px)" href="/assets/css/small.css">
 <link rel="stylesheet" media="(max-width: 800px)" href="/assets/css/mobile.css">
 <link rel="shortcut icon" href="assets/images/favicon.ico">
 
 <meta name="author" content="Dr. Dos">
-<meta name="description" content="">
-<meta name="keywords" content="">
+<meta name="description" content="The ZZT Archive">
+<meta name="keywords" content="ZZT">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+{% block scripts %}
+{% endblock %}
 </head>
 
 <body>
 
 <header>
-    <img id="logo" src="{% static "images/z2_logo.gif" %}" alt="z2"><br>
+    <a href="/"><img id="logo" src="{% static "images/z2_logo.gif" %}" alt="z2"></a><br>
     <nav>
         <ul>
-            <li><a href="">Main</a></li>
-            <li><a href="">About ZZT</a></li>
-            <li><a href="">Upload</a></li>
-            <li><a href="">Wiki</a></li>
-            <li><a href="">Forums</a></li>
+            <li><a href="/">Main</a></li>
+            <li><a href="/article/1/about-zzt">About ZZT</a></li>
+            <li><a href="/upload">Upload</a></li>
+            <li><a href="http://zzt.org/zu/wiki/Main_Page">Wiki</a></li>
+            <li><a href="/fora">Forums</a></li>
         </ul>
     </nav>
 </header>
@@ -47,35 +49,35 @@
     <div class="block">
         <h1>Worlds</h1>
         <div id="letters">
-            <a href="">#</a>
-            <a href="">A</a>
-            <a href="">B</a>
-            <a href="">C</a>
-            <a href="">D</a>
-            <a href="">E</a>
-            <a href="">F</a>
-            <a href="">G</a>
-            <a href="">H</a>
-            <br>
-            <a href="">I</a>
-            <a href="">J</a>
-            <a href="">K</a>
-            <a href="">L</a>
-            <a href="">M</a>
-            <a href="">N</a>
-            <a href="">O</a>
-            <a href="">P</a>
-            <a href="">Q</a>
-            <br>
-            <a href="">R</a>
-            <a href="">S</a>
-            <a href="">T</a>
-            <a href="">U</a>
-            <a href="">V</a>
-            <a href="">W</a>
-            <a href="">X</a>
-            <a href="">Y</a>
-            <a href="">Z</a>
+            <a href="/browse/1">#</a>
+            <a href="/browse/a">A</a>
+            <a href="/browse/b">B</a>
+            <a href="/browse/c">C</a>
+            <a href="/browse/d">D</a>
+            <a href="/browse/e">E</a>
+            <a href="/browse/f">F</a>
+            <a href="/browse/g">G</a>
+            <a href="/browse/h">H</a>
+            
+            <a href="/browse/i">I</a>
+            <a href="/browse/j">J</a>
+            <a href="/browse/k">K</a>
+            <a href="/browse/l">L</a>
+            <a href="/browse/m">M</a>
+            <a href="/browse/n">N</a>
+            <a href="/browse/o">O</a>
+            <a href="/browse/p">P</a>
+            <a href="/browse/q">Q</a>
+            
+            <a href="/browse/r">R</a>
+            <a href="/browse/s">S</a>
+            <a href="/browse/t">T</a>
+            <a href="/browse/u">U</a>
+            <a href="/browse/v">V</a>
+            <a href="/browse/w">W</a>
+            <a href="/browse/x">X</a>
+            <a href="/browse/y">Y</a>
+            <a href="/browse/z">Z</a>
         </div>
         
         <div>
@@ -86,7 +88,7 @@
         <div>
             Search:
             <form method="GET" action="/search">
-            <input name="q"><input type="submit" value="Go">
+            <input name="q"><input name="search_button" type="submit" value="Go">
             <br>
             <a href="">Advanced Search</a>
             </form>
@@ -95,12 +97,12 @@
     
     <div class="block">
         <h1>Downloads</h1>
-        <a href="">ZZT</a><br>
-        <a href="">Dosbox</a><br>
+        <a href="/zzt">ZZT</a><br>
+        <a href="http://www.dosbox.com/download.php?main=1" target="_blank">Dosbox</a><br>
         <a href="">Kev-Edit</a><br>
-        <a href="">ZZT Clones</a><br>
-        <a href="">Utilities</a><br>
-        <a href="">Upload Queue</a>
+        <a href="/clones">ZZT Clones</a><br>
+        <a href="/utilities">Utilities</a><br>
+        <a href="/uploaded">Upload Queue</a>
     </div>
     
     <div class="block">
@@ -119,17 +121,21 @@
 </section>
 {% endblock %}
 
-<section id="sidebar-right" class="col sidebar">
+<section id="sidebar-right" class="col sidebar">    
     <div class="block">
-        <h1>Forum login stuff</h1>
-        <a href=""></a>
-    </div>
-    
-    <div class="block">
-        <h1>Help</h1>
+        <h1>Articles</h1>
+        
+        <h2>Playing</h2>
         <a href="">Getting Started With ZZT</a><br>
-        <a href="">ASCII Character Reference</a><br>
         <a href="">Walkthroughs</a><br>
+        
+        <h2>Editing</h2>
+        <a href="">ASCII Character Reference</a><br>
+        
+        <h2>Historical</h2>
+        <a href="">Message Board Logs</a><br>
+        <a href="">Old News</a><br>
+        <a href="">ZZTers' First Games</a><br>
     </div>
     
     <div class="block">
@@ -141,13 +147,6 @@
         <a href="">Link to z2</a><br>
     </div>
     
-    <div class="block">
-        <h1>Historical</h1>
-        <a href="">Message Board Logs</a><br>
-        <a href="">Old News</a><br>
-        <a href="">ZZTers' First Games</a><br>
-    </div>
-    
 </section>
 </div>
 
@@ -156,7 +155,4 @@
 </footer>
 
 </body>
-
-{% block scripts %}
-{% endblock %}
 </html>

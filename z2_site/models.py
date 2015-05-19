@@ -15,6 +15,7 @@ class Article(models.Model):
     title       = models.CharField(max_length=50)
     author      = models.CharField(max_length=50)
     category    = models.CharField(max_length=50)   #
+    #summary     = models.CharField(max_length=300)  # Summary of article
     content     = models.TextField()                #
     date        = models.DateField()                #
     published   = models.BooleanField(default=False)
@@ -30,10 +31,23 @@ class File(models.Model):
     genre       = models.CharField(max_length=50)   # Action, Adventure, Puzzle, Etc.
     category    = models.CharField(max_length=10)   # ZZT, Super ZZT, ZIG, Utility, Editor, Etc.
     screenshot  = models.CharField(max_length=80)   # Screenshot of title screen
+    letter      = models.CharField(max_length=1, db_index=True)    # #/A-Z to show up under when browsed
     description = models.TextField(null=True, default=None) # Description for Utilites
     details     = models.CharField(max_length=80, default="MS-DOS")
     review_count= models.IntegerField(default=0)    # Number of reviews on this file
     reviews     = models.ForeignKey("Review", null=True)    # Reviews
+    
+    def download_url(self):
+        return "/zgames/" + self.letter + "/" + self.filename
+        
+    def review_url(self):
+        return "/review/" + self.letter + "/" + self.filename.lower()
+        
+    def file_url(self):
+        return "/file/" + self.letter + "/" + self.filename.lower()
+        
+    def wiki_url(self):
+        return "http://zzt.org/zu/wiki/" + self.title
     
 class Review(models.Model):
     title       = models.CharField(max_length=50)   # Review title

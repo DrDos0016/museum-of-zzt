@@ -1,3 +1,16 @@
+@font-face 
+{
+	font-family: 'Classic Console';
+	src: url('/assets/fonts/clacon.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
+a
+{
+    text-decoration:none;
+}
+
 a:visited
 {
     color:#00F;
@@ -15,12 +28,27 @@ body
 .col
 {
     display:inline-block;
+    zoom: 1;
+    *display: inline;
     vertical-align:top;
+    overflow:auto;
+}
+
+.dos
+{
+    font-family:"Classic Console";
+    font-size:16pt;
 }
 
 section
 {
 }
+
+.selected
+{
+    background:#619F9F;
+}
+
 
 #logo
 {
@@ -48,8 +76,8 @@ nav li
 .sidebar
 {
     /*min-width:200px;*/
-    max-width:20%;
-    flex-grow:1;
+    width:15%;
+    /*flex-grow:1;*/
 }
 
 .sidebar h1
@@ -66,10 +94,12 @@ nav li
 
 #content
 {
-    flex-grow:2;
     order:2;
+    width:60%;
+    /*flex-grow:2;
+    
     min-width:50%;
-    /*max-width:1024px;*/
+    max-width:50%;*/
     
 }
 
@@ -78,6 +108,11 @@ nav li
     display:flex;
     flex-direction:row;
     flex-wrap:wrap;
+    justify-content:space-around;
+}
+
+.flex-between
+{
     justify-content:space-between;
 }
 
@@ -134,56 +169,90 @@ footer
     background:#CCC;
 }
 
+input[name=q]
+{
+    max-width:80%;
+    border:1px solid #000;
+}
+
+input[name=search_button]
+{
+    border:1px solid #000;
+    background:#CCC;
+    margin-top:2px;
+}
 /* End Left sidebar */
 
-/* Game blocks */
-.game-block
+.pages
+{
+    text-align:center;
+    margin:auto;
+    width:90%;
+    font-size:larger;
+    padding:1em;
+}
+
+/* File blocks */
+.file-block
 {
     width:100%;
     border:1px solid #000;
     margin-bottom:1em;
 }
 
-.game-block img
+.file-block img
 {
     max-width:240px;
 }
 
-.game-block div
+.file-screen
 {
+    max-width:240px;
 }
 
-.game-block > div
+.file-block > div
 {
-    height:175px;
-    border:1px solid #000;
     padding:1em;
 }
 
-.game-info
+.file-info
 {
-    flex-grow:2;
+    min-height:175px;
 }
 
-.game-info h1
+.file-info h1
 {
     margin:0;
     margin-bottom:0.5em;
 }
 
-div.game-links
+.file-info div
 {
-    flex-basis:100%;
-    height:auto;
-    padding:0.25em;
+    display:inline-block;
+    min-width:100px;
 }
 
-div.game-links ul
+.file-details
+{
+    padding:0.25em;
+    max-width:100%;
+}
+
+div.file-links, div.file-details
+{
+    flex-basis:100%;
+    min-height:auto;
+    height:auto;
+    padding:0.25em;
+    border-top:1px solid #000;
+}
+
+div.file-links ul, div.file-details ul
 {
     margin:0;
 }
 
-.game-links li
+.file-links li
 {
     display:inline-block;
     zoom: 1;
@@ -191,4 +260,63 @@ div.game-links ul
     width:24%;
     text-align:center;
 }
+
+div.file-details ul
+{
+    padding-left:0px;
+}
+
+.file-details li
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    font-family:monospace;
+    margin-left:1.5em;
+}
 /* End Game blocks */
+
+/* File viewing */
+#details
+{
+    min-width:482px;
+    min-height:350px;
+    border:1px solid #000;
+    padding:0.5em;
+    overflow:auto;
+    margin-right:1em;
+    float:left;
+    clear:both;
+    font-family:monospace;
+    
+}
+
+#file_list
+{
+    border:1px solid #000;
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+    height:350px;
+    overflow:auto;
+    font-family:monospace;
+}
+
+#file_list ul
+{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+#file_list ul li
+{
+    padding-left:0.5em;
+    padding-right:0.5em;
+}
+
+#file_list ul li:hover
+{
+    cursor:pointer;
+    background:#98C9C9;
+}
+/* End file viewing */
