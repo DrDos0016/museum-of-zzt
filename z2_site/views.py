@@ -28,7 +28,7 @@ def browse(request, letter="*", page=1):
     data = {}
     data["page"] = int(request.GET.get("page", page))
     data["letter"] = letter if letter != "1" else "#"
-    data["files"] = File.objects.filter(letter=letter)[(data["page"]-1)*10:data["page"]*10]
+    data["files"] = File.objects.filter(letter=letter).order_by("title")[(data["page"]-1)*10:data["page"]*10]
     data["count"] = File.objects.filter(letter=letter).count()
     data["pages"] = int(math.ceil(data["count"] / 10.0))
     data["page_range"] = range(1, data["pages"] + 1)
@@ -40,7 +40,7 @@ def file(request, letter, filename):
     data = {}
     data["file"] = get_object_or_404(File, letter=letter, filename=filename)
     data["letter"] = letter
-    zip = zipfile.ZipFile("/var/projects/misc/zzt_release/zgames/"+filename) # TODO Proper path + os.path.join()
+    zip = zipfile.ZipFile("/var/projects/z2/zgames/"+letter+"/"+filename) # TODO Proper path + os.path.join()
     data["files"] = zip.namelist()
     data["files"].sort()
     return render_to_response("file.html", data)
@@ -48,3 +48,10 @@ def file(request, letter, filename):
 def index(request):
     data = {}
     return render_to_response("index.html", data)
+    
+def review(request, letter, filename):
+    data = {}
+    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["reviews"] = Review.objects.filter(file_id=data["file"].id)
+    data["letter"] = letter
+    return render_to_response("review.html", data)

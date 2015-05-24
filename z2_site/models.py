@@ -35,21 +35,21 @@ class File(models.Model):
     description = models.TextField(null=True, default=None) # Description for Utilites
     details     = models.CharField(max_length=80, default="MS-DOS")
     review_count= models.IntegerField(default=0)    # Number of reviews on this file
-    reviews     = models.ForeignKey("Review", null=True)    # Reviews
     
     def download_url(self):
         return "/zgames/" + self.letter + "/" + self.filename
         
     def review_url(self):
-        return "/review/" + self.letter + "/" + self.filename.lower()
+        return "/review/" + self.letter + "/" + self.filename
         
     def file_url(self):
-        return "/file/" + self.letter + "/" + self.filename.lower()
+        return "/file/" + self.letter + "/" + self.filename
         
     def wiki_url(self):
         return "http://zzt.org/zu/wiki/" + self.title
     
 class Review(models.Model):
+    file        = models.ForeignKey("File")         # Review file
     title       = models.CharField(max_length=50)   # Review title
     author      = models.CharField(max_length=50)   # Review author
     email       = models.EmailField()               # Contact info for author (hide this? Optional?)
@@ -57,3 +57,14 @@ class Review(models.Model):
     rating      = models.FloatField(default=5.0)
     date        = models.DateField()
     ip          = models.IPAddressField()
+    
+    def __unicode__(self):
+        x = "Review for " + self.file.title + "[" + self.file.filename + "]\n"
+        x+= self.title + "\n"
+        x+= self.author + "\n"
+        x+= self.email + "\n"
+        x+= self.content[:50] + "..." + "\n"
+        x+= str(self.rating) + "\n"  
+        x+= str(self.date) + "\n"
+        x+= self.ip + "\n"
+        return x

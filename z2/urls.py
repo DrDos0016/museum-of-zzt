@@ -17,8 +17,12 @@ urlpatterns = patterns('',
     url(r'^browse/(?P<letter>[a-z1])$', 'z2_site.views.browse'),
     url(r'^file/(?P<letter>[a-z1])/(?P<filename>.*)$', 'z2_site.views.file'),
     
+    # Reviews
+    url(r'^review/(?P<letter>[a-z1])/(?P<filename>.*)$', 'z2_site.views.review'),
+    
     # AJAX
     url(r'^ajax/get_zip_file$', 'z2_site.ajax.get_zip_file'),
     
-    (r'^assets/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT})
+    (r'^assets/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    (r'^zgames/(?P<path>.*)$', 'django.views.static.serve', {'document_root': "/var/projects/z2/zgames/"})
 )

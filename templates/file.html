@@ -9,20 +9,29 @@ var zip = "{{file.filename}}";
 {% endblock %}
 
 {% block content %}
+<img src="/assets/images/ascii.png" id="ascii" style="display:none"> <!-- DEBUG -->
 <section id="content" class="col block">
-<h1>[{{file.filename}}] - {{file.title}}</h1>
+<h1>[{{file.filename}}] - {{file.title}} - <span id="filename">Title Screen</span></h1>
+<div class="file-links">
+        <ul>
+            <li><a href="{{file.download_url}}">Download</a></li>
+            <li><a href="{{file.review_url}}">Review</a></li>
+            <li>View Files</li>
+            <li><a href="{{file.wiki_url}}">Wiki</a></li>
+        </ul></div>
 
 <div id="details">
 <img src="/assets/images/screenshots/no_screenshot.png">
 </div>
-<div id="file_list" class="">
+<div id="file-list" class="">
 <ul>
-<li>Title Screen</li>
+<li class="selected">Title Screen</li>
 {% for file in files %}
 <li>{{file}}</li>
 {% endfor %}
 </ul>
 </div>
-Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda Abra kadrabasda 
+
+<textarea id="debug" style="width:100%;height:400px;"></textarea>
 </section>
 {% endblock %}

@@ -40,6 +40,12 @@ body
     font-size:16pt;
 }
 
+h1, h2, h3
+{
+    margin:0;
+    margin-bottom:0.5em;
+}
+
 section
 {
 }
@@ -83,8 +89,6 @@ nav li
 .sidebar h1
 {
     text-align:center;
-    margin:0;
-    margin-bottom:0.5em;
 }
 
 #sidebar-right
@@ -220,12 +224,6 @@ input[name=search_button]
     min-height:175px;
 }
 
-.file-info h1
-{
-    margin:0;
-    margin-bottom:0.5em;
-}
-
 .file-info div
 {
     display:inline-block;
@@ -279,7 +277,8 @@ div.file-details ul
 /* File viewing */
 #details
 {
-    min-width:482px;
+    width:75%;
+    /*max-width:482px;*/
     min-height:350px;
     border:1px solid #000;
     padding:0.5em;
@@ -288,35 +287,68 @@ div.file-details ul
     float:left;
     clear:both;
     font-family:monospace;
-    
 }
 
-#file_list
+#details img, #details canvas
 {
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    max-width:100%;
+}
+
+#file-list
+{
+    max-width:20%;
     border:1px solid #000;
     padding-top:0.5em;
     padding-bottom:0.5em;
-    height:350px;
     overflow:auto;
     font-family:monospace;
 }
 
-#file_list ul
+#file-list ul
 {
     margin:0;
     padding:0;
     list-style:none;
 }
 
-#file_list ul li
+#file-list ul li
 {
     padding-left:0.5em;
     padding-right:0.5em;
 }
 
-#file_list ul li:hover
+#file-list ul li:hover
 {
     cursor:pointer;
     background:#98C9C9;
 }
+
+
+#file-list ul li ul /* ZZT Boards */
+{
+    background:#FFF;
+    width:100%;
+}
+
+#world-canvas
+{
+    width:480px;
+    height:350px;
+    background:#F00;
+}
 /* End file viewing */
+
+/* Reviews */
+.review-meta
+{
+    margin-bottom:1em;
+}
+
+.review article
+{
+    margin-bottom:1em;
+}
+/* End Reviews */

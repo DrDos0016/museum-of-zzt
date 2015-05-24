@@ -8,7 +8,7 @@ from django.db.models import Count, Avg, Sum, Q
 from z2_site.models import *
 from datetime import datetime
 
-import zipfile
+import zipfile, binascii
 
 def get_zip_file(request):
     data = {}
@@ -18,14 +18,16 @@ def get_zip_file(request):
     ext = filename.split(".")[-1].lower()
     
     try:
-        zip = zipfile.ZipFile("/var/projects/misc/zzt_release/zgames/"+zip) # TODO Proper path + os.path.join()
+        zip = zipfile.ZipFile("/var/projects/z2/zgames/"+letter+"/"+zip) # TODO Proper path + os.path.join()
         file = zip.open(filename)
         
         if ext in ["txt", "bat"]:
             return HttpResponse(file.read().replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>"))
         if ext in ["hi"]:
             return HttpResponse("High Scores")
+        if ext == "zzt":
+            return HttpResponse(binascii.hexlify(file.read()))
         else:
             return HttpResponse("Maybe in the future")
     except:
-        return HttpReponse("An error occurred, and the file could not be retreived.")
+        return HttpResponse("An error occurred, and the file could not be retreived.")
