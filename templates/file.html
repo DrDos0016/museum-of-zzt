@@ -4,6 +4,8 @@
 <script>
 var letter = "{{letter}}";
 var zip = "{{file.filename}}";
+var load_file = "{{load_file}}";
+var load_board = "{{load_board}}";
 </script>
 <script async src="/assets/js/file_viewer.js"></script>
 {% endblock %}
@@ -23,7 +25,8 @@ var zip = "{{file.filename}}";
 <div id="details">
 <img src="/assets/images/screenshots/no_screenshot.png">
 </div>
-<div id="file-list" class="">
+
+<div id="file-list" class="col">
 <ul>
 <li class="selected">Title Screen</li>
 {% for file in files %}
@@ -32,6 +35,6 @@ var zip = "{{file.filename}}";
 </ul>
 </div>
 
-<textarea id="debug" style="width:100%;height:400px;"></textarea>
+<div id="world-info" class="col"></div>
 </section>
 {% endblock %}

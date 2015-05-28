@@ -43,6 +43,8 @@ def file(request, letter, filename):
     zip = zipfile.ZipFile("/var/projects/z2/zgames/"+letter+"/"+filename) # TODO Proper path + os.path.join()
     data["files"] = zip.namelist()
     data["files"].sort()
+    data["load_file"] = request.GET.get("file")
+    data["load_board"] = request.GET.get("board")
     return render_to_response("file.html", data)
 
 def index(request):
