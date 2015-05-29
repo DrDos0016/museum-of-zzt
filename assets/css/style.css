@@ -55,6 +55,15 @@ section
     background:#619F9F;
 }
 
+table
+{
+    border-collapse:collapse;
+}
+
+table td, table th
+{
+    border:1px solid #000;
+}
 
 #logo
 {
@@ -373,3 +382,21 @@ div.file-details ul
     margin-bottom:1em;
 }
 /* End Reviews */
+
+/* Ascii */
+#ascii-table
+{
+    width:100%;
+}
+#ascii-table td, #ascii-table th
+{
+    text-align:center;
+    min-width:8%;
+    padding:2px;
+}
+
+#ascii-table img
+{
+    background:#000;
+}
+/* End Ascii */

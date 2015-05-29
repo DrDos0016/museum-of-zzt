@@ -1,8 +1,947 @@
 {% extends "main.html" %}
 
 {% block content %}
+<style>
+.char
+{
+    display:block;
+    width:8px;
+    height:14px;
+    overflow:hidden;
+    background-color:#000;
+    background-image:url("/assets/images/ascii.png");
+    background-repeat: no-repeat;
+    margin:auto;
+}
+
+#ascii-table
+{
+    max-width:800px;
+    margin:auto;
+    background:#555;
+    color:#FFFF55;
+}
+</style>
 <section id="content" class="col block">
-<h1>Main Content</h1>
-<p>Stuff goes here</p>
+<h1>Ascii Character Reference</h1>
+
+<table id="ascii-table">
+<tr>
+    <th>#</th>
+    <th>Character</th>
+    <th>Graphic</th>
+    
+    <th>#</th>
+    <th>Character</th>
+    <th>Graphic</th>
+    
+    <th>#</th>
+    <th>Character</th>
+    <th>Graphic</th>
+    
+    <th>#</th>
+    <th>Character</th>
+    <th>Graphic</th>
+</tr>
+
+<tr>
+    <td>000</td>
+    <td> </td>
+    <td><div class="char" style="background-position:0px 0px"></div></td>
+    <td>064</td>
+    <td>@</td>
+    <td><div class="char" style="background-position:0px -56px"></div></td>
+    <td>128</td>
+    <td>128</td>
+    <td><div class="char" style="background-position:0px -112px"></div></td>
+    <td>192</td>
+    <td>└</td>
+    <td><div class="char" style="background-position:0px -168px"></div></td>
+</tr>
+<tr>
+    <td>001</td>
+    <td>☺</td>
+    <td><div class="char" style="background-position:-8px 0px"></div></td>
+    <td>065</td>
+    <td>A</td>
+    <td><div class="char" style="background-position:-8px -56px"></div></td>
+    <td>129</td>
+    <td>129</td>
+    <td><div class="char" style="background-position:-8px -112px"></div></td>
+    <td>193</td>
+    <td>┴</td>
+    <td><div class="char" style="background-position:-8px -168px"></div></td>
+</tr>
+<tr>
+    <td>002</td>
+    <td>☻</td>
+    <td><div class="char" style="background-position:-16px 0px"></div></td>
+    <td>066</td>
+    <td>B</td>
+    <td><div class="char" style="background-position:-16px -56px"></div></td>
+    <td>130</td>
+    <td>130</td>
+    <td><div class="char" style="background-position:-16px -112px"></div></td>
+    <td>194</td>
+    <td>┬</td>
+    <td><div class="char" style="background-position:-16px -168px"></div></td>
+</tr>
+<tr>
+    <td>003</td>
+    <td>♥</td>
+    <td><div class="char" style="background-position:-24px 0px"></div></td>
+    <td>067</td>
+    <td>C</td>
+    <td><div class="char" style="background-position:-24px -56px"></div></td>
+    <td>131</td>
+    <td>131</td>
+    <td><div class="char" style="background-position:-24px -112px"></div></td>
+    <td>195</td>
+    <td>├</td>
+    <td><div class="char" style="background-position:-24px -168px"></div></td>
+</tr>
+<tr>
+    <td>004</td>
+    <td>♦</td>
+    <td><div class="char" style="background-position:-32px 0px"></div></td>
+    <td>068</td>
+    <td>D</td>
+    <td><div class="char" style="background-position:-32px -56px"></div></td>
+    <td>132</td>
+    <td>132</td>
+    <td><div class="char" style="background-position:-32px -112px"></div></td>
+    <td>196</td>
+    <td>─</td>
+    <td><div class="char" style="background-position:-32px -168px"></div></td>
+</tr>
+<tr>
+    <td>005</td>
+    <td>♣</td>
+    <td><div class="char" style="background-position:-40px 0px"></div></td>
+    <td>069</td>
+    <td>E</td>
+    <td><div class="char" style="background-position:-40px -56px"></div></td>
+    <td>133</td>
+    <td>133</td>
+    <td><div class="char" style="background-position:-40px -112px"></div></td>
+    <td>197</td>
+    <td>┼</td>
+    <td><div class="char" style="background-position:-40px -168px"></div></td>
+</tr>
+<tr>
+    <td>006</td>
+    <td>♠</td>
+    <td><div class="char" style="background-position:-48px 0px"></div></td>
+    <td>070</td>
+    <td>F</td>
+    <td><div class="char" style="background-position:-48px -56px"></div></td>
+    <td>134</td>
+    <td>134</td>
+    <td><div class="char" style="background-position:-48px -112px"></div></td>
+    <td>198</td>
+    <td>╞</td>
+    <td><div class="char" style="background-position:-48px -168px"></div></td>
+</tr>
+<tr>
+    <td>007</td>
+    <td>•</td>
+    <td><div class="char" style="background-position:-56px 0px"></div></td>
+    <td>071</td>
+    <td>G</td>
+    <td><div class="char" style="background-position:-56px -56px"></div></td>
+    <td>135</td>
+    <td>135</td>
+    <td><div class="char" style="background-position:-56px -112px"></div></td>
+    <td>199</td>
+    <td>╟</td>
+    <td><div class="char" style="background-position:-56px -168px"></div></td>
+</tr>
+<tr>
+    <td>008</td>
+    <td>◘</td>
+    <td><div class="char" style="background-position:-64px 0px"></div></td>
+    <td>072</td>
+    <td>H</td>
+    <td><div class="char" style="background-position:-64px -56px"></div></td>
+    <td>136</td>
+    <td>136</td>
+    <td><div class="char" style="background-position:-64px -112px"></div></td>
+    <td>200</td>
+    <td>╚</td>
+    <td><div class="char" style="background-position:-64px -168px"></div></td>
+</tr>
+<tr>
+    <td>009</td>
+    <td>○</td>
+    <td><div class="char" style="background-position:-72px 0px"></div></td>
+    <td>073</td>
+    <td>I</td>
+    <td><div class="char" style="background-position:-72px -56px"></div></td>
+    <td>137</td>
+    <td>137</td>
+    <td><div class="char" style="background-position:-72px -112px"></div></td>
+    <td>201</td>
+    <td>╔</td>
+    <td><div class="char" style="background-position:-72px -168px"></div></td>
+</tr>
+<tr>
+    <td>010</td>
+    <td>◙</td>
+    <td><div class="char" style="background-position:-80px 0px"></div></td>
+    <td>074</td>
+    <td>J</td>
+    <td><div class="char" style="background-position:-80px -56px"></div></td>
+    <td>138</td>
+    <td>138</td>
+    <td><div class="char" style="background-position:-80px -112px"></div></td>
+    <td>202</td>
+    <td>╩</td>
+    <td><div class="char" style="background-position:-80px -168px"></div></td>
+</tr>
+<tr>
+    <td>011</td>
+    <td>♂</td>
+    <td><div class="char" style="background-position:-88px 0px"></div></td>
+    <td>075</td>
+    <td>K</td>
+    <td><div class="char" style="background-position:-88px -56px"></div></td>
+    <td>139</td>
+    <td>139</td>
+    <td><div class="char" style="background-position:-88px -112px"></div></td>
+    <td>203</td>
+    <td>╦</td>
+    <td><div class="char" style="background-position:-88px -168px"></div></td>
+</tr>
+<tr>
+    <td>012</td>
+    <td>♀</td>
+    <td><div class="char" style="background-position:-96px 0px"></div></td>
+    <td>076</td>
+    <td>L</td>
+    <td><div class="char" style="background-position:-96px -56px"></div></td>
+    <td>140</td>
+    <td>140</td>
+    <td><div class="char" style="background-position:-96px -112px"></div></td>
+    <td>204</td>
+    <td>╠</td>
+    <td><div class="char" style="background-position:-96px -168px"></div></td>
+</tr>
+<tr>
+    <td>013</td>
+    <td>♪</td>
+    <td><div class="char" style="background-position:-104px 0px"></div></td>
+    <td>077</td>
+    <td>M</td>
+    <td><div class="char" style="background-position:-104px -56px"></div></td>
+    <td>141</td>
+    <td>141</td>
+    <td><div class="char" style="background-position:-104px -112px"></div></td>
+    <td>205</td>
+    <td>═</td>
+    <td><div class="char" style="background-position:-104px -168px"></div></td>
+</tr>
+<tr>
+    <td>014</td>
+    <td>♫</td>
+    <td><div class="char" style="background-position:-112px 0px"></div></td>
+    <td>078</td>
+    <td>N</td>
+    <td><div class="char" style="background-position:-112px -56px"></div></td>
+    <td>142</td>
+    <td>142</td>
+    <td><div class="char" style="background-position:-112px -112px"></div></td>
+    <td>206</td>
+    <td>╬</td>
+    <td><div class="char" style="background-position:-112px -168px"></div></td>
+</tr>
+<tr>
+    <td>015</td>
+    <td>☼</td>
+    <td><div class="char" style="background-position:-120px 0px"></div></td>
+    <td>079</td>
+    <td>O</td>
+    <td><div class="char" style="background-position:-120px -56px"></div></td>
+    <td>143</td>
+    <td>143</td>
+    <td><div class="char" style="background-position:-120px -112px"></div></td>
+    <td>207</td>
+    <td>╧</td>
+    <td><div class="char" style="background-position:-120px -168px"></div></td>
+</tr>
+<tr>
+    <td>016</td>
+    <td>►</td>
+    <td><div class="char" style="background-position:0px -14px"></div></td>
+    <td>080</td>
+    <td>P</td>
+    <td><div class="char" style="background-position:0px -70px"></div></td>
+    <td>144</td>
+    <td>144</td>
+    <td><div class="char" style="background-position:0px -126px"></div></td>
+    <td>208</td>
+    <td>╨</td>
+    <td><div class="char" style="background-position:0px -182px"></div></td>
+</tr>
+<tr>
+    <td>017</td>
+    <td>◄</td>
+    <td><div class="char" style="background-position:-8px -14px"></div></td>
+    <td>081</td>
+    <td>Q</td>
+    <td><div class="char" style="background-position:-8px -70px"></div></td>
+    <td>145</td>
+    <td>145</td>
+    <td><div class="char" style="background-position:-8px -126px"></div></td>
+    <td>209</td>
+    <td>╤</td>
+    <td><div class="char" style="background-position:-8px -182px"></div></td>
+</tr>
+<tr>
+    <td>018</td>
+    <td>↕</td>
+    <td><div class="char" style="background-position:-16px -14px"></div></td>
+    <td>082</td>
+    <td>R</td>
+    <td><div class="char" style="background-position:-16px -70px"></div></td>
+    <td>146</td>
+    <td>146</td>
+    <td><div class="char" style="background-position:-16px -126px"></div></td>
+    <td>210</td>
+    <td>╥</td>
+    <td><div class="char" style="background-position:-16px -182px"></div></td>
+</tr>
+<tr>
+    <td>019</td>
+    <td>‼</td>
+    <td><div class="char" style="background-position:-24px -14px"></div></td>
+    <td>083</td>
+    <td>S</td>
+    <td><div class="char" style="background-position:-24px -70px"></div></td>
+    <td>147</td>
+    <td>147</td>
+    <td><div class="char" style="background-position:-24px -126px"></div></td>
+    <td>211</td>
+    <td>╙</td>
+    <td><div class="char" style="background-position:-24px -182px"></div></td>
+</tr>
+<tr>
+    <td>020</td>
+    <td>¶</td>
+    <td><div class="char" style="background-position:-32px -14px"></div></td>
+    <td>084</td>
+    <td>T</td>
+    <td><div class="char" style="background-position:-32px -70px"></div></td>
+    <td>148</td>
+    <td>148</td>
+    <td><div class="char" style="background-position:-32px -126px"></div></td>
+    <td>212</td>
+    <td>╘</td>
+    <td><div class="char" style="background-position:-32px -182px"></div></td>
+</tr>
+<tr>
+    <td>021</td>
+    <td>§</td>
+    <td><div class="char" style="background-position:-40px -14px"></div></td>
+    <td>085</td>
+    <td>U</td>
+    <td><div class="char" style="background-position:-40px -70px"></div></td>
+    <td>149</td>
+    <td>149</td>
+    <td><div class="char" style="background-position:-40px -126px"></div></td>
+    <td>213</td>
+    <td>╒</td>
+    <td><div class="char" style="background-position:-40px -182px"></div></td>
+</tr>
+<tr>
+    <td>022</td>
+    <td>▬</td>
+    <td><div class="char" style="background-position:-48px -14px"></div></td>
+    <td>086</td>
+    <td>V</td>
+    <td><div class="char" style="background-position:-48px -70px"></div></td>
+    <td>150</td>
+    <td>150</td>
+    <td><div class="char" style="background-position:-48px -126px"></div></td>
+    <td>214</td>
+    <td>╓</td>
+    <td><div class="char" style="background-position:-48px -182px"></div></td>
+</tr>
+<tr>
+    <td>023</td>
+    <td>↨</td>
+    <td><div class="char" style="background-position:-56px -14px"></div></td>
+    <td>087</td>
+    <td>W</td>
+    <td><div class="char" style="background-position:-56px -70px"></div></td>
+    <td>151</td>
+    <td>151</td>
+    <td><div class="char" style="background-position:-56px -126px"></div></td>
+    <td>215</td>
+    <td>╫</td>
+    <td><div class="char" style="background-position:-56px -182px"></div></td>
+</tr>
+<tr>
+    <td>024</td>
+    <td>↑</td>
+    <td><div class="char" style="background-position:-64px -14px"></div></td>
+    <td>088</td>
+    <td>X</td>
+    <td><div class="char" style="background-position:-64px -70px"></div></td>
+    <td>152</td>
+    <td>152</td>
+    <td><div class="char" style="background-position:-64px -126px"></div></td>
+    <td>216</td>
+    <td>╪</td>
+    <td><div class="char" style="background-position:-64px -182px"></div></td>
+</tr>
+<tr>
+    <td>025</td>
+    <td>↓</td>
+    <td><div class="char" style="background-position:-72px -14px"></div></td>
+    <td>089</td>
+    <td>Y</td>
+    <td><div class="char" style="background-position:-72px -70px"></div></td>
+    <td>153</td>
+    <td>153</td>
+    <td><div class="char" style="background-position:-72px -126px"></div></td>
+    <td>217</td>
+    <td>┘</td>
+    <td><div class="char" style="background-position:-72px -182px"></div></td>
+</tr>
+<tr>
+    <td>026</td>
+    <td>→</td>
+    <td><div class="char" style="background-position:-80px -14px"></div></td>
+    <td>090</td>
+    <td>Z</td>
+    <td><div class="char" style="background-position:-80px -70px"></div></td>
+    <td>154</td>
+    <td>154</td>
+    <td><div class="char" style="background-position:-80px -126px"></div></td>
+    <td>218</td>
+    <td>┌</td>
+    <td><div class="char" style="background-position:-80px -182px"></div></td>
+</tr>
+<tr>
+    <td>027</td>
+    <td>←</td>
+    <td><div class="char" style="background-position:-88px -14px"></div></td>
+    <td>091</td>
+    <td>[</td>
+    <td><div class="char" style="background-position:-88px -70px"></div></td>
+    <td>155</td>
+    <td>155</td>
+    <td><div class="char" style="background-position:-88px -126px"></div></td>
+    <td>219</td>
+    <td>█</td>
+    <td><div class="char" style="background-position:-88px -182px"></div></td>
+</tr>
+<tr>
+    <td>028</td>
+    <td>∟</td>
+    <td><div class="char" style="background-position:-96px -14px"></div></td>
+    <td>092</td>
+    <td>\</td>
+    <td><div class="char" style="background-position:-96px -70px"></div></td>
+    <td>156</td>
+    <td>156</td>
+    <td><div class="char" style="background-position:-96px -126px"></div></td>
+    <td>220</td>
+    <td>▄</td>
+    <td><div class="char" style="background-position:-96px -182px"></div></td>
+</tr>
+<tr>
+    <td>029</td>
+    <td>↔</td>
+    <td><div class="char" style="background-position:-104px -14px"></div></td>
+    <td>093</td>
+    <td>]</td>
+    <td><div class="char" style="background-position:-104px -70px"></div></td>
+    <td>157</td>
+    <td>157</td>
+    <td><div class="char" style="background-position:-104px -126px"></div></td>
+    <td>221</td>
+    <td>▌</td>
+    <td><div class="char" style="background-position:-104px -182px"></div></td>
+</tr>
+<tr>
+    <td>030</td>
+    <td>▲</td>
+    <td><div class="char" style="background-position:-112px -14px"></div></td>
+    <td>094</td>
+    <td>^</td>
+    <td><div class="char" style="background-position:-112px -70px"></div></td>
+    <td>158</td>
+    <td>158</td>
+    <td><div class="char" style="background-position:-112px -126px"></div></td>
+    <td>222</td>
+    <td>▐</td>
+    <td><div class="char" style="background-position:-112px -182px"></div></td>
+</tr>
+<tr>
+    <td>031</td>
+    <td>▼</td>
+    <td><div class="char" style="background-position:-120px -14px"></div></td>
+    <td>095</td>
+    <td>_</td>
+    <td><div class="char" style="background-position:-120px -70px"></div></td>
+    <td>159</td>
+    <td>159</td>
+    <td><div class="char" style="background-position:-120px -126px"></div></td>
+    <td>223</td>
+    <td>▀</td>
+    <td><div class="char" style="background-position:-120px -182px"></div></td>
+</tr>
+<tr>
+    <td>032</td>
+    <td> </td>
+    <td><div class="char" style="background-position:0px -28px"></div></td>
+    <td>096</td>
+    <td>`</td>
+    <td><div class="char" style="background-position:0px -84px"></div></td>
+    <td>160</td>
+    <td>160</td>
+    <td><div class="char" style="background-position:0px -140px"></div></td>
+    <td>224</td>
+    <td>α</td>
+    <td><div class="char" style="background-position:0px -196px"></div></td>
+</tr>
+<tr>
+    <td>033</td>
+    <td>!</td>
+    <td><div class="char" style="background-position:-8px -28px"></div></td>
+    <td>097</td>
+    <td>a</td>
+    <td><div class="char" style="background-position:-8px -84px"></div></td>
+    <td>161</td>
+    <td>161</td>
+    <td><div class="char" style="background-position:-8px -140px"></div></td>
+    <td>225</td>
+    <td>ß</td>
+    <td><div class="char" style="background-position:-8px -196px"></div></td>
+</tr>
+<tr>
+    <td>034</td>
+    <td>"</td>
+    <td><div class="char" style="background-position:-16px -28px"></div></td>
+    <td>098</td>
+    <td>b</td>
+    <td><div class="char" style="background-position:-16px -84px"></div></td>
+    <td>162</td>
+    <td>162</td>
+    <td><div class="char" style="background-position:-16px -140px"></div></td>
+    <td>226</td>
+    <td>Γ</td>
+    <td><div class="char" style="background-position:-16px -196px"></div></td>
+</tr>
+<tr>
+    <td>035</td>
+    <td>#</td>
+    <td><div class="char" style="background-position:-24px -28px"></div></td>
+    <td>099</td>
+    <td>c</td>
+    <td><div class="char" style="background-position:-24px -84px"></div></td>
+    <td>163</td>
+    <td>163</td>
+    <td><div class="char" style="background-position:-24px -140px"></div></td>
+    <td>227</td>
+    <td>π</td>
+    <td><div class="char" style="background-position:-24px -196px"></div></td>
+</tr>
+<tr>
+    <td>036</td>
+    <td>$</td>
+    <td><div class="char" style="background-position:-32px -28px"></div></td>
+    <td>100</td>
+    <td>d</td>
+    <td><div class="char" style="background-position:-32px -84px"></div></td>
+    <td>164</td>
+    <td>164</td>
+    <td><div class="char" style="background-position:-32px -140px"></div></td>
+    <td>228</td>
+    <td>Σ</td>
+    <td><div class="char" style="background-position:-32px -196px"></div></td>
+</tr>
+<tr>
+    <td>037</td>
+    <td>%</td>
+    <td><div class="char" style="background-position:-40px -28px"></div></td>
+    <td>101</td>
+    <td>e</td>
+    <td><div class="char" style="background-position:-40px -84px"></div></td>
+    <td>165</td>
+    <td>165</td>
+    <td><div class="char" style="background-position:-40px -140px"></div></td>
+    <td>229</td>
+    <td>σ</td>
+    <td><div class="char" style="background-position:-40px -196px"></div></td>
+</tr>
+<tr>
+    <td>038</td>
+    <td>&</td>
+    <td><div class="char" style="background-position:-48px -28px"></div></td>
+    <td>102</td>
+    <td>f</td>
+    <td><div class="char" style="background-position:-48px -84px"></div></td>
+    <td>166</td>
+    <td>166</td>
+    <td><div class="char" style="background-position:-48px -140px"></div></td>
+    <td>230</td>
+    <td>µ</td>
+    <td><div class="char" style="background-position:-48px -196px"></div></td>
+</tr>
+<tr>
+    <td>039</td>
+    <td>'</td>
+    <td><div class="char" style="background-position:-56px -28px"></div></td>
+    <td>103</td>
+    <td>g</td>
+    <td><div class="char" style="background-position:-56px -84px"></div></td>
+    <td>167</td>
+    <td>167</td>
+    <td><div class="char" style="background-position:-56px -140px"></div></td>
+    <td>231</td>
+    <td>τ</td>
+    <td><div class="char" style="background-position:-56px -196px"></div></td>
+</tr>
+<tr>
+    <td>040</td>
+    <td>(</td>
+    <td><div class="char" style="background-position:-64px -28px"></div></td>
+    <td>104</td>
+    <td>h</td>
+    <td><div class="char" style="background-position:-64px -84px"></div></td>
+    <td>168</td>
+    <td>168</td>
+    <td><div class="char" style="background-position:-64px -140px"></div></td>
+    <td>232</td>
+    <td>Φ</td>
+    <td><div class="char" style="background-position:-64px -196px"></div></td>
+</tr>
+<tr>
+    <td>041</td>
+    <td>)</td>
+    <td><div class="char" style="background-position:-72px -28px"></div></td>
+    <td>105</td>
+    <td>i</td>
+    <td><div class="char" style="background-position:-72px -84px"></div></td>
+    <td>169</td>
+    <td>169</td>
+    <td><div class="char" style="background-position:-72px -140px"></div></td>
+    <td>233</td>
+    <td>Θ</td>
+    <td><div class="char" style="background-position:-72px -196px"></div></td>
+</tr>
+<tr>
+    <td>042</td>
+    <td>*</td>
+    <td><div class="char" style="background-position:-80px -28px"></div></td>
+    <td>106</td>
+    <td>j</td>
+    <td><div class="char" style="background-position:-80px -84px"></div></td>
+    <td>170</td>
+    <td>170</td>
+    <td><div class="char" style="background-position:-80px -140px"></div></td>
+    <td>234</td>
+    <td>Ω</td>
+    <td><div class="char" style="background-position:-80px -196px"></div></td>
+</tr>
+<tr>
+    <td>043</td>
+    <td>+</td>
+    <td><div class="char" style="background-position:-88px -28px"></div></td>
+    <td>107</td>
+    <td>k</td>
+    <td><div class="char" style="background-position:-88px -84px"></div></td>
+    <td>171</td>
+    <td>171</td>
+    <td><div class="char" style="background-position:-88px -140px"></div></td>
+    <td>235</td>
+    <td>δ</td>
+    <td><div class="char" style="background-position:-88px -196px"></div></td>
+</tr>
+<tr>
+    <td>044</td>
+    <td>,</td>
+    <td><div class="char" style="background-position:-96px -28px"></div></td>
+    <td>108</td>
+    <td>l</td>
+    <td><div class="char" style="background-position:-96px -84px"></div></td>
+    <td>172</td>
+    <td>172</td>
+    <td><div class="char" style="background-position:-96px -140px"></div></td>
+    <td>236</td>
+    <td>∞</td>
+    <td><div class="char" style="background-position:-96px -196px"></div></td>
+</tr>
+<tr>
+    <td>045</td>
+    <td>-</td>
+    <td><div class="char" style="background-position:-104px -28px"></div></td>
+    <td>109</td>
+    <td>m</td>
+    <td><div class="char" style="background-position:-104px -84px"></div></td>
+    <td>173</td>
+    <td>173</td>
+    <td><div class="char" style="background-position:-104px -140px"></div></td>
+    <td>237</td>
+    <td>φ</td>
+    <td><div class="char" style="background-position:-104px -196px"></div></td>
+</tr>
+<tr>
+    <td>046</td>
+    <td>.</td>
+    <td><div class="char" style="background-position:-112px -28px"></div></td>
+    <td>110</td>
+    <td>n</td>
+    <td><div class="char" style="background-position:-112px -84px"></div></td>
+    <td>174</td>
+    <td>174</td>
+    <td><div class="char" style="background-position:-112px -140px"></div></td>
+    <td>238</td>
+    <td>ε</td>
+    <td><div class="char" style="background-position:-112px -196px"></div></td>
+</tr>
+<tr>
+    <td>047</td>
+    <td>/</td>
+    <td><div class="char" style="background-position:-120px -28px"></div></td>
+    <td>111</td>
+    <td>o</td>
+    <td><div class="char" style="background-position:-120px -84px"></div></td>
+    <td>175</td>
+    <td>175</td>
+    <td><div class="char" style="background-position:-120px -140px"></div></td>
+    <td>239</td>
+    <td>∩</td>
+    <td><div class="char" style="background-position:-120px -196px"></div></td>
+</tr>
+<tr>
+    <td>048</td>
+    <td>0</td>
+    <td><div class="char" style="background-position:0px -42px"></div></td>
+    <td>112</td>
+    <td>p</td>
+    <td><div class="char" style="background-position:0px -98px"></div></td>
+    <td>176</td>
+    <td>176</td>
+    <td><div class="char" style="background-position:0px -154px"></div></td>
+    <td>240</td>
+    <td>≡</td>
+    <td><div class="char" style="background-position:0px -210px"></div></td>
+</tr>
+<tr>
+    <td>049</td>
+    <td>1</td>
+    <td><div class="char" style="background-position:-8px -42px"></div></td>
+    <td>113</td>
+    <td>q</td>
+    <td><div class="char" style="background-position:-8px -98px"></div></td>
+    <td>177</td>
+    <td>177</td>
+    <td><div class="char" style="background-position:-8px -154px"></div></td>
+    <td>241</td>
+    <td>±</td>
+    <td><div class="char" style="background-position:-8px -210px"></div></td>
+</tr>
+<tr>
+    <td>050</td>
+    <td>2</td>
+    <td><div class="char" style="background-position:-16px -42px"></div></td>
+    <td>114</td>
+    <td>r</td>
+    <td><div class="char" style="background-position:-16px -98px"></div></td>
+    <td>178</td>
+    <td>178</td>
+    <td><div class="char" style="background-position:-16px -154px"></div></td>
+    <td>242</td>
+    <td>≥</td>
+    <td><div class="char" style="background-position:-16px -210px"></div></td>
+</tr>
+<tr>
+    <td>051</td>
+    <td>3</td>
+    <td><div class="char" style="background-position:-24px -42px"></div></td>
+    <td>115</td>
+    <td>s</td>
+    <td><div class="char" style="background-position:-24px -98px"></div></td>
+    <td>179</td>
+    <td>179</td>
+    <td><div class="char" style="background-position:-24px -154px"></div></td>
+    <td>243</td>
+    <td>≤</td>
+    <td><div class="char" style="background-position:-24px -210px"></div></td>
+</tr>
+<tr>
+    <td>052</td>
+    <td>4</td>
+    <td><div class="char" style="background-position:-32px -42px"></div></td>
+    <td>116</td>
+    <td>t</td>
+    <td><div class="char" style="background-position:-32px -98px"></div></td>
+    <td>180</td>
+    <td>180</td>
+    <td><div class="char" style="background-position:-32px -154px"></div></td>
+    <td>244</td>
+    <td>⌠</td>
+    <td><div class="char" style="background-position:-32px -210px"></div></td>
+</tr>
+<tr>
+    <td>053</td>
+    <td>5</td>
+    <td><div class="char" style="background-position:-40px -42px"></div></td>
+    <td>117</td>
+    <td>u</td>
+    <td><div class="char" style="background-position:-40px -98px"></div></td>
+    <td>181</td>
+    <td>181</td>
+    <td><div class="char" style="background-position:-40px -154px"></div></td>
+    <td>245</td>
+    <td>⌡</td>
+    <td><div class="char" style="background-position:-40px -210px"></div></td>
+</tr>
+<tr>
+    <td>054</td>
+    <td>6</td>
+    <td><div class="char" style="background-position:-48px -42px"></div></td>
+    <td>118</td>
+    <td>v</td>
+    <td><div class="char" style="background-position:-48px -98px"></div></td>
+    <td>182</td>
+    <td>182</td>
+    <td><div class="char" style="background-position:-48px -154px"></div></td>
+    <td>246</td>
+    <td>÷</td>
+    <td><div class="char" style="background-position:-48px -210px"></div></td>
+</tr>
+<tr>
+    <td>055</td>
+    <td>7</td>
+    <td><div class="char" style="background-position:-56px -42px"></div></td>
+    <td>119</td>
+    <td>w</td>
+    <td><div class="char" style="background-position:-56px -98px"></div></td>
+    <td>183</td>
+    <td>183</td>
+    <td><div class="char" style="background-position:-56px -154px"></div></td>
+    <td>247</td>
+    <td>≈</td>
+    <td><div class="char" style="background-position:-56px -210px"></div></td>
+</tr>
+<tr>
+    <td>056</td>
+    <td>8</td>
+    <td><div class="char" style="background-position:-64px -42px"></div></td>
+    <td>120</td>
+    <td>x</td>
+    <td><div class="char" style="background-position:-64px -98px"></div></td>
+    <td>184</td>
+    <td>184</td>
+    <td><div class="char" style="background-position:-64px -154px"></div></td>
+    <td>248</td>
+    <td>°</td>
+    <td><div class="char" style="background-position:-64px -210px"></div></td>
+</tr>
+<tr>
+    <td>057</td>
+    <td>9</td>
+    <td><div class="char" style="background-position:-72px -42px"></div></td>
+    <td>121</td>
+    <td>y</td>
+    <td><div class="char" style="background-position:-72px -98px"></div></td>
+    <td>185</td>
+    <td>185</td>
+    <td><div class="char" style="background-position:-72px -154px"></div></td>
+    <td>249</td>
+    <td>∙</td>
+    <td><div class="char" style="background-position:-72px -210px"></div></td>
+</tr>
+<tr>
+    <td>058</td>
+    <td>:</td>
+    <td><div class="char" style="background-position:-80px -42px"></div></td>
+    <td>122</td>
+    <td>z</td>
+    <td><div class="char" style="background-position:-80px -98px"></div></td>
+    <td>186</td>
+    <td>186</td>
+    <td><div class="char" style="background-position:-80px -154px"></div></td>
+    <td>250</td>
+    <td>·</td>
+    <td><div class="char" style="background-position:-80px -210px"></div></td>
+</tr>
+<tr>
+    <td>059</td>
+    <td>;</td>
+    <td><div class="char" style="background-position:-88px -42px"></div></td>
+    <td>123</td>
+    <td>{</td>
+    <td><div class="char" style="background-position:-88px -98px"></div></td>
+    <td>187</td>
+    <td>187</td>
+    <td><div class="char" style="background-position:-88px -154px"></div></td>
+    <td>251</td>
+    <td>√</td>
+    <td><div class="char" style="background-position:-88px -210px"></div></td>
+</tr>
+<tr>
+    <td>060</td>
+    <td><</td>
+    <td><div class="char" style="background-position:-96px -42px"></div></td>
+    <td>124</td>
+    <td>|</td>
+    <td><div class="char" style="background-position:-96px -98px"></div></td>
+    <td>188</td>
+    <td>188</td>
+    <td><div class="char" style="background-position:-96px -154px"></div></td>
+    <td>252</td>
+    <td>ⁿ</td>
+    <td><div class="char" style="background-position:-96px -210px"></div></td>
+</tr>
+<tr>
+    <td>061</td>
+    <td>=</td>
+    <td><div class="char" style="background-position:-104px -42px"></div></td>
+    <td>125</td>
+    <td>}</td>
+    <td><div class="char" style="background-position:-104px -98px"></div></td>
+    <td>189</td>
+    <td>189</td>
+    <td><div class="char" style="background-position:-104px -154px"></div></td>
+    <td>253</td>
+    <td>²</td>
+    <td><div class="char" style="background-position:-104px -210px"></div></td>
+</tr>
+<tr>
+    <td>062</td>
+    <td>></td>
+    <td><div class="char" style="background-position:-112px -42px"></div></td>
+    <td>126</td>
+    <td>~</td>
+    <td><div class="char" style="background-position:-112px -98px"></div></td>
+    <td>190</td>
+    <td>190</td>
+    <td><div class="char" style="background-position:-112px -154px"></div></td>
+    <td>254</td>
+    <td>■</td>
+    <td><div class="char" style="background-position:-112px -210px"></div></td>
+</tr>
+<tr>
+    <td>063</td>
+    <td>?</td>
+    <td><div class="char" style="background-position:-120px -42px"></div></td>
+    <td>127</td>
+    <td>⌂</td>
+    <td><div class="char" style="background-position:-120px -98px"></div></td>
+    <td>191</td>
+    <td>191</td>
+    <td><div class="char" style="background-position:-120px -154px"></div></td>
+    <td>255</td>
+    <td> </td>
+    <td><div class="char" style="background-position:-120px -210px"></div></td>
+</tr>
+</table>
 </section>
+
+
 {% endblock %}

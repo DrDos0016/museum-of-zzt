@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect, get_object_or_404
@@ -49,6 +51,19 @@ def file(request, letter, filename):
 
 def index(request):
     data = {}
+    data["r1"] = range(0,64)
+    data["r2"] = range(64,128)
+    data["r3"] = range(128,256)
+    
+    data["output"] = []
+    for x in xrange(0,len(data["r1"])):
+        data["output"].append(data["r1"][x])
+        data["output"].append(data["r2"][x])
+        data["output"].append(data["r3"][x])
+        
+    data["output"] = range(0,64)
+    
+    data["chars"] = list(" ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ XXX")
     return render_to_response("index.html", data)
     
 def review(request, letter, filename):

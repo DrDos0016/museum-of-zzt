@@ -17,6 +17,7 @@ class Article(models.Model):
     category    = models.CharField(max_length=50)   #
     #summary     = models.CharField(max_length=300)  # Summary of article
     content     = models.TextField()                #
+    css         = models.TextField()                # Additional styling for the article
     date        = models.DateField()                #
     published   = models.BooleanField(default=False)
     file        = models.ForeignKey("File", null=True)  # Associate this article with a specific file
@@ -48,15 +49,23 @@ class File(models.Model):
     def wiki_url(self):
         return "http://zzt.org/zu/wiki/" + self.title
     
+"""
+class Detail(models.Model):
+    OS_LIST = ("MS-DOS", "Windows 16-bit", "Windows 32-bit", "Windows 64-bit", "Linux", "OSX")
+    
+    file        = models.OneToOneField("File", primary_key=True)        # TeamID
+    os          = models.CharField(max_length=50)
+"""
+    
 class Review(models.Model):
     file        = models.ForeignKey("File")         # Review file
     title       = models.CharField(max_length=50)   # Review title
     author      = models.CharField(max_length=50)   # Review author
     email       = models.EmailField()               # Contact info for author (hide this? Optional?)
-    content     = models.TextField()
-    rating      = models.FloatField(default=5.0)
-    date        = models.DateField()
-    ip          = models.IPAddressField()
+    content     = models.TextField()                # Review content
+    rating      = models.FloatField(default=5.0)    # Review Rating
+    date        = models.DateField()                # Review Date
+    ip          = models.IPAddressField()           # Review IP
     
     def __unicode__(self):
         x = "Review for " + self.file.title + "[" + self.file.filename + "]\n"
