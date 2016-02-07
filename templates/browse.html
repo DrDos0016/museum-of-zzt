@@ -13,12 +13,14 @@ Page #{{page}}/{{pages}}<br>
 {% endfor %}
 <a href="?page={{next}}">&gt;</a>
 </div>
+<a href="?">Detailed View</a> | <a href="?view=list">List View</a>
 
 {% for file in files %}
 <div class="file-block">
     <div class="file-screen" style="float:left">
-        <img src="{% if file.screenshot %}/assets/images/screenshots/{{file.screenshot}}{% else %}/assets/images/screenshots/no_screenshot.png{% endif %}" class="titlescreen">
-    </div><div class="file-info">
+        <img src="{% if file.screenshot %}/assets/images/screenshots/{{file.letter}}/{{file.screenshot}}{% else %}/assets/images/screenshots/no_screenshot.png{% endif %}" class="titlescreen">
+    </div>
+    <div class="file-info">
         <h1><a href="{{file.download_url}}">{{file.title|default:"NO NAME"}}</a></h1>
         <div>Author</div>: {{file.author}}<br>
         <div>Filename</div>: {{file.filename}}<br>

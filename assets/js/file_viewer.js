@@ -58,15 +58,17 @@ function pull_file()
     }
     
     $("#file-list li").removeClass("selected");
+    $("#file-list li ul").remove();
+    $("#file-list li br").remove();
     $(this).addClass("selected");
     var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "gif", "bmp", "png", "bat", "zzt"];
-    var filename = $(this).text();
+    //var filename = $(this).clone().children().remove().end().text(); // Handle when the board list is already written
+    var filename = $(this).contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var split = filename.toLowerCase().split(".");
     var ext = split[split.length - 1];
     
     if (valid_extensions.indexOf(ext) == -1)
     {
-        
         if (filename == "Title Screen")
         {
             $("#details").html('<img src="/assets/images/screenshots/no_screenshot.png">');
@@ -104,6 +106,10 @@ function pull_file()
             // Auto Load board
             if (load_board != "")
                 auto_load_board();
+        }
+        else if (ext == "hi")
+        {
+            scores = parse_scores(data);
         }
         else
         {
@@ -289,6 +295,8 @@ function parse_board(world)
 function render_board()
 {
     board_number = $(this).data("board-number");
+    $("li.board").removeClass("selected");
+    $(this).addClass("selected");
     $("#details").html("<canvas id='world-canvas' width='480' height='350'>Your browser is outdated and does not support the canvas element.</canvas>");
     var canvas = document.getElementById("world-canvas");
     var ctx = canvas.getContext("2d");
@@ -415,6 +423,16 @@ function render_board()
     
     $("#world-canvas").click(stat_info);
     console.log(document.getElementById("world-canvas").toDataURL());
+    
+    // DEBUG Screenshot Saving
+    if (save)
+    {
+        var canvas = document.getElementById("world-canvas");
+        base64 = canvas.toDataURL();
+        $("input[name=screenshot]").val(base64);
+        $("form[name=save]")[0].submit();
+    }
+    // END DEBUG
     return true;
 }
 
@@ -495,3 +513,8 @@ function auto_load_board()
     });
 }
 /* End Auto Load Functions */
+
+function parse_scores(data)
+{
+    
+}

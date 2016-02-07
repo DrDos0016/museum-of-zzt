@@ -16,6 +16,14 @@ a:visited
     color:#00F;
 }
 
+a[target=_blank]
+{
+    padding-right:16px;
+    background:url("/assets/images/external_link.png");
+    background-position:right;
+    background-repeat:no-repeat;
+}
+
 body
 {
     font-family:sans-serif;
@@ -23,6 +31,7 @@ body
     max-width:95%;
     margin:auto;
     margin-top:1em;
+    overflow-y:scroll;
 }
 
 .col
@@ -38,6 +47,11 @@ body
 {
     font-family:"Classic Console";
     font-size:16pt;
+}
+
+.sub
+{
+    font-size:smaller;
 }
 
 h1, h2, h3
@@ -157,6 +171,11 @@ footer
 #featured img
 {
     width:80%;
+}
+
+.worlds-block form
+{
+    margin:1em 0 1em 0;
 }
 
 #letters
@@ -281,7 +300,27 @@ div.file-details ul
     font-family:monospace;
     margin-left:1.5em;
 }
-/* End Game blocks */
+/* End File blocks */
+
+/* List View */
+#list-table
+{
+    width:100%;
+}
+#list-table td
+{
+    height:2em;
+    padding-left:4px;
+}
+
+#list-table td.name { width:25%; }
+#list-table td.author { width:25%; }
+#list-table td.genre { width:20%; }
+#list-table td.size { width:10%; }
+#list-table td.rating { width:5%; text-align:center; }
+#list-table td.files { width:5%; text-align:center; }
+#list-table td.wiki { width:5%; text-align:center; }
+/* End List View */
 
 /* File viewing */
 #details
@@ -310,7 +349,7 @@ div.file-details ul
 #file-list
 {
     width:48%;
-    max-height:12.5em;
+    max-height:50%;
     border:1px solid #000;
     padding-top:0.5em;
     padding-bottom:0.5em;
@@ -343,14 +382,13 @@ div.file-details ul
 #file-list ul li ul /* ZZT Boards */
 {
     background:#FFF;
-    width:90%;
-    padding-left:1.5em;
+    width:100%;
 }
 
 #file-list ul li ul li /* ZZT Boards */
 {
-    background:red;
-    width:50%;
+    width:auto;
+    text-align:right;
 }
 
 #world-canvas
@@ -372,6 +410,11 @@ div.file-details ul
 /* End file viewing */
 
 /* Reviews */
+.review
+{
+    margin:auto auto 1em;
+}
+
 .review-meta
 {
     margin-bottom:1em;
@@ -400,3 +443,24 @@ div.file-details ul
     background:#000;
 }
 /* End Ascii */
+
+/* Staff */
+.checklist
+{
+    display:inline-block;
+    vertical-align:top;
+    height:150px;
+    overflow:auto;
+    min-width:300px;
+    border:1px solid #000;
+    background:#DDD;
+}
+
+.field div.checklist label
+{
+    width:100%;
+    font-size:10pt;
+    border-bottom:1px solid #000;
+    font-weight:400;
+}
+/* End Staff */

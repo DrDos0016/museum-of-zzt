@@ -1,0 +1,12 @@
+z2/settings.py
+*.pyc
+*.pnws
+*.[zZ][iI][pP]
+manage.py
+list.php
+WS_FTP.LOG
+*.exe
+downtown
+Voidzzt
+virt
+junk

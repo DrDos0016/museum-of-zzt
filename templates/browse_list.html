@@ -1,0 +1,36 @@
+{% extends "main.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Browse - {{letter|upper}}</h1>
+
+<a href="?">Detailed View</a> | <a href="?view=list">List View</a>
+
+<table id="list-table">
+<thead>
+    <th>Name</th>
+    <th>Author</th>
+    <th>Genre</th>
+    <th>Size</th>
+    <th>Rating</th>
+    <th>Files</th>
+    <th>Wiki</th>
+</thead>
+<tbody>
+{% for file in files %}
+    <tr>
+        <td class="name"><a href="{{file.download_url}}">{{file.title}}</a></td>
+        <td class="author">{{file.author}}</td>
+        <td class="genre">{{file.genre}}</td>
+        <td class="size">{{file.size}} KB</td>
+        <td class="rating">x/5</td>
+        <td class="files"><a href="{{file.file_url}}">View</a></td>
+        <td class="wiki"><a href="{{file.wiki_url}}">Wiki</a></td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+
+</section>
+{% endblock %}

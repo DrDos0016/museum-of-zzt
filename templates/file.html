@@ -6,6 +6,12 @@ var letter = "{{letter}}";
 var zip = "{{file.filename}}";
 var load_file = "{{load_file}}";
 var load_board = "{{load_board}}";
+
+{% if save %}
+// DEBUG DO NOT USE ON PRODUCTION
+var save = "{{save}}";
+// END DEBUG
+{% endif %}
 </script>
 <script async src="/assets/js/file_viewer.js"></script>
 {% endblock %}
@@ -16,14 +22,14 @@ var load_board = "{{load_board}}";
 <h1>[{{file.filename}}] - {{file.title}} - <span id="filename">Title Screen</span></h1>
 <div class="file-links">
         <ul>
-            <li><a href="{{file.download_url}}">Download</a></li>
+            <li><a href="{{file.download_url}}" id="dl-link">Download</a></li>
             <li><a href="{{file.review_url}}">Review</a></li>
             <li>View Files</li>
             <li><a href="{{file.wiki_url}}">Wiki</a></li>
         </ul></div>
 
 <div id="details">
-<img src="/assets/images/screenshots/no_screenshot.png">
+<img src="{% if file.screenshot %}/assets/images/screenshots/{{file.letter}}/{{file.screenshot}}{% else %}/assets/images/screenshots/no_screenshot.png{% endif %}" class="titlescreen">
 </div>
 
 <div id="file-list" class="col">
@@ -36,5 +42,15 @@ var load_board = "{{load_board}}";
 </div>
 
 <div id="world-info" class="col"></div>
+
+{% if save %}
+<form method="POST" action="/debug/save" name="save">
+{% csrf_token %}
+<input name="screenshot">
+<input name="letter" value="{{file.letter}}">
+<input name="zip" value="{{file.filename}}">
+<input type="submit" id="save" value="Save">
+</form>
+{% endif %}
 </section>
 {% endblock %}

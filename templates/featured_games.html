@@ -1,0 +1,56 @@
+{% extends "main.html" %}
+
+{% block content %}
+<section id="content" class="col block">
+<p>Featured games, are games which have been deemed unique in some way as an example of what ZZT has to offer. These game worlds generally show a higher quality than most, and have been given their place in the spotlight.</p>
+
+<p>In the past, a Game of the Month award was given to worlds which were deemed the best released that month. A Classic Game of the Month award was given to a game released at any time. Eventually these awards ceased, until years later when Featured Games brought the idea of the Classic Game of the Month back.</p>
+
+<p>Additionally, a renowned community member MadTom ran his own award series, MadTom's Pick, which filled the role of the Game of the Month.</p>
+
+<p>All of these worlds that received these awards along with their reviews have been merged into the Featured Games list. If you would like to write about a game which showcases excellence in ZZT in some way, please do! This list is far from complete and could certainly use new additions.</p>
+
+<p>With that said, here are the current Featured Games:</p>
+
+{% for file in featured %}
+<div class="file-block">
+    <div class="file-screen" style="float:left">
+        <img src="{% if file.screenshot %}/assets/images/screenshots/{{file.letter}}/{{file.screenshot}}{% else %}/assets/images/screenshots/no_screenshot.png{% endif %}" class="titlescreen">
+    </div>
+    <div class="file-info col">
+        <h1><a href="{{file.download_url}}">{{file.title|default:"NO NAME"}}</a></h1>
+        <div>Author</div>: {{file.author}}<br>
+        <div>Filename</div>: {{file.filename}}<br>
+        <div>Released</div>: {{file.released}}<br>
+        <div>Genre</div>: {{file.genre}}<br>
+        <div>Size</div>: {{file.size}} KB<br>
+        <div>Rating</div>: x/5
+    </div>
+    <div class="featured-reviews col">
+        <h2>Featured Reviews</h2>
+        <a href="#">Featured Game Review by Commodore</a><br>
+        <a href="#">Game of the Month Review by Commodore</a><br>
+        <a href="#">Game of the Month Review by Commodore</a><br>
+    </div>
+    <div class="featured-summary">
+        <h2>Summary</h2>
+        <p>Set in the 50's, you play Johnny, a teenager looking to make some quick cash. What better place to do it than in the very first fast food restaurant ever? Just look out for the freezer bears... </p>
+    </div>
+    <div class="file-details">
+        <ul>
+            <li>ZZT World</li>
+            <li> Featured Game</li>
+            <li> MS-DOS Program</li>
+        </ul>
+    </div>
+    <div class="file-links">
+        <ul>
+            <li><a href="{{file.download_url}}">Download</a></li>
+            <li><a href="{{file.review_url}}">Review</a></li>
+            <li><a href="{{file.file_url}}">View Files</a></li>
+            <li><a href="{{file.wiki_url}}">Wiki</a></li>
+        </ul></div>
+</div>
+{% endfor %}
+</section>
+{% endblock %}

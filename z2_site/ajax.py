@@ -24,7 +24,7 @@ def get_zip_file(request):
         if ext in ["txt", "bat"]:
             return HttpResponse(file.read().replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>"))
         if ext in ["hi"]:
-            return HttpResponse("High Scores")
+            return HttpResponse(file.read().replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>"))
         if ext == "zzt":
             return HttpResponse(binascii.hexlify(file.read()))
         else:
