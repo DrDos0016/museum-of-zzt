@@ -39,11 +39,10 @@
 <section id="sidebar-left" class="col sidebar">
     <div id="featured" class="block">
         <h1>Featured Game</h1>
-        <a href="">Pepper Bolette</a>
+        <a href="">{{fg.title}}</a><br>
+        <a href="/"><img src="/assets/images/screenshots/{{fg.letter}}/{{fg.screenshot}}" alt="{{fg.title}}"></a>
         <br>
-        <a href="/"><img src="{% static "images/mockup/fg.gif" %}" alt="z2"></a>
-        <br>
-        by <a href="">Jur</a>
+        by <a href="">{{fg.author}}</a>
         <br>
         <a href="/featured">Featured Games</a>
     </div>
@@ -90,7 +89,7 @@
         <div>
             <form method="GET" action="/search">
             Search:<br>
-            <input name="q"><input name="search_button" type="submit" value="Go">
+            <input name="q" value="{{q}}"><input id="search-button" type="submit" value="Go">
             <br>
             <a href="/advanced-search">Advanced Search</a>
             </form>
@@ -98,6 +97,7 @@
         
         <div>
             <a href="/superzzt">Super ZZT Worlds</a><br>
+            <a href="/utilities">Utilities</a><br>
             <a href="/zig">ZIG Worlds</a>
         </div>
     </div>
@@ -108,7 +108,6 @@
         <a href="http://www.dosbox.com/download.php?main=1" target="_blank">DOSBox</a><br>
         <a href="http://kevedit.sourceforge.net/download.html" target="_blank">Kev-Edit</a><br>
         <a href="/clones">ZZT Clones</a><br>
-        <a href="/utilities">Utilities</a><br>
         <a href="/uploaded">Upload Queue</a>
     </div>
 </section>

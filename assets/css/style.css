@@ -207,7 +207,7 @@ input[name=q]
     border:1px solid #000;
 }
 
-input[name=search_button]
+#search-button
 {
     border:1px solid #000;
     background:#CCC;

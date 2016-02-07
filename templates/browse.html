@@ -3,17 +3,18 @@
 
 {% block content %}
 <section id="content" class="col block">
-<h1>Browse - {{letter|upper}}</h1>
+{% if mode == "browse" %}<h1>Browse - {{letter|upper}}</h1>{% endif %}
+{% if mode == "search" %}<h1>Search - {{q}}</h1>{% endif %}
 
 <div class="pages">
 Page #{{page}}/{{pages}}<br>
-<a href="?page={{prev}}">&lt;</a>
+<a href="?page={{prev}}{% if q %}&q={{q}}{% endif %}">&lt;</a>
 {% for page in page_range %}
-<a href="?page={{page}}">{{page}}</a> 
+<a href="?page={{page}}{% if q %}&q={{q}}{% endif %}">{{page}}</a> 
 {% endfor %}
-<a href="?page={{next}}">&gt;</a>
+<a href="?page={{next}}{% if q %}&q={{q}}{% endif %}">&gt;</a>
 </div>
-<a href="?">Detailed View</a> | <a href="?view=list">List View</a>
+<a href="?{% if q %}q={{q}}{% endif %}">Detailed View</a> | <a href="?view=list{% if q %}&q={{q}}{% endif %}">List View</a>
 
 {% for file in files %}
 <div class="file-block">
@@ -48,11 +49,11 @@ Page #{{page}}/{{pages}}<br>
 
 <div class="pages">
 Page #{{page}}/{{pages}}<br>
-<a href="?page={{prev}}">&lt;</a>
+<a href="?page={{prev}}{% if q %}&q={{q}}{% endif %}">&lt;</a>
 {% for page in page_range %}
-<a href="?page={{page}}">{{page}}</a> 
+<a href="?page={{page}}{% if q %}&q={{q}}{% endif %}">{{page}}</a> 
 {% endfor %}
-<a href="?page={{next}}">&gt;</a>
+<a href="?page={{next}}{% if q %}&q={{q}}{% endif %}">&gt;</a>
 </div>
 
 </section>

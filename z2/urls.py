@@ -34,6 +34,9 @@ urlpatterns = patterns("",
     # Reviews
     url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", z2_site.views.review),
     
+    # Search
+    url(r"^search$", z2_site.views.search),
+    
     # AJAX
     url(r"^ajax/get_zip_file$", z2_site.ajax.get_zip_file),
     

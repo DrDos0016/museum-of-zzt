@@ -3,9 +3,10 @@
 
 {% block content %}
 <section id="content" class="col block">
-<h1>Browse - {{letter|upper}}</h1>
+{% if mode == "browse" %}<h1>Browse - {{letter|upper}}</h1>{% endif %}
+{% if mode == "search" %}<h1>Search - {{q}}</h1>{% endif %}
 
-<a href="?">Detailed View</a> | <a href="?view=list">List View</a>
+<a href="?{% if q %}q={{q}}{% endif %}">Detailed View</a> | <a href="?view=list{% if q %}&q={{q}}{% endif %}">List View</a>
 
 <table id="list-table">
 <thead>

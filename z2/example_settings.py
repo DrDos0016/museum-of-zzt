@@ -120,6 +120,9 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
+# Custom Context Processors
+TEMPLATE_CONTEXT_PROCESSORS = ("z2_site.context_processors.get_fg",)
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.

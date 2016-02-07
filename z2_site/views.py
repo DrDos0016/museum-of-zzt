@@ -8,25 +8,25 @@ def article_directory(request):
     data["sort"] = request.GET.get("sort", "category")
     if request.GET.get("sort") == "date":
         data["articles"] = Article.objects.defer("content", "css").filter(published=True).order_by("date", "title")
-        return render_to_response("article_directory.html", data)
+        return render_to_response("article_directory.html", data, context_instance=RequestContext(request))
     else:
         data["articles"] = Article.objects.defer("content", "css").filter(published=True).order_by("category", "title")
-        return render_to_response("article_directory.html", data)
+        return render_to_response("article_directory.html", data, context_instance=RequestContext(request))
     
 def article_view(request, id):
     id = int(id)
     data = {"id":id}
     data["article"] = get_object_or_404(Article, pk=id)
     data["title"] = data["article"].title
-    return render_to_response("article_view.html", data)
+    return render_to_response("article_view.html", data, context_instance=RequestContext(request))
 
 def browse(request, letter="*", page=1):
-    data = {}
+    data = {"mode":"browse"}
     
     if request.GET.get("view") == "list":
         data["letter"] = letter if letter != "1" else "#"
         data["files"] = File.objects.filter(letter=letter).order_by("title")
-        return render_to_response("browse_list.html", data)
+        return render_to_response("browse_list.html", data, context_instance=RequestContext(request))
     else:
         data["page"] = int(request.GET.get("page", page))
         data["letter"] = letter if letter != "1" else "#"
@@ -36,7 +36,7 @@ def browse(request, letter="*", page=1):
         data["page_range"] = range(1, data["pages"] + 1)
         data["prev"] = max(1,data["page"] - 1)
         data["next"] = min(data["pages"],data["page"] + 1)
-        return render_to_response("browse.html", data)
+        return render_to_response("browse.html", data, context_instance=RequestContext(request))
 
 def featured_games(request):
     data = {}
@@ -64,7 +64,7 @@ def file(request, letter, filename):
 
 def index(request):
     data = {}
-    return render_to_response("index.html", data)
+    return render_to_response("index.html", data, context_instance=RequestContext(request))
     
 def random(request):
     count = File.objects.count() # TODO: Filter this to only ZZT Worlds
@@ -84,10 +84,33 @@ def review(request, letter, filename):
     data["file"] = get_object_or_404(File, letter=letter, filename=filename)
     data["reviews"] = Review.objects.filter(file_id=data["file"].id)
     data["letter"] = letter
-    return render_to_response("review.html", data)
+    return render_to_response("review.html", data, context_instance=RequestContext(request))
+    
+def search(request):
+    data = {"mode":"search"}
+    
+    if request.GET.get("q"): # Basic Search
+        q = request.GET["q"].strip()
+        data["q"] = request.GET["q"]
+        qs = File.objects.filter(
+                Q(title__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(company__icontains=q)
+            )
+        if request.GET.get("view") == "list":
+            data["files"] = qs.order_by("title")
+            
+            return render_to_response("browse_list.html", data, context_instance=RequestContext(request))
+        else:
+            data["page"] = int(request.GET.get("page", 1))
+            data["files"] = qs.order_by("title")[(data["page"]-1)*10:data["page"]*10]
+            data["count"] = qs.count()
+            data["pages"] = int(math.ceil(data["count"] / 10.0))
+            data["page_range"] = range(1, data["pages"] + 1)
+            data["prev"] = max(1,data["page"] - 1)
+            data["next"] = min(data["pages"],data["page"] + 1)
+            return render_to_response("browse.html", data, context_instance=RequestContext(request))
     
 def upload(request):
-    return render_to_response("upload.html", data)
+    return render_to_response("upload.html", data, context_instance=RequestContext(request))
     
 def debug_save(request):
     letter = request.POST.get("letter")
