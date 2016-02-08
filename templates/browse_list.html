@@ -3,14 +3,22 @@
 
 {% block content %}
 <section id="content" class="col block">
+{% if category == "ZZT" %}
 {% if mode == "browse" %}<h1>Browse - {{letter|upper}}</h1>{% endif %}
 {% if mode == "search" %}<h1>Search - {{q}}</h1>{% endif %}
+{% else %}
+<h1>{{category}}</h1>
+{% endif %}
 
-<a href="?{% if q %}q={{q}}{% endif %}">Detailed View</a> | <a href="?view=list{% if q %}&q={{q}}{% endif %}">List View</a>
+<div class="pages">
+    <div class="sub">
+        <a href="?{% if q %}q={{q}}{% endif %}">Detailed View</a> | List View
+    </div>
+</div>
 
 <table id="list-table">
 <thead>
-    <th>Name</th>
+    <th>Title</th>
     <th>Author</th>
     <th>Genre</th>
     <th>Size</th>
@@ -21,11 +29,11 @@
 <tbody>
 {% for file in files %}
     <tr>
-        <td class="name"><a href="{{file.download_url}}">{{file.title}}</a></td>
-        <td class="author">{{file.author}}</td>
-        <td class="genre">{{file.genre}}</td>
+        <td class="title"><a href="{{file.download_url}}">{{file.title}}</a></td>
+        <td class="author">{% for a in file.author_list %}<a href="/search?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        <td class="genre">{% for g in file.genre_list %}<a href="/search?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         <td class="size">{{file.size}} KB</td>
-        <td class="rating">x/5</td>
+        <td class="rating">{%if file.rating != None %}{{file.rating|floatformat:"2"}}{% else %}<em>None</em>{% endif %}</td>
         <td class="files"><a href="{{file.file_url}}">View</a></td>
         <td class="wiki"><a href="{{file.wiki_url}}">Wiki</a></td>
     </tr>

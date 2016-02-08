@@ -3,33 +3,43 @@
 
 {% block content %}
 <section id="content" class="col block">
+{% if category == "ZZT" %}
 {% if mode == "browse" %}<h1>Browse - {{letter|upper}}</h1>{% endif %}
 {% if mode == "search" %}<h1>Search - {{q}}</h1>{% endif %}
-
+{% else %}
+<h1>{{category}}</h1>
+{% endif %}
 <div class="pages">
-Page #{{page}}/{{pages}}<br>
-<a href="?page={{prev}}{% if q %}&q={{q}}{% endif %}">&lt;</a>
-{% for page in page_range %}
-<a href="?page={{page}}{% if q %}&q={{q}}{% endif %}">{{page}}</a> 
-{% endfor %}
-<a href="?page={{next}}{% if q %}&q={{q}}{% endif %}">&gt;</a>
+    {% if category == "ZZT" %}
+    Page #{{page}}/{{pages}}<br>
+    <a href="?page={{prev}}{% if q %}&q={{q}}{% endif %}">&lt;</a>
+    {% for page in page_range %}
+    <a href="?page={{page}}{% if q %}&q={{q}}{% endif %}">{{page}}</a> 
+    {% endfor %}
+    <a href="?page={{next}}{% if q %}&q={{q}}{% endif %}">&gt;</a>
+    {% endif %}
+    <div class="sub">
+        Detailed View | <a href="?view=list{% if q %}&q={{q}}{% endif %}">List View</a>
+    </div>
 </div>
-<a href="?{% if q %}q={{q}}{% endif %}">Detailed View</a> | <a href="?view=list{% if q %}&q={{q}}{% endif %}">List View</a>
+
+
 
 {% for file in files %}
-<div class="file-block">
+<div class="file-block" id="{{file.filename}}">
     <div class="file-screen" style="float:left">
         <img src="{% if file.screenshot %}/assets/images/screenshots/{{file.letter}}/{{file.screenshot}}{% else %}/assets/images/screenshots/no_screenshot.png{% endif %}" class="titlescreen">
     </div>
     <div class="file-info">
         <h1><a href="{{file.download_url}}">{{file.title|default:"NO NAME"}}</a></h1>
-        <div>Author</div>: {{file.author}}<br>
+        <div>Author</div>: {% for a in file.author_list %}<a href="/search?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
         <div>Filename</div>: {{file.filename}}<br>
-        <div>Released</div>: {{file.released}}<br>
-        <div>Genre</div>: {{file.genre}}<br>
+        <div>Released</div>: <span title="{% if file.released %}Source: {{file.released_source}}{% endif %}">{{file.released|default:"Unknown"}}</span><br>
+        <div>Genre</div>: {% for g in file.genre_list %}<a href="/search?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
         <div>Size</div>: {{file.size}} KB<br>
-        <div>Rating</div>: x/5
+        <div>Rating</div>: {%if file.rating != None %}{{file.rating|floatformat:"2"}} / 5.00{% else %}<em>No rating</em>{% endif %}
     </div>
+    {% comment %}
     <div class="file-details">
         <ul>
             <li>ZZT World</li>
@@ -37,6 +47,7 @@ Page #{{page}}/{{pages}}<br>
             <li> MS-DOS Program</li>
         </ul>
     </div>
+    {% endcomment %}
     <div class="file-links">
         <ul>
             <li><a href="{{file.download_url}}">Download</a></li>
@@ -47,14 +58,16 @@ Page #{{page}}/{{pages}}<br>
 </div>
 {% endfor %}
 
+{% if category == "ZZT" %}
 <div class="pages">
-Page #{{page}}/{{pages}}<br>
-<a href="?page={{prev}}{% if q %}&q={{q}}{% endif %}">&lt;</a>
-{% for page in page_range %}
-<a href="?page={{page}}{% if q %}&q={{q}}{% endif %}">{{page}}</a> 
-{% endfor %}
-<a href="?page={{next}}{% if q %}&q={{q}}{% endif %}">&gt;</a>
+    Page #{{page}}/{{pages}}<br>
+    <a href="?page={{prev}}{% if q %}&q={{q}}{% endif %}">&lt;</a>
+    {% for page in page_range %}
+    <a href="?page={{page}}{% if q %}&q={{q}}{% endif %}">{{page}}</a> 
+    {% endfor %}
+    <a href="?page={{next}}{% if q %}&q={{q}}{% endif %}">&gt;</a>
 </div>
+{% endif %}
 
 </section>
 {% endblock %}

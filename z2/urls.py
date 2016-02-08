@@ -26,7 +26,12 @@ urlpatterns = patterns("",
     
     # Files
     url(r"^browse/(?P<letter>[a-z1])$", z2_site.views.browse),
-    url(r"^file/(?P<letter>[a-z1])/(?P<filename>.*)$", z2_site.views.file),
+    url(r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.file),
+    url(r"^superzzt$", z2_site.views.browse, {"category":"Super ZZT"}),
+    url(r"^zig$", z2_site.views.browse, {"category":"ZIG"}),
+    url(r"^soundtracks$", z2_site.views.browse, {"category":"Soundtrack"}),
+    url(r"^uploaded$", z2_site.views.browse, {"category":"Uploaded"}),
+    url(r"^utilities$", z2_site.views.browse, {"category":"Utility"}),
     
     # Random ZZT World
     url(r"^random$", z2_site.views.random),
@@ -35,7 +40,15 @@ urlpatterns = patterns("",
     url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", z2_site.views.review),
     
     # Search
+    url(r"^advanced-search$", z2_site.views.advanced_search),
     url(r"^search$", z2_site.views.search),
+    
+    # Uploads
+    url(r"^upload$", z2_site.views.upload),
+    
+    
+    ###########################################################################
+    ###########################################################################
     
     # AJAX
     url(r"^ajax/get_zip_file$", z2_site.ajax.get_zip_file),

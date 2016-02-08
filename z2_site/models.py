@@ -17,18 +17,18 @@ class File(models.Model):
     letter      = models.CharField(max_length=1, db_index=True)    # #/A-Z to show up under when browsed
     filename    = models.CharField(max_length=50)   # Respite.zip
     title       = models.CharField(max_length=80)   # Frost 1: Power
-    author      = models.CharField(max_length=80)   # Zenith Nadir
+    author      = models.CharField(max_length=80)   # Zenith Nadir/Hercules (/ sep)
     size        = models.IntegerField(default=0)    # Filesize in Kilobytes
+    genre       = models.CharField(max_length=80, blank=True, default="")   # RPG/Action/Arcade (/ sep)
     release_date= models.DateField(default=None, null=True) # Release date
-    release_source = models.CharField(max_length=20, null=True, default=None) # ZZT file, News post, Text File, etc
-    category    = models.CharField(max_length=10)   # ZZT, Super ZZT, ZIG, Utility
-    screenshot  = models.CharField(max_length=80)   # Screenshot of title screen
+    release_source = models.CharField(max_length=20, null=True, default=None, blank=True) # ZZT file, News post, Text File, etc
+    category    = models.CharField(max_length=10)   # ZZT, Super ZZT, ZIG, Soundtrack, Utility
+    screenshot  = models.CharField(max_length=80, blank=True, null=True, default=None)   # Screenshot of title screen
     company     = models.CharField(max_length=80, default="", blank=True)   # Interactive Fantasies
     description = models.TextField(null=True, default=None) # Description for Utilites/Featured Games
     review_count= models.IntegerField(default=0)    # Number of reviews on this file
-    rating      = models.FloatField(null=True, default=None) # Rating if any, from reviews given
+    rating      = models.FloatField(null=True, default=None, blank=True) # Rating if any, from reviews given
     details     = models.ManyToManyField("Detail")
-    genres      = models.ManyToManyField("Genre")
     articles    = models.ManyToManyField("Article")    
     
     def __unicode__(self):
@@ -41,7 +41,10 @@ class File(models.Model):
         return "/review/" + self.letter + "/" + self.filename
         
     def file_url(self):
-        return "/file/" + self.letter + "/" + self.filename
+        if self.category != "Uploaded":
+            return "/file/" + self.letter + "/" + self.filename
+        else:
+            return "/file/!/" + self.filename
         
     def wiki_url(self):
         return "http://zzt.org/zu/wiki/" + self.title
@@ -53,19 +56,15 @@ class File(models.Model):
             output.append(int(detail.id))
         return output
         
-    def get_genre_ids(self):
-        genres = self.genres.all()
-        output = []
-        for genre in genres:
-            output.append(int(genre.id))
-        return output
+    def author_list(self):
+        return self.author.split("/")
+        
+    def genre_list(self):
+        return self.genre.split("/")
     
 
 class Detail(models.Model):
     detail      = models.CharField(max_length=20)
-    
-class Genre(models.Model):
-    genre      = models.CharField(max_length=20)
     
 class Review(models.Model):
     file        = models.ForeignKey("File")         # Review file

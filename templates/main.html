@@ -6,6 +6,7 @@
 
 <title>z2 - {% block title %}{{title|default:"The ZZT Archive"}}{% endblock %}</title>
 <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/forms.css">
 <link rel="stylesheet" media="(max-width: 1023px)" href="/assets/css/small.css">
 <link rel="stylesheet" media="(max-width: 800px)" href="/assets/css/mobile.css">
 <link rel="shortcut icon" href="/assets/images/favicon.ico">
@@ -42,13 +43,13 @@
         <a href="">{{fg.title}}</a><br>
         <a href="/"><img src="/assets/images/screenshots/{{fg.letter}}/{{fg.screenshot}}" alt="{{fg.title}}"></a>
         <br>
-        by <a href="">{{fg.author}}</a>
+        by {% for author in fg.author_list %}<a href="/search?author={{author}}">{{author}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
         <br>
         <a href="/featured">Featured Games</a>
     </div>
     
     <div class="block worlds-block">
-        <h1>Database</h1>
+        <h1>ZZT Worlds</h1>
         <div id="letters">
             <a href="/browse/1">#</a>
             <a href="/browse/a">A</a>
@@ -97,8 +98,7 @@
         
         <div>
             <a href="/superzzt">Super ZZT Worlds</a><br>
-            <a href="/utilities">Utilities</a><br>
-            <a href="/zig">ZIG Worlds</a>
+            <a href="/utilities">Utilities</a>
         </div>
     </div>
     

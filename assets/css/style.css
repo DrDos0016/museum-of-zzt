@@ -11,6 +11,11 @@ a
     text-decoration:none;
 }
 
+a:hover
+{
+    text-decoration:underline;
+}
+
 a:visited
 {
     color:#00F;
@@ -197,7 +202,6 @@ footer
 
 #letters a:hover
 {
-    text-decoration:underline;
     background:#CCC;
 }
 
@@ -209,7 +213,6 @@ input[name=q]
 
 #search-button
 {
-    border:1px solid #000;
     background:#CCC;
     margin-top:2px;
 }
@@ -313,7 +316,7 @@ div.file-details ul
     padding-left:4px;
 }
 
-#list-table td.name { width:25%; }
+#list-table td.title { width:25%; }
 #list-table td.author { width:25%; }
 #list-table td.genre { width:20%; }
 #list-table td.size { width:10%; }

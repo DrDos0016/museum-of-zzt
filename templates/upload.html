@@ -1,0 +1,92 @@
+{% extends "main.html" %}
+
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+
+<h1>Upload File</h1>
+
+<div class="file-block">
+    <div class="file-screen" style="float:left">
+        <img src="{% if file.screenshot %}/assets/images/screenshots/{{file.letter}}/{{file.screenshot}}{% else %}/assets/images/screenshots/no_screenshot.png{% endif %}" class="titlescreen">
+    </div>
+    <div class="file-info">
+        <h1><span id="pre-title">&lt;Title&gt;</span></h1>
+        <div>Author</div>: <span id="pre-authors">&lt;Authors&gt;</span><br>
+        <div>Filename</div>: <span id="pre-filename">&lt;Filename&gt;</span><br>
+        <div>Released</div>: <span id="pre-released">&lt;Release Date&gt;</span><br>
+        <div>Genre</div>: <span id="pre-released">&lt;Genres&gt;</span><br>
+        <div>Size</div>: <span id="pre-size">&lt;File Size&gt;</span> KB<br>
+        <div>Rating</div>: <em>No rating</em>
+    </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+<input type="hidden" name="action" value="upload">
+<div class="field">
+    <label>File:<br>
+        <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must be smaller than 2.5 MB</span>
+    </label>
+    <input id="file" name="file" type="file" accept=".zip">
+</div>
+<div class="field">
+    <label for="title">Title:<br>
+        <span class="sub">The title of your upload. Maximum 80 characters. Leave A/An/The as the first word if applicable.<br>
+        ("The Town of ZZT" is good. "Town of ZZT, The" is bad.)</span>
+    </label>
+    <input id="title" name="title" maxlength="80">
+</div>
+<div class="field">
+    <label for="author">Author(s):<br>
+        <span class="sub">The author(s) of your upload. Maximum 80 characters. Separate multiple authors with a forward slash (/). Do not abbreviate names<br>
+        ("Hercules/Hydra78" is good. "Herc, Hydra" is bad.)</span>
+    </label>
+    <input id="author" name="author" maxlength="80">
+</div>
+<div class="field">
+    <label for="company">Company contains:<br>
+        <span class="sub">The company this file is published under. Maximum 80 characters. This field is optional and may be left blank.</span>
+    </label>
+    <input id="company" name="company" value="" maxlength="80">
+</div>
+<div class="field">
+    <label for="genre">Genre(s):<br>
+        <span class="sub">Any genres which this file may fall under. Multiple genres may be checked.</span>
+    </label>
+    <div class="checklist">
+        {% for genre in genres %}
+        <label><input name="genre" type="checkbox" value="{{genre}}"> - {{genre}}</label><br>
+        {% endfor %}
+    </div>
+</div>
+<div class="field">
+    <label for="release_date">Release Date:<br>
+        <span class="sub">The date this file was first made public. Use YYYY-MM-DD for the format. If this is a new release, it should be today's date. If the release date is not known, leave the field blank.</span>
+    </label>
+    <input id="release_date" name="release_date" value="" maxlength="10"> <input type="button" value="Today">
+</div>
+<div class="field">
+    <label for="desc">Utility Description:<br>
+        <span class="sub">If you are uploading a utility, please describe it here. Otherwise, leave this field blank.</span>
+    </label>
+    <textarea id="desc" name="desc"></textarea>
+</div>
+
+<div class="field">
+    <button type="submit">Upload File</button>
+</div>
+
+<textarea>
+{{results}}
+</textarea>
+
+
+</form>
+
+</section>
+{% endblock %}

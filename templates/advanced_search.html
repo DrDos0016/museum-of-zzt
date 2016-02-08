@@ -1,0 +1,102 @@
+{% extends "main.html" %}
+
+{% block style %}
+<style>
+#content input
+{
+    width:150px;
+}
+
+#content select
+{
+    width:154px;
+}
+
+#content input#min, #content input#max, #content .spacing
+{
+    width:50px;
+    text-align:center;
+}
+
+.spacing
+{
+    width:45px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+
+<h1>Advanced Search</h1>
+
+TODO: Add Filename field
+
+<form method="GET" action="/search">
+
+<div class="field">
+    <label for="title">Title contains:</label>
+        <span class="sub"></span>
+    <input id="title" name="title" value="" maxlength="80">
+</div>
+<div class="field">
+    <label for="author">Author contains:<br>
+        <span class="sub"></span>
+    </label>
+    <input id="author" name="author" value="" maxlength="50">
+</div>
+<div class="field">
+    <label for="company">Company contains:<br>
+        <span class="sub"></span>
+    </label>
+    <input id="company" name="company" value="" maxlength="50">
+</div>
+<div class="field">
+    <label for="genre">Genre:<br>
+    </label>
+    <select id="genre" name="genre">
+        <option value="Any">- ANY - </option>
+        {% for genre in genres %}
+            <option>{{genre}}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="field">
+    <label for="min">Min. / max. rating:<br>
+    </label>
+    <input id="min" name="min" value="0.0" maxlength="3"><div class="col spacing">&nbsp;&mdash;&nbsp;</div><input id="max" name="max" value="5.0" maxlength="3"> 
+</div>
+<div class="field">
+    <label for="category">Category:<br>
+    </label>
+    <select id="category" name="category">
+        <option value="Any">- Any -</option>
+        <option>ZZT</option>
+        <option>Super ZZT</option>
+        <option>ZIG</option>
+        <option>Utilities</option>
+    </select>
+</div>
+<div class="field">
+    <label for="sort">Sort results by:<br>
+    </label>
+    <select id="sor" name="sort">
+        <option value="title">Title</option>
+        <option value="author">Author</option>
+        <option value="company">Company</option>
+        <option value="-rating">Rating</option>
+        <option value="release_date">Release Date</option>
+    </select>
+</div>
+
+<div class="field">
+    <button type="submit">Search</button>
+</div>
+
+
+
+</form>
+
+</section>
+{% endblock %}

@@ -3,6 +3,11 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from common import *
 
+def advanced_search(request):
+    data = {"mode":"search", "genres":GENRE_LIST}
+    
+    return render_to_response("advanced_search.html", data, context_instance=RequestContext(request))
+
 def article_directory(request):
     data = {}
     data["sort"] = request.GET.get("sort", "category")
@@ -20,23 +25,32 @@ def article_view(request, id):
     data["title"] = data["article"].title
     return render_to_response("article_view.html", data, context_instance=RequestContext(request))
 
-def browse(request, letter="*", page=1):
-    data = {"mode":"browse"}
+def browse(request, letter="*", category="ZZT", page=1):
+    data = {"mode":"browse", "category":category}
     
-    if request.GET.get("view") == "list":
-        data["letter"] = letter if letter != "1" else "#"
-        data["files"] = File.objects.filter(letter=letter).order_by("title")
-        return render_to_response("browse_list.html", data, context_instance=RequestContext(request))
+    if category == "ZZT":
+        if request.GET.get("view") == "list":
+            data["letter"] = letter if letter != "1" else "#"
+            data["files"] = File.objects.filter(category=category, letter=letter).order_by("title")
+            return render_to_response("browse_list.html", data, context_instance=RequestContext(request))
+        else:
+            data["page"] = int(request.GET.get("page", page))
+            data["letter"] = letter if letter != "1" else "#"
+            data["files"] = File.objects.filter(category=category, letter=letter).order_by("title")[(data["page"]-1)*10:data["page"]*10]
+            data["count"] = File.objects.filter(category=category, letter=letter).count()
+            data["pages"] = int(math.ceil(data["count"] / 10.0))
+            data["page_range"] = range(1, data["pages"] + 1)
+            data["prev"] = max(1,data["page"] - 1)
+            data["next"] = min(data["pages"],data["page"] + 1)
+            return render_to_response("browse.html", data, context_instance=RequestContext(request))
     else:
-        data["page"] = int(request.GET.get("page", page))
-        data["letter"] = letter if letter != "1" else "#"
-        data["files"] = File.objects.filter(letter=letter).order_by("title")[(data["page"]-1)*10:data["page"]*10]
-        data["count"] = File.objects.filter(letter=letter).count()
-        data["pages"] = int(math.ceil(data["count"] / 10.0))
-        data["page_range"] = range(1, data["pages"] + 1)
-        data["prev"] = max(1,data["page"] - 1)
-        data["next"] = min(data["pages"],data["page"] + 1)
-        return render_to_response("browse.html", data, context_instance=RequestContext(request))
+        data["files"] = File.objects.filter(category=category).order_by("title")
+        
+        print data["files"].query
+        if request.GET.get("view") == "list":
+            return render_to_response("browse_list.html", data, context_instance=RequestContext(request))
+        else:
+            return render_to_response("browse.html", data, context_instance=RequestContext(request))
 
 def featured_games(request):
     data = {}
@@ -92,8 +106,9 @@ def search(request):
     if request.GET.get("q"): # Basic Search
         q = request.GET["q"].strip()
         data["q"] = request.GET["q"]
-        qs = File.objects.filter(
-                Q(title__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(company__icontains=q)
+        qs = File.objects.filter( 
+                Q(title__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(company__icontains=q),
+                category="ZZT"
             )
         if request.GET.get("view") == "list":
             data["files"] = qs.order_by("title")
@@ -108,8 +123,164 @@ def search(request):
             data["prev"] = max(1,data["page"] - 1)
             data["next"] = min(data["pages"],data["page"] + 1)
             return render_to_response("browse.html", data, context_instance=RequestContext(request))
+    else: # Advanced Search
+        qs = File.objects.all()
+        if request.GET.get("title", "").strip():
+            qs = qs.filter(title__icontains=request.GET.get("title", "").strip())
+        if request.GET.get("author", "").strip():
+            qs = qs.filter(author__icontains=request.GET.get("author", "").strip())
+        if request.GET.get("company", "").strip():
+            qs = qs.filter(author__icontains=request.GET.get("company", "").strip())
+        if request.GET.get("genre", "").strip() and request.GET.get("genre", "") != "Any":
+            qs = qs.filter(genre__icontains=request.GET.get("genre", "").strip())
+        if request.GET.get("min", "").strip() and float(request.GET.get("min", "")) > 0:
+            qs = qs.filter(rating__gte=float(request.GET.get("min", "").strip()))
+        if request.GET.get("max", "").strip() and float(request.GET.get("max", "")) < 5:
+            qs = qs.filter(rating__lte=float(request.GET.get("max", "").strip()))
+        if request.GET.get("category", "").strip() and request.GET.get("category", "") != "Any":
+            qs = qs.filter(category=request.GET.get("category", "").strip())
+            
+        # Show results
+        sort = request.GET.get("sort", "title").strip()
+        if request.GET.get("view") == "list":
+            data["files"] = qs.order_by(sort)
+            print data["files"].query
+            
+            return render_to_response("browse_list.html", data, context_instance=RequestContext(request))
+        else:
+            data["page"] = int(request.GET.get("page", 1))
+            data["files"] = qs.order_by(sort)[(data["page"]-1)*10:data["page"]*10]
+            data["count"] = qs.count()
+            data["pages"] = int(math.ceil(data["count"] / 10.0))
+            data["page_range"] = range(1, data["pages"] + 1)
+            data["prev"] = max(1,data["page"] - 1)
+            data["next"] = min(data["pages"],data["page"] + 1)
+            
+            print data["files"].query
+            return render_to_response("browse.html", data, context_instance=RequestContext(request))
     
 def upload(request):
+    data = {}
+    data["genres"] = GENRE_LIST
+    
+    if request.POST.get("action") == "upload" and request.FILES.get("file"):
+        
+        # Form stuff
+        title = request.POST.get("title", "").strip()
+        
+        # Get letter
+        l_title = title.lower()
+        if l_title[:4] == "the ":
+            l_title = l_title[4:]
+        elif l_title[:3] == " an":
+            l_title = l_title[3:]
+        elif l_title[:2] == "a ":
+            l_title = l_title[2:]
+
+        if l_title[0] in "abcdefghijklmnopqrstuvwxyz":
+            letter = l_title[0]
+        elif l_title[0] in "1234567890":
+            letter = "1"
+        else:
+            for char in l_title:
+                if char in "abcdefghijklmnopqrstuvwxyz":
+                    letter = char
+                    break
+        
+        # Get authors
+        raw_authors = request.POST.get("author", "").strip().split("/")
+        authors = ""
+        for author in raw_authors:
+            authors += author.strip()+"/"
+        authors = authors[:-1]
+        
+        company = request.POST.get("company", "")
+        
+        # Get genres
+        raw_genres = request.POST.getlist("genre", [])
+        genres = ""
+        for genre in raw_genres:
+            if genre in GENRE_LIST:
+                genres += genre.strip()+"/"
+        genres = genres[:-1]
+        
+        # Get release date
+        release_date = request.POST.get("release_date", "")
+        try:
+            datetime.strptime(release_date, "%Y-%m-%d")
+        except:
+            release_date = None
+        
+        if request.POST.get("desc", ""):
+            description = "<p>" + request.POST.get("desc", "").replace("\n\n", "</p><p>").replace("\n", "<br>")+"</p"
+        else:
+            description = ""
+        
+        file = File(title=title, letter=letter, author=author, 
+            company=company, genre=genres, release_date=release_date, release_source="Uploader", 
+            description=description, category="Uploaded")
+        
+        # File stuff
+        uploaded = request.FILES["file"]
+        filename = uploaded.name
+        size = int(uploaded.size / 1024)
+        
+        print request.FILES
+        print uploaded.name
+        print uploaded.content_type
+        print uploaded.size
+        
+        
+        # Upload limit
+        if uploaded.size > UPLOAD_CAP:
+            return HttpResponse("Uploaded file is too large!")
+            
+        zip = zipfile.ZipFile(uploaded) # TODO Proper path + os.path.join()
+        
+        file_list = zip.namelist()
+        file_list.sort()
+        print "ZIP CONTENTS"
+        print file_list
+        use_file = None
+        for f in file_list:
+            if f.lower()[-4:] == ".zzt":
+                use_file = f
+                break
+            
+        if not use_file:
+            screenshot = None
+        else:
+            print "Ok workign w/ this file"
+            # Extract it
+            zip.extract(use_file, ZZT2PNG_TEMP)
+            screenshot_path = SITE_ROOT+"assets/images/screenshots/"+letter+"/"+os.path.splitext(filename)[0]
+            #command = "python "+ZZT2PNG_PATH+" "+ZZT2PNG_TEMP+use_file + " 0 " + SITE_ROOT+"zgames/"+letter+"/"+os.path.splitext(filename)[0]
+            command = "/usr/local/bin/python "+ZZT2PNG_PATH+" "+ZZT2PNG_TEMP+use_file + " 0 " + screenshot_path
+            print "ZZT2PNG COMMAND:", command
+            os.system(command)
+            
+            if os.path.isfile(SITE_ROOT+"assets/images/screenshots/"+letter+"/"+os.path.splitext(filename)[0]+".png") and os.path.getsize(SITE_ROOT+"assets/images/screenshots/"+letter+"/"+os.path.splitext(filename)[0]+".png") > 0:
+                screenshot = os.path.splitext(filename)[0]+".png"
+            
+        # -------------------------------------------
+        
+        try:
+            file.filename = filename
+            file.size = size
+            file.screenshot = screenshot
+            file.full_clean()
+            file.save()
+            return redirect("/uploaded#"+filename)
+        except ValidationError as e:
+            data["results"] = e
+        
+        print title
+        print author
+        print company
+        print genres
+        print release_date
+        print description
+    
     return render_to_response("upload.html", data, context_instance=RequestContext(request))
     
 def debug_save(request):

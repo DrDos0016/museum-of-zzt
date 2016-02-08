@@ -6,5 +6,5 @@ def get_fg(request):
     featured = Detail.objects.get(pk=7)
     fg = featured.file_set.all().order_by("?")[0]
     
-    #fg = File.objects.get(pk=26)
+    #fg = File.objects.get(pk=821)
     return {"fg":fg}
