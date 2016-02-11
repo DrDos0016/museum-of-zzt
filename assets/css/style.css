@@ -261,6 +261,11 @@ input[name=q]
     min-width:100px;
 }
 
+.file-info span:hover
+{
+    cursor: help;
+}
+
 .file-details
 {
     padding:0.25em;

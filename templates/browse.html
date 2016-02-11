@@ -32,12 +32,12 @@
     </div>
     <div class="file-info">
         <h1><a href="{{file.download_url}}">{{file.title|default:"NO NAME"}}</a></h1>
-        <div>Author</div>: {% for a in file.author_list %}<a href="/search?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
+        <div>Author</div>: {% for a in file.author_list %}<a href="/search?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
         <div>Filename</div>: {{file.filename}}<br>
-        <div>Released</div>: <span title="{% if file.released %}Source: {{file.released_source}}{% endif %}">{{file.released|default:"Unknown"}}</span><br>
+        <div>Released</div>: <span title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</span><br>
         <div>Genre</div>: {% for g in file.genre_list %}<a href="/search?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
         <div>Size</div>: {{file.size}} KB<br>
-        <div>Rating</div>: {%if file.rating != None %}{{file.rating|floatformat:"2"}} / 5.00{% else %}<em>No rating</em>{% endif %}
+        <div>Rating</div>: {%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}
     </div>
     {% comment %}
     <div class="file-details">

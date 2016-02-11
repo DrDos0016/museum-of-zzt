@@ -36,9 +36,9 @@ def browse(request, letter="*", category="ZZT", page=1):
         else:
             data["page"] = int(request.GET.get("page", page))
             data["letter"] = letter if letter != "1" else "#"
-            data["files"] = File.objects.filter(category=category, letter=letter).order_by("title")[(data["page"]-1)*10:data["page"]*10]
+            data["files"] = File.objects.filter(category=category, letter=letter).order_by("title")[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
             data["count"] = File.objects.filter(category=category, letter=letter).count()
-            data["pages"] = int(math.ceil(data["count"] / 10.0))
+            data["pages"] = int(1.0 * math.ceil(data["count"] / PAGE_SIZE))
             data["page_range"] = range(1, data["pages"] + 1)
             data["prev"] = max(1,data["page"] - 1)
             data["next"] = min(data["pages"],data["page"] + 1)
@@ -116,9 +116,9 @@ def search(request):
             return render_to_response("browse_list.html", data, context_instance=RequestContext(request))
         else:
             data["page"] = int(request.GET.get("page", 1))
-            data["files"] = qs.order_by("title")[(data["page"]-1)*10:data["page"]*10]
+            data["files"] = qs.order_by("title")[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
             data["count"] = qs.count()
-            data["pages"] = int(math.ceil(data["count"] / 10.0))
+            data["pages"] = int(1.0 * math.ceil(data["count"] / PAGE_SIZE))
             data["page_range"] = range(1, data["pages"] + 1)
             data["prev"] = max(1,data["page"] - 1)
             data["next"] = min(data["pages"],data["page"] + 1)
@@ -128,7 +128,10 @@ def search(request):
         if request.GET.get("title", "").strip():
             qs = qs.filter(title__icontains=request.GET.get("title", "").strip())
         if request.GET.get("author", "").strip():
-            qs = qs.filter(author__icontains=request.GET.get("author", "").strip())
+            if request.GET.get("exact"):
+                qs = qs.filter(author=request.GET.get("author", "").strip())
+            else:
+                qs = qs.filter(author__icontains=request.GET.get("author", "").strip())
         if request.GET.get("company", "").strip():
             qs = qs.filter(author__icontains=request.GET.get("company", "").strip())
         if request.GET.get("genre", "").strip() and request.GET.get("genre", "") != "Any":
@@ -149,9 +152,9 @@ def search(request):
             return render_to_response("browse_list.html", data, context_instance=RequestContext(request))
         else:
             data["page"] = int(request.GET.get("page", 1))
-            data["files"] = qs.order_by(sort)[(data["page"]-1)*10:data["page"]*10]
+            data["files"] = qs.order_by(sort)[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
             data["count"] = qs.count()
-            data["pages"] = int(math.ceil(data["count"] / 10.0))
+            data["pages"] = int(1.0 * math.ceil(data["count"] / PAGE_SIZE))
             data["page_range"] = range(1, data["pages"] + 1)
             data["prev"] = max(1,data["page"] - 1)
             data["next"] = min(data["pages"],data["page"] + 1)
