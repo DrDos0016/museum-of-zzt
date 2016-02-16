@@ -1,20 +1,25 @@
-#!/usr/bin/python
-# coding=utf-8
-import os, sys
-sys.path.append("/var/projects/z2")
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+import django, sys, os, codecs
+
+sys.path.append("/var/projects/z2/")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "z2.settings")
-from z2_site.models import File, Review
+django.setup()
+
+from z2_site.models import *
+
 from datetime import datetime
 
 """ This will need additional development """
 
 def main():
-    raw = open("reviews.csv").readlines()
+    raw = codecs.open("reviews.csv", "r", "utf-8").readlines()
     for line in raw:
         split = line.split("☃") # this is the best delimiter ever
         if len(split) > 8:
             print "UH OH", line, "Split length: ", len(split)
             continue
+        
         title = split[0][1:-1]
         author = split[1][1:-1]
         email = split[2][1:-1]

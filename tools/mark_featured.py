@@ -8,7 +8,34 @@ django.setup()
 
 from z2_site.models import *
 
-titles = ["4", "Anthropoid", "Blood Oath", "Bloodlines Disc 1", "Blue Moon", "Buck Russel: Private Eye v2.0", "Burger Joint", "Burglar!", "ChickenWire v1.5", "Chrono Wars 11", "Chrono Wars 9", "Community X-Mas, A", "Compound", "Corrupt Mind", "Cyberworld", "Daemon Riff", "Dark Soul", "Death", "Defender of Castle Sin", "Draco Experience, The", "Dragon Eye", "Dwarvish-Mead Dream, A", "Edible Vomit", "End Of The World", "Escape/Planet Red v2.0", "Fabrication", "Fantasy World Dizzy", "Final Fantasy Extreme", "Fool's Quest, The", "Freedom", "Fury Spell", "Gem Hunter", "Gem Hunter SE 1.5", "Kamek", "Kudzu 2.1 (update, not sequel)", "Last Momentum", "Lebensraum", "Life of a Player 2", "Little Square Things", "LOME: The Legend of Matt Eatingham", "Long Voyage, The", "Los Refritos 9", "Lost Monkeys", "Merbotia", "Mercenary, The", "Mined Out", "Misandventures of Mega Job: The Epic Tag Team, The", "Mystic Blade", "Ned the Knight", "NEW Demo", "New Earth Operations Part 1", "NextGame 33", "NO!", "Nothing Constructive", "November Eve", "Overflow", "Pop ver.2", "PPDV", "Quest for the Immortals", "Rippled Flesh", "Run-On", "Rup Pig", "Scooter", "Sivion", "Slime Line", "Sombrero", "Speed Racer X", "Starship Troopers", "Teen Priest 2", "Thief 3", "Today Is Monday", "Voyage of Four", "Warlock Domain", "Warlord's Temple Beta", "Wartorn", "When East Met West: The Phoenix Reich", "Within v1.9", "xod", "You vs. Stupidity 2", "Zem! X", "ZZTris"]
+titles = ["4", "Anthropoid", "Blood Oath", "Bloodlines Disc 1", "Blue Moon", "Buck Russel: Private Eye v2.0", "Burger Joint", "Burglar!", "ChickenWire v1.5", "Chrono Wars 11", "Chrono Wars 9", "Community X-Mas, A", "Compound", "Corrupt Mind", "Cyberworld", "Daemon Riff", "Dark Soul", "Death", "Defender of Castle Sin", "Draco Experience, The", "Dragon Eye", "Dwarvish-Mead Dream, A", "Edible Vomit", "End Of The World", "Escape/Planet Red v2.0", "Fabrication", "Fantasy World Dizzy", "Final Fantasy Extreme", "Fool's Quest, The", "Freedom", "Fury Spell", "Gem Hunter", "Gem Hunter SE 1.5", "Kamek", "Kudzu 2.1 (update, not sequel)", "Last Momentum", "Lebensraum", "Life of a Player 2", "Little Square Things", "LOME: The Legend of Matt Eatingham", "Long Voyage, The", "Los Refritos 9", "Lost Monkeys", "Merbotia", "Mercenary, The", "Mined Out", "Misandventures of Mega Job: The Epic Tag Team, The", "Mystic Blade", "Ned the Knight", "NEW Demo", "New Earth Operations Part 1", "NextGame 33", "NO!", "Nothing Constructive", "November Eve", "Overflow", "Pop ver.2", "PPDV", "Quest for the Immortals", "Rippled Flesh", "Run-On", "Rup Pig", "Scooter", "Sivion", "Slime Line", "Sombrero", "Speed Racer X", "Starship Troopers", "Teen Priest 2", "Thief 3", "Today Is Monday", "Voyage of Four", "Warlock Domain", "Warlord's Temple Beta", "Wartorn", "When East Met West: The Phoenix Reich", "Within v1.9", "xod", "You vs. Stupidity 2", "Zem! X", "ZZTris",
+"Banana Quest",
+"Burger Joint",
+"Death",
+"Dungeon Master's Gallery",
+"Dragon Woods",
+"Ned the Knight",
+"Kudzu 2.1 (update, not sequel)",
+"Lebensraum",
+"Merbotia",
+"Run-On v2.4",
+"Sivion",
+"Mercenary, The",
+"ZZT Syndromes",
+"Smiley Guy & Toxic Terminator",
+"Edible Vomit",
+"Warlock Domain",
+"Winter",
+"Little Square Things",
+"Burglar!",
+"Legend of Brandonia",
+"Ezanya",
+"ESP (Evil Sorceror's Party)",
+"Frost 1; Power",
+"Mooseka Rules With An Iron Fist",
+"Pepper Bolette SE",
+"Aura",
+"Eli's House"]
 
 fg_detail = Detail.objects.get(detail="Featured Game")
 

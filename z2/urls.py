@@ -16,6 +16,8 @@ urlpatterns = patterns("",
     url(r"^article/(?P<id>[0-9]+)/(.*)$", z2_site.views.article_view),
     
     # Special Article Pages (those with urls besides /article/#/title)
+    url(r"^about-zzt$", z2_site.views.article_view, {"id":1}),
+    url(r"^ascii$", z2_site.views.article_view, {"id":3}),
     url(r"^clones$", z2_site.views.article_view, {"id":6}),
     url(r"^getting-started$", z2_site.views.article_view, {"id":5}),
     url(r"^mass$", z2_site.views.article_view, {"id":7}),

@@ -4,10 +4,11 @@ from django.template.defaultfilters import slugify
 class Article(models.Model):
     title       = models.CharField(max_length=50)
     author      = models.CharField(max_length=50)
-    category    = models.CharField(max_length=50)   #
-    content     = models.TextField(default="")                #
-    css         = models.TextField(default="", blank=True)                # Additional styling for the article
-    date        = models.DateField(default="1970-01-01")                #
+    category    = models.CharField(max_length=50)
+    content     = models.TextField(default="")
+    css         = models.TextField(default="", blank=True)
+    type        = models.CharField(max_length=4) # text/html    
+    date        = models.DateField(default="1970-01-01")
     published   = models.BooleanField(default=False)
     
     def url(self):

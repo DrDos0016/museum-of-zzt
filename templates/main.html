@@ -16,6 +16,16 @@
 <meta name="description" content="The ZZT Archive">
 <meta name="keywords" content="ZZT">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script>
+$(document).ready(function (){
+    $(".file-screen").click(function (){
+        if ($(this).css("max-width") != "480px")
+            $(this).css({"max-width":"480px", "cursor":"zoom-out"});
+        else
+            $(this).css({"max-width":"240px", "cursor":"zoom-in"});
+    });
+});
+</script>
 {% block scripts %}
 {% endblock %}
 {% block style %}
@@ -44,7 +54,7 @@
         <a href="">{{fg.title}}</a><br>
         <a href="/"><img src="/assets/images/screenshots/{{fg.letter}}/{{fg.screenshot}}" alt="{{fg.title}}"></a>
         <br>
-        by {% for author in fg.author_list %}<a href="/search?author={{author}}">{{author}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+        by {% for author in fg.author_list %}<a href="/search?author={{author}}&exact=1">{{author}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
         <br>
         <a href="/featured">Featured Games</a>
     </div>

@@ -8,7 +8,7 @@ from z2_site.models import File
 SITE_ROOT = "/var/projects/z2/"
 
 def main():
-    files = File.objects.filter(release_date=None).order_by("letter", "title")
+    files = File.objects.filter(release_date=None).order_by("id")
     
     for file in files:
         try:
@@ -36,9 +36,9 @@ def main():
                 file.release_date = date_str
                 file.release_source = "ZZT File"
                 file.save()
-                print ".",
+                print file.id
         except:
-            print "\nBAD FILE", file.id, file.filename + "\n"
+            print "BAD FILE", file.id, file.filename + ""
     return True
     
 if __name__ == "__main__" : main()

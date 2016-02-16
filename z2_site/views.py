@@ -46,7 +46,6 @@ def browse(request, letter="*", category="ZZT", page=1):
     else:
         data["files"] = File.objects.filter(category=category).order_by("title")
         
-        print data["files"].query
         if request.GET.get("view") == "list":
             return render_to_response("browse_list.html", data, context_instance=RequestContext(request))
         else:
@@ -132,6 +131,8 @@ def search(request):
                 qs = qs.filter(author=request.GET.get("author", "").strip())
             else:
                 qs = qs.filter(author__icontains=request.GET.get("author", "").strip())
+        if request.GET.get("filename", "").strip():
+            qs = qs.filter(filename__icontains=request.GET.get("filename", "").replace(".zip", "").strip())
         if request.GET.get("company", "").strip():
             qs = qs.filter(author__icontains=request.GET.get("company", "").strip())
         if request.GET.get("genre", "").strip() and request.GET.get("genre", "") != "Any":
@@ -147,7 +148,6 @@ def search(request):
         sort = request.GET.get("sort", "title").strip()
         if request.GET.get("view") == "list":
             data["files"] = qs.order_by(sort)
-            print data["files"].query
             
             return render_to_response("browse_list.html", data, context_instance=RequestContext(request))
         else:
@@ -159,7 +159,6 @@ def search(request):
             data["prev"] = max(1,data["page"] - 1)
             data["next"] = min(data["pages"],data["page"] + 1)
             
-            print data["files"].query
             return render_to_response("browse.html", data, context_instance=RequestContext(request))
     
 def upload(request):

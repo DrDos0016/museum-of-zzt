@@ -152,7 +152,7 @@ nav li
 {
     padding:0.5em;
     margin:0.5em;
-    background:#FFF;
+    background:#F0F0F0;
     border:1px solid #000;
 }
 
@@ -237,12 +237,13 @@ input[name=q]
 
 .file-block img
 {
-    max-width:240px;
+    max-width:100%;
 }
 
 .file-screen
 {
     max-width:240px;
+    cursor:zoom-in;
 }
 
 .file-block > div
