@@ -9,9 +9,20 @@
 <section id="content" class="col block">
 
 <h1>{{article.title}}</h1>
+<div>By: {{article.author}}</div>
+<div>Date: {{article.date}}</div>
 
 <article>
+{% if article.type == "html" %}
 {{article.content|safe}}
+{% elif article.type == "text" %}
+<textarea id="plain-text-article" readonly>{{article.content}}</textarea>
+<script>
+document.getElementById("plain-text-article").style.height = document.getElementById("plain-text-article").scrollHeight+'px';
+</script>
+{% else %}
+Article has an invalid type!
+{% endif %}
 </article>
 
 <br>

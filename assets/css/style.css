@@ -473,3 +473,17 @@ div.file-details ul
     font-weight:400;
 }
 /* End Staff */
+
+/* Article Globals */
+#plain-text-article
+{
+    padding:0;
+    margin:0;
+    border:0;
+    font-family:sans-serif;
+    background:#F0F0F0;
+    width:100%;
+    min-height:50vh;
+    resize:none;
+}
+/* End Article Globals */

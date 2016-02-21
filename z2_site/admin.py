@@ -18,6 +18,7 @@ def article_management(request):
         # Set fields
         article.title       = request.POST.get("title")
         article.author      = request.POST.get("author")
+        article.type        = request.POST.get("type")
         article.category    =request.POST.get("category")
         article.content     = request.POST.get("content")
         article.css         = request.POST.get("css")

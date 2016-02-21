@@ -46,6 +46,15 @@ $(document).ready(function (){
     <input id="author" name="author" value="{{article.author}}" maxlength="50">
 </div>
 <div class="field">
+    <label for="type">Type:<br>
+        <span class="sub">The formatting of the article.</span>
+    </label>
+    <select name="type" id="type">
+        <option value="html"{% if article.type == 'html' %} selected{% endif %}>HTML</option>
+        <option value="text"{% if article.type == 'text' %} selected{% endif %}>Plain text</option>
+    </select>
+</div>
+<div class="field">
     <label for="category">Category:<br>
         <span class="sub">The category for the article.</span>
     </label>
