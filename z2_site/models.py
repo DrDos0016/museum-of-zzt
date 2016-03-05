@@ -10,6 +10,7 @@ class Article(models.Model):
     type        = models.CharField(max_length=4) # text/html    
     date        = models.DateField(default="1970-01-01")
     published   = models.BooleanField(default=False)
+    page        = models.IntegerField(default=1)
     
     def url(self):
         return "/article/"+str(self.id)+"/"+slugify(self.title)

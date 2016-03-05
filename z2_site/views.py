@@ -12,10 +12,10 @@ def article_directory(request):
     data = {}
     data["sort"] = request.GET.get("sort", "category")
     if request.GET.get("sort") == "date":
-        data["articles"] = Article.objects.defer("content", "css").filter(published=True).order_by("date", "title")
+        data["articles"] = Article.objects.defer("content", "css").filter(published=True, page=1).order_by("date", "title")
         return render_to_response("article_directory.html", data, context_instance=RequestContext(request))
     else:
-        data["articles"] = Article.objects.defer("content", "css").filter(published=True).order_by("category", "title")
+        data["articles"] = Article.objects.defer("content", "css").filter(published=True, page=1).order_by("category", "title")
         return render_to_response("article_directory.html", data, context_instance=RequestContext(request))
     
 def article_view(request, id):

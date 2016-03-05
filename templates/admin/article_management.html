@@ -29,7 +29,7 @@ $(document).ready(function (){
     <select id="article_id" name="article_id">
         <option value="NEW">NEW ARTICLE</option>
         {% for a in articles %}
-            <option value="{{a.id}}"{% if a.id == article.id %} selected {% endif %}>{{a.title}}</option>
+            <option value="{{a.id}}"{% if a.id == article.id %} selected {% endif %}>{{a.title}} [{{a.page}}]</option>
         {% endfor %}
     </select>
 </div>
@@ -59,6 +59,12 @@ $(document).ready(function (){
         <span class="sub">The category for the article.</span>
     </label>
     <input id="category" name="category" value="{{article.category}}" maxlength="50">
+</div>
+<div class="field">
+    <label for="page">Page:<br>
+        <span class="sub">The page for the article. Pages that aren't 1 are hidden from article listings.</span>
+    </label>
+    <input id="page" name="page" value="{{article.page|default:1}}" maxlength="2">
 </div>
 <div class="field">
     <label for="a_content">Content:<br>

@@ -24,6 +24,7 @@ def article_management(request):
         article.css         = request.POST.get("css")
         article.date        = request.POST.get("date")
         article.published   = request.POST.get("published", False)
+        article.page        = request.POST.get("page", 1)
         article.file_id     = request.POST.get("file_id") if request.POST.get("file_id") else None
         
         try:
