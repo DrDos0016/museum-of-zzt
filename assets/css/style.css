@@ -292,7 +292,7 @@ div.file-links ul, div.file-details ul
     display:inline-block;
     zoom: 1;
     *display: inline;
-    width:24%;
+    width:19%;
     text-align:center;
 }
 
@@ -332,7 +332,7 @@ div.file-details ul
 /* End List View */
 
 /* File viewing */
-#details
+#details, #play-area
 {
     min-width:482px;
     max-width:100%;

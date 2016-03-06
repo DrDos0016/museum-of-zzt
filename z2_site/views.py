@@ -12,7 +12,7 @@ def article_directory(request):
     data = {}
     data["sort"] = request.GET.get("sort", "category")
     if request.GET.get("sort") == "date":
-        data["articles"] = Article.objects.defer("content", "css").filter(published=True, page=1).order_by("date", "title")
+        data["articles"] = Article.objects.defer("content", "css").filter(published=True, page=1).order_by("-date", "title")
         return render_to_response("article_directory.html", data, context_instance=RequestContext(request))
     else:
         data["articles"] = Article.objects.defer("content", "css").filter(published=True, page=1).order_by("category", "title")
@@ -78,6 +78,13 @@ def file(request, letter, filename):
 def index(request):
     data = {}
     return render_to_response("index.html", data, context_instance=RequestContext(request))
+    
+def play(request, letter, filename):
+    data = {}
+    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["letter"] = letter
+    
+    return render_to_response("play.html", data, context_instance=RequestContext(request))
     
 def random(request):
     count = File.objects.count() # TODO: Filter this to only ZZT Worlds

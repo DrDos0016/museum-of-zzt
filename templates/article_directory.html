@@ -3,39 +3,20 @@
 {% block content %}
 <section id="content" class="col block">
 <h1>Article Directory</h1>
-
+<ul>
 {% if sort == "category" %}
     {% for article in articles %}
-        {% if forloop.counter == 1 %}
-        <h2>{{article.category}}</h2>
-        <ul>
-        {% endif %}
-        {%if changed %}
-        <h2>{{article.category}}</h2>
-        <ul>
-        {% endif %}
-            <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} ({{article.date}})</li>
-        {%if changed %}
-        <!--{{article.category}}-->
-        </ul>
-        {% endif %}
+        {%ifchanged %}
+            </ul><h2>{{article.category}}</h2><ul>
+        {% endifchanged %}
+        
+        <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} ({{article.date}})</li>
     {% endfor %}
 {% else %}
     {% for article in articles %}
-        {% if forloop.counter == 1 %}
-        <h2>{{article.category}}</h2>
-        <ul>
-        {% endif %}
-        {%if changed %}
-        <h2>{{article.category}}</h2>
-        <ul>
-        {% endif %}
-            <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} ({{article.date}})</li>
-        {%if changed %}
-        <!--{{article.category}}-->
-        </ul>
-        {% endif %}
+        <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} ({{article.date}})</li>
     {% endfor %}
 {% endif %}
+</ul>
 </section>
 {% endblock %}

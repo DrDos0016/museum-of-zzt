@@ -39,6 +39,9 @@ class File(models.Model):
     def download_url(self):
         return "/zgames/" + self.letter + "/" + self.filename
         
+    def play_url(self):
+        return "/play/" + self.letter + "/" + self.filename
+        
     def review_url(self):
         return "/review/" + self.letter + "/" + self.filename
         

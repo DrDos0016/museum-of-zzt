@@ -29,6 +29,7 @@ urlpatterns = patterns("",
     # Files
     url(r"^browse/(?P<letter>[a-z1])$", z2_site.views.browse),
     url(r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.file),
+    url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.play),
     url(r"^superzzt$", z2_site.views.browse, {"category":"Super ZZT"}),
     url(r"^zig$", z2_site.views.browse, {"category":"ZIG"}),
     url(r"^soundtracks$", z2_site.views.browse, {"category":"Soundtrack"}),
