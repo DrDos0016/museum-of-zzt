@@ -38,7 +38,7 @@ def browse(request, letter="*", category="ZZT", page=1):
             data["letter"] = letter if letter != "1" else "#"
             data["files"] = File.objects.filter(category=category, letter=letter).order_by("title")[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
             data["count"] = File.objects.filter(category=category, letter=letter).count()
-            data["pages"] = int(1.0 * math.ceil(data["count"] / PAGE_SIZE))
+            data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
             data["page_range"] = range(1, data["pages"] + 1)
             data["prev"] = max(1,data["page"] - 1)
             data["next"] = min(data["pages"],data["page"] + 1)
