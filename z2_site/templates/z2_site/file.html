@@ -1,4 +1,5 @@
-{% extends "main.html" %}
+{% extends "z2_site/main.html" %}
+{% load staticfiles %}
 
 {% block scripts %}
 <script>
@@ -13,11 +14,11 @@ var save = "{{save}}";
 // END DEBUG
 {% endif %}
 </script>
-<script async src="/assets/js/file_viewer.js"></script>
+<script async src="{% static 'js/file_viewer.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-<img src="/assets/images/ascii.png" id="ascii" style="display:none"> <!-- DEBUG -->
+<img src="{% static 'images/ascii.png' %}" id="ascii" style="display:none"> <!-- DEBUG -->
 <section id="content" class="col block">
 <h1>[{{file.filename}}] - {{file.title}} - <span id="filename">Title Screen</span></h1>
 <div class="file-links">
@@ -30,7 +31,7 @@ var save = "{{save}}";
         </ul></div>
 
 <div id="details">
-<img src="{% if file.screenshot %}/assets/images/screenshots/{{file.letter}}/{{file.screenshot}}{% else %}/assets/images/screenshots/no_screenshot.png{% endif %}" class="titlescreen">
+<img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
 </div>
 
 <div id="file-list" class="col">

@@ -1,4 +1,5 @@
-{% extends "main.html" %}
+{% extends "z2_site/main.html" %}
+{% load staticfiles %}
 
 {% block content %}
 <section id="content" class="col block">
@@ -15,7 +16,7 @@
 {% for file in featured %}
 <div class="file-block">
     <div class="file-screen" style="float:left">
-        <img src="{% if file.screenshot %}/assets/images/screenshots/{{file.letter}}/{{file.screenshot}}{% else %}/assets/images/screenshots/no_screenshot.png{% endif %}" class="titlescreen">
+        <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
     </div>
     <div class="file-info col">
         <h1><a href="{{file.download_url}}">{{file.title|default:"NO NAME"}}</a></h1>

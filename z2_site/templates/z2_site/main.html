@@ -6,16 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>z2 - {% block title %}{{title|default:"The ZZT Archive"}}{% endblock %}</title>
-<link rel="stylesheet" type="text/css" href="/assets/css/style.css">
-<link rel="stylesheet" type="text/css" href="/assets/css/forms.css">
-<link rel="stylesheet" media="(max-width: 1023px)" href="/assets/css/small.css">
-<link rel="stylesheet" media="(max-width: 800px)" href="/assets/css/mobile.css">
-<link rel="shortcut icon" href="/assets/images/favicon.ico">
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+<link rel="stylesheet" media="(max-width: 1023px)" href="{% static 'css/small.css' %}">
+<link rel="stylesheet" media="(max-width: 800px)" href="{% static 'css/mobile.css' %}">
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
 
 <meta name="author" content="Dr. Dos">
 <meta name="description" content="The ZZT Archive">
 <meta name="keywords" content="ZZT">
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> 
 <script>
 $(document).ready(function (){
     $(".file-screen").click(function (){
@@ -35,7 +35,7 @@ $(document).ready(function (){
 <body>
 
 <header>
-    <a href="/"><img id="logo" src="/assets/images/z2_logo.gif" alt="z2"></a><br>
+    <a href="/"><img id="logo" src="{% static 'images/z2_logo.gif' %}" alt="z2"></a><br>
     <nav>
         <ul>
             <li><a href="/">Main</a></li>
@@ -52,7 +52,7 @@ $(document).ready(function (){
     <div id="featured" class="block">
         <h1>Featured Game</h1>
         <a href="">{{fg.title}}</a><br>
-        <a href="/"><img src="/assets/images/screenshots/{{fg.letter}}/{{fg.screenshot}}" alt="{{fg.title}}"></a>
+        <a href="/"><img src="{% static 'images/screenshots/'|add:fg.letter|add:'/'|add:fg.screenshot' %}" alt="{{fg.title}}"></a>
         <br>
         by {% for author in fg.author_list %}<a href="/search?author={{author}}&exact=1">{{author}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
         <br>
@@ -125,8 +125,8 @@ $(document).ready(function (){
 
 
 {% block content %}
-<section id="content" class="col">
-</section>
+<main id="content" class="col">
+</main>
 {% endblock %}
 
 <section id="sidebar-right" class="col sidebar">    

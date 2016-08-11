@@ -1,4 +1,4 @@
-z2/settings.py
+z2/private_settings.py
 *.pyc
 *.pnws
 *.[zZ][iI][pP]
@@ -9,4 +9,5 @@ WS_FTP.LOG
 downtown
 Voidzzt
 virt
+venv
 junk

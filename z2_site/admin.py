@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
 from django.shortcuts import render
-from common import *
+from .common import *
 
 def article_management(request):
     data = {}
@@ -25,11 +26,15 @@ def article_management(request):
         article.date        = request.POST.get("date")
         article.published   = request.POST.get("published", False)
         article.page        = request.POST.get("page", 1)
-        article.file_id     = request.POST.get("file_id") if request.POST.get("file_id") else None
+        file_id             = request.POST.get("file_id") if request.POST.get("file_id") else None
         
         try:
             article.full_clean(exclude=["file"])
             article.save()
+            
+            if file_id:
+                file.articles.add(int(file_id))
+            
             data["results"] = "Article successfully saved."
         except ValidationError as e:
             data["results"] = e
@@ -54,23 +59,23 @@ def file_management(request):
         # Set fields
         
         # Handle Details
-        print "="*40
-        print "DETAILS"
+        print("="*40)
+        print("DETAILS")
         old_detail_list = request.POST.get("original_detail")[:-1].split(",")
         if old_detail_list[0] == "":
             old_detail_list = []
         detail_list = request.POST.getlist("detail")
-        print "Old detail list:", old_detail_list
-        print "New detail list:", detail_list
+        print("Old detail list:", old_detail_list)
+        print("New detail list:", detail_list)
         
         for detail in old_detail_list:
             if detail not in detail_list:
-                print "REMOVE DETAIL", detail
+                print("REMOVE DETAIL", detail)
                 file.details.remove(int(detail))
                 
         for detail in detail_list:
             if detail not in old_detail_list:
-                print "ADD DETAIL", detail
+                print("ADD DETAIL", detail)
                 file.details.add(int(detail))
         
         try:
@@ -83,7 +88,7 @@ def file_management(request):
     else:
         if request.GET.get("letter") and request.GET.get("file_name"):
             data["file"] = File.objects.get(filename=request.GET["file_name"]+".zip", letter=request.GET["letter"])
-            print "GOT A FILE"
+            print("GOT A FILE")
             
             
     # Possible details

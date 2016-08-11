@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "z2_site/main.html" %}
 {% load staticfiles %}
 
 {% block style %}
@@ -26,7 +26,7 @@ Article has an invalid type!
 </article>
 
 <br>
-<a href="/article">Return to articles</a><br>
-<a href="/">Return to the main page</a>
+<a href="{% url 'article_directory' %}">Return to articles</a><br>
+<a href="{% url 'index' %}">Return to the main page</a>
 </section>
 {% endblock %}

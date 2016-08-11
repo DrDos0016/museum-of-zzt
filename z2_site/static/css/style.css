@@ -48,6 +48,12 @@ body
     overflow:auto;
 }
 
+.c
+{
+    text-align:center;
+    margin:auto;
+}
+
 .dos
 {
     font-family:"Classic Console";
@@ -235,7 +241,7 @@ input[name=q]
     margin-bottom:1em;
 }
 
-.file-block img
+.file-screen img
 {
     max-width:100%;
 }

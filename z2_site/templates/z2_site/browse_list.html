@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "z2_site/main.html" %}
 {% load staticfiles %}
 
 {% block content %}
@@ -31,8 +31,8 @@
 {% for file in files %}
     <tr>
         <td class="title"><a href="{{file.download_url}}">{{file.title}}</a></td>
-        <td class="author">{% for a in file.author_list %}<a href="/search?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-        <td class="genre">{% for g in file.genre_list %}<a href="/search?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        <td class="author">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        <td class="genre">{% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         <td class="size">{{file.size}} KB</td>
         <td class="rating">{%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>None</em>{% endif %}</td>
         <td class="files"><a href="{{file.file_url}}">View</a></td>
