@@ -1,4 +1,4 @@
-{% extends "z2_site/main.html" %}
+{% extends "z2_site/world.html" %}
 {% load staticfiles %}
 
 {% block scripts %}
@@ -17,42 +17,32 @@ var save = "{{save}}";
 <script async src="{% static 'js/file_viewer.js' %}"></script>
 {% endblock %}
 
-{% block content %}
-<img src="{% static 'images/ascii.png' %}" id="ascii" style="display:none"> <!-- DEBUG -->
-<section id="content" class="col block">
-<h1>[{{file.filename}}] - {{file.title}} - <span id="filename">Title Screen</span></h1>
-<div class="file-links">
-        <ul>
-            <li><a href="{{file.download_url}}" id="dl-link">Download</a></li>
-            <li><a href="{{file.play_url}}">Play Online</a></li>
-            <li><a href="{{file.review_url}}">Review</a></li>
-            <li>View Files</li>
-            <li><a href="{{file.wiki_url}}">Wiki</a></li>
-        </ul></div>
+{% block world_content %}
+<div id="file-area">
+    <img src="/static/images/ascii.png" id="ascii" style="display:none"> <!-- DEBUG -->
+    <div id="details">
+    <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+    </div>
 
-<div id="details">
-<img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+    <div id="file-list" class="col">
+    <ul>
+    <li class="selected" data-img="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}">Title Screen</li>
+    {% for file in files %}
+    <li>{{file}}</li>
+    {% endfor %}
+    </ul>
+    </div>
+
+    <div id="world-info" class="col"></div>
+
+    {% if save %}
+    <form method="POST" action="/debug/save" name="save">
+    {% csrf_token %}
+    <input name="screenshot">
+    <input name="letter" value="{{file.letter}}">
+    <input name="zip" value="{{file.filename}}">
+    <input type="submit" id="save" value="Save">
+    </form>
+    {% endif %}
 </div>
-
-<div id="file-list" class="col">
-<ul>
-<li class="selected">Title Screen</li>
-{% for file in files %}
-<li>{{file}}</li>
-{% endfor %}
-</ul>
-</div>
-
-<div id="world-info" class="col"></div>
-
-{% if save %}
-<form method="POST" action="/debug/save" name="save">
-{% csrf_token %}
-<input name="screenshot">
-<input name="letter" value="{{file.letter}}">
-<input name="zip" value="{{file.filename}}">
-<input type="submit" id="save" value="Save">
-</form>
-{% endif %}
-</section>
 {% endblock %}

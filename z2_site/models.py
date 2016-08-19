@@ -19,22 +19,23 @@ class Article(models.Model):
         return "/article/"+str(self.id)+"/"+slugify(self.title)
     
 class File(models.Model):
-    letter      = models.CharField(max_length=1, db_index=True)    # #/A-Z to show up under when browsed
-    filename    = models.CharField(max_length=50)   # Respite.zip
-    title       = models.CharField(max_length=80)   # Frost 1: Power
-    author      = models.CharField(max_length=80)   # Zenith Nadir/Hercules (/ sep)
-    size        = models.IntegerField(default=0)    # Filesize in Kilobytes
-    genre       = models.CharField(max_length=80, blank=True, default="")   # RPG/Action/Arcade (/ sep)
-    release_date= models.DateField(default=None, null=True) # Release date
-    release_source = models.CharField(max_length=20, null=True, default=None, blank=True) # ZZT file, News post, Text File, etc
-    category    = models.CharField(max_length=10)   # ZZT, Super ZZT, ZIG, Soundtrack, Utility
-    screenshot  = models.CharField(max_length=80, blank=True, null=True, default=None)   # Screenshot of title screen
-    company     = models.CharField(max_length=80, default="", blank=True)   # Interactive Fantasies
-    description = models.TextField(null=True, default=None) # Description for Utilites/Featured Games
-    review_count= models.IntegerField(default=0)    # Number of reviews on this file
-    rating      = models.FloatField(null=True, default=None, blank=True) # Rating if any, from reviews given
-    details     = models.ManyToManyField("Detail")
-    articles    = models.ManyToManyField("Article")    
+    letter          = models.CharField(max_length=1, db_index=True)    # #/A-Z to show up under when browsed
+    filename        = models.CharField(max_length=50)   # Respite.zip
+    title           = models.CharField(max_length=80)   # Frost 1: Power
+    author          = models.CharField(max_length=80)   # Zenith Nadir/Hercules (/ sep)
+    size            = models.IntegerField(default=0)    # Filesize in Kilobytes
+    genre           = models.CharField(max_length=80, blank=True, default="")   # RPG/Action/Arcade (/ sep)
+    release_date    = models.DateField(default=None, null=True) # Release date
+    release_source  = models.CharField(max_length=20, null=True, default=None, blank=True) # ZZT file, News post, Text File, etc
+    category        = models.CharField(max_length=10)   # ZZT, Super ZZT, ZIG, Soundtrack, Utility
+    screenshot      = models.CharField(max_length=80, blank=True, null=True, default=None)   # Screenshot of title screen
+    company         = models.CharField(max_length=80, default="", blank=True)   # Interactive Fantasies
+    description     = models.TextField(null=True, default=None) # Description for Utilites/Featured Games
+    review_count    = models.IntegerField(default=0)    # Number of reviews on this file
+    rating          = models.FloatField(null=True, default=None, blank=True) # Rating if any, from reviews given
+    details         = models.ManyToManyField("Detail")
+    articles        = models.ManyToManyField("Article")    
+    article_count   = models.IntegerField(default=0) # Number of articles associated with this file
     
     def __unicode__(self):
         return str(self.id) + " " + self.title

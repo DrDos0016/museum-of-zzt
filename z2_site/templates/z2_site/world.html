@@ -1,0 +1,14 @@
+{% extends "z2_site/main.html" %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>[{{file.filename}}] - {{file.title}}</h1>
+<div class="file-links">
+    {% include "z2_site/blocks/file_links.html" %}
+</div>
+
+{% block world_content %}
+{% endblock %}
+
+</section>
+{% endblock %}

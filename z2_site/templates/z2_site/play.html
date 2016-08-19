@@ -1,25 +1,11 @@
-{% extends "z2_site/main.html" %}
+{% extends "z2_site/world.html" %}
 
-{% block content %}
-<section id="content" class="col block">
-<h1>[{{file.filename}}] - {{file.title}}</h1>
-<div class="file-links">
-    <ul>
-        <li><a href="{{file.download_url}}">Download</a></li>
-        <li>Play Online</li>
-        <li><a href="{{file.review_url}}">Review</a></li>
-        <li><a href="{{file.file_url}}">View Files</a></li>
-        <li><a href="{{file.wiki_url}}">Wiki</a></li>
-    </ul>
-</div>
-
+{% block world_content %}
 <div id="play-area">
     <iframe src="https://archive.org/embed/zzt_{{file.filename|slice:'0:-4'}}" width="640" height="350" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
 </div>
 
 <div>
-This file is hosted on <a href="https://archive.org/details/softwarelibrary_msdos_zzt" target="_blank">Archive.org's ZZT Software Library</a>
+This file is hosted on <a href="https://archive.org/details/softwarelibrary_msdos_zzt" target="_blank">The Internet Archive's ZZT Software Library</a>
 </div>
-
-</section>
 {% endblock %}

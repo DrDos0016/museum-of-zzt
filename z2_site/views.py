@@ -41,11 +41,13 @@ def browse(request, letter="a", category="ZZT", page=1):
     """
     data = {"mode":"browse", "category":category}
     
+    print("Q count:", connection.queries)
+    
     if category == "ZZT":
         if request.GET.get("view") == "list":
             data["letter"] = letter if letter != "1" else "#"
             data["files"] = File.objects.filter(category=category, letter=letter).order_by("title")
-            return render(request, "z2_site/browse_list.html", data)
+            destination = "z2_site/browse_list.html"
         else:
             data["page"] = int(request.GET.get("page", page))
             data["letter"] = letter if letter != "1" else "#"
@@ -55,14 +57,17 @@ def browse(request, letter="a", category="ZZT", page=1):
             data["page_range"] = range(1, data["pages"] + 1)
             data["prev"] = max(1,data["page"] - 1)
             data["next"] = min(data["pages"],data["page"] + 1)
-            return render(request, "z2_site/browse.html", data)
+            destination = "z2_site/browse.html"
     else:
         data["files"] = File.objects.filter(category=category).order_by("title")
         
         if request.GET.get("view") == "list":
-            return render(request, "z2_site/browse_list.html", data)
+            destination = "z2_site/browse_list.html"
         else:
-            return render(request, "z2_site/browse.html", data)
+            destination = "z2_site/browse.html"
+            
+    print("Q count:", connection.queries)
+    return render(request, destination, data)
 
 def featured_games(request):
     """ Returns a page listing all games marked as Featured """
@@ -70,7 +75,7 @@ def featured_games(request):
     featured = Detail.objects.get(pk=7)
     data["featured"] = featured.file_set.all()
     
-    return render_to_response("z2_site/featured_games.html", data)
+    return render(request, "z2_site/featured_games.html", data)
 
 def file(request, letter, filename):
     """ Returns page exploring a file's zip contents """

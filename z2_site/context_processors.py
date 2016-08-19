@@ -4,6 +4,7 @@ from __future__ import print_function
 from z2_site.models import Detail, File
 
 def get_fg(request):
+    print("Getting Featured Game")
     featured = Detail.objects.get(pk=7)
     fg = featured.file_set.all().order_by("?")[0]
     

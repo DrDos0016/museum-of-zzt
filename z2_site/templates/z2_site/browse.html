@@ -26,29 +26,7 @@
 
 
 {% for file in files %}
-<div class="file-block" id="{{file.filename}}">
-    <div class="file-screen col">
-        <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
-    </div>
-    <div class="file-info col">
-        <h1><a href="{{file.download_url}}">{{file.title|default:"NO NAME"}}</a></h1>
-        <div>Author</div>: {% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
-        <div>Filename</div>: {{file.filename}}<br>
-        <div>Released</div>: <span title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</span><br>
-        <div>Genre</div>: {% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
-        <div>Company</div>: {{file.company}}<br>
-        <div>Size</div>: {{file.size}} KB<br>
-        <div>Rating</div>: {%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}
-    </div>
-    <div class="file-links">
-        <ul>
-            <li><a href="{{file.download_url}}">Download</a></li>
-            <li><a href="{{file.play_url}}">Play Online</a></li>
-            <li><a href="{{file.review_url}}">Review</a></li>
-            <li><a href="{{file.file_url}}">View Files</a></li>
-            <li><a href="{{file.wiki_url}}">Wiki</a></li>
-        </ul></div>
-</div>
+    {% include "z2_site/blocks/file_block.html" %}
 {% endfor %}
 
 {% if category == "ZZT" %}

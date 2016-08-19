@@ -71,7 +71,7 @@ function pull_file()
     {
         if (filename == "Title Screen")
         {
-            $("#details").html('<img src="/assets/images/screenshots/no_screenshot.png">');
+            $("#details").html('<img src="'+$(this).data("img")+'">');
             return true;
         }
         else
@@ -425,6 +425,7 @@ function render_board()
     console.log(document.getElementById("world-canvas").toDataURL());
     
     // DEBUG Screenshot Saving
+    /*
     if (save)
     {
         var canvas = document.getElementById("world-canvas");
@@ -432,6 +433,7 @@ function render_board()
         $("input[name=screenshot]").val(base64);
         $("form[name=save]")[0].submit();
     }
+    */
     // END DEBUG
     return true;
 }

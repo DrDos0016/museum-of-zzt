@@ -1,23 +1,10 @@
-{% extends "z2_site/main.html" %}
+{% extends "z2_site/world.html" %}
 {% load staticfiles %}
 
 {% block scripts %}
 {% endblock %}
 
-{% block content %}
-<section id="content" class="col block">
-<div class="review-header">
-    <h1>[{{file.filename}}] - {{file.title}} - Reviews</h1>
-    <div class="file-links">
-    <ul>
-        <li><a href="{{file.download_url}}">Download</a></li>
-        <li><a href="{{file.play_url}}">Play Online</a></li>
-        <li>Review</li>
-        <li><a href="{{file.file_url}}">View Files</a></li>
-        <li><a href="{{file.wiki_url}}">Wiki</a></li>
-    </ul></div>
-</div>
-
+{% block world_content %}
 {% for review in reviews %}
 <div class="review block">
 <div class="review-meta">
@@ -44,5 +31,4 @@
 <input type="submit" value="Post Review">
 </form>
 </div>
-</section>
 {% endblock %}
