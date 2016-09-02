@@ -58,9 +58,9 @@ urlpatterns = [
     # AJAX
     url(r"^ajax/get_zip_file$", z2_site.ajax.get_zip_file),
     
-    # Admin
-    url(r"^admin/file_management$", z2_site.admin.file_management),
-    url(r"^admin/article_management$", z2_site.admin.article_management),
+    # Staff
+    #url(r"^staff/file_management$", z2_site.staff.file_management),
+    #url(r"^staff/article_management$", z2_site.staff.article_management),
     
     # Debug
     url(r"^debug/save$", z2_site.views.debug_save),

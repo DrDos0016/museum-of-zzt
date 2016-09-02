@@ -14,44 +14,7 @@
 <p>With that said, here are the current Featured Games:</p>
 
 {% for file in featured %}
-<div class="file-block">
-    <div class="file-screen" style="float:left">
-        <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
-    </div>
-    <div class="file-info col">
-        <h1><a href="{{file.download_url}}">{{file.title|default:"NO NAME"}}</a></h1>
-        <div>Author</div>: {{file.author}}<br>
-        <div>Filename</div>: {{file.filename}}<br>
-        <div>Released</div>: {{file.release_date}}<br>
-        <div>Genre</div>: {{file.genre}}<br>
-        <div>Size</div>: {{file.size}} KB<br>
-        <div>Rating</div>: x/5
-    </div>
-    <div class="featured-reviews col">
-        <h2>Featured Reviews</h2>
-        <a href="#">Featured Game Review by Commodore</a><br>
-        <a href="#">Game of the Month Review by Commodore</a><br>
-        <a href="#">Game of the Month Review by Commodore</a><br>
-    </div>
-    <div class="featured-description">
-        <h2>Description</h2>
-        <p>{{file.description}}</p>
-    </div>
-    <div class="file-details">
-        <ul>
-            <li>ZZT World</li>
-            <li> Featured Game</li>
-            <li> MS-DOS Program</li>
-        </ul>
-    </div>
-    <div class="file-links">
-        <ul>
-            <li><a href="{{file.download_url}}">Download</a></li>
-            <li><a href="{{file.review_url}}">Review</a></li>
-            <li><a href="{{file.file_url}}">View Files</a></li>
-            <li><a href="{{file.wiki_url}}">Wiki</a></li>
-        </ul></div>
-</div>
+    {% include "z2_site/blocks/file_block.html" %}
 {% endfor %}
 </section>
 {% endblock %}

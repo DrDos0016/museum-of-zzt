@@ -2,10 +2,11 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 from django.db import models
+from django.contrib import admin
 from django.template.defaultfilters import slugify
 
 class Article(models.Model):
-    title       = models.CharField(max_length=50)
+    title       = models.CharField(max_length=100)
     author      = models.CharField(max_length=50)
     category    = models.CharField(max_length=50)
     content     = models.TextField(default="")
@@ -15,8 +16,15 @@ class Article(models.Model):
     published   = models.BooleanField(default=False)
     page        = models.IntegerField(default=1)
     
+    class Meta:
+        ordering = ["title"]
+    
+    def __str__(self):
+        return self.title + " by " + self.author
+    
     def url(self):
         return "/article/"+str(self.id)+"/"+slugify(self.title)
+    
     
 class File(models.Model):
     letter          = models.CharField(max_length=1, db_index=True)    # #/A-Z to show up under when browsed
@@ -25,20 +33,23 @@ class File(models.Model):
     author          = models.CharField(max_length=80)   # Zenith Nadir/Hercules (/ sep)
     size            = models.IntegerField(default=0)    # Filesize in Kilobytes
     genre           = models.CharField(max_length=80, blank=True, default="")   # RPG/Action/Arcade (/ sep)
-    release_date    = models.DateField(default=None, null=True) # Release date
+    release_date    = models.DateField(default=None, null=True, blank=True) # Release date
     release_source  = models.CharField(max_length=20, null=True, default=None, blank=True) # ZZT file, News post, Text File, etc
     category        = models.CharField(max_length=10)   # ZZT, Super ZZT, ZIG, Soundtrack, Utility
     screenshot      = models.CharField(max_length=80, blank=True, null=True, default=None)   # Screenshot of title screen
     company         = models.CharField(max_length=80, default="", blank=True)   # Interactive Fantasies
-    description     = models.TextField(null=True, default=None) # Description for Utilites/Featured Games
+    description     = models.TextField(null=True, blank=True, default="") # Description for Utilites/Featured Games
     review_count    = models.IntegerField(default=0)    # Number of reviews on this file
     rating          = models.FloatField(null=True, default=None, blank=True) # Rating if any, from reviews given
     details         = models.ManyToManyField("Detail")
-    articles        = models.ManyToManyField("Article")    
+    articles        = models.ManyToManyField("Article")
     article_count   = models.IntegerField(default=0) # Number of articles associated with this file
     
-    def __unicode__(self):
-        return str(self.id) + " " + self.title
+    class Meta:
+        ordering = ["title"]
+    
+    def __str__(self):
+        return "[" + str(self.id) + "] " + self.title
     
     def download_url(self):
         return "/zgames/" + self.letter + "/" + self.filename
@@ -75,6 +86,12 @@ class File(models.Model):
 class Detail(models.Model):
     detail      = models.CharField(max_length=20)
     
+    class Meta:
+        ordering = ["detail"]
+    
+    def __str__(self):
+        return self.detail
+    
 class Review(models.Model):
     file        = models.ForeignKey("File")         # Review file
     title       = models.CharField(max_length=50)   # Review title
@@ -86,12 +103,5 @@ class Review(models.Model):
     ip          = models.GenericIPAddressField()    # Review IP
     
     def __unicode__(self):
-        x = "Review for " + self.file.title + "[" + self.file.filename + "]\n"
-        x+= self.title + "\n"
-        x+= self.author + "\n"
-        x+= self.email + "\n"
-        x+= self.content[:50] + "..." + "\n"
-        x+= str(self.rating) + "\n"  
-        x+= str(self.date) + "\n"
-        x+= self.ip + "\n"
+        x = "Review for " + self.file.title + "[" + self.file.filename + "] by " + self.author
         return x

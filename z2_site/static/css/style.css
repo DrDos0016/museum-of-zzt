@@ -60,6 +60,16 @@ body
     font-size:16pt;
 }
 
+.fl
+{
+    float:left;
+}
+
+.fr
+{
+    float:right;
+}
+
 .sub
 {
     font-size:smaller;
@@ -321,6 +331,11 @@ div.file-details ul
     *display: inline;
     font-family:monospace;
     margin-left:1.5em;
+}
+
+.featured-reviews
+{
+    max-width:30%;
 }
 /* End File blocks */
 

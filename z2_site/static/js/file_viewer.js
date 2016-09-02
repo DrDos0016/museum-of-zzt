@@ -1,5 +1,7 @@
+"use strict";
 var elements = ["Empty", "Board Edge", "Messenger", "Monitor", "Player", "Ammo", "Torch", "Gem", "Key", "Door", "Scroll", "Passage", "Duplicator", "Bomb", "Energizer", "Star", "Conveyor, Clockwise", "Conveyor, Counterclockwise", "Bullet", "Water", "Forest", "Solid Wall", "Normal Wall", "Breakable Wall", "Boulder", "Slider, North-South", "Slider, East-West", "Fake Wall", "Invisible Wall", "Blink Wall", "Transporter", "Line Wall", "Ricochet", "Blink Ray, Horizontal", "Bear", "Ruffian", "Object", "Slime", "Shark", "Spinning Gun", "Pusher", "Lion", "Tiger", "Blink Ray, Vertical", "Centipede Head", "Centipede Segment", "Text, Blue", "Text, Green", "Text, Cyan", "Text, Red", "Text, Purple", "Text, Brown", "Text, Black"];
 var colors = ["#000000", "#0000AA", "#00AA00", "#00AAAA", "#AA0000", "#AA00AA", "#AA5500", "#AAAAAA", "#555555", "#5555FF", "#55FF55", "#55FFFF", "#FF5555", "#FF55FF", "#FFFF55", "#FFFFFF"];
+var COLOR_NAMES = ["Black", "Dark Blue", "Dark Green", "Dark Cyan", "Dark Red", "Dark Purple", "Dark Yellow", "Gray", "Dark Gray", "Blue", "Green", "Cyan", "Red", "Purple", "Yellow", "White"];
 var characters = [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 47, 47, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63];
 var line_characters = {"0000":249, "0001":181, "0010":198, "0011":205, "0100":210, "0101":187, "0110":201, "0111":203, "1000":208, "1001":188, "1010":200, "1011":202, "1100":186, "1101":185, "1110":204, "1111":206};
 var world = null;
@@ -16,7 +18,7 @@ var World = function (data) {
     this.read = function (bytes)        // read X bytes of world file data
     {
         var input = this.hex.substr(this.idx, bytes*2);
-        output = input;
+        var output = input;
         
         // Convert to Little Endian
         if (bytes > 1)
@@ -211,7 +213,8 @@ function parse_world(type, data)
 function parse_board(world)
 {
     var board = {};
-    board.room = [];
+    board.room = []; // Room is used for generic rendering
+    board.elements = []; // Elements are used for individual tiles
     board.size = world.read(2);
     board.name_length = world.read(1);
     board.name = world.str_read(50).substr(0,board.name_length);
@@ -227,6 +230,23 @@ function parse_board(world)
         var element_id = world.read(1);
         var color = world.read(1);
         board.room.push([quantity, element_id, color]);
+        
+        for (var tile_idx = 0; tile_idx < quantity; tile_idx++)
+        {
+            board.elements.push(
+                {
+                    "id":element_id,
+                    "tile":tile_idx,
+                    "name":ZZT_ELEMENTS[element_id]["name"],
+                    "character":characters[element_id], // This is the default character before any additional board/stat parsing
+                    "color_id":color,
+                    "foreground":color % 16,
+                    "background":color / 16,
+                    "foreground_name":COLOR_NAMES[color % 16],
+                    "background_name":COLOR_NAMES[Math.floor(color / 16)]
+                }
+            );
+        }
         //$("#debug").val($("#debug").val() + "\n" + quantity + " " + colors[color % 16] + " on " + colors[parseInt(color / 16)] + " " + elements[element_id]);
         parsed_tiles += quantity;
     }
@@ -317,7 +337,7 @@ function render_board()
         console.log("CLR:" + chunk[2]);
         */
         
-        for (qty = 0; qty < chunk[0]; qty++)
+        for (var qty = 0; qty < chunk[0]; qty++)
         {
             // Text
             if (chunk[1] >= 47 && chunk[1] <= 69)
@@ -444,14 +464,64 @@ function stat_info(e)
     var posY = $(this).offset().top;
     var x = parseInt((e.pageX - posX) / 8) + 1;
     var y = parseInt((e.pageY - posY) / 14) + 1;
+    var tile_idx = ((y-1) * 60) + (x-1);
+    var output = "";
+    
+    // General info
+    var tile = world.boards[board_number].elements[tile_idx];
+    output += "Coordinates: ("+x+", "+y+") [Tile "+tile_idx+"/1500]" + "<br>";
+    output += "ID: " + tile.id + "<br>";
+    output += "Name: " + tile.name + "<br>";
+    output += "Character: " + tile.character + "<br>";
+    output += "Color ID: " + tile.color_id + "<br>";
+    output += "Color Name: " + tile.foreground_name + " on " + tile.background_name + "<br>";
+    
+    // Iterate over stat elements
+    var stat = null;
     for (var stat_idx = 0; stat_idx < world.boards[board_number].stats.length; stat_idx++)
     {
         if (world.boards[board_number].stats[stat_idx].x == x && world.boards[board_number].stats[stat_idx].y == y)
         {
-            $("#world-info").text(world.boards[board_number].stats[stat_idx].oop.replace(/\r/g, "\n"));
-            $("#world-info").html($("#world-info").html().replace(/\n/g, "<br>"));
+            stat = world.boards[board_number].stats[stat_idx];
+            break;
         }
     }
+    
+    if (stat != null)
+    {
+        output += "Cycle: " + stat.cycle + "<br>";
+        output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param1") ? ZZT_ELEMENTS[tile.id].param1 : "Param1") + ": " + stat.param1 + "<br>";
+        output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param2") ? ZZT_ELEMENTS[tile.id].param2 : "Param2") + ": " + stat.param2 + "<br>";
+        
+        // Passages get a link and the board's proper name
+        if (tile.name == "Passage")
+        {
+            var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
+            output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param3") ? ZZT_ELEMENTS[tile.id].param3 : "Param3") + ": ";
+            output += '<a href="?file='+loaded_file+'&board='+stat.param3+'">'+stat.param3 + " - " + world.boards[stat.param3].name +"</a>";
+            output += "<br>";
+        }
+        else
+            output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param3") ? ZZT_ELEMENTS[tile.id].param3 : "Param3") + ": " + stat.param3 + "<br>";
+        
+        if (ZZT_ELEMENTS[tile.id].hasOwnProperty("step"))
+            output += ZZT_ELEMENTS[tile.id].step + "<br>"
+        output += "X-Step: " + stat.x_step + "<br>";
+        output += "Y-Step: " + stat.y_step + "<br>";
+        output += "Leader: " + stat.leader + "<br>";
+        output += "Follower: " + stat.follower + "<br>";
+        output += "Under ID: " + stat.under_id + "<br>";
+        output += "Under Color: " + stat.under_color + "<br>";
+        output += "Current Instruction: " + stat.oop_idx + "<br>";
+        output += "OOP Length: " + stat.oop_length + "<br>";
+        if (stat.oop_length > 0)
+        {
+            output += "================ ZZT-OOP =================<br>";
+            output += stat.oop.replace(/\r/g, "<br>");
+        }
+    }
+    
+    $("#world-info").html(output);
     
     return true;
 }

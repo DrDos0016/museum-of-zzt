@@ -69,11 +69,19 @@ def browse(request, letter="a", category="ZZT", page=1):
     print("Q count:", connection.queries)
     return render(request, destination, data)
 
-def featured_games(request):
+def featured_games(request, page=1):
     """ Returns a page listing all games marked as Featured """
     data = {}
+    data["page"] = int(request.GET.get("page", page))
     featured = Detail.objects.get(pk=7)
-    data["featured"] = featured.file_set.all()
+    data["featured"] = featured.file_set.all().order_by("title").prefetch_related("articles")[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
+    data["count"] = featured.file_set.all().count()
+    data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
+    data["page_range"] = range(1, data["pages"] + 1)
+    data["prev"] = max(1,data["page"] - 1)
+    data["next"] = min(data["pages"],data["page"] + 1)
+    data["show_description"] = True
+    data["show_featured"] = True
     
     return render(request, "z2_site/featured_games.html", data)
 
