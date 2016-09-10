@@ -12,3 +12,4 @@ virt
 venv
 junk
 *.vhost
+.htpasswd

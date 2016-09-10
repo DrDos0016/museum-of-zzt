@@ -63,8 +63,7 @@ function pull_file()
     $("#file-list li ul").remove();
     $("#file-list li br").remove();
     $(this).addClass("selected");
-    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "gif", "bmp", "png", "bat", "zzt"];
-    //var filename = $(this).clone().children().remove().end().text(); // Handle when the board list is already written
+    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi"];
     var filename = $(this).contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var split = filename.toLowerCase().split(".");
     var ext = split[split.length - 1];
@@ -99,7 +98,7 @@ function pull_file()
             var board_list = "<ul>";
             for (var x = 0; x < world.boards.length; x++)
             {
-                board_list += "<li class='board' data-board-number='"+x+"'>"+world.boards[x].name+"</li>";
+                board_list += "<li class='board' data-board-number='"+x+"'>"+world.boards[x].title+"</li>";
             }
             board_list += "</ul>";
             $("#file-list li.selected").append(board_list + "<br>");
@@ -107,11 +106,53 @@ function pull_file()
             
             // Auto Load board
             if (load_board != "")
-                auto_load_board();
+                auto_load_board(load_board);
         }
         else if (ext == "hi")
         {
-            scores = parse_scores(data);
+            var scores = parse_scores(data);
+            var output = "<div class='high-scores'>Score &nbsp;Name<br>";
+            output += "----- &nbsp;----------------------------------<br>";
+            for (var idx in scores)
+            {
+                output += scores[idx].score + " &nbsp;" + scores[idx].name + "<br>";
+            }
+            output += "</div>";
+            $("#details").html(output);
+        }
+        else if (["jpg", "jpeg", "gif", "bmp", "png"].indexOf(ext) != -1)
+        {
+            var zip_image = new Image();
+            zip_image.src = data;
+            $("#details").html("<img id='zip_image' alt='Zip file image'>");
+            $("#zip_image").attr("src", "data:image/'"+ext+"';base64,"+data);
+            
+            
+        }
+        else if (["wav", "mp3", "ogg", "mid", "midi"].indexOf(ext) != -1)
+        {
+            // TODO: Make this actually work
+            if (ext == "wav")
+                var type = "audio/wav wav";
+            else if (ext == "mp3")
+                var type = "audio/mpeg mp3";
+            else if (ext == "ogg")
+                var type = "audio/ogg ogg";
+            else
+                var type = "application/octet-stream";
+            console.log(data);
+            
+            var audio_buffer = null;
+            var context = new AudioContext();
+            context.decodeAudioData(data, function(buffer) { audio_buffer = buffer; });
+            console.log("L#147");
+            
+            var source = context.createBufferSource(); // creates a sound source
+            source.buffer = audio_buffer;                    // tell the source which sound to play
+            source.connect(context.destination);       // connect the source to the context's destination (the speakers)
+            source.start(0)
+            
+            //$("#details").html("<audio id='zip_audio' src='"+zip_audio_url+"'>Your browser does not support HTML5 audio</audio>");
         }
         else
         {
@@ -144,7 +185,6 @@ function parse_world(type, data)
     
     // Parse Number of Boards (this starts at 0 for a title screen only)
     world.board_count = world.read(2);
-    //console.log("Boards          : " + world.board_count);
     
     // Parse World Stats
     world.ammo = world.read(2)
@@ -152,14 +192,6 @@ function parse_world(type, data)
     world.keys = world.read(7) // This one is special
     world.health = world.read(2);
     world.starting_board = world.read(2);
-    
-    /*
-    console.log("Ammo            : " + world.ammo);
-    console.log("Gems            : " + world.gems);
-    console.log("Keys            : " + world.keys);
-    console.log("Health          : " + world.health);
-    console.log("Starting board  : " + world.starting_board);
-    */
     
     // Begin Parse ZZT Specific World Stats
     world.torches = world.read(2);
@@ -169,15 +201,6 @@ function parse_world(type, data)
     world.score = world.read(2);
     world.name_length = world.read(1);
     world.name = world.str_read(20).substr(0,world.name_length);
-    
-    /*
-    console.log("Torches         : " + world.torches);
-    console.log("T Cycles        : " + world.torch_cycles);
-    console.log("E Cycles        : " + world.energizer_cycles);
-    console.log("Score           : " + world.score);
-    console.log("Name Length     : " + world.name_length);
-    console.log("Name            : " + world.name);
-    */
     
     // Parse Flags
     for (var x = 0; x < 10; x++)
@@ -191,8 +214,6 @@ function parse_world(type, data)
     world.read(2)                       // Unused playerdata
     world.save = (world.read(1) != 0);  // Save/Lock file
     
-    //console.log("Flags           : " + world.flags);
-    //console.log("Save            : " + world.save);
     // End Parse ZZT Specific World Stats
     
     // Begin Parse SZZT Specific World Stats
@@ -206,7 +227,28 @@ function parse_world(type, data)
         world.boards.push(parse_board(world));
     }
     
-    console.log("ALL BOARDS PARSED!!!");
+    var output = "World format: " + type.toUpperCase() + "<br>";
+    output += "World name: " + world.name + "<br>";
+    output += "Health: " + world.health + "<br>";
+    output += "Ammo: " + world.ammo + "<br>";
+    output += "Torches: " + world.torches + "<br>";
+    output += "Gems: " + world.gems + "<br>";
+    output += "Keys: " + world.keys + "<br>";
+    output += "Score: " + world.score + "<br>";
+    
+    output += "Torch cycles: " + world.torch_cycles + "<br>";
+    output += "Energizer cycles: " + world.energizer_cycles + "<br>";
+    output += "Time elapsed: " + world.time_passed + "<br>";
+    output += "Saved game: " + (world.save ? "Yes" : "No") + "<br>";
+    
+    for (var idx in world.flags)
+    {
+        if (world.flags[idx])
+            output += "Flag "+idx+": " + world.flags[idx] + "<br>";
+    }
+    
+    
+    $("#world-info").html(output);
     return world;
 }
 
@@ -216,8 +258,8 @@ function parse_board(world)
     board.room = []; // Room is used for generic rendering
     board.elements = []; // Elements are used for individual tiles
     board.size = world.read(2);
-    board.name_length = world.read(1);
-    board.name = world.str_read(50).substr(0,board.name_length);
+    board.title_length = world.read(1);
+    board.title = world.str_read(50).substr(0,board.title_length);
     //console.log("Size: " + board.size);
     //console.log("Name: " + board.name);
     
@@ -323,6 +365,59 @@ function render_board()
     
     // Get board
     var board = world.boards[board_number];
+    
+    // Write board information
+    var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
+    var output = "";
+    output += "Title: " + board.title + "<br>";
+    output += "Can fire: " + board.max_shots + " shot"+((board.max_shots != 1) ? "s" : "")+".<br>";
+    output += "Board is dark: " + (board.dark ? "Yes" : "No") + "<br>";
+    if (board.exit_north)
+    {
+        output += "Board ↑: ";
+        output += '<a href="?file='+loaded_file+'&board='+board.exit_north+'">'+board.exit_north + " - " + world.boards[board.exit_north].title +"</a>";
+        output += "<br>";
+    }
+    else
+        output += "Board ↑: None" + "<br>";
+    if (board.exit_south)
+    {
+        output += "Board ↓: ";
+        output += '<a href="?file='+loaded_file+'&board='+board.exit_south+'">'+board.exit_south + " - " + world.boards[board.exit_south].title +"</a>";
+        output += "<br>";
+    }
+    else
+        output += "Board ↓: None" + "<br>";
+    if (board.exit_east)
+    {
+        output += "Board →: ";
+        output += '<a href="?file='+loaded_file+'&board='+board.exit_east+'">'+board.exit_east + " - " + world.boards[board.exit_east].title +"</a>";
+        output += "<br>";
+    }
+    else
+        output += "Board →: None" + "<br>";
+    if (board.exit_west)
+    {
+        output += "Board ←: ";
+        output += '<a href="?file='+loaded_file+'&board='+board.exit_west+'">'+board.exit_west + " - " + world.boards[board.exit_west].title +"</a>";
+        output += "<br>";
+    }
+    else
+        output += "Board ←: None" + "<br>";
+    
+    output += "Re-enter when zapped: " + (board.zap ? "Yes" : "No") + "<br>";
+    output += "Re-enter X: " + board.enter_x + "<br>";
+    output += "Re-enter Y: " + board.enter_y + "<br>";
+    output += "Time limit: " + (board.time_limit ? "None" : board.time_limit + " sec"+(board.time_limit != 1 ? "s" : "")+".") + "<br>";
+    
+    output += "Stat elements: " + (board.stat_count + 1) + "/151<br>";
+    output += "Board size: " + (board.size + 2) + " bytes<br>"; // Extra two bytes are for the "size of board" bytes themselves. This is necessary to match KevEdit.
+    if (board.message != "")
+        output += "Message: " + board.message + "<br>";
+    
+    $("#world-info").html(output);
+    
+    
     var x = 0;
     var y = 0;
     var tile = 0;
@@ -498,7 +593,7 @@ function stat_info(e)
         {
             var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
             output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param3") ? ZZT_ELEMENTS[tile.id].param3 : "Param3") + ": ";
-            output += '<a href="?file='+loaded_file+'&board='+stat.param3+'">'+stat.param3 + " - " + world.boards[stat.param3].name +"</a>";
+            output += '<a href="?file='+loaded_file+'&board='+stat.param3+'">'+stat.param3 + " - " + world.boards[stat.param3].title +"</a>";
             output += "<br>";
         }
         else
@@ -574,7 +669,7 @@ function auto_load()
     });
 }
 
-function auto_load_board()
+function auto_load_board(load_board)
 {
     $("li.board").each(function (){
         if ($(this).data("board-number") == load_board)
@@ -588,5 +683,57 @@ function auto_load_board()
 
 function parse_scores(data)
 {
-    
+    var scores = [];
+    var idx = 0;
+    while (true)
+    {
+        // Read the first byte for length of name
+        var name_length = read(data, 1, idx);
+        idx += 2;
+        
+        if (name_length == 0)
+            break;
+        
+        var name = str_read(data, 50, idx).substr(0,name_length);
+        idx += 100;
+        
+        var score = read(data, 2, idx);
+        idx += 4;
+        
+        scores.push({"name":name, "score":score});
+    }
+    return scores;
 }
+
+function read(data, bytes, idx)
+{
+    var input = data.substr(idx, bytes*2);
+    var output = input;
+    
+    // Convert to Little Endian
+    if (bytes > 1)
+    {
+        var endian = [];
+        for (var i = 0; i < input.length; i += 2)
+        {
+            endian.push(input.substring(i, i + 2));
+        }
+        endian.reverse();
+        
+        output = endian.join("");
+    }
+    output = parseInt(output, 16)
+    return output;
+}
+
+function str_read(data, bytes, idx)
+{
+    var input = data.substr(idx, bytes*2);
+    var output = "";
+    for (var i = 0; i < input.length; i += 2)
+    {
+        output += String.fromCharCode(parseInt(input.substring(i, i + 2), 16));
+    }
+    return output;
+};
+
