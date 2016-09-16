@@ -1,0 +1,13 @@
+<div class="pages">
+    {% if category == "ZZT" or mode == "search" %}
+    Page #{{page}}/{{pages}}<br>
+    <a href="?page={{prev}}{% if q %}&q={{q}}{% endif %}{% if mode == 'search' %}&{{qs}}{% endif %}">&lt;</a>
+    {% for page in page_range %}
+    <a href="?page={{page}}{% if q %}&q={{q}}{% endif %}{% if mode == 'search' %}&{{qs}}{% endif %}">{{page}}</a> 
+    {% endfor %}
+    <a href="?page={{next}}{% if q %}&q={{q}}{% endif %}{% if mode == 'search' %}&{{qs}}{% endif %}">&gt;</a>
+    {% endif %}
+    <div class="sub">
+        Detailed View | <a href="?view=list{% if q %}&q={{q}}{% endif %}{% if mode == 'search' %}&{{qs}}{% endif %}">List View</a>
+    </div>
+</div>

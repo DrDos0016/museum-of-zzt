@@ -20,7 +20,7 @@ var save = "{{save}}";
 
 {% block world_content %}
 <div id="file-area">
-    <img src="/static/images/ascii.png" id="ascii" style="display:none"> <!-- DEBUG -->
+    <img src="/static/images/charsets/cp437.png" id="ascii" style="display:none"> <!-- DEBUG -->
     <div id="details">
     <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
     </div>

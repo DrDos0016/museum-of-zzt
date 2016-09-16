@@ -6,7 +6,7 @@ from .common import *
 
 def advanced_search(request):
     """ Returns page containing multiple filters to use when searching """
-    data = {"mode":"search", "genres":GENRE_LIST}
+    data = {"mode":"search", "genres":GENRE_LIST, "years":range(1991, YEAR+1)}
     
     return render(request, "z2_site/advanced_search.html", data)
 
@@ -88,6 +88,7 @@ def featured_games(request, page=1):
 def file(request, letter, filename):
     """ Returns page exploring a file's zip contents """
     data = {}
+    data["year"] = YEAR
     data["file"] = get_object_or_404(File, letter=letter, filename=filename)
     data["letter"] = letter
     zip = zipfile.ZipFile("/var/projects/z2/zgames/"+letter+"/"+filename) # TODO Proper path + os.path.join()
@@ -141,6 +142,12 @@ def search(request):
     """ Searches database files. Returns the browse page filtered appropriately. """
     data = {"mode":"search"}
     
+    # Strip page param from query string
+    data["qs"] = request.GET.copy()
+    if "page" in data["qs"]:
+        data["qs"].pop("page")
+    data["qs"] = data["qs"].urlencode()
+    
     if request.GET.get("q"): # Basic Search
         q = request.GET["q"].strip()
         data["q"] = request.GET["q"]
@@ -176,13 +183,15 @@ def search(request):
             qs = qs.filter(author__icontains=request.GET.get("company", "").strip())
         if request.GET.get("genre", "").strip() and request.GET.get("genre", "") != "Any":
             qs = qs.filter(genre__icontains=request.GET.get("genre", "").strip())
+        if request.GET.get("year", "").strip() and request.GET.get("year", "") != "Any":
+            qs = qs.filter(release_date__gte=request.GET.get("year","1991")+"-01-01", release_date__lte=request.GET.get("year", "2091")+"-12-31")
         if request.GET.get("min", "").strip() and float(request.GET.get("min", "")) > 0:
             qs = qs.filter(rating__gte=float(request.GET.get("min", "").strip()))
         if request.GET.get("max", "").strip() and float(request.GET.get("max", "")) < 5:
             qs = qs.filter(rating__lte=float(request.GET.get("max", "").strip()))
         if request.GET.get("category", "").strip() and request.GET.get("category", "") != "Any":
             qs = qs.filter(category=request.GET.get("category", "").strip())
-            
+    
         # Show results
         sort = request.GET.get("sort", "title").strip()
         if request.GET.get("view") == "list":

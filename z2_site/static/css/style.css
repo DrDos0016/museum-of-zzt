@@ -299,7 +299,7 @@ input[name=q]
     max-width:100%;
 }
 
-div.file-links, div.file-details
+div.file-links, div.file-details, div.file-meta
 {
     flex-basis:100%;
     min-height:auto;
@@ -308,6 +308,7 @@ div.file-links, div.file-details
     border-top:1px solid #000;
     display:flex;
     justify-content: space-around;
+    text-align:center;
 }
 
 div.file-links div
@@ -444,8 +445,8 @@ div.file-details ul
 
 #world-canvas
 {
-    width:480px;
-    height:350px;
+    min-width:480px;
+    min-height:350px;
     background:#550000;
 }
 

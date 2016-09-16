@@ -24,7 +24,10 @@ ZZT2PNG_TEMP    = "/var/projects/z2/assets/data/temp/"
 ZZT2PNG_PATH    = "/var/projects/z2/tools/zzt2png.py"
 
 PAGE_SIZE       = 25
+LIST_PAGE_SIZE  = 150
 UPLOAD_CAP      = 1048576 # 1 Megabyte
+
+YEAR            = datetime.now().year
 
 PYTHON_VERSION  = sys.version
 DJANGO_VERSION  = VERSION

@@ -6,6 +6,14 @@
 <div class="file-links">
     {% include "z2_site/blocks/file_links.html" %}
 </div>
+<div class="file-meta">
+    <div>Author<br> {% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    <div>Released<br> <a href="{% url 'search' %}?year={{file.release_date.year|default:'any'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
+    <div>Genre<br> {% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    <div>Company<br> {{file.company}}</div>
+    <div>Size<br> {{file.size}} KB</div>
+    <div>Rating<br> {%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}</div>
+</div>
 
 {% block world_content %}
 {% endblock %}

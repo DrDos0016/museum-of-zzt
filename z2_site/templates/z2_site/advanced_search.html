@@ -65,6 +65,16 @@
     </select>
 </div>
 <div class="field">
+    <label for="year">Release Year:<br>
+    </label>
+    <select id="year" name="year">
+        <option value="Any">- ANY - </option>
+        {% for year in years %}
+            <option>{{year}}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="field">
     <label for="min">Min. / max. rating:<br>
     </label>
     <input id="min" name="min" value="0.0" maxlength="3"><div class="col spacing">&nbsp;&mdash;&nbsp;</div><input id="max" name="max" value="5.0" maxlength="3"> 
@@ -74,9 +84,9 @@
     </label>
     <select id="category" name="category">
         <option value="Any">- Any -</option>
-        <option>ZZT</option>
-        <option>Super ZZT</option>
-        <option>ZIG</option>
+        <option value="ZZT" selected>ZZT Worlds</option>
+        <option value="Super ZZT">Super ZZT Worlds</option>
+        <option value="ZIG">ZIG Worlds</option>
         <option>Utilities</option>
     </select>
 </div>

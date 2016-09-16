@@ -7,6 +7,13 @@ var line_characters = {"0000":249, "0001":181, "0010":198, "0011":205, "0100":21
 var world = null;
 var board_number = null;
 
+var CANVAS_WIDTH = 480;
+var CANVAS_HEIGHT = 350;
+var TILE_WIDTH = 8;
+var TILE_HEIGHT = 14;
+
+console.log("CANVAS DIMENSIONS", CANVAS_WIDTH, CANVAS_HEIGHT);
+
 var World = function (data) {
     // World Properties
     this.hex = data;                    // World file as hex string
@@ -263,6 +270,20 @@ function parse_board(world)
     //console.log("Size: " + board.size);
     //console.log("Name: " + board.name);
     
+    // Placeholder way to deal with invalid elements
+    if (ZZT_ELEMENTS.length < 256)
+    {
+        while (ZZT_ELEMENTS.length < 256)
+            ZZT_ELEMENTS.push(
+                {
+                "id":ZZT_ELEMENTS.length,
+                "name":"Element " + ZZT_ELEMENTS.length,
+                "oop_name":"",
+                "character":63
+                }
+            );
+    }
+    
     // Parse Elements
     var parsed_tiles = 0;
     
@@ -275,6 +296,7 @@ function parse_board(world)
         
         for (var tile_idx = 0; tile_idx < quantity; tile_idx++)
         {
+            //console.log("ELEMENT", element_id, board.title, tile_idx, ZZT_ELEMENTS[element_id]["name"]);
             board.elements.push(
                 {
                     "id":element_id,
@@ -359,7 +381,8 @@ function render_board()
     board_number = $(this).data("board-number");
     $("li.board").removeClass("selected");
     $(this).addClass("selected");
-    $("#details").html("<canvas id='world-canvas' width='480' height='350'>Your browser is outdated and does not support the canvas element.</canvas>");
+    set_dimensions();
+    $("#details").html("<canvas id='world-canvas' width='"+CANVAS_WIDTH+"' height='"+CANVAS_HEIGHT+"'>Your browser is outdated and does not support the canvas element.</canvas>");
     var canvas = document.getElementById("world-canvas");
     var ctx = canvas.getContext("2d");
     
@@ -557,14 +580,14 @@ function stat_info(e)
 {
     var posX = $(this).offset().left;
     var posY = $(this).offset().top;
-    var x = parseInt((e.pageX - posX) / 8) + 1;
-    var y = parseInt((e.pageY - posY) / 14) + 1;
+    var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
+    var y = parseInt((e.pageY - posY) / TILE_HEIGHT) + 1;
     var tile_idx = ((y-1) * 60) + (x-1);
     var output = "";
     
     // General info
     var tile = world.boards[board_number].elements[tile_idx];
-    output += "Coordinates: ("+x+", "+y+") [Tile "+tile_idx+"/1500]" + "<br>";
+    output += "Coordinates: ("+x+", "+y+") [Tile "+(tile_idx+1)+"/1500]" + "<br>";
     output += "ID: " + tile.id + "<br>";
     output += "Name: " + tile.name + "<br>";
     output += "Character: " + tile.character + "<br>";
@@ -642,16 +665,16 @@ function print(ctx, character, color, x, y)
     // Background
     
     ctx.fillStyle = bg;
-    ctx.fillRect(x*8, y*14, 8, 14);
+    ctx.fillRect(x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
     ctx.restore();
     
     // Creates transparency for foreground
     ctx.globalCompositeOperation = "xor";
-    ctx.drawImage(image, ch_x*8, ch_y*14, 8, 14, x*8, y*14, 8, 14 ); // 8x14
+    ctx.drawImage(image, ch_x*TILE_WIDTH, ch_y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
     // Draw foreground
     ctx.globalCompositeOperation = "destination-over";
     ctx.fillStyle = fg;
-    ctx.fillRect(x*8, y*14, 8, 14);
+    ctx.fillRect(x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
     ctx.restore();
     return true;
 }
@@ -737,3 +760,11 @@ function str_read(data, bytes, idx)
     return output;
 };
 
+function set_dimensions()
+{
+    CANVAS_WIDTH = $("#ascii").get(0).width / 16 * 60;
+    CANVAS_HEIGHT = $("#ascii").get(0).height / 16 * 25;
+    
+    TILE_WIDTH = CANVAS_WIDTH / 60;
+    TILE_HEIGHT = CANVAS_HEIGHT / 25;
+}

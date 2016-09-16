@@ -12,7 +12,7 @@
 
 <div class="pages">
     <div class="sub">
-        <a href="?{% if q %}q={{q}}{% endif %}">Detailed View</a> | List View
+        <a href="?{% if q %}q={{q}}{% endif %}{% if mode == 'search' %}{{qs}}{% endif %}">Detailed View</a> | List View
     </div>
 </div>
 

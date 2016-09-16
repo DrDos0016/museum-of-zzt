@@ -9,36 +9,13 @@
 {% else %}
 <h1>{{category}}</h1>
 {% endif %}
-<div class="pages">
-    {% if category == "ZZT" %}
-    Page #{{page}}/{{pages}}<br>
-    <a href="?page={{prev}}{% if q %}&q={{q}}{% endif %}">&lt;</a>
-    {% for page in page_range %}
-    <a href="?page={{page}}{% if q %}&q={{q}}{% endif %}">{{page}}</a> 
-    {% endfor %}
-    <a href="?page={{next}}{% if q %}&q={{q}}{% endif %}">&gt;</a>
-    {% endif %}
-    <div class="sub">
-        Detailed View | <a href="?view=list{% if q %}&q={{q}}{% endif %}">List View</a>
-    </div>
-</div>
-
-
+{% include "z2_site/blocks/page_block.html" %}
 
 {% for file in files %}
     {% include "z2_site/blocks/file_block.html" %}
 {% endfor %}
 
-{% if category == "ZZT" %}
-<div class="pages">
-    Page #{{page}}/{{pages}}<br>
-    <a href="?page={{prev}}{% if q %}&q={{q}}{% endif %}">&lt;</a>
-    {% for page in page_range %}
-    <a href="?page={{page}}{% if q %}&q={{q}}{% endif %}">{{page}}</a> 
-    {% endfor %}
-    <a href="?page={{next}}{% if q %}&q={{q}}{% endif %}">&gt;</a>
-</div>
-{% endif %}
+{% include "z2_site/blocks/page_block.html" %}
 
 </section>
 {% endblock %}
