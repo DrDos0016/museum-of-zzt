@@ -732,7 +732,6 @@ function read(data, bytes, idx)
 {
     var input = data.substr(idx, bytes*2);
     var output = input;
-<<<<<<< HEAD
     
     // Convert to Little Endian
     if (bytes > 1)
@@ -769,23 +768,6 @@ function set_dimensions()
     TILE_WIDTH = CANVAS_WIDTH / 60;
     TILE_HEIGHT = CANVAS_HEIGHT / 25;
 }
-=======
-    
-    // Convert to Little Endian
-    if (bytes > 1)
-    {
-        var endian = [];
-        for (var i = 0; i < input.length; i += 2)
-        {
-            endian.push(input.substring(i, i + 2));
-        }
-        endian.reverse();
-        
-        output = endian.join("");
-    }
-    output = parseInt(output, 16)
-    return output;
-}
 
 function str_read(data, bytes, idx)
 {
@@ -797,5 +779,3 @@ function str_read(data, bytes, idx)
     }
     return output;
 };
-
->>>>>>> fc91160b4c398e99232207482f573073df094720
