@@ -1,0 +1,17 @@
+{% extends "z2_site/world.html" %}
+{% load staticfiles %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block world_content %}
+{% if articles %}
+<ul>
+    {% for article in articles %}
+    <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} ({{article.date}})</li>
+    {% endfor %}
+</ul>
+{% else %}
+No articles found!
+{% endif %}
+{% endblock %}

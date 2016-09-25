@@ -10,6 +10,20 @@ def advanced_search(request):
     
     return render(request, "z2_site/advanced_search.html", data)
 
+def article(request, letter, filename):
+    """ Returns page listing all articles associated with a provided file. 
+    If there is just one article, display it instead.
+    """
+    data = {}
+    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["articles"] = data["file"].articles.all()
+    data["letter"] = letter
+    
+    if len(data["articles"]) == 1:
+        return article_view(request, data["articles"][0].id)
+    else:
+        return render(request, "z2_site/article.html", data)
+
 def article_directory(request):
     """ Returns page listing all articles sorted either by date or name """
     data = {}
@@ -27,6 +41,9 @@ def article_view(request, id):
     data = {"id":id}
     data["article"] = get_object_or_404(Article, pk=id)
     data["title"] = data["article"].title
+    file = data["article"].file_set.all()
+    if file:
+        data["file"] = file[0] # TODO: How to properly handle an article covering multiple files (ex Zem + Zem 2)
     return render(request, "z2_site/article_view.html", data)
 
 def browse(request, letter="a", category="ZZT", page=1):

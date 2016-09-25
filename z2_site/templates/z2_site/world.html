@@ -2,6 +2,7 @@
 
 {% block content %}
 <section id="content" class="col block">
+{% if file %}
 <h1>[{{file.filename}}] - {{file.title}}</h1>
 <div class="file-links">
     {% include "z2_site/blocks/file_links.html" %}
@@ -14,6 +15,7 @@
     <div>Size<br> {{file.size}} KB</div>
     <div>Rating<br> {%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}</div>
 </div>
+{% endif %}
 
 {% block world_content %}
 {% endblock %}

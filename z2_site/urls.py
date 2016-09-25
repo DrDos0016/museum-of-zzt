@@ -30,6 +30,7 @@ urlpatterns = [
     url(r"^featured$", z2_site.views.featured_games, name="featured_games"),
     
     # Files
+    url(r"^article/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.article, name="article"),
     url(r"^browse/(?P<letter>[a-z1])$", z2_site.views.browse),
     url(r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.file, name="file"),
     url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.play, name="play"),

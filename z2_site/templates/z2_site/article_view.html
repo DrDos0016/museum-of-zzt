@@ -1,13 +1,11 @@
-{% extends "z2_site/main.html" %}
+{% extends "z2_site/world.html" %}
 {% load staticfiles %}
 
 {% block style %}
 {{article.css|safe}}
 {% endblock %}
 
-{% block content %}
-<section id="content" class="col block">
-
+{% block world_content %}
 <h1>{{article.title}}{% if article.page != 1 %} - Page {{article.page}}{% endif %}</h1>
 <div>By: {{article.author}}</div>
 <div>Date: {{article.date}}</div>
@@ -25,8 +23,11 @@ Article has an invalid type!
 {% endif %}
 </article>
 
+{% for file in article.file_set.all %}
+{{file}}<br>
+{% endfor %}
+
 <br>
-<a href="{% url 'article_directory' %}">Return to articles</a><br>
+<a href="{% url 'article_directory' %}">Return to article directory</a><br>
 <a href="{% url 'index' %}">Return to the main page</a>
-</section>
 {% endblock %}

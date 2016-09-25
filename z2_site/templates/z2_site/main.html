@@ -51,8 +51,8 @@ $(document).ready(function (){
 <section id="sidebar-left" class="col sidebar">
     <div id="featured" class="block">
         <h1>Featured Game</h1>
-        <a href="">{{fg.title}}</a><br>
-        <a href="/"><img src="{% static 'images/screenshots/'|add:fg.letter|add:'/'|add:fg.screenshot' %}" alt="{{fg.title}}"></a>
+        <a href="{{fg.file_url}}">{{fg.title}}</a><br>
+        <a href="{{fg.file_url}}"><img src="{% static 'images/screenshots/'|add:fg.letter|add:'/'|add:fg.screenshot' %}" alt="{{fg.title}}"></a>
         <br>
         by {% for author in fg.author_list %}<a href="/search?author={{author}}&exact=1">{{author}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
         <br>

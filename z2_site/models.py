@@ -65,6 +65,9 @@ class File(models.Model):
             return "/file/" + self.letter + "/" + self.filename
         else:
             return "/file/!/" + self.filename
+            
+    def article_url(self):
+        return "/article/" + self.letter + "/" + self.filename
         
     def wiki_url(self):
         return "http://zzt.org/zu/wiki/" + self.title

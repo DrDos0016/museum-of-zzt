@@ -311,6 +311,11 @@ div.file-links, div.file-details, div.file-meta
     text-align:center;
 }
 
+div.file-meta
+{
+    border-bottom:1px solid #000;
+}
+
 div.file-links div
 {
     
@@ -347,6 +352,7 @@ div.file-details ul
 .featured-reviews
 {
     max-width:30%;
+    text-align:right;
 }
 /* End File blocks */
 
