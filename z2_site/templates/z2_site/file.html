@@ -20,7 +20,6 @@ var save = "{{save}}";
 
 {% block world_content %}
 <div id="file-area">
-    <img src="/static/images/charsets/cp437.png" id="ascii" style="display:none"> <!-- DEBUG -->
     <div id="details">
     <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
     </div>
@@ -34,7 +33,26 @@ var save = "{{save}}";
     </ul>
     </div>
 
-    <div id="world-info" class="col"></div>
+    <div id="tab-area">
+        <div id="file-tabs">
+            <ul><li name="world-info">World</li><li name="board-info">Board</li><li name="element-info">Element</li><li name="preferences">Prefs.</li></ul>
+        </div>
+        <div id="world-info" class="toggle"></div>
+        <div id="board-info" class="toggle"></div>
+        <div id="element-info" class="toggle"></div>
+        <div id="preferences" class="toggle">
+            <select name="charset">
+                <optgroup label="Standard Fonts">
+                    <option value="cp437">Code Page 437 -- RECOMMENDED</option>
+                </optgroup>
+                <optgroup label="Custom Fonts">
+                    <option value="efzi">EFZI.COM</option>
+                </optgroup>
+            </select>
+            
+            <label><input type="checkbox" name="2x" value="1"> - 2x Zoom</label>
+        </div>
+    </div>
 
     {% if save %}
     <form method="POST" action="/debug/save" name="save">

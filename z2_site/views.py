@@ -89,9 +89,11 @@ def browse(request, letter="a", category="ZZT", page=1):
 def featured_games(request, page=1):
     """ Returns a page listing all games marked as Featured """
     data = {}
+    data["category"] = "ZZT"
+    data["no_list"] = True
     data["page"] = int(request.GET.get("page", page))
     featured = Detail.objects.get(pk=7)
-    data["featured"] = featured.file_set.all().order_by("title").prefetch_related("articles")[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
+    data["featured"] = featured.file_set.all().order_by("title").prefetch_related("articles").defer("articles__content")[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
     data["count"] = featured.file_set.all().count()
     data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
     data["page_range"] = range(1, data["pages"] + 1)

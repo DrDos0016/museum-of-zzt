@@ -7,7 +7,7 @@
     {% endfor %}
     <a href="?page={{next}}{% if q %}&q={{q}}{% endif %}{% if mode == 'search' %}&{{qs}}{% endif %}">&gt;</a>
     {% endif %}
-    <div class="sub">
+    {% if not no_list %}<div class="sub">
         Detailed View | <a href="?view=list{% if q %}&q={{q}}{% endif %}{% if mode == 'search' %}&{{qs}}{% endif %}">List View</a>
-    </div>
+    </div>{% endif %}
 </div>

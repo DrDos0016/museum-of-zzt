@@ -7,6 +7,10 @@ var line_characters = {"0000":249, "0001":181, "0010":198, "0011":205, "0100":21
 var world = null;
 var board_number = null;
 
+var canvas = null;
+var ctx = null;
+var CHARSET_IMAGE = null;
+var CHARSET_NAME = null;
 var CANVAS_WIDTH = 480;
 var CANVAS_HEIGHT = 350;
 var TILE_WIDTH = 8;
@@ -254,8 +258,8 @@ function parse_world(type, data)
             output += "Flag "+idx+": " + world.flags[idx] + "<br>";
     }
     
-    
     $("#world-info").html(output);
+    tab_select("world-info");
     return world;
 }
 
@@ -381,10 +385,7 @@ function render_board()
     board_number = $(this).data("board-number");
     $("li.board").removeClass("selected");
     $(this).addClass("selected");
-    set_dimensions();
-    $("#details").html("<canvas id='world-canvas' width='"+CANVAS_WIDTH+"' height='"+CANVAS_HEIGHT+"'>Your browser is outdated and does not support the canvas element.</canvas>");
-    var canvas = document.getElementById("world-canvas");
-    var ctx = canvas.getContext("2d");
+    load_charset();
     
     // Get board
     var board = world.boards[board_number];
@@ -438,8 +439,21 @@ function render_board()
     if (board.message != "")
         output += "Message: " + board.message + "<br>";
     
-    $("#world-info").html(output);
+    $("#board-info").html(output);
+    tab_select("board-info");
+    return true;
+}
+
+function draw_board()
+{
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillstyle = "black";
+    ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
+    var board_number = $(".board.selected").data("board-number");
+    if (! board_number)
+        return false;
     
+    var board = world.boards[board_number];
     
     var x = 0;
     var y = 0;
@@ -560,7 +574,7 @@ function render_board()
     }
     
     $("#world-canvas").click(stat_info);
-    console.log(document.getElementById("world-canvas").toDataURL());
+    //console.log(document.getElementById("world-canvas").toDataURL());
     
     // DEBUG Screenshot Saving
     /*
@@ -573,7 +587,6 @@ function render_board()
     }
     */
     // END DEBUG
-    return true;
 }
 
 function stat_info(e)
@@ -639,13 +652,25 @@ function stat_info(e)
         }
     }
     
-    $("#world-info").html(output);
+    $("#element-info").html(output);
+    tab_select("element-info");
     
     return true;
 }
 
+function tab_select(selector)
+{
+    $("#world-info, #board-info, #element-info, #preferences").hide();
+    $("li[name=world-info], li[name=board-info], li[name=element-info], li[name=preferences]").removeClass("selected");
+    $("li[name="+selector+"]").addClass("selected");
+    $("#"+selector).show();
+}
+
 $(document).ready(function (){
     $("#file-list li").click(pull_file);
+    $("#file-tabs ul li").click(function (){tab_select($(this).attr("name"))});
+    $("select[name=charset]").change(load_charset);
+    $("input[name=2x]").change(load_charset);
     
     if (load_file)
     {
@@ -656,26 +681,23 @@ $(document).ready(function (){
 /* Canvas Functions */
 function print(ctx, character, color, x, y)
 {
-    var image = document.getElementById("ascii");
     var ch_x = character % 16;
     var ch_y = parseInt(character / 16);
     var bg = colors[parseInt(color / 16)];
     var fg = colors[color % 16];
     
     // Background
-    
+    ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = bg;
     ctx.fillRect(x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
-    ctx.restore();
     
     // Creates transparency for foreground
     ctx.globalCompositeOperation = "xor";
-    ctx.drawImage(image, ch_x*TILE_WIDTH, ch_y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+    ctx.drawImage(CHARSET_IMAGE, ch_x*TILE_WIDTH, ch_y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
     // Draw foreground
     ctx.globalCompositeOperation = "destination-over";
     ctx.fillStyle = fg;
     ctx.fillRect(x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
-    ctx.restore();
     return true;
 }
 /* End Canvas Functions */
@@ -760,13 +782,38 @@ function str_read(data, bytes, idx)
     return output;
 };
 
-function set_dimensions()
+function load_charset()
 {
-    CANVAS_WIDTH = $("#ascii").get(0).width / 16 * 60;
-    CANVAS_HEIGHT = $("#ascii").get(0).height / 16 * 25;
+    var selected_charset = $("select[name=charset]").val() + ($("input[name=2x]").prop("checked") ? "-2x" : "");
     
-    TILE_WIDTH = CANVAS_WIDTH / 60;
-    TILE_HEIGHT = CANVAS_HEIGHT / 25;
+    console.log("CSName", CHARSET_NAME, "Selected", selected_charset);
+    
+    // Charset needs to be loaded
+    if (CHARSET_NAME != selected_charset)
+    {
+        console.log("Loading new charset");
+        CHARSET_NAME = selected_charset;
+        CHARSET_IMAGE = new Image();
+        CHARSET_IMAGE.src = "/static/images/charsets/"+CHARSET_NAME+".png";
+        CHARSET_IMAGE.addEventListener("load", function (){
+            CANVAS_WIDTH = CHARSET_IMAGE.width / 16 * 60;
+            CANVAS_HEIGHT = CHARSET_IMAGE.height / 16 * 25;
+            
+            TILE_WIDTH = CANVAS_WIDTH / 60;
+            TILE_HEIGHT = CANVAS_HEIGHT / 25;
+            
+            $("#details").html("<div id='overlay'></div><canvas id='world-canvas' width='"+CANVAS_WIDTH+"' height='"+CANVAS_HEIGHT+"'>Your browser is outdated and does not support the canvas element.</canvas>");
+            canvas = document.getElementById("world-canvas");
+            ctx = canvas.getContext("2d");
+            console.log("CSName on load charset", ctx.globalCompositeOperation);
+            
+            draw_board();
+        });
+    }
+    else
+    {
+        draw_board();
+    }
 }
 
 function str_read(data, bytes, idx)
