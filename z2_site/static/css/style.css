@@ -1,4 +1,4 @@
-@font-face 
+@font-face
 {
 	font-family: 'Classic Console';
 	src: url('/assets/fonts/clacon.ttf');
@@ -46,6 +46,12 @@ body
     *display: inline;
     vertical-align:top;
     overflow:auto;
+}
+
+.jsLink
+{
+	cursor:pointer;
+	color:#00F;
 }
 
 .l
@@ -155,10 +161,10 @@ nav li
     order:2;
     width:60%;
     /*flex-grow:2;
-    
+
     min-width:50%;
     max-width:50%;*/
-    
+
 }
 
 .flex-container
@@ -205,7 +211,7 @@ footer
 
 #featured
 {
-    
+
 }
 
 #featured img
@@ -274,7 +280,7 @@ input[name=q]
 
 .file-screen
 {
-    
+
 }
 
 .file-screen img
@@ -337,7 +343,7 @@ div.file-meta
 
 div.file-links div
 {
-    
+
 }
 
 div.file-links ul, div.file-details ul
@@ -510,7 +516,7 @@ div.file-details ul
     margin:0;
     padding:0;
     display:inline-block;
-    width:25%;
+    width:20%;
     text-align:center;
     background:#CCC;
 }

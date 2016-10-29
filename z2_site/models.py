@@ -37,7 +37,7 @@ class File(models.Model):
     release_source  = models.CharField(max_length=20, null=True, default=None, blank=True) # ZZT file, News post, Text File, etc
     category        = models.CharField(max_length=10)   # ZZT, Super ZZT, ZIG, Soundtrack, Utility
     screenshot      = models.CharField(max_length=80, blank=True, null=True, default=None)   # Screenshot of title screen
-    company         = models.CharField(max_length=80, default="", blank=True)   # Interactive Fantasies
+    company         = models.CharField(max_length=80, default="", blank=True, null=True)   # Interactive Fantasies
     description     = models.TextField(null=True, blank=True, default="") # Description for Utilites/Featured Games
     review_count    = models.IntegerField(default=0)    # Number of reviews on this file
     rating          = models.FloatField(null=True, default=None, blank=True) # Rating if any, from reviews given

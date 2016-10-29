@@ -16,21 +16,19 @@ var CANVAS_HEIGHT = 350;
 var TILE_WIDTH = 8;
 var TILE_HEIGHT = 14;
 
-console.log("CANVAS DIMENSIONS", CANVAS_WIDTH, CANVAS_HEIGHT);
-
 var World = function (data) {
     // World Properties
     this.hex = data;                    // World file as hex string
     this.idx = 0;                       // Index of world file data
     this.flags = [];                    // List of flags
     this.boards = [];                   // List of boards
-    
+
     // World Methods
     this.read = function (bytes)        // read X bytes of world file data
     {
         var input = this.hex.substr(this.idx, bytes*2);
         var output = input;
-        
+
         // Convert to Little Endian
         if (bytes > 1)
         {
@@ -40,12 +38,11 @@ var World = function (data) {
                 endian.push(input.substring(i, i + 2));
             }
             endian.reverse();
-            
+
             output = endian.join("");
         }
         output = parseInt(output, 16)
         this.idx += bytes * 2;
-        //console.log("IDX: " + (this.idx / 2));
         return output;
     };
     this.str_read = function (bytes)    // read X bytes of world file data as string
@@ -55,9 +52,8 @@ var World = function (data) {
         for (var i = 0; i < input.length; i += 2)
         {
             output += String.fromCharCode(parseInt(input.substring(i, i + 2), 16));
-        }            
+        }
         this.idx += bytes * 2;
-        //console.log("IDX: " + (this.idx / 2));
         return output;
     };
 };
@@ -69,7 +65,7 @@ function pull_file()
         //$(this).find("ul").toggle();
         return false;
     }
-    
+
     $("#file-list li").removeClass("selected");
     $("#file-list li ul").remove();
     $("#file-list li br").remove();
@@ -78,7 +74,7 @@ function pull_file()
     var filename = $(this).contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var split = filename.toLowerCase().split(".");
     var ext = split[split.length - 1];
-    
+
     if (valid_extensions.indexOf(ext) == -1)
     {
         if (filename == "Title Screen")
@@ -92,9 +88,9 @@ function pull_file()
             return false;
         }
     }
-    
+
     $.ajax({
-        url:"/ajax/get_zip_file", 
+        url:"/ajax/get_zip_file",
         data:{
             "letter":letter,
             "zip":zip,
@@ -104,17 +100,17 @@ function pull_file()
         if (ext == "zzt")
         {
             world = parse_world("zzt", data);
-            
+
             // Write the board names to the file list
             var board_list = "<ul>";
             for (var x = 0; x < world.boards.length; x++)
             {
-                board_list += "<li class='board' data-board-number='"+x+"'>"+world.boards[x].title+"</li>";
+                board_list += "<li class='board' data-board-number='"+x+"'>"+(world.boards[x].title ? world.boards[x].title : "-untitled")+"</li>";
             }
             board_list += "</ul>";
             $("#file-list li.selected").append(board_list + "<br>");
             $("li.board").click(render_board); // Bind event
-            
+
             // Auto Load board
             if (load_board != "")
                 auto_load_board(load_board);
@@ -137,8 +133,8 @@ function pull_file()
             zip_image.src = data;
             $("#details").html("<img id='zip_image' alt='Zip file image'>");
             $("#zip_image").attr("src", "data:image/'"+ext+"';base64,"+data);
-            
-            
+
+
         }
         else if (["wav", "mp3", "ogg", "mid", "midi"].indexOf(ext) != -1)
         {
@@ -152,17 +148,16 @@ function pull_file()
             else
                 var type = "application/octet-stream";
             console.log(data);
-            
+
             var audio_buffer = null;
             var context = new AudioContext();
             context.decodeAudioData(data, function(buffer) { audio_buffer = buffer; });
-            console.log("L#147");
-            
+
             var source = context.createBufferSource(); // creates a sound source
             source.buffer = audio_buffer;                    // tell the source which sound to play
             source.connect(context.destination);       // connect the source to the context's destination (the speakers)
             source.start(0)
-            
+
             //$("#details").html("<audio id='zip_audio' src='"+zip_audio_url+"'>Your browser does not support HTML5 audio</audio>");
         }
         else
@@ -180,30 +175,29 @@ function parse_world(type, data)
         $("#details").html("I can't render this");
         return false;
     }
-    
+
     // ZZT World Parsing
     var world = new World(data);
-    
+
     // Parse World Bytes
     world.world_bytes = world.read(2);
-    //console.log("World Bytes     : " + world.world_bytes);
-    
+
     if (world.world_bytes != 65535)
     {
         $("#details").html("World is not a valid ZZT world");
         return false;
     }
-    
+
     // Parse Number of Boards (this starts at 0 for a title screen only)
     world.board_count = world.read(2);
-    
+
     // Parse World Stats
     world.ammo = world.read(2)
     world.gems = world.read(2)
     world.keys = world.read(7) // This one is special
     world.health = world.read(2);
     world.starting_board = world.read(2);
-    
+
     // Begin Parse ZZT Specific World Stats
     world.torches = world.read(2);
     world.torch_cycles = world.read(2);
@@ -212,32 +206,31 @@ function parse_world(type, data)
     world.score = world.read(2);
     world.name_length = world.read(1);
     world.name = world.str_read(20).substr(0,world.name_length);
-    
+
     // Parse Flags
     for (var x = 0; x < 10; x++)
     {
         var len = world.read(1);                              // Read flag length
-        //console.log("Flag " + x + " length is " + len);
         world.flags.push(world.str_read(20).substr(0,len));   // Read flag name
     }
-    
+
     world.time_passed = world.read(2);
     world.read(2)                       // Unused playerdata
     world.save = (world.read(1) != 0);  // Save/Lock file
-    
+
     // End Parse ZZT Specific World Stats
-    
+
     // Begin Parse SZZT Specific World Stats
     // TODO: This is extremely low priority.
     // End Parse SZZT Specific World Stats
-    
+
     // Parse Boards
     world.idx = 1024; // todo: debug, this shouldn't be necessary at all
     for (var x = 0; x <= world.board_count; x++)
     {
         world.boards.push(parse_board(world));
     }
-    
+
     var output = "World format: " + type.toUpperCase() + "<br>";
     output += "World name: " + world.name + "<br>";
     output += "Health: " + world.health + "<br>";
@@ -246,18 +239,18 @@ function parse_world(type, data)
     output += "Gems: " + world.gems + "<br>";
     output += "Keys: " + world.keys + "<br>";
     output += "Score: " + world.score + "<br>";
-    
+
     output += "Torch cycles: " + world.torch_cycles + "<br>";
     output += "Energizer cycles: " + world.energizer_cycles + "<br>";
     output += "Time elapsed: " + world.time_passed + "<br>";
     output += "Saved game: " + (world.save ? "Yes" : "No") + "<br>";
-    
+
     for (var idx in world.flags)
     {
         if (world.flags[idx])
             output += "Flag "+idx+": " + world.flags[idx] + "<br>";
     }
-    
+
     $("#world-info").html(output);
     tab_select("world-info");
     return world;
@@ -271,9 +264,7 @@ function parse_board(world)
     board.size = world.read(2);
     board.title_length = world.read(1);
     board.title = world.str_read(50).substr(0,board.title_length);
-    //console.log("Size: " + board.size);
-    //console.log("Name: " + board.name);
-    
+
     // Placeholder way to deal with invalid elements
     if (ZZT_ELEMENTS.length < 256)
     {
@@ -281,26 +272,25 @@ function parse_board(world)
             ZZT_ELEMENTS.push(
                 {
                 "id":ZZT_ELEMENTS.length,
-                "name":"Element " + ZZT_ELEMENTS.length,
+                "name":"Unknown Element " + ZZT_ELEMENTS.length,
                 "oop_name":"",
                 "character":63
                 }
             );
     }
-    
+
     // Parse Elements
     var parsed_tiles = 0;
-    
+
     while (parsed_tiles < 1500)
     {
         var quantity = world.read(1);
         var element_id = world.read(1);
         var color = world.read(1);
         board.room.push([quantity, element_id, color]);
-        
+
         for (var tile_idx = 0; tile_idx < quantity; tile_idx++)
         {
-            //console.log("ELEMENT", element_id, board.title, tile_idx, ZZT_ELEMENTS[element_id]["name"]);
             board.elements.push(
                 {
                     "id":element_id,
@@ -318,7 +308,7 @@ function parse_board(world)
         //$("#debug").val($("#debug").val() + "\n" + quantity + " " + colors[color % 16] + " on " + colors[parseInt(color / 16)] + " " + elements[element_id]);
         parsed_tiles += quantity;
     }
-    
+
     // Parse Properties
     board.max_shots = world.read(1);
     board.dark = world.read(1);
@@ -337,15 +327,16 @@ function parse_board(world)
     board.stats = [];
     // Super ZZT Properties
     // End
-    
+
     // Parse Stats
     var parsed_stats = 0;
-    
+
     while (parsed_stats <= board.stat_count)
     {
         var stat = {};
         stat.x = world.read(1);
         stat.y = world.read(1);
+        stat.tile_idx = ((stat.y-1) * 60) + (stat.x-1);
         stat.x_step = world.read(2);
         stat.y_step = world.read(2);
         stat.cycle = world.read(2);
@@ -360,10 +351,10 @@ function parse_board(world)
         stat.oop_idx = world.read(2);
         stat.oop_length = world.read(2);
         world.read(8); // Padding
-        
+
         if (stat.oop_length > 32767) // Pre-bound element
             stat.oop_length = 0;
-            
+
         if (stat.oop_length)
         {
             stat.oop = world.str_read(stat.oop_length);
@@ -372,11 +363,11 @@ function parse_board(world)
         {
             stat.oop = "";
         }
-        
+
         board.stats.push(stat);
+
         parsed_stats++;
     }
-    
     return board;
 }
 
@@ -386,10 +377,10 @@ function render_board()
     $("li.board").removeClass("selected");
     $(this).addClass("selected");
     load_charset();
-    
+
     // Get board
     var board = world.boards[board_number];
-    
+
     // Write board information
     var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var output = "";
@@ -428,19 +419,37 @@ function render_board()
     }
     else
         output += "Board ←: None" + "<br>";
-    
+
     output += "Re-enter when zapped: " + (board.zap ? "Yes" : "No") + "<br>";
     output += "Re-enter X: " + board.enter_x + "<br>";
     output += "Re-enter Y: " + board.enter_y + "<br>";
     output += "Time limit: " + (board.time_limit ? "None" : board.time_limit + " sec"+(board.time_limit != 1 ? "s" : "")+".") + "<br>";
-    
+
     output += "Stat elements: " + (board.stat_count + 1) + "/151<br>";
     output += "Board size: " + (board.size + 2) + " bytes<br>"; // Extra two bytes are for the "size of board" bytes themselves. This is necessary to match KevEdit.
     if (board.message != "")
         output += "Message: " + board.message + "<br>";
-    
+
     $("#board-info").html(output);
     tab_select("board-info");
+
+    // Render the stat info as well
+    var stat_list = "<ul>\n"
+    for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
+    {
+        var stat = board.stats[stat_idx];
+        var stat_name = board.elements[stat.tile_idx].name;
+        if ((stat_name == "Scroll" || stat_name == "Object") && stat.oop[0] == "@")
+            stat_name = stat.oop.slice(0, stat.oop.indexOf("\r"));
+
+        stat_list += "<li><a class='jsLink' name='stat-link' data-x='"+stat.x+"' data-y='"+stat.y+"'>("+ ("00"+stat.x).slice(-2) +", "+ ("00"+stat.y).slice(-2) +") ["+(("0000"+(stat.tile_idx+1)).slice(-4))+"] "+stat_name+"</a></li>\n";
+    }
+    stat_list += "</ul>\n";
+    $("#stat-info").html(stat_list);
+    $("a[name=stat-link]").click(function (){
+        var e = {"data":{"x":$(this).data("x"), "y":$(this).data("y")}};
+        stat_info(e);
+    });
     return true;
 }
 
@@ -450,11 +459,11 @@ function draw_board()
     ctx.fillstyle = "black";
     ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
     var board_number = $(".board.selected").data("board-number");
-    if (! board_number)
+    if (board_number == null)
         return false;
-    
+
     var board = world.boards[board_number];
-    
+
     var x = 0;
     var y = 0;
     var tile = 0;
@@ -463,12 +472,7 @@ function draw_board()
     for (var chunk_idx = 0; chunk_idx < board.room.length; chunk_idx++)
     {
         var chunk = board.room[chunk_idx];
-        /*
-        console.log("QTY:" + chunk[0]);
-        console.log("ELE:" + chunk[1]);
-        console.log("CLR:" + chunk[2]);
-        */
-        
+
         for (var qty = 0; qty < chunk[0]; qty++)
         {
             // Text
@@ -506,7 +510,7 @@ function draw_board()
                                 pusher_char = 31;
                             else if (board.stats[stat_idx].x_step > 32767)
                                 pusher_char = 17;
-                                
+
                             print(ctx, pusher_char, chunk[2], x, y);
                         }
                         if (chunk[1] == 30) // Transporter
@@ -518,7 +522,7 @@ function draw_board()
                                 transporter_char = 118;
                             else if (board.stats[stat_idx].x_step > 32767)
                                 transporter_char = 60;
-                                
+
                             print(ctx, transporter_char, chunk[2], x, y);
                         }
                     }
@@ -531,7 +535,7 @@ function draw_board()
             }
             else // Standard
                 print(ctx, characters[chunk[1]], chunk[2], x, y);
-            
+
             tile += 1;
             x += 1;
             if (x > 59)
@@ -541,7 +545,7 @@ function draw_board()
             }
         }
     }
-    
+
     // Render line walls
     var line_tiles = Object.keys(line_walls);
     for (var line_idx = 0; line_idx < 1500; line_idx++)
@@ -551,31 +555,31 @@ function draw_board()
             line_key += "1";
         else
             line_key += (line_walls[line_idx-60] ? "1" : "0");
-        
+
         if (line_idx > 1440)
             line_key += "1";
         else
             line_key += (line_walls[line_idx+60] ? "1" : "0");
-            
+
         if (line_idx % 60 == 59)
             line_key += "1";
         else
             line_key += (line_walls[line_idx+1] ? "1" : "0");
-            
+
         if (line_idx % 60 == 0)
             line_key += "1";
         else
             line_key += (line_walls[line_idx-1] ? "1" : "0");
-        
+
         if (line_walls[line_idx])
         {
             print(ctx, line_characters[line_key], line_colors[line_idx], line_idx % 60, parseInt(line_idx / 60));
         }
     }
-    
+
     $("#world-canvas").click(stat_info);
     //console.log(document.getElementById("world-canvas").toDataURL());
-    
+
     // DEBUG Screenshot Saving
     /*
     if (save)
@@ -591,13 +595,24 @@ function draw_board()
 
 function stat_info(e)
 {
-    var posX = $(this).offset().left;
-    var posY = $(this).offset().top;
-    var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
-    var y = parseInt((e.pageY - posY) / TILE_HEIGHT) + 1;
+    console.log(e.data);
+    if (! e.data)
+    {
+        var posX = $(this).offset().left;
+        var posY = $(this).offset().top;
+        var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
+        var y = parseInt((e.pageY - posY) / TILE_HEIGHT) + 1;
+    }
+    else
+    {
+        var x = e.data.x;
+        var y = e.data.y;
+    }
+    console.log("X and y", x, y);
     var tile_idx = ((y-1) * 60) + (x-1);
+    console.log(tile_idx);
     var output = "";
-    
+
     // General info
     var tile = world.boards[board_number].elements[tile_idx];
     output += "Coordinates: ("+x+", "+y+") [Tile "+(tile_idx+1)+"/1500]" + "<br>";
@@ -606,7 +621,7 @@ function stat_info(e)
     output += "Character: " + tile.character + "<br>";
     output += "Color ID: " + tile.color_id + "<br>";
     output += "Color Name: " + tile.foreground_name + " on " + tile.background_name + "<br>";
-    
+
     // Iterate over stat elements
     var stat = null;
     for (var stat_idx = 0; stat_idx < world.boards[board_number].stats.length; stat_idx++)
@@ -617,13 +632,13 @@ function stat_info(e)
             break;
         }
     }
-    
+
     if (stat != null)
     {
         output += "Cycle: " + stat.cycle + "<br>";
         output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param1") ? ZZT_ELEMENTS[tile.id].param1 : "Param1") + ": " + stat.param1 + "<br>";
         output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param2") ? ZZT_ELEMENTS[tile.id].param2 : "Param2") + ": " + stat.param2 + "<br>";
-        
+
         // Passages get a link and the board's proper name
         if (tile.name == "Passage")
         {
@@ -634,7 +649,7 @@ function stat_info(e)
         }
         else
             output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param3") ? ZZT_ELEMENTS[tile.id].param3 : "Param3") + ": " + stat.param3 + "<br>";
-        
+
         if (ZZT_ELEMENTS[tile.id].hasOwnProperty("step"))
             output += ZZT_ELEMENTS[tile.id].step + "<br>"
         output += "X-Step: " + stat.x_step + "<br>";
@@ -651,17 +666,17 @@ function stat_info(e)
             output += stat.oop.replace(/\r/g, "<br>");
         }
     }
-    
+
     $("#element-info").html(output);
     tab_select("element-info");
-    
+
     return true;
 }
 
 function tab_select(selector)
 {
-    $("#world-info, #board-info, #element-info, #preferences").hide();
-    $("li[name=world-info], li[name=board-info], li[name=element-info], li[name=preferences]").removeClass("selected");
+    $("#world-info, #board-info, #element-info, #stat-info, #preferences").hide();
+    $("li[name=world-info], li[name=board-info], li[name=element-info], li[name=preferences], li[name=stat-info]").removeClass("selected");
     $("li[name="+selector+"]").addClass("selected");
     $("#"+selector).show();
 }
@@ -671,7 +686,7 @@ $(document).ready(function (){
     $("#file-tabs ul li").click(function (){tab_select($(this).attr("name"))});
     $("select[name=charset]").change(load_charset);
     $("input[name=2x]").change(load_charset);
-    
+
     if (load_file)
     {
         auto_load();
@@ -685,12 +700,12 @@ function print(ctx, character, color, x, y)
     var ch_y = parseInt(character / 16);
     var bg = colors[parseInt(color / 16)];
     var fg = colors[color % 16];
-    
+
     // Background
     ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = bg;
     ctx.fillRect(x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
-    
+
     // Creates transparency for foreground
     ctx.globalCompositeOperation = "xor";
     ctx.drawImage(CHARSET_IMAGE, ch_x*TILE_WIDTH, ch_y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
@@ -735,16 +750,16 @@ function parse_scores(data)
         // Read the first byte for length of name
         var name_length = read(data, 1, idx);
         idx += 2;
-        
+
         if (name_length == 0)
             break;
-        
+
         var name = str_read(data, 50, idx).substr(0,name_length);
         idx += 100;
-        
+
         var score = read(data, 2, idx);
         idx += 4;
-        
+
         scores.push({"name":name, "score":score});
     }
     return scores;
@@ -754,7 +769,7 @@ function read(data, bytes, idx)
 {
     var input = data.substr(idx, bytes*2);
     var output = input;
-    
+
     // Convert to Little Endian
     if (bytes > 1)
     {
@@ -764,7 +779,7 @@ function read(data, bytes, idx)
             endian.push(input.substring(i, i + 2));
         }
         endian.reverse();
-        
+
         output = endian.join("");
     }
     output = parseInt(output, 16)
@@ -785,28 +800,24 @@ function str_read(data, bytes, idx)
 function load_charset()
 {
     var selected_charset = $("select[name=charset]").val() + ($("input[name=2x]").prop("checked") ? "-2x" : "");
-    
-    console.log("CSName", CHARSET_NAME, "Selected", selected_charset);
-    
+
     // Charset needs to be loaded
     if (CHARSET_NAME != selected_charset)
     {
-        console.log("Loading new charset");
         CHARSET_NAME = selected_charset;
         CHARSET_IMAGE = new Image();
         CHARSET_IMAGE.src = "/static/images/charsets/"+CHARSET_NAME+".png";
         CHARSET_IMAGE.addEventListener("load", function (){
             CANVAS_WIDTH = CHARSET_IMAGE.width / 16 * 60;
             CANVAS_HEIGHT = CHARSET_IMAGE.height / 16 * 25;
-            
+
             TILE_WIDTH = CANVAS_WIDTH / 60;
             TILE_HEIGHT = CANVAS_HEIGHT / 25;
-            
+
             $("#details").html("<div id='overlay'></div><canvas id='world-canvas' width='"+CANVAS_WIDTH+"' height='"+CANVAS_HEIGHT+"'>Your browser is outdated and does not support the canvas element.</canvas>");
             canvas = document.getElementById("world-canvas");
             ctx = canvas.getContext("2d");
-            console.log("CSName on load charset", ctx.globalCompositeOperation);
-            
+
             draw_board();
         });
     }
