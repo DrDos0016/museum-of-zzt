@@ -26,6 +26,9 @@ urlpatterns = [
     url(r"^mass$", z2_site.views.article_view, {"id":7}),
     url(r"^zzt$", z2_site.views.article_view, {"id":2}),
     
+    # Directories
+    url(r"^directory/(?P<category>[a-z].*)$", z2_site.views.directory, name="directory"),
+    
     # Featured Games
     url(r"^featured$", z2_site.views.featured_games, name="featured_games"),
     

@@ -86,6 +86,47 @@ def browse(request, letter="a", category="ZZT", page=1):
     print("Q count:", connection.queries)
     return render(request, destination, data)
 
+def directory(request, category):
+    """ Returns a directory of all authors/companies/genres in the database """
+    data = {}
+    data["category"] = category
+    
+    """ This can possibly be cached in some way, it's not going to change
+    often.
+    """
+    data_list = []
+    if category == "company":
+        companies = File.objects.values("company").exclude(company=None).exclude(company="").distinct().order_by("company")
+        for c in companies:
+            split = c["company"].split("/")
+            for credited in split:
+                if credited not in data_list:
+                    data_list.append(credited)
+    elif category == "author":
+        authors = File.objects.values("author").distinct().order_by("author")
+        for a in authors:
+            split = a["author"].split("/")
+            for credited in split:
+                if credited not in data_list:
+                    data_list.append(credited)
+    elif category == "genre":
+        genres = File.objects.values("genre").distinct().order_by("genre")
+        for g in genres:
+            split = g["genre"].split("/")
+            for genre in split:
+                if genre not in data_list:
+                    data_list.append(genre)
+    
+    data_list = sorted(data_list, key=lambda k: k.lower())
+    
+    # Break the list of results into 4 columns
+    data["list"] = data_list
+    data["split"] = math.ceil(len(data["list"]) / 4.0)
+    print("Length of list", len(data["list"]))
+    print("Length / 4", len(data["list"]) / 4.0)
+    return render(request, "z2_site/directory.html", data)
+    
+
 def featured_games(request, page=1):
     """ Returns a page listing all games marked as Featured """
     data = {}
@@ -188,6 +229,7 @@ def search(request):
             data["next"] = min(data["pages"],data["page"] + 1)
             return render(request, "z2_site/browse.html", data)
     else: # Advanced Search
+        # TODO: Handle <exact> in situations with multiple authors/companies
         qs = File.objects.all()
         if request.GET.get("title", "").strip():
             qs = qs.filter(title__icontains=request.GET.get("title", "").strip())
@@ -199,7 +241,7 @@ def search(request):
         if request.GET.get("filename", "").strip():
             qs = qs.filter(filename__icontains=request.GET.get("filename", "").replace(".zip", "").strip())
         if request.GET.get("company", "").strip():
-            qs = qs.filter(author__icontains=request.GET.get("company", "").strip())
+            qs = qs.filter(company__icontains=request.GET.get("company", "").strip())
         if request.GET.get("genre", "").strip() and request.GET.get("genre", "") != "Any":
             qs = qs.filter(genre__icontains=request.GET.get("genre", "").strip())
         if request.GET.get("year", "").strip() and request.GET.get("year", "") != "Any":

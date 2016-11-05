@@ -597,3 +597,36 @@ div.file-details ul
     resize:none;
 }
 /* End Article Globals */
+
+/* Directory Listings */
+.directory
+{
+    width:100%;
+    margin:auto;
+}
+
+.directory .column
+{
+    border:1px solid #000;
+    display:inline-block;
+    width:24%;
+    vertical-align:top;
+}
+
+.directory .column .header
+{
+    background:#000;
+    color:#F0F0F0;
+    text-align:center;
+    font-weight:bold;
+}
+
+.directory .column .row
+{
+    padding-left:0.5em;
+}
+
+.directory .column div
+{
+    border-top:1px solid #000;
+}

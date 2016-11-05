@@ -1,0 +1,30 @@
+{% extends "z2_site/main.html" %}
+
+{% block content %}
+<section id="content" class="col block">
+
+<h1>{{category|title}} Directory</h1>
+
+<div class="directory">
+{% for row in list %}
+    {% if forloop.counter0|divisibleby:split %}
+    <div class="column">
+        <div class="header">
+            {{row.0|upper}}
+        </div>
+    {% else %}
+        {% ifchanged %}
+        <div class="header">
+            {{row.0|upper}}
+        </div>
+        {% endifchanged %}
+    {% endif %}
+        <div class="row"><a href="{% url 'search' %}?{{category}}={{row}}&exact=1">{{row}}</a></div>
+    {% if forloop.counter|divisibleby:split %}
+    </div>
+    {% endif %}
+{% endfor %}
+</div>
+
+</section>
+{% endblock %}
