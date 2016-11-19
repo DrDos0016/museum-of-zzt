@@ -56,7 +56,7 @@ def browse(request, letter="a", category="ZZT", page=1):
 
     letter and page arguments are only used when the category is ZZT due to small sizes of other categories
     """
-    data = {"mode":"browse", "category":category}
+    data = {"mode":"browse", "category":category, "show_description": (category == "Utility")}
 
     print("Q count:", connection.queries)
 
@@ -151,7 +151,7 @@ def file(request, letter, filename):
     data["year"] = YEAR
     data["file"] = get_object_or_404(File, letter=letter, filename=filename)
     data["letter"] = letter
-    zip = zipfile.ZipFile("/var/projects/z2/zgames/"+letter+"/"+filename) # TODO Proper path + os.path.join()
+    zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
     data["files"] = zip.namelist()
     data["files"].sort()
     data["load_file"] = request.GET.get("file")

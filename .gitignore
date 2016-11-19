@@ -13,3 +13,4 @@ venv
 junk
 *.vhost
 .htpasswd
+*.conf

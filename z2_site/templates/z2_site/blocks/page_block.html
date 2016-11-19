@@ -10,4 +10,45 @@
     {% if not no_list %}<div class="sub">
         Detailed View | <a href="?view=list{% if q %}&q={{q}}{% endif %}{% if mode == 'search' %}&{{qs}}{% endif %}">List View</a>
     </div>{% endif %}
+    <div class="sub">
+        Sort: <select name="sort">
+            <option value="title"{% if request.GET.sort == "title" %} selected {%endif %}>Title</option>
+            <option value="author"{% if request.GET.sort == "author" %} selected {%endif %}>Author</option>
+            <option value="company"{% if request.GET.sort == "company" %} selected {%endif %}>Company</option>
+            <option value="-rating"{% if request.GET.sort == "-rating" %} selected {%endif %}>Rating</option>
+            <option value="release_date"{% if request.GET.sort == "release_date" %} selected {%endif %}>Release Date</option>
+        </select>
+    </div>
+    <script>
+    $(document).ready(function (){
+        $("select[name=sort]").change(function (){
+            var location = ("" + window.location);
+            
+            if (location.indexOf("?") == -1)
+                window.location = "?sort="+$(this).val();
+            else
+            {
+                var qs = location.split("?")[1];
+                var params = qs.split("&");
+                var new_qs = "?";
+                console.log(qs);
+                console.log(params);
+                
+                for (idx in params)
+                {
+                    var key = params[idx].split("=")[0];
+                    var val = params[idx].split("=")[1];
+                    
+                    if (key == "sort")
+                        new_qs += key + "=" + $(this).val();
+                    else
+                        new_qs += key + "=" + val;
+                    new_qs += "&";
+                }
+                new_qs = new_qs.slice(0, -1);
+                window.location = new_qs;
+            }
+        });
+    });
+    </script>
 </div>

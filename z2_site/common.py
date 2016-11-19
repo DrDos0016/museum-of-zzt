@@ -16,12 +16,9 @@ from datetime import datetime
 from random import randint
 import math, zipfile, glob, os, sys
 
-ADS = True #Adsense
 TRACKING = True #Analytics
 
-SITE_ROOT       = "/var/projects/z2/"
-ZZT2PNG_TEMP    = "/var/projects/z2/assets/data/temp/"
-ZZT2PNG_PATH    = "/var/projects/z2/tools/zzt2png.py"
+SITE_ROOT       = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PAGE_SIZE       = 25
 LIST_PAGE_SIZE  = 150

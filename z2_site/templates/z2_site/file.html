@@ -15,6 +15,7 @@ var save = "{{save}}";
 {% endif %}
 </script>
 <script src="{% static 'js/elements.js' %}"></script>
+<script src="{% static 'js/renderer.js' %}"></script>
 <script async src="{% static 'js/file_viewer.js' %}"></script>
 {% endblock %}
 
@@ -52,6 +53,15 @@ var save = "{{save}}";
             </select>
 
             <label><input type="checkbox" name="2x" value="1"> - 2x Zoom</label>
+            <br>
+            <label>
+                <input type="radio" name="renderer" value="zzt_standard" checked> 
+                Standard
+            </label>
+            <label>
+                <input type="radio" name="renderer" value="zzt_objects">
+                Object Highlight
+            </label>
         </div>
     </div>
 

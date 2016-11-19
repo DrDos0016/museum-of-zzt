@@ -15,6 +15,8 @@ var CANVAS_WIDTH = 480;
 var CANVAS_HEIGHT = 350;
 var TILE_WIDTH = 8;
 var TILE_HEIGHT = 14;
+var renderer = new Renderer();
+renderer.render = renderer[$("input[name=renderer]").filter(":checked").val()];
 
 var World = function (data) {
     // World Properties
@@ -70,7 +72,7 @@ function pull_file()
     $("#file-list li ul").remove();
     $("#file-list li br").remove();
     $(this).addClass("selected");
-    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi"];
+    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi", "nfo"];
     var filename = $(this).contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var split = filename.toLowerCase().split(".");
     var ext = split[split.length - 1];
@@ -232,6 +234,7 @@ function parse_world(type, data)
     }
 
     var output = "World format: " + type.toUpperCase() + "<br>";
+    output += "Number of Boards: " + (world.board_count + 1) + "<br>";
     output += "World name: " + world.name + "<br>";
     output += "Health: " + world.health + "<br>";
     output += "Ammo: " + world.ammo + "<br>";
@@ -464,119 +467,8 @@ function draw_board()
 
     var board = world.boards[board_number];
 
-    var x = 0;
-    var y = 0;
-    var tile = 0;
-    var line_walls = {}; // I am not happy with this solution
-    var line_colors = {};
-    for (var chunk_idx = 0; chunk_idx < board.room.length; chunk_idx++)
-    {
-        var chunk = board.room[chunk_idx];
-
-        for (var qty = 0; qty < chunk[0]; qty++)
-        {
-            // Text
-            if (chunk[1] >= 47 && chunk[1] <= 69)
-            {
-                if (chunk[1] != 53)
-                    print(ctx, chunk[2], ((chunk[1]-46)*16 + 15), x, y);
-                else // White Text needs black not gray background
-                    print(ctx, chunk[2], 15, x, y);
-            }
-            else if (chunk[1] == 0) // Empty
-            {
-                print(ctx, characters[chunk[1]], 0, x, y);
-            }
-            else if (board_number == 0 && chunk[1] == 4) // Replace Player w/ black on black (monitor) for title screen
-            {
-                print(ctx, characters[chunk[1]], 0, x, y);
-            }
-            else if (chunk[1] == 36 || chunk[1] == 40 || chunk[1] == 30) // Objects, pushers, transporters, linewalls which need stat check (linewall 31)
-            {
-                for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
-                {
-                    if (board.stats[stat_idx].x - 1 == x && board.stats[stat_idx].y - 1 == y)
-                    {
-                        if (chunk[1] == 36) // Object
-                        {
-                            print(ctx, board.stats[stat_idx].param1, chunk[2], x, y);
-                        }
-                        if (chunk[1] == 40) // Pusher
-                        {
-                            var pusher_char = 16;
-                            if (board.stats[stat_idx].y_step > 32767)
-                                pusher_char = 30;
-                            else if (board.stats[stat_idx].y_step > 0)
-                                pusher_char = 31;
-                            else if (board.stats[stat_idx].x_step > 32767)
-                                pusher_char = 17;
-
-                            print(ctx, pusher_char, chunk[2], x, y);
-                        }
-                        if (chunk[1] == 30) // Transporter
-                        {
-                            var transporter_char = 62;
-                            if (board.stats[stat_idx].y_step > 32767)
-                                transporter_char = 94;
-                            else if (board.stats[stat_idx].y_step > 0)
-                                transporter_char = 118;
-                            else if (board.stats[stat_idx].x_step > 32767)
-                                transporter_char = 60;
-
-                            print(ctx, transporter_char, chunk[2], x, y);
-                        }
-                    }
-                }
-            }
-            else if (chunk[1] == 31) // Line walls
-            {
-                line_walls[(y*60)+x] = 1;
-                line_colors[(y*60)+x] = chunk[2];
-            }
-            else // Standard
-                print(ctx, characters[chunk[1]], chunk[2], x, y);
-
-            tile += 1;
-            x += 1;
-            if (x > 59)
-            {
-                x = 0;
-                y += 1;
-            }
-        }
-    }
-
-    // Render line walls
-    var line_tiles = Object.keys(line_walls);
-    for (var line_idx = 0; line_idx < 1500; line_idx++)
-    {
-        var line_key = "";
-        if (line_idx < 60)
-            line_key += "1";
-        else
-            line_key += (line_walls[line_idx-60] ? "1" : "0");
-
-        if (line_idx > 1440)
-            line_key += "1";
-        else
-            line_key += (line_walls[line_idx+60] ? "1" : "0");
-
-        if (line_idx % 60 == 59)
-            line_key += "1";
-        else
-            line_key += (line_walls[line_idx+1] ? "1" : "0");
-
-        if (line_idx % 60 == 0)
-            line_key += "1";
-        else
-            line_key += (line_walls[line_idx-1] ? "1" : "0");
-
-        if (line_walls[line_idx])
-        {
-            print(ctx, line_characters[line_key], line_colors[line_idx], line_idx % 60, parseInt(line_idx / 60));
-        }
-    }
-
+    renderer.render(board);
+    
     $("#world-canvas").click(stat_info);
     //console.log(document.getElementById("world-canvas").toDataURL());
 
@@ -608,9 +500,7 @@ function stat_info(e)
         var x = e.data.x;
         var y = e.data.y;
     }
-    console.log("X and y", x, y);
     var tile_idx = ((y-1) * 60) + (x-1);
-    console.log(tile_idx);
     var output = "";
 
     // General info
@@ -618,8 +508,8 @@ function stat_info(e)
     output += "Coordinates: ("+x+", "+y+") [Tile "+(tile_idx+1)+"/1500]" + "<br>";
     output += "ID: " + tile.id + "<br>";
     output += "Name: " + tile.name + "<br>";
-    output += "Character: " + tile.character + "<br>";
-    output += "Color ID: " + tile.color_id + "<br>";
+    output += "Default Character: " + tile.character + "<br>";
+    //output += "Color ID: " + tile.color_id + "<br>";
     output += "Color Name: " + tile.foreground_name + " on " + tile.background_name + "<br>";
 
     // Iterate over stat elements
@@ -666,7 +556,7 @@ function stat_info(e)
             output += stat.oop.replace(/\r/g, "<br>");
         }
     }
-
+    
     $("#element-info").html(output);
     tab_select("element-info");
 
@@ -684,8 +574,25 @@ function tab_select(selector)
 $(document).ready(function (){
     $("#file-list li").click(pull_file);
     $("#file-tabs ul li").click(function (){tab_select($(this).attr("name"))});
+    
     $("select[name=charset]").change(load_charset);
     $("input[name=2x]").change(load_charset);
+    
+    // Renderer
+    $("input[name=renderer]").change(function (){
+        console.log("Hello?");
+        renderer.render = renderer[$(this).filter(":checked").val()];
+        $("li.selected.board").click();
+        $("li[name=preferences]").click();
+    });
+    
+    // Keyboard Shortcuts
+    $(window).keyup(function (e){
+        if (e.keyCode == 107 || e.keyCode == 61) // Next
+            $("li.board.selected").next().click()
+        else if (e.keyCode == 109 || e.keyCode == 173) // Prev
+            $("li.board.selected").prev().click()
+    });
 
     if (load_file)
     {

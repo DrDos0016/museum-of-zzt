@@ -8,7 +8,9 @@ from django.db.models import Count, Avg, Sum, Q
 #from django.utils.timezone import utc
 #from django.contrib.auth import logout, authenticate, login as auth_login
 
-from z2_site.models import *
+from .models import *
+from .common import *
+
 from datetime import datetime
 
 import zipfile, binascii
@@ -22,30 +24,42 @@ def get_zip_file(request):
     ext = filename.split(".")[-1].lower()
     
     try:
-        zip = zipfile.ZipFile("/var/projects/z2/zgames/"+letter+"/"+zip) # TODO Proper path + os.path.join()
+        zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, zip)) # TODO Proper path + os.path.join()
         file = zip.open(filename)
-        
-        if ext in ("txt", "bat", "cfg"):
-            return HttpResponse(file.read().decode("utf-8").replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>"))
-        elif ext in ("hi", "zzt"):
-            return HttpResponse(binascii.hexlify(file.read()))
-        elif ext in ("jpg", "jpeg", "bmp", "gif", "png"):
-            b64 = base64.b64encode(file.read())
-            return HttpResponse(b64)
-        elif ext in ("wav", "mp3", "ogg", "mid", "midi"):
-            response = HttpResponse(file.read())
-            
-            if ext == "wav":
-                response["Content-Type"] = "audio/wav wav"
-            elif ext == "mp3":
-                response["Content-Type"] = "audio/mpeg mp3"
-            elif ext == "ogg":
-                response["Content-Type"] = "audio/ogg ogg"
-            else: # Fallback
-                response["Content-Type"] = "application/octet-stream"
-            
-            return response
-        else:
-            return HttpResponse("Maybe in the future")
-    except:
+    except Exception as error:
+        print(type(error))
+        print(error)
         return HttpResponse("An error occurred, and the file could not be retreived.")
+        
+    if ext in ("txt", "bat", "cfg", "nfo"):
+        output = file.read()
+        try:
+            output = output.decode("utf-8")
+            encoding = "utf-8"
+        except UnicodeDecodeError:
+            output = output.decode("cp437")
+            encoding = "cp437"
+        output = output.replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>").replace("  ", " &nbsp;")
+        output = "<div class='" + encoding + "'>" + output + "</div>"
+        
+        return HttpResponse(output)
+    elif ext in ("hi", "zzt"):
+        return HttpResponse(binascii.hexlify(file.read()))
+    elif ext in ("jpg", "jpeg", "bmp", "gif", "png"):
+        b64 = base64.b64encode(file.read())
+        return HttpResponse(b64)
+    elif ext in ("wav", "mp3", "ogg", "mid", "midi"):
+        response = HttpResponse(file.read())
+        
+        if ext == "wav":
+            response["Content-Type"] = "audio/wav wav"
+        elif ext == "mp3":
+            response["Content-Type"] = "audio/mpeg mp3"
+        elif ext == "ogg":
+            response["Content-Type"] = "audio/ogg ogg"
+        else: # Fallback
+            response["Content-Type"] = "application/octet-stream"
+        
+        return response
+    else:
+        return HttpResponse("Maybe in the future")
