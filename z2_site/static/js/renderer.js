@@ -102,7 +102,7 @@ class Renderer {
             else
                 line_key += (line_walls[line_idx-60] ? "1" : "0");
 
-            if (line_idx > 1440)
+            if (line_idx >= 1440)
                 line_key += "1";
             else
                 line_key += (line_walls[line_idx+60] ? "1" : "0");

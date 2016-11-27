@@ -154,8 +154,8 @@ def file(request, letter, filename):
     zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
     data["files"] = zip.namelist()
     data["files"].sort()
-    data["load_file"] = request.GET.get("file")
-    data["load_board"] = request.GET.get("board")
+    data["load_file"] = request.GET.get("file", "")
+    data["load_board"] = request.GET.get("board", "")
 
     """ DEBUG, DO NOT USE ON PRODUCTION """
     data["save" ] = request.GET.get("screenshot")

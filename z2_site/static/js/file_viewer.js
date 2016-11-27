@@ -9,6 +9,7 @@ var board_number = null;
 
 var canvas = null;
 var ctx = null;
+var filename = null;
 var CHARSET_IMAGE = null;
 var CHARSET_NAME = null;
 var CANVAS_WIDTH = 480;
@@ -73,7 +74,7 @@ function pull_file()
     $("#file-list li br").remove();
     $(this).addClass("selected");
     var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi", "nfo"];
-    var filename = $(this).contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
+    filename = $(this).contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var split = filename.toLowerCase().split(".");
     var ext = split[split.length - 1];
 
@@ -90,6 +91,15 @@ function pull_file()
             return false;
         }
     }
+    
+    // Add to history
+    var state = {"load_file": filename, "load_board":"", "tab":""};
+    var qs = "?file=" + filename;
+    if (! history.state || (history.state["load_file"] != filename))
+    {
+        history.pushState(state, "", qs);
+    }
+    
 
     $.ajax({
         url:"/ajax/get_zip_file",
@@ -380,6 +390,14 @@ function render_board()
     $("li.board").removeClass("selected");
     $(this).addClass("selected");
     load_charset();
+    
+    // Add to history
+    var state = {"load_file": filename, "load_board":board_number, "tab":""};
+    var qs = "?file=" + filename + "&board=" + board_number;
+    if (! history.state || (history.state["load_board"] != board_number))
+    {
+        history.pushState(state, "", qs);
+    }
 
     // Get board
     var board = world.boards[board_number];
@@ -445,7 +463,9 @@ function render_board()
         if ((stat_name == "Scroll" || stat_name == "Object") && stat.oop[0] == "@")
             stat_name = stat.oop.slice(0, stat.oop.indexOf("\r"));
 
-        stat_list += "<li><a class='jsLink' name='stat-link' data-x='"+stat.x+"' data-y='"+stat.y+"'>("+ ("00"+stat.x).slice(-2) +", "+ ("00"+stat.y).slice(-2) +") ["+(("0000"+(stat.tile_idx+1)).slice(-4))+"] "+stat_name+"</a></li>\n";
+        stat_list += "<li><a class='jsLink' name='stat-link' data-x='"+stat.x+"' data-y='"+stat.y+"'>";
+        stat_list +="("+ ("00"+stat.x).slice(-2) +", "+ ("00"+stat.y).slice(-2) +") ["+(("0000"+(stat.tile_idx+1)).slice(-4))+"] "
+        stat_list += stat_name+"</a> "+ stat.oop.length +" bytes</li>\n";
     }
     stat_list += "</ul>\n";
     $("#stat-info").html(stat_list);
@@ -588,10 +608,34 @@ $(document).ready(function (){
     
     // Keyboard Shortcuts
     $(window).keyup(function (e){
-        if (e.keyCode == 107 || e.keyCode == 61) // Next
+        if ($("input[name=q]").is(":focus"))
+            return false;
+        
+        if (e.keyCode == 107 || e.keyCode == 61 || e.keyCode == 74) // Next Board
             $("li.board.selected").next().click()
-        else if (e.keyCode == 109 || e.keyCode == 173) // Prev
+        else if (e.keyCode == 109 || e.keyCode == 173 || e.keyCode == 75) // Previous Board
             $("li.board.selected").prev().click()
+    });
+    
+    // History
+    $(window).bind("popstate", function(e) {
+        console.log("POPSTATE", history.state);
+        console.log("FILENAME CURRENT", filename);
+        console.log("BOARD CURRENT", board_number);
+        load_file = history.state["load_file"];
+        load_board = history.state["load_board"];
+        
+        if (filename != load_file)
+        {
+            console.log("Clicking new file", load_file);
+            auto_load();
+        }
+            
+        if (board_number != load_board && load_board)
+        {
+            console.log("Clicking new board", load_board);
+            $("li.board[data-board-number="+load_board+"]").click();
+        }
     });
 
     if (load_file)
