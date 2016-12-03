@@ -9,12 +9,7 @@
 {% else %}
 <h1>{{category}}</h1>
 {% endif %}
-
-<div class="pages">
-    <div class="sub">
-        <a href="?{% if q %}q={{q}}{% endif %}{% if mode == 'search' %}{{qs}}{% endif %}">Detailed View</a> | List View
-    </div>
-</div>
+{% include "z2_site/blocks/page_block.html" %}
 
 <table id="list-table">
 <thead>
@@ -43,5 +38,6 @@
 </tbody>
 </table>
 
+{% include "z2_site/blocks/page_block.html" %}
 </section>
 {% endblock %}

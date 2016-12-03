@@ -16,6 +16,7 @@ urlpatterns = [
     
     # Articles
     url(r"^article$", z2_site.views.article_directory, name="article_directory"),
+    url(r"^article/(?P<category>[a-z-]+)$", z2_site.views.article_directory, name="article_directory"),
     url(r"^article/(?P<id>[0-9]+)/(.*)$", z2_site.views.article_view),
     
     # Special Article Pages (those with urls besides /article/#/title)

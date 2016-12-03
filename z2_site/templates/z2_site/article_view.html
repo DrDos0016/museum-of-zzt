@@ -14,10 +14,7 @@
 {% if article.type == "html" %}
 {{article.content|safe}}
 {% elif article.type == "text" %}
-<textarea id="plain-text-article" readonly>{{article.content}}</textarea>
-<script>
-document.getElementById("plain-text-article").style.height = document.getElementById("plain-text-article").scrollHeight+'px';
-</script>
+{{article.content|linebreaks}}
 {% else %}
 Article has an invalid type!
 {% endif %}

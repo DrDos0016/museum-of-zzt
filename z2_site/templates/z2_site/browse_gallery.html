@@ -1,0 +1,29 @@
+{% extends "z2_site/main.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<section id="content" class="col block">
+{% if category == "ZZT" %}
+{% if mode == "browse" %}<h1>Browse - {{letter|upper}}</h1>{% endif %}
+{% if mode == "search" %}<h1>Search - {{q}}</h1>{% endif %}
+{% else %}
+<h1>{{category}}</h1>
+{% endif %}
+{% include "z2_site/blocks/page_block.html" %}
+
+<div class="gallery">
+{% for file in files %}
+<div class="gallery-block">
+    <div class="file-screen">
+        <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+    </div>
+    <div class="title"><a href="{{file.download_url}}">{{file.title}}</a></div>
+    <div class="author">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    <div class="view"><a href="{{file.file_url}}">View</a></div>
+</div>
+{% endfor %}
+</div>
+
+{% include "z2_site/blocks/page_block.html" %}
+</section>
+{% endblock %}

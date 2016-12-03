@@ -24,16 +24,18 @@ def article(request, letter, filename):
     else:
         return render(request, "z2_site/article.html", data)
 
-def article_directory(request):
+def article_directory(request, category="all"):
     """ Returns page listing all articles sorted either by date or name """
     data = {}
     data["sort"] = request.GET.get("sort", "category")
     if request.GET.get("sort") == "date":
         data["articles"] = Article.objects.defer("content", "css").filter(published=True, page=1).order_by("-date", "title")
-        return render(request, "z2_site/article_directory.html", data)
     else:
         data["articles"] = Article.objects.defer("content", "css").filter(published=True, page=1).order_by("category", "title")
-        return render(request, "z2_site/article_directory.html", data)
+    
+    if category != "all":
+        data["articles"] = data["articles"].filter(category=category.replace("-", " ").title())
+    return render(request, "z2_site/article_directory.html", data)
 
 def article_view(request, id):
     """ Returns an article pulled from the database """
@@ -57,33 +59,37 @@ def browse(request, letter="a", category="ZZT", page=1):
     letter and page arguments are only used when the category is ZZT due to small sizes of other categories
     """
     data = {"mode":"browse", "category":category, "show_description": (category == "Utility")}
-
-    print("Q count:", connection.queries)
+    data["view"] = request.GET.get("view", "detailed")
+    sort = request.GET.get("sort", "title").strip()
+    
+    # Query strings
+    data["qs_sans_page"] = qs_sans(request.GET, "page")
+    data["qs_sans_view"] = qs_sans(request.GET, "view")
 
     if category == "ZZT":
-        if request.GET.get("view") == "list":
+        if data["view"] == "list":  # List gets a full listing on one page
             data["letter"] = letter if letter != "1" else "#"
-            data["files"] = File.objects.filter(category=category, letter=letter).order_by("title")
+            data["files"] = File.objects.filter(category=category, letter=letter).order_by(sort)
             destination = "z2_site/browse_list.html"
-        else:
+        else:  # Others list over multiple pages
             data["page"] = int(request.GET.get("page", page))
             data["letter"] = letter if letter != "1" else "#"
-            data["files"] = File.objects.filter(category=category, letter=letter).order_by("title")[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
+            data["files"] = File.objects.filter(category=category, letter=letter).order_by(sort)[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
             data["count"] = File.objects.filter(category=category, letter=letter).count()
             data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
             data["page_range"] = range(1, data["pages"] + 1)
             data["prev"] = max(1,data["page"] - 1)
             data["next"] = min(data["pages"],data["page"] + 1)
-            destination = "z2_site/browse.html"
     else:
-        data["files"] = File.objects.filter(category=category).order_by("title")
+        data["files"] = File.objects.filter(category=category).order_by(sort)
 
-        if request.GET.get("view") == "list":
-            destination = "z2_site/browse_list.html"
-        else:
-            destination = "z2_site/browse.html"
-
-    print("Q count:", connection.queries)
+    if data["view"] == "list":
+        destination = "z2_site/browse_list.html"
+    elif data["view"] == "gallery":
+        destination = "z2_site/browse_gallery.html"
+    else: # Detailed
+        destination = "z2_site/browse.html"
+    
     return render(request, destination, data)
 
 def directory(request, category):
@@ -122,8 +128,6 @@ def directory(request, category):
     # Break the list of results into 4 columns
     data["list"] = data_list
     data["split"] = math.ceil(len(data["list"]) / 4.0)
-    print("Length of list", len(data["list"]))
-    print("Length / 4", len(data["list"]) / 4.0)
     return render(request, "z2_site/directory.html", data)
     
 
@@ -161,7 +165,6 @@ def file(request, letter, filename):
     data["save" ] = request.GET.get("screenshot")
     """ END DEBUG """
 
-    #return render_to_response("file.html", data)
     return render(request, "z2_site/file.html", data)
 
 def index(request):
@@ -178,13 +181,13 @@ def play(request, letter, filename):
     return render(request, "z2_site/play.html", data)
 
 def random(request):
-    """ Returns a random file page """
-    count = File.objects.count() # TODO: Filter this to only ZZT Worlds
+    """ Returns a random ZZT file page """
+    max_pk = File.objects.all().order_by("-id")[0].id
 
     file = None
     while not file:
-        id = randint(1,count)
-        file = File.objects.filter(pk=id)
+        id = randint(1,max_pk)
+        file = File.objects.filter(pk=id, category="ZZT")
         if file:
             file = file[0]
 
@@ -202,11 +205,10 @@ def search(request):
     """ Searches database files. Returns the browse page filtered appropriately. """
     data = {"mode":"search"}
 
-    # Strip page param from query string
-    data["qs"] = request.GET.copy()
-    if "page" in data["qs"]:
-        data["qs"].pop("page")
-    data["qs"] = data["qs"].urlencode()
+    # Query strings
+    data["qs_sans_page"] = qs_sans(request.GET, "page")
+    data["qs_sans_view"] = qs_sans(request.GET, "view")
+    sort = request.GET.get("sort", "title")
 
     if request.GET.get("q"): # Basic Search
         q = request.GET["q"].strip()
@@ -216,18 +218,21 @@ def search(request):
                 category="ZZT"
             )
         if request.GET.get("view") == "list":
-            data["files"] = qs.order_by("title")
-
-            return render(request, "z2_site/browse_list.html", data)
+            data["files"] = qs.order_by(sort)
+            destination = "z2_site/browse_list.html"
         else:
             data["page"] = int(request.GET.get("page", 1))
-            data["files"] = qs.order_by("title")[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
+            data["files"] = qs.order_by(sort)[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
             data["count"] = qs.count()
             data["pages"] = int(1.0 * math.ceil(data["count"] / PAGE_SIZE))
             data["page_range"] = range(1, data["pages"] + 1)
             data["prev"] = max(1,data["page"] - 1)
             data["next"] = min(data["pages"],data["page"] + 1)
-            return render(request, "z2_site/browse.html", data)
+            
+            if request.GET.get("view") == "gallery":
+                destination = "z2_site/browse_gallery.html"
+            else:
+                destination = "z2_site/browse.html"
     else: # Advanced Search
         # TODO: Handle <exact> in situations with multiple authors/companies
         qs = File.objects.all()
@@ -258,7 +263,7 @@ def search(request):
         if request.GET.get("view") == "list":
             data["files"] = qs.order_by(sort)
 
-            return render(request, "z2_site/browse_list.html", data)
+            destination = "z2_site/browse_list.html"
         else:
             data["page"] = int(request.GET.get("page", 1))
             data["files"] = qs.order_by(sort)[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
@@ -268,7 +273,12 @@ def search(request):
             data["prev"] = max(1,data["page"] - 1)
             data["next"] = min(data["pages"],data["page"] + 1)
 
-            return render(request, "z2_site/browse.html", data)
+            if request.GET.get("view") == "gallery":
+                destination = "z2_site/browse_gallery.html"
+            else:
+                destination = "z2_site/browse.html"
+    return render(request, destination, data)
+
 
 def upload(request):
     data = {}

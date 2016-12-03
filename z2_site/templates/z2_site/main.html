@@ -18,11 +18,47 @@
  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> 
 <script>
 $(document).ready(function (){
+    // Screenshot Zoom
     $(".file-screen").click(function (){
         if ($(this).css("max-width") != "480px")
             $(this).css({"max-width":"480px", "cursor":"zoom-out"});
         else
             $(this).css({"max-width":"240px", "cursor":"zoom-in"});
+    });
+    
+    // Reload on sort change
+    $("select[name=sort]").change(function (){
+        var location = ("" + window.location);
+        
+        if (location.indexOf("?") == -1)
+            window.location = "?sort="+$(this).val();
+        else
+        {
+            var qs = location.split("?")[1];
+            var params = qs.split("&");
+            var new_qs = "?";
+            console.log(qs);
+            console.log(params);
+            
+            for (idx in params)
+            {
+                var key = params[idx].split("=")[0];
+                var val = params[idx].split("=")[1];
+                
+                if (key == "sort")
+                    new_qs += key + "=" + $(this).val();
+                else
+                    new_qs += key + "=" + val;
+                new_qs += "&";
+            }
+            new_qs = new_qs.slice(0, -1);
+            
+            // Make sure there's a sort param
+            if (new_qs.indexOf("sort=") == -1)
+                new_qs += "&sort="+$(this).val();
+            
+            window.location = new_qs;
+        }
     });
 });
 </script>
@@ -142,7 +178,7 @@ $(document).ready(function (){
         
         <h2>Playing</h2>
         <a href="/getting-started">Getting Started With ZZT</a><br>
-        <a href="/walkthroughs">Walkthroughs</a><br>
+        <a href="/article/walkthrough">Walkthroughs</a><br>
         
         <h2>Editing</h2>
         <a href="/ascii">ASCII Character Reference</a><br>
