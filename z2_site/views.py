@@ -4,11 +4,15 @@ from __future__ import print_function
 from django.shortcuts import render
 from .common import *
 
+
 def advanced_search(request):
     """ Returns page containing multiple filters to use when searching """
-    data = {"mode":"search", "genres":GENRE_LIST, "years":range(1991, YEAR+1)}
+    data = {"mode": "search",
+            "genres": GENRE_LIST,
+            "years": [str(x) for x in range(1991, YEAR + 1)]}
 
     return render(request, "z2_site/advanced_search.html", data)
+
 
 def article(request, letter, filename):
     """ Returns page listing all articles associated with a provided file.
@@ -24,44 +28,62 @@ def article(request, letter, filename):
     else:
         return render(request, "z2_site/article.html", data)
 
+
 def article_directory(request, category="all"):
     """ Returns page listing all articles sorted either by date or name """
     data = {}
     data["sort"] = request.GET.get("sort", "category")
     if request.GET.get("sort") == "date":
-        data["articles"] = Article.objects.defer("content", "css").filter(published=True, page=1).order_by("-date", "title")
+        data["articles"] = Article.objects.defer(
+            "content", "css"
+        ).filter(published=True, page=1).order_by("-date", "title")
     else:
-        data["articles"] = Article.objects.defer("content", "css").filter(published=True, page=1).order_by("category", "title")
-    
+        data["articles"] = Article.objects.defer(
+            "content", "css"
+        ).filter(published=True, page=1).order_by("category", "title")
+
     if category != "all":
-        data["articles"] = data["articles"].filter(category=category.replace("-", " ").title())
+        data["articles"] = data["articles"].filter(
+            category=category.replace("-", " ").title()
+        )
     return render(request, "z2_site/article_directory.html", data)
+
 
 def article_view(request, id):
     """ Returns an article pulled from the database """
     id = int(id)
-    data = {"id":id}
+    data = {"id": id}
     data["article"] = get_object_or_404(Article, pk=id)
     data["title"] = data["article"].title
     file = data["article"].file_set.all()
     if file:
-        data["file"] = file[0] # TODO: How to properly handle an article covering multiple files (ex Zem + Zem 2)
+        # TODO: Handle an article w/ multiple files (ex Zem + Zem 2)
+        data["file"] = file[0]
     return render(request, "z2_site/article_view.html", data)
 
+
 def browse(request, letter="a", category="ZZT", page=1):
-    """ Returns page containing a list of files filtered by letter, category, and page
+    """ Returns page containing a list of files filtered by letter, category,
+    and page
 
     Keyword arguments:
-    letter      -- The letter to filter by, may be a-z or 1 for numeric titled games. Default 'a'
-    category    -- Category of files to filter by, may be ZZT, Super ZZT, ZIG, Soundtrack, Utility. Default 'ZZT'
+    letter      -- The letter to filter by, may be a-z or 1. Default 'a'
+    category    -- Category of files to filter by, may be
+                   ZZT, Super ZZT, ZIG, Soundtrack, Utility. Default 'ZZT'
     page        -- Page of results to slice to. Default '1'
 
-    letter and page arguments are only used when the category is ZZT due to small sizes of other categories
+    TODO: Is this true still?
+    letter and page arguments are only used when the category is ZZT due to
+    small sizes of other categories
     """
-    data = {"mode":"browse", "category":category, "show_description": (category == "Utility")}
+    data = {
+        "mode": "browse",
+        "category": category,
+        "show_description": (category == "Utility")
+    }
     data["view"] = request.GET.get("view", "detailed")
     sort = request.GET.get("sort", "title").strip()
-    
+
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     data["qs_sans_view"] = qs_sans(request.GET, "view")
@@ -69,17 +91,28 @@ def browse(request, letter="a", category="ZZT", page=1):
     if category == "ZZT":
         if data["view"] == "list":  # List gets a full listing on one page
             data["letter"] = letter if letter != "1" else "#"
-            data["files"] = File.objects.filter(category=category, letter=letter).order_by(sort)
+            data["files"] = File.objects.filter(
+                category=category,
+                letter=letter
+            ).order_by(sort)
             destination = "z2_site/browse_list.html"
         else:  # Others list over multiple pages
             data["page"] = int(request.GET.get("page", page))
             data["letter"] = letter if letter != "1" else "#"
-            data["files"] = File.objects.filter(category=category, letter=letter).order_by(sort)[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
-            data["count"] = File.objects.filter(category=category, letter=letter).count()
+            data["files"] = File.objects.filter(
+                category=category,
+                letter=letter
+            ).order_by(
+                sort
+            )[(data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE]
+            data["count"] = File.objects.filter(
+                category=category,
+                letter=letter
+            ).count()
             data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
             data["page_range"] = range(1, data["pages"] + 1)
-            data["prev"] = max(1,data["page"] - 1)
-            data["next"] = min(data["pages"],data["page"] + 1)
+            data["prev"] = max(1, data["page"] - 1)
+            data["next"] = min(data["pages"], data["page"] + 1)
     else:
         data["files"] = File.objects.filter(category=category).order_by(sort)
 
@@ -87,22 +120,29 @@ def browse(request, letter="a", category="ZZT", page=1):
         destination = "z2_site/browse_list.html"
     elif data["view"] == "gallery":
         destination = "z2_site/browse_gallery.html"
-    else: # Detailed
+    else:  # Detailed
         destination = "z2_site/browse.html"
-    
+
     return render(request, destination, data)
+
 
 def directory(request, category):
     """ Returns a directory of all authors/companies/genres in the database """
     data = {}
     data["category"] = category
-    
+
     """ This can possibly be cached in some way, it's not going to change
     often.
     """
     data_list = []
     if category == "company":
-        companies = File.objects.values("company").exclude(company=None).exclude(company="").distinct().order_by("company")
+        companies = File.objects.values(
+            "company"
+        ).exclude(
+            company=None
+        ).exclude(
+            company=""
+        ).distinct().order_by("company")
         for c in companies:
             split = c["company"].split("/")
             for credited in split:
@@ -122,14 +162,14 @@ def directory(request, category):
             for genre in split:
                 if genre not in data_list:
                     data_list.append(genre)
-    
+
     data_list = sorted(data_list, key=lambda k: k.lower())
-    
+
     # Break the list of results into 4 columns
     data["list"] = data_list
     data["split"] = math.ceil(len(data["list"]) / 4.0)
     return render(request, "z2_site/directory.html", data)
-    
+
 
 def featured_games(request, page=1):
     """ Returns a page listing all games marked as Featured """
@@ -138,16 +178,21 @@ def featured_games(request, page=1):
     data["no_list"] = True
     data["page"] = int(request.GET.get("page", page))
     featured = Detail.objects.get(pk=7)
-    data["featured"] = featured.file_set.all().order_by("title").prefetch_related("articles").defer("articles__content")[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
+    data["featured"] = featured.file_set.all().order_by(
+        "title"
+    ).prefetch_related("articles").defer(
+        "articles__content"
+    )[(data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE]
     data["count"] = featured.file_set.all().count()
     data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
     data["page_range"] = range(1, data["pages"] + 1)
-    data["prev"] = max(1,data["page"] - 1)
-    data["next"] = min(data["pages"],data["page"] + 1)
+    data["prev"] = max(1, data["page"] - 1)
+    data["next"] = min(data["pages"], data["page"] + 1)
     data["show_description"] = True
     data["show_featured"] = True
 
     return render(request, "z2_site/featured_games.html", data)
+
 
 def file(request, letter, filename):
     """ Returns page exploring a file's zip contents """
@@ -155,6 +200,8 @@ def file(request, letter, filename):
     data["year"] = YEAR
     data["file"] = get_object_or_404(File, letter=letter, filename=filename)
     data["letter"] = letter
+    data["charsets"] = CHARSET_LIST
+    data["custom_charsets"] = CUSTOM_CHARSET_LIST
     zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
     data["files"] = zip.namelist()
     data["files"].sort()
@@ -162,15 +209,17 @@ def file(request, letter, filename):
     data["load_board"] = request.GET.get("board", "")
 
     """ DEBUG, DO NOT USE ON PRODUCTION """
-    data["save" ] = request.GET.get("screenshot")
+    data["save"] = request.GET.get("screenshot")
     """ END DEBUG """
 
     return render(request, "z2_site/file.html", data)
+
 
 def index(request):
     """ Returns front page """
     data = {}
     return render(request, "z2_site/index.html", data)
+
 
 def play(request, letter, filename):
     """ Returns page to play file on archive.org """
@@ -180,18 +229,20 @@ def play(request, letter, filename):
 
     return render(request, "z2_site/play.html", data)
 
+
 def random(request):
     """ Returns a random ZZT file page """
     max_pk = File.objects.all().order_by("-id")[0].id
 
     file = None
     while not file:
-        id = randint(1,max_pk)
+        id = randint(1, max_pk)
         file = File.objects.filter(pk=id, category="ZZT")
         if file:
             file = file[0]
 
-    return redirect("file/"+file.letter+"/"+file.filename)
+    return redirect("file/" + file.letter + "/" + file.filename)
+
 
 def review(request, letter, filename):
     """ Returns a page of reviews for a file """
@@ -201,61 +252,96 @@ def review(request, letter, filename):
     data["letter"] = letter
     return render(request, "z2_site/review.html", data)
 
+
 def search(request):
-    """ Searches database files. Returns the browse page filtered appropriately. """
-    data = {"mode":"search"}
+    """ Searches database files. Returns the browse page filtered
+        appropriately.
+    """
+    data = {"mode": "search"}
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     data["qs_sans_view"] = qs_sans(request.GET, "view")
     sort = request.GET.get("sort", "title")
 
-    if request.GET.get("q"): # Basic Search
+    if request.GET.get("q"):  # Basic Search
         q = request.GET["q"].strip()
         data["q"] = request.GET["q"]
         qs = File.objects.filter(
-                Q(title__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(company__icontains=q),
-                category="ZZT"
-            )
+            Q(title__icontains=q) |
+            Q(author__icontains=q) |
+            Q(filename__icontains=q) |
+            Q(company__icontains=q),
+            category="ZZT"
+        )
         if request.GET.get("view") == "list":
             data["files"] = qs.order_by(sort)
             destination = "z2_site/browse_list.html"
         else:
             data["page"] = int(request.GET.get("page", 1))
-            data["files"] = qs.order_by(sort)[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
+            data["files"] = qs.order_by(
+                sort
+            )[(data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE]
             data["count"] = qs.count()
             data["pages"] = int(1.0 * math.ceil(data["count"] / PAGE_SIZE))
             data["page_range"] = range(1, data["pages"] + 1)
-            data["prev"] = max(1,data["page"] - 1)
-            data["next"] = min(data["pages"],data["page"] + 1)
-            
+            data["prev"] = max(1, data["page"] - 1)
+            data["next"] = min(data["pages"], data["page"] + 1)
+
             if request.GET.get("view") == "gallery":
                 destination = "z2_site/browse_gallery.html"
             else:
                 destination = "z2_site/browse.html"
-    else: # Advanced Search
+    else:  # Advanced Search
         # TODO: Handle <exact> in situations with multiple authors/companies
+        data["advanced_search"] = True
         qs = File.objects.all()
         if request.GET.get("title", "").strip():
-            qs = qs.filter(title__icontains=request.GET.get("title", "").strip())
+            qs = qs.filter(
+                title__icontains=request.GET.get("title", "").strip()
+            )
         if request.GET.get("author", "").strip():
             if request.GET.get("exact"):
                 qs = qs.filter(author=request.GET.get("author", "").strip())
             else:
-                qs = qs.filter(author__icontains=request.GET.get("author", "").strip())
+                qs = qs.filter(
+                    author__icontains=request.GET.get("author", "").strip()
+                )
         if request.GET.get("filename", "").strip():
-            qs = qs.filter(filename__icontains=request.GET.get("filename", "").replace(".zip", "").strip())
+            qs = qs.filter(
+                filename__icontains=request.GET.get(
+                    "filename", ""
+                ).replace(
+                    ".zip", ""
+                ).strip()
+            )
         if request.GET.get("company", "").strip():
-            qs = qs.filter(company__icontains=request.GET.get("company", "").strip())
-        if request.GET.get("genre", "").strip() and request.GET.get("genre", "") != "Any":
-            qs = qs.filter(genre__icontains=request.GET.get("genre", "").strip())
-        if request.GET.get("year", "").strip() and request.GET.get("year", "") != "Any":
-            qs = qs.filter(release_date__gte=request.GET.get("year","1991")+"-01-01", release_date__lte=request.GET.get("year", "2091")+"-12-31")
-        if request.GET.get("min", "").strip() and float(request.GET.get("min", "")) > 0:
-            qs = qs.filter(rating__gte=float(request.GET.get("min", "").strip()))
-        if request.GET.get("max", "").strip() and float(request.GET.get("max", "")) < 5:
-            qs = qs.filter(rating__lte=float(request.GET.get("max", "").strip()))
-        if request.GET.get("category", "").strip() and request.GET.get("category", "") != "Any":
+            qs = qs.filter(
+                company__icontains=request.GET.get("company", "").strip()
+            )
+        if (request.GET.get("genre", "").strip() and
+                request.GET.get("genre", "") != "Any"):
+            qs = qs.filter(
+                genre__icontains=request.GET.get("genre", "").strip()
+            )
+        if (request.GET.get("year", "").strip() and
+                request.GET.get("year", "") != "Any"):
+            qs = qs.filter(
+                release_date__gte=request.GET.get("year", "1991") + "-01-01",
+                release_date__lte=request.GET.get("year", "2091") + "-12-31"
+            )
+        if (request.GET.get("min", "").strip() and
+                float(request.GET.get("min", "")) > 0):
+            qs = qs.filter(
+                rating__gte=float(request.GET.get("min", "").strip())
+            )
+        if (request.GET.get("max", "").strip() and
+                float(request.GET.get("max", "")) < 5):
+            qs = qs.filter(
+                rating__lte=float(request.GET.get("max", "").strip())
+            )
+        if (request.GET.get("category", "").strip() and
+                request.GET.get("category", "") != "Any"):
             qs = qs.filter(category=request.GET.get("category", "").strip())
 
         # Show results
@@ -266,12 +352,14 @@ def search(request):
             destination = "z2_site/browse_list.html"
         else:
             data["page"] = int(request.GET.get("page", 1))
-            data["files"] = qs.order_by(sort)[(data["page"]-1)*PAGE_SIZE:data["page"]*PAGE_SIZE]
+            data["files"] = qs.order_by(sort)[
+                (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
+            ]
             data["count"] = qs.count()
             data["pages"] = int(1.0 * math.ceil(data["count"] / PAGE_SIZE))
             data["page_range"] = range(1, data["pages"] + 1)
-            data["prev"] = max(1,data["page"] - 1)
-            data["next"] = min(data["pages"],data["page"] + 1)
+            data["prev"] = max(1, data["page"] - 1)
+            data["next"] = min(data["pages"], data["page"] + 1)
 
             if request.GET.get("view") == "gallery":
                 destination = "z2_site/browse_gallery.html"
@@ -312,7 +400,7 @@ def upload(request):
         raw_authors = request.POST.get("author", "").strip().split("/")
         authors = ""
         for author in raw_authors:
-            authors += author.strip()+"/"
+            authors += author.strip() + "/"
         authors = authors[:-1]
 
         company = request.POST.get("company", "")
@@ -322,7 +410,7 @@ def upload(request):
         genres = ""
         for genre in raw_genres:
             if genre in GENRE_LIST:
-                genres += genre.strip()+"/"
+                genres += genre.strip() + "/"
         genres = genres[:-1]
 
         # Get release date
@@ -333,13 +421,17 @@ def upload(request):
             release_date = None
 
         if request.POST.get("desc", ""):
-            description = "<p>" + request.POST.get("desc", "").replace("\n\n", "</p><p>").replace("\n", "<br>")+"</p"
+            description = "<p>" + request.POST.get("desc", "").replace(
+                "\n\n", "</p><p>"
+            ).replace("\n", "<br>") + "</p>"
         else:
             description = ""
 
         file = File(title=title, letter=letter, author=author,
-            company=company, genre=genres, release_date=release_date, release_source="Uploader",
-            description=description, category="Uploaded")
+                    company=company, genre=genres, release_date=release_date,
+                    release_source="Uploader", description=description,
+                    category="Uploaded"
+                    )
 
         # File stuff
         uploaded = request.FILES["file"]
@@ -351,12 +443,11 @@ def upload(request):
         print(uploaded.content_type)
         print(uploaded.size)
 
-
         # Upload limit
         if uploaded.size > UPLOAD_CAP:
             return HttpResponse("Uploaded file is too large!")
 
-        zip = zipfile.ZipFile(uploaded) # TODO Proper path + os.path.join()
+        zip = zipfile.ZipFile(uploaded)  # TODO Proper path + os.path.join()
 
         file_list = zip.namelist()
         file_list.sort()
@@ -374,14 +465,17 @@ def upload(request):
             print("Ok working w/ this file")
             # Extract it
             zip.extract(use_file, ZZT2PNG_TEMP)
-            screenshot_path = SITE_ROOT+"assets/images/screenshots/"+letter+"/"+os.path.splitext(filename)[0]
-            #command = "python "+ZZT2PNG_PATH+" "+ZZT2PNG_TEMP+use_file + " 0 " + SITE_ROOT+"zgames/"+letter+"/"+os.path.splitext(filename)[0]
-            command = "/usr/local/bin/python "+ZZT2PNG_PATH+" "+ZZT2PNG_TEMP+use_file + " 0 " + screenshot_path
+            screenshot_path = (SITE_ROOT + "assets/images/screenshots/" +
+                               letter + "/" + os.path.splitext(filename)[0])
+            command = ("/usr/local/bin/python " + ZZT2PNG_PATH + " " +
+                       ZZT2PNG_TEMP + use_file + " 0 " + screenshot_path)
             print("ZZT2PNG COMMAND:", command)
             os.system(command)
 
-            if os.path.isfile(SITE_ROOT+"assets/images/screenshots/"+letter+"/"+os.path.splitext(filename)[0]+".png") and os.path.getsize(SITE_ROOT+"assets/images/screenshots/"+letter+"/"+os.path.splitext(filename)[0]+".png") > 0:
-                screenshot = os.path.splitext(filename)[0]+".png"
+            scr = (SITE_ROOT + "assets/images/screenshots/" + letter + "/" +
+                   os.path.splitext(filename)[0] + ".png")
+            if (os.path.isfile(scr) and os.path.getsize(scr) > 0):
+                screenshot = os.path.splitext(filename)[0] + ".png"
 
         # -------------------------------------------
 
@@ -391,7 +485,7 @@ def upload(request):
             file.screenshot = screenshot
             file.full_clean()
             file.save()
-            return redirect("/uploaded#"+filename)
+            return redirect("/uploaded#" + filename)
         except ValidationError as e:
             data["results"] = e
 
@@ -404,17 +498,19 @@ def upload(request):
 
     return render(request, "z2_site/upload.html", data)
 
+
 def debug_save(request):
     letter = request.POST.get("letter")
     zip = request.POST.get("zip")
     img = request.POST.get("screenshot")[22:]
 
-    fh = open("/var/projects/z2/assets/images/screenshots/"+letter+"/"+zip[:-4]+".png", "wb")
+    fh = open("/var/projects/z2/assets/images/screenshots/" +
+              letter + "/" + zip[:-4] + ".png", "wb")
     fh.write(img.decode("base64"))
     fh.close()
 
     file = File.objects.get(letter=letter, filename=zip)
-    file.screenshot = zip[:-4]+".png"
+    file.screenshot = zip[:-4] + ".png"
     file.save()
 
-    return HttpResponse("<title>OK!</title>Saved "+zip)
+    return HttpResponse("<title>OK!</title>Saved " + zip)

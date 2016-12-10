@@ -35,24 +35,24 @@
 <div class="field">
     <label for="title">Title contains:</label>
         <span class="sub"></span>
-    <input id="title" name="title" value="" maxlength="80">
+    <input id="title" name="title" value="{{request.GET.title}}" maxlength="80">
 </div>
 <div class="field">
     <label for="author">Author contains:<br>
         <span class="sub"></span>
     </label>
-    <input id="author" name="author" value="" maxlength="50">
+    <input id="author" name="author" value="{{request.GET.author}}" maxlength="50">
 </div>
 <div class="field">
     <label for="filename">Filename contains:</label>
         <span class="sub"></span>
-    <input id="filename" name="filename" value="" maxlength="80">
+    <input id="filename" name="filename" value="{{request.GET.filename}}" maxlength="80">
 </div>
 <div class="field">
     <label for="company">Company contains:<br>
         <span class="sub"></span>
     </label>
-    <input id="company" name="company" value="" maxlength="50">
+    <input id="company" name="company" value="{{request.GET.company}}" maxlength="50">
 </div>
 <div class="field">
     <label for="genre">Genre:<br>
@@ -60,7 +60,11 @@
     <select id="genre" name="genre">
         <option value="Any">- ANY - </option>
         {% for genre in genres %}
+            {% if genre == request.GET.genre %}
+            <option selected>{{genre}}</option>
+            {% else %}
             <option>{{genre}}</option>
+            {% endif %}
         {% endfor %}
     </select>
 </div>
@@ -70,44 +74,47 @@
     <select id="year" name="year">
         <option value="Any">- ANY - </option>
         {% for year in years %}
-            <option>{{year}}</option>
+			{% if year == request.GET.year %}
+			<option selected>{{year}}</option>
+			{% else %}
+            <option>{{year}} - {{request.GET.year}}</option>
+            {% endif %}
         {% endfor %}
     </select>
 </div>
 <div class="field">
     <label for="min">Min. / max. rating:<br>
     </label>
-    <input id="min" name="min" value="0.0" maxlength="3"><div class="col spacing">&nbsp;&mdash;&nbsp;</div><input id="max" name="max" value="5.0" maxlength="3"> 
+    <input id="min" name="min" value="{{request.GET.min|default:'0.0'}}" min=0 max=5 maxlength="4">
+    <div class="col spacing">&nbsp;&mdash;&nbsp;</div>
+    <input id="max" name="max" value="{{request.GET.max|default:'5.0'}}" min=0 max=5 maxlength="4"> 
 </div>
 <div class="field">
     <label for="category">Category:<br>
     </label>
     <select id="category" name="category">
-        <option value="Any">- Any -</option>
-        <option value="ZZT" selected>ZZT Worlds</option>
-        <option value="Super ZZT">Super ZZT Worlds</option>
-        <option value="ZIG">ZIG Worlds</option>
-        <option>Utilities</option>
+        <option value="Any"{% if request.GET.category == "Any" %} selected {% endif %}>- Any -</option>
+        <option value="ZZT" {% if request.GET.category == "ZZT" or not request.GET.category %} selected {% endif %}>ZZT Worlds</option>
+        <option value="Super ZZT"{% if request.GET.category == "Super ZZT" %} selected {% endif %}>Super ZZT Worlds</option>
+        <option value="ZIG"{% if request.GET.category == "ZIG" %} selected {% endif %}>ZIG Worlds</option>
+        <option value="Utility">Utilities</option>
     </select>
 </div>
 <div class="field">
     <label for="sort">Sort results by:<br>
     </label>
     <select id="sort" name="sort">
-        <option value="title">Title</option>
-        <option value="author">Author</option>
-        <option value="company">Company</option>
-        <option value="-rating">Rating</option>
-        <option value="release_date">Release Date</option>
+        <option value="title"{% if request.GET.sort == "title" %} selected {% endif %}>Title</option>
+        <option value="author"{% if request.GET.sort == "author" %} selected {% endif %}>Author</option>
+        <option value="company"{% if request.GET.sort == "company" %} selected {% endif %}>Company</option>
+        <option value="-rating"{% if request.GET.sort == "-rating" %} selected {% endif %}>Rating</option>
+        <option value="release_date"{% if request.GET.sort == "release_date" %} selected {% endif %}>Release Date</option>
     </select>
 </div>
 
 <div class="field">
     <button type="submit">Search</button>
 </div>
-
-
-
 </form>
 
 </section>

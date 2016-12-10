@@ -45,10 +45,14 @@ var save = "{{save}}";
         <div id="preferences" class="toggle">
             <select name="charset">
                 <optgroup label="Standard Fonts">
-                    <option value="cp437">Code Page 437 -- RECOMMENDED</option>
+                    {% for charset in charsets %}
+                    <option value="{{charset.0}}">{{charset.1}}</option>
+                    {% endfor %}
                 </optgroup>
                 <optgroup label="Custom Fonts">
-                    <option value="efzi">EFZI.COM</option>
+                    {% for charset in custom_charsets %}
+                    <option value="{{charset}}">{{charset}}</option>
+                    {% endfor %}
                 </optgroup>
             </select>
 

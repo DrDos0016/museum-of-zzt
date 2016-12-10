@@ -73,9 +73,10 @@ function pull_file()
     $("#file-list li ul").remove();
     $("#file-list li br").remove();
     $(this).addClass("selected");
-    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi", "nfo"];
+    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi", "nfo", "com"];
     filename = $(this).contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var split = filename.toLowerCase().split(".");
+    var head = split[0];
     var ext = split[split.length - 1];
 
     if (valid_extensions.indexOf(ext) == -1)
@@ -172,6 +173,13 @@ function pull_file()
 
             //$("#details").html("<audio id='zip_audio' src='"+zip_audio_url+"'>Your browser does not support HTML5 audio</audio>");
         }
+        else if (ext == "com")
+        {
+            // Load the font
+            $("select[name=charset]").val(head);
+            
+            // Display the font
+        }
         else
         {
             $("#details").html(data);
@@ -237,7 +245,7 @@ function parse_world(type, data)
     // End Parse SZZT Specific World Stats
 
     // Parse Boards
-    world.idx = 1024; // todo: debug, this shouldn't be necessary at all
+    world.idx = 1024;
     for (var x = 0; x <= world.board_count; x++)
     {
         world.boards.push(parse_board(world));
@@ -272,6 +280,8 @@ function parse_world(type, data)
 function parse_board(world)
 {
     var board = {};
+    var start_idx = world.idx;
+    var procced_bytes = 0;
     board.room = []; // Room is used for generic rendering
     board.elements = []; // Elements are used for individual tiles
     board.size = world.read(2);
@@ -296,10 +306,11 @@ function parse_board(world)
     var parsed_tiles = 0;
 
     while (parsed_tiles < 1500)
-    {
+    {        
         var quantity = world.read(1);
         var element_id = world.read(1);
         var color = world.read(1);
+        procced_bytes += 3;
         board.room.push([quantity, element_id, color]);
 
         for (var tile_idx = 0; tile_idx < quantity; tile_idx++)
@@ -318,7 +329,6 @@ function parse_board(world)
                 }
             );
         }
-        //$("#debug").val($("#debug").val() + "\n" + quantity + " " + colors[color % 16] + " on " + colors[parseInt(color / 16)] + " " + elements[element_id]);
         parsed_tiles += quantity;
     }
 
@@ -343,6 +353,7 @@ function parse_board(world)
 
     // Parse Stats
     var parsed_stats = 0;
+    var oop_read = 0;
 
     while (parsed_stats <= board.stat_count)
     {
@@ -371,6 +382,7 @@ function parse_board(world)
         if (stat.oop_length)
         {
             stat.oop = world.str_read(stat.oop_length);
+            oop_read += stat.oop_length;
         }
         else
         {
@@ -381,6 +393,14 @@ function parse_board(world)
 
         parsed_stats++;
     }
+    
+    // Jump to the start of the next board in file (for corrupt boards)
+    var manual_idx = (start_idx + board.size * 2) + 4;
+    if (world.idx != manual_idx)
+    {
+		board.corrupt = true;
+		world.idx = manual_idx;
+	}
     return board;
 }
 
@@ -405,6 +425,15 @@ function render_board()
     // Write board information
     var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var output = "";
+    
+    if (board.corrupt)
+    {
+		output += "<div class='error'>This board is corrupt</div>";
+		$("#board-info").html(output);
+		tab_select("board-info");
+		return true;
+	}
+    
     output += "Title: " + board.title + "<br>";
     output += "Can fire: " + board.max_shots + " shot"+((board.max_shots != 1) ? "s" : "")+".<br>";
     output += "Board is dark: " + (board.dark ? "Yes" : "No") + "<br>";
@@ -600,7 +629,6 @@ $(document).ready(function (){
     
     // Renderer
     $("input[name=renderer]").change(function (){
-        console.log("Hello?");
         renderer.render = renderer[$(this).filter(":checked").val()];
         $("li.selected.board").click();
         $("li[name=preferences]").click();
