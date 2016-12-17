@@ -38,34 +38,36 @@ var save = "{{save}}";
         <div id="file-tabs">
             <ul><li name="world-info">World</li><li name="board-info">Board</li><li name="element-info">Element</li><li name="stat-info">Stats</li><li name="preferences">Prefs.</li></ul>
         </div>
-        <div id="world-info" class="toggle"></div>
-        <div id="board-info" class="toggle"></div>
-        <div id="element-info" class="toggle"></div>
-        <div id="stat-info" class="toggle"></div>
-        <div id="preferences" class="toggle">
-            <select name="charset">
-                <optgroup label="Standard Fonts">
-                    {% for charset in charsets %}
-                    <option value="{{charset.0}}">{{charset.1}}</option>
-                    {% endfor %}
-                </optgroup>
-                <optgroup label="Custom Fonts">
-                    {% for charset in custom_charsets %}
-                    <option value="{{charset}}">{{charset}}</option>
-                    {% endfor %}
-                </optgroup>
-            </select>
+        <div id="file-data">
+            <div id="world-info" class="toggle"></div>
+            <div id="board-info" class="toggle"></div>
+            <div id="element-info" class="toggle"></div>
+            <div id="stat-info" class="toggle"></div>
+            <div id="preferences" class="toggle">
+                <select name="charset">
+                    <optgroup label="Standard Fonts">
+                        {% for charset in charsets %}
+                        <option value="{{charset.0}}">{{charset.1}}</option>
+                        {% endfor %}
+                    </optgroup>
+                    <optgroup label="Custom Fonts">
+                        {% for charset in custom_charsets %}
+                        <option value="{{charset}}">{{charset}}</option>
+                        {% endfor %}
+                    </optgroup>
+                </select>
 
-            <label><input type="checkbox" name="2x" value="1"> - 2x Zoom</label>
-            <br>
-            <label>
-                <input type="radio" name="renderer" value="zzt_standard" checked> 
-                Standard
-            </label>
-            <label>
-                <input type="radio" name="renderer" value="zzt_objects">
-                Object Highlight
-            </label>
+                <label><input type="checkbox" name="2x" value="1"> - 2x Zoom</label>
+                <br>
+                <label>
+                    <input type="radio" name="renderer" value="zzt_standard" checked> 
+                    Standard
+                </label>
+                <label>
+                    <input type="radio" name="renderer" value="zzt_objects">
+                    Object Highlight
+                </label>
+            </div>
         </div>
     </div>
 

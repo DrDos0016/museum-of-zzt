@@ -457,6 +457,18 @@ div.file-details ul
     font-family:monospace;
     margin:auto;
     margin-bottom:1em;
+    display:flex;
+    align-items:center;
+}
+
+#play-area
+{
+    /*min-height:400px;*/
+}
+
+#play-area iframe
+{
+    margin:auto;
 }
 
 #details img, #details canvas
@@ -468,10 +480,15 @@ div.file-details ul
     max-width:100%;
 }
 
+#details img.charset
+{
+    background:#000;
+}
+
 #file-list
 {
     width:48%;
-    max-height:300px;
+    height:300px;
     border:1px solid #000;
     padding-top:0.5em;
     padding-bottom:0.5em;
@@ -525,10 +542,15 @@ div.file-details ul
     width:48%;
     padding:0.5em;
     border:1px solid #000;
-    overflow:auto;
+    overflow:none;
     font-family:monospace;
     float:right;
-    max-height:300px;
+    height:300px;
+}
+
+#file-tabs
+{
+    height:1em;
 }
 
 #file-tabs ul
@@ -536,6 +558,7 @@ div.file-details ul
     padding:0;
     margin:-0.5em;
     margin-bottom:0.5em;
+    border-bottom:1px solid #000;
 }
 
 #file-tabs ul li
@@ -554,6 +577,20 @@ div.file-details ul
     text-decoration:underline;
     cursor:pointer;
 }
+
+#file-data
+{
+    height:98%;
+    margin-top:3px;
+}
+
+#world-info, #board-info, #element-info, #stat-info, #preferences
+{
+    padding-top:0.25em;
+    height:98%;
+    overflow:auto;
+}
+
 /* End file viewing */
 
 /* Reviews */
@@ -672,3 +709,57 @@ div.file-details ul
     */
     
 }
+
+/* ZZT-OOP Syntax */
+code
+{
+    display:block;
+    width:42ch;
+    color:#839496;
+    /* background-color:#fdf6e3; Light */
+    background-color:#002b36;
+    font-size:larger;
+    padding:1ch 2ch 1ch 2ch;
+}
+
+code .blue, code .command
+{
+    color:#268bd2;
+}
+
+code .green, code .comment
+{
+    color:#859900;
+}
+
+code .cyan, code .reserved
+{
+    color:#2aa198;
+}
+
+code .red, code .name
+{
+    color:#dc322f;
+}
+
+code .magenta, code .hyperlink
+{
+    color:#d33682;
+}
+
+code .purple, code .center
+{
+    color:#6c71c4;
+}
+
+code .yellow, code .go, code .try
+{
+    color:#b58900;
+}
+
+code .orange, code .label
+{
+    color:#cb4b16;
+}
+
+/* End ZZT-OOP Syntax */

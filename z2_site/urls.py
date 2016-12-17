@@ -81,4 +81,5 @@ urlpatterns = [
 
     # Debug
     url(r"^debug/save$", z2_site.views.debug_save),
+    url(r"^ajax/debug_file$", z2_site.ajax.debug_file),
 ]

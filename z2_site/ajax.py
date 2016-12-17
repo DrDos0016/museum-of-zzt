@@ -67,3 +67,9 @@ def get_zip_file(request):
         return response
     else:
         return HttpResponse("Maybe in the future")
+
+def debug_file(request):
+    if not os.path.isfile("/var/projects/DEV"):
+        return HttpResponse("Not on production.")
+    file = open(request.GET.get("file"), "rb")
+    return HttpResponse(binascii.hexlify(file.read()))
