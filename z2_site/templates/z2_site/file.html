@@ -44,29 +44,56 @@ var save = "{{save}}";
             <div id="element-info" class="toggle"></div>
             <div id="stat-info" class="toggle"></div>
             <div id="preferences" class="toggle">
-                <select name="charset">
-                    <optgroup label="Standard Fonts">
-                        {% for charset in charsets %}
-                        <option value="{{charset.0}}">{{charset.1}}</option>
-                        {% endfor %}
-                    </optgroup>
-                    <optgroup label="Custom Fonts">
-                        {% for charset in custom_charsets %}
-                        <option value="{{charset}}">{{charset}}</option>
-                        {% endfor %}
-                    </optgroup>
-                </select>
-
-                <label><input type="checkbox" name="2x" value="1"> - 2x Zoom</label>
-                <br>
-                <label>
-                    <input type="radio" name="renderer" value="zzt_standard" checked> 
-                    Standard
-                </label>
-                <label>
-                    <input type="radio" name="renderer" value="zzt_objects">
-                    Object Highlight
-                </label>
+                <fieldset>
+                    <label>Charset</label>
+                    <select name="charset">
+                        <optgroup label="Standard Fonts">
+                            {% for charset in charsets %}
+                            <option value="{{charset.0}}">{{charset.1}}</option>
+                            {% endfor %}
+                        </optgroup>
+                        <optgroup label="Custom Fonts">
+                            {% for charset in custom_charsets %}
+                            <option value="{{charset}}">{{charset}}</option>
+                            {% endfor %}
+                        </optgroup>
+                    </select>
+                
+                    <label><input type="checkbox" name="2x" value="1"> - 2x Zoom</label>
+                </fieldset>
+                
+                <fieldset>
+                    <label>
+                        Board Rendering
+                        <select name="renderer">
+                            <option value="zzt_standard" selected>Standard</option>
+                            <option value="zzt_objects">Object Highlight</option>
+                            <option value="zzt_dark">Dark Board</option>
+                            <!--<option value="zzt_torch">Dark Board - Lit Torch</option>-->
+                        </select>
+                    </label>
+                    
+                    <br>
+                    
+                    <label>
+                        High Intensity Backgrounds
+                        <select name="intensity">
+                            <option value="high">On</option>
+                            <option value="low" selected>Off</option>
+                        </select>
+                    </label>
+                    
+                    <br>
+                    
+                    <label>
+                        Invisible Walls
+                        <select name="invisibles">
+                            <option value="revealed">Visible - Revealed</option>
+                            <option value="editor" selected>Visible - Editor</option>
+                            <option value="invisible">Invisible</option>
+                        </select>
+                    </label>
+                </fieldset>
             </div>
         </div>
     </div>

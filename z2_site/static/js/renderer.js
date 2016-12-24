@@ -3,12 +3,16 @@
 class Renderer {
     constructor()
     {
+        this.invisible_chars = {"revealed":178, "editor":176, "invisible":32};
         this.render = this.zzt_standard;
+        this.invisible_style = $("select[name=invisibles]").val();
+        this.bg_intensity = $("select[name=intensity]").val();
     }
     
     zzt_standard(board)
     {
         console.log("STANDARD RENDERING");
+        console.log("Invis style:", this.invisible_style);
         var x = 0;
         var y = 0;
         var tile = 0;
@@ -78,6 +82,10 @@ class Renderer {
                 {
                     line_walls[(y*60)+x] = 1;
                     line_colors[(y*60)+x] = chunk[2];
+                }
+                else if (chunk[1] == 28) // Invisible walls
+                {
+                    print(ctx, this.invisible_chars[this.invisible_style], chunk[2], x, y);
                 }
                 else // Standard
                     print(ctx, characters[chunk[1]], chunk[2], x, y);
@@ -238,4 +246,63 @@ class Renderer {
             }
         }
     }
+    
+    zzt_dark(board)
+    {
+        console.log("DARK RENDERING");
+        var x = 0;
+        var y = 0;
+        var tile = 0;
+        var line_walls = {}; // I am not happy with this solution
+        var line_colors = {};
+        
+        for (var chunk_idx = 0; chunk_idx < board.room.length; chunk_idx++)
+        {
+            var chunk = board.room[chunk_idx];
+
+            for (var qty = 0; qty < chunk[0]; qty++)
+            {
+                if ([4, 6, 11].indexOf(chunk[1]) == -1) // Render darkness
+                    print(ctx, 176, 7, x, y);
+                else // Standard
+                    print(ctx, characters[chunk[1]], chunk[2], x, y);
+                    
+                tile += 1;
+                x += 1;
+                if (x > 59)
+                {
+                    x = 0;
+                    y += 1;
+                }
+            }
+        }
+    }
 };
+
+/* Canvas functions */
+function print(ctx, character, color, x, y)
+{
+    var ch_x = character % 16;
+    var ch_y = parseInt(character / 16);
+    var fg = colors[color % 16];
+
+    if (renderer.bg_intensity == "low")
+        var bg = colors[parseInt(color / 16) % 8];
+    else if (renderer.bg_intensity == "high")
+        var bg = colors[parseInt(color / 16)];
+
+    // Background
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = bg;
+    ctx.fillRect(x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+
+    // Creates transparency for foreground
+    ctx.globalCompositeOperation = "xor";
+    ctx.drawImage(CHARSET_IMAGE, ch_x*TILE_WIDTH, ch_y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+    // Draw foreground
+    ctx.globalCompositeOperation = "destination-over";
+    ctx.fillStyle = fg;
+    ctx.fillRect(x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+    return true;
+}
+/* End Canvas functions */

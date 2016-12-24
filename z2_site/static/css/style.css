@@ -131,11 +131,28 @@ table td, table th
     clear:both;
 }
 
-nav
+header
 {
-    text-align:center;
+    margin:auto;
+    width:90%;
 }
 
+nav
+{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+}
+
+nav a
+{
+    display:block;
+    text-align:center;
+    font-size:16pt;
+    flex:1;
+}
+
+/*
 nav li
 {
     display:inline-block;
@@ -147,6 +164,7 @@ nav li
     font-size:16pt;
     text-align:center;
 }
+* */
 
 .sidebar
 {

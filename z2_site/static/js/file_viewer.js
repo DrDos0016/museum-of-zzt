@@ -277,7 +277,7 @@ var CANVAS_HEIGHT = 350;
 var TILE_WIDTH = 8;
 var TILE_HEIGHT = 14;
 var renderer = new Renderer();
-renderer.render = renderer[$("input[name=renderer]").filter(":checked").val()];
+renderer.render = renderer[$("select[name=renderer]").val()];
 
 var World = function (data) {
     // World Properties
@@ -895,12 +895,24 @@ $(document).ready(function (){
     $("input[name=2x]").change(load_charset);
     
     // Renderer
-    $("input[name=renderer]").change(function (){
-        renderer.render = renderer[$(this).filter(":checked").val()];
+    $("select[name=renderer]").change(function (){
+        renderer.render = renderer[$(this).val()];
         $("li.selected.board").click();
         $("li[name=preferences]").click();
     });
     
+    // Invisibles
+    $("select[name=invisibles]").change(function (){
+        renderer.invisible_style = $(this).val();
+        renderer.render(world.boards[board_number]);
+    });
+    
+    // High Intensity BGs
+    $("select[name=intensity]").change(function (){
+        renderer.bg_intensity = $(this).val();
+        renderer.render(world.boards[board_number]);
+    });
+
     // Keyboard Shortcuts
     $(window).keyup(function (e){
         if ($("input[name=q]").is(":focus"))
@@ -938,30 +950,6 @@ $(document).ready(function (){
         auto_load();
     }
 });
-
-/* Canvas Functions */
-function print(ctx, character, color, x, y)
-{
-    var ch_x = character % 16;
-    var ch_y = parseInt(character / 16);
-    var bg = colors[parseInt(color / 16)];
-    var fg = colors[color % 16];
-
-    // Background
-    ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = bg;
-    ctx.fillRect(x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
-
-    // Creates transparency for foreground
-    ctx.globalCompositeOperation = "xor";
-    ctx.drawImage(CHARSET_IMAGE, ch_x*TILE_WIDTH, ch_y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT, x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
-    // Draw foreground
-    ctx.globalCompositeOperation = "destination-over";
-    ctx.fillStyle = fg;
-    ctx.fillRect(x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
-    return true;
-}
-/* End Canvas Functions */
 
 /* Auto Load functions */
 function auto_load()
