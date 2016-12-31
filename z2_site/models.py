@@ -136,15 +136,18 @@ class Review(models.Model):
     """
     file = models.ForeignKey("File")
     title = models.CharField(max_length=50)
-    author = models.CharField(max_length=50)
-    email = models.EmailField()
+    author = models.CharField(max_length=50, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     content = models.TextField()
     rating = models.FloatField(default=5.0)
     date = models.DateField()
-    ip = models.GenericIPAddressField()
+    ip = models.GenericIPAddressField(blank=True, null=True)
 
-    def __unicode__(self):
-        x = ("Review for " + self.file.title + "[" +
+    class Meta:
+        ordering = ["id"]
+
+    def __str__(self):
+        x = ("[" + str(self.id)  + "] Review for " + self.file.title + " [" +
              self.file.filename + "] by " + self.author
              )
         return x

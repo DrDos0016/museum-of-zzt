@@ -738,6 +738,7 @@ code
     background-color:#002b36;
     font-size:larger;
     padding:1ch 2ch 1ch 2ch;
+    white-space:pre;
 }
 
 code .blue, code .command

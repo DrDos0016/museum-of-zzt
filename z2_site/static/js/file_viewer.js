@@ -361,7 +361,7 @@ function pull_file()
     
     // Add to history
     var state = {"load_file": filename, "load_board":"", "tab":""};
-    var qs = "?file=" + filename;
+    var qs = "?file=" + filename + window.location.hash;
     if (! history.state || (history.state["load_file"] != filename))
     {
         history.pushState(state, "", qs);
@@ -787,6 +787,18 @@ function draw_board()
     renderer.render(board);
     
     $("#world-canvas").click(stat_info);
+    
+    // Click coordinates in hash
+    if (hash_coords)
+    {
+        console.log("Auto clicking element...", hash_coords);
+        var sliced = hash_coords.slice(1);
+        var split = sliced.split(",");
+        var e = {"data":{"x":split[0], "y":split[1]}};
+        stat_info(e);
+    }
+        
+    
     //console.log(document.getElementById("world-canvas").toDataURL());
 
     // DEBUG Screenshot Saving
@@ -817,6 +829,9 @@ function stat_info(e)
         var y = e.data.y;
     }
     var tile_idx = ((y-1) * 60) + (x-1);
+    var hash_coords = "#" + x + "," + y;
+    //window.location.hash = ;
+    history.replaceState(undefined, undefined, hash_coords)
     var output = "";
 
     // General info
@@ -929,19 +944,22 @@ $(document).ready(function (){
         console.log("POPSTATE", history.state);
         console.log("FILENAME CURRENT", filename);
         console.log("BOARD CURRENT", board_number);
-        load_file = history.state["load_file"];
-        load_board = history.state["load_board"];
+        if (history.state)
+        {
+            load_file = history.state["load_file"];
+            load_board = history.state["load_board"];
         
-        if (filename != load_file)
-        {
-            console.log("Clicking new file", load_file);
-            auto_load();
-        }
-            
-        if (board_number != load_board && load_board)
-        {
-            console.log("Clicking new board", load_board);
-            $("li.board[data-board-number="+load_board+"]").click();
+            if (filename != load_file)
+            {
+                console.log("Clicking new file", load_file);
+                auto_load();
+            }
+                
+            if (board_number != load_board && load_board)
+            {
+                console.log("Clicking new board", load_board);
+                $("li.board[data-board-number="+load_board+"]").click();
+            }
         }
     });
 
@@ -1075,10 +1093,8 @@ function str_read(data, bytes, idx)
 function syntax_highlight(oop)
 {
         var oop = oop.split("\r");
-        console.log(oop);
         for (var idx in oop)
         {
-            console.log(oop[idx]);
             // Symbols: @, #, /, ?, :, ', !, $
             if (idx == 0 && oop[idx][0] && oop[idx][0] == "@")
                 oop[idx] = "<span class='name'>@</span><span class='yellow'>" + oop[idx].slice(1) + "</span>";
@@ -1114,7 +1130,7 @@ function syntax_highlight(oop)
                 oop[idx] = "<span class='center'>$</span><span class=''>" + oop[idx].slice(1) + "</span>";
             }
         }
-        return oop.join("<br>\n");
+        return oop.join("\n");
 }
 
 /* DEBUG FUNCTION */

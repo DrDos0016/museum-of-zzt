@@ -1,5 +1,6 @@
 {% extends "z2_site/world.html" %}
 {% load staticfiles %}
+{% load markdown_deux_tags %}
 
 {% block scripts %}
 {% endblock %}
@@ -8,15 +9,16 @@
 {% for review in reviews %}
 <div class="review block">
 <div class="review-meta">
-    <h2>{{review.title}}</h2>
+    <h2>{% markdown %}{{review.title}}{% endmarkdown %}</h2>
     <i>Written by {{review.author}}<br>{{review.date}}</i>
 </div>
 
 <article>
-{{review.content|safe}}
+<!--{{review.content|escape|linebreaks}}-->
+{{review.content|markdown|linebreaks}}
 </article>
 
-<b>Rating:</b> {{review.rating}} out of 5.0
+<b>Rating:</b> {{review.rating}} out of 5.0 {{review.id}}
 </div>
 {% endfor %}
 
