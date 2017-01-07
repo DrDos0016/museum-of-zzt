@@ -51,8 +51,6 @@ body
 .col
 {
     display:inline-block;
-    zoom: 1;
-    *display: inline;
     vertical-align:top;
     overflow:auto;
 }
@@ -782,3 +780,38 @@ code .orange, code .label
 }
 
 /* End ZZT-OOP Syntax */
+
+/* Content Warnings */
+.content-warning
+{
+    background:#CFF;
+    display:flex;
+    align-items:center;
+    padding:0.25em;
+    max-width:75%;
+    margin:auto;
+    border:1px dashed #000;
+}
+
+.content-warning .img
+{;
+    flex:0 0 150px;
+    height:50px;
+}
+
+.content-warning .text
+{
+    flex:1;
+    padding-left:1em;
+    font-size:smaller;
+}
+
+.content-warning .text b
+{
+    font-size:larger;
+    letter-spacing:1em;
+    text-align:center;
+    display:block;
+    width:100%;
+}
+/* End Content Warnings */

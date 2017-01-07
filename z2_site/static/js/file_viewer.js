@@ -358,7 +358,7 @@ function pull_file()
             return false;
         }
     }
-    
+
     // Add to history
     var state = {"load_file": filename, "load_board":"", "tab":""};
     var qs = "?file=" + filename + window.location.hash;
@@ -366,7 +366,7 @@ function pull_file()
     {
         history.pushState(state, "", qs);
     }
-    
+
 
     $.ajax({
         url:"/ajax/get_zip_file",
@@ -375,7 +375,7 @@ function pull_file()
             "zip":zip,
             "filename":filename
         }
-    }).done(function (data){        
+    }).done(function (data){
         if (ext == "zzt")
         {
             world = parse_world("zzt", data);
@@ -443,9 +443,9 @@ function pull_file()
         {
             // Load the font
             $("select[name=charset]").val(head);
-            
+
             // Display the font
-            $("#details").html("<img src='/static/images/charsets/"+head+".png' class='charset' alt='"+head+"' title='"+head+"'>");   
+            $("#details").html("<img src='/static/images/charsets/"+head+".png' class='charset' alt='"+head+"' title='"+head+"'>");
         }
         else
         {
@@ -573,7 +573,7 @@ function parse_board(world)
     var parsed_tiles = 0;
 
     while (parsed_tiles < 1500)
-    {        
+    {
         var quantity = world.read(1);
         var element_id = world.read(1);
         var color = world.read(1);
@@ -650,6 +650,10 @@ function parse_board(world)
         {
             stat.oop = world.str_read(stat.oop_length);
             oop_read += stat.oop_length;
+
+            // Escape HTML
+            stat.oop = stat.oop.replace("<", "&lt;");
+            stat.oop = stat.oop.replace(">", "&gt;");
         }
         else
         {
@@ -660,7 +664,7 @@ function parse_board(world)
 
         parsed_stats++;
     }
-    
+
     // Jump to the start of the next board in file (for corrupt boards)
     var manual_idx = (start_idx + board.size * 2) + 4;
     if (world.idx != manual_idx)
@@ -677,7 +681,7 @@ function render_board()
     $("li.board").removeClass("selected");
     $(this).addClass("selected");
     load_charset();
-    
+
     // Add to history
     var state = {"load_file": filename, "load_board":board_number, "tab":""};
     var qs = "?file=" + filename + "&board=" + board_number;
@@ -692,7 +696,7 @@ function render_board()
     // Write board information
     var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var output = "";
-    
+
     if (board.corrupt)
     {
 		output += "<div class='error'>This board is corrupt</div>";
@@ -700,7 +704,7 @@ function render_board()
 		tab_select("board-info");
 		return true;
 	}
-    
+
     output += "Title: " + board.title + "<br>";
     output += "Can fire: " + board.max_shots + " shot"+((board.max_shots != 1) ? "s" : "")+".<br>";
     output += "Board is dark: " + (board.dark ? "Yes" : "No") + "<br>";
@@ -785,9 +789,9 @@ function draw_board()
     var board = world.boards[board_number];
 
     renderer.render(board);
-    
+
     $("#world-canvas").click(stat_info);
-    
+
     // Click coordinates in hash
     if (hash_coords)
     {
@@ -797,8 +801,8 @@ function draw_board()
         var e = {"data":{"x":split[0], "y":split[1]}};
         stat_info(e);
     }
-        
-    
+
+
     //console.log(document.getElementById("world-canvas").toDataURL());
 
     // DEBUG Screenshot Saving
@@ -887,7 +891,7 @@ function stat_info(e)
             output += "<code class='zzt-oop'>" + syntax_highlight(stat.oop) + "</code>";
         }
     }
-    
+
     $("#element-info").html(output);
     tab_select("element-info");
 
@@ -905,23 +909,23 @@ function tab_select(selector)
 $(document).ready(function (){
     $("#file-list li").click(pull_file);
     $("#file-tabs ul li").click(function (){tab_select($(this).attr("name"))});
-    
+
     $("select[name=charset]").change(load_charset);
     $("input[name=2x]").change(load_charset);
-    
+
     // Renderer
     $("select[name=renderer]").change(function (){
         renderer.render = renderer[$(this).val()];
         $("li.selected.board").click();
         $("li[name=preferences]").click();
     });
-    
+
     // Invisibles
     $("select[name=invisibles]").change(function (){
         renderer.invisible_style = $(this).val();
         renderer.render(world.boards[board_number]);
     });
-    
+
     // High Intensity BGs
     $("select[name=intensity]").change(function (){
         renderer.bg_intensity = $(this).val();
@@ -932,13 +936,13 @@ $(document).ready(function (){
     $(window).keyup(function (e){
         if ($("input[name=q]").is(":focus"))
             return false;
-        
+
         if (e.keyCode == 107 || e.keyCode == 61 || e.keyCode == 74) // Next Board
             $("li.board.selected").next().click()
         else if (e.keyCode == 109 || e.keyCode == 173 || e.keyCode == 75) // Previous Board
             $("li.board.selected").prev().click()
     });
-    
+
     // History
     $(window).bind("popstate", function(e) {
         console.log("POPSTATE", history.state);
@@ -948,13 +952,13 @@ $(document).ready(function (){
         {
             load_file = history.state["load_file"];
             load_board = history.state["load_board"];
-        
+
             if (filename != load_file)
             {
                 console.log("Clicking new file", load_file);
                 auto_load();
             }
-                
+
             if (board_number != load_board && load_board)
             {
                 console.log("Clicking new board", load_board);
@@ -1053,8 +1057,13 @@ function load_charset()
 {
     var selected_charset = $("select[name=charset]").val() + ($("input[name=2x]").prop("checked") ? "-2x" : "");
 
-    // Charset needs to be loaded
-    if (CHARSET_NAME != selected_charset)
+    if ($("#world-canvas").length == 0)
+        var no_canvas = true;
+    else
+        var no_canvas = false;
+
+    // Charset needs to be loaded and/or canvas doesn't exist
+    if (CHARSET_NAME != selected_charset || no_canvas)
     {
         CHARSET_NAME = selected_charset;
         CHARSET_IMAGE = new Image();
@@ -1120,9 +1129,9 @@ function syntax_highlight(oop)
             }
             else if (oop[idx][0] && oop[idx][0] == "!")
             {
-                oop[idx] = "<span class='hyperlink'>!</span><span class='label'>" + 
-                    oop[idx].slice(1, oop[idx].indexOf(";")) + 
-                    "</span><span class='hyperlink'>;</span>" + 
+                oop[idx] = "<span class='hyperlink'>!</span><span class='label'>" +
+                    oop[idx].slice(1, oop[idx].indexOf(";")) +
+                    "</span><span class='hyperlink'>;</span>" +
                     oop[idx].slice(oop[idx].indexOf(";")+1);
             }
             else if (oop[idx][0] && oop[idx][0] == "$")
@@ -1139,7 +1148,7 @@ function debug_file(file)
     $.ajax({
         url:"/ajax/debug_file?file="+file,
         data:{}
-    }).done(function (data){        
+    }).done(function (data){
         world = parse_world("zzt", data);
 
         // Write the board names to the file list

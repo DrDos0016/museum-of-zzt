@@ -25,6 +25,8 @@ Article has an invalid type!
 {% endfor %}
 
 <br>
+{% if article.page > 1 %}<a href="{% url 'article_view' prev  'prev' %}">Previous page</a><br>{% endif %}
+{% if article.page != 0 %}<a href="{% url 'article_view' next 'next' %}">Next page</a><br>{% endif %}
 <a href="{% url 'article_directory' %}">Return to article directory</a><br>
 <a href="{% url 'index' %}">Return to the main page</a>
 {% endblock %}

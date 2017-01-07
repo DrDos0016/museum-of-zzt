@@ -55,6 +55,11 @@ def article_view(request, id):
     data = {"id": id}
     data["article"] = get_object_or_404(Article, pk=id)
     data["title"] = data["article"].title
+    
+    # TODO: Handle pages
+    data["next"] = id + 1
+    data["prev"] = id - 1
+    
     file = data["article"].file_set.all()
     if file:
         # TODO: Handle an article w/ multiple files (ex Zem + Zem 2)
@@ -498,6 +503,16 @@ def upload(request):
 
     return render(request, "z2_site/upload.html", data)
 
+def debug_article(request):
+    data = {"id": 0}
+    with open("/var/projects/museum/private/" + request.GET.get("file")) as fh:
+        article = Article.objects.get(pk=1)
+        article.title = "TEST ARTICLE"
+        article.category = "TEST"
+        article.content = fh.read()
+        article.type = "html"
+    data["article"] = article
+    return render(request, "z2_site/article_view.html", data)
 
 def debug_save(request):
     letter = request.POST.get("letter")

@@ -1,0 +1,26 @@
+{% extends "z2_site/main.html" %}
+{% load staticfiles %}
+
+{% block style %}
+<style>
+#comic img
+{
+    max-width:100%;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+
+<h1>Bencomic - {{comic.title}}</h1>
+
+<div id="comic">
+    <img src="{% static 'bencomic/comics/{{comic.img}}.png' %}">
+</div>
+
+<b>Featuring:</b><br>
+
+
+</section>
+{% endblock %}

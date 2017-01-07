@@ -18,7 +18,9 @@ urlpatterns = [
     url(r"^article/(?P<category>[a-z-]+)$", z2_site.views.article_directory,
         name="article_directory"
         ),
-    url(r"^article/(?P<id>[0-9]+)/(.*)$", z2_site.views.article_view),
+    url(r"^article/(?P<id>[0-9]+)/(.*)$",
+        z2_site.views.article_view,
+        name="article_view"),
 
     # Special Article Pages (those with urls besides /article/#/title)
     url(r"^about-zzt$", z2_site.views.article_view, {"id": 1}),
@@ -81,5 +83,6 @@ urlpatterns = [
 
     # Debug
     url(r"^debug/save$", z2_site.views.debug_save),
+    url(r"^debug/article$", z2_site.views.debug_article),
     url(r"^ajax/debug_file$", z2_site.ajax.debug_file),
 ]

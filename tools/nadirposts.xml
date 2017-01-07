@@ -1,0 +1,1244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pma_xml_export version="1.0" xmlns:pma="https://www.phpmyadmin.net/some_doc_url/">
+    <database name="z2">
+        <!-- Table nadirposts -->
+        <table name="nadirposts">
+            <column name="ID">2</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-05-21 15:59:53</column>
+            <column name="post_date_gmt">2008-05-21 22:59:53</column>
+            <column name="post_content">&lt;img class=&quot;alignright&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/05/nadir.jpg&quot; alt=&quot;this is a picture of me, as accurate as any picture can possibly be&quot; /&gt;Hello! I am &lt;strong&gt;Peter S&lt;/strong&gt;*, aka. &quot;Zenith Nadir&quot; to the vast wastes of Internet, and this is &quot;&lt;strong&gt;Frost&lt;/strong&gt;&quot;, a comic I've been drawing that I decided to start posting on the internet in a fit of hubris and arrogance and lust for acknowledgment. It is called &quot;Frost&quot; and is about a girl called &lt;strong&gt;Penny&lt;/strong&gt; and her adventures in an animal-dude world called &lt;strong&gt;Ilititoa&lt;/strong&gt;. I guess it is pretty &lt;strong&gt;gay&lt;/strong&gt; but I like drawing it.
+
+I made a &lt;strong&gt;&lt;a title=&quot;ZZT game&quot; href=&quot;http://zzt.belsambar.net&quot; target=&quot;_self&quot;&gt;ZZT game&lt;/a&gt;&lt;/strong&gt; of this current plotline (subtitled &quot;&lt;strong&gt;Power&lt;/strong&gt;&quot;) years ago, but the writing kind of sucked and is embarrassing in retrospect and it wasn't a proper game anyway. I attempted a comic the year after but it was an unscripted disasterpiece of cross-hatching that I eventually threw away after quitting a few pages in (after redrawing it for the first few pages of this). HOPEFULLY this will be better, even though it's probably pretty rough around the edges; I've never bothered with a comic before, even though I love the medium!
+
+No, it's not a furry comic. Fuck off.
+Anyway, I'll post character synopses sometime once the ball's got rolling, I guess. Whoops I just did.
+
+(* - my surname is way too easy to be searched for on the internet for my personal comfort (hey, I'm a private person); you can look it up if you like, it's around, I won't get mad)</column>
+            <column name="post_title">info?</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">about</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-07-10 23:07:49</column>
+            <column name="post_modified_gmt">2008-07-10 22:07:49</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?page_id=2</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">page</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">1</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">5</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-05-22 19:36:14</column>
+            <column name="post_date_gmt">2008-05-22 18:36:14</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/05/2008-05-22.jpg&quot; alt=&quot;Prologue page 1&quot; /&gt;
+
+Congratulations, it's a comic
+
+The plan here is to upload the first four pages every other day, then post one weekly after that (I'm slow and can't afford to waste the buffer).
+
+Anyway, welcome to my thing! At this point you're probably someone I know, so hi, sorry I never write. You may want to have a look at &lt;a title=&quot;the skinny&quot; href=&quot;http://zzt.belsambar.net/frost/?page_id=2&quot; target=&quot;_blank&quot;&gt;&lt;strong&gt;the skinny&lt;/strong&gt;&lt;/a&gt; on this website, which is just some info on the comic.</column>
+            <column name="post_title">Prologue, page 1</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">prologue-page-1</column>
+            <column name="to_ping"></column>
+            <column name="pinged">
+http://zzt.belsambar.net/frost/?page_id=2</column>
+            <column name="post_modified">2008-07-19 01:48:59</column>
+            <column name="post_modified_gmt">2008-07-19 00:48:59</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=5</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">5</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">7</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-05-24 07:00:56</column>
+            <column name="post_date_gmt">2008-05-24 06:00:56</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/05/2008-05-24.jpg&quot; alt=&quot;Prologue page 2&quot; /&gt;
+
+Who is this man? Why did he appear from the sky! WHY IS HE EGYPTIAN AND ALSO A CAT IN A SKIRT!? OH GOD SO MANY QUESTIONS
+
+Most of the site is working okay now, after way too much fiddling about. I just need to figure out those darn back/forward archive buttons now!</column>
+            <column name="post_title">Prologue, page 2</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">prologue-page-2</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-05-24 09:56:56</column>
+            <column name="post_modified_gmt">2008-05-24 08:56:56</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=7</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">8</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-05-26 07:00:03</column>
+            <column name="post_date_gmt">2008-05-26 06:00:03</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/05/2008-05-26.jpg&quot; alt=&quot;&quot; /&gt;
+
+Yes, I know he's wordy. No, I don't write like that all the time. That would be... less than evocative...</column>
+            <column name="post_title">Prologue, page 3</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">prologue-page-3</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-05-26 10:57:00</column>
+            <column name="post_modified_gmt">2008-05-26 09:57:00</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=8</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">9</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-05-28 07:00:36</column>
+            <column name="post_date_gmt">2008-05-28 06:00:36</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/05/2008-05-28.jpg&quot; alt=&quot;Prologue page 4&quot; /&gt;
+
+Well, that ends the semi-daily updates... from now on, you have to pay... in WAIT DOLLARS, blaahahaha buhh. See you in a week, suckers! Well, actually the next update will be on Sunday June 1st, then every Sunday thereafter. This is because few webcomics update on a Sunday.</column>
+            <column name="post_title">Prologue, page 4</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">prologue-page-4</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-05-24 09:54:40</column>
+            <column name="post_modified_gmt">2008-05-24 08:54:40</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=9</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">2</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">11</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-06-01 07:00:50</column>
+            <column name="post_date_gmt">2008-06-01 06:00:50</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/06/2008-06-01.jpg&quot; alt=&quot;Prologue page 2&quot; /&gt;
+
+Not much to say about this page, apart from that it introduces my main character (for the time being), Penny. It's probably bad practice not to end a page on a cliffhanger in this particular line of comickry, especially if I plan only to upload once a week (it's something I'll do a lot, sorry).
+
+Oh yeah, and the &quot;Fauna&quot; thing, it's just another name these animal dudes have for &quot;God&quot;. That is all.</column>
+            <column name="post_title">Power: page 1</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-1</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-05-25 15:37:37</column>
+            <column name="post_modified_gmt">2008-05-25 14:37:37</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=11</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">3</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">12</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-06-08 07:00:16</column>
+            <column name="post_date_gmt">2008-06-08 06:00:16</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/06/2008-06-08.jpg&quot; alt=&quot;Power: page 2&quot; /&gt;
+
+Drawing the same background over and over is hard. Thank god for tracing paper. (Everything ever in this comic is drawn by hand the old-fashioned way, except for text and the occasional digital trimming done in the GIMP. I am old school, and also a cheapskate, no Photoshop for me)
+
+It may be hard to see in panel 7, but there's an inset showing that Penny's mother has a tranquilizer in her hand which she was concealing from her daughter for some reason. I had a nasty habit of overcrowding my work in these earlier pages, something I've tried to cut down on since (10 panels on one page is too many)</column>
+            <column name="post_title">Power: page 2</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">12</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-06-20 20:28:09</column>
+            <column name="post_modified_gmt">2008-06-20 19:28:09</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=12</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">13</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-06-15 07:00:12</column>
+            <column name="post_date_gmt">2008-06-15 06:00:12</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/06/2008-06-15.jpg&quot; alt=&quot;Power: page 3&quot; /&gt;
+
+I really need to work on my lettering size, don't I? Sorry about some of these. I made the speech bubbles too small, I guess.</column>
+            <column name="post_title">Power: page 3</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">frost-power-page-3</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-06-20 20:28:35</column>
+            <column name="post_modified_gmt">2008-06-20 19:28:35</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=13</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">14</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-06-22 07:00:33</column>
+            <column name="post_date_gmt">2008-06-22 06:00:33</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/06/2008-06-22.jpg&quot; alt=&quot;Power page 4&quot; /&gt;
+
+I'm not actually here this weekend, I'm in Sheffield on a TESL course. I may be getting out of the country again to harass foreign lands with the English language come September! Maybe, nothing is concrete yet
+
+Don't tell me I spelled &quot;Fibonacci&quot; wrong. I didn't. It's a lame pun.
+
+Also, in the &quot;lunchtime&quot; panel, Melissa is telling the other girl about the thing she was talking about on the previous page. Penny says &quot;probably mostly made up&quot;, Melissa says &quot;shut up.&quot; and Penny says &quot;no&quot;. It kind of got lost when I shrunk the page down (OKAY, I admit it, I actually never intended to shrink my pages but Comicpress makes me and I'm its bitch).
+
+The &quot;dddrrriiinnnggg&quot; parts of this page were actually a lot of fun to ink in, once I got the hang of it.</column>
+            <column name="post_title">Power: page 4: skool</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-4</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-06-20 20:41:43</column>
+            <column name="post_modified_gmt">2008-06-20 19:41:43</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=14</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">15</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-06-29 07:00:08</column>
+            <column name="post_date_gmt">2008-06-29 06:00:08</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/06/2008-06-29.jpg&quot; alt=&quot;Power page 5&quot; /&gt;
+
+BLUGH, nothing to see here, I guess I made the speech bubbles bigger again, that's good I guess</column>
+            <column name="post_title">Power: page 5</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-5</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-07-19 01:50:15</column>
+            <column name="post_modified_gmt">2008-07-19 00:50:15</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=15</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">1</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">16</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-07-06 07:00:01</column>
+            <column name="post_date_gmt">2008-07-06 06:00:01</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/2008-07-06.jpg&quot; alt=&quot;Power page 6&quot; /&gt;
+
+The first 2/3 of the page are supposed to be kind of diagrammatic but I didn't keep the proportions consistent and should have started as big as I ended really.
+
+Feel free to call me out on swordplay techniques as I actually made all this up on the fly and have no actual knowledge on the subject. I was more interested in panel-to-panel choreography than research. I'm SO SORRY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! i think
+
+And for some reason Comicpress has apparently decided to post the newest update twice after I specifically told it not to. If anyone out there knows how to make it stop, let me know okay. It annoys me disproportionately and I'd really appreciate it. I know it's something to do with index.php but I have no idea which bit of rogue code I need to modify. This is my face right now: &lt;strong&gt;&amp;gt;:|
+&lt;/strong&gt;</column>
+            <column name="post_title">Power: page 6</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">frost-power-page-6</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-07-05 20:55:54</column>
+            <column name="post_modified_gmt">2008-07-05 19:55:54</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=16</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">17</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-07-10 22:35:57</column>
+            <column name="post_date_gmt">2008-07-10 21:35:57</column>
+            <column name="post_content">&lt;p style=&quot;text-align: left;&quot;&gt;&lt;strong&gt;CAST PAGE!!!!!!!!!!!!!!&lt;/strong&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;This page is &quot;in progress&quot;, meaning I'll add more characters to the summaries as and when I feel like it, and am also likely to change the pics and writeups whenever. For now there's just a bunch of gurlz, ew&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/cast-penny.png&quot;&gt;&lt;img class=&quot;alignleft size-full wp-image-18&quot; title=&quot;Nothing is cool.&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/cast-penny.png&quot; alt=&quot;Nothing is cool&quot; width=&quot;248&quot; height=&quot;400&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;strong&gt;PENNY SNOWFLAKES&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;strong&gt;Gender:&lt;/strong&gt; F
+&lt;strong&gt;Species:&lt;/strong&gt; Fox
+&lt;strong&gt;DOB:&lt;/strong&gt; 01/03/861 PA
+&lt;strong&gt;Likes:&lt;/strong&gt; Books
+&lt;strong&gt;Dislikes:&lt;/strong&gt; A lot of things&lt;/p&gt;
+
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;strong&gt;Current Mood:&lt;/strong&gt; Ugh
+&lt;strong&gt;Current Music:&lt;/strong&gt; Mew - Comforting Sounds&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/cast-melissa.png&quot;&gt;&lt;img class=&quot;size-full wp-image-19 alignright&quot; style=&quot;float: right;&quot; title=&quot;Ready for Action&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/cast-melissa.png&quot; alt=&quot;Rockin'&quot; width=&quot;281&quot; height=&quot;410&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: right;&quot;&gt;&lt;strong&gt;MELISSA FARNHAM&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right;&quot;&gt;&lt;strong&gt;Gender:&lt;/strong&gt; F
+&lt;strong&gt;Species:&lt;/strong&gt; Dog
+&lt;strong&gt;DOB:&lt;/strong&gt; 22/11/860 PA
+&lt;strong&gt;Likes:&lt;/strong&gt; Music, making fun of the internet
+&lt;strong&gt;Dislikes:&lt;/strong&gt; Jerks with shitty attitudes&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right;&quot;&gt;&lt;strong&gt;Current Mood:&lt;/strong&gt; Cautiously optimistic
+&lt;strong&gt;Current Music:&lt;/strong&gt; Freezepop - Brain Power&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/cast-penny.png&quot;&gt;&lt;img class=&quot;alignleft size-full wp-image-18&quot; title=&quot;A knock-down drag out fight&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/cast-onyx.png&quot; alt=&quot;A knock-down drag out fight&quot; width=&quot;297&quot; height=&quot;348&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;strong&gt;ONYX WINDER&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;strong&gt;Gender:&lt;/strong&gt; F
+&lt;strong&gt;Species:&lt;/strong&gt; Raccoon
+&lt;strong&gt;DOB:&lt;/strong&gt; 12/06/861 PA
+&lt;strong&gt;Likes:&lt;/strong&gt; Soft toys
+&lt;strong&gt;Dislikes:&lt;/strong&gt; Anyone&lt;/p&gt;
+
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;strong&gt;Current Mood:&lt;/strong&gt; Irate
+&lt;strong&gt;Current Music:&lt;/strong&gt; Combichrist - Fuck that Shit&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|
+&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: left;&quot;&gt;Other players: (the ones who weren't cool enough for full writeups)&lt;/p&gt;
+&lt;strong&gt;Mist Snowflakes:&lt;/strong&gt; Penny's younger brother: annoying little kid&lt;strong&gt; &lt;/strong&gt;|&lt;strong&gt; Mildred Snowflakes:&lt;/strong&gt; Penny's mother: harassed | &lt;strong&gt;Jolene Faris:&lt;/strong&gt; Gym teacher: jolly hockey sticks | &lt;strong&gt;Lynne B:&lt;/strong&gt; a fair-weather friend: pseudo-hip but a bit dippy | &lt;strong&gt;Rose Winder:&lt;/strong&gt; Onyx's sister: trying to reform</column>
+            <column name="post_title">the cast</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">cast</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-08-14 10:51:18</column>
+            <column name="post_modified_gmt">2008-08-14 09:51:18</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?page_id=17</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">page</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">1</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">22</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-07-13 07:00:38</column>
+            <column name="post_date_gmt">2008-07-13 06:00:38</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/2008-07-13.jpg&quot; alt=&quot;Power page 7&quot; /&gt;
+
+I sure was annoyed when I drew a panel I really liked, only to realise during inking that I'd made a silly mistake in it. I'll let you work out which one that is.
+
+Thanks to the very nice people at the Something Awful forums for giving me a couple of pointers re: making things less obviously amateurish. One of them sent me some stuff I really ought to implement into the site already.
+
+I fixed the site mostly by completely replacing index.php and starting over. At least I &lt;strong&gt;think&lt;/strong&gt; it's all okay now.
+
+I added a small &lt;a href=&quot;http://zzt.belsambar.net/frost/?page_id=17&quot;&gt;cast list&lt;/a&gt; to the site. There's only three characters on it so far but it'll expand over time.
+
+Actually you know what, balls to it, I'll put a second page up on Wednesday. I'm dissatisfied with the trickle of new pages so far. Don't expect it to be a regular thing though.</column>
+            <column name="post_title">Power: page 7</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-7</column>
+            <column name="to_ping"></column>
+            <column name="pinged">
+http://zzt.belsambar.net/frost/?page_id=17</column>
+            <column name="post_modified">2008-07-12 23:19:45</column>
+            <column name="post_modified_gmt">2008-07-12 22:19:45</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=22</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">23</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-07-16 07:00:10</column>
+            <column name="post_date_gmt">2008-07-16 06:00:10</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/2008-07-16.jpg&quot; alt=&quot;Power page 8&quot; /&gt;
+
+A New Challenger Has Appeared</column>
+            <column name="post_title">Power: page 8</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-8</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-07-15 23:14:21</column>
+            <column name="post_modified_gmt">2008-07-15 22:14:21</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=23</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">24</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-07-20 07:00:45</column>
+            <column name="post_date_gmt">2008-07-20 06:00:45</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/2008-07-20.jpg&quot; alt=&quot;Power page 9&quot; /&gt;
+
+Thought bubble in second panel; &quot;Why does this feel more like a cheerful mugging than praise?&quot;
+
+I need to stop doing that. It's &lt;strong&gt;really&lt;/strong&gt; annoying when I shrink the image and the writing is completely obscured..</column>
+            <column name="post_title">Power: page 9</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-9</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-07-20 13:17:25</column>
+            <column name="post_modified_gmt">2008-07-20 12:17:25</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=24</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">25</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-07-27 07:00:24</column>
+            <column name="post_date_gmt">2008-07-27 06:00:24</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/2008-07-27.jpg&quot; alt=&quot;Power page 10&quot; /&gt;
+
+&lt;em&gt;[no comment for this entry; aren't you relieved?]&lt;/em&gt;</column>
+            <column name="post_title">Power: page 10</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-10</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-07-26 23:35:51</column>
+            <column name="post_modified_gmt">2008-07-26 22:35:51</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=25</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">1</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">26</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-07-30 07:00:04</column>
+            <column name="post_date_gmt">2008-07-30 06:00:04</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/07/2008-07-30.jpg&quot; alt=&quot;Power page 11&quot; /&gt;
+
+Surprise extra entry for this week! I felt that not enough happens on this page and the page before so I'm not going to make all three of you who read this as it updates wait a week between them.
+
+Also, those CD shelves sure do look like book shelves. This is what happens when I draw things. They get drawn wrong.
+
+Had fun with that top panel. It took so long to draw, though! God! Good thing I like doing this!</column>
+            <column name="post_title">Power: page 11</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-11</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-07-30 11:53:24</column>
+            <column name="post_modified_gmt">2008-07-30 10:53:24</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=26</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">1</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">27</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-08-03 07:00:41</column>
+            <column name="post_date_gmt">2008-08-03 06:00:41</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/08/2008-08-03.jpg&quot; alt=&quot;Power page 12&quot; /&gt;
+
+BLAH BLAH BLAH
+
+Yeah, I stuck with those shelves because it would have been weirder to suddenly change the orientation between pages. At least they were easy to draw.
+
+Also: revenge of the fluctuating head size :o</column>
+            <column name="post_title">Power: page 12</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-12</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-08-02 09:57:50</column>
+            <column name="post_modified_gmt">2008-08-02 08:57:50</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=27</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">28</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-08-10 07:00:49</column>
+            <column name="post_date_gmt">2008-08-10 06:00:49</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/08/2008-08-10.jpg&quot; alt=&quot;Power page 13&quot; /&gt;
+
+Words, more words, a picture. Repeat until page is filled.
+
+I'll put another page up on Wednesday, too. In fact, I've decided to make &quot;one page one week, two pages the next&quot; my regular schedule for the time being. I don't really like only uploading one a week but I'm just not fast enough for two yet (although I have managed to up my production lately, which is nice).
+
+I'm not sure I got that hand right, but I can't see anything immediately wrong with it either. This bothers me.</column>
+            <column name="post_title">Power: page 13</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-13</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-08-11 14:13:40</column>
+            <column name="post_modified_gmt">2008-08-11 13:13:40</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=28</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">29</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-08-13 07:00:14</column>
+            <column name="post_date_gmt">2008-08-13 06:00:14</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/08/2008-08-13.jpg&quot; alt=&quot;Power page 14&quot; /&gt;
+
+HELLO, MY LOVELIES
+
+First off, you might notice that I've rescaled everything. I realised that I was &lt;em&gt;really&lt;/em&gt; unhappy with the size of my images, so I went back over everything and made them all a bit bigger. 90 extra pixels may not sound like much, but it makes everything more readable and obscures my linework a bit less. Now you can see how craptastic it is without having to blame the horrible image reduction. I am sorry if this makes the site to big for your resolution. Deal. With. It.
+
+I had to rejig the site to accommodate this though, got rid of those useless black bars on the left-hand side and replaced them with all the links and stuff. I'm not entirely satisfied with the new margins (in my current resolution there is a blank space the right which could use filling) but it's presentable.
+
+I also bought a domain name for the comic. If you prefer, change your bookmarks to &lt;a title=&quot;http://www.frost-comic.com&quot; href=&quot;http://www.frost-comic.com&quot; target=&quot;_self&quot;&gt;http://www.frost-comic.com&lt;/a&gt;. You won't get the funky favicon anymore, but I paid actual real money for this small detail so I'd prefer it got some use &amp;lt;:(</column>
+            <column name="post_title">Power: page 14</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-14</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-08-12 22:13:23</column>
+            <column name="post_modified_gmt">2008-08-12 21:13:23</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=29</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">30</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-08-17 07:00:38</column>
+            <column name="post_date_gmt">2008-08-17 06:00:38</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/08/2008-08-17.jpg&quot; alt=&quot;Power page 15&quot; /&gt;
+
+If Onyx's dialogue seems stilted here, it's because she's a bad actress and is just making stuff up to stall Penny until she can goad Rose into beating her up. That's my excuse anyway.
+
+Oh, and an advance warning: I'm probably going to have to stick the strip on hiatus at some point because I'm relocating to Spain for a while starting middle of next month. You have been warned. By this, this warning.</column>
+            <column name="post_title">Power: page 15</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-15</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-08-17 01:10:11</column>
+            <column name="post_modified_gmt">2008-08-17 00:10:11</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=30</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">31</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-08-24 07:00:18</column>
+            <column name="post_date_gmt">2008-08-24 06:00:18</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/08/2008-08-24.jpg&quot; alt=&quot;Power page 16&quot; /&gt;
+
+BOOYAH, new thing, another one on Wednesday, best thing ever
+
+Everything I do is the best
+
+The Light Pours Out Of Me
+
+RUUUAAAAAHHHHHHHHH</column>
+            <column name="post_title">Power: page 16</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">31</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-08-31 10:38:23</column>
+            <column name="post_modified_gmt">2008-08-31 09:38:23</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=31</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">32</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-08-31 11:00:46</column>
+            <column name="post_date_gmt">2008-08-31 10:00:46</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/08/2008-08-31.jpg&quot; alt=&quot;Power page 17&quot; /&gt;
+
+Whoops, I guess I didn't upload a page on Wednesday after all (and this one is a little late, to boot). Sorry about that. I hope nobody is too distraught. I'll put one up this Wednesday instead to compensate.
+
+Anyway I am going to have to put the comic and the site on hiatus for a little while in the near future, but I'd like to get to a certain point in the narrative before I do. If worse comes to worse I can always automate updates for a little while and let it get on with it.
+
+I'm not sure where Rose is pointing in that second panel.</column>
+            <column name="post_title">Power: page 17</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">32</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-09-03 17:34:47</column>
+            <column name="post_modified_gmt">2008-09-03 16:34:47</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=32</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">33</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-09-03 18:00:00</column>
+            <column name="post_date_gmt">2008-09-03 17:00:00</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/09/2008-09-03.jpg&quot; alt=&quot;Power page 18&quot; /&gt;
+
+Whoops, looks like I accidentally fucked the site up with the previous update and hadn't noticed until now. Fixed it, sorry!
+
+This is probably the last Wednesday update for a while. Tune in again on Sunday..........................</column>
+            <column name="post_title">Power: page 18</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-18</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-09-03 17:38:47</column>
+            <column name="post_modified_gmt">2008-09-03 16:38:47</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=33</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">34</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-09-07 07:00:03</column>
+            <column name="post_date_gmt">2008-09-07 06:00:03</column>
+            <column name="post_content">&lt;img class=&quot;aligncenter&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/09/2008-09-07.jpg&quot; alt=&quot;Power page 19&quot; /&gt;
+
+Whoops! There goes the neighbourhood!</column>
+            <column name="post_title">Power: page 19</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-19</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-09-06 23:58:54</column>
+            <column name="post_modified_gmt">2008-09-06 22:58:54</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=34</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">2</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">35</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-09-14 07:00:04</column>
+            <column name="post_date_gmt">2008-09-14 06:00:04</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/09/2008-09-14.jpg&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2008-09-14&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/09/2008-09-13.jpg&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+AUTOMATED POST #1:
+
+Writing this on Tuesday 9th, heading to Spain tomorrow, meeting with agency on Thursday, scheduling this post for Sunday. Hopefully by the time this goes up I'll have some idea of where I'll be working! Whoo boy, yes I am nervous.
+
+Next Sunday's post is the last one before a hiatus. I'll probably start posting again before the end of October at the latest. I am sorry about this, but it is necessary while I settle in.</column>
+            <column name="post_title">Power: page 20</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-20</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-09-09 20:14:04</column>
+            <column name="post_modified_gmt">2008-09-09 19:14:04</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=35</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">37</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-09-21 07:00:54</column>
+            <column name="post_date_gmt">2008-09-21 06:00:54</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/09/2008-09-21.jpg&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2008-09-21&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/09/2008-09-21.jpg&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+Also scheduling before I go. This is the last one for a bit, don't worry, my feelings won't be TOO hurt if you stop checking the site and never think about it again... or will they.
+
+Onyx's expression in the third panel is actually kind of funny, even though it really shouldn't be.</column>
+            <column name="post_title">Power: page 21</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-21</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-09-09 20:18:38</column>
+            <column name="post_modified_gmt">2008-09-09 19:18:38</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=37</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">38</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-11-09 07:00:43</column>
+            <column name="post_date_gmt">2008-11-09 06:00:43</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/11/2008-11-09.jpg&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2008-11-09&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/11/2008-11-09.jpg&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+And we're back! Kinda. I do not have a home computer or a scanner at the moment (I'll get one or the other once I'm decently affluent, but not before December at the earliest). I made sure to scan and letter all the pages I'd drawn before I relocated to Spain, so I've got a modest buffer, but we're going to have to go back to one page a week for the forseeable future and there could possibly be another hiatus at some point. I am sorry about this, Roast Beef
+
+Anyway. Yes. Magic. You didn't see any so far because it's banned in Suburbia Land. Also I guess Penny is talking directly to you, the reader? I guess? I really should think these narrative decisions through properly. Oh well.</column>
+            <column name="post_title">Power: page 22</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-22</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-11-08 18:30:47</column>
+            <column name="post_modified_gmt">2008-11-08 17:30:47</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=38</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">1</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">39</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-11-16 07:00:47</column>
+            <column name="post_date_gmt">2008-11-16 06:00:47</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/11/2008-11-16.jpg&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2008-11-16&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/11/2008-11-16.jpg&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+The only image editing program I have at my disposal at the moment is MS Paint. I am NOT HAPPY ABOUT THIS. Sorry if the resampled images look like crap.
+
+This is also not good because I would like to rewrite the &quot;No, I don't understand what you mean by fantasy novels&quot; bit because it is as lame as butts. Check back here later and I may have changed it.</column>
+            <column name="post_title">Power: page 23</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-23</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-11-21 17:05:50</column>
+            <column name="post_modified_gmt">2008-11-21 16:05:50</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=39</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">3</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">40</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-11-23 07:00:28</column>
+            <column name="post_date_gmt">2008-11-23 06:00:28</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/11/2008-11-23.jpg&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2008-11-23&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/11/2008-11-23.jpg&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+MS Paint still sucks but the comic should be readable. Otherwise I have nothing new to say, new page, wootin', I'm drawing new pages and they're pretty nice, you'll see later.
+
+Oh also the next sequence after this page goes on for too long. I apologise, I got sick of drawing it toward the end. Just a heads-up.</column>
+            <column name="post_title">Power: page 24</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-24</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-12-05 16:51:25</column>
+            <column name="post_modified_gmt">2008-12-05 15:51:25</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=40</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">41</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2008-12-07 07:00:00</column>
+            <column name="post_date_gmt">2008-12-07 06:00:00</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/12/2008-12-07.jpg&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2008-12-07&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2008/12/2008-12-07.jpg&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+I know I didn't update last week. This is because I'm not joking when I say I can't stand using MS Paint to resize the images, it really is awful (AUGH, jagged pixels). Anyway, I've decided to stop updating for a little while until I can edit things properly again; I'll be getting a new computer over Christmas that I'll be able to do things with (I've been updating from work these past few weeks). Stuff will probably be back in the new year. I'm sorry about this but at least I held off on advertising or any of that shit in the meantime so only about five people will notice. I'm only including a page here because I don't want to update without one (honestly, the previous page was a nice cut-off point, oh well).
+
+I also have a horrible feeling I broke the site with the previous update so that only RSS was working. It should be working again now though.
+
+Oh yeah, the comic! Penny's mother is kind of a disillusioned ex-hippie who has kept a few traits from that particular mindset, ref: &quot;the fuzz&quot;. You've seen the sword before, but I'm not saying where; go back in the archive and find it-- oh fine it was above the mantlepiece on page 6.
+
+Spoiler; on the next page Penny gets a sword! I have included this spoiler so you do not fall off the edge of your seat in anticipation while there is another hiatus.</column>
+            <column name="post_title">Power: page 25</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-25</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2008-12-05 17:02:42</column>
+            <column name="post_modified_gmt">2008-12-05 16:02:42</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=41</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">43</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2009-01-11 07:00:49</column>
+            <column name="post_date_gmt">2009-01-11 06:00:49</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/01/2009-01-11.jpg&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2009-01-11&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/01/2009-01-11.jpg&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+Whoosh, a new page for a new year! I got my image editor of choice installed on the school's computer and am seekritly screwing around with it. It is a secret to everyone. I also changed that dumb line that sucked a couple of pages ago but you're not supposed to notice.
+
+Apparently the sword has the ability to change the format of the speech bubbles (as of the next page I started to add them digitally). Don't be too alarmed, it's mostly harmless
+
+I sent my newly drawn pages home with my sister when she visited over the New Year, so the comic's fate rests on her shoulders (ie. pending scans). DONT FORGET DAMNIT</column>
+            <column name="post_title">Power: page 26</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-26</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2009-01-09 23:43:26</column>
+            <column name="post_modified_gmt">2009-01-09 22:43:26</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=43</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">1</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">44</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2009-01-18 07:00:25</column>
+            <column name="post_date_gmt">2009-01-18 06:00:25</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/01/2009-01-18.jpg&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2009-01-18&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/01/2009-01-18.jpg&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+I guess I fell into the VGCats trap of having a high-larious character expression in place of any kind of a punchline here. Oh Well
+
+Also I guess Penny is weirdly elongated in the second panel. I don't know why.</column>
+            <column name="post_title">Power: page 27</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-2</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2009-04-06 15:21:54</column>
+            <column name="post_modified_gmt">2009-04-06 14:21:54</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=44</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">45</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2009-01-25 07:00:30</column>
+            <column name="post_date_gmt">2009-01-25 06:00:30</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/01/2009-01-25.jpg&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2009-01-25&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/01/2009-01-25.jpg&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+BLUGHgggggggghhhhhhhhhhhhrrh rj</column>
+            <column name="post_title">Power: page 28</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-28</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2009-04-06 15:22:27</column>
+            <column name="post_modified_gmt">2009-04-06 14:22:27</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=45</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">46</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2009-02-08 07:00:47</column>
+            <column name="post_date_gmt">2009-02-08 06:00:47</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/02/2009-02-08.jpg&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2009-02-08&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/02/2009-02-08.jpg&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+Hopefully this won't be the only page this month. Sorry for no page last week (nobody cares) but I was sick and this is also the only page left in my cache until the others finally get scanned properly (scanner may have broken? something like that). So, I may need to hiatus again pretty soon, but these things cannot be avoided. Hold Onto Your Hats until then, anyhow</column>
+            <column name="post_title">Power: page 29</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-2-2</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2009-04-06 15:22:55</column>
+            <column name="post_modified_gmt">2009-04-06 14:22:55</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=46</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">47</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2009-04-05 07:00:51</column>
+            <column name="post_date_gmt">2009-04-05 06:00:51</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/04/2009-04-05.png&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2009-04-05&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/04/2009-04-05.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+I ATEN'T DEAD, i was busy for a couple of months and didn't have anything to upload for a bunch of time because of a crappy scanner but that is all over now, sometimes I even draw new pages of komick
+
+Not much to say about this one, lots of talk, if it's not clear the &quot;censored picture&quot; is some godawful porn image spam Melissa printed off the internet and put in the box on the back of the scooter in case the police searched it (and they did!)
+
+Also can I just say here and now that I'm horrible at drawing vehicles? Sorry if the scooter's sort of non-euclidean.
+
+Oh one last thing, technical and boring, I decided to get a clue and start using pngs, maybe I could go back some time and replace all the old pages with those too</column>
+            <column name="post_title">Power: page 30</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-3</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2009-04-06 15:56:38</column>
+            <column name="post_modified_gmt">2009-04-06 14:56:38</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=47</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">48</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2009-04-12 20:17:16</column>
+            <column name="post_date_gmt">2009-04-12 19:17:16</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/04/2009-04-12.png&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2009-04-12&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/04/2009-04-12.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+buts, laol
+
+been playing persona 3 lately, it's great but some of the music is an atrocity brought upon all mankind, you need to know this</column>
+            <column name="post_title">Power: page 31</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-31</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2009-04-12 20:18:18</column>
+            <column name="post_modified_gmt">2009-04-12 19:18:18</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=48</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">0</column>
+        </table>
+        <table name="nadirposts">
+            <column name="ID">49</column>
+            <column name="post_author">1</column>
+            <column name="post_date">2009-04-19 18:06:10</column>
+            <column name="post_date_gmt">2009-04-19 17:06:10</column>
+            <column name="post_content">&lt;a href=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/04/2009-04-19.png&quot;&gt;&lt;img class=&quot;aligncenter size-medium wp-image-36&quot; title=&quot;2009-04-19&quot; src=&quot;http://zzt.belsambar.net/frost/wp-content/uploads/2009/04/2009-04-19.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;
+
+FINALLY, finished that part
+
+Sorry that segment overran a bit (and was extended by hiatus, too). I might not update next week, which will make things even worse. Whoopsie me</column>
+            <column name="post_title">Power: page 32</column>
+            <column name="post_category">0</column>
+            <column name="post_excerpt"></column>
+            <column name="post_status">publish</column>
+            <column name="comment_status">open</column>
+            <column name="ping_status">open</column>
+            <column name="post_password"></column>
+            <column name="post_name">power-page-32</column>
+            <column name="to_ping"></column>
+            <column name="pinged"></column>
+            <column name="post_modified">2009-04-19 18:06:10</column>
+            <column name="post_modified_gmt">2009-04-19 17:06:10</column>
+            <column name="post_content_filtered"></column>
+            <column name="post_parent">0</column>
+            <column name="guid">http://zzt.belsambar.net/frost/?p=49</column>
+            <column name="menu_order">0</column>
+            <column name="post_type">post</column>
+            <column name="post_mime_type"></column>
+            <column name="comment_count">1</column>
+        </table>
+    </database>
+</pma_xml_export>

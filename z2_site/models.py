@@ -21,7 +21,7 @@ class Article(models.Model):
         ordering = ["title"]
 
     def __str__(self):
-        return self.title + " by " + self.author
+        return "["+str(self.id)+"] " + self.title + " by " + self.author
 
     def url(self):
         return "/article/" + str(self.id) + "/" + slugify(self.title)
