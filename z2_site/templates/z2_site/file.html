@@ -59,23 +59,24 @@ var save = "{{save}}";
                             {% endfor %}
                         </optgroup>
                     </select>
-                
+
                     <label><input type="checkbox" name="2x" value="1"> - 2x Zoom</label>
                 </fieldset>
-                
+
                 <fieldset>
                     <label>
                         Board Rendering
                         <select name="renderer">
                             <option value="zzt_standard" selected>Standard</option>
                             <option value="zzt_objects">Object Highlight</option>
+                            <option value="zzt_fake">Fake Wall Highlight</option>
                             <option value="zzt_dark">Dark Board</option>
                             <!--<option value="zzt_torch">Dark Board - Lit Torch</option>-->
                         </select>
                     </label>
-                    
+
                     <br>
-                    
+
                     <label>
                         High Intensity Backgrounds
                         <select name="intensity">
@@ -83,9 +84,9 @@ var save = "{{save}}";
                             <option value="low" selected>Off</option>
                         </select>
                     </label>
-                    
+
                     <br>
-                    
+
                     <label>
                         Invisible Walls
                         <select name="invisibles">

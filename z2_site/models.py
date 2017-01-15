@@ -16,15 +16,25 @@ class Article(models.Model):
     date = models.DateField(default="1970-01-01")
     published = models.BooleanField(default=False)
     page = models.IntegerField(default=1)
+    parent = models.ForeignKey("Article", null=True, blank=True, default=None)
 
     class Meta:
         ordering = ["title"]
 
     def __str__(self):
-        return "["+str(self.id)+"] " + self.title + " by " + self.author
+        return "[" + str(self.id) + "] " + self.title + " by " + self.author
 
     def url(self):
         return "/article/" + str(self.id) + "/" + slugify(self.title)
+
+    def get_page_count(self):
+        if self.parent_id == 0:
+            page_count = 1 + Article.objects.filter(parent_id=self.id).count()
+        else:
+            page_count = 1 + Article.objects.filter(
+                parent_id=self.parent_id
+            ).count()
+        return page_count
 
 
 class File(models.Model):
@@ -68,8 +78,8 @@ class File(models.Model):
     description = models.TextField(null=True, blank=True, default="")
     review_count = models.IntegerField(default=0)
     rating = models.FloatField(null=True, default=None, blank=True)
-    details = models.ManyToManyField("Detail")
-    articles = models.ManyToManyField("Article")
+    details = models.ManyToManyField("Detail", default=None, blank=True)
+    articles = models.ManyToManyField("Article", default=None, blank=True)
     article_count = models.IntegerField(default=0)
 
     class Meta:
@@ -147,7 +157,7 @@ class Review(models.Model):
         ordering = ["id"]
 
     def __str__(self):
-        x = ("[" + str(self.id)  + "] Review for " + self.file.title + " [" +
+        x = ("[" + str(self.id) + "] Review for " + self.file.title + " [" +
              self.file.filename + "] by " + self.author
              )
         return x

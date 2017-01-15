@@ -1,0 +1,668 @@
+    1762 1 blaughlm.zip
+0150 1 Boring.zip
+1631 1 endgame.zip
+1812 1 endgame2_1.zip
+    0431 1 four.zip
+    1530 1 lashooot.zip
+1450 1 oevil.zip
+    1061 1 sic.zip
+    1328 1 wolf.zip
+1894 1 YAAAY.zip
+2129 a ADVLINK2.ZIP     <- Zip was never downloaded from z2.
+    0042 a aktk.zip     <- Fixed link, but it's a font that needs PNGing.
+0051 a anihili8r.zip    <- This exists. Says it doesn't in django
+0057 a Apzine.zip       <- Corrupt zip file (also apzine.zip not Apzine.zip)
+2144 a arena1.zip       <- Missing zip.
+    0072 a Atlantis
+    1271 a uprzzm.zip
+    1275 a usassociety.zip <- RENAMED ZIP
+0085 b bananaq.zip
+0097 b be2.zip
+0145 b bombzzt.zip
+0203 c cjwuzzle.zip
+    0204 c Class-war.zip
+0326 c dragon.zip
+0268 d dctlkt.zip
+    0269 d ddsoslt.zip
+    0275 d decguide.zip
+0278 d demomim.zip <- ZIG
+0295 d dgntower.zip <- dgntowr.zip and dgntwr.zip exist in /d/
+0311 d dmage2.zip
+0312 d dmage3.zip
+    0314 d dmfont.zip   <- Has font to dump.
+    0323 d downtown.zip <- Had no extension
+1858 d Dragon.zip
+0343 d dstation.zip
+1457 d dysantemple.zip
+    0382 e era.zip      <- Has font to dump.
+    1451 e EVILGOOD-demo.zip
+2142 e Evilstania.zip
+    1793 e hood.zip     <- I believe moving this from H to E was correct.
+0013 f 4seasons.zip
+0014 f 4seasons2.zip
+0402 f fantasyszzt.zip
+0406 f ff.zip   <- MIA
+0441 f fredomzzm.zip <- Moved zzm to F, renamed freedomzzm.zip
+0449 f frkzztse.zip
+    0453 f fsoundtr.zip
+    0459 f funtown.zip <- Has font to dump
+    0510 h halsound.zip
+    0525 h hooker.zip <- Has font to dump
+    0533 h hyperzzt.zip <- Has font to dump
+    0164 i building.zip
+0566 i invaders.zip
+0601 j jknight.zip
+    0626 k kewliof.zip
+2140 k KNIGHST.zip
+    1245 k trethain.zip <- Has font to dump
+2138 l lifeszzt.zip
+    0674 l lmiii-1.zip <- Has font to dump
+0676 l loaelkdemo.zip <- Zig
+    0688 l lr6.zip <- Has font to dump
+    1748 l lv3demo.zip
+2143 l LynxZztGraveyard.zip
+2137 l Lyon.zip
+0783 l muzakone.zip
+0966 l refritos.zip
+1203 l thelost.ZIP
+    1292 l Voyage1.zip
+    1293 l Voyage2.zip
+    0047 m amtrealiate.zip
+0049 m andy2dem.zip
+2095 m MADTOM3.ZIP
+0719 m maze3d.zip <- This may be overlap!!
+1584 m MECH.zip
+0765 m morestuff.zip
+0770 m MOUSEENGINE.zip
+0776 m mrlinzzt.zip
+1927 n 9elation.zip
+0540 n icannaewait.zip
+    0812 n Noise.zip
+    1430 n nonengns
+2135 n nyan.zip
+    0855 p parell1
+0859 p patriot.zip
+0875 p pirate.zip <- OVERLAP ON Z2!!!
+    0878 p pkmult1.zip <- Has font
+2132 p PlatoCav.zip
+2139 p PLATON2.zip
+0001 p playv4.zip
+0905 p prison.zip
+0940 q quest3d.zip
+    0011 r 3g-ruby.zip
+    0950 r ratraceh.zip <- Has Font
+    0977 r rgmusiczzm.zip
+1222 r tim0.zip
+0006 s 202.zip
+2141 s ARCH.zip
+0134 s Bob.zip
+1982 s DRogueAuraWAIFur2
+0654 s ldog.zip
+1002 s rpgsound.zip
+2133 s santa.zip
+1051 s shake.zip
+1090 s smiley.zip
+1127 s srblue.zip
+1142 s starcom.zip
+1146 s starwars.zip
+1149 s stbc00001.zip
+1459 s STBC00003.zip
+1174 s sweden.zip
+1178 s szttools.zip
+1244 s trek.zip
+0012 t 3trials.zip
+0017 t 7monday7.zip
+2134 t ATLANTIS.zip
+0801 t newlook.zip
+2128 t quiet1.zip
+1718 t TC.zip
+1189 t teatime.zip
+1190 t teatime2.zip
+1209 t TheTribe.zip
+1220 t tidizz.zip
+1227 t timewarsdem.zip
+2130 t Time_Quest_1.zip
+2131 t TMQUESTREUPLOAD.zip
+1263 t twistrpg.zip
+1389 t zzmtris.zip
+1285 v village2.zip
+1941 w 2006WoZ.zip
+2136 w WMD2.zip
+1390 w ZZMX.zip
+1344 x xod.zip
+1360 y YumYum.zip
+1361 y yvs2.zip
+0625 z kewl.zip
+1364 z Zagold.zip
+1554 z zarena2.zip
+1505 z zzt2zig.zip
+2127 z zztvX.zip
+139 MISSING ZIPS
+========================================
+Missing entry for /var/projects/museum/zgames/1a_zfonts/srblue.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/kewliof.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/aktk.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/pkmult1.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/quest3d.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/funtown.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/hooker.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/patriot.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/jknight.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/teatime.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/dmfont.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/kurie.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/dctlkt.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/timewarsdem.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/ssg.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/shake.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/mrlinzzt.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/village2.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/ratraceh.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/xod.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/starcom.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/kewl.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/lr6.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/hyperzzt.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/village.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/refritos.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/yvs2.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/trethain.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/newlook.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/lmiii-1.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/era.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/teatime2.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/bombzzt.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/YumYum.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/bananaq.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/ff.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/be2.zip
+Missing entry for /var/projects/museum/zgames/1a_zfonts/twistrpg.zip
+Missing entry for /var/projects/museum/zgames/s/szzt3dem.zip
+Missing entry for /var/projects/museum/zgames/s/sdarkness.zip
+Missing entry for /var/projects/museum/zgames/s/series-a.zip
+Missing entry for /var/projects/museum/zgames/s/SWEVII.zip
+Missing entry for /var/projects/museum/zgames/s/smileyrmk.zip
+Missing entry for /var/projects/museum/zgames/s/s-tool-k.zip
+Missing entry for /var/projects/museum/zgames/s/SLife2demo.zip
+Missing entry for /var/projects/museum/zgames/s/swepviidem.zip
+Missing entry for /var/projects/museum/zgames/s/stuff.zip
+Missing entry for /var/projects/museum/zgames/s/series-a3.zip
+Missing entry for /var/projects/museum/zgames/s/Srpggggg.zip
+Missing entry for /var/projects/museum/zgames/s/sic.zip
+Missing entry for /var/projects/museum/zgames/y/yoshiadv.zip
+Missing entry for /var/projects/museum/zgames/y/YAAAY.zip
+Missing entry for /var/projects/museum/zgames/zig/loaelkdemo.zip
+Missing entry for /var/projects/museum/zgames/zig/STBC00003a.zip
+Missing entry for /var/projects/museum/zgames/zig/mplayer.zip
+Missing entry for /var/projects/museum/zgames/zig/demomim.zip
+Missing entry for /var/projects/museum/zgames/zig/zarena2.zip
+Missing entry for /var/projects/museum/zgames/zig/dysantemple.zip
+Missing entry for /var/projects/museum/zgames/zig/stbc00001b.zip
+Missing entry for /var/projects/museum/zgames/zig/zzt2zig.zip
+Missing entry for /var/projects/museum/zgames/zig/Zagold.zip
+Missing entry for /var/projects/museum/zgames/p/playv3.zip
+2 copies of /var/projects/museum/zgames/p/pupegold.zip
+2 copies of /var/projects/museum/zgames/p/Pirate.zip
+Missing entry for /var/projects/museum/zgames/p/ProjZZT.zip
+Missing entry for /var/projects/museum/zgames/p/pipe-se.zip
+Missing entry for /var/projects/museum/zgames/p/painter.zip
+Missing entry for /var/projects/museum/zgames/p/PrisonerDEMODK.zip
+Missing entry for /var/projects/museum/zgames/p/parell1.zip
+Missing entry for /var/projects/museum/zgames/p/pipeline60.zip
+Missing entry for /var/projects/museum/zgames/p/piratwo.zip
+Missing entry for /var/projects/museum/zgames/p/gtpyrmid.zip
+Missing entry for /var/projects/museum/zgames/p/#play.zip
+Missing entry for /var/projects/museum/zgames/c/colorb98.zip
+Missing entry for /var/projects/museum/zgames/c/calidrmn.zip
+Missing entry for /var/projects/museum/zgames/c/choasdemo2.zip
+Missing entry for /var/projects/museum/zgames/c/coprogram.zip
+Missing entry for /var/projects/museum/zgames/c/clwars.zip
+Missing entry for /var/projects/museum/zgames/c/cj.zip
+Missing entry for /var/projects/museum/zgames/c/catalogn.zip
+Missing entry for /var/projects/museum/zgames/c/cityofmons.zip
+Missing entry for /var/projects/museum/zgames/c/ct2.zip
+Missing entry for /var/projects/museum/zgames/c/cwars7.zip
+Missing entry for /var/projects/museum/zgames/x/xwizdemo.zip
+Missing entry for /var/projects/museum/zgames/x/xcal2030.zip
+Missing entry for /var/projects/museum/zgames/x/x-file01.zip
+Missing entry for /var/projects/museum/zgames/x/xtscape.zip
+Missing entry for /var/projects/museum/zgames/j/Johnwrld.zip
+Missing entry for /var/projects/museum/zgames/f/ft4ffwrd.zip
+Missing entry for /var/projects/museum/zgames/f/freakzztse.zip
+Missing entry for /var/projects/museum/zgames/f/fun.zip
+Missing entry for /var/projects/museum/zgames/f/flik.zip
+Missing entry for /var/projects/museum/zgames/f/four.zip
+Missing entry for /var/projects/museum/zgames/b/bh-demo.zip
+Missing entry for /var/projects/museum/zgames/b/Boss3v1.2.zip
+Missing entry for /var/projects/museum/zgames/b/blaughlm.zip
+Missing entry for /var/projects/museum/zgames/b/Boss3Part1.zip
+Missing entry for /var/projects/museum/zgames/b/blergh.zip
+Missing entry for /var/projects/museum/zgames/b/Boring.zip
+Missing entry for /var/projects/museum/zgames/b/booby.zip
+Missing entry for /var/projects/museum/zgames/b/buck70s.zip
+Missing entry for /var/projects/museum/zgames/b/baddemo.zip
+Missing entry for /var/projects/museum/zgames/b/blades.zip
+Missing entry for /var/projects/museum/zgames/b/boring16.zip
+Missing entry for /var/projects/museum/zgames/w/WALT-ZZT.zip
+Missing entry for /var/projects/museum/zgames/w/wooperrun.zip
+Missing entry for /var/projects/museum/zgames/w/wolf.zip
+Missing entry for /var/projects/museum/zgames/w/weird.zip
+Missing entry for /var/projects/museum/zgames/w/wwf-stk.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/horror.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/building.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/trek.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/dstation.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/szttools.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/fantasy.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/Voyage2.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/dragon.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/lv3demo.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/ldog.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/life.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/EVILGOOD-demo.zip
+Missing entry for /var/projects/museum/zgames/1a_szzt/Voyage1.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/stk.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/infoedit.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/sympc.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/boccokit.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztmplay215.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/chrutils.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/mplayer.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/savelock.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zmenu.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztunlok.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/izztgm.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/Mwzzt.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/mwzicons.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/lzu_0.3.1.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztmplay20.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zzmstud.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/tikmak.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/omgalock.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/PureSTK.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/asc2brd.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/vb500a.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/muzmak.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zunwin21.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/textref.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/ulpro135.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/fm.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/nomo7upd.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztfman10.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zfiles24.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/Rpgzzt.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztcheatb.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/ibagv1.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztname.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztae.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/musauthor.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztfont.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/ZZTfaces.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zfiles13.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/Mwencv14.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/mmaker.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/tfades20.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zfiles20.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/Desktop_Theme.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/Z2_Browser_1.2.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zeol.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/mousev2.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/z2browser10.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztmplay.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztuwin-0.2.3.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/quill.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zfiles18.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/Mwencv13.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zprot.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/dexkit.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/ZRUN.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/ansicv22.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/popezkit.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/tab2zzt.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zafs.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/hzzmplay.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zzfont.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/randzzm.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/lemutils.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztmanl.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/mwzzt11.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/Z-zztrunner.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/megahack.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztenc.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/helpfile.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/!zzttool.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/st.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztpatch.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/ff.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/ulpro200.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/superwad.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/un-zztae.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztuwin-0.1.0.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/kevedit.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/IZZTGM2.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/bsv2brd.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/mwzztico.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/u-tool-k.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/lzu_0_3_3.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zztype.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/tabconv3.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/tfades.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/asc.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/zzthk112.zip
+Missing entry for /var/projects/museum/zgames/1a_zutils/char2.zip
+Missing entry for /var/projects/museum/zgames/h/hzzt20al.zip
+Missing entry for /var/projects/museum/zgames/h/HeX-Demo.zip
+Missing entry for /var/projects/museum/zgames/h/hhg_demo.zip
+Missing entry for /var/projects/museum/zgames/h/hyper_jc.zip
+Missing entry for /var/projects/museum/zgames/h/homealon.zip
+Missing entry for /var/projects/museum/zgames/h/advice.zip
+Missing entry for /var/projects/museum/zgames/h/hood.zip
+Missing entry for /var/projects/museum/zgames/g/geo-tom2.zip
+Missing entry for /var/projects/museum/zgames/g/gate2.zip
+Missing entry for /var/projects/museum/zgames/t/tmplt.zip
+2 copies of /var/projects/museum/zgames/t/tc.zip
+Missing entry for /var/projects/museum/zgames/t/time.zip
+Missing entry for /var/projects/museum/zgames/t/OWNAGE.zip
+Missing entry for /var/projects/museum/zgames/t/tidizzy.zip
+Missing entry for /var/projects/museum/zgames/t/tck.zip
+Missing entry for /var/projects/museum/zgames/t/Tournmnt.zip
+Missing entry for /var/projects/museum/zgames/t/mayhemfl.zip
+Missing entry for /var/projects/museum/zgames/t/thing.zip
+Missing entry for /var/projects/museum/zgames/t/TheTrible.zip
+Missing entry for /var/projects/museum/zgames/t/tp2demo.zip
+Missing entry for /var/projects/museum/zgames/n/ndemo.zip
+Missing entry for /var/projects/museum/zgames/n/naewait.zip
+Missing entry for /var/projects/museum/zgames/n/novamag.zip
+Missing entry for /var/projects/museum/zgames/n/negative.zip
+Missing entry for /var/projects/museum/zgames/n/nigeldemoupdate.zip
+Missing entry for /var/projects/museum/zgames/n/n_preview.zip
+Missing entry for /var/projects/museum/zgames/n/nonengns.zip
+Missing entry for /var/projects/museum/zgames/n/Netsurf.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-428.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-278.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z6662.zip
+Missing entry for /var/projects/museum/zgames/24hoz/autumn01.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z6668.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z6660.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-38.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24hozzt.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-422.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-000.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-424.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z6665.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-426.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-275.zip
+Missing entry for /var/projects/museum/zgames/24hoz/summer2002.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-425.zip
+Missing entry for /var/projects/museum/zgames/24hoz/spring2002.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-429.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-274.zip
+Missing entry for /var/projects/museum/zgames/24hoz/winter02.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-423.zip
+Missing entry for /var/projects/museum/zgames/24hoz/f02-game.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z6661.zip
+Missing entry for /var/projects/museum/zgames/24hoz/s24z-279.zip
+Missing entry for /var/projects/museum/zgames/d/game1.zip
+Missing entry for /var/projects/museum/zgames/d/damge3.zip
+2 copies of /var/projects/museum/zgames/d/bl-gm.zip
+Missing entry for /var/projects/museum/zgames/d/ddaoslt.zip
+Missing entry for /var/projects/museum/zgames/d/darktor.zip
+Missing entry for /var/projects/museum/zgames/d/Defendhouse.zip
+Missing entry for /var/projects/museum/zgames/d/decguida.zip
+Missing entry for /var/projects/museum/zgames/d/detrot.zip
+Missing entry for /var/projects/museum/zgames/d/damge2.zip
+Missing entry for /var/projects/museum/zgames/d/destructolp.zip
+Missing entry for /var/projects/museum/zgames/d/DRogueAuraWAIFur2.zip
+Missing entry for /var/projects/museum/zgames/d/dino.zip
+Missing entry for /var/projects/museum/zgames/d/ddwbt2.zip
+Missing entry for /var/projects/museum/zgames/d/destructoguy.zip
+Missing entry for /var/projects/museum/zgames/d/dgntowr.zip
+Missing entry for /var/projects/museum/zgames/d/destructo2.zip
+Missing entry for /var/projects/museum/zgames/d/drunkhip.zip
+Missing entry for /var/projects/museum/zgames/e/evo2.zip
+Missing entry for /var/projects/museum/zgames/e/endgame2_1.zip
+Missing entry for /var/projects/museum/zgames/e/eradem.zip
+Missing entry for /var/projects/museum/zgames/e/endgame.zip
+Missing entry for /var/projects/museum/zgames/e/ewokdemo.zip
+Missing entry for /var/projects/museum/zgames/e/Emonsguild.zip
+Missing entry for /var/projects/museum/zgames/e/endlessj.zip
+Missing entry for /var/projects/museum/zgames/e/evomag01.zip
+Missing entry for /var/projects/museum/zgames/a/Ansiimaker.zip
+Missing entry for /var/projects/museum/zgames/a/Ansiimaker2.zip
+Missing entry for /var/projects/museum/zgames/a/agentzzt.zip
+Missing entry for /var/projects/museum/zgames/a/avisdemo.zip
+Missing entry for /var/projects/museum/zgames/a/aolcompilation.zip
+Missing entry for /var/projects/museum/zgames/a/amtretaliate.zip
+Missing entry for /var/projects/museum/zgames/a/alt4pack.zip
+Missing entry for /var/projects/museum/zgames/a/anthdemo.zip
+Missing entry for /var/projects/museum/zgames/a/acpack.zip
+Missing entry for /var/projects/museum/zgames/a/atlantis.zip
+Missing entry for /var/projects/museum/zgames/a/anihil8r.zip
+Missing entry for /var/projects/museum/zgames/a/andydem.zip
+Missing entry for /var/projects/museum/zgames/a/axeman.zip
+Missing entry for /var/projects/museum/zgames/a/amesocdemo.zip
+2 copies of /var/projects/museum/zgames/z/mplayer.zip
+Missing entry for /var/projects/museum/zgames/z/zcrimes2.zip
+Missing entry for /var/projects/museum/zgames/z/zmtheme.zip
+Missing entry for /var/projects/museum/zgames/z/palace.zip
+Missing entry for /var/projects/museum/zgames/z/pingpong.zip
+Missing entry for /var/projects/museum/zgames/z/zzt_shareware.zip
+Missing entry for /var/projects/museum/zgames/z/zztfont.zip
+Missing entry for /var/projects/museum/zgames/z/ZZTexperienceBETA12.zip
+Missing entry for /var/projects/museum/zgames/z/zztff.zip
+Missing entry for /var/projects/museum/zgames/z/zzt-ques.zip
+Missing entry for /var/projects/museum/zgames/z/zeldalordofguardia.zip
+Missing entry for /var/projects/museum/zgames/z/zzt_flimsy.zip
+Missing entry for /var/projects/museum/zgames/z/zzteam7.zip
+Missing entry for /var/projects/museum/zgames/z/zzttox~1.zip
+Missing entry for /var/projects/museum/zgames/z/zzt-zpzk.zip
+Missing entry for /var/projects/museum/zgames/z/zone10zz.zip
+Missing entry for /var/projects/museum/zgames/z/zztv5.zip
+Missing entry for /var/projects/museum/zgames/o/oevil.zip
+2 copies of /var/projects/museum/zgames/v/Village.zip
+2 copies of /var/projects/museum/zgames/v/village.zip
+2 copies of /var/projects/museum/zgames/v/VILLAGE2.zip
+2 copies of /var/projects/museum/zgames/r/realmz.zip
+Missing entry for /var/projects/museum/zgames/r/runnerdem.zip
+Missing entry for /var/projects/museum/zgames/r/redwavedemo.zip
+Missing entry for /var/projects/museum/zgames/r/ryoart.zip
+Missing entry for /var/projects/museum/zgames/r/rotz.zip
+Missing entry for /var/projects/museum/zgames/u/Untitled.zip
+Missing entry for /var/projects/museum/zgames/u/usasociety.zip
+Missing entry for /var/projects/museum/zgames/u/UWL.zip
+Missing entry for /var/projects/museum/zgames/u/U-A.zip
+Missing entry for /var/projects/museum/zgames/1/3trials.zip
+Missing entry for /var/projects/museum/zgames/1/2006WoZ.zip
+Missing entry for /var/projects/museum/zgames/1/4seasons2.zip
+Missing entry for /var/projects/museum/zgames/1/9elation.zip
+Missing entry for /var/projects/museum/zgames/1/3g-ruby.zip
+Missing entry for /var/projects/museum/zgames/1/4seasons.zip
+Missing entry for /var/projects/museum/zgames/1/24STRANDED.zip
+Missing entry for /var/projects/museum/zgames/1/playv4.zip
+Missing entry for /var/projects/museum/zgames/1/7monday7.zip
+Missing entry for /var/projects/museum/zgames/1/202.zip
+Missing entry for /var/projects/museum/zgames/i/jerks1se.zip
+Missing entry for /var/projects/museum/zgames/1a_ds/jzicons.zip
+Missing entry for /var/projects/museum/zgames/1a_ds/zztwp1.zip
+Missing entry for /var/projects/museum/zgames/m/mportal.zip
+Missing entry for /var/projects/museum/zgames/m/mrred2.zip
+Missing entry for /var/projects/museum/zgames/m/musauthor.zip
+Missing entry for /var/projects/museum/zgames/m/mbmtpr.zip
+Missing entry for /var/projects/museum/zgames/m/monsterb.zip
+Missing entry for /var/projects/museum/zgames/m/maing.zip
+Missing entry for /var/projects/museum/zgames/m/musakone.zip
+Missing entry for /var/projects/museum/zgames/m/mosaic.zip
+Missing entry for /var/projects/museum/zgames/m/magazine.zip
+Missing entry for /var/projects/museum/zgames/m/mwencv12.zip
+Missing entry for /var/projects/museum/zgames/m/musesofsdarkness.zip
+Missing entry for /var/projects/museum/zgames/m/morestuf.zip
+2 copies of /var/projects/museum/zgames/m/mech.zip
+Missing entry for /var/projects/museum/zgames/m/MECHT.zip
+Missing entry for /var/projects/museum/zgames/m/MicroBKZZT.zip
+Missing entry for /var/projects/museum/zgames/m/mwtk-enc.zip
+Missing entry for /var/projects/museum/zgames/m/metallic.zip
+Missing entry for /var/projects/museum/zgames/m/mtzztool.zip
+Missing entry for /var/projects/museum/zgames/m/mwencv11.zip
+Missing entry for /var/projects/museum/zgames/l/lemkill.zip
+Missing entry for /var/projects/museum/zgames/l/lift.zip
+Missing entry for /var/projects/museum/zgames/l/lstwrld.zip
+Missing entry for /var/projects/museum/zgames/l/lashooot.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/grdmusic.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/uprzzm.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/rgmusiczzm.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/ZZMX.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/Noise.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/freedomzzm.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/zzmtris.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/cv_music.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/fsoundtr.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/rpgsound.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/omega.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/halsound.zip
+Missing entry for /var/projects/museum/zgames/1a_zmusic/starwars.zip
+381 MISSING FILES()
+========================================
+http://django.pi:8000/file/1/blaughlm.zip
+http://django.pi:8000/file/1/Boring.zip
+http://django.pi:8000/file/1/endgame.zip
+http://django.pi:8000/file/1/endgame2_1.zip
+http://django.pi:8000/file/1/four.zip
+http://django.pi:8000/file/1/lashooot.zip
+http://django.pi:8000/file/1/oevil.zip
+http://django.pi:8000/file/1/sic.zip
+http://django.pi:8000/file/1/wolf.zip
+http://django.pi:8000/file/1/YAAAY.zip
+http://django.pi:8000/file/a/ADVLINK2.ZIP
+http://django.pi:8000/file/a/aktk.zip
+http://django.pi:8000/file/a/anihili8r.zip
+http://django.pi:8000/file/a/Apzine.zip
+http://django.pi:8000/file/a/arena1.zip
+http://django.pi:8000/file/a/Atlantis
+http://django.pi:8000/file/a/uprzzm.zip
+http://django.pi:8000/file/a/usassociety.zip
+http://django.pi:8000/file/b/bananaq.zip
+http://django.pi:8000/file/b/be2.zip
+http://django.pi:8000/file/b/bombzzt.zip
+http://django.pi:8000/file/c/cjwuzzle.zip
+http://django.pi:8000/file/c/Class-war.zip
+http://django.pi:8000/file/c/dragon.zip
+http://django.pi:8000/file/d/dctlkt.zip
+http://django.pi:8000/file/d/ddsoslt.zip
+http://django.pi:8000/file/d/decguide.zip
+http://django.pi:8000/file/d/demomim.zip
+http://django.pi:8000/file/d/dgntower.zip
+http://django.pi:8000/file/d/dmage2.zip
+http://django.pi:8000/file/d/dmage3.zip
+http://django.pi:8000/file/d/dmfont.zip
+http://django.pi:8000/file/d/downtown.zip
+http://django.pi:8000/file/d/Dragon.zip
+http://django.pi:8000/file/d/dstation.zip
+http://django.pi:8000/file/d/dysantemple.zip
+http://django.pi:8000/file/e/era.zip
+http://django.pi:8000/file/e/EVILGOOD-demo.zip
+http://django.pi:8000/file/e/Evilstania.zip
+http://django.pi:8000/file/e/hood.zip
+http://django.pi:8000/file/f/4seasons.zip
+http://django.pi:8000/file/f/4seasons2.zip
+http://django.pi:8000/file/f/fantasyszzt.zip
+http://django.pi:8000/file/f/ff.zip
+http://django.pi:8000/file/f/fredomzzm.zip
+http://django.pi:8000/file/f/frkzztse.zip
+http://django.pi:8000/file/f/fsoundtr.zip
+http://django.pi:8000/file/f/funtown.zip
+http://django.pi:8000/file/h/halsound.zip
+http://django.pi:8000/file/h/hooker.zip
+http://django.pi:8000/file/h/hyperzzt.zip
+http://django.pi:8000/file/i/building.zip
+http://django.pi:8000/file/i/invaders.zip
+http://django.pi:8000/file/j/jknight.zip
+http://django.pi:8000/file/k/kevedit-setup-0.5.0-win32.exe
+http://django.pi:8000/file/k/kewliof.zip
+http://django.pi:8000/file/k/KNIGHST.zip
+http://django.pi:8000/file/k/trethain.zip
+http://django.pi:8000/file/l/lifeszzt.zip
+http://django.pi:8000/file/l/lmiii-1.zip
+http://django.pi:8000/file/l/loaelkdemo.zip
+http://django.pi:8000/file/l/lr6.zip
+http://django.pi:8000/file/l/lv3demo.zip
+http://django.pi:8000/file/l/LynxZztGraveyard.zip
+http://django.pi:8000/file/l/Lyon.zip
+http://django.pi:8000/file/l/muzakone.zip
+http://django.pi:8000/file/l/refritos.zip
+http://django.pi:8000/file/l/thelost.ZIP
+http://django.pi:8000/file/l/Voyage1.zip
+http://django.pi:8000/file/l/Voyage2.zip
+http://django.pi:8000/file/m/amtrealiate.zip
+http://django.pi:8000/file/m/andy2dem.zip
+http://django.pi:8000/file/m/MADTOM3.ZIP
+http://django.pi:8000/file/m/maze3d.zip
+http://django.pi:8000/file/m/MECH.zip
+http://django.pi:8000/file/m/morestuff.zip
+http://django.pi:8000/file/m/MOUSEENGINE.zip
+http://django.pi:8000/file/m/mrlinzzt.zip
+http://django.pi:8000/file/m/mystZZT.zip
+http://django.pi:8000/file/n/9elation.zip
+http://django.pi:8000/file/n/icannaewait.zip
+http://django.pi:8000/file/n/Noise.zip
+http://django.pi:8000/file/n/nonengns
+http://django.pi:8000/file/n/nyan.zip
+http://django.pi:8000/file/p/parell1
+http://django.pi:8000/file/p/patriot.zip
+http://django.pi:8000/file/p/pirate.zip
+http://django.pi:8000/file/p/pkmult1.zip
+http://django.pi:8000/file/p/PlatoCav.zip
+http://django.pi:8000/file/p/PLATON2.zip
+http://django.pi:8000/file/p/playv4.zip
+http://django.pi:8000/file/p/prison.zip
+http://django.pi:8000/file/q/quest3d.zip
+http://django.pi:8000/file/r/3g-ruby.zip
+http://django.pi:8000/file/r/ratraceh.zip
+http://django.pi:8000/file/r/rgmusiczzm.zip
+http://django.pi:8000/file/r/rings2.zip
+http://django.pi:8000/file/r/tim0.zip
+http://django.pi:8000/file/s/202.zip
+http://django.pi:8000/file/s/ARCH.zip
+http://django.pi:8000/file/s/Bob.zip
+http://django.pi:8000/file/s/DRogueAuraWAIFur2
+http://django.pi:8000/file/s/ldog.zip
+http://django.pi:8000/file/s/rpgsound.zip
+http://django.pi:8000/file/s/santa.zip
+http://django.pi:8000/file/s/shake.zip
+http://django.pi:8000/file/s/smiley.zip
+http://django.pi:8000/file/s/srblue.zip
+http://django.pi:8000/file/s/starcom.zip
+http://django.pi:8000/file/s/starwars.zip
+http://django.pi:8000/file/s/stbc00001.zip
+http://django.pi:8000/file/s/STBC00003.zip
+http://django.pi:8000/file/s/sweden.zip
+http://django.pi:8000/file/s/szttools.zip
+http://django.pi:8000/file/s/trek.zip
+http://django.pi:8000/file/t/3trials.zip
+http://django.pi:8000/file/t/7monday7.zip
+http://django.pi:8000/file/t/ATLANTIS.zip
+http://django.pi:8000/file/t/newlook.zip
+http://django.pi:8000/file/t/quiet1.zip
+http://django.pi:8000/file/t/TC.zip
+http://django.pi:8000/file/t/teatime.zip
+http://django.pi:8000/file/t/teatime2.zip
+http://django.pi:8000/file/t/TheTribe.zip
+http://django.pi:8000/file/t/tidizz.zip
+http://django.pi:8000/file/t/timewarsdem.zip
+http://django.pi:8000/file/t/Time_Quest_1.zip
+http://django.pi:8000/file/t/TMQUESTREUPLOAD.zip
+http://django.pi:8000/file/t/twistrpg.zip
+http://django.pi:8000/file/t/zzmtris.zip
+http://django.pi:8000/file/v/village2.zip
+http://django.pi:8000/file/w/2006WoZ.zip
+http://django.pi:8000/file/w/WMD2.zip
+http://django.pi:8000/file/w/ZZMX.zip
+http://django.pi:8000/file/x/xod.zip
+http://django.pi:8000/file/y/YumYum.zip
+http://django.pi:8000/file/y/yvs2.zip
+http://django.pi:8000/file/z/kewl.zip
+http://django.pi:8000/file/z/Zagold.zip
+http://django.pi:8000/file/z/zarena2.zip
+http://django.pi:8000/file/z/zzt2zig.zip
+http://django.pi:8000/file/z/zztpiano.exe
+http://django.pi:8000/file/z/zztvX.zip
+143 INVALID URLS

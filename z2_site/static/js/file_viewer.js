@@ -755,24 +755,7 @@ function render_board()
     tab_select("board-info");
 
     // Render the stat info as well
-    var stat_list = "<ol>\n"
-    for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
-    {
-        var stat = board.stats[stat_idx];
-        var stat_name = board.elements[stat.tile_idx].name;
-        if ((stat_name == "Scroll" || stat_name == "Object") && stat.oop[0] == "@")
-            stat_name = stat.oop.slice(0, stat.oop.indexOf("\r"));
-
-        stat_list += "<li><a class='jsLink' name='stat-link' data-x='"+stat.x+"' data-y='"+stat.y+"'>";
-        stat_list +="("+ ("00"+stat.x).slice(-2) +", "+ ("00"+stat.y).slice(-2) +") ["+(("0000"+(stat.tile_idx+1)).slice(-4))+"] "
-        stat_list += stat_name+"</a> "+ stat.oop.length +" bytes</li>\n";
-    }
-    stat_list += "</ol>\n";
-    $("#stat-info").html(stat_list);
-    $("a[name=stat-link]").click(function (){
-        var e = {"data":{"x":$(this).data("x"), "y":$(this).data("y")}};
-        stat_info(e);
-    });
+    render_stat_list(board);
     return true;
 }
 
@@ -1140,6 +1123,43 @@ function syntax_highlight(oop)
             }
         }
         return oop.join("\n");
+}
+
+function render_stat_list(board)
+{
+    var stat_list = "<a id='stat-toggle' class='jsLink'>Toggle Codeless Stats</a>\n";
+    stat_list += "<ol>\n";
+    for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
+    {
+        var stat = board.stats[stat_idx];
+        var stat_name = board.elements[stat.tile_idx].name;
+        if ((stat_name == "Scroll" || stat_name == "Object") && stat.oop[0] == "@")
+            stat_name = stat.oop.slice(0, stat.oop.indexOf("\r"));
+
+        if (stat.oop.length == 0)
+            stat_list += "<li class='empty'>";
+        else
+            stat_list += "<li>";
+        stat_list += "<a class='jsLink' name='stat-link' data-x='"+stat.x+"' data-y='"+stat.y+"'>";
+        stat_list +="("+ ("00"+stat.x).slice(-2) +", "+ ("00"+stat.y).slice(-2) +") ["+(("0000"+(stat.tile_idx+1)).slice(-4))+"] "
+        stat_list += stat_name+"</a> "+ stat.oop.length +" bytes</li>\n";
+    }
+    stat_list += "</ol>\n";
+    $("#stat-info").html(stat_list);
+    $("a[name=stat-link]").click(function (){
+        var e = {"data":{"x":$(this).data("x"), "y":$(this).data("y")}};
+        stat_info(e);
+    });
+
+    $("#stat-toggle").click(function (){
+        if ($(this).hasClass("activated")) // Redisplay
+            $("#stat-info li.empty").css({"visibility": "visible", "height":"auto"});
+        else // Hide
+            $("#stat-info li.empty").css({"visibility": "hidden", "height":0});
+        $(this).toggleClass("activated");
+
+    });
+    return true;
 }
 
 /* DEBUG FUNCTION */

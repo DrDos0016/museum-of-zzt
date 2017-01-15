@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 from django import VERSION
+from django.http import Http404
 from django.http import HttpResponse
 from django.http import QueryDict
 from django.template import RequestContext
@@ -21,16 +22,13 @@ import glob
 import os
 import sys
 
-TRACKING = True  # Analytics
-
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+TRACKING = True  # Analytics
+DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25
 LIST_PAGE_SIZE = 150
 UPLOAD_CAP = 1048576  # 1 Megabyte
-
 YEAR = datetime.now().year
-
 PYTHON_VERSION = sys.version
 DJANGO_VERSION = VERSION
 

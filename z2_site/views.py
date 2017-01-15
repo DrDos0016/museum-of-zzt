@@ -36,11 +36,11 @@ def article_directory(request, category="all"):
     if request.GET.get("sort") == "date":
         data["articles"] = Article.objects.defer(
             "content", "css"
-        ).filter(published=True, page=1).order_by("-date", "title")
+        ).filter(published=True, parent=None).order_by("-date", "title")
     else:
         data["articles"] = Article.objects.defer(
             "content", "css"
-        ).filter(published=True, page=1).order_by("category", "title")
+        ).filter(published=True, parent=None).order_by("category", "title")
 
     if category != "all":
         data["articles"] = data["articles"].filter(
@@ -49,17 +49,30 @@ def article_directory(request, category="all"):
     return render(request, "z2_site/article_directory.html", data)
 
 
-def article_view(request, id):
+def article_view(request, id, page=0):
     """ Returns an article pulled from the database """
+    slug = request.path.split("/")[-1]
+    page = int(page)
     id = int(id)
     data = {"id": id}
-    data["article"] = get_object_or_404(Article, pk=id)
+
+    if page == 0: # Pageless articles/heads
+        print("NO PAGES")
+        data["article"] = get_object_or_404(Article, pk=id)
+    else:
+        print("YES PAGES")
+        if page != 1:
+            data["article"] = get_object_or_404(Article, parent_id=id, page=page)
+        else:
+            data["article"] = get_object_or_404(Article, id=id, page=page)
+
+        # TODO: Handle pages
+        data["next"] = page + 1
+        data["prev"] = page - 1
+        data["slug"] = str(slug)
+
     data["title"] = data["article"].title
-    
-    # TODO: Handle pages
-    data["next"] = id + 1
-    data["prev"] = id - 1
-    
+
     file = data["article"].file_set.all()
     if file:
         # TODO: Handle an article w/ multiple files (ex Zem + Zem 2)
@@ -203,7 +216,17 @@ def file(request, letter, filename):
     """ Returns page exploring a file's zip contents """
     data = {}
     data["year"] = YEAR
-    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["file"] = File.objects.filter(letter=letter, filename=filename)
+    if len(data["file"]) == 0:
+        raise Http404()
+    elif len(data["file"]) > 1:
+        for file in data["file"]:
+            if file.filename == filename:
+                data["file"] = file
+                break
+    else:
+        data["file"] = data["file"][0]
+
     data["letter"] = letter
     data["charsets"] = CHARSET_LIST
     data["custom_charsets"] = CUSTOM_CHARSET_LIST
