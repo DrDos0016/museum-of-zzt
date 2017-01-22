@@ -3,11 +3,56 @@
 
 {% block style %}
 <style>
+#comic
+{
+    text-align:center;
+    font-size:smaller;
+}
 #comic img
 {
     max-width:100%;
+    margin:auto;
+}
+
+#transcript
+{
+    text-align:center;
+}
+
+#transcript textarea
+{
+    width:50%;
+    height:150px;
+}
+
+#navigation
+{
+    text-align:center
+}
+
+#navigation div
+{
+    width:24%;
+}
+
+#navigation select
+{
+    width:50%;
+    margin:auto;
+    font-family:monospace;
 }
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("#comic_nav").change(function (){
+        destination = "/bencomic/strip/" + $(this).val() + "/" + $("#comic_nav option:selected").data("slug");
+        window.location = destination;
+    });
+});
+</script>
 {% endblock %}
 
 {% block content %}
@@ -15,11 +60,57 @@
 
 <h1>Bencomic - {{comic.title}}</h1>
 
+{% if intro %}
+<p>Welcome to Bencomic.</p>
+
+<p>Bencomic was a long running series of comics made using
+<a href="http://www.stripcreator.com" target="_blank">Stripcreator</a> to
+transform IRC chat logs among the ZZT community and convert them to a visual
+medium. The series was originally created by Benco (hence the name), though over
+the years several people created Bencomics on both the original 2001-2004
+<a href="http://www.stripcreator.com/comics/benco" target="_blank">Benco</a>
+account as well as the successor 2005-2008
+<a href="http://www.stripcreator.com/comics/bencomic" target="_blank">Bencomic</a>
+account.</p>
+
+<p>Currently, only the second Bencomic account is preserved here. In the future
+the original series will be made available as well as better quality rips of the
+comics themselves which were never available as single image files.</p>
+{% endif %}
+
 <div id="comic">
-    <img src="{% static 'bencomic/comics/{{comic.img}}.png' %}">
+    <img src="{% static comic.image_url %}" alt="{{comic.title}}" title="{{comic.title}}">
+    <br>
+    <a href="{{comic.sc_url}}" target="_blank">View on Stripcreator.com</a>
 </div>
 
-<b>Featuring:</b><br>
+<nav id="navigation">
+    <div>
+    {% if prev %}<a href="{% url 'bencomic_strip' prev.0.id prev.0.title|slugify %}">Previous</a>{% endif %}
+    </div>
+    <select id="comic_nav">
+        {% for c in comic_list %}
+        <option value="{{c.id}}" data-slug="{{c.title|slugify}}"{% if comic.id == c.id %} selected{% endif %}>
+            {{c.date|date:"M d, Y"}} &mdash; {{c.title}}
+        </option>
+        {% endfor %}
+    </select>
+    <div>
+    {% if next %}<a href="{% url 'bencomic_strip' next.0.id next.0.title|slugify %}">Next</a>{% endif %}
+    </div>
+</nav>
+
+<div id="transcript">
+    <b>Transcript</b>
+    <br>
+    <textarea readonly>{{comic.transcript}}</textarea>
+    <br>
+    <a href="{% url 'bencomic_search' %}">Search comic transcripts</a>
+</div>
+
+<div id="cast" style="display:none">
+    <b>Featuring:</b><br>
+</div>
 
 
 </section>

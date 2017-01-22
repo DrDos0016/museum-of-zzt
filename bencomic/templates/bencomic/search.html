@@ -1,0 +1,59 @@
+{% extends "z2_site/main.html" %}
+{% load staticfiles %}
+
+{% block style %}
+<style>
+#results-list li
+{
+    font-family:monospace;
+    font-size:larger;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+
+<h1>Bencomic - Transcript Search</h1>
+
+<form>
+<div class="field">
+    <label for="q">Search Transcripts:</label><input id="q" name="q" value="{{q|default:""}}">
+</div>
+<div class="field">
+    <button type="submit">Search</button>
+</div>
+</form>
+
+{% if q %}
+<h2>Results</h2>
+
+{% if results %}
+<div class="pages">
+    <a href="?page={{prev}}&q={{q}}">&lt;</a>
+    {% for page in page_range %}
+    <a href="?page={{page}}&q={{q}}">{{page}}</a>
+    {% endfor %}
+    <a href="?page={{next}}&q={{q}}">&gt;</a>
+</div>
+
+<ul id="results-list">
+{% for comic in results %}
+    <li>{{comic.date|date:"M d, Y"}} &mdash; <a href="{% url 'bencomic_strip' comic.id comic.title|slugify %}">{{comic.title}}</a></li>
+{% endfor %}
+</ul>
+
+<div class="pages">
+    <a href="?page={{prev}}&q={{q}}">&lt;</a>
+    {% for page in page_range %}
+    <a href="?page={{page}}&q={{q}}">{{page}}</a>
+    {% endfor %}
+    <a href="?page={{next}}&q={{q}}">&gt;</a>
+</div>
+
+{% else %}
+No results found!
+{% endif %}
+{% endif %}
+</section>
+{% endblock %}
