@@ -95,7 +95,7 @@
     <div class="comic">
         <div class="image"><img src="{% static 'comic/frost.png' %}" alt="Frost"></div>
         <div class="desc">
-        <h2><a href="{% url 'article_view' 164 'frost-comic' %}">Frost</a></h2>
+        <h2><a href="{% url 'comic_landing' 'frost' %}">Frost</a></h2>
         <p>A short lived webcomic by Zenith Nadir based on his own ZZT hit: "Frost 1; Power". The comic covers the events in the first half of the game. Ran from 2008-2009.</p>
         </div>
     </div>
@@ -103,7 +103,7 @@
     <div class="comic">
         <div class="image"><img src="{% static 'comic/ubgs.png' %}" alt="Ol' Uncle Bo's Gamblin' Shack"></div>
         <div class="desc">
-        <h2><a href="{% static 'comic/ubgs.zip' %}">Ol' Uncle Bo's Gamblin' Shack</a> (Zip archive)</h2>
+        <h2><a href="{% url 'comic_landing' 'ubgs' %}">Ol' Uncle Bo's Gamblin' Shack</a> (Zip archive)</h2>
         <p>The misadventures of Bo, his friend Bread, and his two slaves Qu and Hank. This comic has aged about as well as that last sentence would have you expect.
         Drawn with clipart and MS Paint, UBGS spans over 100 strips, sometimes referencing the ZZT community. Let's just call it a historical curiosity.</p>
         </div>
