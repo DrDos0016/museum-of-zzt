@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "markdown_deux",
     "z2_site",
-    "bencomic",
+    "comic",
 ]
 
 MIDDLEWARE_CLASSES = [

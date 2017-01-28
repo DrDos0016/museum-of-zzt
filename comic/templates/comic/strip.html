@@ -1,0 +1,88 @@
+{% extends "z2_site/main.html" %}
+{% load staticfiles %}
+
+{% block style %}
+<style>
+#comic
+{
+    text-align:center;
+    font-size:smaller;
+}
+#comic img
+{
+    max-width:100%;
+    margin:auto;
+}
+
+#transcript
+{
+    text-align:center;
+}
+
+#transcript textarea
+{
+    width:50%;
+    height:150px;
+}
+
+#navigation
+{
+    text-align:center
+}
+
+#navigation div
+{
+    width:24%;
+}
+
+#navigation select
+{
+    width:50%;
+    margin:auto;
+    font-family:monospace;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("#comic_nav").change(function (){
+        destination = "/comic/{{comic_account}}/strip/" + $(this).val() + "/" + $("#comic_nav option:selected").data("slug");
+        window.location = destination;
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+
+<h1><a href="{% url 'comic_index' %}">ZZTer Comics</a> - {{comic.get_comic_account_display}} - {{comic.title}}</h1>
+
+<div id="comic">
+    <img src="{% static comic.image_url %}" alt="{{comic.title}}" title="{{comic.title}}">
+</div>
+
+{% if comic.commentary %}
+<div id="commentary">
+    {{comic.commentary|safe}}
+</div>
+{% endif %}
+<nav id="navigation">
+    <div>
+    {% if prev %}<a href="{% url 'comic_strip' comic_account prev.0.id prev.0.title|slugify %}">Previous</a>{% endif %}
+    </div>
+    <select id="comic_nav">
+        {% for c in comic_list %}
+        <option value="{{c.id}}" data-slug="{{c.title|slugify}}"{% if comic.id == c.id %} selected{% endif %}>
+            {% if c.date %}{{c.date|date:"M d, Y"}} &mdash; {% endif %}{{c.title}}
+        </option>
+        {% endfor %}
+    </select>
+    <div>
+    {% if next %}<a href="{% url 'comic_strip' comic_account next.0.id next.0.title|slugify %}">Next</a>{% endif %}
+    </div>
+</nav>
+</section>
+{% endblock %}

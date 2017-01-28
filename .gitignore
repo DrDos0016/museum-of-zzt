@@ -3,11 +3,19 @@ virt
 venv
 zgames
 
-bencomic/static/bencomic/comics/*
-tools/bencomic/necocone.co/*
+comic/static/comic/bencomic/*
+comic/static/comic/frost/*
+comic/static/comic/kaddar/*
+comic/static/comic/lemmy/*
+comic/static/comic/mr-shapiro/*
+comic/static/comic/nomad/*
+comic/static/comic/revvy/*
+comic/static/comic/ubgs/*
+comic/static/comic/zamros/*
+tools/comic/json/*
+tools/comic/necocone.co/*
 tools/db_dump.py
 z2/private_settings.py
-z2_site/static/images/comics/*
 .htpasswd
 manage.py
 

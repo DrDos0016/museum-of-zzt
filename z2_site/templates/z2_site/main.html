@@ -15,7 +15,8 @@
 <meta name="author" content="Dr. Dos">
 <meta name="description" content="The ZZT Archive">
 <meta name="keywords" content="ZZT">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> 
+<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>-->
+<script src="/static/js/jquery.3.1.0.min.js"></script>
 <script>
 $(document).ready(function (){
     // Screenshot Zoom
@@ -25,11 +26,11 @@ $(document).ready(function (){
         else
             $(this).css({"max-width":"240px", "cursor":"zoom-in"});
     });
-    
+
     // Reload on sort change
     $(".pages select[name=sort]").change(function (){
         var location = ("" + window.location);
-        
+
         if (location.indexOf("?") == -1)
             window.location = "?sort="+$(this).val();
         else
@@ -39,12 +40,12 @@ $(document).ready(function (){
             var new_qs = "?";
             console.log(qs);
             console.log(params);
-            
+
             for (idx in params)
             {
                 var key = params[idx].split("=")[0];
                 var val = params[idx].split("=")[1];
-                
+
                 if (key == "sort")
                     new_qs += key + "=" + $(this).val();
                 else
@@ -52,11 +53,11 @@ $(document).ready(function (){
                 new_qs += "&";
             }
             new_qs = new_qs.slice(0, -1);
-            
+
             // Make sure there's a sort param
             if (new_qs.indexOf("sort=") == -1)
                 new_qs += "&sort="+$(this).val();
-            
+
             window.location = new_qs;
         }
     });
@@ -92,7 +93,7 @@ $(document).ready(function (){
         <br>
         <a href="/featured">Featured Games</a>
     </div>
-    
+
     <div class="block worlds-block">
         <h1>ZZT Worlds</h1>
         <div id="letters">
@@ -105,7 +106,7 @@ $(document).ready(function (){
             <a href="/browse/f">F</a>
             <a href="/browse/g">G</a>
             <a href="/browse/h">H</a>
-            
+
             <a href="/browse/i">I</a>
             <a href="/browse/j">J</a>
             <a href="/browse/k">K</a>
@@ -115,7 +116,7 @@ $(document).ready(function (){
             <a href="/browse/o">O</a>
             <a href="/browse/p">P</a>
             <a href="/browse/q">Q</a>
-            
+
             <a href="/browse/r">R</a>
             <a href="/browse/s">S</a>
             <a href="/browse/t">T</a>
@@ -126,12 +127,12 @@ $(document).ready(function (){
             <a href="/browse/y">Y</a>
             <a href="/browse/z">Z</a>
         </div>
-        
+
         <div>
             <a href="/random">Random ZZT World</a><br>
             <a href="/mass">Mass Downloads</a>
         </div>
-        
+
         <div>
             <form method="GET" action="/search">
             Search:<br>
@@ -140,13 +141,13 @@ $(document).ready(function (){
             <a href="/advanced-search">Advanced Search</a>
             </form>
         </div>
-        
+
         <div>
             <a href="/superzzt">Super ZZT Worlds</a><br>
             <a href="/utilities">External Utilities</a>
         </div>
     </div>
-    
+
     <div class="block">
         <h1>Downloads</h1>
         <a href="/zzt">ZZT</a><br>
@@ -163,31 +164,31 @@ $(document).ready(function (){
 </main>
 {% endblock %}
 
-<section id="sidebar-right" class="col sidebar">    
+<section id="sidebar-right" class="col sidebar">
     <div class="block">
         <h1>Articles</h1>
-        
+
         <h2>Directory</h2>
         <a href="/article?sort=date">Articles by date</a><br>
         <a href="/article">Articles by name</a><br>
         <a href="{% url 'directory' 'author' %}">Authors</a><br>
         <a href="{% url 'directory' 'company' %}">Companies</a><br>
         <a href="{% url 'directory' 'genre' %}">Genres</a><br>
-        
+
         <h2>Playing</h2>
         <a href="/getting-started">Getting Started With ZZT</a><br>
         <a href="/article/walkthrough">Walkthroughs</a><br>
-        
+
         <h2>Editing</h2>
         <a href="/ascii">ASCII Character Reference</a><br>
-        
+
         <h2>Historical</h2>
         <a href="">Message Board Logs</a><br>
         <a href="">Old News</a><br>
         <a href="">ZZTers' First Games</a><br>
         <a href="">z2 classic website</a><br>
     </div>
-    
+
     <div class="block">
         <h1>Community</h1>
         <a href="">About the Community</a><br>
@@ -196,13 +197,13 @@ $(document).ready(function (){
         <a href="">Links</a><br>
         <a href="">Link to z2</a><br>
     </div>
-    
+
     <div class="block">
         <h1>Contests</h1>
         <a href="">24 Hours of ZZT</a><br>
         <a href="">Weekend of ZZT</a>
     </div>
-    
+
 </section>
 </div>
 

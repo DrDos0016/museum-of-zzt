@@ -1,0 +1,112 @@
+{% extends "z2_site/main.html" %}
+{% load staticfiles %}
+
+{% block style %}
+<style>
+.comic
+{
+    /*height:200px;*/
+    margin-bottom:0.5em;
+    display:flex;
+}
+
+.comic .image
+{
+    flex:0 0 180px;
+    text-align:center;
+    margin-right:0.5em;
+}
+
+.comic .desc
+{
+    flex:1;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+    <h1>ZZTer Comics</h1>
+
+    <div class="comic">
+        <div class="image"><img src="{% static 'comic/nomad.png' %}" alt="Nomad's ZZT Comics"></div>
+        <div class="desc">
+        <h2><a href="{% url 'comic_landing' 'nomad' %}">Nomad's ZZT Comics</a></h2>
+        <p>The first ZZTer comic series, created by Nomad in 1999. This was a short lived
+        series written specifically to be posted on the ZZT Archives of the time. Two
+        characters, one who never is named, and the other "Vortek", are ZZTers who spend
+        too much time playing ZZT and being on the computer in general.</p>
+        </div>
+    </div>
+    <div class="comic">
+        <div class="image"><img src="{% static 'comic/kaddar.png' %}" alt="Yellow Boarders"></div>
+        <div class="desc">
+        <h2><a href="{% url 'comic_landing' 'kaddar' %}">Yellow Boarders</a></h2>
+        <p>The second series of ZZT comics, "Yellow Boarders" created by Kaddar not
+        long after Nomad's comics The strips focus primarily on ZZTer woes like the management of 24 Hours of ZZT contests, and over-hyping ZZT games still early in development.</p>
+        </div>
+    </div>
+    <div class="comic">
+        <div class="image"><img src="{% static 'comic/zamros.gif' %}" alt="Bencomic - Classic"></div>
+        <div class="desc">
+            <h2><a href="http://www.stripcreator.com/comics/benco/48404" target="_blank">Bencomic - Classic</a> (Hosted on Stripcreator.com)</h2>
+            <p>Bencomic was a long running series of comics from 2001-2004 made using Stripcreator to transform IRC chat logs from the ZZT community
+            and convert them to a visual medium. The series was originally created by Benco, though the account was also shared with Funk, wildkarrdex,
+            and craNKGod.</p>
+        </div>
+    </div>
+    <div class="comic">
+        <div class="image"><img src="{% static 'comic/nuero.gif' %}" alt="Bencomic - Modern"></div>
+        <div class="desc">
+        <h2><a href="{% url 'comic_landing' 'bencomic' %}">Bencomic (Modern)</a></h2>
+        <p>The successor to Benco's Bencomic covering more IRC antics from 2005-2008. Revived by Zamros with strips by dave2, Clecky, Zenith Nadir,
+        MadTom, and FSFunky. Complete with searchable comic transcripts!</p>
+        </div>
+    </div>
+        <div class="comic">
+        <div class="image"><img src="{% static 'comic/shapiro.png' %}" alt="Mr. Shapiro"></div>
+        <div class="desc">
+        <h2><a href="{% url 'comic_landing' 'mr-shapiro' %}">Mr. Shapiro</a></h2>
+        <p>A short collection of comics included with Eurakarte's Mr. Shapiro series of games. It is very reminiscent of Pokey the Penguin.</p>
+        </div>
+    </div>
+    <div class="comic">
+        <div class="image"><img src="{% static 'comic/zamros-comic.png' %}" alt="Zamros: The Comic"></div>
+        <div class="desc">
+        <h2><a href="{% url 'comic_landing' 'zamros' %}">Zamros: The Comic</a></h2>
+        <p>Zamros the comic is a story of the daily trials of a young man living in the cushy suburbs of New York. Created by Dave2.</p>
+        </div>
+    </div>
+    <div class="comic">
+        <div class="image"><img src="{% static 'comic/lemmy.jpg' %}" alt="Lemmy"></div>
+        <div class="desc">
+        <h2><a href="{% url 'comic_landing' 'lemmy' %}">Lemmy!</a></h2>
+        <p>Darkmage's comic all about what Lemmer's sister's life must obviously be like! I'm not sure Lemmer even has a sister, but if he doesn't,
+        this comic lets us imagine what that might be like. Lots of DDR, Satanic rituals, and just trying to survive high school.</p>
+        </div>
+    </div>
+    <div class="comic">
+        <div class="image"><img src="{% static 'comic/revvy.png' %}" alt="The Prophesies of Revvy"></div>
+        <div class="desc">
+        <h2><a href="{% url 'comic_landing' 'revvy' %}">The Prophesies of Revvy</a></h2>
+        <p>Revvy's own foray into ZZT comics with a grim tale of the past, present, and future of ZZT.</p>
+        </div>
+    </div>
+    <div class="comic">
+        <div class="image"><img src="{% static 'comic/frost.png' %}" alt="Frost"></div>
+        <div class="desc">
+        <h2><a href="{% url 'article_view' 164 'frost-comic' %}">Frost</a></h2>
+        <p>A short lived webcomic by Zenith Nadir based on his own ZZT hit: "Frost 1; Power". The comic covers the events in the first half of the game. Ran from 2008-2009.</p>
+        </div>
+    </div>
+
+    <div class="comic">
+        <div class="image"><img src="{% static 'comic/ubgs.png' %}" alt="Ol' Uncle Bo's Gamblin' Shack"></div>
+        <div class="desc">
+        <h2><a href="{% static 'comic/ubgs.zip' %}">Ol' Uncle Bo's Gamblin' Shack</a> (Zip archive)</h2>
+        <p>The misadventures of Bo, his friend Bread, and his two slaves Qu and Hank. This comic has aged about as well as that last sentence would have you expect.
+        Drawn with clipart and MS Paint, UBGS spans over 100 strips, sometimes referencing the ZZT community. Let's just call it a historical curiosity.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

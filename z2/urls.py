@@ -6,6 +6,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r"^admin/", admin.site.urls),
-    url(r"^bencomic/", include("bencomic.urls")),
+    url(r"^comic/", include("comic.urls")),
     url(r"^", include("z2_site.urls")),
 ]
