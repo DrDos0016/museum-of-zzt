@@ -87,7 +87,7 @@
     </label>
     <input id="min" name="min" value="{{request.GET.min|default:'0.0'}}" min=0 max=5 maxlength="4">
     <div class="col spacing">&nbsp;&mdash;&nbsp;</div>
-    <input id="max" name="max" value="{{request.GET.max|default:'5.0'}}" min=0 max=5 maxlength="4"> 
+    <input id="max" name="max" value="{{request.GET.max|default:'5.0'}}" min=0 max=5 maxlength="4">
 </div>
 <div class="field">
     <label for="category">Category:<br>
@@ -95,7 +95,7 @@
     <select id="category" name="category">
         <option value="Any"{% if request.GET.category == "Any" %} selected {% endif %}>- Any -</option>
         <option value="ZZT" {% if request.GET.category == "ZZT" or not request.GET.category %} selected {% endif %}>ZZT Worlds</option>
-        <option value="Super ZZT"{% if request.GET.category == "Super ZZT" %} selected {% endif %}>Super ZZT Worlds</option>
+        <option value="SZZT"{% if request.GET.category == "SZZT" %} selected {% endif %}>Super ZZT Worlds</option>
         <option value="ZIG"{% if request.GET.category == "ZIG" %} selected {% endif %}>ZIG Worlds</option>
         <option value="Utility">Utilities</option>
     </select>

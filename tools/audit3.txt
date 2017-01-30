@@ -207,88 +207,88 @@ Missing entry for /var/projects/museum/zgames/24hoz/s24z-423.zip
 Missing entry for /var/projects/museum/zgames/24hoz/f02-game.zip
 Missing entry for /var/projects/museum/zgames/24hoz/s24z6661.zip
 Missing entry for /var/projects/museum/zgames/24hoz/s24z-279.zip
-Missing entry for /var/projects/museum/zgames/d/game1.zip
+    Missing entry for /var/projects/museum/zgames/d/game1.zip <- DUNGEON OF DOOM
 Missing entry for /var/projects/museum/zgames/d/demomine11.zip
-2 copies of /var/projects/museum/zgames/d/bl-gm.zip
-Missing entry for /var/projects/museum/zgames/d/darktor.zip
-Missing entry for /var/projects/museum/zgames/d/Defendhouse.zip
-Missing entry for /var/projects/museum/zgames/d/detrot.zip
-Missing entry for /var/projects/museum/zgames/d/destructolp.zip
+    2 copies of /var/projects/museum/zgames/d/bl-gm.zip <- Deleted identical File entry
+    Missing entry for /var/projects/museum/zgames/d/darktor.zip <- DARKTOR
+    Missing entry for /var/projects/museum/zgames/d/Defendhouse.zip <- DEFEND YOUR HOUSE
+    Missing entry for /var/projects/museum/zgames/d/detrot.zip <- DETROT
+    Missing entry for /var/projects/museum/zgames/d/destructolp.zip <- DESCTRUCTO GUY LEVEL PACK
 Missing entry for /var/projects/museum/zgames/d/dino.zip
-Missing entry for /var/projects/museum/zgames/d/ddwbt2.zip
-Missing entry for /var/projects/museum/zgames/d/destructoguy.zip
-Missing entry for /var/projects/museum/zgames/d/destructo2.zip
-Missing entry for /var/projects/museum/zgames/d/drunkhip.zip
+    Missing entry for /var/projects/museum/zgames/d/ddwbt2.zip <- DEATH, DESTRUCTION... 2
+    Missing entry for /var/projects/museum/zgames/d/destructoguy.zip <- Destructo 1
+    Missing entry for /var/projects/museum/zgames/d/destructo2.zip <- Destructo 2
+    Missing entry for /var/projects/museum/zgames/d/drunkhip.zip <- Drunk Hippies
 Missing entry for /var/projects/museum/zgames/e/evo2.zip
 Missing entry for /var/projects/museum/zgames/e/eradem.zip
-Missing entry for /var/projects/museum/zgames/e/ewokdemo.zip
-Missing entry for /var/projects/museum/zgames/e/Emonsguild.zip
-Missing entry for /var/projects/museum/zgames/e/endlessj.zip
+    Missing entry for /var/projects/museum/zgames/e/ewokdemo.zip <- Ewok's Life Demo 1
+    Missing entry for /var/projects/museum/zgames/e/Emonsguild.zip <- EMON'S GUILD
+    Missing entry for /var/projects/museum/zgames/e/endlessj.zip <- ENDLESS JOURNEY DEMO
 Missing entry for /var/projects/museum/zgames/e/evomag01.zip
-Missing entry for /var/projects/museum/zgames/a/Ansiimaker.zip
-Missing entry for /var/projects/museum/zgames/a/Ansiimaker2.zip
-Missing entry for /var/projects/museum/zgames/a/agentzzt.zip
-Missing entry for /var/projects/museum/zgames/a/avisdemo.zip
+    Missing entry for /var/projects/museum/zgames/a/Ansiimaker.zip <- ASCII MAKER 1
+    Missing entry for /var/projects/museum/zgames/a/Ansiimaker2.zip <- ASCII MAKER 2
+    Missing entry for /var/projects/museum/zgames/a/agentzzt.zip <- DUPE OF SECRET AGENT OF ZZT
+    Missing entry for /var/projects/museum/zgames/a/avisdemo.zip <- AVI'S WAREHOUSE
 Missing entry for /var/projects/museum/zgames/a/aolcompilation.zip
-Missing entry for /var/projects/museum/zgames/a/alt4pack.zip
-Missing entry for /var/projects/museum/zgames/a/anthdemo.zip
-Missing entry for /var/projects/museum/zgames/a/acpack.zip
-Missing entry for /var/projects/museum/zgames/a/axeman.zip
-Missing entry for /var/projects/museum/zgames/a/amesocdemo.zip
-Missing entry for /var/projects/museum/zgames/z/zcrimes2.zip
+    Missing entry for /var/projects/museum/zgames/a/alt4pack.zip <- ALTERNATIVE 4-PACK
+    Missing entry for /var/projects/museum/zgames/a/anthdemo.zip <- Anthropoid Demo
+    Missing entry for /var/projects/museum/zgames/a/acpack.zip <- ANTI-CHRIST PACK
+    Missing entry for /var/projects/museum/zgames/a/axeman.zip <- AXE MAN
+    Missing entry for /var/projects/museum/zgames/a/amesocdemo.zip
+    Missing entry for /var/projects/museum/zgames/z/zcrimes2.zip <- ZZT CRIME V2
 Missing entry for /var/projects/museum/zgames/z/zmtheme.zip
-Missing entry for /var/projects/museum/zgames/z/palace.zip
-Missing entry for /var/projects/museum/zgames/z/pingpong.zip
+    Missing entry for /var/projects/museum/zgames/z/palace.zip <- 0 BYTE FILE
+    Missing entry for /var/projects/museum/zgames/z/pingpong.zip <- ZZT Ping Pong
 Missing entry for /var/projects/museum/zgames/z/zzt_shareware.zip
 Missing entry for /var/projects/museum/zgames/z/zztfont.zip
 Missing entry for /var/projects/museum/zgames/z/ZZTexperienceBETA12.zip
-Missing entry for /var/projects/museum/zgames/z/zzt-ques.zip
-Missing entry for /var/projects/museum/zgames/z/zeldalordofguardia.zip
+    Missing entry for /var/projects/museum/zgames/z/zzt-ques.zip <- DUPE OF QUEST OF ZZT
+    Missing entry for /var/projects/museum/zgames/z/zeldalordofguardia.zip <- ZELDA LORD OF GUARDIA D
 Missing entry for /var/projects/museum/zgames/z/zzt_flimsy.zip
-Missing entry for /var/projects/museum/zgames/z/zzteam7.zip
+    Missing entry for /var/projects/museum/zgames/z/zzteam7.zip <- ZZTEAM 7
 Missing entry for /var/projects/museum/zgames/z/zzttox~1.zip
 Missing entry for /var/projects/museum/zgames/z/zzt-zpzk.zip
 Missing entry for /var/projects/museum/zgames/z/zone10zz.zip
-Missing entry for /var/projects/museum/zgames/z/zztv5.zip
-Missing entry for /var/projects/museum/zgames/o/oevil.zip
-2 copies of /var/projects/museum/zgames/v/village2.zip
-2 copies of /var/projects/museum/zgames/v/Village.zip
-2 copies of /var/projects/museum/zgames/v/village.zip
-2 copies of /var/projects/museum/zgames/v/VILLAGE2.zip
-2 copies of /var/projects/museum/zgames/r/realmz.zip
-Missing entry for /var/projects/museum/zgames/r/runnerdem.zip
-Missing entry for /var/projects/museum/zgames/r/redwavedemo.zip
-Missing entry for /var/projects/museum/zgames/r/ryoart.zip
-Missing entry for /var/projects/museum/zgames/r/rotz.zip
-Missing entry for /var/projects/museum/zgames/u/Untitled.zip
-Missing entry for /var/projects/museum/zgames/u/UWL.zip
-Missing entry for /var/projects/museum/zgames/u/U-A.zip
-Missing entry for /var/projects/museum/zgames/1/24STRANDED.zip
-Missing entry for /var/projects/museum/zgames/i/jerks1se.zip
-Missing entry for /var/projects/museum/zgames/i/lmiii-1.zip
+Missing entry for /var/projects/museum/zgames/z/zztv5.zip <- Outdated ZZTV 5?
+    Missing entry for /var/projects/museum/zgames/o/oevil.zip <- 24 HOURS OF EVIL
+    2 copies of /var/projects/museum/zgames/v/village2.zip
+    2 copies of /var/projects/museum/zgames/v/Village.zip
+    2 copies of /var/projects/museum/zgames/v/village.zip
+    2 copies of /var/projects/museum/zgames/v/VILLAGE2.zip
+    2 copies of /var/projects/museum/zgames/r/realmz.zip <- Delete dupe Realmz
+    Missing entry for /var/projects/museum/zgames/r/runnerdem.zip <- Runner Demo
+    Missing entry for /var/projects/museum/zgames/r/redwavedemo.zip <- RED WAVE DEMO
+    Missing entry for /var/projects/museum/zgames/r/ryoart.zip <- RYO ART
+    Missing entry for /var/projects/museum/zgames/r/rotz.zip <- REVENGE OF THE ZOMBIE
+    Missing entry for /var/projects/museum/zgames/u/Untitled.zip <- <UNTITLED>
+    Missing entry for /var/projects/museum/zgames/u/UWL.zip <- UNDER WORLD LEGENDS
+    Missing entry for /var/projects/museum/zgames/u/U-A.zip <- UNREAL ARENA
+    Missing entry for /var/projects/museum/zgames/1/24STRANDED.zip <- STRANDED
+    Missing entry for /var/projects/museum/zgames/i/jerks1se.zip <- ISLE OF THE JERKS 1: SE
+    Missing entry for /var/projects/museum/zgames/i/lmiii-1.zip <- Las Muzique 3 dupe
 Missing entry for /var/projects/museum/zgames/1a_ds/jzicons.zip
 Missing entry for /var/projects/museum/zgames/1a_ds/zztwp1.zip
-Missing entry for /var/projects/museum/zgames/m/mportal.zip
-Missing entry for /var/projects/museum/zgames/m/mrred2.zip
-Missing entry for /var/projects/museum/zgames/m/musauthor.zip
-Missing entry for /var/projects/museum/zgames/m/mbmtpr.zip
-Missing entry for /var/projects/museum/zgames/m/monsterb.zip
-Missing entry for /var/projects/museum/zgames/m/maing.zip
-Missing entry for /var/projects/museum/zgames/m/musakone.zip
-Missing entry for /var/projects/museum/zgames/m/mosaic.zip
-Missing entry for /var/projects/museum/zgames/m/magazine.zip
+    Missing entry for /var/projects/museum/zgames/m/mportal.zip <- MYST PORTAL
+    Missing entry for /var/projects/museum/zgames/m/mrred2.zip <- Mr. Red/Blue
+    Missing entry for /var/projects/museum/zgames/m/musauthor.zip <- MUSIC AUTHOR
+    Missing entry for /var/projects/museum/zgames/m/mbmtpr.zip <- MIGHT BE MORE THAN POWER RANGERS
+    Missing entry for /var/projects/museum/zgames/m/monsterb.zip <- MONSTER BATTLE
+    Missing entry for /var/projects/museum/zgames/m/maing.zip
+    Missing entry for /var/projects/museum/zgames/m/musakone.zip <- Las Muzique Vol. 1
+    Missing entry for /var/projects/museum/zgames/m/mosaic.zip <- Added Mosaic
+    Missing entry for /var/projects/museum/zgames/m/magazine.zip <- TUMBLE WEED MAGAZINE
 Missing entry for /var/projects/museum/zgames/m/mwencv12.zip
-Missing entry for /var/projects/museum/zgames/m/musesofsdarkness.zip
-Missing entry for /var/projects/museum/zgames/m/MicroBKZZT.zip
+    Missing entry for /var/projects/museum/zgames/m/musesofsdarkness.zip <- DUPE OF SDARKNES
+    Missing entry for /var/projects/museum/zgames/m/MicroBKZZT.zip <- MICROWAVE'S BK GAMES
 Missing entry for /var/projects/museum/zgames/m/mwtk-enc.zip
-Missing entry for /var/projects/museum/zgames/m/metallic.zip
-Missing entry for /var/projects/museum/zgames/m/mtzztool.zip
+    Missing entry for /var/projects/museum/zgames/m/metallic.zip
+    Missing entry for /var/projects/museum/zgames/m/mtzztool.zip
 Missing entry for /var/projects/museum/zgames/m/mwencv11.zip
-Missing entry for /var/projects/museum/zgames/l/lemkill.zip
-Missing entry for /var/projects/museum/zgames/l/lift.zip
-Missing entry for /var/projects/museum/zgames/l/lstwrld.zip
+    Missing entry for /var/projects/museum/zgames/l/lemkill.zip <- DUPE OF LEMMER WILL KILL YOU
+    Missing entry for /var/projects/museum/zgames/l/lift.zip <- LIFT ENGINE
+    Missing entry for /var/projects/museum/zgames/l/lstwrld.zip <- LOST WORLD OF ZZT
 Missing entry for /var/projects/museum/zgames/1a_zmusic/grdmusic.zip
-Missing entry for /var/projects/museum/zgames/1a_zmusic/cv_music.zip
+    Missing entry for /var/projects/museum/zgames/1a_zmusic/cv_music.zip <- CAVERNS MUSIC
 Missing entry for /var/projects/museum/zgames/1a_zmusic/omega.zip
 280 MISSING FILES()
 ========================================
