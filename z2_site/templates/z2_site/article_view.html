@@ -26,7 +26,7 @@ Article has an invalid type!
 
 <br>
 {% if article.page > 1 %}<a href="{% url 'article_view_page' id  prev slug %}">Previous page</a><br>{% endif %}
-{% if article.parent_id != 0 and article.page != 0 %}<a href="{% url 'article_view_page' id next slug %}">Next page</a><br>{% endif %}
+{% if article.parent_id and article.page != 0 %}<a href="{% url 'article_view_page' id next slug %}">Next page</a><br>{% endif %}
 PAGE COUNT: -- {{article.get_page_count}}<br>
 <a href="{% url 'article_directory' %}">Return to article directory</a><br>
 <a href="{% url 'index' %}">Return to the main page</a>

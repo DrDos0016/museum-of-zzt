@@ -33,7 +33,7 @@ urlpatterns = [
     url(r"^clones$", z2_site.views.article_view, {"id": 6}),
     url(r"^getting-started$", z2_site.views.article_view, {"id": 5}),
     url(r"^mass$", z2_site.views.article_view, {"id": 7}),
-    url(r"^zzt$", z2_site.views.article_view, {"id": 2}),
+    url(r"^zzt$", z2_site.views.article_view, {"id": 2}, name="zzt_dl"),
 
     # Directories
     url(r"^directory/(?P<category>[a-z].*)$", z2_site.views.directory,

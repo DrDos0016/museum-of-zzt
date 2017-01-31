@@ -400,7 +400,9 @@ def upload(request):
     data = {}
     data["genres"] = GENRE_LIST
 
-    if request.POST.get("action") == "upload" and request.FILES.get("file"):
+    if (UPLOADS_ENABLED
+        and request.POST.get("action") == "upload"
+        and request.FILES.get("file")):
 
         # Form stuff
         title = request.POST.get("title", "").strip()

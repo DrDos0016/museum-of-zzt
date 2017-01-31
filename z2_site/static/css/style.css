@@ -38,6 +38,12 @@ a[target=_blank]
     background-repeat:no-repeat;
 }
 
+a.broken
+{
+    text-decoration:line-through;
+    color:#F00;
+}
+
 body
 {
     font-family:sans-serif;

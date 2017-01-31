@@ -27,6 +27,7 @@ TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25
 LIST_PAGE_SIZE = 150
+UPLOADS_ENABLED = False
 UPLOAD_CAP = 1048576  # 1 Megabyte
 YEAR = datetime.now().year
 PYTHON_VERSION = sys.version

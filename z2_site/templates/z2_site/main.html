@@ -76,9 +76,9 @@ $(document).ready(function (){
         <a href="/"><img id="logo" src="{% static 'images/z2_logo.gif' %}" alt="z2"></a><br>
         <a href="/">Main</a>
         <a href="/article/1/about-zzt">About ZZT</a>
-        <a href="/upload">Upload</a>
+        <a href="/upload" class="broken">Upload</a>
         <a href="http://zzt.org/zu/wiki/Main_Page">Wiki</a>
-        <a href="/fora">Forums</a>
+        <a href="/fora" class="broken">Forums</a>
     </nav>
 </header>
 
@@ -130,7 +130,7 @@ $(document).ready(function (){
 
         <div>
             <a href="/random">Random ZZT World</a><br>
-            <a href="/mass">Mass Downloads</a>
+            <a href="/mass" class="broken">Mass Downloads</a>
         </div>
 
         <div>
@@ -143,16 +143,16 @@ $(document).ready(function (){
         </div>
 
         <div>
-            <a href="/superzzt">Super ZZT Worlds</a><br>
+            <a href="/superzzt" class="broken">Super ZZT Worlds</a><br>
             <a href="/utilities">External Utilities</a>
         </div>
     </div>
 
     <div class="block">
         <h1>Downloads</h1>
-        <a href="/zzt">ZZT</a><br>
+        <a href="{% url 'zzt_dl' %}">ZZT</a><br>
         <a href="http://www.dosbox.com/download.php?main=1" target="_blank">DOSBox</a><br>
-        <a href="http://kevedit.sourceforge.net/download.html" target="_blank">Kev-Edit</a><br>
+        <a href="https://github.com/cknave/kevedit" target="_blank">Kev-Edit</a><br>
         <a href="/clones">ZZT Clones</a><br>
         <a href="/uploaded">Upload Queue</a>
     </div>
@@ -183,25 +183,26 @@ $(document).ready(function (){
         <a href="/ascii">ASCII Character Reference</a><br>
 
         <h2>Historical</h2>
-        <a href="">Message Board Logs</a><br>
-        <a href="">Old News</a><br>
-        <a href="">ZZTers' First Games</a><br>
-        <a href="">z2 classic website</a><br>
+        <a href="{% url 'comic_index' %}">ZZT Comics Archive</a><br>
+        <a href="" class="broken">Message Board Logs</a><br>
+        <a href="" class="broken">Old News</a><br>
+        <a href="" class="broken">ZZTers' First Games</a><br>
+        <a href="http://zzt.org" target="_blank">z2 classic website</a><br>
     </div>
 
     <div class="block">
         <h1>Community</h1>
-        <a href="">About the Community</a><br>
-        <a href="">IRC</a><br>
-        <a href="">Ircman</a><br>
-        <a href="">Links</a><br>
-        <a href="">Link to z2</a><br>
+        <a href="" class="broken">About the Community</a><br>
+        <a href="" class="broken">IRC</a><br>
+        <a href="" class="broken">Ircman</a><br>
+        <a href="" class="broken">Links</a><br>
+        <a href="" class="broken">Link to z2</a><br>
     </div>
 
     <div class="block">
         <h1>Contests</h1>
-        <a href="">24 Hours of ZZT</a><br>
-        <a href="">Weekend of ZZT</a>
+        <a href="" class="broken">24 Hours of ZZT</a><br>
+        <a href="" class="broken">Weekend of ZZT</a>
     </div>
 
 </section>
