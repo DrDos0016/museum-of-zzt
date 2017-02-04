@@ -6,6 +6,16 @@ from django.contrib import admin
 from django.template.defaultfilters import slugify
 
 
+CATEGORY_LIST = (
+    ("ZZT", "ZZT World"),
+    ("ZZM", "ZZM Soundtrack"),
+    ("ZIG", "ZIG World"),
+    ("Utility", "External Utility"),
+    ("SZZT", "Super ZZT World"),
+    ("Etc", "Etc."),
+)
+
+
 class Article(models.Model):
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=50)
@@ -17,6 +27,7 @@ class Article(models.Model):
     published = models.BooleanField(default=False)
     page = models.IntegerField(default=1)
     parent = models.ForeignKey("Article", null=True, blank=True, default=None)
+    content_warning = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["title"]
@@ -58,6 +69,7 @@ class File(models.Model):
     articles        -- Link to Article objects
     article_count   -- Number of articles associated with this file
     """
+
     letter = models.CharField(max_length=1, db_index=True)
     filename = models.CharField(max_length=50)
     title = models.CharField(max_length=80)
@@ -68,7 +80,7 @@ class File(models.Model):
     release_source = models.CharField(
         max_length=20, null=True, default=None, blank=True
     )
-    category = models.CharField(max_length=10)
+    category = models.CharField(max_length=10, choices=CATEGORY_LIST)
     screenshot = models.CharField(
         max_length=80, blank=True, null=True, default=None
     )
@@ -81,6 +93,11 @@ class File(models.Model):
     details = models.ManyToManyField("Detail", default=None, blank=True)
     articles = models.ManyToManyField("Article", default=None, blank=True)
     article_count = models.IntegerField(default=0)
+    checksum = models.CharField(max_length=32, null=True,
+                                blank=True, default="")
+    superceded = models.ForeignKey("File", db_column="superceded_id",
+                                   null=True, blank=True, default=None)
+
 
     class Meta:
         ordering = ["title"]

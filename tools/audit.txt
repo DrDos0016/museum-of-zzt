@@ -1,0 +1,11 @@
+Finding File objects with missing Zip files:
+0 MISSING ZIPS
+3 IDs purposely ignored
+========================================
+Finding Zip files with no associated File object:
+0 MISSING FILES()
+10 Files purposely ignored
+========================================
+Finding viewer URLs which result in error:
+0 INVALID URLS
+8 SKIPPED.

@@ -36,6 +36,7 @@ DJANGO_VERSION = VERSION
 print("Python:", PYTHON_VERSION)
 print("Django:", DJANGO_VERSION)
 
+"""
 CATEGORY_LIST = (
     ("ZZT", "ZZT World"),
     ("ZZM", "ZZM Soundtrack"),
@@ -44,6 +45,7 @@ CATEGORY_LIST = (
     ("SZZT", "Super ZZT World"),
     ("Etc", "Etc."),
 )
+"""
 
 CHARSET_LIST = (
     ("cp437", "Code Page 437 -- RECOMMENDED"),

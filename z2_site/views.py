@@ -80,7 +80,7 @@ def article_view(request, id, page=0):
     return render(request, "z2_site/article_view.html", data)
 
 
-def browse(request, letter="a", category="ZZT", page=1):
+def browse(request, letter=None, category="ZZT", page=1):
     """ Returns page containing a list of files filtered by letter, category,
     and page
 
@@ -106,27 +106,26 @@ def browse(request, letter="a", category="ZZT", page=1):
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     data["qs_sans_view"] = qs_sans(request.GET, "view")
 
-    if category == "ZZT":
+    if category == "ZZT" or True:
         if data["view"] == "list":  # List gets a full listing on one page
             data["letter"] = letter if letter != "1" else "#"
-            data["files"] = File.objects.filter(
-                category=category,
-                letter=letter
-            ).order_by(sort)
-            destination = "z2_site/browse_list.html"
+            data["files"] = File.objects.filter(category=category)
+            if letter:
+                data["files"] = data["files"].filter(letter=letter)
+            data["files"] = data["files"].order_by(sort)
         else:  # Others list over multiple pages
             data["page"] = int(request.GET.get("page", page))
             data["letter"] = letter if letter != "1" else "#"
-            data["files"] = File.objects.filter(
-                category=category,
-                letter=letter
-            ).order_by(
-                sort
-            )[(data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE]
-            data["count"] = File.objects.filter(
-                category=category,
-                letter=letter
-            ).count()
+            data["files"] = File.objects.filter(category=category)
+            if letter:
+                data["files"] = data["files"].filter(letter=letter)
+            data["files"] = data["files"].order_by(sort)[
+                (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
+            ]
+            data["count"] = File.objects.filter(category=category)
+            if letter:
+                data["count"] = data["count"].filter(letter=letter)
+            data["count"] = data["count"].count()
             data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
             data["page_range"] = range(1, data["pages"] + 1)
             data["prev"] = max(1, data["page"] - 1)
@@ -302,6 +301,12 @@ def search(request):
             Q(company__icontains=q),
             category="ZZT"
         )
+
+        # Debug override
+        if DEBUG and request.GET.get("q")[:3] == "id=":
+            ids = request.GET.get("q")[3:]
+            qs = File.objects.filter(id__in=ids.split(",")).order_by("id")
+
         if request.GET.get("view") == "list":
             data["files"] = qs.order_by(sort)
             destination = "z2_site/browse_list.html"
@@ -393,6 +398,7 @@ def search(request):
                 destination = "z2_site/browse_gallery.html"
             else:
                 destination = "z2_site/browse.html"
+
     return render(request, destination, data)
 
 

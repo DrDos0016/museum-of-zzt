@@ -55,7 +55,7 @@ urlpatterns = [
     url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.play,
         name="play"
         ),
-    url(r"^superzzt$", z2_site.views.browse, {"category": "Super ZZT"}),
+    url(r"^super-zzt$", z2_site.views.browse, {"category": "SZZT"}),
     url(r"^zig$", z2_site.views.browse, {"category": "ZIG"}),
     url(r"^soundtracks$", z2_site.views.browse, {"category": "Soundtrack"}),
     url(r"^uploaded$", z2_site.views.browse, {"category": "Uploaded"}),
