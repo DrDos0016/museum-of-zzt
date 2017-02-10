@@ -10,17 +10,17 @@
         {% endif %}
     {% endif %}
     {% if not no_list %}<div class="sub">
-        {% if not request.GET.view or request.GET.view == "detailed" %}
+        {% if view == "detailed" %}
         <strong>Detailed View</strong> |
         {% else %}
         <a href="?view=detailed{% if qs_sans_view %}&{{qs_sans_view}}{% endif %}">Detailed View</a> |
         {% endif %}
-        {% if request.GET.view == "list" %}
+        {% if view == "list" %}
         <strong>List View</strong> |
         {% else %}
         <a href="?view=list{% if qs_sans_view %}&{{qs_sans_view}}{% endif %}">List View</a> |
         {% endif %}
-        {% if request.GET.view == "gallery" %}
+        {% if view == "gallery" %}
         <strong>Gallery View</strong>
         {% else %}
         <a href="?view=gallery{% if qs_sans_view %}&{{qs_sans_view}}{% endif %}">Gallery View</a>

@@ -11,6 +11,7 @@ def advanced_search(request):
             "genres": GENRE_LIST,
             "years": [str(x) for x in range(1991, YEAR + 1)]}
 
+    data["details_list"] = request.GET.getlist("details")
     return render(request, "z2_site/advanced_search.html", data)
 
 
@@ -80,58 +81,58 @@ def article_view(request, id, page=0):
     return render(request, "z2_site/article_view.html", data)
 
 
-def browse(request, letter=None, category="ZZT", page=1):
-    """ Returns page containing a list of files filtered by letter, category,
+def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
+    """ Returns page containing a list of files filtered by letter, details,
     and page
 
     Keyword arguments:
     letter      -- The letter to filter by, may be a-z or 1. Default 'a'
-    category    -- Category of files to filter by, may be
-                   ZZT, Super ZZT, ZIG, Soundtrack, Utility. Default 'ZZT'
+    details     -- List of Details of files to filter by.
     page        -- Page of results to slice to. Default '1'
-
-    TODO: Is this true still?
-    letter and page arguments are only used when the category is ZZT due to
-    small sizes of other categories
     """
     data = {
         "mode": "browse",
-        "category": category,
-        "show_description": (category == "Utility")
+        "details": details,
+        "show_description": False  # TODO: Fix this
     }
-    data["view"] = request.GET.get("view", "detailed")
+
+    # Determine the viewing method
+    if request.GET.get("view"):
+        data["view"] = request.GET["view"]
+    elif request.COOKIES.get("view"):
+        data["view"] = request.COOKIES["view"]
+    else:
+        data["view"] = "detailed"
+
     sort = request.GET.get("sort", "title").strip()
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     data["qs_sans_view"] = qs_sans(request.GET, "view")
 
-    if category == "ZZT" or True:
-        if data["view"] == "list":  # List gets a full listing on one page
-            data["letter"] = letter if letter != "1" else "#"
-            data["files"] = File.objects.filter(category=category)
-            if letter:
-                data["files"] = data["files"].filter(letter=letter)
-            data["files"] = data["files"].order_by(sort)
-        else:  # Others list over multiple pages
-            data["page"] = int(request.GET.get("page", page))
-            data["letter"] = letter if letter != "1" else "#"
-            data["files"] = File.objects.filter(category=category)
-            if letter:
-                data["files"] = data["files"].filter(letter=letter)
-            data["files"] = data["files"].order_by(sort)[
-                (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
-            ]
-            data["count"] = File.objects.filter(category=category)
-            if letter:
-                data["count"] = data["count"].filter(letter=letter)
-            data["count"] = data["count"].count()
-            data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
-            data["page_range"] = range(1, data["pages"] + 1)
-            data["prev"] = max(1, data["page"] - 1)
-            data["next"] = min(data["pages"], data["page"] + 1)
-    else:
-        data["files"] = File.objects.filter(category=category).order_by(sort)
+    if data["view"] == "list":  # List gets a full listing on one page
+        data["letter"] = letter if letter != "1" else "#"
+        data["files"] = File.objects.filter(details__id__in=details)
+        if letter:
+            data["files"] = data["files"].filter(letter=letter)
+        data["files"] = data["files"].order_by(sort)
+    else:  # Others list over multiple pages
+        data["page"] = int(request.GET.get("page", page))
+        data["letter"] = letter if letter != "1" else "#"
+        data["files"] = File.objects.filter(details__id__in=details)
+        if letter:
+            data["files"] = data["files"].filter(letter=letter)
+        data["files"] = data["files"].order_by(sort)[
+            (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
+        ]
+        data["count"] = File.objects.filter(details__id__in=details)
+        if letter:
+            data["count"] = data["count"].filter(letter=letter)
+        data["count"] = data["count"].count()
+        data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
+        data["page_range"] = range(1, data["pages"] + 1)
+        data["prev"] = max(1, data["page"] - 1)
+        data["next"] = min(data["pages"], data["page"] + 1)
 
     if data["view"] == "list":
         destination = "z2_site/browse_list.html"
@@ -140,7 +141,12 @@ def browse(request, letter=None, category="ZZT", page=1):
     else:  # Detailed
         destination = "z2_site/browse.html"
 
-    return render(request, destination, data)
+    response = render(request, destination, data)
+
+    # Set page view cookie
+    response.set_cookie("view", data["view"], expires=datetime(3000, 12, 31))
+
+    return response
 
 
 def directory(request, category):
@@ -191,7 +197,6 @@ def directory(request, category):
 def featured_games(request, page=1):
     """ Returns a page listing all games marked as Featured """
     data = {}
-    data["category"] = "ZZT"
     data["no_list"] = True
     data["page"] = int(request.GET.get("page", page))
     featured = Detail.objects.get(pk=7)
@@ -245,6 +250,7 @@ def file(request, letter, filename):
 def index(request):
     """ Returns front page """
     data = {}
+    #data["details"] = DETAIL_LIST
     return render(request, "z2_site/index.html", data)
 
 
@@ -264,7 +270,7 @@ def random(request):
     file = None
     while not file:
         id = randint(1, max_pk)
-        file = File.objects.filter(pk=id, category="ZZT")
+        file = File.objects.filter(pk=id, details__id=DETAIL_ZZT)
         if file:
             file = file[0]
 
@@ -291,6 +297,14 @@ def search(request):
     data["qs_sans_view"] = qs_sans(request.GET, "view")
     sort = request.GET.get("sort", "title")
 
+    # Determine the viewing method
+    if request.GET.get("view"):
+        data["view"] = request.GET["view"]
+    elif request.COOKIES.get("view"):
+        data["view"] = request.COOKIES["view"]
+    else:
+        data["view"] = "detailed"
+
     if request.GET.get("q"):  # Basic Search
         q = request.GET["q"].strip()
         data["q"] = request.GET["q"]
@@ -299,7 +313,7 @@ def search(request):
             Q(author__icontains=q) |
             Q(filename__icontains=q) |
             Q(company__icontains=q),
-            category="ZZT"
+            details__id=DETAIL_ZZT
         )
 
         # Debug override
@@ -307,7 +321,7 @@ def search(request):
             ids = request.GET.get("q")[3:]
             qs = File.objects.filter(id__in=ids.split(",")).order_by("id")
 
-        if request.GET.get("view") == "list":
+        if data["view"] == "list":
             data["files"] = qs.order_by(sort)
             destination = "z2_site/browse_list.html"
         else:
@@ -321,7 +335,7 @@ def search(request):
             data["prev"] = max(1, data["page"] - 1)
             data["next"] = min(data["pages"], data["page"] + 1)
 
-            if request.GET.get("view") == "gallery":
+            if data["view"] == "gallery":
                 destination = "z2_site/browse_gallery.html"
             else:
                 destination = "z2_site/browse.html"
@@ -373,13 +387,12 @@ def search(request):
             qs = qs.filter(
                 rating__lte=float(request.GET.get("max", "").strip())
             )
-        if (request.GET.get("category", "").strip() and
-                request.GET.get("category", "") != "Any"):
-            qs = qs.filter(category=request.GET.get("category", "").strip())
+        if (request.GET.getlist("details")):
+            qs = qs.filter(details__id__in=request.GET.getlist("details"))
 
         # Show results
         sort = request.GET.get("sort", "title").strip()
-        if request.GET.get("view") == "list":
+        if data["view"] == "list":
             data["files"] = qs.order_by(sort)
 
             destination = "z2_site/browse_list.html"
@@ -394,12 +407,15 @@ def search(request):
             data["prev"] = max(1, data["page"] - 1)
             data["next"] = min(data["pages"], data["page"] + 1)
 
-            if request.GET.get("view") == "gallery":
+            if data["view"] == "gallery":
                 destination = "z2_site/browse_gallery.html"
             else:
                 destination = "z2_site/browse.html"
 
-    return render(request, destination, data)
+    # Set page view cookie
+    response = render(request, destination, data)
+    response.set_cookie("view", data["view"], expires=datetime(3000, 12, 31))
+    return response
 
 
 def upload(request):

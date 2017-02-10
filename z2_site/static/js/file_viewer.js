@@ -291,7 +291,6 @@ var World = function (data) {
     {
         var input = this.hex.substr(this.idx, bytes*2);
         var output = input;
-
         // Convert to Little Endian
         if (bytes > 1)
         {
@@ -445,7 +444,7 @@ function pull_file()
             $("select[name=charset]").val(head);
 
             // Display the font
-            $("#details").html("<img src='/static/images/charsets/"+head+".png' class='charset' alt='"+head+"' title='"+head+"'>");
+            $("#details").html("<img src='/static/images/charsets/"+head+"' class='charset' alt='"+head+"' title='"+head+"'>");
         }
         else
         {
@@ -471,7 +470,7 @@ function parse_world(type, data)
 
     if (world.world_bytes != 65535)
     {
-        $("#details").html("World is not a valid ZZT world");
+        $("#details").html("World is not a valid ZZT world. Got " + world.world_bytes + ". Expected 65535");
         return false;
     }
 
@@ -1050,7 +1049,7 @@ function load_charset()
     {
         CHARSET_NAME = selected_charset;
         CHARSET_IMAGE = new Image();
-        CHARSET_IMAGE.src = "/static/images/charsets/"+CHARSET_NAME+".png";
+        CHARSET_IMAGE.src = "/static/images/charsets/"+CHARSET_NAME;
         CHARSET_IMAGE.addEventListener("load", function (){
             CANVAS_WIDTH = CHARSET_IMAGE.width / 16 * 60;
             CANVAS_HEIGHT = CHARSET_IMAGE.height / 16 * 25;

@@ -449,7 +449,7 @@ div.file-details ul
     display:flex;
     text-align:center;
     flex-wrap:wrap;
-    justify-content:space-between;
+    justify-content:space-around;
 }
 .gallery-block
 {

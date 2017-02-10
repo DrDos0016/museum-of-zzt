@@ -87,7 +87,7 @@ $(document).ready(function (){
     <div id="featured" class="block">
         <h1>Featured Game</h1>
         <a href="{{fg.file_url}}">{{fg.title}}</a><br>
-        <a href="{{fg.file_url}}"><img src="{% static 'images/screenshots/'|add:fg.letter|add:'/'|add:fg.screenshot' %}" alt="{{fg.title}}"></a>
+        <a href="{{fg.file_url}}"><img src="{% if fg.screenshot %}{% static 'images/screenshots/'|add:fg.letter|add:'/'|add:fg.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" alt="{{fg.title}}"></a>
         <br>
         by {% for author in fg.author_list %}<a href="/search?author={{author}}&exact=1">{{author}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
         <br>
@@ -152,7 +152,7 @@ $(document).ready(function (){
         <a href="/clones">ZZT Clones</a><br>
         <a href="/super-zzt">Super ZZT Worlds</a><br>
         <a href="/utilities">External Utilities</a><br>
-        <a href="/zzm">ZIG Worlds</a><br>
+        <a href="/zig">ZIG Worlds</a><br>
         <a href="/zzm">ZZM Music</a><br>
     </div>
 </section>

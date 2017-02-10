@@ -47,3 +47,21 @@ input, select, textarea
     width:45%;
     height:300px;
 }
+
+#detail-list
+{
+    width:59%;
+}
+
+#detail-list label
+{
+    width:22%;
+    font-weight:normal;
+    font-size:smaller;
+}
+
+#detail-list input[type=checkbox]
+{
+    width:auto;
+    float:left;
+}

@@ -55,11 +55,13 @@ urlpatterns = [
     url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.play,
         name="play"
         ),
+    # Files (alternate categories)
     url(r"^super-zzt$", z2_site.views.browse, {"category": "SZZT"}),
-    url(r"^zig$", z2_site.views.browse, {"category": "ZIG"}),
-    url(r"^soundtracks$", z2_site.views.browse, {"category": "Soundtrack"}),
     url(r"^uploaded$", z2_site.views.browse, {"category": "Uploaded"}),
     url(r"^utilities$", z2_site.views.browse, {"category": "Utility"}),
+    url(r"^zig$", z2_site.views.browse, {"category": "ZIG"}),
+    url(r"^zzm$", z2_site.views.browse, {"category": "ZZM"}),
+
 
     # Random ZZT World
     url(r"^random$", z2_site.views.random, name="random"),

@@ -55,7 +55,7 @@ var save = "{{save}}";
                         </optgroup>
                         <optgroup label="Custom Fonts">
                             {% for charset in custom_charsets %}
-                            <option value="{{charset}}">{{charset}}</option>
+                            <option value="{{charset}}">{{charset|slice:"5:-4"}}</option>
                             {% endfor %}
                         </optgroup>
                     </select>

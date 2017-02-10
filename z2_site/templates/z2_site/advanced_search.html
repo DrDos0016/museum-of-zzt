@@ -90,15 +90,27 @@
     <input id="max" name="max" value="{{request.GET.max|default:'5.0'}}" min=0 max=5 maxlength="4">
 </div>
 <div class="field">
-    <label for="category">Category:<br>
+    <label>Details:<br>
     </label>
-    <select id="category" name="category">
-        <option value="Any"{% if request.GET.category == "Any" %} selected {% endif %}>- Any -</option>
-        <option value="ZZT" {% if request.GET.category == "ZZT" or not request.GET.category %} selected {% endif %}>ZZT Worlds</option>
-        <option value="SZZT"{% if request.GET.category == "SZZT" %} selected {% endif %}>Super ZZT Worlds</option>
-        <option value="ZIG"{% if request.GET.category == "ZIG" %} selected {% endif %}>ZIG Worlds</option>
-        <option value="Utility">Utilities</option>
-    </select>
+
+    <div id="detail-list" class="col">
+        <label><input name="details" type="checkbox" {% if "15" in details_list %}checked {% endif %}value="15"> ZZT Worlds</label>
+        <label><input name="details" type="checkbox" {% if "7" in details_list %}checked {% endif %}value="7"> Featured Games</label>
+        <label><input name="details" type="checkbox" {% if "10" in details_list %}checked {% endif %}value="10"> Modified GFX</label>
+        <label><input name="details" type="checkbox" {% if "1" in details_list %}checked {% endif %}value="1"> MS-DOS</label>
+        <label><input name="details" type="checkbox" {% if "13" in details_list %}checked {% endif %}value="13"> Super ZZT Worlds</label>
+        <label><input name="details" type="checkbox" {% if "16" in details_list %}checked {% endif %}value="16"> ZIG Worlds</label>
+        <label><input name="details" type="checkbox" {% if "11" in details_list %}checked {% endif %}value="11"> Modified EXE</label>
+        <label><input name="details" type="checkbox" {% if "2" in details_list %}checked {% endif %}value="2"> Windows 16-Bit</label>
+        <label><input name="details" type="checkbox" {% if "14" in details_list %}checked {% endif %}value="14"> Utilities</label>
+        <label><input name="details" type="checkbox" {% if "8" in details_list %}checked {% endif %}value="8"> Contests</label>
+        <label><input name="details" type="checkbox" {% if "6" in details_list %}checked {% endif %}value="6"> OSX</label>
+        <label><input name="details" type="checkbox" {% if "3" in details_list %}checked {% endif %}value="3"> Windows 32-Bit</label>
+        <label><input name="details" type="checkbox" {% if "9" in details_list %}checked {% endif %}value="9"> ZZM Audio</label>
+        <label><input name="details" type="checkbox" {% if "12" in details_list %}checked {% endif %}value="12"> Etc.</label>
+        <label><input name="details" type="checkbox" {% if "5" in details_list %}checked {% endif %}value="5"> Linux</label>
+        <label><input name="details" type="checkbox" {% if "4" in details_list %}checked {% endif %}value="4"> Windows 64-Bit</label>
+    </div>
 </div>
 <div class="field">
     <label for="sort">Sort results by:<br>
