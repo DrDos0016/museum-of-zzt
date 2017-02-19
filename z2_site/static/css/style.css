@@ -477,6 +477,7 @@ div.file-details ul
     min-width:482px;
     max-width:100%;
     min-height:350px;
+    max-height:700px;
     border:1px solid #000;
     padding:0.25em;
     overflow:auto;
@@ -496,6 +497,11 @@ div.file-details ul
 #play-area iframe
 {
     margin:auto;
+}
+
+#details[data-format=txt]
+{
+    align-items:stretch;
 }
 
 #details img, #details canvas
@@ -525,7 +531,7 @@ div.file-details ul
     float:left;
 }
 
-#file-list ul
+#file-list ul, #file-list ol
 {
     margin:0;
     padding:0;
@@ -545,13 +551,18 @@ div.file-details ul
 }
 
 
-#file-list ul li ul /* ZZT Boards */
+#file-list ol
+{
+    list-style: decimal;
+}
+
+#file-list ul li ol /* ZZT Boards */
 {
     background:#FFF;
     width:100%;
 }
 
-#file-list ul li ul li /* ZZT Boards */
+#file-list ul li ol li /* ZZT Boards */
 {
     width:auto;
     text-align:right;

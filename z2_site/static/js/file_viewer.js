@@ -380,12 +380,12 @@ function pull_file()
             world = parse_world("zzt", data);
 
             // Write the board names to the file list
-            var board_list = "<ul>";
+            var board_list = "<ol>";
             for (var x = 0; x < world.boards.length; x++)
             {
                 board_list += "<li class='board' data-board-number='"+x+"'>"+(world.boards[x].title ? world.boards[x].title : "-untitled")+"</li>";
             }
-            board_list += "</ul>";
+            board_list += "</ol>";
             $("#file-list li.selected").append(board_list + "<br>");
             $("li.board").click(render_board); // Bind event
 
@@ -446,8 +446,9 @@ function pull_file()
             // Display the font
             $("#details").html("<img src='/static/images/charsets/"+head+"' class='charset' alt='"+head+"' title='"+head+"'>");
         }
-        else
+        else // Text mode
         {
+            $("#details").attr("data-format", ext);
             $("#details").html(data);
             $("#filename").text(filename);
         }

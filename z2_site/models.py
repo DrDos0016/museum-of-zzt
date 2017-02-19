@@ -32,6 +32,8 @@ DETAIL_UTILITY = 14
 DETAIL_ZZT = 15
 DETAIL_ZIG = 16
 DETAIL_LOST = 17
+DETAIL_UPLOADED = 18
+DETAIL_REMOVED = 19
 
 
 class Article(models.Model):
@@ -165,7 +167,7 @@ class Detail(models.Model):
         ordering = ["detail"]
 
     def __str__(self):
-        return self.detail
+        return "[" + str(self.id) + "] " + self.detail
 
 
 class Review(models.Model):

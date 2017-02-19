@@ -7,6 +7,27 @@ import z2_site.admin
 import z2_site.ajax
 import z2_site.views
 
+from z2_site.models import (
+    DETAIL_DOS,
+    DETAIL_WIN16,
+    DETAIL_WIN32,
+    DETAIL_WIN64,
+    DETAIL_LINUX,
+    DETAIL_OSX,
+    # DETAIL_FEATURED,
+    DETAIL_CONTEST,
+    DETAIL_ZZM,
+    DETAIL_GFX,
+    DETAIL_MOD,
+    DETAIL_ETC,
+    DETAIL_SZZT,
+    DETAIL_UTILITY,
+    DETAIL_ZZT,
+    DETAIL_ZIG,
+    DETAIL_LOST,
+    # DETAIL_UPLOADED,
+)
+
 urlpatterns = [
     url(r"^$", z2_site.views.index, name="index"),
     url(r"^upload$", z2_site.views.upload),
@@ -24,7 +45,7 @@ urlpatterns = [
         name="article_view_page"),
     url(r"^article/(?P<id>[0-9]+)/(.*)$",
         z2_site.views.article_view,
-        {"page":1},
+        {"page": 1},
         name="article_view",),
 
     # Special Article Pages (those with urls besides /article/#/title)
@@ -55,12 +76,41 @@ urlpatterns = [
     url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.play,
         name="play"
         ),
+
     # Files (alternate categories)
-    url(r"^super-zzt$", z2_site.views.browse, {"category": "SZZT"}),
-    url(r"^uploaded$", z2_site.views.browse, {"category": "Uploaded"}),
-    url(r"^utilities$", z2_site.views.browse, {"category": "Utility"}),
-    url(r"^zig$", z2_site.views.browse, {"category": "ZIG"}),
-    url(r"^zzm$", z2_site.views.browse, {"category": "ZZM"}),
+    url(r"^zzt-worlds$", z2_site.views.browse, {"details": [DETAIL_ZZT]},
+        name="zzt_worlds"),
+    url(r"^super-zzt$", z2_site.views.browse, {"details": [DETAIL_SZZT]},
+        name="szzt_worlds"),
+    url(r"^utilities$", z2_site.views.browse, {"details": [DETAIL_UTILITY]},
+        name="utilities"),
+    url(r"^zzm-audio$", z2_site.views.browse, {"details": [DETAIL_ZZM]},
+        name="zzm_audio"),
+    url(r"^zig-worlds$", z2_site.views.browse, {"details": [DETAIL_ZIG]},
+        name="zig_worlds"),
+    url(r"^contest-worlds$", z2_site.views.browse,
+        {"details": [DETAIL_CONTEST]},
+        name="contest_worlds"),
+    url(r"^etc$", z2_site.views.browse, {"details": [DETAIL_ETC]},
+        name="etc"),
+    url(r"^modified-gfx$", z2_site.views.browse, {"details": [DETAIL_GFX]},
+        name="modified_gfx"),
+    url(r"^modified-exe$", z2_site.views.browse, {"details": [DETAIL_MOD]},
+        name="modified_exe"),
+    url(r"^osx$", z2_site.views.browse, {"details": [DETAIL_OSX]},
+        name="osx"),
+    url(r"^linux$", z2_site.views.browse, {"details": [DETAIL_LINUX]},
+        name="linux"),
+    url(r"^ms-dos$", z2_site.views.browse, {"details": [DETAIL_DOS]},
+        name="ms_dos"),
+    url(r"^win16$", z2_site.views.browse, {"details": [DETAIL_WIN16]},
+        name="win16"),
+    url(r"^win32$", z2_site.views.browse, {"details": [DETAIL_WIN32]},
+        name="win32"),
+    url(r"^win64$", z2_site.views.browse, {"details": [DETAIL_WIN64]},
+        name="win64"),
+    url(r"^lost-worlds$", z2_site.views.browse, {"details": [DETAIL_LOST]},
+        name="lost_worlds"),
 
 
     # Random ZZT World

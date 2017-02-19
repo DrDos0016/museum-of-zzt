@@ -199,7 +199,7 @@ def featured_games(request, page=1):
     data = {}
     data["no_list"] = True
     data["page"] = int(request.GET.get("page", page))
-    featured = Detail.objects.get(pk=7)
+    featured = Detail.objects.get(pk=DETAIL_FEATURED)
     data["featured"] = featured.file_set.all().order_by(
         "title"
     ).prefetch_related("articles").defer(
@@ -389,6 +389,10 @@ def search(request):
             )
         if (request.GET.getlist("details")):
             qs = qs.filter(details__id__in=request.GET.getlist("details"))
+
+
+        # Select distinct IDs
+        qs = qs.distinct()
 
         # Show results
         sort = request.GET.get("sort", "title").strip()

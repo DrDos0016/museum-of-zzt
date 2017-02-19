@@ -14,6 +14,7 @@ comic/static/comic/ubgs/*
 comic/static/comic/zamros/*
 tools/comic/json/*
 tools/comic/necocone.co/*
+tools/extract
 tools/zookeeper
 tools/db_dump.py
 z2/private_settings.py

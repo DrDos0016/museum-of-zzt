@@ -28,6 +28,7 @@ def main():
     # Iterate over File objects
     # Finds Files() that have no Zips
     zip_ignore = [904, 2095, 2137]  # Known missing zips
+    zip_ignore = []
     print("Finding File objects with missing Zip files:")
 
     count = 0
