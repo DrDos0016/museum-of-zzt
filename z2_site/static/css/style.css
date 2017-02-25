@@ -192,6 +192,27 @@ nav li
     order:3;
 }
 
+.social
+{
+    text-align:center;
+}
+
+.social a[target=_blank]
+{
+    padding-right:0px;
+    background:none;
+    display:inline-block;
+    width:24px;
+    height:24px;
+}
+
+
+.social img
+{
+    max-width:24px;
+    max-height:24px;
+}
+
 #content
 {
     order:2;

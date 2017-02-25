@@ -132,6 +132,7 @@ $(document).ready(function (){
             <a href="/random">Random ZZT World</a><br>
             <a href="/mass" class="broken">Mass Downloads</a><br>
             <a href="/uploaded">Upload Queue</a><br>
+            <a href="{% url 'local' %}">Local File Viewer</a><br>
         </div>
 
         <div>
@@ -187,22 +188,26 @@ $(document).ready(function (){
         <a href="{% url 'lost_worlds' %}">Lost Worlds</a><br>
         <a href="" class="broken">Old News</a><br>
         <a href="" class="broken">ZZTers' First Games</a><br>
-        <a href="http://zzt.org" target="_blank">z2 classic website</a><br>
-    </div>
-
-    <div class="block">
-        <h1>Community</h1>
-        <a href="" class="broken">About the Community</a><br>
-        <a href="" class="broken">IRC</a><br>
-        <a href="" class="broken">Ircman</a><br>
-        <a href="" class="broken">Links</a><br>
-        <a href="" class="broken">Link to z2</a><br>
+        <a href="http://zzt.org" target="_blank">z2 Classic Website</a><br>
     </div>
 
     <div class="block">
         <h1>Contests</h1>
         <a href="" class="broken">24 Hours of ZZT</a><br>
         <a href="" class="broken">Weekend of ZZT</a>
+    </div>
+
+    <div class="block">
+        <h1>Worlds of ZZT</h1>
+        <div class="social">
+            <a href="https://twitter.com/worldsofzzt" target="_blank"><img src="{% static 'images/social/Twitter_Social_Icon_Rounded_Square_Color.png' %}" alt="Twitter" title="Twitter"></a>
+            <a href="https://tumblr.com/worldsofzzt" target="_blank"><img src="{% static 'images/social/tumblr.png' %}" alt="Tumblr" title="Tumblr"></a>
+            <a href="https://patreon.com/worldsofzzt" target="_blank"><img src="{% static 'images/social/patreon_logo.png' %}" alt="Patreon" title="Patreon"></a>
+            <a href="https://www.youtube.com/channel/UCr0f-r1bRexAZK8sWyk4NJA" target="_blank"><img src="{% static 'images/social/YouTube-social-squircle_red_24px.png' %}" alt="YouTube" title="YouTube"></a>
+            <a href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'images/social/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>
+            <a href="https://github.com/DrDos0016/z2" target="_blank"><img src="{% static 'images/social/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
+        </div>
+        Site Credits
     </div>
 </section>
 </div>

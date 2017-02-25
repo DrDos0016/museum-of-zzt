@@ -76,6 +76,9 @@ urlpatterns = [
     url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.play,
         name="play"
         ),
+    url(r"^file/local$", z2_site.views.local,
+        name="local"
+        ),
 
     # Files (alternate categories)
     url(r"^zzt-worlds$", z2_site.views.browse, {"details": [DETAIL_ZZT]},

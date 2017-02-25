@@ -338,7 +338,7 @@ function pull_file()
     $("#file-list li ul").remove();
     $("#file-list li br").remove();
     $(this).addClass("selected");
-    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi", "nfo", "com"];
+    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi", "nfo", "com", "brd"];
     filename = $(this).contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var split = filename.toLowerCase().split(".");
     var head = split[0];
@@ -392,6 +392,15 @@ function pull_file()
             // Auto Load board
             if (load_board != "")
                 auto_load_board(load_board);
+        }
+        else if (ext == "brd")
+        {
+            console.log("BRD PARSE");
+            world = new World(data);
+            var board = parse_board(world);
+            world.boards.push(board);
+            console.log("SOLD");
+            render_board();
         }
         else if (ext == "hi")
         {
@@ -453,6 +462,40 @@ function pull_file()
             $("#filename").text(filename);
         }
     });
+}
+
+function load_local_file()
+{
+    var file = $("#local-file-path").get(0).files[0];
+    console.log(file);
+    var url = window.URL || window.webkitURL;
+    var blob = url.createObjectURL(file);
+    console.log(blob)
+
+    var file_reader = new FileReader();
+    file_reader.onload = function (e) {
+        $("#local-file-name").text(file["name"]);
+        $("#local-file-name").addClass("selected");
+        var byte_array = new Uint8Array(file_reader.result);
+        var hex_string = "";
+
+        for (var idx in byte_array)
+        {
+            hex_string += ("0" + byte_array[idx].toString(16)).slice(-2);
+        }
+        world = parse_world("zzt", hex_string);
+
+        var board_list = "<ol>";
+        for (var x = 0; x < world.boards.length; x++)
+        {
+            board_list += "<li class='board' data-board-number='"+x+"'>"+(world.boards[x].title ? world.boards[x].title : "-untitled")+"</li>";
+        }
+        board_list += "</ol>";
+        $("#file-list li.selected").append(board_list + "<br>");
+        $("li.board").click(render_board); // Bind event
+    }
+
+    file_reader.readAsArrayBuffer(file);
 }
 
 function parse_world(type, data)
@@ -546,6 +589,7 @@ function parse_world(type, data)
 
 function parse_board(world)
 {
+    console.log("PARSING BOARD");
     var board = {};
     var start_idx = world.idx;
     var procced_bytes = 0;
@@ -677,7 +721,7 @@ function parse_board(world)
 
 function render_board()
 {
-    board_number = $(this).data("board-number");
+    board_number = $(this).data("board-number") || 0;
     $("li.board").removeClass("selected");
     $(this).addClass("selected");
     load_charset();
@@ -765,7 +809,7 @@ function draw_board()
     ctx.globalCompositeOperation = "source-over";
     ctx.fillstyle = "black";
     ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
-    var board_number = $(".board.selected").data("board-number");
+    var board_number = $(".board.selected").data("board-number") || 0;
     if (board_number == null)
         return false;
 
@@ -890,6 +934,8 @@ function tab_select(selector)
 }
 
 $(document).ready(function (){
+    $("#local-load").click(load_local_file);
+
     $("#file-list li").click(pull_file);
     $("#file-tabs ul li").click(function (){tab_select($(this).attr("name"))});
 

@@ -253,6 +253,13 @@ def index(request):
     #data["details"] = DETAIL_LIST
     return render(request, "z2_site/index.html", data)
 
+def local(request):
+    """ Returns ZZT file viewer intended for local files """
+    data = {}
+    data["charsets"] = CHARSET_LIST
+    data["custom_charsets"] = CUSTOM_CHARSET_LIST
+    return render(request, "z2_site/local_file.html", data)
+
 
 def play(request, letter, filename):
     """ Returns page to play file on archive.org """
