@@ -45,25 +45,25 @@ var save = "{{save}}";
             <div id="element-info" class="toggle"></div>
             <div id="stat-info" class="toggle"></div>
             <div id="preferences" class="toggle">
-                <fieldset>
-                    <label>Charset</label>
-                    <select name="charset">
-                        <optgroup label="Standard Fonts">
-                            {% for charset in charsets %}
-                            <option value="{{charset.0}}">{{charset.1}}</option>
-                            {% endfor %}
-                        </optgroup>
-                        <optgroup label="Custom Fonts">
-                            {% for charset in custom_charsets %}
-                            <option value="{{charset}}">{{charset|slice:"5:-4"}}</option>
-                            {% endfor %}
-                        </optgroup>
-                    </select>
+                    <label>Charset
+                        <select name="charset">
+                            <optgroup label="Standard Fonts">
+                                {% for charset in charsets %}
+                                <option value="{{charset.0}}">{{charset.1}}</option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="Custom Fonts">
+                                {% for charset in custom_charsets %}
+                                <option value="{{charset}}">{{charset|slice:"5:-4"}}</option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                        <div class="option r" style="clear:both">
+                            <input type="checkbox" name="2x" value="1"> - 2x Zoom
+                        </div>
+                    </label>
 
-                    <label><input type="checkbox" name="2x" value="1"> - 2x Zoom</label>
-                </fieldset>
 
-                <fieldset>
                     <label>
                         Board Rendering
                         <select name="renderer">
@@ -95,7 +95,26 @@ var save = "{{save}}";
                             <option value="invisible">Invisible</option>
                         </select>
                     </label>
-                </fieldset>
+
+                    <br>
+
+                    <label>
+                        Monitors
+                        <select name="monitors">
+                            <option value="hidden">Hidden - ZZT Style</option>
+                            <option value="m" selected>M - KevEdit Style</option>
+                        </select>
+                    </label>
+
+                    <br>
+
+                    <label>
+                        Board Edges
+                        <select name="edges">
+                            <option value="hidden" selected>Hidden - ZZT Style</option>
+                            <option value="e">E - KevEdit Style</option>
+                        </select>
+                    </label>
             </div>
         </div>
     </div>

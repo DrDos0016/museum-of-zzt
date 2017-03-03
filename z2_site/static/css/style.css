@@ -391,7 +391,7 @@ div.file-links, div.file-details, div.file-meta
 
 div.file-meta
 {
-    border-bottom:1px solid #000;
+
 }
 
 div.file-links div
@@ -523,6 +523,11 @@ div.file-details ul
 #details[data-format=txt]
 {
     align-items:stretch;
+}
+
+#details[data-format=zzt]
+{
+    /*align-items:center;*/
 }
 
 #details img, #details canvas

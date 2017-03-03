@@ -2,7 +2,7 @@
 var elements = ["Empty", "Board Edge", "Messenger", "Monitor", "Player", "Ammo", "Torch", "Gem", "Key", "Door", "Scroll", "Passage", "Duplicator", "Bomb", "Energizer", "Star", "Conveyor, Clockwise", "Conveyor, Counterclockwise", "Bullet", "Water", "Forest", "Solid Wall", "Normal Wall", "Breakable Wall", "Boulder", "Slider, North-South", "Slider, East-West", "Fake Wall", "Invisible Wall", "Blink Wall", "Transporter", "Line Wall", "Ricochet", "Blink Ray, Horizontal", "Bear", "Ruffian", "Object", "Slime", "Shark", "Spinning Gun", "Pusher", "Lion", "Tiger", "Blink Ray, Vertical", "Centipede Head", "Centipede Segment", "Text, Blue", "Text, Green", "Text, Cyan", "Text, Red", "Text, Purple", "Text, Brown", "Text, Black"];
 var colors = ["#000000", "#0000AA", "#00AA00", "#00AAAA", "#AA0000", "#AA00AA", "#AA5500", "#AAAAAA", "#555555", "#5555FF", "#55FF55", "#55FFFF", "#FF5555", "#FF55FF", "#FFFF55", "#FFFFFF"];
 var COLOR_NAMES = ["Black", "Dark Blue", "Dark Green", "Dark Cyan", "Dark Red", "Dark Purple", "Dark Yellow", "Gray", "Dark Gray", "Blue", "Green", "Cyan", "Red", "Purple", "Yellow", "White"];
-var characters = [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 47, 47, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63];
+var characters = [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63];
 var line_characters = {"0000":249, "0001":181, "0010":198, "0011":205, "0100":210, "0101":187, "0110":201, "0111":203, "1000":208, "1001":188, "1010":200, "1011":202, "1100":186, "1101":185, "1110":204, "1111":206};
 
 var CP437_TO_UNICODE = {
@@ -326,6 +326,15 @@ var World = function (data) {
     };
 };
 
+var switch_board = function (e)
+{
+    e.preventDefault();
+    var board_number = $(this).attr("data-board");
+    $("li.board[data-board-number="+board_number+"]").click();
+    //output += '<a class="board-link" data-board="'+stat.param3+'" href="?file='+loaded_file+'&board='+stat.param3+'">'+stat.param3 + " - " + world.boards[stat.param3].title +"</a>";
+    return true;
+}
+
 function pull_file()
 {
     if ($(this).hasClass("selected"))
@@ -335,27 +344,23 @@ function pull_file()
     }
 
     $("#file-list li").removeClass("selected");
-    $("#file-list li ul").remove();
+    $("#file-list li ol").remove();
     $("#file-list li br").remove();
     $(this).addClass("selected");
-    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi", "nfo", "com", "brd"];
+    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi", "nfo", "com", "brd", "mh"];
     filename = $(this).contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var split = filename.toLowerCase().split(".");
     var head = split[0];
     var ext = split[split.length - 1];
 
-    if (valid_extensions.indexOf(ext) == -1)
+    // Fix for files with no extension
+    if (filename.indexOf(".") == -1)
+        ext = "txt";
+
+    if (filename == "Title Screen")
     {
-        if (filename == "Title Screen")
-        {
-            $("#details").html('<img src="'+$(this).data("img")+'">');
-            return true;
-        }
-        else
-        {
-            $("#details").html(filename + " is not a supported filetype that can be viewed.");
-            return false;
-        }
+        $("#details").html('<img src="'+$(this).data("img")+'">');
+        return true;
     }
 
     // Add to history
@@ -372,15 +377,16 @@ function pull_file()
         data:{
             "letter":letter,
             "zip":zip,
-            "filename":filename
+            "filename":filename,
+            "format":"auto"
         }
     }).done(function (data){
-        if (ext == "zzt")
+        if (ext == "zzt" || ext == "sav")
         {
             world = parse_world("zzt", data);
 
             // Write the board names to the file list
-            var board_list = "<ol>";
+            var board_list = "<ol start='0'>";
             for (var x = 0; x < world.boards.length; x++)
             {
                 board_list += "<li class='board' data-board-number='"+x+"'>"+(world.boards[x].title ? world.boards[x].title : "-untitled")+"</li>";
@@ -402,7 +408,7 @@ function pull_file()
             console.log("SOLD");
             render_board();
         }
-        else if (ext == "hi")
+        else if (ext == "hi" || ext == "mh")
         {
             var scores = parse_scores(data);
             var output = "<div class='high-scores'>Score &nbsp;Name<br>";
@@ -414,14 +420,20 @@ function pull_file()
             output += "</div>";
             $("#details").html(output);
         }
-        else if (["jpg", "jpeg", "gif", "bmp", "png"].indexOf(ext) != -1)
+        else if (["jpg", "jpeg", "gif", "bmp", "png", "ico"].indexOf(ext) != -1)
         {
             var zip_image = new Image();
             zip_image.src = data;
             $("#details").html("<img id='zip_image' alt='Zip file image'>");
             $("#zip_image").attr("src", "data:image/'"+ext+"';base64,"+data);
-
-
+        }
+        else if (["avi"].indexOf(ext) != -1)
+        {
+            // TODO: Make this actually work (many many years from now)
+            $("#details").html("<video id='zip_video' alt='Zip file video'></video>");
+            $("#zip_video").attr("src", "data:video/x-msvideo;base64,"+data);
+            // MIME would vary, but there's only one avi file in the DB.
+            // Not surprisingly msvideo was not adapted into the HTML5 spec.
         }
         else if (["wav", "mp3", "ogg", "mid", "midi"].indexOf(ext) != -1)
         {
@@ -755,7 +767,7 @@ function render_board()
     if (board.exit_north)
     {
         output += "Board ↑: ";
-        output += '<a href="?file='+loaded_file+'&board='+board.exit_north+'">'+board.exit_north + " - " + world.boards[board.exit_north].title +"</a>";
+        output += '<a class="board-link" data-board="'+board.exit_north+'" href="?file='+loaded_file+'&board='+board.exit_north+'">'+board.exit_north + ". " + world.boards[board.exit_north].title +"</a>";
         output += "<br>";
     }
     else
@@ -763,7 +775,7 @@ function render_board()
     if (board.exit_south)
     {
         output += "Board ↓: ";
-        output += '<a href="?file='+loaded_file+'&board='+board.exit_south+'">'+board.exit_south + " - " + world.boards[board.exit_south].title +"</a>";
+        output += '<a class="board-link" data-board="'+board.exit_south+'" href="?file='+loaded_file+'&board='+board.exit_south+'">'+board.exit_south + ". " + world.boards[board.exit_south].title +"</a>";
         output += "<br>";
     }
     else
@@ -771,7 +783,7 @@ function render_board()
     if (board.exit_east)
     {
         output += "Board →: ";
-        output += '<a href="?file='+loaded_file+'&board='+board.exit_east+'">'+board.exit_east + " - " + world.boards[board.exit_east].title +"</a>";
+        output += '<a class="board-link" data-board="'+board.exit_east+'" href="?file='+loaded_file+'&board='+board.exit_east+'">'+board.exit_east + ". " + world.boards[board.exit_east].title +"</a>";
         output += "<br>";
     }
     else
@@ -779,7 +791,7 @@ function render_board()
     if (board.exit_west)
     {
         output += "Board ←: ";
-        output += '<a href="?file='+loaded_file+'&board='+board.exit_west+'">'+board.exit_west + " - " + world.boards[board.exit_west].title +"</a>";
+        output += '<a class="board-link" data-board="'+board.exit_west+'" href="?file='+loaded_file+'&board='+board.exit_west+'">'+board.exit_west + ". " + world.boards[board.exit_west].title +"</a>";
         output += "<br>";
     }
     else
@@ -797,6 +809,9 @@ function render_board()
 
     $("#board-info").html(output);
     tab_select("board-info");
+
+    // Bind board links
+    $(".board-link").click(switch_board);
 
     // Render the stat info as well
     render_stat_list(board);
@@ -818,6 +833,7 @@ function draw_board()
     renderer.render(board);
 
     $("#world-canvas").click(stat_info);
+    $("#world-canvas").dblclick({"board": board}, passage_travel);
 
     // Click coordinates in hash
     if (hash_coords)
@@ -845,6 +861,36 @@ function draw_board()
     // END DEBUG
 }
 
+var passage_travel = function(e) {
+    var posX = $(this).offset().left;
+    var posY = $(this).offset().top;
+    var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
+    var y = parseInt((e.pageY - posY) / TILE_HEIGHT) + 1;
+    var tile_idx = ((y-1) * 60) + (x-1);
+    console.log("Clicked on X/Y", x, y);
+    var board = world.boards[board_number];
+
+    var destination = null;
+
+    if (board.elements[tile_idx].name == "Passage")
+    {
+        destination = 0;
+        for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
+        {
+            if (board.stats[stat_idx].x == x && board.stats[stat_idx].y == y)
+            {
+                console.log("Passage found!");
+                destination = board.stats[stat_idx].param3;
+            }
+        }
+    }
+
+    if (destination != null)
+        $("li.board[data-board-number="+destination+"]").click();
+
+    return true;
+}
+
 function stat_info(e)
 {
     if (! e.data)
@@ -861,6 +907,11 @@ function stat_info(e)
     }
     var tile_idx = ((y-1) * 60) + (x-1);
     var hash_coords = "#" + x + "," + y;
+
+    // Check for out of bounds coordinates
+    if (tile_idx < 0 || tile_idx >= 1500)
+        return false;
+
     //window.location.hash = ;
     history.replaceState(undefined, undefined, hash_coords)
     var output = "";
@@ -896,7 +947,7 @@ function stat_info(e)
         {
             var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
             output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param3") ? ZZT_ELEMENTS[tile.id].param3 : "Param3") + ": ";
-            output += '<a href="?file='+loaded_file+'&board='+stat.param3+'">'+stat.param3 + " - " + world.boards[stat.param3].title +"</a>";
+            output += '<a class="board-link" data-board="'+stat.param3+'" href="?file='+loaded_file+'&board='+stat.param3+'">'+stat.param3 + " - " + world.boards[stat.param3].title +"</a>";
             output += "<br>";
         }
         else
@@ -921,6 +972,8 @@ function stat_info(e)
 
     $("#element-info").html(output);
     tab_select("element-info");
+    // Bind board links (from passages)
+    $(".board-link").click(switch_board);
 
     return true;
 }
@@ -936,7 +989,7 @@ function tab_select(selector)
 $(document).ready(function (){
     $("#local-load").click(load_local_file);
 
-    $("#file-list li").click(pull_file);
+    $("#file-list li").click({"format": "auto"}, pull_file);
     $("#file-tabs ul li").click(function (){tab_select($(this).attr("name"))});
 
     $("select[name=charset]").change(load_charset);
@@ -949,11 +1002,20 @@ $(document).ready(function (){
         $("li[name=preferences]").click();
     });
 
-    // Invisibles
+    // Invisibles, Monitors, and Board Edges
     $("select[name=invisibles]").change(function (){
         renderer.invisible_style = $(this).val();
         renderer.render(world.boards[board_number]);
     });
+    $("select[name=monitors]").change(function (){
+        renderer.monitor_style = $(this).val();
+        renderer.render(world.boards[board_number]);
+    });
+    $("select[name=edges]").change(function (){
+        renderer.edge_style = $(this).val();
+        renderer.render(world.boards[board_number]);
+    });
+
 
     // High Intensity BGs
     $("select[name=intensity]").change(function (){
@@ -1178,6 +1240,20 @@ function render_stat_list(board)
     for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
     {
         var stat = board.stats[stat_idx];
+
+        // Invalid stat check
+        if ((stat.tile_idx < 0) || (stat.tile_idx >= 1500))
+        {
+            console.log("Invalid stat detected!")
+            if (stat.oop.length == 0)
+                stat_list += "<li class='empty'>";
+            else
+                stat_list += "<li>";
+            stat_list += "<a class='jsLink' name='stat-link' data-x='"+stat.x+"' data-y='"+stat.y+"'>";
+            stat_list +="("+ ("00"+stat.x).slice(-2) +", "+ ("00"+stat.y).slice(-2) +") [????] "
+            stat_list += "UNKNOWN</a> "+ stat.oop.length +" bytes</li>\n";
+            continue;
+        }
         var stat_name = board.elements[stat.tile_idx].name;
         if ((stat_name == "Scroll" || stat_name == "Object") && stat.oop[0] == "@")
             stat_name = stat.oop.slice(0, stat.oop.indexOf("\r"));

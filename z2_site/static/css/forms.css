@@ -65,3 +65,23 @@ input, select, textarea
     width:auto;
     float:left;
 }
+
+#preferences label
+{
+    min-height:2em;
+    width:100%;
+    display:inline-block;
+    line-height:2em;
+    border-bottom:1px dotted #000;
+    font-size:larger;
+    font-weight:bold;
+}
+
+#preferences label select, #preferences label .option
+{
+    float:right;
+    clear:both;
+    height:1.5em;
+    margin-top:0.25em;
+    min-width:35%;
+}

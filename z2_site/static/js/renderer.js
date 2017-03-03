@@ -4,8 +4,12 @@ class Renderer {
     constructor()
     {
         this.invisible_chars = {"revealed":178, "editor":176, "invisible":32};
+        this.monitor_chars = {"hidden":32, "m":77};
+        this.edge_chars = {"hidden":32, "e":69}; // Nice
         this.render = this.zzt_standard;
         this.invisible_style = $("select[name=invisibles]").val();
+        this.monitor_style = $("select[name=monitors]").val();
+        this.edge_style = $("select[name=edges]").val();
         this.bg_intensity = $("select[name=intensity]").val();
     }
 
@@ -13,6 +17,8 @@ class Renderer {
     {
         console.log("STANDARD RENDERING");
         console.log("Invis style:", this.invisible_style);
+        console.log("Monitor style:", this.monitor_style);
+        console.log("Edge style:", this.edge_style);
         var x = 0;
         var y = 0;
         var tile = 0;
@@ -41,17 +47,19 @@ class Renderer {
                 {
                     print(ctx, characters[chunk[1]], 0, x, y);
                 }
-                else if (chunk[1] == 36 || chunk[1] == 40 || chunk[1] == 30) // Objects, pushers, transporters, linewalls which need stat check (linewall 31)
+                else if (chunk[1] == 36 || chunk[1] == 40 || chunk[1] == 30 || chunk[1] == 13 || chunk[1] == 12 ) // Objects, pushers, transporters, bombs, dupes
                 {
+                    print(ctx, characters[chunk[1]], chunk[2], x, y); // Statless
                     for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
                     {
+
                         if (board.stats[stat_idx].x - 1 == x && board.stats[stat_idx].y - 1 == y)
                         {
                             if (chunk[1] == 36) // Object
                             {
                                 print(ctx, board.stats[stat_idx].param1, chunk[2], x, y);
                             }
-                            if (chunk[1] == 40) // Pusher
+                            else if (chunk[1] == 40) // Pusher
                             {
                                 var pusher_char = 16;
                                 if (board.stats[stat_idx].y_step > 32767)
@@ -63,7 +71,7 @@ class Renderer {
 
                                 print(ctx, pusher_char, chunk[2], x, y);
                             }
-                            if (chunk[1] == 30) // Transporter
+                            else if (chunk[1] == 30) // Transporter
                             {
                                 var transporter_char = 62;
                                 if (board.stats[stat_idx].y_step > 32767)
@@ -74,6 +82,30 @@ class Renderer {
                                     transporter_char = 60;
 
                                 print(ctx, transporter_char, chunk[2], x, y);
+                            }
+                            else if (chunk[1] == 13) // Bomb
+                            {
+                                if (board.stats[stat_idx].param1 >= 2)
+                                {
+                                    var bomb_char = board.stats[stat_idx].param1 + 48
+                                    if (bomb_char > 255)
+                                        bomb_char -= 255;
+                                }
+                                else
+                                {
+                                    continue; // Default is fine
+                                }
+                                print(ctx, bomb_char, chunk[2], x, y);
+                            }
+                            if (chunk[1] == 12) // Duplicator
+                            {
+                                var dupe_chars = [250,250,249,248,111,79];
+                                if (board.stats[stat_idx].param1 >= 2 && board.stats[stat_idx].param1 <= 5)
+                                    print(ctx, dupe_chars[board.stats[stat_idx].param1], chunk[2], x, y);
+                                // Default case handles the rest
+
+
+
                             }
                         }
                     }
@@ -86,6 +118,14 @@ class Renderer {
                 else if (chunk[1] == 28) // Invisible walls
                 {
                     print(ctx, this.invisible_chars[this.invisible_style], chunk[2], x, y);
+                }
+                else if (chunk[1] == 3) // Monitors
+                {
+                    print(ctx, this.monitor_chars[this.monitor_style], chunk[2], x, y);
+                }
+                else if (chunk[1] == 1) // Board Edges
+                {
+                    print(ctx, this.edge_chars[this.edge_style], chunk[2], x, y);
                 }
                 else // Standard
                     print(ctx, characters[chunk[1]], chunk[2], x, y);

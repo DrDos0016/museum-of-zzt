@@ -235,8 +235,15 @@ def file(request, letter, filename):
     data["charsets"] = CHARSET_LIST
     data["custom_charsets"] = CUSTOM_CHARSET_LIST
     zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
-    data["files"] = zip.namelist()
-    data["files"].sort()
+    files = zip.namelist()
+    files.sort(key=str.lower)
+    data["files"] = []
+    # Filter out directories (but not their contents)
+    for f in files:
+        print("F IS..", f)
+        if f and f[-1] != os.sep:
+            print("REMOVING", f)
+            data["files"].append(f)
     data["load_file"] = request.GET.get("file", "")
     data["load_board"] = request.GET.get("board", "")
 

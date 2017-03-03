@@ -9,17 +9,22 @@ from .common import *
 import zipfile
 import binascii
 import base64
+import os
 
 
 def get_zip_file(request):
     letter = request.GET.get("letter")
     zip = request.GET.get("zip")
     filename = request.GET.get("filename", "")
-    ext = filename.split(".")[-1].lower()
+    format = request.GET.get("format", "auto")
+    ext = os.path.splitext(filename.lower())[1]
+    if filename.find(".") == -1:
+        ext = ".txt"
 
     try:
         zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, zip))
         file = zip.open(filename)
+
     except Exception as error:
         print(type(error))
         print(error)
@@ -27,14 +32,24 @@ def get_zip_file(request):
             "An error occurred, and the file could not be retreived."
         )
 
-    if ext in ("txt", "bat", "cfg", "nfo"):
+    print("EXT IS", ext)
+    if ext in ("", ".txt", ".bat", ".cfg", ".nfo", ".dat", ".bas", ".deu", ".diz", ".c", ".ds_store", ".faq", ".frm", ".fyi", ".gud", ".h", ".hlp", ".lst", ".me", ".nfo", ".pas", ".reg", ".sol", ".zln", ".zml", ".zzl", ".zzm", ".135", ".1st", ".asm", ".bb", ".bin", ".chr"):
         output = file.read()
-        try:
-            output = output.decode("utf-8")
-            encoding = "utf-8"
-        except UnicodeDecodeError:
+
+        if format == "auto" or format == "utf-8":
+            try:
+                output = output.decode("utf-8")
+                encoding = "utf-8"
+            except UnicodeDecodeError as e:
+                output = output.decode("cp437")
+                encoding = "cp437"
+        elif format == "cp437":
             output = output.decode("cp437")
             encoding = "cp437"
+        elif format == "hex":
+            output = "HEXADECIMAL"
+            encding = "hex"
+
         output = output.replace(
             "\r\n", "<br>"
         ).replace(
@@ -47,19 +62,19 @@ def get_zip_file(request):
         output = "<div class='" + encoding + "'>" + output + "</div>"
 
         return HttpResponse(output)
-    elif ext in ("hi", "zzt", "brd"):
+    elif ext in (".hi", ".zzt", ".brd", ".mh", ".sav"):
         return HttpResponse(binascii.hexlify(file.read()))
-    elif ext in ("jpg", "jpeg", "bmp", "gif", "png"):
+    elif ext in (".jpg", ".jpeg", ".bmp", ".gif", ".png", ".ico", ".avi"):
         b64 = base64.b64encode(file.read())
         return HttpResponse(b64)
-    elif ext in ("wav", "mp3", "ogg", "mid", "midi"):
+    elif ext in (".wav", ".mp3", ".ogg", ".mid", ".midi"):
         response = HttpResponse(file.read())
 
-        if ext == "wav":
+        if ext == ".wav":
             response["Content-Type"] = "audio/wav wav"
-        elif ext == "mp3":
+        elif ext == ".mp3":
             response["Content-Type"] = "audio/mpeg mp3"
-        elif ext == "ogg":
+        elif ext == ".ogg":
             response["Content-Type"] = "audio/ogg ogg"
         else:  # Fallback
             response["Content-Type"] = "application/octet-stream"
