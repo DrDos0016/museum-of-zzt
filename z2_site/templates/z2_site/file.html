@@ -1,6 +1,10 @@
 {% extends "z2_site/world.html" %}
 {% load staticfiles %}
 
+{% block og %}
+
+{% endblock %}
+
 {% block scripts %}
 <script>
 var letter = "{{letter}}";
@@ -8,12 +12,8 @@ var zip = "{{file.filename}}";
 var load_file = "{{load_file}}";
 var load_board = "{{load_board}}";
 var hash_coords = window.location.hash;
+var db_id = {{file.id|default:0}};
 
-{% if save %}
-// DEBUG DO NOT USE ON PRODUCTION
-var save = "{{save}}";
-// END DEBUG
-{% endif %}
 </script>
 <script src="{% static 'js/elements.js' %}"></script>
 <script src="{% static 'js/renderer.js' %}"></script>
@@ -30,7 +30,7 @@ var save = "{{save}}";
     <ul>
     <li class="selected" data-img="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}">Title Screen</li>
     {% for file in files %}
-    <li>{{file}}</li>
+    <li class="zip-content">{{file}}</li>
     {% endfor %}
     </ul>
     </div>
@@ -118,15 +118,5 @@ var save = "{{save}}";
             </div>
         </div>
     </div>
-
-    {% if save %}
-    <form method="POST" action="/debug/save" name="save">
-    {% csrf_token %}
-    <input name="screenshot">
-    <input name="letter" value="{{file.letter}}">
-    <input name="zip" value="{{file.filename}}">
-    <input type="submit" id="save" value="Save">
-    </form>
-    {% endif %}
 </div>
 {% endblock %}

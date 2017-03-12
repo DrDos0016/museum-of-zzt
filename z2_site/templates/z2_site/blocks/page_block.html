@@ -31,8 +31,8 @@
             <option value="title"{% if request.GET.sort == "title" %} selected {%endif %}>Title</option>
             <option value="author"{% if request.GET.sort == "author" %} selected {%endif %}>Author</option>
             <option value="company"{% if request.GET.sort == "company" %} selected {%endif %}>Company</option>
-            <option value="-rating"{% if request.GET.sort == "-rating" %} selected {%endif %}>Rating</option>
-            <option value="release_date"{% if request.GET.sort == "release_date" %} selected {%endif %}>Release Date</option>
+            <option value="rating"{% if request.GET.sort == "rating" %} selected {%endif %}>Rating</option>
+            <option value="release"{% if request.GET.sort == "release" %} selected {%endif %}>Release Date</option>
         </select>
     </div>
     {% if advanced_search %}

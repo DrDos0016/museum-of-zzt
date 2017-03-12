@@ -1,0 +1,520 @@
+[882] #play 5 | #play 0005
+[4] 1 Object Fire | 0001 object fire
+[2178] 16 Horribly Boring Games That Will Keep You On The Edge Of Your Chair V2 | 0016 horribly boring games that will keep you on the edge of your chair v2
+[150] 16 Horribly Boring Games... | 0016 horribly boring games...
+[1450] 24 hours of evil | 0024 hours of evil
+[2257] 24 Hours of ZZT Autumn 1999 [Fantasy] | 0024 hours of zzt autumn 1999 [fantasy]
+[2261] 24 Hours of ZZT Autumn 2000 [Person] | 0024 hours of zzt autumn 2000 [person]
+[2248] 24 Hours of ZZT Autumn 2001 [Hope] | 0024 hours of zzt autumn 2001 [hope]
+[2251] 24 Hours of ZZT Autumn 2002 [Mystery] | 0024 hours of zzt autumn 2002 [mystery]
+[2269] 24 Hours of ZZT Autumn 2003 [Disaster] | 0024 hours of zzt autumn 2003 [disaster]
+[2255] 24 Hours of ZZT Spring 1999 [Fear] | 0024 hours of zzt spring 1999 [fear]
+[2259] 24 Hours of ZZT Spring 2000 [Food] | 0024 hours of zzt spring 2000 [food]
+[2263] 24 Hours of ZZT Spring 2001 [Revival] | 0024 hours of zzt spring 2001 [revival]
+[2249] 24 Hours of ZZT Spring 2002 [Betrayal] | 0024 hours of zzt spring 2002 [betrayal]
+[2267] 24 Hours of ZZT Spring 2003 [Adversity] | 0024 hours of zzt spring 2003 [adversity]
+[2266] 24 Hours of ZZT Spring 2003 [Music] | 0024 hours of zzt spring 2003 [music]
+[2253] 24 Hours of ZZT Summer 1998 [Night] | 0024 hours of zzt summer 1998 [night]
+[2256] 24 Hours of ZZT Summer 1999 [Space] | 0024 hours of zzt summer 1999 [space]
+[2260] 24 Hours of ZZT Summer 2000 [Metamorphosis] | 0024 hours of zzt summer 2000 [metamorphosis]
+[2264] 24 Hours of ZZT Summer 2001 [Invention] | 0024 hours of zzt summer 2001 [invention]
+[2250] 24 Hours of ZZT Summer 2002 [War] | 0024 hours of zzt summer 2002 [war]
+[2268] 24 Hours of ZZT Summer 2003 [Night] | 0024 hours of zzt summer 2003 [night]
+[2254] 24 Hours of ZZT Winter 1998 [History] | 0024 hours of zzt winter 1998 [history]
+[2258] 24 Hours of ZZT Winter 1999 [Violence] | 0024 hours of zzt winter 1999 [violence]
+[2262] 24 Hours of ZZT Winter 2000 [Discovery] | 0024 hours of zzt winter 2000 [discovery]
+[2252] 24 Hours of ZZT Winter 2001 [Seasons] | 0024 hours of zzt winter 2001 [seasons]
+[2265] 24 Hours of ZZT Winter 2002 [Travelling/Worship] | 0024 hours of zzt winter 2002 [travelling/worship]
+[1812] 33 more ways to die | 0033 more ways to die
+[1631] 33 Ways to Die | 0033 ways to die
+[431] 4 | 0004
+[16] 5 Screen Title | 0005 screen title
+[1907] 5 thoughts of DirrCo | 0005 thoughts of dirrco
+[1751] 666 Hell: Issue #1 | 0666 hell: issue #1
+[2129] Adventures of Link 2 | adventures of link 0002
+[1652] Alien Adoption Agency 2 | alien adoption agency 0002
+[1975] Angelis Finale: Episode 1 | angelis finale: episode 0001
+[58] Area 51 | area 0051
+[2144] Arena 1 | arena 0001
+[61] Arena 2 | arena 0002
+[1654] Art Juice 2 | art juice 0002
+[18] Asbestos 2 | asbestos 0002
+[2213] ASCII Maker Collection 2 | ascii maker collection 0002
+[1637] ASCII Maker Collection 6 | ascii maker collection 0006
+[1591] Asher's Game Pak 1 | asher's game pak 0001
+[1589] Asher's Game Pak 2 | asher's game pak 0002
+[68] Assasin 1  & 2 | assasin 0001  & 0002
+[77] Avi's Warehouse 4 | avi's warehouse 0004
+[1533] The Adventure in IanLand III | adventure in ianland iii
+[538] The Adventure in lanland II | adventure in lanland ii
+[104] The Adventure of Bertil | adventure of bertil
+[1805] The Adventure of Sam | adventure of sam
+[2146] The Adventures of Kurie Cat Part 1 - Demo | adventures of kurie cat part 0001 - demo
+[57] The Akim Magazine | akim magazine
+[34] The Akim Prod Arcade v1.0 | akim prod arcade v1.0
+[51] The Anilihator | anilihator
+[1198] The Arena | arena
+[59] The Arena 2 | arena 0002
+[1524] A Black Carriage Was Drawn: ELECTRIC BOOGALOO | black carriage was drawn: electric boogaloo
+[113] A Black Carridge Was Drawn: Chapter 1 | black carridge was drawn: chapter 0001
+[1769] A Brief History of Zeux | brief history of zeux
+[2099] BACONÇ 2 | baconç 0002
+[94] Battle Maze 2 Demo | battle maze 0002 demo
+[107] Best of ZZT 2 | best of zzt 0002
+[122] Bloodlines 1 & 2 | bloodlines 0001 & 0002
+[95] Bloodlines Disc 1 | bloodlines disc 0001
+[121] Bloodlines Disc 2 | bloodlines disc 0002
+[138] Bob 2 | bob 0002
+[141] Bobo 2 | bobo 0002
+[1123] Bomb Squad! 1 | bomb squad! 0001
+[2325] Boss 3 Demo | boss 0003 demo
+[2326] Boss 3 Incomplete | boss 0003 incomplete
+[1460] Boxland 0 | boxland 0000
+[156] Bum Squirrel: Part 1 | bum squirrel: part 0001
+[137] Business Bob 2 | business bob 0002
+[102] The Benco Experience | benco experience
+[1186] The Big Stink Demo | big stink demo
+[114] The Black Library | black library
+[127] The Blue Town | blue town
+[143] The Bocco11 Experience | bocco11 experience
+[2280] The Bocco11 ZZToolkit | bocco11 zztoolkit
+[555] A Christmas Gone Horribly, Horribly Wrong | christmas gone horribly, horribly wrong
+[1434] A Community X-Mas | community x-mas
+[1831] Card Prime 2 | card prime 0002
+[2005] Case study 1 | case study 0001
+[2324] Chaos Quest Demo 2 | chaos quest demo 0002
+[188] Chrono Chaos 1 | chrono chaos 0001
+[240] Chrono Wars 10 | chrono wars 0010
+[241] Chrono Wars 11 | chrono wars 0011
+[242] Chrono Wars 12 | chrono wars 0012
+[243] Chrono Wars 13 | chrono wars 0013
+[244] Chrono Wars 8 | chrono wars 0008
+[245] Chrono Wars 9 | chrono wars 0009
+[1892] Commodore 64 Xmas Demo | commodore 0064 xmas demo
+[225] Cowquest 4 | cowquest 0004
+[2104] THE CHALLENGE | challenge
+[2165] The City of Monsters | city of monsters
+[206] The Cliff | cliff
+[212] The Colors! | colors!
+[2161] The Complete Color Library | complete color library
+[215] The Continent | continent
+[1592] The Crypt | crypt
+[1136] The Crypt - Renewed | crypt - renewed
+[25] A Dwarvish-Mead Dream | dwarvish-mead dream
+[313] A Dwarvish-Mead Dream Demo | dwarvish-mead dream demo
+[259] Dark Realm 1 | dark realm 0001
+[260] Dark Realm 2 | dark realm 0002
+[255] Darkness Falls 2 | darkness falls 0002
+[256] Darkness Falls 3 | darkness falls 0003
+[1875] Dave's Galactic Games Part 1 | dave's galactic games part 0001
+[263] Dave's World 1 | dave's world 0001
+[264] Dave's World 2 | dave's world 0002
+[2202] Death, Desctruction, War, Bloodshed, Terror, and other stuff 2 | death, desctruction, war, bloodshed, terror, and other stuff 0002
+[266] Deep Blue 1 : Divided | deep blue 0001 : divided
+[278] Demominer Multiplayer V 1 | demominer multiplayer v 0001
+[1881] Demon City: Act 1 | demon city: act 0001
+[281] Despair Part 1 | despair part 0001
+[2203] Destructo Guy 1 | destructo guy 0001
+[2204] Destructo Guy 2 | destructo guy 0002
+[304] Disturbe 1 | disturbe 0001
+[1651] Doobie Magazine 1 | doobie magazine 0001
+[340] Dr. Who Episode 1 | dr. who episode 0001
+[1847] Dragons; Disc 1 | dragons; disc 0001
+[348] Dungeon 2 | dungeon 0002
+[293] Dungeon Guru Nostalgia 2 | dungeon guru nostalgia 0002
+[318] Dungeons of Despair 2 | dungeons of despair 0002
+[1917] Dungeons Part 2 | dungeons part 0002
+[350] Dutch Collection 2 | dutch collection 0002
+[267] Dutch Collection 3 | dutch collection 0003
+[511] The D.mentiaHappy Pack | d.mentiahappy pack
+[1513] The Dark Forest | dark forest
+[1761] The Day Odin Got Up on the Wrong Side of Bed | day odin got up on the wrong side of bed
+[287] The Death of a Cockrum Demo | death of a cockrum demo
+[2102] The Deed of Ged in Earthsea | deed of ged in earthsea
+[111] The Demon Pogie Bleagh Thing: GM Release | demon pogie bleagh thing: gm release
+[2038] The Disgruntled Elf | disgruntled elf
+[80] The Dividing Axe Demo | dividing axe demo
+[325] The Draco Experience | draco experience
+[330] The Dream 1-3 | dream 1-3
+[1446] An Ennuiphobic's Worst Nightmare | ennuiphobic's worst nightmare
+[2209] An Ewok's Life Demo | ewok's life demo
+[358] Earth Air Force 1 + 2 | earth air force 0001 + 0002
+[373] Emerald Rose 2 (Version 1.1) | emerald rose 0002 (version 1.1)
+[379] Entrisa File 1 | entrisa file 0001
+[380] ERA 2 | era 0002
+[389] Escape From Mars 2 | escape from mars 0002
+[387] Escape/Doom Island 1+ 2 | escape/doom island 1+ 0002
+[371] The Emerald Rose | emerald rose
+[372] The Emerald Rose 2 | emerald rose 0002
+[1658] The end of your sanity DEMO | end of your sanity demo
+[2211] The Endless Journey ZZT Demo | endless journey zzt demo
+[661] The Experiment Demo | experiment demo
+[322] A Few More Hours Downtown | few more hours downtown
+[433] Fallen Realms Arcade Edition 1 | fallen realms arcade edition 0001
+[1766] Fatal Quest file 1 | fatal quest file 0001
+[411] FFSoft 3 | ffsoft 0003
+[412] FFSoft 5 | ffsoft 0005
+[413] FFSoft 6 | ffsoft 0006
+[407] Final Fantasy 2 | final fantasy 0002
+[416] Final Trigger 2 | final trigger 0002
+[417] Final Trigger 3 | final trigger 0003
+[438] First Reality Part 1 | first reality part 0001
+[1569] Fish Master Version 2 | fish master version 0002
+[425] Flame Games Mag 1 | flame games mag 0001
+[420] Flame Games Mag 2 | flame games mag 0002
+[421] Flame Games Mag 3 | flame games mag 0003
+[422] Flame Games Mag 4 | flame games mag 0004
+[423] Flame Games Mag 5 | flame games mag 0005
+[435] Freak Da Cat 2 | freak da cat 0002
+[462] Futureware 1 | futureware 0001
+[463] Futureware 2 | futureware 0002
+[464] Futureware 3 | futureware 0003
+[465] Futureware 4 | futureware 0004
+[1205] The fall of Loraedon Demo | fall of loraedon demo
+[1822] The Five-Minute Game | five-minute game
+[1497] The Fool's Quest | fool's quest
+[430] The Forest Will Echo With Laughter | forest will echo with laughter
+[14] The Four Season Revival | four season revival
+[447] The Friend Abusal Game | friend abusal game
+[448] The Friend Abusal Game v2.1 | friend abusal game v2.1
+[479] G-Fighter 2 | g-fighter 0002
+[481] Gem Hunter 2 | gem hunter 0002
+[483] Gem Hunter 3 | gem hunter 0003
+[2186] George and Tom 2 | george and tom 0002
+[1903] George And Tom | Episode 1 | george and tom | episode 0001
+[1817] Green Commando 2 | green commando 0002
+[1648] The Gate of Time | gate of time
+[484] The Gem Hunter Anthology | gem hunter anthology
+[1957] The Genesis Matrix | genesis matrix
+[1129] The Good Ones - Volume 1 | good ones - volume 0001
+[1507] The Green | green
+[1988] The Green Dragen | green dragen
+[1560] The Guardian | guardian
+[1986] A Heaven of Hell | heaven of hell
+[1796] Hallucina 1383890 | hallucina 3890
+[509] Halo 8 | halo 0008
+[471] Heavy Gear file 1 | heavy gear file 0001
+[516] Heroes: Legend of the Copper Serpent Disc 1 | heroes: legend of the copper serpent disc 0001
+[519] HGSI Final Fantasy 1 | hgsi final fantasy 0001
+[1202] The Hague: City behind the Dunes | hague: city behind the dunes
+[507] The Hall of Stuff | hall of stuff
+[1798] The Hooded Adventurer Demo | hooded adventurer demo
+[2056] The Hopeless Man | hopeless man
+[1896] The House of Asterion | house of asterion
+[455] The House of Terror 1+2 | house of terror 1+2
+[1213] The Hungry Monster | hungry monster
+[2092] An Idiot's Guide to Magic | idiot's guide to magic
+[552] iFantasy 1 | ifantasy 0001
+[545] iFantasy 10 | ifantasy 0010
+[1445] iFantasy 11 | ifantasy 0011
+[553] iFantasy 2 | ifantasy 0002
+[546] iFantasy 3 | ifantasy 0003
+[547] iFantasy 4 | ifantasy 0004
+[548] iFantasy 5 | ifantasy 0005
+[549] iFantasy 6 | ifantasy 0006
+[550] iFantasy 7 | ifantasy 0007
+[544] iFantasy 8 | ifantasy 0008
+[551] iFantasy 9 | ifantasy 0009
+[2303] Improbus ZZT File Manager 2 | improbus zzt file manager 0002
+[190] Infestation 1 | infestation 0001
+[534] Infestation 2 | infestation 0002
+[535] Infestation 3 v2.0 | infestation 0003 v2.0
+[2002] INTRO 2 AXE PEN | intro 0002 axe pen
+[592] Island of Jerks 1 | island of jerks 0001
+[572] IsPoint Magazine 1 | ispoint magazine 0001
+[576] IsPoint Magazine 2 | ispoint magazine 0002
+[577] IsPoint Magazine 4 | ispoint magazine 0004
+[557] The Immortals (Demo) | immortals (demo)
+[1550] The Invading Dicks Demo | invading dicks demo
+[583] Jack: Space Trip 2 | jack: space trip 0002
+[586] James Jon 007 | james jon 0007
+[1857] Journey of something 2 | journey of something 0002
+[607] Journey Part 1 | journey part 0001
+[2098] A Knife and a Stick Extended Edition | knife and a stick extended edition
+[622] Keesh's Quest 2 | keesh's quest 0002
+[640] King's Quest ZZT 2 | king's quest zzt 0002
+[633] Kitty File 1 | kitty file 0001
+[616] The Kane Project | kane project
+[1232] The Kane Project - Disc 2 | kane project - disc 0002
+[1230] The Kane Project 2 | kane project 0002
+[615] The Kane Project 2 Demo | kane project 0002 demo
+[1467] The Kane Project 3 | kane project 0003
+[1656] The Kane Project 4 | kane project 0004
+[1647] The Kane Project 4 Demo | kane project 0004 demo
+[1231] The Kane Project Disc 1 & 2 | kane project disc 0001 & 0002
+[620] The Kave | kave
+[1768] The Kave: Special Edition | kave: special edition
+[630] The Kingdom Of ZZT | kingdom of zzt
+[1912] Land Land 2 | land land 0002
+[784] Las Musique: 2 | las musique: 0002
+[539] Last November 2 | last november 0002
+[1516] Lemming Hunter 2 and Other Worlds | lemming hunter 0002 and other worlds
+[678] Life of a Player 2 | life of a player 0002
+[666] Links Adventure 1 | links adventure 0001
+[667] Links Adventure 2 | links adventure 0002
+[668] Links Adventure 3 | links adventure 0003
+[670] Llama Masters 1 | llama masters 0001
+[671] Llama Masters 2 | llama masters 0002
+[966] Los Refritos 1 | los refritos 0001
+[688] Los Refritos 6 | los refritos 0006
+[689] Los Refritos 9 | los refritos 0009
+[1478] The Land Before Xenon | land before xenon
+[1312] The Land of Where? | land of where?
+[1362] The Land of YYS | land of yys
+[1911] The Lands of the World of ZZT | lands of the world of zzt
+[676] The Legend of Aelk (DEMO 1.0) | legend of aelk (demo 1.0)
+[657] The Legend Of Bob | legend of bob
+[133] The Legend of Bob Complete | legend of bob complete
+[1653] The Legend of Zelda | legend of zelda
+[1655] The Legend of Zelda Demo | legend of zelda demo
+[1029] The Life of a Scotter | life of a scotter
+[1534] The Living Dead | living dead
+[1292] The Long Voyage | long voyage
+[1748] The Long Voyage 3: Underwater War (Demo) | long voyage 3: underwater war (demo)
+[1293] The Long Voyage: Outerspace | long voyage: outerspace
+[1879] The Lost Caves | lost caves
+[1913] The Lost Crown | lost crown
+[1914] The Lost Crown 2 | lost crown 0002
+[1915] The Lost Crown 3 | lost crown 0003
+[1203] The Lost Demo | lost demo
+[1749] The Lost Pyramid | lost pyramid
+[2244] The Lost World of ZZT | lost world of zzt
+[47] A Mind to Retaliate | mind to retaliate
+[1526] A Mind to Retaliate: Sniper Edition | mind to retaliate: sniper edition
+[1510] Mario Brothers 2 | mario brothers 0002
+[752] Maullar_Maullar Mag 2 | maullar_maullar mag 0002
+[753] Maullar_Maullar Mag 3 | maullar_maullar mag 0003
+[754] Maullar_Maullar Mag 4 | maullar_maullar mag 0004
+[748] Meaningless Game 2 | meaningless game 0002
+[2160] Mega Color Box 2 | mega color box 0002
+[738] Midnight 2 | midnight 0002
+[761] Monster Damage 2 | monster damage 0002
+[759] Monster Invasion in Las Vegas Disc 1 | monster invasion in las vegas disc 0001
+[758] Monsters 2 Demo | monsters 0002 demo
+[768] Mosaic! 2 | mosaic! 0002
+[774] Mr. Happy 2 | mr. happy 0002
+[775] Mr. Happy 3 | mr. happy 0003
+[782] Music Isle 1 & 2 | music isle 0001 & 0002
+[724] The Magic Cave | magic cave
+[1876] The Magic of Deff Leppard is Within us | magic of deff leppard is within us
+[48] The Magical Adventures of Andy 1 | magical adventures of andy 0001
+[49] The Magical Adventures of Andy 2 (Demo) | magical adventures of andy 0002 (demo)
+[50] The Magical Adventures of Andy Chapter 1: SE | magical adventures of andy chapter 1: se
+[705] The Mansion of Bill! | mansion of bill!
+[337] The Mansion of Dr. Rob | mansion of dr. rob
+[2134] The Mask of Atlantis | mask of atlantis
+[711] The Mask of Cortez | mask of cortez
+[712] The Master 1 | master 0001
+[713] The Matrix ZZT Demo | matrix zzt demo
+[2009] The Maxim Torture Rack | maxim torture rack
+[718] The Maze of No Return | maze of no return
+[1106] The Mercenary | mercenary
+[728] The Misandventures of Mega Job: The Epic Tag Team | misandventures of mega job: the epic tag team
+[764] The Moonpie Treat | moonpie treat
+[694] The Most Ancient Atrocity Part I | most ancient atrocity part i
+[769] The Motivational Speaker | motivational speaker
+[1741] The Movie Channel | movie channel
+[90] The Mystical Barrier | mystical barrier
+[2097] NanoPack 1 | nanopack 0001
+[797] New Earth Operations Part 1 | new earth operations part 0001
+[813] Newbie Eliminators Part 1 | newbie eliminators part 0001
+[804] NextGame 33 | nextgame 0033
+[1432] NIGEL Demo Update 2 | nigel demo update 0002
+[807] Night Angel 1 | night angel 0001
+[815] No Point 2 | no point 0002
+[810] NO! 2 | no! 0002
+[819] Nova Magazine 1 | nova magazine 0001
+[2193] Nova Magazine 1 UPDATE | nova magazine 0001 update
+[226] November Eve 2 | november eve 0002
+[823] Nuff Nuff Land 2 | nuff nuff land 0002
+[1562] Operation: GAMMA VELORUM, Part 3 | operation: gamma velorum, part 0003
+[1827] Operation: GAMMA VELORUM, Part 4 | operation: gamma velorum, part 0004
+[827] Operation: OBRIAN 2 | operation: obrian 0002
+[843] Orb Holders 1 | orb holders 0001
+[855] Parell Wars 1 | parell wars 0001
+[856] Parell Wars 2 | parell wars 0002
+[870] Pipeline 99 (With Solutions) | pipeline 0099 (with solutions)
+[2157] Pipeline SE Level Pack 1 | pipeline se level pack 0001
+[2139] Platon 2 | platon 0002
+[897] Pokemon Part 1 | pokemon part 0001
+[878] Pokemon Ultimate 1 | pokemon ultimate 0001
+[895] Power 2 | power 0002
+[886] The Pink Man in Green | pink man in green
+[884] THE PLOT-LESS GAME (Or a game with no plot) | plot-less game (or a game with no plot)
+[907] The Prodigy | prodigy
+[914] The Prophecy | prophecy
+[913] The Prophecy Demo | prophecy demo
+[1175] the prophecy: remake | prophecy: remake
+[917] The Punctuation People | punctuation people
+[924] The Purple Files | purple files
+[925] The Purple Files II | purple files ii
+[2094] Quake 2 ZZT v1.0 | quake 0002 zzt v1.0
+[46] The Quest of Ozzmossis Demo | quest of ozzmossis demo
+[2128] The Quiet | quiet
+[1004] A Really Short Dungeon Game | really short dungeon game
+[942] Rainbow 3 ZZT Demo | rainbow 0003 zzt demo
+[947] Rainbow 6 Engine for ZZT | rainbow 0006 engine for zzt
+[1601] Rainbow Six -Lone wolf- Mission 1 | rainbow six -lone wolf- mission 0001
+[978] Rhygar 1 plus | rhygar 0001 plus
+[981] Rhygar 2 | rhygar 0002
+[982] Rhygar 3 | rhygar 0003
+[980] Rhygar 3 Demo | rhygar 0003 demo
+[979] Rhygar 3 Demo 2 | rhygar 0003 demo 0002
+[1006] Rhygar 3 Original Soundtrack | rhygar 0003 original soundtrack
+[984] Rings of the Elements 2 | rings of the elements 0002
+[994] Ripped Off 2 | ripped off 0002
+[987] Ripped Off 3 | ripped off 0003
+[514] Road 2 Heaven | road 0002 heaven
+[955] The Realm Part 1 | realm part 0001
+[956] The Realmz | realmz
+[1222] The Return of ZeeZeeTee | return of zeezeetee
+[2023] The Revival of Richard Ravenshead | revival of richard ravenshead
+[1204] The Rose | rose
+[1866] The Rose Part 2: The Stones | rose part 2: the stones
+[1598] A Smiley's Life | smiley's life
+[1603] A Smiley's Life : Christmas Expansion Pack | smiley's life : christmas expansion pack
+[1578] A Smiley's Life : Christmas Expansion Pack (fix) | smiley's life : christmas expansion pack (fix)
+[1088] Sailor Moon Destroyer X 2 | sailor moon destroyer x 0002
+[857] School Sucks 6 | school sucks 0006
+[1133] School Sucks 7 | school sucks 0007
+[362] Scribbit's Mini Game 2 | scribbit's mini game 0002
+[2121] Sector 9 | sector 0009
+[1050] Shaft Today i. 1 | shaft today i. 0001
+[1060] Shut Up 2 | shut up 0002
+[2147] Sim: Life 2 Demo | sim: life 0002 demo
+[1620] SK8 3 | sk8 0003
+[1972] Skate 2 | skate 0002
+[1617] Skate 2 Demo | skate 0002 demo
+[1117] Space Code 1 Beta | space code 0001 beta
+[1032] Space Crud Adventure 5 | space crud adventure 0005
+[1033] Space Crud Adventure 6 | space crud adventure 0006
+[1034] Space Crud Adventure 7 | space crud adventure 0007
+[1135] Space Crud Adventure 7 Disk 2 Demo | space crud adventure 0007 disk 0002 demo
+[1047] Space Fighter: Mercenary 2 | space fighter: mercenary 0002
+[1122] Space Quest 1 | space quest 0001
+[944] Speed Racer X 2 | speed racer x 0002
+[1119] Spork Man 2 Demo | spork man 0002 demo
+[2078] STAIN Engine 2 | stain engine 0002
+[3] Station 101 | station 0101
+[6] Station 202 | station 0202
+[1151] Stickman Comix Game File 1 | stickman comix game file 0001
+[1161] Strange Trek 2 | strange trek 0002
+[1172] Survivor ZZT Episode 1 | survivor zzt episode 0001
+[1645] The Scepter Quest | scepter quest
+[1200] The Scorched Earth Engine | scorched earth engine
+[1028] The Score! | score!
+[339] The Search for Dr. Weird | search for dr. weird
+[1035] The Search for Justice | search for justice
+[1951] The Search for the Ancient | search for the ancient
+[1045] The Search For The Lost Brother | search for the lost brother
+[654] The Search For The Lost Dog | search for the lost dog
+[1131] The Search for the Magic Flamingo | search for the magic flamingo
+[1596] The Secret Agent | secret agent
+[1038] The Sensu Trait | sensu trait
+[1062] The Signal | signal
+[1553] The Sim | sim
+[1071] The Simpsons | simpsons
+[1070] The Simpsons 2 | simpsons 0002
+[1082] The Slim Fast Commercial that Didn't make it | slim fast commercial that didn't make it
+[2076] The Society of Acequia | society of acequia
+[472] The Stolen Gems | stolen gems
+[134] The Story of Bob | story of bob
+[1806] The Strange City | strange city
+[1159] The Streets | streets
+[1693] Tab 2 ZZT | tab 0002 zzt
+[1614] Tab Converter 3 | tab converter 0003
+[1789] Tale of ZZT: Part 1 | tale of zzt: part 0001
+[1842] Tank Wars 2 | tank wars 0002
+[1240] Teen Priest 2 | teen priest 0002
+[2191] Teen Priest 2 Demo | teen priest 0002 demo
+[1183] Terminator 2 | terminator 0002
+[1194] Test 101 | test 0101
+[1797] The Tape | tape
+[1210] The Things | things
+[1209] The Tribe | tribe
+[1247] The Tribe II: Arrival of Zoot | tribe ii: arrival of zoot
+[1471] The Trip: A Little Excusion! | trip: a little excusion!
+[1188] The Twisted Castle of ZZT | twisted castle of zzt
+[1211] Thief 3 | thief 0003
+[1214] Thug In Space 3 | thug in space 0003
+[2131] Time Quest 1 | time quest 0001
+[2130] Time Quest Part 1 | time quest part 0001
+[1227] Time Wars 1 (Demo) | time wars 0001 (demo)
+[1185] Town of Akim 1 | town of akim 0001
+[33] Town of Akim 2 | town of akim 0002
+[1949] Toxic River Dance 2 | toxic river dance 0002
+[1268] The Ultimate Game | ultimate game
+[2162] The UNOFFICIAL ZZT Programming Guide | unofficial zzt programming guide
+[2052] The Uprise | uprise
+[1490] Ultima RPG 2 Demo | ultima rpg 0002 demo
+[2081] The Void of ZZT | void of zzt
+[1567] Vagabond's Cradle 2 | vagabond's cradle 0002
+[1285] Village 2 | village 0002
+[1760] Village 2 (Return of Mondo) | village 0002 (return of mondo)
+[1286] Virus 302 | virus 0302
+[1531] Virus 302 Special Edition | virus 0302 special edition
+[227] Vork's 7 Episode 1:  Escape From Crazytown | vork's 0007 episode 1:  escape from crazytown
+[1310] The Weird Adventure | weird adventure
+[2273] The Weird Adventure | weird adventure
+[1750] The Weird World: Improved | weird world: improved
+[1981] The White Album | white album
+[196] The Wild Chase | wild chase
+[930] The Wild Chase 2 | wild chase 0002
+[1321] The Wise Man | wise man
+[1322] The Wise Man 2 | wise man 0002
+[521] Wacky World History 1 | wacky world history 0001
+[2063] Warriors of Seven: Chapter 1 | warriors of seven: chapter 0001
+[1332] Wartorn 2 | wartorn 0002
+[1349] Why is 6 Afraid of 7 | why is 0006 afraid of 0007
+[1313] WidderShins Version 3 Demo | widdershins version 0003 demo
+[1317] Winders 98 | winders 0098
+[2168] The X-Files | x-files
+[154] Xquest 2 | xquest 0002
+[1353] Yoshi 1 | yoshi 0001
+[1354] Yoshi 2 | yoshi 0002
+[1355] Yoshi 3 | yoshi 0003
+[1356] Yoshi 4 | yoshi 0004
+[573] Yoshi's Island 1 | yoshi's island 0001
+[574] Yoshi's Island 2 | yoshi's island 0002
+[1359] You vs. Stupidity 1 | you vs. stupidity 0001
+[1361] You vs. Stupidity 2 | you vs. stupidity 0002
+[192] The ZZT Challenge World | zzt challenge world
+[1395] The ZZT Convention | zzt convention
+[306] The ZZT Dizzy Games | zzt dizzy games
+[1420] The ZZT Journey | zzt journey
+[1628] Z-Out X Episode 1 | z-out x episode 0001
+[1549] Z-Wonk 2 | z-wonk 0002
+[1366] ZapZak in Epsilon 9 | zapzak in epsilon 0009
+[1369] Zelda-Lord of Guardia Demo 2 | zelda-lord of guardia demo 0002
+[1374] Zem! 2 | zem! 0002
+[1373] Zem! 2 Level Pack | zem! 0002 level pack
+[772] ZIG Internet Level Pack 1 | zig internet level pack 0001
+[1380] Zone 10 | zone 0010
+[1382] ZPower 1 | zpower 0001
+[1383] ZPower 2 | zpower 0002
+[1384] ZPower 4 | zpower 0004
+[2220] ZZT Crime Version 2 | zzt crime version 0002
+[1726] ZZT Crime Version 6 | zzt crime version 0006
+[1046] ZZT Episode 15 - The Search for the Lost Brother | zzt episode 0015 - the search for the lost brother
+[1377] ZZT Journey Part 1 | zzt journey part 0001
+[1299] ZZT Warriors 1 | zzt warriors 0001
+[1300] ZZT Warriors 2 | zzt warriors 0002
+[1301] ZZT Warriors 3 | zzt warriors 0003
+[1398] ZZTeam 1 | zzteam 0001
+[1399] ZZTeam 2 | zzteam 0002
+[1400] ZZTeam 3 | zzteam 0003
+[1401] ZZTeam 5 | zzteam 0005
+[1402] ZZTeam 6 | zzteam 0006
+[2223] ZZTeam 7 | zzteam 0007
+[1414] ZZTV 1 | zztv 0001
+[2127] ZZTV 10 | zztv 0010
+[1416] ZZTV 2 | zztv 0002
+[1417] ZZTV 3 | zztv 0003
+[1418] ZZTV 4 | zztv 0004
+[1415] ZZTV 5 | zztv 0005
+[1419] ZZTV 6 | zztv 0006
+[1396] ZZTV 7 | zztv 0007
+[1801] ZZTV 8 | zztv 0008
+[1901] ZZTV 9 | zztv 0009
+[1422] ZZZine 1 | zzzine 0001
+[1423] ZZZine 2 | zzzine 0002

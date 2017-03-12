@@ -276,8 +276,21 @@ var CANVAS_WIDTH = 480;
 var CANVAS_HEIGHT = 350;
 var TILE_WIDTH = 8;
 var TILE_HEIGHT = 14;
-var renderer = new Renderer();
-renderer.render = renderer[$("select[name=renderer]").val()];
+var renderer = null;
+var hover_x = 0;
+var hover_y = 0;
+
+function init()
+{
+    renderer = new Renderer();
+    renderer.render = renderer[$("select[name=renderer]").val()];
+    $(".zip-content").show();
+
+    if (load_file)
+    {
+        auto_load();
+    }
+}
 
 var World = function (data) {
     // World Properties
@@ -347,7 +360,6 @@ function pull_file()
     $("#file-list li ol").remove();
     $("#file-list li br").remove();
     $(this).addClass("selected");
-    var valid_extensions = ["Title Screen", "hi", "txt", "doc", "jpg", "jpeg", "gif", "bmp", "png", "bat", "zzt", "cfg", "dat", "wav", "mp3", "ogg", "mid", "midi", "nfo", "com", "brd", "mh"];
     filename = $(this).contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
     var split = filename.toLowerCase().split(".");
     var head = split[0];
@@ -371,7 +383,6 @@ function pull_file()
         history.pushState(state, "", qs);
     }
 
-
     $.ajax({
         url:"/ajax/get_zip_file",
         data:{
@@ -381,8 +392,11 @@ function pull_file()
             "format":"auto"
         }
     }).done(function (data){
+        var format = "txt";  // Default to text mode
+
         if (ext == "zzt" || ext == "sav")
         {
+            format = "zzt";
             world = parse_world("zzt", data);
 
             // Write the board names to the file list
@@ -401,6 +415,7 @@ function pull_file()
         }
         else if (ext == "brd")
         {
+            format = "zzt";
             console.log("BRD PARSE");
             world = new World(data);
             var board = parse_board(world);
@@ -410,6 +425,7 @@ function pull_file()
         }
         else if (ext == "hi" || ext == "mh")
         {
+            format = "txt";
             var scores = parse_scores(data);
             var output = "<div class='high-scores'>Score &nbsp;Name<br>";
             output += "----- &nbsp;----------------------------------<br>";
@@ -422,6 +438,7 @@ function pull_file()
         }
         else if (["jpg", "jpeg", "gif", "bmp", "png", "ico"].indexOf(ext) != -1)
         {
+            format = "img";
             var zip_image = new Image();
             zip_image.src = data;
             $("#details").html("<img id='zip_image' alt='Zip file image'>");
@@ -429,6 +446,7 @@ function pull_file()
         }
         else if (["avi"].indexOf(ext) != -1)
         {
+            format = "video";
             // TODO: Make this actually work (many many years from now)
             $("#details").html("<video id='zip_video' alt='Zip file video'></video>");
             $("#zip_video").attr("src", "data:video/x-msvideo;base64,"+data);
@@ -437,6 +455,7 @@ function pull_file()
         }
         else if (["wav", "mp3", "ogg", "mid", "midi"].indexOf(ext) != -1)
         {
+            format = "audio";
             // TODO: Make this actually work
             if (ext == "wav")
                 var type = "audio/wav wav";
@@ -461,18 +480,22 @@ function pull_file()
         }
         else if (ext == "com")
         {
+            format = "img";
             // Load the font
-            $("select[name=charset]").val(head);
+            var font_filename = ("0000" +db_id).slice(-4) + "-" + filename.slice(0, -4) + ".png";
+            $("select[name=charset]").val(font_filename);
 
             // Display the font
-            $("#details").html("<img src='/static/images/charsets/"+head+"' class='charset' alt='"+head+"' title='"+head+"'>");
+            $("#details").html("<img src='/static/images/charsets/"+font_filename+"' class='charset' alt='"+filename+"' title='"+filename+"'>");
         }
         else // Text mode
         {
-            $("#details").attr("data-format", ext);
             $("#details").html(data);
             $("#filename").text(filename);
         }
+
+        // Update the format for CSS purposes
+        $("#details").attr("data-format", format);
     });
 }
 
@@ -646,7 +669,7 @@ function parse_board(world)
                     "character":characters[element_id], // This is the default character before any additional board/stat parsing
                     "color_id":color,
                     "foreground":color % 16,
-                    "background":color / 16,
+                    "background":parseInt(color / 16),
                     "foreground_name":COLOR_NAMES[color % 16],
                     "background_name":COLOR_NAMES[Math.floor(color / 16)]
                 }
@@ -918,7 +941,7 @@ function stat_info(e)
 
     // General info
     var tile = world.boards[board_number].elements[tile_idx];
-    output += "Coordinates: ("+x+", "+y+") [Tile "+(tile_idx+1)+"/1500]" + "<br>";
+    output += "Coordinates: ("+x+", "+y+") [Tile "+(tile_idx)+"/1499]" + "<br>";
     output += "ID: " + tile.id + "<br>";
     output += "Name: " + tile.name + "<br>";
     output += "Default Character: " + tile.character + "<br>";
@@ -986,7 +1009,7 @@ function tab_select(selector)
     $("#"+selector).show();
 }
 
-$(document).ready(function (){
+$(window).bind("load", function() {
     $("#local-load").click(load_local_file);
 
     $("#file-list li").click({"format": "auto"}, pull_file);
@@ -1058,10 +1081,10 @@ $(document).ready(function (){
         }
     });
 
-    if (load_file)
-    {
-        auto_load();
-    }
+    // Activate the file viewer
+    init();
+    //var timeout = window.setTimeout(init, 5000);
+
 });
 
 /* Auto Load functions */
@@ -1159,7 +1182,8 @@ function load_charset()
         CHARSET_NAME = selected_charset;
         CHARSET_IMAGE = new Image();
         CHARSET_IMAGE.src = "/static/images/charsets/"+CHARSET_NAME;
-        CHARSET_IMAGE.addEventListener("load", function (){
+        CHARSET_IMAGE.addEventListener("load", function ()
+        {
             CANVAS_WIDTH = CHARSET_IMAGE.width / 16 * 60;
             CANVAS_HEIGHT = CHARSET_IMAGE.height / 16 * 25;
 
@@ -1170,6 +1194,7 @@ function load_charset()
             canvas = document.getElementById("world-canvas");
             ctx = canvas.getContext("2d");
 
+            init_overlay();
             draw_board();
         });
     }
@@ -1284,27 +1309,48 @@ function render_stat_list(board)
     return true;
 }
 
-/* DEBUG FUNCTION */
-function debug_file(file)
+function init_overlay()
 {
-    $.ajax({
-        url:"/ajax/debug_file?file="+file,
-        data:{}
-    }).done(function (data){
-        world = parse_world("zzt", data);
+    $("#overlay").hide();
+    $("#overlay").html("(<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>) [<span id='overlay-tile'>0000</span>]<br><div class='color-swatch'></div> <span id='overlay-element'></span>");
 
-        // Write the board names to the file list
-        var board_list = "<ul>";
-        for (var x = 0; x < world.boards.length; x++)
-        {
-            board_list += "<li class='board' data-board-number='"+x+"'>"+(world.boards[x].title ? world.boards[x].title : "-untitled")+"</li>";
-        }
-        board_list += "</ul>";
-        $("#file-list li.selected").append(board_list + "<br>");
-        $("li.board").click(render_board); // Bind event
+    $("#world-canvas").mousemove(update_overlay);
+    $("#world-canvas").mouseout(hide_overlay);
+}
 
-        // Auto Load board
-        if (load_board != "")
-            auto_load_board(load_board);
-    });
+function update_overlay(e)
+{
+    $("#overlay").show();
+    var posX = $(this).offset().left;
+    var posY = $(this).offset().top;
+    var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
+    var y = parseInt((e.pageY - posY) / TILE_HEIGHT) + 1;
+    var tile_idx = ((y-1) * 60) + (x-1);
+
+    if (x != hover_x || y != hover_y)
+    {
+        hover_x = x;
+        hover_y = y;
+
+        $("#overlay-x").text(("00"+x).slice(-2));
+        $("#overlay-y").text(("00"+y).slice(-2));
+        $("#overlay-tile").text(("0000"+(tile_idx+1)).slice(-4));
+
+        // Element
+        var element = world.boards[board_number].elements[tile_idx];
+        $("#overlay-element").text(element.name);
+
+        // Color
+        var bg_x = parseInt((element.foreground) * -8);
+        var bg_y = parseInt((element.background) * -14);
+        console.log(element);
+        $("#overlay .color-swatch").css("background-position", bg_x+"px "+ bg_y + "px");
+    }
+
+    return true;
+}
+
+function hide_overlay(e)
+{
+    $("#overlay").hide();
 }

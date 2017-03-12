@@ -507,7 +507,25 @@ div.file-details ul
     margin:auto;
     margin-bottom:1em;
     display:flex;
-    align-items:center;
+    align-items:stretch;
+}
+
+#details
+{
+    position:relative;
+}
+
+#overlay
+{
+    height:2em;
+    position:absolute;
+    font-size:14px;
+    line-height:14px;
+    top:0px;
+    left:0px;
+    width:21em;
+    font-family:monospace;
+    padding:2px;
 }
 
 #play-area
@@ -520,15 +538,11 @@ div.file-details ul
     margin:auto;
 }
 
-#details[data-format=txt]
-{
-    align-items:stretch;
-}
-
-#details[data-format=zzt]
-{
-    /*align-items:center;*/
-}
+#details[data-format=zzt] { align-items:center; }
+#details[data-format=txt] { align-items:stretch; }
+#details[data-format=img] { align-items:center; }
+#details[data-format=audio] { align-items:center; }
+#details[data-format=video] { align-items:center; }
 
 #details img, #details canvas
 {
@@ -555,6 +569,11 @@ div.file-details ul
     overflow-y:auto;
     font-family:monospace;
     float:left;
+}
+
+#file-list li.zip-content
+{
+    display:none;
 }
 
 #file-list ul, #file-list ol
@@ -653,6 +672,16 @@ div.file-details ul
     padding-top:0.25em;
     height:98%;
     overflow:auto;
+}
+
+.color-swatch
+{
+    width:8px;
+    height:14px;
+    background:url("/static/images/colors.png");
+    background-position:32px 28px top;
+    background-repeat:no-repeat;
+    display:inline-block;
 }
 
 /* End file viewing */

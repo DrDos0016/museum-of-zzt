@@ -93,6 +93,10 @@ class File(models.Model):
     letter = models.CharField(max_length=1, db_index=True)
     filename = models.CharField(max_length=50)
     title = models.CharField(max_length=80)
+    sort_title = models.CharField(
+        max_length=100, db_index=True, default="", blank=True,
+        help_text="Leave blank to set automatically"
+    )
     author = models.CharField(max_length=80)
     size = models.IntegerField(default=0)
     genre = models.CharField(max_length=80, blank=True, default="")
@@ -120,10 +124,37 @@ class File(models.Model):
 
 
     class Meta:
-        ordering = ["title"]
+        ordering = ["sort_title", "letter"]
 
     def __str__(self):
         return "[" + str(self.id) + "] " + self.title
+
+    def save(self, *args, **kwargs):
+        # Pre save
+        if self.sort_title == "":
+            self.sort_title = self.sorted_title()
+
+        super(File, self).save(*args, **kwargs)  # Actual save call
+
+    def sorted_title(self):
+        # Handle titles that start with A/An/The
+        sort_title = self.title.lower()
+
+        if sort_title.startswith(("a ", "an ", "the ")):
+            sort_title = sort_title[sort_title.find(" ") + 1:]
+
+        # Expand numbers
+        words = sort_title.split(" ")
+        expanded = []
+        for word in words:
+            try:
+                number = int(word)
+                expanded.append(("0000" + word)[-4:])
+            except ValueError:
+                expanded.append(word)
+        sort_title = " ".join(expanded)
+
+        return sort_title
 
     def download_url(self):
         return "/zgames/" + self.letter + "/" + self.filename

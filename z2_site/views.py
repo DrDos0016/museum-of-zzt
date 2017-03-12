@@ -104,7 +104,7 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
     else:
         data["view"] = "detailed"
 
-    sort = request.GET.get("sort", "title").strip()
+    sort = SORT_CODES[request.GET.get("sort", "title").strip()]
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
@@ -309,7 +309,7 @@ def search(request):
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     data["qs_sans_view"] = qs_sans(request.GET, "view")
-    sort = request.GET.get("sort", "title")
+    sort = SORT_CODES[request.GET.get("sort", "title").strip()]
 
     # Determine the viewing method
     if request.GET.get("view"):
@@ -409,7 +409,7 @@ def search(request):
         qs = qs.distinct()
 
         # Show results
-        sort = request.GET.get("sort", "title").strip()
+        sort = SORT_CODES[request.GET.get("sort", "title").strip()]
         if data["view"] == "list":
             data["files"] = qs.order_by(sort)
 

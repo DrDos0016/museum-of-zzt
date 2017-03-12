@@ -188,6 +188,14 @@ GENRE_LIST = (
     "Sports", "Strategy", "Toolkit", "Trippy", "Trivia", "Tutorial"
 )
 
+SORT_CODES = {
+    "title": "sort_title",
+    "author": "author",
+    "company": "company",
+    "rating": "-rating",
+    "release": "release_date"
+}
+
 
 def qs_sans(params, key):
     """ Returns a query string with a key removed """
