@@ -50,7 +50,6 @@ body
     background:#CCC;
     max-width:95%;
     margin:auto;
-    margin-top:1em;
     overflow-y:scroll;
 }
 
@@ -113,6 +112,31 @@ h1, h2, h3
 .debug
 {
     background:#FAA;
+}
+
+#environment
+{
+    height:2px;
+    width:100%;
+    margin:0;
+    overflow:hidden;
+    text-align:center;
+    border-top:2px solid #0F0;
+}
+
+#environment[data-environment="z2.pokyfriends.com"]
+{
+    border-top:2px solid #F0F;
+}
+#environment[data-environment="museum.pokyfriends.com"]
+{
+    border-top:2px solid #F00;
+}
+
+#environment:hover
+{
+    height:1.5em;
+    background:#F0F0F0;
 }
 
 section
@@ -864,29 +888,36 @@ code .orange, code .label
     background:#CFF;
     display:flex;
     align-items:center;
-    padding:0.25em;
+    padding:0.25em 1em 0.25em 1em;
     max-width:75%;
     margin:auto;
     border:1px dashed #000;
+    margin-bottom:1em;
 }
 
 .content-warning .img
 {;
     flex:0 0 150px;
     height:50px;
+    padding:1em;
 }
 
 .content-warning .text
 {
     flex:1;
-    padding-left:1em;
     font-size:smaller;
 }
 
-.content-warning .text b
+.content-warning .text p
+{
+    margin-top:0.25em;
+    margin-bottom:0.25em;
+}
+
+.content-warning .text b.heading
 {
     font-size:larger;
-    letter-spacing:1em;
+    letter-spacing:0.5em;
     text-align:center;
     display:block;
     width:100%;

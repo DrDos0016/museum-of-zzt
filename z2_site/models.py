@@ -7,12 +7,26 @@ from django.template.defaultfilters import slugify
 
 
 CATEGORY_LIST = (
-    ("ZZT", "ZZT World"),
+    ("?", "?"),
+    ("MS-DOS", "MS-DOS Programs"),
+    ("WIN16", "16-Bit Windows Programs"),
+    ("WIN32", "32-Bit Windows Programs"),
+    ("WIN64", "64-Bit Windows Programs"),
+    ("LINUX", "Linux Programs"),
+    ("OSX", "OSX Programs"),
+    ("FEATURED", "Featured Worlds"),
+    ("CONTEST", "Contest Entries"),
     ("ZZM", "ZZM Soundtrack"),
+    ("GFX", "Modified Graphics"),
+    ("MOD", "Modified Executables"),
+    ("ETC", "Etc."),
+    ("SZZT", "Super ZZT Worlds"),
+    ("UTILITY", "Utilities"),
+    ("ZZT", "ZZT Worlds"),
     ("ZIG", "ZIG World"),
-    ("Utility", "External Utility"),
-    ("SZZT", "Super ZZT World"),
-    ("Etc", "Etc."),
+    ("LOST", "Lost Worlds"),
+    ("UPLOADED", "Uploaded Worlds"),
+    ("REMOVED", "Removed Worlds"),
 )
 
 DETAIL_DOS = 1
@@ -80,6 +94,7 @@ class File(models.Model):
     release_date    -- Best guess release date (ex: 2001-04-16)
     release_source  -- Source of release date (ex: ZZT file, News post, Text)
     category        -- What kind of file this is (ex: ZZT, Super ZZT, Utility)
+    TODO: REMOVE CATEGORY WHEN PUBLIC BETA IS UPDATED NEXT
     screenshot      -- Filename of screenshot to display (ex: 3dtalk.png)
     company         -- / sep. ABC list of companies published (ex: ERI/IF)
     description     -- Description of file for utilities or featured games

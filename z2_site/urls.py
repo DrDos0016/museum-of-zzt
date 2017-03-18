@@ -52,9 +52,15 @@ urlpatterns = [
     url(r"^about-zzt$", z2_site.views.article_view, {"id": 1}),
     url(r"^ascii$", z2_site.views.article_view, {"id": 3}),
     url(r"^clones$", z2_site.views.article_view, {"id": 6}),
+    url(r"^credits$", z2_site.views.article_view, {"id": 164}, name="credits"),
     url(r"^getting-started$", z2_site.views.article_view, {"id": 5}),
     url(r"^mass$", z2_site.views.article_view, {"id": 7}),
     url(r"^zzt$", z2_site.views.article_view, {"id": 2}, name="zzt_dl"),
+
+    # Site policies
+    url(r"^policy/submission$", z2_site.views.article_view, {"id": 2}, name="submission_policy"),
+    url(r"^policy/removal$", z2_site.views.article_view, {"id": 165}, name="removal_policy"),
+    url(r"^policy/correction$", z2_site.views.article_view, {"id": 2}, name="correction_policy"),
 
     # Directories
     url(r"^directory/(?P<category>[a-z].*)$", z2_site.views.directory,
@@ -142,6 +148,7 @@ urlpatterns = [
     # url(r"^staff/article_management$", z2_site.staff.article_management),
 
     # Debug
+    url(r"^debug$", z2_site.views.debug),
     url(r"^debug/save$", z2_site.views.debug_save),
     url(r"^debug/article$", z2_site.views.debug_article),
     url(r"^ajax/debug_file$", z2_site.ajax.debug_file),

@@ -5,11 +5,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Museum of ZZT - {% block title %}{{title|default:"The ZZT Archive"}}{% endblock %}</title>
+<title>{% block title %}{{title|default:"The ZZT Archive"}}{% endblock %} - Museum of ZZT</title>
 <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
 <link rel="stylesheet" media="(max-width: 1023px)" href="{% static 'css/small.css' %}">
 <link rel="stylesheet" media="(max-width: 800px)" href="{% static 'css/mobile.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/zzt.css' %}">
 <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
 
 <meta name="author" content="Dr. Dos">
@@ -65,6 +66,11 @@ $(document).ready(function (){
             window.location = new_qs;
         }
     });
+
+    // Content warnings
+    $("span[name=cw-hide-this]").click(function (){
+        $(".content-warning").hide();
+    });
 });
 </script>
 {% block scripts %}
@@ -74,6 +80,12 @@ $(document).ready(function (){
 </head>
 
 <body>
+
+<div id="environment" data-host="{{request.get_host}}">
+{% if request.get_host == "museum.pokyfriends.com" %}Private Beta
+{% elif request.get_host == "z2.pokyfriends.com" %}Public Beta
+{% else %}Development Environment{% endif %}
+</div>
 
 <header>
     <nav>
@@ -211,13 +223,16 @@ $(document).ready(function (){
             <a href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'images/social/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>
             <a href="https://github.com/DrDos0016/z2" target="_blank"><img src="{% static 'images/social/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
         </div>
-        Site Credits
+        <a href="{% url 'credits' %}">Site Credits</a><br>
+        <a href="{% url 'submission_policy' %}" class="broken">Submission Policy</a><br>
+        <a href="{% url 'removal_policy' %}">Removal Policy</a><br>
+        <a href="{% url 'correction_policy' %}" class="broken">Correction Policy</a><br>
     </div>
 </section>
 </div>
 
 <footer>
-- z2 -
+- Museum of ZZT -
 </footer>
 
 </body>

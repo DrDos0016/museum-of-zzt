@@ -59,13 +59,15 @@ def article_view(request, id, page=0):
 
     if page == 0: # Pageless articles/heads
         print("NO PAGES")
-        data["article"] = get_object_or_404(Article, pk=id)
+        data["article"] = get_object_or_404(Article, pk=id, published=True)
     else:
         print("YES PAGES")
         if page != 1:
-            data["article"] = get_object_or_404(Article, parent_id=id, page=page)
+            data["article"] = get_object_or_404(Article, parent_id=id,
+                                                page=page, published=True)
         else:
-            data["article"] = get_object_or_404(Article, id=id, page=page)
+            data["article"] = get_object_or_404(Article, pk=id, page=page,
+                                                published=True)
 
         # TODO: Handle pages
         data["next"] = page + 1
@@ -95,6 +97,13 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
         "details": details,
         "show_description": False  # TODO: Fix this
     }
+
+    if letter is not None:
+        data["title"] = "Browse - " + letter.upper()
+    elif len(details) == 1:
+        data["title"] = "Browse - " + CATEGORY_LIST[details[0]][1]
+    else:
+        data["title"] = "Browse"
 
     # Determine the viewing method
     if request.GET.get("view"):
@@ -567,6 +576,10 @@ def upload(request):
         print(description)
 
     return render(request, "z2_site/upload.html", data)
+
+def debug(request):
+    data = {"title": "DEBUG PAGE"}
+    return render(request, "z2_site/debug.html", data)
 
 def debug_article(request):
     data = {"id": 0}

@@ -1,0 +1,57 @@
+{% extends "z2_site/main.html" %}
+
+{% load staticfiles %}
+{% load zzt_tags %}
+{% load site_tags %}
+
+{% block content %}
+<section id="content" class="col block">
+
+<h1>Debug</h1>
+
+{% content_warning "bad stuff" "worse stuff" "the worst stuff" %}
+
+{% scroll %}@Hello
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+{% endscroll %}
+
+<hr>
+{% zzt_img "images/test" %}
+<hr>
+{% zzt_img "images/test" alt="shrunk" css="border:2px solid red;width:20%;"%}
+<hr>
+Sidebar<br>
+{% zzt_img "images/test" "sidebar" %}
+<hr>
+HUD<br>
+{% zzt_img "images/test" "hud" %}
+<hr>
+Message<br>
+{% zzt_img "images/test" "message" %}
+{% zzt_img "images/test" "message" %}
+{% zzt_img "images/test" "message" %}
+<hr>
+Cheat<br>
+{% zzt_img "images/test2.png" "cheat" %}
+<hr>
+Custom<br>
+{% zzt_img "images/test3.png" tl="12,14" br="27,22" %}
+{% zzt_img "images/test3.png" tl="14,04" br="28,10" %}
+{% zzt_img "images/test3.png" tl="39,14" br="50,16" %}
+
+
+</section>
+{% endblock %}
