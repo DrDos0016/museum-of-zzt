@@ -1,7 +1,11 @@
 {% extends "z2_site/world.html" %}
 {% load staticfiles %}
+{% load site_tags %}
 
 {% block style %}
+{% if article.parent_id %}
+{{article.parent.css|safe}}
+{% endif %}
 {{article.css|safe}}
 {% endblock %}
 
@@ -12,11 +16,11 @@
 
 <article>
 {% if article.type == "html" %}
-{{article.content|safe}}
+    {{article.content|safe}}
 {% elif article.type == "text" %}
-{{article.content|linebreaks}}
+    {{article.content|linebreaks}}
 {% else %}
-Article has an invalid type!
+    {{article.content|as_template|safe}}
 {% endif %}
 </article>
 
@@ -25,7 +29,9 @@ Article has an invalid type!
 {% endfor %}
 
 {% if article.page > 1 %}<a href="{% url 'article_view_page' id  prev slug %}">Previous page</a><br>{% endif %}
-{% if article.parent_id and article.page != 0 %}<a href="{% url 'article_view_page' id next slug %}">Next page</a><br>{% endif %}
+{% if next %}<a href="{% url 'article_view_page' id next slug %}">Next page</a><br>{% endif %}
 <a href="{% url 'article_directory' %}">Return to article directory</a><br>
 <a href="{% url 'index' %}">Return to the main page</a>
+--PARENT {{article.parent_id}}<br>
+--PAGE {{article.page}}<br>
 {% endblock %}

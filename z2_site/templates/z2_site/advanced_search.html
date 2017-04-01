@@ -23,7 +23,26 @@
     width:45px;
 }
 
+div[name=all-none] > button
+{
+    font-size:smaller;
+    font-weight:bold;
+    width:10%;
+}
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("div[name=all-none] button").click(function (){
+        if ($(this).text() == "All")
+            $("input[name=details]").prop("checked", "checked");
+        else if ($(this).text() == "None")
+            $("input[name=details]").prop("checked", "");
+    });
+});
+</script>
 {% endblock %}
 
 {% block content %}
@@ -77,7 +96,7 @@
 			{% if year == request.GET.year %}
 			<option selected>{{year}}</option>
 			{% else %}
-            <option>{{year}} - {{request.GET.year}}</option>
+            <option>{{year}}</option>
             {% endif %}
         {% endfor %}
     </select>
@@ -85,9 +104,9 @@
 <div class="field">
     <label for="min">Min. / max. rating:<br>
     </label>
-    <input id="min" name="min" value="{{request.GET.min|default:'0.0'}}" min=0 max=5 maxlength="4">
+    <input id="min" name="min" value="{{request.GET.min|default:'0.0'}}" min=0.0 max=5.0 maxlength="4" type="number" step=0.1>
     <div class="col spacing">&nbsp;&mdash;&nbsp;</div>
-    <input id="max" name="max" value="{{request.GET.max|default:'5.0'}}" min=0 max=5 maxlength="4">
+    <input id="max" name="max" value="{{request.GET.max|default:'5.0'}}" min=0.0 max=5.0 maxlength="4" type="number" step=0.1>
 </div>
 <div class="field">
     <label>Details:<br>
@@ -110,6 +129,7 @@
         <label><input name="details" type="checkbox" {% if "17" in details_list %}checked {% endif %}value="17"> Lost Worlds</label>
         <label><input name="details" type="checkbox" {% if "5" in details_list %}checked {% endif %}value="5"> Linux</label>
         <label><input name="details" type="checkbox" {% if "4" in details_list %}checked {% endif %}value="4"> Windows 64-Bit</label>
+        <div name="all-none"><button type="button">All</button> <button type="button">None</button></div>
     </div>
 </div>
 <div class="field">
@@ -119,8 +139,8 @@
         <option value="title"{% if request.GET.sort == "title" %} selected {% endif %}>Title</option>
         <option value="author"{% if request.GET.sort == "author" %} selected {% endif %}>Author</option>
         <option value="company"{% if request.GET.sort == "company" %} selected {% endif %}>Company</option>
-        <option value="-rating"{% if request.GET.sort == "-rating" %} selected {% endif %}>Rating</option>
-        <option value="release_date"{% if request.GET.sort == "release_date" %} selected {% endif %}>Release Date</option>
+        <option value="rating"{% if request.GET.sort == "rating" %} selected {% endif %}>Rating</option>
+        <option value="release"{% if request.GET.sort == "release" %} selected {% endif %}>Release Date</option>
     </select>
 </div>
 

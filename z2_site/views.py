@@ -11,7 +11,7 @@ def advanced_search(request):
             "genres": GENRE_LIST,
             "years": [str(x) for x in range(1991, YEAR + 1)]}
 
-    data["details_list"] = request.GET.getlist("details")
+    data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
     return render(request, "z2_site/advanced_search.html", data)
 
 
@@ -57,7 +57,7 @@ def article_view(request, id, page=0):
     id = int(id)
     data = {"id": id}
 
-    if page == 0: # Pageless articles/heads
+    if page == 0:  # Pageless articles/heads
         print("NO PAGES")
         data["article"] = get_object_or_404(Article, pk=id, published=True)
     else:
@@ -69,8 +69,13 @@ def article_view(request, id, page=0):
             data["article"] = get_object_or_404(Article, pk=id, page=page,
                                                 published=True)
 
-        # TODO: Handle pages
-        data["next"] = page + 1
+        # Calculate pages
+        exists = Article.objects.filter(pk=id, page=page + 1,
+                                        published=True).exists()
+        if exists:
+            data["next"] = page + 1
+        else:
+            data["next"] = None
         data["prev"] = page - 1
         data["slug"] = str(slug)
 
@@ -266,8 +271,8 @@ def file(request, letter, filename):
 def index(request):
     """ Returns front page """
     data = {}
-    #data["details"] = DETAIL_LIST
     return render(request, "z2_site/index.html", data)
+
 
 def local(request):
     """ Returns ZZT file viewer intended for local files """
@@ -335,8 +340,7 @@ def search(request):
             Q(title__icontains=q) |
             Q(author__icontains=q) |
             Q(filename__icontains=q) |
-            Q(company__icontains=q),
-            details__id=DETAIL_ZZT
+            Q(company__icontains=q)
         )
 
         # Debug override
@@ -413,7 +417,6 @@ def search(request):
         if (request.GET.getlist("details")):
             qs = qs.filter(details__id__in=request.GET.getlist("details"))
 
-
         # Select distinct IDs
         qs = qs.distinct()
 
@@ -449,9 +452,10 @@ def upload(request):
     data = {}
     data["genres"] = GENRE_LIST
 
-    if (UPLOADS_ENABLED
-        and request.POST.get("action") == "upload"
-        and request.FILES.get("file")):
+    if not UPLOADS_ENABLED:
+        return redirect("/")
+
+    if request.POST.get("action") == "upload" and request.FILES.get("file"):
 
         # Form stuff
         title = request.POST.get("title", "").strip()
@@ -577,9 +581,11 @@ def upload(request):
 
     return render(request, "z2_site/upload.html", data)
 
+
 def debug(request):
     data = {"title": "DEBUG PAGE"}
     return render(request, "z2_site/debug.html", data)
+
 
 def debug_article(request):
     data = {"id": 0}
@@ -591,6 +597,7 @@ def debug_article(request):
         article.type = "html"
     data["article"] = article
     return render(request, "z2_site/article_view.html", data)
+
 
 def debug_save(request):
     letter = request.POST.get("letter")

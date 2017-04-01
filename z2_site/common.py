@@ -196,6 +196,11 @@ SORT_CODES = {
     "release": "release_date"
 }
 
+ADV_SEARCH_DEFAULTS = [
+    str(DETAIL_ZZT),
+    str(DETAIL_SZZT),
+    str(DETAIL_UTILITY),
+]
 
 def qs_sans(params, key):
     """ Returns a query string with a key removed """

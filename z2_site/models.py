@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 from django.db import models
-from django.contrib import admin
+#  from django.contrib import admin
 from django.template.defaultfilters import slugify
 
 
@@ -56,7 +56,7 @@ class Article(models.Model):
     category = models.CharField(max_length=50)
     content = models.TextField(default="")
     css = models.TextField(default="", blank=True)
-    type = models.CharField(max_length=4)  # text/html
+    type = models.CharField(max_length=6)  # text/html/django
     date = models.DateField(default="1970-01-01")
     published = models.BooleanField(default=False)
     page = models.IntegerField(default=1)
@@ -130,13 +130,13 @@ class File(models.Model):
     review_count = models.IntegerField(default=0)
     rating = models.FloatField(null=True, default=None, blank=True)
     details = models.ManyToManyField("Detail", default=None, blank=True)
-    articles = models.ManyToManyField("Article", default=None, blank=True)
+    articles = models.ManyToManyField("Article", default=None, blank=True,
+                                      limit_choices_to={'page': 1})
     article_count = models.IntegerField(default=0)
     checksum = models.CharField(max_length=32, null=True,
                                 blank=True, default="")
     superceded = models.ForeignKey("File", db_column="superceded_id",
                                    null=True, blank=True, default=None)
-
 
     class Meta:
         ordering = ["sort_title", "letter"]
@@ -163,7 +163,7 @@ class File(models.Model):
         expanded = []
         for word in words:
             try:
-                number = int(word)
+                int(word)
                 expanded.append(("0000" + word)[-4:])
             except ValueError:
                 expanded.append(word)

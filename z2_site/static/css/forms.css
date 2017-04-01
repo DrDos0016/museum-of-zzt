@@ -66,6 +66,13 @@ input, select, textarea
     float:left;
 }
 
+#detail-list div[name=all-none]
+{
+    width:88%;
+    font-size:smaller;
+    text-align:right;
+}
+
 #preferences label
 {
     min-height:2em;

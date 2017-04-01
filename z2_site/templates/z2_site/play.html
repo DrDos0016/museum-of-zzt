@@ -1,11 +1,25 @@
 {% extends "z2_site/world.html" %}
 
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    var speed = 3000;
+    $(window).keyup(function (e){
+        if (e.ctrlKey)
+            console.log(e.keyCode);
+    });
+});
+</script>
+{% endblock %}
+
 {% block world_content %}
 <div id="play-area">
-    <iframe src="https://archive.org/embed/zzt_{{file.filename|slice:'0:-4'}}" width="640" height="350" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
+    <iframe src="https://archive.org/embed/zzt_{{file.filename|slice:'0:-4'}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
 </div>
 
 <div>
-This file is hosted on <a href="https://archive.org/details/softwarelibrary_msdos_zzt" target="_blank">The Internet Archive's ZZT Software Library</a>
+This file is hosted on <a href="https://archive.org/details/softwarelibrary_msdos_zzt" target="_blank">The Internet Archive's ZZT Software Library</a><br>
+<a href="https://archive.org/embed/zzt_{{file.filename|slice:'0:-4'}}" target="_blank">Open this file on archive.org</a><br>
+
 </div>
 {% endblock %}
