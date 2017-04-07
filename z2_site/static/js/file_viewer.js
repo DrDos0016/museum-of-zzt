@@ -1,9 +1,38 @@
 "use strict";
-var elements = ["Empty", "Board Edge", "Messenger", "Monitor", "Player", "Ammo", "Torch", "Gem", "Key", "Door", "Scroll", "Passage", "Duplicator", "Bomb", "Energizer", "Star", "Conveyor, Clockwise", "Conveyor, Counterclockwise", "Bullet", "Water", "Forest", "Solid Wall", "Normal Wall", "Breakable Wall", "Boulder", "Slider, North-South", "Slider, East-West", "Fake Wall", "Invisible Wall", "Blink Wall", "Transporter", "Line Wall", "Ricochet", "Blink Ray, Horizontal", "Bear", "Ruffian", "Object", "Slime", "Shark", "Spinning Gun", "Pusher", "Lion", "Tiger", "Blink Ray, Vertical", "Centipede Head", "Centipede Segment", "Text, Blue", "Text, Green", "Text, Cyan", "Text, Red", "Text, Purple", "Text, Brown", "Text, Black"];
 var colors = ["#000000", "#0000AA", "#00AA00", "#00AAAA", "#AA0000", "#AA00AA", "#AA5500", "#AAAAAA", "#555555", "#5555FF", "#55FF55", "#55FFFF", "#FF5555", "#FF55FF", "#FFFF55", "#FFFFFF"];
 var COLOR_NAMES = ["Black", "Dark Blue", "Dark Green", "Dark Cyan", "Dark Red", "Dark Purple", "Dark Yellow", "Gray", "Dark Gray", "Blue", "Green", "Cyan", "Red", "Purple", "Yellow", "White"];
-var characters = [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63];
 var line_characters = {"0000":249, "0001":181, "0010":198, "0011":205, "0100":210, "0101":187, "0110":201, "0111":203, "1000":208, "1001":188, "1010":200, "1011":202, "1100":186, "1101":185, "1110":204, "1111":206};
+var web_characters = {"0000":250, "0001":196, "0010":196, "0011":196,
+                      "0100":179, "0101":191, "0110":218, "0111":194,
+                      "1000":179, "1001":217, "1010":192, "1011":193,
+                      "1100":179, "1101":180, "1110":195, "1111":197};
+var ELEMENTS = null;
+var ENGINE = null;
+
+var engines = {
+    "zzt":{
+        "max_world_length": 20,
+        "max_flags": 10,
+        "tile_count": 1500,
+        "max_board_length": 50,
+        "first_board_index": 1024,
+        "board_width": 60,
+        "board_height": 25,
+        "elements": ["Empty", "Board Edge", "Messenger", "Monitor", "Player", "Ammo", "Torch", "Gem", "Key", "Door", "Scroll", "Passage", "Duplicator", "Bomb", "Energizer", "Star", "Conveyor, Clockwise", "Conveyor, Counterclockwise", "Bullet", "Water", "Forest", "Solid Wall", "Normal Wall", "Breakable Wall", "Boulder", "Slider, North-South", "Slider, East-West", "Fake Wall", "Invisible Wall", "Blink Wall", "Transporter", "Line Wall", "Ricochet", "Blink Ray, Horizontal", "Bear", "Ruffian", "Object", "Slime", "Shark", "Spinning Gun", "Pusher", "Lion", "Tiger", "Blink Ray, Vertical", "Centipede Head", "Centipede Segment", "Text, Blue", "Text, Green", "Text, Cyan", "Text, Red", "Text, Purple", "Text, Yellow", "Text, White"],
+        "characters": [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63]
+        },
+    "szt":{
+        "max_world_length": 20,
+        "max_flags": 16,
+        "tile_count": 7680,
+        "max_board_length": 60,
+        "first_board_index": 2048,
+        "board_width": 96,
+        "board_height": 80,
+        "elements": ["Empty", "Board Edge", "Messenger", "Monitor", "Player", "Ammo", "Torch", "Gem", "Key", "Door", "Scroll", "Passage", "Duplicator", "Bomb", "Energizer", "Star", "Clockwise Conveyor", "Counter Clockwise Conveyor", "Bullet", "Lava", "Forest", "Solid Wall", "Normal Wall", "Breakable Wall", "Boulder", "Slider (NS)", "Slider (EW)", "Fake Wall", "Invisible Wall", "Blink Wall", "Transporter", "Line Wall", "Ricochet", "Horizontal Blink Ray", "Bear", "Ruffian", "Object", "Slime", "Shark", "Spinning Gun", "Pusher", "Lion", "Tiger", "Vertical Blink Ray", "Head", "Segment", "Element 46", "Floor", "Water N", "Water S", "Water W", "Water E", "Element 52", "Element 53", "Element 54", "Element 55", "Element 56", "Element 57", "Element 58", "Roton", "Dragon Pup", "Pairer", "Spider", "Web", "Stone", "Element 65", "Element 66", "Element 67", "Element 68", "Bullet", "Horizontal Blink Ray", "Vertical Blink Ray", "Star", "Blue Text", "Green Text", "Cyan Text", "Red Text", "Purple Text", "Yellow Text", "White Text"],
+        "characters": [32, 32, 32, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 83, 47, 92, 248, 111, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 32, 206, 42, 205, 153, 5, 2, 42, 94, 24, 31, 234, 227, 186, 233, 79, 32, 176, 30, 31, 17, 16, 32, 32, 32, 32, 32, 32, 32, 148, 237, 229, 15, 197, 90, 32, 32, 32, 32, 248, 205, 186, 83, 32, 32, 32, 32, 32, 32, 32]
+        }
+};
 
 var CP437_TO_UNICODE = {
     0:0,
@@ -394,10 +423,13 @@ function pull_file()
     }).done(function (data){
         var format = "txt";  // Default to text mode
 
-        if (ext == "zzt" || ext == "sav")
+        if (ext == "zzt" || ext == "sav" || ext == "szt")
         {
-            format = "zzt";
-            world = parse_world("zzt", data);
+            format = (ext != "szt") ? "zzt" : "szt";
+            ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
+            ENGINE = engines[format];
+
+            world = parse_world(format, data);
 
             // Write the board names to the file list
             var board_list = "<ol start='0'>";
@@ -420,7 +452,6 @@ function pull_file()
             world = new World(data);
             var board = parse_board(world);
             world.boards.push(board);
-            console.log("SOLD");
             render_board();
         }
         else if (ext == "hi" || ext == "mh")
@@ -535,21 +566,40 @@ function load_local_file()
 
 function parse_world(type, data)
 {
-    if (type != "zzt")
+    if (type == "zzt")
     {
-        $("#details").html("I can't render this");
-        return false;
+        var identifier = 65535;
+    }
+    else if (type == "szt")
+    {
+        var identifier = 65534;
     }
 
     // ZZT World Parsing
     var world = new World(data);
+    world.format = type;
+
+    if (world.format == "szt")
+    {
+        renderer.render = renderer["szzt_standard"];
+        /*TILE_WIDTH = 8;
+        TILE_HEIGHT = 8;*/
+        CANVAS_WIDTH = 8 * 96;
+        CANVAS_HEIGHT = 14 * 80;
+        $("#details").html("<div id='overlay'></div><canvas id='world-canvas' width='"+CANVAS_WIDTH+"' height='"+CANVAS_HEIGHT+"'>Your browser is outdated and does not support the canvas element.</canvas>");
+        $("select[name=charset]").val("szzt-cp437.png");
+    }
+    else
+    {
+        // Default these out
+    }
 
     // Parse World Bytes
     world.world_bytes = world.read(2);
 
-    if (world.world_bytes != 65535)
+    if (world.world_bytes != identifier)
     {
-        $("#details").html("World is not a valid ZZT world. Got " + world.world_bytes + ". Expected 65535");
+        $("#details").html("World is not valid. Got " + world.world_bytes + ". Expected " + identifier);
         return false;
     }
 
@@ -563,17 +613,29 @@ function parse_world(type, data)
     world.health = world.read(2);
     world.starting_board = world.read(2);
 
-    // Begin Parse ZZT Specific World Stats
-    world.torches = world.read(2);
-    world.torch_cycles = world.read(2);
-    world.energizer_cycles = world.read(2);
-    world.read(2); // Unused bytes
-    world.score = world.read(2);
-    world.name_length = world.read(1);
-    world.name = world.str_read(20).substr(0,world.name_length);
+    // Begin parsing World information
+    if (type == "zzt")
+    {
+        world.torches = world.read(2);
+        world.torch_cycles = world.read(2);
+        world.energizer_cycles = world.read(2);
+        world.read(2); // Unused bytes
+        world.score = world.read(2);
+        world.name_length = world.read(1);
+        world.name = world.str_read(ENGINE.max_world_length).substr(0,world.name_length);
+    }
+    else if (type == "szt")
+    {
+        world.read(2); // Unused
+        world.score = world.read(2);
+        world.read(2); // Unused
+        world.energizer_cycles = world.read(2);
+        world.name_length = world.read(1);
+        world.name = world.str_read(ENGINE.max_world_length).substr(0,world.name_length);
+    }
 
     // Parse Flags
-    for (var x = 0; x < 10; x++)
+    for (var x = 0; x < ENGINE.max_flags; x++)
     {
         var len = world.read(1);                              // Read flag length
         world.flags.push(world.str_read(20).substr(0,len));   // Read flag name
@@ -583,14 +645,14 @@ function parse_world(type, data)
     world.read(2)                       // Unused playerdata
     world.save = (world.read(1) != 0);  // Save/Lock file
 
-    // End Parse ZZT Specific World Stats
-
-    // Begin Parse SZZT Specific World Stats
-    // TODO: This is extremely low priority.
-    // End Parse SZZT Specific World Stats
+    if (type == "szt")
+    {
+        world.z = world.read(2); // z-counter
+    }
+    // End Parsing World information
 
     // Parse Boards
-    world.idx = 1024;
+    world.idx = ENGINE.first_board_index;
     for (var x = 0; x <= world.board_count; x++)
     {
         world.boards.push(parse_board(world));
@@ -632,16 +694,16 @@ function parse_board(world)
     board.elements = []; // Elements are used for individual tiles
     board.size = world.read(2);
     board.title_length = world.read(1);
-    board.title = world.str_read(50).substr(0,board.title_length);
+    board.title = world.str_read(ENGINE.max_board_length).substr(0,board.title_length);
 
     // Placeholder way to deal with invalid elements
-    if (ZZT_ELEMENTS.length < 256)
+    if (ELEMENTS.length < 256)
     {
-        while (ZZT_ELEMENTS.length < 256)
-            ZZT_ELEMENTS.push(
+        while (ELEMENTS.length < 256)
+            ELEMENTS.push(
                 {
-                "id":ZZT_ELEMENTS.length,
-                "name":"Unknown Element " + ZZT_ELEMENTS.length,
+                "id":ELEMENTS.length,
+                "name":"Unknown Element " + ELEMENTS.length,
                 "oop_name":"",
                 "character":63
                 }
@@ -651,22 +713,23 @@ function parse_board(world)
     // Parse Elements
     var parsed_tiles = 0;
 
-    while (parsed_tiles < 1500)
+    while (parsed_tiles < ENGINE.tile_count)
     {
         var quantity = world.read(1);
+        if (quantity == 0)
+            quantity = 256;
         var element_id = world.read(1);
         var color = world.read(1);
         procced_bytes += 3;
         board.room.push([quantity, element_id, color]);
-
         for (var tile_idx = 0; tile_idx < quantity; tile_idx++)
         {
             board.elements.push(
                 {
                     "id":element_id,
                     "tile":tile_idx,
-                    "name":ZZT_ELEMENTS[element_id]["name"],
-                    "character":characters[element_id], // This is the default character before any additional board/stat parsing
+                    "name":ELEMENTS[element_id]["name"],
+                    "character":ENGINE.characters[element_id], // This is the default character before any additional board/stat parsing
                     "color_id":color,
                     "foreground":color % 16,
                     "background":parseInt(color / 16),
@@ -679,34 +742,57 @@ function parse_board(world)
     }
 
     // Parse Properties
-    board.max_shots = world.read(1);
-    board.dark = world.read(1);
-    board.exit_north = world.read(1);
-    board.exit_south = world.read(1);
-    board.exit_west = world.read(1);
-    board.exit_east = world.read(1);
-    board.zap = world.read(1);
-    board.message_length = world.read(1);
-    board.message = world.str_read(58).substr(0,board.message_length);
-    board.enter_x = world.read(1);
-    board.enter_y = world.read(1);
-    board.time_limit = world.read(2);
-    world.read(16); // Padding
-    board.stat_count = world.read(2);
+    if (world.format == "zzt")
+    {
+        board.max_shots = world.read(1);
+        board.dark = world.read(1);
+        board.exit_north = world.read(1);
+        board.exit_south = world.read(1);
+        board.exit_west = world.read(1);
+        board.exit_east = world.read(1);
+        board.zap = world.read(1);
+
+        board.message_length = world.read(1);
+        board.message = world.str_read(58).substr(0,board.message_length);
+        board.enter_x = world.read(1);
+        board.enter_y = world.read(1);
+        board.time_limit = world.read(2);
+        world.read(16); // Padding
+        board.stat_count = world.read(2);
+    }
+    else if (world.format == "szt")
+    {
+        console.log("Parse szzt board props");
+        board.max_shots = world.read(1);
+        board.exit_north = world.read(1);
+        board.exit_south = world.read(1);
+        board.exit_west = world.read(1);
+        board.exit_east = world.read(1);
+        board.zap = world.read(1);
+        board.enter_x = world.read(1);
+        board.enter_y = world.read(1);
+        board.camera_x = world.read(2);
+        board.camera_y = world.read(2);
+        board.time_limit = world.read(2);
+        world.read(14) // Unused
+        board.stat_count = world.read(2);
+    }
+
     board.stats = [];
-    // Super ZZT Properties
-    // End
+    // End board properties
 
     // Parse Stats
     var parsed_stats = 0;
     var oop_read = 0;
 
+    console.log("Board has ", board.stat_count, "stats");
     while (parsed_stats <= board.stat_count)
     {
         var stat = {};
+        stat.idx = parsed_stats;
         stat.x = world.read(1);
         stat.y = world.read(1);
-        stat.tile_idx = ((stat.y-1) * 60) + (stat.x-1);
+        stat.tile_idx = ((stat.y-1) * ENGINE.board_width) + (stat.x-1);
         stat.x_step = world.read(2);
         stat.y_step = world.read(2);
         stat.cycle = world.read(2);
@@ -720,7 +806,9 @@ function parse_board(world)
         stat.pointer = world.read(4);
         stat.oop_idx = world.read(2);
         stat.oop_length = world.read(2);
-        world.read(8); // Padding
+
+        if (world.format == "zzt")
+            world.read(8); // Padding
 
         if (stat.oop_length > 32767) // Pre-bound element
             stat.oop_length = 0;
@@ -837,7 +925,7 @@ function render_board()
     $(".board-link").click(switch_board);
 
     // Render the stat info as well
-    render_stat_list(board);
+    render_stat_list();
     return true;
 }
 
@@ -854,7 +942,7 @@ function draw_board()
     var board = world.boards[board_number];
 
     renderer.render(board);
-
+    console.log("Rendered.");
     $("#world-canvas").click(stat_info);
     $("#world-canvas").dblclick({"board": board}, passage_travel);
 
@@ -928,11 +1016,11 @@ function stat_info(e)
         var x = e.data.x;
         var y = e.data.y;
     }
-    var tile_idx = ((y-1) * 60) + (x-1);
+    var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
     var hash_coords = "#" + x + "," + y;
 
     // Check for out of bounds coordinates
-    if (tile_idx < 0 || tile_idx >= 1500)
+    if (tile_idx < 0 || tile_idx >= ENGINE.tile_count)
         return false;
 
     //window.location.hash = ;
@@ -941,7 +1029,7 @@ function stat_info(e)
 
     // General info
     var tile = world.boards[board_number].elements[tile_idx];
-    output += "Coordinates: ("+x+", "+y+") [Tile "+(tile_idx)+"/1499]" + "<br>";
+    output += "Coordinates: ("+x+", "+y+") [Tile "+(tile_idx)+"/"+(ENGINE.tile_count - 1)+"]" + "<br>";
     output += "ID: " + tile.id + "<br>";
     output += "Name: " + tile.name + "<br>";
     output += "Default Character: " + tile.character + "<br>";
@@ -962,22 +1050,22 @@ function stat_info(e)
     if (stat != null)
     {
         output += "Cycle: " + stat.cycle + "<br>";
-        output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param1") ? ZZT_ELEMENTS[tile.id].param1 : "Param1") + ": " + stat.param1 + "<br>";
-        output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param2") ? ZZT_ELEMENTS[tile.id].param2 : "Param2") + ": " + stat.param2 + "<br>";
+        output += (ELEMENTS[tile.id].hasOwnProperty("param1") ? ELEMENTS[tile.id].param1 : "Param1") + ": " + stat.param1 + "<br>";
+        output += (ELEMENTS[tile.id].hasOwnProperty("param2") ? ELEMENTS[tile.id].param2 : "Param2") + ": " + stat.param2 + "<br>";
 
         // Passages get a link and the board's proper name
         if (tile.name == "Passage")
         {
             var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
-            output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param3") ? ZZT_ELEMENTS[tile.id].param3 : "Param3") + ": ";
+            output += (ELEMENTS[tile.id].hasOwnProperty("param3") ? ELEMENTS[tile.id].param3 : "Param3") + ": ";
             output += '<a class="board-link" data-board="'+stat.param3+'" href="?file='+loaded_file+'&board='+stat.param3+'">'+stat.param3 + " - " + world.boards[stat.param3].title +"</a>";
             output += "<br>";
         }
         else
-            output += (ZZT_ELEMENTS[tile.id].hasOwnProperty("param3") ? ZZT_ELEMENTS[tile.id].param3 : "Param3") + ": " + stat.param3 + "<br>";
+            output += (ELEMENTS[tile.id].hasOwnProperty("param3") ? ELEMENTS[tile.id].param3 : "Param3") + ": " + stat.param3 + "<br>";
 
-        if (ZZT_ELEMENTS[tile.id].hasOwnProperty("step"))
-            output += ZZT_ELEMENTS[tile.id].step + "<br>"
+        if (ELEMENTS[tile.id].hasOwnProperty("step"))
+            output += ELEMENTS[tile.id].step + "<br>"
         output += "X-Step: " + stat.x_step + "<br>";
         output += "Y-Step: " + stat.y_step + "<br>";
         output += "Leader: " + stat.leader + "<br>";
@@ -1014,6 +1102,9 @@ $(window).bind("load", function() {
 
     $("#file-list li").click({"format": "auto"}, pull_file);
     $("#file-tabs ul li").click(function (){tab_select($(this).attr("name"))});
+
+    // Stat sorting
+    $("select[name=stat-sort]").change(render_stat_list);
 
     $("select[name=charset]").change(load_charset);
     $("input[name=2x]").change(load_charset);
@@ -1179,16 +1270,22 @@ function load_charset()
     // Charset needs to be loaded and/or canvas doesn't exist
     if (CHARSET_NAME != selected_charset || no_canvas)
     {
+        if (world && world.format == "szt")
+        {
+            selected_charset = "szzt-cp437.png";
+        }
+
+        console.log("I'm hitting load charset?", selected_charset);
         CHARSET_NAME = selected_charset;
         CHARSET_IMAGE = new Image();
         CHARSET_IMAGE.src = "/static/images/charsets/"+CHARSET_NAME;
         CHARSET_IMAGE.addEventListener("load", function ()
         {
-            CANVAS_WIDTH = CHARSET_IMAGE.width / 16 * 60;
-            CANVAS_HEIGHT = CHARSET_IMAGE.height / 16 * 25;
+            CANVAS_WIDTH = CHARSET_IMAGE.width / 16 * ENGINE.board_width;
+            CANVAS_HEIGHT = CHARSET_IMAGE.height / 16 * ENGINE.board_height;
 
-            TILE_WIDTH = CANVAS_WIDTH / 60;
-            TILE_HEIGHT = CANVAS_HEIGHT / 25;
+            TILE_WIDTH = CANVAS_WIDTH / ENGINE.board_width;
+            TILE_HEIGHT = CANVAS_HEIGHT / ENGINE.board_height;
 
             $("#details").html("<div id='overlay'></div><canvas id='world-canvas' width='"+CANVAS_WIDTH+"' height='"+CANVAS_HEIGHT+"'>Your browser is outdated and does not support the canvas element.</canvas>");
             canvas = document.getElementById("world-canvas");
@@ -1258,16 +1355,66 @@ function syntax_highlight(oop)
         return oop.join("\n");
 }
 
-function render_stat_list(board)
+function render_stat_list()
 {
-    var stat_list = "<a id='stat-toggle' class='jsLink'>Toggle Codeless Stats</a>\n";
-    stat_list += "<ol>\n";
+    console.log("RENDERING STATS")
+    var board = world.boards[board_number];
+    var stat_list = "";
+
+    // Sort method
+    var sort = $("select[name=stat-sort]").val();
+    console.log("SORTING BY", sort);
+    if (sort == "stat")
+    {
+        board.stats.sort(function(a, b){
+            return a.idx - b.idx;
+        });
+    }
+    else if (sort == "coord")
+    {
+        board.stats.sort(function(a, b){
+            return a.tile_idx - b.tile_idx;
+        });
+    }
+    else if (sort == "name")
+    {
+        board.stats.sort(function(a, b){
+            var stat_name1 = world.boards[board_number].elements[a.tile_idx].name;
+            if ((stat_name1 == "Scroll" || stat_name1 == "Object") && a.oop[0] == "@")
+                stat_name1 = a.oop.slice(0, a.oop.indexOf("\r"));
+
+            var stat_name2 = world.boards[board_number].elements[b.tile_idx].name;
+            if ((stat_name2 == "Scroll" || stat_name2 == "Object") && b.oop[0] == "@")
+                stat_name2 = b.oop.slice(0, b.oop.indexOf("\r"));
+
+            console.log(stat_name1, stat_name2, a.idx, b.idx);
+            if (stat_name1.toLowerCase() < stat_name2.toLowerCase())
+                return -1;
+            else if (stat_name1.toLowerCase() > stat_name2.toLowerCase())
+                return 1;
+            else
+                return 0;
+        });
+    }
+    else if (sort == "code")
+    {
+        board.stats.sort(function(a, b){
+            if (a.oop_length < b.oop_length)
+                return 1;
+            else if (a.oop_length > b.oop_length)
+                return -1;
+            else
+                return 0;
+        });
+    }
+
+
     for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
     {
         var stat = board.stats[stat_idx];
 
         // Invalid stat check
-        if ((stat.tile_idx < 0) || (stat.tile_idx >= 1500))
+        if ((stat.tile_idx < 0) || (stat.tile_idx >= ENGINE.tile_count))
         {
             console.log("Invalid stat detected!")
             if (stat.oop.length == 0)
@@ -1276,7 +1423,10 @@ function render_stat_list(board)
                 stat_list += "<li>";
             stat_list += "<a class='jsLink' name='stat-link' data-x='"+stat.x+"' data-y='"+stat.y+"'>";
             stat_list +="("+ ("00"+stat.x).slice(-2) +", "+ ("00"+stat.y).slice(-2) +") [????] "
-            stat_list += "UNKNOWN</a> "+ stat.oop.length +" bytes</li>\n";
+            stat_list += "UNKNOWN</a> "
+            if (stat.oop.length)
+                stat_list += stat.oop.length +" bytes";
+            stat_list += "</li>\n";
             continue;
         }
         var stat_name = board.elements[stat.tile_idx].name;
@@ -1289,10 +1439,12 @@ function render_stat_list(board)
             stat_list += "<li>";
         stat_list += "<a class='jsLink' name='stat-link' data-x='"+stat.x+"' data-y='"+stat.y+"'>";
         stat_list +="("+ ("00"+stat.x).slice(-2) +", "+ ("00"+stat.y).slice(-2) +") ["+(("0000"+(stat.tile_idx+1)).slice(-4))+"] "
-        stat_list += stat_name+"</a> "+ stat.oop.length +" bytes</li>\n";
+        stat_list += stat_name+"</a> ";
+        if (stat.oop.length)
+                stat_list += stat.oop.length +" bytes";
+            stat_list += "</li>\n";
     }
-    stat_list += "</ol>\n";
-    $("#stat-info").html(stat_list);
+    $("#stat-info ol").html(stat_list);
     $("a[name=stat-link]").click(function (){
         var e = {"data":{"x":$(this).data("x"), "y":$(this).data("y")}};
         stat_info(e);
@@ -1325,7 +1477,7 @@ function update_overlay(e)
     var posY = $(this).offset().top;
     var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
     var y = parseInt((e.pageY - posY) / TILE_HEIGHT) + 1;
-    var tile_idx = ((y-1) * 60) + (x-1);
+    var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
 
     if (x != hover_x || y != hover_y)
     {
@@ -1341,9 +1493,8 @@ function update_overlay(e)
         $("#overlay-element").text(element.name);
 
         // Color
-        var bg_x = parseInt((element.foreground) * -8);
+        var bg_x = parseInt((element.foreground) * -8); // TODO: Tile W/H for SZZT
         var bg_y = parseInt((element.background) * -14);
-        console.log(element);
         $("#overlay .color-swatch").css("background-position", bg_x+"px "+ bg_y + "px");
     }
 

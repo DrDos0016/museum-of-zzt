@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import django, sys, os, codecs
 
-sys.path.append("/var/projects/z2/")
+sys.path.append("/var/projects/museum/")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "z2.settings")
 django.setup()
 
@@ -17,9 +17,9 @@ def main():
     for line in raw:
         split = line.split("☃") # this is the best delimiter ever
         if len(split) > 8:
-            print "UH OH", line, "Split length: ", len(split)
+            print("UH OH", line, "Split length: ", len(split))
             continue
-        
+
         title = split[0][1:-1]
         author = split[1][1:-1]
         email = split[2][1:-1]
@@ -28,16 +28,17 @@ def main():
         gamefile = split[5][1:-1]
         rating = split[6][1:-1]
         ip = split[7][1:-1].replace('"', "")
-        
+
         # Get the file the review is for
         try:
             file_id = File.objects.get(filename=gamefile)
         except:
-            print "UH OH", gamefile, " has no results"
-        
-        review = Review(file=file_id, title=title, author=author, email=email, content=review, rating=rating, date=str(postdate)[:10], ip=ip)
-        review.save()
-        
+            print("UH OH", gamefile, " has no results")
+            print("Look for a weird review with", file_id, title, author)
+
+        #review = Review(file=file_id, title=title, author=author, email=email, content=review, rating=rating, date=str(postdate)[:10], ip=ip)
+        #review.save()
+
         """
         file        = models.ForeignKey("File")         # Review file
         title       = models.CharField(max_length=50)   # Review title
@@ -48,8 +49,8 @@ def main():
         date        = models.DateField()
         ip          = models.IPAddressField()
         """
-        
+
         #print split
-    print "DONE."
+    print("DONE.")
     return True
 if __name__ == "__main__": main()

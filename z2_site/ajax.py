@@ -62,7 +62,7 @@ def get_zip_file(request):
         output = "<div class='" + encoding + "'>" + output + "</div>"
 
         return HttpResponse(output)
-    elif ext in (".hi", ".zzt", ".brd", ".mh", ".sav"):
+    elif ext in (".hi", ".zzt", ".brd", ".mh", ".sav", ".szt"):
         return HttpResponse(binascii.hexlify(file.read()))
     elif ext in (".jpg", ".jpeg", ".bmp", ".gif", ".png", ".ico", ".avi"):
         b64 = base64.b64encode(file.read())

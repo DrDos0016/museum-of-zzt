@@ -67,7 +67,10 @@ class Article(models.Model):
         ordering = ["title"]
 
     def __str__(self):
-        return "[" + str(self.id) + "] " + self.title + " by " + self.author
+        output = "[" + str(self.id) + "] " + self.title + " by " + self.author
+        if self.page > 1:
+            output += " (P{})".format(self.page)
+        return output
 
     def url(self):
         return "/article/" + str(self.id) + "/" + slugify(self.title)

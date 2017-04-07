@@ -567,6 +567,8 @@ div.file-details ul
 #details[data-format=img] { align-items:center; }
 #details[data-format=audio] { align-items:center; }
 #details[data-format=video] { align-items:center; }
+#details[data-format=szt] { display:block; }
+#details[data-format=szt] canvas { max-width:none; }
 
 #details img, #details canvas
 {
@@ -641,7 +643,7 @@ div.file-details ul
 {
     min-width:480px;
     min-height:350px;
-    background:#550000;
+    background:#000;
 }
 
 #tab-area

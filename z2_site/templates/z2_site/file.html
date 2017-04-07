@@ -43,7 +43,17 @@ var db_id = {{file.id|default:0}};
             <div id="world-info" class="toggle"></div>
             <div id="board-info" class="toggle"></div>
             <div id="element-info" class="toggle"></div>
-            <div id="stat-info" class="toggle"></div>
+            <div id="stat-info" class="toggle">
+                <a id='stat-toggle' class='jsLink'>Toggle Codeless Stats</a><br>
+                Sort by:
+                <select name="stat-sort">
+                    <option value="code">Code Length</option>
+                    <option value="coord">Coordinates</option>
+                    <option value="name" selected>Name</option>
+                    <option value="stat">Stat Index</option>
+                </select>
+                <ol></ol>
+            </div>
             <div id="preferences" class="toggle">
                     <label>Charset
                         <select name="charset">

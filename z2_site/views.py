@@ -70,7 +70,7 @@ def article_view(request, id, page=0):
                                                 published=True)
 
         # Calculate pages
-        exists = Article.objects.filter(pk=id, page=page + 1,
+        exists = Article.objects.filter(parent_id=id, page=page + 1,
                                         published=True).exists()
         if exists:
             data["next"] = page + 1
