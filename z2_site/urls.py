@@ -57,10 +57,8 @@ urlpatterns = [
     url(r"^mass$", z2_site.views.article_view, {"id": 7}),
     url(r"^zzt$", z2_site.views.article_view, {"id": 2}, name="zzt_dl"),
 
-    # Site policies
-    url(r"^policy/submission$", z2_site.views.article_view, {"id": 2}, name="submission_policy"),
-    url(r"^policy/removal$", z2_site.views.article_view, {"id": 165}, name="removal_policy"),
-    url(r"^policy/correction$", z2_site.views.article_view, {"id": 2}, name="correction_policy"),
+    # Closer Looks
+    url(r"^closer-looks$", z2_site.views.closer_look, name="closer_looks"),
 
     # Directories
     url(r"^directory/(?P<category>[a-z].*)$", z2_site.views.directory,
@@ -121,6 +119,10 @@ urlpatterns = [
     url(r"^lost-worlds$", z2_site.views.browse, {"details": [DETAIL_LOST]},
         name="lost_worlds"),
 
+    # Policies
+    url(r"^policy/submission$", z2_site.views.article_view, {"id": 2}, name="submission_policy"),
+    url(r"^policy/removal$", z2_site.views.article_view, {"id": 165}, name="removal_policy"),
+    url(r"^policy/correction$", z2_site.views.article_view, {"id": 2}, name="correction_policy"),
 
     # Random ZZT World
     url(r"^random$", z2_site.views.random, name="random"),

@@ -14,7 +14,7 @@
 <div>By: {{article.author}}</div>
 <div>Date: {{article.date}}</div>
 
-<article>
+<article class="{{article.category|slugify}}">
 {% if article.type == "html" %}
     {{article.content|safe}}
 {% elif article.type == "text" %}

@@ -129,14 +129,14 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
         data["files"] = File.objects.filter(details__id__in=details)
         if letter:
             data["files"] = data["files"].filter(letter=letter)
-        data["files"] = data["files"].order_by(sort)
+        data["files"] = data["files"].order_by(*sort)
     else:  # Others list over multiple pages
         data["page"] = int(request.GET.get("page", page))
         data["letter"] = letter if letter != "1" else "#"
         data["files"] = File.objects.filter(details__id__in=details)
         if letter:
             data["files"] = data["files"].filter(letter=letter)
-        data["files"] = data["files"].order_by(sort)[
+        data["files"] = data["files"].order_by(*sort)[
             (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
         ]
         data["count"] = File.objects.filter(details__id__in=details)
@@ -161,6 +161,19 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
     response.set_cookie("view", data["view"], expires=datetime(3000, 12, 31))
 
     return response
+
+
+def closer_look(request):
+    """ Returns a listing of all Closer Look articles """
+    data = {}
+    data["articles"] = Article.objects.filter(category="Closer Look", published=1, page=1)
+    sort = request.GET.get("sort", "title")
+    if sort == "title":
+        data["articles"] = data["articles"].order_by("title")
+    elif sort == "date":
+        data["articles"] = data["articles"].order_by("-date")
+
+    return render(request, "z2_site/closer_look.html", data)
 
 
 def directory(request, category):
@@ -349,12 +362,12 @@ def search(request):
             qs = File.objects.filter(id__in=ids.split(",")).order_by("id")
 
         if data["view"] == "list":
-            data["files"] = qs.order_by(sort)
+            data["files"] = qs.order_by(*sort)
             destination = "z2_site/browse_list.html"
         else:
             data["page"] = int(request.GET.get("page", 1))
             data["files"] = qs.order_by(
-                sort
+                *sort
             )[(data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE]
             data["count"] = qs.count()
             data["pages"] = int(1.0 * math.ceil(data["count"] / PAGE_SIZE))
@@ -423,12 +436,12 @@ def search(request):
         # Show results
         sort = SORT_CODES[request.GET.get("sort", "title").strip()]
         if data["view"] == "list":
-            data["files"] = qs.order_by(sort)
+            data["files"] = qs.order_by(*sort)
 
             destination = "z2_site/browse_list.html"
         else:
             data["page"] = int(request.GET.get("page", 1))
-            data["files"] = qs.order_by(sort)[
+            data["files"] = qs.order_by(*sort)[
                 (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
             ]
             data["count"] = qs.count()

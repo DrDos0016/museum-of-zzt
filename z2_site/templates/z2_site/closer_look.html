@@ -1,0 +1,22 @@
+{% extends "z2_site/main.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<section id="content" class="block">
+{% for article in articles %}
+<div class="file-block" data-pk="{{article.id}}">
+    <div class="file-screen">
+        <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+        class="titlescreen"
+        alt="{{article.preview}}">
+    </div>
+    <div class="file-info">
+        <h1><a href="{% url 'article_view' article.id article.title|slugify %}">{{article.title}}</a></h1>
+        <div>Author</div>: {{article.author}}<br>
+        <div>Date</div>: {{article.date}}<br>
+        <div><br>{{article.summary|default:"Summary"}}</div>
+    </div>
+</div>
+{% endfor %}
+</section>
+{% endblock %}

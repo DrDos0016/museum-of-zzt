@@ -189,11 +189,11 @@ GENRE_LIST = (
 )
 
 SORT_CODES = {
-    "title": "sort_title",
-    "author": "author",
-    "company": "company",
-    "rating": "-rating",
-    "release": "release_date"
+    "title": ["sort_title"],
+    "author": ["author", "sort_title"],
+    "company": ["company", "sort_title"],
+    "rating": ["-rating", "sort_title"],
+    "release": ["release_date", "sort_title"]
 }
 
 ADV_SEARCH_DEFAULTS = [

@@ -6,6 +6,14 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 
+ARTICLE_FORMATS = (
+    ("text", "Plaintext"),
+    ("md", "Markdown"),
+    ("html", "HTML"),
+    ("django", "Django"),
+)
+
+
 CATEGORY_LIST = (
     ("?", "?"),
     ("MS-DOS", "MS-DOS Programs"),
@@ -51,17 +59,34 @@ DETAIL_REMOVED = 19
 
 
 class Article(models.Model):
+    """ Article object repesenting a page from an article
+
+    Fields:
+    title           -- Title of the article
+    author          -- Author of the article
+    category        -- Categorization of the article for the directory
+    content         -- Body of the article
+    css             -- Custom CSS for the article
+    type            -- Whether the article is in text/md/html/django form
+    date            -- Date the article was written
+    published       -- If the article is available to the public
+    page            -- Page # of the article
+    parent          -- Article ID of the first page of the article
+    summary         -- Summary for Opengraph
+    preview         -- Path to preview image
+    """
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=50)
     category = models.CharField(max_length=50)
     content = models.TextField(default="")
     css = models.TextField(default="", blank=True)
-    type = models.CharField(max_length=6)  # text/html/django
+    type = models.CharField(max_length=6, choices=ARTICLE_FORMATS)
     date = models.DateField(default="1970-01-01")
     published = models.BooleanField(default=False)
     page = models.IntegerField(default=1)
     parent = models.ForeignKey("Article", null=True, blank=True, default=None)
-    content_warning = models.BooleanField(default=False)
+    summary = models.CharField(max_length=150, default="", blank=True)
+    preview = models.CharField(max_length=80, default="", blank=True)
 
     class Meta:
         ordering = ["title"]
@@ -89,8 +114,10 @@ class File(models.Model):
     """ File object repesenting an upload to the site
 
     Fields:
-    letter          -- Name of the (Zip) file (ex: Respite.zip)
+    letter          -- Letter the file can be found under via browse pages
+    filename        -- Name of the (Zip) file (ex: Respite.zip)
     title           -- Name of the World (ex: Frost 1: Power)
+    sort_title      -- Title used for natural sorting
     author          -- / sep. ABC list of authors (ex: Hercules/Nadir)
     size            -- Filesize in Kilobytes (ex: 42)
     genre           -- / sep. ABC list of genres (ex: Action/RPG)
@@ -106,6 +133,8 @@ class File(models.Model):
     details         -- Link to Detail objects
     articles        -- Link to Article objects
     article_count   -- Number of articles associated with this file
+    checksum        -- md5 checksum of the zip file
+    superceded      -- FK with File for the "definitive" version of a file
     """
 
     letter = models.CharField(max_length=1, db_index=True)
