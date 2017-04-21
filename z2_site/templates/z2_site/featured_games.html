@@ -12,12 +12,12 @@
 
 <p>With that said, here are the current Featured Games:</p>
 
-{% include "z2_site/blocks/page_block.html" %}
+{% include "z2_site/blocks/file_page_block.html" %}
 
 {% for file in featured %}
     {% include "z2_site/blocks/file_block.html" %}
 {% endfor %}
 
-{% include "z2_site/blocks/page_block.html" %}
+{% include "z2_site/blocks/file_page_block.html" %}
 </section>
 {% endblock %}

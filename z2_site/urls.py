@@ -54,7 +54,6 @@ urlpatterns = [
     url(r"^clones$", z2_site.views.article_view, {"id": 6}),
     url(r"^credits$", z2_site.views.article_view, {"id": 164}, name="credits"),
     url(r"^getting-started$", z2_site.views.article_view, {"id": 5}),
-    url(r"^mass$", z2_site.views.article_view, {"id": 7}),
     url(r"^zzt$", z2_site.views.article_view, {"id": 2}, name="zzt_dl"),
 
     # Closer Looks
@@ -118,6 +117,10 @@ urlpatterns = [
         name="win64"),
     url(r"^lost-worlds$", z2_site.views.browse, {"details": [DETAIL_LOST]},
         name="lost_worlds"),
+
+    # Mass Downloads
+    url(r"^mass-downloads$", z2_site.views.mass_downloads,
+        name="mass_downloads"),
 
     # Policies
     url(r"^policy/submission$", z2_site.views.article_view, {"id": 2}, name="submission_policy"),

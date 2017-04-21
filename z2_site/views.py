@@ -58,10 +58,8 @@ def article_view(request, id, page=0):
     data = {"id": id}
 
     if page == 0:  # Pageless articles/heads
-        print("NO PAGES")
         data["article"] = get_object_or_404(Article, pk=id, published=True)
     else:
-        print("YES PAGES")
         if page != 1:
             data["article"] = get_object_or_404(Article, parent_id=id,
                                                 page=page, published=True)
@@ -70,9 +68,13 @@ def article_view(request, id, page=0):
                                                 published=True)
 
         # Calculate pages
-        exists = Article.objects.filter(parent_id=id, page=page + 1,
-                                        published=True).exists()
-        if exists:
+        page_count = Article.objects.filter(
+            parent_id=id, published=True
+        ).count() + 1  # Also count the original article
+
+        data["page_count"] = page_count
+        data["page_range"] = list(range(1, page_count + 1))
+        if page_count != page:
             data["next"] = page + 1
         else:
             data["next"] = None
@@ -294,6 +296,12 @@ def local(request):
     data["custom_charsets"] = CUSTOM_CHARSET_LIST
     return render(request, "z2_site/local_file.html", data)
 
+
+def mass_downloads(request):
+    """ Returns a page for downloading files by release year """
+    data = {"title":"Mass Downloads"}
+    # Read the json
+    return render(request, "z2_site/mass_downloads.html", data)
 
 def play(request, letter, filename):
     """ Returns page to play file on archive.org """

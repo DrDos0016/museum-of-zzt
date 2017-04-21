@@ -1,0 +1,8 @@
+<div class="pages">
+    Page #{{article.page}}/{{page_count}}<br>
+    {% if article.page > 1 %}<a href="{% url 'article_view_page' id  prev slug %}">&lt;</a>{% endif %}
+    {% for p in page_range %}
+    <a href="{% url 'article_view_page' id p slug %}">{{p}}</a>
+    {% endfor %}
+    {% if next %}<a href="{% url 'article_view_page' id next slug %}">&gt;</a>{% endif %}
+</div>

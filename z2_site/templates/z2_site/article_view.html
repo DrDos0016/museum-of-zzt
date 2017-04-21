@@ -14,6 +14,10 @@
 <div>By: {{article.author}}</div>
 <div>Date: {{article.date}}</div>
 
+{% if page_range %}
+{% include "z2_site/blocks/article_page_block.html" %}
+{% endif %}
+
 <article class="{{article.category|slugify}}">
 {% if article.type == "html" %}
     {{article.content|safe}}
@@ -24,8 +28,10 @@
 {% endif %}
 </article>
 
-{% if article.page > 1 %}<a href="{% url 'article_view_page' id  prev slug %}">Previous page</a><br>{% endif %}
-{% if next %}<a href="{% url 'article_view_page' id next slug %}">Next page</a><br>{% endif %}
+{% if page_range %}
+{% include "z2_site/blocks/article_page_block.html" %}
+{% endif %}
+
 <a href="{% url 'article_directory' %}">Return to article directory</a><br>
 <a href="{% url 'index' %}">Return to the main page</a>
 {% endblock %}
