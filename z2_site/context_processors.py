@@ -1,12 +1,21 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from __future__ import print_function
+from datetime import datetime
+
 from z2_site.models import Detail, DETAIL_FEATURED
 from z2_site.common import DEBUG
 
 
-def get_fg(request):
-    featured = Detail.objects.get(pk=DETAIL_FEATURED)
-    fg = featured.file_set.all().order_by("?")[0]
+def museum_global(request):
+    data = {"debug":DEBUG}
 
-    return {"fg": fg, "debug":DEBUG}
+    # Server date/time
+    data["datetime"] = datetime.utcnow()
+    if data["datetime"].day == 27:  # This is very important
+        data["drupe"] = True
+
+    # Featured Games
+    featured = Detail.objects.get(pk=DETAIL_FEATURED)
+    data["fg"] = featured.file_set.all().order_by("?")[0]
+
+
+    return data
