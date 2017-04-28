@@ -25,7 +25,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
-ALLOWED_HOSTS = ["django.pi", "z2.pokyfriends.com", "museum.pokyfriends.com"]
+ALLOWED_HOSTS = [
+    "django.pi",
+    "z2.pokyfriends.com",
+    "museum.pokyfriends.com",
+    "museumofzzt.com",
+    "beta.museumofzzt.com",
+    "api.museumofzzt.com"
+]
 
 
 # Application definition
@@ -65,7 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'z2_site.context_processors.get_fg'
+                'z2_site.context_processors.museum_global'
             ],
         },
     },
