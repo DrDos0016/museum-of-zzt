@@ -346,6 +346,7 @@ def review(request, letter, filename):
 
         # Update file's review count/scores
         data["file"].recalculate_reviews()
+        data["file"].save()
 
     data["reviews"] = Review.objects.filter(file_id=data["file"].id)
     return render(request, "z2_site/review.html", data)
