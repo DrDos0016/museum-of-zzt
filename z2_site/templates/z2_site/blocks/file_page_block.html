@@ -1,13 +1,11 @@
 <div class="pages">
-    {% if request.GET.view != "list" %}
-        {% if pages > 1 %}
-        Page #{{page}}/{{pages}}<br>
-        <a href="?page={{prev}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">&lt;</a>
-        {% for page in page_range %}
-        <a href="?page={{page}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">{{page}}</a>
-        {% endfor %}
-        <a href="?page={{next}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">&gt;</a>
-        {% endif %}
+    {% if pages > 1 %}
+    Page #{{page}}/{{pages}}<br>
+    <a href="?page={{prev}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">&lt;</a>
+    {% for page in page_range %}
+    <a href="?page={{page}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">{{page}}</a>
+    {% endfor %}
+    <a href="?page={{next}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">&gt;</a>
     {% endif %}
     {% if not no_list %}<div class="sub">
         {% if view == "detailed" %}

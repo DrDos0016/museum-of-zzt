@@ -564,7 +564,7 @@ SZZT_ELEMENTS = [
         "id":34, // Snake?
         "name":"Bear",
         "oop_name":"bear",
-        "character":153,
+        "character":235,
         "param1":"Sensitivity"
     },
     {

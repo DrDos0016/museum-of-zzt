@@ -60,6 +60,11 @@ body
     overflow:auto;
 }
 
+.hidden
+{
+    visibility:hidden;
+}
+
 .jsLink
 {
 	cursor:pointer;
@@ -713,7 +718,7 @@ div.file-details ul
 /* End file viewing */
 
 /* Reviews */
-.review
+.review, .review-post
 {
     margin:auto auto 1em;
 }
@@ -727,6 +732,7 @@ div.file-details ul
 {
     margin-bottom:1em;
 }
+
 /* End Reviews */
 
 /* Ascii */

@@ -3,34 +3,142 @@
 {% load markdown_deux_tags %}
 
 {% block scripts %}
+<script>
+$(document).ready(function (){
+    $("#submit-review").click(function (e){
+        e.preventDefault();
+        var name = $("#name").val();
+        var email = $("#email").val();
+        var title = $("#title").val();
+        var review = $("#review-content").val();
+
+        var valid = true;
+
+        if (name.trim() == "")
+            valid = valid && error_message("name", "Name cannot be blank.");
+        else
+            clear_error("name");
+
+        if (email.trim() == "" || (! email.match(/.+@.+/)))
+            valid = valid && error_message("email", "Please enter a valid email address.");
+        else
+            clear_error("email");
+
+        if (title.trim() == "")
+            valid = valid && error_message("title", "Title cannot be blank.");
+        else
+            clear_error("title");
+
+        if (review.trim() == "")
+            valid = valid && error_message("review-content", "Review cannot be blank!");
+        else
+            clear_error("review-content");
+
+        if (valid)
+        {
+            // Submit the form
+            $("#review-form").submit();
+
+        }
+
+        return false;
+    });
+});
+
+function error_message(identifier, msg)
+{
+    $("label[for="+identifier+"]").addClass("error");
+    $("#"+identifier).addClass("error");
+    $("label[for="+identifier+"] div.error").text(msg);
+    return false;
+}
+
+function clear_error(identifier)
+{
+    $("label[for="+identifier+"]").removeClass("error");
+    $("#"+identifier).removeClass("error");
+    $("label[for="+identifier+"] div.error").text("");
+    return true;
+}
+</script>
 {% endblock %}
 
 {% block world_content %}
 {% for review in reviews %}
 <div class="review block">
 <div class="review-meta">
-    <h2>{% markdown %}{{review.title}}{% endmarkdown %}</h2>
+    <h2>{{review.title}}</h2>
     <i>Written by {{review.author}}<br>{{review.date}}</i>
 </div>
 
 <article>
-<!--{{review.content|escape|linebreaks}}-->
-{{review.content|markdown|linebreaks}}
+{{review.content|markdown}}
 </article>
 
-<b>Rating:</b> {{review.rating}} out of 5.0 {{review.id}}
+{% if review.rating >= 0 %}<b>Rating:</b> {{review.rating}} out of 5.0 {{review.id}}
+{% else %}
+<i>This user has opted out of providing a numeric rating</i>
+{% endif %}
+{% if debug %}<div class="debug"><a href="/admin/z2_site/review/{{review.id}}/change/">EDIT</a>{% endif %}
+</div>
 </div>
 {% endfor %}
 
-<div class="review-post block">
 <h2>Review {{file.title}}</h2>
-<form method="POST">
-<label>Name: <input name="name"></label>
-<label>Email: <input name="email"></label>
-<label>Review Title: <input name="title"></label>
-<label>Review: <textarea name="review"></textarea></label>
-
-<input type="submit" value="Post Review">
-</form>
+<form method="POST" id="review-form">
+{% csrf_token %}
+<input name="action" value="post-review" type="hidden">
+<input name="file_id" value="{{file.id}}" type="hidden">
+<div class="field">
+    <label for="name">Your Name:<br>
+        <div class="sub"></div>
+        <div class="sub error"></div>
+    </label>
+    <input id="name" name="name" value="" maxlength="50">
 </div>
+<div class="field">
+    <label for="email">Email Address:<br>
+        <div class="sub">Will not be displayed.</div>
+        <div class="sub error"></div>
+    </label>
+    <input id="email" name="email" value="" maxlength="50" type="email">
+</div>
+<div class="field">
+    <label for="title">Review Title:<br>
+        <div class="sub"></div>
+        <div class="sub error"></div>
+    </label>
+    <input id="title" name="title" value="" maxlength="50">
+</div>
+<div class="field">
+    <label for="review-content">Review:<br>
+        <div class="sub"><a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown syntax</a> is supported for formatting.</div>
+        <div class="sub error"></div>
+    </label>
+    <textarea id="review-content" name="content"></textarea>
+</div>
+<div class="field">
+    <label for="rating">Rating:<br>
+        <div class="sub">Optionally give the file a numeric score from 0.0 to 5.0</div>
+        <div class="sub error"></div>
+    </label>
+    <select id="rating" name="rating">
+        <option value="-1">No rating</option>
+        <option>0.0</option>
+        <option>0.5</option>
+        <option>1.0</option>
+        <option>1.5</option>
+        <option>2.0</option>
+        <option>2.5</option>
+        <option>3.0</option>
+        <option>3.5</option>
+        <option>4.0</option>
+        <option>4.5</option>
+        <option>5.0</option>
+    </select>
+</div>
+<div class="field">
+    <button type="submit" id="submit-review">Post Review</button>
+</div>
+</form>
 {% endblock %}

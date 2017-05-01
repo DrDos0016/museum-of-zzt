@@ -123,9 +123,10 @@ urlpatterns = [
         name="mass_downloads"),
 
     # Policies
-    url(r"^policy/submission$", z2_site.views.article_view, {"id": 2}, name="submission_policy"),
-    url(r"^policy/removal$", z2_site.views.article_view, {"id": 165}, name="removal_policy"),
     url(r"^policy/correction$", z2_site.views.article_view, {"id": 2}, name="correction_policy"),
+    url(r"^policy/removal$", z2_site.views.article_view, {"id": 165}, name="removal_policy"),
+    url(r"^policy/review$", z2_site.views.article_view, {"id": 165}, name="review_policy"),
+    url(r"^policy/submission$", z2_site.views.article_view, {"id": 2}, name="submission_policy"),
 
     # Random ZZT World
     url(r"^random$", z2_site.views.random, name="random"),

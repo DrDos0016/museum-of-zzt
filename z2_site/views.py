@@ -150,6 +150,11 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
         data["prev"] = max(1, data["page"] - 1)
         data["next"] = min(data["pages"], data["page"] + 1)
 
+    # Show descriptions for lost worlds
+    if DETAIL_LOST in details:
+        data["show_description"] = True
+
+    # Determine destination template
     if data["view"] == "list":
         destination = "z2_site/browse_list.html"
     elif data["view"] == "gallery":
@@ -168,7 +173,9 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
 def closer_look(request):
     """ Returns a listing of all Closer Look articles """
     data = {}
-    data["articles"] = Article.objects.filter(category="Closer Look", published=1, page=1)
+    data["articles"] = Article.objects.filter(
+        category="Closer Look", published=1, page=1
+    )
     sort = request.GET.get("sort", "title")
     if sort == "title":
         data["articles"] = data["articles"].order_by("title")
@@ -249,6 +256,7 @@ def file(request, letter, filename):
     """ Returns page exploring a file's zip contents """
     data = {}
     data["year"] = YEAR
+    data["details"] = []  # Required to show all download links
     data["file"] = File.objects.filter(letter=letter, filename=filename)
     if len(data["file"]) == 0:
         raise Http404()
@@ -276,10 +284,6 @@ def file(request, letter, filename):
     data["load_file"] = request.GET.get("file", "")
     data["load_board"] = request.GET.get("board", "")
 
-    """ DEBUG, DO NOT USE ON PRODUCTION """
-    data["save"] = request.GET.get("screenshot")
-    """ END DEBUG """
-
     return render(request, "z2_site/file.html", data)
 
 
@@ -299,9 +303,10 @@ def local(request):
 
 def mass_downloads(request):
     """ Returns a page for downloading files by release year """
-    data = {"title":"Mass Downloads"}
+    data = {"title": "Mass Downloads"}
     # Read the json
     return render(request, "z2_site/mass_downloads.html", data)
+
 
 def play(request, letter, filename):
     """ Returns page to play file on archive.org """
@@ -327,11 +332,22 @@ def random(request):
 
 
 def review(request, letter, filename):
-    """ Returns a page of reviews for a file """
+    """ Returns a page of reviews for a file. Handles POSTing new reviews """
     data = {}
     data["file"] = get_object_or_404(File, letter=letter, filename=filename)
-    data["reviews"] = Review.objects.filter(file_id=data["file"].id)
     data["letter"] = letter
+
+    # POST review
+    if request.POST.get("action") == "post-review":
+        review = Review()
+        created = review.from_request(request)
+        review.full_clean()
+        review.save()
+
+        # Update file's review count/scores
+        data["file"].recalculate_reviews()
+
+    data["reviews"] = Review.objects.filter(file_id=data["file"].id)
     return render(request, "z2_site/review.html", data)
 
 
@@ -340,6 +356,7 @@ def search(request):
         appropriately.
     """
     data = {"mode": "search"}
+    data["page"] = int(request.GET.get("page", 1))
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
@@ -370,23 +387,25 @@ def search(request):
             qs = File.objects.filter(id__in=ids.split(",")).order_by("id")
 
         if data["view"] == "list":
-            data["files"] = qs.order_by(*sort)
+            page_size = LIST_PAGE_SIZE
+        else:
+            page_size = PAGE_SIZE
+
+        data["files"] = qs.order_by(
+            *sort
+        )[(data["page"] - 1) * page_size:data["page"] * page_size]
+        data["count"] = qs.count()
+        data["pages"] = int(1.0 * math.ceil(data["count"] / page_size))
+        data["page_range"] = range(1, data["pages"] + 1)
+        data["prev"] = max(1, data["page"] - 1)
+        data["next"] = min(data["pages"], data["page"] + 1)
+
+        if data["view"] == "gallery":
+            destination = "z2_site/browse_gallery.html"
+        elif data["view"] == "list":
             destination = "z2_site/browse_list.html"
         else:
-            data["page"] = int(request.GET.get("page", 1))
-            data["files"] = qs.order_by(
-                *sort
-            )[(data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE]
-            data["count"] = qs.count()
-            data["pages"] = int(1.0 * math.ceil(data["count"] / PAGE_SIZE))
-            data["page_range"] = range(1, data["pages"] + 1)
-            data["prev"] = max(1, data["page"] - 1)
-            data["next"] = min(data["pages"], data["page"] + 1)
-
-            if data["view"] == "gallery":
-                destination = "z2_site/browse_gallery.html"
-            else:
-                destination = "z2_site/browse.html"
+            destination = "z2_site/browse.html"
     else:  # Advanced Search
         # TODO: Handle <exact> in situations with multiple authors/companies
         data["advanced_search"] = True
@@ -448,7 +467,6 @@ def search(request):
 
             destination = "z2_site/browse_list.html"
         else:
-            data["page"] = int(request.GET.get("page", 1))
             data["files"] = qs.order_by(*sort)[
                 (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
             ]

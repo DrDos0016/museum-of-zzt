@@ -18,7 +18,7 @@
 {% include "z2_site/blocks/article_page_block.html" %}
 {% endif %}
 
-<article class="{{article.category|slugify}}">
+<article class="{{article.category|slugify}}" data-article_id="{{article.id}}">
 {% if article.type == "html" %}
     {{article.content|safe}}
 {% elif article.type == "text" %}

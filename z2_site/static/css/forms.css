@@ -92,3 +92,13 @@ input, select, textarea
     margin-top:0.25em;
     min-width:35%;
 }
+
+input.error, textarea.error
+{
+    border:1px solid #FF0000;
+}
+
+.error
+{
+    color:#FF0000;
+}

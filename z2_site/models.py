@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from __future__ import print_function
+from datetime import datetime
+
 from django.db import models
+from django.db.models import Avg
 #  from django.contrib import admin
 from django.template.defaultfilters import slugify
 
@@ -159,12 +159,16 @@ class File(models.Model):
         max_length=80, default="", blank=True, null=True
     )
     description = models.TextField(null=True, blank=True, default="")
-    review_count = models.IntegerField(default=0)
+    review_count = models.IntegerField(
+        default=0, help_text="Set automatically. Do not adjust."
+    )
     rating = models.FloatField(null=True, default=None, blank=True)
     details = models.ManyToManyField("Detail", default=None, blank=True)
     articles = models.ManyToManyField("Article", default=None, blank=True,
                                       limit_choices_to={'page': 1})
-    article_count = models.IntegerField(default=0)
+    article_count = models.IntegerField(
+        default=0, help_text="Set automatically. Do not adjust."
+    )
     checksum = models.CharField(max_length=32, null=True,
                                 blank=True, default="")
     superceded = models.ForeignKey("File", db_column="superceded_id",
@@ -178,8 +182,16 @@ class File(models.Model):
 
     def save(self, *args, **kwargs):
         # Pre save
+        # Create sorted title if not set
         if self.sort_title == "":
             self.sort_title = self.sorted_title()
+
+        # Recalculate Article Count
+        self.article_count = self.articles.all().filter(
+            published=True
+        ).count()
+
+        self.recalculate_reviews()
 
         super(File, self).save(*args, **kwargs)  # Actual save call
 
@@ -237,6 +249,21 @@ class File(models.Model):
     def genre_list(self):
         return self.genre.split("/")
 
+    def is_lost(self):
+        lost = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_LOST in lost else False
+
+    def recalculate_reviews(self):
+        # Recalculate Review Count
+        if self.id is not None:
+            self.review_count = Review.objects.filter(file_id=self.id).count()
+
+        # Recalculate Rating
+        if self.id is not None:
+            ratings = Review.objects.filter(file_id=self.id, rating__gte=0).aggregate(Avg("rating"))
+            print("RATING AVERAGE", ratings)
+            self.rating = round(ratings["rating__avg"], 2)
+
 
 class Detail(models.Model):
     detail = models.CharField(max_length=20)
@@ -258,6 +285,8 @@ class Review(models.Model):
     email           -- Author's email (hide this? Optional?)
     content         -- Body of review
     rating          -- Rating given to file from 0.0 - 5.0
+    date            -- Date review was written
+    ip              -- IP address posting the review
     """
     file = models.ForeignKey("File")
     title = models.CharField(max_length=50)
@@ -276,3 +305,19 @@ class Review(models.Model):
              self.file.filename + "] by " + self.author
              )
         return x
+
+    def from_request(self, request):
+        if request.method != "POST":
+            return False
+
+        self.file_id = int(request.POST.get("file_id"))
+        self.title = request.POST.get("title")
+        self.author = request.POST.get("name")  # NAME not author
+        self.email = request.POST.get("email")
+        self.content = request.POST.get("content")
+        self.rating = round(float(request.POST.get("rating")), 2)
+        self.date = datetime.utcnow()
+        self.ip = request.META["REMOTE_ADDR"]
+
+        return True
+

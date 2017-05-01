@@ -97,15 +97,12 @@ $(document).ready(function (){
 
 <body>
 
-<div id="environment" data-host="{{request.get_host}}">
-{% if request.get_host == "museum.pokyfriends.com" %}Private Beta
-{% elif request.get_host == "z2.pokyfriends.com" %}Public Beta
-{% else %}Development Environment{% endif %}
+<div id="environment" data-host="{{HOST}}">
+{{ENV}}
 </div>
 
 <header>
     <nav>
-        <a href="/"><img id="logo" src="{% static 'images/z2_logo.gif' %}" alt="z2"></a><br>
         <a href="/">Main</a>
         <a href="/article/1/about-zzt">About ZZT</a>
         <a href="/upload" class="broken">Upload</a>
@@ -241,12 +238,16 @@ $(document).ready(function (){
         <a href="{% url 'submission_policy' %}" class="broken">Submission Policy</a><br>
         <a href="{% url 'removal_policy' %}">Removal Policy</a><br>
         <a href="{% url 'correction_policy' %}" class="broken">Correction Policy</a><br>
+        <a href="{% url 'review_policy' %}" class="broken">Review Policy</a><br>
     </div>
 </section>
 </div>
 
 <footer>
 - Museum of ZZT -
+{% if drupe %}Happy Drupe Day! -{% endif %}
+<br>
+&copy; {{datetime.year}}
 </footer>
 
 </body>
