@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>{% block title %}{{title}}{% endblock %}{% if title %} - {% endif %}The Museum of ZZT</title>
+<title>{% block title %}{{title}}{% endblock %}{% if title %} - {% endif %}Museum of ZZT</title>
 <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
 <link rel="stylesheet" media="(max-width: 1023px)" href="{% static 'css/small.css' %}">
@@ -18,12 +18,23 @@
 <meta name="keywords" content="ZZT">
 
 {% block og %}
-<meta property="og:title" content="{% if title %}{{title}} - {% endif %}The Museum of ZZT">
+<meta property="og:title" content="{% if title %}{{title}} - {% endif %}Museum of ZZT">
 <meta property="og:type" content="website">
-{% if article.preview %}<meta property="og:image" content="{% static 'images/'|add:article.preview %}">
-{% elif file.screenshot %}<meta property="og:image" content="{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}">
-{% else %}<meta property="og:image" content="{% static 'images/og_default.jpg' %}">{% endif %}
+{% if article.preview %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/'|add:article.preview %}">
+{% elif file.screenshot %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}">
+{% else %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/og_default.jpg' %}">{% endif %}
 <meta property="og:url" content="{{request.build_absolute_uri}}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@worldsofzzt">
+{% if article.title %}<meta name="twitter:title" content="{{article.title}}">
+{% elif file.title %}<meta name="twitter:title" content="{{file.title}}">
+{% else %}<meta name="twitter:title" content="Museum of ZZT">{% endif %}
+{% if article.summary %}<meta name="twitter:description" content="{{article.summary}}">
+{% else %}<meta name="twitter:description" content="{{title|default:'A Museum of ZZT page'}}">{% endif %}
+{% if article.preview %}<meta property="twitter:image" content="{{DOMAIN}}{% static 'images/'|add:article.preview %}">
+{% elif file.screenshot %}<meta property="twitter:image" content="{{DOMAIN}}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}">
+{% else %}<meta property="twitter:image" content="{{DOMAIN}}{% static 'images/og_default.jpg' %}">{% endif %}
 {% endblock %}
 
 {% block analytics %}
@@ -253,8 +264,10 @@ $(document).ready(function (){
 - Museum of ZZT -
 {% if drupe %}Happy Drupe Day! -{% endif %}
 <br>
-&copy; {{datetime.year}}
-{{request.build_absolute_uri}}
+&copy; 2015-{{datetime.year}} <a href="mailto:doctordos@gmail.com">Dr. Dos</a><br>
+Additional content copyright their respective owners
+<br>{{request.build_absolute_uri}}
+{{request.META.HTTP_HOST}}
 </footer>
 
 </body>

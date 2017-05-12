@@ -16,6 +16,9 @@ def museum_global(request):
     else:
         data["ENV"] = "DEVELOPMENT SERVER"
 
+    data["PROTOCOL"] = "https" if request.is_secure() else "http"
+    data["DOMAIN"] = data["PROTOCOL"] + "://" + data["HOST"] + "/"
+
     # Server date/time
     data["datetime"] = datetime.utcnow()
     if data["datetime"].day == 27:  # This is very important
