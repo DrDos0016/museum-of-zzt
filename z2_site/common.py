@@ -31,7 +31,7 @@ PYTHON_VERSION = sys.version
 DJANGO_VERSION = VERSION
 
 print("MUSEUM OF ZZT STARTUP")
-print(str(datetime.utcnow())
+print(str(datetime.utcnow()))
 print("Python:", PYTHON_VERSION)
 print("Django:", DJANGO_VERSION)
 
