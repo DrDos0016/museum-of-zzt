@@ -75,11 +75,11 @@ function clear_error(identifier)
 {{review.content|markdown}}
 </article>
 
-{% if review.rating >= 0 %}<b>Rating:</b> {{review.rating}} out of 5.0 {{review.id}}
+{% if review.rating >= 0 %}<b>Rating:</b> {{review.rating}} out of 5.0
 {% else %}
 <i>This user has opted out of providing a numeric rating</i>
 {% endif %}
-{% if debug %}<div class="debug"><a href="/admin/z2_site/review/{{review.id}}/change/">EDIT</a>{% endif %}
+{% if debug %}<div class="debug"><a href="/admin/z2_site/review/{{review.id}}/change/">EDIT {{review.id}}</a>{% endif %}
 </div>
 </div>
 {% endfor %}

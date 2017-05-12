@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from __future__ import print_function
 from django import VERSION
 from django.http import Http404
 from django.http import HttpResponse
@@ -33,6 +30,8 @@ YEAR = datetime.now().year
 PYTHON_VERSION = sys.version
 DJANGO_VERSION = VERSION
 
+print("MUSEUM OF ZZT STARTUP")
+print(str(datetime.utcnow())
 print("Python:", PYTHON_VERSION)
 print("Django:", DJANGO_VERSION)
 
@@ -212,5 +211,4 @@ def qs_sans(params, key):
     else:
         qs_nokey = qs
 
-    print(qs_nokey.urlencode())
     return qs_nokey.urlencode()

@@ -34,4 +34,5 @@
 
 <a href="{% url 'article_directory' %}">Return to article directory</a><br>
 <a href="{% url 'index' %}">Return to the main page</a>
+{% if debug %}<div class="debug"><a href="/admin/z2_site/article/{{article.id}}/change/">Edit Article {{article.id}}</a></div>{% endif %}
 {% endblock %}

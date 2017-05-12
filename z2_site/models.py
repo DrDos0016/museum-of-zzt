@@ -187,9 +187,10 @@ class File(models.Model):
             self.sort_title = self.sorted_title()
 
         # Recalculate Article Count
-        self.article_count = self.articles.all().filter(
-            published=True
-        ).count()
+        if self.id is not None:
+            self.article_count = self.articles.all().filter(
+                published=True
+            ).count()
 
         self.recalculate_reviews()
 
@@ -261,8 +262,8 @@ class File(models.Model):
         # Recalculate Rating
         if self.id is not None:
             ratings = Review.objects.filter(file_id=self.id, rating__gte=0).aggregate(Avg("rating"))
-            print("RATING AVERAGE", ratings)
-            self.rating = round(ratings["rating__avg"], 2)
+            if ratings["rating__avg"] is not None:
+                self.rating = round(ratings["rating__avg"], 2)
 
 
 class Detail(models.Model):

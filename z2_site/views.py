@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from __future__ import print_function
 from django.shortcuts import render
 from .common import *
 
@@ -259,6 +256,17 @@ def file(request, letter, filename):
     data["details"] = []  # Required to show all download links
     data["file"] = File.objects.filter(letter=letter, filename=filename)
     if len(data["file"]) == 0:
+        # Check if there's a matching zip with a different letter
+        alternative = File.objects.filter(filename=filename)
+        alt_count = alternative.count()
+        if alt_count:
+            if alt_count == 1:
+                response = redirect("file", letter=alternative[0].letter, filename=filename)
+                return response
+            else:
+                response = redirect("search")
+                response['Location'] += "?filename="+filename
+                return response
         raise Http404()
     elif len(data["file"]) > 1:
         for file in data["file"]:
@@ -277,9 +285,7 @@ def file(request, letter, filename):
     data["files"] = []
     # Filter out directories (but not their contents)
     for f in files:
-        print("F IS..", f)
         if f and f[-1] != os.sep:
-            print("REMOVING", f)
             data["files"].append(f)
     data["load_file"] = request.GET.get("file", "")
     data["load_board"] = request.GET.get("board", "")
@@ -334,7 +340,16 @@ def random(request):
 def review(request, letter, filename):
     """ Returns a page of reviews for a file. Handles POSTing new reviews """
     data = {}
-    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["file"] = File.objects.filter(letter=letter, filename=filename)
+    if len(data["file"]) == 0:
+        raise Http404()
+    elif len(data["file"]) > 1:
+        for file in data["file"]:
+            if file.filename == filename:
+                data["file"] = file
+                break
+    else:
+        data["file"] = data["file"][0]
     data["letter"] = letter
 
     # POST review

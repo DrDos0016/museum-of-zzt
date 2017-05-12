@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-from __future__ import print_function
 from django.http import HttpResponse
 
 from .models import *
@@ -32,7 +29,6 @@ def get_zip_file(request):
             "An error occurred, and the file could not be retreived."
         )
 
-    print("EXT IS", ext)
     if ext in ("", ".txt", ".bat", ".cfg", ".nfo", ".dat", ".bas", ".deu", ".diz", ".c", ".ds_store", ".faq", ".frm", ".fyi", ".gud", ".h", ".hlp", ".lst", ".me", ".nfo", ".pas", ".reg", ".sol", ".zln", ".zml", ".zzl", ".zzm", ".135", ".1st", ".asm", ".bb", ".bin", ".chr"):
         output = file.read()
 

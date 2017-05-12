@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 
 from z2_site.models import Detail, DETAIL_FEATURED
