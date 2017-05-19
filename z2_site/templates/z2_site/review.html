@@ -79,8 +79,7 @@ function clear_error(identifier)
 {% else %}
 <i>This user has opted out of providing a numeric rating</i>
 {% endif %}
-{% if debug %}<div class="debug"><a href="/admin/z2_site/review/{{review.id}}/change/">EDIT {{review.id}}</a>{% endif %}
-</div>
+{% if debug %}<div class="debug"><a href="/admin/z2_site/review/{{review.id}}/change/">EDIT {{review.id}}</a></div>{% endif %}
 </div>
 {% endfor %}
 
