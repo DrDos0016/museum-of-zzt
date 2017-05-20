@@ -2,7 +2,9 @@ from django.conf.urls import url
 
 import z2_site.admin
 import z2_site.ajax
+import z2_site.errors
 import z2_site.views
+
 
 from z2_site.models import (
     DETAIL_DOS,
@@ -155,4 +157,6 @@ urlpatterns = [
     url(r"^debug/save$", z2_site.views.debug_save),
     url(r"^debug/article$", z2_site.views.debug_article),
     url(r"^ajax/debug_file$", z2_site.ajax.debug_file),
+
+    url(r"^error/(?P<status>[0-9]+)$", z2_site.errors.raise_error)
 ]

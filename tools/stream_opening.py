@@ -47,7 +47,7 @@ def main():
     # Save
     z.save()
 
-    b.screenshot("intro.png")
+    b.screenshot("intro")
 
 
     return True

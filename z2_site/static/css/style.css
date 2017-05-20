@@ -165,14 +165,20 @@ table td, table th
 
 #logo
 {
-    float:left;
-    clear:both;
+    background-image:url("/static/images/museum_of_zzt_logo_wide.png");
+    background-repeat:no-repeat;
+    background-position:left bottom;
+    background-size:contain;
+    height:100px;
+    display:block;
+    position:relative;
+    top:30px;
 }
 
 header
 {
     margin:auto;
-    width:90%;
+    flex:0 0 100%;
 }
 
 nav
@@ -184,25 +190,11 @@ nav
 
 nav a
 {
-    display:block;
+    /*display:block;*/
     text-align:center;
     font-size:16pt;
     flex:1;
 }
-
-/*
-nav li
-{
-    display:inline-block;
-    zoom: 1;
-    *display: inline;
-
-    width:125px;
-    height:25px;
-    font-size:16pt;
-    text-align:center;
-}
-* */
 
 .sidebar
 {
@@ -258,18 +250,13 @@ nav li
     display:flex;
     flex-direction:row;
     flex-wrap:wrap;
-    justify-content:space-around;
-}
-
-.flex-between
-{
     justify-content:space-between;
 }
 
 .block
 {
     padding:0.5em;
-    margin:0.5em;
+    margin:0.5em 0 0.5em 0;
     background:#F0F0F0;
     border:1px solid #000;
 }
@@ -351,8 +338,12 @@ input[name=q]
     text-align:center;
     margin:auto;
     width:90%;
-    font-size:larger;
     padding:1em;
+}
+
+.pages .sub + .sub
+{
+    padding-top:2px;
 }
 
 /* File blocks */
@@ -421,7 +412,7 @@ div.file-links, div.file-details, div.file-meta
 
 div.file-meta
 {
-
+    border-bottom:1px solid #000;
 }
 
 div.file-links div
@@ -530,6 +521,7 @@ div.file-details ul
     min-height:350px;
     max-height:700px;
     border:1px solid #000;
+    border-top:0;
     padding:0.25em;
     overflow:auto;
     clear:both;

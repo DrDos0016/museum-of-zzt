@@ -4,9 +4,12 @@ from .common import *
 
 def advanced_search(request):
     """ Returns page containing multiple filters to use when searching """
-    data = {"mode": "search",
-            "genres": GENRE_LIST,
-            "years": [str(x) for x in range(1991, YEAR + 1)]}
+    data = {
+        "title": "Advanced Search",
+        "mode": "search",
+        "genres": GENRE_LIST,
+        "years": [str(x) for x in range(1991, YEAR + 1)]
+    }
 
     data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
     return render(request, "z2_site/advanced_search.html", data)
@@ -17,7 +20,17 @@ def article(request, letter, filename):
     If there is just one article, display it instead.
     """
     data = {}
-    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["file"] = File.objects.filter(letter=letter, filename=filename)
+    if len(data["file"]) == 0:
+        raise Http404()
+    elif len(data["file"]) > 1:
+        for file in data["file"]:
+            if file.filename == filename:
+                data["file"] = file
+                break
+    else:
+        data["file"] = data["file"][0]
+    data["title"] = data["file"].title + " - Articles"
     data["articles"] = data["file"].articles.all()
     data["letter"] = letter
 
@@ -29,7 +42,7 @@ def article(request, letter, filename):
 
 def article_directory(request, category="all"):
     """ Returns page listing all articles sorted either by date or name """
-    data = {}
+    data = {"title": "Article Dirctory"}
     data["sort"] = request.GET.get("sort", "category")
     if request.GET.get("sort") == "date":
         data["articles"] = Article.objects.defer(
@@ -169,15 +182,28 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
 
 def closer_look(request):
     """ Returns a listing of all Closer Look articles """
-    data = {}
+    data = {"title": "Closer Looks"}
     data["articles"] = Article.objects.filter(
         category="Closer Look", published=1, page=1
     )
-    sort = request.GET.get("sort", "title")
+    print(data["articles"])
+    sort = request.GET.get("sort", "date")
     if sort == "title":
         data["articles"] = data["articles"].order_by("title")
     elif sort == "date":
         data["articles"] = data["articles"].order_by("-date")
+
+    data["sort"] = sort
+    data["page"] = int(request.GET.get("page", 1))
+    data["articles"] = data["articles"][
+        (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
+    ]
+    data["count"] = Article.objects.filter(category="Closer Look", published=1,
+                                           page=1).count()
+    data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
+    data["page_range"] = range(1, data["pages"] + 1)
+    data["prev"] = max(1, data["page"] - 1)
+    data["next"] = min(data["pages"], data["page"] + 1)
 
     return render(request, "z2_site/closer_look.html", data)
 
@@ -192,6 +218,7 @@ def directory(request, category):
     """
     data_list = []
     if category == "company":
+        data["title"] = "Companies"
         companies = File.objects.values(
             "company"
         ).exclude(
@@ -205,6 +232,7 @@ def directory(request, category):
                 if credited not in data_list:
                     data_list.append(credited)
     elif category == "author":
+        data["title"] = "Authors"
         authors = File.objects.values("author").distinct().order_by("author")
         for a in authors:
             split = a["author"].split("/")
@@ -212,6 +240,7 @@ def directory(request, category):
                 if credited not in data_list:
                     data_list.append(credited)
     elif category == "genre":
+        data["title"] = "Genres"
         genres = File.objects.values("genre").distinct().order_by("genre")
         for g in genres:
             split = g["genre"].split("/")
@@ -229,7 +258,7 @@ def directory(request, category):
 
 def featured_games(request, page=1):
     """ Returns a page listing all games marked as Featured """
-    data = {}
+    data = {"title": "Featured Games"}
     data["no_list"] = True
     data["page"] = int(request.GET.get("page", page))
     featured = Detail.objects.get(pk=DETAIL_FEATURED)
@@ -261,11 +290,12 @@ def file(request, letter, filename):
         alt_count = alternative.count()
         if alt_count:
             if alt_count == 1:
-                response = redirect("file", letter=alternative[0].letter, filename=filename)
+                response = redirect("file", letter=alternative[0].letter,
+                                    filename=filename)
                 return response
             else:
                 response = redirect("search")
-                response['Location'] += "?filename="+filename
+                response['Location'] += "?filename=" + filename
                 return response
         raise Http404()
     elif len(data["file"]) > 1:
@@ -276,6 +306,7 @@ def file(request, letter, filename):
     else:
         data["file"] = data["file"][0]
 
+    data["title"] = data["file"].title
     data["letter"] = letter
     data["charsets"] = CHARSET_LIST
     data["custom_charsets"] = CUSTOM_CHARSET_LIST
@@ -317,7 +348,17 @@ def mass_downloads(request):
 def play(request, letter, filename):
     """ Returns page to play file on archive.org """
     data = {}
-    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["file"] = File.objects.filter(letter=letter, filename=filename)
+    if len(data["file"]) == 0:
+        raise Http404()
+    elif len(data["file"]) > 1:
+        for file in data["file"]:
+            if file.filename == filename:
+                data["file"] = file
+                break
+    else:
+        data["file"] = data["file"][0]
+    data["title"] = data["file"].title + " - Play Online"
     data["letter"] = letter
 
     return render(request, "z2_site/play.html", data)
@@ -351,13 +392,15 @@ def review(request, letter, filename):
     else:
         data["file"] = data["file"][0]
     data["letter"] = letter
+    data["title"] = data["file"].title + " - Reviews"
 
     # POST review
     if request.POST.get("action") == "post-review":
         review = Review()
         created = review.from_request(request)
-        review.full_clean()
-        review.save()
+        if created:
+            review.full_clean()
+            review.save()
 
         # Update file's review count/scores
         data["file"].recalculate_reviews()
@@ -371,7 +414,7 @@ def search(request):
     """ Searches database files. Returns the browse page filtered
         appropriately.
     """
-    data = {"mode": "search"}
+    data = {"mode": "search", "title": "Search"}
     data["page"] = int(request.GET.get("page", 1))
 
     # Query strings
@@ -504,7 +547,7 @@ def search(request):
 
 
 def upload(request):
-    data = {}
+    data = {"title": "Upload"}
     data["genres"] = GENRE_LIST
 
     if not UPLOADS_ENABLED:

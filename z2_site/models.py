@@ -192,6 +192,7 @@ class File(models.Model):
                 published=True
             ).count()
 
+        # Recalculate Review Scores
         self.recalculate_reviews()
 
         super(File, self).save(*args, **kwargs)  # Actual save call

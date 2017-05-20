@@ -27,12 +27,15 @@ def content_warning(*args, **kwargs):
             <div class="controls r">
                 <span class="jsLink" name="cw-hide-all">Hide all future content
                 warnings</span> |
-                <span class="jsLink" name="cw-hide-this">Hide this</span>
+                <span class="jsLink" name="cw-hide-this"
+                data-content-warning-key="{}">Hide this</span>
+
             </div>
         </div>
     </div>
     """
+    content_warning_key = kwargs.get("key", "")
 
-    output = output.format(", ".join(args).title())
+    output = output.format(", ".join(args).title(), content_warning_key)
 
     return mark_safe(output + "\n")

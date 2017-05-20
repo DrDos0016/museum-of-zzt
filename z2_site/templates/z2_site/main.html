@@ -101,8 +101,23 @@ $(document).ready(function (){
     });
 
     // Content warnings
+    if (document.cookie.replace(/(?:(?:^|.*;\s*)hide_content_warnings\s*\=\s*([^;]*).*$)|^.*$/, "$1") == 1)
+    {
+        alert("Hiding CWs");
+        $(".content-warning").hide();
+    }
+
     $("span[name=cw-hide-this]").click(function (){
         $(".content-warning").hide();
+    });
+
+    $("span[name=cw-hide-all]").click(function (){
+        $(".content-warning").hide();
+        var now = new Date();
+        var time = now.getTime();
+        var expireTime = time + (1000 * 31536000); // 1yr
+        now.setTime(expireTime);
+        document.cookie = "hide_content_warnings=1;expires=" + now.toGMTString() + ";path=/";
     });
 });
 </script>
@@ -118,17 +133,16 @@ $(document).ready(function (){
 {{ENV}}
 </div>
 
+<div class="flex-container">
 <header>
     <nav>
-        <a href="/">Main</a>
+        <a href="/" id="logo"></a>
         <a href="/article/1/about-zzt">About ZZT</a>
         <a href="/upload" class="broken">Upload</a>
         <a href="http://zzt.org/zu/wiki/Main_Page">Wiki</a>
         <a href="/fora" class="broken">Forums</a>
     </nav>
 </header>
-
-<div class="flex-container">
 <section id="sidebar-left" class="col sidebar">
     <div id="featured" class="block">
         <h1>Featured Game</h1>
@@ -178,7 +192,7 @@ $(document).ready(function (){
             <a href="/random">Random ZZT World</a><br>
             <a href="/mass-downloads">Mass Downloads</a><br>
             <a href="/uploaded">Upload Queue</a><br>
-            <a href="{% url 'local' %}">Local File Viewer</a><br>
+            {% comment %}<a href="{% url 'local' %}">Local File Viewer</a><br>{% endcomment %}
         </div>
 
         <div>
@@ -265,9 +279,13 @@ $(document).ready(function (){
 {% if drupe %}Happy Drupe Day! -{% endif %}
 <br>
 &copy; 2015-{{datetime.year}} <a href="mailto:doctordos@gmail.com">Dr. Dos</a><br>
-Additional content copyright their respective owners
-<br>{{request.build_absolute_uri}}
+Additional content copyright belongs to its respective owners
+{% if debug %}
+<div class="debug">
+{{request.build_absolute_uri}}<br>
 {{request.META.HTTP_HOST}}
+</div>
+{% endif %}
 </footer>
 
 </body>
