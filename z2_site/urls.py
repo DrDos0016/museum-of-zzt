@@ -29,6 +29,7 @@ from z2_site.models import (
 
 urlpatterns = [
     url(r"^$", z2_site.views.index, name="index"),
+    url(r"^credits$", z2_site.views.site_credits),
     url(r"^upload$", z2_site.views.upload),
 
     # Articles

@@ -1,0 +1,123 @@
+{% extends "z2_site/main.html" %}
+{% load staticfiles %}
+
+{% block style %}
+<style>
+#content
+{
+    text-align:center;
+}
+
+.listing
+{
+    display:flex;
+    width:100%;
+    flex-wrap:wrap;
+    justify-content:space-around;
+}
+
+.credit
+{
+    flex:1 1 25%;
+    padding:1em;
+    border:1px solid #000;
+    margin:0.5em;
+    font-family:monospace;
+    font-size:14px;
+}
+
+.credit.xl
+{
+    flex:0 0 35%;
+}
+
+.flex-break
+{
+    flex:0 0 100%;
+}
+
+.credit img.icon
+{
+    max-height:100px;
+}
+
+.smiley img
+{
+    position:relative;
+}
+
+.smiley
+{
+    display:inline-block;
+    width:8px;
+    height:14px;
+    overflow:hidden;
+    background:#CCC;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Credits</h1>
+
+
+<h2>Site Development</h2>
+<ul>
+    <li>Code: Dr. Dos</li>
+    <li>Logo: Lazymoth</li>
+</ul>
+
+
+<h2>Articles</h2>
+
+<h2>Patreon Supporters</h2>
+<!-- $10+ for large, $50+ for XL -->
+<div class="listing">
+    <div class="credit xl">
+        <div class="icon"><img src="/static/images/articles/credits/tim.jpg" class="icon"></div>
+        <div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Tim Sweeney
+    </div>
+    <div class="credit xl">
+        <div class="icon"><img src="" class="icon"></div>
+        <div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Chris A.
+    </div>
+
+    <div class="flex-break"></div>
+
+    <div class="credit large">
+        <div class="icon"><img src="/static/images/articles/credits/geight.png" class="icon"></div>
+        <div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-336px;left:-544px"></div> Geight
+    </div>
+
+    <div class="credit large">
+        <div class="icon"><img src="/static/images/articles/credits/celine_kalante.png" class="icon"></div>
+        <div class="smiley" style="background:#A0A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-760px"></div> Kjorteo Kalante
+    </div>
+
+    <div class="flex-break"></div>
+
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Adrian S.</div>
+    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-736px"></div> Anna Anthropy</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Ashley</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Beau G.</div>
+    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-238px;left:-792px"></div> DavidN</div>
+    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> #endgame CHECK EMAIL</div>
+    <div class="credit"><div class="smiley" style="background:#0AA"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-400px;"></div> Jeanne T.</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Kevin C.</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Kevin G.</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Lana Coyote</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Leonard R.</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:0px;left:-912px"></div> Mike W.</div>
+    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-792px"></div> Ravenworks</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Rob C.</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Sarkath</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Saxxon Fox</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> That Deer</div>
+
+    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-266px;left:-1016px"></div> Anonymous Patrons!</div>
+</div>
+
+
+</section>
+{% endblock %}

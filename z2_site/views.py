@@ -546,6 +546,13 @@ def search(request):
     return response
 
 
+def site_credits(request):
+    """ Returns page for site credits """
+    data = {"title": "Credits"}
+
+    return render(request, "z2_site/credits.html", data)
+
+
 def upload(request):
     data = {"title": "Upload"}
     data["genres"] = GENRE_LIST
