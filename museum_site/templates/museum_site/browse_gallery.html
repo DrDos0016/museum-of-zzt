@@ -1,4 +1,4 @@
-{% extends "z2_site/main.html" %}
+{% extends "museum_site/main.html" %}
 {% load staticfiles %}
 
 {% block content %}
@@ -9,7 +9,7 @@
 {% else %}
 <h1>{{category}}</h1>
 {% endif %}
-{% include "z2_site/blocks/file_page_block.html" %}
+{% include "museum_site/blocks/file_page_block.html" %}
 
 <div class="gallery">
 {% for file in files %}
@@ -24,6 +24,6 @@
 {% endfor %}
 </div>
 
-{% include "z2_site/blocks/file_page_block.html" %}
+{% include "museum_site/blocks/file_page_block.html" %}
 </section>
 {% endblock %}

@@ -12,7 +12,7 @@ def advanced_search(request):
     }
 
     data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
-    return render(request, "z2_site/advanced_search.html", data)
+    return render(request, "museum_site/advanced_search.html", data)
 
 
 def article(request, letter, filename):
@@ -37,7 +37,7 @@ def article(request, letter, filename):
     if len(data["articles"]) == 1:
         return article_view(request, data["articles"][0].id)
     else:
-        return render(request, "z2_site/article.html", data)
+        return render(request, "museum_site/article.html", data)
 
 
 def article_directory(request, category="all"):
@@ -57,7 +57,7 @@ def article_directory(request, category="all"):
         data["articles"] = data["articles"].filter(
             category=category.replace("-", " ").title()
         )
-    return render(request, "z2_site/article_directory.html", data)
+    return render(request, "museum_site/article_directory.html", data)
 
 
 def article_view(request, id, page=0):
@@ -97,7 +97,7 @@ def article_view(request, id, page=0):
     if file:
         # TODO: Handle an article w/ multiple files (ex Zem + Zem 2)
         data["file"] = file[0]
-    return render(request, "z2_site/article_view.html", data)
+    return render(request, "museum_site/article_view.html", data)
 
 
 def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
@@ -166,11 +166,11 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
 
     # Determine destination template
     if data["view"] == "list":
-        destination = "z2_site/browse_list.html"
+        destination = "museum_site/browse_list.html"
     elif data["view"] == "gallery":
-        destination = "z2_site/browse_gallery.html"
+        destination = "museum_site/browse_gallery.html"
     else:  # Detailed
-        destination = "z2_site/browse.html"
+        destination = "museum_site/browse.html"
 
     response = render(request, destination, data)
 
@@ -205,7 +205,7 @@ def closer_look(request):
     data["prev"] = max(1, data["page"] - 1)
     data["next"] = min(data["pages"], data["page"] + 1)
 
-    return render(request, "z2_site/closer_look.html", data)
+    return render(request, "museum_site/closer_look.html", data)
 
 
 def directory(request, category):
@@ -253,7 +253,7 @@ def directory(request, category):
     # Break the list of results into 4 columns
     data["list"] = data_list
     data["split"] = math.ceil(len(data["list"]) / 4.0)
-    return render(request, "z2_site/directory.html", data)
+    return render(request, "museum_site/directory.html", data)
 
 
 def featured_games(request, page=1):
@@ -262,8 +262,14 @@ def featured_games(request, page=1):
     data["no_list"] = True
     data["page"] = int(request.GET.get("page", page))
     featured = Detail.objects.get(pk=DETAIL_FEATURED)
+
+    sort = SORT_CODES[request.GET.get("sort", "title").strip()]
+    # Query strings
+    data["qs_sans_page"] = qs_sans(request.GET, "page")
+    data["qs_sans_view"] = qs_sans(request.GET, "view")
+
     data["featured"] = featured.file_set.all().order_by(
-        "title"
+        *sort
     ).prefetch_related("articles").defer(
         "articles__content"
     )[(data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE]
@@ -275,7 +281,7 @@ def featured_games(request, page=1):
     data["show_description"] = True
     data["show_featured"] = True
 
-    return render(request, "z2_site/featured_games.html", data)
+    return render(request, "museum_site/featured_games.html", data)
 
 
 def file(request, letter, filename):
@@ -321,13 +327,18 @@ def file(request, letter, filename):
     data["load_file"] = request.GET.get("file", "")
     data["load_board"] = request.GET.get("board", "")
 
-    return render(request, "z2_site/file.html", data)
+    return render(request, "museum_site/file.html", data)
+
+
+def generic(request, title="", template=""):
+    data = {"title": title}
+    return render(request, "museum_site/"+ template + ".html")
 
 
 def index(request):
     """ Returns front page """
     data = {}
-    return render(request, "z2_site/index.html", data)
+    return render(request, "museum_site/index.html", data)
 
 
 def local(request):
@@ -335,14 +346,14 @@ def local(request):
     data = {}
     data["charsets"] = CHARSET_LIST
     data["custom_charsets"] = CUSTOM_CHARSET_LIST
-    return render(request, "z2_site/local_file.html", data)
+    return render(request, "museum_site/local_file.html", data)
 
 
 def mass_downloads(request):
     """ Returns a page for downloading files by release year """
     data = {"title": "Mass Downloads"}
     # Read the json
-    return render(request, "z2_site/mass_downloads.html", data)
+    return render(request, "museum_site/mass_downloads.html", data)
 
 
 def play(request, letter, filename):
@@ -361,7 +372,7 @@ def play(request, letter, filename):
     data["title"] = data["file"].title + " - Play Online"
     data["letter"] = letter
 
-    return render(request, "z2_site/play.html", data)
+    return render(request, "museum_site/play.html", data)
 
 
 def random(request):
@@ -407,7 +418,7 @@ def review(request, letter, filename):
         data["file"].save()
 
     data["reviews"] = Review.objects.filter(file_id=data["file"].id)
-    return render(request, "z2_site/review.html", data)
+    return render(request, "museum_site/review.html", data)
 
 
 def search(request):
@@ -460,11 +471,11 @@ def search(request):
         data["next"] = min(data["pages"], data["page"] + 1)
 
         if data["view"] == "gallery":
-            destination = "z2_site/browse_gallery.html"
+            destination = "museum_site/browse_gallery.html"
         elif data["view"] == "list":
-            destination = "z2_site/browse_list.html"
+            destination = "museum_site/browse_list.html"
         else:
-            destination = "z2_site/browse.html"
+            destination = "museum_site/browse.html"
     else:  # Advanced Search
         # TODO: Handle <exact> in situations with multiple authors/companies
         data["advanced_search"] = True
@@ -524,7 +535,7 @@ def search(request):
         if data["view"] == "list":
             data["files"] = qs.order_by(*sort)
 
-            destination = "z2_site/browse_list.html"
+            destination = "museum_site/browse_list.html"
         else:
             data["files"] = qs.order_by(*sort)[
                 (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
@@ -536,9 +547,9 @@ def search(request):
             data["next"] = min(data["pages"], data["page"] + 1)
 
             if data["view"] == "gallery":
-                destination = "z2_site/browse_gallery.html"
+                destination = "museum_site/browse_gallery.html"
             else:
-                destination = "z2_site/browse.html"
+                destination = "museum_site/browse.html"
 
     # Set page view cookie
     response = render(request, destination, data)
@@ -550,7 +561,9 @@ def site_credits(request):
     """ Returns page for site credits """
     data = {"title": "Credits"}
 
-    return render(request, "z2_site/credits.html", data)
+    # Get all article authors
+    data["authors"] = Article.objects.order_by("author").distinct().values_list("author", flat=True)
+    return render(request, "museum_site/credits.html", data)
 
 
 def upload(request):
@@ -561,7 +574,6 @@ def upload(request):
         return redirect("/")
 
     if request.POST.get("action") == "upload" and request.FILES.get("file"):
-
         # Form stuff
         title = request.POST.get("title", "").strip()
 
@@ -684,12 +696,12 @@ def upload(request):
         print(release_date)
         print(description)
 
-    return render(request, "z2_site/upload.html", data)
+    return render(request, "museum_site/upload.html", data)
 
 
 def debug(request):
     data = {"title": "DEBUG PAGE"}
-    return render(request, "z2_site/debug.html", data)
+    return render(request, "museum_site/debug.html", data)
 
 
 def debug_article(request):
@@ -701,7 +713,7 @@ def debug_article(request):
         article.content = fh.read()
         article.type = "html"
     data["article"] = article
-    return render(request, "z2_site/article_view.html", data)
+    return render(request, "museum_site/article_view.html", data)
 
 
 def debug_save(request):

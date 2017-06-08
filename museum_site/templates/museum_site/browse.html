@@ -1,4 +1,4 @@
-{% extends "z2_site/main.html" %}
+{% extends "museum_site/main.html" %}
 {% load staticfiles %}
 
 {% block content %}
@@ -10,13 +10,13 @@
 <h1>{{category}}</h1>
 {% endif %}
 {% if files %}
-{% include "z2_site/blocks/file_page_block.html" %}
+{% include "museum_site/blocks/file_page_block.html" %}
 
 {% for file in files %}
-    {% include "z2_site/blocks/file_block.html" %}
+    {% include "museum_site/blocks/file_block.html" %}
 {% endfor %}
 
-{% include "z2_site/blocks/file_page_block.html" %}
+{% include "museum_site/blocks/file_page_block.html" %}
 {% else %}
     <p>No files found!</p>
     {% if advanced_search %}

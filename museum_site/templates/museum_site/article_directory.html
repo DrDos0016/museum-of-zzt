@@ -1,4 +1,4 @@
-{% extends "z2_site/main.html" %}
+{% extends "museum_site/main.html" %}
 
 {% block content %}
 <section id="content" class="col block">
@@ -9,7 +9,7 @@
         {%ifchanged %}
             </ul><h2>{{article.category}}</h2><ul>
         {% endifchanged %}
-        
+
         <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} ({{article.date}})</li>
     {% endfor %}
 {% else %}

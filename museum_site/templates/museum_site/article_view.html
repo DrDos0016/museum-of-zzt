@@ -1,4 +1,4 @@
-{% extends "z2_site/world.html" %}
+{% extends "museum_site/world.html" %}
 {% load staticfiles %}
 {% load site_tags %}
 
@@ -15,7 +15,7 @@
 <div>Date: {{article.date}}</div>
 
 {% if page_range %}
-{% include "z2_site/blocks/article_page_block.html" %}
+{% include "museum_site/blocks/article_page_block.html" %}
 {% endif %}
 
 <article class="{{article.category|slugify}}" data-article_id="{{article.id}}">
@@ -29,10 +29,10 @@
 </article>
 
 {% if page_range %}
-{% include "z2_site/blocks/article_page_block.html" %}
+{% include "museum_site/blocks/article_page_block.html" %}
 {% endif %}
 
 <a href="{% url 'article_directory' %}">Return to article directory</a><br>
 <a href="{% url 'index' %}">Return to the main page</a>
-{% if debug %}<div class="debug"><a href="/admin/z2_site/article/{{article.id}}/change/">Edit Article {{article.id}}</a></div>{% endif %}
+{% if debug %}<div class="debug"><a href="/admin/museum_site/article/{{article.id}}/change/">Edit Article {{article.id}}</a></div>{% endif %}
 {% endblock %}

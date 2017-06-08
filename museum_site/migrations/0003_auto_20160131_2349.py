@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('z2_site', '0002_auto_20160131_2345'),
+        ('museum_site', '0002_auto_20160131_2345'),
     ]
 
     operations = [
@@ -26,6 +26,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='file',
             name='genres',
-            field=models.ManyToManyField(to='z2_site.Genre'),
+            field=models.ManyToManyField(to='museum_site.Genre'),
         ),
     ]

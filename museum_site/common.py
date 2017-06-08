@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 # from django.utils.timezone import utc
 # from django.contrib.auth import logout, authenticate, login as auth_login
 
-from z2_site.models import *
+from museum_site.models import *
 from datetime import datetime
 from random import randint
 import math
@@ -24,11 +24,13 @@ TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25
 LIST_PAGE_SIZE = 300
-UPLOADS_ENABLED = False
+UPLOADS_ENABLED = True
 UPLOAD_CAP = 1048576  # 1 Megabyte
 YEAR = datetime.now().year
 PYTHON_VERSION = sys.version
 DJANGO_VERSION = VERSION
+
+EMAIL_ADDRESS = "doctordos@gmail.com"
 
 print("MUSEUM OF ZZT STARTUP")
 print(str(datetime.utcnow()))
@@ -177,14 +179,17 @@ DETAIL_LIST = (
 )
 
 GENRE_LIST = (
-    "Action", "Adventure", "Alternative", "Arcade", "Art", "Cameo",
-    "Catalog", "Cinema", "Comedy", "Compilation", "Demo",
+    "24HoZZT"
+    "Action", "Adventure", "Alternative", "Arcade", "Art", "Beta", "BKZZT", "Cameo",
+    "Catalog", "Cinema", "Comedy", "Compilation", "Contest", "Demo",
     "Dungeon", "Edutainment", "Engine", "Erotic", "Fantasy",
-    "Help", "Horror", "Incomplete", "Magazine", "Maze",
-    "Minigame", "Multiplayer", "Music", "Mystery", "Other",
-    "Parody", "Philosophy", "Platformer", "Puzzle", "Racing",
-    "Random", "Remake", "RPG", "Sci-Fi", "Shooter", "Simulation",
-    "Sports", "Strategy", "Toolkit", "Trippy", "Trivia", "Tutorial"
+    "Help", "Horror", "Incomplete", "Ludum Dare", "Magazine", "Maze",
+    "Minigame", "Multiplayer", "Music", "Mystery", "Official", "Other",
+    "Parody", "Platformer", "Political", "Puzzle", "Racing",
+    "Random", "Remake", "RPG", "Sci-Fi", "Shooter", "Simulation", "Space",
+    "Sports", "Strategy", "Story", "Toolkit", "Traditional",
+    "Trippy", "Trivia", "Tutorial",
+    "Update", "Utility", "Vintage", "WoZZT"
 )
 
 SORT_CODES = {

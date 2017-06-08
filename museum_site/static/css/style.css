@@ -208,6 +208,12 @@ nav a
     text-align:center;
 }
 
+.sidebar h2
+{
+    margin-top:0.5em;
+    margin-bottom:0;
+}
+
 #sidebar-right
 {
     order:3;
@@ -457,6 +463,7 @@ div.file-details ul
 .featured-description
 {
     padding:0;
+    flex:0 1 100%;
 }
 
 .featured-description > div
@@ -711,6 +718,11 @@ div.file-details ul
 /* End file viewing */
 
 /* Reviews */
+div.file-meta + .review
+{
+    border-top:0;
+}
+
 .review, .review-post
 {
     margin:auto auto 1em;

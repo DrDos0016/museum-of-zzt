@@ -1,11 +1,11 @@
-{% extends "z2_site/main.html" %}
+{% extends "museum_site/main.html" %}
 {% load staticfiles %}
 
 {% block style %}
 <style>
-#content
+#content ul
 {
-    text-align:center;
+    list-style:none;
 }
 
 .listing
@@ -14,6 +14,11 @@
     width:100%;
     flex-wrap:wrap;
     justify-content:space-around;
+}
+
+.listing
+{
+    text-align:center;
 }
 
 .credit
@@ -70,6 +75,11 @@
 
 
 <h2>Articles</h2>
+<ul>
+    {% for a in authors %}
+    <li>{{a}}</li>
+    {% endfor %}
+</ul>
 
 <h2>Patreon Supporters</h2>
 <!-- $10+ for large, $50+ for XL -->
@@ -79,8 +89,8 @@
         <div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Tim Sweeney
     </div>
     <div class="credit xl">
-        <div class="icon"><img src="" class="icon"></div>
-        <div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Chris A.
+        <div class="icon"><img class="icon" style="height:100px;width:100px;display:block;"></div>
+        <div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Chris A.
     </div>
 
     <div class="flex-break"></div>
@@ -102,7 +112,7 @@
     <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Ashley</div>
     <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Beau G.</div>
     <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-238px;left:-792px"></div> DavidN</div>
-    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> #endgame CHECK EMAIL</div>
+    <div class="credit"><div class="smiley"><img src="/static/images/articles/credits/pirate.png"></div> #endgame</div>
     <div class="credit"><div class="smiley" style="background:#0AA"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-400px;"></div> Jeanne T.</div>
     <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Kevin C.</div>
     <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Kevin G.</div>
@@ -112,7 +122,7 @@
     <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-792px"></div> Ravenworks</div>
     <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Rob C.</div>
     <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Sarkath</div>
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Saxxon Fox</div>
+    <div class="credit"><div class="smiley" style="background:#A0A"><img src="/static/images/cp437-transparent.png" style="top:-126px;left:-1016px"></div> Saxxon</div>
     <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> That Deer</div>
 
     <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-266px;left:-1016px"></div> Anonymous Patrons!</div>

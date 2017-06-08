@@ -1,0 +1,47 @@
+{% extends "museum_site/main.html" %}
+{% load staticfiles %}
+
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Correction Policy</h1>
+
+<p>The Museum of ZZT strives to mark its content accurately. Much of the data about files uploaded to the Museum has been originally taken from z2's own database. If any information is inaccurate or outdated it will gladly be fixed.</p>
+
+<h2>File Data</h2>
+
+<p>The title of a file is generally taken from the file's title screen or text file. Some files may be inconsistent with this. If you are the creator of a file with an inaccurately displayed name, it can be changed at your request.</p>
+
+<p>Release dates for files default to the modification date of the most recently modified ZZT file in the ZIP archive. These are generally the most accurate dates available though they aren't perfect due to the delays from completing a world, upload it, having it added to an archive, and having a news post announcement about its release.
+These dates will likely not be adjusted unless there is a glaring disparity (such as some ZZT files which claim to have been modifed years before ZZT's own 1991 release year).</p>
+
+<p>Genres are left to the author's discretion for more subjective defintions such as the difference between "Action", "Adventure", and "Action/Adventure". Prior
+archives had free reign of genres, many of which would only be used on one or two releases. To try and keep genre browsing useful, a list of genres is offered
+when uploading a title and the not particularly helpful genres of older titles is slowly being phased out. If you feel an important genre is missing (and possibly should be used on one of your own worlds)
+then let's discuss it!</p>
+
+<p>Companies are taken from title screens, in game credits screens, or text files as needed. If a company is missing from a world's data or is incorrect, it will gladly be fixed.</p>
+
+<p>Screenshots used when browsing the Museum's collection are automatically generated via a Python script using a ZZT world parser called Zookeeper. This Zookeeper script selects the oldest ZZT file in the archive, renders its
+title screen, and saves that image as the screenshot. It is strongly preferred that the title screen is used for these previews, but they may be changed at the author's request.</p>
+
+<h2>Author Data</h2>
+
+<p>Author data is taken from title screens, in game credits screens, or text files as needed. Many ZZTers used multiple aliases over the years and the Museum intends to link these aliases together to make it easier to
+browse an individual's complete works. If you would prefer all your releases to be under a specific name that change can be made at your request. In the event that a ZZT world uses a person's given name and that name is no
+longer one that they use or would like others to use it will gladly be changed as well. (These unwanted names that may appear on title screens are welcome to have those screenshot previews changed to a different board.)</p>
+
+<h2>Other Corrections</h2>
+
+<p>Inaccurate data in articles or other site pages is also welcome to be reported so it may be fixed. Typos, factual and grammatical errors, broken links, missing content warnings, or any other issues with site content should
+absolutely be reported.</p>
+
+<h2>Reporting Corrections</h2>
+
+<p>Regardless of what sort of correction needs to be made, reports of misinformation and requests to fix it should be directed to <a href="mailto:{{EMAIL_ADDRESS}}?subj=Museum of ZZT Correction">Dr. Dos</a></p>
+</section>
+{% endblock %}

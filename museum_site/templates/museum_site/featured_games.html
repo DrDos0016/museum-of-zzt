@@ -1,7 +1,9 @@
-{% extends "z2_site/main.html" %}
+{% extends "museum_site/main.html" %}
 
 {% block content %}
 <section id="content" class="block">
+<h1>Featured Games</h1>
+{% if page == 1 %}
 <p>Featured games, are games which have been deemed unique in some way as an example of what ZZT has to offer. These game worlds generally show a higher quality than most, and have been given their place in the spotlight.</p>
 
 <p>In the past, a Game of the Month award was given to worlds which were deemed the best released that month. A Classic Game of the Month award was given to a game released at any time. Eventually these awards ceased, until years later when Featured Games brought the idea of the Classic Game of the Month back.</p>
@@ -11,13 +13,14 @@
 <p>All of these worlds that received these awards along with their reviews have been merged into the Featured Games list. If you would like to write about a game which showcases excellence in ZZT in some way, please do! This list is far from complete and could certainly use new additions.</p>
 
 <p>With that said, here are the current Featured Games:</p>
+{% endif %}
 
-{% include "z2_site/blocks/file_page_block.html" %}
+{% include "museum_site/blocks/file_page_block.html" %}
 
 {% for file in featured %}
-    {% include "z2_site/blocks/file_block.html" %}
+    {% include "museum_site/blocks/file_block.html" %}
 {% endfor %}
 
-{% include "z2_site/blocks/file_page_block.html" %}
+{% include "museum_site/blocks/file_page_block.html" %}
 </section>
 {% endblock %}

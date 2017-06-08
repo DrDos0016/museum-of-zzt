@@ -55,12 +55,12 @@ class Migration(migrations.Migration):
                 ('rating', models.FloatField(default=5.0)),
                 ('date', models.DateField()),
                 ('ip', models.GenericIPAddressField()),
-                ('file', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='z2_site.File')),
+                ('file', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='museum_site.File')),
             ],
         ),
         migrations.AddField(
             model_name='article',
             name='file',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, to='z2_site.File'),
+            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, to='museum_site.File'),
         ),
     ]

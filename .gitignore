@@ -17,8 +17,8 @@ tools/comic/necocone.co/*
 tools/extract
 tools/zookeeper
 tools/db_dump.py
-z2/private_settings.py
-z2_site/static/images/articles/cl/*
+museum/*
+museum_site/static/images/articles/cl/*
 .htpasswd
 manage.py
 

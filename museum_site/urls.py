@@ -1,12 +1,12 @@
 from django.conf.urls import url
 
-import z2_site.admin
-import z2_site.ajax
-import z2_site.errors
-import z2_site.views
+import museum_site.admin
+import museum_site.ajax
+import museum_site.errors
+import museum_site.views
 
 
-from z2_site.models import (
+from museum_site.models import (
     DETAIL_DOS,
     DETAIL_WIN16,
     DETAIL_WIN32,
@@ -28,136 +28,136 @@ from z2_site.models import (
 )
 
 urlpatterns = [
-    url(r"^$", z2_site.views.index, name="index"),
-    url(r"^credits$", z2_site.views.site_credits),
-    url(r"^upload$", z2_site.views.upload),
+    url(r"^$", museum_site.views.index, name="index"),
+    url(r"^credits$", museum_site.views.site_credits),
+    url(r"^upload$", museum_site.views.upload),
 
     # Articles
-    url(r"^article$", z2_site.views.article_directory,
+    url(r"^article$", museum_site.views.article_directory,
         name="article_directory"
         ),
-    url(r"^article/(?P<category>[a-z-]+)$", z2_site.views.article_directory,
+    url(r"^article/(?P<category>[a-z-]+)$", museum_site.views.article_directory,
         name="article_directory"
         ),
 
     url(r"^article/(?P<id>[0-9]+)/page/(?P<page>[0-9]+)/(.*)$",
-        z2_site.views.article_view,
+        museum_site.views.article_view,
         name="article_view_page"),
     url(r"^article/(?P<id>[0-9]+)/(.*)$",
-        z2_site.views.article_view,
+        museum_site.views.article_view,
         {"page": 1},
         name="article_view",),
 
     # Special Article Pages (those with urls besides /article/#/title)
-    url(r"^about-zzt$", z2_site.views.article_view, {"id": 1}),
-    url(r"^ascii$", z2_site.views.article_view, {"id": 3}),
-    url(r"^clones$", z2_site.views.article_view, {"id": 6}),
-    url(r"^credits$", z2_site.views.article_view, {"id": 164}, name="credits"),
-    url(r"^getting-started$", z2_site.views.article_view, {"id": 5}),
-    url(r"^zzt$", z2_site.views.article_view, {"id": 2}, name="zzt_dl"),
+    url(r"^about-zzt$", museum_site.views.article_view, {"id": 1}),
+    url(r"^ascii$", museum_site.views.article_view, {"id": 3}),
+    url(r"^clones$", museum_site.views.article_view, {"id": 6}),
+    url(r"^credits$", museum_site.views.article_view, {"id": 164}, name="credits"),
+    url(r"^getting-started$", museum_site.views.article_view, {"id": 5}),
+    url(r"^zzt$", museum_site.views.article_view, {"id": 2}, name="zzt_dl"),
 
     # Closer Looks
-    url(r"^closer-looks$", z2_site.views.closer_look, name="closer_looks"),
+    url(r"^closer-looks$", museum_site.views.closer_look, name="closer_looks"),
 
     # Directories
-    url(r"^directory/(?P<category>[a-z].*)$", z2_site.views.directory,
+    url(r"^directory/(?P<category>[a-z].*)$", museum_site.views.directory,
         name="directory"
         ),
 
     # Featured Games
-    url(r"^featured$", z2_site.views.featured_games, name="featured_games"),
+    url(r"^featured$", museum_site.views.featured_games, name="featured_games"),
 
     # Files
     url(r"^article/(?P<letter>[a-z1!])/(?P<filename>.*)$",
-        z2_site.views.article,
+        museum_site.views.article,
         name="article"
         ),
-    url(r"^browse/(?P<letter>[a-z1])$", z2_site.views.browse),
-    url(r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.file,
+    url(r"^browse/(?P<letter>[a-z1])$", museum_site.views.browse),
+    url(r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.file,
         name="file"
         ),
-    url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", z2_site.views.play,
+    url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.play,
         name="play"
         ),
-    url(r"^file/local$", z2_site.views.local,
+    url(r"^file/local$", museum_site.views.local,
         name="local"
         ),
 
     # Files (alternate categories)
-    url(r"^zzt-worlds$", z2_site.views.browse, {"details": [DETAIL_ZZT]},
+    url(r"^zzt-worlds$", museum_site.views.browse, {"details": [DETAIL_ZZT]},
         name="zzt_worlds"),
-    url(r"^super-zzt$", z2_site.views.browse, {"details": [DETAIL_SZZT]},
+    url(r"^super-zzt$", museum_site.views.browse, {"details": [DETAIL_SZZT]},
         name="szzt_worlds"),
-    url(r"^utilities$", z2_site.views.browse, {"details": [DETAIL_UTILITY]},
+    url(r"^utilities$", museum_site.views.browse, {"details": [DETAIL_UTILITY]},
         name="utilities"),
-    url(r"^zzm-audio$", z2_site.views.browse, {"details": [DETAIL_ZZM]},
+    url(r"^zzm-audio$", museum_site.views.browse, {"details": [DETAIL_ZZM]},
         name="zzm_audio"),
-    url(r"^zig-worlds$", z2_site.views.browse, {"details": [DETAIL_ZIG]},
+    url(r"^zig-worlds$", museum_site.views.browse, {"details": [DETAIL_ZIG]},
         name="zig_worlds"),
-    url(r"^contest-worlds$", z2_site.views.browse,
+    url(r"^contest-worlds$", museum_site.views.browse,
         {"details": [DETAIL_CONTEST]},
         name="contest_worlds"),
-    url(r"^etc$", z2_site.views.browse, {"details": [DETAIL_ETC]},
+    url(r"^etc$", museum_site.views.browse, {"details": [DETAIL_ETC]},
         name="etc"),
-    url(r"^modified-gfx$", z2_site.views.browse, {"details": [DETAIL_GFX]},
+    url(r"^modified-gfx$", museum_site.views.browse, {"details": [DETAIL_GFX]},
         name="modified_gfx"),
-    url(r"^modified-exe$", z2_site.views.browse, {"details": [DETAIL_MOD]},
+    url(r"^modified-exe$", museum_site.views.browse, {"details": [DETAIL_MOD]},
         name="modified_exe"),
-    url(r"^osx$", z2_site.views.browse, {"details": [DETAIL_OSX]},
+    url(r"^osx$", museum_site.views.browse, {"details": [DETAIL_OSX]},
         name="osx"),
-    url(r"^linux$", z2_site.views.browse, {"details": [DETAIL_LINUX]},
+    url(r"^linux$", museum_site.views.browse, {"details": [DETAIL_LINUX]},
         name="linux"),
-    url(r"^ms-dos$", z2_site.views.browse, {"details": [DETAIL_DOS]},
+    url(r"^ms-dos$", museum_site.views.browse, {"details": [DETAIL_DOS]},
         name="ms_dos"),
-    url(r"^win16$", z2_site.views.browse, {"details": [DETAIL_WIN16]},
+    url(r"^win16$", museum_site.views.browse, {"details": [DETAIL_WIN16]},
         name="win16"),
-    url(r"^win32$", z2_site.views.browse, {"details": [DETAIL_WIN32]},
+    url(r"^win32$", museum_site.views.browse, {"details": [DETAIL_WIN32]},
         name="win32"),
-    url(r"^win64$", z2_site.views.browse, {"details": [DETAIL_WIN64]},
+    url(r"^win64$", museum_site.views.browse, {"details": [DETAIL_WIN64]},
         name="win64"),
-    url(r"^lost-worlds$", z2_site.views.browse, {"details": [DETAIL_LOST]},
+    url(r"^lost-worlds$", museum_site.views.browse, {"details": [DETAIL_LOST]},
         name="lost_worlds"),
 
     # Mass Downloads
-    url(r"^mass-downloads$", z2_site.views.mass_downloads,
+    url(r"^mass-downloads$", museum_site.views.mass_downloads,
         name="mass_downloads"),
 
     # Policies
-    url(r"^policy/correction$", z2_site.views.article_view, {"id": 2}, name="correction_policy"),
-    url(r"^policy/removal$", z2_site.views.article_view, {"id": 165}, name="removal_policy"),
-    url(r"^policy/review$", z2_site.views.article_view, {"id": 165}, name="review_policy"),
-    url(r"^policy/submission$", z2_site.views.article_view, {"id": 2}, name="submission_policy"),
+    url(r"^policy/correction$", museum_site.views.generic, {"template": "correction_policy", "title":"Correction Policy"}, name="correction_policy"),
+    url(r"^policy/removal$", museum_site.views.generic, {"template": "removal_policy", "title":"Removal Policy"}, name="removal_policy"),
+    url(r"^policy/review$", museum_site.views.generic, {"template": "review_policy", "title":"Review Policy"}, name="review_policy"),
+    url(r"^policy/upload$", museum_site.views.generic, {"template": "upload_policy", "title":"Upload Policy"}, name="upload_policy"),
 
     # Random ZZT World
-    url(r"^random$", z2_site.views.random, name="random"),
+    url(r"^random$", museum_site.views.random, name="random"),
 
     # Reviews
-    url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", z2_site.views.review),
+    url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", museum_site.views.review),
 
     # Search
-    url(r"^advanced-search$", z2_site.views.advanced_search,
+    url(r"^advanced-search$", museum_site.views.advanced_search,
         name="advanced_search"
         ),
-    url(r"^search$", z2_site.views.search, name="search"),
+    url(r"^search$", museum_site.views.search, name="search"),
 
     # Uploads
-    url(r"^upload$", z2_site.views.upload),
+    url(r"^upload$", museum_site.views.upload),
 
     ###########################################################################
     ###########################################################################
 
     # AJAX
-    url(r"^ajax/get_zip_file$", z2_site.ajax.get_zip_file),
+    url(r"^ajax/get_zip_file$", museum_site.ajax.get_zip_file),
 
     # Staff
-    # url(r"^staff/file_management$", z2_site.staff.file_management),
-    # url(r"^staff/article_management$", z2_site.staff.article_management),
+    # url(r"^staff/file_management$", museum_site.staff.file_management),
+    # url(r"^staff/article_management$", museum_site.staff.article_management),
 
     # Debug
-    url(r"^debug$", z2_site.views.debug),
-    url(r"^debug/save$", z2_site.views.debug_save),
-    url(r"^debug/article$", z2_site.views.debug_article),
-    url(r"^ajax/debug_file$", z2_site.ajax.debug_file),
+    url(r"^debug$", museum_site.views.debug),
+    url(r"^debug/save$", museum_site.views.debug_save),
+    url(r"^debug/article$", museum_site.views.debug_article),
+    url(r"^ajax/debug_file$", museum_site.ajax.debug_file),
 
-    url(r"^error/(?P<status>[0-9]+)$", z2_site.errors.raise_error)
+    url(r"^error/(?P<status>[0-9]+)$", museum_site.errors.raise_error)
 ]

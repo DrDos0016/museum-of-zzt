@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('z2_site', '0013_auto_20170201_0052'),
+        ('museum_site', '0013_auto_20170201_0052'),
     ]
 
     operations = [
@@ -21,6 +21,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='file',
             name='superceded',
-            field=models.ForeignKey(blank=True, db_column='superceded_id', default=None, null=True, on_delete=django.db.models.deletion.CASCADE, to='z2_site.File'),
+            field=models.ForeignKey(blank=True, db_column='superceded_id', default=None, null=True, on_delete=django.db.models.deletion.CASCADE, to='museum_site.File'),
         ),
     ]

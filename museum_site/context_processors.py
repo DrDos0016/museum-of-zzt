@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from z2_site.models import Detail, DETAIL_FEATURED
-from z2_site.common import DEBUG
+from museum_site.models import Detail, DETAIL_FEATURED
+from museum_site.common import DEBUG, EMAIL_ADDRESS
 
 
 def museum_global(request):
@@ -23,6 +23,9 @@ def museum_global(request):
     data["datetime"] = datetime.utcnow()
     if data["datetime"].day == 27:  # This is very important
         data["drupe"] = True
+
+    # E-mail
+    data["EMAIL_ADDRESS"] = EMAIL_ADDRESS
 
     # Featured Games
     featured = Detail.objects.get(pk=DETAIL_FEATURED)

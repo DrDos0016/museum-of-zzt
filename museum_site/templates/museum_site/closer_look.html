@@ -1,4 +1,4 @@
-{% extends "z2_site/main.html" %}
+{% extends "museum_site/main.html" %}
 {% load staticfiles %}
 
 {% block content %}
@@ -14,7 +14,7 @@ decisions.</p>
 <p>Most Closer Looks are written articles, however there are also livestreams
 which can be watched on the <a href="https://www.youtube.com/channel/UCr0f-r1bRexAZK8sWyk4NJA" target="_blank">Worlds of ZZT YouTube channel.</a></p>
 
-{% include "z2_site/blocks/closer_look_page_block.html" %}
+{% include "museum_site/blocks/closer_look_page_block.html" %}
 
 {% for article in articles %}
 <div class="file-block" data-pk="{{article.id}}">
@@ -32,6 +32,6 @@ which can be watched on the <a href="https://www.youtube.com/channel/UCr0f-r1bRe
 </div>
 {% endfor %}
 
-{% include "z2_site/blocks/closer_look_page_block.html" %}
+{% include "museum_site/blocks/closer_look_page_block.html" %}
 </section>
 {% endblock %}

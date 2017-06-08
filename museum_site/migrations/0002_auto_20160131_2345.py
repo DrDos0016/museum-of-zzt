@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('z2_site', '0001_initial'),
+        ('museum_site', '0001_initial'),
     ]
 
     operations = [
@@ -32,6 +32,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='file',
             name='details',
-            field=models.ManyToManyField(to='z2_site.Detail'),
+            field=models.ManyToManyField(to='museum_site.Detail'),
         ),
     ]

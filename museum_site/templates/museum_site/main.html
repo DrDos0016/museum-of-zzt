@@ -191,7 +191,7 @@ $(document).ready(function (){
         <div>
             <a href="/random">Random ZZT World</a><br>
             <a href="/mass-downloads">Mass Downloads</a><br>
-            <a href="/uploaded">Upload Queue</a><br>
+            <a href="/uploaded" class="broken">Upload Queue</a><br>
             {% comment %}<a href="{% url 'local' %}">Local File Viewer</a><br>{% endcomment %}
         </div>
 
@@ -230,7 +230,7 @@ $(document).ready(function (){
 
         <h2>Directory</h2>
         <a href="/article?sort=date">Articles by date</a><br>
-        <a href="/article">Articles by name</a><br>
+        <a href="/article">Articles by category</a><br>
         <a href="{% url 'directory' 'author' %}">Authors</a><br>
         <a href="{% url 'directory' 'company' %}">Companies</a><br>
         <a href="{% url 'directory' 'genre' %}">Genres</a><br>
@@ -266,10 +266,10 @@ $(document).ready(function (){
             <a href="https://github.com/DrDos0016/z2" target="_blank"><img src="{% static 'images/social/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
         </div>
         <a href="{% url 'credits' %}">Site Credits</a><br>
-        <a href="{% url 'submission_policy' %}" class="broken">Submission Policy</a><br>
+        <a href="{% url 'upload_policy' %}">Upload Policy</a><br>
         <a href="{% url 'removal_policy' %}">Removal Policy</a><br>
-        <a href="{% url 'correction_policy' %}" class="broken">Correction Policy</a><br>
-        <a href="{% url 'review_policy' %}" class="broken">Review Policy</a><br>
+        <a href="{% url 'correction_policy' %}">Correction Policy</a><br>
+        <a href="{% url 'review_policy' %}">Review Policy</a><br>
     </div>
 </section>
 </div>
@@ -279,7 +279,7 @@ $(document).ready(function (){
 {% if drupe %}Happy Drupe Day! -{% endif %}
 <br>
 &copy; 2015-{{datetime.year}} <a href="mailto:doctordos@gmail.com">Dr. Dos</a><br>
-Additional content copyright belongs to its respective owners
+Additional content copyright its  <a href="{% url 'credits' %}">respective owners</a>
 {% if debug %}
 <div class="debug">
 {{request.build_absolute_uri}}<br>

@@ -1,11 +1,11 @@
-{% extends "z2_site/main.html" %}
+{% extends "museum_site/main.html" %}
 
 {% block content %}
 <section id="content" class="col block">
 {% if file %}
 <h1>[{{file.filename}}] - {{file.title}}</h1>
 <div class="file-links">
-    {% include "z2_site/blocks/file_links.html" %}
+    {% include "museum_site/blocks/file_links.html" %}
 </div>
 <div class="file-meta">
     <div>Author<br> {% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>

@@ -266,6 +266,21 @@ class File(models.Model):
             if ratings["rating__avg"] is not None:
                 self.rating = round(ratings["rating__avg"], 2)
 
+    def from_request(self, request):
+        if request.method != "POST":
+            return False
+
+        self.file_id = int(request.POST.get("file_id"))
+        self.title = request.POST.get("title")
+        self.author = request.POST.get("name")  # NAME not author
+        self.email = request.POST.get("email")
+        self.content = request.POST.get("content")
+        self.rating = round(float(request.POST.get("rating")), 2)
+        self.date = datetime.utcnow()
+        self.ip = request.META["REMOTE_ADDR"]
+
+        return True
+
 
 class Detail(models.Model):
     detail = models.CharField(max_length=20)
