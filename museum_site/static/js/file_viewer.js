@@ -418,7 +418,8 @@ function pull_file()
             "letter":letter,
             "zip":zip,
             "filename":filename,
-            "format":"auto"
+            "format":"auto",
+            "uploaded":uploaded,
         }
     }).done(function (data){
         var format = "txt";  // Default to text mode

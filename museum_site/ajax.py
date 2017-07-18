@@ -15,14 +15,19 @@ def get_zip_file(request):
     filename = request.GET.get("filename", "")
     format = request.GET.get("format", "auto")
     ext = os.path.splitext(filename.lower())[1]
+    uploaded = request.GET.get("uploaded", "false")
     if filename.find(".") == -1:
         ext = ".txt"
+
+    if uploaded != "false":
+        letter = "uploaded"
 
     try:
         zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, zip))
         file = zip.open(filename)
 
     except Exception as error:
+        print(filename)
         print(type(error))
         print(error)
         return HttpResponse(

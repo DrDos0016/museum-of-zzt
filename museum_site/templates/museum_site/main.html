@@ -103,7 +103,7 @@ $(document).ready(function (){
     // Content warnings
     if (document.cookie.replace(/(?:(?:^|.*;\s*)hide_content_warnings\s*\=\s*([^;]*).*$)|^.*$/, "$1") == 1)
     {
-        alert("Hiding CWs");
+        console.log("Hiding CWs");
         $(".content-warning").hide();
     }
 
@@ -138,9 +138,9 @@ $(document).ready(function (){
     <nav>
         <a href="/" id="logo"></a>
         <a href="/article/1/about-zzt">About ZZT</a>
-        <a href="/upload" class="broken">Upload</a>
+        <a href="/upload">Upload</a>
         <a href="http://zzt.org/zu/wiki/Main_Page">Wiki</a>
-        <a href="/fora" class="broken">Forums</a>
+        <a href="http://zzt.org/fora">z2 Forums</a>
     </nav>
 </header>
 <section id="sidebar-left" class="col sidebar">
@@ -191,7 +191,7 @@ $(document).ready(function (){
         <div>
             <a href="/random">Random ZZT World</a><br>
             <a href="/mass-downloads">Mass Downloads</a><br>
-            <a href="/uploaded" class="broken">Upload Queue</a><br>
+            <a href="/uploaded">Upload Queue</a><br>
             {% comment %}<a href="{% url 'local' %}">Local File Viewer</a><br>{% endcomment %}
         </div>
 
@@ -249,11 +249,13 @@ $(document).ready(function (){
         <a href="{% url 'comic_index' %}">ZZT Comics Archive</a><br>
     </div>
 
+    {% comment %}
     <div class="block">
         <h1>Contests</h1>
         <a href="" class="broken">24 Hours of ZZT</a><br>
         <a href="" class="broken">Weekend of ZZT</a>
     </div>
+    {% endcomment %}
 
     <div class="block">
         <h1>Worlds of ZZT</h1>

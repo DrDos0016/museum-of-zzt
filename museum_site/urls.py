@@ -13,7 +13,7 @@ from museum_site.models import (
     DETAIL_WIN64,
     DETAIL_LINUX,
     DETAIL_OSX,
-    # DETAIL_FEATURED,
+    DETAIL_FEATURED,
     DETAIL_CONTEST,
     DETAIL_ZZM,
     DETAIL_GFX,
@@ -24,13 +24,12 @@ from museum_site.models import (
     DETAIL_ZZT,
     DETAIL_ZIG,
     DETAIL_LOST,
-    # DETAIL_UPLOADED,
+    DETAIL_UPLOADED,
 )
 
 urlpatterns = [
     url(r"^$", museum_site.views.index, name="index"),
     url(r"^credits$", museum_site.views.site_credits),
-    url(r"^upload$", museum_site.views.upload),
 
     # Articles
     url(r"^article$", museum_site.views.article_directory,
@@ -76,6 +75,9 @@ urlpatterns = [
     url(r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.file,
         name="file"
         ),
+    url(r"^file/uploaded/(?P<filename>.*)$", museum_site.views.uploaded_redir,
+        name="redir_file"
+        ),
     url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.play,
         name="play"
         ),
@@ -117,6 +119,8 @@ urlpatterns = [
         name="win64"),
     url(r"^lost-worlds$", museum_site.views.browse, {"details": [DETAIL_LOST]},
         name="lost_worlds"),
+    url(r"^uploaded$", museum_site.views.browse, {"details": [DETAIL_UPLOADED]},
+        name="uploaded_worlds"),
 
     # Mass Downloads
     url(r"^mass-downloads$", museum_site.views.mass_downloads,
@@ -155,7 +159,6 @@ urlpatterns = [
 
     # Debug
     url(r"^debug$", museum_site.views.debug),
-    url(r"^debug/save$", museum_site.views.debug_save),
     url(r"^debug/article$", museum_site.views.debug_article),
     url(r"^ajax/debug_file$", museum_site.ajax.debug_file),
 

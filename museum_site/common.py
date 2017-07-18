@@ -17,6 +17,7 @@ import math
 import zipfile
 import glob
 import os
+import subprocess
 import sys
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -179,9 +180,9 @@ DETAIL_LIST = (
 )
 
 GENRE_LIST = (
-    "24HoZZT"
-    "Action", "Adventure", "Alternative", "Arcade", "Art", "Beta", "BKZZT", "Cameo",
-    "Catalog", "Cinema", "Comedy", "Compilation", "Contest", "Demo",
+    "24HoZZT",
+    "Action", "Adventure", "Alternative", "Arcade", "Art", "Beta", "BKZZT",
+    "Cameo", "Catalog", "Cinema", "Comedy", "Compilation", "Contest", "Demo",
     "Dungeon", "Edutainment", "Engine", "Erotic", "Fantasy",
     "Help", "Horror", "Incomplete", "Ludum Dare", "Magazine", "Maze",
     "Minigame", "Multiplayer", "Music", "Mystery", "Official", "Other",
@@ -205,6 +206,7 @@ ADV_SEARCH_DEFAULTS = [
     str(DETAIL_SZZT),
     str(DETAIL_UTILITY),
 ]
+
 
 def qs_sans(params, key):
     """ Returns a query string with a key removed """

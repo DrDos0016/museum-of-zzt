@@ -1,3 +1,6 @@
+import os
+import subprocess
+
 from datetime import datetime
 
 from django.db import models
@@ -218,7 +221,10 @@ class File(models.Model):
         return sort_title
 
     def download_url(self):
-        return "/zgames/" + self.letter + "/" + self.filename
+        if self.is_uploaded():
+            return "/zgames/uploaded/" + self.filename
+        else:
+            return "/zgames/" + self.letter + "/" + self.filename
 
     def play_url(self):
         return "/play/" + self.letter + "/" + self.filename
@@ -227,10 +233,7 @@ class File(models.Model):
         return "/review/" + self.letter + "/" + self.filename
 
     def file_url(self):
-        if self.category != "Uploaded":
-            return "/file/" + self.letter + "/" + self.filename
-        else:
-            return "/file/!/" + self.filename
+        return "/file/" + self.letter + "/" + self.filename
 
     def article_url(self):
         return "/article/" + self.letter + "/" + self.filename
@@ -255,6 +258,10 @@ class File(models.Model):
         lost = self.details.all().values_list("id", flat=True)
         return True if DETAIL_LOST in lost else False
 
+    def is_uploaded(self):
+        uploaded = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_UPLOADED in uploaded else False
+
     def recalculate_reviews(self):
         # Recalculate Review Count
         if self.id is not None:
@@ -262,24 +269,62 @@ class File(models.Model):
 
         # Recalculate Rating
         if self.id is not None:
-            ratings = Review.objects.filter(file_id=self.id, rating__gte=0).aggregate(Avg("rating"))
+            ratings = Review.objects.filter(
+                file_id=self.id, rating__gte=0
+            ).aggregate(Avg("rating"))
             if ratings["rating__avg"] is not None:
                 self.rating = round(ratings["rating__avg"], 2)
 
     def from_request(self, request):
+        # TODO: Unhardcode
+        upload_directory = "/var/projects/museum/zgames/uploaded"
+
         if request.method != "POST":
             return False
 
-        self.file_id = int(request.POST.get("file_id"))
+        print(request.FILES.get("file"))
+        # First handle the easy stuff
+        self.letter = request.POST.get("title", "1")[0].lower()
+        if self.letter not in "abcdefghijklmnopqrstuvwxyz":
+            self.letter = "1"
+        self.filename = str(request.FILES.get("file"))
         self.title = request.POST.get("title")
-        self.author = request.POST.get("name")  # NAME not author
-        self.email = request.POST.get("email")
-        self.content = request.POST.get("content")
-        self.rating = round(float(request.POST.get("rating")), 2)
-        self.date = datetime.utcnow()
-        self.ip = request.META["REMOTE_ADDR"]
+        # sort_title handled by saving
+        self.author = request.POST.get("author")
+        self.size = int(request.FILES.get("file").size / 1024)
+        self.release_date = request.POST.get("release_date")
+        self.release_source = "User upload"
+        self.company = request.POST.get("company", "")
+        self.description = request.POST.get("desc", "")
+        self.genre = "/".join(request.POST.getlist("genre"))
 
-        return True
+        # DEBUG -- REMOVE THIS FOR LAUNCH WHEN THIS FIELD IS REMOVED
+        self.category = "ZZT"
+
+        # SCREENSHOT -- Currently manual
+        # DETAILS -- Currently manual
+
+        # Check for a duplicate filename
+        exists = File.objects.filter(filename=self.filename).exists()
+        if exists:
+            return {"status": "error",
+                    "msg": "The chosen filename is already in use."}
+
+        # Save the file to the uploaded folder
+        file_path = os.path.join(upload_directory, self.filename)
+        with open(file_path, 'wb+') as fh:
+            for chunk in request.FILES["file"].chunks():
+                fh.write(chunk)
+
+        # md5 checksum
+        resp = subprocess.run(["md5sum", file_path], stdout=subprocess.PIPE)
+        md5 = resp.stdout[:32].decode("utf-8")
+        print("MD5 is", md5)
+        self.checksum = md5
+
+        # SITE META
+        print(str(request.POST.dict()))
+        return {"status": "success"}
 
 
 class Detail(models.Model):
@@ -337,4 +382,3 @@ class Review(models.Model):
         self.ip = request.META["REMOTE_ADDR"]
 
         return True
-

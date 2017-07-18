@@ -39,3 +39,28 @@ def content_warning(*args, **kwargs):
     output = output.format(", ".join(args).title(), content_warning_key)
 
     return mark_safe(output + "\n")
+
+@register.simple_tag()
+def patreon_plug(*args, **kwargs):
+    output = """
+        <div class="patreon-plug">
+        <div class="text">
+            <div class="heading"><span>======</span> A Worlds of ZZT Production <span>======</span></div>
+            <p>
+               The Worlds of ZZT project is
+               committed to the preservation
+               of ZZT and its history.</p>
+
+               <p> This article was produced
+               thanks to supporters on Patreon.</p>
+
+            <a href="https://patreon.com/worldsofzzt" target="_blank">Support Worlds of ZZT on
+            Patreon!</a>
+        </div>
+    </div>
+    """
+    content_warning_key = kwargs.get("key", "")
+
+    output = output.format(", ".join(args).title(), content_warning_key)
+
+    return mark_safe(output + "\n")

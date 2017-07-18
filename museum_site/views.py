@@ -67,29 +67,13 @@ def article_view(request, id, page=0):
     id = int(id)
     data = {"id": id}
 
-    if page == 0:  # Pageless articles/heads
-        data["article"] = get_object_or_404(Article, pk=id, published=True)
-    else:
-        if page != 1:
-            data["article"] = get_object_or_404(Article, parent_id=id,
-                                                page=page, published=True)
-        else:
-            data["article"] = get_object_or_404(Article, pk=id, page=page,
-                                                published=True)
-
-        # Calculate pages
-        page_count = Article.objects.filter(
-            parent_id=id, published=True
-        ).count() + 1  # Also count the original article
-
-        data["page_count"] = page_count
-        data["page_range"] = list(range(1, page_count + 1))
-        if page_count != page:
-            data["next"] = page + 1
-        else:
-            data["next"] = None
-        data["prev"] = page - 1
-        data["slug"] = str(slug)
+    data["article"] = get_object_or_404(Article, pk=id, published=True)
+    data["page"] = page
+    data["page_count"] = data["article"].content.count("<!--Page-->") + 1
+    data["page_range"] = list(range(1, data["page_count"] + 1))
+    data["next"] = None if page + 1 > data["page_count"] else page + 1
+    data["prev"] = page - 1
+    data["slug"] = str(slug)
 
     data["title"] = data["article"].title
 
@@ -97,6 +81,9 @@ def article_view(request, id, page=0):
     if file:
         # TODO: Handle an article w/ multiple files (ex Zem + Zem 2)
         data["file"] = file[0]
+
+    # Split article to current page
+    data["article"].content = data["article"].content.split("<!--Page-->")[data["page"]-1]
     return render(request, "museum_site/article_view.html", data)
 
 
@@ -163,6 +150,10 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
     # Show descriptions for lost worlds
     if DETAIL_LOST in details:
         data["show_description"] = True
+
+    if DETAIL_UPLOADED in details:
+        for file in data["files"]:
+            file.letter = "uploaded"
 
     # Determine destination template
     if data["view"] == "list":
@@ -316,6 +307,10 @@ def file(request, letter, filename):
     data["letter"] = letter
     data["charsets"] = CHARSET_LIST
     data["custom_charsets"] = CUSTOM_CHARSET_LIST
+
+    if data["file"].is_uploaded():
+        letter = "uploaded"
+        data["uploaded"] = True
     zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
     files = zip.namelist()
     files.sort(key=str.lower)
@@ -449,7 +444,7 @@ def search(request):
             Q(author__icontains=q) |
             Q(filename__icontains=q) |
             Q(company__icontains=q)
-        )
+        ).exclude(details__id__in=[18])  # TODO: Unhardcode
 
         # Debug override
         if DEBUG and request.GET.get("q")[:3] == "id=":
@@ -574,130 +569,40 @@ def upload(request):
         return redirect("/")
 
     if request.POST.get("action") == "upload" and request.FILES.get("file"):
-        # Form stuff
-        title = request.POST.get("title", "").strip()
+        upload = File()
+        upload_resp = upload.from_request(request)
 
-        # Get letter
-        l_title = title.lower()
-        if l_title[:4] == "the ":
-            l_title = l_title[4:]
-        elif l_title[:3] == " an":
-            l_title = l_title[3:]
-        elif l_title[:2] == "a ":
-            l_title = l_title[2:]
-
-        if l_title[0] in "abcdefghijklmnopqrstuvwxyz":
-            letter = l_title[0]
-        elif l_title[0] in "1234567890":
-            letter = "1"
-        else:
-            for char in l_title:
-                if char in "abcdefghijklmnopqrstuvwxyz":
-                    letter = char
-                    break
-
-        # Get authors
-        raw_authors = request.POST.get("author", "").strip().split("/")
-        authors = ""
-        for author in raw_authors:
-            authors += author.strip() + "/"
-        authors = authors[:-1]
-
-        company = request.POST.get("company", "")
-
-        # Get genres
-        raw_genres = request.POST.getlist("genre", [])
-        genres = ""
-        for genre in raw_genres:
-            if genre in GENRE_LIST:
-                genres += genre.strip() + "/"
-        genres = genres[:-1]
-
-        # Get release date
-        release_date = request.POST.get("release_date", "")
-        try:
-            datetime.strptime(release_date, "%Y-%m-%d")
-        except:
-            release_date = None
-
-        if request.POST.get("desc", ""):
-            description = "<p>" + request.POST.get("desc", "").replace(
-                "\n\n", "</p><p>"
-            ).replace("\n", "<br>") + "</p>"
-        else:
-            description = ""
-
-        file = File(title=title, letter=letter, author=author,
-                    company=company, genre=genres, release_date=release_date,
-                    release_source="Uploader", description=description,
-                    category="Uploaded"
-                    )
-
-        # File stuff
-        uploaded = request.FILES["file"]
-        filename = uploaded.name
-        size = int(uploaded.size / 1024)
-
-        print(request.FILES)
-        print(uploaded.name)
-        print(uploaded.content_type)
-        print(uploaded.size)
+        if upload_resp.get("status") != "success":
+            data["error"] = upload_resp["msg"]
+            return render(request, "museum_site/upload.html", data)
 
         # Upload limit
-        if uploaded.size > UPLOAD_CAP:
-            return HttpResponse("Uploaded file is too large!")
+        if request.FILES.get("file").size > UPLOAD_CAP:
+            data["error"] = "Uploaded file size is too large. Contact staff for a manual upload."
 
-        zip = zipfile.ZipFile(uploaded)  # TODO Proper path + os.path.join()
-
-        file_list = zip.namelist()
-        file_list.sort()
-        print("ZIP CONTENTS")
-        print(file_list)
-        use_file = None
-        for f in file_list:
-            if f.lower()[-4:] == ".zzt":
-                use_file = f
-                break
-
-        if not use_file:
-            screenshot = None
-        else:
-            print("Ok working w/ this file")
-            # Extract it
-            zip.extract(use_file, ZZT2PNG_TEMP)
-            screenshot_path = (SITE_ROOT + "assets/images/screenshots/" +
-                               letter + "/" + os.path.splitext(filename)[0])
-            command = ("/usr/local/bin/python " + ZZT2PNG_PATH + " " +
-                       ZZT2PNG_TEMP + use_file + " 0 " + screenshot_path)
-            print("ZZT2PNG COMMAND:", command)
-            os.system(command)
-
-            scr = (SITE_ROOT + "assets/images/screenshots/" + letter + "/" +
-                   os.path.splitext(filename)[0] + ".png")
-            if (os.path.isfile(scr) and os.path.getsize(scr) > 0):
-                screenshot = os.path.splitext(filename)[0] + ".png"
-
-        # -------------------------------------------
+            return render(request, "museum_site/upload.html", data)
 
         try:
-            file.filename = filename
-            file.size = size
-            file.screenshot = screenshot
-            file.full_clean()
-            file.save()
-            return redirect("/uploaded#" + filename)
+            upload.full_clean()
+            upload.save()
+
+            # Flag it as an upload
+            upload.details.add(Detail.objects.get(pk=18)) # TODO: Unhardcode #
+
+            print("SAVED")
+            return redirect("/uploaded#" + upload.filename)
         except ValidationError as e:
             data["results"] = e
-
-        print(title)
-        print(author)
-        print(company)
-        print(genres)
-        print(release_date)
-        print(description)
+            print(data["results"])
 
     return render(request, "museum_site/upload.html", data)
 
+
+def uploaded_redir(request, filename):
+    file = File.objects.get(filename=filename)
+    print(file)
+    print(file.letter, "is letter")
+    return redirect(file.file_url())
 
 def debug(request):
     data = {"title": "DEBUG PAGE"}
@@ -714,20 +619,3 @@ def debug_article(request):
         article.type = "html"
     data["article"] = article
     return render(request, "museum_site/article_view.html", data)
-
-
-def debug_save(request):
-    letter = request.POST.get("letter")
-    zip = request.POST.get("zip")
-    img = request.POST.get("screenshot")[22:]
-
-    fh = open("/var/projects/z2/assets/images/screenshots/" +
-              letter + "/" + zip[:-4] + ".png", "wb")
-    fh.write(img.decode("base64"))
-    fh.close()
-
-    file = File.objects.get(letter=letter, filename=zip)
-    file.screenshot = zip[:-4] + ".png"
-    file.save()
-
-    return HttpResponse("<title>OK!</title>Saved " + zip)

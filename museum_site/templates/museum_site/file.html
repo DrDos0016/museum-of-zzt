@@ -9,6 +9,7 @@ var load_file = "{{load_file}}";
 var load_board = "{{load_board}}";
 var hash_coords = window.location.hash;
 var db_id = {{file.id|default:0}};
+var uploaded = {% if uploaded %}true{% else %} false{% endif %};
 
 </script>
 <script src="{% static 'js/elements.js' %}"></script>

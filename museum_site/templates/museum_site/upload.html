@@ -2,13 +2,79 @@
 
 {% block style %}
 <style>
+#desc
+{
+    height:7em;
+}
+
+.upload-error
+{
+    background:#FAA;
+}
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function load_local_file()
+{
+    return false;
+}
+
+function reload_preview()
+{
+    var filename = $("input[name=file]").val().split("\\").reverse()[0];
+    var title = $("input[name=title]").val();
+    var authors = $("input[name=author]").val();
+    var company = $("input[name=company]").val();
+    if ($("input[name=file]").val())
+        var size = Math.round($("input[name=file]").get(0).files[0].size / 1000.0);
+    var released = $("input[name=release_date]").val();
+
+    var genres = "";
+    $("input[name=genre]:checked").each(function (){
+        genres += $(this).val() + ", ";
+    });
+    genres = genres.slice(0, (genres.length - 2));
+
+    $("#pre-title").text(title ? title : "<Title>");
+    $("#pre-authors").text(authors ? authors : "<Authors>");
+    $("#pre-filename").text(filename ? filename : "<Filename>");
+    $("#pre-released").text(released ? released : "<Release Date>");
+    $("#pre-genres").text(genres ? genres : "<Genres>");
+    $("#pre-company").text(company ? company : "<Company>");
+    $("#pre-size").text(size);
+}
+
+$(document).ready(function (){
+    $("#file").change(load_local_file);
+    $("input").change(reload_preview);
+    $("input[name=today]").click(function (){
+        var today = new Date();
+        $("#release_date").val(today.toISOString().slice(0,10));
+        reload_preview();
+    });
+});
+</script>
 {% endblock %}
 
 {% block content %}
 <section id="content" class="col block">
 
 <h1>Upload File</h1>
+
+{% if error %}
+<h2>File Not Uploaded!</h2>
+
+<div class="upload-error">
+<p>Your file could not be uploaded.</p>
+
+<p>Reason: {{error}}</p>
+
+<p>Please correct any errors and try again. If the problem persists, contact
+<a href="mailto:{{EMAIL_ADDRESS}}?subj=Upload error">Dr. Dos</a>.</p>
+</div>
+{% endif %}
 
 <div class="file-block">
     <div class="file-screen" style="float:left">
@@ -19,7 +85,8 @@
         <div>Author</div>: <span id="pre-authors">&lt;Authors&gt;</span><br>
         <div>Filename</div>: <span id="pre-filename">&lt;Filename&gt;</span><br>
         <div>Released</div>: <span id="pre-released">&lt;Release Date&gt;</span><br>
-        <div>Genre</div>: <span id="pre-released">&lt;Genres&gt;</span><br>
+        <div>Genre</div>: <span id="pre-genres">&lt;Genres&gt;</span><br>
+        <div>Company</div>: <span id="pre-company">&lt;Company&gt;</span><br>
         <div>Size</div>: <span id="pre-size">&lt;File Size&gt;</span> KB<br>
         <div>Rating</div>: <em>No rating</em>
     </div>
@@ -56,7 +123,7 @@
 </div>
 <div class="field">
     <label for="genre">Genre(s):<br>
-        <span class="sub">Any genres which this file may fall under. Multiple genres may be checked.</span>
+        <span class="sub">Any genres which this file may fall under. At least one genre must be selected.</span>
     </label>
     <div class="checklist">
         {% for genre in genres %}
@@ -69,7 +136,7 @@
         <span class="sub">The date this file was first made public. Use YYYY-MM-DD for the format. If this is a new release, it should be the modified date of the most recent ZZT world (or executable, or other primary file).
         If the release date is not known, leave this field blank.</span>
     </label>
-    <input id="release_date" name="release_date" value="" maxlength="10"> <input type="button" value="Today">
+    <input id="release_date" name="release_date" value="" maxlength="10" type="date"> <input type="button" value="Today" name="today">
 </div>
 <div class="field">
     <label for="desc">Utility Description:<br>
