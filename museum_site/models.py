@@ -305,7 +305,6 @@ class File(models.Model):
         if request.method != "POST":
             return False
 
-        print(request.FILES.get("file"))
         # First handle the easy stuff
         self.letter = request.POST.get("title", "1")[0].lower()
         if self.letter not in "abcdefghijklmnopqrstuvwxyz":
@@ -342,11 +341,9 @@ class File(models.Model):
         # md5 checksum
         resp = subprocess.run(["md5sum", file_path], stdout=subprocess.PIPE)
         md5 = resp.stdout[:32].decode("utf-8")
-        print("MD5 is", md5)
         self.checksum = md5
 
         # SITE META
-        print(str(request.POST.dict()))
         return {"status": "success"}
 
 

@@ -179,21 +179,6 @@ h1, h2, h3
     border-top:2px solid #FF0;
 }
 
-#environment[data-host="z2.pokyfriends.com"]
-{
-    border-top:2px solid #F0F;
-}
-#environment[data-host="museum.pokyfriends.com"]
-{
-    border-top:2px solid #F00;
-}
-
-#environment:hover
-{
-    height:1.5em;
-    background:#F0F0F0;
-}
-
 section
 {
 }

@@ -130,10 +130,6 @@ $(document).ready(function (){
 
 <body>
 
-<div id="environment" data-host="{{HOST}}">
-{{ENV}}
-</div>
-
 <div class="flex-container">
 <header>
     <nav>
@@ -288,7 +284,9 @@ Additional content copyright its  <a href="{% url 'credits' %}">respective owner
 {% if debug %}
 <div class="debug">
 {{request.build_absolute_uri}}<br>
-{{request.META.HTTP_HOST}}
+{{request.META.HTTP_HOST}}<br>
+Host: {{HOST}}<br.
+Env: {{ENV}}<br>
 </div>
 {% endif %}
 </footer>

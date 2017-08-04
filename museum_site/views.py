@@ -174,7 +174,6 @@ def closer_look(request):
     data["articles"] = Article.objects.filter(
         category="Closer Look", published=1, page=1
     )
-    print(data["articles"])
     sort = request.GET.get("sort", "date")
     if sort == "title":
         data["articles"] = data["articles"].order_by("title")
@@ -569,7 +568,6 @@ def site_credits(request):
         for name in split:
             if name not in data["list"]:
                 data["list"].append(name)
-    print(data["list"])
     data["list"].sort(key=str.lower)
     data["split"] = math.ceil(len(data["list"]) / 4.0)
     return render(request, "museum_site/credits.html", data)
@@ -602,8 +600,6 @@ def upload(request):
 
             # Flag it as an upload
             upload.details.add(Detail.objects.get(pk=18)) # TODO: Unhardcode #
-
-            print("SAVED")
             return redirect("/uploaded#" + upload.filename)
         except ValidationError as e:
             data["results"] = e
@@ -614,8 +610,6 @@ def upload(request):
 
 def uploaded_redir(request, filename):
     file = File.objects.get(filename=filename)
-    print(file)
-    print(file.letter, "is letter")
     return redirect(file.file_url())
 
 def debug(request):
