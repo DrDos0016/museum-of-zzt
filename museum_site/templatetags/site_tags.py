@@ -40,6 +40,7 @@ def content_warning(*args, **kwargs):
 
     return mark_safe(output + "\n")
 
+
 @register.simple_tag()
 def patreon_plug(*args, **kwargs):
     output = """
@@ -59,8 +60,5 @@ def patreon_plug(*args, **kwargs):
         </div>
     </div>
     """
-    content_warning_key = kwargs.get("key", "")
-
-    output = output.format(", ".join(args).title(), content_warning_key)
 
     return mark_safe(output + "\n")

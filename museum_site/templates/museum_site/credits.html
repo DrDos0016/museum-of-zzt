@@ -59,6 +59,16 @@
     overflow:hidden;
     background:#CCC;
 }
+
+.directory .column > .row
+{
+    border-top:0;
+}
+
+.directory .column > .row + .row
+{
+    border-top:1px solid #000;
+}
 </style>
 {% endblock %}
 
@@ -75,11 +85,19 @@
 
 
 <h2>Articles</h2>
-<ul>
-    {% for a in authors %}
-    <li>{{a}}</li>
-    {% endfor %}
-</ul>
+<div class="directory">
+{% for row in list %}
+    {% if forloop.counter0|divisibleby:split %}
+    <div class="column">
+    {% endif %}
+        <div class="row">
+            {{row}}
+            </div>
+    {% if forloop.counter|divisibleby:split %}
+    </div>
+    {% endif %}
+{% endfor %}
+</div>
 
 <h2>Patreon Supporters</h2>
 <!-- $10+ for large, $50+ for XL -->
@@ -127,7 +145,5 @@
 
     <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-266px;left:-1016px"></div> Anonymous Patrons!</div>
 </div>
-
-
 </section>
 {% endblock %}

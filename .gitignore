@@ -16,7 +16,9 @@ tools/comic/json/*
 tools/comic/necocone.co/*
 tools/extract
 tools/zookeeper
+tools/data
 tools/db_dump.py
+tools/fonts
 museum/*
 museum_site/static/images/articles/cl/*
 .htpasswd

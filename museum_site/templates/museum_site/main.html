@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load site_tags %}
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
@@ -59,8 +60,8 @@
 $(document).ready(function (){
     // Screenshot Zoom
     $(".file-screen").click(function (){
-        if ($(this).css("max-width") != "480px")
-            $(this).css({"max-width":"480px", "cursor":"zoom-out"});
+        if ($(this).css("max-width") != "100%")
+            $(this).css({"max-width":"100%", "cursor":"zoom-out"});
         else
             $(this).css({"max-width":"240px", "cursor":"zoom-in"});
     });
@@ -214,7 +215,7 @@ $(document).ready(function (){
         <a href="/super-zzt">Super ZZT Worlds</a><br>
         <a href="/utilities">External Utilities</a><br>
         <a href="/zig-worlds">ZIG Worlds</a><br>
-        <a href="/zzm">ZZM Music</a><br>
+        <a href="/zzm-audio">ZZM Music</a><br>
     </div>
 </section>
 
@@ -238,6 +239,7 @@ $(document).ready(function (){
         <h2>Playing</h2>
         <a href="/getting-started">Getting Started With ZZT</a><br>
         <a href="/article/walkthrough">Walkthroughs</a><br>
+        <a href="{% url 'zzt_cheats' %}">ZZT Cheats</a><br>
 
         <h2>Editing</h2>
         <a href="/ascii">ASCII Character Reference</a><br>
@@ -267,11 +269,12 @@ $(document).ready(function (){
             <a href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'images/social/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>
             <a href="https://github.com/DrDos0016/z2" target="_blank"><img src="{% static 'images/social/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
         </div>
+
+        <a href="{% url 'correction_policy' %}">Correction Policy</a><br>
+        <a href="{% url 'removal_policy' %}">Removal Policy</a><br>
+        <a href="{% url 'review_policy' %}">Review Policy</a><br>
         <a href="{% url 'credits' %}">Site Credits</a><br>
         <a href="{% url 'upload_policy' %}">Upload Policy</a><br>
-        <a href="{% url 'removal_policy' %}">Removal Policy</a><br>
-        <a href="{% url 'correction_policy' %}">Correction Policy</a><br>
-        <a href="{% url 'review_policy' %}">Review Policy</a><br>
     </div>
 </section>
 </div>

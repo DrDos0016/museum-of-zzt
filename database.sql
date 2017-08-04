@@ -498,7 +498,7 @@ CREATE TABLE `museum_site_file` (
   `release_source` varchar(20) DEFAULT NULL,
   `genre` varchar(80) NOT NULL,
   `article_count` int(11) NOT NULL,
-  `checksum` varchar(32),
+  `checksum` varchar(32) DEFAULT NULL,
   `superceded_id` int(11) DEFAULT NULL,
   `sort_title` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
@@ -624,4 +624,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-06-07 19:51:58
+-- Dump completed on 2017-08-04 15:04:08

@@ -14,7 +14,7 @@
         <div>Company</div>: <a href="{% url 'search'%}?company={{file.company}}">{{file.company}}</a><br>
         <div>Size</div>: {{file.size}} KB<br>
         <div>Rating</div>: {%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}<br>
-        <div>Details:</div> {% for detail in file.details.all %}{{detail.detail}}, {% endfor %}<br>
+        <div>Details:</div> {% for detail in file.details.all %}{{detail.detail}}{% if not forloop.last %}, {% endif %}{% endfor %}<br>
         {% if debug %}<div class="debug">File ID</div>: {{file.id}} -- <a href="/admin/museum_site/file/{{file.id}}/change/">Edit</a><br>{% endif %}
     </div>
     {% if show_featured %}

@@ -1,32 +1,22 @@
 T H E   M U S E U M   O F   Z Z T   P R E S E N T S
 
-A compiliation of all ZZT worlds released in 2015 hosted on the Museum of ZZT.
+A compiliation of all utilities hosted on the Museum of ZZT.
 
-To run:
-- Download ZZT v3.2 from https://z2.pokyfriends.com/file/z/zzt.zip
-- Download DOSBox from http://www.dosbox.com
-- Extract ZZT and any worlds you wish you play into a directory
-- Mount the directory in DOSBox with the command:
-  mount c C:\path\to\ZZT\directory
-- Run ZZT.EXE and follow the on screen setup instructions
-- Press W to bring up the world list and ENTER to select a world
-- Press P to play!
+98 files are included in this compilation:
 
-For more detailed instructions, please refer to
-https://museumofzzt.com/getting-started
-
-90 Files are included in this compilation:
-
-KevEdit (Windows) by Kev Vance [kevedit-setup-0.5.0-win32.exe]
+KevEdit v0.5.0 (Windows) by Kev Vance [kevedit-setup-0.5.0-win32.exe]
 ZMenu by JMStuckman [zmenu.zip]
 ZZT Piano by Dark FLR [zztpiano.exe]
-ZZT v2.0 by Tim Sweeney [zztold.zip]
+ZZT v2.0 by Tim Sweeney [ZZT20.zip]
 ZZT v3.2 Shareware by Tim Sweeney [zzt_shareware.zip]
 ZZTYPE by Unknown [zztype.zip]
 1986-12-02 ASCII Chart by Unknown [asc.zip]
 1991-01-25 ANSI-DIGITIZER by Jim Matczak [ansicv22.zip]
+1991-11-02 ZZT v3.1 Shareware by Tim Sweeney [ZZT31.zip]
 1991-11-02 ZZT v3.2 by Tim Sweeney [zzt.zip]
 1992-02-25 Font Mania by REXXCOM [fm.zip]
+1992-12-16 Tim's Toolkit by Tim Gallagher [timstools.zip]
+1993-06-08 Misclany by Unknown [zzt-misc.zip]
 1994-08-15 Screen Thief v1.57 by Nildram Software [st.zip]
 1995-01-15 ZZT Manual by Chris Kohler [zztmanl.zip]
 1995-11-26 SaveLock by DanDraco [savelock.zip]
@@ -54,6 +44,7 @@ ZZTYPE by Unknown [zztype.zip]
 1999-11-18 abbloipp by Lemmer [lemutils.zip]
 1999-11-21 Dexkit by dexter [dexkit.zip]
 1999-11-28 Unlock Pro 2.0.0 by Kev Vance [ulpro200.zip]
+1999-11-30 nomo7 update by coolzx [nomo7upd.zip]
 2000-01-01 The Bocco11 ZZToolkit by Bocco11 [boccokit.zip]
 2000-01-24 Random ZZM Music Generator by Hell Camino [randzzm.zip]
 2000-02-11 ZZTPatch 1.0 by Grant D. Watson [zztpatch.zip]
@@ -92,7 +83,7 @@ ZZTYPE by Unknown [zztype.zip]
 2002-05-25 ZZT Faces by kcnrogers [ZZTfaces.zip]
 2002-10-06 CleanZZT by Nanobot [CLEANZZT.ZIP]
 2002-10-17 Z by Saxxonpike [Z-zztrunner.zip]
-2002-12-02 KevEdit (DOS) by Kev Vance [kevedit.zip]
+2002-12-02 KevEdit v0.5.0 (DOS) by Kev Vance [kevedit.zip]
 2002-12-07 ZZT Under Windows v0.2.3 by Ryan Philips [zztuwin-0.2.3.zip]
 2003-03-18 Z2 Browser 1.2 by MystickCal [Z2_Browser_1.2.zip]
 2003-05-12 PaZZT 0.01 by HaroldOOP [pazzt001.zip]
@@ -104,8 +95,12 @@ ZZTYPE by Unknown [zztype.zip]
 2004-02-01 ZOE by phunk [ZOE.zip]
 2004-07-15 zFront by phunk [zfront.zip]
 2004-11-25 ZZT v4.0 by WiL [ZZT40.zip]
+2005-11-29 Plastic by WiL/PapaBear [Plastic.zip]
 2007-03-19 mod2zzt by Quantum P. [mod2zzt.zip]
 2008-03-13 ZAP by SaxxonPike [ZAP.zip]
+2008-06-08 ZZT All-Purpose TSR by Quantum P. [zzt_tsr.zip]
+2012-05-12 ZZT v4.1 by WiL [zzt41_w.zip]
 2012-07-28 Lyon by Saxxon [Lyon.zip]
+2013-06-16 ZZT-POOP by Dr. Dos [zzt_poop.zip]
 
 - https://museumofzzt.com -

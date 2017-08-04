@@ -26,7 +26,7 @@ CATEGORY_LIST = (
     ("LINUX", "Linux Programs"),
     ("OSX", "OSX Programs"),
     ("FEATURED", "Featured Worlds"),
-    ("CONTEST", "Contest Entries"),
+    ("UNUSED-8", "UNUSED Contest Entries"),
     ("ZZM", "ZZM Soundtrack"),
     ("GFX", "Modified Graphics"),
     ("MOD", "Modified Executables"),
@@ -185,6 +185,16 @@ class File(models.Model):
 
     def save(self, *args, **kwargs):
         # Pre save
+        # Force lowercase letter
+        self.letter = self.letter.lower()
+
+        # Sort genres
+        temp_list = self.genre.split("/")
+        temp_list.sort()
+        sorted_str = "/".join(temp_list)
+
+        self.genre = sorted_str
+
         # Create sorted title if not set
         if self.sort_title == "":
             self.sort_title = self.sorted_title()
@@ -195,8 +205,21 @@ class File(models.Model):
                 published=True
             ).count()
 
+        # If the screenshot is blank and a file exists for it, set it
+        if self.screenshot == "" and os.path.isfile("/var/projects/museum/museum_site/static/images/screenshots/" + self.letter + "/" + self.filename[:-4] + ".png"):
+            self.screenshot = self.filename[:-4] + ".png"
+
         # Recalculate Review Scores
         self.recalculate_reviews()
+
+        # Update blank md5s
+        if self.checksum == "":
+            try:
+                resp = subprocess.run(["md5sum", "/var/projects/museum/zgames/"+ self.letter + "/" + self.filename], stdout=subprocess.PIPE)
+                md5 = resp.stdout[:32].decode("utf-8")
+                self.checksum = md5
+            except:
+                pass
 
         super(File, self).save(*args, **kwargs)  # Actual save call
 
@@ -363,8 +386,8 @@ class Review(models.Model):
         ordering = ["id"]
 
     def __str__(self):
-        x = ("[" + str(self.id) + "] Review for " + self.file.title + " [" +
-             self.file.filename + "] by " + self.author
+        x = ("[" + str(self.id) + "] Review for " + str(self.file.title) + " [" +
+             str(self.file.filename) + "] by " + str(self.author)
              )
         return x
 

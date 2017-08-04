@@ -18,10 +18,13 @@
 
 {% include "museum_site/blocks/file_page_block.html" %}
 {% else %}
+    {% if 18 in details%}<p>There are no unverified file uploads at this time.</p>{% else %}
     <p>No files found!</p>
+    {% endif %}
     {% if advanced_search %}
     <p><a href="/advanced-search?{{request.META.QUERY_STRING}}">Modify Search Query</a></p>
     {% endif %}
+
 {% endif %}
 
 </section>

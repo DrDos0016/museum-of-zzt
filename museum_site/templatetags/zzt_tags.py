@@ -8,6 +8,15 @@ from django.conf import settings
 register = Library()
 
 
+@register.simple_tag()
+def hyperlink(text):
+    output = "<p class='cl-hyperlink'>{}</p>"
+
+    output = output.format(text)
+
+    return mark_safe(output + "\n")
+
+
 @register.tag(name="scroll")
 def scroll(parser, token):
     nodelist = parser.parse(('endscroll',))

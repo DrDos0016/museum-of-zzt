@@ -35,7 +35,8 @@ urlpatterns = [
     url(r"^article$", museum_site.views.article_directory,
         name="article_directory"
         ),
-    url(r"^article/(?P<category>[a-z-]+)$", museum_site.views.article_directory,
+    url(r"^article/(?P<category>[a-z- ]+)$",
+        museum_site.views.article_directory,
         name="article_directory"
         ),
 
@@ -51,6 +52,7 @@ urlpatterns = [
     url(r"^about-zzt$", museum_site.views.article_view, {"id": 1}),
     url(r"^ascii$", museum_site.views.article_view, {"id": 3}),
     url(r"^clones$", museum_site.views.article_view, {"id": 6}),
+    url(r"^zzt-cheats$", museum_site.views.article_view, {"id": 22}, name="zzt_cheats"),
     url(r"^credits$", museum_site.views.article_view, {"id": 164}, name="credits"),
     url(r"^getting-started$", museum_site.views.article_view, {"id": 5}),
     url(r"^zzt$", museum_site.views.article_view, {"id": 2}, name="zzt_dl"),

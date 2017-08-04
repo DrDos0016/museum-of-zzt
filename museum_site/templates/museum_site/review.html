@@ -65,7 +65,7 @@ function clear_error(identifier)
 
 {% block world_content %}
 {% for review in reviews %}
-<div class="review block">
+<div class="review block" id="rev-{{review.id}}">
 <div class="review-meta">
     <h2>{{review.title}}</h2>
     <i>Written by {{review.author}}<br>{{review.date}}</i>

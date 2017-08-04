@@ -6,10 +6,10 @@ import django
 import zookeeper
 
 sys.path.append("/var/projects/museum/")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "z2.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
-from z2_site.models import File
+from museum_site.models import File
 
 
 def main():
@@ -38,6 +38,7 @@ def main():
 
                 # Rip the font
                 fname = os.path.join("/var/projects/museum/tools/extract", file)
+
                 try:
                     id = ("0000"+str(f.id))[-4:]
                     z.export_font(fname, "fonts/"+id+"-"+name+".png", 1)

@@ -34,10 +34,7 @@ def article(request, letter, filename):
     data["articles"] = data["file"].articles.all()
     data["letter"] = letter
 
-    if len(data["articles"]) == 1:
-        return article_view(request, data["articles"][0].id)
-    else:
-        return render(request, "museum_site/article.html", data)
+    return render(request, "museum_site/article.html", data)
 
 
 def article_directory(request, category="all"):
@@ -195,6 +192,7 @@ def closer_look(request):
     data["page_range"] = range(1, data["pages"] + 1)
     data["prev"] = max(1, data["page"] - 1)
     data["next"] = min(data["pages"], data["page"] + 1)
+    data["qs_sans_page"] = qs_sans(request.GET, "page")
 
     return render(request, "museum_site/closer_look.html", data)
 
@@ -222,6 +220,7 @@ def directory(request, category):
             for credited in split:
                 if credited not in data_list:
                     data_list.append(credited)
+        data_list.sort()
     elif category == "author":
         data["title"] = "Authors"
         authors = File.objects.values("author").distinct().order_by("author")
@@ -230,18 +229,14 @@ def directory(request, category):
             for credited in split:
                 if credited not in data_list:
                     data_list.append(credited)
+        data_list.sort()
     elif category == "genre":
         data["title"] = "Genres"
-        genres = File.objects.values("genre").distinct().order_by("genre")
-        for g in genres:
-            split = g["genre"].split("/")
-            for genre in split:
-                if genre not in data_list:
-                    data_list.append(genre)
-
-    data_list = sorted(data_list, key=lambda k: k.lower())
+        # genres = File.objects.values("genre").distinct().order_by("genre")
+        data_list = GENRE_LIST
 
     # Break the list of results into 4 columns
+
     data["list"] = data_list
     data["split"] = math.ceil(len(data["list"]) / 4.0)
     return render(request, "museum_site/directory.html", data)
@@ -333,6 +328,12 @@ def generic(request, title="", template=""):
 def index(request):
     """ Returns front page """
     data = {}
+
+    # Obtain latest content
+    data["articles"] = Article.objects.all().order_by("-id")[:10]
+    data["files"] = File.objects.all().order_by("-id")[:10]
+    data["reviews"] = Review.objects.all().order_by("-id")[:10]
+
     return render(request, "museum_site/index.html", data)
 
 
@@ -447,9 +448,13 @@ def search(request):
         ).exclude(details__id__in=[18])  # TODO: Unhardcode
 
         # Debug override
-        if DEBUG and request.GET.get("q")[:3] == "id=":
-            ids = request.GET.get("q")[3:]
-            qs = File.objects.filter(id__in=ids.split(",")).order_by("id")
+        if DEBUG:
+            if request.GET.get("q") == "debug=blank":
+                qs = File.objects.filter(screenshot="").exclude(details__id__in=[DETAIL_LOST])
+            elif request.GET.get("q").startswith("debug="):
+                ids = request.GET.get("q").split("=", maxsplit=1)[-1]
+                qs = File.objects.filter(id__in=ids.split(",")).order_by("id")
+
 
         if data["view"] == "list":
             page_size = LIST_PAGE_SIZE
@@ -557,7 +562,16 @@ def site_credits(request):
     data = {"title": "Credits"}
 
     # Get all article authors
-    data["authors"] = Article.objects.order_by("author").distinct().values_list("author", flat=True)
+    data["authors"] = Article.objects.exclude(author="N/A").distinct().values_list("author", flat=True)
+    data["list"] = []
+    for author in data["authors"]:
+        split = author.split("/")
+        for name in split:
+            if name not in data["list"]:
+                data["list"].append(name)
+    print(data["list"])
+    data["list"].sort(key=str.lower)
+    data["split"] = math.ceil(len(data["list"]) / 4.0)
     return render(request, "museum_site/credits.html", data)
 
 

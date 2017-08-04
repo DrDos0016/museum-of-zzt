@@ -158,6 +158,9 @@ CUSTOM_CHARSET_LIST = (
     "1682-ZZFont.png",
     "2298-ZZFONT.png",
     "1057-ZZTRINGA.png",
+    "2323-ZFONT2.png",
+    "2349-ZFONT2.png",
+    "2359-ZZFACES.png",
 )
 
 DETAIL_LIST = (
@@ -181,16 +184,19 @@ DETAIL_LIST = (
 
 GENRE_LIST = (
     "24HoZZT",
-    "Action", "Adventure", "Alternative", "Arcade", "Art", "Beta", "BKZZT",
-    "Cameo", "Catalog", "Cinema", "Comedy", "Compilation", "Contest", "Demo",
-    "Dungeon", "Edutainment", "Engine", "Erotic", "Fantasy",
-    "Help", "Horror", "Incomplete", "Ludum Dare", "Magazine", "Maze",
-    "Minigame", "Multiplayer", "Music", "Mystery", "Official", "Other",
-    "Parody", "Platformer", "Political", "Puzzle", "Racing",
-    "Random", "Remake", "RPG", "Sci-Fi", "Shooter", "Simulation", "Space",
-    "Sports", "Strategy", "Story", "Toolkit", "Traditional",
+    "Action", "Adventure", "Arcade", "Art", "Beta", "BKZZT",
+    "Cameo", "Catalog", "Cinema", "Comedy", "Comic",
+    "Compilation", "Contest", "Demo",
+    "Dungeon", "Edutainment", "Engine", "Experimental", "Explicit", "Fantasy",
+    "Fighting", "Font", "Help", "Horror", "Incomplete", "Ludum Dare",
+    "Magazine", "Maze", "Minigame", "Multiplayer", "Music", "Mystery",
+    "Non-English", "Official", "Other",
+    "Parody", "Platformer", "Puzzle", "Racing",
+    "Random", "Remake", "Registered", "Retro", "RPG", "Sci-Fi", "Shareware",
+    "Shooter", "Simulation", "Space",
+    "Sports", "Story", "Strategy", "Toolkit",
     "Trippy", "Trivia", "Tutorial",
-    "Update", "Utility", "Vintage", "WoZZT"
+    "Update", "Utility", "WoZZT"
 )
 
 SORT_CODES = {

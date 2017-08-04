@@ -61,11 +61,11 @@ var uploaded = {% if uploaded %}true{% else %} false{% endif %};
                             </optgroup>
                             <optgroup label="Custom Fonts">
                                 {% for charset in custom_charsets %}
-                                <option value="{{charset}}">{{charset|slice:"5:-4"}}</option>
+                                <option value="{{charset}}">{{charset|slice:"5:-4"}}{% if file.id|stringformat:"i" == charset|slice:":4" %} (RECOMMENDED){% endif %}</option>
                                 {% endfor %}
                             </optgroup>
                         </select>
-                        <div class="option r" style="clear:both">
+                        <div class="option r" style="clear:both;display:none"><!--TODO-->
                             <input type="checkbox" name="2x" value="1"> - 2x Zoom
                         </div>
                     </label>

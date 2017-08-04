@@ -1,18 +1,60 @@
 {% extends "museum_site/main.html" %}
+{% load static %}
 
 {% block content %}
 <section id="content" class="col block">
 
-<h1>z2 - The ZZT Archive</h1>
+<h1>Museum of ZZT</h1>
 
-<p>Welcome to z2. A website originally created for the ZZT community to share their games and interact with fellow ZZTers. After years of stagnation, the site has been redeveloped from scratch
- with a new purpose of historical preservation of everything ZZT.</p>
+<p>Welcome to the Museum of ZZT, a site dedicated to the preservation and
+curation of the many games and worlds created with ZZT.</p>
 
-<p>If you've never played ZZT before, or haven't touched it in years, check out the <a href="/article/5/getting-started-with-zzt">Getting Started With ZZT</a> article, to get yourself ready
-to experience 25 years of a gaming subculture unlike any other.</p>
+<p>ZZT is a text-mode game from 1991 created by Tim Sweeney of Epic Games. ZZT
+has its own editor and scripting language which offers what may still be an
+unmatched level of accessibility to beginning game developers. A significant
+number of ZZT worlds were created by authors in their early teenage years, with
+some being made by children under 10. ZZT's simple ZZT-OOP scripting language
+gave many a friendly introduction to programming.</p>
 
-<h1>Latest Stuff</h1>
-{{fg}}
-<hr>
+<p>The goal of the Museum of ZZT site is to collect these worlds, offer
+discussions into them and the community built around them, and keep them safely
+preserved. It is the hope of the Museum that the generally unknown works of ZZT
+community can be easily discovered and that their importance can be recognized.
+</p>
+
+
+
+<h1>Latest Files</h1>
+<div class="gallery-wide">
+{% for file in files %}
+<div class="gallery-block">
+    <div class="file-screen">
+        <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+    </div>
+    <div class="title"><a href="{{file.download_url}}">{{file.title}}</a></div>
+    <div class="author">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    <div class="view"><a href="{{file.file_url}}">View</a></div>
+</div>
+{% endfor %}
+</div>
+
+<div>
+    <div class="col">
+        <h1>Latest Articles</h1>
+        <ul>
+        {% for article in articles %}
+        <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} {% if article.date|date:"Y-m-d" != '1970-01-01' %}({{article.date}}){% endif %}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="col">
+        <h1>Latest Reviews</h1>
+        <ul>
+        {% for review in reviews %}
+        <li><a href="{{review.file.review_url}}#rev-{{review.id}}"><i>{{review.file.title}}</i></a> reviewed by {{review.author}}{% if review.rating > -1 %} ({{review.rating}} / 5.0){% endif %}</li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
 </section>
 {% endblock %}

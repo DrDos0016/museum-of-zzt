@@ -449,6 +449,8 @@ function pull_file()
         else if (ext == "brd")
         {
             format = "zzt";
+            ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
+            ENGINE = engines[format];
             console.log("BRD PARSE");
             world = new World(data);
             var board = parse_board(world);

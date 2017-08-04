@@ -10,7 +10,7 @@
             </ul><h2>{{article.category}}</h2><ul>
         {% endifchanged %}
 
-        <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} ({{article.date}})</li>
+        <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} {% if article.date|date:"Y-m-d" != '1970-01-01' %}({{article.date}}){% endif %}</li>
     {% endfor %}
 {% else %}
     {% for article in articles %}

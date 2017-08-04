@@ -3,7 +3,7 @@
 {% block content %}
 <section id="content" class="col block">
 {% if file %}
-<h1>[{{file.filename}}] - {{file.title}}</h1>
+<h1>[{{file.filename}}] - {{file.title}}{% if debug %} <span class="debug"><a href="/admin/museum_site/file/{{file.id}}/change/">Edit {{file.id}}</a></span>{% endif %}</h1>
 <div class="file-links">
     {% include "museum_site/blocks/file_links.html" %}
 </div>

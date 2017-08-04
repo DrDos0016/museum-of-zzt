@@ -38,6 +38,12 @@ a[target=_blank]
     background-repeat:no-repeat;
 }
 
+a.noext[target=_blank]
+{
+    padding-right:0;
+    background:none;
+}
+
 a.broken
 {
     text-decoration:line-through;
@@ -60,9 +66,19 @@ body
     overflow:auto;
 }
 
+.inline
+{
+    display:inline;
+}
+
 .hidden
 {
     visibility:hidden;
+}
+
+.i
+{
+    font-style:oblique;
 }
 
 .jsLink
@@ -87,10 +103,44 @@ body
     text-align:right;
 }
 
+.img-set
+{
+    display:block;
+    text-align:center;
+    margin:auto;
+}
+
+.img-set img
+{
+    border:1px solid #000;
+}
+
+.img-c
+{
+    display:block;
+    margin:auto;
+    text-align:center;
+}
+
+img.fit
+{
+    max-width:100%;
+}
+
 .dos
 {
     font-family:"Classic Console";
     font-size:16pt;
+}
+
+.mono
+{
+    font-family:monospace;
+}
+
+.plaintext
+{
+    white-space:pre-wrap;
 }
 
 .fl
@@ -179,6 +229,7 @@ header
 {
     margin:auto;
     flex:0 0 100%;
+    margin-top:-30px; /* should equal top property of logo */
 }
 
 nav
@@ -370,7 +421,7 @@ input[name=q]
 .file-screen
 {
     margin:auto;
-    flex:1 0 auto;
+    flex:0 0 auto;
     min-width:240px;
     max-width:240px;
     cursor:zoom-in;
@@ -434,8 +485,6 @@ div.file-links ul, div.file-details ul
 .file-links li
 {
     display:inline-block;
-    zoom: 1;
-    *display: inline;
     width:19%;
     text-align:center;
 }
@@ -448,8 +497,6 @@ div.file-details ul
 .file-details li
 {
     display:inline-block;
-    zoom: 1;
-    *display: inline;
     font-family:monospace;
     margin-left:1.5em;
 }
@@ -498,8 +545,21 @@ div.file-details ul
     display:flex;
     text-align:center;
     flex-wrap:wrap;
-    justify-content:space-around;
+    justify-content:center;
 }
+
+.gallery-wide
+{
+    display:flex;
+    text-align:center;
+    flex:0 1 100%;
+    overflow:auto;
+    padding:0.25em;
+    flex-wrap:wrap;
+    justify-content:center;
+    max-height:265px;
+}
+
 .gallery-block
 {
     margin:0 0.25em 1em 0.25em;
@@ -840,6 +900,20 @@ div.file-meta + .review
 
 }
 
+.cl-hyperlink /* ZZT Hyperlink for Closer Looks */
+{
+    font-family: 'cp437';
+    background-image:url("/static/images/hyperlink.png");
+    background-color:#0000AA;
+    background-repeat:no-repeat;
+    color:#FFF;
+    padding-left:40px;
+    padding-right:16px;
+    background-position:16px;
+    width:auto;
+    display:inline;
+}
+
 /* ZZT-OOP Syntax */
 code
 {
@@ -851,6 +925,12 @@ code
     font-size:larger;
     padding:1ch 2ch 1ch 2ch;
     white-space:pre;
+}
+
+code.inline
+{
+    width:auto;
+    padding:0.1em;
 }
 
 code .blue, code .command
@@ -971,7 +1051,27 @@ code .orange, code .label
     background:none;
     text-decoration:underline;
 }
-
-
 /* End Worlds of ZZT plug */
 
+figcaption
+{
+    text-align:center;
+}
+
+/* MadTom's Pick CSS hotfixes */
+article.featured-game a.screen
+{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    width:160px;
+    margin:0.25em auto 0.25em auto;
+    text-align:center;
+}
+
+article.featured-game p.score
+{
+    text-align:center;
+    font-size:2em;
+}
+/* End MadTom's Pick CSS hotfixes */

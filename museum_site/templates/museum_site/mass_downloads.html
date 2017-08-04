@@ -1,14 +1,51 @@
 {% extends "museum_site/main.html" %}
 {% load staticfiles %}
 
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "/static/data/mass_dl.json",
+        dataType: "json",
+        }
+    ).done(function (data)
+    {
+        console.log(data);
+
+        for (key in data)
+        {
+            console.log(data[key]);
+            $("tr[name="+key+"] td[name=zips]").text(data[key]["file_count"]);
+            $("tr[name="+key+"] td[name=updated]").text(data[key]["date"]);
+        }
+    }
+);
+});
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+#content td
+{
+    padding:0.25em;
+}
+
+td[name=zips]
+{
+    text-align:right;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <section id="content" class="block">
-<p>By today's standards, ZZT's worlds are incredible small downloads.
+<p>By today's standards, ZZT's worlds are incredibly small downloads.
 A complete collection of all files hosted on the Museum of ZZT isn't that much larger than 100 MB.</p>
 
 <p>Because of their small size, automatically updated bulk downloads are made available to download.
 Due to potential collisions with file names (as well as issues with ZZT trying to load a list of hundreds of worlds),
-they have been split up into categories, for non-ZZT worlds, and by release year for ZZT worlds.</p>
+they have been split up by release year for ZZT worlds and by file type for non-ZZT files.</p>
 
 <p>Note that since these downloads consist of nothing more than a zip file filled with dozens of zip files you may wind up downloading
 plenty of duplicate copies of executables, fonts, or other content.</p>
@@ -19,140 +56,55 @@ plenty of duplicate copies of executables, fonts, or other content.</p>
     <th>Zips</th>
     <th>Updated</th>
 </tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_unknown.zip">ZZT Worlds - Unknown Year</a></td>
-    <td></td>
-    <td></td>
+<tr name="UNKNOWN">
+    <td><a href="/zgames/mass/zzt_worlds_unknown.zip">ZZT Worlds - Unknown</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_1990.zip">ZZT Worlds - 1990</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
+<tr name="1991">
     <td><a href="/zgames/mass/zzt_worlds_1991.zip">ZZT Worlds - 1991</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
+<tr name="1992">
     <td><a href="/zgames/mass/zzt_worlds_1992.zip">ZZT Worlds - 1992</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
+<tr name="1993">
     <td><a href="/zgames/mass/zzt_worlds_1993.zip">ZZT Worlds - 1993</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
+<tr name="1994">
     <td><a href="/zgames/mass/zzt_worlds_1994.zip">ZZT Worlds - 1994</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
+<tr name="1995">
     <td><a href="/zgames/mass/zzt_worlds_1995.zip">ZZT Worlds - 1995</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
+<tr name="1996">
     <td><a href="/zgames/mass/zzt_worlds_1996.zip">ZZT Worlds - 1996</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
+<tr name="1997">
     <td><a href="/zgames/mass/zzt_worlds_1997.zip">ZZT Worlds - 1997</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
+<tr name="1998">
     <td><a href="/zgames/mass/zzt_worlds_1998.zip">ZZT Worlds - 1998</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
+<tr name="1999">
     <td><a href="/zgames/mass/zzt_worlds_1999.zip">ZZT Worlds - 1999</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2000.zip">ZZT Worlds - 2000</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2001.zip">ZZT Worlds - 2001</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2002.zip">ZZT Worlds - 2002</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2003.zip">ZZT Worlds - 2003</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2004.zip">ZZT Worlds - 2004</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2005.zip">ZZT Worlds - 2005</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2006.zip">ZZT Worlds - 2006</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2007.zip">ZZT Worlds - 2007</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2008.zip">ZZT Worlds - 2008</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2009.zip">ZZT Worlds - 2009</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2010.zip">ZZT Worlds - 2010</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2011.zip">ZZT Worlds - 2011</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2012.zip">ZZT Worlds - 2012</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2013.zip">ZZT Worlds - 2013</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2014.zip">ZZT Worlds - 2014</a></td>
-    <td></td>
-    <td></td>
-</tr>
-<tr>
-    <td><a href="/zgames/mass/zzt_worlds_2015.zip">ZZT Worlds - 2015</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
 </table>
 
@@ -162,20 +114,83 @@ plenty of duplicate copies of executables, fonts, or other content.</p>
     <th>Zips</th>
     <th>Updated</th>
 </tr>
+<tr name="2000">
+    <td><a href="/zgames/mass/zzt_worlds_2000.zip">ZZT Worlds - 2000</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+<tr name="2001">
+    <td><a href="/zgames/mass/zzt_worlds_2001.zip">ZZT Worlds - 2001</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+<tr name="2002">
+    <td><a href="/zgames/mass/zzt_worlds_2002.zip">ZZT Worlds - 2002</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+<tr name="2003">
+    <td><a href="/zgames/mass/zzt_worlds_2003.zip">ZZT Worlds - 2003</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+<tr name="2004">
+    <td><a href="/zgames/mass/zzt_worlds_2004.zip">ZZT Worlds - 2004</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+<tr name="2005">
+    <td><a href="/zgames/mass/zzt_worlds_2005.zip">ZZT Worlds - 2005</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+<tr name="2006">
+    <td><a href="/zgames/mass/zzt_worlds_2006.zip">ZZT Worlds - 2006</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+<tr name="2007">
+    <td><a href="/zgames/mass/zzt_worlds_2007.zip">ZZT Worlds - 2007</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+<tr name="2008">
+    <td><a href="/zgames/mass/zzt_worlds_2008.zip">ZZT Worlds - 2008</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+<tr name="2009">
+    <td><a href="/zgames/mass/zzt_worlds_2009.zip">ZZT Worlds - 2009</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+</table>
+
+<table class="col">
 <tr>
+    <th>File</th>
+    <th>Zips</th>
+    <th>Updated</th>
+</tr>
+<tr name="2010-2017">
+    <td><a href="/zgames/mass/zzt_worlds_2010-2017.zip">ZZT Worlds - 2010-2017</a></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
+</tr>
+<tr name="SZZT">
     <td><a href="/zgames/mass/szzt_worlds.zip">Super ZZT Worlds</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
+<tr name="ZIG">
     <td><a href="/zgames/mass/zig_worlds.zip">ZIG Worlds</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
-<tr>
+<tr name="UTIL">
     <td><a href="/zgames/mass/utilities.zip">Utilities</a></td>
-    <td></td>
-    <td></td>
+    <td name="zips"></td>
+    <td name="updated"></td>
 </tr>
 </table>
 

@@ -6,10 +6,10 @@ import django
 import zookeeper
 
 sys.path.append("/var/projects/museum/")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "z2.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
-from z2_site.models import File
+from museum_site.models import File
 
 
 def main():
@@ -103,13 +103,11 @@ def main():
             continue
 
         # Extract the file
-        """
         try:
             zf.extract(oldest_file, path="/var/projects/museum/tools/extract")
         except:
             print("\tSkipping due to bad zip to extract")
             continue
-        """
 
         if mode == "AUTO":
             zf.extract(oldest_file, path="/var/projects/museum/tools/extract")
@@ -120,11 +118,12 @@ def main():
             )
 
             z.boards[0].screenshot(
-                ("/var/projects/museum/z2_site/static/images"
+                ("/var/projects/museum/museum_site/static/images"
                  "/screenshots/{}/{}").format(
                     f.letter,
                     f.filename[:-4]
-                )
+                ),
+                title_screen=True
             )
         elif mode == "MANUAL":
             use_com = ""
@@ -169,11 +168,12 @@ def main():
 
             board_idx = int(input("Enter board IDX to render: "))
             z.boards[board_idx].screenshot(
-                ("/var/projects/museum/z2_site/static/images"
-                 "/screenshots/{}/{}").format(
+                ("/var/projects/museum/museum_site/static/images"
+                 "/screenshots/{}/{}", title).format(
                     f.letter,
                     f.filename[:-4]
-                )
+                ),
+                title_screen=True
             )
 
         # Update the DB entry
