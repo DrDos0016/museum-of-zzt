@@ -35,6 +35,7 @@ EMAIL_ADDRESS = "doctordos@gmail.com"
 
 print("MUSEUM OF ZZT STARTUP")
 print(str(datetime.utcnow()))
+print("Site Root:", SITE_ROOT)
 print("Python:", PYTHON_VERSION)
 print("Django:", DJANGO_VERSION)
 

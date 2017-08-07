@@ -60,6 +60,8 @@ DETAIL_LOST = 17
 DETAIL_UPLOADED = 18
 DETAIL_REMOVED = 19
 
+SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 class Article(models.Model):
     """ Article object repesenting a page from an article
@@ -206,7 +208,7 @@ class File(models.Model):
             ).count()
 
         # If the screenshot is blank and a file exists for it, set it
-        if self.screenshot == "" and os.path.isfile("/var/projects/museum/museum_site/static/images/screenshots/" + self.letter + "/" + self.filename[:-4] + ".png"):
+        if self.screenshot == "" and os.path.isfile(os.path.join(SITE_ROOT, "museum_site/static/images/screenshots/") + self.letter + "/" + self.filename[:-4] + ".png"):
             self.screenshot = self.filename[:-4] + ".png"
 
         # Recalculate Review Scores
@@ -215,7 +217,7 @@ class File(models.Model):
         # Update blank md5s
         if self.checksum == "":
             try:
-                resp = subprocess.run(["md5sum", "/var/projects/museum/zgames/"+ self.letter + "/" + self.filename], stdout=subprocess.PIPE)
+                resp = subprocess.run(["md5sum", os.path.join(SITE_ROOT, "zgames/") + self.letter + "/" + self.filename], stdout=subprocess.PIPE)
                 md5 = resp.stdout[:32].decode("utf-8")
                 self.checksum = md5
             except:
@@ -299,8 +301,7 @@ class File(models.Model):
                 self.rating = round(ratings["rating__avg"], 2)
 
     def from_request(self, request):
-        # TODO: Unhardcode
-        upload_directory = "/var/projects/museum/zgames/uploaded"
+        upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
 
         if request.method != "POST":
             return False
