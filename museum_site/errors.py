@@ -19,19 +19,19 @@ def raise_error(request, status):
 def bad_request_400(request):
     data = {"title": "Bad Request",
     "msg": "The request sent to the server was invalid."}
-    return render(request, "z2_site/error.html", data)
+    return render(request, "museum_site/error.html", data)
 
 def permission_denied_403(request):
     data = {"title": "Forbidden",
     "msg": "The content you were trying to access is restricted."}
-    return render(request, "z2_site/error.html", data)
+    return render(request, "museum_site/error.html", data)
 
 def page_not_found_404(request):
     data = {"title": "Page Not Found",
     "msg": "The content you were trying to access could not be found."}
-    return render(request, "z2_site/error.html", data)
+    return render(request, "museum_site/error.html", data)
 
 def server_error_500(request):
     data = {"title": "Internal Server Error",
     "msg": "The server was unable to process your request."}
-    return render(request, "z2_site/error.html", data)
+    return render(request, "museum_site/error.html", data)
