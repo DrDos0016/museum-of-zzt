@@ -5,7 +5,7 @@ import sys
 import zipfile
 
 sys.path.append("/var/projects/museum")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "z2.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
 from museum_site.models import File

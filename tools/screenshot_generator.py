@@ -21,6 +21,7 @@ def main():
         print("Generate screenshots for: ")
         print("ALL - All Files")
         print("BLANK - Files with no screenshot set")
+        print("UPLOADED - Files that haven't been published")
         print("<#> - File ID #")
         print("<[a-z]> - Letter")
         print("TEMP - Whatever set I coded for this")
@@ -28,6 +29,8 @@ def main():
 
         if choice == "ALL":
             files = File.objects.all().order_by("letter", "title")
+        elif choice == "UPLOADED":
+            files = File.objects.filter(details__id__in=18) # UPLOADED
         elif choice == "BLANK":
             files = File.objects.filter(screenshot="").order_by("letter",
                                                                 "title")

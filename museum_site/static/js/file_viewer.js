@@ -530,6 +530,7 @@ function pull_file()
 
         // Update the format for CSS purposes
         $("#details").attr("data-format", format);
+        $("#details").scrollTop(0);
     });
 }
 

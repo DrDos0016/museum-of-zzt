@@ -1,12 +1,16 @@
+from datetime import datetime
+
 from django.template import Template, Context, Library
 from django.utils.safestring import mark_safe
+
+from museum_site.models import File
 
 register = Library()
 
 
 @register.filter
 def as_template(raw):
-    raw = "{% load staticfiles %}\n{% load zzt_tags %}" + raw
+    raw = "{% load staticfiles %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
     return Template(raw).render(Context())
 
 
@@ -62,3 +66,26 @@ def patreon_plug(*args, **kwargs):
     """
 
     return mark_safe(output + "\n")
+
+@register.simple_tag()
+def cl_info(id):
+    file = File.objects.get(pk=id)
+
+    if file.company:
+        company = "Published Under: {}<br>".format(file.company)
+    else:
+        company = ""
+
+    output = """
+        <div class="c">
+            <h2>{}</h2>
+            By: {}<br>
+            {}
+            Released: {}<br>
+            <a href="{}" target="_blank">Download</a> | <a href="{}" target="_blank">Play Online</a> | <a href="{}" target="_blank">View Files</a><br>
+        </div>
+
+    """.format(file.title, file.author, company, file.release_date.strftime("%B %m, %Y"), file.download_url(), file.play_url(), file.file_url())
+
+    return mark_safe(output + "\n")
+

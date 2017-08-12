@@ -82,7 +82,7 @@ def get_zip_file(request):
 
         return response
     else:
-        return HttpResponse("Maybe in the future")
+        return HttpResponse("This file type is not currently supported for embedded content.")
 
 def debug_file(request):
     if not os.path.isfile("/var/projects/DEV"):

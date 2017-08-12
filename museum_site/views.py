@@ -624,6 +624,6 @@ def debug_article(request):
         article.title = "TEST ARTICLE"
         article.category = "TEST"
         article.content = fh.read()
-        article.type = "html"
+        article.type = request.GET.get("format", "django")
     data["article"] = article
     return render(request, "museum_site/article_view.html", data)
