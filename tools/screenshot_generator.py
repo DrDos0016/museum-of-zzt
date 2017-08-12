@@ -30,7 +30,7 @@ def main():
         if choice == "ALL":
             files = File.objects.all().order_by("letter", "title")
         elif choice == "UPLOADED":
-            files = File.objects.filter(details__id__in=18) # UPLOADED
+            files = File.objects.filter(details__id__in=[18]) # UPLOADED
         elif choice == "BLANK":
             files = File.objects.filter(screenshot="").order_by("letter",
                                                                 "title")
