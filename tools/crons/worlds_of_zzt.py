@@ -111,7 +111,7 @@ def main():
         if processing and z.boards[board_num].title in BOARD_TITLE_BLACKLIST:
             continue
 
-        z.boards[board_num].screenshot("temp", title_screen=(board_num == 0))
+        z.boards[board_num].screenshot(CRON_ROOT + "temp", title_screen=(board_num == 0))
         processing = False
 
     # Remove the ZZT file. We're done with it.
