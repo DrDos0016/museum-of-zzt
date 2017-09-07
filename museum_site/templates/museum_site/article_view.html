@@ -7,6 +7,11 @@
 {{article.parent.css|safe}}
 {% endif %}
 {{article.css|safe}}
+{% if request.GET.spellcheck %}
+<style>
+.zzt-img, .zzt-scroll, .patreon-plug { display:none; }
+</style>
+{% endif %}
 {% endblock %}
 
 {% block world_content %}
@@ -19,6 +24,11 @@
 {% endif %}
 
 <article class="{{article.category|slugify}}" data-article_id="{{article.id}}">
+{% if veryspecial %}
+<div class="debug">
+    <a href="?file={{request.GET.file}}&spellcheck=1&page=all">Spellcheck</a>
+</div>
+{% endif %}
 {% if article.type == "html" %}
     {{article.content|safe}}
 {% elif article.type == "text" %}

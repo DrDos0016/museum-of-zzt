@@ -1,5 +1,6 @@
 import os
 import subprocess
+import zipfile
 
 from datetime import datetime
 
@@ -7,6 +8,12 @@ from django.db import models
 from django.db.models import Avg
 #  from django.contrib import admin
 from django.template.defaultfilters import slugify
+
+try:
+    import zookeeper
+    HAS_ZOOKEEPER = True
+except ImportError:
+    HAS_ZOOKEEPER = False
 
 
 ARTICLE_FORMATS = (
@@ -128,8 +135,6 @@ class File(models.Model):
     genre           -- / sep. ABC list of genres (ex: Action/RPG)
     release_date    -- Best guess release date (ex: 2001-04-16)
     release_source  -- Source of release date (ex: ZZT file, News post, Text)
-    category        -- What kind of file this is (ex: ZZT, Super ZZT, Utility)
-    TODO: REMOVE CATEGORY WHEN PUBLIC BETA IS UPDATED NEXT
     screenshot      -- Filename of screenshot to display (ex: 3dtalk.png)
     company         -- / sep. ABC list of companies published (ex: ERI/IF)
     description     -- Description of file for utilities or featured games
@@ -140,6 +145,8 @@ class File(models.Model):
     article_count   -- Number of articles associated with this file
     checksum        -- md5 checksum of the zip file
     superceded      -- FK with File for the "definitive" version of a file
+    playable_boards -- Number of boards in file that can be accessed in play
+    total_boards    -- Number of boards in file that exist period
     """
 
     letter = models.CharField(max_length=1, db_index=True)
@@ -156,7 +163,6 @@ class File(models.Model):
     release_source = models.CharField(
         max_length=20, null=True, default=None, blank=True
     )
-    category = models.CharField(max_length=10, choices=CATEGORY_LIST)
     screenshot = models.CharField(
         max_length=80, blank=True, null=True, default=None
     )
@@ -178,6 +184,8 @@ class File(models.Model):
                                 blank=True, default="")
     superceded = models.ForeignKey("File", db_column="superceded_id",
                                    null=True, blank=True, default=None)
+    playable_boards = models.IntegerField(null=True, blank=True, default=None, help_text="Set automatically. Do not adjust.")
+    total_boards = models.IntegerField(null=True, blank=True, default=None, help_text="Set automatically. Do not adjust.")
 
     class Meta:
         ordering = ["sort_title", "letter"]
@@ -223,7 +231,12 @@ class File(models.Model):
             except:
                 pass
 
-        super(File, self).save(*args, **kwargs)  # Actual save call
+        # Set board counts
+        if not self.playable_boards or not self.total_boards and HAS_ZOOKEEPER:
+            self.calculate_boards()
+
+        # Actual save call
+        super(File, self).save(*args, **kwargs)
 
     def sorted_title(self):
         # Handle titles that start with A/An/The
@@ -346,6 +359,91 @@ class File(models.Model):
 
         # SITE META
         return {"status": "success"}
+
+    def calculate_boards(self):
+        temp_playable = 0
+        temp_total = 0
+        zip_path = os.path.join(SITE_ROOT, "zgames",self.letter, self.filename)
+        temp_path = os.path.join(SITE_ROOT, "temp")
+
+        try:
+            zf = zipfile.ZipFile(zip_path)
+        except (FileNotFoundError, zipfile.BadZipFile):
+            print("\tSkipping due to bad zip")
+
+        file_list = zf.namelist()
+
+        for file in file_list:
+            name, ext = os.path.splitext(file)
+            ext = ext.upper()
+
+            if ext == ".ZZT":  # ZZT File
+                # Extract the file
+                try:
+                    zf.extract(file, path=temp_path)
+                except:
+                    print("Bad zip.")
+            else:
+                continue
+
+            z = zookeeper.Zookeeper(
+                os.path.join(temp_path, file)
+            )
+
+            # Since a ZZT world is being opened, initialize these for the first file only
+            if self.playable_boards is None:
+                self.playable_boards = 0
+                self.total_boards = 0
+
+            to_explore = []
+            accessible = []
+
+            # Start with the starting board
+            to_explore.append(z.world.current_board)
+
+            false_positives = 0
+            for idx in to_explore:
+                # Make sure the board idx exists in the file (in case of imported boards with passages)
+                if idx >= len(z.boards):
+                    false_positives += 1
+                    continue
+
+                #print(to_explore)
+                # This board is clearly accessible
+                accessible.append(idx)
+
+                # Get the connected boards via edges
+                if z.boards[idx].board_north != 0 and z.boards[idx].board_north not in to_explore:
+                    to_explore.append(z.boards[idx].board_north)
+                if z.boards[idx].board_south != 0 and z.boards[idx].board_south not in to_explore:
+                    to_explore.append(z.boards[idx].board_south)
+                if z.boards[idx].board_east != 0 and z.boards[idx].board_east not in to_explore:
+                    to_explore.append(z.boards[idx].board_east)
+                if z.boards[idx].board_west != 0 and z.boards[idx].board_west not in to_explore:
+                    to_explore.append(z.boards[idx].board_west)
+
+                # Get the connected boards via passages
+                for stat in z.boards[idx].stat_data:
+                    if z.boards[idx].get_element((stat.x, stat.y)).name == "Passage":
+                        # print("Found a passage at", stat.x, stat.y)
+                        if stat.param3 not in to_explore:
+                            to_explore.append(stat.param3)
+
+            # Title screen always counts (but don't count it twice)
+            if 0 not in to_explore:
+                to_explore.append(0)
+
+            """
+            for x in range(0, len(z.boards)):
+                if x in to_explore:
+                    print("[X]", z.boards[x].title)
+                else:
+                    print("[ ]", z.boards[x].title)
+            """
+
+            self.playable_boards += len(to_explore) - false_positives
+            self.total_boards += len(z.boards)
+        return True
 
 
 class Detail(models.Model):

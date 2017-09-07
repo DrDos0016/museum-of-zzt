@@ -2,6 +2,7 @@ private
 virt
 venv
 zgames
+zookeeper
 
 comic/static/comic/bencomic/*
 comic/static/comic/frost/*
@@ -14,6 +15,7 @@ comic/static/comic/ubgs/*
 comic/static/comic/zamros/*
 tools/comic/json/*
 tools/comic/necocone.co/*
+tools/crons/private.py
 tools/extract
 tools/zookeeper
 tools/data

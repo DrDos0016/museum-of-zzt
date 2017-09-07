@@ -10,8 +10,12 @@ def main():
     """
     This calls .save() on every File object.
     """
-    for f in File.objects.all():
+    #for f in File.objects.all():
+    for f in File.objects.filter(total_boards=None).order_by("-letter"):
+        if f.id == 2320:
+            continue # Don't fuck with the AOL compilation
         try:
+            print(f)
             f.save()
         except:
             print("Couldn't save", f)
