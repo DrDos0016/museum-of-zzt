@@ -223,9 +223,9 @@ $(document).ready(function (){
 
 <section id="sidebar-right" class="col sidebar">
     <div class="block">
-        <h1>Articles</h1>
+        <h1>Reference</h1>
 
-        <h2>Directory</h2>
+        <h2>Directories</h2>
         <a href="/article?sort=date">Articles by date</a><br>
         <a href="/article">Articles by category</a><br>
         <a href="{% url 'directory' 'author' %}">Authors</a><br>
@@ -238,7 +238,8 @@ $(document).ready(function (){
         <a href="{% url 'zzt_cheats' %}">ZZT Cheats</a><br>
 
         <h2>Editing</h2>
-        <a href="/ascii">ASCII Character Reference</a><br>
+        <a href="/ascii">ASCII Characters</a><br>
+        <a href="/file/local">Local File Viewer</a><br>
 
         <h2>Historical</h2>
         <a href="{% url 'closer_looks' %}">Closer Looks</a><br>

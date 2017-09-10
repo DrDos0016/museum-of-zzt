@@ -544,6 +544,13 @@ function load_local_file()
 
     var file_reader = new FileReader();
     file_reader.onload = function (e) {
+        // Determine engine
+        var ext = file["name"].slice(-3).toLowerCase();
+        var format = (ext != "szt") ? "zzt" : "szt";
+        console.log("FORMAT", format, ext)
+        ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
+        ENGINE = engines[format];
+
         $("#local-file-name").text(file["name"]);
         $("#local-file-name").addClass("selected");
         var byte_array = new Uint8Array(file_reader.result);
@@ -553,7 +560,7 @@ function load_local_file()
         {
             hex_string += ("0" + byte_array[idx].toString(16)).slice(-2);
         }
-        world = parse_world("zzt", hex_string);
+        world = parse_world(format, hex_string);
 
         var board_list = "<ol>";
         for (var x = 0; x < world.boards.length; x++)
@@ -563,6 +570,9 @@ function load_local_file()
         board_list += "</ol>";
         $("#file-list li.selected").append(board_list + "<br>");
         $("li.board").click(render_board); // Bind event
+
+        $("#details").attr("data-format", format);
+        $("#details").scrollTop(0);
     }
 
     file_reader.readAsArrayBuffer(file);

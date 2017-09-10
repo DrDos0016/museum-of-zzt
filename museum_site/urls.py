@@ -83,8 +83,9 @@ urlpatterns = [
     url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.play,
         name="play"
         ),
-    url(r"^file/local$", museum_site.views.local,
-        name="local"
+    url(r"^file/local$", museum_site.views.file,
+        {"local": True, "letter":"!", "filename":""},
+        name="local",
         ),
 
     # Files (alternate categories)

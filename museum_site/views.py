@@ -269,52 +269,59 @@ def featured_games(request, page=1):
     return render(request, "museum_site/featured_games.html", data)
 
 
-def file(request, letter, filename):
+def file(request, letter, filename, local=False):
     """ Returns page exploring a file's zip contents """
     data = {}
     data["year"] = YEAR
     data["details"] = []  # Required to show all download links
     data["file"] = File.objects.filter(letter=letter, filename=filename)
-    if len(data["file"]) == 0:
-        # Check if there's a matching zip with a different letter
-        alternative = File.objects.filter(filename=filename)
-        alt_count = alternative.count()
-        if alt_count:
-            if alt_count == 1:
-                response = redirect("file", letter=alternative[0].letter,
-                                    filename=filename)
-                return response
-            else:
-                response = redirect("search")
-                response['Location'] += "?filename=" + filename
-                return response
-        raise Http404()
-    elif len(data["file"]) > 1:
-        for file in data["file"]:
-            if file.filename == filename:
-                data["file"] = file
-                break
-    else:
-        data["file"] = data["file"][0]
+    data["local"] = local
+    if not local:
+        if len(data["file"]) == 0:
+            # Check if there's a matching zip with a different letter
+            alternative = File.objects.filter(filename=filename)
+            alt_count = alternative.count()
+            if alt_count:
+                if alt_count == 1:
+                    response = redirect("file", letter=alternative[0].letter,
+                                        filename=filename)
+                    return response
+                else:
+                    response = redirect("search")
+                    response['Location'] += "?filename=" + filename
+                    return response
+            raise Http404()
+        elif len(data["file"]) > 1:
+            for file in data["file"]:
+                if file.filename == filename:
+                    data["file"] = file
+                    break
+        else:
+            data["file"] = data["file"][0]
 
-    data["title"] = data["file"].title
-    data["letter"] = letter
+        data["title"] = data["file"].title
+        data["letter"] = letter
+
+        if data["file"].is_uploaded():
+            letter = "uploaded"
+            data["uploaded"] = True
+        zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
+        files = zip.namelist()
+        files.sort(key=str.lower)
+        data["files"] = []
+        # Filter out directories (but not their contents)
+        for f in files:
+            if f and f[-1] != os.sep:
+                data["files"].append(f)
+        data["load_file"] = request.GET.get("file", "")
+        data["load_board"] = request.GET.get("board", "")
+    else: # Local files
+        data["file"] = "Local File Viewer"
+        data["letter"] = letter
+
     data["charsets"] = CHARSET_LIST
     data["custom_charsets"] = CUSTOM_CHARSET_LIST
 
-    if data["file"].is_uploaded():
-        letter = "uploaded"
-        data["uploaded"] = True
-    zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
-    files = zip.namelist()
-    files.sort(key=str.lower)
-    data["files"] = []
-    # Filter out directories (but not their contents)
-    for f in files:
-        if f and f[-1] != os.sep:
-            data["files"].append(f)
-    data["load_file"] = request.GET.get("file", "")
-    data["load_board"] = request.GET.get("board", "")
 
     return render(request, "museum_site/file.html", data)
 
