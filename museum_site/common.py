@@ -204,6 +204,7 @@ SORT_CODES = {
     "title": ["sort_title"],
     "author": ["author", "sort_title"],
     "company": ["company", "sort_title"],
+    "id": ["-id"],
     "rating": ["-rating", "sort_title"],
     "release": ["release_date", "sort_title"]
 }

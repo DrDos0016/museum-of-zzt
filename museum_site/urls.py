@@ -31,6 +31,9 @@ urlpatterns = [
     url(r"^$", museum_site.views.index, name="index"),
     url(r"^credits$", museum_site.views.site_credits),
 
+    # Accounts
+    url(r"^register$", museum_site.views.register, name="register"),
+
     # Articles
     url(r"^article$", museum_site.views.article_directory,
         name="article_directory"
@@ -124,6 +127,9 @@ urlpatterns = [
         name="lost_worlds"),
     url(r"^uploaded$", museum_site.views.browse, {"details": [DETAIL_UPLOADED]},
         name="uploaded_worlds"),
+
+    url(r"^new$", museum_site.views.browse,
+        name="new_files"),
 
     # Mass Downloads
     url(r"^mass-downloads$", museum_site.views.mass_downloads,

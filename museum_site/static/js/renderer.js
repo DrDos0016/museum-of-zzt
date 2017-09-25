@@ -25,122 +25,120 @@ class Renderer {
         var line_walls = {}; // I am not happy with this solution
         var line_colors = {};
 
-        for (var chunk_idx = 0; chunk_idx < board.room.length; chunk_idx++)
+        for (var element_idx = 0; element_idx < board.elements.length; element_idx++)
         {
-            var chunk = board.room[chunk_idx];
+            var element = board.elements[element_idx];
 
-            for (var qty = 0; qty < chunk[0]; qty++)
+            // Text
+            if (element.id >= 47 && element.id <= 69)
             {
-                // Text
-                if (chunk[1] >= 47 && chunk[1] <= 69)
+                if (element.id != 53)
+                    print(ctx, element.color_id, ((element.id-46)*16 + 15), x, y);
+                else // White Text needs black not gray background
+                    print(ctx, element.color_id, 15, x, y);
+            }
+            else if (element.id == 0) // Empty
+            {
+                print(ctx, ENGINE.characters[element.id], 0, x, y);
+            }
+            /*
+            else if (board_number == 0 && element.id == 4) // Replace Player w/ black on black (monitor) for title screen
+            {
+                print(ctx, ENGINE.characters[element.id], 0, x, y);
+            }
+            */
+            else if (element.id == 36 || element.id == 40 || element.id == 30 || element.id == 13 || element.id == 12 ) // Objects, pushers, transporters, bombs, dupes
+            {
+                print(ctx, ENGINE.characters[element.id], element.color_id, x, y); // Statless
+                for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
                 {
-                    if (chunk[1] != 53)
-                        print(ctx, chunk[2], ((chunk[1]-46)*16 + 15), x, y);
-                    else // White Text needs black not gray background
-                        print(ctx, chunk[2], 15, x, y);
-                }
-                else if (chunk[1] == 0) // Empty
-                {
-                    print(ctx, ENGINE.characters[chunk[1]], 0, x, y);
-                }
-                /*
-                else if (board_number == 0 && chunk[1] == 4) // Replace Player w/ black on black (monitor) for title screen
-                {
-                    print(ctx, ENGINE.characters[chunk[1]], 0, x, y);
-                }
-                */
-                else if (chunk[1] == 36 || chunk[1] == 40 || chunk[1] == 30 || chunk[1] == 13 || chunk[1] == 12 ) // Objects, pushers, transporters, bombs, dupes
-                {
-                    print(ctx, ENGINE.characters[chunk[1]], chunk[2], x, y); // Statless
-                    for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
+
+                    if (board.stats[stat_idx].x - 1 == x && board.stats[stat_idx].y - 1 == y)
                     {
-
-                        if (board.stats[stat_idx].x - 1 == x && board.stats[stat_idx].y - 1 == y)
+                        if (element.id == 36) // Object
                         {
-                            if (chunk[1] == 36) // Object
-                            {
-                                print(ctx, board.stats[stat_idx].param1, chunk[2], x, y);
-                            }
-                            else if (chunk[1] == 40) // Pusher
-                            {
-                                var pusher_char = 16;
-                                if (board.stats[stat_idx].y_step > 32767)
-                                    pusher_char = 30;
-                                else if (board.stats[stat_idx].y_step > 0)
-                                    pusher_char = 31;
-                                else if (board.stats[stat_idx].x_step > 32767)
-                                    pusher_char = 17;
+                            print(ctx, board.stats[stat_idx].param1, element.color_id, x, y);
+                        }
+                        else if (element.id == 40) // Pusher
+                        {
+                            var pusher_char = 16;
+                            if (board.stats[stat_idx].y_step > 32767)
+                                pusher_char = 30;
+                            else if (board.stats[stat_idx].y_step > 0)
+                                pusher_char = 31;
+                            else if (board.stats[stat_idx].x_step > 32767)
+                                pusher_char = 17;
 
-                                print(ctx, pusher_char, chunk[2], x, y);
-                            }
-                            else if (chunk[1] == 30) // Transporter
-                            {
-                                var transporter_char = 62;
-                                if (board.stats[stat_idx].y_step > 32767)
-                                    transporter_char = 94;
-                                else if (board.stats[stat_idx].y_step > 0)
-                                    transporter_char = 118;
-                                else if (board.stats[stat_idx].x_step > 32767)
-                                    transporter_char = 60;
+                            print(ctx, pusher_char, element.color_id, x, y);
+                        }
+                        else if (element.id == 30) // Transporter
+                        {
+                            var transporter_char = 62;
+                            if (board.stats[stat_idx].y_step > 32767)
+                                transporter_char = 94;
+                            else if (board.stats[stat_idx].y_step > 0)
+                                transporter_char = 118;
+                            else if (board.stats[stat_idx].x_step > 32767)
+                                transporter_char = 60;
 
-                                print(ctx, transporter_char, chunk[2], x, y);
-                            }
-                            else if (chunk[1] == 13) // Bomb
+                            print(ctx, transporter_char, element.color_id, x, y);
+                        }
+                        else if (element.id == 13) // Bomb
+                        {
+                            if (board.stats[stat_idx].param1 >= 2)
                             {
-                                if (board.stats[stat_idx].param1 >= 2)
-                                {
-                                    var bomb_char = board.stats[stat_idx].param1 + 48
-                                    if (bomb_char > 255)
-                                        bomb_char -= 255;
-                                }
-                                else
-                                {
-                                    continue; // Default is fine
-                                }
-                                print(ctx, bomb_char, chunk[2], x, y);
+                                var bomb_char = board.stats[stat_idx].param1 + 48
+                                if (bomb_char > 255)
+                                    bomb_char -= 255;
                             }
-                            if (chunk[1] == 12) // Duplicator
+                            else
                             {
-                                var dupe_chars = [250,250,249,248,111,79];
-                                if (board.stats[stat_idx].param1 >= 2 && board.stats[stat_idx].param1 <= 5)
-                                    print(ctx, dupe_chars[board.stats[stat_idx].param1], chunk[2], x, y);
-                                // Default case handles the rest
+                                continue; // Default is fine
+                            }
+                            print(ctx, bomb_char, element.color_id, x, y);
+                        }
+                        if (element.id == 12) // Duplicator
+                        {
+                            var dupe_chars = [250,250,249,248,111,79];
+                            if (board.stats[stat_idx].param1 >= 2 && board.stats[stat_idx].param1 <= 5)
+                                print(ctx, dupe_chars[board.stats[stat_idx].param1], element.color_id, x, y);
+                            // Default case handles the rest
 
 
 
-                            }
                         }
                     }
                 }
-                else if (chunk[1] == 31) // Line walls
-                {
-                    line_walls[(y*60)+x] = 1;
-                    line_colors[(y*60)+x] = chunk[2];
-                }
-                else if (chunk[1] == 28) // Invisible walls
-                {
-                    print(ctx, this.invisible_chars[this.invisible_style], chunk[2], x, y);
-                }
-                else if (chunk[1] == 3) // Monitors
-                {
-                    print(ctx, this.monitor_chars[this.monitor_style], chunk[2], x, y);
-                }
-                else if (chunk[1] == 1) // Board Edges
-                {
-                    print(ctx, this.edge_chars[this.edge_style], chunk[2], x, y);
-                }
-                else // Standard
-                    print(ctx, ENGINE.characters[chunk[1]], chunk[2], x, y);
+            }
+            else if (element.id == 31) // Line walls
+            {
+                line_walls[(y*60)+x] = 1;
+                line_colors[(y*60)+x] = element.color_id;
+            }
+            else if (element.id == 28) // Invisible walls
+            {
+                print(ctx, this.invisible_chars[this.invisible_style], element.color_id, x, y);
+            }
+            else if (element.id == 3) // Monitors
+            {
+                print(ctx, this.monitor_chars[this.monitor_style], element.color_id, x, y);
+            }
+            else if (element.id == 1) // Board Edges
+            {
+                print(ctx, this.edge_chars[this.edge_style], element.color_id, x, y);
+            }
+            else // Standard
+                print(ctx, ENGINE.characters[element.id], element.color_id, x, y);
 
-                tile += 1;
-                x += 1;
-                if (x > 59)
-                {
-                    x = 0;
-                    y += 1;
-                }
+            tile += 1;
+            x += 1;
+            if (x > 59)
+            {
+                x = 0;
+                y += 1;
             }
         }
+
 
         // Render line walls
         var line_tiles = Object.keys(line_walls);

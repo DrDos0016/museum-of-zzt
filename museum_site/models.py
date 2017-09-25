@@ -4,9 +4,11 @@ import zipfile
 
 from datetime import datetime
 
+from django.conf import settings
 from django.db import models
 from django.db.models import Avg
-#  from django.contrib import admin
+
+from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
 try:
@@ -86,6 +88,7 @@ class Article(models.Model):
     parent          -- Article ID of the first page of the article
     summary         -- Summary for Opengraph
     preview         -- Path to preview image
+    allow_comments  -- Allow user comments on the article
     """
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=50)
@@ -99,6 +102,7 @@ class Article(models.Model):
     parent = models.ForeignKey("Article", null=True, blank=True, default=None)
     summary = models.CharField(max_length=150, default="", blank=True)
     preview = models.CharField(max_length=80, default="", blank=True)
+    #allow_comments = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["title"]
@@ -120,6 +124,45 @@ class Article(models.Model):
                 parent_id=self.parent_id
             ).count()
         return page_count
+
+
+class Comment():
+    """ Review object repesenting a comment on an article
+
+    Fields:
+    article         -- Link to Article object
+    user            -- UserID who posted comment
+    content         -- Body of comment
+    date            -- Date review was written
+    ip              -- IP address posting the review
+    """
+    article = models.ForeignKey("Article")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    content = models.TextField()
+    date = models.DateField()
+    ip = models.GenericIPAddressField(blank=True, null=True)
+
+    class Meta:
+        ordering = ["id"]
+
+    def __str__(self):
+        x = ("[" + str(self.id) + "] Comment for " + str(self.article.title) + " by " + str(self.article.author))
+        return x
+
+    def from_request(self, request):
+        if request.method != "POST":
+            return False
+
+        self.file_id = int(request.POST.get("file_id"))
+        self.title = request.POST.get("title")
+        self.author = request.POST.get("name")  # NAME not author
+        self.email = request.POST.get("email")
+        self.content = request.POST.get("content")
+        self.rating = round(float(request.POST.get("rating")), 2)
+        self.date = datetime.utcnow()
+        self.ip = request.META["REMOTE_ADDR"]
+
+        return True
 
 
 class File(models.Model):

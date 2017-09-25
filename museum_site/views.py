@@ -116,6 +116,10 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
 
     sort = SORT_CODES[request.GET.get("sort", "title").strip()]
 
+    # Handle "new additions"
+    if request.path == "/new":
+        sort = SORT_CODES["id"]
+
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     data["qs_sans_view"] = qs_sans(request.GET, "view")
@@ -389,6 +393,10 @@ def random(request):
             file = file[0]
 
     return redirect("file/" + file.letter + "/" + file.filename)
+
+def register(request):
+    data = {}
+    return render(request, "museum_site/register.html", data)
 
 
 def review(request, letter, filename):

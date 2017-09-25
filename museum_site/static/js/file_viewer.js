@@ -295,6 +295,7 @@ var CP437_TO_UNICODE = {
 
 var world = null;
 var board_number = null;
+var board = null;
 
 var canvas = null;
 var ctx = null;
@@ -700,7 +701,6 @@ function parse_world(type, data)
 
 function parse_board(world)
 {
-    console.log("PARSING BOARD");
     var board = {};
     var start_idx = world.idx;
     var procced_bytes = 0;
@@ -776,7 +776,6 @@ function parse_board(world)
     }
     else if (world.format == "szt")
     {
-        console.log("Parse szzt board props");
         board.max_shots = world.read(1);
         board.exit_north = world.read(1);
         board.exit_south = world.read(1);
@@ -799,7 +798,6 @@ function parse_board(world)
     var parsed_stats = 0;
     var oop_read = 0;
 
-    console.log("Board has ", board.stat_count, "stats");
     while (parsed_stats <= board.stat_count)
     {
         var stat = {};
@@ -1377,7 +1375,6 @@ function render_stat_list()
 
     // Sort method
     var sort = $("select[name=stat-sort]").val();
-    console.log("SORTING BY", sort);
     if (sort == "stat")
     {
         board.stats.sort(function(a, b){
@@ -1401,7 +1398,6 @@ function render_stat_list()
             if ((stat_name2 == "Scroll" || stat_name2 == "Object") && b.oop[0] == "@")
                 stat_name2 = b.oop.slice(0, b.oop.indexOf("\r"));
 
-            console.log(stat_name1, stat_name2, a.idx, b.idx);
             if (stat_name1.toLowerCase() < stat_name2.toLowerCase())
                 return -1;
             else if (stat_name1.toLowerCase() > stat_name2.toLowerCase())

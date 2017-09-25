@@ -45,4 +45,10 @@
 <a href="{% url 'article_directory' %}">Article directory</a><br>
 <a href="{% url 'index' %}">Main page</a>
 {% if debug %}<div class="debug"><a href="/admin/museum_site/article/{{article.id}}/change/">Edit Article {{article.id}}</a></div>{% endif %}
+
+{% if article.allow_comments %}
+<div>
+    COMMENTS GO HERE
+</div>
+{% endif %}
 {% endblock %}
