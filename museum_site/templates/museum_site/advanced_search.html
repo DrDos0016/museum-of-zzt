@@ -18,6 +18,12 @@
     text-align:center;
 }
 
+#content input[name=board_min], #content input[name=board_max]
+{
+    width:60px;
+    text-align:center;
+}
+
 .spacing
 {
     width:45px;
@@ -28,6 +34,13 @@ div[name=all-none] > button
     font-size:smaller;
     font-weight:bold;
     width:10%;
+}
+
+#board-count label
+{
+    font-weight:normal;
+    width:auto;
+    display:inline;
 }
 </style>
 {% endblock %}
@@ -88,7 +101,19 @@ $(document).ready(function (){
     </select>
 </div>
 <div class="field">
-    <label for="year">Release Year:<br>
+    <label for="min">Min. / max. board count:<br>
+    </label>
+    <div id="board-count" class="col">
+        <input name="board_min" value="{{request.GET.board_min|default:''}}" min=0 max=32767 maxlength="5" type="number">
+        <div class="col spacing">&nbsp;&mdash;&nbsp;</div>
+        <input name="board_max" value="{{request.GET.board_max|default:''}}" min=0 max=32767 maxlength="5" type="number">
+        <br>
+        <label><input name="board_type" value="playable" type="radio"{% if request.GET.board_type == 'playable' %}checked {% endif %}> Playable Boards</label>
+        <label><input name="board_type" value="total" type="radio"{% if request.GET.board_type != 'playable' %}checked {% endif %}> Total Boards</label>
+    </div>
+</div>
+<div class="field">
+    <label for="year">Release year:<br>
     </label>
     <select id="year" name="year">
         <option value="Any">- ANY - </option>

@@ -1,0 +1,106 @@
+{% extends "museum_site/main.html" %}
+{% load staticfiles %}
+
+{% block style %}
+<style>
+    #lanky-kong
+    {
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Data Integrity</h1>
+
+<p>The Museum of ZZT catalogs a large amount of data on its files. In some cases it may be useful to know how that data is obtained and where potential inaccuracies may be found.</p>
+
+<h2>File Data:</h2>
+<table id="file-data-table">
+    <tr>
+        <th>Field</th>
+        <th>Source</th>
+    </tr>
+    <tr>
+        <td>Letter</td>
+        <td>The first letter of the file's title that isn't A/An/The. Is "1" if the first such character is a number or other symbol.</td>
+    </tr>
+    <tr>
+        <td>Filename</td>
+        <td>The filename of the uploaded file. Only modified to prevent duplicate filenames in the same letter folder.</td>
+    </tr>
+    <tr>
+        <td>Title</td>
+        <td>The name of the file. Taken from title screens, text files, or credits to try and find a consistent representation.</td>
+    </tr>
+    <tr>
+        <td>Author</td>
+        <td>The credited authors of the file. Taken from title screens, text files, or credits. Multiple authors are listed alphabetically.
+        For ZZTV worlds the author is set to the person who compiled entries along with "superfriends" as per z2's tradition. For contest compilations such as 24 Hours of ZZT or Weekend of ZZT collections the author is set to
+        the host of the contest and "various".
+        <br><br>
+        Names of authors when they had multiple aliases are set to those used in the file with some standardization between files. Aliases are preferred over given names. Similar aliases are grouped together to make finding all of an
+        individual's files easier. (Example: There are files attributed to the same person under the aliases "Zenith", "Nadir", "Zenith Nadir". The author field for all these files has been set to "Zenith Nadir".)
+        <br><br>
+        Authors with works under a deadname are updated to a preferred name. The author field on your own releases may be set to whichever name your prefer. See the <a href="{% url 'correction_policy' ">Correction Policy</a> page.
+        </td>
+    </tr>
+    <tr>
+        <td>Size</td>
+        <td>The size of the uploaded file in kilobytes and rounded to the nearest kilobyte.</td>
+    </tr>
+    <tr>
+        <td>Genre</td>
+        <td>Subjective! The genres on the <a href="{% url 'directory' category='genre' %}">Genre list</a> are preferred. Genres are taken from text files when available, but are otherwise chosen by the uploader. Not all files
+        will have all genre tags that may apply to them.</td>
+    </tr>
+    <tr>
+        <td>Release Date</td>
+        <td>The date the file was finalized. Typically the most recent modification date of any .ZZT files (or .EXE files for utilities). This date does not reflect when the file was made available to the public.</td>
+    </tr>
+    <tr>
+        <td>Release Source</td>
+        <td>How the release date was acquired. Typically from a .ZZT file's modification date. In some cases this date is obviously incorrect (such as ZZT files with dates prior to ZZT existing). In this case z2 news posts, dates
+        in game, and modification dates of other files in the Zip file may be used instead.</td>
+    </tr>
+    <tr>
+        <td>Screenshot</td>
+        <td>Screenshots are typically taken automatically via the Zookeeper tool. The default screenshot is the title screen of the .ZZT/.SZT file with the earliest modification date (as this is most likely file 1 of a multi-file game).
+        <br><br>
+        Custom fonts are applied when applicable.
+        <br><br>
+        For non-(Super) ZZT files, screenshots are taken manually.
+        <br><br>
+        Using a screenshot of a board other than the title screen is frowned upon but permissable (especially in cases of title screens which use outdated names authors do not want attention drawn to).
+        </td>
+    </tr>
+    <tr>
+        <td>Company</td>
+        <td>The company the file is attributed to. Typically taken from title screens, text files, or credits.</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>Used for featured games. A short summary of the game not typically written by the game's author.</td>
+    </tr>
+    <tr>
+        <td>Rating</td>
+        <td>An average score based on file reviews. Review scores range from 0.0 to 5.0 in steps of 0.5. Reviews were imported from z2 which required selecting a score.
+        The Museum of ZZT does not require numeric scores and reviews without them are not considered when calculating a rating.</td>
+    </tr>
+    <tr>
+        <td>Checksum</td>
+        <td>An md5 checksum of the uploaded file. This is used internally to help detect duplicate files.</td>
+    </tr>
+    <tr>
+        <td>Playable Boards</td>
+        <td>An estimated number of boards which can be seen by a player without opening ZZT's editor. This is calculated by looking at every ZZT file's starting board
+        and branching off to connecting boards both via board edges and passages plus one to include the typically inaccessible but still visible title screen. This value may be inaccurate due to improper board connections or
+        blocked off passages that the player cannot access in gameplay without cheats but are still treated as accessible via the board count script.</td>
+    </tr>
+    <tr>
+        <td>Total Boards</td>
+        <td>The total number of boards in all .ZZT files within a Zip file. This number will include blank boards, toolkits, and other boards which are functionless to gameplay.</td>
+    </tr>
+</table>
+</section>
+{% endblock %}

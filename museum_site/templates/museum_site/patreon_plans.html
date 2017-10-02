@@ -1,0 +1,36 @@
+{% extends "museum_site/main.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Patrons Only!</h1>
+
+<form method="POST">
+{% csrf_token %}
+<label>Enter Password:</label>
+<input name="secret" type="password"> <button>Submit</button>
+</form>
+
+{% if wrong_password %}
+<b>Bad news! That password was incorrect!</b>
+{% endif %}
+
+<p>Planned Articles/Streams are only available to those pledging $2 per month or
+more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>.
+If you're already a Patron at that level, please enter the password you were
+given above in order to access this document.</p>
+
+<p>If you're a Patron and do not have said password, please get in touch with me
+from your Patreon account e-mail address. Send your message to <a href="mailto:{{EMAIL_ADDRESS}}">Dr. Dos</a></p>
+
+<p>If you're not a Patron, this is one of the perks that can be made available to you! Other perks include:</p>
+
+<ul>
+<li>$1+ &mdash; Voting for the subject of a monthly Closer Look</li>
+<li>$2+ &mdash; Access to this document, and regular updates on the project</li>
+<li>$5+ &mdash; Access to the private beta site which gets features more often than the public site</li>
+</ul>
+
+
+</section>
+{% endblock %}

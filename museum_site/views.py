@@ -361,6 +361,22 @@ def mass_downloads(request):
     # Read the json
     return render(request, "museum_site/mass_downloads.html", data)
 
+def patron_plans(request):
+    """ Redirects to the Patron only Google Doc for Closer Looks """
+    data = {}
+
+    # Ugh I have to keep the URL outside of my public repo...
+    with open("/var/projects/museum/patron_plans.txt") as fh:
+        url = fh.readline().strip()
+        passphrase = fh.readline().strip()
+
+    if request.POST.get("secret") == passphrase:
+        return redirect(url)
+    else:
+        if request.POST.get("secret"):
+            data["wrong_password"] = True
+        return render(request, "museum_site/patreon_plans.html", data)
+
 
 def play(request, letter, filename):
     """ Returns page to play file on archive.org """
@@ -538,6 +554,28 @@ def search(request):
             qs = qs.filter(
                 rating__lte=float(request.GET.get("max", "").strip())
             )
+        if (request.GET.get("board_min", "").strip() and
+                int(request.GET.get("board_min", "")) >= 0 and
+                request.GET.get("board_min", "") != ""):
+            if (request.GET.get("board_type", "") == "playable"):
+                qs = qs.filter(
+                    playable_boards__gte=int(request.GET.get("board_min", "").strip())
+                )
+            else:
+                qs = qs.filter(
+                    total_boards__gte=int(request.GET.get("board_min", "").strip())
+                )
+        if (request.GET.get("board_max", "").strip() and
+                int(request.GET.get("board_max", "")) <= 32767 and
+                request.GET.get("board_min", "") != ""):
+            if (request.GET.get("board_type", "") == "playable"):
+                qs = qs.filter(
+                    playable_boards__lte=int(request.GET.get("board_max", "").strip())
+                )
+            else:
+                qs = qs.filter(
+                    total_boards__lte=int(request.GET.get("board_max", "").strip())
+                )
         if (request.GET.getlist("details")):
             qs = qs.filter(details__id__in=request.GET.getlist("details"))
 

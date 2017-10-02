@@ -25,6 +25,7 @@ museum/*
 museum_site/static/images/articles/cl/*
 .htpasswd
 manage.py
+patron_plans.txt
 
 *.conf
 *.exe

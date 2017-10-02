@@ -30,6 +30,7 @@ from museum_site.models import (
 urlpatterns = [
     url(r"^$", museum_site.views.index, name="index"),
     url(r"^credits$", museum_site.views.site_credits),
+    url(r"^data-integrity$", museum_site.views.generic, {"template": "data", "title":"Data Integrity"}, name="data_integrity"),
 
     # Accounts
     url(r"^register$", museum_site.views.register, name="register"),
@@ -134,6 +135,9 @@ urlpatterns = [
     # Mass Downloads
     url(r"^mass-downloads$", museum_site.views.mass_downloads,
         name="mass_downloads"),
+
+    # Patrons Only
+    url(r"^patron-plans$", museum_site.views.patron_plans, name="patron_plans"),
 
     # Policies
     url(r"^policy/correction$", museum_site.views.generic, {"template": "correction_policy", "title":"Correction Policy"}, name="correction_policy"),

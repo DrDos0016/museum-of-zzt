@@ -48,7 +48,7 @@ input, select, textarea
     height:300px;
 }
 
-#detail-list
+#detail-list, #board-count
 {
     width:59%;
 }
@@ -64,6 +64,11 @@ input, select, textarea
 {
     width:auto;
     float:left;
+}
+
+#board-count input[type=radio]
+{
+    width:auto;
 }
 
 #detail-list div[name=all-none]

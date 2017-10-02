@@ -269,10 +269,17 @@ $(document).ready(function (){
         </div>
 
         <a href="{% url 'correction_policy' %}">Correction Policy</a><br>
+        <a href="{% url 'data_integrity' %}">Data Integrity</a><br>
         <a href="{% url 'removal_policy' %}">Removal Policy</a><br>
         <a href="{% url 'review_policy' %}">Review Policy</a><br>
         <a href="{% url 'credits' %}">Site Credits</a><br>
         <a href="{% url 'upload_policy' %}">Upload Policy</a><br>
+        <br>
+        <b>Patron Restricted</b><br>
+        $1+ <a href="">Closer Look Poll</a><br>
+        $2+ <a href="{% url 'patron_plans' %}">Planned Articles/Streams</a>
+        $5+ <a href="https://beta.museumofzzt.com{{request.path}}">Private Beta</a><br>
+
     </div>
 </section>
 </div>
@@ -283,14 +290,21 @@ $(document).ready(function (){
 <br>
 &copy; 2015-{{datetime.year}} <a href="mailto:doctordos@gmail.com">Dr. Dos</a><br>
 Additional content copyright its  <a href="{% url 'credits' %}">respective owners</a>
+<br>
 {% if debug %}
 <div class="debug">
-{{DOMAIN}} - domain<br>
-{{request.build_absolute_uri}}<br>
-{{request.META.HTTP_HOST}}<br>
-Host: {{HOST}}<br.
-Env: {{ENV}}<br>
+{{DOMAIN}} |
+{{request.build_absolute_uri}} |
+{{request.META.HTTP_HOST}} |Host: {{HOST}} | Env: {{ENV}}
 </div>
+{% if user.is_staff %}
+<a id="showdebug" class="jsLink">TOGGLE DEBUG</a>
+<script>
+$("#showdebug").click(function (){
+    $(".debug").toggle();
+});
+</script>
+{% endif %}
 {% endif %}
 </footer>
 
