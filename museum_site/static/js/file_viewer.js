@@ -1,7 +1,10 @@
 "use strict";
 var colors = ["#000000", "#0000AA", "#00AA00", "#00AAAA", "#AA0000", "#AA00AA", "#AA5500", "#AAAAAA", "#555555", "#5555FF", "#55FF55", "#55FFFF", "#FF5555", "#FF55FF", "#FFFF55", "#FFFFFF"];
 var COLOR_NAMES = ["Black", "Dark Blue", "Dark Green", "Dark Cyan", "Dark Red", "Dark Purple", "Dark Yellow", "Gray", "Dark Gray", "Blue", "Green", "Cyan", "Red", "Purple", "Yellow", "White"];
-var line_characters = {"0000":249, "0001":181, "0010":198, "0011":205, "0100":210, "0101":187, "0110":201, "0111":203, "1000":208, "1001":188, "1010":200, "1011":202, "1100":186, "1101":185, "1110":204, "1111":206};
+var line_characters = {"0000":249, "0001":181, "0010":198, "0011":205,
+                       "0100":210, "0101":187, "0110":201, "0111":203,
+                       "1000":208, "1001":188, "1010":200, "1011":202,
+                       "1100":186, "1101":185, "1110":204, "1111":206};
 var web_characters = {"0000":250, "0001":196, "0010":196, "0011":196,
                       "0100":179, "0101":191, "0110":218, "0111":194,
                       "1000":179, "1001":217, "1010":192, "1011":193,
@@ -380,10 +383,21 @@ var switch_board = function (e)
 
 function pull_file()
 {
+    console.log("PULL FILE", $(this).text());
+    console.log("Board is", board_number);
+
     if ($(this).hasClass("selected"))
     {
-        //$(this).find("ul").toggle();
         return false;
+        /*
+        //$(this).find("ul").toggle();
+        var split = filename.toLowerCase().split(".");
+        var ext = split[split.length - 1];
+        if (ext == "zzt" || ext == "szt" || ext == "sav")
+            //display_help();
+            1;
+        return true;
+        */
     }
 
     $("#file-list li").removeClass("selected");
@@ -446,6 +460,8 @@ function pull_file()
             // Auto Load board
             if (load_board != "")
                 auto_load_board(load_board);
+            else
+                display_help();
         }
         else if (ext == "brd")
         {
@@ -1155,9 +1171,19 @@ $(window).bind("load", function() {
             return false;
 
         if (e.keyCode == 107 || e.keyCode == 61 || e.keyCode == 74) // Next Board
-            $("li.board.selected").next().click()
+            $("li.board.selected").next().click();
         else if (e.keyCode == 109 || e.keyCode == 173 || e.keyCode == 75) // Previous Board
-            $("li.board.selected").prev().click()
+            $("li.board.selected").prev().click();
+        else if (e.keyCode == 87) // World
+            $("li[name=world-info]").click();
+        else if (e.keyCode == 66) // Board
+            $("li[name=board-info]").click();
+        else if (e.keyCode == 69) // Element
+            $("li[name=element-info]").click();
+        else if (e.keyCode == 83) // Stat
+            $("li[name=stat-info]").click();
+        else if (e.keyCode == 80) // Prefs.
+            $("li[name=preferences]").click();
     });
 
     // History
@@ -1514,4 +1540,26 @@ function update_overlay(e)
 function hide_overlay(e)
 {
     $("#overlay").hide();
+}
+
+function display_help()
+{
+    var help_text = "<div class='help'>\
+    <b>Board Navigation</b>\
+    <ul>\
+    <li>+/J Next board</li>\
+    <li>-/K Previous board</li>\
+    <li>Double click on a passage (≡) to travel to its destination</li>\
+    </ul>\
+    <b>Tabs</b>\
+    <ul>\
+    <li>W - World tab</li>\
+    <li>B - Board tab</li>\
+    <li>E - Element tab</li>\
+    <li>S - Stat tab</li>\
+    <li>P - Preferences tab</li>\
+    </ul>\
+    </div>";
+
+    $("#details").html(help_text);
 }

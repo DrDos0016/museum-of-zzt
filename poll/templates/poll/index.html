@@ -1,0 +1,166 @@
+{% extends "museum_site/main.html" %}
+{% load staticfiles %}
+
+{% block style %}
+<style>
+.flex-break
+{
+    flex-shrink:0;
+    width:100%;
+}
+
+.patron
+{
+    font-weight:bold;
+}
+
+#poll-form h2
+{
+    font-family:sans-serif;
+}
+
+#poll-form label
+{
+    width:50%;
+    max-width:500px;
+    color:#FFF;
+    margin:auto;
+    display:block;
+    vertical-align:center;
+    height:1em;
+    padding:0.5em;
+}
+
+#poll-form label input, #poll-form label div[name=vote]
+{
+    float:right;
+    clear:both;
+}
+
+.winner
+{
+    font-size:32px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+
+<h1>{{display_poll}}</h1>
+<div class="gallery">
+    <div class="gallery-block">
+        <div class="file-screen">
+            <img src="{% if display_poll.option1.file.screenshot %}{% static 'images/screenshots/'|add:display_poll.option1.file.letter|add:'/'|add:display_poll.option1.file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+        </div>
+        <div class="title"><a href="{{display_poll.option1.file.download_url}}">{{display_poll.option1.file.title}}</a></div>
+        <div class="author">{% for a in display_poll.option1.file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+        <div class="date">{{display_poll.option1.file.release_date}}</div>
+        <div class="view"><a href="{{display_poll.option1.file.file_url}}">View</a></div>
+        <div class="patron">{% if display_poll.option1.backer %}Patron nominated!{% else %}&nbsp;{% endif %}</div>
+        <div class="desc">{{display_poll.option1.summary}}</div>
+    </div>
+
+    <div class="gallery-block">
+        <div class="file-screen">
+            <img src="{% if display_poll.option2.file.screenshot %}{% static 'images/screenshots/'|add:display_poll.option2.file.letter|add:'/'|add:display_poll.option2.file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+        </div>
+        <div class="title"><a href="{{display_poll.option2.file.download_url}}">{{display_poll.option2.file.title}}</a></div>
+        <div class="author">{% for a in display_poll.option2.file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+        <div class="date">{{display_poll.option2.file.release_date}}</div>
+        <div class="view"><a href="{{display_poll.option2.file.file_url}}">View</a></div>
+        <div class="patron">{% if display_poll.option2.backer %}Patron nominated!{% else %}&nbsp;{% endif %}</div>
+        <div class="desc">{{display_poll.option2.summary}}</div>
+    </div>
+
+    <div class="gallery-block">
+        <div class="file-screen">
+            <img src="{% if display_poll.option3.file.screenshot %}{% static 'images/screenshots/'|add:display_poll.option3.file.letter|add:'/'|add:display_poll.option3.file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+        </div>
+        <div class="title"><a href="{{display_poll.option3.file.download_url}}">{{display_poll.option3.file.title}}</a></div>
+        <div class="author">{% for a in display_poll.option3.file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+        <div class="date">{{display_poll.option3.file.release_date}}</div>
+        <div class="view"><a href="{{display_poll.option3.file.file_url}}">View</a></div>
+        <div class="patron">{% if display_poll.option3.backer %}Patron nominated!{% else %}&nbsp;{% endif %}</div>
+        <div class="desc">{{display_poll.option3.summary}}</div>
+    </div>
+
+    <div class="flex-break"></div>
+
+    <div class="gallery-block">
+        <div class="file-screen">
+            <img src="{% if display_poll.option4.file.screenshot %}{% static 'images/screenshots/'|add:display_poll.option4.file.letter|add:'/'|add:display_poll.option4.file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+        </div>
+        <div class="title"><a href="{{display_poll.option4.file.download_url}}">{{display_poll.option4.file.title}}</a></div>
+        <div class="author">{% for a in display_poll.option4.file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+        <div class="date">{{display_poll.option4.file.release_date}}</div>
+        <div class="view"><a href="{{display_poll.option4.file.file_url}}">View</a></div>
+        <div class="patron">{% if display_poll.option4.backer %}Patron nominated!{% else %}&nbsp;{% endif %}</div>
+        <div class="desc">{{display_poll.option4.summary}}</div>
+    </div>
+
+    <div class="gallery-block">
+        <div class="file-screen">
+            <img src="{% if display_poll.option5.file.screenshot %}{% static 'images/screenshots/'|add:display_poll.option5.file.letter|add:'/'|add:display_poll.option5.file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+        </div>
+        <div class="title"><a href="{{display_poll.option5.file.download_url}}">{{display_poll.option5.file.title}}</a></div>
+        <div class="author">{% for a in display_poll.option5.file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+        <div class="date">{{display_poll.option5.file.release_date}}</div>
+        <div class="view"><a href="{{display_poll.option5.file.file_url}}">View</a></div>
+        <div class="patron">{% if display_poll.option5.backer %}Patron nominated!{% else %}&nbsp;{% endif %}</div>
+        <div class="desc">{{display_poll.option5.summary}}</div>
+    </div>
+</div>
+
+{% if display_poll.active and not results_mode %}
+<form method="POST" id="poll-form" class="cp437" action="/poll/results/{{display_poll.id}}">
+    {% csrf_token %}
+    <label style="background-color:#0000AA">{{display_poll.option1.file.title}} <input name="vote" type="radio" value="{{display_poll.option1_id}}"></label>
+    <label style="background-color:#00AA00">{{display_poll.option2.file.title}} <input name="vote" type="radio" value="{{display_poll.option2_id}}"></label>
+    <label style="background-color:#00AAAA">{{display_poll.option3.file.title}} <input name="vote" type="radio" value="{{display_poll.option3_id}}"></label>
+    <label style="background-color:#AA0000">{{display_poll.option4.file.title}} <input name="vote" type="radio" value="{{display_poll.option4_id}}"></label>
+    <label style="background-color:#AA00AA">{{display_poll.option5.file.title}} <input name="vote" type="radio" value="{{display_poll.option5_id}}"></label>
+    <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value=""></label>
+    <label style="background-color:#AAAAAA"><a href="/poll/results/{{display_poll.id}}">View Results</a><input type="submit" name="action" value="Vote"></label>
+    {% comment %}<input type="hidden" name="key" value="{{key}}">{% endcomment %}
+</form>
+{% elif results_mode %}
+<form method="POST" id="poll-form" class="cp437">
+    <label style="background-color:#0000AA">{{display_poll.option1.file.title}} <div {% if winner == results.0 %}class="winner" {% endif %}name="vote">{{results.0|default:"0"}}</div></label>
+    <label style="background-color:#00AA00">{{display_poll.option2.file.title}} <div {% if winner == results.1 %}class="winner" {% endif %}name="vote">{{results.1|default:"0"}}</div></label>
+    <label style="background-color:#00AAAA">{{display_poll.option3.file.title}} <div {% if winner == results.2 %}class="winner" {% endif %}name="vote">{{results.2|default:"0"}}</div></label>
+    <label style="background-color:#AA0000">{{display_poll.option4.file.title}} <div {% if winner == results.3 %}class="winner" {% endif %}name="vote">{{results.3|default:"0"}}</div></label>
+    <label style="background-color:#AA00AA">{{display_poll.option5.file.title}} <div {% if winner == results.4 %}class="winner" {% endif %}name="vote">{{results.4|default:"0"}}</div></label>
+    {% comment %}<input type="hidden" name="key" value="{{key}}">{% endcomment %}
+</form>
+
+<h2>Results Info</h2>
+<ul>
+    <li>Results shown reflect the current votes in the database prior to filtering ineligible votes.</li>
+    <li>Current totals may therefore differ from the final results!</li>
+    <li>In the event of a tie, priority will be given to Patron selected poll options.</li>
+    <li>If two Patron selected options tie, a winner will be selected randomly.</li>
+</ul>
+{% endif %}
+
+<h2>Poll Rules</h2>
+<ul>
+    <li>Only Patrons are eligible for voting. Not a Patron? <a href="https://patreon.com/worldsofzzt" target="_blank">Become one</a>!</li>
+    <li>Votes whic do not provide an e-mail address associated with an active Patron will be rejected.</li>
+    <li>Patrons at the $20/month level can select a game to be featured in the poll. Patrons who do so will have their chosen game
+        in all subsequent polls until it either wins or the patron opts to change it to something else.</li>
+    <li>Patrons who do not select a game will have one substitued by me.</li>
+    <li>Only the last vote for an e-mail address will be counted, you may change your vote by simply placing a new vote.</li>
+</ul>
+
+<h2>Poll History</h2>
+<div style="border:1px solid #000;max-height:10em;overflow:auto;">
+<ul>
+    {% for poll in polls %}
+    <li><a href="/poll/results/{{poll.id}}">{{poll}}</a></li>
+    {% endfor %}
+</ul>
+</div>
+
+</section>
+{% endblock %}

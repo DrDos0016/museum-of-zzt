@@ -21,6 +21,7 @@ tools/zookeeper
 tools/data
 tools/db_dump.py
 tools/fonts
+tools/intro.png
 museum/*
 museum_site/static/images/articles/cl/*
 .htpasswd
