@@ -1,0 +1,97 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    .controls
+    {
+        margin:auto;
+        text-align:center;
+    }
+    
+    .controls .col
+    {
+        border:1px solid #000;
+        padding:0.25em;
+        width:20%;
+        height:200px;
+        overflow:auto;
+        text-align:left;
+    }
+    
+    .controls ul
+    {
+        margin:0;
+        padding:0;
+    }
+    
+    .controls li
+    {
+        list-style: none;
+    }
+    
+    .controls li.selected
+    {
+        background:#98C9C9;
+    }
+    
+    .controls .col img
+    {
+        width:100%;
+    }
+    
+    .preview
+    {
+        border:1px solid #AAA;
+        text-align:center;
+        margin:1em auto 1em auto;
+        width:480px;
+        height:350px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Tool List - {{file}}</h1>
+
+<a href="{% url 'tool_list' file.id %}">Back to Tool List</a>
+<br>
+
+<div class="controls">
+    <div class="col">
+        <b>File</b><br>
+        <ul>
+        {% for f in file_list %}
+            <li{% if f == request.GET.file %} class="selected"{% endif %}><a href="?file={{f}}">{{f}}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div class="col">
+        <b>Board</b><br>
+        <ul>
+        {% for b in board_list %}
+            <li{% if forloop.counter0 == board_num %} class="selected"{% endif %}><a href="?file={{request.GET.file}}&board={{forloop.counter0}}">{{b}}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div class="col">
+        <b>Font</b><br>
+    </div>
+    
+    <div class="col">
+        <b>Current (Cached?) Screenshot</b><br>
+        <img src="{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}">
+    </div>
+</div>
+
+<div class="preview"><img src="{% static 'data/temp.png' %}"></div>
+<form class="c" method="POST">
+    {% csrf_token %}
+    <input type="submit" name="save" id="save" value="Save Screenshot">
+</form>
+
+</section>
+{% endblock %}

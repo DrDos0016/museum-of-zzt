@@ -4,6 +4,7 @@ import museum_site.admin
 import museum_site.ajax
 import museum_site.errors
 import museum_site.views
+import museum_site.tools
 
 
 from museum_site.models import (
@@ -166,7 +167,10 @@ urlpatterns = [
     # AJAX
     url(r"^ajax/get_zip_file$", museum_site.ajax.get_zip_file),
 
-    # Staff
+    # Tools
+    url(r"^tools/(?P<pk>[0-9]+)$", museum_site.tools.tool_list, name="tool_list"),
+    url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tools.set_screenshot, name="set_screenshot"),
+    
     # url(r"^staff/file_management$", museum_site.staff.file_management),
     # url(r"^staff/article_management$", museum_site.staff.article_management),
 

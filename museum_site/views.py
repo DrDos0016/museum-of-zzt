@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from .common import *
 
-
 def advanced_search(request):
     """ Returns page containing multiple filters to use when searching """
     data = {
@@ -223,7 +222,6 @@ def directory(request, category):
             for credited in split:
                 if credited not in data_list:
                     data_list.append(credited)
-        data_list.sort()
     elif category == "author":
         data["title"] = "Authors"
         authors = File.objects.values("author").distinct().order_by("author")
@@ -232,13 +230,13 @@ def directory(request, category):
             for credited in split:
                 if credited not in data_list:
                     data_list.append(credited)
-        data_list.sort()
     elif category == "genre":
         data["title"] = "Genres"
         # genres = File.objects.values("genre").distinct().order_by("genre")
         data_list = GENRE_LIST
 
     # Break the list of results into 4 columns
+    data_list = sorted(data_list, key=lambda s: s.lower())
 
     data["list"] = data_list
     data["split"] = math.ceil(len(data["list"]) / 4.0)
@@ -507,7 +505,6 @@ def search(request):
         else:
             destination = "museum_site/browse.html"
     else:  # Advanced Search
-        # TODO: Handle <exact> in situations with multiple authors/companies
         data["advanced_search"] = True
         qs = File.objects.all()
         if request.GET.get("title", "").strip():
@@ -515,12 +512,9 @@ def search(request):
                 title__icontains=request.GET.get("title", "").strip()
             )
         if request.GET.get("author", "").strip():
-            if request.GET.get("exact"):
-                qs = qs.filter(author=request.GET.get("author", "").strip())
-            else:
-                qs = qs.filter(
-                    author__icontains=request.GET.get("author", "").strip()
-                )
+            qs = qs.filter(
+                author__icontains=request.GET.get("author", "").strip()
+            )
         if request.GET.get("filename", "").strip():
             qs = qs.filter(
                 filename__icontains=request.GET.get(

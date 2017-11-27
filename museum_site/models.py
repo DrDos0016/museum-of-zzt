@@ -419,6 +419,9 @@ class File(models.Model):
         for file in file_list:
             name, ext = os.path.splitext(file)
             ext = ext.upper()
+            
+            if file.startswith("__MACOSX"):  # Don't count OSX info files
+                continue
 
             if ext == ".ZZT":  # ZZT File
                 # Extract the file

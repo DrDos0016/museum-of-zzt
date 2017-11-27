@@ -146,7 +146,7 @@ $(document).ready(function (){
         <a href="{{fg.file_url}}">{{fg.title}}</a><br>
         <a href="{{fg.file_url}}"><img src="{% if fg.screenshot %}{% static 'images/screenshots/'|add:fg.letter|add:'/'|add:fg.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" alt="{{fg.title}}"></a>
         <br>
-        by {% for author in fg.author_list %}<a href="/search?author={{author}}&exact=1">{{author}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+        by {% for author in fg.author_list %}<a href="/search?author={{author}}">{{author}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
         <br>
         <a href="/featured">Featured Games</a>
     </div>
