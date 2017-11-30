@@ -25,6 +25,7 @@ tools/fonts
 tools/intro.png
 museum/*
 museum_site/static/images/articles/cl/*
+museum_site/static/data/mass_dl.json
 .htpasswd
 manage.py
 patron_plans.txt
