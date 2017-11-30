@@ -27,11 +27,13 @@ def main():
         print(x, shortcuts[str(x)])
 
     contains_regex = input("Regex to list Files that do match: ")
+    #contains_regex="1"
     if contains_regex in shortcuts.keys():
         contains_regex = shortcuts[contains_regex]
 
     lacks_regex = input("Regex to list Files that don't match: ")
-    if lacks_regex in shortcuts.keys():
+    #lacks_regex=""
+    if lacks_regex in list(shortcuts.keys()):
         lacks_regex = shortcuts[lacks_regex]
 
     files = File.objects.all().order_by("letter", "title")
@@ -59,7 +61,8 @@ def main():
                 if contains_regex:
                     if (re.match(contains_regex, file)):
                         contains_matches += str(f.id)+","
-                        print("+", f.id, f.title)
+                        #print("+", f.id, f.title)
+                        print(file, f.filename)
                 if lacks_regex:
                     if (re.match(contains_regex, file)):
                         lack_fail = True
@@ -70,8 +73,8 @@ def main():
             lack_matches += str(f.id)+","
             print("-", f.id, f.title)
 
-    print(contains_matches)
-    print(lacks_matches)
+    #print(contains_matches)
+    #print(lacks_matches)
     return True
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ community can be easily discovered and that their importance can be recognized.
         <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen" alt="{{file.screenshot}}">
     </div>
     <div class="title"><a href="{{file.download_url}}">{{file.title}}</a></div>
-    <div class="author">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    <div class="author">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
     <div class="view"><a href="{{file.file_url}}">View</a></div>
 </div>
 {% endfor %}

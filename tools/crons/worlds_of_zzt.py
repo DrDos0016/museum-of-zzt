@@ -100,6 +100,7 @@ def main():
 
     # Select a random board (unless it's Tuesday)
     processing = True
+    board_name = ""
     while processing:
         if tuesday:
             board_num = 0
@@ -112,6 +113,7 @@ def main():
             continue
 
         z.boards[board_num].screenshot(CRON_ROOT + "temp", title_screen=(board_num == 0), format="RGBA")
+        board_name = z.boards[board_num].title
         processing = False
 
     # Remove the ZZT file. We're done with it.
@@ -144,10 +146,15 @@ def main():
 
         # Form Tweet
         url = "https://museumofzzt.com" + data.file_url() + "?file=" + selected + "&board=" + str(board_num)
-        tweet = url + " " + data.title + " by " + data.author + "\n"
+        tweet = url + " " + data.title + " by " + data.author + " (" + str(data.release_date)[:4] + ")\n"
+        if data.company:
+            tweet += "Published by: " + data.company
         tweet += "https://archive.org/details/zzt_" + data.filename[:-4]
+        
+        #if len(tweet) + len(board_name) + 2 <= 280:
+        #    tweet = tweet + "\n" + board_name
+        
         print(tweet)
-
         print("Posting to twitter...")
 
         # Fix the image

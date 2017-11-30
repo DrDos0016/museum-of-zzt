@@ -8,7 +8,7 @@
     {% include "museum_site/blocks/file_links.html" %}
 </div>
 <div class="file-meta">
-    <div>Author<br> {% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    <div>Author<br> {% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
     <div>Released<br> <a href="{% url 'search' %}?year={{file.release_date.year|default:'any'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
     <div>Genre<br> {% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
     <div>Company<br> <a href="{% url 'search' %}?company={{file.company}}">{{file.company}}</a></div>
