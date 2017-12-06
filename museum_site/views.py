@@ -643,7 +643,7 @@ def upload(request):
 
         try:
             upload.full_clean()
-            upload.save()
+            upload.save(new_upload=True)
 
             # Flag it as an upload
             upload.details.add(Detail.objects.get(pk=18)) # TODO: Unhardcode #

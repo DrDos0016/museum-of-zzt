@@ -274,11 +274,13 @@ class File(models.Model):
             except:
                 pass
 
-        # Set board counts
-        if not self.playable_boards or not self.total_boards and HAS_ZOOKEEPER:
+        # Set board counts for non-uploads
+        if not kwargs.get("new_upload") and (not self.playable_boards or not self.total_boards) and HAS_ZOOKEEPER:
             self.calculate_boards()
 
         # Actual save call
+        if kwargs.get("new_upload"):
+            del kwargs["new_upload"]
         super(File, self).save(*args, **kwargs)
 
     def sorted_title(self):
@@ -372,6 +374,8 @@ class File(models.Model):
         self.author = request.POST.get("author")
         self.size = int(request.FILES.get("file").size / 1024)
         self.release_date = request.POST.get("release_date")
+        if self.release_date == "":
+            self.release_date = None
         self.release_source = "User upload"
         self.company = request.POST.get("company", "")
         self.description = request.POST.get("desc", "")
@@ -404,9 +408,12 @@ class File(models.Model):
         return {"status": "success"}
 
     def calculate_boards(self):
+        if self.is_uploaded():
+            return False
+
         temp_playable = 0
         temp_total = 0
-        zip_path = os.path.join(SITE_ROOT, "zgames",self.letter, self.filename)
+        zip_path = os.path.join(SITE_ROOT, "zgames", self.letter, self.filename)
         temp_path = os.path.join(SITE_ROOT, "temp")
 
         try:
@@ -419,7 +426,7 @@ class File(models.Model):
         for file in file_list:
             name, ext = os.path.splitext(file)
             ext = ext.upper()
-            
+
             if file.startswith("__MACOSX"):  # Don't count OSX info files
                 continue
 
