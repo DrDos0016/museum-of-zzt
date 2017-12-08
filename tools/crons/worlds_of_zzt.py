@@ -148,7 +148,7 @@ def main():
         url = "https://museumofzzt.com" + data.file_url() + "?file=" + selected + "&board=" + str(board_num)
         tweet = url + " " + data.title + " by " + data.author + " (" + str(data.release_date)[:4] + ")\n"
         if data.company:
-            tweet += "Published by: " + data.company
+            tweet += "Published by: " + data.company + " "
         tweet += "https://archive.org/details/zzt_" + data.filename[:-4]
         
         #if len(tweet) + len(board_name) + 2 <= 280:
