@@ -24,6 +24,54 @@ def scroll(parser, token):
     return ZztScroll(nodelist)
 
 
+@register.tag(name="message")
+def message(parser, token):
+    nodelist = parser.parse(('endmessage',))
+    parser.delete_first_token()
+    #color = token.contents if token.contents else "auto"
+    color = token.contents.split()[-1] if len(token.contents.split()) >= 2 else "auto"
+    print()
+    return ZztMessage(nodelist, color)
+
+
+class ZztMessage(template.Node):
+    def __init__(self, nodelist, color):
+        self.nodelist = nodelist
+        self.color_list = ["purple", "red", "cyan", "green", "blue", "white", "yellow"]
+        self.color = color
+        if self.color == "auto":
+            self.active_color = self.color_list[0]
+        else:
+            self.active_color = color
+        self.color_idx = self.color_list.index(self.active_color)
+
+    def advance_color(self):
+        if self.color != "auto":
+            return False
+        self.color_idx += 1
+        if self.color_idx >= len(self.color_list):
+            self.color_idx = 0
+        self.active_color = self.color_list[self.color_idx]
+        return True
+
+    def render(self, context):
+        raw = self.nodelist.render(context)
+        lines = raw.split("\n")
+
+        output = "<div class='zzt-txt-message'>\n"
+
+        if lines[-1] == "":
+            lines.pop()
+
+        for line in lines:
+            output += "<span class='{}'>{}</span><br>".format(self.active_color, line)
+            if line == "":
+                self.advance_color()
+        output += "</div>"
+        return output
+
+
+
 class ZztScroll(template.Node):
     def __init__(self, nodelist):
         self.nodelist = nodelist

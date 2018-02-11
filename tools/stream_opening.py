@@ -20,7 +20,7 @@ def main():
 
 
     # Open the world
-    z = zookeeper.Zookeeper("/media/drdos/easystore/486/ZZT/projects/WoZZT.zzt")
+    z = zookeeper.Zookeeper("/mnt/ez/486/ZZT/projects/WoZZT.zzt")
 
     # Find the board
     b = None
@@ -47,7 +47,7 @@ def main():
     # Save
     z.save()
 
-    b.screenshot("/media/drdos/easystore/pictures/streaming/intro")
+    b.screenshot("/mnt/ez/pictures/streaming/intro")
 
 
     return True
