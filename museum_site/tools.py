@@ -8,15 +8,53 @@ from zipfile import ZipFile
 
 import zookeeper
 
+
+@staff_member_required
+def publish(request, pk):
+    """ Returns page to publish a file marked as uploaded """
+    data = {
+        "title": "Publish",
+        "file": File.objects.get(pk=pk),
+        "file_list": []
+    }
+
+    if request.POST.get("publish"):
+        print("Publishing...")
+
+        # Move the file
+        src = SITE_ROOT + data["file"].download_url()
+        dst = SITE_ROOT + "/zgames/" + data["file"].letter + "/" + data["file"].filename
+        shutil.move(src, dst)
+
+        # Adjust the details
+        data["file"].details.remove(Detail.objects.get(pk=18)) # TODO: Unhardcode
+        for detail in request.POST.getlist("details"):
+            data["file"].details.add(Detail.objects.get(pk=detail))
+
+        # Save
+        data["file"].save()
+
+        # Redirect
+        return redirect("tool_list", pk=pk)
+
+
+    with ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
+        data["file_list"] = zf.namelist()
+    data["file_list"].sort()
+
+    return render(request, "museum_site/tools/publish.html", data)
+
+
 @staff_member_required
 def tool_list(request, pk):
     """ Returns page to generate and set a file's screenshot """
     data = {
-        "title": "Set Screenshot",
+        "title": "Tools",
         "file": File.objects.get(pk=pk)
     }
 
     return render(request, "museum_site/tools/list.html", data)
+
 
 @staff_member_required
 def set_screenshot(request, pk):
@@ -27,33 +65,33 @@ def set_screenshot(request, pk):
     file = File.objects.get(pk=pk)
     data["file"] = file
     data["file_list"] = []
-    
+
     with ZipFile(SITE_ROOT + file.download_url(), "r") as zf:
         all_files = zf.namelist()
         for f in all_files:
             if f.lower().endswith(".zzt"):
                 data["file_list"].append(f)
     data["file_list"].sort()
-    
+
     if request.GET.get("file"):
         with ZipFile(SITE_ROOT + file.download_url(), "r") as zf:
             zf.extract(request.GET["file"], path=SITE_ROOT + "/museum_site/static/data/")
-        
+
         z = zookeeper.Zookeeper(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])
         data["board_list"] = []
         for board in z.boards:
             print(board.title)
             data["board_list"].append(board.title)
-        
+
     if request.GET.get("board"):
         data["board_num"] = int(request.GET["board"])
-        
+
         if data["board_num"] != 0:
             z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp") # TODO: This will need an update when Zookeeper gets updated
         else:
             z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp", title_screen=True) # TODO: This will need an update when Zookeeper gets updated
         data["show_preview"] = True
-        
+
     if request.POST.get("save"):
         print("SAVING")
         src = SITE_ROOT + "/museum_site/static/data/temp.png"
@@ -61,7 +99,7 @@ def set_screenshot(request, pk):
         print(src)
         print(dst)
         shutil.copyfile(src, dst)
-        
+
     if os.path.isfile(SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")):
         os.remove(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])
     return render(request, "museum_site/tools/set_screenshot.html", data)

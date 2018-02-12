@@ -7,6 +7,10 @@
 
 <ul>
     <li><a href="{% url 'set_screenshot' file.id %}">Set Screenshot</a></li>
+    {% if file.is_uploaded %}
+    <li><a href="{% url 'publish' file.id %}">Publish</a></li>
+    {% endif %}
 </ul>
+<div>Details:</div> {% for detail in file.details.all %}{{detail.detail}}{% if not forloop.last %}, {% endif %}{% endfor %}<br>
 </section>
 {% endblock %}

@@ -1,0 +1,101 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    .controls
+    {
+        margin:auto;
+        text-align:center;
+    }
+
+    .controls .col
+    {
+        border:1px solid #000;
+        padding:0.25em;
+        width:20%;
+        height:200px;
+        overflow:auto;
+        text-align:left;
+    }
+
+    .controls ul
+    {
+        margin:0;
+        padding:0;
+    }
+
+    .controls li
+    {
+        list-style: none;
+    }
+
+    .controls li.selected
+    {
+        background:#98C9C9;
+    }
+
+    .controls .col img
+    {
+        width:100%;
+    }
+
+    .preview
+    {
+        border:1px solid #AAA;
+        text-align:center;
+        margin:1em auto 1em auto;
+        width:480px;
+        height:350px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Tool List - {{file}}</h1>
+
+<a href="{% url 'tool_list' file.id %}">Back to Tool List</a>
+<br>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="col">
+        <b>File List:</b><br>
+        <ul>
+        {% for f in file_list %}
+            <li{% if f == request.GET.file %} class="selected"{% endif %}>{{f}}
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div class="field">
+    <label>Details:<br>
+    </label>
+
+    <div id="detail-list" class="col">
+        <label><input name="details" type="checkbox" value="15"> ZZT World</label>
+        <label><input name="details" type="checkbox" value="7"> Featured Game</label>
+        <label><input name="details" type="checkbox" value="10"> Modified GFX</label>
+        <label><input name="details" type="checkbox" value="1"> MS-DOS</label>
+        <label><input name="details" type="checkbox" value="13"> Super ZZT World</label>
+        <label><input name="details" type="checkbox" value="16"> ZIG World</label>
+        <label><input name="details" type="checkbox" value="11"> Modified EXE</label>
+        <label><input name="details" type="checkbox" value="2"> Windows 16-Bit</label>
+        <label><input name="details" type="checkbox" value="14"> Utility</label>
+        <label><input name="details" type="checkbox" value="8"> Contest</label>
+        <label><input name="details" type="checkbox" value="6"> OSX</label>
+        <label><input name="details" type="checkbox" value="3"> Windows 32-Bit</label>
+        <label><input name="details" type="checkbox" value="9"> ZZM Audio</label>
+        <label><input name="details" type="checkbox" value="17"> Lost World</label>
+        <label><input name="details" type="checkbox" value="5"> Linux</label>
+        <label><input name="details" type="checkbox" value="4"> Windows 64-Bit</label>
+        <div>This list is hand coded and will need updates if the possible details change</div>
+    </div>
+
+    <input type="submit" name="publish" id="publish" value="Publish File">
+</form>
+
+</section>
+{% endblock %}

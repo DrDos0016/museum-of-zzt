@@ -83,7 +83,7 @@ def article_view(request, id, page=0):
     return render(request, "museum_site/article_view.html", data)
 
 
-def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
+def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=False):
     """ Returns page containing a list of files filtered by letter, details,
     and page
 
@@ -91,11 +91,12 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1):
     letter      -- The letter to filter by, may be a-z or 1. Default 'a'
     details     -- List of Details of files to filter by.
     page        -- Page of results to slice to. Default '1'
+    show_description -- Shows the description field. Default False
     """
     data = {
         "mode": "browse",
         "details": details,
-        "show_description": False  # TODO: Fix this
+        "show_description": show_description
     }
 
     if letter is not None:
@@ -627,7 +628,10 @@ def upload(request):
     if not UPLOADS_ENABLED:
         return redirect("/")
 
+    print(request.POST.get("action"))
+    print(request.FILES)
     if request.POST.get("action") == "upload" and request.FILES.get("file"):
+        print("In func")
         upload = File()
         upload_resp = upload.from_request(request)
 
@@ -651,7 +655,7 @@ def upload(request):
         except ValidationError as e:
             data["results"] = e
             print(data["results"])
-
+    print("Done with func")
     return render(request, "museum_site/upload.html", data)
 
 

@@ -98,7 +98,7 @@ urlpatterns = [
         name="zzt_worlds"),
     url(r"^super-zzt$", museum_site.views.browse, {"details": [DETAIL_SZZT]},
         name="szzt_worlds"),
-    url(r"^utilities$", museum_site.views.browse, {"details": [DETAIL_UTILITY]},
+    url(r"^utilities$", museum_site.views.browse, {"details": [DETAIL_UTILITY], "show_description": True},
         name="utilities"),
     url(r"^zzm-audio$", museum_site.views.browse, {"details": [DETAIL_ZZM]},
         name="zzm_audio"),
@@ -169,8 +169,9 @@ urlpatterns = [
 
     # Tools
     url(r"^tools/(?P<pk>[0-9]+)$", museum_site.tools.tool_list, name="tool_list"),
+    url(r"^tools/publish/(?P<pk>[0-9]+)$", museum_site.tools.publish, name="publish"),
     url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tools.set_screenshot, name="set_screenshot"),
-    
+
     # url(r"^staff/file_management$", museum_site.staff.file_management),
     # url(r"^staff/article_management$", museum_site.staff.article_management),
 

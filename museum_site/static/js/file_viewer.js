@@ -451,7 +451,13 @@ function pull_file()
             var board_list = "<ol start='0'>";
             for (var x = 0; x < world.boards.length; x++)
             {
-                board_list += "<li class='board' data-board-number='"+x+"'>"+(world.boards[x].title ? world.boards[x].title : "-untitled")+"</li>";
+                board_list += "<li class='board' data-board-number='"+x+"'>";
+                if (world.starting_board == x)
+                    board_list += "<b>";
+                board_list += (world.boards[x].title ? world.boards[x].title : "-untitled");
+                if (world.starting_board == x)
+                    board_list += "</b>";
+                board_list += "</li>";
             }
             board_list += "</ol>";
             $("#file-list li.selected").append(board_list + "<br>");
@@ -683,10 +689,12 @@ function parse_world(type, data)
     // End Parsing World information
 
     // Parse Boards
+    console.log("Parsing boards...");
     world.idx = ENGINE.first_board_index;
     for (var x = 0; x <= world.board_count; x++)
     {
         world.boards.push(parse_board(world));
+        console.log("Parsed board #" + x);
     }
 
     var output = "World format: " + type.toUpperCase() + "<br>";

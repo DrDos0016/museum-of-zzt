@@ -1,13 +1,11 @@
 import os
 import subprocess
 import zipfile
-
 from datetime import datetime
 
 from django.conf import settings
 from django.db import models
 from django.db.models import Avg
-
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
@@ -303,6 +301,24 @@ class File(models.Model):
 
         return sort_title
 
+
+    def letter_from_title(self):
+        """ Returns the letter a file should be listed under after removing
+        articles """
+        title = self.title.lower()
+        if title.startswith("the "):
+            title = title.replace("the ", "", 1)
+        elif title.startswith("a "):
+            title = title.replace("a ", "", 1)
+        if title.startswith("an "):
+            title = title.replace("an ", "", 1)
+
+        letter = title[0]
+        if letter not in "abcdefghijklmnopqrstuvwxyz":
+            letter = "1"
+        return letter
+
+
     def download_url(self):
         if self.is_uploaded():
             return "/zgames/uploaded/" + self.filename
@@ -365,11 +381,9 @@ class File(models.Model):
             return False
 
         # First handle the easy stuff
-        self.letter = request.POST.get("title", "1")[0].lower()
-        if self.letter not in "abcdefghijklmnopqrstuvwxyz":
-            self.letter = "1"
         self.filename = str(request.FILES.get("file"))
         self.title = request.POST.get("title")
+        self.letter = self.letter_from_title()
         # sort_title handled by saving
         self.author = request.POST.get("author")
         self.size = int(request.FILES.get("file").size / 1024)
@@ -381,12 +395,9 @@ class File(models.Model):
         self.description = request.POST.get("desc", "")
         self.genre = "/".join(request.POST.getlist("genre"))
 
-        # DEBUG -- REMOVE THIS FOR LAUNCH WHEN THIS FIELD IS REMOVED
-        self.category = "ZZT"
-
         # SCREENSHOT -- Currently manual
         # DETAILS -- Currently manual
-
+        print("400 combo!")
         # Check for a duplicate filename
         exists = File.objects.filter(filename=self.filename).exists()
         if exists:
@@ -399,6 +410,7 @@ class File(models.Model):
             for chunk in request.FILES["file"].chunks():
                 fh.write(chunk)
 
+        print("Chunky mcGood")
         # md5 checksum
         resp = subprocess.run(["md5sum", file_path], stdout=subprocess.PIPE)
         md5 = resp.stdout[:32].decode("utf-8")
