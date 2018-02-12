@@ -95,7 +95,7 @@ def set_screenshot(request, pk):
     if request.POST.get("save"):
         print("SAVING")
         src = SITE_ROOT + "/museum_site/static/data/temp.png"
-        dst =  SITE_ROOT + "/museum_site/static/images/screenshots/" + file.letter + "/" + file.screenshot
+        dst =  SITE_ROOT + "/museum_site/static/images/screenshots/" + file.letter + "/" + file.filename[:-4]
         print(src)
         print(dst)
         shutil.copyfile(src, dst)
