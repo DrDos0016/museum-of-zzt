@@ -100,7 +100,7 @@ class Article(models.Model):
     parent = models.ForeignKey("Article", null=True, blank=True, default=None)
     summary = models.CharField(max_length=150, default="", blank=True)
     preview = models.CharField(max_length=80, default="", blank=True)
-    #allow_comments = models.BooleanField(default=False)
+    allow_comments = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["title"]

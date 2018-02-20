@@ -110,11 +110,11 @@ img.zzt-cheat
     background:#000;
     font-family:"cp437";
     line-height:14px;
-    text-align:ceter;
+    text-align:center;
     width:352px;
     padding-top:0.25em;
     padding-bottom:0.25em;
-    margin:0.25em;
+    margin:0.25em auto 0.25em auto;
 }
 
 .zzt-txt-message .blue { color:#5555FF; }
