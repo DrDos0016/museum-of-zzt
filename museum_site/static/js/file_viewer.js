@@ -1494,6 +1494,12 @@ function render_stat_list()
         stat_info(e);
     });
 
+    $("a[name=stat-link]").hover(function (){
+        highlight($(this).data("x"), $(this).data("y"));
+    }, function (){
+        unhighlight($(this).data("x"), $(this).data("y"));
+    });
+
     $("#stat-toggle").click(function (){
         if ($(this).hasClass("activated")) // Redisplay
             $("#stat-info li.empty").css({"visibility": "visible", "height":"auto"});
@@ -1570,4 +1576,22 @@ function display_help()
     </div>";
 
     $("#details").html(help_text);
+}
+
+function highlight(x, y)
+{
+    print(ctx, 201, 127, x - 2, y - 2);
+    print(ctx, 205, 127, x - 1, y - 2);
+    print(ctx, 187, 127, x, y - 2);
+    print(ctx, 186, 127, x - 2, y - 1);
+    print(ctx, 186, 127, x, y - 1);
+    print(ctx, 200, 127, x - 2, y);
+    print(ctx, 205, 127, x - 1, y);
+    print(ctx, 188, 127, x, y);
+
+}
+
+function unhighlight(x, y)
+{
+    draw_board();
 }
