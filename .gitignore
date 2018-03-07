@@ -24,6 +24,7 @@ tools/db_dump.py
 tools/fonts
 tools/intro.png
 museum/*
+museum_site/static/images/articles/bugs/*
 museum_site/static/images/articles/cl/*
 museum_site/static/data/mass_dl.json
 .htpasswd
