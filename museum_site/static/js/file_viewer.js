@@ -377,15 +377,11 @@ var switch_board = function (e)
     e.preventDefault();
     var board_number = $(this).attr("data-board");
     $("li.board[data-board-number="+board_number+"]").click();
-    //output += '<a class="board-link" data-board="'+stat.param3+'" href="?file='+loaded_file+'&board='+stat.param3+'">'+stat.param3 + " - " + world.boards[stat.param3].title +"</a>";
     return true;
 }
 
 function pull_file()
 {
-    console.log("PULL FILE", $(this).text());
-    console.log("Board is", board_number);
-
     if ($(this).hasClass("selected"))
     {
         return false;
@@ -476,6 +472,7 @@ function pull_file()
             ENGINE = engines[format];
             console.log("BRD PARSE");
             world = new World(data);
+            world.brd = true;
             var board = parse_board(world);
             world.boards.push(board);
             render_board();
@@ -646,7 +643,9 @@ function parse_world(type, data)
     // Parse World Stats
     world.ammo = world.read(2)
     world.gems = world.read(2)
-    world.keys = world.read(7) // This one is special
+    world.keys = [];
+    for (var x = 0; x < 7; x++)
+        world.keys.push(world.read(1));
     world.health = world.read(2);
     world.starting_board = world.read(2);
 
@@ -689,34 +688,54 @@ function parse_world(type, data)
     // End Parsing World information
 
     // Parse Boards
-    console.log("Parsing boards...");
     world.idx = ENGINE.first_board_index;
     for (var x = 0; x <= world.board_count; x++)
     {
         world.boards.push(parse_board(world));
-        console.log("Parsed board #" + x);
     }
 
-    var output = "World format: " + type.toUpperCase() + "<br>";
-    output += "Number of Boards: " + (world.board_count + 1) + "<br>";
-    output += "World name: " + world.name + "<br>";
-    output += "Health: " + world.health + "<br>";
-    output += "Ammo: " + world.ammo + "<br>";
-    output += "Torches: " + world.torches + "<br>";
-    output += "Gems: " + world.gems + "<br>";
-    output += "Keys: " + world.keys + "<br>";
-    output += "Score: " + world.score + "<br>";
+    if (world.brd)
+        var world_kind = "Board";
+    else if (world.save)
+        var world_kind = "Save";
+    else
+        var world_kind = "World";
 
-    output += "Torch cycles: " + world.torch_cycles + "<br>";
-    output += "Energizer cycles: " + world.energizer_cycles + "<br>";
-    output += "Time elapsed: " + world.time_passed + "<br>";
-    output += "Saved game: " + (world.save ? "Yes" : "No") + "<br>";
+    var key_display = "<div class='cp437'>";
+    for (var idx in world.keys)
+    {
+        var color = colors[parseInt(idx) + 9];
+        var bg = colors[parseInt(idx) + 1];
+        if (world.keys[idx] != 0)
+            key_display += `<span style='color:${color};background:${bg};'>♀</span>`;
+        else
+            key_display += "&nbsp;";
+    }
+    key_display += "</div>";
 
+    var output = `<table class='fv col'>
+        <tr><td>Format:</td><td>${type.toUpperCase()} ${world_kind}</td></tr>
+        <tr><td>Name:</td><td>${world.name}</td></tr>
+        <tr><td>Boards:</td><td>${world.board_count + 1}</td></tr>
+        <tr><td>Health:</td><td>${world.health}</td></tr>
+        <tr><td>Ammo:</td><td>${world.ammo}</td></tr>
+        <tr><td>Torches:</td><td>${world.torches}</td></tr>
+        <tr><td>Gems:</td><td>${world.gems}</td></tr>
+        <tr><td>Keys:</td><td>${key_display}</td></tr>
+        <tr><td>Score:</td><td>${world.score}</td></tr>
+        <tr><td>Torch Cycles:</td><td>${world.torch_cycles}</td></tr>
+        <tr><td>Energizer Cycles:</td><td>${world.energizer_cycles}</td></tr>
+        <tr><td>Time Elapsed:</td><td>${world.time_passed}</td></tr>
+    `;
+    output += `</table>`;
+
+    output += `<table class='fv col'>`;
     for (var idx in world.flags)
     {
         if (world.flags[idx])
-            output += "Flag "+idx+": " + world.flags[idx] + "<br>";
+            output += `<tr><td>Flag ${idx}:</td><td>${world.flags[idx]}</td></tr>`;
     }
+    output += `</table>`;
 
     $("#world-info").html(output);
     tab_select("world-info");
@@ -855,8 +874,8 @@ function parse_board(world)
             oop_read += stat.oop_length;
 
             // Escape HTML
-            stat.oop = stat.oop.replace("<", "&lt;");
-            stat.oop = stat.oop.replace(">", "&gt;");
+            stat.oop = stat.oop.replace(/</g, "&lt;");
+            stat.oop = stat.oop.replace(/>/g, "&gt;");
         }
         else
         {
@@ -869,8 +888,9 @@ function parse_board(world)
     }
 
     // Jump to the start of the next board in file (for corrupt boards)
+    console.log(start_idx, board.size);
     var manual_idx = (start_idx + board.size * 2) + 4;
-    if (world.idx != manual_idx)
+    if ((world.idx != manual_idx) && (world.brd != true))
     {
 		board.corrupt = true;
 		world.idx = manual_idx;
@@ -908,51 +928,51 @@ function render_board()
 		return true;
 	}
 
-    output += "Title: " + board.title + "<br>";
-    output += "Can fire: " + board.max_shots + " shot"+((board.max_shots != 1) ? "s" : "")+".<br>";
-    output += "Board is dark: " + (board.dark ? "Yes" : "No") + "<br>";
-    if (board.exit_north)
-    {
-        output += "Board ↑: ";
-        output += '<a class="board-link" data-board="'+board.exit_north+'" href="?file='+loaded_file+'&board='+board.exit_north+'">'+board.exit_north + ". " + world.boards[board.exit_north].title +"</a>";
-        output += "<br>";
-    }
-    else
-        output += "Board ↑: None" + "<br>";
-    if (board.exit_south)
-    {
-        output += "Board ↓: ";
-        output += '<a class="board-link" data-board="'+board.exit_south+'" href="?file='+loaded_file+'&board='+board.exit_south+'">'+board.exit_south + ". " + world.boards[board.exit_south].title +"</a>";
-        output += "<br>";
-    }
-    else
-        output += "Board ↓: None" + "<br>";
-    if (board.exit_east)
-    {
-        output += "Board →: ";
-        output += '<a class="board-link" data-board="'+board.exit_east+'" href="?file='+loaded_file+'&board='+board.exit_east+'">'+board.exit_east + ". " + world.boards[board.exit_east].title +"</a>";
-        output += "<br>";
-    }
-    else
-        output += "Board →: None" + "<br>";
-    if (board.exit_west)
-    {
-        output += "Board ←: ";
-        output += '<a class="board-link" data-board="'+board.exit_west+'" href="?file='+loaded_file+'&board='+board.exit_west+'">'+board.exit_west + ". " + world.boards[board.exit_west].title +"</a>";
-        output += "<br>";
-    }
-    else
-        output += "Board ←: None" + "<br>";
+    output += `<table class='fv col'>
+    <tr>
+        <td>Title:</td><td>${board.title}</td>
+    </tr>
+    <tr>
+        <td>Can Fire:</td><td>${board.max_shots} shot${((board.max_shots != 1) ? "s" : "")}</td>
+        <td>Board Is Dark:</td><td>${(board.dark ? "Yes" : "No")}</td>
+    </tr>
 
-    output += "Re-enter when zapped: " + (board.zap ? "Yes" : "No") + "<br>";
-    output += "Re-enter X: " + board.enter_x + "<br>";
-    output += "Re-enter Y: " + board.enter_y + "<br>";
-    output += "Time limit: " + (board.time_limit ? "None" : board.time_limit + " sec"+(board.time_limit != 1 ? "s" : "")+".") + "<br>";
+    <tr><td>Re-enter When Zapped:</td><td>${(board.zap ? "Yes" : "No")}</td>
+        <td>Re-enter X/Y:</td><td>${board.enter_x} / ${board.enter_y}</td>
+    </tr>
+    <tr><td>Time Limit:</td>
+        <td>${board.time_limit ? "None": board.time_limit + " sec"+(board.time_limit != 1 ? "s" : "")}.</td>
+        <td>&nbsp;</td><td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td>Stat Elements:</td><td>${board.stat_count + 1} / 151</td>
+        <td>Board Size:</td><td>${board.size + 2} bytes</td>
+    </tr>
+    `;
 
-    output += "Stat elements: " + (board.stat_count + 1) + "/151<br>";
-    output += "Board size: " + (board.size + 2) + " bytes<br>"; // Extra two bytes are for the "size of board" bytes themselves. This is necessary to match KevEdit.
     if (board.message != "")
-        output += "Message: " + board.message + "<br>";
+        output += `<tr><td>Message:</td><td>${board.message}</td></tr>`;
+
+    output += `<tr>
+        <th colspan="4">Board Exits</th>
+    </tr>`
+
+    var arrows = ["↑", "→", "←", "↓"]
+    var props= ["exit_north", "exit_east", "exit_west", "exit_south"];
+    for (var idx in arrows)
+    {
+        if (idx % 2 == 0)
+            output += "<tr>";
+        output += `<td class='exit'>${arrows[idx]}</td>`;
+        if (board[props[idx]] != 0)
+            output += `<td><a class="board-link" data-board="${board[props[idx]]}" href="?file=${loaded_file}&board=${board[props[idx]]}">${board[props[idx]]}. ${world.boards[board[props[idx]]].title}</a></td>`;
+        else
+            output += "<td>None</td>";
+        if (idx % 2 != 0)
+            output += "</tr>";
+    }
+
+    output += "</table>";
 
     $("#board-info").html(output);
     tab_select("board-info");
@@ -991,21 +1011,6 @@ function draw_board()
         var e = {"data":{"x":split[0], "y":split[1]}};
         stat_info(e);
     }
-
-
-    //console.log(document.getElementById("world-canvas").toDataURL());
-
-    // DEBUG Screenshot Saving
-    /*
-    if (save)
-    {
-        var canvas = document.getElementById("world-canvas");
-        base64 = canvas.toDataURL();
-        $("input[name=screenshot]").val(base64);
-        $("form[name=save]")[0].submit();
-    }
-    */
-    // END DEBUG
 }
 
 var passage_travel = function(e) {
@@ -1014,7 +1019,6 @@ var passage_travel = function(e) {
     var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
     var y = parseInt((e.pageY - posY) / TILE_HEIGHT) + 1;
     var tile_idx = ((y-1) * 60) + (x-1);
-    console.log("Clicked on X/Y", x, y);
     var board = world.boards[board_number];
 
     var destination = null;
@@ -1026,7 +1030,6 @@ var passage_travel = function(e) {
         {
             if (board.stats[stat_idx].x == x && board.stats[stat_idx].y == y)
             {
-                console.log("Passage found!");
                 destination = board.stats[stat_idx].param3;
             }
         }
@@ -1061,16 +1064,9 @@ function stat_info(e)
 
     //window.location.hash = ;
     history.replaceState(undefined, undefined, hash_coords)
-    var output = "";
 
-    // General info
+    // Get the current tile
     var tile = world.boards[board_number].elements[tile_idx];
-    output += "Coordinates: ("+x+", "+y+") [Tile "+(tile_idx)+"/"+(ENGINE.tile_count - 1)+"]" + "<br>";
-    output += "ID: " + tile.id + "<br>";
-    output += "Name: " + tile.name + "<br>";
-    output += "Default Character: " + tile.character + "<br>";
-    //output += "Color ID: " + tile.color_id + "<br>";
-    output += "Color Name: " + tile.foreground_name + " on " + tile.background_name + "<br>";
 
     // Iterate over stat elements
     var stat = null;
@@ -1083,36 +1079,71 @@ function stat_info(e)
         }
     }
 
+    var output = `<table class="fv">
+    <tr>
+        <td>Position:</td>
+        <td>(${x}, ${y}) [${tile_idx}/${ENGINE.tile_count}]</td>
+        <td>Def. Character:</td>
+        <td>${tile.character}</td>
+    </tr>
+    <tr>
+        <td>Name:</td>
+        <td>${tile.name}</td>`
+
+    if (stat != null)
+        output += `<td>Cycle:</td><td>${stat.cycle}</td>`;
+    else
+        output += `<td>&nbsp;</td><td>&nbsp;</td>`;
+
+    output += `</tr>
+    <tr>
+        <td>ID:</td>
+        <td>${tile.id}</td>
+        <td>Color:</td>
+        <td>${tile.foreground_name} on ${tile.background_name} (${tile.color_id})</td>
+    </tr>
+    `;
+
     if (stat != null)
     {
-        output += "Cycle: " + stat.cycle + "<br>";
-        output += (ELEMENTS[tile.id].hasOwnProperty("param1") ? ELEMENTS[tile.id].param1 : "Param1") + ": " + stat.param1 + "<br>";
-        output += (ELEMENTS[tile.id].hasOwnProperty("param2") ? ELEMENTS[tile.id].param2 : "Param2") + ": " + stat.param2 + "<br>";
+        var p1name = (ELEMENTS[tile.id].hasOwnProperty("param1") ? ELEMENTS[tile.id].param1 : "Param1");
+        var p2name = (ELEMENTS[tile.id].hasOwnProperty("param2") ? ELEMENTS[tile.id].param2 : "Param2");
+        var p3name = (ELEMENTS[tile.id].hasOwnProperty("param3") ? ELEMENTS[tile.id].param3 : "Param3");
+        var param3_display = stat.param3;
 
-        // Passages get a link and the board's proper name
         if (tile.name == "Passage")
         {
             var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
-            output += (ELEMENTS[tile.id].hasOwnProperty("param3") ? ELEMENTS[tile.id].param3 : "Param3") + ": ";
-            output += '<a class="board-link" data-board="'+stat.param3+'" href="?file='+loaded_file+'&board='+stat.param3+'">'+stat.param3 + " - " + world.boards[stat.param3].title +"</a>";
-            output += "<br>";
+            param3_display = `<a class="board-link" data-board="${stat.param3}" href="?file=${loaded_file}&board=${stat.param3}">${stat.param3} - ${world.boards[stat.param3].title}</a>`;
         }
-        else
-            output += (ELEMENTS[tile.id].hasOwnProperty("param3") ? ELEMENTS[tile.id].param3 : "Param3") + ": " + stat.param3 + "<br>";
 
-        if (ELEMENTS[tile.id].hasOwnProperty("step"))
-            output += ELEMENTS[tile.id].step + "<br>"
-        output += "X-Step: " + stat.x_step + "<br>";
-        output += "Y-Step: " + stat.y_step + "<br>";
-        output += "Leader: " + stat.leader + "<br>";
-        output += "Follower: " + stat.follower + "<br>";
-        output += "Under ID: " + stat.under_id + "<br>";
-        output += "Under Color: " + stat.under_color + "<br>";
-        output += "Current Instruction: " + stat.oop_idx + "<br>";
-        output += "OOP Length: " + stat.oop_length + "<br>";
+        output += `
+        <tr>
+            <td>Under ID:</td><td>${ELEMENTS[stat.under_id].name}</td>
+            <td>Under Color:</td><td>${ELEMENTS[stat.under_id].name}</td>
+
+        </tr>
+        <tr>
+            <td>${p1name}:</td><td>${stat.param1}</td>
+            <td>X/Y-Step:</td><td>(${stat.x_step}, ${stat.y_step})</td>
+        </tr>
+        <tr>
+            <td>${p2name}:</td><td>${stat.param2}</td>
+            <td>Leader:</td><td>${stat.leader}</td>
+        </tr>
+        <tr>
+            <td>${p3name}:</td><td>${param3_display}</td>
+            <td>Follower:</td><td>${stat.follower}</td>
+        </tr>
+        <tr>
+            <td>OOP Length:</td><td>${stat.oop_length}</td>
+            <td>Instruction:</td><td>${stat.oop_idx}</td>
+        </tr>
+        </table>
+        `;
+
         if (stat.oop_length > 0)
         {
-            output += "================ ZZT-OOP =================<br>";
             output += "<code class='zzt-oop'>" + syntax_highlight(stat.oop) + "</code>";
         }
     }
@@ -1588,10 +1619,12 @@ function highlight(x, y)
     print(ctx, 200, 127, x - 2, y);
     print(ctx, 205, 127, x - 1, y);
     print(ctx, 188, 127, x, y);
-
 }
 
 function unhighlight(x, y)
 {
+    var temp_hash_coords = hash_coords;
+    hash_coords = null;
     draw_board();
+    hash_coords = temp_hash_coords;
 }
