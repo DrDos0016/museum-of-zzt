@@ -564,6 +564,8 @@ div.file-details ul
 /* File viewing */
 #file-area
 {
+    display:flex;
+    flex-wrap:wrap;
 }
 
 #details, #play-area
@@ -586,7 +588,8 @@ div.file-details ul
 
 #details
 {
-    position:relative;
+    /*position:relative;*/
+    width:100%;
 }
 
 #overlay
@@ -636,7 +639,6 @@ div.file-details ul
 
 #file-list
 {
-    width:48%;
     height:300px;
     border:1px solid #000;
     padding-top:0.5em;
@@ -644,7 +646,7 @@ div.file-details ul
     overflow-x:none;
     overflow-y:auto;
     font-family:monospace;
-    float:left;
+    flex:1;
 }
 
 #file-list li.zip-content
@@ -698,13 +700,12 @@ div.file-details ul
 
 #tab-area
 {
-    width:48%;
     padding:0.5em;
     border:1px solid #000;
     overflow:none;
     font-family:monospace;
-    float:right;
     height:300px;
+    flex:2;
 }
 
 #file-tabs
@@ -745,7 +746,6 @@ div.file-details ul
 
 #world-info, #board-info, #element-info, #stat-info, #preferences
 {
-    padding-top:0.25em;
     height:98%;
     overflow:auto;
 }
@@ -758,6 +758,41 @@ div.file-details ul
     background-position:32px 28px top;
     background-repeat:no-repeat;
     display:inline-block;
+}
+
+table.fv
+{
+    /*width:100%;*/
+    margin:0.25em;
+}
+
+table.fv td
+{
+    padding-left:0.5em;
+    padding-right:0.5em;
+}
+
+table.fv tr td:nth-child(odd)
+{
+    text-align:right;
+    border-right:0;
+    width:auto;
+}
+
+table.fv tr td:nth-child(even)
+{
+    text-align:left;
+    border-left:0;
+}
+
+table.fv + table.fv
+{
+    margin-left:1em;
+}
+
+table.fv .exit
+{
+    width:1.5em;
 }
 
 /* End file viewing */
@@ -905,11 +940,11 @@ code
     display:block;
     width:42ch;
     color:#839496;
-    /* background-color:#fdf6e3; Light */
     background-color:#002b36;
     font-size:larger;
     padding:1ch 2ch 1ch 2ch;
     white-space:pre;
+    margin-left:0.2em;
 }
 
 code.inline

@@ -24,7 +24,7 @@ var uploaded = {% if uploaded %}true{% else %} false{% endif %};
     <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
     </div>
 
-    <div id="file-list" class="col">
+    <div id="file-list">
     <ul>
     <li class="selected" data-img="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}">Title Screen</li>
     {% for file in files %}

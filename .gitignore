@@ -17,6 +17,7 @@ comic/static/comic/zamros/*
 tools/comic/json/*
 tools/comic/necocone.co/*
 tools/crons/private.py
+tools/crons/woz_queue.txt
 tools/extract
 tools/zookeeper
 tools/data

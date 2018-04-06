@@ -188,6 +188,7 @@ class File(models.Model):
     superceded      -- FK with File for the "definitive" version of a file
     playable_boards -- Number of boards in file that can be accessed in play
     total_boards    -- Number of boards in file that exist period
+    archive_name    -- name on archive.org (ex: zzt_burgerj)
     """
 
     letter = models.CharField(max_length=1, db_index=True)
@@ -227,6 +228,7 @@ class File(models.Model):
                                    null=True, blank=True, default=None)
     playable_boards = models.IntegerField(null=True, blank=True, default=None, help_text="Set automatically. Do not adjust.")
     total_boards = models.IntegerField(null=True, blank=True, default=None, help_text="Set automatically. Do not adjust.")
+    archive_name = models.CharField(max_length=80, default="", blank=True, help_text="ex: zzt_burgerj")
 
     class Meta:
         ordering = ["sort_title", "letter"]
@@ -432,6 +434,7 @@ class File(models.Model):
             zf = zipfile.ZipFile(zip_path)
         except (FileNotFoundError, zipfile.BadZipFile):
             print("\tSkipping due to bad zip")
+            return False
 
         file_list = zf.namelist()
 
@@ -448,6 +451,7 @@ class File(models.Model):
                     zf.extract(file, path=temp_path)
                 except:
                     print("Bad zip.")
+                    return False
             else:
                 continue
 
