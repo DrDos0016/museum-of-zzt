@@ -125,4 +125,17 @@ img.zzt-cheat
 .zzt-txt-message .yellow { color:#FFFF55; }
 .zzt-txt-message .white { color:#FFFFFF; }
 
+/* Super ZZT */
+.zzt-img.zzt-szzt-message
+{
+    width:448px;
+    height:28px;
+}
 
+img.zzt-szzt-message
+{
+    position:relative;
+    top:-322px;
+    left:-192px;
+}
+/* End Super ZZT */
