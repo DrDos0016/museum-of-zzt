@@ -620,7 +620,7 @@ function parse_world(type, data)
         TILE_HEIGHT = 8;*/
         CANVAS_WIDTH = 8 * 96;
         CANVAS_HEIGHT = 14 * 80;
-        $("#details").html("<div id='overlay'></div><canvas id='world-canvas' width='"+CANVAS_WIDTH+"' height='"+CANVAS_HEIGHT+"'>Your browser is outdated and does not support the canvas element.</canvas>");
+        $("#details").html("<div id='overlay' class='cp437'></div><canvas id='world-canvas' width='"+CANVAS_WIDTH+"' height='"+CANVAS_HEIGHT+"'>Your browser is outdated and does not support the canvas element.</canvas>");
         $("select[name=charset]").val("szzt-cp437.png");
     }
     else
@@ -892,9 +892,9 @@ function parse_board(world)
     var manual_idx = (start_idx + board.size * 2) + 4;
     if ((world.idx != manual_idx) && (world.brd != true))
     {
-		board.corrupt = true;
-		world.idx = manual_idx;
-	}
+        board.corrupt = true;
+        world.idx = manual_idx;
+    }
     return board;
 }
 
@@ -922,11 +922,11 @@ function render_board()
 
     if (board.corrupt)
     {
-		output += "<div class='error'>This board is corrupt</div>";
-		$("#board-info").html(output);
-		tab_select("board-info");
-		return true;
-	}
+        output += "<div class='error'>This board is corrupt</div>";
+        $("#board-info").html(output);
+        tab_select("board-info");
+        return true;
+    }
 
     output += `<table class='fv col'>
     <tr>

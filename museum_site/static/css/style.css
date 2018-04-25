@@ -588,7 +588,7 @@ div.file-details ul
 
 #details
 {
-    /*position:relative;*/
+    position:relative;
     width:100%;
 }
 
@@ -598,11 +598,15 @@ div.file-details ul
     position:absolute;
     font-size:14px;
     line-height:14px;
-    top:0px;
-    left:0px;
-    width:21em;
-    font-family:monospace;
-    padding:2px;
+    top:0.25em;
+    left:0.25em;
+    /*width:21em;*/
+}
+
+#details[data-format=szt] #overlay
+{
+    background-color:rgba(128, 128, 128, 0.5);
+    opacity:50%;
 }
 
 #play-area
