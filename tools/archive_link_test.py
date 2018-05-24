@@ -12,14 +12,10 @@ django.setup()
 from museum_site.models import File
 
 def main():
-    with open("broken_archive_links.txt", "w") as fh:
-        for f in File.objects.all().order_by("id"):
-            resp = requests.get("https://archive.org/embed/zzt_" + f.filename[:-4])
-            if resp.status_code != 200:
-                print(resp.status_code, f.id, f.title)
-                fh.write(str(resp.status_code) + " " + str(f.id) + " " + f.title + "\n")
-                f.archive_name = ""
-                f.save()
+    for f in File.objects.all().order_by("id"):
+        resp = requests.get("https://archive.org/embed/" + f.archive_name)
+        if resp.status_code != 200:
+            print(resp.status_code, f.id, f.title)
     return True
 
 if __name__ == "__main__":
