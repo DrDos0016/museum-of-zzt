@@ -30,7 +30,6 @@ def message(parser, token):
     parser.delete_first_token()
     #color = token.contents if token.contents else "auto"
     color = token.contents.split()[-1] if len(token.contents.split()) >= 2 else "auto"
-    print()
     return ZztMessage(nodelist, color)
 
 

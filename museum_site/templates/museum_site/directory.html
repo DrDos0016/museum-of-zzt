@@ -20,7 +20,7 @@
         {% endifchanged %}
     {% endif %}
         <div class="row">
-            <a href="{% url 'search' %}?{{category}}={{row}}">{{row}}</a>
+            <a href="{% url 'search' %}?{{category}}={{row}}{% if category != 'genre' %}&sort=release{% endif %}">{{row}}</a>
             </div>
     {% if forloop.counter|divisibleby:split %}
     </div>
