@@ -48,7 +48,11 @@ padding-left:40px;
     overflow:hidden;
     max-width:640px;
     max-height:350px;
+}
 
+.zzt-img img
+{
+    max-width:100%;
 }
 
 .zzt-img.zzt-sidebar
@@ -60,6 +64,7 @@ img.zzt-sidebar
 {
     position:relative;
     left:-480px;
+    max-width:none;
 }
 
 .zzt-img.zzt-hud
@@ -73,6 +78,7 @@ img.zzt-hud
     position:relative;
     left:-480px;
     top:-84px;
+    max-width:none;
 }
 
 .zzt-img.zzt-message
@@ -90,6 +96,7 @@ img.zzt-message
 {
     position:relative;
     top:-336px;
+    max-width:none;
 }
 
 .zzt-img.zzt-cheat
@@ -103,6 +110,7 @@ img.zzt-cheat
     position:relative;
     left:-480px;
     top:-56px;
+    max-width:none;
 }
 
 .zzt-txt-message

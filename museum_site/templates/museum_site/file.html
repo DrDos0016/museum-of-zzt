@@ -62,7 +62,7 @@ var uploaded = {% if uploaded %}true{% else %} false{% endif %};
                             </optgroup>
                             <optgroup label="Custom Fonts">
                                 {% for charset in custom_charsets %}
-                                <option value="{{charset}}">{{charset|slice:"5:-4"}}{% if file.id|stringformat:"i" == charset|slice:":4" %} (RECOMMENDED){% endif %}</option>
+                                <option value="{{charset}}"{% if request.charset == charset %} selected{% endif %}>{{charset|slice:"5:-4"}}{% if file.id|stringformat:"i" == charset|slice:":4" %} (RECOMMENDED){% endif %}</option>
                                 {% endfor %}
                             </optgroup>
                         </select>

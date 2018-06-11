@@ -198,23 +198,10 @@ table td, table th
     border:1px solid #000;
 }
 
-#logo
-{
-    background-image:url("/static/images/museum_of_zzt_logo_wide_v2.png");
-    background-repeat:no-repeat;
-    background-position:left bottom;
-    background-size:contain;
-    height:100px;
-    display:block;
-    position:relative;
-    top:30px;
-}
-
 header
 {
     margin:auto;
     flex:0 0 100%;
-    margin-top:-30px; /* should equal top property of logo */
 }
 
 nav
@@ -222,14 +209,77 @@ nav
     display:flex;
     justify-content:space-between;
     align-items:flex-end;
+    height:70px;
 }
 
-nav a
+nav div
 {
-    /*display:block;*/
     text-align:center;
-    font-size:16pt;
+    font-size:28px;
     flex:1;
+    font-family:"cp437";
+}
+
+.nav-link
+{
+    padding:0.5em;
+    width:100%;
+    border-radius:20px;
+}
+
+.nav-link .key
+{
+    text-align:center;
+    margin:auto;
+    display:inline-block;
+    width:1.5em;
+    color:#000;
+}
+
+.nav-link:nth-child(even) .key { background-color:#AAA; }
+.nav-link:nth-child(odd) .key { background-color:#0AA; }
+
+.nav-link a
+{
+    color:#FF5;
+    background-color:#00A;
+    display:inline-block;
+    padding:4px;
+    width:80%;
+}
+
+.nav-link a:hover
+{
+    text-decoration:none;
+}
+
+@media (min-width: 10px)
+{
+    #logo
+    {
+        background-image:url("/static/images/logos/museum_of_zzt_logo_nocat.png");
+        background-repeat:no-repeat;
+        background-position:left bottom;
+        background-size:contain;
+        height:70px;
+        display:block;
+        position:relative;
+    }
+}
+
+@media (min-width: 1600px)
+{
+    #logo
+    {
+        background-image:url("/static/images/logos/museum_of_zzt_logo_wide_v2.png");
+        background-repeat:no-repeat;
+        background-position:left bottom;
+        background-size:contain;
+        height:100px;
+        display:block;
+        position:relative;
+        top:30px;
+    }
 }
 
 .sidebar
@@ -455,6 +505,11 @@ div.file-links, div.file-details, div.file-meta
 div.file-meta
 {
     border-bottom:1px solid #000;
+}
+
+div.file-meta div
+{
+    flex:1 0 15%;
 }
 
 div.file-links div
