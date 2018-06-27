@@ -1,3 +1,4 @@
+import json
 import os
 import random
 import sys
@@ -6,6 +7,7 @@ from datetime import datetime
 
 import django
 import pytumblr
+import requests
 from twitter import *
 from PIL import Image
 
@@ -13,10 +15,17 @@ sys.path.append("/var/projects/museum")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
-from museum_site.models import (File, DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_GFX)
+from museum_site.models import (
+    File, DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_GFX
+)
+
 import zookeeper
 
-from private import CONSUMER, SECRET, OAUTH_TOKEN, OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET
+from private import (
+    CONSUMER, SECRET, OAUTH_TOKEN, OAUTH_SECRET, TWITTER_CONSUMER_KEY,
+    TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET,
+    WEBHOOK_URL
+)
 
 
 def main():
@@ -244,6 +253,30 @@ def main():
             t = Twitter(auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
             resp = t.statuses.update(status=tweet, media_ids=img1)
             print(resp)
+            twitter_id = resp.get("id")
+            twitter_img = resp["entities"]["media"][0]["media_url"]
+
+
+        # Discord webhook
+        discord_post = "https://twitter.com/worldsofzzt/status/{}\n**{}** by {} ({})\n"
+        if data.company:
+            discord_post += "Published by: {}\n".format(data.company)
+        discord_post += "`[{}] - \"{}\"\n`"
+        discord_post += "Explore: https://museumofzzt.com" + data.file_url() + "?file=" + selected + "&board=" + str(board_num) + "\n"
+        discord_post += "Play: https://archive.org/details/" + data.archive_name
+
+        discord_post = discord_post.format(twitter_id, data.title, data.author, str(data.release_date)[:4], selected, z.boards[board_num].title)
+
+        discord_data = {
+            "content": discord_post,
+            "embeds": [
+                {"image": {"url": twitter_img}}
+            ]
+        }
+        resp = requests.post(WEBHOOK_URL, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
+        print(resp)
+        print(resp.content)
+
     else:
         print("DID NOT POST")
 
