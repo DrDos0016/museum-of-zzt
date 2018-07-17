@@ -76,16 +76,22 @@ def cl_info(id):
     else:
         company = ""
 
+    if file.release_date is not None:
+        release = file.release_date.strftime("%B %m, %Y")
+    else:
+        release = "Unknown"
+
+
     output = """
         <div class="c">
-            <h2>{}</h2>
-            By: {}<br>
-            {}
-            Released: {}<br>
-            <a href="{}" target="_blank">Download</a> | <a href="{}" target="_blank">Play Online</a> | <a href="{}" target="_blank">View Files</a><br>
+            <h2>{title}</h2>
+            By: {author}<br>
+            {company}
+            Released: {release}<br>
+            <a href="{download}" target="_blank">Download</a> | <a href="{play}" target="_blank">Play Online</a> | <a href="{view}" target="_blank">View Files</a><br>
         </div>
 
-    """.format(file.title, file.author, company, file.release_date.strftime("%B %m, %Y"), file.download_url(), file.play_url(), file.file_url())
+    """.format(title=file.title, author=file.author, company=company, release=release, download=file.download_url(), play=file.play_url(), view=file.file_url())
 
     return mark_safe(output + "\n")
 

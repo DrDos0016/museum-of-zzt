@@ -1,19 +1,37 @@
 "use strict";
-var colors = ["#000000", "#0000AA", "#00AA00", "#00AAAA", "#AA0000", "#AA00AA", "#AA5500", "#AAAAAA", "#555555", "#5555FF", "#55FF55", "#55FFFF", "#FF5555", "#FF55FF", "#FFFF55", "#FFFFFF"];
-var COLOR_NAMES = ["Black", "Dark Blue", "Dark Green", "Dark Cyan", "Dark Red", "Dark Purple", "Dark Yellow", "Gray", "Dark Gray", "Blue", "Green", "Cyan", "Red", "Purple", "Yellow", "White"];
-var line_characters = {"0000":249, "0001":181, "0010":198, "0011":205,
-                       "0100":210, "0101":187, "0110":201, "0111":203,
-                       "1000":208, "1001":188, "1010":200, "1011":202,
-                       "1100":186, "1101":185, "1110":204, "1111":206};
-var web_characters = {"0000":250, "0001":196, "0010":196, "0011":196,
-                      "0100":179, "0101":191, "0110":218, "0111":194,
-                      "1000":179, "1001":217, "1010":192, "1011":193,
-                      "1100":179, "1101":180, "1110":195, "1111":197};
+var colors = [
+    "#000000", "#0000AA", "#00AA00", "#00AAAA",
+    "#AA0000", "#AA00AA", "#AA5500", "#AAAAAA",
+    "#555555", "#5555FF", "#55FF55", "#55FFFF",
+    "#FF5555", "#FF55FF", "#FFFF55", "#FFFFFF"
+];
+
+var COLOR_NAMES = [
+    "Black", "Dark Blue", "Dark Green", "Dark Cyan",
+    "Dark Red", "Dark Purple", "Dark Yellow", "Gray",
+    "Dark Gray", "Blue", "Green", "Cyan",
+    "Red", "Purple", "Yellow", "White"
+];
+
+var line_characters = {
+    "0000":249, "0001":181, "0010":198, "0011":205,
+    "0100":210, "0101":187, "0110":201, "0111":203,
+    "1000":208, "1001":188, "1010":200, "1011":202,
+    "1100":186, "1101":185, "1110":204, "1111":206
+};
+
+var web_characters = {
+    "0000":250, "0001":196, "0010":196, "0011":196,
+    "0100":179, "0101":191, "0110":218, "0111":194,
+    "1000":179, "1001":217, "1010":192, "1011":193,
+    "1100":179, "1101":180, "1110":195, "1111":197
+};
 var ELEMENTS = null;
 var ENGINE = null;
 
 var engines = {
     "zzt":{
+        "identifier": 0xFFFF,
         "max_world_length": 20,
         "max_flags": 10,
         "tile_count": 1500,
@@ -25,6 +43,7 @@ var engines = {
         "characters": [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63]
         },
     "szt":{
+        "identifier": 0xFFFE,
         "max_world_length": 20,
         "max_flags": 16,
         "tile_count": 7680,
@@ -38,262 +57,38 @@ var engines = {
 };
 
 var CP437_TO_UNICODE = {
-    0:0,
-    1:9786,
-    2:9787,
-    3:9829,
-    4:9830,
-    5:9827,
-    6:9824,
-    7:8226,
-    8:9688,
-    9:9675,
-    10:9689,
-    11:9794,
-    12:9792,
-    13:9834,
-    14:9835,
-    15:9788,
-    16:9658,
-    17:9668,
-    18:8597,
-    19:8252,
-    20:182,
-    21:167,
-    22:9644,
-    23:8616,
-    24:8593,
-    25:8595,
-    26:8594,
-    27:8592,
-    28:8735,
-    29:8596,
-    30:9650,
-    31:9660,
-    32:32,
-    33:33,
-    34:34,
-    35:35,
-    36:36,
-    37:37,
-    38:38,
-    39:39,
-    40:40,
-    41:41,
-    42:42,
-    43:43,
-    44:44,
-    45:45,
-    46:46,
-    47:47,
-    48:48,
-    49:49,
-    50:50,
-    51:51,
-    52:52,
-    53:53,
-    54:54,
-    55:55,
-    56:56,
-    57:57,
-    58:58,
-    59:59,
-    60:60,
-    61:61,
-    62:62,
-    63:63,
-    64:64,
-    65:65,
-    66:66,
-    67:67,
-    68:68,
-    69:69,
-    70:70,
-    71:71,
-    72:72,
-    73:73,
-    74:74,
-    75:75,
-    76:76,
-    77:77,
-    78:78,
-    79:79,
-    80:80,
-    81:81,
-    82:82,
-    83:83,
-    84:84,
-    85:85,
-    86:86,
-    87:87,
-    88:88,
-    89:89,
-    90:90,
-    91:91,
-    92:92,
-    93:93,
-    94:94,
-    95:95,
-    96:96,
-    97:97,
-    98:98,
-    99:99,
-    100:100,
-    101:101,
-    102:102,
-    103:103,
-    104:104,
-    105:105,
-    106:106,
-    107:107,
-    108:108,
-    109:109,
-    110:110,
-    111:111,
-    112:112,
-    113:113,
-    114:114,
-    115:115,
-    116:116,
-    117:117,
-    118:118,
-    119:119,
-    120:120,
-    121:121,
-    122:122,
-    123:123,
-    124:124,
-    125:125,
-    126:126,
-    127:8962,
-    128:199,
-    129:252,
-    130:233,
-    131:226,
-    132:228,
-    133:224,
-    134:229,
-    135:231,
-    136:234,
-    137:235,
-    138:232,
-    139:239,
-    140:238,
-    141:236,
-    142:196,
-    143:197,
-    144:201,
-    145:230,
-    146:198,
-    147:244,
-    148:246,
-    149:242,
-    150:251,
-    151:249,
-    152:255,
-    153:214,
-    154:220,
-    155:162,
-    156:163,
-    157:165,
-    158:8359,
-    159:402,
-    160:225,
-    161:237,
-    162:243,
-    163:250,
-    164:241,
-    165:209,
-    166:170,
-    167:186,
-    168:191,
-    169:8976,
-    170:172,
-    171:189,
-    172:188,
-    173:161,
-    174:171,
-    175:187,
-    176:9617,
-    177:9618,
-    178:9619,
-    179:9474,
-    180:9508,
-    181:9569,
-    182:9570,
-    183:9558,
-    184:9557,
-    185:9571,
-    186:9553,
-    187:9559,
-    188:9565,
-    189:9564,
-    190:9563,
-    191:9488,
-    192:9492,
-    193:9524,
-    194:9516,
-    195:9500,
-    196:9472,
-    197:9532,
-    198:9566,
-    199:9567,
-    200:9562,
-    201:9556,
-    202:9577,
-    203:9574,
-    204:9568,
-    205:9552,
-    206:9580,
-    207:9575,
-    208:9576,
-    209:9572,
-    210:9573,
-    211:9561,
-    212:9560,
-    213:9554,
-    214:9555,
-    215:9579,
-    216:9578,
-    217:9496,
-    218:9484,
-    219:9608,
-    220:9604,
-    221:9612,
-    222:9616,
-    223:9600,
-    224:945,
-    225:223,
-    226:915,
-    227:960,
-    228:931,
-    229:963,
-    230:181,
-    231:964,
-    232:934,
-    233:920,
-    234:937,
-    235:948,
-    236:8734,
-    237:966,
-    238:949,
-    239:8745,
-    240:8801,
-    241:177,
-    242:8805,
-    243:8804,
-    244:8992,
-    245:8993,
-    246:247,
-    247:8776,
-    248:176,
-    249:8729,
-    250:183,
-    251:8730,
-    252:8319,
-    253:178,
-    254:9632,
-    255:160,
+    0:0, 1:9786,  2:9787, 3:9829, 4:9830, 5:9827, 6:9824, 7:8226,
+    8:9688, 9:9675, 10:9689, 11:9794, 12:9792, 13:9834, 14:9835, 15:9788,
+    16:9658, 17:9668, 18:8597, 19:8252, 20:182, 21:167, 22:9644, 23:8616,
+    24:8593, 25:8595,26:8594, 27:8592, 28:8735, 29:8596, 30:9650, 31:9660,
+    32:32, 33:33, 34:34, 35:35, 36:36, 37:37, 38:38, 39:39,
+    40:40, 41:41, 42:42, 43:43, 44:44, 45:45, 46:46, 47:47,
+    48:48, 49:49, 50:50, 51:51, 52:52, 53:53, 54:54, 55:55,
+    56:56, 57:57, 58:58, 59:59, 60:60, 61:61, 62:62, 63:63,
+    64:64, 65:65, 66:66, 67:67, 68:68, 69:69, 70:70, 71:71,
+    72:72, 73:73, 74:74, 75:75, 76:76, 77:77, 78:78, 79:79,
+    80:80, 81:81, 82:82, 83:83, 84:84, 85:85, 86:86, 87:87,
+    88:88, 89:89, 90:90, 91:91, 92:92, 93:93, 94:94, 95:95,
+    96:96, 97:97, 98:98, 99:99, 100:100, 101:101, 102:102, 103:103,
+    104:104, 105:105, 106:106, 107:107, 108:108, 109:109, 110:110, 111:111,
+    112:112, 113:113, 114:114, 115:115, 116:116, 117:117, 118:118, 119:119,
+    120:120, 121:121, 122:122, 123:123, 124:124, 125:125, 126:126, 127:8962,
+    128:199, 129:252, 130:233, 131:226, 132:228, 133:224, 134:229, 135:231,
+    136:234, 137:235, 138:232, 139:239, 140:238, 141:236, 142:196, 143:197,
+    144:201, 145:230, 146:198, 147:244, 148:246, 149:242, 150:251, 151:249,
+    152:255, 153:214, 154:220, 155:162, 156:163, 157:165, 158:8359, 159:402,
+    160:225, 161:237, 162:243, 163:250, 164:241, 165:209, 166:170, 167:186,
+    168:191, 169:8976, 170:172, 171:189, 172:188, 173:161, 174:171, 175:187,
+    176:9617, 177:9618, 178:9619, 179:9474, 180:9508, 181:9569, 182:9570, 183:9558,
+    184:9557, 185:9571, 186:9553, 187:9559, 188:9565, 189:9564, 190:9563, 191:9488,
+    192:9492, 193:9524, 194:9516, 195:9500, 196:9472, 197:9532, 198:9566, 199:9567,
+    200:9562, 201:9556, 202:9577, 203:9574, 204:9568, 205:9552, 206:9580, 207:9575,
+    208:9576, 209:9572, 210:9573, 211:9561, 212:9560, 213:9554, 214:9555, 215:9579,
+    216:9578, 217:9496, 218:9484, 219:9608, 220:9604, 221:9612, 222:9616, 223:9600,
+    224:945, 225:223, 226:915, 227:960, 228:931, 229:963, 230:181, 231:964,
+    232:934, 233:920, 234:937, 235:948, 236:8734, 237:966, 238:949, 239:8745,
+    240:8801, 241:177, 242:8805, 243:8804, 244:8992, 245:8993, 246:247, 247:8776,
+    248:176, 249:8729, 250:183, 251:8730, 252:8319, 253:178, 254:9632, 255:160,
 }
 
 var world = null;
@@ -383,18 +178,7 @@ var switch_board = function (e)
 function pull_file()
 {
     if ($(this).hasClass("selected"))
-    {
         return false;
-        /*
-        //$(this).find("ul").toggle();
-        var split = filename.toLowerCase().split(".");
-        var ext = split[split.length - 1];
-        if (ext == "zzt" || ext == "szt" || ext == "sav")
-            //display_help();
-            1;
-        return true;
-        */
-    }
 
     $("#file-list li").removeClass("selected");
     $("#file-list li ol").remove();
@@ -411,7 +195,7 @@ function pull_file()
 
     if (filename == "Title Screen")
     {
-        $("#details").html('<img src="'+$(this).data("img")+'">');
+        $("#details").html(`<img src="${$(this).data("img")}">`);
         return true;
     }
 
@@ -444,26 +228,15 @@ function pull_file()
             world = parse_world(format, data);
 
             // Write the board names to the file list
-            var board_list = "<ol start='0'>";
-            for (var x = 0; x < world.boards.length; x++)
-            {
-                board_list += "<li class='board' data-board-number='"+x+"'>";
-                if (world.starting_board == x)
-                    board_list += "<b>";
-                board_list += (world.boards[x].title ? world.boards[x].title : "-untitled");
-                if (world.starting_board == x)
-                    board_list += "</b>";
-                board_list += "</li>";
-            }
-            board_list += "</ol>";
-            $("#file-list li.selected").append(board_list + "<br>");
+            var board_list = create_board_list();
+            $("#file-list li.selected").append(board_list);
             $("li.board").click(render_board); // Bind event
 
             // Auto Load board
             if (load_board != "")
                 auto_load_board(load_board);
             else
-                display_help();
+                tab_select("help");
         }
         else if (ext == "brd")
         {
@@ -481,8 +254,8 @@ function pull_file()
         {
             format = "txt";
             var scores = parse_scores(data);
-            var output = "<div class='high-scores'>Score &nbsp;Name<br>";
-            output += "----- &nbsp;----------------------------------<br>";
+            var output = `<div class='high-scores'>Score &nbsp;Name<br>\n`;
+            output += `----- &nbsp;----------------------------------<br>\n`;
             for (var idx in scores)
             {
                 output += scores[idx].score + " &nbsp;" + scores[idx].name + "<br>";
@@ -495,15 +268,15 @@ function pull_file()
             format = "img";
             var zip_image = new Image();
             zip_image.src = data;
-            $("#details").html("<img id='zip_image' alt='Zip file image'>");
-            $("#zip_image").attr("src", "data:image/'"+ext+"';base64,"+data);
+            $("#details").html(`<img id='zip_image' alt='Zip file image'>`);
+            $("#zip_image").attr("src", `data:image/'${ext}';base64,${data}`);
         }
         else if (["avi"].indexOf(ext) != -1)
         {
             format = "video";
             // TODO: Make this actually work (many many years from now)
-            $("#details").html("<video id='zip_video' alt='Zip file video'></video>");
-            $("#zip_video").attr("src", "data:video/x-msvideo;base64,"+data);
+            $("#details").html(`<video id='zip_video' alt='Zip file video'></video>`);
+            $("#zip_video").attr("src", `data:video/x-msvideo;base64,${data}`);
             // MIME would vary, but there's only one avi file in the DB.
             // Not surprisingly msvideo was not adapted into the HTML5 spec.
         }
@@ -526,8 +299,8 @@ function pull_file()
             context.decodeAudioData(data, function(buffer) { audio_buffer = buffer; });
 
             var source = context.createBufferSource(); // creates a sound source
-            source.buffer = audio_buffer;                    // tell the source which sound to play
-            source.connect(context.destination);       // connect the source to the context's destination (the speakers)
+            source.buffer = audio_buffer; // tell the source which sound to play
+            source.connect(context.destination); // connect the source to the context's destination (the speakers)
             source.start(0)
 
             //$("#details").html("<audio id='zip_audio' src='"+zip_audio_url+"'>Your browser does not support HTML5 audio</audio>");
@@ -540,7 +313,7 @@ function pull_file()
             $("select[name=charset]").val(font_filename);
 
             // Display the font
-            $("#details").html("<img src='/static/images/charsets/"+font_filename+"' class='charset' alt='"+filename+"' title='"+filename+"'>");
+            $("#details").html(`<img src='/static/images/charsets/${font_filename}' class='charset' alt='${filename}' title='${filename}'>`);
         }
         else // Text mode
         {
@@ -582,13 +355,8 @@ function load_local_file()
         }
         world = parse_world(format, hex_string);
 
-        var board_list = "<ol>";
-        for (var x = 0; x < world.boards.length; x++)
-        {
-            board_list += "<li class='board' data-board-number='"+x+"'>"+(world.boards[x].title ? world.boards[x].title : "-untitled")+"</li>";
-        }
-        board_list += "</ol>";
-        $("#file-list li.selected").append(board_list + "<br>");
+        var board_list = create_board_list();
+        $("#file-list li.selected").append(board_list);
         $("li.board").click(render_board); // Bind event
 
         $("#details").attr("data-format", format);
@@ -600,15 +368,6 @@ function load_local_file()
 
 function parse_world(type, data)
 {
-    if (type == "zzt")
-    {
-        var identifier = 65535;
-    }
-    else if (type == "szt")
-    {
-        var identifier = 65534;
-    }
-
     // ZZT World Parsing
     var world = new World(data);
     world.format = type;
@@ -620,7 +379,13 @@ function parse_world(type, data)
         TILE_HEIGHT = 8;*/
         CANVAS_WIDTH = 8 * 96;
         CANVAS_HEIGHT = 14 * 80;
-        $("#details").html("<div id='overlay' class='cp437'></div><canvas id='world-canvas' width='"+CANVAS_WIDTH+"' height='"+CANVAS_HEIGHT+"'>Your browser is outdated and does not support the canvas element.</canvas>");
+        $("#details").html(
+            `<div id='overlay' class='cp437'></div>
+            <canvas id='world-canvas'
+            width='${CANVAS_WIDTH}'
+            height='${CANVAS_HEIGHT}'
+            </canvas>`
+        );
         $("select[name=charset]").val("szzt-cp437.png");
     }
     else
@@ -631,9 +396,12 @@ function parse_world(type, data)
     // Parse World Bytes
     world.world_bytes = world.read(2);
 
-    if (world.world_bytes != identifier)
+    if (world.world_bytes != engines[type]["identifier"])
     {
-        $("#details").html("World is not valid. Got " + world.world_bytes + ". Expected " + identifier);
+        $("#details").html(
+            `World is not valid. Got ${world.world_bytes}.
+            Expected ${identifier}`
+        );
         return false;
     }
 
@@ -701,7 +469,7 @@ function parse_world(type, data)
     else
         var world_kind = "World";
 
-    var key_display = "<div class='cp437'>";
+    var key_display = `<div class='cp437' id='key-list'>`;
     for (var idx in world.keys)
     {
         var color = colors[parseInt(idx) + 9];
@@ -709,9 +477,9 @@ function parse_world(type, data)
         if (world.keys[idx] != 0)
             key_display += `<span style='color:${color};background:${bg};'>♀</span>`;
         else
-            key_display += "&nbsp;";
+            key_display += `&nbsp;`;
     }
-    key_display += "</div>";
+    key_display += `</div>`;
 
     var output = `<table class='fv col'>
         <tr><td>Format:</td><td>${type.toUpperCase()} ${world_kind}</td></tr>
@@ -738,7 +506,6 @@ function parse_world(type, data)
     output += `</table>`;
 
     $("#world-info").html(output);
-    tab_select("world-info");
     return world;
 }
 
@@ -883,12 +650,10 @@ function parse_board(world)
         }
 
         board.stats.push(stat);
-
         parsed_stats++;
     }
 
     // Jump to the start of the next board in file (for corrupt boards)
-    console.log(start_idx, board.size);
     var manual_idx = (start_idx + board.size * 2) + 4;
     if ((world.idx != manual_idx) && (world.brd != true))
     {
@@ -922,7 +687,7 @@ function render_board()
 
     if (board.corrupt)
     {
-        output += "<div class='error'>This board is corrupt</div>";
+        output += `<div class='error'>This board is corrupt</div>`;
         $("#board-info").html(output);
         tab_select("board-info");
         return true;
@@ -947,8 +712,7 @@ function render_board()
     <tr>
         <td>Stat Elements:</td><td>${board.stat_count + 1} / 151</td>
         <td>Board Size:</td><td>${board.size + 2} bytes</td>
-    </tr>
-    `;
+    </tr>`;
 
     if (board.message != "")
         output += `<tr><td>Message:</td><td>${board.message}</td></tr>`;
@@ -962,17 +726,17 @@ function render_board()
     for (var idx in arrows)
     {
         if (idx % 2 == 0)
-            output += "<tr>";
+            output += `<tr>`;
         output += `<td class='exit'>${arrows[idx]}</td>`;
         if (board[props[idx]] != 0)
             output += `<td><a class="board-link" data-board="${board[props[idx]]}" href="?file=${loaded_file}&board=${board[props[idx]]}">${board[props[idx]]}. ${world.boards[board[props[idx]]].title}</a></td>`;
         else
-            output += "<td>None</td>";
+            output += `<td>None</td>`;
         if (idx % 2 != 0)
-            output += "</tr>";
+            output += `</tr>`;
     }
 
-    output += "</table>";
+    output += `</table>`;
 
     $("#board-info").html(output);
     tab_select("board-info");
@@ -987,7 +751,6 @@ function render_board()
 
 function draw_board()
 {
-    console.log("DRAWING A BOARD");
     ctx.globalCompositeOperation = "source-over";
     ctx.fillstyle = "black";
     ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
@@ -995,6 +758,7 @@ function draw_board()
     if (board_number == null)
         return false;
 
+    console.log("DRAWING A BOARD", board_number);
     var board = world.boards[board_number];
 
     renderer.render(board);
@@ -1144,7 +908,7 @@ function stat_info(e)
 
         if (stat.oop_length > 0)
         {
-            output += "<code class='zzt-oop'>" + syntax_highlight(stat.oop) + "</code>";
+            output += `<code class='zzt-oop'>${syntax_highlight(stat.oop)}</code>`;
         }
     }
 
@@ -1158,8 +922,8 @@ function stat_info(e)
 
 function tab_select(selector)
 {
-    $("#world-info, #board-info, #element-info, #stat-info, #preferences").hide();
-    $("li[name=world-info], li[name=board-info], li[name=element-info], li[name=preferences], li[name=stat-info]").removeClass("selected");
+    $("#file-data > div").hide();
+    $("#file-tabs li").removeClass("selected");
     $("li[name="+selector+"]").addClass("selected");
     $("#"+selector).show();
 }
@@ -1364,7 +1128,9 @@ function load_charset()
             TILE_WIDTH = CANVAS_WIDTH / ENGINE.board_width;
             TILE_HEIGHT = CANVAS_HEIGHT / ENGINE.board_height;
 
-            $("#details").html("<div id='overlay'></div><canvas id='world-canvas' width='"+CANVAS_WIDTH+"' height='"+CANVAS_HEIGHT+"'>Your browser is outdated and does not support the canvas element.</canvas>");
+            $("#details").html(`
+                <div id='overlay'></div><canvas id='world-canvas' width='${CANVAS_WIDTH}' height='${CANVAS_HEIGHT}'>Your browser is outdated and does not support the canvas element.</canvas>
+            `);
             canvas = document.getElementById("world-canvas");
             ctx = canvas.getContext("2d");
 
@@ -1396,37 +1162,37 @@ function syntax_highlight(oop)
         {
             // Symbols: @, #, /, ?, :, ', !, $
             if (idx == 0 && oop[idx][0] && oop[idx][0] == "@")
-                oop[idx] = "<span class='name'>@</span><span class='yellow'>" + oop[idx].slice(1) + "</span>";
+                oop[idx] = `<span class='name'>@</span><span class='yellow'>${oop[idx].slice(1)}</span>`;
             else if (oop[idx][0] && oop[idx][0] == "#")
             {
-                oop[idx] = "<span class='command'>#</span>" + oop[idx].slice(1);
+                oop[idx] = `<span class='command'>#</span>${oop[idx].slice(1)}`;
             }
             else if (oop[idx][0] && oop[idx][0] == "/")
             {
-                oop[idx] = oop[idx].replace(/\//g, "<span class='go'>/</span>");
+                oop[idx] = oop[idx].replace(/\//g, `<span class='go'>/</span>`);
             }
             else if (oop[idx][0] && oop[idx][0] == "?")
             {
-                oop[idx] = oop[idx].replace(/\?/g, "<span class='try'>?</span>");
+                oop[idx] = oop[idx].replace(/\?/g, `<span class='try'>?</span>`);
             }
             else if (oop[idx][0] && oop[idx][0] == ":")
             {
-                oop[idx] = "<span class='label'>:</span><span class='orange'>" + oop[idx].slice(1) + "</span>";
+                oop[idx] = `<span class='label'>:</span><span class='orange'>${oop[idx].slice(1)}</span>`;
             }
             else if (oop[idx][0] && oop[idx][0] == "'")
             {
-                oop[idx] = "<span class='comment'>'" + oop[idx].slice(1) + "</span>"    ;
+                oop[idx] = `<span class='comment'>'${oop[idx].slice(1)}</span>`;
             }
             else if (oop[idx][0] && oop[idx][0] == "!")
             {
-                oop[idx] = "<span class='hyperlink'>!</span><span class='label'>" +
-                    oop[idx].slice(1, oop[idx].indexOf(";")) +
-                    "</span><span class='hyperlink'>;</span>" +
-                    oop[idx].slice(oop[idx].indexOf(";")+1);
+                oop[idx] = `<span class='hyperlink'>!</span>
+                    <span class='label'>${oop[idx].slice(1, oop[idx].indexOf(";"))}</span>
+                    <span class='hyperlink'>;</span>
+                    ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
             }
             else if (oop[idx][0] && oop[idx][0] == "$")
             {
-                oop[idx] = "<span class='center'>$</span><span class=''>" + oop[idx].slice(1) + "</span>";
+                oop[idx] = `<span class='center'>$</span><span class=''>${oop[idx].slice(1)}</span>`;
             }
         }
         return oop.join("\n");
@@ -1483,7 +1249,6 @@ function render_stat_list()
         });
     }
 
-
     for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
     {
         var stat = board.stats[stat_idx];
@@ -1493,15 +1258,15 @@ function render_stat_list()
         {
             console.log("Invalid stat detected!")
             if (stat.oop.length == 0)
-                stat_list += "<li class='empty'>";
+                stat_list += `<li class='empty'>`;
             else
-                stat_list += "<li>";
-            stat_list += "<a class='jsLink' name='stat-link' data-x='"+stat.x+"' data-y='"+stat.y+"'>";
-            stat_list +="("+ ("00"+stat.x).slice(-2) +", "+ ("00"+stat.y).slice(-2) +") [????] "
-            stat_list += "UNKNOWN</a> "
+                stat_list += `<li>`;
+            stat_list += `
+                <a class='jsLink' name='stat-link' data-x='${stat.x}' data-y='${stat.y}'>
+                (${("00"+stat.x).slice(-2)}, ${("00"+stat.y).slice(-2)}) [????] UNKNOWN</a> `
             if (stat.oop.length)
-                stat_list += stat.oop.length +" bytes";
-            stat_list += "</li>\n";
+                stat_list += `${stat.oop.length} bytes`;
+            stat_list += `</li>\n`;
             continue;
         }
         var stat_name = board.elements[stat.tile_idx].name;
@@ -1509,15 +1274,16 @@ function render_stat_list()
             stat_name = stat.oop.slice(0, stat.oop.indexOf("\r"));
 
         if (stat.oop.length == 0)
-            stat_list += "<li class='empty'>";
+            stat_list += `<li class='empty'>`;
         else
-            stat_list += "<li>";
-        stat_list += "<a class='jsLink' name='stat-link' data-x='"+stat.x+"' data-y='"+stat.y+"'>";
-        stat_list +="("+ ("00"+stat.x).slice(-2) +", "+ ("00"+stat.y).slice(-2) +") ["+(("0000"+(stat.tile_idx+1)).slice(-4))+"] "
-        stat_list += stat_name+"</a> ";
+            stat_list += `<li>`;
+        stat_list += `
+            <a class='jsLink' name='stat-link' data-x='${stat.x}' data-y='${stat.y}'>
+            (${("00"+stat.x).slice(-2)}, ${("00"+stat.y).slice(-2)}) [${(("0000"+(stat.tile_idx+1)).slice(-4))}]
+            ${stat_name}</a> `;
         if (stat.oop.length)
-                stat_list += stat.oop.length +" bytes";
-            stat_list += "</li>\n";
+                stat_list += `${stat.oop.length} bytes`;
+            stat_list += `</li>\n`;
     }
     $("#stat-info ol").html(stat_list);
     $("a[name=stat-link]").click(function (){
@@ -1545,7 +1311,7 @@ function render_stat_list()
 function init_overlay()
 {
     $("#overlay").hide();
-    $("#overlay").html("(<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>) [<span id='overlay-tile'>0000</span>]<br><div class='color-swatch'></div> <span id='overlay-element'></span>");
+    $("#overlay").html(`(<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>) [<span id='overlay-tile'>0000</span>]<br><div class='color-swatch'></div> <span id='overlay-element'></span>`);
 
     $("#world-canvas").mousemove(update_overlay);
     $("#world-canvas").mouseout(hide_overlay);
@@ -1587,28 +1353,6 @@ function hide_overlay(e)
     $("#overlay").hide();
 }
 
-function display_help()
-{
-    var help_text = "<div class='help'>\
-    <b>Board Navigation</b>\
-    <ul>\
-    <li>+/J Next board</li>\
-    <li>-/K Previous board</li>\
-    <li>Double click on a passage (≡) to travel to its destination</li>\
-    </ul>\
-    <b>Tabs</b>\
-    <ul>\
-    <li>W - World tab</li>\
-    <li>B - Board tab</li>\
-    <li>E - Element tab</li>\
-    <li>S - Stat tab</li>\
-    <li>P - Preferences tab</li>\
-    </ul>\
-    </div>";
-
-    $("#details").html(help_text);
-}
-
 function highlight(x, y)
 {
     print(ctx, 201, 127, x - 2, y - 2);
@@ -1627,4 +1371,27 @@ function unhighlight(x, y)
     hash_coords = null;
     draw_board();
     hash_coords = temp_hash_coords;
+}
+
+function create_board_list()
+{
+    var board_list = `<ol start='0'>`;
+    for (var x = 0; x < world.boards.length; x++)
+    {
+        board_list += `<li class='board${world.starting_board == x ? " b" : ""}' data-board-number='${x}'>`;
+
+        var formatted_num = (x >= 10 ? x : `&nbsp;` + x);
+        var formatted_title = world.boards[x].title ? world.boards[x].title : `-untitled`;
+        board_list += `
+            <div name='board_idx'>${formatted_num}.</div>
+            <div name='board_name'>${formatted_title}
+            </div>
+        `;
+
+        if (world.starting_board == x)
+            board_list += `</b>`;
+        board_list += `</li>\n`;
+    }
+    board_list += `</ol><br>\n`;
+    return board_list;
 }

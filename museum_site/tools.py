@@ -10,6 +10,30 @@ import zookeeper
 
 
 @staff_member_required
+def mirror(request, pk):
+    """ Returns page to generate and set a file's screenshot """
+    f = File.objects.get(pk=pk)
+    data = {
+        "title": "Archive.org Mirror",
+        "file": f,
+        "ret": None,
+        "packages": PACKAGE_PROFILES
+    }
+
+    if request.GET.get("package"):
+        data["package"] = PACKAGE_PROFILES[int(request.GET["package"])]
+        zip = zipfile.ZipFile(os.path.join(SITE_ROOT, f.download_url()[1:]))
+        file_list = zip.namelist()
+        file_list.sort(key=str.lower)
+        data["file_list"] = file_list
+
+        # SuperZZT games, ZZT games
+        # by Jerry Hsu & Jesse Chang
+
+
+    return render(request, "museum_site/tools/mirror.html", data)
+
+@staff_member_required
 def publish(request, pk):
     """ Returns page to publish a file marked as uploaded """
     data = {

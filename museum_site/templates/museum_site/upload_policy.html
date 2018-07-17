@@ -9,12 +9,13 @@
 {% block content %}
 <section id="content" class="block">
 <h1>Upload Policy</h1>
+<i>Last updated: June 28th, 2018</i><br>
 
 <p>The Museum of ZZT operates with the goal of collecting and sharing as complete a copy of all worlds produced with ZZT and related to ZZT as possible.
 In order to accomplish this visitors are encouraged to upload their own works as well as the works of others which are currently missing from the Museum.</p>
 
 <h2>Acceptable Files</h2>
-<p>All uploaded files must be compressed and in the ZIP archive format.</p>
+<p>All files uploaded via the upload form must be compressed and in the ZIP archive format.</p>
 
 <p>Uploaded files must contain at least one of the following:
 
@@ -29,9 +30,16 @@ In order to accomplish this visitors are encouraged to upload their own works as
 </ul>
 </p>
 
+<p>To prevent abuse a maximum filesize of 1 megabyte per ZIP file is enforced.</p>
+
+<p>Other files, such as articles, walkthroughs, historical documents, or files which exceed the filesize limitations should be submitted via <a href="mailto:{{EMAIL_ADDRESS}}">E-Mail</a>.</p>
+
 <h2>Acceptable Content</h2>
 <p>Prior archives such as z2 had rules in place to require that all uploaded ZZT worlds created after a certain point were required to have a minimum file size and make use of extended Super Tool Kit colors.
-The Museum has no such restrictions.</p>
+The Museum has no such restrictions on quality filters.</p>
+
+<p>The ZZT community's history is one with several titles created to insult and harass other community members. These sort of titles are frowned upon today and it is ultimately the staff's decision on
+whether or not uploaded material should be published.</p>
 
 <h2>Metadata</h2>
 <p>When uploading files, some data such as the title of the upload and authors who have worked on it are requested by the site to be filled out by the user. Other information is automatically parsed by the Museum site.</p>
@@ -44,12 +52,19 @@ additional information that needs to be provided, please create a text file of y
 <h2>Incomplete Worlds</h2>
 
 <p>Worlds which haven't been completed are acceptable to upload, but should be clearly noted as such in the title. These may be demos that have intentional end points or worlds which had simply been abandoned and end abruptly rather
-than having been packaged for release. If you have many incomplete worlds you wish to upload (sharing the entire contents of your old ZZT projects folder) it is preferred to bundle them together and publish them as such as seen in Gingermuffins' <a href="/file/a/Abandoned_Games.zip">Abandoned Games</a> collection.</p>
+than having been packaged for release. If you have many incomplete worlds you wish to upload (such as sharing the entire contents of your old ZZT projects folder) it is preferred to bundle them together and publish them as such as seen in Gingermuffins' <a href="/file/a/Abandoned_Games.zip">Abandoned Games</a> collection.</p>
 
 <h2>World Variants</h2>
 
 <p>Prior archives such as z2 had inconsistently enforced rules where upon receiving an upload of a completed world, the demo would be removed. A similar policy
 existed for worlds which received updates which in some way made an older version "obsolete". The Museum has no such restriction and welcomes all revisions of worlds
 so that the changes may be compared between original release and update or demo and final release.</p>
+
+<h2>Playing Online</h2>
+
+<p>Archive.org offers the ability to upload ZZT worlds and have them playable in browser. The Museum of ZZT supports embedding of these pages to play on the Museum site.
+Unless requested by the author (either in an included text file or contact with staff via E-Mail), any and all compatible uploads will also be mirrored on Archive.org to
+support this feature. Archive.org pages are produced automatically on the file being published when applicable. Unless stated somewhere within the ZIP file, the
+registered edition of ZZT v3.2 (or Super ZZT) will be used for playing uploaded content.</p>
 </section>
 {% endblock %}

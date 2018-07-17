@@ -35,7 +35,14 @@ var uploaded = {% if uploaded %}true{% else %} false{% endif %};
 
     <div id="tab-area">
         <div id="file-tabs">
-            <ul><li name="world-info">World</li><li name="board-info">Board</li><li name="element-info">Element</li><li name="stat-info">Stats</li><li name="preferences">Prefs.</li></ul>
+            <ul>
+                <li name="world-info">World</li>
+                <li name="board-info">Board</li>
+                <li name="element-info">Element</li>
+                <li name="stat-info">Stats</li>
+                <li name="preferences">Prefs.</li>
+                <li name="help">?</li>
+            </ul>
         </div>
         <div id="file-data">
             <div id="world-info" class="toggle"></div>
@@ -79,6 +86,8 @@ var uploaded = {% if uploaded %}true{% else %} false{% endif %};
                             <option value="zzt_objects">Object Highlight</option>
                             <option value="zzt_fake">Fake Wall Highlight</option>
                             <option value="zzt_dark">Dark Board</option>
+                            <option value="zzt_empty">Visible Empties</option>
+                            <option value="zzt_empty_text">Empties as Text</option>
                             <!--<option value="zzt_torch">Dark Board - Lit Torch</option>-->
                         </select>
                     </label>
@@ -123,6 +132,22 @@ var uploaded = {% if uploaded %}true{% else %} false{% endif %};
                             <option value="e">E - KevEdit Style</option>
                         </select>
                     </label>
+            </div>
+            <div id="help" class="toggle">
+                <b>Board Navigation</b>
+                <ul>
+                    <li>+/J Next board</li>
+                    <li>-/K Previous board</li>
+                    <li>Double click on a passage (≡) to travel to its destination</li>
+                </ul>
+                <b>Tabs</b>
+                <ul>
+                    <li>W - World tab</li>
+                    <li>B - Board tab</li>
+                    <li>E - Element tab</li>
+                    <li>S - Stat tab</li>
+                    <li>P - Preferences tab</li>
+                </ul>
             </div>
         </div>
     </div>

@@ -52,13 +52,19 @@ def get_zip_file(request):
             encding = "hex"
 
         output = output.replace(
+            "&", "&amp;"
+        ).replace(
+            "<", "&lt;"
+        ).replace(
+            ">", "&gt;"
+        ).replace(
+            "  ", " &nbsp;"
+        ).replace(
             "\r\n", "<br>"
         ).replace(
             "\r", "<br>"
         ).replace(
             "\n", "<br>"
-        ).replace(
-            "  ", " &nbsp;"
         )
         output = "<div class='" + encoding + "'>" + output + "</div>"
 

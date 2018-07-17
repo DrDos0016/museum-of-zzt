@@ -50,6 +50,11 @@ a.broken
     color:#F00;
 }
 
+.b
+{
+    font-weight:bold;
+}
+
 body
 {
     font-family:sans-serif;
@@ -689,6 +694,7 @@ div.file-details ul
     margin-left:auto;
     margin-right:auto;
     max-width:100%;
+    border:1px solid #AAA;
 }
 
 #details img.charset
@@ -732,22 +738,32 @@ div.file-details ul
     background:#98C9C9;
 }
 
-
-#file-list ol
+.board
 {
-    list-style: decimal;
+    border-bottom:1px dotted #000;
+}
+
+.board div
+{
+    display:inline;
+}
+
+.board div[name=board_idx]
+{
+    width:4ch;
+    float:left;
 }
 
 #file-list ul li ol /* ZZT Boards */
 {
     background:#FFF;
-    width:100%;
+    display:flex;
+    flex-direction:column;
 }
 
 #file-list ul li ol li /* ZZT Boards */
 {
-    width:auto;
-    text-align:right;
+    text-align:left;
 }
 
 #world-canvas
@@ -778,6 +794,7 @@ div.file-details ul
     margin:-0.5em;
     margin-bottom:0.5em;
     border-bottom:1px solid #000;
+    display:flex;
 }
 
 #file-tabs ul li
@@ -785,16 +802,23 @@ div.file-details ul
     list-style-type:none;
     margin:0;
     padding:0;
-    display:inline-block;
-    width:20%;
     text-align:center;
     background:#CCC;
+    flex:4;
+    border-right:1px solid #000;
 }
+
 
 #file-tabs ul li:hover
 {
     text-decoration:underline;
     cursor:pointer;
+}
+
+#file-tabs ul li[name=help]
+{
+    flex:1;
+    border-right:0;
 }
 
 #file-data
@@ -853,7 +877,6 @@ table.fv .exit
 {
     width:1.5em;
 }
-
 /* End file viewing */
 
 /* Reviews */

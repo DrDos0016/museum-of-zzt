@@ -125,6 +125,9 @@ def main():
         qs = File.objects.filter(details__in=[DETAIL_ZZT]).exclude(details__in=[DETAIL_UPLOADED, DETAIL_GFX]).order_by("?")
         data = qs[0]
 
+        # Pull related articles in preparation of linking them later
+        related_articles = data.articles.filter(published=True).order_by("-date")
+
         # Select a random ZZT file in the zip
         zip = zipfile.ZipFile(ROOT + data.download_url())
         files = zip.namelist()
@@ -200,38 +203,83 @@ def main():
         abort("Couldn't remove:", selected)
 
     # Prepare the posts
-    # TUMBLR
-    post1 = "<b>" + data.title + "</b> by <i>" + data.author + "</i> (" + str(data.release_date)[:4] + ")<br>\n"
-    post2 = "["+ selected + "] - " + z.boards[board_num].title + "<br>\n"
-    post3 = "<a href='https://museumofzzt.com" + data.file_url() + "?file=" + selected + "&board=" + str(board_num) + "'>Download / Explore "+ data.filename +" on the Museum of ZZT</a><br>"
-    post4 = "<a href='https://archive.org/details/zzt_" + data.filename[:-4] + "'>Play on Archive.org</a>"
-    post = post1 + post2 + post3 + post4
+    # Tumblr
+    tumblr_post = "<b>{title}</b> by <i>{author}</i>"
+    if data.release_date:
+        tumblr_post += " ({year})"
+    if data.company:
+        tumblr_post += "<br>\nPublished by: {company}"
+    tumblr_post += "<br>\n"
+    tumblr_post += "[{zzt_file}] - {board_title}<br>\n"
+    tumblr_post += "<a href='https://museumofzzt.com{file_url}"
+    tumblr_post += "?file={zzt_file}&board={board_idx}'>Download / Explore {zip_file} "
+    tumblr_post += "on the Museum of ZZT</a><br>\n"
+    if data.archive_name:
+        tumblr_post += "<a href='https://archive.org/details/{archive_name}'>Play on Archive.org</a><br>\n"
 
+    tumblr_post = tumblr_post.format(
+        title=data.title,
+        author=data.author,
+        year=str(data.release_date)[:4],
+        company=data.company,
+        zzt_file=selected,
+        board_title=z.boards[board_num].title,
+        file_url=data.file_url(),
+        board_idx=board_num,
+        zip_file=data.filename,
+        archive_name=data.archive_name
+    )
+
+    # Tumblr - Related Articles
+    if len(related_articles) > 0:
+        article_text = "<br>"
+        for article in related_articles[:3]:
+            article_text += "<a href='https://museumofzzt.com{url}'>{text}</a><br>\n"
+            article_text = article_text.format(
+                url=article.url(),
+                text=article.title
+            )
+        tumblr_post += article_text
+
+    # Tumblr - Tags
     tags = ["ZZT", data.author, data.title, data.filename]
 
     if tuesday:
         tags.append("title screen tuesday")
-    print(post)
+    print(tumblr_post)
 
     client = pytumblr.TumblrRestClient(CONSUMER, SECRET, OAUTH_TOKEN, OAUTH_SECRET)
 
     if POST:
         print("Posting to tumblr...")
         print(tags)
-        resp = client.create_photo("worldsofzzt", state="published", tags=tags, caption=post, data=(CRON_ROOT + "temp.png"))
+        resp = client.create_photo("worldsofzzt", state="published", tags=tags, caption=tumblr_post, data=(CRON_ROOT + "temp.png"))
         print(resp)
 
-        # Form Tweet
-        url = "https://museumofzzt.com" + data.file_url() + "?file=" + selected + "&board=" + str(board_num)
-        tweet = url + " " + data.title + " by " + data.author + " (" + str(data.release_date)[:4] + ")\n"
+        # Twitter
+        twitter_post = "https://museumofzzt.com{file_url}"
+        twitter_post += "?file={zzt_file}&board={board_idx}\n"
+        twitter_post += "{title} by {author}"
+        if data.release_date:
+            twitter_post += " ({year})"
         if data.company:
-            tweet += "Published by: " + data.company + " "
-        tweet += "https://archive.org/details/zzt_" + data.filename[:-4]
+            twitter_post += "\nPublished by: {company}"
+        if data.archive_name:
+            twitter_post += "\nhttps://archive.org/details/{archive_name}"
 
-        #if len(tweet) + len(board_name) + 2 <= 280:
-        #    tweet = tweet + "\n" + board_name
+        twitter_post = twitter_post.format(
+            file_url=data.file_url(),
+            zzt_file=selected,
+            board_idx=board_num,
+            title=data.title,
+            author=data.author,
+            year=str(data.release_date)[:4],
+            company=data.company,
+            archive_name=data.archive_name
+        )
 
-        print(tweet)
+
+        print(twitter_post)
         print("Posting to twitter...")
 
         # Fix the image
@@ -242,26 +290,32 @@ def main():
 
         # April
         if APRIL:
-            tweet = "Room is dark - you need to light a torch!\n" + tweet
+            twitter_post = "Room is dark - you need to light a torch!\n" + twitter_post
 
         with open(CRON_ROOT + "twitter.png", "rb") as imagefile:
             imagedata = imagefile.read()
 
             t_up = Twitter(domain='upload.twitter.com', auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
             img1 = t_up.media.upload(media=imagedata)["media_id_string"]
-            # - finally send your tweet with the list of media ids:
             t = Twitter(auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
-            resp = t.statuses.update(status=tweet, media_ids=img1)
+            resp = t.statuses.update(status=twitter_post, media_ids=img1)
             print(resp)
             twitter_id = resp.get("id")
             twitter_img = resp["entities"]["media"][0]["media_url"]
 
+        # Twitter - Related Articles
+        if len(related_articles) > 0:
+            article_text = "For more \"{title}\" content, check out:\n".format(title=data.title)
+            for article in related_articles[:3]:
+                article_text += "https://museumofzzt.com" + article.url() + "\n"
+
+            resp = t.statuses.update(status=article_text, in_reply_to_status_id=twitter_id)
 
         # Discord webhook
         discord_post = "https://twitter.com/worldsofzzt/status/{}\n**{}** by {} ({})\n"
         if data.company:
             discord_post += "Published by: {}\n".format(data.company)
-        discord_post += "`[{}] - \"{}\"\n`"
+        discord_post += "`[{}] - \"{}\"` \n"
         discord_post += "Explore: https://museumofzzt.com" + data.file_url() + "?file=" + selected + "&board=" + str(board_num) + "\n"
         discord_post += "Play: https://archive.org/details/" + data.archive_name
 
