@@ -134,7 +134,7 @@ def zzt_img(source, shorthand="", alt="", tl="", br="", css=""):
         height = (br[1] - tl[1] + 1) * 14
 
         # Generate cropped CSS for image
-        img_css = "position:relative;left:-{}px;".format(left)
+        img_css = "max-width:none;position:relative;left:-{}px;".format(left)
         img_css += "top:-{}px".format(top)
 
         # Adjust dimensions of container div
