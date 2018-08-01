@@ -4,6 +4,7 @@ virt
 venv
 zgames
 zookeeper
+discord
 
 comic/static/comic/bencomic/*
 comic/static/comic/frost/*

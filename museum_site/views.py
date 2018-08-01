@@ -674,7 +674,7 @@ def debug_article(request):
         article = Article.objects.get(pk=1)
         article.title = "TEST ARTICLE"
         article.category = "TEST"
-        article.content = fh.read()
+        article.content = fh.read().replace("<!--PAGE-->", "<hr>")
         article.type = request.GET.get("format", "django")
     data["article"] = article
     data["veryspecial"] = True

@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 # from django.contrib.auth import logout, authenticate, login as auth_login
 
 from museum_site.models import *
+from museum_site.queries import *
 from datetime import datetime
 from random import randint
 import math
@@ -21,6 +22,7 @@ import subprocess
 import sys
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMP_PATH = os.path.join(SITE_ROOT, "tmp")
 TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25
@@ -203,6 +205,99 @@ ADV_SEARCH_DEFAULTS = [
     str(DETAIL_SZZT),
     str(DETAIL_UTILITY),
 ]
+
+PACKAGE_PROFILES = (
+    {
+        "name": "ZZT v3.2 Registered",
+        "directory": "ZZT32-REG",
+        "use_cfg": True,
+        "registered": True,
+        "prefix": "zzt_",
+        "executable": "ZZT.EXE",
+        "engine": "ZZT",
+    },
+    {
+        "name": "Super ZZT Registered",
+        "directory": "SZZT-REG",
+        "use_cfg": False,
+        "registered": True,
+        "prefix": "superzzt_",
+        "executable": "SUPERZ.EXE",
+        "engine": "Super ZZT",
+    },
+    {
+        "name": "CleanZZT",
+        "directory": "CLEANZZT",
+        "use_cfg": True,
+        "registered": True,
+        "prefix": "cleanzzt_",
+        "executable": "CLEANZZT.EXE",
+        "engine": "ZZT",
+    },
+    {
+        "name": "Super ZZT v4.0",
+        "directory": "SZZT40",
+        "use_cfg": False,
+        "registered": True,
+        "prefix": "superzzt40_",
+        "executable": "s.bat",
+        "engine": "Super ZZT",
+    },
+    {
+        "name": "ZZT v2.0 Shareware",
+        "directory": "ZZT20-SW",
+        "use_cfg": True,
+        "registered": False,
+        "prefix": "zzt20sw_",
+        "executable": "ZZT.EXE",
+        "engine": "ZZT",
+    },
+    {
+        "name": "ZZT v3.1 Shareware",
+        "directory": "ZZT31-SW",
+        "use_cfg": True,
+        "registered": False,
+        "prefix": "zzt31sw_",
+        "executable": "ZZT.EXE",
+        "engine": "ZZT",
+    },
+    {
+        "name": "ZZT v3.2 Shareware",
+        "directory": "ZZT32-SW",
+        "use_cfg": True,
+        "registered": False,
+        "prefix": "zztsw_",
+        "executable": "ZZT.EXE",
+        "engine": "ZZT",
+    },
+    {
+        "name": "ZZT v4.0",
+        "directory": "ZZT40",
+        "use_cfg": True,
+        "registered": True,
+        "prefix": "zzt40_",
+        "executable": "zzt.EXE",
+        "engine": "ZZT",
+    },
+    {
+        "name": "ZZT v4.0 - No MSG",
+        "directory": "ZZT40",
+        "use_cfg": True,
+        "registered": True,
+        "prefix": "zzt40nomsg_",
+        "executable": "zztnomsg.EXE",
+        "engine": "ZZT",
+    },
+    {
+        "name": "ZZT v4.1",
+        "directory": "ZZT41",
+        "use_cfg": True,
+        "registered": True,
+        "prefix": "zzt41_",
+        "executable": "zzt41.exe",
+        "engine": "ZZT",
+    },
+)
 
 
 def qs_sans(params, key):

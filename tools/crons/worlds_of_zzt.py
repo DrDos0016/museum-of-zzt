@@ -317,7 +317,8 @@ def main():
             discord_post += "Published by: {}\n".format(data.company)
         discord_post += "`[{}] - \"{}\"` \n"
         discord_post += "Explore: https://museumofzzt.com" + data.file_url() + "?file=" + selected + "&board=" + str(board_num) + "\n"
-        discord_post += "Play: https://archive.org/details/" + data.archive_name
+        if data.archive_name:
+            discord_post += "Play: https://archive.org/details/" + data.archive_name
 
         discord_post = discord_post.format(twitter_id, data.title, data.author, str(data.release_date)[:4], selected, z.boards[board_num].title)
 

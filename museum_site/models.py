@@ -283,6 +283,34 @@ class File(models.Model):
             del kwargs["new_upload"]
         super(File, self).save(*args, **kwargs)
 
+    def jsoned(self):
+        data = {
+            "letter": self.letter,
+            "filename": self.filename,
+            "title": self.title,
+            "sort_title": self.sort_title,
+            "author": self.author,
+            "size": self.size,
+            "genres": self.genre_list(),
+            "release_date": self.release_date,
+            "release_source": self.release_source,
+            "screenshot": self.screenshot,
+            "company": self.company,
+            "description": self.description,
+            "review_count": self.review_count,
+            "rating": self.rating,
+            #"details": list(self.details.all()),
+            #"articles": self.articles,
+            "article_count": self.article_count,
+            "checksum": self.checksum,
+            #"superceded": self.superceded,
+            "playable_boards": self.playable_boards,
+            "total_boards": self.total_boards,
+            "archive_name": self.archive_name,
+        }
+
+        return data
+
     def sorted_title(self):
         # Handle titles that start with A/An/The
         sort_title = self.title.lower()
@@ -335,6 +363,9 @@ class File(models.Model):
 
     def file_url(self):
         return "/file/" + self.letter + "/" + self.filename
+
+    def phys_path(self):
+        return os.path.join(SITE_ROOT + self.download_url())
 
     def article_url(self):
         return "/article/" + self.letter + "/" + self.filename
