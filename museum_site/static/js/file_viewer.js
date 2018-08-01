@@ -1185,10 +1185,10 @@ function syntax_highlight(oop)
             }
             else if (oop[idx][0] && oop[idx][0] == "!")
             {
-                oop[idx] = `<span class='hyperlink'>!</span>
-                    <span class='label'>${oop[idx].slice(1, oop[idx].indexOf(";"))}</span>
-                    <span class='hyperlink'>;</span>
-                    ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
+                oop[idx] = `<span class='hyperlink'>!</span>\
+<span class='label'>${oop[idx].slice(1, oop[idx].indexOf(";"))}</span>\
+<span class='hyperlink'>;</span>\
+${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
             }
             else if (oop[idx][0] && oop[idx][0] == "$")
             {
