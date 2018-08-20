@@ -1,11 +1,12 @@
 from datetime import datetime
 
 from museum_site.models import Detail, DETAIL_FEATURED
-from museum_site.common import DEBUG, EMAIL_ADDRESS
+from museum_site.common import DEBUG, EMAIL_ADDRESS, CSS_TS
 
 
 def museum_global(request):
-    data = {"debug":DEBUG}
+    use_debug = True if (DEBUG or request.GET.get("DEBUG")) else False
+    data = {"debug": use_debug}
 
     # Server info
     data["HOST"] = request.get_host()
@@ -26,10 +27,10 @@ def museum_global(request):
 
     # E-mail
     data["EMAIL_ADDRESS"] = EMAIL_ADDRESS
+    data["CSS_TS"] = CSS_TS
 
     # Featured Games
     featured = Detail.objects.get(pk=DETAIL_FEATURED)
     data["fg"] = featured.file_set.all().order_by("?")[0]
-
 
     return data

@@ -32,11 +32,13 @@ UPLOAD_CAP = 1048576  # 1 Megabyte
 YEAR = datetime.now().year
 PYTHON_VERSION = sys.version
 DJANGO_VERSION = VERSION
+START_TIME = datetime.utcnow()
+CSS_TS = START_TIME.strftime("%m%d%H%M%S")
 
 EMAIL_ADDRESS = "doctordos@gmail.com"
 
 print("MUSEUM OF ZZT STARTUP")
-print(str(datetime.utcnow()))
+print(START_TIME)
 print("Site Root:", SITE_ROOT)
 print("Python:", PYTHON_VERSION)
 print("Django:", DJANGO_VERSION)
