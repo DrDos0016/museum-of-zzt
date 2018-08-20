@@ -1,5 +1,6 @@
 private
 temp
+tmp
 virt
 venv
 zgames
@@ -21,6 +22,7 @@ tools/crons/private.py
 tools/crons/woz_queue.txt
 tools/extract
 tools/zookeeper
+tools/crons/*.png
 tools/data
 tools/db_dump.py
 tools/fonts
@@ -29,6 +31,8 @@ museum/*
 museum_site/static/images/articles/bugs/*
 museum_site/static/images/articles/cl/*
 museum_site/static/data/mass_dl.json
+museum_site/static/data/base/*
+museum_site/static/data/24hozzt-raw-scores
 .htpasswd
 manage.py
 patron_plans.txt
