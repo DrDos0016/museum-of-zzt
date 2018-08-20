@@ -702,12 +702,18 @@ div.file-details ul
     background:#000;
 }
 
+#lower-ui
+{
+    width:100%;
+    height:300px;
+    display:flex;
+    align-items:stretch;
+}
+
 #file-list
 {
-    height:300px;
     border:1px solid #000;
-    padding-top:0.5em;
-    padding-bottom:0.5em;
+    border-right:none;
     overflow-x:none;
     overflow-y:auto;
     font-family:monospace;
@@ -740,7 +746,7 @@ div.file-details ul
 
 .board
 {
-    border-bottom:1px dotted #000;
+    border-top:1px dotted #000;
 }
 
 .board div
@@ -752,6 +758,11 @@ div.file-details ul
 {
     width:4ch;
     float:left;
+}
+
+#file-list ul li ol li.code-match
+{
+    padding-left:6ch;
 }
 
 #file-list ul li ol /* ZZT Boards */
@@ -779,7 +790,6 @@ div.file-details ul
     border:1px solid #000;
     overflow:none;
     font-family:monospace;
-    height:300px;
     flex:2;
 }
 
@@ -845,7 +855,6 @@ div.file-details ul
 
 table.fv
 {
-    /*width:100%;*/
     margin:0.25em;
 }
 
@@ -868,14 +877,19 @@ table.fv tr td:nth-child(even)
     border-left:0;
 }
 
-table.fv + table.fv
-{
-    margin-left:1em;
-}
-
 table.fv .exit
 {
     width:1.5em;
+}
+
+input[name=code-search]
+{
+    width:10em;
+}
+
+#code-search-submit
+{
+    margin-left:1em;
 }
 /* End file viewing */
 
@@ -1027,6 +1041,12 @@ code
     padding:1ch 2ch 1ch 2ch;
     white-space:pre;
     margin-left:0.2em;
+}
+
+code .highlight
+{
+    background:#FFD700;
+    color:#000;
 }
 
 code.inline

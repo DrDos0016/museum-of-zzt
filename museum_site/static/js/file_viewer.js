@@ -481,7 +481,7 @@ function parse_world(type, data)
     }
     key_display += `</div>`;
 
-    var output = `<table class='fv col'>
+    var output = `<table class='fv col' name='world-table'>
         <tr><td>Format:</td><td>${type.toUpperCase()} ${world_kind}</td></tr>
         <tr><td>Name:</td><td>${world.name}</td></tr>
         <tr><td>Boards:</td><td>${world.board_count + 1}</td></tr>
@@ -497,7 +497,7 @@ function parse_world(type, data)
     `;
     output += `</table>`;
 
-    output += `<table class='fv col'>`;
+    output += `<table class='fv col' name='flag-table'>`;
     for (var idx in world.flags)
     {
         if (world.flags[idx])
@@ -505,7 +505,12 @@ function parse_world(type, data)
     }
     output += `</table>`;
 
+    output += `<table class='fv' name='search-table'>
+        <tr><td>ZZT-OOP Search:</td><td><input name="code-search"><button id="code-search-submit" type="button">Search</button></tr>
+    </table>`;
+
     $("#world-info").html(output);
+    bind_search();
     return world;
 }
 
@@ -665,7 +670,8 @@ function parse_board(world)
 
 function render_board()
 {
-    board_number = $(this).data("board-number") || 0;
+    board_number = $(this).data("board-number") || 0; // idk why this breaks if var is gone
+    var coordinates = $(this).data("coords") || 0;
     $("li.board").removeClass("selected");
     $(this).addClass("selected");
     load_charset();
@@ -695,7 +701,7 @@ function render_board()
 
     output += `<table class='fv col'>
     <tr>
-        <td>Title:</td><td>${board.title}</td>
+        <td>Title:</td><td colspan="3">${board.title}</td>
     </tr>
     <tr>
         <td>Can Fire:</td><td>${board.max_shots} shot${((board.max_shots != 1) ? "s" : "")}</td>
@@ -970,7 +976,7 @@ $(window).bind("load", function() {
 
     // Keyboard Shortcuts
     $(window).keyup(function (e){
-        if ($("input[name=q]").is(":focus"))
+        if ($("input[name=q]").is(":focus") || $("input[name=code-search]").is(":focus"))
             return false;
 
         if (e.keyCode == 107 || e.keyCode == 61 || e.keyCode == 74) // Next Board
@@ -1157,45 +1163,45 @@ function str_read(data, bytes, idx)
 
 function syntax_highlight(oop)
 {
-        var oop = oop.split("\r");
-        for (var idx in oop)
+    var oop = oop.split("\r");
+    for (var idx in oop)
+    {
+        // Symbols: @, #, /, ?, :, ', !, $
+        if (idx == 0 && oop[idx][0] && oop[idx][0] == "@")
+            oop[idx] = `<span class='name'>@</span><span class='yellow'>${oop[idx].slice(1)}</span>`;
+        else if (oop[idx][0] && oop[idx][0] == "#")
         {
-            // Symbols: @, #, /, ?, :, ', !, $
-            if (idx == 0 && oop[idx][0] && oop[idx][0] == "@")
-                oop[idx] = `<span class='name'>@</span><span class='yellow'>${oop[idx].slice(1)}</span>`;
-            else if (oop[idx][0] && oop[idx][0] == "#")
-            {
-                oop[idx] = `<span class='command'>#</span>${oop[idx].slice(1)}`;
-            }
-            else if (oop[idx][0] && oop[idx][0] == "/")
-            {
-                oop[idx] = oop[idx].replace(/\//g, `<span class='go'>/</span>`);
-            }
-            else if (oop[idx][0] && oop[idx][0] == "?")
-            {
-                oop[idx] = oop[idx].replace(/\?/g, `<span class='try'>?</span>`);
-            }
-            else if (oop[idx][0] && oop[idx][0] == ":")
-            {
-                oop[idx] = `<span class='label'>:</span><span class='orange'>${oop[idx].slice(1)}</span>`;
-            }
-            else if (oop[idx][0] && oop[idx][0] == "'")
-            {
-                oop[idx] = `<span class='comment'>'${oop[idx].slice(1)}</span>`;
-            }
-            else if (oop[idx][0] && oop[idx][0] == "!")
-            {
-                oop[idx] = `<span class='hyperlink'>!</span>\
+            oop[idx] = `<span class='command'>#</span>${oop[idx].slice(1)}`;
+        }
+        else if (oop[idx][0] && oop[idx][0] == "/")
+        {
+            oop[idx] = oop[idx].replace(/\//g, `<span class='go'>/</span>`);
+        }
+        else if (oop[idx][0] && oop[idx][0] == "?")
+        {
+            oop[idx] = oop[idx].replace(/\?/g, `<span class='try'>?</span>`);
+        }
+        else if (oop[idx][0] && oop[idx][0] == ":")
+        {
+            oop[idx] = `<span class='label'>:</span><span class='orange'>${oop[idx].slice(1)}</span>`;
+        }
+        else if (oop[idx][0] && oop[idx][0] == "'")
+        {
+            oop[idx] = `<span class='comment'>'${oop[idx].slice(1)}</span>`;
+        }
+        else if (oop[idx][0] && oop[idx][0] == "!")
+        {
+            oop[idx] = `<span class='hyperlink'>!</span>\
 <span class='label'>${oop[idx].slice(1, oop[idx].indexOf(";"))}</span>\
 <span class='hyperlink'>;</span>\
 ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
-            }
-            else if (oop[idx][0] && oop[idx][0] == "$")
-            {
-                oop[idx] = `<span class='center'>$</span><span class=''>${oop[idx].slice(1)}</span>`;
-            }
         }
-        return oop.join("\n");
+        else if (oop[idx][0] && oop[idx][0] == "$")
+        {
+            oop[idx] = `<span class='center'>$</span><span class=''>${oop[idx].slice(1)}</span>`;
+        }
+    }
+    return oop.join("\n");
 }
 
 function render_stat_list()
@@ -1394,4 +1400,92 @@ function create_board_list()
     }
     board_list += `</ol><br>\n`;
     return board_list;
+}
+
+function code_search()
+{
+    var query = $("input[name=code-search]").val().toLowerCase();
+    var board_matches = [];
+    var coordinate_matches = {};
+
+    if (! query)
+        return false;
+
+    for (var board in world.boards)
+    {
+        for (var stat in world.boards[board].stats)
+        {
+            // Check all stats that have ZZT-OOP
+            if (world.boards[board].stats[stat].oop && (world.boards[board].stats[stat].oop.toLowerCase().indexOf(query) != -1))
+            {
+                // Log the matching board if it hasn't been logged yet
+                if (board_matches.indexOf(board) == -1)
+                {
+                    board_matches.push(parseInt(board));
+                }
+
+                // Log the stat's coordinates
+                if (! coordinate_matches[board])
+                    coordinate_matches[board] = [world.boards[board].stats[stat].x + "," + world.boards[board].stats[stat].y];
+                else
+                    coordinate_matches[board].push(world.boards[board].stats[stat].x + "," + world.boards[board].stats[stat].y);
+            }
+        }
+    }
+
+    if (! board_matches) // No results
+        return false;
+
+    $(".code-match").remove();
+
+    $("#file-list .selected ol").children().filter("li").each(function (){
+        $(this).show(); // Reveal boards to allow multiple searches
+        if (board_matches.indexOf($(this).data("board-number")) != -1)
+        {
+            //console.log("Match on" + $(this).text());
+            for (var match_idx = 0; match_idx < coordinate_matches[$(this).data("board-number")].length; match_idx++)
+            {
+                var match_name = coordinate_matches[$(this).data("board-number")][match_idx];
+                var x = match_name.split(",")[0];
+                var y = match_name.split(",")[1];
+                var tile_idx = parseInt((y - 1) * 60) + parseInt(x);
+
+                var stat_name = world.boards[$(this).data("board-number")].elements[tile_idx - 1].name;
+                var stats = world.boards[$(this).data("board-number")].stats
+                for (var stat_idx = 0; stat_idx < stats.length; stat_idx++)
+                {
+                    if (stats[stat_idx].x == x && stats[stat_idx].y == y)
+                    {
+                        if ((stat_name == "Scroll" || stat_name == "Object") && stats[stat_idx].oop[0] == "@")
+                        {
+                            stat_name = stats[stat_idx].oop.slice(0, stats[stat_idx].oop.indexOf("\r"));
+                        }
+                        var oop_size = stats[stat_idx].oop_length;
+                        break;
+                    }
+                }
+
+                $(this).after(`<li class='code-match' data-board-number="" data-x="${x}" data-y="${y}">⤷(${x}, ${y}) [${(("0000"+(tile_idx)).slice(-4))}] ${stat_name} ${oop_size} bytes</li>`);
+            }
+        }
+        else // Hide boards that don't match?
+        {
+            $(this).hide();
+        }
+    });
+
+    // Bind the matches to click
+    $(".code-match").click(function (){
+        $(this).prev().click();
+        var e = {"data":{"x":$(this).data("x"), "y":$(this).data("y")}};
+        stat_info(e);
+    });
+
+    console.log("Matches:", board_matches);
+}
+
+function bind_search()
+{
+    $("#code-search-submit").click(code_search);
+    return true;
 }

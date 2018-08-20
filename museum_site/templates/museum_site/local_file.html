@@ -8,12 +8,6 @@ var zip = "{{file.filename}}";
 var load_file = "{{load_file}}";
 var load_board = "{{load_board}}";
 var hash_coords = window.location.hash;
-
-{% if save %}
-// DEBUG DO NOT USE ON PRODUCTION
-var save = "{{save}}";
-// END DEBUG
-{% endif %}
 </script>
 <script src="{% static 'js/elements.js' %}"></script>
 <script src="{% static 'js/renderer.js' %}"></script>
@@ -21,95 +15,87 @@ var save = "{{save}}";
 {% endblock %}
 
 {% block world_content %}
-<div id="file-area">
-    <div id="details">
-    <div style="background:#000;width:480px;height:300px;margin:auto;"></div>
-    </div>
-
-    <div id="file-list" class="col">
-        <div class="c">
-        <input type="file" id="local-file-path"> <button id="local-load">Load File</button>
+    <div id="file-area">
+        <div id="details">
+        <div style="background:#000;width:480px;height:300px;margin:auto;"></div>
         </div>
+
+        <div id="file-list" class="col">
+            <div class="c">
+            <input type="file" id="local-file-path"> <button id="local-load">Load File</button>
+            </div>
+            <ul>
+                <li id="local-file-name"></li>
+            </ul>
         <ul>
-            <li id="local-file-name"></li>
         </ul>
-    <ul>
-    </ul>
     </div>
 
-    <div id="tab-area">
-        <div id="file-tabs">
-            <ul><li name="world-info">World</li><li name="board-info">Board</li><li name="element-info">Element</li><li name="stat-info">Stats</li><li name="preferences">Prefs.</li></ul>
-        </div>
-        <div id="file-data">
-            <div id="world-info" class="toggle"></div>
-            <div id="board-info" class="toggle"></div>
-            <div id="element-info" class="toggle"></div>
-            <div id="stat-info" class="toggle"></div>
-            <div id="preferences" class="toggle">
-                <fieldset>
-                    <label>Charset</label>
-                    <select name="charset">
-                        <optgroup label="Standard Fonts">
-                            {% for charset in charsets %}
-                            <option value="{{charset.0}}">{{charset.1}}</option>
-                            {% endfor %}
-                        </optgroup>
-                        <optgroup label="Custom Fonts">
-                            {% for charset in custom_charsets %}
-                            <option value="{{charset}}">{{charset|slice:"5:-4"}}</option>
-                            {% endfor %}
-                        </optgroup>
-                    </select>
-
-                    <label><input type="checkbox" name="2x" value="1"> - 2x Zoom</label>
-                </fieldset>
-
-                <fieldset>
-                    <label>
-                        Board Rendering
-                        <select name="renderer">
-                            <option value="zzt_standard" selected>Standard</option>
-                            <option value="zzt_objects">Object Highlight</option>
-                            <option value="zzt_fake">Fake Wall Highlight</option>
-                            <option value="zzt_dark">Dark Board</option>
-                            <!--<option value="zzt_torch">Dark Board - Lit Torch</option>-->
+    <div id="lower-ui">
+        <div id="tab-area">
+            <div id="file-tabs">
+                <ul><li name="world-info">World</li><li name="board-info">Board</li><li name="element-info">Element</li><li name="stat-info">Stats</li><li name="preferences">Prefs.</li></ul>
+            </div>
+            <div id="file-data">
+                <div id="world-info" class="toggle"></div>
+                <div id="board-info" class="toggle"></div>
+                <div id="element-info" class="toggle"></div>
+                <div id="stat-info" class="toggle"></div>
+                <div id="preferences" class="toggle">
+                    <fieldset>
+                        <label>Charset</label>
+                        <select name="charset">
+                            <optgroup label="Standard Fonts">
+                                {% for charset in charsets %}
+                                <option value="{{charset.0}}">{{charset.1}}</option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="Custom Fonts">
+                                {% for charset in custom_charsets %}
+                                <option value="{{charset}}">{{charset|slice:"5:-4"}}</option>
+                                {% endfor %}
+                            </optgroup>
                         </select>
-                    </label>
 
-                    <br>
+                        <label><input type="checkbox" name="2x" value="1"> - 2x Zoom</label>
+                    </fieldset>
 
-                    <label>
-                        High Intensity Backgrounds
-                        <select name="intensity">
-                            <option value="high">On</option>
-                            <option value="low" selected>Off</option>
-                        </select>
-                    </label>
+                    <fieldset>
+                        <label>
+                            Board Rendering
+                            <select name="renderer">
+                                <option value="zzt_standard" selected>Standard</option>
+                                <option value="zzt_objects">Object Highlight</option>
+                                <option value="zzt_fake">Fake Wall Highlight</option>
+                                <option value="zzt_dark">Dark Board</option>
+                                <!--<option value="zzt_torch">Dark Board - Lit Torch</option>-->
+                            </select>
+                        </label>
 
-                    <br>
+                        <br>
 
-                    <label>
-                        Invisible Walls
-                        <select name="invisibles">
-                            <option value="revealed">Visible - Revealed</option>
-                            <option value="editor" selected>Visible - Editor</option>
-                            <option value="invisible">Invisible</option>
-                        </select>
-                    </label>
-                </fieldset>
+                        <label>
+                            High Intensity Backgrounds
+                            <select name="intensity">
+                                <option value="high">On</option>
+                                <option value="low" selected>Off</option>
+                            </select>
+                        </label>
+
+                        <br>
+
+                        <label>
+                            Invisible Walls
+                            <select name="invisibles">
+                                <option value="revealed">Visible - Revealed</option>
+                                <option value="editor" selected>Visible - Editor</option>
+                                <option value="invisible">Invisible</option>
+                            </select>
+                        </label>
+                    </fieldset>
+                </div>
             </div>
         </div>
     </div>
-
-    {% if save %}
-    <form method="POST" action="/debug/save" name="save">
-    {% csrf_token %}
-    <input name="screenshot">
-    <input name="letter" value="{{file.letter}}">
-    <input name="zip" value="{{file.filename}}">
-    <input type="submit" id="save" value="Save">
-    </form>
-    {% endif %}
 </div>
 {% endblock %}

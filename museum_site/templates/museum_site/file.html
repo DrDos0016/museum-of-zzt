@@ -19,135 +19,138 @@ var uploaded = {% if uploaded %}true{% else %} false{% endif %};
 {% endblock %}
 
 {% block world_content %}
+
 <div id="file-area">
     <div id="details">
     <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
     </div>
 
-    <div id="file-list">
-    <ul>
-    <li class="selected" data-img="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}">Title Screen</li>
-    {% for file in files %}
-    <li class="zip-content">{{file}}</li>
-    {% endfor %}
-    </ul>
-    </div>
-
-    <div id="tab-area">
-        <div id="file-tabs">
-            <ul>
-                <li name="world-info">World</li>
-                <li name="board-info">Board</li>
-                <li name="element-info">Element</li>
-                <li name="stat-info">Stats</li>
-                <li name="preferences">Prefs.</li>
-                <li name="help">?</li>
-            </ul>
+    <div id="lower-ui">
+        <div id="file-list">
+        <ul>
+        <li class="selected" data-img="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}">Title Screen</li>
+        {% for file in files %}
+        <li class="zip-content">{{file}}</li>
+        {% endfor %}
+        </ul>
         </div>
-        <div id="file-data">
-            <div id="world-info" class="toggle"></div>
-            <div id="board-info" class="toggle"></div>
-            <div id="element-info" class="toggle"></div>
-            <div id="stat-info" class="toggle">
-                <a id='stat-toggle' class='jsLink'>Toggle Codeless Stats</a><br>
-                Sort by:
-                <select name="stat-sort">
-                    <option value="code">Code Length</option>
-                    <option value="coord">Coordinates</option>
-                    <option value="name" selected>Name</option>
-                    <option value="stat">Stat Index</option>
-                </select>
-                <ol></ol>
-            </div>
-            <div id="preferences" class="toggle">
-                    <label>Charset
-                        <select name="charset">
-                            <optgroup label="Standard Fonts">
-                                {% for charset in charsets %}
-                                <option value="{{charset.0}}">{{charset.1}}</option>
-                                {% endfor %}
-                            </optgroup>
-                            <optgroup label="Custom Fonts">
-                                {% for charset in custom_charsets %}
-                                <option value="{{charset}}"{% if request.charset == charset %} selected{% endif %}>{{charset|slice:"5:-4"}}{% if file.id|stringformat:"i" == charset|slice:":4" %} (RECOMMENDED){% endif %}</option>
-                                {% endfor %}
-                            </optgroup>
-                        </select>
-                        <div class="option r" style="clear:both;display:none"><!--TODO-->
-                            <input type="checkbox" name="2x" value="1"> - 2x Zoom
-                        </div>
-                    </label>
 
-
-                    <label>
-                        Board Rendering
-                        <select name="renderer">
-                            <option value="zzt_standard" selected>Standard</option>
-                            <option value="zzt_objects">Object Highlight</option>
-                            <option value="zzt_fake">Fake Wall Highlight</option>
-                            <option value="zzt_dark">Dark Board</option>
-                            <option value="zzt_empty">Visible Empties</option>
-                            <option value="zzt_empty_text">Empties as Text</option>
-                            <!--<option value="zzt_torch">Dark Board - Lit Torch</option>-->
-                        </select>
-                    </label>
-
-                    <br>
-
-                    <label>
-                        High Intensity Backgrounds
-                        <select name="intensity">
-                            <option value="high">On</option>
-                            <option value="low" selected>Off</option>
-                        </select>
-                    </label>
-
-                    <br>
-
-                    <label>
-                        Invisible Walls
-                        <select name="invisibles">
-                            <option value="revealed">Visible - Revealed</option>
-                            <option value="editor" selected>Visible - Editor</option>
-                            <option value="invisible">Invisible</option>
-                        </select>
-                    </label>
-
-                    <br>
-
-                    <label>
-                        Monitors
-                        <select name="monitors">
-                            <option value="hidden">Hidden - ZZT Style</option>
-                            <option value="m" selected>M - KevEdit Style</option>
-                        </select>
-                    </label>
-
-                    <br>
-
-                    <label>
-                        Board Edges
-                        <select name="edges">
-                            <option value="hidden" selected>Hidden - ZZT Style</option>
-                            <option value="e">E - KevEdit Style</option>
-                        </select>
-                    </label>
-            </div>
-            <div id="help" class="toggle">
-                <b>Board Navigation</b>
+        <div id="tab-area">
+            <div id="file-tabs">
                 <ul>
-                    <li>+/J Next board</li>
-                    <li>-/K Previous board</li>
-                    <li>Double click on a passage (≡) to travel to its destination</li>
+                    <li name="world-info">World</li>
+                    <li name="board-info">Board</li>
+                    <li name="element-info">Element</li>
+                    <li name="stat-info">Stats</li>
+                    <li name="preferences">Prefs.</li>
+                    <li name="help">?</li>
                 </ul>
-                <b>Tabs</b>
-                <ul>
-                    <li>W - World tab</li>
-                    <li>B - Board tab</li>
-                    <li>E - Element tab</li>
-                    <li>S - Stat tab</li>
-                    <li>P - Preferences tab</li>
-                </ul>
+            </div>
+            <div id="file-data">
+                <div id="world-info" class="toggle"></div>
+                <div id="board-info" class="toggle"></div>
+                <div id="element-info" class="toggle"></div>
+                <div id="stat-info" class="toggle">
+                    <a id='stat-toggle' class='jsLink'>Toggle Codeless Stats</a><br>
+                    Sort by:
+                    <select name="stat-sort">
+                        <option value="code">Code Length</option>
+                        <option value="coord">Coordinates</option>
+                        <option value="name" selected>Name</option>
+                        <option value="stat">Stat Index</option>
+                    </select>
+                    <ol></ol>
+                </div>
+                <div id="preferences" class="toggle">
+                        <label>Charset
+                            <select name="charset">
+                                <optgroup label="Standard Fonts">
+                                    {% for charset in charsets %}
+                                    <option value="{{charset.0}}">{{charset.1}}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                <optgroup label="Custom Fonts">
+                                    {% for charset in custom_charsets %}
+                                    <option value="{{charset}}"{% if request.charset == charset %} selected{% endif %}>{{charset|slice:"5:-4"}}{% if file.id|stringformat:"i" == charset|slice:":4" %} (RECOMMENDED){% endif %}</option>
+                                    {% endfor %}
+                                </optgroup>
+                            </select>
+                            <div class="option r" style="clear:both;display:none"><!--TODO-->
+                                <input type="checkbox" name="2x" value="1"> - 2x Zoom
+                            </div>
+                        </label>
+
+
+                        <label>
+                            Board Rendering
+                            <select name="renderer">
+                                <option value="zzt_standard" selected>Standard</option>
+                                <option value="zzt_objects">Object Highlight</option>
+                                <option value="zzt_fake">Fake Wall Highlight</option>
+                                <option value="zzt_dark">Dark Board</option>
+                                <option value="zzt_empty">Visible Empties</option>
+                                <option value="zzt_empty_text">Empties as Text</option>
+                                <!--<option value="zzt_torch">Dark Board - Lit Torch</option>-->
+                            </select>
+                        </label>
+
+                        <br>
+
+                        <label>
+                            High Intensity Backgrounds
+                            <select name="intensity">
+                                <option value="high">On</option>
+                                <option value="low" selected>Off</option>
+                            </select>
+                        </label>
+
+                        <br>
+
+                        <label>
+                            Invisible Walls
+                            <select name="invisibles">
+                                <option value="revealed">Visible - Revealed</option>
+                                <option value="editor" selected>Visible - Editor</option>
+                                <option value="invisible">Invisible</option>
+                            </select>
+                        </label>
+
+                        <br>
+
+                        <label>
+                            Monitors
+                            <select name="monitors">
+                                <option value="hidden">Hidden - ZZT Style</option>
+                                <option value="m" selected>M - KevEdit Style</option>
+                            </select>
+                        </label>
+
+                        <br>
+
+                        <label>
+                            Board Edges
+                            <select name="edges">
+                                <option value="hidden" selected>Hidden - ZZT Style</option>
+                                <option value="e">E - KevEdit Style</option>
+                            </select>
+                        </label>
+                </div>
+                <div id="help" class="toggle">
+                    <b>Board Navigation</b>
+                    <ul>
+                        <li>+/J Next board</li>
+                        <li>-/K Previous board</li>
+                        <li>Double click on a passage (≡) to travel to its destination</li>
+                    </ul>
+                    <b>Tabs</b>
+                    <ul>
+                        <li>W - World tab</li>
+                        <li>B - Board tab</li>
+                        <li>E - Element tab</li>
+                        <li>S - Stat tab</li>
+                        <li>P - Preferences tab</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
