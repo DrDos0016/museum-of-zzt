@@ -6,7 +6,11 @@ from django.shortcuts import render
 from .common import *
 from zipfile import ZipFile
 
-import zookeeper
+try:
+    import zookeeper
+    HAS_ZOOKEEPER = True
+except ImportError:
+    HAS_ZOOKEEPER = False
 
 
 @staff_member_required
@@ -89,6 +93,9 @@ def set_screenshot(request, pk):
     file = File.objects.get(pk=pk)
     data["file"] = file
     data["file_list"] = []
+
+    if not HAS_ZOOKEEPER:
+        return server_error_500(request)
 
     with ZipFile(SITE_ROOT + file.download_url(), "r") as zf:
         all_files = zf.namelist()

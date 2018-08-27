@@ -396,6 +396,29 @@ def play(request, letter, filename):
     return render(request, "museum_site/play.html", data)
 
 
+def play_builtin(request, letter, filename):
+    """ Returns page to play file via built-in emulation """
+    data = {}
+    data["file"] = File.objects.filter(letter=letter, filename=filename)
+    if len(data["file"]) == 0:
+        raise Http404()
+    elif len(data["file"]) > 1:
+        for file in data["file"]:
+            if file.filename == filename:
+                data["file"] = file
+                break
+    else:
+        data["file"] = data["file"][0]
+    data["title"] = data["file"].title + " - Play Online"
+    data["letter"] = letter
+    if data["file"].id in CUSTOM_CHARSET_MAP:
+        data["custom_charset"] = CUSTOM_CHARSET_MAP[data["file"].id]
+    else:
+        data["custom_charset"] = None
+
+    return render(request, "museum_site/play_builtin.html", data)
+
+
 def random(request):
     """ Returns a random ZZT file page """
     max_pk = File.objects.all().order_by("-id")[0].id
