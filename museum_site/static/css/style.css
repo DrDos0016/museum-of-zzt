@@ -674,7 +674,7 @@ div.file-details ul
     /*min-height:400px;*/
 }
 
-#play-area iframe
+#play-area iframe, #play-area canvas
 {
     margin:auto;
 }

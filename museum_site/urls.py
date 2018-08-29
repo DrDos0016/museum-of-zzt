@@ -88,6 +88,9 @@ urlpatterns = [
     url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.play,
         name="play"
         ),
+    url(r"^play/builtin/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.play_builtin,
+        name="play_builtin"
+        ),
     url(r"^file/local$", museum_site.views.file,
         {"local": True, "letter":"!", "filename":""},
         name="local",

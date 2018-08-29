@@ -14,13 +14,20 @@ from museum_site.models import (
 
 from museum_site.common import *
 
-import zookeeper
+try:
+    import zookeeper
+    HAS_ZOOKEEPER = True
+except ImportError:
+    HAS_ZOOKEEPER = False
 
 
 from django.http import JsonResponse
 
 # Create your views here.
 def worlds_of_zzt(request):
+    if not HAS_ZOOKEEPER:
+        return server_error_500(request)
+
     # Timestamp
     ts = int(time.time())
 

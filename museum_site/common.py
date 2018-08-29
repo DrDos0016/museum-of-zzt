@@ -157,6 +157,13 @@ CUSTOM_CHARSET_LIST = (
     "2359-ZZFACES.png",
 )
 
+CUSTOM_CHARSET_MAP = {}
+for charset_name in CUSTOM_CHARSET_LIST:
+    try:
+        CUSTOM_CHARSET_MAP[int(charset_name.split('-', 1)[0])] = charset_name
+    except ValueError:
+        pass
+
 DETAIL_LIST = (
     "Contest"
     "Etc."

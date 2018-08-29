@@ -358,6 +358,9 @@ class File(models.Model):
     def play_url(self):
         return "/play/" + self.letter + "/" + self.filename
 
+    def play_builtin_url(self):
+        return "/play/builtin/" + self.letter + "/" + self.filename
+
     def review_url(self):
         return "/review/" + self.letter + "/" + self.filename
 
@@ -393,6 +396,17 @@ class File(models.Model):
     def is_uploaded(self):
         uploaded = self.details.all().values_list("id", flat=True)
         return True if DETAIL_UPLOADED in uploaded else False
+
+    def is_zzt(self):
+        lost = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_ZZT in lost else False
+
+    def is_super_zzt(self):
+        lost = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_SZZT in lost else False
+
+    def supports_builtin_player(self):
+        return self.id != 85 and (self.is_zzt() or self.is_super_zzt())
 
     def recalculate_reviews(self):
         # Recalculate Review Count
