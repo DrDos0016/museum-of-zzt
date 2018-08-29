@@ -506,7 +506,7 @@ function parse_world(type, data)
     output += `</table>`;
 
     output += `<table class='fv' name='search-table'>
-        <tr><td>ZZT-OOP Search:</td><td><input name="code-search"><button id="code-search-submit" type="button">Search</button></tr>
+        <tr><td>ZZT-OOP Search:</td><td><input name="code-search"><button id="code-search-submit" type="button">Search</button> <button id="code-search-reset" type="button">Reset</button></tr>
     </table>`;
 
     $("#world-info").html(output);
@@ -1484,8 +1484,15 @@ function code_search()
     console.log("Matches:", board_matches);
 }
 
+function code_search_reset()
+{
+    $("#file-list .selected ol").children().filter("li").show();
+    $("li.code-match").remove();
+}
+
 function bind_search()
 {
     $("#code-search-submit").click(code_search);
+    $("#code-search-reset").click(code_search_reset);
     return true;
 }
