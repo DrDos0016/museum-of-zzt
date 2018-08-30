@@ -891,6 +891,16 @@ input[name=code-search]
 {
     margin-left:1em;
 }
+
+#player-list
+{
+    border:1px solid #000;
+    margin:auto;
+    width:25%;
+    min-width:200px;
+    padding:0.25em;
+    margin-bottom:1em;
+}
 /* End file viewing */
 
 /* Reviews */

@@ -308,6 +308,11 @@ PACKAGE_PROFILES = (
     },
 )
 
+PLAY_METHODS = {
+    "archive": {"name":"Archive.org - DosBox Embed"},
+    "cerulean": {"name":"cerulean86"},
+}
+
 
 def qs_sans(params, key):
     """ Returns a query string with a key removed """

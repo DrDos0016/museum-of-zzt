@@ -1,4 +1,7 @@
 from django.conf.urls import url
+from museum.settings import DEBUG
+if DEBUG:
+    from django.conf.urls.static import static
 
 import museum_site.admin
 import museum_site.ajax
@@ -87,9 +90,6 @@ urlpatterns = [
         ),
     url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.play,
         name="play"
-        ),
-    url(r"^play/builtin/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.play_builtin,
-        name="play_builtin"
         ),
     url(r"^file/local$", museum_site.views.file,
         {"local": True, "letter":"!", "filename":""},
@@ -186,3 +186,6 @@ urlpatterns = [
 
     url(r"^error/(?P<status>[0-9]+)$", museum_site.errors.raise_error)
 ]
+
+if DEBUG:
+    urlpatterns += static("/zgames", document_root="/var/projects/museum/zgames/")

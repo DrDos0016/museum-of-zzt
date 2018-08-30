@@ -378,7 +378,7 @@ def patron_plans(request):
 
 
 def play(request, letter, filename):
-    """ Returns page to play file on archive.org """
+    """ Returns page to play file in the browser """
     data = {}
     data["file"] = File.objects.filter(letter=letter, filename=filename)
     if len(data["file"]) == 0:
@@ -393,30 +393,42 @@ def play(request, letter, filename):
     data["title"] = data["file"].title + " - Play Online"
     data["letter"] = letter
 
-    return render(request, "museum_site/play.html", data)
+    # Select a play method
+    player_names = PLAY_METHODS.keys()
+    player = request.GET.get("player")
+    if player is None or player not in player_names:
+        # If no player was provided, check for a cookie preference
+        preferred_player = request.COOKIES.get("preferred_player", "")
+        if preferred_player not in player_names:
+            player = "cerulean"
+        else:
+            player = preferred_player
 
+    # Check player compatibility
+    cookie_preferred = player  # In case the user's choice isn't available
+    data["fallback"] = False
 
-def play_builtin(request, letter, filename):
-    """ Returns page to play file via built-in emulation """
-    data = {}
-    data["file"] = File.objects.filter(letter=letter, filename=filename)
-    if len(data["file"]) == 0:
-        raise Http404()
-    elif len(data["file"]) > 1:
-        for file in data["file"]:
-            if file.filename == filename:
-                data["file"] = file
-                break
-    else:
-        data["file"] = data["file"][0]
-    data["title"] = data["file"].title + " - Play Online"
-    data["letter"] = letter
+    if player == "cerulean":
+        if not data["file"].supports_cerulean_player:
+            player = "archive"
+            data["fallback"] = True
+    elif player == "archive":
+        if not data["file"].archive_name:
+            player = "cerulean"
+            data["fallback"] = True
+
+    # The player the page will use
+    data["player"] = player
+    data["players"] = PLAY_METHODS
+
     if data["file"].id in CUSTOM_CHARSET_MAP:
         data["custom_charset"] = CUSTOM_CHARSET_MAP[data["file"].id]
     else:
         data["custom_charset"] = None
 
-    return render(request, "museum_site/play_builtin.html", data)
+    response = render(request, "museum_site/play.html", data)
+    response.set_cookie("preferred_player", cookie_preferred, expires=datetime(3000, 12, 31))
+    return response
 
 
 def random(request):
