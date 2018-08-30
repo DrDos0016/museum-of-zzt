@@ -400,7 +400,7 @@ def play(request, letter, filename):
         # If no player was provided, check for a cookie preference
         preferred_player = request.COOKIES.get("preferred_player", "")
         if preferred_player not in player_names:
-            player = "cerulean"
+            player = "archive"  # Default player
         else:
             player = preferred_player
 
