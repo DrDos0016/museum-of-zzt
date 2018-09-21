@@ -395,6 +395,8 @@ def play(request, letter, filename):
 
     # Select a play method
     player_names = PLAY_METHODS.keys()
+    player_names = "archive" # TODO: THIS IS A DEBUG UNTIL CERULEAN IS LIVE ON PRODUCTION
+
     player = request.GET.get("player")
     if player is None or player not in player_names:
         # If no player was provided, check for a cookie preference

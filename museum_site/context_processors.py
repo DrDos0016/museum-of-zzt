@@ -10,12 +10,12 @@ def museum_global(request):
 
     # Server info
     data["HOST"] = request.get_host()
-    if data["HOST"] in ["museum.pokyfriends.com", "beta.museumofzzt.com"]:
-        data["ENV"] = "PRIVATE BETA"
-    elif data["HOST"] in ["z2.pokyfriends.com", "museumofzzt.com"]:
-        data["ENV"] = "PUBLIC BETA"
+    if data["HOST"] in ["beta.museumofzzt.com"]:
+        data["ENV"] = "BETA"
+    elif data["HOST"] in ["museumofzzt.com"]:
+        data["ENV"] = "PROD"
     else:
-        data["ENV"] = "DEVELOPMENT SERVER"
+        data["ENV"] = "DEV"
 
     data["PROTOCOL"] = "https" if request.is_secure() else "http"
     data["DOMAIN"] = data["PROTOCOL"] + "://" + data["HOST"]

@@ -47,6 +47,7 @@ $(document).ready(function (){
     {% endif %}
 </div>
 
+{% if ENV != "PROD" %}
 <div id="player-list" class="c">
     <b>Play Method</b><br>
     <select name="player">
@@ -55,6 +56,7 @@ $(document).ready(function (){
         {% endfor %}
     </select>
 </div>
+{% endif %}
 
 <div class="play-instructions">
 {% if player == "archive" %}
