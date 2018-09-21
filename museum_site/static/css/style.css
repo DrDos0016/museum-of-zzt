@@ -978,6 +978,31 @@ div.file-meta + .review
     resize:none;
     color:#000;
 }
+
+.side-commentary
+{
+    margin-bottom:0.25em;
+    overflow:auto;
+    border-bottom:1px solid #000;
+    padding-bottom:0.25em;
+}
+
+.material
+{
+    float:left;
+    min-width:240px;
+    margin-right:0.5em;
+}
+
+.commentary
+{
+    min-width:20%;
+}
+
+.commentary p
+{
+    margin-top:0.25em;
+}
 /* End Article Globals */
 
 /* Directory Listings */

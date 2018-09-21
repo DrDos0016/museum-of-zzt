@@ -1,6 +1,8 @@
 from datetime import datetime
 
+from django import template
 from django.template import Template, Context, Library
+from django.template import defaultfilters as filters
 from django.utils.safestring import mark_safe
 
 from museum_site.models import File
@@ -95,3 +97,41 @@ def cl_info(id):
 
     return mark_safe(output + "\n")
 
+
+@register.tag(name="commentary")
+def scroll(parser, token):
+    nodelist = parser.parse(('endcommentary',))
+    parser.delete_first_token()
+    return Commentary(nodelist)
+
+class Commentary(template.Node):
+    def __init__(self, nodelist):
+        self.nodelist = nodelist
+
+    def render(self, context):
+        print(self.nodelist)
+        material_nodes = self.nodelist[:-1]
+        commentary_node = self.nodelist[-1]
+
+        material = ""
+        commentary = ""
+
+        for n in material_nodes:
+            material += n.render(context)
+
+        #commentary = filters.linebreaks(commentary_node.render(context).strip())
+        commentary = commentary_node.render(context).strip()
+        if commentary and commentary[0] != "<":
+            commentary = "<p>" + commentary.replace("\n\n", "</p><p>") + "</p>"
+
+        output = """
+<div class="side-commentary">
+    <div class="material">
+    {material}
+    </div>
+    <div class="commentary">
+        {commentary}
+    </div>
+</div>
+"""
+        return output.format(material=material, commentary=commentary)

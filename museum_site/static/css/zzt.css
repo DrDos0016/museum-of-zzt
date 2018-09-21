@@ -81,6 +81,20 @@ img.zzt-hud
     max-width:none;
 }
 
+.zzt-img.zzt-popup
+{
+    width:392px;
+    height:266px;
+}
+
+img.zzt-popup
+{
+    position:relative;
+    left:-40px;
+    top:-42px;
+    max-width:none;
+}
+
 .zzt-img.zzt-message
 {
     width:480px;
