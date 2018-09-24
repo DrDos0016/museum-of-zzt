@@ -1,4 +1,5 @@
 from django.conf.urls import url
+
 from museum.settings import DEBUG
 if DEBUG:
     from django.conf.urls.static import static
@@ -169,6 +170,15 @@ urlpatterns = [
 
     # AJAX
     url(r"^ajax/get_zip_file$", museum_site.ajax.get_zip_file),
+
+    # Redirects
+    url(r"^twitter$", museum_site.views.redir, {"url": "https://twitter.com/worldsofzzt"}),
+    url(r"^tumblr$", museum_site.views.redir, {"url": "http://worldsofzzt.tumblr.com"}),
+    url(r"^discord$", museum_site.views.redir, {"url": "https://discordapp.com/invite/Nar4Upf"}),
+    url(r"^patreon$", museum_site.views.redir, {"url": "https://patreon.com/worldsofzzt"}),
+    url(r"^youtube$", museum_site.views.redir, {"url": "https://www.youtube.com/channel/UCr0f-r1bRexAZK8sWyk4NJA"}),
+    url(r"^twitch$", museum_site.views.redir, {"url": "https://twitch.tv/worldsofzzt"}),
+    url(r"^github$", museum_site.views.redir, {"url": "https://github.com/DrDos0016/z2"}),
 
     # Tools
     url(r"^tools/(?P<pk>[0-9]+)$", museum_site.tools.tool_list, name="tool_list"),

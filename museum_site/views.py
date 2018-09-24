@@ -446,6 +446,15 @@ def random(request):
 
     return redirect("file/" + file.letter + "/" + file.filename)
 
+def redir(request, url):
+    return redirect(url, permanent=True)
+
+"""
+def generic(request, title="", template=""):
+    data = {"title": title}
+    return render(request, "museum_site/"+ template + ".html")
+"""
+
 def register(request):
     data = {}
     return render(request, "museum_site/register.html", data)
