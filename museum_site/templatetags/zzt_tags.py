@@ -34,14 +34,15 @@ def message(parser, token):
 
 
 class ZztMessage(template.Node):
-    def __init__(self, nodelist, color):
+    def __init__(self, nodelist, color="auto"):
         self.nodelist = nodelist
-        self.color_list = ["purple", "red", "cyan", "green", "blue", "white", "yellow"]
+        self.color_list = ["yellow", "purple", "red", "cyan", "green", "blue", "white",]
         self.color = color
         if self.color == "auto":
             self.active_color = self.color_list[0]
         else:
             self.active_color = color
+        print("ACTIVE:", self.active_color)
         self.color_idx = self.color_list.index(self.active_color)
 
     def advance_color(self):

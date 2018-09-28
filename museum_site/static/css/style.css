@@ -1,18 +1,18 @@
 @font-face
 {
-	font-family: 'Classic Console';
-	src: url('/static/fonts/clacon.ttf');
-	font-weight: normal;
-	font-style: normal;
+    font-family: 'Classic Console';
+    src: url('/static/fonts/clacon.ttf');
+    font-weight: normal;
+    font-style: normal;
 }
 
 @font-face
 {
     /* http://int10h.org/oldschool-pc-fonts/readme/ */
-	font-family: 'cp437';
-	src: url('/static/fonts/Px437_IBM_EGA8.ttf');
-	font-weight: normal;
-	font-style: normal;
+    font-family: 'cp437';
+    src: url('/static/fonts/Px437_IBM_EGA8.ttf');
+    font-weight: normal;
+    font-style: normal;
 }
 
 a
@@ -88,8 +88,8 @@ body
 
 .jsLink
 {
-	cursor:pointer;
-	color:#00F;
+    cursor:pointer;
+    color:#00F;
 }
 
 .l
@@ -395,16 +395,17 @@ footer
     width:100%;
     text-align:center;
     margin:auto;
+    display:flex;
+    flex-wrap:wrap;
 }
 
 #letters a
 {
-    font-family:monospace;
-    display:inline-block;
-    width:8%;
+    font-family:"cp437";
     margin-bottom:0.25em;
     text-decoration:none;
-    font-size:larger;
+    font-size:21px;
+    flex:1 0 11%;
 }
 
 #letters a:hover
@@ -977,6 +978,13 @@ div.file-meta + .review
     overflow:auto;
     border-bottom:1px solid #000;
     padding-bottom:0.25em;
+}
+
+.zzt-img + .side-commentary, .zzt-scroll + .side-commentary
+{
+    margin-top:0.25em;
+    padding-top:0.25em;
+    border-top:1px solid #000;
 }
 
 .material
