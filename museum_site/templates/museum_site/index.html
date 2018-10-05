@@ -22,8 +22,6 @@ preserved. It is the hope of the Museum that the generally unknown works of ZZT
 community can be easily discovered and that their importance can be recognized.
 </p>
 
-
-
 <h1>Latest Files</h1>
 <div class="gallery-wide">
 {% for file in files %}
@@ -31,30 +29,37 @@ community can be easily discovered and that their importance can be recognized.
     <div class="file-screen">
         <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen" alt="{{file.screenshot}}">
     </div>
-    <div class="title"><a href="{{file.download_url}}">{{file.title}}</a></div>
+    <div class="title"><a href="{{file.file_url}}">{{file.title}}</a></div>
     <div class="author">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-    <div class="view"><a href="{{file.file_url}}">View</a></div>
 </div>
 {% endfor %}
 </div>
 
-<div>
-    <div class="col">
-        <h1>Latest Articles</h1>
-        <ul>
-        {% for article in articles %}
-        <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} {% if article.date|date:"Y-m-d" != '1970-01-01' %}({{article.date}}){% endif %}</li>
-        {% endfor %}
-        </ul>
+<h1>Latest Articles</h1>
+<div class="file-block" data-pk="{{articles.0.id}}">
+    <div class="file-screen">
+        <img src="{% if articles.0.preview %}{% static 'images/'|add:articles.0.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+        class="titlescreen"
+        alt="{{articles.0.preview}}">
     </div>
-    <div class="col">
-        <h1>Latest Reviews</h1>
-        <ul>
-        {% for review in reviews %}
-        <li><a href="{{review.file.review_url}}#rev-{{review.id}}"><i>{{review.file.title}}</i></a> reviewed by {{review.author}}{% if review.rating > -1 %} ({{review.rating}} / 5.0){% endif %}</li>
-        {% endfor %}
-        </ul>
+    <div class="file-info">
+        <h1><a href="">{{articles.0.title}}</a></h1>
+        <div>Author</div>: {{articles.0.author}}<br>
+        <div>Date</div>: {{articles.0.date}}<br>
+        <div><br>{{articles.0.summary|default:""}}</div>
     </div>
 </div>
+<ul>
+{% for article in articles|slice:"1:" %}
+<li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} {% if article.date|date:"Y-m-d" != '1970-01-01' %}({{article.date}}){% endif %}</li>
+{% endfor %}
+</ul>
+
+<h1>Latest Reviews</h1>
+<ul>
+{% for review in reviews %}
+<li><a href="{{review.file.review_url}}#rev-{{review.id}}"><i>{{review.file.title}}</i></a> reviewed by {{review.author}}{% if review.rating > -1 %} ({{review.rating}} / 5.0){% endif %}</li>
+{% endfor %}
+</ul>
 </section>
 {% endblock %}

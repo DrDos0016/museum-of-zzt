@@ -6,7 +6,7 @@
         alt="{{file.screenshot}}">
     </div>
     <div class="file-info">
-        <h1><a href="{{file.download_url}}">{{file.title|default:"NO NAME"}}</a></h1>
+        <h1><a href="{{file.file_url}}">{{file.title|default:"NO NAME"}}</a></h1>
         <div class="col">
             <div>Author</div>: {% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
             <div>Company</div>: <a href="{% url 'search'%}?company={{file.company}}">{{file.company}}</a><br>
