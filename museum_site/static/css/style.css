@@ -510,12 +510,7 @@ div.file-meta
 
 div.file-meta div
 {
-    flex:1 0 15%;
-}
-
-div.file-links div
-{
-
+    flex:1;
 }
 
 div.file-links ul, div.file-details ul

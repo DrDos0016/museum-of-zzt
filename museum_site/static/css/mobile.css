@@ -19,3 +19,23 @@
     flex:1;
     margin-left:0.5em;
 }
+
+#lower-ui
+{
+    flex-wrap:wrap;
+}
+
+#tab-area
+{
+    order:1;
+    flex:1 1 100%;
+}
+
+#file-list
+{
+    order:2;
+    flex:1 1 100%;
+    border:1;
+    border-right:1; /* Needed to overwrite style.css */
+    margin-top:2px;
+}

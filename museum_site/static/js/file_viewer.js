@@ -976,13 +976,21 @@ $(window).bind("load", function() {
 
     // Keyboard Shortcuts
     $(window).keyup(function (e){
+        var match;
         if ($("input[name=q]").is(":focus") || $("input[name=code-search]").is(":focus"))
             return false;
 
         if (e.keyCode == 107 || e.keyCode == 61 || e.keyCode == 74) // Next Board
-            $("li.board.selected").next().click();
+        {
+            // Need to iterate over these until a non-hidden one is found.
+            if (match = $(".board.selected").nextAll(".board"))
+                match[0].click()
+        }
         else if (e.keyCode == 109 || e.keyCode == 173 || e.keyCode == 75) // Previous Board
-            $("li.board.selected").prev().click();
+        {
+            if (match = $(".board.selected").prevAll(".board"))
+                match[0].click()
+        }
         else if (e.keyCode == 87) // World
             $("li[name=world-info]").click();
         else if (e.keyCode == 66) // Board

@@ -4,8 +4,96 @@
 {% load zzt_tags %}
 {% load site_tags %}
 
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
 {% block content %}
 <section id="content" class="col block">
+
+{% commentary %}
+{% zzt_img 'images/articles/cl/shades-of-gray/zzt_001.png' %}
+This is my commentary.
+This is line 2
+
+This is a break in paragraphs
+
+So is this
+
+And that.
+{% endcommentary %}
+<hr><hr>
+<hr>
+
+<div class="side-commentary">
+    <div class="commentary-image">{% zzt_img 'images/articles/cl/shades-of-gray/zzt_001.png' %}</div>
+    <div class="commentary">
+        <p>Now here's a funny picture.</p>
+
+        <p>It turns out that in this game, the player has to find five purple keys
+        in order to enter the Palace. In order to do so, they'll have to cross dangerous
+        waters, rob a bank, break out a convicted felon, and invest in leaves.</p>
+
+        <p>Contrast this with most ZZT games, which are wholesome and sweet, and
+        you'll quickly find that this game is for mature gamers only. If a little
+        swearing upsets you, go back to playing MegaZeux, a children's game for
+        babies.</p>
+
+        <p>All things considered, I should really just be using Lorem Ipsum instead,
+        but what do I know.</p>
+
+        <p>All things considered, I should really just be using Lorem Ipsum instead,
+        but what do I know.</p>
+
+        <p>All things considered, I should really just be using Lorem Ipsum instead,
+        but what do I know.</p>
+
+        <p>All things considered, I should really just be using Lorem Ipsum instead,
+        but what do I know.</p>
+    </div>
+</div>
+
+<div class="side-commentary">
+    <div class="commentary-image">
+    {% zzt_img 'images/articles/cl/shades-of-gray/zzt_001.png' %}
+    </div>
+    <div class="commentary">
+        <p>Now here's a funny picture.</p>
+
+        <p>It turns out that in this game, the player has to find five purple keys
+        in order to enter the Palace. In order to do so, they'll have to cross dangerous
+        waters, rob a bank, break out a convicted felon, and invest in leaves.</p>
+    </div>
+</div>
+
+<div class="side-commentary">
+    <div class="material">
+    {% zzt_img 'images/articles/cl/shades-of-gray/zzt_001.png' shorthand='hud' %}
+    </div>
+    <div class="commentary">
+        <p>Now here's a funny picture.</p>
+
+        <p>It turns out that in this game, the player has to find five purple keys
+        in order to enter the Palace. In order to do so, they'll have to cross dangerous
+        waters, rob a bank, break out a convicted felon, and invest in leaves.</p>
+    </div>
+</div>
+
+<div class="side-commentary">
+    <div class="commentary-image">
+    {% zzt_img 'images/articles/cl/shades-of-gray/zzt_005.png' %}
+    {% zzt_img 'images/articles/cl/shades-of-gray/zzt_016.png' %}
+    {% zzt_img 'images/articles/cl/shades-of-gray/zzt_027.png' %}
+    </div>
+    <div class="commentary">
+        <p>Now here's a funny picture.</p>
+
+        <p>It turns out that in this game, the player has to find five purple keys
+        in order to enter the Palace. In order to do so, they'll have to cross dangerous
+        waters, rob a bank, break out a convicted felon, and invest in leaves.</p>
+    </div>
+</div>
 
 <h1>Debug</h1>
 
