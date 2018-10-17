@@ -13,6 +13,7 @@
 
 {% block content %}
 <section id="content" class="col block">
+<button class="fr contracted" id="expand-contract" title="Toggle sidebars">🠈 🠊</button>
 {% if file and not local%}
 <h1>[{{file.filename}}] - {{file.title}}{% if debug %} <span class="debug"><a href="/admin/museum_site/file/{{file.id}}/change/">Edit {{file.id}}</a></span>{% endif %}</h1>
 <div class="file-links">

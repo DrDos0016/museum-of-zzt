@@ -440,6 +440,19 @@ input[name=q]
 }
 
 /* File blocks */
+#expand-contract
+{
+    color:#AAA;
+    padding:0.10em;
+    text-align:center;
+}
+
+#expand-contract:hover
+{
+    cursor:pointer;
+    color:#000;
+}
+
 .file-block
 {
     width:100%;
@@ -622,8 +635,8 @@ div.file-details ul
 {
     min-width:482px;
     max-width:100%;
-    min-height:350px;
     max-height:700px;
+    min-height:350px;
     border:1px solid #000;
     border-top:0;
     padding:0.25em;
@@ -640,6 +653,13 @@ div.file-details ul
 {
     position:relative;
     width:100%;
+}
+
+#details[data-format=szt]
+{
+    resize:vertical;
+    height:700px;
+    max-height:1120px;
 }
 
 #overlay

@@ -11,6 +11,24 @@ var hash_coords = window.location.hash;
 var db_id = {{file.id|default:0}};
 var uploaded = {% if uploaded %}true{% else %} false{% endif %};
 
+$(document).ready(function (){
+    $("#expand-contract").click(function (){
+            $(this).toggleClass("expanded", "contracted");
+            if ($(this).hasClass("expanded"))
+            {
+                $(this).text("🠊 🠈");
+                $(".sidebar > *").css("visibility", "hidden");
+                $(".sidebar").animate({width: "0%"}, 500);
+            }
+            else // contracted
+            {
+                $(this).text("🠈 🠊");
+                $(".sidebar").animate({width: "15%"}, 500, function (){
+                    $(".sidebar > *").css("visibility", "visible");
+                });
+            }
+        });
+    });
 </script>
 <script src="{% static 'js/elements.js' %}"></script>
 <script src="{% static 'js/renderer.js' %}"></script>
