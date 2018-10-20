@@ -108,6 +108,11 @@ body
     text-align:right;
 }
 
+.fit
+{
+    max-width:100%;
+}
+
 .img-set
 {
     display:block;
@@ -376,13 +381,12 @@ footer
 }
 
 #featured
-{
-
-}
+{}
 
 #featured img
 {
-    width:80%;
+    width:100%;
+    max-width:480px;
 }
 
 .worlds-block form
@@ -1017,6 +1021,17 @@ div.file-meta + .review
 .commentary p
 {
     margin-top:0.25em;
+}
+
+article aside
+{
+    background:#BBB;
+    width:480px;
+    max-width:40%;
+    margin-left:0.5em;
+    padding:0.25em;
+    font-size:smaller;
+    float:right;
 }
 /* End Article Globals */
 
