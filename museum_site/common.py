@@ -185,7 +185,7 @@ DETAIL_LIST = (
 
 GENRE_LIST = (
     "24HoZZT",
-    "Action", "Adventure", "Arcade", "Art", "Beta", "BKZZT",
+    "Action", "Adventure", "Advertisement", "Arcade", "Art", "Beta", "BKZZT",
     "Cameo", "Catalog", "Cinema", "Comedy", "Comic",
     "Compilation", "Contest", "Demo",
     "Dungeon", "Edutainment", "Engine", "Experimental", "Explicit", "Fantasy",
