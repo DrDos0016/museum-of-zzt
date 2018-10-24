@@ -314,6 +314,16 @@ PLAY_METHODS = {
 }
 
 
+def get_view_format(request):
+    """ Returns Detailed/List/Gallery based on selected View type """
+    if request.GET.get("view"):
+        return request.GET["view"]
+    elif request.COOKIES.get("view"):
+        return request.COOKIES["view"]
+    else:
+        return "detailed"
+
+
 def qs_sans(params, key):
     """ Returns a query string with a key removed """
     qs = params.copy()

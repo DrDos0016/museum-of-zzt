@@ -107,12 +107,7 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
         data["title"] = "Browse"
 
     # Determine the viewing method
-    if request.GET.get("view"):
-        data["view"] = request.GET["view"]
-    elif request.COOKIES.get("view"):
-        data["view"] = request.COOKIES["view"]
-    else:
-        data["view"] = "detailed"
+    data["view"] = get_view_format(request)
 
     sort = SORT_CODES[request.GET.get("sort", "title").strip()]
 
@@ -449,11 +444,6 @@ def random(request):
 def redir(request, url):
     return redirect(url, permanent=True)
 
-"""
-def generic(request, title="", template=""):
-    data = {"title": title}
-    return render(request, "museum_site/"+ template + ".html")
-"""
 
 def register(request):
     data = {}
@@ -505,12 +495,7 @@ def search(request):
     sort = SORT_CODES[request.GET.get("sort", "title").strip()]
 
     # Determine the viewing method
-    if request.GET.get("view"):
-        data["view"] = request.GET["view"]
-    elif request.COOKIES.get("view"):
-        data["view"] = request.COOKIES["view"]
-    else:
-        data["view"] = "detailed"
+    data["view"] = get_view_format(request)
 
     if request.GET.get("q"):  # Basic Search
         q = request.GET["q"].strip()
@@ -709,8 +694,14 @@ def uploaded_redir(request, filename):
     file = File.objects.get(filename=filename)
     return redirect(file.file_url())
 
+
 def debug(request):
     data = {"title": "DEBUG PAGE"}
+
+    results = File.objects.filter(author="Dr. Dos")
+    print("Found", len(results), "by me")
+    data["results"] = results
+
     return render(request, "museum_site/debug.html", data)
 
 
