@@ -1,0 +1,82 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    .field label
+    {
+        width:20%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Tool List - {{file}}</h1>
+
+<a href="{% url 'tool_list' file.id %}">Back to Tool List</a>
+<br>
+
+{% if archive_resp %}
+<h2>{{status}} - {{archive_resp.status_code}}</h2>
+<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">Archive.org Mirror</a>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="field">
+        <label for="package">Package:<br>
+        </label>
+        <select name="package">
+            {% for package in packages %}
+            <option value="{{ forloop.counter0 }}">{{package.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="field">
+        <label for="launch">Default World:<br>
+        </label>
+        <select name="launch">
+            {% for name in file_list %}
+            <option>{{name}}</option>
+            {% endfor %}
+            <option value="N/A">None</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label for="title">Title:<br>
+        </label>
+        <input name="title" value="{{file.title}}">
+    </div>
+
+    <div class="field">
+        <label for="year">Year:<br>
+        </label>
+        <input name="year" value="{{file.release_date|date:'Y'}}">
+    </div>
+
+    <div class="field">
+        <label for="subject">Subject:<br>
+        </label>
+        <input name="subject" value="{{file.genre}}">
+    </div>
+
+    <div class="field">
+        <label for="creator">Creator:<br>
+        </label>
+        <input name="creator" value="{{file.author}}">
+    </div>
+
+    <div class="field">
+        <label for="description">Description:<br>
+        <span class="sub">"Use of (Super) ZZT engine" added automatically</span>
+        </label>
+        <textarea name="description"></textarea>
+    </div>
+
+    <input type="submit" name="mirror" value="Mirror on Archive.org">
+</form>
+</section>
+{% endblock %}
