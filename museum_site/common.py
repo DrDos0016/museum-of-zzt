@@ -23,6 +23,7 @@ import sys
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMP_PATH = os.path.join(SITE_ROOT, "tmp")
+BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
 TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25
@@ -34,6 +35,7 @@ PYTHON_VERSION = sys.version
 DJANGO_VERSION = VERSION
 START_TIME = datetime.utcnow()
 CSS_TS = START_TIME.strftime("%m%d%H%M%S")
+ARCHIVE_COLLECTION = "open_source_software" if not DEBUG else "test_collection"
 
 EMAIL_ADDRESS = "doctordos@gmail.com"
 

@@ -6,6 +6,8 @@ from django.shortcuts import render
 from .common import *
 from zipfile import ZipFile
 
+from internetarchive import upload
+
 try:
     import zookeeper
     HAS_ZOOKEEPER = True
@@ -15,7 +17,7 @@ except ImportError:
 
 @staff_member_required
 def mirror(request, pk):
-    """ Returns page to generate and set a file's screenshot """
+    """ Returns page to publish file on Archive.org """
     f = File.objects.get(pk=pk)
     data = {
         "title": "Archive.org Mirror",
@@ -24,15 +26,75 @@ def mirror(request, pk):
         "packages": PACKAGE_PROFILES
     }
 
-    if request.GET.get("package"):
-        data["package"] = PACKAGE_PROFILES[int(request.GET["package"])]
-        zip = zipfile.ZipFile(os.path.join(SITE_ROOT, f.download_url()[1:]))
-        file_list = zip.namelist()
-        file_list.sort(key=str.lower)
-        data["file_list"] = file_list
+    package = int(request.GET.get("package", 0))
+    data["package"] = PACKAGE_PROFILES[package]
+    zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, f.download_url()[1:]))
+    file_list = zip_file.namelist()
+    file_list.sort(key=str.lower)
+    data["file_list"] = file_list
 
         # SuperZZT games, ZZT games
         # by Jerry Hsu & Jesse Chang
+
+    if request.POST.get("mirror"):
+        package = PACKAGE_PROFILES[int(request.POST.get("package", 0))]
+
+        # Copy the zip
+        zip_name = package["prefix"] + f.filename
+        shutil.copy(
+            SITE_ROOT + f.download_url(),
+            os.path.join(TEMP_PATH, zip_name)
+        )
+
+        # Open the WIP zip
+        with ZipFile(os.path.join(TEMP_PATH, zip_name), "a") as z:
+            # Insert the base files
+            to_add = glob.glob(
+                os.path.join(BASE_PATH, package["directory"], "*")
+            )
+            for a in to_add:
+                z.write(a, arcname=os.path.basename(a))
+
+            # Create ZZT.CFG if needed
+            if package["use_cfg"]:
+                config_content = request.POST.get("launch")[:-4].upper()  # Remove .ZZT extension
+                if package["registered"]:
+                    config_content += "\r\nREGISTERED"
+                z.writestr("ZZT.CFG", config_content)
+
+        # Zip file is completed, prepare the upload
+        meta = {
+            "title": request.POST.get("title"),
+            "mediatype": "software",
+            "collection": ARCHIVE_COLLECTION,
+            "emulator": "dosbox",
+            "emulator_ext": "zip",
+            "emulator_start": package["executable"] + " " + request.POST.get("launch")[:-4].upper(),
+            "year": str(f.release_date)[:4],
+            "subject": [package["engine"]] + f.genre.split("/"),
+            "creator": f.author.split("/"),
+            "description": "World created using the {} engine.\n\n{}".format(package["engine"], request.POST.get("description", ""))
+        }
+
+        print("Uploading to Internet Archive...")
+        r = upload(
+            package["prefix"] + f.filename[:-4],
+            files=[os.path.join(TEMP_PATH, zip_name)],
+            metadata=meta
+        )
+
+        if r[0].status_code == 200:
+            data["status"] = "SUCCESS"
+            f.archive_name = package["prefix"] + f.filename[:-4]
+            f.save()
+            print("https://archive.org/details/" + f.archive_name)
+            os.remove(os.path.join(TEMP_PATH, zip_name))
+        else:
+            data["status"] = "FAILURE"
+            print(r)
+
+        data["archive_resp"] = r
+        print(r[0])
 
 
     return render(request, "museum_site/tools/mirror.html", data)
