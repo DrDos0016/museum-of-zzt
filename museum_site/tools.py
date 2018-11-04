@@ -76,7 +76,6 @@ def mirror(request, pk):
             "description": "World created using the {} engine.\n\n{}".format(package["engine"], request.POST.get("description", ""))
         }
 
-        print("Uploading to Internet Archive...")
         r = upload(
             package["prefix"] + f.filename[:-4],
             files=[os.path.join(TEMP_PATH, zip_name)],
@@ -89,15 +88,11 @@ def mirror(request, pk):
             data["status"] = "SUCCESS"
             f.archive_name = package["prefix"] + f.filename[:-4]
             f.save()
-            print("https://archive.org/details/" + f.archive_name)
             os.remove(os.path.join(TEMP_PATH, zip_name))
         else:
             data["status"] = "FAILURE"
-            print(r)
 
         data["archive_resp"] = r
-        print(r[0])
-
 
     return render(request, "museum_site/tools/mirror.html", data)
 

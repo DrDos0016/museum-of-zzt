@@ -1,6 +1,20 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
 
+{% block style %}
+<style>
+#tool-info
+{
+    font-family:monospace;font-size:12pt;
+}
+
+#tool-info td
+{
+    padding:0.25em;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <section id="content" class="col block">
 <h1>Tool List - {{file}}</h1>
@@ -15,6 +29,81 @@
     <li><a href="{% url 'mirror' file.id %}">Archive.org Mirror</a> ({{file.archive_name}})</li>
     {% endif %}
 </ul>
-<div>Details:</div> {% for detail in file.details.all %}{{detail.detail}}{% if not forloop.last %}, {% endif %}{% endfor %}<br>
+
+{% include "museum_site/blocks/file_block.html" %}
+
+<div><b>Details:</b></div> {% for detail in file.details.all %}{{detail.detail}}{% if not forloop.last %}, {% endif %}{% endfor %}<br>
+
+<div><b>File Info:</b></div>
+<table class="dataTable" id="tool-info">
+    <tr>
+        <td>Letter</td>
+        <td>{{file.letter}}</td>
+    </tr>
+    <tr>
+        <td>Filename</td>
+        <td>{{file.filename}}</td>
+    </tr>
+    <tr>
+        <td>Title</td>
+        <td>{{file.title}}</td>
+    </tr>
+    <tr>
+        <td>Sort Title</td>
+        <td>{{file.sort_title}}</td>
+    </tr>
+    <tr>
+        <td>Author</td>
+        <td>{{file.author}}</td>
+    </tr>
+    <tr>
+        <td>Size</td>
+        <td>{{file.size}}</td>
+    </tr>
+    <tr>
+        <td>Genre</td>
+        <td>{{file.genre}}</td>
+    </tr>
+    <tr>
+        <td>Release Date / Source</td>
+        <td>{{file.release_date}} ({{file.release_source}})</td>
+    </tr>
+    <tr>
+        <td>Release Source</td>
+        <td>{{file.release_source}}</td>
+    </tr>
+    <tr>
+        <td>Screenshot</td>
+        <td>{{file.screenshot}}</td>
+    </tr>
+    <tr>
+        <td>Company</td>
+        <td>{{file.company}}</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>{{file.description}}</td>
+    </tr>
+    <tr>
+        <td>Review Count / Rating</td>
+        <td>{{file.review_count}} / {{file.rating}}</td>
+    </tr>
+    <tr>
+        <td>Article Count</td>
+        <td>{{file.article_count}}</td>
+    </tr>
+    <tr>
+        <td>Checksum</td>
+        <td>{{file.checksum}}</td>
+    </tr>
+    <tr>
+        <td>Playable/Total Boards</td>
+        <td>{{file.playable_boards}} / {{file.total_boards}}</td>
+    </tr>
+    <tr>
+        <td>Archive Name</td>
+        <td>{{file.screenshot}}</td>
+    </tr>
+</table>
 </section>
 {% endblock %}
