@@ -34,6 +34,7 @@ museum_site/static/data/mass_dl.json
 museum_site/static/data/base/*
 museum_site/static/data/24hozzt-raw-scores
 .htpasswd
+ia.cfg
 manage.py
 patron_plans.txt
 

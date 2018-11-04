@@ -80,7 +80,9 @@ def mirror(request, pk):
         r = upload(
             package["prefix"] + f.filename[:-4],
             files=[os.path.join(TEMP_PATH, zip_name)],
-            metadata=meta
+            metadata=meta,
+            access_key=IA_ACCESS,
+            secret_key=IA_SECRET,
         )
 
         if r[0].status_code == 200:

@@ -37,6 +37,16 @@ START_TIME = datetime.utcnow()
 CSS_TS = START_TIME.strftime("%m%d%H%M%S")
 ARCHIVE_COLLECTION = "open_source_software" if not DEBUG else "test_collection"
 
+if os.path.isfile(os.path.join(SITE_ROOT, "ia.cfg")):
+    with open(os.path.join(SITE_ROOT, "ia.cfg")) as fh:
+        IA_SUPPORT = True
+        IA_ACCESS = fh.readline().strip()
+        IA_SECRET = fh.readline().strip()
+else:
+    IA_SUPPORT = False
+    IA_ACCESS = None
+    IA_SECRET = None
+
 EMAIL_ADDRESS = "doctordos@gmail.com"
 
 print("MUSEUM OF ZZT STARTUP")
