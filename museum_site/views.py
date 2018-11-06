@@ -502,6 +502,7 @@ def search(request):
         data["q"] = request.GET["q"]
         qs = File.objects.filter(
             Q(title__icontains=q) |
+            Q(aliases__alias__icontains=q) |
             Q(author__icontains=q) |
             Q(filename__icontains=q) |
             Q(company__icontains=q)
@@ -698,7 +699,7 @@ def uploaded_redir(request, filename):
 def debug(request):
     data = {"title": "DEBUG PAGE"}
 
-    results = File.objects.filter(author="Dr. Dos")
+    #results = File.objects.filter(Q(author="Dr. Dos") | Q(review))
     print("Found", len(results), "by me")
     data["results"] = results
 

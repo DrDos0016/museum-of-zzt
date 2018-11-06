@@ -189,6 +189,7 @@ class File(models.Model):
     playable_boards -- Number of boards in file that can be accessed in play
     total_boards    -- Number of boards in file that exist period
     archive_name    -- name on archive.org (ex: zzt_burgerj)
+    aliases         -- Link to Alias objects
     """
 
     letter = models.CharField(max_length=1, db_index=True)
@@ -229,6 +230,10 @@ class File(models.Model):
     playable_boards = models.IntegerField(null=True, blank=True, default=None, help_text="Set automatically. Do not adjust.")
     total_boards = models.IntegerField(null=True, blank=True, default=None, help_text="Set automatically. Do not adjust.")
     archive_name = models.CharField(max_length=80, default="", blank=True, help_text="ex: zzt_burgerj")
+
+    aliases = models.ManyToManyField("Alias", default=None, blank=True)
+    publish_date = models.DateField(auto_now_add=True, db_index=True)
+    last_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["sort_title", "letter"]
@@ -441,7 +446,6 @@ class File(models.Model):
 
         # SCREENSHOT -- Currently manual
         # DETAILS -- Currently manual
-        print("400 combo!")
         # Check for a duplicate filename
         exists = File.objects.filter(filename=self.filename).exists()
         if exists:
@@ -454,7 +458,6 @@ class File(models.Model):
             for chunk in request.FILES["file"].chunks():
                 fh.write(chunk)
 
-        print("Chunky mcGood")
         # md5 checksum
         resp = subprocess.run(["md5sum", file_path], stdout=subprocess.PIPE)
         md5 = resp.stdout[:32].decode("utf-8")
@@ -612,3 +615,15 @@ class Review(models.Model):
         self.ip = request.META["REMOTE_ADDR"]
 
         return True
+
+
+class Alias(models.Model):
+    """ Alias object for File aliases
+    """
+    alias = models.CharField(max_length=80)
+
+    class Meta:
+        ordering = ["alias"]
+
+    def __str__(self):
+        return self.alias
