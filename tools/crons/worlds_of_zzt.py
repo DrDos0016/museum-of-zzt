@@ -35,6 +35,14 @@ def main():
     QUEUE = os.path.join(CRON_ROOT, "woz_queue.txt")
     APRIL = True if datetime.now().strftime("%m-%d") == "04-01" else False
 
+    BLACKLISTED_FILES = [
+        951,  # G**g J*****n And STK Revealed
+        1779,  # 1**9 T*o
+        1577,  # 9**1: A Z*T M******l
+        1927,  # N**e E*****n
+        1811,  # B*N L***N!!
+    ]
+
     BOARD_TITLE_BLACKLIST = [
         "!;MadTom's ColorKit", "!;MadTom's ZZToolKit", "!The NOC Color Kit", "$ **.**Tripping Color Kit**.**", "$- == (( ( paramach ) )) == -", "$ K Z T - Color Kit",
         "$ ZZT Palette Plus v1.1", "$-( Blend Box )-", "$(( ( Paranoid Machinations ) ))", "$() Dude Scott This is Josh ()", "$({[/-=+Colors R' Us 2.25 +=-\]})",
@@ -123,7 +131,12 @@ def main():
         # - Zip must have a ZZT World in it and be published
         # - Zip must not have modified graphics
         qs = File.objects.filter(details__in=[DETAIL_ZZT]).exclude(details__in=[DETAIL_UPLOADED, DETAIL_GFX]).order_by("?")
-        data = qs[0]
+
+        # Filter out blacklisted files
+        for file_obj in qs:
+            data = file_obj
+            if data.id not in BLACKLISTED_FILES:
+                break
 
         # Pull related articles in preparation of linking them later
         related_articles = data.articles.filter(published=True).order_by("-date")
@@ -264,6 +277,7 @@ def main():
             twitter_post += " ({year})"
         if data.company:
             twitter_post += "\nPublished by: {company}"
+        twitter_post += "\n[{zzt_file}] - \"{board_title}\""
         if data.archive_name:
             twitter_post += "\nhttps://archive.org/details/{archive_name}"
 
@@ -271,11 +285,12 @@ def main():
             file_url=data.file_url(),
             zzt_file=selected,
             board_idx=board_num,
+            board_title=z.boards[board_num].title,
             title=data.title,
             author=data.author,
             year=str(data.release_date)[:4],
             company=data.company,
-            archive_name=data.archive_name
+            archive_name=data.archive_name,
         )
 
 
