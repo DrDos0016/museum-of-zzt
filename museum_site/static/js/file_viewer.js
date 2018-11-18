@@ -243,9 +243,9 @@ function pull_file()
             format = "zzt";
             ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
             ENGINE = engines[format];
-            console.log("BRD PARSE");
             world = new World(data);
             world.brd = true;
+            world.format = format;
             var board = parse_board(world);
             world.boards.push(board);
             render_board();
@@ -340,7 +340,6 @@ function load_local_file()
         // Determine engine
         var ext = file["name"].slice(-3).toLowerCase();
         var format = (ext != "szt") ? "zzt" : "szt";
-        console.log("FORMAT", format, ext)
         ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
         ENGINE = engines[format];
 
@@ -456,6 +455,7 @@ function parse_world(type, data)
     // End Parsing World information
 
     // Parse Boards
+    console.log("GONNA PARSE THE BOARDS");
     world.idx = ENGINE.first_board_index;
     for (var x = 0; x <= world.board_count; x++)
     {
@@ -734,8 +734,10 @@ function render_board()
         if (idx % 2 == 0)
             output += `<tr>`;
         output += `<td class='exit'>${arrows[idx]}</td>`;
-        if (board[props[idx]] != 0)
+        if (board[props[idx]] != 0 && board[props[idx]] != null)
+        {
             output += `<td><a class="board-link" data-board="${board[props[idx]]}" href="?file=${loaded_file}&board=${board[props[idx]]}">${board[props[idx]]}. ${world.boards[board[props[idx]]].title}</a></td>`;
+        }
         else
             output += `<td>None</td>`;
         if (idx % 2 != 0)
@@ -764,18 +766,15 @@ function draw_board()
     if (board_number == null)
         return false;
 
-    console.log("DRAWING A BOARD", board_number);
     var board = world.boards[board_number];
 
     renderer.render(board);
-    console.log("Rendered.");
     $("#world-canvas").click(stat_info);
     $("#world-canvas").dblclick({"board": board}, passage_travel);
 
     // Click coordinates in hash
     if (hash_coords)
     {
-        console.log("Auto clicking element...", hash_coords);
         var sliced = hash_coords.slice(1);
         var split = sliced.split(",");
         var e = {"data":{"x":split[0], "y":split[1]}};
@@ -1130,7 +1129,6 @@ function load_charset()
             selected_charset = "szzt-cp437.png";
         }
 
-        console.log("I'm hitting load charset?", selected_charset);
         CHARSET_NAME = selected_charset;
         CHARSET_IMAGE = new Image();
         CHARSET_IMAGE.src = "/static/images/charsets/"+CHARSET_NAME;
@@ -1179,7 +1177,13 @@ function syntax_highlight(oop)
             oop[idx] = `<span class='name'>@</span><span class='yellow'>${oop[idx].slice(1)}</span>`;
         else if (oop[idx][0] && oop[idx][0] == "#")
         {
-            oop[idx] = `<span class='command'>#</span>${oop[idx].slice(1)}`;
+            // Special case for #char
+            if (oop[idx].indexOf("#char") == 0)
+            {
+                oop[idx] = `<span class='command ch'>#</span>${oop[idx].slice(1, 6)}<span class="char" title="${int_to_char(oop[idx].slice(6))}">${oop[idx].slice(6)}</span>`;
+            }
+            else
+                oop[idx] = `<span class='command'>#</span>${oop[idx].slice(1)}`;
         }
         else if (oop[idx][0] && oop[idx][0] == "/")
         {
@@ -1214,7 +1218,6 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
 function render_stat_list()
 {
-    console.log("RENDERING STATS")
     var board = world.boards[board_number];
     var stat_list = "";
 
@@ -1503,4 +1506,9 @@ function bind_search()
     $("#code-search-submit").click(code_search);
     $("#code-search-reset").click(code_search_reset);
     return true;
+}
+
+function int_to_char(number)
+{
+    return String.fromCharCode(CP437_TO_UNICODE[number]);
 }

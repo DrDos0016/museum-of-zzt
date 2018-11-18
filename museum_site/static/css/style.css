@@ -122,7 +122,7 @@ body
 
 .img-set img
 {
-    border:1px solid #000;
+    border:1px solid #AAA;
 }
 
 .img-c
@@ -1153,6 +1153,11 @@ code .yellow, code .go, code .try
 code .orange, code .label
 {
     color:#cb4b16;
+}
+
+code .char:hover
+{
+    cursor:help;
 }
 
 /* End ZZT-OOP Syntax */
