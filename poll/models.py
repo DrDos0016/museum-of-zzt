@@ -41,6 +41,10 @@ class Vote(models.Model):
     email       = models.EmailField()
     option      = models.ForeignKey("Option")
 
+    def __str__(self):
+        formatted = "Poll #{poll} - Vote {option} by {email}".format(poll=self.poll_id, email=self.email, option=self.option_id)
+        return formatted
+
 class Option(models.Model):
     summary     = models.CharField(max_length=300)
     backer      = models.BooleanField(default=False)
