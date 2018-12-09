@@ -232,8 +232,9 @@ class File(models.Model):
     archive_name = models.CharField(max_length=80, default="", blank=True, help_text="ex: zzt_burgerj")
 
     aliases = models.ManyToManyField("Alias", default=None, blank=True)
-    publish_date = models.DateField(auto_now_add=True, db_index=True)
-    last_modified = models.DateTimeField(auto_now=True)
+    upload_date = models.DateTimeField(null=True, auto_now_add=True, db_index=True, help_text="Date File was uploaded to the Museum")
+    publish_date = models.DateTimeField(null=True, default=None, db_index=True, help_text="Date File was published on the Museum")
+    last_modified = models.DateTimeField(auto_now=True, help_text="Date DB entry was last modified")
 
     class Meta:
         ordering = ["sort_title", "letter"]
@@ -537,7 +538,7 @@ class File(models.Model):
                     to_explore.append(z.boards[idx].board_west)
 
                 # Get the connected boards via passages
-                for stat in z.boards[idx].stat_data:
+                for stat in z.boards[idx].stats:
                     if z.boards[idx].get_element((stat.x, stat.y)).name == "Passage":
                         # print("Found a passage at", stat.x, stat.y)
                         if stat.param3 not in to_explore:

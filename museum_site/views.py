@@ -335,7 +335,7 @@ def index(request):
 
     # Obtain latest content
     data["articles"] = Article.objects.all().order_by("-id")[:10]
-    data["files"] = File.objects.all().exclude(details__id__in=[18]).order_by("-id")[:10]  # TODO: Unhardcode
+    data["files"] = File.objects.all().exclude(details__id__in=[18]).order_by("-publish_date", "-id")[:10]  # TODO: Unhardcode
     data["reviews"] = Review.objects.all().order_by("-id")[:10]
 
     return render(request, "museum_site/index.html", data)
