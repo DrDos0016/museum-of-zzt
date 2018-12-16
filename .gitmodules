@@ -1,3 +1,6 @@
 [submodule "museum_site/static/cerulean86"]
 	path = museum_site/static/cerulean86
 	url = https://github.com/asiekierka/cerulean86-z2
+[submodule "zookeeper"]
+	path = zookeeper
+	url = https://github.com/DrDos0016/zookeeper
