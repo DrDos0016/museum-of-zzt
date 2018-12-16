@@ -560,6 +560,9 @@ class File(models.Model):
             self.total_boards += len(z.boards)
         return True
 
+    def calculate_size(self):
+        self.size = os.path.getsize(self.phys_path()) // 1024
+
 
 class Detail(models.Model):
     detail = models.CharField(max_length=20)
