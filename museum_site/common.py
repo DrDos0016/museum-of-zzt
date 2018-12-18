@@ -218,7 +218,8 @@ SORT_CODES = {
     "company": ["company", "sort_title"],
     "id": ["-id"],
     "rating": ["-rating", "sort_title"],
-    "release": ["release_date", "sort_title"]
+    "release": ["release_date", "sort_title"],
+    "published": ["-publish_date", "-id"]
 }
 
 ADV_SEARCH_DEFAULTS = [

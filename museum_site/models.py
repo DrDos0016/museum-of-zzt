@@ -444,6 +444,7 @@ class File(models.Model):
         self.company = request.POST.get("company", "")
         self.description = request.POST.get("desc", "")
         self.genre = "/".join(request.POST.getlist("genre"))
+        self.publish_date = None
 
         # SCREENSHOT -- Currently manual
         # DETAILS -- Currently manual

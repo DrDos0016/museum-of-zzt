@@ -113,7 +113,7 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
 
     # Handle "new additions"
     if request.path == "/new":
-        sort = SORT_CODES["id"]
+        sort = SORT_CODES["published"]
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
@@ -678,7 +678,7 @@ def upload(request):
             return render(request, "museum_site/upload.html", data)
 
         try:
-            upload.full_clean()
+            upload.full_clean(exclude=["publish_date"])
             upload.save(new_upload=True)
 
             # Flag it as an upload
