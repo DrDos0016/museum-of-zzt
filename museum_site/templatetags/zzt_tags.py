@@ -34,10 +34,14 @@ def message(parser, token):
 
 
 class ZztMessage(template.Node):
-    def __init__(self, nodelist, color="auto"):
+    def __init__(self, nodelist, raw_args=""):
+        args = raw_args.split("|")
+        color = args[0]
+        scrolling = args[1] if len(args) > 1 else False
         self.nodelist = nodelist
         self.color_list = ["yellow", "purple", "red", "cyan", "green", "blue", "white",]
         self.color = color
+        self.scrolling = scrolling
         if self.color == "auto":
             self.active_color = self.color_list[0]
         else:
@@ -57,10 +61,17 @@ class ZztMessage(template.Node):
         raw = self.nodelist.render(context)
         lines = raw.split("\n")
 
-        output = "<div class='zzt-txt-message'>\n"
+        if self.scrolling:
+            output = "<div class='zzt-txt-message scrolling'>\n"
+        else:
+            output = "<div class='zzt-txt-message'>\n"
 
         if lines[-1] == "":
             lines.pop()
+
+        print(lines[0])
+        if lines[0].lstrip() == "":
+            lines = lines[1:]
 
         for line in lines:
             output += "<span class='{}'>{}</span><br>".format(self.active_color, line)

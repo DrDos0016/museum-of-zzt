@@ -139,6 +139,12 @@ img.zzt-cheat
     margin:0.25em auto 0.25em auto;
 }
 
+.zzt-txt-message.scrolling
+{
+    max-height:15em;
+    overflow:auto;
+}
+
 .zzt-txt-message .blue { color:#5555FF; }
 .zzt-txt-message .green { color:#55FF55; }
 .zzt-txt-message .cyan { color:#55FFFF; }
