@@ -42,7 +42,6 @@ class ZztMessage(template.Node):
             self.active_color = self.color_list[0]
         else:
             self.active_color = color
-        print("ACTIVE:", self.active_color)
         self.color_idx = self.color_list.index(self.active_color)
 
     def advance_color(self):

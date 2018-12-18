@@ -109,7 +109,6 @@ class Commentary(template.Node):
         self.nodelist = nodelist
 
     def render(self, context):
-        print(self.nodelist)
         material_nodes = self.nodelist[:-1]
         commentary_node = self.nodelist[-1]
 
