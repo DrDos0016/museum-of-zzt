@@ -373,6 +373,13 @@ class File(models.Model):
     def phys_path(self):
         return os.path.join(SITE_ROOT + self.download_url())
 
+    def screenshot_url(self):
+        if self.screenshot:
+            return "images/screenshots/{}/{}".format(self.letter, self.screenshot)
+        else:
+            return "images/screenshots/no_screenshot.png"
+
+
     def article_url(self):
         return "/article/" + self.letter + "/" + self.filename
 

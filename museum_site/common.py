@@ -24,6 +24,7 @@ import sys
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMP_PATH = os.path.join(SITE_ROOT, "tmp")
 BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
+STATIC_PATH =  os.path.join(SITE_ROOT, "museum_site", "static")
 TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25
@@ -54,6 +55,12 @@ print(START_TIME)
 print("Site Root:", SITE_ROOT)
 print("Python:", PYTHON_VERSION)
 print("Django:", DJANGO_VERSION)
+
+LETTERS = (
+    "1", "a", "b", "c", "d", "e", "f", "g", "h",
+    "i", "j", "k", "l", "m", "n", "o", "p", "q",
+    "r", "s", "t", "u", "v", "w", "x", "y", "z"
+)
 
 CHARSET_LIST = (
     ("cp437.png", "Code Page 437 -- RECOMMENDED"),
