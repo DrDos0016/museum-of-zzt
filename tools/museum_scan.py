@@ -14,6 +14,9 @@ from museum_site.models import *
 from museum_site.common import *
 
 
+TEST_ARCHIVE_LINKS = True if "iatest" in sys.argv else False
+
+
 def main():
     files = File.objects.all().order_by("-id")
     for f in files:
@@ -118,22 +121,19 @@ def field_check(f):
     if (DETAIL_ZZT in detail_list or DETAIL_SZZT in detail_list) and f.total_boards is None:
         issues["warnings"].append("File has no total boards value but is marked as ZZT/Super ZZT")
 
-    if f.archive_name == "" and DETAIL_LOST not in detail_list:
+    if f.archive_name == "" and (DETAIL_LOST not in detail_list and DETAIL_UPLOADED not in detail_list):
         issues["warnings"].append("File has no archive.org mirror")
 
     # Test functioning archive.org link
-    """
-    if f.archive_name:
+    if f.archive_name and TEST_ARCHIVE_LINKS:
         url = "https://archive.org/embed/" + f.archive_name
         resp = requests.get(url)
         if resp.status_code != 200:
-            issues["warnings"].append("{} returned status {}", print(url, resp.status_code)
-    """
+            issues["warnings"].append("{} returned status {}".format(url, resp.status_code))
 
     # Zip related
     return issues
 
 
 if __name__ == "__main__":
-
     main()
