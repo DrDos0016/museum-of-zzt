@@ -134,6 +134,18 @@ def publish(request, pk):
 
 
 @staff_member_required
+def scan(request):
+    """ Returns page with latest Museum scan results"""
+    data = {"title": "Museum Scan"}
+    try:
+        with open(os.path.join(STATIC_PATH, "data", "scan.log")) as fh:
+            data["scan"] = fh.read()
+    except FileNotFoundError:
+        data["scan"] = ""
+    return render(request, "museum_site/tools/scan.html", data)
+
+
+@staff_member_required
 def tool_list(request, pk):
     """ Returns page to generate and set a file's screenshot """
     data = {
@@ -178,17 +190,14 @@ def set_screenshot(request, pk):
         data["board_num"] = int(request.GET["board"])
 
         if data["board_num"] != 0:
-            z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp") # TODO: This will need an update when Zookeeper gets updated
+            z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp")
         else:
-            z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp", title_screen=True) # TODO: This will need an update when Zookeeper gets updated
+            z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp", title_screen=True)
         data["show_preview"] = True
 
     if request.POST.get("save"):
-        print("SAVING")
         src = SITE_ROOT + "/museum_site/static/data/temp.png"
         dst =  SITE_ROOT + "/museum_site/static/images/screenshots/" + file.letter + "/" + file.filename[:-4] + ".png"
-        print(src)
-        print(dst)
         shutil.copyfile(src, dst)
 
         file.screenshot = file.filename[:-4] + ".png"
