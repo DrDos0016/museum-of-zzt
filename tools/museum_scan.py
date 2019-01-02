@@ -23,11 +23,13 @@ def main():
         issues = field_check(f)
 
         if len(issues["warnings"]) != 0 or len(issues["errors"]) != 0:
-            print(f)
+            print("<hr><b><a href='{}'>{}</a> - <a href='/admin/museum_site/file/{}/change/'>Edit</a> - <a href='/tools/{}'>Tools</a></b>\n".format(f.file_url(), f, f.id, f.id))
+            print("<ul>\n")
             for w in issues["warnings"]:
-                print("\t-", w)
+                print("<li class='warning'>{}</li>\n".format(w))
             for e in issues["errors"]:
-                print("\t!", e)
+                print("<li class='error'>{}</li>\n".format(e))
+            print("</ul>\n")
 
 
     return True
@@ -111,7 +113,7 @@ def field_check(f):
         pass
 
     if md5 and f.checksum != md5:
-        issues["warnings"].append("Checksum in DB does not match calculated checksum: {}/{}".format(f.checksum, md5))
+        issues["warnings"].append("Checksum in DB does not match calculated checksum:<br><div class='mono'>{}</div><div class='mono'>{}</div>".format(f.checksum, md5))
 
 
     # Board counts

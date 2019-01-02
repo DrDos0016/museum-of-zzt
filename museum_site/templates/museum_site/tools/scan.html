@@ -1,0 +1,24 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+#tool-info
+{
+    font-family:monospace;font-size:12pt;
+}
+
+#tool-info td
+{
+    padding:0.25em;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Museum Scan</h1>
+
+{{scan|safe}}
+</section>
+{% endblock %}
