@@ -1,3 +1,4 @@
+import codecs
 import os
 import shutil
 
@@ -138,7 +139,7 @@ def scan(request):
     """ Returns page with latest Museum scan results"""
     data = {"title": "Museum Scan"}
     try:
-        with open(os.path.join(STATIC_PATH, "data", "scan.log")) as fh:
+        with codecs.open(os.path.join(STATIC_PATH, "data", "scan.log"), "r", "utf-8") as fh:
             data["scan"] = fh.read()
     except FileNotFoundError:
         data["scan"] = ""
