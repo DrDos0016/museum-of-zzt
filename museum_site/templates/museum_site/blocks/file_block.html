@@ -1,9 +1,7 @@
 {% load staticfiles %}
 <div class="file-block" id="{{file.filename}}" data-pk="{{file.id}}">
     <div class="file-screen">
-        <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
-        class="titlescreen"
-        alt="{{file.screenshot}}">
+        <img src="{% static file.screenshot_url %}" class="titlescreen" alt="{{file.screenshot}}">
     </div>
     <div class="file-info">
         <h1><a href="{{file.file_url}}">{{file.title|default:"NO NAME"}}</a></h1>
