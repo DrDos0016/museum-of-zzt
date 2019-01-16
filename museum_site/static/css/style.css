@@ -999,7 +999,7 @@ div.file-meta + .review
     padding-bottom:0.25em;
 }
 
-.zzt-img + .side-commentary, .zzt-scroll + .side-commentary
+.zzt-img + .side-commentary, .zzt-scroll + .side-commentary, p + .side-commentary
 {
     margin-top:0.25em;
     padding-top:0.25em;

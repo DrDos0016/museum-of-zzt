@@ -29,26 +29,26 @@ def mirror(request, pk):
 
     package = int(request.GET.get("package", 0))
     data["package"] = PACKAGE_PROFILES[package]
+
     zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, f.download_url()[1:]))
     file_list = zip_file.namelist()
     file_list.sort(key=str.lower)
     data["file_list"] = file_list
 
-        # SuperZZT games, ZZT games
-        # by Jerry Hsu & Jesse Chang
-
     if request.POST.get("mirror"):
-        package = PACKAGE_PROFILES[int(request.POST.get("package", 0))]
+        if request.POST.get("package") != "NONE":
+            package = PACKAGE_PROFILES[int(request.POST.get("package", 0))]
 
-        # Copy the zip
-        zip_name = package["prefix"] + f.filename
-        shutil.copy(
-            SITE_ROOT + f.download_url(),
-            os.path.join(TEMP_PATH, zip_name)
-        )
+            # Copy the base package zip
+            zip_name = package["prefix"] + f.filename
+            shutil.copy(
+                SITE_ROOT + f.download_url(),
+                os.path.join(TEMP_PATH, zip_name)
+            )
+            temp_zip = os.path.join(TEMP_PATH, zip_name)
 
         # Open the WIP zip
-        with ZipFile(os.path.join(TEMP_PATH, zip_name), "a") as z:
+        with ZipFile(temp_zip, "a") as z:
             # Insert the base files
             to_add = glob.glob(
                 os.path.join(BASE_PATH, package["directory"], "*")
@@ -57,11 +57,14 @@ def mirror(request, pk):
                 z.write(a, arcname=os.path.basename(a))
 
             # Create ZZT.CFG if needed
-            if package["use_cfg"]:
+            if package.get("use_cfg"):
                 config_content = request.POST.get("launch")[:-4].upper()  # Remove .ZZT extension
                 if package["registered"]:
                     config_content += "\r\nREGISTERED"
                 z.writestr("ZZT.CFG", config_content)
+
+        # Create description
+        description = "{}\n\n{}".format(package["auto_desc"], request.POST.get("description", ""))
 
         # Zip file is completed, prepare the upload
         meta = {
@@ -70,15 +73,20 @@ def mirror(request, pk):
             "collection": ARCHIVE_COLLECTION,
             "emulator": "dosbox",
             "emulator_ext": "zip",
-            "emulator_start": package["executable"] + " " + request.POST.get("launch")[:-4].upper(),
+            "emulator_start": package["executable"] + " " + request.POST.get("launch", "").upper(),
             "year": str(f.release_date)[:4],
             "subject": [package["engine"]] + f.genre.split("/"),
             "creator": f.author.split("/"),
-            "description": "World created using the {} engine.\n\n{}".format(package["engine"], request.POST.get("description", ""))
+            "description": description
         }
 
+        if DEBUG:
+            upload_name = "test-" + package["prefix"] + f.filename[:-4]
+        else:
+            upload_name = package["prefix"] + f.filename[:-4]
+
         r = upload(
-            package["prefix"] + f.filename[:-4],
+            upload_name,
             files=[os.path.join(TEMP_PATH, zip_name)],
             metadata=meta,
             access_key=IA_ACCESS,

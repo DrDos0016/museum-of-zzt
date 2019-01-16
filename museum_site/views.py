@@ -708,7 +708,11 @@ def debug(request):
 
 def debug_article(request):
     data = {"id": 0}
-    with open("/var/projects/museum/private/" + request.GET.get("file")) as fh:
+    filepath = "/var/projects/museum/private/" + request.GET.get("file")
+    if not os.path.isfile(filepath):
+        filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")
+
+    with open(filepath) as fh:
         article = Article.objects.get(pk=1)
         article.title = "TEST ARTICLE"
         article.category = "TEST"
