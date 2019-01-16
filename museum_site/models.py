@@ -547,10 +547,15 @@ class File(models.Model):
 
                 # Get the connected boards via passages
                 for stat in z.boards[idx].stats:
-                    if z.boards[idx].get_element((stat.x, stat.y)).name == "Passage":
-                        # print("Found a passage at", stat.x, stat.y)
-                        if stat.param3 not in to_explore:
-                            to_explore.append(stat.param3)
+                    #print("ON BOARD IDX", idx)
+                    try:
+                        stat_name = z.boards[idx].get_element((stat.x, stat.y)).name
+                        if stat_name == "Passage":
+                            print("Found a passage at", stat.x, stat.y)
+                            if stat.param3 not in to_explore:
+                                to_explore.append(stat.param3)
+                    except IndexError:  # This is currently thrown on corrupt boards in Zookeeper
+                        continue
 
             # Title screen always counts (but don't count it twice)
             if 0 not in to_explore:
