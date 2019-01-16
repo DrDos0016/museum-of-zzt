@@ -374,8 +374,11 @@ class File(models.Model):
         return os.path.join(SITE_ROOT + self.download_url())
 
     def screenshot_url(self):
-        if self.screenshot:
+        SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
+        if self.screenshot and self.screenshot not in SPECIAL_SCREENSHOTS:
             return "images/screenshots/{}/{}".format(self.letter, self.screenshot)
+        elif self.screenshot:  # Special case
+            return "images/screenshots/{}".format(self.screenshot)
         else:
             return "images/screenshots/no_screenshot.png"
 
@@ -551,7 +554,7 @@ class File(models.Model):
                     try:
                         stat_name = z.boards[idx].get_element((stat.x, stat.y)).name
                         if stat_name == "Passage":
-                            print("Found a passage at", stat.x, stat.y)
+                            # print("Found a passage at", stat.x, stat.y)
                             if stat.param3 not in to_explore:
                                 to_explore.append(stat.param3)
                     except IndexError:  # This is currently thrown on corrupt boards in Zookeeper
