@@ -31,6 +31,7 @@
             {% for package in packages %}
             <option value="{{ forloop.counter0 }}">{{package.name}}</option>
             {% endfor %}
+            <option value="NONE">None</option>
         </select>
     </div>
 
@@ -41,7 +42,7 @@
             {% for name in file_list %}
             <option>{{name}}</option>
             {% endfor %}
-            <option value="N/A">None</option>
+            <option value="">None</option>
         </select>
     </div>
 
@@ -77,6 +78,12 @@
     </div>
 
     <input type="submit" name="mirror" value="Mirror on Archive.org">
+
+    <div class="field">
+        <label for="creator">Custom Zip Name:<br>
+        </label>
+        <span class="sub">Archive.org required uploaded zip filenames to match: ^[a-zA-Z0-9][a-zA-Z0-9_.-]{4,100}$</span>
+        <input name="zip_name" value="">
 </form>
 </section>
 {% endblock %}

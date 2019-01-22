@@ -30,6 +30,12 @@ def mirror(request, pk):
     package = int(request.GET.get("package", 0))
     data["package"] = PACKAGE_PROFILES[package]
 
+    # Advanced settings
+    if request.POST.get("zip_name"):
+        zip_name = request.POST["zip_name"]
+    else:
+        zip_name = package["prefix"] + f.filename
+
     zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, f.download_url()[1:]))
     file_list = zip_file.namelist()
     file_list.sort(key=str.lower)
@@ -40,7 +46,6 @@ def mirror(request, pk):
             package = PACKAGE_PROFILES[int(request.POST.get("package", 0))]
 
             # Copy the base package zip
-            zip_name = package["prefix"] + f.filename
             shutil.copy(
                 SITE_ROOT + f.download_url(),
                 os.path.join(TEMP_PATH, zip_name)
