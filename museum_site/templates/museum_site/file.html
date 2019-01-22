@@ -40,13 +40,13 @@ $(document).ready(function (){
 
 <div id="file-area">
     <div id="details">
-    <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+    <img src="{% static file.screenshot_url %}" class="titlescreen">
     </div>
 
     <div id="lower-ui">
         <div id="file-list">
         <ul>
-        <li class="selected" data-img="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}">Title Screen</li>
+        <li class="selected" data-img="{% static file.screenshot_url %}">Preview Image</li>
         {% for file in files %}
         <li class="zip-content">{{file}}</li>
         {% endfor %}
