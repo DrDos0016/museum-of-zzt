@@ -34,7 +34,7 @@ def mirror(request, pk):
     if request.POST.get("zip_name"):
         zip_name = request.POST["zip_name"]
     else:
-        zip_name = package["prefix"] + f.filename
+        zip_name = None
 
     zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, f.download_url()[1:]))
     file_list = zip_file.namelist()
@@ -44,6 +44,8 @@ def mirror(request, pk):
     if request.POST.get("mirror"):
         if request.POST.get("package") != "NONE":
             package = PACKAGE_PROFILES[int(request.POST.get("package", 0))]
+            if zip_name is None:
+                zip_name = package["prefix"] + f.filename
 
             # Copy the base package zip
             shutil.copy(
