@@ -79,11 +79,13 @@
 
     <input type="submit" name="mirror" value="Mirror on Archive.org">
 
+    <hr>
+    <h2>Advanced</h2>
     <div class="field">
-        <label for="creator">Custom Zip Name:<br>
+        <label for="creator">Custom Upload Name:<br>
+        <span class="sub">4-100 chars. alphanumerics, underscores, periods, and hypens (ex: zzt_town)</span>
         </label>
-        <span class="sub">Archive.org required uploaded zip filenames to match: ^[a-zA-Z0-9][a-zA-Z0-9_.-]{4,100}$</span>
-        <input name="zip_name" value="">
+        <input name="upload_name" value="">
 </form>
 </section>
 {% endblock %}

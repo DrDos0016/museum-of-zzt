@@ -30,22 +30,23 @@ def mirror(request, pk):
     package = int(request.GET.get("package", 0))
     data["package"] = PACKAGE_PROFILES[package]
 
-    # Advanced settings
-    if request.POST.get("zip_name"):
-        zip_name = request.POST["zip_name"]
-    else:
-        zip_name = None
-
     zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, f.download_url()[1:]))
     file_list = zip_file.namelist()
     file_list.sort(key=str.lower)
     data["file_list"] = file_list
 
+    # Mirror the file
     if request.POST.get("mirror"):
         if request.POST.get("package") != "NONE":
             package = PACKAGE_PROFILES[int(request.POST.get("package", 0))]
-            if zip_name is None:
-                zip_name = package["prefix"] + f.filename
+
+            # Advanced settings
+            zip_name = package["prefix"] + f.filename
+
+            if request.POST.get("upload_name"):
+                upload_name = request.POST["upload_name"]
+            else:
+                upload_name = zip_name[:-4]
 
             # Copy the base package zip
             shutil.copy(
@@ -88,9 +89,7 @@ def mirror(request, pk):
         }
 
         if DEBUG:
-            upload_name = "test-" + package["prefix"] + f.filename[:-4]
-        else:
-            upload_name = package["prefix"] + f.filename[:-4]
+            upload_name = "test-" + upload_name
 
         r = upload(
             upload_name,
@@ -102,7 +101,7 @@ def mirror(request, pk):
 
         if r[0].status_code == 200:
             data["status"] = "SUCCESS"
-            f.archive_name = package["prefix"] + f.filename[:-4]
+            f.archive_name = upload_name
             f.save()
             os.remove(os.path.join(TEMP_PATH, zip_name))
         else:
