@@ -44,7 +44,6 @@ def strip(request, comic_account, id=None):
                        "nomad":971, "kaddar":981, "revvy":988, "zamros": 994,
                        "frost":1015, "ubgs": 1053}
         id = FIRST_COMIC[comic_account]
-    print(comic_account, id)
     data["comic"] = Comic.objects.get(comic_account=comic_account, pk=id)
     data["prev"] = Comic.objects.filter(comic_account=comic_account, pk__lt=id).order_by("-id")
     data["next"] = Comic.objects.filter(comic_account=comic_account, pk__gt=id).order_by("id")
