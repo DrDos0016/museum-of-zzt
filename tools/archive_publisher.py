@@ -92,7 +92,7 @@ def main():
             "year": str(f.release_date)[:4],
             "subject": ["zzt"] + f.genre.split("/"),
             "creator": f.author.split("/"),
-            "description": "Game created using the ZZT engine."
+            "description": "World created using the ZZT engine."
         }
 
         print("Uploading to Internet Archive...")
