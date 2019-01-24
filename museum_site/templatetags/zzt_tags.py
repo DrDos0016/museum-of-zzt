@@ -69,7 +69,6 @@ class ZztMessage(template.Node):
         if lines[-1] == "":
             lines.pop()
 
-        print(lines[0])
         if lines[0].lstrip() == "":
             lines = lines[1:]
 
