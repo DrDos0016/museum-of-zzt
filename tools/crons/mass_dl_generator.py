@@ -140,7 +140,7 @@ def main():
                 }
 
 
-            zf = zipfile.ZipFile("zzt_worlds_" + year + ".zip", "w")
+            zf = zipfile.ZipFile("/var/projects/museum/tools/crons/zzt_worlds_" + year + ".zip", "w")
             zip_year = year
             readme_name = "Museum of ZZT Collection - " + year + ".txt"
             file_count = 0
