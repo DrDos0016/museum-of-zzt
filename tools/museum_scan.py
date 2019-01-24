@@ -15,11 +15,17 @@ from museum_site.common import *
 
 
 TEST_ARCHIVE_LINKS = True if "iatest" in sys.argv else False
+IGNORE_LIST = (
+
+)
 
 
 def main():
     files = File.objects.all().order_by("-id")
     for f in files:
+        if f.id in IGNORE_LIST:
+            continue
+
         issues = field_check(f)
 
         if len(issues["warnings"]) != 0 or len(issues["errors"]) != 0:
