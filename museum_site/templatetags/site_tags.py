@@ -34,7 +34,8 @@ def content_warning(*args, **kwargs):
                 <span class="jsLink" name="cw-hide-all">Hide all future content
                 warnings</span> |
                 <span class="jsLink" name="cw-hide-this"
-                data-content-warning-key="{}">Hide this</span>
+                data-content-warning-key="{}">Hide this</span> |
+                <a href="#end-cw">Jump past warned content</a>
 
             </div>
         </div>
@@ -120,7 +121,7 @@ class Commentary(template.Node):
 
         #commentary = filters.linebreaks(commentary_node.render(context).strip())
         commentary = commentary_node.render(context).strip()
-        if commentary and commentary[0] != "<":
+        if (commentary and commentary[0] != "<") or commentary.startswith("<!"):
             commentary = "<p>" + commentary.replace("\n\n", "</p><p>") + "</p>"
 
         output = """
