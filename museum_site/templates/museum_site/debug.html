@@ -12,6 +12,12 @@
 {% block content %}
 <section id="content" class="col block">
 
+{% for result in results %}
+{{result}}<br>
+{% endfor %}
+
+<hr><hr><hr>
+
 {% commentary %}
 {% zzt_img 'images/articles/cl/shades-of-gray/zzt_001.png' %}
 This is my commentary.
