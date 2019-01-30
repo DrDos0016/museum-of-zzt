@@ -1042,7 +1042,7 @@ article aside
     margin:auto;
 }
 
-.directory .column
+.column
 {
     border:1px solid #000;
     display:inline-block;
@@ -1050,7 +1050,7 @@ article aside
     vertical-align:top;
 }
 
-.directory .column .header
+.column .header
 {
     background:#000;
     color:#F0F0F0;
@@ -1058,12 +1058,12 @@ article aside
     font-weight:bold;
 }
 
-.directory .column .row
+.column .row
 {
     padding-left:0.5em;
 }
 
-.directory .column div
+.column div
 {
     border-top:1px solid #000;
 }

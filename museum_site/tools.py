@@ -29,8 +29,10 @@ def mirror(request, pk):
 
     package = int(request.GET.get("package", 0))
     data["package"] = PACKAGE_PROFILES[package]
+    data["split"] = math.ceil(len(data["packages"]) // 2)
 
     zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, f.download_url()[1:]))
+
     file_list = zip_file.namelist()
     file_list.sort(key=str.lower)
     data["file_list"] = file_list
@@ -53,7 +55,13 @@ def mirror(request, pk):
                 SITE_ROOT + f.download_url(),
                 os.path.join(TEMP_PATH, zip_name)
             )
-            temp_zip = os.path.join(TEMP_PATH, zip_name)
+
+        # Handle alternative Zip upload
+        if request.FILES.get("alt_src"):
+            with open(os.path.join(TEMP_PATH, zip_name), "wb") as fh:
+                fh.write(request.FILES["alt_src"].read())
+
+        temp_zip = os.path.join(TEMP_PATH, zip_name)
 
         # Open the WIP zip
         with ZipFile(temp_zip, "a") as z:
@@ -74,6 +82,12 @@ def mirror(request, pk):
         # Create description
         description = "{}\n\n{}".format(package["auto_desc"], request.POST.get("description", ""))
 
+        # Determine the launch command
+        if request.POST.get("alt_launch"):
+            launch_command = request.POST["alt_launch"]
+        else:
+            launch_command = package["executable"] + " " + request.POST.get("launch", "").upper()
+
         # Zip file is completed, prepare the upload
         meta = {
             "title": request.POST.get("title"),
@@ -81,7 +95,7 @@ def mirror(request, pk):
             "collection": ARCHIVE_COLLECTION,
             "emulator": "dosbox",
             "emulator_ext": "zip",
-            "emulator_start": package["executable"] + " " + request.POST.get("launch", "").upper(),
+            "emulator_start": launch_command,
             "year": str(f.release_date)[:4],
             "subject": [package["engine"]] + f.genre.split("/"),
             "creator": f.author.split("/"),
@@ -91,9 +105,12 @@ def mirror(request, pk):
         if DEBUG:
             upload_name = "test-" + upload_name
 
+        print("I'm gonna upload:", os.path.join(TEMP_PATH, zip_name))
+        file_path = os.path.join(TEMP_PATH, zip_name)
+
         r = upload(
             upload_name,
-            files=[os.path.join(TEMP_PATH, zip_name)],
+            files=[file_path],
             metadata=meta,
             access_key=IA_ACCESS,
             secret_key=IA_SECRET,

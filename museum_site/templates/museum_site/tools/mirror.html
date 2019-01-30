@@ -7,6 +7,18 @@
     {
         width:20%;
     }
+
+    #package-list
+    {
+        margin-bottom:0.25em;
+        font-family:monospace;
+        font-size:larger;
+    }
+
+    .row label
+    {
+        width:auto;
+    }
 </style>
 {% endblock %}
 
@@ -22,8 +34,28 @@
 <a href="https://archive.org/details/{{file.archive_name}}" target="_blank">Archive.org Mirror</a>
 {% endif %}
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+    <!--
+    <div class="field">
+        <label for="package">Package:<br>
+        </label>
+        <div id="package-list">
+            {% for package in packages %}
+            {% if forloop.counter0|divisibleby:split %}
+            <div class="column">
+            {% endif %}
+                <div class="row">
+                    <label><input name="package" type="checkbox" value="{{ forloop.counter0 }}"> {{package.name}}</label>
+                </div>
+            {% if forloop.counter|divisibleby:split %}
+            </div>
+            {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+    -->
     <div class="field">
         <label for="package">Package:<br>
         </label>
@@ -34,6 +66,7 @@
             <option value="NONE">None</option>
         </select>
     </div>
+
 
     <div class="field">
         <label for="launch">Default World:<br>
@@ -86,6 +119,19 @@
         <span class="sub">4-100 chars. alphanumerics, underscores, periods, and hypens (ex: zzt_town)</span>
         </label>
         <input name="upload_name" value="">
+    </div>
+    <div class="field">
+        <label for="alt_src">Custom Source Zip:<br>
+        <span class="sub">Zip to use instead of the one in /zgames/</span>
+        </label>
+        <input name="alt_src" value="" type="file">
+    </div>
+    <div class="field">
+        <label for="alt_launch">Custom Launch Command:<br>
+        <span class="sub">Command to use when emulator is loaded</span>
+        </label>
+        <input name="alt_launch" value="">
+    </div>
 </form>
 </section>
 {% endblock %}

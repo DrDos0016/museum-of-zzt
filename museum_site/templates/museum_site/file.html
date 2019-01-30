@@ -46,7 +46,7 @@ $(document).ready(function (){
     <div id="lower-ui">
         <div id="file-list">
         <ul>
-        <li class="selected" data-img="{% static file.screenshot_url %}">Preview Image</li>
+        <li class="preview-image-link selected" data-img="{% static file.screenshot_url %}">Preview Image</li>
         {% for file in files %}
         <li class="zip-content">{{file}}</li>
         {% endfor %}
