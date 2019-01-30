@@ -193,7 +193,9 @@ function pull_file()
     if (filename.indexOf(".") == -1)
         ext = "txt";
 
-    if (filename == "Title Screen")
+    console.log("Pull?");
+    console.log($(this).html());
+    if ($(this).hasClass("preview-image-link"))
     {
         $("#details").html(`<img src="${$(this).data("img")}">`);
         return true;
