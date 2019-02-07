@@ -59,7 +59,8 @@ class ZztMessage(template.Node):
 
     def render(self, context):
         raw = self.nodelist.render(context)
-        lines = raw.split("\n")
+        lines = raw.replace("\r\n", "\n").split("\n")
+
 
         if self.scrolling:
             output = "<div class='zzt-txt-message scrolling'>\n"
