@@ -538,6 +538,29 @@ def search(request):
         else:
             destination = "museum_site/browse.html"
     else:  # Advanced Search
+        # Clean up empty params
+        if request.GET.get("advanced"):
+            print("CLEANING")
+            new_qs = "?"
+            for k in request.GET.keys():
+                if k in ["advanced", "details"]:
+                    continue
+                if k == "board_type" and not (request.GET.get("board_min") or request.GET.get("board_max")):
+                    continue
+                if k == "min" and request.GET[k] == "0.0":
+                    continue
+                if k == "max" and request.GET[k] == "5.0":
+                    continue
+                if request.GET[k] not in ["", "Any"]:
+                    new_qs += k + "=" + request.GET[k] + "&"
+
+            details = request.GET.getlist("details")
+            for d in details:
+                new_qs += "details=" + d + "&"
+            new_qs = new_qs[:-1]
+            print(new_qs)
+            return redirect("/search"+new_qs)
+
         data["advanced_search"] = True
         qs = File.objects.all()
         if request.GET.get("title", "").strip():
@@ -594,7 +617,7 @@ def search(request):
                 )
         if (request.GET.get("board_max", "").strip() and
                 int(request.GET.get("board_max", "")) <= 32767 and
-                request.GET.get("board_min", "") != ""):
+                request.GET.get("board_max", "") != ""):
             if (request.GET.get("board_type", "") == "playable"):
                 qs = qs.filter(
                     playable_boards__lte=int(request.GET.get("board_max", "").strip())
@@ -700,8 +723,8 @@ def debug(request):
     data = {"title": "DEBUG PAGE"}
 
     #results = File.objects.filter(Q(author="Dr. Dos") | Q(review))
-    print("Found", len(results), "by me")
-    data["results"] = results
+    #print("Found", len(results), "by me")
+    #data["results"] = results
 
     return render(request, "museum_site/debug.html", data)
 
