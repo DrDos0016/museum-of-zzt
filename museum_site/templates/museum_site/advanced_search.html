@@ -117,10 +117,11 @@ $(document).ready(function (){
     </label>
     <select id="year" name="year">
         <option value="Any">- ANY - </option>
+        <option value="Unk">Unknown</option>
         {% for year in years %}
-			{% if year == request.GET.year %}
-			<option selected>{{year}}</option>
-			{% else %}
+            {% if year == request.GET.year %}
+            <option selected>{{year}}</option>
+            {% else %}
             <option>{{year}}</option>
             {% endif %}
         {% endfor %}
@@ -172,6 +173,7 @@ $(document).ready(function (){
 <div class="field">
     <button type="submit">Search</button>
 </div>
+<input type="hidden" name="advanced" value="1">
 </form>
 
 </section>

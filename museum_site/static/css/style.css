@@ -50,6 +50,11 @@ a.broken
     color:#F00;
 }
 
+a.il
+{
+    font-style:italic;
+}
+
 .b
 {
     font-weight:bold;

@@ -135,3 +135,27 @@ class Commentary(template.Node):
 </div>
 """
         return output.format(material=material, commentary=commentary)
+
+
+@register.tag(name="il")
+def register_il(parser, token):
+    nodelist = parser.parse(('endil',))
+    parser.delete_first_token()
+    # Strip the leading "il " before splitting args
+    raw_args = token.contents[3:] if len(token.contents.split()) >= 2 else ""
+    return IL(nodelist, raw_args)
+
+class IL(template.Node):
+    def __init__(self, nodelist, raw_args=""):
+        self.args = raw_args.split("|") + ["", "", "", ""]
+        self.nodelist = nodelist
+
+    def render(self, context):
+        text = self.nodelist[0].render(context)
+        q = text if self.args[0] == "" else self.args[0]
+        filename = "&file=" + self.args[1] if self.args[1] != "" else ""
+        board = "&board=" + self.args[2] if self.args[2] != "" else ""
+        coords = "#" + self.args[3] if self.args[3] != "" else ""
+        url = "/search?q={}&auto=1".format(q) + filename + board + coords
+        output = "<a class='il' target='_blank' href='{url}'>{text}</a>".format(url=url, text=text)
+        return output

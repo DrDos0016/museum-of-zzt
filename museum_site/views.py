@@ -334,7 +334,7 @@ def index(request):
     data = {}
 
     # Obtain latest content
-    data["articles"] = Article.objects.all().order_by("-id")[:10]
+    data["articles"] = Article.objects.filter(published=True).order_by("-id")[:10]
     data["files"] = File.objects.all().exclude(details__id__in=[18]).order_by("-publish_date", "-id")[:10]  # TODO: Unhardcode
     data["reviews"] = Review.objects.all().order_by("-id")[:10]
 
@@ -508,6 +508,12 @@ def search(request):
             Q(company__icontains=q)
         ).exclude(details__id__in=[18])  # TODO: Unhardcode
 
+        # Auto redirect for Italicized-Links in Closer Looks
+        if request.GET.get("auto"):
+            qs.order_by("id")
+            params = qs_sans(request.GET, "q")
+            return redirect(qs[0].file_url() + "?" + params)
+
         # Debug override
         if DEBUG:
             if request.GET.get("q") == "debug=blank":
@@ -589,11 +595,14 @@ def search(request):
                 genre__icontains=request.GET.get("genre", "").strip()
             )
         if (request.GET.get("year", "").strip() and
-                request.GET.get("year", "") != "Any"):
+                request.GET.get("year", "") != "Any" and
+                request.GET.get("year", "") != "Unk"):
             qs = qs.filter(
                 release_date__gte=request.GET.get("year", "1991") + "-01-01",
                 release_date__lte=request.GET.get("year", "2091") + "-12-31"
             )
+        elif (request.GET.get("year", "").strip() == "Unk"):
+            qs = qs.filter(release_date=None)
         if (request.GET.get("min", "").strip() and
                 float(request.GET.get("min", "")) > 0):
             qs = qs.filter(
@@ -725,6 +734,9 @@ def debug(request):
     #results = File.objects.filter(Q(author="Dr. Dos") | Q(review))
     #print("Found", len(results), "by me")
     #data["results"] = results
+
+    set_captcha_seed(request)
+    print(request.session["captcha-seed"])
 
     return render(request, "museum_site/debug.html", data)
 
