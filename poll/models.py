@@ -9,11 +9,11 @@ class Poll(models.Model):
     start_date  = models.DateField()
     end_date    = models.DateField()
     secret      = models.CharField(max_length=32, blank=True, default="")
-    option1      = models.ForeignKey("Option", related_name='option1')
-    option2      = models.ForeignKey("Option", related_name='option2')
-    option3      = models.ForeignKey("Option", related_name='option3')
-    option4      = models.ForeignKey("Option", related_name='option4')
-    option5      = models.ForeignKey("Option", related_name='option5')
+    option1      = models.ForeignKey("Option", related_name='option1', on_delete=models.SET_NULL, null=True)
+    option2      = models.ForeignKey("Option", related_name='option2', on_delete=models.SET_NULL, null=True)
+    option3      = models.ForeignKey("Option", related_name='option3', on_delete=models.SET_NULL, null=True)
+    option4      = models.ForeignKey("Option", related_name='option4', on_delete=models.SET_NULL, null=True)
+    option5      = models.ForeignKey("Option", related_name='option5', on_delete=models.SET_NULL, null=True)
 
     def save(self, *args, **kwargs):
         # Pre save
@@ -35,11 +35,11 @@ class Poll(models.Model):
         return "Poll running " +str(self.start_date) + " through " + str(self.end_date)
 
 class Vote(models.Model):
-    poll        = models.ForeignKey("Poll")
+    poll        = models.ForeignKey("Poll", on_delete=models.SET_NULL, null=True)
     ip          = models.GenericIPAddressField(default="")
     timestamp   = models.DateTimeField(auto_now_add=True)
     email       = models.EmailField()
-    option      = models.ForeignKey("Option")
+    option      = models.ForeignKey("Option", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         formatted = "Poll #{poll} - Vote {option} by {email}".format(poll=self.poll_id, email=self.email, option=self.option_id)
@@ -48,7 +48,7 @@ class Vote(models.Model):
 class Option(models.Model):
     summary     = models.CharField(max_length=300)
     backer      = models.BooleanField(default=False)
-    file        = models.ForeignKey(File)
+    file        = models.ForeignKey(File, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.file.title + " by " + self.file.author

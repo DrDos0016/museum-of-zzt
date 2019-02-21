@@ -96,8 +96,8 @@ class Article(models.Model):
     type = models.CharField(max_length=6, choices=ARTICLE_FORMATS)
     date = models.DateField(default="1970-01-01")
     published = models.BooleanField(default=False)
-    page = models.IntegerField(default=1)
-    parent = models.ForeignKey("Article", null=True, blank=True, default=None)
+    page = models.IntegerField(default=1) # TODO: Remove field
+    parent = models.ForeignKey("Article", null=True, blank=True, default=None, on_delete=models.SET_NULL) # TODO remove field entirely
     summary = models.CharField(max_length=150, default="", blank=True)
     preview = models.CharField(max_length=80, default="", blank=True)
     allow_comments = models.BooleanField(default=False)
@@ -134,8 +134,8 @@ class Comment():
     date            -- Date review was written
     ip              -- IP address posting the review
     """
-    article = models.ForeignKey("Article")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    article = models.ForeignKey("Article", on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     date = models.DateField()
     ip = models.GenericIPAddressField(blank=True, null=True)
@@ -226,7 +226,8 @@ class File(models.Model):
     checksum = models.CharField(max_length=32, null=True,
                                 blank=True, default="")
     superceded = models.ForeignKey("File", db_column="superceded_id",
-                                   null=True, blank=True, default=None)
+                                   null=True, blank=True, default=None,
+                                   on_delete=models.SET_NULL)
     playable_boards = models.IntegerField(null=True, blank=True, default=None, help_text="Set automatically. Do not adjust.")
     total_boards = models.IntegerField(null=True, blank=True, default=None, help_text="Set automatically. Do not adjust.")
     archive_name = models.CharField(max_length=80, default="", blank=True, help_text="ex: zzt_burgerj")
@@ -603,7 +604,7 @@ class Review(models.Model):
     date            -- Date review was written
     ip              -- IP address posting the review
     """
-    file = models.ForeignKey("File")
+    file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=50)
     author = models.CharField(max_length=50, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
