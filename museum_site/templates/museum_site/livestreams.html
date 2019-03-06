@@ -3,7 +3,7 @@
 
 {% block content %}
 <section id="content" class="block">
-<h1>Closer Looks</h1>
+<h1>Livestreams</h1>
 
 <p>Closer Looks are one of the main components of the Worlds of ZZT project.
 The Closer Look series consists primarily of (re)visiting ZZT worlds and
@@ -19,7 +19,7 @@ which can be watched on the <a href="https://www.youtube.com/channel/UCr0f-r1bRe
 {% for article in articles %}
 <div class="file-block" data-pk="{{article.id}}">
     <div class="file-screen">
-        <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+        <img src="{% static article.preview %}"
         class="titlescreen"
         alt="{{article.preview}}">
     </div>
@@ -27,7 +27,7 @@ which can be watched on the <a href="https://www.youtube.com/channel/UCr0f-r1bRe
         <h1><a href="{% url 'article_view' article.id article.title|slugify %}">{{article.title}}</a></h1>
         <div>Author</div>: {{article.author}}<br>
         <div>Date</div>: {{article.date}}<br>
-        <div><br>{{article.summary|default:"Summary"}}</div>
+        <div><br>{{article.summary}}</div>
     </div>
 </div>
 {% endfor %}

@@ -61,7 +61,11 @@ table
 {% else %}
 <div id="years">
 {% for article in articles %}
+    {% if article.date|date:"Y" != "1970" %}
     {% ifchanged %}<a href="#year-{{article.date|date:'Y'}}">{{article.date|date:"Y"}}</a>{% endifchanged %}
+    {% else %}
+    {% ifchanged %}<a href="#year-none">N/A</a>{% endifchanged %}
+    {% endif %}
 {% endfor %}
 {% endif %}
 </div>
@@ -79,7 +83,11 @@ table
         {% if sort == "category" %}
         <tr><th colspan="4" id="{{article.category}}">{{article.category}}</th></tr>
         {% else %}
-        <tr><th colspan="4" id="year-{{article.date|date:"Y"}}">{{article.date|date:"Y"}}</th></tr>
+            {% if article.date|date:"Y" != "1970" %}
+            <tr><th colspan="4" id="year-{{article.date|date:"Y"}}">{{article.date|date:"Y"}}</th></tr>
+            {% else %}
+            <tr><th colspan="4" id="year-none">N/A</th></tr>
+            {% endif %}
         {% endif %}
     {% endifchanged %}
     <tr>

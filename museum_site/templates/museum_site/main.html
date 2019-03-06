@@ -157,9 +157,13 @@
     <div class="block">
         <h1>Reference</h1>
 
+        <h2>Worlds of ZZT</h2>
+        <a href="{% url 'closer_looks' %}">Closer Looks</a><br>
+        <a href="{% url 'article_directory' category='livestream' %}">Livestreams</a><br>
+        <a href="https://github.com/DrDos0016/zookeeper" target="_blank">Zookeeper</a><br>
+
         <h2>Directories</h2>
-        <a href="/article?sort=date">Articles by date</a><br>
-        <a href="/article">Articles by category</a><br>
+        <a href="{% url 'article_directory' %}">Articles</a><br>
         <a href="{% url 'directory' 'author' %}">Authors</a><br>
         <a href="{% url 'directory' 'company' %}">Companies</a><br>
         <a href="{% url 'directory' 'genre' %}">Genres</a><br>
@@ -174,10 +178,10 @@
         <a href="/file/local">Local File Viewer</a><br>
 
         <h2>Historical</h2>
-        <a href="{% url 'closer_looks' %}">Closer Looks</a><br>
         <a href="{% url 'lost_worlds' %}">Lost Worlds</a><br>
         <a href="http://zzt.org" target="_blank">z2 Classic Website</a><br>
         <a href="{% url 'comic_index' %}">ZZT Comics Archive</a><br>
+
     </div>
 
     {% comment %}

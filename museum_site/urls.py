@@ -68,6 +68,7 @@ urlpatterns = [
 
     # Closer Looks
     url(r"^closer-looks$", museum_site.views.closer_look, name="closer_looks"),
+    url(r"^livestreams$", museum_site.views.livestreams, name="livestreams"),
 
     # Directories
     url(r"^directory/(?P<category>[a-z].*)$", museum_site.views.directory,
@@ -193,6 +194,7 @@ urlpatterns = [
     # Debug
     url(r"^debug$", museum_site.views.debug),
     url(r"^debug/article$", museum_site.views.debug_article),
+    url(r"^debug/z0x$", museum_site.views.debug_z0x),
     url(r"^ajax/debug_file$", museum_site.ajax.debug_file),
 
     url(r"^error/(?P<status>[0-9]+)$", museum_site.errors.raise_error)

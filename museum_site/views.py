@@ -39,15 +39,15 @@ def article(request, letter, filename):
 def article_directory(request, category="all"):
     """ Returns page listing all articles sorted either by date or name """
     data = {"title": "Article Dirctory"}
-    data["sort"] = request.GET.get("sort", "category")
-    if request.GET.get("sort") == "date":
+    data["sort"] = request.GET.get("sort", "date")
+    if data["sort"] == "date":
         data["articles"] = Article.objects.defer(
             "content", "css"
-        ).filter(published=True, parent=None).order_by("-date", "title")
+        ).filter(published=True).order_by("-date", "title")
     else:
         data["articles"] = Article.objects.defer(
             "content", "css"
-        ).filter(published=True, parent=None).order_by("category", "title")
+        ).filter(published=True).order_by("category", "title")
 
     if category != "all":
         data["articles"] = data["articles"].filter(
@@ -334,11 +334,46 @@ def index(request):
     data = {}
 
     # Obtain latest content
-    data["articles"] = Article.objects.filter(published=True).order_by("-id")[:10]
+    data["articles"] = Article.objects.filter(published=True).order_by("-date")[:10]
     data["files"] = File.objects.all().exclude(details__id__in=[18]).order_by("-publish_date", "-id")[:10]  # TODO: Unhardcode
-    data["reviews"] = Review.objects.all().order_by("-id")[:10]
+    data["reviews"] = Review.objects.all().order_by("-date")[:10]
 
     return render(request, "museum_site/index.html", data)
+
+def livestreams(request):
+    """ Returns a listing of all Livestream articles """
+    data = {"title": "Livestreams"}
+    data["articles"] = Article.objects.filter(
+        category="Livestream", published=1
+    )
+    sort = request.GET.get("sort", "date")
+    if sort == "title":
+        data["articles"] = data["articles"].order_by("title")
+    elif sort == "date":
+        data["articles"] = data["articles"].order_by("-date")
+
+    data["sort"] = sort
+    data["page"] = int(request.GET.get("page", 1))
+    data["articles"] = data["articles"][
+        (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
+    ]
+    data["count"] = Article.objects.filter(category="Closer Look", published=1,
+                                           page=1).count()
+    data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
+    data["page_range"] = range(1, data["pages"] + 1)
+    data["prev"] = max(1, data["page"] - 1)
+    data["next"] = min(data["pages"], data["page"] + 1)
+    data["qs_sans_page"] = qs_sans(request.GET, "page")
+
+    # TODO: Actually give livestreams a preview image
+    for idx in range(0,len(data["articles"])):
+        related_files = data["articles"][idx].file_set.all()
+        if related_files:
+            data["articles"][idx].preview = related_files[0].screenshot_url()
+        else:
+            data["articles"][idx].preview = "images/screenshots/no_screenshot.png"
+
+    return render(request, "museum_site/livestreams.html", data)
 
 
 def local(request):
@@ -756,3 +791,7 @@ def debug_article(request):
     data["article"] = article
     data["veryspecial"] = True
     return render(request, "museum_site/article_view.html", data)
+
+def debug_z0x(request):
+    data = {}
+    return render(request, "museum_site/z0x.html", data)
