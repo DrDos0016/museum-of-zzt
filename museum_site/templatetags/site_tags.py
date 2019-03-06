@@ -34,8 +34,8 @@ def content_warning(*args, **kwargs):
                 <span class="jsLink" name="cw-hide-all">Hide all future content
                 warnings</span> |
                 <span class="jsLink" name="cw-hide-this"
-                data-content-warning-key="{}">Hide this</span> |
-                <a href="#end-cw">Jump past warned content</a>
+                data-content-warning-key="{}">Hide this</span>
+                {}
 
             </div>
         </div>
@@ -43,7 +43,12 @@ def content_warning(*args, **kwargs):
     """
     content_warning_key = kwargs.get("key", "")
 
-    output = output.format(", ".join(args).title(), content_warning_key)
+    if not kwargs.get("noskip"):
+        skip_text = ' | <a href="#end-cw">Jump past warned content</a>'
+    else:
+        skip_text= ""
+
+    output = output.format(", ".join(args).title(), content_warning_key, skip_text)
 
     return mark_safe(output + "\n")
 
