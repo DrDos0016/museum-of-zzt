@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from museum_site.models import Detail, DETAIL_FEATURED
-from museum_site.common import DEBUG, EMAIL_ADDRESS, CSS_TS
+from museum_site.common import DEBUG, EMAIL_ADDRESS, BOOT_TS
 
 
 def museum_global(request):
@@ -27,10 +27,9 @@ def museum_global(request):
 
     # E-mail
     data["EMAIL_ADDRESS"] = EMAIL_ADDRESS
-    data["CSS_TS"] = CSS_TS
+    data["BOOT_TS"] = BOOT_TS
 
     # Featured Games
     featured = Detail.objects.get(pk=DETAIL_FEATURED)
     data["fg"] = featured.file_set.all().order_by("?")[0]
-
     return data

@@ -7,11 +7,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>{% block title %}{{title}}{% endblock %}{% if title %} - {% endif %}Museum of ZZT</title>
-<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}?{{CSS_TS}}">
-<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}?{{CSS_TS}}">
-<link rel="stylesheet" media="(max-width: 1023px)" href="{% static 'css/small.css' %}?{{CSS_TS}}">
-<link rel="stylesheet" media="(max-width: 800px)" href="{% static 'css/mobile.css' %}?{{CSS_TS}}">
-<link rel="stylesheet" type="text/css" href="{% static 'css/zzt.css' %}?{{CSS_TS}}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}?{{BOOT_TS}}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}?{{BOOT_TS}}">
+<link rel="stylesheet" media="(max-width: 1023px)" href="{% static 'css/small.css' %}?{{BOOT_TS}}">
+<link rel="stylesheet" media="(max-width: 800px)" href="{% static 'css/mobile.css' %}?{{BOOT_TS}}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/zzt.css' %}?{{BOOT_TS}}">
 <link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
 
 <meta name="author" content="Dr. Dos">
@@ -55,7 +55,7 @@
 {% endblock %}
 
 <script src="/static/js/jquery.3.1.0.min.js"></script>
-<script src="{% static 'js/museum.js' %}?{{CSS_TS}}"></script>
+<script src="{% static 'js/museum.js' %}?{{BOOT_TS}}"></script>
 {% block scripts %}{% endblock %}
 {% block style %}{% endblock %}
 </head>

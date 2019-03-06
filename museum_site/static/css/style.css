@@ -451,15 +451,13 @@ input[name=q]
 /* File blocks */
 #expand-contract
 {
-    color:#AAA;
-    padding:0.10em;
+    padding:0.05em;
     text-align:center;
 }
 
 #expand-contract:hover
 {
     cursor:pointer;
-    color:#000;
 }
 
 .file-block

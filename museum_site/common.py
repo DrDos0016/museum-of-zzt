@@ -35,7 +35,7 @@ YEAR = datetime.now().year
 PYTHON_VERSION = sys.version
 DJANGO_VERSION = VERSION
 START_TIME = datetime.utcnow()
-CSS_TS = START_TIME.strftime("%m%d%H%M%S")
+BOOT_TS = START_TIME.strftime("%m%d%H%M%S")
 ARCHIVE_COLLECTION = "open_source_software" if not DEBUG else "test_collection"
 
 if os.path.isfile(os.path.join(SITE_ROOT, "ia.cfg")):
@@ -373,3 +373,7 @@ def qs_sans(params, key):
         qs_nokey = qs
 
     return qs_nokey.urlencode()
+
+
+def set_captcha_seed(request):
+    request.session["captcha-seed"] = str(datetime.now()).replace("-", "").replace(":", "").replace(".", "").replace(" ", "")
