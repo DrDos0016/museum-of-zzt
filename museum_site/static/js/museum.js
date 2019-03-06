@@ -63,4 +63,22 @@ $(document).ready(function (){
         now.setTime(expireTime);
         document.cookie = "hide_content_warnings=1;expires=" + now.toGMTString() + ";path=/";
     });
+
+    // Expand/Contract Middle Column
+    $("#expand-contract").click(function (){
+        $(this).toggleClass("expanded", "contracted");
+        if ($(this).hasClass("expanded"))
+        {
+            $(this).text("🠊 🠈");
+            $(".sidebar > *").css("visibility", "hidden");
+            $(".sidebar").animate({width: "0%"}, 500);
+        }
+        else // contracted
+        {
+            $(this).text("🠈 🠊");
+            $(".sidebar").animate({width: "15%"}, 500, function (){
+                $(".sidebar > *").css("visibility", "visible");
+            });
+        }
+    });
 });
