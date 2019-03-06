@@ -1,22 +1,95 @@
 {% extends "museum_site/main.html" %}
 
+{% block style %}
+<style>
+.date
+{
+    font-family:monospace;
+    width:9em;
+}
+
+.summary
+{
+    font-size:smaller;
+}
+
+tr:hover > td
+{
+    background:#AAA;
+}
+
+th
+{
+    background:#619F9F;
+}
+
+table
+{
+    margin:auto;
+}
+
+#years, #categories
+{
+    margin:auto;
+    margin-bottom:1em;
+    text-align:center;
+}
+
+#categories
+{
+    text-align:left;
+}
+
+#years a
+{
+    padding:0.25em;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <section id="content" class="col block">
 <h1>Article Directory</h1>
-<ul>
-{% if sort == "category" %}
-    {% for article in articles %}
-        {%ifchanged %}
-            </ul><h2>{{article.category}}</h2><ul>
-        {% endifchanged %}
 
-        <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} {% if article.date|date:"Y-m-d" != '1970-01-01' %}({{article.date}}){% endif %}</li>
-    {% endfor %}
-{% else %}
-    {% for article in articles %}
-        <li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} ({{article.date}})</li>
-    {% endfor %}
-{% endif %}
+{% if sort == "category" %}
+<div id="categories">
+<ul>
+{% for article in articles %}
+    {% ifchanged %}<li><a href="#{{article.category}}">{{article.category}}</a></li>{% endifchanged %}
+{% endfor %}
 </ul>
+{% else %}
+<div id="years">
+{% for article in articles %}
+    {% ifchanged %}<a href="#year-{{article.date|date:'Y'}}">{{article.date|date:"Y"}}</a>{% endifchanged %}
+{% endfor %}
+{% endif %}
+</div>
+
+<table>
+<tr>
+    <th>Title</th>
+    <th>Author</th>
+    <th>Date</th>
+    <th>Summary</th>
+</tr>
+
+{% for article in articles %}
+    {%ifchanged %}
+        {% if sort == "category" %}
+        <tr><th colspan="4" id="{{article.category}}">{{article.category}}</th></tr>
+        {% else %}
+        <tr><th colspan="4" id="year-{{article.date|date:"Y"}}">{{article.date|date:"Y"}}</th></tr>
+        {% endif %}
+    {% endifchanged %}
+    <tr>
+        <td><a href="{{article.url}}">{{article.title}}</a></td>
+        <td>{{article.author}}</td>
+        {% if article.date|date:"Y" != "1970" %}<td class="date">{{article.date}}</td>
+        {% else %}<td class="date"></td>{% endif %}
+        <td class="summary">{{article.summary}}</td>
+    </tr>
+{% endfor %}
+</table>
 </section>
 {% endblock %}
