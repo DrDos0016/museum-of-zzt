@@ -18,11 +18,15 @@ def main():
     with open("data/streams.csv") as fh:
         data = csv.reader(fh, delimiter=",")
 
+        header_row = True
         for row in data:
+            if header_row:  # Skip first header row
+                header_row = False
+                continue
             row[1] = row[1].strip()
-            text = TEMPLATE.format(row[0], row[1], row[2])
-            date = row[3]
-            games = row[4]
+            text = TEMPLATE.format(row[0].strip(), row[2].strip().replace("\n", "<br>\n"))
+            date = row[3].strip()
+            games = row[4].strip()
             a = Article()
 
             print(row)
@@ -39,10 +43,14 @@ def main():
 
 
             for pk in games.split("/"):
-                f = File.objects.get(pk=int(pk))
-                f.articles.add(a)
-                f.save()
-                print("Associated with", f)
+                try:
+                    if str(pk) != "":
+                        f = File.objects.get(pk=int(pk))
+                        f.articles.add(a)
+                        f.save()
+                        print("Associated with", f)
+                except:
+                    print("Couldn't associate with PK of", pk)
 
     print("DONE")
 
