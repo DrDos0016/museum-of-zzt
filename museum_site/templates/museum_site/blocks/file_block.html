@@ -11,7 +11,7 @@
             <div>Released</div>: <a href="{% url 'search'%}?year={{file.release_date.year|default:'any'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a><br>
             <div>Genre</div>: {% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
             <div>Filename</div>: {{file.filename}}<br>
-            <div>Size</div>: {{file.size}} KB<br>
+            <div>Size</div>: {{file.size|filesizeformat}}<br>
         </div>
         <div class="col">
             <div>Details:</div> {% for detail in file.details.all %}{{detail.detail}}{% if not forloop.last %}, {% endif %}{% endfor %}<br>

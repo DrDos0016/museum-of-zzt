@@ -82,8 +82,6 @@ class Article(models.Model):
     type            -- Whether the article is in text/md/html/django form
     date            -- Date the article was written
     published       -- If the article is available to the public
-    page            -- Page # of the article
-    parent          -- Article ID of the first page of the article
     summary         -- Summary for Opengraph
     preview         -- Path to preview image
     allow_comments  -- Allow user comments on the article
@@ -96,8 +94,6 @@ class Article(models.Model):
     type = models.CharField(max_length=6, choices=ARTICLE_FORMATS)
     date = models.DateField(default="1970-01-01")
     published = models.BooleanField(default=False)
-    page = models.IntegerField(default=1) # TODO: Remove field
-    parent = models.ForeignKey("Article", null=True, blank=True, default=None, on_delete=models.SET_NULL) # TODO remove field entirely
     summary = models.CharField(max_length=150, default="", blank=True)
     preview = models.CharField(max_length=80, default="", blank=True)
     allow_comments = models.BooleanField(default=False)
@@ -113,15 +109,6 @@ class Article(models.Model):
 
     def url(self):
         return "/article/" + str(self.id) + "/" + slugify(self.title)
-
-    def get_page_count(self):
-        if self.parent_id == 0:
-            page_count = 1 + Article.objects.filter(parent_id=self.id).count()
-        else:
-            page_count = 1 + Article.objects.filter(
-                parent_id=self.parent_id
-            ).count()
-        return page_count
 
 
 class Comment():
@@ -172,7 +159,7 @@ class File(models.Model):
     title           -- Name of the World (ex: Frost 1: Power)
     sort_title      -- Title used for natural sorting
     author          -- / sep. ABC list of authors (ex: Hercules/Nadir)
-    size            -- Filesize in Kilobytes (ex: 42)
+    size            -- Filesize in bytes (ex: 420690)
     genre           -- / sep. ABC list of genres (ex: Action/RPG)
     release_date    -- Best guess release date (ex: 2001-04-16)
     release_source  -- Source of release date (ex: ZZT file, News post, Text)
@@ -447,7 +434,7 @@ class File(models.Model):
         self.letter = self.letter_from_title()
         # sort_title handled by saving
         self.author = request.POST.get("author")
-        self.size = int(request.FILES.get("file").size / 1024)
+        self.size = int(request.FILES.get("file").size)
         self.release_date = request.POST.get("release_date")
         if self.release_date == "":
             self.release_date = None
@@ -578,7 +565,7 @@ class File(models.Model):
         return True
 
     def calculate_size(self):
-        self.size = os.path.getsize(self.phys_path()) // 1024
+        self.size = os.path.getsize(self.phys_path())
 
 
 class Detail(models.Model):

@@ -28,7 +28,7 @@ function reload_preview()
     var authors = $("input[name=author]").val();
     var company = $("input[name=company]").val();
     if ($("input[name=file]").val())
-        var size = Math.round($("input[name=file]").get(0).files[0].size / 1000.0);
+        var size = Math.round($("input[name=file]").get(0).files[0].size / 1024.0);
     var released = $("input[name=release_date]").val();
 
     var genres = "";
