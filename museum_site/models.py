@@ -103,8 +103,6 @@ class Article(models.Model):
 
     def __str__(self):
         output = "[" + str(self.id) + "] " + self.title + " by " + self.author
-        if self.page > 1:
-            output += " (P{})".format(self.page)
         return output
 
     def url(self):
@@ -205,8 +203,7 @@ class File(models.Model):
     )
     rating = models.FloatField(null=True, default=None, blank=True)
     details = models.ManyToManyField("Detail", default=None, blank=True)
-    articles = models.ManyToManyField("Article", default=None, blank=True,
-                                      limit_choices_to={'page': 1})
+    articles = models.ManyToManyField("Article", default=None, blank=True)
     article_count = models.IntegerField(
         default=0, help_text="Set automatically. Do not adjust."
     )
