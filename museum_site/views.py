@@ -171,7 +171,7 @@ def closer_look(request):
     """ Returns a listing of all Closer Look articles """
     data = {"title": "Closer Looks"}
     data["articles"] = Article.objects.filter(
-        category="Closer Look", published=1, page=1
+        category="Closer Look", published=1,
     )
     sort = request.GET.get("sort", "date")
     if sort == "title":
@@ -184,8 +184,7 @@ def closer_look(request):
     data["articles"] = data["articles"][
         (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
     ]
-    data["count"] = Article.objects.filter(category="Closer Look", published=1,
-                                           page=1).count()
+    data["count"] = Article.objects.filter(category="Closer Look", published=1).count()
     data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
     data["page_range"] = range(1, data["pages"] + 1)
     data["prev"] = max(1, data["page"] - 1)
@@ -357,8 +356,7 @@ def livestreams(request):
     data["articles"] = data["articles"][
         (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
     ]
-    data["count"] = Article.objects.filter(category="Closer Look", published=1,
-                                           page=1).count()
+    data["count"] = Article.objects.filter(category="Closer Look", published=1).count()
     data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
     data["page_range"] = range(1, data["pages"] + 1)
     data["prev"] = max(1, data["page"] - 1)
