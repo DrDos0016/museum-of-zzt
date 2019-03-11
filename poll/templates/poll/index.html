@@ -51,36 +51,33 @@
 <div class="gallery">
     <div class="gallery-block">
         <div class="file-screen">
-            <img src="{% if display_poll.option1.file.screenshot %}{% static 'images/screenshots/'|add:display_poll.option1.file.letter|add:'/'|add:display_poll.option1.file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+            <img src="{% static display_poll.option1.file.screenshot_url %}" class="titlescreen">
         </div>
-        <div class="title"><a href="{{display_poll.option1.file.download_url}}">{{display_poll.option1.file.title}}</a></div>
+        <div class="title"><a href="{{display_poll.option1.file.file_url}}">{{display_poll.option1.file.title}}</a></div>
         <div class="author">{% for a in display_poll.option1.file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
         <div class="date">{{display_poll.option1.file.release_date}}</div>
-        <div class="view"><a href="{{display_poll.option1.file.file_url}}">View</a></div>
         <div class="patron">{% if display_poll.option1.backer %}Patron nominated!{% else %}&nbsp;{% endif %}</div>
         <div class="desc">{{display_poll.option1.summary}}</div>
     </div>
 
     <div class="gallery-block">
         <div class="file-screen">
-            <img src="{% if display_poll.option2.file.screenshot %}{% static 'images/screenshots/'|add:display_poll.option2.file.letter|add:'/'|add:display_poll.option2.file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+            <img src="{% static display_poll.option2.file.screenshot_url %}" class="titlescreen">
         </div>
-        <div class="title"><a href="{{display_poll.option2.file.download_url}}">{{display_poll.option2.file.title}}</a></div>
+        <div class="title"><a href="{{display_poll.option2.file.file_url}}">{{display_poll.option2.file.title}}</a></div>
         <div class="author">{% for a in display_poll.option2.file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
         <div class="date">{{display_poll.option2.file.release_date}}</div>
-        <div class="view"><a href="{{display_poll.option2.file.file_url}}">View</a></div>
         <div class="patron">{% if display_poll.option2.backer %}Patron nominated!{% else %}&nbsp;{% endif %}</div>
         <div class="desc">{{display_poll.option2.summary}}</div>
     </div>
 
     <div class="gallery-block">
         <div class="file-screen">
-            <img src="{% if display_poll.option3.file.screenshot %}{% static 'images/screenshots/'|add:display_poll.option3.file.letter|add:'/'|add:display_poll.option3.file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+            <img src="{% static display_poll.option3.file.screenshot_url %}" class="titlescreen">
         </div>
-        <div class="title"><a href="{{display_poll.option3.file.download_url}}">{{display_poll.option3.file.title}}</a></div>
+        <div class="title"><a href="{{display_poll.option3.file.file_url}}">{{display_poll.option3.file.title}}</a></div>
         <div class="author">{% for a in display_poll.option3.file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
         <div class="date">{{display_poll.option3.file.release_date}}</div>
-        <div class="view"><a href="{{display_poll.option3.file.file_url}}">View</a></div>
         <div class="patron">{% if display_poll.option3.backer %}Patron nominated!{% else %}&nbsp;{% endif %}</div>
         <div class="desc">{{display_poll.option3.summary}}</div>
     </div>
@@ -89,24 +86,22 @@
 
     <div class="gallery-block">
         <div class="file-screen">
-            <img src="{% if display_poll.option4.file.screenshot %}{% static 'images/screenshots/'|add:display_poll.option4.file.letter|add:'/'|add:display_poll.option4.file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+            <img src="{% static display_poll.option4.file.screenshot_url %}" class="titlescreen">
         </div>
-        <div class="title"><a href="{{display_poll.option4.file.download_url}}">{{display_poll.option4.file.title}}</a></div>
+        <div class="title"><a href="{{display_poll.option4.file.file_url}}">{{display_poll.option4.file.title}}</a></div>
         <div class="author">{% for a in display_poll.option4.file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
         <div class="date">{{display_poll.option4.file.release_date}}</div>
-        <div class="view"><a href="{{display_poll.option4.file.file_url}}">View</a></div>
         <div class="patron">{% if display_poll.option4.backer %}Patron nominated!{% else %}&nbsp;{% endif %}</div>
         <div class="desc">{{display_poll.option4.summary}}</div>
     </div>
 
     <div class="gallery-block">
         <div class="file-screen">
-            <img src="{% if display_poll.option5.file.screenshot %}{% static 'images/screenshots/'|add:display_poll.option5.file.letter|add:'/'|add:display_poll.option5.file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
+            <img src="{% static display_poll.option5.file.screenshot_url %}" class="titlescreen">
         </div>
-        <div class="title"><a href="{{display_poll.option5.file.download_url}}">{{display_poll.option5.file.title}}</a></div>
+        <div class="title"><a href="{{display_poll.option5.file.file_url}}">{{display_poll.option5.file.title}}</a></div>
         <div class="author">{% for a in display_poll.option5.file.author_list %}<a href="{% url 'search' %}?author={{a}}&exact=1">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
         <div class="date">{{display_poll.option5.file.release_date}}</div>
-        <div class="view"><a href="{{display_poll.option5.file.file_url}}">View</a></div>
         <div class="patron">{% if display_poll.option5.backer %}Patron nominated!{% else %}&nbsp;{% endif %}</div>
         <div class="desc">{{display_poll.option5.summary}}</div>
     </div>
