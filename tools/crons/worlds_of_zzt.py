@@ -41,6 +41,26 @@ def main():
         1577,  # 9**1: A Z*T M******l
         1927,  # N**e E*****n
         1811,  # B*N L***N!!
+        1852,  # M*****a R***s
+        2064,  # M*****a R***s SE
+        1496,  # B******! (Author's request)
+        2542,  # E**e K****e M****m-M***k! (Author's request)
+        493,  # G***D P**t 1! (Author's request)
+        494,  # G***D P**t 2! (Author's request)
+        494,  # G***D S********k! (Author's request)
+        2242,  # M*****'s Z*T T*******s (Author's request)
+        2242,  # P******l (Author's request)
+        1197,  # P******l B* (Author's request)
+        925,  # T*e P****e F***s I* (Author's request)
+        1723,  # T***h (Author's request)
+        1801,  # Z*TV 8 (Author's request TEMPORARY UNTIL BOARDS ARE HANDLED)
+        1901,  # Z*TV 9 (Author's request TEMPORARY UNTIL BOARDS ARE HANDLED)
+        2059,  #M****m B***s A*******y (Harassing)
+        2095,  #M****m B***s 3 (Harassing)
+        2540,  #M****m B***s 4 (Harassing)
+        2087,  #M****m B***s 1 (Harassing)
+        2084,  #M****m B***s 2 (Harassing)
+
     ]
 
     BOARD_TITLE_BLACKLIST = [
