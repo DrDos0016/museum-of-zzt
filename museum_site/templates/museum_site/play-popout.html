@@ -1,0 +1,95 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>{{title}} - Popout</title>
+<link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
+
+<meta name="author" content="Dr. Dos">
+<meta name="description" content="The Museum of ZZT website is dedicated towards the curation and preservation of ZZT worlds made by budding game developers. Explore over 25 years of indie gaming history.">
+<meta name="keywords" content="ZZT">
+
+{% block og %}
+<meta property="og:title" content="{% if title %}{{title}} - {% endif %}Museum of ZZT">
+<meta property="og:type" content="website">
+{% if article.preview %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/'|add:article.preview %}">
+{% elif file.screenshot %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}">
+{% else %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/og_default.jpg' %}">{% endif %}
+<meta property="og:url" content="{{request.build_absolute_uri}}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@worldsofzzt">
+{% if article.title %}<meta name="twitter:title" content="{{article.title}}">
+{% elif file.title %}<meta name="twitter:title" content="{{file.title}}">
+{% else %}<meta name="twitter:title" content="Museum of ZZT">{% endif %}
+{% endblock %}
+
+<script src="/static/js/jquery.3.1.0.min.js"></script>
+<script src="{% static 'js/museum.js' %}?{{BOOT_TS}}"></script>
+{% block scripts %}{% endblock %}
+{% block style %}{% endblock %}
+<script>
+$(document).ready(function (){
+    console.log("BODY", $("body").width(), $("body").height());
+
+    $(window).resize(resize_canvas_display);
+
+    resize_canvas_display();
+});
+
+function resize_canvas_display()
+{
+    var base_w = 640;
+    var base_h = 350;
+
+    var w = $("body").width()
+    var h = $("body").height()
+
+    var x_scale = parseInt(w / base_w);
+    var y_scale = parseInt(h / base_h);
+
+    console.log("SCALES", x_scale, y_scale);
+
+    var new_scale = Math.min(x_scale, y_scale);
+
+    if (new_scale == scale)
+        return false;
+    else
+    {
+        $("canvas").width(base_w * new_scale);
+        $("canvas").height(base_h * new_scale);
+        scale = new_scale;
+    }
+}s
+
+</script>
+</head>
+
+<style>
+body
+{
+    margin:0;
+    background:#0F0F0F;
+    width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#framing
+{
+    flex:0;
+    width:100vw;
+    image-rendering:crisp-edges;
+}
+</style>
+
+<body>
+    <div id="framing"><canvas id="zzt_canvas" width="640" height="350"></canvas></div>
+</body>
+
+</html>
