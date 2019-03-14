@@ -403,7 +403,7 @@ class File(models.Model):
         lost = self.details.all().values_list("id", flat=True)
         return True if DETAIL_SZZT in lost else False
 
-    def supports_cerulean_player(self):
+    def supports_zeta_player(self):
         return self.id != 85 and (self.is_zzt() or self.is_super_zzt())
 
     def recalculate_reviews(self):
