@@ -342,13 +342,13 @@ PACKAGE_PROFILES = (
         "prefix": "zztmp20_",
         "executable": "ZZTMPLAY.EXE",
         "engine": "ZZM",
-        "auto_desc": "ZZM files being played using ZZT Musice Player v2.0, a program to play ZZM music, a format designed to play ZZT's PC speaker sounds in a more traditional audio player. Note that ZZM files do not sound identical to the same sounds produced in ZZT. (If both formats are available, ZZT is the superior choice for playback accuracy.)",
+        "auto_desc": "ZZM files being played using ZZT Music Player v2.0, a program to play ZZM music, a format designed to play ZZT's PC speaker sounds in a more traditional audio player. Note that ZZM files do not sound identical to the same sounds produced in ZZT. (If both formats are available, ZZT is the superior choice for playback accuracy.)",
     }
 )
 
 PLAY_METHODS = {
     "archive": {"name":"Archive.org - DosBox Embed"},
-    "cerulean": {"name":"cerulean86"},
+    "zeta": {"name":"Zeta"},
 }
 
 
