@@ -1,4 +1,18 @@
-{% extends "museum_site/world.html" %}
+{% extends play_base %}
+
+{% block style %}
+<style>
+#zzt_canvas
+{
+    image-rendering:crisp-edges;
+}
+
+#zeta-controls
+{
+    margin-bottom:1em;
+}
+</style>
+{% endblock %}
 
 {% block scripts %}
 <script>
@@ -14,26 +28,53 @@ $(document).ready(function (){
     });
 });
 </script>
-{% if player == "cerulean" %}
+{% if player == "zeta" %}
 <script type="text/javascript" src="/static/cerulean86/zzt_preload.js"></script>
 <script type="text/javascript">
-    window.onload = function() {
-        zzt_emu_load("/static/cerulean86/", {
-            files: [
-            {% if file.is_super_zzt %}
-                "/static/data/cerulean86_engines/szzt.zip",
-            {% else %}
-                "/static/data/cerulean86_engines/zzt.zip",
-            {% endif %}
-            "{{DOMAIN}}{{file.download_url}}"],
-            charset_png:
-            {% if custom_charset %}
-                "/static/images/charsets/{{custom_charset}}"
-            {% else %}
-                "/static/images/charsets/cp437.png"
-            {% endif %}
-        });
-    };
+var zoom = 1;
+var base_w = 640;
+var base_h = 350;
+
+window.onload = function() {
+    zzt_emu_load("/static/cerulean86/", {
+        files: [
+            "/static/data/cerulean86_engines/{{engine}}",
+            "{{file.download_url}}"
+        ],
+        arg: ""
+    });
+};
+
+$(document).ready(function (){
+    $("#fullscreen").click(function (){
+        $("#zzt_canvas")[0].requestFullscreen();
+    });
+
+    //$(window).resize(resize_canvas_display);
+    //resize_canvas_display();
+
+    $("#popout").click(function (e){
+        window.open("?player=zeta&popout=1&scale=" + scale, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+    });
+
+    $(".zoom").click(function (){
+        if ($(this).val() == "+")
+        {
+            scale++;
+        }
+        else
+        {
+            scale--;
+        }
+
+        $(".zoom").attr("disabled", false);
+        $(this).attr("disabled", true);
+
+        $("#zzt_canvas").width(base_w * scale);
+        $("#zzt_canvas").height(base_h * scale);
+    });
+
+});
 </script>
 {% endif %}
 {% endblock %}
@@ -42,12 +83,19 @@ $(document).ready(function (){
 <div id="play-area">
     {% if player == "archive" %}
     <iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
-    {% elif player == "cerulean" %}
+    {% elif player == "zeta" %}
     <canvas id="zzt_canvas" width="640" height="350"></canvas>
     {% endif %}
 </div>
+{% if player == "zeta" %}
+<div id="zeta-controls" class="c">
+    <button id="popout">Popout</button>
+    <button id="zoom-out" class="zoom" value="-" disabled>-</button>
+    <button id="zoom-in" class="zoom" value="+">+</button>
+    <button id="fullscreen">Fullscreen</button>
+</div>
+{% endif %}
 
-{% if ENV != "PROD" %}
 <div id="player-list" class="c">
     <b>Play Method</b><br>
     <select name="player">
@@ -56,7 +104,6 @@ $(document).ready(function (){
         {% endfor %}
     </select>
 </div>
-{% endif %}
 
 <div class="play-instructions">
 {% if player == "archive" %}
@@ -65,6 +112,8 @@ This file is hosted on <a href="https://archive.org/details/softwarelibrary_msdo
 <a href="https://archive.org/about/faqs.php#MS-DOS_Emulation" target="_blank">Internet Archive MS-DOS Emulation Help</a><br>
 <br>
 If the world appears to be running too slow, pressing <b>Control+F12</b> will increase the emulated CPU instructions.<br>Similarly, <b>Control+F11</b> will decrease emulated CPU instructions.</b>
+{% else %}
+<b>Zeta</b> created and maintained by Asiekierka
 {% endif %}
 </div>
 {% endblock %}

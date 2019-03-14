@@ -38,7 +38,7 @@ def article(request, letter, filename):
 
 def article_directory(request, category="all"):
     """ Returns page listing all articles sorted either by date or name """
-    data = {"title": "Article Dirctory"}
+    data = {"title": "Article Directory"}
     data["sort"] = request.GET.get("sort", "date")
     if data["sort"] == "date":
         data["articles"] = Article.objects.defer(
@@ -423,14 +423,13 @@ def play(request, letter, filename):
 
     # Select a play method
     player_names = PLAY_METHODS.keys()
-    player_names = ["archive"] # TODO: THIS IS A DEBUG UNTIL CERULEAN IS LIVE ON PRODUCTION
 
     player = request.GET.get("player")
     if player is None or player not in player_names:
         # If no player was provided, check for a cookie preference
         preferred_player = request.COOKIES.get("preferred_player", "")
         if preferred_player not in player_names:
-            player = "archive"  # Default player
+            player = "zeta"  # Default player
         else:
             player = preferred_player
 
@@ -438,13 +437,13 @@ def play(request, letter, filename):
     cookie_preferred = player  # In case the user's choice isn't available
     data["fallback"] = False
 
-    if player == "cerulean":
-        if not data["file"].supports_cerulean_player:
+    if player == "zeta":
+        if not data["file"].supports_zeta_player:
             player = "archive"
             data["fallback"] = True
     elif player == "archive":
         if not data["file"].archive_name:
-            player = "cerulean"
+            player = "zeta"
             data["fallback"] = True
 
     # The player the page will use
@@ -455,6 +454,15 @@ def play(request, letter, filename):
         data["custom_charset"] = CUSTOM_CHARSET_MAP[data["file"].id]
     else:
         data["custom_charset"] = None
+
+    if data["file"].is_super_zzt():
+        data["engine"] = "szzt.zip"
+    else:
+        data["engine"] = "zzt.zip"
+
+    data["play_base"] = "museum_site/world.html"
+    if request.GET.get("popout"):
+        data["play_base"] = "museum_site/play-popout.html"
 
     response = render(request, "museum_site/play.html", data)
     response.set_cookie("preferred_player", cookie_preferred, expires=datetime(3000, 12, 31))
