@@ -23,7 +23,7 @@ $(document).ready(function (){
             console.log(qs);
             console.log(params);
 
-            for (idx in params)
+            for (var idx in params)
             {
                 var key = params[idx].split("=")[0];
                 var val = params[idx].split("=")[1];
