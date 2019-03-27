@@ -24,6 +24,8 @@ def museum_global(request):
     data["datetime"] = datetime.utcnow()
     if data["datetime"].day == 27:  # This is very important
         data["drupe"] = True
+    if data["datetime"].day == 27 and data["datetime"].month == 3:  # This is very important
+        data["april"] = True
 
     # E-mail
     data["EMAIL_ADDRESS"] = EMAIL_ADDRESS

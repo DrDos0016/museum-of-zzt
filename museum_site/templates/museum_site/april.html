@@ -1,0 +1,52 @@
+<style>
+.yb
+{
+    background-image:url("/static/images/yellow-normal.png");
+    position:fixed;
+}
+
+#yb-left, #yb-right
+{
+    width:8px;
+    height:100vh;
+}
+
+#yb-left
+{
+    top:0;
+    left:0;
+}
+#yb-right
+{
+    top:0;
+    left:calc(100vw - (100vw - 100%) - 8px);
+}
+
+#yb-top
+{
+    top:0;
+}
+
+#yb-bottom
+{
+    top:calc(100vh - 14px);
+}
+
+#yb-top, #yb-bottom
+{
+    width:calc(100vw - (100vw - 100%) - 16px);
+    height:14px;
+    left:8px;
+}
+</style>
+<div id="yb-top" class="yb"></div>
+<div id="yb-left" class="yb"></div>
+<div id="yb-right" class="yb"></div>
+<div id="yb-bottom" class="yb"></div>
+<script>
+    $(document).ready(function (){
+        $(".yb").click(function (){
+            $(".yb").hide();
+            });
+    });
+</script>
