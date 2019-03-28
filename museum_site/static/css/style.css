@@ -69,6 +69,24 @@ body
     margin-top:0.25em;
 }
 
+blockquote
+{
+    font-family:serif;
+    font-style:oblique;
+    text-align:justify;
+    padding:0.5em;
+    border:3px double #000;
+    background:#DEF;
+}
+
+blockquote::first-letter
+{
+    margin-left:1em;
+    font-size:x-large;
+}
+
+
+
 .col
 {
     display:inline-block;
