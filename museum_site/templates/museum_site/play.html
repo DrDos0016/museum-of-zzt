@@ -29,21 +29,11 @@ $(document).ready(function (){
 });
 </script>
 {% if player == "zeta" %}
-<script type="text/javascript" src="/static/cerulean86/zzt_preload.js"></script>
+<script type="text/javascript" src="/static/zeta86/zeta_preload.js"></script>
 <script type="text/javascript">
 var scale = 1;
 var base_w = 640;
 var base_h = 350;
-
-window.onload = function() {
-    zzt_emu_load("/static/cerulean86/", {
-        files: [
-            "/static/data/cerulean86_engines/{{engine}}",
-            "{{file.download_url}}"
-        ],
-        arg: ""
-    });
-};
 
 $(document).ready(function (){
     $("#fullscreen").click(function (){
@@ -74,6 +64,18 @@ $(document).ready(function (){
         $("#zzt_canvas").height(base_h * scale);
     });
 
+    Zeta("/static/zeta86/", {
+        render: {
+            canvas: document.getElementById("zzt_canvas")
+        },
+        files: [
+            "/static/data/cerulean86_engines/{{engine}}",
+            "{{file.download_url}}"
+        ],
+        arg: ""
+    }, function(zeta) {
+
+    });
 });
 </script>
 {% endif %}
@@ -113,7 +115,7 @@ This file is hosted on <a href="https://archive.org/details/softwarelibrary_msdo
 <br>
 If the world appears to be running too slow, pressing <b>Control+F12</b> will increase the emulated CPU instructions.<br>Similarly, <b>Control+F11</b> will decrease emulated CPU instructions.</b>
 {% else %}
-<b>Zeta</b> created and maintained by Asiekierka
+<b>Zeta</b> created and maintained by asie
 {% endif %}
 </div>
 {% endblock %}

@@ -1,3 +1,3 @@
-[submodule "museum_site/static/cerulean86"]
-	path = museum_site/static/cerulean86
-	url = https://github.com/asiekierka/cerulean86-z2
+[submodule "museum_site/static/zeta86"]
+	path = museum_site/static/zeta86
+	url = https://github.com/asiekierka/zeta-z2
