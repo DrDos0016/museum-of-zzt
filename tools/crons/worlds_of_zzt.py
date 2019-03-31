@@ -4,6 +4,7 @@ import random
 import sys
 import zipfile
 from datetime import datetime
+from urllib.parse import quote
 
 import django
 import pytumblr
@@ -265,8 +266,8 @@ def main():
         print("Posting to twitter...")
 
         # April
-        if APRIL:
-            twitter_post = "Room is dark - you need to light a torch!\n" + twitter_post
+        #if APRIL:
+        #    twitter_post = "Room is dark - you need to light a torch!\n" + twitter_post
 
         with open(CRON_ROOT + "temp.png", "rb") as imagefile:
             imagedata = imagefile.read()
