@@ -64,18 +64,20 @@ $(document).ready(function (){
         $("#zzt_canvas").height(base_h * scale);
     });
 
-    Zeta("/static/zeta86/", {
+    Zeta({
+        path: "/static/zeta86/",
         render: {
-            canvas: document.getElementById("zzt_canvas")
+            canvas: document.getElementById("zzt_canvas"),
         },
         files: [
-            "/static/data/cerulean86_engines/{{engine}}",
+            "/static/data/zeta86_engines/{{engine}}",
             "{{file.download_url}}"
         ],
         arg: ""
     }, function(zeta) {
 
     });
+
 });
 </script>
 {% endif %}
