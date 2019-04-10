@@ -147,9 +147,9 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
     if DETAIL_LOST in details:
         data["show_description"] = True
 
-    if DETAIL_UPLOADED in details:
-        for file in data["files"]:
-            file.letter = "uploaded"
+    #if DETAIL_UPLOADED in details:
+    #    for file in data["files"]:
+    #        file.letter = "uploaded"
 
     # Determine destination template
     if data["view"] == "list":

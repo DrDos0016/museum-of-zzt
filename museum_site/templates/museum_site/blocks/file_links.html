@@ -1,5 +1,5 @@
 <div{% if file.is_lost %} class="hidden"{% endif %}><a href="{{file.download_url}}">Download</a></div>
-<div{% if file.is_lost or file.is_uploaded %} class="hidden"{% endif %}><a href="{{file.play_url}}">Play Online</a></div>
-<div{% if file.is_uploaded %} class="hidden"{% endif %}><a href="{{file.review_url}}">Reviews ({{file.review_count|default:0}})</a></div>
+<div{% if file.is_lost %} class="hidden"{% endif %}><a href="{{file.play_url}}">Play Online</a></div>
 <div{% if file.is_lost %} class="hidden"{% endif %}><a href="{{file.file_url}}">View Files</a></div>
+<div{% if file.is_uploaded %} class="hidden"{% endif %}><a href="{{file.review_url}}">Reviews ({{file.review_count|default:0}})</a></div>
 <div{% if file.is_uploaded %} class="hidden"{% endif %}><a href="{{file.article_url}}">Articles ({{file.article_count|default:0}})</a></div>
