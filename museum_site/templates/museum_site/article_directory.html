@@ -70,6 +70,15 @@ table
 {% endif %}
 </div>
 
+<div class="pages">
+    <div class="sub">
+        Sort: <select name="sort">
+            <option value="category"{% if sort == "category" %} selected {%endif %}>Category</option>
+            <option value="date"{% if sort == "date" %} selected {%endif %}>Date</option>
+        </select>
+    </div>
+</div>
+
 <table>
 <tr>
     <th>Title</th>
