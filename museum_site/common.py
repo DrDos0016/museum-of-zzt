@@ -13,6 +13,7 @@ from django.core.exceptions import ValidationError
 from museum_site.models import *
 from museum_site.queries import *
 from datetime import datetime
+from io import BytesIO
 from random import randint
 import math
 import zipfile

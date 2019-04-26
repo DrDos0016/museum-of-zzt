@@ -107,6 +107,7 @@ var TILE_HEIGHT = 14;
 var renderer = null;
 var hover_x = 0;
 var hover_y = 0;
+var raw_doc = "";
 
 function init()
 {
@@ -316,6 +317,19 @@ function pull_file()
 
             // Display the font
             $("#details").html(`<img src='/static/images/charsets/${font_filename}' class='charset' alt='${filename}' title='${filename}'>`);
+        }
+        else if (ext == "doc")
+        {
+            console.log("Loaded a DOC");
+            format = "txt";
+            var encoding = "auto";
+
+            var doc_header = `<div id="doc-header">
+            DOC files are not intended for display in a browser. They may contain visual errors.
+            </div>`;
+
+            $("#details").html(doc_header + data);
+            $("#filename").text(filename);
         }
         else // Text mode
         {
@@ -748,11 +762,18 @@ function render_board()
 
     output += `</table>`;
 
+    // Tools
+    if (can_live_edit)
+        output += `<br><button id="play-board">Play This Board</button>`;
+
     $("#board-info").html(output);
     tab_select("board-info");
 
     // Bind board links
     $(".board-link").click(switch_board);
+
+    // Bind play-board link
+    $("#play-board").click(play_board);
 
     // Render the stat info as well
     render_stat_list();
@@ -1513,4 +1534,14 @@ function bind_search()
 function int_to_char(number)
 {
     return String.fromCharCode(CP437_TO_UNICODE[number]);
+}
+
+function play_board()
+{
+    var scale = 1;
+    var base_w = 640;
+    var base_h = 350;
+    console.log("PLAYING THIS BOARD");
+    window.open("/play/"+letter+"/"+zip+"?player=zeta&popout=1&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number, "popout-"+zip, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+    //window.open(play_url);
 }

@@ -71,7 +71,7 @@ $(document).ready(function (){
         },
         files: [
             "/static/data/zeta86_engines/{{engine}}",
-            "{{file.download_url}}"
+            "{{zeta_url|default:file.download_url}}",
         ],
         arg: ""
     }, function(zeta) {

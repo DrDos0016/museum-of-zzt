@@ -166,6 +166,9 @@ urlpatterns = [
     # Uploads
     url(r"^upload$", museum_site.views.upload),
 
+    # Zeta Live
+    url(r"^zeta-live$", museum_site.views.zeta_live),
+
     ###########################################################################
     ###########################################################################
 
