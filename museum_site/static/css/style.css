@@ -671,6 +671,7 @@ div.file-details ul
     margin:auto;
     margin-bottom:1em;
     display:flex;
+    flex-wrap:wrap;
     align-items:stretch;
 }
 
@@ -678,6 +679,19 @@ div.file-details ul
 {
     position:relative;
     width:100%;
+}
+
+#doc-header
+{
+    border-bottom:1px solid #000;
+    flex:1 0 100%;
+    margin:-3px -3px 6px -3px;
+    background:#CCC;
+}
+
+.text-file
+{
+    overflow:scroll;
 }
 
 #details[data-format=szt]
