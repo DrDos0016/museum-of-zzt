@@ -227,7 +227,8 @@ SORT_CODES = {
     "id": ["-id"],
     "rating": ["-rating", "sort_title"],
     "release": ["release_date", "sort_title"],
-    "published": ["-publish_date", "-id"]
+    "published": ["-publish_date", "-id"],
+    "roulette": ["?"]
 }
 
 ADV_SEARCH_DEFAULTS = [

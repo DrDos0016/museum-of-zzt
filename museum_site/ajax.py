@@ -34,7 +34,7 @@ def get_zip_file(request):
             "An error occurred, and the file could not be retreived."
         )
 
-    if ext in ("", ".txt", ".bat", ".cfg", ".nfo", ".dat", ".bas", ".deu", ".diz", ".c", ".ds_store", ".faq", ".frm", ".fyi", ".gud", ".h", ".hlp", ".lst", ".me", ".nfo", ".pas", ".reg", ".sol", ".zln", ".zml", ".zzl", ".zzm", ".135", ".1st", ".asm", ".bb", ".bin", ".chr", ".sdi", ".now"):
+    if ext in ("", ".doc", ".txt", ".bat", ".cfg", ".nfo", ".dat", ".bas", ".deu", ".diz", ".c", ".ds_store", ".faq", ".frm", ".fyi", ".gud", ".h", ".hlp", ".lst", ".me", ".nfo", ".pas", ".reg", ".sol", ".zln", ".zml", ".zzl", ".zzm", ".135", ".1st", ".asm", ".bb", ".bin", ".chr", ".sdi", ".now"):
         output = file.read()
 
         if format == "auto" or format == "utf-8":
@@ -66,7 +66,7 @@ def get_zip_file(request):
         ).replace(
             "\n", "<br>"
         )
-        output = "<div class='" + encoding + "'>" + output + "</div>"
+        output = "<div class='text-file " + encoding + "'>" + output + "</div>"
 
         return HttpResponse(output)
     elif ext in (".hi", ".zzt", ".brd", ".mh", ".sav", ".szt"):

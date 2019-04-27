@@ -115,6 +115,10 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
     if request.path == "/new":
         sort = SORT_CODES["published"]
 
+    if request.path == "/roulette":
+        sort = SORT_CODES["roulette"]
+        data["title"] = "Roulette"
+
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     data["qs_sans_view"] = qs_sans(request.GET, "view")
@@ -464,6 +468,10 @@ def play(request, letter, filename):
     if request.GET.get("popout"):
         data["play_base"] = "museum_site/play-popout.html"
 
+    # Override for "Live" Zeta edits
+    if request.GET.get("live"):
+        data["zeta_url"] = "/zeta-live?pk={}&world={}&start={}".format(data["file"].id, request.GET.get("world"), request.GET.get("start", 0))
+
     response = render(request, "museum_site/play.html", data)
     response.set_cookie("preferred_player", cookie_preferred, expires=datetime(3000, 12, 31))
     return response
@@ -801,3 +809,37 @@ def debug_article(request):
 def debug_z0x(request):
     data = {}
     return render(request, "museum_site/z0x.html", data)
+
+def zeta_live(request):
+    pk = int(request.GET["pk"])
+    fname = request.GET["world"]
+    start = int(request.GET["start"]).to_bytes(1, byteorder="little")
+
+    f = File.objects.get(pk=int(pk))
+
+    temp_bytes = BytesIO()
+
+    # Open original zip and extract the file
+    with zipfile.ZipFile(f.phys_path()) as orig_zip:
+        orig_file = orig_zip.read(fname)
+
+
+    # Adjust starting board
+    modded_file = orig_file[:17] + start + orig_file[18:]
+
+    #temp_bytes.write(orig_file)
+
+    # Extract the file
+    # Adjust the file
+
+    # Return it to Zeta
+    temp_zip = BytesIO()
+
+    # Create new zip
+    with zipfile.ZipFile(temp_zip, "w") as mem_zip:
+        mem_zip.writestr(fname, modded_file)
+
+    response = HttpResponse(content_type="application/octet-stream")
+    response["Content-Disposition"] = "attachment; filename=TEST.ZIP"
+    response.write(temp_zip.getvalue())
+    return response

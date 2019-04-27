@@ -151,8 +151,9 @@ urlpatterns = [
     url(r"^policy/review$", museum_site.views.generic, {"template": "review_policy", "title":"Review Policy"}, name="review_policy"),
     url(r"^policy/upload$", museum_site.views.generic, {"template": "upload_policy", "title":"Upload Policy"}, name="upload_policy"),
 
-    # Random ZZT World
+    # Random ZZT Worlds
     url(r"^random$", museum_site.views.random, name="random"),
+    url(r"^roulette$", museum_site.views.browse, {"details": [DETAIL_ZZT]}, name="roulette"),
 
     # Reviews
     url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", museum_site.views.review),
