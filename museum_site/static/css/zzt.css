@@ -23,7 +23,6 @@
     width:360px; /*336*/
     height:210px;
     overflow-y:scroll;
-    overflow-x:none;
 }
 
 .zzt-scroll .white

@@ -761,7 +761,7 @@ div.file-details ul
 {
     border:1px solid #000;
     border-right:none;
-    overflow-x:none;
+    overflow-x:hidden;
     overflow-y:auto;
     font-family:monospace;
     flex:1;
@@ -835,7 +835,7 @@ div.file-details ul
 {
     padding:0.5em;
     border:1px solid #000;
-    overflow:none;
+    overflow:hidden;
     font-family:monospace;
     flex:2;
 }
@@ -895,7 +895,6 @@ div.file-details ul
     width:8px;
     height:14px;
     background:url("/static/images/colors.png");
-    background-position:32px 28px top;
     background-repeat:no-repeat;
     display:inline-block;
 }

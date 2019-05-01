@@ -35,7 +35,7 @@
 {
     order:2;
     flex:1 1 100%;
-    border:1;
-    border-right:1; /* Needed to overwrite style.css */
+    border:1px solid #000;
+    border-right:1px solid #000; /* Needed to overwrite style.css */
     margin-top:2px;
 }
