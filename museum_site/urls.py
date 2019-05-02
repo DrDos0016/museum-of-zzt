@@ -65,6 +65,7 @@ urlpatterns = [
     url(r"^credits$", museum_site.views.article_view, {"id": 164}, name="credits"),
     url(r"^getting-started$", museum_site.views.article_view, {"id": 5}),
     url(r"^zzt$", museum_site.views.article_view, {"id": 2}, name="zzt_dl"),
+    url(r"^zeta$", museum_site.views.article_view, {"id": 399}, name="zeta"),
 
     # Closer Looks
     url(r"^closer-looks$", museum_site.views.closer_look, name="closer_looks"),
