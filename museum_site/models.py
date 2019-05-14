@@ -1,3 +1,4 @@
+import hashlib
 import os
 import subprocess
 import zipfile
@@ -253,17 +254,12 @@ class File(models.Model):
         if self.screenshot == "" and os.path.isfile(os.path.join(SITE_ROOT, "museum_site/static/images/screenshots/") + self.letter + "/" + self.filename[:-4] + ".png"):
             self.screenshot = self.filename[:-4] + ".png"
 
-        # Recalculate Review Scores
-        self.recalculate_reviews()
+        # Calculate Review Scores
+        self.calculate_reviews()
 
         # Update blank md5s
-        if self.checksum == "":
-            try:
-                resp = subprocess.run(["md5sum", os.path.join(SITE_ROOT, "zgames/") + self.letter + "/" + self.filename], stdout=subprocess.PIPE)
-                md5 = resp.stdout[:32].decode("utf-8")
-                self.checksum = md5
-            except:
-                pass
+        if self.checksum == "" or self.checksum == None:
+            self.calculate_checksum()
 
         # Set board counts for non-uploads
         if not kwargs.get("new_upload") and (not self.playable_boards or not self.total_boards) and HAS_ZOOKEEPER:
@@ -406,18 +402,36 @@ class File(models.Model):
     def supports_zeta_player(self):
         return self.id != 85 and (self.is_zzt() or self.is_super_zzt())
 
-    def recalculate_reviews(self):
-        # Recalculate Review Count
+    def calculate_reviews(self):
+        # Calculate Review Count
         if self.id is not None:
             self.review_count = Review.objects.filter(file_id=self.id).count()
 
-        # Recalculate Rating
+        # Calculate Rating
         if self.id is not None:
             ratings = Review.objects.filter(
                 file_id=self.id, rating__gte=0
             ).aggregate(Avg("rating"))
             if ratings["rating__avg"] is not None:
                 self.rating = round(ratings["rating__avg"], 2)
+
+    def calculate_checksum(self, path=None):
+        # Calculate an md5 checksum of the zip file
+        if path is None:
+            path = self.phys_path()
+        try:
+            with open(path, "rb") as fh:
+                m = hashlib.md5()
+                while True:
+                    byte_stream = fh.read(102400)
+                    m.update(byte_stream)
+                    if not byte_stream:
+                        break
+        except FileNotFoundError:
+            return False
+
+        self.checksum = m.hexdigest()
+        return True
 
     def from_request(self, request):
         upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
@@ -455,10 +469,8 @@ class File(models.Model):
             for chunk in request.FILES["file"].chunks():
                 fh.write(chunk)
 
-        # md5 checksum
-        resp = subprocess.run(["md5sum", file_path], stdout=subprocess.PIPE)
-        md5 = resp.stdout[:32].decode("utf-8")
-        self.checksum = md5
+        # Calculate checksum
+        self.calculate_checksum(file_path)
 
         # SITE META
         return {"status": "success"}
