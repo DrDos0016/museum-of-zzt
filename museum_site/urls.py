@@ -193,9 +193,6 @@ urlpatterns = [
     url(r"^tools/scan$", museum_site.tools.scan, name="scan"),
     url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tools.set_screenshot, name="set_screenshot"),
 
-    # url(r"^staff/file_management$", museum_site.staff.file_management),
-    # url(r"^staff/article_management$", museum_site.staff.article_management),
-
     # Debug
     url(r"^debug$", museum_site.views.debug),
     url(r"^debug/article$", museum_site.views.debug_article),
