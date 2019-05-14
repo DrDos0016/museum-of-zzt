@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .common import *
+from .constants import *
 
 def advanced_search(request):
     """ Returns page containing multiple filters to use when searching """
@@ -43,11 +44,11 @@ def article_directory(request, category="all"):
     if data["sort"] == "date":
         data["articles"] = Article.objects.defer(
             "content", "css"
-        ).filter(published=True).order_by("-date", "title")
+        ).filter(published=PUBLISHED_ARTICLE).order_by("-date", "title")
     else:
         data["articles"] = Article.objects.defer(
             "content", "css"
-        ).filter(published=True).order_by("category", "title")
+        ).filter(published=PUBLISHED_ARTICLE).order_by("category", "title")
 
     if category != "all":
         data["articles"] = data["articles"].filter(
@@ -63,7 +64,7 @@ def article_view(request, id, page=0):
     id = int(id)
     data = {"id": id}
 
-    data["article"] = get_object_or_404(Article, pk=id, published=True)
+    data["article"] = get_object_or_404(Article, pk=id, published=PUBLISHED_ARTICLE)
     data["page"] = page
     data["page_count"] = data["article"].content.count("<!--Page-->") + 1
     data["page_range"] = list(range(1, data["page_count"] + 1))
@@ -175,7 +176,7 @@ def closer_look(request):
     """ Returns a listing of all Closer Look articles """
     data = {"title": "Closer Looks"}
     data["articles"] = Article.objects.filter(
-        category="Closer Look", published=1,
+        category="Closer Look", published=PUBLISHED_ARTICLE,
     )
     sort = request.GET.get("sort", "date")
     if sort == "title":
@@ -188,7 +189,7 @@ def closer_look(request):
     data["articles"] = data["articles"][
         (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
     ]
-    data["count"] = Article.objects.filter(category="Closer Look", published=1).count()
+    data["count"] = Article.objects.filter(category="Closer Look", published=PUBLISHED_ARTICLE).count()
     data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
     data["page_range"] = range(1, data["pages"] + 1)
     data["prev"] = max(1, data["page"] - 1)
@@ -337,7 +338,7 @@ def index(request):
     data = {}
 
     # Obtain latest content
-    data["articles"] = Article.objects.filter(published=True).order_by("-date")[:10]
+    data["articles"] = Article.objects.filter(published=PUBLISHED_ARTICLE).order_by("-date")[:10]
     data["files"] = File.objects.all().exclude(details__id__in=[18]).order_by("-publish_date", "-id")[:10]  # TODO: Unhardcode
     data["reviews"] = Review.objects.all().order_by("-date")[:10]
 
@@ -347,7 +348,7 @@ def livestreams(request):
     """ Returns a listing of all Livestream articles """
     data = {"title": "Livestreams"}
     data["articles"] = Article.objects.filter(
-        category="Livestream", published=1
+        category="Livestream", published=PUBLISHED_ARTICLE
     )
     sort = request.GET.get("sort", "date")
     if sort == "title":
@@ -360,7 +361,7 @@ def livestreams(request):
     data["articles"] = data["articles"][
         (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
     ]
-    data["count"] = Article.objects.filter(category="Closer Look", published=1).count()
+    data["count"] = Article.objects.filter(category="Livestream", published=PUBLISHED_ARTICLE).count()
     data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
     data["page_range"] = range(1, data["pages"] + 1)
     data["prev"] = max(1, data["page"] - 1)
@@ -524,7 +525,7 @@ def review(request, letter, filename):
             review.save()
 
         # Update file's review count/scores
-        data["file"].recalculate_reviews()
+        data["file"].calculate_reviews()
         data["file"].save()
 
     data["reviews"] = Review.objects.filter(file_id=data["file"].id)
@@ -785,6 +786,12 @@ def debug(request):
     #data["results"] = results
 
     set_captcha_seed(request)
+
+    f = File.objects.filter(pk=int(request.GET.get("id", 420)))
+    data["file"] = f
+
+
+
     print(request.session["captcha-seed"])
 
     return render(request, "museum_site/debug.html", data)
@@ -801,7 +808,7 @@ def debug_article(request):
         article.title = "TEST ARTICLE"
         article.category = "TEST"
         article.content = fh.read().replace("<!--PAGE-->", "<hr>")
-        article.type = request.GET.get("format", "django")
+        article.schema = request.GET.get("format", "django")
     data["article"] = article
     data["veryspecial"] = True
     return render(request, "museum_site/article_view.html", data)

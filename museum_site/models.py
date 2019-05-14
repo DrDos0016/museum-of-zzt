@@ -10,6 +10,8 @@ from django.db.models import Avg
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
+from .constants import PUBLISHED_ARTICLE, UPCOMING_ARTICLE, UNPUBLISHED_ARTICLE, REMOVED_ARTICLE
+
 try:
     import zookeeper
     HAS_ZOOKEEPER = True
@@ -22,6 +24,14 @@ ARTICLE_FORMATS = (
     ("md", "Markdown"),
     ("html", "HTML"),
     ("django", "Django"),
+)
+
+
+ARTICLE_PUBLISH = (
+    (PUBLISHED_ARTICLE, "Published"),
+    (UPCOMING_ARTICLE, "Upcoming"),
+    (UNPUBLISHED_ARTICLE, "Unpublished"),
+    (REMOVED_ARTICLE, "Removed"),
 )
 
 
@@ -80,7 +90,7 @@ class Article(models.Model):
     category        -- Categorization of the article for the directory
     content         -- Body of the article
     css             -- Custom CSS for the article
-    type            -- Whether the article is in text/md/html/django form
+    schema          -- Whether the article is in text/md/html/django form
     date            -- Date the article was written
     published       -- If the article is available to the public
     summary         -- Summary for Opengraph
@@ -92,9 +102,9 @@ class Article(models.Model):
     category = models.CharField(max_length=50)
     content = models.TextField(default="")
     css = models.TextField(default="", blank=True)
-    type = models.CharField(max_length=6, choices=ARTICLE_FORMATS)
+    schema = models.CharField(max_length=6, choices=ARTICLE_FORMATS)
     date = models.DateField(default="1970-01-01")
-    published = models.BooleanField(default=False)
+    published = models.IntegerField(default=UNPUBLISHED_ARTICLE, choices=ARTICLE_PUBLISH)
     summary = models.CharField(max_length=150, default="", blank=True)
     preview = models.CharField(max_length=80, default="", blank=True)
     allow_comments = models.BooleanField(default=False)

@@ -29,9 +29,9 @@
     <a href="?file={{request.GET.file}}&spellcheck=1&page=all">Spellcheck</a>
 </div>
 {% endif %}
-{% if article.type == "html" %}
+{% if article.schema == "html" %}
     {{article.content|safe}}
-{% elif article.type == "text" %}
+{% elif article.schema == "text" %}
     {{article.content|linebreaks}}
 {% else %}
     {{article.content|as_template|safe}}
