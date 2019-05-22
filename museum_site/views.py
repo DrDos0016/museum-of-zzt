@@ -119,12 +119,25 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
     if request.path == "/roulette":
         sort = SORT_CODES["roulette"]
         data["title"] = "Roulette"
+        data["rng_seed"] = str(int(request.GET.get("rng_seed", time())))
+
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     data["qs_sans_view"] = qs_sans(request.GET, "view")
 
-    if data["view"] == "list":  # List gets a full listing on one page
+    # Append RNG seed if there is one
+    if data["rng_seed"] and "rng_seed" not in data["qs_sans_page"]:
+        data["qs_sans_page"] += "&rng_seed=" + data["rng_seed"]
+        data["qs_sans_view"] += "&rng_seed=" + data["rng_seed"]
+
+    if request.path == "/roulette":
+        ids = list(File.objects.filter(details__id__in=details).values_list("id", flat=True))
+        print(data["rng_seed"])
+        seed(data["rng_seed"])
+        shuffle(ids)
+        data["files"] = File.objects.filter(id__in=ids[:PAGE_SIZE]).order_by("?")
+    elif data["view"] == "list":  # List gets a full listing on one page
         data["letter"] = letter if letter != "1" else "#"
         data["files"] = File.objects.filter(details__id__in=details)
         if letter:

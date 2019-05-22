@@ -14,7 +14,8 @@ from museum_site.models import *
 from museum_site.queries import *
 from datetime import datetime
 from io import BytesIO
-from random import randint
+from random import randint, shuffle, seed
+from time import time
 import math
 import zipfile
 import glob

@@ -1,5 +1,5 @@
 <div class="pages">
-    {% if pages > 1 %}
+    {% if pages > 1 and view != "roulette" %}
     Page #{{page}}/{{pages}}<br>
     <a href="?page={{prev}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">&lt;</a>
     {% for page in page_range %}
@@ -24,6 +24,7 @@
         <a href="?view=gallery{% if qs_sans_view %}&{{qs_sans_view}}{% endif %}">Gallery View</a>
         {% endif %}
     </div>{% endif %}
+    {% if request.path != "/roulette" %}
     <div class="sub">
         Sort: <select name="sort">
             <option value="title"{% if request.GET.sort == "title" %} selected {%endif %}>Title</option>
@@ -33,6 +34,11 @@
             <option value="release"{% if request.GET.sort == "release" %} selected {%endif %}>Release Date</option>
         </select>
     </div>
+    {% else %}
+    <div class="sub">
+        Random Seed: <a href="/roulette?rng_seed={{rng_seed}}">{{rng_seed}}</a>
+    </div>
+    {% endif %}
     {% if advanced_search %}
     <a href="/advanced-search?{{request.META.QUERY_STRING}}">Modify Search Query</a>
     {% endif %}
