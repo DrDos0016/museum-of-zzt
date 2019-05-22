@@ -12,6 +12,35 @@
 .zzt-img, .zzt-scroll, .patreon-plug, .zzt-txt-message, audio, video  { display:none; }
 </style>
 {% endif %}
+{% if veryspecial %}
+<style>
+#crop-controls
+{
+    position:fixed;
+    top:0;
+    background:#0AA;
+    width:100%;
+    height:1.5em;
+    padding:4px;
+}
+
+#crop-controls input
+{
+    width:5em;
+}
+
+#active
+{
+    width:10em;
+    display:inline-block;
+}
+
+#crop-controls #crop-output
+{
+    width:10em;
+}
+</style>
+{% endif %}
 {% endblock %}
 
 {% block world_content %}
@@ -26,6 +55,7 @@
 <article class="{{article.category|slugify}}" data-article_id="{{article.id}}">
 {% if veryspecial %}
 <div class="debug">
+    <script src="/static/js/debug-crop.js"></script>
     <a href="?file={{request.GET.file}}&spellcheck=1&page=all">Spellcheck</a>
 </div>
 {% endif %}
