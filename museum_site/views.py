@@ -127,7 +127,7 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
     data["qs_sans_view"] = qs_sans(request.GET, "view")
 
     # Append RNG seed if there is one
-    if data["rng_seed"] and "rng_seed" not in data["qs_sans_page"]:
+    if data.get("rng_seed") and "rng_seed" not in data["qs_sans_page"]:
         data["qs_sans_page"] += "&rng_seed=" + data["rng_seed"]
         data["qs_sans_view"] += "&rng_seed=" + data["rng_seed"]
 
