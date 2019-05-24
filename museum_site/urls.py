@@ -145,6 +145,7 @@ urlpatterns = [
 
     # Patrons Only
     url(r"^patron-plans$", museum_site.views.patron_plans, name="patron_plans"),
+    url(r"^patron-articles$", museum_site.views.patron_articles, name="patron_articles"),
 
     # Policies
     url(r"^policy/correction$", museum_site.views.generic, {"template": "correction_policy", "title":"Correction Policy"}, name="correction_policy"),

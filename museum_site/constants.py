@@ -1,3 +1,5 @@
+from museum_site.patron_secrets import PASSWORD2DOLLARS, PASSWORD5DOLLARS
+
 # Article publish states
 PUBLISHED_ARTICLE = 1
 UPCOMING_ARTICLE = 2

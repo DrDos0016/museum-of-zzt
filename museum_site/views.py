@@ -406,8 +406,27 @@ def mass_downloads(request):
     # Read the json
     return render(request, "museum_site/mass_downloads.html", data)
 
+
+def patron_articles(request):
+    data = {}
+    data["early"] = Article.objects.filter(published=UPCOMING_ARTICLE)
+    data["really_early"] = Article.objects.filter(published=UNPUBLISHED_ARTICLE)
+
+
+
+    if request.POST.get("secret") == PASSWORD2DOLLARS:
+        data["access"] = "early"
+    elif request.POST.get("secret") == PASSWORD5DOLLARS:
+        data["access"] = "really_early"
+    elif request.POST.get("secret") is not None:
+        data["wrong_password"] = True
+
+
+    return render(request, "museum_site/patreon_articles.html", data)
+
 def patron_plans(request):
-    """ Redirects to the Patron only Google Doc for Closer Looks """
+    """ TODO THIS IS LIKELY DEFUNCT """
+    # Redirects to the Patron only Google Doc for Closer Looks
     data = {}
 
     # Ugh I have to keep the URL outside of my public repo...

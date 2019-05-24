@@ -1,0 +1,85 @@
+{% extends "museum_site/main.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Patrons Only!</h1>
+
+<form method="POST">
+{% csrf_token %}
+<label>Enter your Patreon Password to unlock articles:</label>
+<input name="secret" type="password"> <button>Unlock</button>
+<br>
+<a href="https://www.patreon.com/posts/27088669" target="_blank">Get the password for <b>$2+</b> pledges</a>
+<br>
+<a href="https://www.patreon.com/posts/27089050" target="_blank">Get the password for <b>$5+</b> pledges</a>
+</form>
+
+{% if wrong_password %}
+<div class="c" style="font-size:28pt">
+<b>Incorrect password!</b>
+</div>
+{% endif %}
+<br>
+<h2>Early Access To The Next Article</h2>
+
+<p>Want to read the next Closer Look or other article in advance? Patrons pledging at least
+<b>$2</b> per month or more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>
+can stay ahead of the game and read this upcoming article right away:
+
+{% for article in early %}
+<div class="file-block" data-pk="{{article.id}}">
+    <div class="file-screen">
+        <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+        class="titlescreen"
+        alt="{{article.preview}}">
+    </div>
+    <div class="file-info">
+        <h1>{% if access == 'early' or access == 'really_early' %}<a href="{{article.url}}?secret={{request.POST.secret}}">{{article.title}}</a>{% else %}LOCKED -- {{article.title}}{% endif %}</h1>
+        <div>Author</div>: {{article.author}}<br>
+        <div>Date</div>: {{article.date}}<br>
+        <div><br>{{article.summary|default:""}}</div>
+    </div>
+</div>
+{% endfor %}
+
+
+<h2>Early Acess to Every Article</h2>
+
+<p>Want to read the complete article backlog? Patrons pledging at least
+<b>$5</b> per month or more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>
+can <i>also</i> read whatever the entire article queue which additionally includes:
+
+{% for article in really_early %}
+<div class="file-block" data-pk="{{article.id}}">
+    <div class="file-screen">
+        <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+        class="titlescreen"
+        alt="{{article.preview}}">
+    </div>
+    <div class="file-info">
+        <h1>{% if access == 'really_early' %}<a href="{{article.url}}?secret={{request.POST.secret}}">{{article.title}}</a>{% else %}LOCKED -- {{article.title}}{% endif %}</h1>
+        <div>Author</div>: {{article.author}}<br>
+        <div>Date</div>: {{article.date}}<br>
+        <div><br>{{article.summary|default:""}}</div>
+    </div>
+</div>
+{% endfor %}
+
+<p>If you're not a Patron, this is one of the perks that can be made available to you! Other perks include:</p>
+
+<ul>
+<li><b>$1+</b> &mdash; Voting for the subject of a monthly Closer Look</li>
+<li><b>$2+</b> &mdash; Access to a private patrons room on the <a href="/discord" target="_blank">Museum of ZZT Discord server</a></li>
+<li><b>$5+</b> &mdash; Access to the (mostly defunct) private beta site which sometimes gets features before the public site</li>
+<li>And more for those fortunate enough to be able to pledge larger amounts!</li>
+</ul>
+
+<div class="c" style="border:1px solid #000">
+    <a href="https://patreon.com/worldsofzzt" target="_blank" style="font-size:24pt">Make a monthly pledge to the Worlds of ZZT via Patreon!
+    <br>
+    <img src="{% static 'images/wozzt_pinned_tweet.png' %}"></a>
+</div>
+
+</section>
+{% endblock %}
