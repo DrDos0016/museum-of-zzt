@@ -48,6 +48,24 @@
 <div>By: {{article.author}}</div>
 <div>Date: {{article.date}}</div>
 
+{% if private_disclaimer %}
+<div class="content-warning">
+    <div class="text">
+        <b class="heading">DISCLAIMER</b>
+        <p>This article is available to you before being made available to the public thanks
+        to your support on Patreon!</p>
+
+        <b>Please: DO NOT SHARE THIS ARTICLE WITH OTHERS</b>
+
+        <p>Content may change before before being published to all visitors of the Museum.
+        If you encounter any issues with this article, letting me know so I could fix them
+        before publishing would be <a href="mailto:{{EMAIL_ADDRESS}}">greatly appreciated</a>.</p>
+
+        <p>Thank you again!</p>
+    </div>
+</div>
+{% endif %}
+
 {% if page_range %}
 {% include "museum_site/blocks/article_page_block.html" %}
 {% endif %}

@@ -64,7 +64,26 @@ def article_view(request, id, page=0):
     id = int(id)
     data = {"id": id}
 
-    data["article"] = get_object_or_404(Article, pk=id, published=PUBLISHED_ARTICLE)
+    if request.GET.get("secret") is None:
+        data["article"] = get_object_or_404(Article, pk=id, published=PUBLISHED_ARTICLE)
+    elif request.GET.get("secret") == PASSWORD2DOLLARS:
+        data["access"] = "early"
+        data["article"] = get_object_or_404(Article,
+            Q(published=PUBLISHED_ARTICLE) |
+            Q(published=UPCOMING_ARTICLE),
+            pk=id
+        )
+        data["private_disclaimer"] = True
+
+    elif request.GET.get("secret") == PASSWORD5DOLLARS:
+        data["access"] = "really_early"
+        data["article"] = get_object_or_404(Article,
+            Q(published=PUBLISHED_ARTICLE) |
+            Q(published=UPCOMING_ARTICLE) |
+            Q(published=UNPUBLISHED_ARTICLE),
+            pk=id,
+        )
+        data["private_disclaimer"] = True
     data["page"] = page
     data["page_count"] = data["article"].content.count("<!--Page-->") + 1
     data["page_range"] = list(range(1, data["page_count"] + 1))

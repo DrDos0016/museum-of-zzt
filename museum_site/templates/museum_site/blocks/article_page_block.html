@@ -1,10 +1,10 @@
 {% if page_count > 1 %}
 <div class="pages">
     Page #{{page}}/{{page_count}}<br>
-    {% if page > 1 %}<a href="{% url 'article_view_page' id  prev slug %}">&lt;</a>{% endif %}
+    {% if page > 1 %}<a href="{% url 'article_view_page' id  prev slug %}{% if private_disclaimer%}?secret={{request.GET.secret}}{% endif %}">&lt;</a>{% endif %}
     {% for p in page_range %}
-    <a href="{% url 'article_view_page' id p slug %}">{{p}}</a>
+    <a href="{% url 'article_view_page' id p slug %}{% if private_disclaimer%}?secret={{request.GET.secret}}{% endif %}">{{p}}</a>
     {% endfor %}
-    {% if next %}<a href="{% url 'article_view_page' id next slug %}">&gt;</a>{% endif %}
+    {% if next %}<a href="{% url 'article_view_page' id next slug %}{% if private_disclaimer%}?secret={{request.GET.secret}}{% endif %}">&gt;</a>{% endif %}
 </div>
 {% endif %}
