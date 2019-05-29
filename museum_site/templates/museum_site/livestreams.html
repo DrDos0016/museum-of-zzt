@@ -15,7 +15,7 @@ the <a href="https://www.youtube.com/channel/UCr0f-r1bRexAZK8sWyk4NJA" target="_
 {% for article in articles %}
 <div class="file-block" data-pk="{{article.id}}">
     <div class="file-screen">
-        <img src="{% static article.preview %}"
+        <img src="{% static 'images/'|add:article.preview %}"
         class="titlescreen"
         alt="{{article.preview}}">
     </div>
