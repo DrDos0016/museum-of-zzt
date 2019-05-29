@@ -399,15 +399,6 @@ def livestreams(request):
     data["prev"] = max(1, data["page"] - 1)
     data["next"] = min(data["pages"], data["page"] + 1)
     data["qs_sans_page"] = qs_sans(request.GET, "page")
-
-    # TODO: Actually give livestreams a preview image
-    for idx in range(0,len(data["articles"])):
-        related_files = data["articles"][idx].file_set.all()
-        if related_files:
-            data["articles"][idx].preview = related_files[0].screenshot_url()
-        else:
-            data["articles"][idx].preview = "images/screenshots/no_screenshot.png"
-
     return render(request, "museum_site/livestreams.html", data)
 
 
