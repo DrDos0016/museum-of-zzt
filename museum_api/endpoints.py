@@ -1,6 +1,5 @@
 import base64
 import random
-import time
 
 from io import BytesIO
 
@@ -29,7 +28,7 @@ def worlds_of_zzt(request):
         return server_error_500(request)
 
     # Timestamp
-    ts = int(time.time())
+    ts = int(time())
 
     # Select a randomly displayable file
     f = displayable_files().order_by("?")[0]
