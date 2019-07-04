@@ -1194,6 +1194,29 @@ code .char:hover
     cursor:help;
 }
 
+#oop-wrapper.zzt-scroll
+{
+    margin:0;
+}
+
+#oop-wrapper.zzt-scroll code
+{
+    background:transparent;
+    color:#FF5;
+    padding:0;
+    font-size:16px;
+    line-height:14px;
+    margin-left:32px;
+    font-family:"cp437";
+    overflow:auto;
+    width:356px;
+    height:210px;
+}
+
+#oop-wrapper.zzt-scroll code::before, #oop-wrapper.zzt-scroll code::after
+{
+    content:"  •    •    •    •    •    •    •    •    •\A";
+}
 /* End ZZT-OOP Syntax */
 
 /* Content Warnings */

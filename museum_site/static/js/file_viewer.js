@@ -107,6 +107,7 @@ var TILE_HEIGHT = 14;
 var renderer = null;
 var hover_x = 0;
 var hover_y = 0;
+var oop_style = "zzt-scroll";
 var raw_doc = "";
 
 function init()
@@ -932,18 +933,25 @@ function stat_info(e)
             <td>Instruction:</td><td>${stat.oop_idx}</td>
         </tr>
         </table>
-        `;
 
-        if (stat.oop_length > 0)
-        {
-            output += `<code class='zzt-oop'>${syntax_highlight(stat.oop)}</code>`;
-        }
+        ZZT-OOP style:
+        <label><input type="radio" name="oop_style" value="modern"${oop_style == 'modern' ? ' checked' : ''}> Modern</label>
+        <label><input type="radio" name="oop_style" value="zzt-scroll"${oop_style == 'zzt-scroll' ? ' checked' : ''}> Classic</label>
+
+        <div id="oop-wrapper"><code id='zzt-oop' class='zzt-oop ${oop_style}' data-stat_idx='${stat_idx}'></code></div>
+        `;
     }
 
     $("#element-info").html(output);
+    render_zzt_oop(stat);
     tab_select("element-info");
     // Bind board links (from passages)
     $(".board-link").click(switch_board);
+    // Bind radio buttons
+    $("input[name=oop_style]").click(function (){
+        oop_style = $(this).val();
+        render_zzt_oop(null);
+    });
 
     return true;
 }
@@ -1544,4 +1552,38 @@ function play_board()
     console.log("PLAYING THIS BOARD");
     window.open("/play/"+letter+"/"+zip+"?player=zeta&popout=1&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number, "popout-"+zip, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
     //window.open(play_url);
+}
+
+function render_zzt_oop(stat)
+{
+    if (stat == null)
+    {
+        console.log($("#zzt-oop").data("stat_idx"));
+        stat = world.boards[board_number].stats[$("#zzt-oop").data("stat_idx")];
+    }
+
+
+    $("#zzt-oop, #oop-wrapper").removeClass("modern zzt-scroll");
+    $("#oop-wrapper").addClass(oop_style);
+    $("#oop-wrapper .name").remove();
+
+    if (oop_style == "zzt-scroll")
+    {
+        $("#oop-wrapper").prepend("<div class='name'>Edit Program</div>");
+        $("zzt-oop").addClass("content");
+    }
+    else
+    {
+        $("zzt-oop").removeClass("content");
+    }
+
+    if (stat && oop_style == "modern")
+        $("#zzt-oop").html(syntax_highlight(stat.oop));
+    else
+        $("#zzt-oop").html(stat.oop);
+
+    if (! stat || stat.oop_length == 0)
+        $("#zzt-oop").hide();
+    else
+        $("#zzt-oop").show();
 }
