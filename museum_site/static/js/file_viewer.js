@@ -107,7 +107,7 @@ var TILE_HEIGHT = 14;
 var renderer = null;
 var hover_x = 0;
 var hover_y = 0;
-var oop_style = "zzt-scroll";
+var oop_style = "modern";
 var raw_doc = "";
 
 function init()
