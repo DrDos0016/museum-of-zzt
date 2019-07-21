@@ -1579,7 +1579,7 @@ function render_zzt_oop(stat)
 
     if (stat && oop_style == "modern")
         $("#zzt-oop").html(syntax_highlight(stat.oop));
-    else
+    else if (stat)
         $("#zzt-oop").html(stat.oop);
 
     if (! stat || stat.oop_length == 0)
