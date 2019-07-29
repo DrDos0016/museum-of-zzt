@@ -14,6 +14,7 @@ BLACKLISTED_FILES = [
     494,  # G***D P**t 2! (Author's request)
     2246,  # G***D S********k! (Author's request)
     2242,  # M*****'s Z*T T*******s (Author's request)
+    739,  # M***y A*d T*e Q***t F*r L***! (Sexual content between early teens)
     853,  # P******l (Author's request)
     1197,  # P******l B* (Author's request)
     1660, # R*****e (Author's request)
