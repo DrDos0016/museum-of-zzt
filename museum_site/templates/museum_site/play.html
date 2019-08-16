@@ -29,7 +29,7 @@ $(document).ready(function (){
 });
 </script>
 {% if player == "zeta" %}
-<script type="text/javascript" src="/static/zeta86/zeta_preload.js"></script>
+<script type="text/javascript" src="/static/zeta86/zeta_loader.js"></script>
 <script type="text/javascript">
 var scale = 1;
 var base_w = 640;
@@ -64,11 +64,17 @@ $(document).ready(function (){
         $("#zzt_canvas").height(base_h * scale);
     });
 
-    Zeta({
+    ZetaLoad({
         path: "/static/zeta86/",
         render: {
             canvas: document.getElementById("zzt_canvas"),
         },
+{% if zeta_database %}
+        storage: {
+            type: "auto",
+            database: "{{zeta_database}}"
+        },
+{% endif %}
         files: [
             "/static/data/zeta86_engines/{{engine}}",
             "{{zeta_url|default:file.download_url}}",
