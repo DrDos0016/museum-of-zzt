@@ -502,10 +502,12 @@ def play(request, letter, filename):
     else:
         data["custom_charset"] = None
 
-    if data["file"].is_super_zzt():
-        data["engine"] = "szzt.zip"
-    else:
-        data["engine"] = "zzt.zip"
+    if player == "zeta":
+        if data["file"].is_super_zzt():
+            data["engine"] = "szzt.zip"
+        else:
+            data["engine"] = "zzt.zip"
+        data["zeta_database"] = str(data["file"].id)
 
     data["play_base"] = "museum_site/world.html"
     if request.GET.get("popout"):
