@@ -36,10 +36,15 @@
     </div>
     {% else %}
     <div class="sub">
-        Random Seed: <a href="/roulette?rng_seed={{rng_seed}}">{{rng_seed}}</a>
+        Roulette Seed: <a href="/roulette?rng_seed={{rng_seed}}">{{rng_seed}}</a>
     </div>
     {% endif %}
     {% if advanced_search %}
     <a href="/advanced-search?{{request.META.QUERY_STRING}}">Modify Search Query</a>
+    {% endif %}
+    {% if collection_params %}
+    <div class="sub">
+        <a href="{% url 'play_collection' %}{{collection_params}}">Play Collection</a>
+    </div>
     {% endif %}
 </div>

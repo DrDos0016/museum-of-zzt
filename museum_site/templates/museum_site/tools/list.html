@@ -28,6 +28,7 @@
     {% else %}
     <li><a href="{% url 'mirror' file.id %}">Archive.org Mirror</a> ({{file.archive_name}})</li>
     {% endif %}
+    <li><a href="{% url 'replace_zip' file.id %}">Replace Zip</a></li>
 </ul>
 
 {% include "museum_site/blocks/file_block.html" %}
@@ -58,7 +59,7 @@
     </tr>
     <tr>
         <td>Size</td>
-        <td>{{file.size}}</td>
+        <td>{{file.size|filesizeformat}} ({{file.size}} bytes)</td>
     </tr>
     <tr>
         <td>Genre</td>
@@ -82,7 +83,7 @@
     </tr>
     <tr>
         <td>Last Modified</td>
-        <td>{{file.last_modified}})</td>
+        <td>{{file.last_modified}}</td>
     </tr>
     <tr>
         <td>Screenshot</td>

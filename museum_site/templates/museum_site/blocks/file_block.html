@@ -1,44 +1,66 @@
 {% load staticfiles %}
-<div class="file-block" id="{{file.filename}}" data-pk="{{file.id}}">
-    <div class="file-screen">
-        <img src="{% static file.screenshot_url %}" class="titlescreen" alt="{{file.screenshot}}">
-    </div>
-    <div class="file-info">
-        <h1><a href="{{file.file_url}}">{{file.title|default:"NO NAME"}}</a></h1>
-        <div class="col">
-            <div>Author</div>: {% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
-            <div>Company</div>: <a href="{% url 'search'%}?company={{file.company}}">{{file.company}}</a><br>
-            <div>Released</div>: <a href="{% url 'search'%}?year={{file.release_date.year|default:'any'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a><br>
-            <div>Genre</div>: {% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br>
-            <div>Filename</div>: {{file.filename}}<br>
-            <div>Size</div>: {{file.size|filesizeformat}}<br>
+<div class="overview-block" id="{{file.filename}}" data-pk="{{file.id}}">
+    <h1 class="title"><a href="{{file.file_url}}">{{file.title|default:"NO NAME"}}</a></h1>
+    <img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">
+
+
+    <div class="basic-info">
+        <div class="field">
+            <div class="key">Author{{file.author_list|pluralize}}</div><div class="value">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
         </div>
-        <div class="col">
-            <div>Details:</div> {% for detail in file.details.all %}{{detail.detail}}{% if not forloop.last %}, {% endif %}{% endfor %}<br>
-            <div>Rating</div>: {%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}<br>
-            <div>Boards</div>: {% if file.total_boards %}<span title="Playable/Total - Values are not 100% accurate">{{file.playable_boards}} / {{file.total_boards}}</span>{% endif %}<br>
-            {% if debug %}<div class="debug">Debug:</div>: {{file.id}} / <a href="/admin/museum_site/file/{{file.id}}/change/">Edit</a> / <a href="/tools/{{file.id}}">Tools</a><br>{% endif %}
+        <div class="field">
+            <div class="key">Company</div><div class="value"><a href="{% url 'search'%}?company={{file.company}}">{{file.company}}</a></div>
+        </div>
+        <div class="field">
+            <div class="key">Released</div><div class="value"><a href="{% url 'search'%}?year={{file.release_date.year|default:'any'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
+        </div>
+        <div class="field">
+            <div class="key">Genre{{file.genre_list|pluralize}}</div><div class="value">{% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+        </div>
+        <div class="field">
+            <div class="key">Filename</div><div class="value">{{file.filename}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Size</div><div class="value">{{file.size|filesizeformat}}</div>
         </div>
     </div>
-    {% if show_featured %}
-    <div class="featured-reviews">
-        <h2>Featured Reviews</h2>
-        {% for article in file.articles.all %}
-            {% if article.category == "Featured Game" %}
-                <a href="{{article.url}}">{{article.title}} by {{article.author|default:"Unknown"}}</a><br>
-            {% endif %}
-        {% endfor %}
+    <div class="advanced-info">
+            <div class="field">
+                <div class="key">Details</div><div class="value">{% for detail in file.details.all %}{{detail.detail}}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+            </div>
+            <div class="field">
+                <div class="key">Rating</div><div class="value">{%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}</div>
+            </div>
+            <div class="field">
+                <div class="key">Boards</div><div class="value">{% if file.total_boards %}<span title="Playable/Total - Values are not 100% accurate">{{file.playable_boards}} / {{file.total_boards}}</span>{% endif %}</div>
+            </div>
+            {% if debug %}<div class="field debug">
+                <div class="key">Debug</div><div class="value">{{file.id}} / <a href="/admin/museum_site/file/{{file.id}}/change/">Edit</a> / <a href="/tools/{{file.id}}">Tools</a></div>
+            </div>{% endif %}
     </div>
-    {% endif %}
-    {% if show_description and file.description %}
+    {% if show_description %}
     <div class="featured-description">
+        {% if file.description %}
         <div>
             <h2>Description</h2>
             <p>{{file.description|safe}}</p>
         </div>
+        {% endif %}
     </div>
     {% endif %}
-    <div class="file-links">
-        {% include "museum_site/blocks/file_links.html" %}
+    {% if show_featured %}
+    <div class="featured-reviews">
+        <h2>Featured Reviews</h2>
+        <ul>
+        {% for article in file.articles.all %}
+            {% if article.category == "Featured Game" %}
+                <li><a href="{{article.url}}">{{article.title}} by {{article.author|default:"Unknown"}}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
     </div>
+    {% endif %}
+</div>
+<div class="overview-links">
+    {% include "museum_site/blocks/file_links.html" %}
 </div>
