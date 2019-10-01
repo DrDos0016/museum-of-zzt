@@ -4,25 +4,26 @@
 <section id="content" class="col block">
 
 <h1>{{category|title}} Directory</h1>
-
 <div class="directory">
 {% for row in list %}
     {% if forloop.counter0|divisibleby:split %}
     <div class="column">
-        <div class="header">
-            {{row.0|upper}}
-        </div>
-    {% else %}
-        {% ifchanged %}
-        <div class="header">
-            {{row.0|upper}}
-        </div>
-        {% endifchanged %}
     {% endif %}
+    {% ifchanged %}
+    <div class="header">
+        {{row.1.0|upper}}
+    </div>
+    {% else %}
+        {% if forloop.counter0|divisibleby:split %}
+        <div class="header">
+            {{row.1.0|upper}} (cntd.)
+        </div>
+        {% endif %}
+    {% endifchanged %}
         <div class="row">
-            <a href="{% url 'search' %}?{{category}}={{row}}{% if category != 'genre' %}&sort=release{% endif %}">{{row}}</a>
+            <a href="{% url 'search' %}?{{category}}={{row.0}}{% if category != 'genre' %}&sort=release{% endif %}">{{row.0}}</a>
             </div>
-    {% if forloop.counter|divisibleby:split %}
+    {% if forloop.counter|divisibleby:split or forloop.last %}
     </div>
     {% endif %}
 {% endfor %}

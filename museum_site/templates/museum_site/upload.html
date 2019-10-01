@@ -2,14 +2,25 @@
 
 {% block style %}
 <style>
+#upload-form
+{
+    margin-top:14px;
+}
 #desc
 {
     height:7em;
+    flex:4;
 }
 
 .upload-error
 {
     background:#FAA;
+}
+
+input[name=today]
+{
+    max-width:20%;
+    margin-left:8px;
 }
 </style>
 {% endblock %}
@@ -49,10 +60,24 @@ function reload_preview()
 $(document).ready(function (){
     $("#file").change(load_local_file);
     $("input").change(reload_preview);
+    $("input[name=genre]").click(function (){
+        if ($(this).prop("checked"))
+            $(this).parent().addClass("selected");
+        else
+            $(this).parent().removeClass("selected");
+    });
     $("input[name=today]").click(function (){
         var today = new Date();
         $("#release_date").val(today.toISOString().slice(0,10));
         reload_preview();
+    });
+
+    // Keep background on genre labels between refreshes
+    $("input[name=genre]").each(function (){
+        if ($(this).prop("checked"))
+            $(this).parent().addClass("selected");
+        else
+            $(this).parent().removeClass("selected");
     });
 });
 </script>
@@ -76,28 +101,37 @@ $(document).ready(function (){
 </div>
 {% endif %}
 
-<div class="file-block">
-    <div class="file-screen" style="float:left">
-        <img src="{% if file.screenshot %}/assets/images/screenshots/{{file.letter}}/{{file.screenshot}}{% else %}/static/images/screenshots/no_screenshot.png{% endif %}" class="titlescreen">
-    </div>
-    <div class="file-info">
-        <h1><span id="pre-title">&lt;Title&gt;</span></h1>
-        <div>Author</div>: <span id="pre-authors">&lt;Authors&gt;</span><br>
-        <div>Filename</div>: <span id="pre-filename">&lt;Filename&gt;</span><br>
-        <div>Released</div>: <span id="pre-released">&lt;Release Date&gt;</span><br>
-        <div>Genre</div>: <span id="pre-genres">&lt;Genres&gt;</span><br>
-        <div>Company</div>: <span id="pre-company">&lt;Company&gt;</span><br>
-        <div>Size</div>: <span id="pre-size">&lt;File Size&gt;</span> KB<br>
-        <div>Rating</div>: <em>No rating</em>
+<div class="overview-block">
+    <h1 class="title"><span id="pre-title">&lt;Title&gt;</span></h1>
+    <img src="/static/images/screenshots/no_screenshot.png" class="screenshot-thumb" alt="{{file.screenshot}}">
+    <div class="basic-info">
+        <div class="field">
+            <div class="key">Author(s)</div><div class="value"><span id="pre-authors">&lt;Author(s)&gt;</div>
+        </div>
+        <div class="field">
+            <div class="key">Company</div><div class="value"><span id="pre-company">&lt;Company&gt;</div>
+        </div>
+        <div class="field">
+            <div class="key">Released</div><div class="value"><span id="pre-released">&lt;Release Date&gt;</span></div>
+        </div>
+        <div class="field">
+            <div class="key">Genre(s)</div><div class="value"><span id="pre-genres">&lt;Genre(s)&gt;</span></div>
+        </div>
+        <div class="field">
+            <div class="key">Filename</div><div class="value"><span id="pre-filename">&lt;Filename&gt;</span></div>
+        </div>
+        <div class="field">
+            <div class="key">Size</div><div class="value"><span id="pre-size">&lt;File Size&gt;</span></div>
+        </div>
     </div>
 </div>
 
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data" id="upload-form">
 {% csrf_token %}
 <input type="hidden" name="action" value="upload">
 <div class="field">
     <label>File:<br>
-        <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must be smaller than 2.5 MB</span>
+        <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must be smaller than <b>{{UPLOAD_CAP|filesizeformat}}</b></span>
     </label>
     <input id="file" name="file" type="file" accept=".zip">
 </div>
@@ -125,9 +159,9 @@ $(document).ready(function (){
     <label for="genre">Genre(s):<br>
         <span class="sub">Any genres which this file may fall under. At least one genre must be selected.</span>
     </label>
-    <div class="checklist">
+    <div class="genre-checklist">
         {% for genre in genres %}
-        <label><input name="genre" type="checkbox" value="{{genre}}"> - {{genre}}</label><br>
+        <label><input name="genre" type="checkbox" value="{{genre}}"> {{genre}}</label>
         {% endfor %}
     </div>
 </div>
@@ -136,7 +170,9 @@ $(document).ready(function (){
         <span class="sub">The date this file was first made public. Use YYYY-MM-DD for the format. If this is a new release, it should be the modified date of the most recent ZZT world (or executable, or other primary file).
         If the release date is not known, leave this field blank.</span>
     </label>
-    <input id="release_date" name="release_date" value="" maxlength="10" type="date"> <input type="button" value="Today" name="today">
+    <div class="field-group">
+        <input id="release_date" name="release_date" value="" maxlength="10" type="date"> <input type="button" value="Today" name="today">
+    </div>
 </div>
 <div class="field">
     <label for="desc">Utility Description:<br>
@@ -146,7 +182,7 @@ $(document).ready(function (){
 </div>
 
 <div class="field">
-    <button type="submit">Upload File</button>
+    <button type="submit" id="submit-upload-button">Upload File</button>
 </div>
 </form>
 

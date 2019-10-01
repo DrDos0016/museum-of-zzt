@@ -29,7 +29,7 @@
         <td class="author">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         <td class="genre">{% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         <td class="size">{{file.size|filesizeformat}}</td>
-        <td class="rating">{%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>None</em>{% endif %}</td>
+        <td class="rating">{%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}}<span class="low-res-hidden"> / 5.00</span></span>{% else %}<em>None</em>{% endif %}</td>
         <td class="files"><a href="{{file.play_url}}">Play</a></td>
         {% comment %}<td class="wiki"><a href="{{file.wiki_url}}">Wiki</a></td>{% endcomment %}
     </tr>

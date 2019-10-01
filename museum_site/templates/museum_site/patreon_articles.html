@@ -28,17 +28,21 @@
 can stay ahead of the game and read this upcoming article right away:
 
 {% for article in early %}
-<div class="file-block" data-pk="{{article.id}}">
-    <div class="file-screen">
-        <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
-        class="titlescreen"
-        alt="{{article.preview}}">
-    </div>
-    <div class="file-info">
-        <h1>{% if access == 'early' or access == 'really_early' %}<a href="{{article.url}}?secret={{request.POST.secret}}">{{article.title}}</a>{% else %}LOCKED -- {{article.title}}{% endif %}</h1>
-        <div>Author</div>: {{article.author}}<br>
-        <div>Date</div>: {{article.date}}<br>
-        <div><br>{{article.summary|default:""}}</div>
+<div class="overview-block" data-pk="{{article.id}}">
+    <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+    class="screenshot-thumb"
+    alt="{{article.preview}}">
+    <h1 class="title">{% if access == 'early' or access == 'really_early' %}<a href="{{article.url}}?secret={{request.POST.secret}}">{{article.title}}</a>{% else %}LOCKED -- {{article.title}}{% endif %}</h1>
+    <div class="wide-info">
+        <div class="field">
+            <div class="key">Author</div><div class="value">{{article.author}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Date</div><div class="value">{{article.date}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Summary</div><div class="value">{{article.summary}}</div>
+        </div>
     </div>
 </div>
 {% endfor %}
@@ -51,17 +55,21 @@ can stay ahead of the game and read this upcoming article right away:
 can <i>also</i> read whatever the entire article queue which additionally includes:
 
 {% for article in really_early %}
-<div class="file-block" data-pk="{{article.id}}">
-    <div class="file-screen">
-        <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
-        class="titlescreen"
-        alt="{{article.preview}}">
-    </div>
-    <div class="file-info">
-        <h1>{% if access == 'really_early' %}<a href="{{article.url}}?secret={{request.POST.secret}}">{{article.title}}</a>{% else %}LOCKED -- {{article.title}}{% endif %}</h1>
-        <div>Author</div>: {{article.author}}<br>
-        <div>Date</div>: {{article.date}}<br>
-        <div><br>{{article.summary|default:""}}</div>
+<div class="overview-block" data-pk="{{article.id}}">
+    <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+    class="screenshot-thumb"
+    alt="{{article.preview}}">
+    <h1 class="title">{% if access == 'really_early' %}<a href="{{article.url}}?secret={{request.POST.secret}}">{{article.title}}</a>{% else %}LOCKED -- {{article.title}}{% endif %}</h1>
+    <div class="wide-info">
+        <div class="field">
+            <div class="key">Author</div><div class="value">{{article.author}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Date</div><div class="value">{{article.date}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Summary</div><div class="value">{{article.summary}}</div>
+        </div>
     </div>
 </div>
 {% endfor %}

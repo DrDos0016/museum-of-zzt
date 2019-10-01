@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from museum_site.models import Detail, DETAIL_FEATURED
-from museum_site.common import DEBUG, EMAIL_ADDRESS, BOOT_TS
+from museum_site.common import DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP
 
 
 def museum_global(request):
@@ -31,7 +31,13 @@ def museum_global(request):
     data["EMAIL_ADDRESS"] = EMAIL_ADDRESS
     data["BOOT_TS"] = BOOT_TS
 
+    # CSS Files
+    data["CSS_INCLUDES"] = CSS_INCLUDES
+
     # Featured Games
     featured = Detail.objects.get(pk=DETAIL_FEATURED)
     data["fg"] = featured.file_set.all().order_by("?")[0]
+
+    # Upload Cap
+    data["UPLOAD_CAP"] = UPLOAD_CAP
     return data

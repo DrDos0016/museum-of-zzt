@@ -26,20 +26,29 @@ $(document).ready(function() {
 
 {% block style %}
 <style>
-#content td
+.mass-dl-table
 {
-    padding:0.25em;
+    width:auto;
+    display:inline-block;
+    vertical-align:top;
+    margin:auto;
+    border:0;
+}
+
+.mass-dl-table td:first-child
+{
+    width:60%;
 }
 
 td[name=zips]
 {
-    text-align:right;
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <section id="content" class="block">
+<h1>Mass Downloads</h1>
 <p>By today's standards, ZZT's worlds are incredibly small downloads.
 A complete collection of all files hosted on the Museum of ZZT isn't that much larger than 100 MB.</p>
 
@@ -50,7 +59,7 @@ they have been split up by release year for ZZT worlds and by file type for non-
 <p>Note that since these downloads consist of nothing more than a zip file filled with dozens of zip files you may wind up downloading
 plenty of duplicate copies of executables, fonts, or other content.</p>
 
-<table class="col">
+<table class="mass-dl-table">
 <tr>
     <th>File</th>
     <th>Zips</th>
@@ -108,7 +117,7 @@ plenty of duplicate copies of executables, fonts, or other content.</p>
 </tr>
 </table>
 
-<table class="col">
+<table class="mass-dl-table">
 <tr>
     <th>File</th>
     <th>Zips</th>
@@ -166,7 +175,7 @@ plenty of duplicate copies of executables, fonts, or other content.</p>
 </tr>
 </table>
 
-<table class="col">
+<table class="mass-dl-table">
 <tr>
     <th>File</th>
     <th>Zips</th>

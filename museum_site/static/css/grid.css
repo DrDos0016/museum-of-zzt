@@ -1,0 +1,1170 @@
+/* Basic Elements */
+body
+{
+    font-family:sans-serif;
+    background:#CCC;
+    margin:7px 8px auto 8px;
+}
+
+a { text-decoration:none; }
+a:hover { text-decoration:underline; }
+a:visited { color:#00F; }
+
+a[target=_blank]
+{
+    padding-right:16px;
+    background:url("/static/images/external_link.png");
+    background-position:right;
+    background-repeat:no-repeat;
+}
+
+a.noext[target=_blank]
+{
+    padding-right:0;
+    background:none;
+}
+
+a.broken
+{
+    text-decoration:line-through;
+    color:#F00;
+}
+
+a.il
+{
+    font-style:italic;
+}
+
+blockquote
+{
+    font-family:serif;
+    font-style:oblique;
+    text-align:justify;
+    padding:0.5em;
+    border:3px double #000;
+    background:#DEF;
+}
+
+blockquote::first-letter
+{
+    margin-left:1em;
+    font-size:x-large;
+}
+
+h1, h2, h3 { margin:0; margin-bottom:7px; }
+
+img:not(.screenshot-thumb) { max-width:100%; }
+
+p
+{
+    margin:14px auto 14px auto;
+}
+
+table
+{
+    border-collapse:collapse;
+    border:1px solid #000;
+    width:100%;
+    margin-top:14px;
+    margin-bottom:14px;
+}
+
+table th
+{
+    background-color:#619F9F;
+}
+
+table th, table td
+{
+    border:1px solid #000;
+    padding:7px 4px 7px 4px;
+}
+
+input, select, textarea
+{
+    border:1px solid #000;
+    background:#FFF;
+    font-size:larger;
+}
+
+input[type=number]
+{
+    padding:2px;
+}
+/* End Basic Elements */
+
+/* Fonts */
+@font-face
+{
+    /* http://int10h.org/oldschool-pc-fonts/readme/ */
+    font-family: 'cp437';
+    src: url('/static/fonts/Px437_IBM_EGA8.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.cp437 { font-family: "cp437";}
+/* End Fonts */
+
+/* Site Layout */
+.grid-root
+{
+    display:grid;
+    grid-template-areas:
+    "logo content links"
+    "left content right"
+    "footer footer footer";
+
+    grid-template-columns:3fr 14fr 3fr;
+    grid-template-rows:86px auto auto;
+    grid-gap:14px 8px;
+}
+
+#logo-area
+{
+    grid-area: logo;
+}
+
+@media (min-width: 10px)
+{
+    #logo
+    {
+        background-image:url("/static/images/logos/museum_of_zzt_logo_nocat.png");
+        background-repeat:no-repeat;
+        background-position:left bottom;
+        background-size:contain;
+        height:70px;
+        display:block;
+        position:relative;
+    }
+}
+
+@media (min-width: 1500px)
+{
+    #logo
+    {
+        background-image:url("/static/images/logos/museum_of_zzt_logo_wide_v3.png");
+        background-repeat:no-repeat;
+        background-position:center bottom;
+        background-size:contain;
+        height:100px;
+    }
+}
+
+@media (max-width: 1024px)
+{
+    .low-res-hidden { display:none; }
+}
+
+#logo-area
+{
+    height:50px;
+}
+
+#top-links
+{
+    border:1px solid #000;
+}
+
+.nav-link
+{
+    margin:auto;
+    font-size:28px;
+    height:28px;
+    line-height:28px;
+    width:100%;
+    background-color:#00A;
+}
+
+.nav-link:nth-child(even) .key { background-color:#AAA; }
+.nav-link:nth-child(odd) .key { background-color:#0AA; }
+
+.nav-link a
+{
+    color:#FF5;
+    padding-left:14px;
+    padding-right:14px;
+    display:block;
+}
+
+.nav-link a:hover
+{
+    text-decoration:none;
+}
+
+.nav-link .key
+{
+    text-align:center;
+    margin:auto;
+    display:inline-block;
+    padding-left:14px;
+    padding-right:14px;
+    color:#000;
+}
+
+/* Adjust special links on low-res devices */
+@media (max-width:1499px) {
+    .grid-root
+    {
+        grid-template-rows:65px auto auto;
+    }
+
+    #logo
+    {
+        height:50px;
+    }
+
+    .nav-link
+    {
+        font-size:21px;
+        height:21px;
+        line-height:21px;
+    }
+}
+
+@media (max-width:1279px) {
+    .nav-link .key
+    {
+        display:none;
+    }
+
+    #top-links
+    {
+        height:auto;
+    }
+
+    .nav-link
+    {
+        height:auto;
+        /*font-size:smaller;*/
+    }
+}
+
+#sidebar-left { grid-area: left; margin-top: -28px} /* Margin is for the logo */
+#content { grid-area: content; }
+#sidebar-right { grid-area: right; }
+/*.sidebar { max-width:500px; }*/
+
+#footer
+{
+    grid-area: footer;
+    text-align: center;
+    font-size: smaller;
+}
+/* End Site Layout */
+
+/* Utility Classes */
+.debug { background:#FAA; }
+.hidden { visibility: hidden; }
+.inline { display: inline; }
+.fit-height { height: calc(100vh - 44px ); align-self:start; }
+
+.b { font-weight: bold; }
+.i { font-style: oblique; }
+.smaller { font-size: smaller; }
+.larger { font-size: larger; }
+
+.jsLink { cursor:pointer; color:#00F; }
+
+.fl { float:left; }
+.fr { float:right; }
+
+.l { text-align:left; }
+.c { text-align:center; margin:auto; }
+.r { text-align:right; }
+
+.zoomed { cursor:zoom-out; width:auto; }
+img.zoomed { max-width: auto; }
+/* End Utility Classes */
+
+/* Generic Structures */
+.block
+{
+    padding:14px 8px 14px 8px;
+    margin-bottom:14px;
+    background:#F0F0F0;
+    border:1px solid #000;
+}
+
+.td-date { width:5em; }
+.top-margin { margin-top:7px; }
+.screenshot-thumb { width:240px; }
+
+.screenshot-thumb:hover { cursor:zoom-in; }
+
+.img-set /* Used in old Featured Game reviews */
+{
+    display:block;
+    text-align:center;
+    margin:auto;
+}
+
+.img-set img { border:1px solid #AAA; }
+/* End Generic Structures */
+
+/* Specific Structures */
+.sidebar h1
+{
+    border-bottom:1px solid #000;
+}
+
+.sidebar h2
+{
+    font-size:smaller;
+    border-bottom:1px solid #000;
+    padding-top:7px;
+}
+
+#featured img
+{
+    width:100%;
+    max-width:480px;
+    margin:auto;
+}
+
+#fg-screenshot { display:block; }
+
+#letters
+{
+    width:100%;
+    margin:auto;
+    display:grid;
+    grid-template-columns: repeat(9, 11%);
+    font-size:21px;
+    border-bottom:1px solid #000;
+    padding-bottom:7px;
+    margin-bottom:7px;
+}
+
+#search-form
+{
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-gap:8px;
+}
+
+#worlds-block form
+{
+border:0px;
+padding:0px;
+}
+
+input[name=q]
+{
+    width:100%;
+    font-size:medium;
+}
+
+#search-button
+{
+    font-size:medium;
+}
+
+#social
+{
+    text-align:center;
+    border-bottom:1px solid #000;
+    padding-bottom:7px;
+    margin-bottom:7px;
+    min-height:24px;
+    line-height:0px; /* what */
+}
+
+#social a[target=_blank]
+{
+    padding-right:0px;
+    background:none;
+    display:inline-block;
+    width:24px;
+    height:24px;
+}
+
+#social img { max-width:24px; max-height:24px; }
+#policies { margin-bottom:7px; }
+
+.pages
+{
+    text-align:center;
+    margin:14px auto 14px auto;
+}
+
+#years
+{
+    margin:auto;
+    text-align:center;
+    width:100%;
+}
+
+#years a
+{
+    padding-left:8px;
+    padding-right:8px;
+    text-align:center;
+}
+
+.directory
+{
+    width:100%;
+    display:flex;
+    justify-content:space-evenly;
+    align-items:flex-start;
+}
+
+.column
+{
+    border:1px solid #000;
+    border-top:0px;
+    display:inline-block;
+    width:24%;
+    vertical-align:top;
+}
+
+.column .header
+{
+    background:#619F9F;
+    text-align:center;
+    font-weight:bold;
+}
+
+.column .row
+{
+    padding-left:0.5em;
+}
+
+.column div
+{
+    border-top:1px solid #000;
+}
+
+.column .row:hover
+{
+    background:#AAA;
+}
+
+.content-warning
+{
+    background:#CFF;
+    display:flex;
+    align-items:center;
+    padding:0.25em 1em 0.25em 1em;
+    max-width:75%;
+    margin:auto;
+    border:1px dashed #000;
+    margin-bottom:1em;
+}
+
+.content-warning .img
+{;
+    flex:0 0 150px;
+    height:50px;
+    padding:1em;
+}
+
+.content-warning .text
+{
+    flex:1;
+    font-size:smaller;
+}
+
+.content-warning .text p
+{
+    margin-top:0.25em;
+    margin-bottom:0.25em;
+}
+
+.content-warning .text b.heading
+{
+    font-size:larger;
+    letter-spacing:0.5em;
+    text-align:center;
+    display:block;
+    width:100%;
+}
+
+.patreon-plug
+{
+    font-family:monospace;
+    font-size:14px;
+    line-height:14px;
+    color:#FFFF55;
+    background:#000;
+    padding:14px 8px;
+    max-width:320px;
+    margin:0.25em auto 0.25em auto;
+    border:2px solid #0000AA;
+}
+
+.patreon-plug .heading
+{
+    color:#FFFFFF;
+}
+
+.patreon-plug .heading span
+{
+    color:#0000AA;
+}
+
+.patreon-plug a
+{
+    color:#55FF55;
+    text-align:center;
+    width:100%;
+    display:block;
+    padding-right:0;
+    background:none;
+    text-decoration:underline;
+}
+/* End Specific Structures */
+
+/* Forms */
+form
+{
+    border:1px solid #000;
+    padding:0px 8px 0px 8px;
+}
+
+form .field
+{
+    display:flex;
+    padding:14px 0px 14px 0px;
+}
+
+form .field + .field { border-top:1px dashed #000; }
+
+form .field > label
+{
+    font-weight:bold;
+    flex:1 1 20%;
+    margin-right:8px;
+}
+
+form .field input, form .field select, form .field div
+{
+    flex:4;
+    height:max-content;
+}
+
+.field-group
+{
+    display:flex;
+    flex-wrap:wrap;
+    font-weight:normal;
+}
+
+.field-group label
+{
+    flex:1 1 25%;
+}
+
+@media (max-width: 1280px)
+{
+    #detail-list
+    {
+        font-size:smaller;
+    }
+
+    input[name=board_min], input[name=board_max], input[name=min], input[name=max]
+    {
+        flex:1;
+        max-width:40%;
+    }
+}
+
+
+form .field .board-type-select
+{
+    flex:1 0 100%;
+}
+
+#detail-list label { font-weight:normal; }
+#submit-search-button, #submit-upload-button {width:100%;font-size:larger;}
+
+#upload-form .sub
+{
+    font-size:medium;
+    font-weight:normal;
+}
+
+@media (max-width: 1024px)
+{
+    #upload-form .sub
+    {
+        font-size:smaller;
+    }
+}
+
+#upload-form .field > label
+{
+    flex:1 1 33%;
+}
+
+form .field .genre-checklist
+{
+    font-family:monospace;
+    height: 150px;
+    overflow: auto;
+    min-width: 300px;
+    border: 1px solid #000;
+    background: #DDD;
+}
+
+.genre-checklist label { display:block; }
+.genre-checklist label + label {  border-top: 1px dotted #000; }
+.genre-checklist label.selected { background:#619F9F;}
+.genre-checklist label:hover { background:#98C9C9; }
+/* Forms */
+
+/* File Structures */
+.gallery-list
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:14px auto 14px auto;
+}
+
+.gallery-list.scrolling
+{
+    padding:14px 8px 14px 8px;
+    overflow:auto;
+    border:1px solid #000;
+    max-height:546px;
+}
+
+.gallery-list > .gallery-block
+{
+    margin-bottom:14px;
+    margin-right:8px;
+}
+
+.gallery-block
+{
+    width:auto;
+    border:1px solid #000;
+    padding:14px 8px 14px 8px;
+}
+
+.gallery-block > div
+{
+    width:240px;
+    max-width:100%;
+}
+
+.gallery-footer
+{
+    width:100%;
+    text-align:center;
+    padding-bottom:14px;
+}
+
+.overview-block
+{
+    border:1px solid #000;
+    padding:14px 8px 14px 8px;
+    margin:14px auto auto auto;
+    display:grid;
+    grid-template-areas:
+    "screenshot title title"
+    "screenshot basic advanced"
+    "feat desc desc"
+    "links links links";
+
+    grid-template-columns: 240px 1fr 1fr;
+    grid-template-rows:auto minmax(0px, 1fr) auto auto;
+}
+
+.overview-block .screenshot-thumb
+{
+    grid-area:screenshot;
+}
+
+.overview-block .title { grid-area:title; margin-left:8px;}
+.overview-block .basic-info { grid-area:basic; margin-left:8px;}
+.overview-block .advanced-info { grid-area:advanced; margin-left:8px;}
+.overview-block .wide-info { grid-area:basic / basic / advanced / advanced; margin-left:8px;}
+.overview-block .field { display:flex; border-bottom:1px dotted #000; }
+
+.overview-block .key { flex:1; min-width:10ch; }
+.overview-block .value { flex:3; }
+
+.featured-reviews {
+    grid-area: feat;
+    margin-top:7px;
+    margin-left:-8px;
+    padding-left:8px;
+}
+
+.featured-reviews ul
+{
+    padding-left:1em;
+
+}
+
+.featured-description {
+    grid-area: desc;
+    margin-top:7px;
+    margin-right:-8px;
+    padding-right:8px;
+    padding-left:8px;
+}
+
+.overview-links
+{
+    grid-area:links;
+    display:grid;
+    border:1px solid #000;
+    border-top:0px;
+    grid-template-columns: repeat(5, auto);
+    text-align:center;
+}
+/* End File Structures */
+
+/* File Viewer */
+.fv-grid /* Applied to center content element */
+{
+    display:grid;
+    grid-template-areas:
+    "header header expand"
+    "links links links"
+    "data data data"
+    "display display display"
+    "zip-name tabs tabs"
+    "file-list analysis analysis";
+
+    grid-template-columns:1.5fr 2fr auto;
+    grid-template-rows:auto auto auto minmax(378px, auto) auto 1fr;
+    height:calc(100vh - 42px);
+    min-height:858px; /* With padding this is 900px of space */
+}
+
+.file-header { grid-area: header;}
+#expand-contract { grid-area: expand;}
+
+
+#content h1
+{
+    margin-bottom:0px;
+    display:inline-block;
+}
+
+.file-links
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+    border-top:1px solid #000;
+    border-bottom:1px solid #000;
+    padding:7px;
+    font-weight:bold;
+    grid-area: links;
+}
+
+.file-data
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+    text-align:center;
+    grid-area:data
+}
+.file-data > div
+{
+    flex:1;
+}
+
+#fv-main
+{
+    grid-area: display;
+    border:1px solid #000;
+    padding:7px 4px 7px 4px;
+    margin-bottom:14px;
+    max-height:728px;
+    overflow:auto;
+}
+
+#fv-main .output
+{
+    display:none
+}
+
+#fv-main .output.active
+{
+    display:block;
+}
+
+#fv-main #canvas-envelope.output.active
+{
+    display:grid;
+}
+
+#zip-name
+{
+    grid-area:zip-name;
+    text-align:center;
+    border:1px solid #000;
+    border-bottom:0px;
+    background:#AAA;
+}
+
+#file-tabs
+{
+    grid-area: tabs;
+    display:flex;
+    flex-wrap:wrap;
+    text-align:center;
+    justify-items:stretch;
+    border-top:1px solid #000;
+    border-right:1px solid #000;
+}
+
+#file-tabs div
+{
+    border-bottom:0px;
+    border-left:0px;
+    background:#AAA;
+    flex:3;
+}
+
+#file-tabs div:hover
+{
+    cursor:pointer;
+    background:#98C9C9;
+    text-decoration:underline;
+}
+
+#file-tabs div + div
+{
+    border-left:1px solid #000;
+}
+
+#file-tabs div[name=help]
+{
+    flex:1;
+}
+
+#file-list
+{
+    grid-area: file-list;
+    border:1px solid #000;
+    font-family:monospace;
+    overflow:auto;
+    max-height:100%;
+}
+
+#file-list .selected
+{
+    background-color:#619F9F;
+}
+
+#file-list li:hover
+{
+    /* (Preview, List of files) */
+    cursor:pointer;
+    background:#98C9C9;
+}
+
+#file-list .zip-name
+{
+    font-weight:bold;
+    text-align:center;
+    background-color:#619F9F;
+    border-bottom:1px solid #000;
+}
+
+#file-list ul /* (Preview, List of files) */
+{
+    margin:0px;
+    padding:0px;
+    overflow:auto;
+    height:100%;
+}
+
+#file-list ul li /* (Preview, List of files) */
+{
+    list-style:none;
+    border-bottom:1px dashed #000;
+    padding-left:8px;
+    padding-right:8px;
+
+}
+
+#file-list ul li.selected
+{
+    text-align:center;
+    font-weight:bold;
+}
+
+#file-list ol /* (List of boards in ZZT file) */
+{
+    text-align:left;
+    font-weight:normal;
+
+    list-style:none;
+    margin-left:8px;
+    margin-right:8px;
+    padding:0px;
+    background:#FFF;
+
+}
+
+#file-list ol li { border-bottom:1px dotted #000; } /* (List of boards in ZZT file) */
+
+li.board div  { display:inline-block; } /* Board numbers and names */
+
+#analysis
+{
+    grid-area: analysis;
+    border:1px solid #000;
+    border-left:0px;
+    padding:7px 4px 7px 4px;
+    font-family:monospace;
+    overflow:auto;
+}
+
+#analysis table
+{
+    padding:0px;
+    margin:0;
+}
+
+#analysis table td
+{
+    background:#FFF;
+    padding:0px 0px 0px 1ch;
+}
+
+#analysis table th
+{
+    padding:0px 1ch 0px 1ch;
+}
+
+#file-tabs .selected { background:#619F9F; }
+#analysis .toggle { display:none; }
+#file-list ul li.code-match { padding-left:3ch; }
+
+#analysis #search-table
+{
+    margin-top:7px;
+}
+
+#analysis #search-table input
+{
+    margin-top:2px; /* TODO: This could be done better */
+}
+
+#preferences .field
+{
+    display:flex;
+    padding: 7px 0px 7px 0px;
+    font-size:medium;
+    font-weight:bold;
+    font-family:sans-serif;
+}
+
+#preferences .field + .field
+{
+    border-top: 1px dashed #000;
+}
+
+#preferences label
+{
+    flex:1 1 20%;
+}
+
+#preferences input, #preferences select
+{
+    flex:1 1;
+}
+
+/* File Viewer Extension Based Formatting */
+#fv-main #canvas-envelope
+{
+    justify-content:space-evenly;
+    grid-template-areas:
+    "left canvas right";
+    grid-template-columns:12ch minmax(480px, auto) 12ch;
+}
+
+#fv-left-sidebar
+{
+    font-family:cp437;
+    grid-area:left;
+    font-size:medium;
+    line-height:14px;
+
+}
+
+.color-swatch
+{
+    height:2em;
+    background-image:url("/static/images/colors.png");
+    width:8px;
+    height:14px;
+    margin:auto;
+    display:inline-block;
+}
+
+#fv-right-sidebar
+{
+    grid-area:right;
+}
+
+#world-canvas
+{
+    grid-area:canvas;
+    background:blue;
+}
+
+#image-envelope {
+    height:100%;
+    text-align:center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#fv-image { border:1px solid #AAA;}
+
+#text-body { font-family:cp437; }
+#doc-header { color:#F00; text-align:center; }
+/* End File Viewer Extension Based Formatting */
+
+/* End File Viewer */
+
+/* ZZT-OOP Syntax */
+code
+{
+    display:block;
+    width:42ch;
+    color:#839496;
+    background-color:#002b36;
+    font-size:larger;
+    padding:1ch 2ch 1ch 2ch;
+    white-space:pre;
+    margin-left:0.2em;
+}
+
+code .highlight { background:#FFD700; color:#000; }
+code.inline { width:auto; padding:0.1em; }
+code .blue, code .command { color:#268bd2; }
+code .green, code .comment { color:#859900; }
+code .cyan, code .reserved { color:#2aa198; }
+code .red, code .name { color:#dc322f; }
+code .magenta, code .hyperlink { color:#d33682; }
+code .purple, code .center { color:#6c71c4; }
+code .yellow, code .go, code .try { color:#b58900; }
+code .orange, code .label { color:#cb4b16; }
+code .char:hover { cursor:help; }
+
+#oop-wrapper.zzt-scroll { margin:0; }
+#oop-wrapper.zzt-scroll code
+{
+    background:transparent;
+    color:#FF5;
+    padding:0;
+    font-size:16px;
+    line-height:14px;
+    margin-left:32px;
+    font-family:"cp437";
+    overflow:auto;
+    width:356px;
+    height:210px;
+}
+
+#oop-wrapper.zzt-scroll code::before, #oop-wrapper.zzt-scroll code::after { content:"  •    •    •    •    •    •    •    •    •\A"; }
+/* End ZZT-OOP Syntax */
+/* Article Globals -- Copied directly from old CSS */
+#plain-text-article
+{
+    padding:0;
+    margin:0;
+    border:0;
+    font-family:sans-serif;
+    background:#F0F0F0;
+    width:100%;
+    min-height:50vh;
+    resize:none;
+    color:#000;
+}
+
+.side-commentary
+{
+    margin-bottom:0.25em;
+    overflow:auto;
+    border-bottom:1px solid #000;
+    padding-bottom:0.25em;
+}
+
+.zzt-img + .side-commentary, .zzt-scroll + .side-commentary, p + .side-commentary
+{
+    margin-top:0.25em;
+    padding-top:0.25em;
+    border-top:1px solid #000;
+}
+
+.material
+{
+    float:left;
+    min-width:240px;
+    margin-right:0.5em;
+}
+
+@media (max-width:1280px)
+{
+    .material
+    {
+        width:100%;
+    }
+}
+
+.commentary
+{
+    min-width:20%;
+}
+
+.commentary p
+{
+    margin-top:0.25em;
+}
+
+article aside
+{
+    background:#BBB;
+    width:480px;
+    max-width:40%;
+    margin-left:0.5em;
+    padding:0.25em;
+    font-size:smaller;
+    float:right;
+}
+/* End Article Globals */
+
+
+#content.article .file-links
+{
+    padding:7px 0px 7px 0px;
+    width:100%;
+}
+
+/* Hotfixes */
+/* Screenshots in MTP reviews */
+article.featured-game a.screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 160px;
+    margin: 0.25em auto 0.25em auto;
+    text-align: center;
+}
+/* End Hotfixes */
+
+/* Comics */
+#comics-nav
+{
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    border-top:1px solid #000;
+    margin-top:7px;
+    padding-top:7px;
+}
+/* End Comics */

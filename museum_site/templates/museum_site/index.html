@@ -5,7 +5,6 @@
 <section id="content" class="col block">
 
 <h1>Museum of ZZT</h1>
-
 <p>Welcome to the Museum of ZZT, a site dedicated to the preservation and
 curation of the many games and worlds created with ZZT.</p>
 
@@ -23,43 +22,70 @@ community can be easily discovered and that their importance can be recognized.
 </p>
 
 <h1>Latest Files</h1>
-<div class="gallery-wide">
-{% for file in files %}
-<div class="gallery-block">
-    <div class="file-screen">
-        <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen" alt="{{file.screenshot}}">
+<div class="gallery-list scrolling">
+    {% for file in files %}
+    <div class="gallery-block">
+        <img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">
+        <div class="title c"><a href="{{file.file_url}}">{{file.title}}</a></div>
+        <div class="author c">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
     </div>
-    <div class="title"><a href="{{file.file_url}}">{{file.title}}</a></div>
-    <div class="author">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-</div>
-{% endfor %}
+    {% endfor %}
+    <div class="gallery-footer">
+        <a href="{% url 'new_files' %}">View More</a>
+    </div>
 </div>
 
 <h1>Latest Articles</h1>
-<div class="file-block" data-pk="{{articles.0.id}}">
-    <div class="file-screen">
-        <img src="{% if articles.0.preview %}{% static 'images/'|add:articles.0.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
-        class="titlescreen"
-        alt="{{articles.0.preview}}">
-    </div>
-    <div class="file-info">
-        <h1><a href="{{articles.0.url}}">{{articles.0.title}}</a></h1>
-        <div>Author</div>: {{articles.0.author}}<br>
-        <div>Date</div>: {{articles.0.date}}<br>
-        <div><br>{{articles.0.summary|default:""}}</div>
+{% for article in articles|slice:":3" %}
+<div class="overview-block" data-pk="{{article.id}}">
+    <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+    class="screenshot-thumb"
+    alt="{{article.preview}}">
+    <h1 class="title"><a href="{{article.url}}">{{article.title}}</a></h1>
+    <div class="wide-info">
+        <div class="field">
+            <div class="key">Author</div><div class="value">{{article.author}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Date</div><div class="value">{{article.date}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Summary</div><div class="value">{{article.summary}}</div>
+        </div>
     </div>
 </div>
-<ul>
-{% for article in articles|slice:"1:" %}
-<li><a href="{{article.url}}">{{article.title}}</a> by {{article.author}} {% if article.date|date:"Y-m-d" != '1970-01-01' %}({{article.date}}){% endif %}</li>
 {% endfor %}
-</ul>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Date</th>
+        <th class="">Summary</th>
+    </tr>
+    {% for article in articles|slice:"3:" %}
+    <tr>
+    <td><a href="{{article.url}}">{{article.title}}</a></td>
+    <td>{{article.author}}</td>
+    <td class="td-date">{% if article.date|date:"Y-m-d" != '1970-01-01' %}{{article.date|date:"N jS"}}{% endif %}</td>
+    <td class="">{{article.summary}}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 <h1>Latest Reviews</h1>
-<ul>
-{% for review in reviews %}
-<li><a href="{{review.file.review_url}}#rev-{{review.id}}"><i>{{review.file.title}}</i></a> reviewed by {{review.author}}{% if review.rating > -1 %} ({{review.rating}} / 5.0){% endif %}</li>
-{% endfor %}
-</ul>
+<table>
+    <tr>
+        <th>File</th>
+        <th>Author</th>
+        <th>Rating</th>
+    </tr>
+    {% for review in reviews %}
+    <tr>
+        <td><a href="{{review.file.review_url}}#rev-{{review.id}}"><i>{{review.file.title}}</i></a></td>
+        <td>{{review.author}}</td>
+        <td>{% if review.rating > -1 %} {{review.rating}} / 5.0{% else %}&mdash;{% endif %}</td>
+    </tr>
+    {% endfor %}
+</table>
 </section>
 {% endblock %}

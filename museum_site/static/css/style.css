@@ -86,7 +86,6 @@ blockquote::first-letter
 }
 
 
-
 .col
 {
     display:inline-block;
@@ -433,6 +432,7 @@ footer
     text-decoration:none;
     font-size:21px;
     flex:1 0 11%;
+
 }
 
 #letters a:hover
@@ -471,6 +471,8 @@ input[name=q]
 {
     padding:0.05em;
     text-align:center;
+    position:relative;
+    top:-25px;
 }
 
 #expand-contract:hover

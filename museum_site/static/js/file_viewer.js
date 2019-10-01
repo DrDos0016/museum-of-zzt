@@ -39,6 +39,8 @@ var engines = {
         "first_board_index": 1024,
         "board_width": 60,
         "board_height": 25,
+        "character_width": 8,
+        "character_height": 14,
         "elements": ["Empty", "Board Edge", "Messenger", "Monitor", "Player", "Ammo", "Torch", "Gem", "Key", "Door", "Scroll", "Passage", "Duplicator", "Bomb", "Energizer", "Star", "Conveyor, Clockwise", "Conveyor, Counterclockwise", "Bullet", "Water", "Forest", "Solid Wall", "Normal Wall", "Breakable Wall", "Boulder", "Slider, North-South", "Slider, East-West", "Fake Wall", "Invisible Wall", "Blink Wall", "Transporter", "Line Wall", "Ricochet", "Blink Ray, Horizontal", "Bear", "Ruffian", "Object", "Slime", "Shark", "Spinning Gun", "Pusher", "Lion", "Tiger", "Blink Ray, Vertical", "Centipede Head", "Centipede Segment", "Text, Blue", "Text, Green", "Text, Cyan", "Text, Red", "Text, Purple", "Text, Yellow", "Text, White"],
         "characters": [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63]
         },
@@ -51,6 +53,8 @@ var engines = {
         "first_board_index": 2048,
         "board_width": 96,
         "board_height": 80,
+        "character_width": 16,
+        "character_height": 14,
         "elements": ["Empty", "Board Edge", "Messenger", "Monitor", "Player", "Ammo", "Torch", "Gem", "Key", "Door", "Scroll", "Passage", "Duplicator", "Bomb", "Energizer", "Star", "Clockwise Conveyor", "Counter Clockwise Conveyor", "Bullet", "Lava", "Forest", "Solid Wall", "Normal Wall", "Breakable Wall", "Boulder", "Slider (NS)", "Slider (EW)", "Fake Wall", "Invisible Wall", "Blink Wall", "Transporter", "Line Wall", "Ricochet", "Horizontal Blink Ray", "Bear", "Ruffian", "Object", "Slime", "Shark", "Spinning Gun", "Pusher", "Lion", "Tiger", "Vertical Blink Ray", "Head", "Segment", "Element 46", "Floor", "Water N", "Water S", "Water W", "Water E", "Element 52", "Element 53", "Element 54", "Element 55", "Element 56", "Element 57", "Element 58", "Roton", "Dragon Pup", "Pairer", "Spider", "Web", "Stone", "Element 65", "Element 66", "Element 67", "Element 68", "Bullet", "Horizontal Blink Ray", "Vertical Blink Ray", "Star", "Blue Text", "Green Text", "Cyan Text", "Red Text", "Purple Text", "Yellow Text", "White Text"],
         "characters": [32, 32, 32, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 83, 47, 92, 248, 111, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 32, 206, 42, 205, 235, 5, 2, 42, 94, 24, 31, 234, 227, 186, 233, 79, 32, 176, 30, 31, 17, 16, 32, 32, 32, 32, 32, 32, 32, 148, 237, 229, 15, 197, 90, 32, 32, 32, 32, 248, 205, 186, 83, 32, 32, 32, 32, 32, 32, 32]
         }
@@ -195,18 +199,17 @@ function pull_file()
     if (filename.indexOf(".") == -1)
         ext = "txt";
 
-    console.log("Pull?");
-    console.log($(this).html());
+    console.log("Pull File:", $(this).html());
     if ($(this).hasClass("preview-image-link"))
     {
-        $("#details").html(`<img src="${$(this).data("img")}">`);
+        set_output("image", {"src": $(this).data("img")});
         return true;
     }
 
     // Add to history
-    var state = {"load_file": filename, "load_board":"", "tab":""};
-    var qs = "?file=" + filename + window.location.hash;
-    if (! history.state || (history.state["load_file"] != filename))
+    var state = {"load_file": encodeURIComponent(filename), "load_board":"", "tab":""};
+    var qs = "?file=" + encodeURIComponent(filename) + window.location.hash;
+    if (! history.state || (history.state["load_file"] != encodeURIComponent(filename)))
     {
         history.pushState(state, "", qs);
     }
@@ -228,6 +231,11 @@ function pull_file()
             format = (ext != "szt") ? "zzt" : "szt";
             ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
             ENGINE = engines[format];
+
+            // Adjust the canvas size based on engine
+            var canvas_w = ENGINE.character_width * ENGINE.board_width;
+            var canvas_h = ENGINE.character_height * ENGINE.board_height;
+            $("#world-canvas").attr({"width": canvas_w + "px", "height": canvas_h + "px"});
 
             world = parse_world(format, data);
 
@@ -256,6 +264,7 @@ function pull_file()
         }
         else if (ext == "hi" || ext == "mh")
         {
+            console.log("High score file");
             format = "txt";
             var scores = parse_scores(data);
             var output = `<div class='high-scores'>Score &nbsp;Name<br>\n`;
@@ -265,15 +274,18 @@ function pull_file()
                 output += scores[idx].score + " &nbsp;" + scores[idx].name + "<br>";
             }
             output += "</div>";
-            $("#details").html(output);
+
+            set_active_envelope("text");
+            $("#text-body").html(output);
+            $("#text-body").attr("data-ext", ext);
         }
         else if (["jpg", "jpeg", "gif", "bmp", "png", "ico"].indexOf(ext) != -1)
         {
             format = "img";
             var zip_image = new Image();
             zip_image.src = data;
-            $("#details").html(`<img id='zip_image' alt='Zip file image'>`);
-            $("#zip_image").attr("src", `data:image/'${ext}';base64,${data}`);
+            set_active_envelope("image");
+            $("#fv-image").attr("src", `data:image/'${ext}';base64,${data}`);
         }
         else if (["avi"].indexOf(ext) != -1)
         {
@@ -317,7 +329,10 @@ function pull_file()
             $("select[name=charset]").val(font_filename);
 
             // Display the font
-            $("#details").html(`<img src='/static/images/charsets/${font_filename}' class='charset' alt='${filename}' title='${filename}'>`);
+            $("#fv-image").attr("src", `/static/images/charsets/${font_filename}`);
+            $("#fv-image").css("background", "#000");
+
+            set_active_envelope("image");
         }
         else if (ext == "doc")
         {
@@ -329,13 +344,15 @@ function pull_file()
             DOC files are not intended for display in a browser. They may contain visual errors.
             </div>`;
 
-            $("#details").html(doc_header + data);
+            $("#text-body").html(doc_header + data);
             $("#filename").text(filename);
+            set_active_envelope("text");
         }
         else // Text mode
         {
-            $("#details").html(data);
+            $("#text-body").html(data);
             $("#filename").text(filename);
+            set_active_envelope("text");
         }
 
         // Update the format for CSS purposes
@@ -472,7 +489,6 @@ function parse_world(type, data)
     // End Parsing World information
 
     // Parse Boards
-    console.log("GONNA PARSE THE BOARDS");
     world.idx = ENGINE.first_board_index;
     for (var x = 0; x <= world.board_count; x++)
     {
@@ -522,7 +538,7 @@ function parse_world(type, data)
     }
     output += `</table>`;
 
-    output += `<table class='fv' name='search-table'>
+    output += `<table class='fv' name='search-table' id="search-table">
         <tr><td>ZZT-OOP Search:</td><td><input name="code-search"><button id="code-search-submit" type="button">Search</button> <button id="code-search-reset" type="button">Reset</button></tr>
     </table>`;
 
@@ -729,8 +745,8 @@ function render_board()
         <td>Re-enter X/Y:</td><td>${board.enter_x} / ${board.enter_y}</td>
     </tr>
     <tr><td>Time Limit:</td>
-        <td>${board.time_limit ? "None": board.time_limit + " sec"+(board.time_limit != 1 ? "s" : "")}.</td>
-        <td>&nbsp;</td><td>&nbsp;</td>
+        <td>${board.time_limit ? board.time_limit + " sec"+(board.time_limit != 1 ? "s" : "") : "None"}.</td>
+        <td colspan="2">&nbsp;</td>
     </tr>
     <tr>
         <td>Stat Elements:</td><td>${board.stat_count + 1} / 151</td>
@@ -783,6 +799,9 @@ function render_board()
 
 function draw_board()
 {
+    $(".output.active").removeClass("active");
+    $(".output.canvas").addClass("active");
+
     ctx.globalCompositeOperation = "source-over";
     ctx.fillstyle = "black";
     ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
@@ -874,25 +893,25 @@ function stat_info(e)
 
     var output = `<table class="fv">
     <tr>
-        <td>Position:</td>
+        <th>Position</td>
         <td>(${x}, ${y}) [${tile_idx}/${ENGINE.tile_count}]</td>
-        <td>Def. Character:</td>
+        <th>Default Character</td>
         <td>${tile.character}</td>
     </tr>
     <tr>
-        <td>Name:</td>
+        <th>Name</td>
         <td>${tile.name}</td>`
 
     if (stat != null)
-        output += `<td>Cycle:</td><td>${stat.cycle}</td>`;
+        output += `<th>Cycle</td><td>${stat.cycle}</td>`;
     else
         output += `<td>&nbsp;</td><td>&nbsp;</td>`;
 
     output += `</tr>
     <tr>
-        <td>ID:</td>
+        <th>ID</td>
         <td>${tile.id}</td>
-        <td>Color:</td>
+        <th>Color</td>
         <td>${tile.foreground_name} on ${tile.background_name} (${tile.color_id})</td>
     </tr>
     `;
@@ -912,25 +931,25 @@ function stat_info(e)
 
         output += `
         <tr>
-            <td>Under ID:</td><td>${ELEMENTS[stat.under_id].name}</td>
-            <td>Under Color:</td><td>${ELEMENTS[stat.under_id].name}</td>
+            <th>Under ID</td><td>${ELEMENTS[stat.under_id].name}</td>
+            <th>Under Color</td><td>${ELEMENTS[stat.under_id].name}</td>
 
         </tr>
         <tr>
-            <td>${p1name}:</td><td>${stat.param1}</td>
-            <td>X/Y-Step:</td><td>(${stat.x_step}, ${stat.y_step})</td>
+            <th>${p1name}</td><td>${stat.param1}</td>
+            <th>X/Y-Step</td><td>(${stat.x_step}, ${stat.y_step})</td>
         </tr>
         <tr>
-            <td>${p2name}:</td><td>${stat.param2}</td>
-            <td>Leader:</td><td>${stat.leader}</td>
+            <th>${p2name}</td><td>${stat.param2}</td>
+            <th>Leader</td><td>${stat.leader}</td>
         </tr>
         <tr>
-            <td>${p3name}:</td><td>${param3_display}</td>
-            <td>Follower:</td><td>${stat.follower}</td>
+            <th>${p3name}</td><td>${param3_display}</td>
+            <th>Follower</td><td>${stat.follower}</td>
         </tr>
         <tr>
-            <td>OOP Length:</td><td>${stat.oop_length}</td>
-            <td>Instruction:</td><td>${stat.oop_idx}</td>
+            <th>OOP Length</td><td>${stat.oop_length}</td>
+            <th>Instruction</td><td>${stat.oop_idx}</td>
         </tr>
         </table>
 
@@ -958,9 +977,13 @@ function stat_info(e)
 
 function tab_select(selector)
 {
+    // Debug
+    if (selector == "zip-info")
+        return false;
+
     $("#file-data > div").hide();
-    $("#file-tabs li").removeClass("selected");
-    $("li[name="+selector+"]").addClass("selected");
+    $("#file-tabs div").removeClass("selected");
+    $("div[name="+selector+"]").addClass("selected");
     $("#"+selector).show();
 }
 
@@ -968,7 +991,8 @@ $(window).bind("load", function() {
     $("#local-load").click(load_local_file);
 
     $("#file-list li").click({"format": "auto"}, pull_file);
-    $("#file-tabs ul li").click(function (){tab_select($(this).attr("name"))});
+    $("#file-tabs div").click(function (){tab_select($(this).attr("name"))});
+    $("#zip-name").click(function (){tab_select($(this).attr("name"))});
 
     // Stat sorting
     $("select[name=stat-sort]").change(render_stat_list);
@@ -1022,22 +1046,24 @@ $(window).bind("load", function() {
                 match[0].click()
         }
         else if (e.keyCode == 87) // World
-            $("li[name=world-info]").click();
+            $("div[name=world-info]").click();
         else if (e.keyCode == 66) // Board
-            $("li[name=board-info]").click();
+            $("div[name=board-info]").click();
         else if (e.keyCode == 69) // Element
-            $("li[name=element-info]").click();
+            $("div[name=element-info]").click();
         else if (e.keyCode == 83) // Stat
-            $("li[name=stat-info]").click();
+            $("div[name=stat-info]").click();
         else if (e.keyCode == 80) // Prefs.
-            $("li[name=preferences]").click();
+            $("div[name=preferences]").click();
     });
 
     // History
     $(window).bind("popstate", function(e) {
+        /*
         console.log("POPSTATE", history.state);
         console.log("FILENAME CURRENT", filename);
         console.log("BOARD CURRENT", board_number);
+        */
         if (history.state)
         {
             load_file = history.state["load_file"];
@@ -1066,6 +1092,7 @@ $(window).bind("load", function() {
 /* Auto Load functions */
 function auto_load()
 {
+    console.log("Auto Load:", load_file);
     $("#file-list li").each(function (){
         if ($(this).text() == load_file)
         {
@@ -1358,16 +1385,15 @@ function render_stat_list()
 
 function init_overlay()
 {
-    $("#overlay").hide();
-    $("#overlay").html(`(<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>) [<span id='overlay-tile'>0000</span>]<br><div class='color-swatch'></div> <span id='overlay-element'></span>`);
-
+    $("#fv-left-sidebar").html(`(<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>) [<span id='overlay-tile'>0000</span>]<br><div class='color-swatch'></div> <span id='overlay-element'></span>`);
     $("#world-canvas").mousemove(update_overlay);
     $("#world-canvas").mouseout(hide_overlay);
 }
 
 function update_overlay(e)
 {
-    $("#overlay").show();
+    console.log("Update overlay!");
+    $("#fv-left-sidebar").css("visibility", "visible");
     var posX = $(this).offset().left;
     var posY = $(this).offset().top;
     var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
@@ -1390,7 +1416,7 @@ function update_overlay(e)
         // Color
         var bg_x = parseInt((element.foreground) * -8); // TODO: Tile W/H for SZZT
         var bg_y = parseInt((element.background) * -14);
-        $("#overlay .color-swatch").css("background-position", bg_x+"px "+ bg_y + "px");
+        $("#fv-left-sidebar .color-swatch").css("background-position", bg_x+"px "+ bg_y + "px");
     }
 
     return true;
@@ -1398,7 +1424,7 @@ function update_overlay(e)
 
 function hide_overlay(e)
 {
-    $("#overlay").hide();
+    //$("#fv-left-sidebar").css("visibility", "hidden");
 }
 
 function highlight(x, y)
@@ -1586,4 +1612,31 @@ function render_zzt_oop(stat)
         $("#zzt-oop").hide();
     else
         $("#zzt-oop").show();
+}
+
+
+function set_output(category, data)
+{
+    $(".output.active").removeClass("active");
+    $(".output."+category).addClass("active");
+
+    if (category == "image")
+    {
+        $("#fv-image").attr("src", data["src"]);
+    }
+}
+
+function set_active_envelope(envelope)
+{
+    $(".output.active").removeClass("active");
+    $(".output." + envelope).addClass("active");
+
+    if (envelope == "canvas")
+    {
+        $("#canvas-envelope").hide();
+    }
+    else
+    {
+        $("#canvas-envelope").css("display", "grid");
+    }
 }

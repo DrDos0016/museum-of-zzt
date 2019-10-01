@@ -1,58 +1,20 @@
 {% extends "museum_site/main.html" %}
 
-{% block style %}
-<style>
-#content input
-{
-    width:150px;
-}
-
-#content select
-{
-    width:154px;
-}
-
-#content input#min, #content input#max, #content .spacing
-{
-    width:50px;
-    text-align:center;
-}
-
-#content input[name=board_min], #content input[name=board_max]
-{
-    width:60px;
-    text-align:center;
-}
-
-.spacing
-{
-    width:45px;
-}
-
-div[name=all-none] > button
-{
-    font-size:smaller;
-    font-weight:bold;
-    width:10%;
-}
-
-#board-count label
-{
-    font-weight:normal;
-    width:auto;
-    display:inline;
-}
-</style>
-{% endblock %}
-
 {% block scripts %}
 <script>
 $(document).ready(function (){
-    $("div[name=all-none] button").click(function (){
+    $("#advanced-search-form button").click(function (){
         if ($(this).text() == "All")
             $("input[name=details]").prop("checked", "checked");
         else if ($(this).text() == "None")
             $("input[name=details]").prop("checked", "");
+        else if ($(this).text() == "Default")
+        {
+            $("input[name=details]").prop("checked", "");
+            $("input[name=details][value=13]").prop("checked", "checked");
+            $("input[name=details][value=14]").prop("checked", "checked");
+            $("input[name=details][value=15]").prop("checked", "checked");
+        }
     });
 });
 </script>
@@ -63,7 +25,7 @@ $(document).ready(function (){
 
 <h1>Advanced Search</h1>
 
-<form method="GET" action="{% url 'search' %}">
+<form method="GET" action="{% url 'search' %}" id="advanced-search-form">
 <div class="field">
     <label for="title">Title contains:</label>
         <span class="sub"></span>
@@ -103,13 +65,14 @@ $(document).ready(function (){
 <div class="field">
     <label for="min">Min. / max. board count:<br>
     </label>
-    <div id="board-count" class="col">
+    <div id="board-count" class="field-group">
         <input name="board_min" value="{{request.GET.board_min|default:''}}" min=0 max=32767 maxlength="5" type="number">
-        <div class="col spacing">&nbsp;&mdash;&nbsp;</div>
+        <div class="c">to</div>
         <input name="board_max" value="{{request.GET.board_max|default:''}}" min=0 max=32767 maxlength="5" type="number">
-        <br>
-        <label><input name="board_type" value="playable" type="radio"{% if request.GET.board_type == 'playable' %}checked {% endif %}> Playable Boards</label>
-        <label><input name="board_type" value="total" type="radio"{% if request.GET.board_type != 'playable' %}checked {% endif %}> Total Boards</label>
+        <div class="board-type-select">
+            <label><input name="board_type" value="playable" type="radio"{% if request.GET.board_type == 'playable' %}checked {% endif %}> Playable Boards</label>
+            <label><input name="board_type" value="total" type="radio"{% if request.GET.board_type != 'playable' %}checked {% endif %}> Total Boards</label>
+        </div>
     </div>
 </div>
 <div class="field">
@@ -130,15 +93,18 @@ $(document).ready(function (){
 <div class="field">
     <label for="min">Min. / max. rating:<br>
     </label>
-    <input id="min" name="min" value="{{request.GET.min|default:'0.0'}}" min=0.0 max=5.0 maxlength="4" type="number" step=0.1>
-    <div class="col spacing">&nbsp;&mdash;&nbsp;</div>
-    <input id="max" name="max" value="{{request.GET.max|default:'5.0'}}" min=0.0 max=5.0 maxlength="4" type="number" step=0.1>
+
+    <div id="board-count" class="field-group">
+        <input id="min" name="min" value="{{request.GET.min|default:'0.0'}}" min=0.0 max=5.0 maxlength="4" type="number" step=0.1>
+        <div class="c">to</div>
+        <input id="max" name="max" value="{{request.GET.max|default:'5.0'}}" min=0.0 max=5.0 maxlength="4" type="number" step=0.1>
+    </div>
 </div>
 <div class="field">
     <label>Details:<br>
     </label>
 
-    <div id="detail-list" class="col">
+    <div id="detail-list" class="field-group">
         <label><input name="details" type="checkbox" {% if "15" in details_list %}checked {% endif %}value="15"> ZZT Worlds</label>
         <label><input name="details" type="checkbox" {% if "7" in details_list %}checked {% endif %}value="7"> Featured Games</label>
         <label><input name="details" type="checkbox" {% if "10" in details_list %}checked {% endif %}value="10"> Modified GFX</label>
@@ -155,7 +121,7 @@ $(document).ready(function (){
         <label><input name="details" type="checkbox" {% if "17" in details_list %}checked {% endif %}value="17"> Lost Worlds</label>
         <label><input name="details" type="checkbox" {% if "5" in details_list %}checked {% endif %}value="5"> Linux</label>
         <label><input name="details" type="checkbox" {% if "4" in details_list %}checked {% endif %}value="4"> Windows 64-Bit</label>
-        <div name="all-none"><button type="button">All</button> <button type="button">None</button></div>
+        <button type="button">All</button> <button type="button">None</button> <button type="button">Default</button>
     </div>
 </div>
 <div class="field">
@@ -171,7 +137,7 @@ $(document).ready(function (){
 </div>
 
 <div class="field">
-    <button type="submit">Search</button>
+    <button type="submit" id="submit-search-button">Search</button>
 </div>
 <input type="hidden" name="advanced" value="1">
 </form>

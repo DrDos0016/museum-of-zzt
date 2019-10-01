@@ -12,21 +12,24 @@
 {% endblock %}
 
 {% block content %}
-<section id="content" class="col block">
+<section id="content" class="block {{custom_layout}}">
 <button class="fr contracted" id="expand-contract" title="Toggle sidebars">🠈 🠊</button>
 {% if file and not local%}
-<h1>[{{file.filename}}] - {{file.title}}{% if debug %} <span class="debug"><a href="/admin/museum_site/file/{{file.id}}/change/">Edit {{file.id}}</a></span>{% endif %}</h1>
+<div class="file-header">
+    <h1>{{file.title}}</h1>
+    {% if debug %} <span class="debug"><a href="/admin/museum_site/file/{{file.id}}/change/">Edit {{file.id}}</a></span>{% endif %}
+</div>
 <div class="file-links">
     {% include "museum_site/blocks/file_links.html" %}
 </div>
-<div class="file-meta">
-    <div>Author<br> {% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-    <div>Released<br> <a href="{% url 'search' %}?year={{file.release_date.year|default:'any'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
-    <div>Genre<br> {% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-    <div>Company<br> <a href="{% url 'search' %}?company={{file.company}}">{{file.company}}</a></div>
-    <div>Size<br> {{file.size|filesizeformat}}</div>
-    {% if file.total_boards %}<div>Boards<br> <span title="Playable/Total - Values are not 100% accurate">{{file.playable_boards}} / {{file.total_boards}}</span></div>{% endif %}
-    <div>Rating<br> {%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}</div>
+<div class="file-data">
+    <div class="author-data">Author<br> {% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    <div class="release-data">Released<br> <a href="{% url 'search' %}?year={{file.release_date.year|default:'any'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
+    <div class="genre-data">Genre<br> {% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    <div class="company-data">Company<br> <a href="{% url 'search' %}?company={{file.company}}">{{file.company}}</a></div>
+    <div class="size-data">Size<br> {{file.size|filesizeformat}}</div>
+    {% if file.total_boards %}<div class="board-data">Boards<br> <span title="Playable/Total - Values are not 100% accurate">{{file.playable_boards}} / {{file.total_boards}}</span></div>{% endif %}
+    <div class="Dating-data">Rating<br> {%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}</div>
 </div>
 {% endif %}
 {% if local %}

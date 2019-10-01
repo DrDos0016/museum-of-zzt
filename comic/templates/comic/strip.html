@@ -69,7 +69,7 @@ $(document).ready(function (){
     {{comic.commentary|safe}}
 </div>
 {% endif %}
-<nav id="navigation">
+<nav id="comics-nav">
     <div>
     {% if prev %}<a href="{% url 'comic_strip' comic_account prev.0.id prev.0.title|slugify %}">Previous</a>{% endif %}
     </div>

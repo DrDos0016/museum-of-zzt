@@ -2,11 +2,20 @@
 
 $(document).ready(function (){
     // Screenshot Zoom
-    $(".file-screen").click(function (){
-        if ($(this).css("max-width") != "100%")
-            $(this).css({"max-width":"100%", "cursor":"zoom-out"});
+    $(".screenshot-thumb").click(function (){
+        $(this).toggleClass("zoomed");
+        if ($(this).hasClass("zoomed"))
+        {
+            $(this).data("thumb-size", $(this).css("width"));
+            $(this).css({"width": "480px"});
+            $(this).parent().css({"grid-template-columns": "min-content auto auto fit-content(100%)"});
+
+        }
         else
-            $(this).css({"max-width":"240px", "cursor":"zoom-in"});
+        {
+            $(this).css({"width": $(this).data("thumb-size")});
+            $(this).parent().css({"grid-template-columns": "240px 1fr 1fr"});
+        }
     });
 
     // Reload on sort change
@@ -67,18 +76,18 @@ $(document).ready(function (){
     // Expand/Contract Middle Column
     $("#expand-contract").click(function (){
         $(this).toggleClass("expanded", "contracted");
-        if ($(this).hasClass("expanded"))
+        if ($(this).hasClass("expanded")) // Expand
         {
+            console.log("EXPANDING")
             $(this).text("🠊 🠈");
-            $(".sidebar > *").css("visibility", "hidden");
-            $(".sidebar").animate({width: "0%"}, 500);
+            $(".sidebar, #top-links, #logo-area").hide();
+            $("body").removeClass("grid-root");
         }
-        else // contracted
+        else // Contract
         {
             $(this).text("🠈 🠊");
-            $(".sidebar").animate({width: "15%"}, 500, function (){
-                $(".sidebar > *").css("visibility", "visible");
-            });
+            $(".sidebar, #top-links, #logo-area").show();
+            $("body").addClass("grid-root");
         }
     });
 });

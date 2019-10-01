@@ -12,14 +12,12 @@
 {% endif %}
 {% include "museum_site/blocks/file_page_block.html" %}
 
-<div class="gallery">
+<div class="gallery-list">
 {% for file in files %}
 <div class="gallery-block">
-    <div class="file-screen">
-        <img src="{% if file.screenshot %}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}" class="titlescreen">
-    </div>
-    <div class="title"><a href="{{file.file_url}}">{{file.title}}</a></div>
-    <div class="author">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    <img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">
+    <div class="title c"><a href="{{file.file_url}}">{{file.title}}</a></div>
+    <div class="author c">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
 </div>
 {% endfor %}
 </div>

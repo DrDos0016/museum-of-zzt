@@ -5,7 +5,7 @@
 <script>
 var letter = "{{letter}}";
 var zip = "{{file.filename}}";
-var load_file = "{{load_file}}";
+var load_file = "{{load_file|safe}}";
 var load_board = "{{load_board}}";
 var hash_coords = window.location.hash;
 var db_id = {{file.id|default:0}};
@@ -19,140 +19,144 @@ var can_live_edit = {% if file.size < 1048576 %}true{% else %}false{% endif %};
 {% endblock %}
 
 {% block world_content %}
-
-<div id="file-area">
-    <div id="details">
-    <img src="{% static file.screenshot_url %}" class="titlescreen">
+<div id="fv-main">
+    <div class="output image active" id="image-envelope">
+        <img src="{% static file.screenshot_url %}" class="image" id="fv-image">
     </div>
+    <div class="output canvas" id="canvas-envelope">
+        <div id="fv-left-sidebar"></div>
+        <canvas id="world-canvas" height="350px" width="480px"></canvas>
+        <div id="fv-right-sidebar"></div>
+    </div>
+    <div class="output zeta" id="zeta-envelope">
+        Zeta
+    </div>
+    <div class="output audio" id="audio-envelope">
+        Audio
+    </div>
+    <div class="output video" id="video-envelope">
+        Video
+    </div>
+    <div class="output text" id="text-envelope">
+        <div id="text-body"></div>
+    </div>
+</div>
 
-    <div id="lower-ui">
-        <div id="file-list">
-        <ul>
-        <li class="preview-image-link selected" data-img="{% static file.screenshot_url %}">Preview Image</li>
-        {% for file in files %}
-        <li class="zip-content">{{file}}</li>
-        {% endfor %}
-        </ul>
+<div id="zip-name" name="zip-info">{{file.filename}}</div>
+<div id="file-tabs">
+    <div name="world-info">World</div>
+    <div name="board-info">Board</div>
+    <div name="element-info">Element</div>
+    <div name="stat-info">Stats</div>
+    <div name="preferences">Prefs.</div>
+    <div name="help">?</div>
+</div>
+
+<div id="file-list">
+    <ul>
+    <li class="preview-image-link selected" data-img="{% static file.screenshot_url %}">Preview Image</li>
+    {% for file in files %}
+    <li class="zip-content">{{file}}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div id="analysis">
+    <div id="file-data">
+        <div id="world-info" class="toggle"></div>
+        <div id="board-info" class="toggle"></div>
+        <div id="element-info" class="toggle"></div>
+        <div id="stat-info" class="toggle">
+            <a id='stat-toggle' class='jsLink'>Toggle Codeless Stats</a><br>
+            Sort by:
+            <select name="stat-sort">
+                <option value="code">Code Length</option>
+                <option value="coord">Coordinates</option>
+                <option value="name" selected>Name</option>
+                <option value="stat">Stat Index</option>
+            </select>
+            <ol></ol>
+        </div>
+        <div id="preferences" class="toggle">
+            <div class="field">
+                <label for="pref-charset">Charset</label>
+                <select name="charset" id="pref-charset">
+                    <optgroup label="Standard Fonts">
+                        {% for charset in charsets %}
+                        <option value="{{charset.0}}">{{charset.1}}</option>
+                        {% endfor %}
+                    </optgroup>
+                    <optgroup label="Custom Fonts">
+                        {% for charset in custom_charsets %}
+                        <option value="{{charset}}"{% if request.charset == charset %} selected{% endif %}>{{charset|slice:"5:-4"}}{% if file.id|stringformat:"i" == charset|slice:":4" %} (RECOMMENDED){% endif %}</option>
+                        {% endfor %}
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-renderer">Board Rendering</label>
+                <select name="renderer" id="pref-renderer">
+                    <option value="zzt_standard" selected>Standard</option>
+                    <option value="zzt_objects">Object Highlight</option>
+                    <option value="zzt_code">Code Highlight</option>
+                    <option value="zzt_fake">Fake Wall Highlight</option>
+                    <option value="zzt_dark">Dark Board</option>
+                    <option value="zzt_empty">Visible Empties</option>
+                    <option value="zzt_empty_text">Empties as Text</option>
+                    <!--<option value="zzt_torch">Dark Board - Lit Torch</option>TODO-->
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-intensity">High Intensity Backgrounds</label>
+                <select name="intensity" id="pref-intensity">
+                    <option value="high">On</option>
+                    <option value="low" selected>Off</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-invisibles" id="pref-invisibles">Invisible Walls</label>
+                <select name="invisibles">
+                    <option value="revealed">Visible - Revealed</option>
+                    <option value="editor" selected>Visible - Editor</option>
+                    <option value="invisible">Invisible</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-monitors">Monitors</label>
+                <select name="monitors" id="pref-monitors">
+                    <option value="hidden">Hidden - ZZT Style</option>
+                    <option value="m" selected>M - KevEdit Style</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-edges">Board Edges</label>
+                <select name="edges" id="pref-edges">
+                    <option value="hidden" selected>Hidden - ZZT Style</option>
+                    <option value="e">E - KevEdit Style</option>
+                </select>
+            </div>
         </div>
 
-        <div id="tab-area">
-            <div id="file-tabs">
-                <ul>
-                    <li name="world-info">World</li>
-                    <li name="board-info">Board</li>
-                    <li name="element-info">Element</li>
-                    <li name="stat-info">Stats</li>
-                    <li name="preferences">Prefs.</li>
-                    <li name="help">?</li>
-                </ul>
-            </div>
-            <div id="file-data">
-                <div id="world-info" class="toggle"></div>
-                <div id="board-info" class="toggle"></div>
-                <div id="element-info" class="toggle"></div>
-                <div id="stat-info" class="toggle">
-                    <a id='stat-toggle' class='jsLink'>Toggle Codeless Stats</a><br>
-                    Sort by:
-                    <select name="stat-sort">
-                        <option value="code">Code Length</option>
-                        <option value="coord">Coordinates</option>
-                        <option value="name" selected>Name</option>
-                        <option value="stat">Stat Index</option>
-                    </select>
-                    <ol></ol>
-                </div>
-                <div id="preferences" class="toggle">
-                        <label>Charset
-                            <select name="charset">
-                                <optgroup label="Standard Fonts">
-                                    {% for charset in charsets %}
-                                    <option value="{{charset.0}}">{{charset.1}}</option>
-                                    {% endfor %}
-                                </optgroup>
-                                <optgroup label="Custom Fonts">
-                                    {% for charset in custom_charsets %}
-                                    <option value="{{charset}}"{% if request.charset == charset %} selected{% endif %}>{{charset|slice:"5:-4"}}{% if file.id|stringformat:"i" == charset|slice:":4" %} (RECOMMENDED){% endif %}</option>
-                                    {% endfor %}
-                                </optgroup>
-                            </select>
-                            <div class="option r" style="clear:both;display:none"><!--TODO-->
-                                <input type="checkbox" name="2x" value="1"> - 2x Zoom
-                            </div>
-                        </label>
-
-
-                        <label>
-                            Board Rendering
-                            <select name="renderer">
-                                <option value="zzt_standard" selected>Standard</option>
-                                <option value="zzt_objects">Object Highlight</option>
-                                <option value="zzt_code">Code Highlight</option>
-                                <option value="zzt_fake">Fake Wall Highlight</option>
-                                <option value="zzt_dark">Dark Board</option>
-                                <option value="zzt_empty">Visible Empties</option>
-                                <option value="zzt_empty_text">Empties as Text</option>
-                                <!--<option value="zzt_torch">Dark Board - Lit Torch</option>-->
-                            </select>
-                        </label>
-
-                        <br>
-
-                        <label>
-                            High Intensity Backgrounds
-                            <select name="intensity">
-                                <option value="high">On</option>
-                                <option value="low" selected>Off</option>
-                            </select>
-                        </label>
-
-                        <br>
-
-                        <label>
-                            Invisible Walls
-                            <select name="invisibles">
-                                <option value="revealed">Visible - Revealed</option>
-                                <option value="editor" selected>Visible - Editor</option>
-                                <option value="invisible">Invisible</option>
-                            </select>
-                        </label>
-
-                        <br>
-
-                        <label>
-                            Monitors
-                            <select name="monitors">
-                                <option value="hidden">Hidden - ZZT Style</option>
-                                <option value="m" selected>M - KevEdit Style</option>
-                            </select>
-                        </label>
-
-                        <br>
-
-                        <label>
-                            Board Edges
-                            <select name="edges">
-                                <option value="hidden" selected>Hidden - ZZT Style</option>
-                                <option value="e">E - KevEdit Style</option>
-                            </select>
-                        </label>
-                </div>
-                <div id="help" class="toggle">
-                    <b>Board Navigation</b>
-                    <ul>
-                        <li>+/J Next board</li>
-                        <li>-/K Previous board</li>
-                        <li>Double click on a passage (≡) to travel to its destination</li>
-                    </ul>
-                    <b>Tabs</b>
-                    <ul>
-                        <li>W - World tab</li>
-                        <li>B - Board tab</li>
-                        <li>E - Element tab</li>
-                        <li>S - Stat tab</li>
-                        <li>P - Preferences tab</li>
-                    </ul>
-                </div>
-            </div>
+        <div id="help" class="toggle">
+            <b>Board Navigation</b>
+            <ul>
+                <li>+/J Next board</li>
+                <li>-/K Previous board</li>
+                <li>Double click on a passage (≡) to travel to its destination</li>
+            </ul>
+            <b>Tab Hotkeys</b>
+            <ul>
+                <li>W - World tab</li>
+                <li>B - Board tab</li>
+                <li>E - Element tab</li>
+                <li>S - Stat tab</li>
+                <li>P - Preferences tab</li>
+            </ul>
         </div>
     </div>
 </div>

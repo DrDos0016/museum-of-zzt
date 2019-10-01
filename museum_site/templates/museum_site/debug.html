@@ -12,6 +12,26 @@
 {% block content %}
 <section id="content" class="col block">
 
+{{f}}<br>
+
+<hr><hr><hr>
+
+<b>ZZT Captcha</b><br><br>
+
+<form method="POST">
+{% csrf_token %}
+Key 1: <input name="key1"><br>
+Key 2: <input name="key2"><br>
+</form>
+
+<b>Italicized Link Test:</b><br><br>
+
+<p>Some classic ZZT worlds include {% il %}Frost 1; Power{% endil %}, by
+{% il %}Zenith Nadir{% endil %} and {% il MadTom %}MadTom's{% endil %} thieving
+adventure: {% il %}Burglar!{% endil %}.</p>
+
+<p>I'm also fond of this ending sequence from {% il quest for glory|QGZZT-2.ZZT|13|6,23 %}Quest For Glory{% endil %}</p>
+<hr><hr><hr>
 {% for result in results %}
 {{result}}<br>
 {% endfor %}

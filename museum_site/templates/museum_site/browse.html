@@ -8,7 +8,7 @@
 {% if mode == "browse" %}<h1>Browse - {{letter|upper}}</h1>{% endif %}
 {% if mode == "search" %}<h1>Search - {{q}}</h1>{% endif %}
 {% else %}
-<h1>{{category}}</h1>
+<h1>{{category|default:"Uhh"}}</h1>
 {% endif %}
 {% if files %}
 {% include "museum_site/blocks/file_page_block.html" %}
@@ -25,7 +25,6 @@
     {% if advanced_search %}
     <p><a href="/advanced-search?{{request.META.QUERY_STRING}}">Modify Search Query</a></p>
     {% endif %}
-
 {% endif %}
 
 </section>

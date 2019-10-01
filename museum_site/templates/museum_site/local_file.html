@@ -5,7 +5,7 @@
 <script>
 var letter = "{{letter}}";
 var zip = "{{file.filename}}";
-var load_file = "{{load_file}}";
+var load_file = "{{load_file|safe}}";
 var load_board = "{{load_board}}";
 var hash_coords = window.location.hash;
 </script>

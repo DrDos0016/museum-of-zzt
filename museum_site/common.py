@@ -16,17 +16,20 @@ from datetime import datetime
 from io import BytesIO
 from random import randint, shuffle, seed
 from time import time
-import math
-import zipfile
 import glob
+import math
 import os
+import re
 import subprocess
 import sys
+import urllib.parse
+import zipfile
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMP_PATH = os.path.join(SITE_ROOT, "tmp")
 BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
 STATIC_PATH =  os.path.join(SITE_ROOT, "museum_site", "static")
+CSS_INCLUDES = ["grid.css", "responsive.css", "zzt.css"]
 TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25
@@ -353,6 +356,16 @@ PLAY_METHODS = {
     "archive": {"name":"Archive.org - DosBox Embed"},
     "zeta": {"name":"Zeta"},
 }
+
+def populate_collection_params(data):
+    params = "?"
+    keys = ["mode", "rng_seed", "author", "year", "genre", "company", "letter", "page", "sort"]
+    for k in keys:
+        if data.get(k):
+            params += k + "=" + str(data[k]) + "&"
+    params = params[:-1]
+    return params
+
 
 
 def get_view_format(request):

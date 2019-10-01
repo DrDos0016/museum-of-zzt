@@ -44,9 +44,11 @@
 {% endblock %}
 
 {% block world_content %}
-<h1>{{article.title}}</h1>
-<div>By: {{article.author}}</div>
-<div>Date: {{article.date}}</div>
+<div id="article-meta">
+    <h1>{{article.title}}</h1>
+    <div>By: {{article.author}}</div>
+    <div>Date: {{article.date}}</div>
+</div>
 
 {% if private_disclaimer %}
 <div class="content-warning">
@@ -77,6 +79,7 @@
     <a href="?file={{request.GET.file}}&spellcheck=1&page=all">Spellcheck</a>
 </div>
 {% endif %}
+
 {% if article.schema == "html" %}
     {{article.content|safe}}
 {% elif article.schema == "text" %}
@@ -98,8 +101,8 @@
 <hr>
 <div>
 <div id="disqus_thread"></div>
-<script>
 
+<script>
 var disqus_config = function () {
 this.page.url = "{{request.build_absolute_uri}}";
 this.page.identifier = "{{article.title|slugify}}";

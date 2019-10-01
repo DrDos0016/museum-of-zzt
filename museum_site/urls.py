@@ -58,14 +58,19 @@ urlpatterns = [
         name="article_view",),
 
     # Special Article Pages (those with urls besides /article/#/title)
-    url(r"^about-zzt$", museum_site.views.article_view, {"id": 1}),
-    url(r"^ascii$", museum_site.views.article_view, {"id": 3}),
-    url(r"^clones$", museum_site.views.article_view, {"id": 6}),
+    url(r"^about-zzt$", museum_site.views.article_view, {"id": 1}, name="about_zzt"),
+    url(r"^ascii$", museum_site.views.article_view, {"id": 3}, name="ascii"),
+    url(r"^clones$", museum_site.views.article_view, {"id": 6}, name="clones"),
     url(r"^zzt-cheats$", museum_site.views.article_view, {"id": 22}, name="zzt_cheats"),
     url(r"^credits$", museum_site.views.article_view, {"id": 164}, name="credits"),
-    url(r"^getting-started$", museum_site.views.article_view, {"id": 5}),
+    url(r"^getting-started$", museum_site.views.article_view, {"id": 5}, name="zzt_dosbox"),
     url(r"^zzt$", museum_site.views.article_view, {"id": 2}, name="zzt_dl"),
     url(r"^zeta$", museum_site.views.article_view, {"id": 399}, name="zeta"),
+
+    # Collections
+    url(r"^collection/play$", museum_site.views.play_collection,
+        name="play_collection"
+        ),
 
     # Closer Looks
     url(r"^closer-looks$", museum_site.views.closer_look, name="closer_looks"),
@@ -84,7 +89,7 @@ urlpatterns = [
         museum_site.views.article,
         name="article"
         ),
-    url(r"^browse/(?P<letter>[a-z1])$", museum_site.views.browse),
+    url(r"^browse/(?P<letter>[a-z1])$", museum_site.views.browse, name="browse_letter"),
     url(r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.file,
         name="file"
         ),
@@ -96,7 +101,7 @@ urlpatterns = [
         ),
     url(r"^file/local$", museum_site.views.file,
         {"local": True, "letter":"!", "filename":""},
-        name="local",
+        name="local_file",
         ),
 
     # Files (alternate categories)
@@ -144,7 +149,6 @@ urlpatterns = [
         name="mass_downloads"),
 
     # Patrons Only
-    url(r"^patron-plans$", museum_site.views.patron_plans, name="patron_plans"),
     url(r"^patron-articles$", museum_site.views.patron_articles, name="patron_articles"),
 
     # Policies
@@ -167,7 +171,7 @@ urlpatterns = [
     url(r"^search$", museum_site.views.search, name="search"),
 
     # Uploads
-    url(r"^upload$", museum_site.views.upload),
+    url(r"^upload$", museum_site.views.upload, name="upload"),
 
     # Zeta Live
     url(r"^zeta-live$", museum_site.views.zeta_live),
@@ -191,6 +195,7 @@ urlpatterns = [
     url(r"^tools/(?P<pk>[0-9]+)$", museum_site.tools.tool_list, name="tool_list"),
     url(r"^tools/mirror/(?P<pk>[0-9]+)$", museum_site.tools.mirror, name="mirror"),
     url(r"^tools/publish/(?P<pk>[0-9]+)$", museum_site.tools.publish, name="publish"),
+    url(r"^tools/replace_zip/(?P<pk>[0-9]+)$", museum_site.tools.replace_zip, name="replace_zip"),
     url(r"^tools/scan$", museum_site.tools.scan, name="scan"),
     url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tools.set_screenshot, name="set_screenshot"),
 

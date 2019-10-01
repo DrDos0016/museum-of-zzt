@@ -63,6 +63,7 @@ def article_view(request, id, page=0):
     page = int(page)
     id = int(id)
     data = {"id": id}
+    data["custom_layout"] = "article"
 
     if request.GET.get("secret") is None:
         data["article"] = get_object_or_404(Article, pk=id, published=PUBLISHED_ARTICLE)
@@ -121,8 +122,10 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
 
     if letter is not None:
         data["title"] = "Browse - " + letter.upper()
+        data["category"] = "ZZT"
     elif len(details) == 1:
         data["title"] = "Browse - " + CATEGORY_LIST[details[0]][1]
+        data["category"] = CATEGORY_LIST[details[0]][1]
     else:
         data["title"] = "Browse"
 
@@ -131,15 +134,21 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
 
     sort = SORT_CODES[request.GET.get("sort", "title").strip()]
 
-    # Handle "new additions"
+    # Handle special paths
     if request.path == "/new":
+        data["mode"] = "new"
+        data["title"] = "New Additions"
+        data["category"] = "New Additions"
         sort = SORT_CODES["published"]
-
-    if request.path == "/roulette":
+    elif request.path == "/roulette":
         sort = SORT_CODES["roulette"]
+        data["mode"] = "roulette"
         data["title"] = "Roulette"
         data["rng_seed"] = str(int(request.GET.get("rng_seed", time())))
-
+        data["category"] = "Roulette Seed " + data["rng_seed"]
+    elif request.path == "/uploaded":
+        data["mode"] = "uploaded"
+        data["category"] = "Upload Queue"
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
@@ -184,10 +193,6 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
     if DETAIL_LOST in details:
         data["show_description"] = True
 
-    #if DETAIL_UPLOADED in details:
-    #    for file in data["files"]:
-    #        file.letter = "uploaded"
-
     # Determine destination template
     if data["view"] == "list":
         destination = "museum_site/browse_list.html"
@@ -195,6 +200,9 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
         destination = "museum_site/browse_gallery.html"
     else:  # Detailed
         destination = "museum_site/browse.html"
+
+    # Determine params needed to play this collection of files
+    data["collection_params"] = populate_collection_params(data)
 
     response = render(request, destination, data)
 
@@ -268,16 +276,28 @@ def directory(request, category):
         data_list = GENRE_LIST
 
     # Break the list of results into 4 columns
-    data_list = sorted(data_list, key=lambda s: s.lower())
+    data_list = sorted(data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.lower()))
+    #data_list = sorted(data_list, key=lambda s: s.lower())
+    first_letters = []
 
-    data["list"] = data_list
-    data["split"] = math.ceil(len(data["list"]) / 4.0)
+    for entry in data_list:
+        if entry[0] in "1234567890":
+            first_letters.append("#")
+        elif entry[0].upper() not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+            first_letters.append("*")
+        else:
+            first_letters.append(entry[0].upper())
+
+    data["list"] = list(zip(data_list, first_letters))
+    data["split"] = math.ceil(len(data_list) / 4.0)
+    print(data["list"])
     return render(request, "museum_site/directory.html", data)
 
 
 def featured_games(request, page=1):
     """ Returns a page listing all games marked as Featured """
     data = {"title": "Featured Games"}
+    data["mode"] = "featured"
     data["no_list"] = True
     data["page"] = int(request.GET.get("page", page))
     featured = Detail.objects.get(pk=DETAIL_FEATURED)
@@ -300,12 +320,15 @@ def featured_games(request, page=1):
     data["show_description"] = True
     data["show_featured"] = True
 
+    data["collection_params"] = populate_collection_params(data)
+
     return render(request, "museum_site/featured_games.html", data)
 
 
 def file(request, letter, filename, local=False):
     """ Returns page exploring a file's zip contents """
     data = {}
+    data["custom_layout"] = "fv-grid"
     data["year"] = YEAR
     data["details"] = []  # Required to show all download links
     data["file"] = File.objects.filter(letter=letter, filename=filename)
@@ -347,7 +370,7 @@ def file(request, letter, filename, local=False):
         for f in files:
             if f and f[-1] != os.sep:
                 data["files"].append(f)
-        data["load_file"] = request.GET.get("file", "")
+        data["load_file"] = urllib.parse.unquote(request.GET.get("file", ""))
         data["load_board"] = request.GET.get("board", "")
     else: # Local files
         data["file"] = "Local File Viewer"
@@ -371,7 +394,7 @@ def index(request):
 
     # Obtain latest content
     data["articles"] = Article.objects.filter(published=PUBLISHED_ARTICLE).order_by("-date")[:10]
-    data["files"] = File.objects.all().exclude(details__id__in=[18]).order_by("-publish_date", "-id")[:10]  # TODO: Unhardcode
+    data["files"] = File.objects.all().exclude(details__id__in=[18]).order_by("-publish_date", "-id")[:12]  # TODO: Unhardcode
     data["reviews"] = Review.objects.all().order_by("-date")[:10]
 
     return render(request, "museum_site/index.html", data)
@@ -422,8 +445,6 @@ def patron_articles(request):
     data["early"] = Article.objects.filter(published=UPCOMING_ARTICLE)
     data["really_early"] = Article.objects.filter(published=UNPUBLISHED_ARTICLE)
 
-
-
     if request.POST.get("secret") == PASSWORD2DOLLARS:
         data["access"] = "early"
     elif request.POST.get("secret") == PASSWORD5DOLLARS:
@@ -433,23 +454,6 @@ def patron_articles(request):
 
 
     return render(request, "museum_site/patreon_articles.html", data)
-
-def patron_plans(request):
-    """ TODO THIS IS LIKELY DEFUNCT """
-    # Redirects to the Patron only Google Doc for Closer Looks
-    data = {}
-
-    # Ugh I have to keep the URL outside of my public repo...
-    with open("/var/projects/museum/patron_plans.txt") as fh:
-        url = fh.readline().strip()
-        passphrase = fh.readline().strip()
-
-    if request.POST.get("secret") == passphrase:
-        return redirect(url)
-    else:
-        if request.POST.get("secret"):
-            data["wrong_password"] = True
-        return render(request, "museum_site/patreon_plans.html", data)
 
 
 def play(request, letter, filename):
@@ -520,6 +524,61 @@ def play(request, letter, filename):
     return response
 
 
+def play_collection(request):
+    """ Returns page to play file in the browser """
+    data = {}
+    data["title"] = " - Play Collection"
+    data["player"] = "zeta"  # Must be Zeta
+    data["custom_charset"] = None  # Modified graphics aren't really viable here
+    data["engine"] = "zzt.zip"  # TODO: Special case for SZZT
+    data["play_base"] = "museum_site/world.html"
+
+    if request.GET.get("letter"):
+        data["letter"] = request.GET.get("letter")
+
+    if request.GET.get("popout"):
+        data["play_base"] = "museum_site/play-popout.html"
+
+    # Get the files in the collection
+    if request.GET.get("mode") == "featured":
+        files = File.objects.filter(details__id__in=[DETAIL_FEATURED])
+    elif request.GET.get("mode") == "new":
+        files = File.objects.all().order_by(*SORT_CODES["published"])
+    elif request.GET.get("mode") == "browse":
+        files = File.objects.filter(letter=data["letter"])
+
+    # TODO: WEIRDLY BROKEN TITLES
+    files = files.exclude(pk=431)  # 4 by Jojoisjo
+    files = files.exclude(pk=85)  # Banana Quest
+
+
+    # Slice by page
+
+    data["page"] = int(request.GET.get("page", 1))
+    data["files"] = files[
+        (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
+    ]
+
+    data["file"] = None
+    data["extra_files"] = ""
+    for f in data["files"][1:]:
+        if f.file_exists():
+            print("ADDING", f)
+            print(f.phys_path())
+            if data["file"] is None:
+                data["file"] = f
+            else:
+                data["extra_files"] += '"{}",\n'.format(f.download_url())
+        else:
+            print("SKIPPING", f)
+
+    print(data["extra_files"])
+
+    response = render(request, "museum_site/play_collection.html", data)
+    return response
+
+
+
 def random(request):
     """ Returns a random ZZT file page """
     max_pk = File.objects.all().order_by("-id")[0].id
@@ -579,6 +638,7 @@ def search(request):
         appropriately.
     """
     data = {"mode": "search", "title": "Search"}
+    data["category"] = "Search Results"
     data["page"] = int(request.GET.get("page", 1))
 
     # Query strings
@@ -849,7 +909,7 @@ def debug_article(request):
         article = Article.objects.get(pk=1)
         article.title = "TEST ARTICLE"
         article.category = "TEST"
-        article.content = fh.read().replace("<!--PAGE-->", "<hr>")
+        article.content = fh.read().replace("<!--Page-->", "<hr><b>PAGE BREAK</b><hr>")
         article.schema = request.GET.get("format", "django")
     data["article"] = article
     data["veryspecial"] = True
