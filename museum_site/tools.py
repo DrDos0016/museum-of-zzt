@@ -166,6 +166,15 @@ def publish(request, pk):
 
 
 @staff_member_required
+def replace_zip(request, pk):
+    """ Returns page with latest Museum scan results"""
+    data = {"title": "Replace Zip"}
+
+    return render(request, "museum_site/tools/replace_zip.html", data)
+
+
+
+@staff_member_required
 def scan(request):
     """ Returns page with latest Museum scan results"""
     data = {"title": "Museum Scan"}
