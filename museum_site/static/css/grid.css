@@ -176,6 +176,11 @@ input[type=number]
     background-color:#00A;
 }
 
+@media (max-width:1024px)
+{
+    .nav-link .optional { display:none; }
+}
+
 .nav-link:nth-child(even) .key { background-color:#AAA; }
 .nav-link:nth-child(odd) .key { background-color:#0AA; }
 

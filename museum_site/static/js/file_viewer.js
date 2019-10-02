@@ -300,6 +300,7 @@ function pull_file()
         {
             format = "audio";
             // TODO: Make this actually work
+            /*
             if (ext == "wav")
                 var type = "audio/wav wav";
             else if (ext == "mp3")
@@ -320,6 +321,8 @@ function pull_file()
             source.start(0)
 
             //$("#details").html("<audio id='zip_audio' src='"+zip_audio_url+"'>Your browser does not support HTML5 audio</audio>");
+            */
+            set_active_envelope("audio");
         }
         else if (ext == "com")
         {
@@ -799,8 +802,9 @@ function render_board()
 
 function draw_board()
 {
-    $(".output.active").removeClass("active");
-    $(".output.canvas").addClass("active");
+    //$(".output.active").removeClass("active");
+    //$(".output.canvas").addClass("active");
+    set_active_envelope("canvas");
 
     ctx.globalCompositeOperation = "source-over";
     ctx.fillstyle = "black";
@@ -1004,7 +1008,7 @@ $(window).bind("load", function() {
     $("select[name=renderer]").change(function (){
         renderer.render = renderer[$(this).val()];
         $("li.selected.board").click();
-        $("li[name=preferences]").click();
+        tab_select("preferences");
     });
 
     // Invisibles, Monitors, and Board Edges
@@ -1628,15 +1632,17 @@ function set_output(category, data)
 
 function set_active_envelope(envelope)
 {
+    console.log("SETTING ENVELOPE TO", envelope);
     $(".output.active").removeClass("active");
-    $(".output." + envelope).addClass("active");
 
-    if (envelope == "canvas")
+    if (envelope != "canvas")
     {
-        $("#canvas-envelope").hide();
+        $("#canvas-envelope").css("display", "none");
     }
     else
     {
         $("#canvas-envelope").css("display", "grid");
     }
+
+    $(".output." + envelope).addClass("active");
 }

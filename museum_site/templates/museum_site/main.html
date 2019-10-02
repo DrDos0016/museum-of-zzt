@@ -67,9 +67,9 @@
 </header>
 
 <nav id="top-links" class="cp437">
-    <div class="nav-link"><a href="{% url 'about_zzt' %}"><span class="key">A</span> About ZZT</a></div>
+    <div class="nav-link"><a href="{% url 'about_zzt' %}"><span class="key">A</span> About<span class="optional"> ZZT</span></a></div>
     <div class="nav-link"><a href="{% url 'upload' %}"><span class="key">U</span> Upload</a></div>
-    <div class="nav-link"><a href="http://zzt.org/fora"><span class="key">Z</span> z2 Forums</a></div>
+    <div class="nav-link"><a href="http://zzt.org/fora"><span class="key">Z</span> <span class="optional"> z2 </span>Forums</a></div>
 </nav>
 
 <section id="sidebar-left" class="sidebar">
@@ -91,11 +91,11 @@
         </div>
 
         <div class="world-special">
-            <a href="{% url 'mass_downloads' %}">Mass Downloads</a><br>
-            <a href="{% url 'new_files' %}">New Additions</a><br>
-            <a href="{% url 'random' %}">Random ZZT World</a><br>
-            <a href="{% url 'roulette' %}">Roulette</a><br>
-            <a href="{% url 'uploaded_worlds' %}">Upload Queue</a><br>
+            &bull; <a href="{% url 'mass_downloads' %}">Mass Downloads</a><br>
+            &bull; <a href="{% url 'new_files' %}">New Additions</a><br>
+            &bull; <a href="{% url 'random' %}">Random ZZT World</a><br>
+            &bull; <a href="{% url 'roulette' %}">Roulette</a><br>
+            &bull; <a href="{% url 'uploaded_worlds' %}">Upload Queue</a><br>
         </div>
 
         <form method="GET" action="{% url 'search' %}">
@@ -104,20 +104,20 @@
             <input id="search-button" type="submit" value="Search">
         </div>
         </form>
-        <a href="{% url 'advanced_search' %}">Advanced Search</a>
+        &bull; <a href="{% url 'advanced_search' %}">Advanced Search</a>
     </div>
 
     <div class="block">
         <h1>Downloads</h1>
-        <a href="{% url 'zzt_dl' %}">ZZT</a><br>
-        <a href="http://zeta.asie.pl/" target="_blank">Zeta</a><br>
-        <a href="http://www.dosbox.com/download.php?main=1" target="_blank">DOSBox</a><br>
-        <a href="https://github.com/cknave/kevedit" target="_blank">KevEdit</a><br>
-        <a href="{% url 'clones' %}">ZZT Clones</a><br>
-        <a href="{% url 'szzt_worlds' %}">Super ZZT Worlds</a><br>
-        <a href="{% url 'utilities' %}">External Utilities</a><br>
-        <a href="{% url 'zig_worlds' %}">ZIG Worlds</a><br>
-        <a href="{% url 'zzm_audio' %}">ZZM Music</a><br>
+        &bull; <a href="{% url 'zzt_dl' %}">ZZT</a><br>
+        &bull; <a href="http://zeta.asie.pl/" target="_blank">Zeta</a><br>
+        &bull; <a href="http://www.dosbox.com/download.php?main=1" target="_blank">DOSBox</a><br>
+        &bull; <a href="https://github.com/cknave/kevedit" target="_blank">KevEdit</a><br>
+        &bull; <a href="{% url 'clones' %}">ZZT Clones</a><br>
+        &bull; <a href="{% url 'szzt_worlds' %}">Super ZZT Worlds</a><br>
+        &bull; <a href="{% url 'utilities' %}">External Utilities</a><br>
+        &bull; <a href="{% url 'zig_worlds' %}">ZIG Worlds</a><br>
+        &bull; <a href="{% url 'zzm_audio' %}">ZZM Music</a><br>
     </div>
 </section>
 
@@ -131,31 +131,30 @@
         <h1>Exhibits</h1>
 
         <h2>Worlds of ZZT</h2>
-        <a href="{% url 'closer_looks' %}">Closer Looks</a><br>
-        <a href="{% url 'livestreams' %}">Livestreams</a><br>
-        <a href="https://github.com/DrDos0016/zookeeper" target="_blank">Zookeeper</a><br>
+        &bull; <a href="{% url 'closer_looks' %}">Closer Looks</a><br>
+        &bull; <a href="{% url 'livestreams' %}">Livestreams</a><br>
+        &bull; <a href="https://github.com/DrDos0016/zookeeper" target="_blank">Zookeeper</a><br>
 
         <h2>Directories</h2>
-        <a href="{% url 'article_directory' %}">Articles</a><br>
-        <a href="{% url 'directory' 'author' %}">Authors</a><br>
-        <a href="{% url 'directory' 'company' %}">Companies</a><br>
-        <a href="{% url 'directory' 'genre' %}">Genres</a><br>
+        &bull; <a href="{% url 'article_directory' %}">Articles</a><br>
+        &bull; <a href="{% url 'directory' 'author' %}">Authors</a><br>
+        &bull; <a href="{% url 'directory' 'company' %}">Companies</a><br>
+        &bull; <a href="{% url 'directory' 'genre' %}">Genres</a><br>
 
         <h2>Playing</h2>
-        <a href="{% url 'zeta' %}">Using ZZT with Zeta</a><br>
-        <a href="{% url 'zzt_dosbox' %}">Using ZZT with DOSBox</a><br>
-        <a href="{% url 'article_directory' 'walkthrough' %}">Walkthroughs</a><br>
-        <a href="{% url 'zzt_cheats' %}">ZZT Cheats</a><br>
+        &bull; <a href="{% url 'zeta' %}">Using ZZT with Zeta</a><br>
+        &bull; <a href="{% url 'zzt_dosbox' %}">Using ZZT with DOSBox</a><br>
+        &bull; <a href="{% url 'article_directory' 'walkthrough' %}">Walkthroughs</a><br>
+        &bull; <a href="{% url 'zzt_cheats' %}">ZZT Cheats</a><br>
 
         <h2>Editing</h2>
-        <a href="{% url 'ascii' %}">ASCII Characters</a><br>
-        <a href="{% url 'local_file' %}">Local File Viewer</a><br>
+        &bull; <a href="{% url 'ascii' %}">ASCII Characters</a><br>
+        &bull; <a href="{% url 'local_file' %}">Local File Viewer</a><br>
 
         <h2>Historical</h2>
-        <a href="{% url 'lost_worlds' %}">Lost Worlds</a><br>
-        <a href="http://zzt.org" target="_blank">z2 ZZT Archive</a><br>
-        <a href="{% url 'comic_index' %}">ZZT Comics Archive</a><br>
-
+        &bull; <a href="{% url 'lost_worlds' %}">Lost Worlds</a><br>
+        &bull; <a href="http://zzt.org" target="_blank">z2 ZZT Archive</a><br>
+        &bull; <a href="{% url 'comic_index' %}">ZZT Comics Archive</a><br>
     </div>
 
     <div class="block">
@@ -171,19 +170,19 @@
 
         <div id="policies">
             <h2>Policies</h2>
-            <div><a href="{% url 'correction_policy' %}">Correction Policy</a></div>
-            <div><a href="{% url 'data_integrity' %}">Data Integrity</a></div>
-            <div><a href="{% url 'removal_policy' %}">Removal Policy</a></div>
-            <div><a href="{% url 'review_policy' %}">Review Policy</a></div>
-            <div><a href="{% url 'credits' %}">Site Credits</a></div>
-            <div><a href="{% url 'upload_policy' %}">Upload Policy</a></div>
+            &bull; <a href="{% url 'correction_policy' %}">Correction Policy</a><br>
+            &bull; <a href="{% url 'data_integrity' %}">Data Integrity</a><br>
+            &bull; <a href="{% url 'removal_policy' %}">Removal Policy</a><br>
+            &bull; <a href="{% url 'review_policy' %}">Review Policy</a><br>
+            &bull; <a href="{% url 'credits' %}">Site Credits</a><br>
+            &bull; <a href="{% url 'upload_policy' %}">Upload Policy</a><br>
         </div>
 
         <div id="patreon-links">
             <h2>Patron Exclusives</h2>
-            <div>$1+ <a href="{% url 'poll_index' %}">Closer Look Poll</a></div>
-            <div>$2+ <a href="{% url 'patron_articles' %}">Early Articles</a></div>
-            <div>$5+ <a href="https://beta.museumofzzt.com">Private Beta</a></div>
+            &bull;$1+ <a href="{% url 'poll_index' %}">Closer Look Poll</a><br>
+            &bull;$2+ <a href="{% url 'patron_articles' %}">Early Articles</a><br>
+            &bull;$5+ <a href="https://beta.museumofzzt.com">Private Beta</a><br>
         </div>
     </div>
 </section>

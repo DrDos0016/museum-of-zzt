@@ -4,6 +4,7 @@
     max-width:392px;
     height:266px;
     font-family:"cp437", monospace;
+    font-size:12pt;
     line-height:14px;
     text-align:left;
     color:#FFFF55;
@@ -23,6 +24,7 @@
     width:360px; /*336*/
     height:210px;
     overflow-y:scroll;
+    -webkit-overflow-scrolling: touch;
 }
 
 .zzt-scroll .white
