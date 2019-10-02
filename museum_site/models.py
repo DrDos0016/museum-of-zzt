@@ -45,14 +45,14 @@ CATEGORY_LIST = (
     ("OSX", "OSX Programs"),
     ("FEATURED", "Featured Worlds"),
     ("UNUSED-8", "UNUSED Contest Entries"),
-    ("ZZM", "ZZM Soundtrack"),
+    ("ZZM", "ZZM Soundtracks"),
     ("GFX", "Modified Graphics"),
     ("MOD", "Modified Executables"),
     ("ETC", "Etc."),
     ("SZZT", "Super ZZT Worlds"),
     ("UTILITY", "Utilities"),
     ("ZZT", "ZZT Worlds"),
-    ("ZIG", "ZIG World"),
+    ("ZIG", "ZIG Worlds"),
     ("LOST", "Lost Worlds"),
     ("UPLOADED", "Uploaded Worlds"),
     ("REMOVED", "Removed Worlds"),
@@ -351,6 +351,9 @@ class File(models.Model):
             return "/zgames/uploaded/" + self.filename
         else:
             return "/zgames/" + self.letter + "/" + self.filename
+
+    def file_exists(self):
+        return True if os.path.isfile(self.phys_path()) else False
 
     def play_url(self):
         return "/play/" + self.letter + "/" + self.filename
