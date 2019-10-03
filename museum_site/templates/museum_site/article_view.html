@@ -79,11 +79,10 @@
     <a href="?file={{request.GET.file}}&spellcheck=1&page=all">Spellcheck</a>
 </div>
 {% endif %}
-
 {% if article.schema == "html" %}
     {{article.content|safe}}
 {% elif article.schema == "text" %}
-    {{article.content|linebreaks}}
+    {{article.content|safe|linebreaks}}
 {% else %}
     {{article.content|as_template|safe}}
 {% endif %}
