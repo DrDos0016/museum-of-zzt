@@ -112,6 +112,15 @@ input[type=number]
     font-style: normal;
 }
 
+@font-face
+{
+    /* http://int10h.org/oldschool-pc-fonts/readme/ */
+    font-family: 'mono';
+    src: url('/static/fonts/UbuntuMono-R.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .cp437 { font-family: "cp437";}
 /* End Fonts */
 
@@ -519,7 +528,7 @@ input[name=q]
 
 .patreon-plug
 {
-    font-family:monospace;
+    font-family:cp437;
     font-size:14px;
     line-height:14px;
     color:#FFFF55;
@@ -636,7 +645,7 @@ form .field .board-type-select
 
 form .field .genre-checklist
 {
-    font-family:monospace;
+    font-family:mono;
     height: 150px;
     overflow: auto;
     min-width: 300px;
@@ -882,7 +891,7 @@ form .field .genre-checklist
 {
     grid-area: file-list;
     border:1px solid #000;
-    font-family:monospace;
+    font-family:mono;
     overflow:auto;
     max-height:100%;
 }
@@ -953,7 +962,7 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     border:1px solid #000;
     border-left:0px;
     padding:7px 4px 7px 4px;
-    font-family:monospace;
+    font-family:mono;
     overflow:auto;
 }
 
