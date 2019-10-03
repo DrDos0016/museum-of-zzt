@@ -165,6 +165,11 @@ input[type=number]
     .low-res-hidden { display:none; }
 }
 
+@media (min-width: 1025px)
+{
+    .low-res-break { display:none; }
+}
+
 #logo-area
 {
     height:50px;
@@ -354,7 +359,7 @@ img.zoomed { max-width: auto; }
 {
     display:grid;
     grid-template-columns:1fr auto;
-    grid-gap:8px;
+    grid-gap:4px 8px;
 }
 
 #worlds-block form
@@ -372,6 +377,23 @@ input[name=q]
 #search-button
 {
     font-size:medium;
+}
+
+@media (max-width: 1024px)
+{
+    #search-button, input[name=q]
+    {
+        height:auto;
+        width:100%;
+        margin:auto;
+        padding:0;
+        max-width:116px;
+    }
+
+    input[name=q]
+    {
+        max-width:114px;
+    }
 }
 
 #social
