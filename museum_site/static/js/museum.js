@@ -79,13 +79,13 @@ $(document).ready(function (){
         if ($(this).hasClass("expanded")) // Expand
         {
             console.log("EXPANDING")
-            $(this).text("🠊 🠈");
+            $(this).html("→ ←");
             $(".sidebar, #top-links, #logo-area").hide();
             $("body").removeClass("grid-root");
         }
         else // Contract
         {
-            $(this).text("🠈 🠊");
+            $(this).html("← →");
             $(".sidebar, #top-links, #logo-area").show();
             $("body").addClass("grid-root");
         }

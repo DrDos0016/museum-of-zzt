@@ -85,6 +85,15 @@ input, select, textarea
     border:1px solid #000;
     background:#FFF;
     font-size:larger;
+    max-height:2.5ch;
+}
+
+@media (max-width: 1024px)
+{
+    input, select, textarea
+    {
+        font-size:medium;
+    }
 }
 
 input[type=number]
