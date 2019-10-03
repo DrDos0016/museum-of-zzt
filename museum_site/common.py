@@ -164,6 +164,7 @@ CUSTOM_CHARSET_LIST = (
     "1360-YUMMY.png",
     "1361-YVS2FONT.png",
     "1627-ZBERT.png",
+    "2613-ZELDA3.png",
     "1861-ZEPHFONT.png",
     "1880-ZEPHFONT.png",
     "0533-ZFONT.png",
