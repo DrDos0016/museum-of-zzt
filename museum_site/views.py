@@ -520,6 +520,8 @@ def play(request, letter, filename):
     # Override for "Live" Zeta edits
     if request.GET.get("live"):
         data["zeta_url"] = "/zeta-live?pk={}&world={}&start={}".format(data["file"].id, request.GET.get("world"), request.GET.get("start", 0))
+    elif request.GET.get("discord"):
+        data["zeta_url"] = "/zeta-live?discord=1&world={}".format(request.GET.get("world"))
 
     response = render(request, "museum_site/play.html", data)
     response.set_cookie("preferred_player", cookie_preferred, expires=datetime(3000, 12, 31))
@@ -881,47 +883,14 @@ def uploaded_redir(request, filename):
     file = File.objects.get(filename=filename)
     return redirect(file.file_url())
 
-
-def debug(request):
-    data = {"title": "DEBUG PAGE"}
-
-    #results = File.objects.filter(Q(author="Dr. Dos") | Q(review))
-    #print("Found", len(results), "by me")
-    #data["results"] = results
-
-    set_captcha_seed(request)
-
-    f = File.objects.filter(pk=int(request.GET.get("id", 420)))
-    data["file"] = f
-
-
-
-    print(request.session["captcha-seed"])
-
-    return render(request, "museum_site/debug.html", data)
-
-
-def debug_article(request):
-    data = {"id": 0}
-    filepath = "/var/projects/museum/private/" + request.GET.get("file")
-    if not os.path.isfile(filepath):
-        filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")
-
-    with open(filepath) as fh:
-        article = Article.objects.get(pk=1)
-        article.title = "TEST ARTICLE"
-        article.category = "TEST"
-        article.content = fh.read().replace("<!--Page-->", "<hr><b>PAGE BREAK</b><hr>")
-        article.schema = request.GET.get("format", "django")
-    data["article"] = article
-    data["veryspecial"] = True
-    return render(request, "museum_site/article_view.html", data)
-
-def debug_z0x(request):
-    data = {}
-    return render(request, "museum_site/z0x.html", data)
-
 def zeta_live(request):
+    if request.GET.get("discord"):
+        with open("/var/projects/museum/museum_site/static/data/discord-zzt/"+ request.GET.get("filename"), "rb") as fh:
+            response = HttpResponse(content_type="application/octet-stream")
+            response["Content-Disposition"] = "attachment; filename=DISCORD.ZIP"
+            response.write(fh.read())
+        return response
+
     pk = int(request.GET["pk"])
     fname = request.GET["world"]
     start = int(request.GET["start"]).to_bytes(1, byteorder="little")

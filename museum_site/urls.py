@@ -6,6 +6,7 @@ if DEBUG:
 
 import museum_site.admin
 import museum_site.ajax
+import museum_site.debug
 import museum_site.errors
 import museum_site.views
 import museum_site.tools
@@ -200,9 +201,10 @@ urlpatterns = [
     url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tools.set_screenshot, name="set_screenshot"),
 
     # Debug
-    url(r"^debug$", museum_site.views.debug),
-    url(r"^debug/article$", museum_site.views.debug_article),
-    url(r"^debug/z0x$", museum_site.views.debug_z0x),
+    url(r"^debug$", museum_site.debug.debug),
+    url(r"^debug/article$", museum_site.debug.debug_article),
+    url(r"^debug/colors$", museum_site.debug.debug_colors),
+    url(r"^debug/z0x$", museum_site.debug.debug_z0x),
     url(r"^ajax/debug_file$", museum_site.ajax.debug_file),
 
     url(r"^error/(?P<status>[0-9]+)$", museum_site.errors.raise_error)
