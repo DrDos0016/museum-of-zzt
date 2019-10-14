@@ -209,20 +209,16 @@ DETAIL_LIST = (
 )
 
 GENRE_LIST = (
-    "24HoZZT",
-    "Action", "Adventure", "Advertisement", "Arcade", "Art", "Beta", "BKZZT",
-    "Cameo", "Catalog", "Cinema", "Comedy", "Comic",
-    "Compilation", "Contest", "Demo",
-    "Dungeon", "Edutainment", "Engine", "Experimental", "Explicit", "Fantasy",
-    "Fighting", "Font", "Help", "Horror", "Incomplete", "Ludum Dare",
-    "Magazine", "Maze", "Minigame", "Multiplayer", "Music", "Mystery",
-    "Non-English", "Official", "Other",
-    "Parody", "Platformer", "Puzzle", "Racing",
-    "Random", "Remake", "Registered", "Retro", "RPG", "Sci-Fi", "Shareware",
-    "Shooter", "Simulation", "Space",
-    "Sports", "Story", "Strategy", "Toolkit",
-    "Trippy", "Trivia", "Tutorial",
-    "Update", "Utility", "WoZZT"
+    "24HoZZT", "Action", "Adventure", "Advertisement", "Arcade", "Art",
+    "Beta", "BKZZT", "Bugfix" "Cameo", "Catalog", "Cinema", "Comedy", "Comic",
+    "Compilation", "Contest", "Demo", "Dungeon", "Edutainment", "Engine",
+    "Experimental", "Explicit", "Fantasy", "Fighting", "Font", "Help",
+    "Horror", "Incomplete", "Ludum Dare", "Magazine", "Maze", "Minigame",
+    "Multiplayer", "Music", "Mystery", "Non-English", "Official", "Other",
+    "Parody", "Platformer", "Puzzle", "Racing", "Random", "Remake",
+    "Registered", "Retro", "RPG", "Sci-Fi", "Shareware", "Shooter",
+    "Simulation", "Space", "Sports", "Story", "Strategy", "Toolkit",
+    "Trippy", "Trivia", "Tutorial", "Update", "Utility", "WoZZT"
 )
 
 SORT_CODES = {
