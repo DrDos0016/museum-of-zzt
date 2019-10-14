@@ -25,6 +25,7 @@ BLACKLISTED_FILES = [
     2540,  #M****m B***s 4 (Harassing)
     2087,  #M****m B***s 1 (Harassing)
     2084,  #M****m B***s 2 (Harassing)
+    1077,  #S**n (Plenty of N-bombs)
 ]
 
 
