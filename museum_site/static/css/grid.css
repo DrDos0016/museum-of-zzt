@@ -14,7 +14,7 @@ a[target=_blank]
 {
     padding-right:16px;
     background:url("/static/images/external_link.png");
-    background-position:right;
+    background-position:top right;
     background-repeat:no-repeat;
 }
 
@@ -22,6 +22,11 @@ a.noext[target=_blank]
 {
     padding-right:0;
     background:none;
+}
+
+a.nohover:hover
+{
+    background-color:none;
 }
 
 a.broken
@@ -272,6 +277,37 @@ input[type=number]
 #content { grid-area: content; }
 #sidebar-right { grid-area: right; }
 
+.sidebar a {
+    display:block;
+    padding-top:1px;
+    padding-bottom:1px;
+}
+
+.sidebar a + a
+{
+    border-top:1px dashed #AAA;
+}
+
+.sidebar a[target=_blank]
+{
+    background:none;
+}
+
+.sidebar a:hover, .sidebar a[target=_blank]:hover
+{
+    background-color:#98C9C9;
+}
+
+.sidebar a[target=_blank]::after
+{
+    background-image:url("/static/images/external_link.png");
+    background-repeat:no-repeat;
+    background-position:top left;
+    padding-left:12px;
+    margin-left:2px;
+    content:"";
+}
+
 @media (max-width: 1100px)
 {
     .sidebar, #content
@@ -293,6 +329,19 @@ input[type=number]
 .hidden { visibility: hidden; }
 .inline { display: inline; }
 .fit-height { height: calc(100vh - 44px ); align-self:start; }
+
+a.inline
+{
+    display:inline;
+
+}
+
+a.inline[target=_blank]::after
+{
+    margin:0;
+    padding:0;
+    content:"";
+}
 
 .b { font-weight: bold; }
 .i { font-style: oblique; }
@@ -360,6 +409,16 @@ input[type=number]
     padding-top:7px;
 }
 
+#featured a
+{
+    border-top:0px;
+}
+
+#featured a.nohover:hover
+{
+    background:none;
+}
+
 #featured img
 {
     width:100%;
@@ -381,17 +440,23 @@ input[type=number]
     margin-bottom:7px;
 }
 
+#letters a
+{
+    border-top:0px;
+}
+
 #search-form
 {
     display:grid;
     grid-template-columns:1fr auto;
     grid-gap:4px 8px;
+    margin-top:2px;
 }
 
 #worlds-block form
 {
-border:0px;
-padding:0px;
+    border:0px;
+    padding:0px;
 }
 
 input[name=q]
@@ -429,16 +494,17 @@ input[name=q]
     padding-bottom:7px;
     margin-bottom:7px;
     min-height:24px;
-    line-height:0px; /* what */
+    line-height:0px; /* TODO: what */
 }
 
-#social a[target=_blank]
+#social a
 {
     padding-right:0px;
     background:none;
     display:inline-block;
     width:24px;
     height:24px;
+    border-top:0px;
 }
 
 #social img { max-width:24px; max-height:24px; }
