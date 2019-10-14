@@ -126,6 +126,7 @@ class Renderer {
             else if (element.id == 1) // Board Edges
             {
                 print(ctx, this.edge_chars[this.edge_style], element.color_id, x, y);
+                line_walls[(y*60)+x] = 2; // Board edges count as line wall connections
             }
             else // Standard
                 print(ctx, ENGINE.characters[element.id], element.color_id, x, y);
@@ -165,7 +166,7 @@ class Renderer {
             else
                 line_key += (line_walls[line_idx-1] ? "1" : "0");
 
-            if (line_walls[line_idx])
+            if (line_walls[line_idx] && line_walls[line_idx] != 2)
             {
                 print(ctx, line_characters[line_key], line_colors[line_idx], line_idx % 60, parseInt(line_idx / 60));
             }
