@@ -271,7 +271,14 @@ input[type=number]
 #sidebar-left { grid-area: left; margin-top: -28px} /* Margin is for the logo */
 #content { grid-area: content; }
 #sidebar-right { grid-area: right; }
-/*.sidebar { max-width:500px; }*/
+
+@media (max-width: 1100px)
+{
+    .sidebar, #content
+    {
+        font-size:smaller;
+    }
+}
 
 #footer
 {
@@ -302,8 +309,10 @@ input[type=number]
 .r { text-align:right; }
 
 .zoomed { cursor:zoom-out; width:auto; }
-img.zoomed { max-width: auto; }
 /* End Utility Classes */
+
+
+
 
 /* Generic Structures */
 .block
@@ -317,8 +326,16 @@ img.zoomed { max-width: auto; }
 .td-date { width:5em; }
 .top-margin { margin-top:7px; }
 .screenshot-thumb { width:240px; }
-
+.screenshot-thumb.zoomed { width:auto; }
 .screenshot-thumb:hover { cursor:zoom-in; }
+
+@media (max-width: 1100px)
+{
+    .gallery-block > .screenshot-thumb:not(.zoomed)
+    {
+        width:120px;
+    }
+}
 
 .img-set /* Used in old Featured Game reviews */
 {
@@ -695,6 +712,14 @@ form .field .genre-checklist
     max-width:100%;
 }
 
+@media (max-width: 1100px)
+{
+    .gallery-block > div
+    {
+        width:120px;
+    }
+}
+
 .gallery-footer
 {
     width:100%;
@@ -714,8 +739,22 @@ form .field .genre-checklist
     "feat desc desc"
     "links links links";
 
-    grid-template-columns: 240px 1fr 1fr;
+    grid-template-columns: minmax(240px, auto) 1fr 1fr;
     grid-template-rows:auto minmax(0px, 1fr) auto auto;
+}
+
+.overview-block.ob-zoomed
+{
+    /* Used when zooming in on screenshots */
+    grid-template-columns: auto auto auto auto;
+    grid-template-rows:100% auto auto auto auto;
+
+    grid-template-areas:
+    "screenshot screenshot screenshot screenshot"
+    "title title title title"
+    "basic basic advanced advanced"
+    "feat feat desc desc"
+    "links links links links";
 }
 
 .overview-block .screenshot-thumb
@@ -723,11 +762,17 @@ form .field .genre-checklist
     grid-area:screenshot;
 }
 
+.overview-block.ob-zoomed .screenshot-thumb
+{
+    margin:auto;
+    max-width:100%;
+}
+
 .overview-block .title { grid-area:title; margin-left:8px;}
 .overview-block .basic-info { grid-area:basic; margin-left:8px;}
 .overview-block .advanced-info { grid-area:advanced; margin-left:8px;}
 .overview-block .wide-info { grid-area:basic / basic / advanced / advanced; margin-left:8px;}
-.overview-block .field { display:flex; border-bottom:1px dotted #000; }
+.overview-block .field { display:flex; flex-wrap: wrap; border-bottom:1px dotted #000; }
 
 .overview-block .key { flex:1; min-width:10ch; }
 .overview-block .value { flex:3; }
@@ -1024,10 +1069,21 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 /* File Viewer Extension Based Formatting */
 #fv-main #canvas-envelope
 {
-    justify-content:space-evenly;
+    justify-content:center;
     grid-template-areas:
     "left canvas right";
     grid-template-columns:12ch minmax(480px, auto) 12ch;
+}
+
+@media (max-width: 1024px)
+{
+    #fv-main #canvas-envelope
+    {
+        grid-template-areas:
+        "left right"
+        "canvas canvas";
+        grid-template-columns:auto auto;
+    }
 }
 
 #fv-left-sidebar

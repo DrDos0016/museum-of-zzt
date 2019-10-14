@@ -1300,11 +1300,18 @@ function render_stat_list()
     else if (sort == "name")
     {
         board.stats.sort(function(a, b){
-            var stat_name1 = world.boards[board_number].elements[a.tile_idx].name;
+            // TODO -- Technically messenger shouldn't be hard coded?
+            if (a.tile_idx == -61)
+                var stat_name1 = "Messenger";
+            else
+                var stat_name1 = world.boards[board_number].elements[a.tile_idx].name;
             if ((stat_name1 == "Scroll" || stat_name1 == "Object") && a.oop[0] == "@")
                 stat_name1 = a.oop.slice(0, a.oop.indexOf("\r"));
 
-            var stat_name2 = world.boards[board_number].elements[b.tile_idx].name;
+            if (b.tile_idx == -61)
+                var stat_name2 = "Messenger";
+            else
+                var stat_name2 = world.boards[board_number].elements[b.tile_idx].name;
             if ((stat_name2 == "Scroll" || stat_name2 == "Object") && b.oop[0] == "@")
                 stat_name2 = b.oop.slice(0, b.oop.indexOf("\r"));
 
@@ -1335,14 +1342,13 @@ function render_stat_list()
         // Invalid stat check
         if ((stat.tile_idx < 0) || (stat.tile_idx >= ENGINE.tile_count))
         {
-            console.log("Invalid stat detected!")
             if (stat.oop.length == 0)
                 stat_list += `<li class='empty'>`;
             else
                 stat_list += `<li>`;
             stat_list += `
-                <a class='jsLink' name='stat-link' data-x='${stat.x}' data-y='${stat.y}'>
-                (${("00"+stat.x).slice(-2)}, ${("00"+stat.y).slice(-2)}) [????] UNKNOWN</a> `
+                <span>
+                (${("00"+stat.x).slice(-2)}, ${("00"+stat.y).slice(-2)}) [${stat.tile_idx+1}] Messenger</span> `
             if (stat.oop.length)
                 stat_list += `${stat.oop.length} bytes`;
             stat_list += `</li>\n`;

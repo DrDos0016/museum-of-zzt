@@ -4,17 +4,11 @@ $(document).ready(function (){
     // Screenshot Zoom
     $(".screenshot-thumb").click(function (){
         $(this).toggleClass("zoomed");
-        if ($(this).hasClass("zoomed"))
-        {
-            $(this).data("thumb-size", $(this).css("width"));
-            $(this).css({"width": "480px"});
-            $(this).parent().css({"grid-template-columns": "min-content auto auto fit-content(100%)"});
+        var parent = $(this).parent();
 
-        }
-        else
+        if (parent.hasClass("overview-block"))
         {
-            $(this).css({"width": $(this).data("thumb-size")});
-            $(this).parent().css({"grid-template-columns": "240px 1fr 1fr"});
+            parent.toggleClass("ob-zoomed");
         }
     });
 
