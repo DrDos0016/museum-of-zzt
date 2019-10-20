@@ -7,7 +7,7 @@ if DEBUG:
 import museum_site.admin
 import museum_site.ajax
 import museum_site.debug
-import museum_site.errors
+#import museum_site.errors
 import museum_site.views
 import museum_site.tools
 
@@ -207,7 +207,7 @@ urlpatterns = [
     url(r"^debug/z0x$", museum_site.debug.debug_z0x),
     url(r"^ajax/debug_file$", museum_site.ajax.debug_file),
 
-    url(r"^error/(?P<status>[0-9]+)$", museum_site.errors.raise_error)
+    #url(r"^error/(?P<status>[0-9]+)$", museum_site.errors.raise_error)
 ]
 
 if DEBUG:
