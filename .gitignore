@@ -1,7 +1,7 @@
+backups
 private
 temp
 tmp
-virt
 venv
 zgames
 discord
@@ -27,6 +27,7 @@ tools/db_dump.py
 tools/fonts
 tools/intro.png
 museum/*
+museum_site/patron_secrets.py
 museum_site/static/images/articles/bugs/*
 museum_site/static/images/articles/cl/*
 museum_site/static/data/mass_dl.json
