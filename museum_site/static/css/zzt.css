@@ -7,7 +7,7 @@
     font-size:12pt;
     line-height:14px;
     text-align:left;
-    color:#FFFF55;
+    color:#FF5;
     margin:0.25em auto 0.25em auto;
 }
 
@@ -29,7 +29,7 @@
 
 .zzt-scroll .white
 {
-    color:#FFFFFF;
+    color:#FFF;
 }
 
 .zzt-scroll .hypertext
@@ -146,13 +146,13 @@ img.zzt-cheat
     overflow:auto;
 }
 
-.zzt-txt-message .blue { color:#5555FF; }
-.zzt-txt-message .green { color:#55FF55; }
-.zzt-txt-message .cyan { color:#55FFFF; }
-.zzt-txt-message .red { color:#FF5555; }
-.zzt-txt-message .purple { color:#FF55FF; }
-.zzt-txt-message .yellow { color:#FFFF55; }
-.zzt-txt-message .white { color:#FFFFFF; }
+.zzt-txt-message .blue { color:#55F; }
+.zzt-txt-message .green { color:#5F5; }
+.zzt-txt-message .cyan { color:#5FF; }
+.zzt-txt-message .red { color:#F55; }
+.zzt-txt-message .purple { color:#F5F; }
+.zzt-txt-message .yellow { color:#FF5; }
+.zzt-txt-message .white { color:#FFF; }
 
 /* Super ZZT */
 .zzt-img.zzt-szzt-message

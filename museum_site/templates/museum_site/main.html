@@ -8,9 +8,7 @@
 
 <title>{% block title %}{{title}}{% endblock %}{% if title %} - {% endif %}Museum of ZZT</title>
 
-{% for file in CSS_INCLUDES %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/'|add:file %}?{{BOOT_TS}}">
-{% endfor %}
+{% for file in CSS_INCLUDES %}<link rel="stylesheet" type="text/css" href="{% static 'css/'|add:file %}?{{BOOT_TS}}">{% endfor %}
 
 <link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
 
@@ -39,8 +37,7 @@
 {% endblock %}
 
 {% block analytics %}
-{% if request.get_host == "beta.museumofzzt.com" %}<!--N/A-->
-{% elif request.get_host == "museumofzzt.com" %}
+{% if request.get_host == "museumofzzt.com" %}
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -89,6 +86,16 @@
             <a href="{% url 'browse_letter' l|lower %}">{{l}}</a>
             {% endfor %}
         </div>
+        <div id="letters-select">
+            <select id="letter-select">
+                <option value="">By Letter</option>
+                <option value="1">#</option>
+                {% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+                <option value="{{l}}">{{l}}</option>
+                {% endfor %}
+            </select>
+            <input id="letter-button" type="button" value="Go">
+        </div>
 
         <div class="world-special">
             <a href="{% url 'mass_downloads' %}">Mass Downloads</a>
@@ -107,7 +114,7 @@
         <a href="{% url 'advanced_search' %}">Advanced Search</a>
     </div>
 
-    <div class="block">
+    <div id="downloads-block" class="block">
         <h1>Downloads</h1>
         <a href="{% url 'zzt_dl' %}">ZZT</a>
         <a href="http://zeta.asie.pl/" target="_blank">Zeta</a>
@@ -157,7 +164,7 @@
         <a href="{% url 'comic_index' %}">ZZT Comics Archive</a>
     </div>
 
-    <div class="block">
+    <div id="wozzt-block" class="block">
         <h1>Worlds of ZZT</h1>
         <div id="social">
             <a class="inline nohover" href="https://twitter.com/worldsofzzt" target="_blank"><img src="{% static 'images/social/Twitter_Social_Icon_Rounded_Square_Color.png' %}" alt="Twitter" title="Twitter"></a>
@@ -196,16 +203,23 @@ Additional content copyright its  <a href="{% url 'credits' %}">respective owner
 <br>
 {% if debug %}
 <div class="debug">
-<textarea style="width:100ch;height:50px;">
+Device Resolution: <span id="debug-res"></span><br>
+Page Dimensions: <span id="debug-view"></span><br>
+<textarea style="width:100ch;height:50px;max-width:90vw;margin:auto;">
 Domain: {{DOMAIN}}
 Absolute URI: {{request.build_absolute_uri}}
 HTTP_HOST: {{request.META.HTTP_HOST}} | Host: {{HOST}} | Env: {{ENV}}
 </textarea><br>
 View this page on: <a href="https://beta.museumofzzt.com{{request.path}}" target="_blank">BETA</a> <a href="https://museumofzzt.com{{request.path}}" target="_blank">LIVE</a>
 </div>
+
+<script>
+$("#debug-res").text($(window).width() + "x" + $(window).height());
+$("#debug-view").text($("body").width() + "x" + $("body").height());
+</script>
 {% endif %}
 {% if user.is_staff %}
-<a id="showdebug" class="jsLink">TOGGLE DEBUG CLASS</a>
+<a id="showdebug" class="jsLink">TOGGLE DEBUG CLASS</a><br>
 <script>
 $("#showdebug").click(function (){
     $(".debug").toggle();

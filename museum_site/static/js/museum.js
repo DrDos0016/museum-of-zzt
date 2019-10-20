@@ -12,6 +12,13 @@ $(document).ready(function (){
         }
     });
 
+    // Browse Letters Select-based Input
+    $("#letter-button").click(function (){
+        var letter = $("#letter-select").val().toLowerCase();
+        if (letter)
+            window.location = "/browse/"+letter;
+    });
+
     // Reload on sort change
     $(".pages select[name=sort]").change(function (){
         var location = ("" + window.location);
