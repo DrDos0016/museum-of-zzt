@@ -7,7 +7,7 @@ from datetime import datetime
 from urllib.parse import quote
 
 import django
-import pytumblr
+#import pytumblr
 import requests
 from twitter import *
 from PIL import Image
@@ -155,6 +155,23 @@ def main():
 
             z.boards[board_num].screenshot(CRON_ROOT + "temp", title_screen=(board_num == 0))
             board_name = z.boards[board_num].title
+
+            # Board properties
+            board_properties = []
+            # Dark
+            if z.boards[board_num].is_dark:
+                board_properties.append("🔦")
+            # Zap
+            if z.boards[board_num].zap:
+                board_properties.append("⚡")
+            # Can fire
+            if z.boards[board_num].can_fire != 255:
+                board_properties.append(str(z.boards[board_num].can_fire) + " 🔫")
+            # Time limit
+            if z.boards[board_num].time_limit != 0:
+                board_properties.append(str(z.boards[board_num].time_limit) + " ⏳")
+
+
             processing = False
     elif source == "QUEUE":
         tuesday = False
@@ -177,6 +194,30 @@ def main():
         z.boards[queue_data["board"]].screenshot(CRON_ROOT + "temp", title_screen=(queue_data["board"] == 0), dark=APRIL)
         board_name = z.boards[queue_data["board"]].title
 
+        # Board properties
+        board_properties = []
+        # Dark
+        if z.boards[queue_data["board"]].is_dark:
+            board_properties.append("🔦")
+        # Zap
+        if z.boards[queue_data["board"]].zap:
+            board_properties.append("⚡")
+        # Can fire
+        if z.boards[queue_data["board"]].can_fire != 255:
+            board_properties.append(str(z.boards[queue_data["board"]].can_fire) + " 🔫")
+        # Time limit
+        if z.boards[queue_data["board"]].time_limit != 0:
+            board_properties.append(str(z.boards[queue_data["board"]].time_limit) + " ⏳")
+
+    bp = ""
+    if board_properties:
+        bp = " {"
+        for p in board_properties:
+            bp += p + "/"
+        bp = bp[:-1] + "}"
+
+
+
     # Remove the ZZT file. We're done with it.
     try:
         os.remove(os.path.join(CRON_ROOT, selected))
@@ -185,6 +226,7 @@ def main():
 
     # Prepare the posts
     # Tumblr
+    """
     tumblr_post = "<b>{title}</b> by <i>{author}</i>"
     if data.release_date:
         tumblr_post += " ({year})"
@@ -196,19 +238,19 @@ def main():
     tumblr_post += "?file={zzt_file}&board={board_idx}'>Download / Explore {zip_file} "
     tumblr_post += "on the Museum of ZZT</a><br>\n"
     if data.archive_name:
-        tumblr_post += "<a href='https://archive.org/details/{archive_name}'>Play on Archive.org</a><br>\n"
+        tumblr_post += "<a href='https://museumofzzt.com{play_url}'>Play Online</a><br>\n"
 
     tumblr_post = tumblr_post.format(
         title=data.title,
         author=data.author,
         year=str(data.release_date)[:4],
         company=data.company,
-        zzt_file=selected,
+        zzt_file=quote(selected),
         board_title=z.boards[board_num].title,
-        file_url=data.file_url(),
+        file_url=quote(data.file_url()),
         board_idx=board_num,
         zip_file=data.filename,
-        archive_name=data.archive_name
+        play_url=quote(data.play_url())
     )
 
     # Tumblr - Related Articles
@@ -230,12 +272,15 @@ def main():
     print(tumblr_post)
 
     client = pytumblr.TumblrRestClient(CONSUMER, SECRET, OAUTH_TOKEN, OAUTH_SECRET)
+    """
 
     if POST:
+        """
         print("Posting to tumblr...")
         print(tags)
         resp = client.create_photo("worldsofzzt", state="published", tags=tags, caption=tumblr_post, data=(CRON_ROOT + "temp.png"))
         print(resp)
+        """
 
         # Twitter
         twitter_post = "https://museumofzzt.com{file_url}"
@@ -245,20 +290,21 @@ def main():
             twitter_post += " ({year})"
         if data.company:
             twitter_post += "\nPublished by: {company}"
-        twitter_post += "\n[{zzt_file}] - \"{board_title}\""
+        twitter_post += "\n[{zzt_file}] - \"{board_title}\"{board_properties}"
         if data.archive_name:
-            twitter_post += "\nhttps://archive.org/details/{archive_name}"
+            twitter_post += "\nhttps://museumofzzt.com{play_url}"
 
         twitter_post = twitter_post.format(
-            file_url=data.file_url(),
-            zzt_file=selected,
+            file_url=quote(data.file_url()),
+            zzt_file=quote(selected),
             board_idx=board_num,
             board_title=z.boards[board_num].title,
+            board_properties=bp,
             title=data.title,
             author=data.author,
             year=str(data.release_date)[:4],
             company=data.company,
-            archive_name=data.archive_name,
+            play_url=quote(data.play_url()),
         )
 
 
@@ -293,9 +339,9 @@ def main():
         if data.company:
             discord_post += "Published by: {}\n".format(data.company)
         discord_post += "`[{}] - \"{}\"` \n"
-        discord_post += "Explore: https://museumofzzt.com" + data.file_url() + "?file=" + selected + "&board=" + str(board_num) + "\n"
+        discord_post += "Explore: https://museumofzzt.com" + quote(data.file_url()) + "?file=" + quote(selected) + "&board=" + str(board_num) + "\n"
         if data.archive_name:
-            discord_post += "Play: https://archive.org/details/" + data.archive_name
+            discord_post += "Play: https://museumofzzt.com" + quote(data.play_url())
 
         discord_post = discord_post.format(twitter_id, data.title, data.author, str(data.release_date)[:4], selected, z.boards[board_num].title)
 
