@@ -30,6 +30,8 @@ museum/*
 museum_site/patron_secrets.py
 museum_site/static/images/articles/bugs/*
 museum_site/static/images/articles/cl/*
+museum_site/static/images/articles/frost-ost/*
+museum_site/static/images/articles/streams/*
 museum_site/static/data/mass_dl.json
 museum_site/static/data/scan.log
 museum_site/static/data/base/*
