@@ -1156,8 +1156,15 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     grid-area:left;
     font-size:medium;
     line-height:14px;
-
 }
+
+
+#fv-left-sidebar #overlay
+{
+    position: absolute;
+    background-color:#EEE;
+}
+
 
 .color-swatch
 {

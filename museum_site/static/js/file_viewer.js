@@ -1395,7 +1395,7 @@ function render_stat_list()
 
 function init_overlay()
 {
-    $("#fv-left-sidebar").html(`(<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>) [<span id='overlay-tile'>0000</span>]<br><div class='color-swatch'></div> <span id='overlay-element'></span>`);
+    $("#fv-left-sidebar").html(`<div id="overlay">(<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>) [<span id='overlay-tile'>0000</span>]<br><div class='color-swatch'></div> <span id='overlay-element'></span></div>`);
     $("#world-canvas").mousemove(update_overlay);
     $("#world-canvas").mouseout(hide_overlay);
 }
