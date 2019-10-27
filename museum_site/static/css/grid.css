@@ -4,6 +4,7 @@ body
     font-family:sans-serif;
     background:#CCC;
     margin:7px 8px auto 8px;
+    overflow-y:scroll;
 }
 
 a { text-decoration:none; }
