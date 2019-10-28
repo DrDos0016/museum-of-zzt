@@ -558,6 +558,9 @@ function parse_board(world)
     if (isNaN(start_idx))
     {
         board.title = "Extremely Corrupt Board";
+        board.elements = [];
+        board.stats = [];
+        board.corrupt = true;
         return board;
     }
 
@@ -829,7 +832,7 @@ function draw_board()
     set_active_envelope("canvas");
 
     ctx.globalCompositeOperation = "source-over";
-    ctx.fillstyle = "black";
+    ctx.fillStyle = "black";
     ctx.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
     var board_number = $(".board.selected").data("board-number") || 0;
     if (board_number == null)
