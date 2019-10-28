@@ -554,6 +554,13 @@ function parse_board(world)
 {
     var board = {};
     var start_idx = world.idx;
+
+    if (isNaN(start_idx))
+    {
+        board.title = "Extremely Corrupt Board";
+        return board;
+    }
+
     var procced_bytes = 0;
     board.room = []; // Room is used for generic rendering
     board.elements = []; // Elements are used for individual tiles
@@ -578,126 +585,141 @@ function parse_board(world)
     // Parse Elements
     var parsed_tiles = 0;
 
+
+    // Actually parse the tiles
     while (parsed_tiles < ENGINE.tile_count)
     {
         var quantity = world.read(1);
         if (quantity == 0)
             quantity = 256;
         var element_id = world.read(1);
+
+        if (isNaN(element_id))
+        {
+            console.log("NaN Element!");
+            board.corrupt = true;
+            break;
+        }
+
         var color = world.read(1);
         procced_bytes += 3;
         board.room.push([quantity, element_id, color]);
+
+        var element = {
+            "id":element_id,
+            "tile":tile_idx,
+            "name":ELEMENTS[element_id]["name"],
+            "character":ENGINE.characters[element_id], // This is the default character before any additional board/stat parsing
+            "color_id":color,
+            "foreground":color % 16,
+            "background":parseInt(color / 16),
+            "foreground_name":COLOR_NAMES[color % 16],
+            "background_name":COLOR_NAMES[Math.floor(color / 16)]
+        }
+
         for (var tile_idx = 0; tile_idx < quantity; tile_idx++)
         {
-            board.elements.push(
-                {
-                    "id":element_id,
-                    "tile":tile_idx,
-                    "name":ELEMENTS[element_id]["name"],
-                    "character":ENGINE.characters[element_id], // This is the default character before any additional board/stat parsing
-                    "color_id":color,
-                    "foreground":color % 16,
-                    "background":parseInt(color / 16),
-                    "foreground_name":COLOR_NAMES[color % 16],
-                    "background_name":COLOR_NAMES[Math.floor(color / 16)]
-                }
-            );
+            board.elements.push(element);
         }
         parsed_tiles += quantity;
     }
 
-    // Parse Properties
-    if (world.format == "zzt")
+    if (! board.corrupt)
     {
-        board.max_shots = world.read(1);
-        board.dark = world.read(1);
-        board.exit_north = world.read(1);
-        board.exit_south = world.read(1);
-        board.exit_west = world.read(1);
-        board.exit_east = world.read(1);
-        board.zap = world.read(1);
-
-        board.message_length = world.read(1);
-        board.message = world.str_read(58).substr(0,board.message_length);
-        board.enter_x = world.read(1);
-        board.enter_y = world.read(1);
-        board.time_limit = world.read(2);
-        world.read(16); // Padding
-        board.stat_count = world.read(2);
-    }
-    else if (world.format == "szt")
-    {
-        board.max_shots = world.read(1);
-        board.exit_north = world.read(1);
-        board.exit_south = world.read(1);
-        board.exit_west = world.read(1);
-        board.exit_east = world.read(1);
-        board.zap = world.read(1);
-        board.enter_x = world.read(1);
-        board.enter_y = world.read(1);
-        board.camera_x = world.read(2);
-        board.camera_y = world.read(2);
-        board.time_limit = world.read(2);
-        world.read(14) // Unused
-        board.stat_count = world.read(2);
-    }
-
-    board.stats = [];
-    // End board properties
-
-    // Parse Stats
-    var parsed_stats = 0;
-    var oop_read = 0;
-
-    while (parsed_stats <= board.stat_count)
-    {
-        var stat = {};
-        stat.idx = parsed_stats;
-        stat.x = world.read(1);
-        stat.y = world.read(1);
-        stat.tile_idx = ((stat.y-1) * ENGINE.board_width) + (stat.x-1);
-        stat.x_step = world.read(2);
-        stat.y_step = world.read(2);
-        stat.cycle = world.read(2);
-        stat.param1 = world.read(1);
-        stat.param2 = world.read(1);
-        stat.param3 = world.read(1);
-        stat.follower = world.read(2);
-        stat.leader = world.read(2);
-        stat.under_id = world.read(1);
-        stat.under_color = world.read(1);
-        stat.pointer = world.read(4);
-        stat.oop_idx = world.read(2);
-        stat.oop_length = world.read(2);
-
+        // Parse Properties
         if (world.format == "zzt")
-            world.read(8); // Padding
-
-        if (stat.oop_length > 32767) // Pre-bound element
-            stat.oop_length = 0;
-
-        if (stat.oop_length)
         {
-            stat.oop = world.str_read(stat.oop_length);
-            oop_read += stat.oop_length;
+            board.max_shots = world.read(1);
+            board.dark = world.read(1);
+            board.exit_north = world.read(1);
+            board.exit_south = world.read(1);
+            board.exit_west = world.read(1);
+            board.exit_east = world.read(1);
+            board.zap = world.read(1);
 
-            // Escape HTML
-            stat.oop = stat.oop.replace(/</g, "&lt;");
-            stat.oop = stat.oop.replace(/>/g, "&gt;");
+            board.message_length = world.read(1);
+            board.message = world.str_read(58).substr(0,board.message_length);
+            board.enter_x = world.read(1);
+            board.enter_y = world.read(1);
+            board.time_limit = world.read(2);
+            world.read(16); // Padding
+            board.stat_count = world.read(2);
         }
-        else
+        else if (world.format == "szt")
         {
-            stat.oop = "";
+            board.max_shots = world.read(1);
+            board.exit_north = world.read(1);
+            board.exit_south = world.read(1);
+            board.exit_west = world.read(1);
+            board.exit_east = world.read(1);
+            board.zap = world.read(1);
+            board.enter_x = world.read(1);
+            board.enter_y = world.read(1);
+            board.camera_x = world.read(2);
+            board.camera_y = world.read(2);
+            board.time_limit = world.read(2);
+            world.read(14) // Unused
+            board.stat_count = world.read(2);
         }
 
-        board.stats.push(stat);
-        parsed_stats++;
+        board.stats = [];
+        // End board properties
+
+        // Parse Stats
+        var parsed_stats = 0;
+        var oop_read = 0;
+
+        while (parsed_stats <= board.stat_count)
+        {
+            var stat = {};
+            stat.idx = parsed_stats;
+            stat.x = world.read(1);
+            stat.y = world.read(1);
+            stat.tile_idx = ((stat.y-1) * ENGINE.board_width) + (stat.x-1);
+            stat.x_step = world.read(2);
+            stat.y_step = world.read(2);
+            stat.cycle = world.read(2);
+            stat.param1 = world.read(1);
+            stat.param2 = world.read(1);
+            stat.param3 = world.read(1);
+            stat.follower = world.read(2);
+            stat.leader = world.read(2);
+            stat.under_id = world.read(1);
+            stat.under_color = world.read(1);
+            stat.pointer = world.read(4);
+            stat.oop_idx = world.read(2);
+            stat.oop_length = world.read(2);
+
+            if (world.format == "zzt")
+                world.read(8); // Padding
+
+            if (stat.oop_length > 32767) // Pre-bound element
+                stat.oop_length = 0;
+
+            if (stat.oop_length)
+            {
+                stat.oop = world.str_read(stat.oop_length);
+                oop_read += stat.oop_length;
+
+                // Escape HTML
+                stat.oop = stat.oop.replace(/</g, "&lt;");
+                stat.oop = stat.oop.replace(/>/g, "&gt;");
+            }
+            else
+            {
+                stat.oop = "";
+            }
+
+            board.stats.push(stat);
+            parsed_stats++;
+        }
     }
 
     // Jump to the start of the next board in file (for corrupt boards)
     var manual_idx = (start_idx + board.size * 2) + 4;
     if ((world.idx != manual_idx) && (world.brd != true))
     {
+        console.log("Corrupt last case", world.idx, manual_idx);
         board.corrupt = true;
         world.idx = manual_idx;
     }
@@ -1638,7 +1660,9 @@ function set_output(category, data)
 
 function set_active_envelope(envelope)
 {
-    console.log("SETTING ENVELOPE TO", envelope);
+    if ($("#"+envelope+"-envelope").hasClass("active"))
+        return true;
+
     $(".output.active").removeClass("active");
 
     if (envelope != "canvas")
