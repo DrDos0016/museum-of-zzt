@@ -202,7 +202,7 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
         destination = "museum_site/browse.html"
 
     # Determine params needed to play this collection of files
-    data["collection_params"] = populate_collection_params(data)
+    #data["collection_params"] = populate_collection_params(data) TODO: THIS IS COMMENTED OUT TO HIDE IT ON PRODUCTION
 
     response = render(request, destination, data)
 
@@ -320,7 +320,7 @@ def featured_games(request, page=1):
     data["show_description"] = True
     data["show_featured"] = True
 
-    data["collection_params"] = populate_collection_params(data)
+    #data["collection_params"] = populate_collection_params(data) TODO: THIS IS COMMENTED OUT TO HIDE IT ON PRODUCTION
 
     return render(request, "museum_site/featured_games.html", data)
 
