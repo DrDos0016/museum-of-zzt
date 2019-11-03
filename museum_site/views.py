@@ -161,7 +161,6 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
 
     if request.path == "/roulette":
         ids = list(File.objects.filter(details__id__in=details).values_list("id", flat=True))
-        print(data["rng_seed"])
         seed(data["rng_seed"])
         shuffle(ids)
         data["files"] = File.objects.filter(id__in=ids[:PAGE_SIZE]).order_by("?")
@@ -272,7 +271,6 @@ def directory(request, category):
                     data_list.append(credited)
     elif category == "genre":
         data["title"] = "Genres"
-        # genres = File.objects.values("genre").distinct().order_by("genre")
         data_list = GENRE_LIST
 
     # Break the list of results into 4 columns
@@ -290,7 +288,6 @@ def directory(request, category):
 
     data["list"] = list(zip(data_list, first_letters))
     data["split"] = math.ceil(len(data_list) / 4.0)
-    print(data["list"])
     return render(request, "museum_site/directory.html", data)
 
 
@@ -702,7 +699,6 @@ def search(request):
     else:  # Advanced Search
         # Clean up empty params
         if request.GET.get("advanced"):
-            print("CLEANING")
             new_qs = "?"
             for k in request.GET.keys():
                 if k in ["advanced", "details"]:
@@ -720,7 +716,6 @@ def search(request):
             for d in details:
                 new_qs += "details=" + d + "&"
             new_qs = new_qs[:-1]
-            print(new_qs)
             return redirect("/search"+new_qs)
 
         data["advanced_search"] = True
@@ -848,10 +843,7 @@ def upload(request):
     if not UPLOADS_ENABLED:
         return redirect("/")
 
-    print(request.POST.get("action"))
-    print(request.FILES)
     if request.POST.get("action") == "upload" and request.FILES.get("file"):
-        print("In func")
         upload = File()
         upload_resp = upload.from_request(request)
 
@@ -875,7 +867,6 @@ def upload(request):
         except ValidationError as e:
             data["results"] = e
             print(data["results"])
-    print("Done with func")
     return render(request, "museum_site/upload.html", data)
 
 
