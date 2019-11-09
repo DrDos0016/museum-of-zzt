@@ -213,8 +213,8 @@ def main():
     if board_properties:
         bp = " {"
         for p in board_properties:
-            bp += p + "/"
-        bp = bp[:-1] + "}"
+            bp += p + ", "
+        bp = bp[:-2] + "}"
 
 
 
@@ -321,7 +321,7 @@ def main():
             t_up = Twitter(domain='upload.twitter.com', auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
             img1 = t_up.media.upload(media=imagedata)["media_id_string"]
             t = Twitter(auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
-            resp = t.statuses.update(status=twitter_post, media_ids=img1)
+            resp = t.statuses.update(status=twitter_post, media_ids=img1, tweet_mode="extended")
             print(resp)
             twitter_id = resp.get("id")
             twitter_img = resp["entities"]["media"][0]["media_url"]
@@ -338,12 +338,12 @@ def main():
         discord_post = "https://twitter.com/worldsofzzt/status/{}\n**{}** by {} ({})\n"
         if data.company:
             discord_post += "Published by: {}\n".format(data.company)
-        discord_post += "`[{}] - \"{}\"` \n"
+        discord_post += "`[{}] - \"{}\"` {}\n"
         discord_post += "Explore: https://museumofzzt.com" + quote(data.file_url()) + "?file=" + quote(selected) + "&board=" + str(board_num) + "\n"
         if data.archive_name:
             discord_post += "Play: https://museumofzzt.com" + quote(data.play_url())
 
-        discord_post = discord_post.format(twitter_id, data.title, data.author, str(data.release_date)[:4], selected, z.boards[board_num].title)
+        discord_post = discord_post.format(twitter_id, data.title, data.author, str(data.release_date)[:4], selected, z.boards[board_num].title, bp)
 
         discord_data = {
             "content": discord_post,
