@@ -86,12 +86,12 @@ table th, table td
     padding:7px 4px 7px 4px;
 }
 
+input, select { max-height:2.5ch; }
 input, select, textarea
 {
     border:1px solid #000;
     background:#FFF;
     font-size:larger;
-    max-height:2.5ch;
 }
 
 @media (max-width: 1024px)
@@ -672,7 +672,7 @@ form .field > label
     margin-right:8px;
 }
 
-form .field input, form .field select, form .field div
+form .field input, form .field textarea, form .field select, form .field div
 {
     flex:4;
     height:max-content;
@@ -688,6 +688,11 @@ form .field input, form .field select, form .field div
 .field-group label
 {
     flex:1 1 25%;
+}
+
+#review-content
+{
+    min-height:140px;
 }
 
 @media (max-width: 1280px)
