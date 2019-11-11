@@ -1331,6 +1331,9 @@ article.featured-game a.screen {
     margin: 0.25em auto 0.25em auto;
     text-align: center;
 }
+
+article.closer-look img { max-width:640px; } /* Stretched screenshots in old CLs */
+
 /* End Hotfixes */
 
 /* Comics */
