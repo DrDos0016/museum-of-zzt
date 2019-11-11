@@ -552,7 +552,6 @@ def play_collection(request):
     files = files.exclude(pk=431)  # 4 by Jojoisjo
     files = files.exclude(pk=85)  # Banana Quest
 
-
     # Slice by page
 
     data["page"] = int(request.GET.get("page", 1))
@@ -564,14 +563,10 @@ def play_collection(request):
     data["extra_files"] = ""
     for f in data["files"][1:]:
         if f.file_exists():
-            print("ADDING", f)
-            print(f.phys_path())
             if data["file"] is None:
                 data["file"] = f
             else:
                 data["extra_files"] += '"{}",\n'.format(f.download_url())
-        else:
-            print("SKIPPING", f)
 
     print(data["extra_files"])
 
@@ -873,6 +868,7 @@ def upload(request):
 def uploaded_redir(request, filename):
     file = File.objects.get(filename=filename)
     return redirect(file.file_url())
+
 
 def zeta_live(request):
     if request.GET.get("discord"):
