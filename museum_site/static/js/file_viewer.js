@@ -108,7 +108,9 @@ var CANVAS_WIDTH = 480;
 var CANVAS_HEIGHT = 350;
 var TILE_WIDTH = 8;
 var TILE_HEIGHT = 14;
+var SCALE = 1;
 var renderer = null;
+var overlay_corner = "TL";
 var hover_x = 0;
 var hover_y = 0;
 var oop_style = "modern";
@@ -118,6 +120,7 @@ function init()
 {
     renderer = new Renderer();
     renderer.render = renderer[$("select[name=renderer]").val()];
+
     $(".zip-content").show();
 
     if (load_file)
@@ -411,9 +414,7 @@ function parse_world(type, data)
     if (world.format == "szt")
     {
         renderer.render = renderer["szzt_standard"];
-        /*TILE_WIDTH = 8;
-        TILE_HEIGHT = 8;*/
-        CANVAS_WIDTH = 8 * 96;
+        CANVAS_WIDTH = 16 * 96;
         CANVAS_HEIGHT = 14 * 80;
         $("#details").html(
             `<div id='overlay' class='cp437'></div>
@@ -736,10 +737,11 @@ function render_board()
     $("li.board").removeClass("selected");
     $(this).addClass("selected");
     load_charset();
+    update_scale();
 
     // Add to history
     var state = {"load_file": filename, "load_board":board_number, "tab":""};
-    var qs = "?file=" + filename + "&board=" + board_number;
+    var qs = "?file=" + encodeURIComponent(filename) + "&board=" + board_number;
     if (! history.state || (history.state["load_board"] != board_number))
     {
         history.pushState(state, "", qs);
@@ -1050,11 +1052,15 @@ $(window).bind("load", function() {
         renderer.render(world.boards[board_number]);
     });
 
-
     // High Intensity BGs
     $("select[name=intensity]").change(function (){
         renderer.bg_intensity = $(this).val();
         renderer.render(world.boards[board_number]);
+    });
+
+    // Scale
+    $("input[name=pref-board-scale]").change(function (){
+        update_scale();
     });
 
     // Keyboard Shortcuts
@@ -1427,16 +1433,21 @@ function init_overlay()
 
 function update_overlay(e)
 {
-    console.log("Update overlay!");
     $("#fv-left-sidebar").css("visibility", "visible");
-    var posX = $(this).offset().left;
-    var posY = $(this).offset().top;
-    var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
-    var y = parseInt((e.pageY - posY) / TILE_HEIGHT) + 1;
+
+    // Calculate position on canvas
+    var rect = canvas.getBoundingClientRect();
+    var raw_x = e.pageX - rect.left;
+    var raw_y = e.pageY - rect.top;
+
+    // Calculate ZZT tile
+    var x = parseInt(raw_x / (TILE_WIDTH * SCALE)) + 1;
+    var y = parseInt(raw_y / (TILE_HEIGHT * SCALE)) + 1;
     var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
 
     if (x != hover_x || y != hover_y)
     {
+
         hover_x = x;
         hover_y = y;
 
@@ -1452,6 +1463,19 @@ function update_overlay(e)
         var bg_x = parseInt((element.foreground) * -8); // TODO: Tile W/H for SZZT
         var bg_y = parseInt((element.background) * -14);
         $("#fv-left-sidebar .color-swatch").css("background-position", bg_x+"px "+ bg_y + "px");
+
+        // Position
+        if (overlay_corner == "TL" && raw_y < 80 && raw_x <= 180)
+        {
+            var margin = Math.min(720, $("#world-canvas").height()) - $("#overlay").outerHeight();
+            overlay_corner = "BL";
+            $("#overlay").css("margin-top", margin + "px");
+        }
+        else if (overlay_corner == "BL" && raw_y >= 270 && raw_x <= 180)
+        {
+            $("#overlay").css("margin-top", "0px");
+            overlay_corner = "TL";
+        }
     }
 
     return true;
@@ -1459,7 +1483,7 @@ function update_overlay(e)
 
 function hide_overlay(e)
 {
-    //$("#fv-left-sidebar").css("visibility", "hidden");
+    $("#fv-left-sidebar").css("visibility", "hidden");
 }
 
 function highlight(x, y)
@@ -1678,4 +1702,12 @@ function set_active_envelope(envelope)
     }
 
     $(".output." + envelope).addClass("active");
+}
+
+function update_scale()
+{
+    SCALE = document.querySelector("input[name=pref-board-scale]").checked ? 2 : 1;
+    $("#world-canvas").css("width", CANVAS_WIDTH * SCALE + "px");
+    $("#world-canvas").css("height", CANVAS_HEIGHT * SCALE + "px");
+    $("#canvas-envelope").css("min-height", SCALE * CANVAS_HEIGHT);
 }

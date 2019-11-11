@@ -947,6 +947,7 @@ form .field .genre-checklist
     margin-bottom:14px;
     max-height:728px;
     overflow:auto;
+    resize:vertical;
 }
 
 #fv-main .output
@@ -1141,7 +1142,7 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     justify-content:center;
     grid-template-areas:
     "left canvas right";
-    grid-template-columns:12ch minmax(480px, auto) 12ch;
+    grid-template-columns:auto minmax(480px, auto) auto;
 }
 
 @media (max-width: 1024px)
@@ -1161,13 +1162,16 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     grid-area:left;
     font-size:medium;
     line-height:14px;
+    z-index:3;
+    visibility:hidden;
 }
 
 
 #fv-left-sidebar #overlay
 {
     position: absolute;
-    background-color:#EEE;
+    background-color:rgba(204, 204, 204, 0.7);
+    padding:7px 4px 7px 4px;
 }
 
 
@@ -1184,12 +1188,16 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 #fv-right-sidebar
 {
     grid-area:right;
+    z-index:1;
 }
 
 #world-canvas
 {
     grid-area:canvas;
     background:blue;
+    align-self:center;
+    image-rendering: crisp-edges;
+    z-index:2;
 }
 
 #image-envelope {

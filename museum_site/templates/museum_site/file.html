@@ -25,7 +25,7 @@ var can_live_edit = {% if file.size < 1048576 %}true{% else %}false{% endif %};
     </div>
     <div class="output canvas" id="canvas-envelope">
         <div id="fv-left-sidebar"></div>
-        <canvas id="world-canvas" height="350px" width="480px"></canvas>
+        <canvas id="world-canvas" height="350" width="480"></canvas>
         <div id="fv-right-sidebar"></div>
     </div>
     <div class="output zeta" id="zeta-envelope">
@@ -139,6 +139,11 @@ var can_live_edit = {% if file.size < 1048576 %}true{% else %}false{% endif %};
                     <option value="hidden" selected>Hidden - ZZT Style</option>
                     <option value="e">E - KevEdit Style</option>
                 </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-edges">2x Zoom</label>
+                <input name="pref-board-scale" id="board-scale" type="checkbox">
             </div>
         </div>
 
