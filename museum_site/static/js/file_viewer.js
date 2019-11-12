@@ -857,13 +857,17 @@ function draw_board()
 }
 
 var passage_travel = function(e) {
-    var posX = $(this).offset().left;
-    var posY = $(this).offset().top;
-    var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
-    var y = parseInt((e.pageY - posY) / TILE_HEIGHT) + 1;
-    var tile_idx = ((y-1) * 60) + (x-1);
-    var board = world.boards[board_number];
+    // Calculate position on canvas
+    var rect = canvas.getBoundingClientRect();
+    var raw_x = e.pageX - rect.left;
+    var raw_y = e.pageY - rect.top;
 
+    // Calculate ZZT tile
+    var x = parseInt(raw_x / (TILE_WIDTH * SCALE)) + 1;
+    var y = parseInt(raw_y / (TILE_HEIGHT * SCALE)) + 1;
+    var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
+
+    var board = world.boards[board_number];
     var destination = null;
 
     if (board.elements[tile_idx].name == "Passage")
@@ -888,10 +892,15 @@ function stat_info(e)
 {
     if (! e.data)
     {
-        var posX = $(this).offset().left;
-        var posY = $(this).offset().top;
-        var x = parseInt((e.pageX - posX) / TILE_WIDTH) + 1;
-        var y = parseInt((e.pageY - posY) / TILE_HEIGHT) + 1;
+        // Calculate position on canvas
+        var rect = canvas.getBoundingClientRect();
+        var raw_x = e.pageX - rect.left;
+        var raw_y = e.pageY - rect.top;
+
+        // Calculate ZZT tile
+        var x = parseInt(raw_x / (TILE_WIDTH * SCALE)) + 1;
+        var y = parseInt(raw_y / (TILE_HEIGHT * SCALE)) + 1;
+        var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
     }
     else
     {
