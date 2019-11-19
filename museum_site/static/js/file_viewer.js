@@ -859,8 +859,8 @@ function draw_board()
 var passage_travel = function(e) {
     // Calculate position on canvas
     var rect = canvas.getBoundingClientRect();
-    var raw_x = e.pageX - rect.left;
-    var raw_y = e.pageY - rect.top;
+    var raw_x = e.pageX - rect.left - document.querySelector("html").scrollLeft;
+    var raw_y = e.pageY - rect.top - document.querySelector("html").scrollTop;
 
     // Calculate ZZT tile
     var x = parseInt(raw_x / (TILE_WIDTH * SCALE)) + 1;
@@ -894,8 +894,8 @@ function stat_info(e)
     {
         // Calculate position on canvas
         var rect = canvas.getBoundingClientRect();
-        var raw_x = e.pageX - rect.left;
-        var raw_y = e.pageY - rect.top;
+        var raw_x = e.pageX - rect.left - document.querySelector("html").scrollLeft;
+        var raw_y = e.pageY - rect.top - document.querySelector("html").scrollTop;
 
         // Calculate ZZT tile
         var x = parseInt(raw_x / (TILE_WIDTH * SCALE)) + 1;
@@ -1446,8 +1446,8 @@ function update_overlay(e)
 
     // Calculate position on canvas
     var rect = canvas.getBoundingClientRect();
-    var raw_x = e.pageX - rect.left;
-    var raw_y = e.pageY - rect.top;
+    var raw_x = e.pageX - rect.left - document.querySelector("html").scrollLeft;
+    var raw_y = e.pageY - rect.top - document.querySelector("html").scrollTop;
 
     // Calculate ZZT tile
     var x = parseInt(raw_x / (TILE_WIDTH * SCALE)) + 1;
@@ -1652,7 +1652,6 @@ function render_zzt_oop(stat)
 {
     if (stat == null)
     {
-        console.log($("#zzt-oop").data("stat_idx"));
         stat = world.boards[board_number].stats[$("#zzt-oop").data("stat_idx")];
     }
 
