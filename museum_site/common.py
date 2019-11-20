@@ -134,7 +134,7 @@ CUSTOM_CHARSET_LIST = (
     "1135-QUEST.png",
     "1245-QUEST.png",
     "0940-QUEST3D.png",
-    "0906-Question.png"
+    "0906-Question.png",
     "1115-Question.png",
     "0950-RAT-RACE.png",
     "1282-RED.png",
@@ -386,6 +386,21 @@ def qs_sans(params, key):
         qs_nokey = qs
 
     return qs_nokey.urlencode()
+
+
+def serve_file(file_path="", named=""):
+    """ Returns an HTTPResponse containing the given file with an optional name """
+    if not named:
+        named = os.path.basename(file_path)
+
+    if not os.path.isfile(file_path):
+        raise Http404("Source file not found")
+
+    response = HttpResponse(content_type="application/octet-stream")
+    response["Content-Disposition"] = "attachment; filename={}".format(named)
+    with open(file_path, "rb") as fh:
+        response.write(fh.read())
+    return response
 
 
 def set_captcha_seed(request):
