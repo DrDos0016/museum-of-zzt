@@ -71,30 +71,30 @@
     </div>
 
     <div class="field">
-    <label>Details:<br>
-    </label>
+        <label>Details:</label>
 
-    <div id="detail-list" class="col">
-        <label><input name="details" type="checkbox" value="15"> ZZT World</label>
-        <label><input name="details" type="checkbox" value="7"> Featured Game</label>
-        <label><input name="details" type="checkbox" value="10"> Modified GFX</label>
-        <label><input name="details" type="checkbox" value="1"> MS-DOS</label>
-        <label><input name="details" type="checkbox" value="13"> Super ZZT World</label>
-        <label><input name="details" type="checkbox" value="16"> ZIG World</label>
-        <label><input name="details" type="checkbox" value="11"> Modified EXE</label>
-        <label><input name="details" type="checkbox" value="2"> Windows 16-Bit</label>
-        <label><input name="details" type="checkbox" value="14"> Utility</label>
-        <label><input name="details" type="checkbox" value="8"> Contest</label>
-        <label><input name="details" type="checkbox" value="6"> OSX</label>
-        <label><input name="details" type="checkbox" value="3"> Windows 32-Bit</label>
-        <label><input name="details" type="checkbox" value="9"> ZZM Audio</label>
-        <label><input name="details" type="checkbox" value="17"> Lost World</label>
-        <label><input name="details" type="checkbox" value="5"> Linux</label>
-        <label><input name="details" type="checkbox" value="4"> Windows 64-Bit</label>
-        <div>This list is hand coded and will need updates if the possible details change</div>
+        <div id="detail-list" class="field-group">
+            <label><input name="details" type="checkbox" {% if "15" in details_list %}checked {% endif %}value="15"> ZZT Worlds</label>
+            <label><input name="details" type="checkbox" {% if "7" in details_list %}checked {% endif %}value="7"> Featured Games</label>
+            <label><input name="details" type="checkbox" {% if "10" in details_list %}checked {% endif %}value="10"> Modified GFX</label>
+            <label><input name="details" type="checkbox" {% if "1" in details_list %}checked {% endif %}value="1"> MS-DOS</label>
+            <label><input name="details" type="checkbox" {% if "13" in details_list %}checked {% endif %}value="13"> Super ZZT Worlds</label>
+            <label><input name="details" type="checkbox" {% if "16" in details_list %}checked {% endif %}value="16"> ZIG Worlds</label>
+            <label><input name="details" type="checkbox" {% if "11" in details_list %}checked {% endif %}value="11"> Modified EXE</label>
+            <label><input name="details" type="checkbox" {% if "2" in details_list %}checked {% endif %}value="2"> Windows 16-Bit</label>
+            <label><input name="details" type="checkbox" {% if "14" in details_list %}checked {% endif %}value="14"> Utilities</label>
+            <label><input name="details" type="checkbox" {% if "6" in details_list %}checked {% endif %}value="6"> OSX</label>
+            <label><input name="details" type="checkbox" {% if "3" in details_list %}checked {% endif %}value="3"> Windows 32-Bit</label>
+            <label><input name="details" type="checkbox" {% if "9" in details_list %}checked {% endif %}value="9"> ZZM Audio</label>
+            <label><input name="details" type="checkbox" {% if "17" in details_list %}checked {% endif %}value="17"> Lost Worlds</label>
+            <label><input name="details" type="checkbox" {% if "5" in details_list %}checked {% endif %}value="5"> Linux</label>
+            <label><input name="details" type="checkbox" {% if "4" in details_list %}checked {% endif %}value="4"> Windows 64-Bit</label>
+            <label class="hidden"></label>
+            <div><b>This list is hand coded and will need updates if the possible details change</b></div>
+        </div>
     </div>
 
-    <input type="submit" name="publish" id="publish" value="Publish File">
+        <input type="submit" name="publish" id="publish" value="Publish File">
 </form>
 
 </section>

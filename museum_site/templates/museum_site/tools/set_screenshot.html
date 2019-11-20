@@ -7,8 +7,11 @@
     {
         margin:auto;
         text-align:center;
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:center;
     }
-    
+
     .controls .col
     {
         border:1px solid #000;
@@ -18,28 +21,28 @@
         overflow:auto;
         text-align:left;
     }
-    
+
     .controls ul
     {
         margin:0;
         padding:0;
     }
-    
+
     .controls li
     {
         list-style: none;
     }
-    
+
     .controls li.selected
     {
         background:#98C9C9;
     }
-    
+
     .controls .col img
     {
         width:100%;
     }
-    
+
     .preview
     {
         border:1px solid #AAA;
@@ -80,7 +83,7 @@
     <div class="col">
         <b>Font</b><br>
     </div>
-    
+
     <div class="col">
         <b>Current (Cached?) Screenshot</b><br>
         <img src="{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}">
