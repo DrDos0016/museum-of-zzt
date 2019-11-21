@@ -168,3 +168,17 @@ img.zzt-szzt-message
     left:-192px;
 }
 /* End Super ZZT */
+
+.cl-hyperlink /* ZZT Hyperlink for Closer Looks */
+{
+    font-family: 'cp437';
+    background-image:url("/static/images/hyperlink.png");
+    background-color:#0000AA;
+    background-repeat:no-repeat;
+    color:#FFF;
+    padding-left:40px;
+    padding-right:16px;
+    background-position:16px;
+    width:auto;
+    display:inline;
+}
