@@ -182,3 +182,36 @@ img.zzt-szzt-message
     width:auto;
     display:inline;
 }
+
+.ega-blue { color:#55F; }
+.ega-green { color:#5F5; }
+.ega-cyan { color:#5FF; }
+.ega-red { color:#F55; }
+.ega-purple { color:#F5F; }
+.ega-yellow { color:#FF5; }
+.ega-white { color:#FFF; }
+.ega-gray { color:#AAA; }
+.ega-black { color:#000; }
+.ega-darkblue { color:#00A; }
+.ega-darkgreen { color:#0A0; }
+.ega-darkcyan { color:#0AA; }
+.ega-darkred { color:#A00; }
+.ega-darkpurple { color:#A0A; }
+.ega-darkyellow { color:#A50; }
+.ega-darkgray { color:#555; }
+.ega-blue-bg { background-color:#55F; }
+.ega-green-bg { background-color:#5F5; }
+.ega-cyan-bg { background-color:#5FF; }
+.ega-red-bg { background-color:#F55; }
+.ega-purple-bg { background-color:#F5F; }
+.ega-yellow-bg { background-color:#FF5; }
+.ega-white-bg { background-color:#FFF; }
+.ega-gray-bg { background-color:#AAA; }
+.ega-black-bg { background-color:#000; }
+.ega-darkblue-bg { background-color:#00A; }
+.ega-darkgreen-bg { background-color:#0A0; }
+.ega-darkcyan-bg { background-color:#0AA; }
+.ega-darkred-bg { background-color:#A00; }
+.ega-darkpurple-bg { background-color:#A0A; }
+.ega-darkyellow-bg { background-color:#A50; }
+.ega-darkgray-bg { background-color:#555; }
