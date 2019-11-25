@@ -205,7 +205,7 @@ function pull_file()
     console.log("Pull File:", $(this).html());
     if ($(this).hasClass("preview-image-link"))
     {
-        set_output("image", {"src": $(this).data("img")});
+        set_active_envelope("image")
         return true;
     }
 
@@ -215,6 +215,22 @@ function pull_file()
     if (! history.state || (history.state["load_file"] != encodeURIComponent(filename)))
     {
         history.pushState(state, "", qs);
+    }
+
+    // COM files can avoid calling the actual ZIP
+    if (ext == "com")
+    {
+        var format = "img";
+        // Load the font
+        var font_filename = ("0000" +db_id).slice(-4) + "-" + filename.slice(0, -4) + ".png";
+        $("select[name=charset]").val(font_filename);
+
+        // Display the font
+        $("#fv-image").attr("src", `/static/images/charsets/${font_filename}`);
+        $("#fv-image").css("background", "#000");
+
+        set_active_envelope("image");
+        return true;
     }
 
     $.ajax({
@@ -329,16 +345,7 @@ function pull_file()
         }
         else if (ext == "com")
         {
-            format = "img";
-            // Load the font
-            var font_filename = ("0000" +db_id).slice(-4) + "-" + filename.slice(0, -4) + ".png";
-            $("select[name=charset]").val(font_filename);
 
-            // Display the font
-            $("#fv-image").attr("src", `/static/images/charsets/${font_filename}`);
-            $("#fv-image").css("background", "#000");
-
-            set_active_envelope("image");
         }
         else if (ext == "doc")
         {
@@ -1685,17 +1692,6 @@ function render_zzt_oop(stat)
         $("#zzt-oop").show();
 }
 
-
-function set_output(category, data)
-{
-    $(".output.active").removeClass("active");
-    $(".output."+category).addClass("active");
-
-    if (category == "image")
-    {
-        $("#fv-image").attr("src", data["src"]);
-    }
-}
 
 function set_active_envelope(envelope)
 {
