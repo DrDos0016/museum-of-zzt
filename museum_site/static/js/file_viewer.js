@@ -799,7 +799,11 @@ function render_board()
         output += `<td class='exit'>${arrows[idx]}</td>`;
         if (board[props[idx]] != 0 && board[props[idx]] != null)
         {
-            output += `<td><a class="board-link" data-board="${board[props[idx]]}" href="?file=${loaded_file}&board=${board[props[idx]]}">${board[props[idx]]}. ${world.boards[board[props[idx]]].title}</a></td>`;
+            if (world.boards[board[props[idx]]])
+                var displayed_title = world.boards[board[props[idx]]].title;
+            else
+                var displayed_title = `Undefined Board ${parseInt(idx)+1}`;
+            output += `<td><a class="board-link" data-board="${board[props[idx]]}" href="?file=${loaded_file}&board=${board[props[idx]]}">${board[props[idx]]}. ${displayed_title}</a></td>`;
         }
         else
             output += `<td>None</td>`;
