@@ -46,7 +46,9 @@
 {% block content %}
 <section id="content" class="col block">
 
-<h1>Poll running from {{display_poll.start_date}} through {{display_poll.end_date}}</h1>
+<h1>{{display_poll.title}}</h1>
+<p>Poll open from <b>{{display_poll.start_date}}</b> through <b>{{display_poll.end_date}}</b></p>
+
 <div class="gallery-list">
     <div class="gallery-block">
         <img src="{% static display_poll.option1.file.screenshot_url %}" class="screenshot-thumb" alt="{{display_poll.option1.file.screenshot}}">
@@ -118,6 +120,23 @@
     {% comment %}<input type="hidden" name="key" value="{{key}}">{% endcomment %}
 </form>
 
+{% if user.is_staff %}
+<h2>Vote Log -- ONLY VISIBLE TO STAFF</h2>
+<a href="https://www.patreon.com/manageRewardsList" target="_blank">Patrons</a><br>
+<table class="data-table">
+<tr><th colspan="4">Final Votes</th></tr>
+<tr><th>ID</th><th>Option</th><th>Email</th><th>Timestamp</th></tr>
+{% for v in final_votes %}
+<tr><td>{{v.id}}</td><td>{{v.option}}</td><td>{{v.email}}</td><td>{{v.timestamp}}</tr>
+{% endfor %}
+<tr><th colspan="4">All Votes</th></tr>
+<tr><th>ID</th><th>Option</th><th>Email</th><th>Timestamp</th></tr>
+{% for v in all_votes %}
+<tr><td>{{v.id}}</td><td>{{v.option}}</td><td>{{v.email}}</td><td>{{v.timestamp}}</tr>
+{% endfor %}
+</table>
+{% endif %}
+
 <h2>Results Info</h2>
 <ul>
     <li>Results shown reflect the current votes in the database prior to filtering ineligible votes.</li>
@@ -141,7 +160,7 @@
 <div style="border:1px solid #000;max-height:10em;overflow:auto;">
 <ul>
     {% for poll in polls %}
-    <li><a href="/poll/results/{{poll.id}}">{{poll}}</a></li>
+    <li><a href="/poll/results/{{poll.id}}">{{poll.title}} ({{poll.start_date}} - {{poll.end_date }})</a></li>
     {% endfor %}
 </ul>
 </div>

@@ -25,26 +25,28 @@ def index(request, poll_id=None):
     if data["results_mode"]:
         results = [0,0,0,0,0]
 
-        votes = Vote.objects.filter(poll_id=poll_id).order_by("id")
+        votes = Vote.objects.filter(poll_id=poll_id).order_by("-id")
 
-        voters = {}
+        data["all_votes"] = votes
+        data["final_votes"] = []
+        observed_emails = []
 
-        for vote in votes:
-            voters[vote.email] = vote.option_id
+        for v in votes:
+            if v.email not in observed_emails:
+                observed_emails.append(v.email)
+                data["final_votes"].append(v)
 
-        for k in voters.keys():
-            if data["display_poll"].option1_id == voters[k]:
-                results[0] += 1
-            if data["display_poll"].option2_id == voters[k]:
-                results[1] += 1
-            if data["display_poll"].option3_id == voters[k]:
-                results[2] += 1
-            if data["display_poll"].option4_id == voters[k]:
-                results[3] += 1
-            if data["display_poll"].option5_id == voters[k]:
-                results[4] += 1
+                if data["display_poll"].option1_id == v.option_id:
+                    results[0] += 1
+                elif data["display_poll"].option2_id == v.option_id:
+                    results[1] += 1
+                elif data["display_poll"].option3_id == v.option_id:
+                    results[2] += 1
+                elif data["display_poll"].option4_id == v.option_id:
+                    results[3] += 1
+                elif data["display_poll"].option5_id == v.option_id:
+                    results[4] += 1
 
         data["results"] = results
         data["winner"] = max(results)
-
     return render(request, "poll/index.html", data)
