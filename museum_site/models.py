@@ -492,6 +492,8 @@ class File(models.Model):
         if self.is_uploaded():
             return False
 
+        self.playable_boards = 0
+        self.total_boards = 0
         temp_playable = 0
         temp_total = 0
         zip_path = os.path.join(SITE_ROOT, "zgames", self.letter, self.filename)
@@ -525,11 +527,6 @@ class File(models.Model):
             z = zookeeper.Zookeeper(
                 os.path.join(temp_path, file)
             )
-
-            # Since a ZZT world is being opened, initialize these for the first file only
-            if self.playable_boards is None:
-                self.playable_boards = 0
-                self.total_boards = 0
 
             to_explore = []
             accessible = []
