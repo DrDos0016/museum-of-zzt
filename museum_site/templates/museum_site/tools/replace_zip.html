@@ -1,0 +1,112 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+#tool-info
+{
+    font-family:monospace;font-size:12pt;
+}
+
+#tool-info td
+{
+    padding:0.25em;
+}
+
+#content .data-table td
+{
+    font-family:monospace;
+}
+
+.sub
+{
+    font-size: smaller;
+    font-weight:normal;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Replace Zip - {{file}}</h1>
+
+<form method="POST" enctype="multipart/form-data" id="replace-zip-form">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="replace-zip">
+    <div class="field">
+        <label>Replacement Zip<br>
+        <span class="sub">Original filename will be kept. Replacement filename is discarded. This will ensure existing links remain valid.</span></label><input type="file" name="replacement">
+    </div>
+    <div class="field">
+        <label>Update Checksum</label>
+        <input type="checkbox" name="update-checksum" value="1" checked>
+    </div>
+    <div class="field">
+        <label>Update Board Count</label>
+        <input type="checkbox" name="update-board-count" value="1" checked>
+    </div>
+    <div class="field">
+        <label>Update Size</label>
+        <input type="checkbox" name="update-size" value="1" checked>
+    </div>
+
+    <div class="field">
+    <button type="submit" id="submit-upload-button">Replace Zip File</button>
+</div>
+</form>
+
+<h2>Current Zip Info</h2>
+<table class="data-table">
+<tr>
+    <th colspan="3">Database Info (<a href="/admin/museum_site/file/{{file.id}}/change/">Edit</a>)</th>
+</tr>
+<tr><th></th><th>Original File</th><th>New File</th></tr>
+<tr>
+    <th>Name</th>
+    <td><a href="{{file.download_url}}">{{file.filename}}</a></td>
+</tr>
+<tr>
+    <th>Letter</th>
+    <td>{{file.letter|upper}}</td>
+    <td>{{new_file.letter|upper}}</td>
+</tr>
+<tr>
+    <th>Path</th>
+    <td>{{file.phys_path}}</td>
+    <td>{{new_file.phys_path}}</td>
+</tr>
+<tr>
+    <th>Checksum</th>
+    <td>{{file.checksum}}</td>
+    <td>{{new_file.checksum}}</td>
+<tr>
+<tr>
+    <th>Boards</th>
+    <td>{{file.playable_boards}}/{{file.total_boards}}</td>
+    <td>{{new_file.playable_boards}}/{{new_file.total_boards}}</td>
+</tr>
+<tr>
+    <th>Size</th>
+    <td>{{file.size|filesizeformat}} ({{file.size}} bytes)</td>
+    <td>{{new_file.size|filesizeformat}} ({{new_file.size}} bytes)</td>
+</tr>
+<tr>
+    <th colspan="3">OS Info</th>
+</tr>
+<tr>
+    <th>Size</th>
+    <td>{{stat.st_size|filesizeformat}} ({{stat.st_size}} bytes)</td>
+    <td>{{new_stat.st_size|filesizeformat}} ({{new_stat.st_size}} bytes)</td>
+</tr>
+    <th>Mod Time</th>
+    <td>{{mtime}} ({{stat.st_mtime}})</td>
+    <td>{{new_mtime}} ({{new_stat.st_mtime}})</td>
+</tr>
+<tr>
+    <th>User/Group</th>
+    <td>{{file_user.pw_name}}:{{file_group.gr_name}} ({{stat.st_uid}}:{{stat.st_gid}})</td>
+    <td>{{new_file_user.pw_name}}:{{new_file_group.gr_name}} ({{new_stat.st_uid}}:{{new_stat.st_gid}})</td>
+</tr>
+</table>
+</section>
+{% endblock %}

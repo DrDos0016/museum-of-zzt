@@ -1,5 +1,7 @@
 import codecs
+import grp
 import os
+import pwd
 import shutil
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -169,6 +171,36 @@ def publish(request, pk):
 def replace_zip(request, pk):
     """ Returns page with latest Museum scan results"""
     data = {"title": "Replace Zip"}
+    data["file"] = File.objects.get(pk=pk)
+
+    # Original file info
+    data["stat"] = os.stat(data["file"].phys_path())
+    data["mtime"] = datetime.fromtimestamp(data["stat"].st_mtime)
+    data["file_user"] = pwd.getpwuid(data["stat"].st_uid)
+    data["file_group"] = grp.getgrgid(data["stat"].st_gid)
+
+    if request.POST.get("action") == "replace-zip":
+        file_path = data["file"].phys_path()
+        print(request.FILES)
+        with open(file_path, 'wb+') as fh:
+            for chunk in request.FILES["replacement"].chunks():
+                fh.write(chunk)
+
+        data["new_file"] = File.objects.get(pk=pk)
+
+        # Update checksum
+        if request.POST.get("update-checksum"):
+            data["new_file"].calculate_checksum()
+        if request.POST.get("update-board-count"):
+            data["new_file"].calculate_boards()
+        if request.POST.get("update-size"):
+            data["new_file"].calculate_size()
+        data["new_file"].save()
+
+        data["new_stat"] = os.stat(data["file"].phys_path())
+        data["new_mtime"] = datetime.fromtimestamp(data["stat"].st_mtime)
+        data["new_file_user"] = pwd.getpwuid(data["stat"].st_uid)
+        data["new_file_group"] = grp.getgrgid(data["stat"].st_gid)
 
     return render(request, "museum_site/tools/replace_zip.html", data)
 
