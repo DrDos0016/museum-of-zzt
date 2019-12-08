@@ -310,8 +310,8 @@ function pull_file()
         {
             format = "video";
             // TODO: Make this actually work (many many years from now)
-            $("#details").html(`<video id='zip_video' alt='Zip file video'></video>`);
-            $("#zip_video").attr("src", `data:video/x-msvideo;base64,${data}`);
+            //$("#details").html(`<video id='zip_video' alt='Zip file video'></video>`);
+            //$("#zip_video").attr("src", `data:video/x-msvideo;base64,${data}`);
             // MIME would vary, but there's only one avi file in the DB.
             // Not surprisingly msvideo was not adapted into the HTML5 spec.
         }
@@ -367,10 +367,6 @@ function pull_file()
             $("#filename").text(filename);
             set_active_envelope("text");
         }
-
-        // Update the format for CSS purposes
-        $("#details").attr("data-format", format);
-        $("#details").scrollTop(0);
     });
 }
 
@@ -412,9 +408,6 @@ function load_local_file()
         var board_list = create_board_list();
         $("#file-list li.selected").append(board_list);
         $("li.board").click(render_board); // Bind event
-
-        $("#details").attr("data-format", format);
-        $("#details").scrollTop(0);
     }
 
     file_reader.readAsArrayBuffer(file);
@@ -431,13 +424,6 @@ function parse_world(type, data)
         renderer.render = renderer["szzt_standard"];
         CANVAS_WIDTH = 16 * 96;
         CANVAS_HEIGHT = 14 * 80;
-        $("#details").html(
-            `<div id='overlay' class='cp437'></div>
-            <canvas id='world-canvas'
-            width='${CANVAS_WIDTH}'
-            height='${CANVAS_HEIGHT}'
-            </canvas>`
-        );
         $("select[name=charset]").val("szzt-cp437.png");
     }
     else
@@ -445,16 +431,8 @@ function parse_world(type, data)
         // Default these out
         $("select[name=renderer]").val("zzt_standard");
         renderer.render = renderer["zzt_standard"];
-        // TODO this doesn't consider 2x zoom
         CANVAS_WIDTH = 480;
         CANVAS_HEIGHT = 350;
-        $("#details").html(
-            `<div id='overlay' class='cp437'></div>
-            <canvas id='world-canvas'
-            width='${CANVAS_WIDTH}'
-            height='${CANVAS_HEIGHT}'
-            </canvas>`
-        );
         $("select[name=charset]").val("cp437.png");
     }
 
@@ -463,10 +441,12 @@ function parse_world(type, data)
 
     if (world.world_bytes != engines[type]["identifier"])
     {
-        $("#details").html(
-            `World is not valid. Got ${world.world_bytes}.
-            Expected ${identifier}`
-        );
+        let bad_identifier = world.world_bytes.toString(16);
+        bad_identifier = bad_identifier.slice(2,4) + bad_identifier.slice(0,2);
+
+        set_active_envelope("text");
+        $("#text-body").html(`File is not valid. Got unsupported identifier of "${bad_identifier}".`);
+        $("#text-body").attr("data-ext", "err");
         return false;
     }
 
@@ -1274,11 +1254,8 @@ function load_charset()
             TILE_WIDTH = CANVAS_WIDTH / ENGINE.board_width;
             TILE_HEIGHT = CANVAS_HEIGHT / ENGINE.board_height;
 
-            $("#details").html(`
-                <div id='overlay'></div><canvas id='world-canvas' width='${CANVAS_WIDTH}' height='${CANVAS_HEIGHT}'>Your browser is outdated and does not support the canvas element.</canvas>
-            `);
             canvas = document.getElementById("world-canvas");
-            ctx = canvas.getContext("2d");
+            ctx = canvas.getContext("2d", { alpha: false });
 
             init_overlay();
             draw_board();
@@ -1465,6 +1442,7 @@ function render_stat_list()
     return true;
 }
 
+
 function init_overlay()
 {
     $("#fv-left-sidebar").html(`<div id="overlay">(<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>) [<span id='overlay-tile'>0000</span>]<br><div class='color-swatch'></div> <span id='overlay-element'></span></div>`);
@@ -1518,7 +1496,6 @@ function update_overlay(e)
             overlay_corner = "TL";
         }
     }
-
     return true;
 }
 
@@ -1677,7 +1654,6 @@ function play_board()
     var base_h = 350;
     console.log("PLAYING THIS BOARD");
     window.open("/play/"+letter+"/"+zip+"?player=zeta&popout=1&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number, "popout-"+zip, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
-    //window.open(play_url);
 }
 
 function render_zzt_oop(stat)
@@ -1720,6 +1696,7 @@ function set_active_envelope(envelope)
         return true;
 
     $(".output.active").removeClass("active");
+    $("#fv-main").scrollTop(0);
 
     if (envelope != "canvas")
     {
