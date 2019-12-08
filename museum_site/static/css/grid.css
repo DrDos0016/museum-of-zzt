@@ -978,13 +978,12 @@ form .field .genre-checklist
 {
     grid-area: tabs;
     display:flex;
-    flex-wrap:wrap;
     text-align:center;
     justify-items:stretch;
     border-top:1px solid #000;
     border-right:1px solid #000;
+    overflow-x:auto;
 }
-
 #file-tabs div
 {
     border-bottom:0px;
@@ -1194,7 +1193,6 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 #world-canvas
 {
     grid-area:canvas;
-    background:blue;
     align-self:center;
     image-rendering: crisp-edges;
     z-index:2;

@@ -399,6 +399,14 @@ function load_local_file()
         {
             hex_string += ("0" + byte_array[idx].toString(16)).slice(-2);
         }
+
+        // Create world info for BRD files
+        if (ext == "brd")
+        {
+            hex_string = "ffff000000000000000000000000006400000000000000000000000000084155544f47454e57" + "0".repeat(948) + hex_string;
+        }
+
+        console.log(hex_string)
         world = parse_world(format, hex_string);
 
         var board_list = create_board_list();
@@ -435,6 +443,19 @@ function parse_world(type, data)
     else
     {
         // Default these out
+        $("select[name=renderer]").val("zzt_standard");
+        renderer.render = renderer["zzt_standard"];
+        // TODO this doesn't consider 2x zoom
+        CANVAS_WIDTH = 480;
+        CANVAS_HEIGHT = 350;
+        $("#details").html(
+            `<div id='overlay' class='cp437'></div>
+            <canvas id='world-canvas'
+            width='${CANVAS_WIDTH}'
+            height='${CANVAS_HEIGHT}'
+            </canvas>`
+        );
+        $("select[name=charset]").val("cp437.png");
     }
 
     // Parse World Bytes
