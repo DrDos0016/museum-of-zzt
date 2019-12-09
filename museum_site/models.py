@@ -404,6 +404,14 @@ class File(models.Model):
         uploaded = self.details.all().values_list("id", flat=True)
         return True if DETAIL_UPLOADED in uploaded else False
 
+    def is_utility(self):
+        utility = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_UTILITY in utility else False
+
+    def is_zig(self):
+        zig = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_ZIG in zig else False
+
     def is_zzt(self):
         lost = self.details.all().values_list("id", flat=True)
         return True if DETAIL_ZZT in lost else False
