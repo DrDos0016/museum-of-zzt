@@ -210,12 +210,12 @@ def main():
         # Add the relevant files
         for f in file_list[zip_name]:
             try:
-                #zf.write(f.phys_path(), arcname=os.path.basename(f.phys_path()))
+                zf.write(f.phys_path(), arcname=os.path.basename(f.phys_path()))
                 f_rd = str(f.release_date) if f.release_date is not None else ""
                 file_listing += '{} "{}" by {} [{}]'.format(f_rd, f.title, f.author, f.filename).strip() + "\n"
                 pass
             except FileNotFoundError:
-                #print('File not found: "{}"'.format(f.phys_path()))
+                print('File not found: "{}"'.format(f.phys_path()))
                 continue
 
         # Format the readme
