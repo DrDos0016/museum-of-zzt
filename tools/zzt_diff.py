@@ -28,34 +28,53 @@ def main():
         print(str(getattr(z2.world, attr)).ljust(20), end=" ")
         if getattr(z1.world, attr) != getattr(z2.world, attr):
             print("MISMATCH", end=" ")
-            input("\nPress Enter to continue...")
+            #input("\nPress Enter to continue...")
         print("")
 
     print("=" * 78)
 
     # Compare board names
     print(z1.meta.file_name.ljust(40), z2.meta.file_name)
-    for idx in range(0, z1.world.total_boards):
-        print(z1.boards[idx].title.ljust(40), end=" ")
-        print(z2.boards[idx].title.ljust(40), end=" ")
-        if z1.boards[idx].title != z2.boards[idx].title:
+    for idx in range(0, max(z1.world.total_boards, z2.world.total_boards)):
+        if idx < len(z1.boards) :
+            print(z1.boards[idx].title.ljust(40), end=" ")
+        else:
+            print(" " * 40, end=" ")
+        if idx < len(z2.boards) :
+            print(z2.boards[idx].title.ljust(40), end=" ")
+        else:
+            print(" " * 40, end=" ")
+        if idx >= len(z1.boards) or idx >= len(z2.boards):
             print("MISMATCH", end=" ")
-            input("\nPress Enter to continue...")
+        elif z1.boards[idx].title != z2.boards[idx].title:
+            print("MISMATCH", end=" ")
+            #input("\nPress Enter to continue...")
         print("")
 
     print("=" * 78)
 
     # Compare board RLE data
-    for idx in range(0, z2.world.total_boards):
-        print(z1.boards[idx].title.ljust(40), end=" ")
+    for idx in range(0, max(z1.world.total_boards, z2.world.total_boards)):
 
-        wip = md5()
-        wip.update(str(z1.boards[idx].rle_elements).encode())
-        z1_board_md5 = wip.hexdigest()
 
-        wip = md5()
-        wip.update(str(z2.boards[idx].rle_elements).encode())
-        z2_board_md5 = wip.hexdigest()
+        if idx < len(z1.boards):
+            print(z1.boards[idx].title.ljust(40), end=" ")
+        else:
+            print(z2.boards[idx].title.ljust(40), end=" ")
+
+        if idx < len(z1.boards):
+            wip = md5()
+            wip.update(str(z1.boards[idx].rle_elements).encode())
+            z1_board_md5 = wip.hexdigest()
+        else:
+            z1_board_md5 = " " * 32
+
+        if idx < len(z2.boards):
+            wip = md5()
+            wip.update(str(z2.boards[idx].rle_elements).encode())
+            z2_board_md5 = wip.hexdigest()
+        else:
+            z2_board_md5 = " " * 32
 
         print(z1_board_md5, end=" ")
         print(z2_board_md5, end=" ")
