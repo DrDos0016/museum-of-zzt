@@ -105,7 +105,7 @@ def cl_info(id):
 
 
 @register.tag(name="commentary")
-def scroll(parser, token):
+def commentary(parser, token):
     nodelist = parser.parse(('endcommentary',))
     parser.delete_first_token()
     return Commentary(nodelist)
@@ -143,7 +143,7 @@ class Commentary(template.Node):
 
 
 @register.tag(name="il")
-def register_il(parser, token):
+def il(parser, token):
     nodelist = parser.parse(('endil',))
     parser.delete_first_token()
     # Strip the leading "il " before splitting args
