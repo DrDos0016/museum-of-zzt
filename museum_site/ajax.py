@@ -25,7 +25,9 @@ def get_zip_file(request):
     try:
         zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, zip))
         file = zip.open(filename)
-
+    except NotImplementedError as error:
+        print(filename)
+        return HttpResponse("Unimplemented Compression Method:" + str(error))
     except Exception as error:
         print(filename)
         print(type(error))
