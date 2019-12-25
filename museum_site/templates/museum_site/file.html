@@ -82,13 +82,10 @@ var can_live_edit = {% if file.size < 1048576 %}true{% else %}false{% endif %};
                 <label for="pref-charset">Charset</label>
                 <select name="charset" id="pref-charset">
                     <optgroup label="Standard Fonts">
-                        {% for charset in charsets %}
-                        <option value="{{charset.0}}">{{charset.1}}</option>
-                        {% endfor %}
+                        {% for charset in charsets %}<option value="{{charset.0}}">{{charset.1}}</option>{% endfor %}
                     </optgroup>
                     <optgroup label="Custom Fonts">
-                        {% for charset in custom_charsets %}
-                        <option value="{{charset}}"{% if request.charset == charset %} selected{% endif %}>{{charset|slice:"5:-4"}}{% if file.id|stringformat:"i" == charset|slice:":4" %} (RECOMMENDED){% endif %}</option>
+                        {% for charset in custom_charsets %}<option value="{{charset}}"{% if request.charset == charset %} selected{% endif %}>{{charset|slice:"5:-4"}}{% if file.id|stringformat:"i" == charset|slice:":4" %} (RECOMMENDED){% endif %}</option>
                         {% endfor %}
                     </optgroup>
                 </select>

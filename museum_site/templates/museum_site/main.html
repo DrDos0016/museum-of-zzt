@@ -81,18 +81,14 @@
     <div id="worlds-block" class="block l">
         <h1>ZZT Worlds</h1>
         <div id="letters" class="c cp437">
-            <a href="{% url 'browse_letter' '1'%}">#</a>
-            {% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-            <a href="{% url 'browse_letter' l|lower %}">{{l}}</a>
-            {% endfor %}
+            <a href="{% url 'browse_letter' '1'%}">#</a>{% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+            <a href="{% url 'browse_letter' l|lower %}">{{l}}</a>{% endfor %}
         </div>
         <div id="letters-select">
             <select id="letter-select">
                 <option value="">By Letter</option>
-                <option value="1">#</option>
-                {% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-                <option value="{{l}}">{{l}}</option>
-                {% endfor %}
+                <option value="1">#</option>{% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+                <option value="{{l}}">{{l}}</option>{% endfor %}
             </select>
             <input id="letter-button" type="button" value="Go">
         </div>
