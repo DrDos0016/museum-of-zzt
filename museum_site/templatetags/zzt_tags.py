@@ -53,19 +53,14 @@ def char(num, fg="white", bg="black"):
 
 
 @register.simple_tag()
-def hyperlink(text):
-    output = "<p class='cl-hyperlink'>{}</p>"
+def hyperlink(text, inline=False):
+    if inline:
+        output = "<span class='cl-hyperlink'>{}</span>"
+    else:
+        output = "<div class='cl-hyperlink'>{}</div>"
 
     output = output.format(text)
-
     return mark_safe(output + "\n")
-
-
-@register.tag(name="scroll")
-def scroll(parser, token):
-    nodelist = parser.parse(('endscroll',))
-    parser.delete_first_token()
-    return ZztScroll(nodelist)
 
 
 @register.tag(name="message")
@@ -78,10 +73,14 @@ def message(parser, token):
 
 
 class ZztMessage(template.Node):
-    def __init__(self, nodelist, raw_args=""):
-        args = raw_args.split("|")
-        color = args[0]
-        scrolling = args[1] if len(args) > 1 else False
+    def __init__(self, nodelist, color="auto", scrolling=False):
+
+        # Horrible legacy code
+        if "|" in color:
+            args = color.split("|")
+            color = args[0]
+            scrolling = args[1] if len(args) > 1 else False
+
         self.nodelist = nodelist
         self.color_list = ["yellow", "purple", "red", "cyan", "green", "blue", "white",]
         self.color = color
@@ -125,6 +124,12 @@ class ZztMessage(template.Node):
         return output
 
 
+@register.tag(name="scroll")
+def scroll(parser, token):
+    nodelist = parser.parse(('endscroll',))
+    parser.delete_first_token()
+    return ZztScroll(nodelist)
+
 
 class ZztScroll(template.Node):
     def __init__(self, nodelist):
@@ -135,6 +140,8 @@ class ZztScroll(template.Node):
         output = "<div class='zzt-scroll'>\n"
 
         raw = raw.split("\n")
+        if raw[0] == "" and raw[1][0] == "@":  # It's okay to start on the second line
+            raw = raw[1:]
 
         if raw[0] != "" and raw[0][0] == "@":
             output += "<div class='name'>" + raw[0][1:] + "</div>\n"
@@ -143,12 +150,15 @@ class ZztScroll(template.Node):
 
         output += "<div class='content'>\n"
 
-        # Header dots
+
+        # Pad short scrolls with blank lines
+        output += "X<br>\n" * (10 - len(raw))
         output += "  •    •    •    •    •    •    •    •    •<br>\n"
 
+        # Header dots
         for line in raw[1:]:
             if line and line[0] == "$":
-                output += "<div class='c white'>" + line[1:] + "</div>\n"
+                output += "<div class='white'>" + line[1:] + "</div>\n"
             elif line and line[0] == "!":
                 output += ("<div class='hypertext'>" + line.split(";", 1)[-1] +
                            "</div>\n")
@@ -163,7 +173,7 @@ class ZztScroll(template.Node):
         output += "</div>\n</div>\n"
 
         # Fix spacing
-        output = output.replace("  ", "&nbsp; ")
+        output = output.replace("  ", "&nbsp;&nbsp;")
         return output
 
 
