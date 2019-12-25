@@ -110,11 +110,82 @@ var TILE_WIDTH = 8;
 var TILE_HEIGHT = 14;
 var SCALE = 1;
 var renderer = null;
-var overlay_corner = "TL";
-var hover_x = 0;
-var hover_y = 0;
 var oop_style = "modern";
 var raw_doc = "";
+
+class Overlay {
+    constructor() {
+        this.corner = "TL";
+        this.hover_x = 0;
+        this.hover_y = 0;
+        this.html = `<div id="overlay">
+            (<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>)
+            [<span id='overlay-tile'>0000</span>]<br>
+            <div class='color-swatch'></div> <span id='overlay-element'></span>
+        </div>`;
+    }
+
+    init = function(){
+        $("#fv-left-sidebar").html(this.html);
+        $("#world-canvas").mousemove({ self: overlay }, this.update_overlay);
+        $("#world-canvas").mouseout(this.hide_overlay);
+    };
+
+    update_overlay = function(e){
+        let overlay = e.data.self;
+        $("#fv-left-sidebar").css("visibility", "visible");
+
+        // Calculate position on canvas
+        var rect = canvas.getBoundingClientRect();
+        var raw_x = e.pageX - rect.left - document.querySelector("html").scrollLeft;
+        var raw_y = e.pageY - rect.top - document.querySelector("html").scrollTop;
+
+        // Calculate ZZT tile
+        var x = parseInt(raw_x / (TILE_WIDTH * SCALE)) + 1;
+        var y = parseInt(raw_y / (TILE_HEIGHT * SCALE)) + 1;
+        var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
+
+        if (x != overlay.hover_x || y != overlay.hover_y)
+        {
+
+            overlay.hover_x = x;
+            overlay.hover_y = y;
+
+            $("#overlay-x").text(("00"+x).slice(-2));
+            $("#overlay-y").text(("00"+y).slice(-2));
+            $("#overlay-tile").text(("0000"+(tile_idx+1)).slice(-4));
+
+            // Element
+            var element = world.boards[board_number].elements[tile_idx];
+            $("#overlay-element").text(element.name);
+
+            // Color
+            var bg_x = parseInt((element.foreground) * -8)
+            var bg_y = parseInt((element.background) * -14);
+            $("#fv-left-sidebar .color-swatch").css("background-position", bg_x+"px "+ bg_y + "px");
+
+            // Position
+            if (overlay.corner == "TL" && raw_y < 80 && raw_x <= 180)
+            {
+                var margin = Math.min(720, $("#world-canvas").height()) - $("#overlay").outerHeight();
+                overlay.corner = "BL";
+                $("#overlay").css("margin-top", margin + "px");
+            }
+            else if (overlay.corner == "BL" && raw_y >= 270 && raw_x <= 180)
+            {
+                $("#overlay").css("margin-top", "0px");
+                overlay.corner = "TL";
+            }
+        }
+        return true;
+    }
+
+    hide_overlay = function(){
+        //$("#fv-left-sidebar").css("visibility", "hidden");
+    }
+};
+
+let overlay = new Overlay();
 
 function init()
 {
@@ -1257,7 +1328,7 @@ function load_charset()
             canvas = document.getElementById("world-canvas");
             ctx = canvas.getContext("2d", { alpha: false });
 
-            init_overlay();
+            overlay.init();
             draw_board();
         });
     }
@@ -1440,68 +1511,6 @@ function render_stat_list()
 
     });
     return true;
-}
-
-
-function init_overlay()
-{
-    $("#fv-left-sidebar").html(`<div id="overlay">(<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>) [<span id='overlay-tile'>0000</span>]<br><div class='color-swatch'></div> <span id='overlay-element'></span></div>`);
-    $("#world-canvas").mousemove(update_overlay);
-    $("#world-canvas").mouseout(hide_overlay);
-}
-
-function update_overlay(e)
-{
-    $("#fv-left-sidebar").css("visibility", "visible");
-
-    // Calculate position on canvas
-    var rect = canvas.getBoundingClientRect();
-    var raw_x = e.pageX - rect.left - document.querySelector("html").scrollLeft;
-    var raw_y = e.pageY - rect.top - document.querySelector("html").scrollTop;
-
-    // Calculate ZZT tile
-    var x = parseInt(raw_x / (TILE_WIDTH * SCALE)) + 1;
-    var y = parseInt(raw_y / (TILE_HEIGHT * SCALE)) + 1;
-    var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
-
-    if (x != hover_x || y != hover_y)
-    {
-
-        hover_x = x;
-        hover_y = y;
-
-        $("#overlay-x").text(("00"+x).slice(-2));
-        $("#overlay-y").text(("00"+y).slice(-2));
-        $("#overlay-tile").text(("0000"+(tile_idx+1)).slice(-4));
-
-        // Element
-        var element = world.boards[board_number].elements[tile_idx];
-        $("#overlay-element").text(element.name);
-
-        // Color
-        var bg_x = parseInt((element.foreground) * -8); // TODO: Tile W/H for SZZT
-        var bg_y = parseInt((element.background) * -14);
-        $("#fv-left-sidebar .color-swatch").css("background-position", bg_x+"px "+ bg_y + "px");
-
-        // Position
-        if (overlay_corner == "TL" && raw_y < 80 && raw_x <= 180)
-        {
-            var margin = Math.min(720, $("#world-canvas").height()) - $("#overlay").outerHeight();
-            overlay_corner = "BL";
-            $("#overlay").css("margin-top", margin + "px");
-        }
-        else if (overlay_corner == "BL" && raw_y >= 270 && raw_x <= 180)
-        {
-            $("#overlay").css("margin-top", "0px");
-            overlay_corner = "TL";
-        }
-    }
-    return true;
-}
-
-function hide_overlay(e)
-{
-    $("#fv-left-sidebar").css("visibility", "hidden");
 }
 
 function highlight(x, y)
