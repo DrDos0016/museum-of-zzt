@@ -57,8 +57,12 @@ def main():
     current_date = datetime.now().strftime("%Y-%m-%d")
     current_hour = datetime.now().strftime("%H")
     print("DATE/HOUR", current_date, current_hour)
-    with open(QUEUE) as fh:
-        lines = fh.readlines()
+
+    if os.path.isfile(QUEUE):
+        with open(QUEUE) as fh:
+            lines = fh.readlines()
+    else:
+        lines = []
 
     for line in lines:
         line = line.strip()
