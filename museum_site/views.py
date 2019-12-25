@@ -360,6 +360,8 @@ def file(request, letter, filename, local=False):
             letter = "uploaded"
             data["uploaded"] = True
         zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
+        print("ZIP INFO TIME")
+        print(zip)
         files = zip.namelist()
         files.sort(key=str.lower)
         data["files"] = []
@@ -420,14 +422,6 @@ def livestreams(request):
     data["next"] = min(data["pages"], data["page"] + 1)
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     return render(request, "museum_site/livestreams.html", data)
-
-
-def local(request):
-    """ Returns ZZT file viewer intended for local files """
-    data = {}
-    data["charsets"] = CHARSET_LIST
-    data["custom_charsets"] = CUSTOM_CHARSET_LIST
-    return render(request, "museum_site/local_file.html", data)
 
 
 def mass_downloads(request):
@@ -910,3 +904,27 @@ def zeta_live(request):
     response["Content-Disposition"] = "attachment; filename=TEST.ZIP"
     response.write(temp_zip.getvalue())
     return response
+
+
+def zeta_launcher(request):
+    data = {"title": "Zeta Launcher"}
+    data["charsets"] = CUSTOM_CHARSET_LIST
+
+    data["executable"] = request.GET.get("executable", "zzt.zip")
+    data["engine"] = data["executable"]
+    data["charset_override"] = request.GET.get("charset_override", "cp437.png")
+
+    # Heck yeah get every file in the database (basically)
+    data["all_files"] = File.objects.filter(details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED]).order_by("sort_title", "id").only("id", "title")
+
+    # Get files requests
+    data["file_ids"] = list(map(int, request.GET.getlist("file_id")))
+    data["included_files"] = []
+    for f in File.objects.filter(pk__in=data["file_ids"]):
+        data["included_files"].append(f.download_url())
+
+    if len(data["included_files"]) == 1:  # Use the file ID for the SaveDB
+        data["zeta_database"] = f.id
+
+    data["mode"] = "full"  # or "embedded"
+    return render(request, "museum_site/zeta-launcher.html", data)

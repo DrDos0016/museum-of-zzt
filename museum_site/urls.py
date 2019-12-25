@@ -176,6 +176,7 @@ urlpatterns = [
 
     # Zeta Live
     url(r"^zeta-live$", museum_site.views.zeta_live),
+    url(r"^zeta-launcher$", museum_site.views.zeta_launcher),
 
     ###########################################################################
     ###########################################################################
