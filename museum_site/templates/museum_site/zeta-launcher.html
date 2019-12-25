@@ -1,0 +1,253 @@
+{% extends "museum_site/world.html" %}
+
+{% block style %}
+<style>
+#play-area
+{
+    text-align:center;
+    margin:auto;
+}
+
+#zzt_canvas
+{
+    image-rendering:crisp-edges;
+    background:#AAA;
+}
+
+#zeta-controls
+{
+    margin-bottom:1em;
+}
+
+#zeta-config
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    border:0px;
+}
+
+.setting
+{
+    flex:1 0 20%;
+    padding:7px 8px 7px 8px;
+    font-family:mono;
+    border:1px solid #000;
+    margin:2px;
+}
+
+.setting .heading
+{
+    text-align:center;
+    border-bottom:1px dashed #000;
+    margin-bottom:7px;
+}
+
+.setting label
+{
+    display:block;
+}
+
+.setting .list
+{
+    height:260px;
+    overflow:auto;
+}
+
+#apply-config
+{
+    width:100%;
+    margin-top:10px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="/static/zeta86/zeta_loader.js"></script>
+<script type="text/javascript">
+var scale = 1;
+var base_w = 640;
+var base_h = 350;
+
+$(document).ready(function (){
+    $("#fullscreen").click(function (){
+        $("#zzt_canvas")[0].requestFullscreen();
+    });
+
+    $("#popout").click(function (e){
+        window.open("?player=zeta&popout=1&scale=" + scale, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+    });
+
+    $(".zoom").click(function (){
+        if ($(this).val() == "+")
+        {
+            scale++;
+        }
+        else
+        {
+            scale--;
+        }
+
+        $(".zoom").attr("disabled", false);
+        $(this).attr("disabled", true);
+
+        $("#zzt_canvas").width(base_w * scale);
+        $("#zzt_canvas").height(base_h * scale);
+    });
+
+    ZetaLoad({
+        path: "/static/zeta86/",
+        render: {
+            canvas: document.getElementById("zzt_canvas"),
+            {% if request.GET.blink_cycle %}blink_cycle_duration: {{request.GET.blink_cycle|default:'0.466'}},{% endif %}
+            {% if request.GET.charset_override %}charset_override: "http://django.pi:8000/static/images/charsets/{{request.GET.charset_override|default:'cp437.png'}}",{% endif %}
+        },
+        {% if request.GET.commands and ENV == "DEV" %}commands: {{request.GET.commands|safe}},{% endif %}
+        storage: {
+            type: "auto",
+            database: "{{zeta_database|default:'generic-zeta-save-db'}}"
+        },
+        audio : {
+            {% if request.GET.bufferSize %}bufferSize: {{request.GET.bufferSize}},{% endif %}
+            {% if request.GET.sampleRate %}sampleRate: {{request.GET.sampleRate}},{% endif %}
+            {% if request.GET.noteDelay %}noteDelay: {{request.GET.noteDelay}},{% endif %}
+            {% if request.GET.volume %}volume: {{request.GET.volume}},{% endif %}
+        },
+        files: [
+            "/static/data/zeta86_engines/{{engine}}",
+            {% for file in included_files %}"{{file}}",
+            {% endfor %}
+        ],
+        {% if request.GET.arg and ENV == "DEV" %}arg: "{{request.GET.arg|escapejs}}",{% endif %}
+    }, function(zeta) {
+
+    });
+
+});
+</script>
+{% endblock %}
+
+{% block world_content %}
+<div id="play-area">
+    <canvas id="zzt_canvas" width="640" height="350"></canvas>
+</div>
+
+<div id="zeta-controls" class="c">
+    <button id="popout">Popout</button>
+    <button id="zoom-out" class="zoom" value="-" disabled>-</button>
+    <button id="zoom-in" class="zoom" value="+">+</button>
+    <button id="fullscreen">Fullscreen</button>
+</div>
+
+<div class="play-instructions">
+<b>Zeta</b> created and maintained by asie
+</div>
+
+<form id="zeta-config">
+    <div class="setting">
+        <div class="heading">Executable</div>
+        <div class="list">
+        <i>Recommended</i><br>
+        <label class="option"><input type="radio" name="executable" value="zzt.zip"{% if executable == "zzt.zip" %} checked{% endif %}> ZZT v3.2 - Registered</label>
+        <label class="option"><input type="radio" name="executable" value="szzt.zip"{% if executable == "szzt.zip" %} checked{% endif %}> Super ZZT</label>
+        <i>Alternative</i><br>
+        <label class="option"><input type="radio" name="executable" value="zzt32sw.zip"{% if executable == "zzt32sw.zip" %} checked{% endif %}> ZZT v3.2 - Shareware</label>
+        <label class="option"><input type="radio" name="executable" value="zzt31.zip"{% if executable == "zzt31.zip" %} checked{% endif %}> ZZT v3.1 - Shareware</label>
+        <label class="option"><input type="radio" name="executable" value="zzt30.zip"{% if executable == "zzt30.zip" %} checked{% endif %}> ZZT v3.0 - Shareware</label>
+        <label class="option"><input type="radio" name="executable" value="zzt20.zip"{% if executable == "zzt20.zip" %} checked{% endif %}> ZZT v2.0 - Shareware</label>
+        <label class="option"><input type="radio" name="executable" value="wozzt356.zip"{% if executable == "wozzt356.zip" %} checked{% endif %}> Worlds of ZZT v3.56</label>
+        </div>
+    </div>
+
+    {% if ENV == "DEV" %}<div class="setting">
+        <div class="heading">Launch Commands</div>
+        <div class="list">
+            <label class="option">Executable  Arguments<br><input type="text" value="{{request.GET.arg}}" name="arg"></label>
+            <label class="option">Commands (overrides Executable Arguments)<br><input type="text" value="{{request.GET.commands}}" name="commands"></label>
+            (Ex: [["SUPERZ.EXE", "/e"]])<br><br>
+            <i>Only available on DEV environment!</i><br>
+            <b>Do not allow GET params to be used directly as JS!</b>
+        </div>
+
+
+    </div>{% endif %}
+
+    {% comment %}
+    <div class="setting">
+        <div class="heading">Storage</div>
+        <label class="option">
+            Type<br>
+            <select name="storage-type">
+                <option value="auto">Auto</option>
+                <option value="localstorage">Local Storage</option>
+                <option value="indexeddb">Indexed DB</option>
+            </select>
+        </label>
+        <label class="option">DB Name (blank for auto)<br><input type="text" value="" name="database"></label>
+    </div>
+    {% endcomment %}
+
+    <div class="setting">
+        <div class="heading">Render</div>
+        {% comment %}
+        <label class="option">
+            Type<br>
+            <select name="render">
+                <option value="auto">Auto</option>
+                <option value="canvas">Canvas</option>
+            </select>
+        </label>
+        {% endcomment %}
+        <label class="option">Blink Duration (-1 disables)<br><input type="number" name="blink_cycle" value="{{request.GET.blink_cycle|default:'0.466'}}" step="0.001"></label>
+    </div>
+
+    <div class="setting">
+        <div class="heading">Charset Override</div>
+        <div class="list">
+        <label class="option"><input type="radio" name="charset_override" value="cp437.png"{% if charset_override == "cp437.png" %} checked{% endif %}> Code Page 437</label>
+        {% for charset in charsets %}
+        <label class="option"><input type="radio" name="charset_override" value="{{charset}}"{% if charset_override == charset %} checked{% endif %}> {{charset|slice:"5:-4"}}</label>
+        {% endfor %}
+        </div>
+    </div>
+
+    <div class="setting">
+        <div class="heading">Audio</div>
+        <div class="list">
+            {% comment %}
+            <label class="option">
+                Type<br>
+                <select name="audio-type">
+                    <option value="auto">Auto</option>
+                    <option value="buffer">Buffer</option>
+                </select>
+            </label>
+            {% endcomment %}
+            <label class="option">Buffer Size (Samples)<br><input type="number" name="bufferSize" value="{{request.GET.bufferSize}}"></label>
+            <label class="option">Sample Rate (Hz)<br><input type="number" name="sampleRate" value="{{request.GET.sampleRate}}"></label>
+            <label class="option">Note Delay (ms)<br><input type="number" name="noteDelay" value="{{request.GET.noteDelay|default:'1'}}"></label>
+            <label class="option">Volume<br><input type="number" name="volume" value="{{request.GET.volume|default:'0.2'}}" min="0.0" max="1.0" step="0.1"></label>
+        </div>
+    </div>
+
+    <div class="setting">
+        <div class="heading">Included Files</div>
+        <div class="list" id="all-files">
+            {% comment %}
+            <label class="option"><input name="file_id" value="23" type="checkbox"> Aceland</label>
+            <label class="option"><input name="file_id" value="850" type="checkbox"> Pac Man Vs. Zac Man</label>
+            <label class="option"><input name="file_id" value="935" type="checkbox"> QFG</label>
+            <label class="option"><input name="file_id" value="1673" type="checkbox"> PureSTK</label>
+            <label class="option"><input name="file_id" value="1775" type="checkbox"> Frost 1</label>
+            {% endcomment %}
+            {% for f in all_files %}
+            <label class="option"><input name="file_id" value="{{f.id}}" type="checkbox"{% if f.id in file_ids %} checked{% endif %}> {{f.title}}</label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="setting">
+    <button id="apply-config">APPLY</button>
+    <img src="/static/images/charsets/{{request.GET.charset_override|default:'cp437.png'}}">
+</form>
+{% endblock %}
