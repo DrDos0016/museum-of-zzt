@@ -14,6 +14,8 @@ def debug(request):
     f = File.objects.filter(pk=int(request.GET.get("id", 420)))
     data["file"] = f
 
+    if request.GET.get("serve"):
+        return serve_file(request.GET.get("serve"), request.GET.get("as", ""))
 
 
     print(request.session["captcha-seed"])

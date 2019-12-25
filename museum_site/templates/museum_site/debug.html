@@ -5,124 +5,472 @@
 {% load site_tags %}
 
 {% block style %}
-<style>
-</style>
+<style></style>
 {% endblock %}
 
 {% block content %}
 <section id="content" class="col block">
+<h1>Debug Page</h1>
 
-{{f}}<br>
+<p>ZZT Tags:
+<ul>
+    <li><a href="#char">char(num, fg="white", bg="black")</a></li>
+    <li><a href="#hyperlink">hyperlink(string, inline=False)</a></li>
+    <li><a href="#scroll">scroll(string)</a></li>
+    <li><a href="#message">message(color="auto", scrolling=False)</a></li>
+    <li><a href="#zzt-img">zzt_img(source, shorthand="", alt="", tl="", br="", css="")</a></li>
+</ul>
+</p>
 
-<hr><hr><hr>
-
-<b>ZZT Captcha</b><br><br>
-
-<form method="POST">
-{% csrf_token %}
-Key 1: <input name="key1"><br>
-Key 2: <input name="key2"><br>
-</form>
-
-<b>Italicized Link Test:</b><br><br>
-
-<p>Some classic ZZT worlds include {% il %}Frost 1; Power{% endil %}, by
-{% il %}Zenith Nadir{% endil %} and {% il MadTom %}MadTom's{% endil %} thieving
-adventure: {% il %}Burglar!{% endil %}.</p>
-
-<p>I'm also fond of this ending sequence from {% il quest for glory|QGZZT-2.ZZT|13|6,23 %}Quest For Glory{% endil %}</p>
-<hr><hr><hr>
-{% for result in results %}
-{{result}}<br>
-{% endfor %}
-
-<hr><hr><hr>
-
-{% commentary %}
-{% zzt_img 'images/articles/cl/shades-of-gray/zzt_001.png' %}
-This is my commentary.
-This is line 2
-
-This is a break in paragraphs
-
-So is this
-
-And that.
-{% endcommentary %}
-<hr><hr>
+<p>Site Tags:
+<ul>
+    <li><a href="#as-template">as_template</a></li>
+    <li><a href="#content-warning">content_warning</a></li>
+    <li><a href="#patreon-plug">patreon_plug</a></li>
+    <li><a href="#cl-info">cl_info</a></li>
+    <li><a href="#commentary">commentary</a></li>
+    <li><a href="#il">il</a></li>
+</ul>
+</p>
+<hr>
+<h2 id="char">Char</h2>
+<p>The "{% char 248 %}",  "{% char 65 'red' 'gray' %}", and "{% char 2 'white' 'darkblue' %}" characters all rule. "{% char 42 'green' %}", "{% char 2 bg='darkblue' %}"</p>
 <hr>
 
-<div class="side-commentary">
-    <div class="commentary-image">{% zzt_img 'images/articles/cl/shades-of-gray/zzt_001.png' %}</div>
-    <div class="commentary">
-        <p>Now here's a funny picture.</p>
+<h2 id="hyperlink">Hyperlink</h2>
+<p>This paragraph has a hyperlink {% hyperlink "hack the planet" %} in the middle of it.</p>
 
-        <p>It turns out that in this game, the player has to find five purple keys
-        in order to enter the Palace. In order to do so, they'll have to cross dangerous
-        waters, rob a bank, break out a convicted felon, and invest in leaves.</p>
+<p>This paragraph has a hyperlink {% hyperlink "but it's inlined" inline=True %} but it's inlined.</p>
+<hr>
 
-        <p>Contrast this with most ZZT games, which are wholesome and sweet, and
-        you'll quickly find that this game is for mature gamers only. If a little
-        swearing upsets you, go back to playing MegaZeux, a children's game for
-        babies.</p>
-
-        <p>All things considered, I should really just be using Lorem Ipsum instead,
-        but what do I know.</p>
-
-        <p>All things considered, I should really just be using Lorem Ipsum instead,
-        but what do I know.</p>
-
-        <p>All things considered, I should really just be using Lorem Ipsum instead,
-        but what do I know.</p>
-
-        <p>All things considered, I should really just be using Lorem Ipsum instead,
-        but what do I know.</p>
-    </div>
+<h2 id="scroll">Scroll</h2>
+<div style="height:300px;overflow:scroll;border:1px solid #000;">
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+Line 12
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+Line 12
+Line 13
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+Line 12
+Line 13
+Line 14
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+Line 12
+Line 13
+Line 14
+Line 15
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+Line 12
+Line 13
+Line 14
+Line 15
+Line 16
+{% endscroll %}
+</div>
 </div>
 
-<div class="side-commentary">
-    <div class="commentary-image">
-    {% zzt_img 'images/articles/cl/shades-of-gray/zzt_001.png' %}
-    </div>
-    <div class="commentary">
-        <p>Now here's a funny picture.</p>
-
-        <p>It turns out that in this game, the player has to find five purple keys
-        in order to enter the Palace. In order to do so, they'll have to cross dangerous
-        waters, rob a bank, break out a convicted felon, and invest in leaves.</p>
-    </div>
+<div style="height:300px;overflow:scroll;border:1px solid #000;">
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}@Bob
+Line 1
+Line 2
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+Line 12
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+Line 12
+Line 13
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+Line 12
+Line 13
+Line 14
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+Line 12
+Line 13
+Line 14
+Line 15
+{% endscroll %}
+</div>
+<div style="display:inline-block; border:1px solid red; margin:1px;">
+{% scroll %}
+@Bob
+Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+Line 11
+Line 12
+Line 13
+Line 14
+Line 15
+Line 16
+{% endscroll %}
+</div>
 </div>
 
-<div class="side-commentary">
-    <div class="material">
-    {% zzt_img 'images/articles/cl/shades-of-gray/zzt_001.png' shorthand='hud' %}
-    </div>
-    <div class="commentary">
-        <p>Now here's a funny picture.</p>
+{% scroll %}
+@Scroll Boy
+Line 1
+$Centered
+$1  2  3  4  5
+These rows  have   mulitple    spaces     after
+each      line.
 
-        <p>It turns out that in this game, the player has to find five purple keys
-        in order to enter the Palace. In order to do so, they'll have to cross dangerous
-        waters, rob a bank, break out a convicted felon, and invest in leaves.</p>
-    </div>
-</div>
+!1;Hyperlink goes here.
+!-File.hlp;File hyperlink goes here.
 
-<div class="side-commentary">
-    <div class="commentary-image">
-    {% zzt_img 'images/articles/cl/shades-of-gray/zzt_005.png' %}
-    {% zzt_img 'images/articles/cl/shades-of-gray/zzt_016.png' %}
-    {% zzt_img 'images/articles/cl/shades-of-gray/zzt_027.png' %}
-    </div>
-    <div class="commentary">
-        <p>Now here's a funny picture.</p>
+This one is too long on purpose
+!;1234567890123456789012345678901234567890
+{% endscroll %}
+<hr>
 
-        <p>It turns out that in this game, the player has to find five purple keys
-        in order to enter the Palace. In order to do so, they'll have to cross dangerous
-        waters, rob a bank, break out a convicted felon, and invest in leaves.</p>
-    </div>
-</div>
-
-<h1>Debug</h1>
-
+<h2 id="message">Message</h2>
 {% message %}ARIC: Damn...
 
 GEM HUNTER: It's over, Aric.
@@ -147,13 +495,7 @@ going to get away?
 ARIC: Yep!
 {% endmessage %}
 
-{% hyperlink "hack the planet" %}
-
-{% patreon_plug %}
-
-{% content_warning "bad stuff" "worse stuff" "the worst stuff" %}
-
-{% scroll %}@Hello
+{% message auto|scrolling %}
 1
 2
 3
@@ -163,42 +505,117 @@ ARIC: Yep!
 7
 8
 9
+
 10
 11
 12
 13
 14
-----5----5----5----5----5----5----5----5--
-{% endscroll %}
+15
+16
+17
+{% endmessage %}
 
-<hr>
-{% zzt_img "images/test" %}
-<hr>
-{% zzt_img "images/test" alt="shrunk" css="border:2px solid red;width:20%;"%}
-<hr>
+<b>Hideous Legacy Message</b>
+{% message auto|scrolling %}
+1
+
+3
+
+5
+
+7
+
+9
+
+11
+
+13
+
+15
+
+17
+
+19
+
+21
+{% endmessage %}
+
+<h2 id="zzt-img">zzt_img</h2>
+<b>Plain Image</b><br>
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" %}
+
+<b>Custom Alt/Title - "Title Screen for Ezanya"</b><br>
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" alt="Title Screen for Ezanya" %}
+
+<b>Custom TL/BR - TL="4,2" BR="57,8"</b><br>
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" tl="4,2" br="57,8" %}
+
+<b>Custom CSS - 2px border, 8px padding</b><br>
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" css="border:2px solid red;padding:8px;"%}
+
+<b>Shorthand Cropping</b><br>
 Sidebar<br>
-{% zzt_img "images/test" "sidebar" %}
-<hr>
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" shorthand="sidebar" %}
+
 HUD<br>
-{% zzt_img "images/test" "hud" %}
-<hr>
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" shorthand="hud" %}
+
+Popup<br>
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" shorthand="popup" %}
+
 Message<br>
-{% zzt_img "images/test" "message" %}
-{% zzt_img "images/test" "message" %}
-{% zzt_img "images/test" "message" %}
-<hr>
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" shorthand="message" %}
+
 Cheat<br>
-{% zzt_img "images/test2.png" "cheat" %}
-<hr>
-Custom<br>
-{% zzt_img "images/test3.png" tl="12,14" br="27,22" %}
-{% zzt_img "images/test3.png" tl="14,04" br="28,10" %}
-{% zzt_img "images/test3.png" tl="39,14" br="50,16" %}
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" shorthand="cheat" %}
+
+<h2 id="as-template">As Template</h2>
+<h2 id="content-warning">Content Warning</h2>
+<h2 id="patreon-plug">Patreon Plug</h2>
+{% patreon_plug %}
+
+<h2 id="cl-info">CL Info</h2>
+{% cl_info 420 %}
+<h2 id="commentary">Commentary</h2>
+<h2 id="il">Italicized Link</h2>
+
+<h2>ETC</h2>
+{{f}}<br>
 
 <hr>
-<b>CL_INFO TAG</b>
-{% cl_info 2276 %}
-<hr>
 
+<b>ZZT Captcha</b><br><br>
+
+<form method="POST">
+{% csrf_token %}
+Key 1: <input name="key1"><br>
+Key 2: <input name="key2"><br>
+</form>
+
+
+
+<b>Italicized Link Test:</b><br><br>
+<p>Some classic ZZT worlds include {% il %}Frost 1; Power{% endil %}, by
+{% il %}Zenith Nadir{% endil %} and {% il MadTom %}MadTom's{% endil %} thieving
+adventure: {% il %}Burglar!{% endil %}.</p>
+
+<p>I'm also fond of this ending sequence from {% il quest for glory|QGZZT-2.ZZT|13|6,23 %}Quest For Glory{% endil %}</p>
+<hr><hr><hr>
+{% for result in results %}
+{{result}}<br>
+{% endfor %}
+
+<h1>Debug</h1>
+
+{% content_warning "bad stuff" "worse stuff" "the worst stuff" %}
+
+
+{% commentary %}
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" alt="Title Screen for Ezanya" %}
+Wow what a cool game.
+{% char 65 %}
+{% endcommentary %}
+<hr>
 </section>
 {% endblock %}
