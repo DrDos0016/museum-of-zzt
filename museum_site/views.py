@@ -832,6 +832,9 @@ def upload(request):
     if not UPLOADS_ENABLED:
         return redirect("/")
 
+    # Convert POST genres to a list to easily recheck boxes on failed upload
+    data["requested_genres"] = request.POST.getlist("genre")
+
     if request.POST.get("action") == "upload" and request.FILES.get("file"):
         upload = File()
         upload_resp = upload.from_request(request)

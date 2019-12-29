@@ -232,6 +232,8 @@ class File(models.Model):
     publish_date = models.DateTimeField(null=True, default=None, db_index=True, help_text="Date File was published on the Museum")
     last_modified = models.DateTimeField(auto_now=True, help_text="Date DB entry was last modified")
 
+    uploader_ip = models.GenericIPAddressField(null=True, blank=True, default=None, editable=False)
+
     class Meta:
         ordering = ["sort_title", "letter"]
 
@@ -475,6 +477,7 @@ class File(models.Model):
         self.description = request.POST.get("desc", "")
         self.genre = "/".join(request.POST.getlist("genre"))
         self.publish_date = None
+        self.uploader_ip = request.META["REMOTE_ADDR"]
 
         # SCREENSHOT -- Currently manual
         # DETAILS -- Currently manual

@@ -79,6 +79,8 @@ $(document).ready(function (){
         else
             $(this).parent().removeClass("selected");
     });
+
+    reload_preview();
 });
 </script>
 {% endblock %}
@@ -131,7 +133,7 @@ $(document).ready(function (){
 <input type="hidden" name="action" value="upload">
 <div class="field">
     <label>File:<br>
-        <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must be smaller than <b>{{UPLOAD_CAP|filesizeformat}}</b></span>
+        <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must no larger than <b>{{UPLOAD_CAP|filesizeformat}}</b></span>
     </label>
     <input id="file" name="file" type="file" accept=".zip">
 </div>
@@ -140,28 +142,28 @@ $(document).ready(function (){
         <span class="sub">The title of your upload. Maximum 80 characters. Leave A/An/The as the first word if applicable.<br>
         ("The Town of ZZT" is good. "Town of ZZT, The" is bad.)</span>
     </label>
-    <input id="title" name="title" maxlength="80">
+    <input id="title" name="title" maxlength="80" value="{{request.POST.title}}">
 </div>
 <div class="field">
     <label for="author">Author(s):<br>
         <span class="sub">The author(s) of your upload. Maximum 80 characters. Separate multiple authors with a forward slash (/). Do not abbreviate names.<br>
         ("Hercules/Hydra78" is good. "Herc, Hydra" is bad.) For files with many authors, consider using the compiler as the author with "Various" to represent the rest.</span>
     </label>
-    <input id="author" name="author" maxlength="80">
+    <input id="author" name="author" maxlength="80" value="{{request.POST.author}}">
 </div>
 <div class="field">
     <label for="company">Company:<br>
         <span class="sub">The company this file is published under. Maximum 80 characters. This field is optional and may be left blank.</span>
     </label>
-    <input id="company" name="company" value="" maxlength="80">
+    <input id="company" name="company" value="{{request.POST.company}}" maxlength="80">
 </div>
 <div class="field">
     <label for="genre">Genre(s):<br>
-        <span class="sub">Any genres which this file may fall under. At least one genre must be selected.</span>
+        <span class="sub">Any genres which this file may fall under. At least one genre must be selected.{{requested_genres}}</span>
     </label>
     <div class="genre-checklist">
         {% for genre in genres %}
-        <label><input name="genre" type="checkbox" value="{{genre}}"> {{genre}}</label>
+        <label><input name="genre" type="checkbox" value="{{genre}}"{% if genre in requested_genres %} checked{% endif %}> {{genre}}</label>
         {% endfor %}
     </div>
 </div>
@@ -171,14 +173,14 @@ $(document).ready(function (){
         If the release date is not known, leave this field blank.</span>
     </label>
     <div class="field-group">
-        <input id="release_date" name="release_date" value="" maxlength="10" type="date"> <input type="button" value="Today" name="today">
+        <input id="release_date" name="release_date" value="{{request.POST.release_date}}" maxlength="10" type="date"> <input type="button" value="Today" name="today">
     </div>
 </div>
 <div class="field">
     <label for="desc">Utility Description:<br>
         <span class="sub">If you are uploading a utility, please describe it here. Otherwise, leave this field blank.</span>
     </label>
-    <textarea id="desc" name="desc"></textarea>
+    <textarea id="desc" name="desc">{{request.POST.desc}}</textarea>
 </div>
 
 <div class="field">

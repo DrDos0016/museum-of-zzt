@@ -114,8 +114,12 @@
         <td>{{file.playable_boards}} / {{file.total_boards}}</td>
     </tr>
     <tr>
-        <td>Archive Name</td>
-        <td>{{file.screenshot}}</td>
+        <td>Archive.org Name</td>
+        <td>{{file.archive_name}}</td>
+    </tr>
+    <tr>
+        <td>Uploader IP</td>
+        <td>{{file.uploader_ip|default:"-"}}</td>
     </tr>
 </table>
 </section>
