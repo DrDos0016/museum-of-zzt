@@ -210,7 +210,7 @@ DETAIL_LIST = (
 
 GENRE_LIST = (
     "24HoZZT", "Action", "Adventure", "Advertisement", "Arcade", "Art",
-    "Beta", "BKZZT", "Bugfix" "Cameo", "Catalog", "Cinema", "Comedy", "Comic",
+    "Beta", "BKZZT", "Bugfix", "Cameo", "Catalog", "Cinema", "Comedy", "Comic",
     "Compilation", "Contest", "Demo", "Dungeon", "Edutainment", "Engine",
     "Experimental", "Explicit", "Fantasy", "Fighting", "Font", "Help",
     "Horror", "Incomplete", "Ludum Dare", "Magazine", "Maze", "Minigame",
@@ -218,7 +218,7 @@ GENRE_LIST = (
     "Parody", "Platformer", "Puzzle", "Racing", "Random", "Remake",
     "Registered", "Retro", "RPG", "Sci-Fi", "Shareware", "Shooter",
     "Simulation", "Space", "Sports", "Story", "Strategy", "Toolkit",
-    "Trippy", "Trivia", "Tutorial", "Update", "Utility", "WoZZT"
+    "Trippy", "Trivia", "Update", "Utility", "WoZZT"
 )
 
 SORT_CODES = {
@@ -362,7 +362,6 @@ def populate_collection_params(data):
             params += k + "=" + str(data[k]) + "&"
     params = params[:-1]
     return params
-
 
 
 def get_view_format(request):
