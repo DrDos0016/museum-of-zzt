@@ -512,8 +512,6 @@ function parse_world(type, data)
             $("select[name=charset]").val(custom_charset);
         else
             $("select[name=charset]").val("cp437.png");
-
-        alert("Setting charset" + custom_charset);
     }
 
     // Parse World Bytes
