@@ -356,12 +356,15 @@ def file(request, letter, filename, local=False):
         data["title"] = data["file"].title
         data["letter"] = letter
 
+        # Check for recommended custom charset
+        if data["file"].id in list(CUSTOM_CHARSET_MAP.keys()):
+            data["custom_charset"] = CUSTOM_CHARSET_MAP[data["file"].id]
+            print(data["custom_charset"])
+
         if data["file"].is_uploaded():
             letter = "uploaded"
             data["uploaded"] = True
         zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
-        print("ZIP INFO TIME")
-        print(zip)
         files = zip.namelist()
         files.sort(key=str.lower)
         data["files"] = []

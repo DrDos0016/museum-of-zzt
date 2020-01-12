@@ -10,7 +10,12 @@ def index(request, poll_id=None):
     data["polls"] = Poll.objects.all().order_by("-id")
     if poll_id is None:
         data["display_poll"] = data["polls"][0]
-        data["results_mode"] = False
+
+        # Load up the results if the poll has ended already
+        if not data["display_poll"].active:
+            data["results_mode"] = True
+        else:
+            data["results_mode"] = False
     else:
         data["display_poll"] = Poll.objects.get(pk=int(poll_id))
         data["results_mode"] = True

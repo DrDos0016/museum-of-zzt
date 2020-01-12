@@ -1,4 +1,5 @@
 "use strict";
+
 var colors = [
     "#000000", "#0000AA", "#00AA00", "#00AAAA",
     "#AA0000", "#AA00AA", "#AA5500", "#AAAAAA",
@@ -495,7 +496,10 @@ function parse_world(type, data)
         renderer.render = renderer["szzt_standard"];
         CANVAS_WIDTH = 16 * 96;
         CANVAS_HEIGHT = 14 * 80;
-        $("select[name=charset]").val("szzt-cp437.png");
+        if (custom_charset)
+            $("select[name=charset]").val(custom_charset);
+        else
+            $("select[name=charset]").val("szzt-cp437.png");
     }
     else
     {
@@ -504,7 +508,12 @@ function parse_world(type, data)
         renderer.render = renderer["zzt_standard"];
         CANVAS_WIDTH = 480;
         CANVAS_HEIGHT = 350;
-        $("select[name=charset]").val("cp437.png");
+        if (custom_charset)
+            $("select[name=charset]").val(custom_charset);
+        else
+            $("select[name=charset]").val("cp437.png");
+
+        alert("Setting charset" + custom_charset);
     }
 
     // Parse World Bytes
