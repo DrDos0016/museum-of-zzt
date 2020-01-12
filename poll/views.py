@@ -30,7 +30,7 @@ def index(request, poll_id=None):
     if data["results_mode"]:
         results = [0,0,0,0,0]
 
-        votes = Vote.objects.filter(poll_id=poll_id).order_by("-id")
+        votes = Vote.objects.filter(poll_id=data["display_poll"].id).order_by("-id")
 
         data["all_votes"] = votes
         data["final_votes"] = []
