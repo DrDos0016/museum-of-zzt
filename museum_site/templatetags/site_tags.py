@@ -41,14 +41,14 @@ def content_warning(*args, **kwargs):
         </div>
     </div>
     """
-    content_warning_key = kwargs.get("key", "")
+    skip_link = kwargs.get("key", "#end-cw")
 
     if not kwargs.get("noskip"):
-        skip_text = ' | <a href="#end-cw">Jump past warned content</a>'
+        skip_text = ' | <a href="{}">Jump past warned content</a>'.format(skip_link)
     else:
         skip_text= ""
 
-    output = output.format(", ".join(args).title(), content_warning_key, skip_text)
+    output = output.format(", ".join(args).title(), skip_link, skip_text)
 
     return mark_safe(output + "\n")
 
@@ -115,17 +115,29 @@ class Commentary(template.Node):
         self.nodelist = nodelist
 
     def render(self, context):
-        material_nodes = self.nodelist[:-1]
-        commentary_node = self.nodelist[-1]
-
+        nodes = self.nodelist
         material = ""
         commentary = ""
 
-        for n in material_nodes:
-            material += n.render(context)
+        idx = 0
+        for n in nodes[:-1]:
+            rendered = n.render(context)
 
-        #commentary = filters.linebreaks(commentary_node.render(context).strip())
-        commentary = commentary_node.render(context).strip()
+            # Manually break on a split
+            if "<!--Split-->" in rendered:
+                break
+
+            material += rendered
+            idx += 1
+
+        # All remaining nodes are for commentary
+        commentary_nodes = nodes[idx:]
+
+        for c in commentary_nodes:
+            rendered = c.render(context).replace("<!--Split-->", "")
+            commentary += rendered
+
+        commentary = commentary.strip()
         if (commentary and commentary[0] != "<") or commentary.startswith("<!"):
             commentary = "<p>" + commentary.replace("\n\n", "</p><p>") + "</p>"
 

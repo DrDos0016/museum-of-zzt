@@ -57,6 +57,12 @@ blockquote::first-letter
     font-size:x-large;
 }
 
+blockquote footer
+{
+    text-align:right;
+    font-style:normal;
+}
+
 h1, h2, h3 { margin:0; margin-bottom:7px; }
 
 img:not(.screenshot-thumb) { max-width:100%; }

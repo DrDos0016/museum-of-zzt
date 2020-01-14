@@ -572,12 +572,53 @@ Cheat<br>
 
 <h2 id="as-template">As Template</h2>
 <h2 id="content-warning">Content Warning</h2>
+<b>No custom key</b><br>
+{% content_warning "bad stuff" "worse stuff" "the worst stuff" %}
+
+<b>With custom key</b><br>
+{% content_warning "Yellow Borders" "Ping-Pong Paths" key="#end-cw-test" %}
+
+<b>With custom href</b><br>
+{% content_warning "ABCDEFG" key="/browse/p?sort=release" %}
+
+<p id="end-cw">This tag is the end tag for the first CW (ID: end-cw)</p>
+<p id="end-cw-cw-test">This tag is the end tag for the second CW (ID: end-cw-cw-test)</p>
+
 <h2 id="patreon-plug">Patreon Plug</h2>
 {% patreon_plug %}
 
 <h2 id="cl-info">CL Info</h2>
 {% cl_info 420 %}
 <h2 id="commentary">Commentary</h2>
+<b>Manual Split (!--Split--)</b><br>
+{% commentary %}
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" alt="Title Screen for Ezanya" %}
+<!--Split-->
+
+
+
+
+
+
+
+Wow what a cool game.
+
+
+
+
+This character: {% char 65 %} is a letter A. This one ({% char 1 "green" %}) is Bog!
+{% endcommentary %}
+
+<b>Automatic Split</b><br>
+{% commentary %}
+{% zzt_img "images/articles/cl/ezanya/zzt_001.png" %}
+This is Ezanya's title screen. I kind of like it.
+
+Note that you actually start on the title screen. That's pretty uncommon.
+
+And cool.
+{% endcommentary %}
+
 <h2 id="il">Italicized Link</h2>
 
 <h2>ETC</h2>
@@ -605,17 +646,5 @@ adventure: {% il %}Burglar!{% endil %}.</p>
 {% for result in results %}
 {{result}}<br>
 {% endfor %}
-
-<h1>Debug</h1>
-
-{% content_warning "bad stuff" "worse stuff" "the worst stuff" %}
-
-
-{% commentary %}
-{% zzt_img "images/articles/cl/ezanya/zzt_001.png" alt="Title Screen for Ezanya" %}
-Wow what a cool game.
-{% char 65 %}
-{% endcommentary %}
-<hr>
 </section>
 {% endblock %}

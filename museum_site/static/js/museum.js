@@ -62,7 +62,7 @@ $(document).ready(function (){
     }
 
     $("span[name=cw-hide-this]").click(function (){
-        $(".content-warning").hide();
+        $(this).parent().parent().parent().hide();
     });
 
     $("span[name=cw-hide-all]").click(function (){
