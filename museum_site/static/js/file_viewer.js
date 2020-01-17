@@ -116,8 +116,8 @@ var raw_doc = "";
 
 var overlay = {
     corner: "TL",
-    hover_x: 420,
-    hover_y: 69,
+    hover_x: 0,
+    hover_y: 0,
     html_template: `<div id="overlay">
         (<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>)
         [<span id='overlay-tile'>0000</span>]<br>
