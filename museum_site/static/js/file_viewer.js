@@ -114,29 +114,20 @@ var renderer = null;
 var oop_style = "modern";
 var raw_doc = "";
 
-class Overlay {
-    constructor() {
-        this.corner = "TL";
-        this.hover_x = 0;
-        this.hover_y = 0;
-        this.html = `<div id="overlay">
-            (<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>)
-            [<span id='overlay-tile'>0000</span>]<br>
-            <div class='color-swatch'></div> <span id='overlay-element'></span>
-        </div>`;
-    }
+var overlay = {
+    corner: "TL",
+    hover_x: 420,
+    hover_y: 69,
+    html_template: `<div id="overlay">
+        (<span id='overlay-x'>00</span>, <span id='overlay-y'>00</span>)
+        [<span id='overlay-tile'>0000</span>]<br>
+        <div class='color-swatch'></div> <span id='overlay-element'></span>
+    </div>`,
 
-    init = function(){
-        $("#fv-left-sidebar").html(this.html);
-        $("#world-canvas").mousemove({ self: overlay }, this.update_overlay);
-        $("#world-canvas").mouseout(this.hide_overlay);
-    };
+    update: function(e) {
+        if ($("#fv-left-sidebar").css("visibility") != "visible")
+            $("#fv-left-sidebar").css("visibility", "visible");
 
-    update_overlay = function(e){
-        let overlay = e.data.self;
-        $("#fv-left-sidebar").css("visibility", "visible");
-
-        // Calculate position on canvas
         var rect = canvas.getBoundingClientRect();
         var raw_x = e.pageX - rect.left - document.querySelector("html").scrollLeft;
         var raw_y = e.pageY - rect.top - document.querySelector("html").scrollTop;
@@ -146,47 +137,52 @@ class Overlay {
         var y = parseInt(raw_y / (TILE_HEIGHT * SCALE)) + 1;
         var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
 
-        if (x != overlay.hover_x || y != overlay.hover_y)
+        if (x != this.hover_x || y != this.hover_y)
         {
-
-            overlay.hover_x = x;
-            overlay.hover_y = y;
-
-            $("#overlay-x").text(("00"+x).slice(-2));
-            $("#overlay-y").text(("00"+y).slice(-2));
-            $("#overlay-tile").text(("0000"+(tile_idx+1)).slice(-4));
-
-            // Element
-            var element = world.boards[board_number].elements[tile_idx];
-            $("#overlay-element").text(element.name);
-
-            // Color
-            var bg_x = parseInt((element.foreground) * -8)
-            var bg_y = parseInt((element.background) * -14);
-            $("#fv-left-sidebar .color-swatch").css("background-position", bg_x+"px "+ bg_y + "px");
-
-            // Position
-            if (overlay.corner == "TL" && raw_y < 80 && raw_x <= 180)
-            {
-                var margin = Math.min(720, $("#world-canvas").height()) - $("#overlay").outerHeight();
-                overlay.corner = "BL";
-                $("#overlay").css("margin-top", margin + "px");
-            }
-            else if (overlay.corner == "BL" && raw_y >= 270 && raw_x <= 180)
-            {
-                $("#overlay").css("margin-top", "0px");
-                overlay.corner = "TL";
-            }
+            this.hover_x = x;
+            this.hover_y = y;
         }
+        else
+        {
+            return false;
+        }
+
+        $("#overlay-x").text(("00"+x).slice(-2));
+        $("#overlay-y").text(("00"+y).slice(-2));
+        $("#overlay-tile").text(("0000"+(tile_idx+1)).slice(-4));
+
+        // Element
+        var element = world.boards[board_number].elements[tile_idx];
+        $("#overlay-element").text(element.name);
+
+        // Color
+        var bg_x = parseInt((element.foreground) * -8)
+        var bg_y = parseInt((element.background) * -14);
+        $("#fv-left-sidebar .color-swatch").css("background-position", bg_x+"px "+ bg_y + "px");
+
+        // Position
+        //console.log("Current POS", this.corner, raw_y, raw_x);
+        if (this.corner == "TL" && raw_y < 80 && raw_x <= 180)
+        {
+            var margin = Math.min(720, $("#world-canvas").height()) - $("#overlay").outerHeight();
+            this.corner = "BL";
+            $("#overlay").css("margin-top", margin + "px");
+        }
+        else if (this.corner == "BL" && raw_y >= 270 && raw_x <= 180)
+        {
+            $("#overlay").css("margin-top", "0px");
+            this.corner = "TL";
+        }
+        return true;
+    },
+
+    hide: function() {
+        if ($("#fv-left-sidebar").css("visibility") != "hidden")
+            $("#fv-left-sidebar").css("visibility", "hidden");
         return true;
     }
 
-    hide_overlay = function(){
-        //$("#fv-left-sidebar").css("visibility", "hidden");
-    }
-};
-
-let overlay = new Overlay();
+}
 
 function init()
 {
@@ -1335,7 +1331,11 @@ function load_charset()
             canvas = document.getElementById("world-canvas");
             ctx = canvas.getContext("2d", { alpha: false });
 
-            overlay.init();
+            // Set up overlay and bindings
+            $("#fv-left-sidebar").html(overlay.html_template);
+            $("#world-canvas").mousemove(function (e){overlay.update(e)});
+            $("#world-canvas").mouseout(overlay.hide);
+
             draw_board();
         });
     }
