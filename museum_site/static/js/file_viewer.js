@@ -942,7 +942,7 @@ function draw_board()
     }
 }
 
-var passage_travel = function(e) {
+function passage_travel(e) {
     // Calculate position on canvas
     var rect = canvas.getBoundingClientRect();
     var raw_x = e.pageX - rect.left - document.querySelector("html").scrollLeft;
@@ -1213,10 +1213,13 @@ $(window).bind("load", function() {
         }
     });
 
+    // Initialize the overlay
+    $("#fv-left-sidebar").html(overlay.html_template);
+    $("#world-canvas").mousemove(function (e){overlay.update(e)});
+    $("#world-canvas").mouseout(overlay.hide);
+
     // Activate the file viewer
     init();
-    //var timeout = window.setTimeout(init, 5000);
-
 });
 
 /* Auto Load functions */
@@ -1331,11 +1334,6 @@ function load_charset()
             canvas = document.getElementById("world-canvas");
             ctx = canvas.getContext("2d", { alpha: false });
 
-            // Set up overlay and bindings
-            $("#fv-left-sidebar").html(overlay.html_template);
-            $("#world-canvas").mousemove(function (e){overlay.update(e)});
-            $("#world-canvas").mouseout(overlay.hide);
-
             draw_board();
         });
     }
@@ -1344,17 +1342,6 @@ function load_charset()
         draw_board();
     }
 }
-
-function str_read(data, bytes, idx)
-{
-    var input = data.substr(idx, bytes*2);
-    var output = "";
-    for (var i = 0; i < input.length; i += 2)
-    {
-        output += String.fromCharCode(parseInt(input.substring(i, i + 2), 16));
-    }
-    return output;
-};
 
 function syntax_highlight(oop)
 {
@@ -1704,7 +1691,6 @@ function render_zzt_oop(stat)
     else
         $("#zzt-oop").show();
 }
-
 
 function set_active_envelope(envelope)
 {
