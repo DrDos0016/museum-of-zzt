@@ -1,5 +1,6 @@
 {% extends "museum_site/main.html" %}
 {% load staticfiles %}
+{% load zzt_tags %}
 
 {% block style %}
 <style>
@@ -28,7 +29,7 @@
     border:1px solid #000;
     margin:0.5em;
     font-family:monospace;
-    font-size:14px;
+    /*font-size:14px;*/
 }
 
 .credit.xl
@@ -99,47 +100,56 @@
 <div class="listing">
     <div class="credit xl">
         <div class="icon"><img src="/static/images/articles/credits/tim.jpg" class="icon"></div>
-        <div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Tim Sweeney
+        {% char 2 'white' 'darkblue' %} Tim Sweeney
     </div>
     <div class="credit xl">
         <div class="icon"><img class="icon" style="height:100px;width:100px;display:block;"></div>
-        <div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Chris A.
+        {% char 2 'white' 'darkblue' %} Chris A.
     </div>
 
     <div class="flex-break"></div>
 
     <div class="credit large">
         <div class="icon"><img src="/static/images/articles/credits/geight.png" class="icon"></div>
-        <div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-336px;left:-544px"></div> Geight
+        {% char 132 'purple' 'black' %} Geight
     </div>
 
     <div class="credit large">
         <div class="icon"><img src="/static/images/articles/credits/celine_kalante.png" class="icon"></div>
-        <div class="smiley" style="background:#A0A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-760px"></div> Celine Kalante
+        {% char 15 'purple' 'darkpurple' %} Celine Kalante
     </div>
 
     <div class="flex-break"></div>
 
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Adrian S.</div>
-    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-736px"></div> Anna Anthropy</div>
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Ashley</div>
-    <div class="credit"><div class="smiley" style="background:#A00"><img src="/static/images/cp437-transparent.png" style="top:0px;left:-392px;"></div> aplsaucers</div>
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Beau G.</div>
-    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-238px;left:-792px"></div> DavidN</div>
-    <div class="credit"><div class="smiley"><img src="/static/images/articles/credits/pirate.png"></div> #endgame</div>
-    <div class="credit"><div class="smiley" style="background:#0AA"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-400px;"></div> Jeanne T.</div>
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Kevin C.</div>
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Lana Coyote</div>
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Leonard R.</div>
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:0px;left:-912px"></div> Mike W.</div>
-    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-378px;left:-607px"></div> Rabbitboots</div>
-    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-792px"></div> Ravenworks</div>
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Rob C.</div>
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Sarkath</div>
-    <div class="credit"><div class="smiley" style="background:#A0A"><img src="/static/images/cp437-transparent.png" style="top:-126px;left:-1016px"></div> Saxxon</div>
-    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> That Deer</div>
+    <div class="credit">{% char 2 'white' 'darkblue' %} Adrian S.</div>
+    <div class="credit">{% char 12 'purple' 'black' %} Anna Anthropy</div>
+    <div class="credit">{% char 2 'white' 'darkblue' %} Arun R.</div>
+    <div class="credit">{% char 2 'white' 'darkblue' %} Ashley</div>
+    <div class="credit"><div class="smiley" style="background:#A00"><img src="/static/images/cp437-transparent.png" style="top:0px;left:-392px;"></div> aplsaucersTODO</div>
+    <div class="credit">{% char 2 'white' 'darkblue' %} Beau G.</div>
+    <div class="credit">{% char 19 'yellow' 'black' %} DavidN</div>
+    <div class="credit">{% char 2 'cyan' 'darkcyan' %} Jeanne T.</div>
+    <div class="credit">{% char 2 'white' 'darkblue' %} Jimantha</div>
+    <div class="credit">{% char 224 'darkcyan' 'transparent' %} John D. Moore</div>
+    <div class="credit">{% char 141 'white' 'black' %} John Thyer</div>
+    <div class="credit">{% char 2 'white' 'darkblue' %} JohnWWells</div>
+    <div class="credit">{% char 2 'white' 'darkblue' %} Kevin C.</div>
+    <div class="credit">{% char 2 'white' 'darkblue' %} Leonard R.</div>
+    <div class="credit">{% char 2 'gray' 'darkblue' %} Mike W.</div>
+    <div class="credit">{% char 188 'red' 'black' %} Rabbitboots</div>
+    <div class="credit">{% char 3 'yellow' 'black' %} RavenWorks</div>
+    <div class="credit">{% char 2 'white' 'darkblue' %} Sarkath</div>
+    <div class="credit">{% char 159 'gray' 'darkpurple' %} Saxxon</div>
+    <div class="credit">{% char 2 'white' 'darkblue' %} That Deer</div>
 
-    <div class="credit"><div class="smiley" style="background:#000"><img src="/static/images/cp437-transparent.png" style="top:-266px;left:-1016px"></div> Anonymous Patrons!</div>
+    <div class="credit">{% char 63 'white' 'black' %} Anonymous Patrons!</div>
+
+    {% comment %}
+    Former Patrons (non-exhaustive)
+    <div class="credit"><div class="smiley"><img src="/static/images/articles/credits/pirate.png"></div> #endgame</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px;"></div> Lana Coyote</div>
+    <div class="credit"><div class="smiley" style="background:#00A"><img src="/static/images/cp437-transparent.png" style="top:-224px;left:-912px"></div> Rob C.</div>
+    {% endcomment %}
 </div>
 </section>
 {% endblock %}
