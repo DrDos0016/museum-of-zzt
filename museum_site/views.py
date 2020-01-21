@@ -238,6 +238,19 @@ def closer_look(request):
     return render(request, "museum_site/closer_look.html", data)
 
 
+def deep_search(request):
+    """ Returns page containing multiple filters to use when searching """
+    data = {
+        "title": "Deep Search",
+        "mode": "search",
+        "genres": GENRE_LIST,
+        "years": [str(x) for x in range(1991, YEAR + 1)]
+    }
+
+    data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
+    return render(request, "museum_site/deep_search.html", data)
+
+
 def directory(request, category):
     """ Returns a directory of all authors/companies/genres in the database """
     data = {}
@@ -438,6 +451,7 @@ def patron_articles(request):
     data = {}
     data["early"] = Article.objects.filter(published=UPCOMING_ARTICLE)
     data["really_early"] = Article.objects.filter(published=UNPUBLISHED_ARTICLE)
+    data["og_image"] = "images/early-access-preview.png"
 
     if request.POST.get("secret") == PASSWORD2DOLLARS:
         data["access"] = "early"
