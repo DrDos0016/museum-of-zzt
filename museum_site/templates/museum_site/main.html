@@ -21,6 +21,7 @@
 <meta property="og:type" content="website">
 {% if article.preview %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/'|add:article.preview %}">
 {% elif file.screenshot %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}">
+{% elif og_image %}<meta property="og:image" content="{{DOMAIN}}{% static og_image %}">
 {% else %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/og_default.jpg' %}">{% endif %}
 <meta property="og:url" content="{{request.build_absolute_uri}}">
 
@@ -33,6 +34,7 @@
 {% else %}<meta name="twitter:description" content="{{title|default:'A Museum of ZZT page'}}">{% endif %}
 {% if article.preview %}<meta name="twitter:image" content="{{DOMAIN}}{% static 'images/'|add:article.preview %}">
 {% elif file.screenshot %}<meta name="twitter:image" content="{{DOMAIN}}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}">
+{% elif og_image %}<meta property="twitter:image" content="{{DOMAIN}}{% static og_image %}">
 {% else %}<meta property="twitter:image" content="{{DOMAIN}}{% static 'images/og_default.jpg' %}">{% endif %}
 {% endblock %}
 
