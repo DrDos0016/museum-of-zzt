@@ -1718,4 +1718,11 @@ function update_scale()
     $("#world-canvas").css("width", CANVAS_WIDTH * SCALE + "px");
     $("#world-canvas").css("height", CANVAS_HEIGHT * SCALE + "px");
     $("#canvas-envelope").css("min-height", SCALE * CANVAS_HEIGHT);
+
+    // Set scale cookie
+    var now = new Date();
+    var time = now.getTime();
+    var expireTime = time + (1000 * 31536000); // 1yr
+    now.setTime(expireTime);
+    document.cookie = "file_viewer_scale=" + SCALE + ";expires=" + now.toGMTString() + ";path=/";
 }

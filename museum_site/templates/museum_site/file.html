@@ -141,7 +141,7 @@ var custom_charset = "{{custom_charset}}";
 
             <div class="field">
                 <label for="pref-edges">2x Zoom</label>
-                <input name="pref-board-scale" id="board-scale" type="checkbox">
+                <input name="pref-board-scale" id="board-scale" type="checkbox"{% if request.COOKIES.file_viewer_scale == "2" %} checked{% endif %}>
             </div>
         </div>
 
