@@ -289,15 +289,32 @@ function pull_file()
     if (ext == "com")
     {
         var format = "img";
-        // Load the font
         var font_filename = ("0000" +db_id).slice(-4) + "-" + filename.slice(0, -4) + ".png";
-        $("select[name=charset]").val(font_filename);
 
-        // Display the font
-        $("#fv-image").attr("src", `/static/images/charsets/${font_filename}`);
-        $("#fv-image").css("background", "#000");
+        // Check if the font is on the list of dumped fonts
+        var font_exists = false;
+        $("select[name=charset]").find("option").each(function (){
+            if ($(this).val() == font_filename)
+                font_exists = true;
+        });
 
-        set_active_envelope("image");
+        // Load the font
+        if (font_exists)
+        {
+            $("select[name=charset]").val(font_filename);
+
+            // Display the font
+            $("#fv-image").attr("src", `/static/images/charsets/${font_filename}`);
+            $("#fv-image").css("background", "#000");
+
+            set_active_envelope("image");
+        }
+        else
+        {
+            var output = "The specified .COM file is either not a custom font or has not yet been converted to PNG for Museum use.";
+            $("#text-body").html(output);
+            set_active_envelope("text");
+        }
         return true;
     }
 
@@ -699,8 +716,6 @@ function parse_board(world)
             "color_id":color,
             "foreground":color % 16,
             "background":parseInt(color / 16),
-            "foreground_name":COLOR_NAMES[color % 16],
-            "background_name":COLOR_NAMES[Math.floor(color / 16)]
         }
 
         for (var tile_idx = 0; tile_idx < quantity; tile_idx++)
@@ -1038,7 +1053,7 @@ function stat_info(e)
         <th>ID</td>
         <td>${tile.id}</td>
         <th>Color</td>
-        <td>${tile.foreground_name} on ${tile.background_name} (${tile.color_id})</td>
+        <td>${color_desc(tile.color_id)}</td>
     </tr>
     `;
 
@@ -1058,7 +1073,7 @@ function stat_info(e)
         output += `
         <tr>
             <th>Under ID</td><td>${ELEMENTS[stat.under_id].name}</td>
-            <th>Under Color</td><td>${ELEMENTS[stat.under_id].name}</td>
+            <th>Under Color</td><td>${color_desc(stat.under_color)}</td>
 
         </tr>
         <tr>
@@ -1377,7 +1392,7 @@ function syntax_highlight(oop)
         {
             oop[idx] = `<span class='comment'>'${oop[idx].slice(1)}</span>`;
         }
-        else if (oop[idx][0] && oop[idx][0] == "!")
+        else if (oop[idx][0] && oop[idx][0] == "!" && (oop[idx].indexOf(";") != -1))
         {
             oop[idx] = `<span class='hyperlink'>!</span>\
 <span class='label'>${oop[idx].slice(1, oop[idx].indexOf(";"))}</span>\
@@ -1666,7 +1681,6 @@ function render_zzt_oop(stat)
         stat = world.boards[board_number].stats[$("#zzt-oop").data("stat_idx")];
     }
 
-
     $("#zzt-oop, #oop-wrapper").removeClass("modern zzt-scroll");
     $("#oop-wrapper").addClass(oop_style);
     $("#oop-wrapper .name").remove();
@@ -1725,4 +1739,9 @@ function update_scale()
     var expireTime = time + (1000 * 31536000); // 1yr
     now.setTime(expireTime);
     document.cookie = "file_viewer_scale=" + SCALE + ";expires=" + now.toGMTString() + ";path=/";
+}
+
+function color_desc(color)
+{
+    return COLOR_NAMES[color % 16] + " on " + COLOR_NAMES[Math.floor(color / 16)] + ` (${color})` ;
 }
