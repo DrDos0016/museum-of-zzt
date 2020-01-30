@@ -592,6 +592,13 @@ class File(models.Model):
 
             self.playable_boards += len(to_explore) - false_positives
             self.total_boards += len(z.boards)
+
+        # Use null instead of 0 to avoid showing up in searches w/ board limits
+        if self.playable_boards == 0:
+            self.playable_boards = None
+        if self.total_boards == 0:
+            self.total_boards = None
+
         return True
 
     def calculate_size(self):
