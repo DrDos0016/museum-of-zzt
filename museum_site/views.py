@@ -377,16 +377,20 @@ def file(request, letter, filename, local=False):
         if data["file"].is_uploaded():
             letter = "uploaded"
             data["uploaded"] = True
-        zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
-        files = zip.namelist()
-        files.sort(key=str.lower)
+
         data["files"] = []
-        # Filter out directories (but not their contents)
-        for f in files:
-            if f and f[-1] != os.sep:
-                data["files"].append(f)
-        data["load_file"] = urllib.parse.unquote(request.GET.get("file", ""))
-        data["load_board"] = request.GET.get("board", "")
+
+        if ".zip" in filename.lower():
+            zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
+            files = zip.namelist()
+            files.sort(key=str.lower)
+
+            # Filter out directories (but not their contents)
+            for f in files:
+                if f and f[-1] != os.sep:
+                    data["files"].append(f)
+            data["load_file"] = urllib.parse.unquote(request.GET.get("file", ""))
+            data["load_board"] = request.GET.get("board", "")
     else: # Local files
         data["file"] = "Local File Viewer"
         data["letter"] = letter
