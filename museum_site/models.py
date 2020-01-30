@@ -514,6 +514,8 @@ class File(models.Model):
             zf = zipfile.ZipFile(zip_path)
         except (FileNotFoundError, zipfile.BadZipFile):
             print("\tSkipping due to bad zip")
+            self.playable_boards = None
+            self.total_boards = None
             return False
 
         file_list = zf.namelist()
