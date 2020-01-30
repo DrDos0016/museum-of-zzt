@@ -503,8 +503,8 @@ class File(models.Model):
         if self.is_uploaded():
             return False
 
-        self.playable_boards = 0
-        self.total_boards = 0
+        self.playable_boards = None
+        self.total_boards = None
         temp_playable = 0
         temp_total = 0
         zip_path = os.path.join(SITE_ROOT, "zgames", self.letter, self.filename)
@@ -513,9 +513,7 @@ class File(models.Model):
         try:
             zf = zipfile.ZipFile(zip_path)
         except (FileNotFoundError, zipfile.BadZipFile):
-            print("\tSkipping due to bad zip")
-            self.playable_boards = None
-            self.total_boards = None
+            print("Skipping due to bad zip")
             return False
 
         file_list = zf.namelist()
@@ -532,7 +530,7 @@ class File(models.Model):
                 try:
                     zf.extract(file, path=temp_path)
                 except:
-                    print("Bad zip.")
+                    print("Could not extract {}. Aborting.".format(file))
                     return False
             else:
                 continue
@@ -584,16 +582,8 @@ class File(models.Model):
             if 0 not in to_explore:
                 to_explore.append(0)
 
-            """
-            for x in range(0, len(z.boards)):
-                if x in to_explore:
-                    print("[X]", z.boards[x].title)
-                else:
-                    print("[ ]", z.boards[x].title)
-            """
-
-            self.playable_boards += len(to_explore) - false_positives
-            self.total_boards += len(z.boards)
+            self.playable_boards = len(to_explore) - false_positives
+            self.total_boards = len(z.boards)
 
         # Use null instead of 0 to avoid showing up in searches w/ board limits
         if self.playable_boards == 0:
