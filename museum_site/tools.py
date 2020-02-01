@@ -19,6 +19,15 @@ except ImportError:
 
 
 @staff_member_required
+def calculate(request, field, pk):
+    f = File.objects.get(pk=pk)
+    data = {
+        "title": "Calculate " + field.title(),
+    }
+    return render(request, "museum_site/tools/calculate.html", data)
+
+
+@staff_member_required
 def mirror(request, pk):
     """ Returns page to publish file on Archive.org """
     f = File.objects.get(pk=pk)
@@ -220,11 +229,38 @@ def scan(request):
 
 @staff_member_required
 def tool_list(request, pk):
-    """ Returns page to generate and set a file's screenshot """
+    """ Returns page listing tools available for a file and file information """
     data = {
         "title": "Tools",
         "file": File.objects.get(pk=pk)
     }
+
+    # Simple validation tools
+    data["valid_letter"] = True if data["file"].letter in LETTERS else False
+    data["valid_filename"] = True if data["file"].phys_path() else False
+
+    if request.GET.get("recalculate"):
+        field = request.GET["recalculate"]
+        if field == "sort-title":
+            data["file"].sorted_title()
+            data["new"] = data["file"].sort_title
+        elif field == "size":
+            data["file"].calculate_size()
+            data["new"] =  data["file"].size
+        elif field == "reviews":
+            data["file"].calculate_reviews()
+            data["new"] =  "{}/{}".format(data["file"].review_count, data["file"].rating)
+        elif field == "articles":
+            data["file"].calculate_article_count()
+            data["new"] =  data["file"].article_count
+        elif field == "checksum":
+            data["file"].calculate_checksum()
+            data["new"] = data["file"].checksum
+        elif field == "boards":
+            data["file"].calculate_boards()
+            data["new"] = "{}/{}".format(data["file"].playable_boards, data["file"].total_boards)
+
+        data["file"].basic_save()
 
     return render(request, "museum_site/tools/list.html", data)
 

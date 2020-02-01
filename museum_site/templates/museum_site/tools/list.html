@@ -12,6 +12,9 @@
 {
     padding:0.25em;
 }
+
+#tool-info td.True { background-color:#0F0; text-align:center; }
+#tool-info td.False { background-color:#F00; text-align:center; }
 </style>
 {% endblock %}
 
@@ -20,6 +23,8 @@
 <h1>Tool List - {{file}}</h1>
 <a href="/tools/{{file.id|add:-1}}">Previous</a> |
 <a href="/tools/{{file.id|add:1}}">Next</a>
+
+{% include "museum_site/blocks/file_block.html" %}
 
 <ul>
     <li><a href="{% url 'set_screenshot' file.id %}">Set Screenshot</a></li>
@@ -31,95 +36,126 @@
     <li><a href="{% url 'replace_zip' file.id %}">Replace Zip</a></li>
 </ul>
 
-{% include "museum_site/blocks/file_block.html" %}
-
-<div><b>Details:</b></div> {% for detail in file.details.all %}{{detail.detail}}{% if not forloop.last %}, {% endif %}{% endfor %}<br>
+{% if request.GET.recalculate %}
+<div><b>Recalculated {{request.GET.recalculate|title}}</b><br>
+<table>
+    <tr><th>Old Value</th><td>{{request.GET.old}}</td></tr>
+    <tr><th>New Value</th><td>{{new}}</td></tr>
+</table>
+</div>
+<br>
+{% endif %}
 
 <div><b>File Info:</b></div>
 <table class="dataTable" id="tool-info">
     <tr>
+        <th>Field</th>
+        <th>Value</th>
+        <th>Status</th>
+    <tr>
         <td>Letter</td>
         <td>{{file.letter}}</td>
+        <td class="c {{valid_letter}}">{{valid_letter}}</td>
     </tr>
     <tr>
         <td>Filename</td>
         <td>{{file.filename}}</td>
+        <td class="c {{valid_filename}}">{{valid_filename}}</td>
     </tr>
     <tr>
         <td>Title</td>
         <td>{{file.title}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Sort Title</td>
         <td>{{file.sort_title}}</td>
+        <td class="c"><a href="?recalculate=sort-title&old={{file.size}}">Recalculate</a></td>
     </tr>
     <tr>
         <td>Author</td>
         <td>{{file.author}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Size</td>
         <td>{{file.size|filesizeformat}} ({{file.size}} bytes)</td>
+        <td class="c"><a href="?recalculate=size&old={{file.sort_title}}">Recalculate</a></td>
     </tr>
     <tr>
         <td>Genre</td>
         <td>{{file.genre}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Release Date / Source</td>
-        <td>{{file.release_date}} ({{file.release_source}})</td>
-    </tr>
-    <tr>
-        <td>Release Source</td>
-        <td>{{file.release_source}}</td>
+        <td>{{file.release_date}} / {{file.release_source}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Upload Date</td>
         <td>{{file.upload_date}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Publish Date</td>
         <td>{{file.publish_date}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Last Modified</td>
         <td>{{file.last_modified}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Screenshot</td>
         <td>{{file.screenshot}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Company</td>
         <td>{{file.company}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Description</td>
         <td>{{file.description}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Review Count / Rating</td>
         <td>{{file.review_count}} / {{file.rating}}</td>
+        <td class="c"><a href="?recalculate=reviews&old={{file.review_count}}%2F{{file.rating}}">Recalculate</a></td>
     </tr>
     <tr>
         <td>Article Count</td>
         <td>{{file.article_count}}</td>
+        <td class="c"><a href="?recalculate=articles&old={{file.article_count}}">Recalculate</a></td>
     </tr>
     <tr>
         <td>Checksum</td>
         <td>{{file.checksum}}</td>
+        <td class="c"><a href="?recalculate=checksum&old={{file.checksum}}">Recalculate</a></td>
     </tr>
     <tr>
         <td>Playable/Total Boards</td>
         <td>{{file.playable_boards}} / {{file.total_boards}}</td>
+        <td class="c"><a href="?recalculate=boards&old={{file.playable_boards}}%2F{{file.total_boards}}">Recalculate</a></td>
     </tr>
     <tr>
         <td>Archive.org Name</td>
         <td>{{file.archive_name}}</td>
+        <td class="c">-</td>
     </tr>
     <tr>
         <td>Uploader IP</td>
         <td>{{file.uploader_ip|default:"-"}}</td>
+        <td class="c">-</td>
+    </tr>
+    <tr>
+        <td>Details</td>
+        <td>{% for detail in file.details.all %}[{{detail.id}}] {{detail.detail}}<br>{% endfor %}</td>
+        <td class="c">-</td>
     </tr>
 </table>
 </section>

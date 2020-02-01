@@ -240,6 +240,9 @@ class File(models.Model):
     def __str__(self):
         return "[" + str(self.id) + "] " + self.title
 
+    def basic_save(self, *args, **kwargs):
+        super(File, self).save(*args, **kwargs)
+
     def save(self, *args, **kwargs):
         # Pre save
         # Force lowercase letter
@@ -257,10 +260,7 @@ class File(models.Model):
             self.sort_title = self.sorted_title()
 
         # Recalculate Article Count
-        if self.id is not None:
-            self.article_count = self.articles.all().filter(
-                published=True
-            ).count()
+        self.calculate_article_count()
 
         # If the screenshot is blank and a file exists for it, set it
         if self.screenshot == "" and os.path.isfile(os.path.join(SITE_ROOT, "museum_site/static/images/screenshots/") + self.letter + "/" + self.filename[:-4] + ".png"):
@@ -425,6 +425,12 @@ class File(models.Model):
     def supports_zeta_player(self):
         return self.id != 85 and (self.is_zzt() or self.is_super_zzt())
 
+    def calculate_article_count(self):
+        if self.id is not None:
+            self.article_count = self.articles.all().filter(
+                published=True
+            ).count()
+
     def calculate_reviews(self):
         # Calculate Review Count
         if self.id is not None:
@@ -455,49 +461,6 @@ class File(models.Model):
 
         self.checksum = m.hexdigest()
         return True
-
-    def from_request(self, request):
-        upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
-
-        if request.method != "POST":
-            return False
-
-        # First handle the easy stuff
-        self.filename = str(request.FILES.get("file"))
-        self.title = request.POST.get("title")
-        self.letter = self.letter_from_title()
-        # sort_title handled by saving
-        self.author = request.POST.get("author")
-        self.size = int(request.FILES.get("file").size)
-        self.release_date = request.POST.get("release_date")
-        if self.release_date == "":
-            self.release_date = None
-        self.release_source = "User upload"
-        self.company = request.POST.get("company", "")
-        self.description = request.POST.get("desc", "")
-        self.genre = "/".join(request.POST.getlist("genre"))
-        self.publish_date = None
-        self.uploader_ip = request.META["REMOTE_ADDR"]
-
-        # SCREENSHOT -- Currently manual
-        # DETAILS -- Currently manual
-        # Check for a duplicate filename
-        exists = File.objects.filter(filename=self.filename).exists()
-        if exists:
-            return {"status": "error",
-                    "msg": "The chosen filename is already in use."}
-
-        # Save the file to the uploaded folder
-        file_path = os.path.join(upload_directory, self.filename)
-        with open(file_path, 'wb+') as fh:
-            for chunk in request.FILES["file"].chunks():
-                fh.write(chunk)
-
-        # Calculate checksum
-        self.calculate_checksum(file_path)
-
-        # SITE META
-        return {"status": "success"}
 
     def calculate_boards(self):
         if self.is_uploaded():
@@ -595,6 +558,49 @@ class File(models.Model):
 
     def calculate_size(self):
         self.size = os.path.getsize(self.phys_path())
+
+    def from_request(self, request):
+        upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
+
+        if request.method != "POST":
+            return False
+
+        # First handle the easy stuff
+        self.filename = str(request.FILES.get("file"))
+        self.title = request.POST.get("title")
+        self.letter = self.letter_from_title()
+        # sort_title handled by saving
+        self.author = request.POST.get("author")
+        self.size = int(request.FILES.get("file").size)
+        self.release_date = request.POST.get("release_date")
+        if self.release_date == "":
+            self.release_date = None
+        self.release_source = "User upload"
+        self.company = request.POST.get("company", "")
+        self.description = request.POST.get("desc", "")
+        self.genre = "/".join(request.POST.getlist("genre"))
+        self.publish_date = None
+        self.uploader_ip = request.META["REMOTE_ADDR"]
+
+        # SCREENSHOT -- Currently manual
+        # DETAILS -- Currently manual
+        # Check for a duplicate filename
+        exists = File.objects.filter(filename=self.filename).exists()
+        if exists:
+            return {"status": "error",
+                    "msg": "The chosen filename is already in use."}
+
+        # Save the file to the uploaded folder
+        file_path = os.path.join(upload_directory, self.filename)
+        with open(file_path, 'wb+') as fh:
+            for chunk in request.FILES["file"].chunks():
+                fh.write(chunk)
+
+        # Calculate checksum
+        self.calculate_checksum(file_path)
+
+        # SITE META
+        return {"status": "success"}
 
 
 class Detail(models.Model):
