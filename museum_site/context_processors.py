@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from museum_site.models import Detail, DETAIL_FEATURED
-from museum_site.common import DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP
+from museum_site.common import DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP, env_from_host
 
 
 def museum_global(request):
@@ -10,12 +10,9 @@ def museum_global(request):
 
     # Server info
     data["HOST"] = request.get_host()
-    if data["HOST"] in ["beta.museumofzzt.com"]:
-        data["ENV"] = "BETA"
-    elif data["HOST"] in ["museumofzzt.com"]:
-        data["ENV"] = "PROD"
-    else:
-        data["ENV"] = "DEV"
+
+    data["ENV"] = env_from_host(data["HOST"])
+
 
     data["PROTOCOL"] = "https" if request.is_secure() else "http"
     data["DOMAIN"] = data["PROTOCOL"] + "://" + data["HOST"]
