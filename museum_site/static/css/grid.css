@@ -657,7 +657,7 @@ input[name=q]
 /* End Specific Structures */
 
 /* Forms */
-form
+form,
 {
     border:1px solid #000;
     padding:0px 8px 0px 8px;
@@ -1215,6 +1215,19 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 
 #text-body { font-family:cp437; }
 #doc-header { color:#F00; text-align:center;}
+
+.high-scores .score
+{
+    text-align:right;
+    display:inline-block;
+    width:5ch;
+    padding-right:1ch;
+}
+
+.high-scores .name
+{
+    display:inline-block;
+}
 /* End File Viewer Extension Based Formatting */
 
 /* End File Viewer */

@@ -330,7 +330,7 @@ function pull_file()
     }).done(function (data){
         var format = "txt";  // Default to text mode
 
-        if (ext == "zzt" || ext == "sav" || ext == "szt")
+        if (ext == "zzt" || ext == "sav" || ext == "szt" || ext == "mwz")
         {
             format = (ext != "szt") ? "zzt" : "szt";
             ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
@@ -375,7 +375,8 @@ function pull_file()
             output += `----- &nbsp;----------------------------------<br>\n`;
             for (var idx in scores)
             {
-                output += scores[idx].score + " &nbsp;" + scores[idx].name + "<br>";
+                //output += scores[idx].score + " &nbsp;" + scores[idx].name + "<br>";
+                output +=`<div class="score">${scores[idx].score}</div> <div class="name">${scores[idx].name}</div><br>`;
             }
             output += "</div>";
 

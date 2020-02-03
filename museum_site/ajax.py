@@ -71,7 +71,7 @@ def get_zip_file(request):
         output = "<div class='text-file " + encoding + "'>" + output + "</div>"
 
         return HttpResponse(output)
-    elif ext in (".hi", ".zzt", ".brd", ".mh", ".sav", ".szt"):
+    elif ext in (".hi", ".zzt", ".brd", ".mh", ".sav", ".szt", ".mwz"):
         return HttpResponse(binascii.hexlify(file.read()))
     elif ext in (".jpg", ".jpeg", ".bmp", ".gif", ".png", ".ico", ".avi"):
         b64 = base64.b64encode(file.read())
@@ -91,6 +91,29 @@ def get_zip_file(request):
         return response
     else:
         return HttpResponse("This file type is not currently supported for embedded content.")
+
+
+def deep_search(request, phase):
+    phase = int(phase)
+    if phase == 1:
+        title = request.GET.get("title")
+        author = request.GET.get("author")
+        query = request.GET.get("query")
+
+        qs = File.objects.all()
+        if title:
+            qs = qs.filter(title__icontains=title)
+        if author:
+            qs = qs.filter(author__icontains=author)
+
+        count = qs.count()
+
+        print("QS contains...")
+        for f in qs:
+            print(f)
+
+    return HttpResponse("Criteria narrowed to {} files. Beginning search.".format(count))
+
 
 def debug_file(request):
     if not os.path.isfile("/var/projects/DEV"):
