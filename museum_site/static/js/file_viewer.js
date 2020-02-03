@@ -332,9 +332,20 @@ function pull_file()
 
         if (ext == "zzt" || ext == "sav" || ext == "szt" || ext == "mwz")
         {
-            format = (ext != "szt") ? "zzt" : "szt";
+            if (ext == "sav")
+                format = identify_save_type(data);
+            else
+                format = (ext != "szt") ? "zzt" : "szt";
+
             ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
-            ENGINE = engines[format];
+            if (engines.hasOwnProperty(format))
+                ENGINE = engines[format];
+            else
+            {
+                set_active_envelope("text");
+                $("#text-body").html(`Data error: Engine format "${format}" not found.`);
+                return false;
+            }
 
             // Adjust the canvas size based on engine
             var canvas_w = ENGINE.character_width * ENGINE.board_width;
@@ -468,6 +479,11 @@ function load_local_file()
     file_reader.onload = function (e) {
         // Determine engine
         var ext = file["name"].slice(-3).toLowerCase();
+
+        if (ext == "sav")
+            identify_save_type(data);
+
+
         var format = (ext != "szt") ? "zzt" : "szt";
         ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
         ENGINE = engines[format];
@@ -1745,4 +1761,17 @@ function update_scale()
 function color_desc(color)
 {
     return COLOR_NAMES[color % 16] + " on " + COLOR_NAMES[Math.floor(color / 16)] + ` (${color})` ;
+}
+
+function identify_save_type(data)
+{
+    console.log("IDENTIFY SAVE...");
+    var file_identifier = read(data, 2, 0);
+
+    if (file_identifier == engines["zzt"]["identifier"])
+        return "zzt";
+    else if (file_identifier == engines["szt"]["identifier"])
+        return "szt";
+    else
+        return null;
 }
