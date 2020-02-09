@@ -43,6 +43,24 @@ START_TIME = datetime.utcnow()
 BOOT_TS = START_TIME.strftime("%m%d%H%M%S")
 ARCHIVE_COLLECTION = "open_source_software" if not DEBUG else "test_collection"
 
+FILE_VIEWER_TEXT_EXTENSIONS = (
+    "", ".doc", ".txt", ".bat", ".cfg", ".nfo", ".dat", ".bas", ".deu", ".diz",
+    ".c", ".ds_store", ".faq", ".frm", ".fyi", ".gud", ".h", ".hlp", ".lst",
+    ".me", ".nfo", ".pas", ".reg", ".sol", ".zln", ".zml", ".zzl", ".zzm",
+    ".135", ".1st", ".asm", ".bb", ".bin", ".chr", ".sdi", ".now", ".md"
+)
+FILE_VIEWER_HEX_EXTENSIONS = (
+    ".hi", ".zzt", ".brd", ".mh", ".sav", ".szt", ".mwz"
+)
+
+FILE_VIEWER_B64_EXTENSIONS = (
+    ".jpg", ".jpeg", ".bmp", ".gif", ".png", ".ico", ".avi"
+)
+
+FILE_VIEWER_AUDIO_EXTENSIONS = (
+    ".wav", ".mp3", ".ogg", ".mid", ".midi"
+)
+
 if os.path.isfile(os.path.join(SITE_ROOT, "ia.cfg")):
     with open(os.path.join(SITE_ROOT, "ia.cfg")) as fh:
         IA_SUPPORT = True
