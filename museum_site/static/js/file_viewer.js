@@ -1567,7 +1567,7 @@ function create_board_list()
         board_list += `<li class='board${world.starting_board == x ? " b" : ""}' data-board-number='${x}'>`;
 
         var formatted_num = (x >= 10 ? x : `&nbsp;` + x);
-        var formatted_title = world.boards[x].title ? world.boards[x].title : `-untitled`;
+        var formatted_title = world.boards[x].title ? world.boards[x].title.replace("<", "&lt;").replace(">", "&gt;") : `-untitled`;
         board_list += `
             <div name='board_idx'>${formatted_num}.</div>
             <div name='board_name'>${formatted_title}
