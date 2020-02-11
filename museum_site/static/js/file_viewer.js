@@ -947,8 +947,6 @@ function render_board()
 
 function draw_board()
 {
-    //$(".output.active").removeClass("active");
-    //$(".output.canvas").addClass("active");
     set_active_envelope("canvas");
 
     ctx.globalCompositeOperation = "source-over";
