@@ -1020,8 +1020,25 @@ class Renderer {
             }
         }
 
+
+        // We also need a list of things on top of webs
+        for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
+        {
+            if (board.stats[stat_idx].under_id == 63) // Web
+            {
+                var x_coord = board.stats[stat_idx].x;
+                var y_coord = board.stats[stat_idx].y;
+                var tile_idx = board.stats[stat_idx].tile_idx;
+                var under_color = board.stats[stat_idx].under_color;
+
+                webs[tile_idx] = 2; // I'll regret doing it like this later, but I'm making sure that things on webs are drawn instead of the webs meant to be beneath them with this
+                web_colors[tile_idx] = under_color;
+            }
+        }
+
         // Render webs
         var web_tiles = Object.keys(webs);
+
         for (var web_idx = 0; web_idx < 7680; web_idx++)
         {
             var web_key = "";
@@ -1045,7 +1062,7 @@ class Renderer {
             else
                 web_key += (webs[web_idx-1] ? "1" : "0");
 
-            if (webs[web_idx])
+            if (webs[web_idx] && webs[web_idx] != 2)
             {
                 print(ctx, web_characters[web_key], web_colors[web_idx], web_idx % 96, parseInt(web_idx / 96));
             }
