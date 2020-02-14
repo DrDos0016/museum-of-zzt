@@ -152,7 +152,7 @@ class ZztScroll(template.Node):
 
 
         # Pad short scrolls with blank lines
-        output += "X<br>\n" * (10 - len(raw))
+        output += "<br>\n" * (10 - len(raw))
         output += "  •    •    •    •    •    •    •    •    •<br>\n"
 
         # Header dots
