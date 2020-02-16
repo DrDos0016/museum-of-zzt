@@ -905,14 +905,15 @@ form .field .genre-checklist
     "file-list analysis analysis";
 
     grid-template-columns:1.5fr 2fr auto;
-    grid-template-rows:auto auto auto minmax(378px, auto) auto 1fr;
-    height:calc(100vh - 42px);
+    /*grid-template-rows:auto auto auto minmax(378px, auto) auto 1fr;*/
+    grid-template-rows:auto auto auto auto auto 1fr;
     min-height:858px; /* With padding this is 900px of space */
+    height:calc(100vh - 42px);
+
 }
 
 .file-header { grid-area: header;}
 #expand-contract { grid-area: expand;}
-
 
 #content h1
 {

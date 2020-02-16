@@ -1730,13 +1730,9 @@ function set_active_envelope(envelope)
     $("#fv-main").scrollTop(0);
 
     if (envelope != "canvas")
-    {
         $("#canvas-envelope").css("display", "none");
-    }
     else
-    {
         $("#canvas-envelope").css("display", "grid");
-    }
 
     $(".output." + envelope).addClass("active");
 }
@@ -1746,7 +1742,10 @@ function update_scale()
     SCALE = document.querySelector("input[name=pref-board-scale]").checked ? 2 : 1;
     $("#world-canvas").css("width", CANVAS_WIDTH * SCALE + "px");
     $("#world-canvas").css("height", CANVAS_HEIGHT * SCALE + "px");
-    $("#canvas-envelope").css("min-height", SCALE * CANVAS_HEIGHT);
+
+    // If you shrink, snap the upper canvas area size
+    if (SCALE == 1)
+        $("#fv-main").css("height", "auto");
 
     // Set scale cookie
     var now = new Date();
