@@ -1,16 +1,5 @@
 {% extends "museum_site/main.html" %}
 
-{% block style %}
-{% if local %}
-<style>
-#file-area
-{
-    border-top:1px solid #000;
-}
-</style>
-{% endif %}
-{% endblock %}
-
 {% block content %}
 <section id="content" class="block {{custom_layout}}">
 <button class="fr contracted" id="expand-contract" title="Toggle sidebars">&larr; &rarr;</button>
