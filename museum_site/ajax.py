@@ -36,7 +36,7 @@ def get_zip_file(request):
             "An error occurred, and the file could not be retreived."
         )
 
-    if ext in ("", ".doc", ".txt", ".bat", ".cfg", ".nfo", ".dat", ".bas", ".deu", ".diz", ".c", ".ds_store", ".faq", ".frm", ".fyi", ".gud", ".h", ".hlp", ".lst", ".me", ".nfo", ".pas", ".reg", ".sol", ".zln", ".zml", ".zzl", ".zzm", ".135", ".1st", ".asm", ".bb", ".bin", ".chr", ".sdi", ".now", ".md"):
+    if ext in (FILE_VIEWER_TEXT_EXTENSIONS):
         output = file.read()
 
         if format == "auto" or format == "utf-8":
@@ -71,12 +71,12 @@ def get_zip_file(request):
         output = "<div class='text-file " + encoding + "'>" + output + "</div>"
 
         return HttpResponse(output)
-    elif ext in (".hi", ".zzt", ".brd", ".mh", ".sav", ".szt", ".mwz"):
+    elif ext in (FILE_VIEWER_HEX_EXTENSIONS):
         return HttpResponse(binascii.hexlify(file.read()))
-    elif ext in (".jpg", ".jpeg", ".bmp", ".gif", ".png", ".ico", ".avi"):
+    elif ext in (FILE_VIEWER_B64_EXTENSIONS):
         b64 = base64.b64encode(file.read())
         return HttpResponse(b64)
-    elif ext in (".wav", ".mp3", ".ogg", ".mid", ".midi"):
+    elif ext in (FILE_VIEWER_AUDIO_EXTENSIONS):
         response = HttpResponse(file.read())
 
         if ext == ".wav":
