@@ -71,8 +71,8 @@ def field_check(f):
     if f.release_date and f.release_date.year < 1991:
         issues["warnings"].append("Release date is prior to 1991.")
 
-    if f.release_source == "":
-        issues["warnings"].append("Release source is blank.")
+    if f.release_date and f.release_source == "":
+        issues["warnings"].append("Release source is blank, but release date is set.")
 
     if f.screenshot == "":
         issues["warnings"].append("No screenshot.")
