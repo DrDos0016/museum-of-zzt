@@ -33,10 +33,7 @@
 {% block style %}{% endblock %}
 <script>
 $(document).ready(function (){
-    console.log("BODY", $("body").width(), $("body").height());
-
     $(window).resize(resize_canvas_display);
-
     resize_canvas_display();
 });
 
@@ -79,17 +76,8 @@ body
     justify-content:center;
     align-items:center;
 }
-
-#framing
-{
-    flex:0;
-    width:100vw;
-    image-rendering:crisp-edges;
-}
 </style>
 
-<body>
-    <div id="framing"><canvas id="zzt_canvas" width="640" height="350"></canvas></div>
-</body>
+<body><canvas id="zzt_canvas" width="640" height="350"></canvas></body>
 
 </html>

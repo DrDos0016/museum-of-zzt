@@ -1,4 +1,5 @@
-{% extends "museum_site/world.html" %}
+{% extends base %}
+
 
 {% block style %}
 <style>
@@ -65,17 +66,21 @@
 {% block scripts %}
 <script type="text/javascript" src="/static/zeta86/zeta_loader.js"></script>
 <script type="text/javascript">
-var scale = 1;
+var scale = {{scale|default:1}};
 var base_w = 640;
 var base_h = 350;
+var ZETA = null;
 
 $(document).ready(function (){
+    $("#zzt_canvas").width(base_w * scale);
+    $("#zzt_canvas").height(base_h * scale);
+
     $("#fullscreen").click(function (){
         $("#zzt_canvas")[0].requestFullscreen();
     });
 
     $("#popout").click(function (e){
-        window.open("?player=zeta&popout=1&scale=" + scale, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+        window.open("?player=zeta&mode=popout&scale=" + scale, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
     });
 
     $(".zoom").click(function (){
@@ -99,8 +104,8 @@ $(document).ready(function (){
         path: "/static/zeta86/",
         render: {
             canvas: document.getElementById("zzt_canvas"),
-            {% if request.GET.blink_cycle %}blink_cycle_duration: {{request.GET.blink_cycle|default:'0.466'}},{% endif %}
-            {% if request.GET.charset_override %}charset_override: "http://django.pi:8000/static/images/charsets/{{request.GET.charset_override|default:'cp437.png'}}",{% endif %}
+            {% if request.GET.blink_cycle %}blink_cycle_duration: {{request.GET.blink_cycle}},{% endif %}
+            {% if request.GET.charset_override %}charset_override: {{request.GET.charset_override}}{% endif %}
         },
         {% if request.GET.commands and ENV == "DEV" %}commands: {{request.GET.commands|safe}},{% endif %}
         storage: {
@@ -120,7 +125,7 @@ $(document).ready(function (){
         ],
         {% if request.GET.arg and ENV == "DEV" %}arg: "{{request.GET.arg|escapejs}}",{% endif %}
     }, function(zeta) {
-
+        ZETA = zeta;
     });
 
 });
@@ -132,18 +137,22 @@ $(document).ready(function (){
     <canvas id="zzt_canvas" width="640" height="350"></canvas>
 </div>
 
-<div id="zeta-controls" class="c">
+{% if components.controls %}<div id="zeta-controls" class="c">
     <button id="popout">Popout</button>
-    <button id="zoom-out" class="zoom" value="-" disabled>-</button>
-    <button id="zoom-in" class="zoom" value="+">+</button>
+    <button id="zoom-out" class="zoom" value="-"{% if scale == 1 %} disabled{% endif %}>-</button>
+    <button id="zoom-in" class="zoom" value="+"{% if scale != 1 %} disabled{% endif %}>+</button>
     <button id="fullscreen">Fullscreen</button>
-</div>
+</div>{% endif %}
 
-<div class="play-instructions">
-<b>Zeta</b> created and maintained by asie
-</div>
+{% if component.instructions %}<div class="zeta-instructions">
+    <p>INSTRUCTIONS</p>
+</div>{% endif %}
 
-<form id="zeta-config">
+{% if components.credits %}<div class="zeta-credits">
+    <p><b><a href="https://zeta.asie.pl" target="_blank">Zeta</a></b> created and maintained by asie.</p>
+</div>{% endif %}
+
+{% if components.advanced %}<form id="zeta-config">
     <div class="setting">
         <div class="heading">Executable</div>
         <div class="list">
@@ -204,7 +213,7 @@ $(document).ready(function (){
     <div class="setting">
         <div class="heading">Charset Override</div>
         <div class="list">
-        <label class="option"><input type="radio" name="charset_override" value="cp437.png"{% if charset_override == "cp437.png" %} checked{% endif %}> Code Page 437</label>
+        <label class="option"><input type="radio" name="charset_override" value=""{% if charset_override == "" %} checked{% endif %}> Code Page 437</label>
         {% for charset in charsets %}
         <label class="option"><input type="radio" name="charset_override" value="{{charset}}"{% if charset_override == charset %} checked{% endif %}> {{charset|slice:"5:-4"}}</label>
         {% endfor %}
@@ -223,8 +232,8 @@ $(document).ready(function (){
                 </select>
             </label>
             {% endcomment %}
-            <label class="option">Buffer Size (Samples)<br><input type="number" name="bufferSize" value="{{request.GET.bufferSize}}"></label>
-            <label class="option">Sample Rate (Hz)<br><input type="number" name="sampleRate" value="{{request.GET.sampleRate}}"></label>
+            <label class="option">Buffer Size (Samples)<br><input type="number" name="bufferSize" value="{{request.GET.bufferSize|default:2048}}"></label>
+            <label class="option">Sample Rate (Hz)<br><input type="number" name="sampleRate" value="{{request.GET.sampleRate|default:48000}}"></label>
             <label class="option">Note Delay (ms)<br><input type="number" name="noteDelay" value="{{request.GET.noteDelay|default:'1'}}"></label>
             <label class="option">Volume<br><input type="number" name="volume" value="{{request.GET.volume|default:'0.2'}}" min="0.0" max="1.0" step="0.1"></label>
         </div>
@@ -248,6 +257,6 @@ $(document).ready(function (){
 
     <div class="setting">
     <button id="apply-config">APPLY</button>
-    <img src="/static/images/charsets/{{request.GET.charset_override|default:'cp437.png'}}">
-</form>
+    <img src="/static/images/charsets/{{request.GET.charset_override|default:'cp437.png'}}" style="background:#000">
+</form>{% endif %}
 {% endblock %}
