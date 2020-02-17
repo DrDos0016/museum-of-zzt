@@ -113,6 +113,7 @@ $(document).ready(function (){
 </div>
 {% endif %}
 
+{% if players %}
 <div id="player-list" class="c">
     <b>Play Method</b><br>
     <select name="player">
@@ -121,6 +122,7 @@ $(document).ready(function (){
         {% endfor %}
     </select>
 </div>
+{% endif %}
 
 <div class="play-instructions">
 {% if player == "archive" %}
@@ -128,9 +130,21 @@ This file is hosted on <a href="https://archive.org/details/softwarelibrary_msdo
 <a href="https://archive.org/details/{{file.archive_name}}" target="_blank">Open this file on archive.org</a><br>
 <a href="https://archive.org/about/faqs.php#MS-DOS_Emulation" target="_blank">Internet Archive MS-DOS Emulation Help</a><br>
 <br>
-If the world appears to be running too slow, pressing <b>Control+F12</b> will increase the emulated CPU instructions.<br>Similarly, <b>Control+F11</b> will decrease emulated CPU instructions.</b>
+If the world appears to be running slowly, pressing <b>Control+F12</b> will increase the emulated CPU instructions.<br>Similarly, <b>Control+F11</b> will decrease emulated CPU instructions.</b>
+{% elif player == "zeta" %}
+<b>Zeta</b> created and maintained by asie.
 {% else %}
-<b>Zeta</b> created and maintained by asie
+<p>No compatible player was found for this file.</p>
+
+<p>For Zeta, files must run on standard versions of ZZT and/or Super ZZT.</p>
+
+<p>For Archive.org's DOSBox player, the file must be mirrored on archive.org, support being ran in browser via DOSBox, and be marked as an available host for this file in the Museum's database.</p>
+
+{% if file.archive_name %}<p>This file's archive.org identifier is set to <a href="https://archive.org/details/{{file.archive_name}}" target="_blank">"{{file.archive_name}}"</a>.</p>
+{% else %}<p>This file does not have an archive.org identifier set. You may search for it on <a href="https://archive.org/details/softwarelibrary_msdos_zzt" target="_blank">The Internet Archive's ZZT Software Library</a> and see if it
+is available there.</p>
+
+{% endif %}
 {% endif %}
 </div>
 {% endblock %}

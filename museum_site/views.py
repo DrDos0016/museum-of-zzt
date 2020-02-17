@@ -549,47 +549,44 @@ def play(request, letter, filename):
     data["title"] = data["file"].title + " - Play Online"
     data["letter"] = letter
 
-    # Select a play method
-    player_names = PLAY_METHODS.keys()
+    # Find supported play methods
+    all_play_methods = list(PLAY_METHODS.keys())
+    compatible_players = []
 
-    player = request.GET.get("player")
-    if player is None or player not in player_names:
-        # If no player was provided, check for a cookie preference
-        preferred_player = request.COOKIES.get("preferred_player", "")
-        if preferred_player not in player_names:
-            player = "zeta"  # Default player
-        else:
-            player = preferred_player
+    if "zeta" in all_play_methods:
+        if data["file"].supports_zeta_player():
+            compatible_players.append("zeta")
 
-    # Check player compatibility
-    cookie_preferred = player  # In case the user's choice isn't available
-    data["fallback"] = False
+    if "archive" in all_play_methods:
+        if data["file"].archive_name:
+            compatible_players.append("archive")
 
-    if player == "zeta":
-        if not data["file"].supports_zeta_player:
-            player = "archive"
-            data["fallback"] = True
-    elif player == "archive":
-        if not data["file"].archive_name:
+    # Is there a manually selected preferred player?
+    if request.GET.get("player") and request.GET.get("player") in all_play_methods:
+        preferred_player = request.GET.get("player")
+    else:  # If not, use Zeta as the default player
+        preferred_player = "zeta"
+
+    # Does the preferred player support this file?
+    if preferred_player in compatible_players:
+        player = preferred_player
+    else:  # If not, force this hierarchy
+        if "zeta" in compatible_players:
             player = "zeta"
-            data["fallback"] = True
-
-    # The player the page will use
-    data["player"] = player
-    data["players"] = PLAY_METHODS
-
-    if data["file"].id in CUSTOM_CHARSET_MAP:
-        data["custom_charset"] = CUSTOM_CHARSET_MAP[data["file"].id]
-    else:
-        data["custom_charset"] = None
-
-    if player == "zeta":
-        if data["file"].is_super_zzt():
-            data["engine"] = "szzt.zip"
+        elif "archive" in compatible_players:
+            player = "archive"
         else:
-            data["engine"] = "zzt.zip"
-        data["zeta_database"] = str(data["file"].id)
+            player = "none"
 
+    # Finalize the player
+    data["player"] = player
+
+    # Populate options for any alternative players
+    data["players"] = {}
+    for option in compatible_players:
+        data["players"][option] = PLAY_METHODS[option]
+
+    # Are we playing in pop-out mode?
     data["play_base"] = "museum_site/world.html"
     if request.GET.get("popout"):
         data["play_base"] = "museum_site/play-popout.html"
@@ -600,8 +597,15 @@ def play(request, letter, filename):
     elif request.GET.get("discord"):
         data["zeta_url"] = "/zeta-live?discord=1&world={}".format(request.GET.get("world"))
 
+    # If you're using Zeta, select the proper executable
+    if player == "zeta":
+        if data["file"].is_super_zzt():
+            data["engine"] = "szzt.zip"
+        else:
+            data["engine"] = "zzt.zip"
+        data["zeta_database"] = str(data["file"].id)
+
     response = render(request, "museum_site/play.html", data)
-    response.set_cookie("preferred_player", cookie_preferred, expires=datetime(3000, 12, 31))
     return response
 
 
