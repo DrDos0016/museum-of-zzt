@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 <div class="overview-block" id="{{file.filename}}" data-pk="{{file.id}}">
     <h1 class="title"><a href="{{file.file_url}}">{{file.title|default:"NO NAME"}}</a></h1>
     <img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">
