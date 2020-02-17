@@ -1,11 +1,18 @@
 {% extends "museum_site/main.html" %}
 
-{% load staticfiles %}
+{% load static %}
 {% load zzt_tags %}
 {% load site_tags %}
 
 {% block style %}
-<style></style>
+<style>
+.zeta-iframe
+{
+    width:640px;
+    height:350px;
+    overflow:none;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -622,6 +629,9 @@ And cool.
 <h2 id="il">Italicized Link</h2>
 
 <h2>ETC</h2>
+<b>Edible Vomit running on WoZ v3.56 with blinking disabled</b><br>
+<iframe class="zeta-iframe" src="/zeta-launcher?executable=wozzt356.zip&arg=&commands=&blink_cycle=-1&charset_override=&bufferSize=2048&sampleRate=48000&noteDelay=1&volume=0.2&file_id=1277&mode=popout">
+<h2>
 {{f}}<br>
 
 <hr>

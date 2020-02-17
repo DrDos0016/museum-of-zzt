@@ -3,7 +3,7 @@ from django.http import Http404
 from django.http import HttpResponse
 from django.http import QueryDict
 from django.template import RequestContext
-from django.shortcuts import render_to_response, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.db import connection
 from django.db.models import Count, Avg, Sum, Q
 from django.core.exceptions import ValidationError
