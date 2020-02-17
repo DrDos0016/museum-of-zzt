@@ -64,6 +64,29 @@ var custom_charset = "{{custom_charset}}";
 
 <div id="analysis">
     <div id="file-data">
+        <div id="zip-info" class="toggle">
+            <table class="zip-info-table">
+                <tr>
+                <th>Filename</th>
+                <th title="Modification Date">Mod. Date</th>
+                <th title="Compression Method">Comp.</th>
+                <th title="Directory">Dir.</th>
+                <th>CRC-32</th>
+                <th>Compressed Size</th>
+                <th>Decompressed Size</th>
+                {% for f in zip_info %}
+                <tr>
+                    <td>{{f.filename}}</td>
+                    <td>{{f.date_time.0}}-{{f.date_time.1|stringformat:"02d"}}-{{f.date_time.2|stringformat:"02d"}}<br>{{f.date_time.3|stringformat:"02d"}}:{{f.date_time.4|stringformat:"02d"}}:{{f.date_time.5|stringformat:"02d"}}</td>
+                    <td class="c">{{f.compress_type}}</td>
+                    <td class="c">{{f.is_dir|yesno:"Y,N"}}</td>
+                    <td class="r">{{f.CRC}}</td>
+                    <td class="r">{{f.compress_size|filesizeformat}}</td>
+                    <td class="r">{{f.file_size|filesizeformat}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
         <div id="world-info" class="toggle"></div>
         <div id="board-info" class="toggle"></div>
         <div id="element-info" class="toggle"></div>

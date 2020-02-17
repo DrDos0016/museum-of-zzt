@@ -999,7 +999,7 @@ form .field .genre-checklist
     flex:3;
 }
 
-#file-tabs div:hover
+#file-tabs div:hover, #zip-name:hover
 {
     cursor:pointer;
     background:#98C9C9;
@@ -1104,7 +1104,13 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     padding:0px 1ch 0px 1ch;
 }
 
-#file-tabs .selected { background:#619F9F; }
+#analysis .zip-info-table td, #analysis .zip-info-table th
+{
+    padding-left:8px;
+    padding-right:8px;
+}
+
+#file-tabs .selected, #zip-name.selected { background:#619F9F; }
 #analysis .toggle { display:none; }
 #file-list ul li.code-match { padding-left:3ch; }
 

@@ -350,9 +350,10 @@ def exhibit(request, letter, filename, section=None, local=False):
         data["files"] = []
 
         if ".zip" in filename.lower():
-            zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
-            files = zip.namelist()
+            zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
+            files = zip_file.namelist()
             files.sort(key=str.lower)
+            data["zip_info"] = zip_file.infolist()
 
             # Filter out directories (but not their contents)
             for f in files:
@@ -446,9 +447,10 @@ def file(request, letter, filename, local=False):
         data["files"] = []
 
         if ".zip" in filename.lower():
-            zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
-            files = zip.namelist()
+            zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
+            files = zip_file.namelist()
             files.sort(key=str.lower)
+            data["zip_info"] = zip_file.infolist()
 
             # Filter out directories (but not their contents)
             for f in files:

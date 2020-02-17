@@ -1133,12 +1133,9 @@ function stat_info(e)
 
 function tab_select(selector)
 {
-    // Debug
-    if (selector == "zip-info")
-        return false;
-
     $("#file-data > div").hide();
     $("#file-tabs div").removeClass("selected");
+    $("div[name=zip-info]").removeClass("selected");
     $("div[name="+selector+"]").addClass("selected");
     $("#"+selector).show();
 }
