@@ -556,6 +556,10 @@ def play(request, letter, filename):
     if "zeta" in all_play_methods:
         if data["file"].supports_zeta_player():
             compatible_players.append("zeta")
+        elif data["file"].is_uploaded():
+            # For unpublished worlds, assume yes but add a disclaimer
+            compatible_players.append("zeta")
+            data["unpublished"] = True
 
     if "archive" in all_play_methods:
         if data["file"].archive_name:

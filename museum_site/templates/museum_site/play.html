@@ -102,6 +102,7 @@ $(document).ready(function (){
     <iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
     {% elif player == "zeta" %}
     <canvas id="zzt_canvas" width="640" height="350"></canvas>
+    {% if unpublished %}<p>This file is currently UNPUBLISHED. Support for Zeta has been assumed, but the file may not be compatible.</p>{% endif %}
     {% endif %}
 </div>
 {% if player == "zeta" %}
