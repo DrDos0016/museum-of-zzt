@@ -1,6 +1,6 @@
 import math
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Comic
 
 # Use main site's page size if availalbe
@@ -50,6 +50,6 @@ def strip(request, comic_account, id=None):
     data["comic_list"] = Comic.objects.only("id", "title", "date").filter(comic_account=comic_account)
 
     if comic_account in ["bencomic", "benco"]:
-        return render(request, "comic/bencomic_strip.html", data)
+        return redirect("/")
     else:
         return render(request, "comic/strip.html", data)

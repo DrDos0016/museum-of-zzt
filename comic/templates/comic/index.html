@@ -1,5 +1,5 @@
 {% extends "museum_site/main.html" %}
-{% load staticfiles %}
+{% load static %}
 
 {% block style %}
 <style>
@@ -46,23 +46,7 @@
         long after Nomad's comics The strips focus primarily on ZZTer woes like the management of 24 Hours of ZZT contests, and over-hyping ZZT games still early in development.</p>
         </div>
     </div>
-    <div class="comic">
-        <div class="image"><img src="{% static 'comic/zamros.gif' %}" alt="Bencomic - Classic"></div>
-        <div class="desc">
-            <h2><a href="http://www.stripcreator.com/comics/benco/48404" target="_blank">Bencomic - Classic</a> (Hosted on Stripcreator.com)</h2>
-            <p>Bencomic was a long running series of comics from 2001-2004 made using Stripcreator to transform IRC chat logs from the ZZT community
-            and convert them to a visual medium. The series was originally created by Benco, though the account was also shared with Funk, wildkarrdex,
-            and craNKGod.</p>
-        </div>
-    </div>
-    <div class="comic">
-        <div class="image"><img src="{% static 'comic/nuero.gif' %}" alt="Bencomic - Modern"></div>
-        <div class="desc">
-        <h2><a href="{% url 'comic_landing' 'bencomic' %}">Bencomic (Modern)</a></h2>
-        <p>The successor to Benco's Bencomic covering more IRC antics from 2005-2008. Revived by Zamros with strips by dave2, Clecky, Zenith Nadir,
-        MadTom, and FSFunky. Complete with searchable comic transcripts!</p>
-        </div>
-    </div>
+    <div>
         <div class="comic">
         <div class="image"><img src="{% static 'comic/shapiro.png' %}" alt="Mr. Shapiro"></div>
         <div class="desc">
