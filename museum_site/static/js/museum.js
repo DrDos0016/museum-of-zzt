@@ -91,4 +91,63 @@ $(document).ready(function (){
             $("body").addClass("grid-root");
         }
     });
+
+    $("code.zzt-oop").each(function (){
+        var raw = $(this).text();
+        var processed = syntax_highlight(raw);
+        $(this).html(processed);
+    })
+
 });
+
+// ZZT-OOP Syntax highlighting
+function syntax_highlight(oop)
+{
+    console.log("Running syntax highlight");
+    console.log(oop);
+    var oop = oop.split("\n");
+    for (var idx in oop)
+    {
+        // Symbols: @, #, /, ?, :, ', !, $
+        if (idx == 0 && oop[idx][0] && oop[idx][0] == "@")
+            oop[idx] = `<span class='name'>@</span><span class='yellow'>${oop[idx].slice(1)}</span>`;
+        else if (oop[idx][0] && oop[idx][0] == "#")
+        {
+            // Special case for #char
+            if (oop[idx].indexOf("#char") == 0)
+            {
+                oop[idx] = `<span class='command ch'>#</span>${oop[idx].slice(1, 6)}<span class="char" title="${int_to_char(oop[idx].slice(6))}">${oop[idx].slice(6)}</span>`;
+            }
+            else
+                oop[idx] = `<span class='command'>#</span>${oop[idx].slice(1)}`;
+        }
+        else if (oop[idx][0] && oop[idx][0] == "/")
+        {
+            oop[idx] = oop[idx].replace(/\//g, `<span class='go'>/</span>`);
+        }
+        else if (oop[idx][0] && oop[idx][0] == "?")
+        {
+            oop[idx] = oop[idx].replace(/\?/g, `<span class='try'>?</span>`);
+        }
+        else if (oop[idx][0] && oop[idx][0] == ":")
+        {
+            oop[idx] = `<span class='label'>:</span><span class='orange'>${oop[idx].slice(1)}</span>`;
+        }
+        else if (oop[idx][0] && oop[idx][0] == "'")
+        {
+            oop[idx] = `<span class='comment'>'${oop[idx].slice(1)}</span>`;
+        }
+        else if (oop[idx][0] && oop[idx][0] == "!" && (oop[idx].indexOf(";") != -1))
+        {
+            oop[idx] = `<span class='hyperlink'>!</span>\
+<span class='label'>${oop[idx].slice(1, oop[idx].indexOf(";"))}</span>\
+<span class='hyperlink'>;</span>\
+${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
+        }
+        else if (oop[idx][0] && oop[idx][0] == "$")
+        {
+            oop[idx] = `<span class='center'>$</span><span class=''>${oop[idx].slice(1)}</span>`;
+        }
+    }
+    return oop.join("\n");
+}
