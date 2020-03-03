@@ -4,8 +4,8 @@ from django.db import models
 
 class Comic(models.Model):
     ACCOUNTS = (
-        ("benco", "Benco"),
-        ("bencomic", "Bencomic"),
+        #("benco", "Benco"),
+        #("bencomic", "Bencomic"),
         ("lemmy", "Lemmy"),
         ("mr-shapiro", "Mr. Shapiro"),
         ("nomad", "Nomad's ZZT Comics"),
