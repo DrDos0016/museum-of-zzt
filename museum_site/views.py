@@ -477,9 +477,9 @@ def index(request):
     data = {}
 
     # Obtain latest content
-    data["articles"] = Article.objects.filter(published=PUBLISHED_ARTICLE).order_by("-date")[:10]
-    data["files"] = File.objects.all().exclude(details__id__in=[18]).order_by("-publish_date", "-id")[:12]  # TODO: Unhardcode
-    data["reviews"] = Review.objects.all().order_by("-date")[:10]
+    data["articles"] = Article.objects.filter(published=PUBLISHED_ARTICLE).order_by("-date")[:FP_ARTICLES_SHOWN]
+    data["files"] = File.objects.all().exclude(details__id__in=[DETAIL_UPLOADED]).order_by("-publish_date", "-id")[:FP_FILES_SHOWN]
+    data["reviews"] = Review.objects.all().order_by("-date")[:FP_REVIEWS_SHOWN]
 
     return render(request, "museum_site/index.html", data)
 
@@ -742,7 +742,7 @@ def search(request):
             Q(author__icontains=q) |
             Q(filename__icontains=q) |
             Q(company__icontains=q)
-        ).exclude(details__id__in=[18])  # TODO: Unhardcode
+        ).exclude(details__id__in=[DETAIL_UPLOADED])
 
         # Auto redirect for Italicized-Links in Closer Looks
         if request.GET.get("auto"):
@@ -948,7 +948,7 @@ def upload(request):
             upload.save(new_upload=True)
 
             # Flag it as an upload
-            upload.details.add(Detail.objects.get(pk=18)) # TODO: Unhardcode #
+            upload.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
             return redirect("/uploaded#" + upload.filename)
         except ValidationError as e:
             data["results"] = e
