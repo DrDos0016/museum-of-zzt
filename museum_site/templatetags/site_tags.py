@@ -12,7 +12,7 @@ register = Library()
 
 @register.filter
 def as_template(raw):
-    raw = "{% load staticfiles %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
+    raw = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
     return Template(raw).render(Context())
 
 
