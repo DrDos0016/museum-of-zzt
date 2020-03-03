@@ -596,6 +596,23 @@ class File(models.Model):
             for chunk in request.FILES["file"].chunks():
                 fh.write(chunk)
 
+        # Check for unsupported compression
+        zip_file = zipfile.ZipFile(os.path.join(file_path))
+        files = zip_file.namelist()
+        zip_info = zip_file.infolist()
+        rezip = False
+        for i in zip_info:
+            if i.compress_type not in [zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED]:
+                rezip = True
+                break
+
+        # Check if the file needs to be rezipped
+        if rezip:
+            None
+            # TODO This feature should wait until the Museum is on a new server
+            #print("I'm gonna rezip")
+
+
         # Calculate checksum
         self.calculate_checksum(file_path)
 
