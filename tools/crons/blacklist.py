@@ -6,6 +6,7 @@ BLACKLISTED_FILES = [
     1577,  # 9**1: A Z*T M******l
     1927,  # N**e E*****n
     1811,  # B*N L***N!!
+    1947,  #B*****e (1 in 5 chance of r-slur)
     1852,  # M*****a R***s
     2064,  # M*****a R***s SE
     1496,  # B******! (Author's request)
@@ -18,6 +19,7 @@ BLACKLISTED_FILES = [
     853,  # P******l (Author's request)
     1197,  # P******l B* (Author's request)
     1660, # R*****e (Author's request)
+    1922,  #R**a P***s (Racial stereotypes)
     925,  # T*e P****e F***s I* (Author's request)
     1723,  # T***h (Author's request)
     2059,  #M****m B***s A*******y (Harassing)
@@ -27,6 +29,7 @@ BLACKLISTED_FILES = [
     2084,  #M****m B***s 2 (Harassing)
     1077,  #S**n (Plenty of N-bombs)
     1933,  #S (Some impressively detailed nudity)
+    2010,  #S*****u (Racial caricatures)
 ]
 
 
