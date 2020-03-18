@@ -59,9 +59,14 @@ def article_directory(request, category="all"):
 
 def article_view(request, id, page=0):
     """ Returns an article pulled from the database """
+    id = int(id)
+    if id == 1:
+        uri = request.build_absolute_uri()
+        if uri.lower().endswith(".zip"):
+            return article(request, "1", uri.split("/")[-1])
+
     slug = request.path.split("/")[-1]
     page = int(page)
-    id = int(id)
     data = {"id": id}
     data["custom_layout"] = "article"
 
@@ -149,6 +154,8 @@ def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=
     elif request.path == "/uploaded":
         data["mode"] = "uploaded"
         data["category"] = "Upload Queue"
+        # Calculate upload queue size
+        request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
@@ -480,6 +487,9 @@ def index(request):
     data["articles"] = Article.objects.filter(published=PUBLISHED_ARTICLE).order_by("-date")[:FP_ARTICLES_SHOWN]
     data["files"] = File.objects.all().exclude(details__id__in=[DETAIL_UPLOADED]).order_by("-publish_date", "-id")[:FP_FILES_SHOWN]
     data["reviews"] = Review.objects.all().order_by("-date")[:FP_REVIEWS_SHOWN]
+
+    # Calculate upload queue size
+    request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
 
     return render(request, "museum_site/index.html", data)
 
@@ -949,6 +959,10 @@ def upload(request):
 
             # Flag it as an upload
             upload.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
+
+            # Calculate upload queue size
+            request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
+
             return redirect("/uploaded#" + upload.filename)
         except ValidationError as e:
             data["results"] = e

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from museum_site.models import Detail, DETAIL_FEATURED
+from museum_site.models import Detail, DETAIL_FEATURED, File, DETAIL_UPLOADED
 from museum_site.common import DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP, env_from_host
 
 
@@ -37,4 +37,8 @@ def museum_global(request):
 
     # Upload Cap
     data["UPLOAD_CAP"] = UPLOAD_CAP
+
+    # Queue size
+    if not request.session.get("FILES_IN_QUEUE"):
+        request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
     return data
