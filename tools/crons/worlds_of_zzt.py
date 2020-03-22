@@ -99,7 +99,7 @@ def main():
                 break
 
         # Pull related articles in preparation of linking them later
-        related_articles = data.articles.filter(published=True).order_by("-date")
+        related_articles = data.articles.filter(published=True).order_by("date")
 
         # Select a random ZZT file in the zip
         zip = zipfile.ZipFile(ROOT + data.download_url())
@@ -332,7 +332,7 @@ def main():
 
         # Twitter - Related Articles
         if len(related_articles) > 0:
-            article_text = "For more \"{title}\" content, check out:\n".format(title=data.title)
+            article_text = "For more related content about \"{title}\", check out:\n".format(title=data.title)
             for article in related_articles[:3]:
                 article_text += "https://museumofzzt.com" + article.url() + "\n"
 
