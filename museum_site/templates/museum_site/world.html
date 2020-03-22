@@ -1,7 +1,7 @@
 {% extends "museum_site/main.html" %}
 
 {% block content %}
-<section id="content" class="block {{custom_layout}}">
+<section id="content" class="block {{custom_layout}}" data-pk="{{file.id}}">
 <button class="fr contracted" id="expand-contract" title="Toggle sidebars">&larr; &rarr;</button>
 {% if file and not local%}
 <div class="file-header">
