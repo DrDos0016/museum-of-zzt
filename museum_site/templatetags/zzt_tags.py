@@ -178,8 +178,11 @@ class ZztScroll(template.Node):
 
 
 @register.simple_tag()
-def zzt_img(source, shorthand="", alt="", tl="", br="", css=""):
+def zzt_img(source, shorthand="", alt="", tl="", br="", css="", sh=""):
     has_coords = True if tl != "" and br != "" else False
+
+    if sh:  # Shorthand for "shorthand"
+        shorthand = sh
 
     if source.find(".") == -1:  # Default extension
         source = source + ".png"
