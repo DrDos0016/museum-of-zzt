@@ -433,7 +433,6 @@ def set_captcha_seed(request):
     request.session["captcha-seed"] = str(datetime.now()).replace("-", "").replace(":", "").replace(".", "").replace(" ", "")
 
 
-
 # Decorators
 def dev_only(func, *args, **kwargs):
     def inner(*args, **kwargs):

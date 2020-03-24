@@ -810,6 +810,11 @@ form .field .genre-checklist
     padding-bottom:14px;
 }
 
+.article-category-heading
+{
+    margin-top:8px;
+}
+
 .overview-block
 {
     border:1px solid #000;

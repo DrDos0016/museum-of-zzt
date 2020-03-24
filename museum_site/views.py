@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render
 from .common import *
 from .constants import *
@@ -37,24 +38,52 @@ def article(request, letter, filename):
     return render(request, "museum_site/article.html", data)
 
 
-def article_directory(request, category="all"):
+def article_directory(request, category="all", page_num=1):
     """ Returns page listing all articles sorted either by date or name """
     data = {"title": "Article Directory"}
     data["sort"] = request.GET.get("sort", "date")
+    data["view"] = get_view_format(request)
+    page_num = request.GET.get("page", page_num)
+
+    # Query strings
+    data["qs_sans_page"] = qs_sans(request.GET, "page")
+    data["qs_sans_view"] = qs_sans(request.GET, "view")
+
     if data["sort"] == "date":
-        data["articles"] = Article.objects.defer(
+        articles = Article.objects.defer(
             "content", "css"
         ).filter(published=PUBLISHED_ARTICLE).order_by("-date", "title")
-    else:
-        data["articles"] = Article.objects.defer(
+    elif data["sort"] == "category":
+        articles = Article.objects.defer(
             "content", "css"
         ).filter(published=PUBLISHED_ARTICLE).order_by("category", "title")
+    else:
+        articles = Article.objects.defer(
+            "content", "css"
+        ).filter(published=PUBLISHED_ARTICLE).order_by("title")
 
     if category != "all":
-        data["articles"] = data["articles"].filter(
+        articles = data["articles"].filter(
             category=category.replace("-", " ").title()
         )
-    return render(request, "museum_site/article_directory.html", data)
+
+    # Limit articles
+    page_size = PAGE_SIZE if data["view"] == "detailed" else LIST_PAGE_SIZE
+    p = Paginator(articles, page_size)
+    data["page"] = p.get_page(page_num)
+    data["articles"] = data["page"].object_list
+
+    # Determine destination template
+    if data["view"] == "list":
+        destination = "museum_site/article_directory_list.html"
+    else:  # Detailed
+        destination = "museum_site/article_directory.html"
+
+    response = render(request, destination, data)
+    # Set page view cookie
+    response.set_cookie("article_view", data["view"], expires=datetime(3000, 12, 31))
+
+    return response
 
 
 def article_view(request, id, page=0):
