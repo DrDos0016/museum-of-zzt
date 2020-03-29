@@ -1,6 +1,8 @@
 from datetime import datetime
 
-from museum_site.models import Detail, DETAIL_FEATURED, File, DETAIL_UPLOADED
+from museum_site.detail import Detail
+from museum_site.file import File
+from museum_site.constants import DETAIL_FEATURED, DETAIL_UPLOADED
 from museum_site.common import DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP, env_from_host
 
 

@@ -1,7 +1,12 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import *
+from .alias import Alias
+from .article import Article
+from .comment import Comment
+from .file import File
+from .detail import Detail
+from .review import Review
 
 admin.site.register(File)
 admin.site.register(Article)

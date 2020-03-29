@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 # from django.contrib.auth import logout, authenticate, login as auth_login
 
 from museum_site.models import *
-from museum_site.queries import *
+from museum_site.constants import *
 from datetime import datetime
 from io import BytesIO
 from random import randint, shuffle, seed

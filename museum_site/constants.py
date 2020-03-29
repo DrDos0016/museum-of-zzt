@@ -1,3 +1,8 @@
+import os
+
+SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Patron Locked Content
 try:
     from museum_site.patron_secrets import PASSWORD2DOLLARS, PASSWORD5DOLLARS
 except ModuleNotFoundError:
@@ -36,3 +41,27 @@ DETAIL_REMOVED = 19
 FP_ARTICLES_SHOWN = 10
 FP_FILES_SHOWN = 12
 FP_REVIEWS_SHOWN = 10
+
+# File categories
+CATEGORY_LIST = (
+    ("?", "?"),
+    ("MS-DOS", "MS-DOS Programs"),
+    ("WIN16", "16-Bit Windows Programs"),
+    ("WIN32", "32-Bit Windows Programs"),
+    ("WIN64", "64-Bit Windows Programs"),
+    ("LINUX", "Linux Programs"),
+    ("OSX", "OSX Programs"),
+    ("FEATURED", "Featured Worlds"),
+    ("UNUSED-8", "UNUSED Contest Entries"),
+    ("ZZM", "ZZM Soundtracks"),
+    ("GFX", "Modified Graphics"),
+    ("MOD", "Modified Executables"),
+    ("ETC", "Etc."),
+    ("SZZT", "Super ZZT Worlds"),
+    ("UTILITY", "Utilities"),
+    ("ZZT", "ZZT Worlds"),
+    ("ZIG", "ZIG Worlds"),
+    ("LOST", "Lost Worlds"),
+    ("UPLOADED", "Uploaded Worlds"),
+    ("REMOVED", "Removed Worlds"),
+)
