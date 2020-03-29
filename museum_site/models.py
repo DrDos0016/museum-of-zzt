@@ -11,6 +11,9 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
 from .constants import PUBLISHED_ARTICLE, UPCOMING_ARTICLE, UNPUBLISHED_ARTICLE, REMOVED_ARTICLE
+from .alias import Alias
+from .comment import Comment
+from .detail import Detail
 from .review import Review
 
 try:
@@ -119,45 +122,6 @@ class Article(models.Model):
 
     def url(self):
         return "/article/" + str(self.id) + "/" + slugify(self.title)
-
-
-class Comment():
-    """ Review object repesenting a comment on an article
-
-    Fields:
-    article         -- Link to Article object
-    user            -- UserID who posted comment
-    content         -- Body of comment
-    date            -- Date review was written
-    ip              -- IP address posting the review
-    """
-    article = models.ForeignKey("Article", on_delete=models.SET_NULL, null=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
-    content = models.TextField()
-    date = models.DateField()
-    ip = models.GenericIPAddressField(blank=True, null=True)
-
-    class Meta:
-        ordering = ["id"]
-
-    def __str__(self):
-        x = ("[" + str(self.id) + "] Comment for " + str(self.article.title) + " by " + str(self.article.author))
-        return x
-
-    def from_request(self, request):
-        if request.method != "POST":
-            return False
-
-        self.file_id = int(request.POST.get("file_id"))
-        self.title = request.POST.get("title")
-        self.author = request.POST.get("name")  # NAME not author
-        self.email = request.POST.get("email")
-        self.content = request.POST.get("content")
-        self.rating = round(float(request.POST.get("rating")), 2)
-        self.date = datetime.utcnow()
-        self.ip = request.META["REMOTE_ADDR"]
-
-        return True
 
 
 class File(models.Model):
@@ -648,28 +612,3 @@ class File(models.Model):
         features["article"] = True
 
         return features
-
-
-class Detail(models.Model):
-    detail = models.CharField(max_length=20)
-
-    class Meta:
-        ordering = ["detail"]
-
-    def __str__(self):
-        return "[" + str(self.id) + "] " + self.detail
-
-
-
-
-
-class Alias(models.Model):
-    """ Alias object for File aliases
-    """
-    alias = models.CharField(max_length=80)
-
-    class Meta:
-        ordering = ["alias"]
-
-    def __str__(self):
-        return self.alias
