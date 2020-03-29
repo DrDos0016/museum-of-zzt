@@ -378,7 +378,6 @@ class File(models.Model):
         else:
             return "images/screenshots/no_screenshot.png"
 
-
     def article_url(self):
         return "/article/" + self.letter + "/" + self.filename
 
@@ -618,6 +617,36 @@ class File(models.Model):
 
         # SITE META
         return {"status": "success"}
+
+    def supported_actions(self):
+        features = {
+            "download": False,
+            "play": False,
+            "view": False,
+            "review": False,
+            "article": False
+        }
+
+        # Download
+        if self.file_exists():
+            features["download"] = True
+
+        # Play
+        if features["download"] and (self.is_zzt() or self.is_super_zzt()):
+            features["play"] = True
+
+        # View
+        if features["download"]:
+            features["view"] = True
+
+        # Review
+        if features["download"]:
+            features["review"] = True
+
+        # Article
+        features["article"] = True
+
+        return features
 
 
 class Detail(models.Model):
