@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db import models
 
+
 class Review(models.Model):
     """ Review object repesenting an review to a file
 
@@ -28,10 +29,13 @@ class Review(models.Model):
         ordering = ["id"]
 
     def __str__(self):
-        x = ("[" + str(self.id) + "] Review for " + str(self.file.title) + " [" +
-             str(self.file.filename) + "] by " + str(self.author)
-             )
-        return x
+        output = "[{}] Review of '{}' [{}] by {}".format(
+            self.id,
+            self.file.title,
+            self.file.filename,
+            self.author
+        )
+        return output
 
     def from_request(self, request):
         if request.method != "POST":
