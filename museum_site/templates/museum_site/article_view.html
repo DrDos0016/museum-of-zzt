@@ -69,7 +69,7 @@
 {% endif %}
 
 {% if page_range %}
-{% include "museum_site/blocks/article_page_block.html" %}
+{% include "museum_site/blocks/article_view_page_block.html" %}
 {% endif %}
 
 <article class="{{article.category|slugify}}" data-article_id="{{article.id}}">
@@ -89,7 +89,7 @@
 </article>
 
 {% if page_range %}
-{% include "museum_site/blocks/article_page_block.html" %}
+{% include "museum_site/blocks/article_view_page_block.html" %}
 {% endif %}
 
 <a href="{% url 'article_directory' %}">Article directory</a><br>
