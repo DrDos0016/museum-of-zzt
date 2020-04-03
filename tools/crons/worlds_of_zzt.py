@@ -324,12 +324,7 @@ def main():
         #if APRIL:
         #    twitter_post = "Room is dark - you need to light a torch!\n" + twitter_post
 
-        #with open(CRON_ROOT + "temp.png", "rb") as imagefile:
-        sivion = glob.glob("/var/projects/museum/sivion/*.png")
-        april_img = sivion[0]
-
-        with open(april_img, "rb") as imagefile:
-
+        with open(CRON_ROOT + "temp.png", "rb") as imagefile:
             imagedata = imagefile.read()
 
             t_up = Twitter(domain='upload.twitter.com', auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
