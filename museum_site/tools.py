@@ -35,7 +35,8 @@ def mirror(request, pk):
         "title": "Archive.org Mirror",
         "file": f,
         "ret": None,
-        "packages": PACKAGE_PROFILES
+        "packages": PACKAGE_PROFILES,
+        "collection": ARCHIVE_COLLECTION,
     }
 
     package = int(request.GET.get("package", 0))
