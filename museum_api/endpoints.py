@@ -7,8 +7,9 @@ from io import BytesIO
 from PIL import Image
 
 
-from museum_site.models import (
-    File, DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_GFX
+from museum_site.file import File
+from museum_site.constants import (
+    DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_GFX
 )
 
 from museum_site.common import *
