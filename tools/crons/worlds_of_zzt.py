@@ -1,3 +1,5 @@
+import glob  # April Fools
+
 import json
 import os
 import random
@@ -16,9 +18,8 @@ sys.path.append("/var/projects/museum")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
-from museum_site.models import (
-    File, DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST
-)
+from museum_site.file import File
+from museum_site.constants import DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST
 
 import zookeeper
 
@@ -32,6 +33,7 @@ from blacklist import BLACKLISTED_FILES, BLACKLISTED_BOARDS, BOARD_TITLE_BLACKLI
 
 
 def main():
+
     POST = True if "NOPOST" not in sys.argv else False
     CRON_ROOT = "/var/projects/museum/tools/crons/"
     ROOT = "/var/projects/museum"
@@ -213,6 +215,9 @@ def main():
         if z.boards[queue_data["board"]].time_limit != 0:
             board_properties.append(str(z.boards[queue_data["board"]].time_limit) + " ⏳")
 
+        # Ignore related articles for April 1st TODO -- Make this an Apr. 1 thing
+        related_articles = []
+
     bp = ""
     if board_properties:
         bp = " {"
@@ -319,7 +324,12 @@ def main():
         #if APRIL:
         #    twitter_post = "Room is dark - you need to light a torch!\n" + twitter_post
 
-        with open(CRON_ROOT + "temp.png", "rb") as imagefile:
+        #with open(CRON_ROOT + "temp.png", "rb") as imagefile:
+        sivion = glob.glob("/var/projects/museum/sivion/*.png")
+        april_img = sivion[0]
+
+        with open(april_img, "rb") as imagefile:
+
             imagedata = imagefile.read()
 
             t_up = Twitter(domain='upload.twitter.com', auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
@@ -358,6 +368,8 @@ def main():
         resp = requests.post(WEBHOOK_URL, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
         print(resp)
         print(resp.content)
+
+        os.remove(april_img)
 
     else:
         print("DID NOT POST")
