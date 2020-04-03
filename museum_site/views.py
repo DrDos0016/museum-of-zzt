@@ -63,7 +63,7 @@ def article_directory(request, category="all", page_num=1):
         ).filter(published=PUBLISHED_ARTICLE).order_by("title")
 
     if category != "all":
-        articles = data["articles"].filter(
+        articles = articles.filter(
             category=category.replace("-", " ").title()
         )
 
