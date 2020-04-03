@@ -12,7 +12,7 @@ import museum_site.views
 import museum_site.tools
 
 
-from museum_site.models import (
+from museum_site.constants import (
     DETAIL_DOS,
     DETAIL_WIN16,
     DETAIL_WIN32,
@@ -80,6 +80,14 @@ urlpatterns = [
     # Directories
     url(r"^directory/(?P<category>[a-z].*)$", museum_site.views.directory,
         name="directory"
+        ),
+
+    # Exhibit
+    url(r"^exhibit/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.exhibit,
+        name="exhibit"
+        ),
+    url(r"^exhibit/(?P<letter>[a-z1!])/(?P<filename>.*)/(?P<section>.*)$", museum_site.views.exhibit,
+        name="exhibit-section"
         ),
 
     # Featured Games
@@ -169,6 +177,9 @@ urlpatterns = [
     url(r"^advanced-search$", museum_site.views.advanced_search,
         name="advanced_search"
         ),
+    url(r"^deep-search$", museum_site.views.deep_search,
+        name="deep_search"
+        ),
     url(r"^search$", museum_site.views.search, name="search"),
 
     # Uploads
@@ -183,13 +194,14 @@ urlpatterns = [
 
     # AJAX
     url(r"^ajax/get_zip_file$", museum_site.ajax.get_zip_file),
+    url(r"^ajax/deep-search/phase-(?P<phase>[0-9])$", museum_site.ajax.deep_search),
 
     # Redirects
     url(r"^twitter$", museum_site.views.redir, {"url": "https://twitter.com/worldsofzzt"}),
     url(r"^tumblr$", museum_site.views.redir, {"url": "http://worldsofzzt.tumblr.com"}),
     url(r"^discord$", museum_site.views.redir, {"url": "https://discordapp.com/invite/Nar4Upf"}),
     url(r"^patreon$", museum_site.views.redir, {"url": "https://patreon.com/worldsofzzt"}),
-    url(r"^youtube$", museum_site.views.redir, {"url": "https://www.youtube.com/channel/UCr0f-r1bRexAZK8sWyk4NJA"}),
+    url(r"^youtube$", museum_site.views.redir, {"url": "https://www.youtube.com/c/WorldsofZZT"}),
     url(r"^twitch$", museum_site.views.redir, {"url": "https://twitch.tv/worldsofzzt"}),
     url(r"^github$", museum_site.views.redir, {"url": "https://github.com/DrDos0016/z2"}),
 
