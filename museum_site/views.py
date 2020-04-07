@@ -377,7 +377,6 @@ def exhibit(request, letter, filename, section=None, local=False):
         # Check for recommended custom charset
         if data["file"].id in list(CUSTOM_CHARSET_MAP.keys()):
             data["custom_charset"] = CUSTOM_CHARSET_MAP[data["file"].id]
-            print(data["custom_charset"])
 
         if data["file"].is_uploaded():
             letter = "uploaded"
@@ -474,7 +473,6 @@ def file(request, letter, filename, local=False):
         # Check for recommended custom charset
         if data["file"].id in list(CUSTOM_CHARSET_MAP.keys()):
             data["custom_charset"] = CUSTOM_CHARSET_MAP[data["file"].id]
-            print(data["custom_charset"])
 
         if data["file"].is_uploaded():
             letter = "uploaded"
