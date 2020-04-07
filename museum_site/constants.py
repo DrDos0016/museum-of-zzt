@@ -1,3 +1,4 @@
+import glob
 import os
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -65,3 +66,24 @@ CATEGORY_LIST = (
     ("UPLOADED", "Uploaded Worlds"),
     ("REMOVED", "Removed Worlds"),
 )
+
+# Character Sets
+CUSTOM_CHARSET_LIST = []
+CUSTOM_CHARSET_MAP = {}
+
+pngs = sorted(glob.glob(
+    os.path.join(
+        SITE_ROOT, "museum_site", "static", "images", "charsets", "*.png"
+    )
+))
+for png in pngs:
+    base = os.path.basename(png)
+    if base.startswith("cp437") or base.startswith("szzt"):
+        continue
+
+    try:
+        CUSTOM_CHARSET_MAP[int(base.split('-', 1)[0])] = base
+    except ValueError:
+        pass
+
+    CUSTOM_CHARSET_LIST.append(base)
