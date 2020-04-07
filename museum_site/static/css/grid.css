@@ -870,6 +870,7 @@ form .field .genre-checklist
     margin-top:7px;
     margin-left:-8px;
     padding-left:8px;
+    max-width:240px;
 }
 
 .featured-reviews ul
