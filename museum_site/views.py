@@ -693,8 +693,6 @@ def play_collection(request):
             else:
                 data["extra_files"] += '"{}",\n'.format(f.download_url())
 
-    print(data["extra_files"])
-
     response = render(request, "museum_site/play_collection.html", data)
     return response
 
