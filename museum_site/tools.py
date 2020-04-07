@@ -151,8 +151,6 @@ def publish(request, pk):
     }
 
     if request.POST.get("publish"):
-        print("Publishing...")
-
         # Move the file
         src = SITE_ROOT + data["file"].download_url()
         dst = SITE_ROOT + "/zgames/" + data["file"].letter + "/" + data["file"].filename
@@ -170,10 +168,13 @@ def publish(request, pk):
         # Redirect
         return redirect("tool_list", pk=pk)
 
-
     with ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
         data["file_list"] = zf.namelist()
     data["file_list"].sort()
+    data["extension_list"] = []
+
+    for f in data["file_list"]:
+        data["extension_list"].append(f.split(".")[-1].upper())
 
     return render(request, "museum_site/tools/publish.html", data)
 
