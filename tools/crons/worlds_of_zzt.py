@@ -363,9 +363,6 @@ def main():
         resp = requests.post(WEBHOOK_URL, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
         print(resp)
         print(resp.content)
-
-        os.remove(april_img)
-
     else:
         print("DID NOT POST")
 
