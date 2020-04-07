@@ -7,6 +7,7 @@ import shutil
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from .common import *
+from .constants import *
 from zipfile import ZipFile
 
 from internetarchive import upload
@@ -158,7 +159,7 @@ def publish(request, pk):
         shutil.move(src, dst)
 
         # Adjust the details
-        data["file"].details.remove(Detail.objects.get(pk=18)) # TODO: Unhardcode
+        data["file"].details.remove(Detail.objects.get(pk=DETAIL_UPLOADED))
         for detail in request.POST.getlist("details"):
             data["file"].details.add(Detail.objects.get(pk=detail))
 
