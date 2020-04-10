@@ -12,8 +12,9 @@ register = Library()
 
 @register.filter
 def as_template(raw):
+    context_data = {"TODO":"TODO", "CROP":"CROP"}
     raw = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
-    return Template(raw).render(Context())
+    return Template(raw).render(Context(context_data))
 
 
 @register.simple_tag()
@@ -141,8 +142,15 @@ class Commentary(template.Node):
         if (commentary and commentary[0] != "<") or commentary.startswith("<!"):
             commentary = "<p>" + commentary.replace("\n\n", "</p><p>") + "</p>"
 
+
+        debug_classes = ""
+        if "TODO" in commentary:
+            debug_classes += " TODO"
+        if "CROP" in commentary:
+            debug_classes += "CROP"
+
         output = """
-<div class="side-commentary">
+<div class="side-commentary{debug_classes}">
     <div class="material">
     {material}
     </div>
@@ -151,7 +159,7 @@ class Commentary(template.Node):
     </div>
 </div>
 """
-        return output.format(material=material, commentary=commentary)
+        return output.format(debug_classes=debug_classes, material=material, commentary=commentary)
 
 
 @register.tag(name="il")

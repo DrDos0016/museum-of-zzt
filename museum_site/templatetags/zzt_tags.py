@@ -227,4 +227,9 @@ def zzt_img(source, shorthand="", alt="", tl="", br="", css="", sh=""):
     if img_css:
         img = img + " style='{}'".format(img_css)
 
-    return mark_safe("<" + div + "><" + img + "></div>\n")
+    crop = ""
+    if "CROP" in shorthand:
+        crop = "<div class='debug-crop'>CROP</div>"
+
+    output = mark_safe("<{}><{}></div>{}\n".format(div, img, crop))
+    return output

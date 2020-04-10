@@ -4,6 +4,9 @@ from .constants import *
 
 def debug(request):
     data = {"title": "DEBUG PAGE"}
+    data["ARTICLE_DEBUG"] = True
+    data["TODO"] = "TODO"
+    data["CROP"] = "CROP"
 
     #results = File.objects.filter(Q(author="Dr. Dos") | Q(review))
     #print("Found", len(results), "by me")
@@ -25,6 +28,9 @@ def debug(request):
 
 def debug_article(request):
     data = {"id": 0}
+    data["TODO"] = "TODO"
+    data["CROP"] = "CROP"
+
     filepath = "/var/projects/museum/private/" + request.GET.get("file")
     if not os.path.isfile(filepath):
         filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")
