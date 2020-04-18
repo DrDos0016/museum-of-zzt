@@ -63,6 +63,24 @@ blockquote footer
     font-style:normal;
 }
 
+figure.zzt-figure
+{
+    padding:14px 8px 0px 8px;
+    background:#0AA;
+    text-align:center;
+    margin:auto;
+    margin-bottom:7px;
+    width:480px;
+    color:#FFF;
+    font-family:"cp437";
+}
+
+figure.zzt-figure figcaption
+{
+    padding-top:7px;
+    padding-bottom:7px;
+}
+
 h1, h2, h3 { margin:0; margin-bottom:7px; }
 
 img:not(.screenshot-thumb) { max-width:100%; }
