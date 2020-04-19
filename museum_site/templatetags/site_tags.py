@@ -1,3 +1,5 @@
+import urllib.parse
+
 from datetime import datetime
 
 from django import template
@@ -15,6 +17,12 @@ def as_template(raw):
     context_data = {"TODO":"TODO", "CROP":"CROP"}
     raw = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
     return Template(raw).render(Context(context_data))
+
+
+@register.filter
+def url_parse(raw):
+    output = urllib.parse.quote(raw)
+    return output
 
 
 @register.simple_tag()

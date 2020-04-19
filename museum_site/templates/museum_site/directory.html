@@ -1,4 +1,5 @@
 {% extends "museum_site/main.html" %}
+{% load site_tags %}
 
 {% block content %}
 <section id="content" class="col block">
@@ -21,7 +22,7 @@
         {% endif %}
     {% endifchanged %}
         <div class="row">
-            <a href="{% url 'search' %}?{{category}}={{row.0}}{% if category != 'genre' %}&sort=release{% endif %}">{{row.0}}</a>
+            <a href="{% url 'search' %}?{{category}}={{row.0|url_parse}}{% if category != 'genre' %}&sort=release{% endif %}">{{row.0}}</a>
             </div>
     {% if forloop.counter|divisibleby:split or forloop.last %}
     </div>
