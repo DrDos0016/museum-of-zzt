@@ -19,7 +19,31 @@
     {
         width:auto;
     }
+
+    .error
+    {
+        background:#F00;
+    }
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var check_launch_file = function (){
+    var val = $("select[name=launch]").val().toUpperCase();
+    console.log(val);
+
+    if (val.indexOf(".ZZT") == -1)
+        $("#launch-field").addClass("error");
+    else
+        $("#launch-field").removeClass("error");
+};
+
+$(document).ready(function (){
+    $("select[name=launch]").change(check_launch_file);
+    check_launch_file();
+});
+</script>
 {% endblock %}
 
 {% block content %}
@@ -36,26 +60,6 @@
 
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <!--
-    <div class="field">
-        <label for="package">Package:<br>
-        </label>
-        <div id="package-list">
-            {% for package in packages %}
-            {% if forloop.counter0|divisibleby:split %}
-            <div class="column">
-            {% endif %}
-                <div class="row">
-                    <label><input name="package" type="checkbox" value="{{ forloop.counter0 }}"> {{package.name}}</label>
-                </div>
-            {% if forloop.counter|divisibleby:split %}
-            </div>
-            {% endif %}
-            {% endfor %}
-            </div>
-        </div>
-    </div>
-    -->
     <div class="field">
         <label for="package">Package:<br>
         </label>
@@ -67,8 +71,7 @@
         </select>
     </div>
 
-
-    <div class="field">
+    <div class="field" id="launch-field">
         <label for="launch">Default World:<br>
         </label>
         <select name="launch">
@@ -110,7 +113,7 @@
         <textarea name="description"></textarea>
     </div>
 
-    <input type="submit" name="mirror" value="Mirror on Archive.org ({{collection}})">
+    <input type="submit" name="mirror" value="Mirror on Archive.org"> - Collection: "{{collection}}"
 
     <hr>
     <h2>Advanced</h2>
