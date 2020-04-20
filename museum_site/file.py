@@ -15,6 +15,7 @@ try:
 except ImportError:
     HAS_ZOOKEEPER = False
 
+from .common import slash_separated_sort
 from .constants import SITE_ROOT
 from .review import Review
 
@@ -151,11 +152,7 @@ class File(models.Model):
         self.letter = self.letter.lower()
 
         # Sort genres
-        temp_list = self.genre.split("/")
-        temp_list.sort()
-        sorted_str = "/".join(temp_list)
-
-        self.genre = sorted_str
+        self.genre = slash_separated_sort(self.genre)
 
         # Create sorted title if not set
         if self.sort_title == "":

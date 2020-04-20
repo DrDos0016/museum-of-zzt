@@ -302,6 +302,12 @@ def serve_file(file_path="", named=""):
     return response
 
 
+def slash_separated_sort(orig):
+    temp_list = orig.split("/")
+    temp_list.sort()
+    output = "/".join(temp_list)
+    return output
+
 def env_from_host(host):
     if host in ["beta.museumofzzt.com"]:
         return "BETA"
