@@ -27,6 +27,7 @@
 {% include "museum_site/blocks/file_block.html" %}
 
 <ul>
+    <li><a href="/admin/museum_site/file/{{file.id}}/change/">Django Admin</a></li>
     <li><a href="{% url 'set_screenshot' file.id %}">Set Screenshot</a></li>
     {% if file.is_uploaded %}
     <li><a href="{% url 'publish' file.id %}">Publish</a></li>
