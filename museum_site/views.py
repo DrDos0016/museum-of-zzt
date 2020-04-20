@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 from .common import *
 from .constants import *
+from .models import *
 
 def advanced_search(request):
     """ Returns page containing multiple filters to use when searching """
@@ -202,14 +203,14 @@ def browse(request, letter=None, details=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILIT
         data["files"] = File.objects.filter(id__in=ids[:PAGE_SIZE]).order_by("?")
     elif data["view"] == "list":  # List gets a full listing on one page
         data["letter"] = letter if letter != "1" else "#"
-        data["files"] = File.objects.filter(details__id__in=details)
+        data["files"] = File.objects.filter(details__id__in=details).distinct()
         if letter:
             data["files"] = data["files"].filter(letter=letter)
         data["files"] = data["files"].order_by(*sort)
     else:  # Others list over multiple pages
         data["page"] = int(request.GET.get("page", page))
         data["letter"] = letter if letter != "1" else "#"
-        data["files"] = File.objects.filter(details__id__in=details)
+        data["files"] = File.objects.filter(details__id__in=details).distinct()
         if letter:
             data["files"] = data["files"].filter(letter=letter)
         data["files"] = data["files"].order_by(*sort)[
