@@ -138,7 +138,7 @@ def article_view(request, id, page=0):
     return render(request, "museum_site/article_view.html", data)
 
 
-def browse(request, letter=None, details=[DETAIL_ZZT], page=1, show_description=False):
+def browse(request, letter=None, details=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY], page=1, show_description=False):
     """ Returns page containing a list of files filtered by letter, details,
     and page
 
