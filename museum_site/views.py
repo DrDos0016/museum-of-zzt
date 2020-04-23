@@ -4,6 +4,7 @@ from .common import *
 from .constants import *
 from .models import *
 
+
 def advanced_search(request):
     """ Returns page containing multiple filters to use when searching """
     data = {
@@ -82,7 +83,11 @@ def article_directory(request, category="all", page_num=1):
 
     response = render(request, destination, data)
     # Set page view cookie
-    response.set_cookie("article_view", data["view"], expires=datetime(3000, 12, 31))
+    response.set_cookie(
+        "article_view",
+        data["view"],
+        expires=datetime(3000, 12, 31)
+    )
 
     return response
 
@@ -101,19 +106,22 @@ def article_view(request, id, page=0):
     data["custom_layout"] = "article"
 
     if request.GET.get("secret") is None:
-        data["article"] = get_object_or_404(Article, pk=id, published=PUBLISHED_ARTICLE)
+        data["article"] = get_object_or_404(
+            Article, pk=id, published=PUBLISHED_ARTICLE
+        )
     elif request.GET.get("secret") == PASSWORD2DOLLARS:
         data["access"] = "early"
-        data["article"] = get_object_or_404(Article,
-            Q(published=PUBLISHED_ARTICLE) |
-            Q(published=UPCOMING_ARTICLE),
+        data["article"] = get_object_or_404(
+            Article,
+            Q(published=PUBLISHED_ARTICLE) | Q(published=UPCOMING_ARTICLE),
             pk=id
         )
         data["private_disclaimer"] = True
 
     elif request.GET.get("secret") == PASSWORD5DOLLARS:
         data["access"] = "really_early"
-        data["article"] = get_object_or_404(Article,
+        data["article"] = get_object_or_404(
+            Article,
             Q(published=PUBLISHED_ARTICLE) |
             Q(published=UPCOMING_ARTICLE) |
             Q(published=UNPUBLISHED_ARTICLE),
@@ -135,11 +143,18 @@ def article_view(request, id, page=0):
         data["file"] = zgames[0]
 
     # Split article to current page
-    data["article"].content = data["article"].content.split("<!--Page-->")[data["page"]-1]
+    data["article"].content = data["article"].content.split(
+        "<!--Page-->"
+    )[data["page"]-1]
     return render(request, "museum_site/article_view.html", data)
 
 
-def browse(request, letter=None, details=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY], page=1, show_description=False):
+def browse(
+    request,
+    letter=None,
+    details=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY],
+    page=1, show_description=False
+):
     """ Returns page containing a list of files filtered by letter, details,
     and page
 
@@ -238,7 +253,8 @@ def browse(request, letter=None, details=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILIT
         destination = "museum_site/browse.html"
 
     # Determine params needed to play this collection of files
-    #data["collection_params"] = populate_collection_params(data) TODO: THIS IS COMMENTED OUT TO HIDE IT ON PRODUCTION
+    # data["collection_params"] = populate_collection_params(data)
+    # TODO: THIS IS COMMENTED OUT TO HIDE IT ON PRODUCTION
 
     response = render(request, destination, data)
 
@@ -325,7 +341,7 @@ def directory(request, category):
 
     # Break the list of results into 4 columns
     data_list = sorted(data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.lower()))
-    #data_list = sorted(data_list, key=lambda s: s.lower())
+    # data_list = sorted(data_list, key=lambda s: s.lower())
     first_letters = []
 
     for entry in data_list:
@@ -397,7 +413,7 @@ def exhibit(request, letter, filename, section=None, local=False):
                     data["files"].append(f)
             data["load_file"] = urllib.parse.unquote(request.GET.get("file", ""))
             data["load_board"] = request.GET.get("board", "")
-    else: # Local files
+    else:  # Local files
         data["file"] = "Local File Viewer"
         data["letter"] = letter
 
@@ -405,6 +421,7 @@ def exhibit(request, letter, filename, section=None, local=False):
     data["custom_charsets"] = CUSTOM_CHARSET_LIST
 
     return render(request, "museum_site/exhibit.html", data)
+
 
 def featured_games(request, page=1):
     """ Returns a page listing all games marked as Featured """
@@ -432,7 +449,7 @@ def featured_games(request, page=1):
     data["show_description"] = True
     data["show_featured"] = True
 
-    #data["collection_params"] = populate_collection_params(data) TODO: THIS IS COMMENTED OUT TO HIDE IT ON PRODUCTION
+    # data["collection_params"] = populate_collection_params(data) TODO: THIS IS COMMENTED OUT TO HIDE IT ON PRODUCTION
 
     return render(request, "museum_site/featured_games.html", data)
 
@@ -493,7 +510,7 @@ def file(request, letter, filename, local=False):
                     data["files"].append(f)
             data["load_file"] = urllib.parse.unquote(request.GET.get("file", ""))
             data["load_board"] = request.GET.get("board", "")
-    else: # Local files
+    else:  # Local files
         data["file"] = "Local File Viewer"
         data["letter"] = letter
 
@@ -504,7 +521,7 @@ def file(request, letter, filename, local=False):
 
 def generic(request, title="", template=""):
     data = {"title": title}
-    return render(request, "museum_site/"+ template + ".html")
+    return render(request, "museum_site/" + template + ".html")
 
 
 def index(request):
@@ -520,6 +537,7 @@ def index(request):
     request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
 
     return render(request, "museum_site/index.html", data)
+
 
 def livestreams(request):
     """ Returns a listing of all Livestream articles """
@@ -566,7 +584,6 @@ def patron_articles(request):
         data["access"] = "really_early"
     elif request.POST.get("secret") is not None:
         data["wrong_password"] = True
-
 
     return render(request, "museum_site/patreon_articles.html", data)
 
@@ -635,9 +652,15 @@ def play(request, letter, filename):
 
     # Override for "Live" Zeta edits
     if request.GET.get("live"):
-        data["zeta_url"] = "/zeta-live?pk={}&world={}&start={}".format(data["file"].id, request.GET.get("world"), request.GET.get("start", 0))
+        data["zeta_url"] = "/zeta-live?pk={}&world={}&start={}".format(
+            data["file"].id,
+            request.GET.get("world"),
+            request.GET.get("start", 0)
+        )
     elif request.GET.get("discord"):
-        data["zeta_url"] = "/zeta-live?discord=1&world={}".format(request.GET.get("world"))
+        data["zeta_url"] = "/zeta-live?discord=1&world={}".format(
+            request.GET.get("world")
+        )
 
     # If you're using Zeta, select the proper executable
     if player == "zeta":
@@ -799,7 +822,6 @@ def search(request):
             elif request.GET.get("q").startswith("debug="):
                 ids = request.GET.get("q").split("=", maxsplit=1)[-1]
                 qs = File.objects.filter(id__in=ids.split(",")).order_by("id")
-
 
         if data["view"] == "list":
             page_size = LIST_PAGE_SIZE
@@ -1009,7 +1031,7 @@ def uploaded_redir(request, filename):
 
 def zeta_live(request):
     if request.GET.get("discord"):
-        with open("/var/projects/museum/museum_site/static/data/discord-zzt/"+ request.GET.get("filename"), "rb") as fh:
+        with open("/var/projects/museum/museum_site/static/data/discord-zzt/" + request.GET.get("filename"), "rb") as fh:
             response = HttpResponse(content_type="application/octet-stream")
             response["Content-Disposition"] = "attachment; filename=DISCORD.ZIP"
             response.write(fh.read())
@@ -1027,11 +1049,10 @@ def zeta_live(request):
     with zipfile.ZipFile(f.phys_path()) as orig_zip:
         orig_file = orig_zip.read(fname)
 
-
     # Adjust starting board
     modded_file = orig_file[:17] + start + orig_file[18:]
 
-    #temp_bytes.write(orig_file)
+    # temp_bytes.write(orig_file)
 
     # Extract the file
     # Adjust the file
