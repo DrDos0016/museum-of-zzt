@@ -1077,12 +1077,26 @@ function stat_info(e)
         var p1name = (ELEMENTS[tile.id].hasOwnProperty("param1") ? ELEMENTS[tile.id].param1 : "Param1");
         var p2name = (ELEMENTS[tile.id].hasOwnProperty("param2") ? ELEMENTS[tile.id].param2 : "Param2");
         var p3name = (ELEMENTS[tile.id].hasOwnProperty("param3") ? ELEMENTS[tile.id].param3 : "Param3");
+        var param1_display = stat.param1;
+        var param2_display = stat.param2;
         var param3_display = stat.param3;
 
         if (tile.name == "Passage")
         {
             var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
             param3_display = `<a class="board-link" data-board="${stat.param3}" href="?file=${loaded_file}&board=${stat.param3}">${stat.param3} - ${world.boards[stat.param3].title}</a>`;
+        }
+
+        if (tile.name == "Spinning Gun" || tile.name == "Tiger")
+        {
+            var rate_value = stat.param2;
+            var projectile = "Bullets";
+            if (stat.param2 >= 128)
+            {
+                rate_value = stat.param2 - 128;
+                projectile = "Stars";
+            }
+            param2_display = `${rate_value} [${projectile}] (Raw: ${stat.param2})`;
         }
 
         output += `
@@ -1092,11 +1106,11 @@ function stat_info(e)
 
         </tr>
         <tr>
-            <th>${p1name}</td><td>${stat.param1}</td>
+            <th>${p1name}</td><td>${param1_display}</td>
             <th>X/Y-Step</td><td>(${stat.x_step}, ${stat.y_step})</td>
         </tr>
         <tr>
-            <th>${p2name}</td><td>${stat.param2}</td>
+            <th>${p2name}</td><td>${param2_display}</td>
             <th>Leader</td><td>${stat.leader}</td>
         </tr>
         <tr>

@@ -253,7 +253,6 @@ ZZT_ELEMENTS = [
         "character":24,
         "param1":"Intelligence",
         "param2":"Firing rate",
-        "param3":"Firing type"
     },
     {
         "id":40,
@@ -276,7 +275,6 @@ ZZT_ELEMENTS = [
         "character":227,
         "param1":"Intelligence",
         "param2":"Firing rate",
-        "param3":"Firing type"
     },
     {
         "id":43,
