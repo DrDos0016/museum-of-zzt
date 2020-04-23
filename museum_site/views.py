@@ -414,7 +414,8 @@ def featured_games(request, page=1):
     data["show_description"] = True
     data["show_featured"] = True
 
-    # data["collection_params"] = populate_collection_params(data) TODO: THIS IS COMMENTED OUT TO HIDE IT ON PRODUCTION
+    # data["collection_params"] = populate_collection_params(data)
+    # TODO: THIS IS COMMENTED OUT TO HIDE IT ON PRODUCTION
 
     return render(request, "museum_site/featured_games.html", data)
 
@@ -425,9 +426,9 @@ def file(request, letter, filename, local=False):
     data["custom_layout"] = "fv-grid"
     data["year"] = YEAR
     data["details"] = []  # Required to show all download links
-    data["file"] = File.objects.get(letter=letter, filename=filename)
     data["local"] = local
     if not local:
+        data["file"] = File.objects.get(letter=letter, filename=filename)
         data["title"] = data["file"].title
         data["letter"] = letter
 
