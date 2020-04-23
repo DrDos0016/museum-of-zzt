@@ -19,20 +19,9 @@ def advanced_search(request):
 
 
 def article(request, letter, filename):
-    """ Returns page listing all articles associated with a provided file.
-    If there is just one article, display it instead.
-    """
+    """ Returns page listing all articles associated with a provided file. """
     data = {}
-    data["file"] = File.objects.filter(letter=letter, filename=filename)
-    if len(data["file"]) == 0:
-        raise Http404()
-    elif len(data["file"]) > 1:
-        for zgame in data["file"]:
-            if zgame.filename == filename:
-                data["file"] = zgame
-                break
-    else:
-        data["file"] = data["file"][0]
+    data["file"] = File.objects.get(letter=letter, filename=filename)
     data["title"] = data["file"].title + " - Articles"
     data["articles"] = data["file"].articles.all()
     data["letter"] = letter
@@ -51,18 +40,16 @@ def article_directory(request, category="all", page_num=1):
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     data["qs_sans_view"] = qs_sans(request.GET, "view")
 
+    articles = Article.objects.defer("content", "css").filter(
+        published=PUBLISHED_ARTICLE
+    )
+
     if data["sort"] == "date":
-        articles = Article.objects.defer(
-            "content", "css"
-        ).filter(published=PUBLISHED_ARTICLE).order_by("-date", "title")
+        articles = articles.order_by("-date", "title")
     elif data["sort"] == "category":
-        articles = Article.objects.defer(
-            "content", "css"
-        ).filter(published=PUBLISHED_ARTICLE).order_by("category", "title")
+        articles = articles.order_by("category", "title")
     else:
-        articles = Article.objects.defer(
-            "content", "css"
-        ).filter(published=PUBLISHED_ARTICLE).order_by("title")
+        articles = articles.order_by("title")
 
     if category != "all":
         articles = articles.filter(
@@ -363,31 +350,9 @@ def exhibit(request, letter, filename, section=None, local=False):
     data["custom_layout"] = "fv-grid"
     data["year"] = YEAR
     data["details"] = []  # Required to show all download links
-    data["file"] = File.objects.filter(letter=letter, filename=filename)
+    data["file"] = File.objects.get(letter=letter, filename=filename)
     data["local"] = local
     if not local:
-        if len(data["file"]) == 0:
-            # Check if there's a matching zip with a different letter
-            alternative = File.objects.filter(filename=filename)
-            alt_count = alternative.count()
-            if alt_count:
-                if alt_count == 1:
-                    response = redirect("file", letter=alternative[0].letter,
-                                        filename=filename)
-                    return response
-                else:
-                    response = redirect("search")
-                    response['Location'] += "?filename=" + filename
-                    return response
-            raise Http404()
-        elif len(data["file"]) > 1:
-            for zgame in data["file"]:
-                if zgame.filename == filename:
-                    data["file"] = zgame
-                    break
-        else:
-            data["file"] = data["file"][0]
-
         data["title"] = data["file"].title
         data["letter"] = letter
 
@@ -460,31 +425,9 @@ def file(request, letter, filename, local=False):
     data["custom_layout"] = "fv-grid"
     data["year"] = YEAR
     data["details"] = []  # Required to show all download links
-    data["file"] = File.objects.filter(letter=letter, filename=filename)
+    data["file"] = File.objects.get(letter=letter, filename=filename)
     data["local"] = local
     if not local:
-        if len(data["file"]) == 0:
-            # Check if there's a matching zip with a different letter
-            alternative = File.objects.filter(filename=filename)
-            alt_count = alternative.count()
-            if alt_count:
-                if alt_count == 1:
-                    response = redirect("file", letter=alternative[0].letter,
-                                        filename=filename)
-                    return response
-                else:
-                    response = redirect("search")
-                    response['Location'] += "?filename=" + filename
-                    return response
-            raise Http404()
-        elif len(data["file"]) > 1:
-            for zgame in data["file"]:
-                if zgame.filename == filename:
-                    data["file"] = zgame
-                    break
-        else:
-            data["file"] = data["file"][0]
-
         data["title"] = data["file"].title
         data["letter"] = letter
 
@@ -591,16 +534,7 @@ def patron_articles(request):
 def play(request, letter, filename):
     """ Returns page to play file in the browser """
     data = {}
-    data["file"] = File.objects.filter(letter=letter, filename=filename)
-    if len(data["file"]) == 0:
-        raise Http404()
-    elif len(data["file"]) > 1:
-        for zgame in data["file"]:
-            if zgame.filename == filename:
-                data["file"] = zgame
-                break
-    else:
-        data["file"] = data["file"][0]
+    data["file"] = File.objects.get(letter=letter, filename=filename)
     data["title"] = data["file"].title + " - Play Online"
     data["letter"] = letter
 
@@ -747,16 +681,7 @@ def register(request):
 def review(request, letter, filename):
     """ Returns a page of reviews for a file. Handles POSTing new reviews """
     data = {}
-    data["file"] = File.objects.filter(letter=letter, filename=filename)
-    if len(data["file"]) == 0:
-        raise Http404()
-    elif len(data["file"]) > 1:
-        for zgame in data["file"]:
-            if zgame.filename == filename:
-                data["file"] = zgame
-                break
-    else:
-        data["file"] = data["file"][0]
+    data["file"] = File.objects.get(letter=letter, filename=filename)
     data["letter"] = letter
     data["title"] = data["file"].title + " - Reviews"
 
