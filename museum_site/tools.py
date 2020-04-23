@@ -9,6 +9,7 @@ from django.shortcuts import render
 from .common import *
 from .constants import *
 from zipfile import ZipFile
+from .models import *
 
 from internetarchive import upload
 
