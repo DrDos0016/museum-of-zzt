@@ -26,9 +26,9 @@ def article(request, letter, filename):
     if len(data["file"]) == 0:
         raise Http404()
     elif len(data["file"]) > 1:
-        for file in data["file"]:
-            if file.filename == filename:
-                data["file"] = file
+        for zgame in data["file"]:
+            if zgame.filename == filename:
+                data["file"] = zgame
                 break
     else:
         data["file"] = data["file"][0]
@@ -129,10 +129,10 @@ def article_view(request, id, page=0):
 
     data["title"] = data["article"].title
 
-    file = data["article"].file_set.all()
-    if file:
+    zgames = data["article"].file_set.all()
+    if zgames:
         # TODO: Handle an article w/ multiple files (ex Zem + Zem 2)
-        data["file"] = file[0]
+        data["file"] = zgames[0]
 
     # Split article to current page
     data["article"].content = data["article"].content.split("<!--Page-->")[data["page"]-1]
@@ -365,9 +365,9 @@ def exhibit(request, letter, filename, section=None, local=False):
                     return response
             raise Http404()
         elif len(data["file"]) > 1:
-            for file in data["file"]:
-                if file.filename == filename:
-                    data["file"] = file
+            for zgame in data["file"]:
+                if zgame.filename == filename:
+                    data["file"] = zgame
                     break
         else:
             data["file"] = data["file"][0]
@@ -461,9 +461,9 @@ def file(request, letter, filename, local=False):
                     return response
             raise Http404()
         elif len(data["file"]) > 1:
-            for file in data["file"]:
-                if file.filename == filename:
-                    data["file"] = file
+            for zgame in data["file"]:
+                if zgame.filename == filename:
+                    data["file"] = zgame
                     break
         else:
             data["file"] = data["file"][0]
@@ -578,9 +578,9 @@ def play(request, letter, filename):
     if len(data["file"]) == 0:
         raise Http404()
     elif len(data["file"]) > 1:
-        for file in data["file"]:
-            if file.filename == filename:
-                data["file"] = file
+        for zgame in data["file"]:
+            if zgame.filename == filename:
+                data["file"] = zgame
                 break
     else:
         data["file"] = data["file"][0]
@@ -698,19 +698,19 @@ def play_collection(request):
     return response
 
 
-
 def random(request):
     """ Returns a random ZZT file page """
     max_pk = File.objects.all().order_by("-id")[0].id
 
-    file = None
-    while not file:
+    zgame = None
+    while not zgame:
         id = randint(1, max_pk)
-        file = File.objects.filter(pk=id, details__id=DETAIL_ZZT)
-        if file:
-            file = file[0]
+        zgames = File.objects.filter(pk=id, details__id=DETAIL_ZZT)
+        if zgames:
+            zgame = zgames[0]
 
-    return redirect("file/" + file.letter + "/" + file.filename)
+    return redirect(zgame.file_url())
+
 
 def redir(request, url):
     return redirect(url, permanent=True)
@@ -728,9 +728,9 @@ def review(request, letter, filename):
     if len(data["file"]) == 0:
         raise Http404()
     elif len(data["file"]) > 1:
-        for file in data["file"]:
-            if file.filename == filename:
-                data["file"] = file
+        for zgame in data["file"]:
+            if zgame.filename == filename:
+                data["file"] = zgame
                 break
     else:
         data["file"] = data["file"][0]
@@ -784,7 +784,7 @@ def search(request):
             Q(author__icontains=q) |
             Q(filename__icontains=q) |
             Q(company__icontains=q)
-        ).exclude(details__id__in=[DETAIL_UPLOADED])
+        ).exclude(details__id__in=[DETAIL_UPLOADED]).distinct()
 
         # Auto redirect for Italicized-Links in Closer Looks
         if request.GET.get("auto"):
@@ -1003,8 +1003,8 @@ def upload(request):
 
 
 def uploaded_redir(request, filename):
-    file = File.objects.get(filename=filename)
-    return redirect(file.file_url())
+    zgame = File.objects.get(filename=filename)
+    return redirect(zgame.file_url())
 
 
 def zeta_live(request):
