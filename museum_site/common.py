@@ -118,7 +118,7 @@ GENRE_LIST = (
     "Parody", "Platformer", "Puzzle", "Racing", "Random", "Remake",
     "Registered", "Retro", "RPG", "Sci-Fi", "Shareware", "Shooter",
     "Simulation", "Space", "Sports", "Story", "Strategy", "Toolkit",
-    "Trippy", "Trivia", "Update", "Utility", "WoZZT"
+    "Trippy", "Trivia", "Unlicensed", "Update", "Utility", "WoZZT"
 )
 
 SORT_CODES = {
