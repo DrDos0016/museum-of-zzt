@@ -37,7 +37,7 @@ $(document).ready(function (){
 {% if player == "zeta" %}
 <script type="text/javascript" src="/static/zeta86/zeta_loader.js"></script>
 <script type="text/javascript">
-var scale = 1;
+var scale = {{zeta_player_scale|default:1}};
 var base_w = 640;
 var base_h = 350;
 
@@ -46,12 +46,12 @@ $(document).ready(function (){
         $("#zzt_canvas")[0].requestFullscreen();
     });
 
-    //$(window).resize(resize_canvas_display);
-    //resize_canvas_display();
-
     $("#popout").click(function (e){
         window.open("?player=zeta&popout=1&scale=" + scale, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
     });
+
+    $("#zzt_canvas").width(base_w * scale);
+    $("#zzt_canvas").height(base_h * scale);
 
     $(".zoom").click(function (){
         if ($(this).val() == "+")
@@ -68,6 +68,13 @@ $(document).ready(function (){
 
         $("#zzt_canvas").width(base_w * scale);
         $("#zzt_canvas").height(base_h * scale);
+
+        var now = new Date();
+        var time = now.getTime();
+        var expireTime = time + (1000 * 31536000); // 1yr
+        now.setTime(expireTime);
+        document.cookie = "zeta_player_scale=" + scale + ";expires=" + now.toGMTString() + ";path=/";
+        console.log("Set scale cookie to " + scale);
     });
 
     ZetaLoad({
@@ -108,8 +115,8 @@ $(document).ready(function (){
 {% if player == "zeta" %}
 <div id="zeta-controls" class="c">
     <button id="popout">Popout</button>
-    <button id="zoom-out" class="zoom" value="-" disabled>-</button>
-    <button id="zoom-in" class="zoom" value="+">+</button>
+    <button id="zoom-out" class="zoom" value="-"{% if zeta_player_scale == 1 %} disabled{% endif %}>-</button>
+    <button id="zoom-in" class="zoom" value="+"{% if zeta_player_scale == 2 %} disabled{% endif %}>+</button>
     <button id="fullscreen">Fullscreen</button>
 </div>
 {% endif %}

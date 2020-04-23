@@ -605,6 +605,8 @@ def play(request, letter, filename):
             data["engine"] = "zzt.zip"
         data["zeta_database"] = str(data["file"].id)
 
+    data["zeta_player_scale"] = int(request.COOKIES.get("zeta_player_scale", 1))
+
     response = render(request, "museum_site/play.html", data)
     return response
 
