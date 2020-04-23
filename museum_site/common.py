@@ -28,7 +28,7 @@ import zipfile
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMP_PATH = os.path.join(SITE_ROOT, "tmp")
 BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
-STATIC_PATH =  os.path.join(SITE_ROOT, "museum_site", "static")
+STATIC_PATH = os.path.join(SITE_ROOT, "museum_site", "static")
 CSS_INCLUDES = ["grid.css", "zzt.css", "low-res.css"]
 TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
@@ -112,13 +112,13 @@ GENRE_LIST = (
     "24HoZZT", "Action", "Adventure", "Advertisement", "Arcade", "Art",
     "Beta", "BKZZT", "Bugfix", "Cameo", "Catalog", "Cinema", "Comedy", "Comic",
     "Compilation", "Contest", "Demo", "Dungeon", "Edutainment", "Engine",
-    "Experimental", "Explicit", "Fantasy", "Fighting", "Font", "Help",
-    "Horror", "Incomplete", "Ludum Dare", "Magazine", "Maze", "Minigame",
-    "Multiplayer", "Music", "Mystery", "Non-English", "Official", "Other",
-    "Parody", "Platformer", "Puzzle", "Racing", "Random", "Remake",
+    "Experimental", "Explicit", "Fangame", "Fantasy", "Fighting", "Font",
+    "Help", "Horror", "Incomplete", "Ludum Dare", "Magazine", "Maze",
+    "Minigame", "Multiplayer", "Music", "Mystery", "Non-English", "Official",
+    "Other", "Parody", "Platformer", "Puzzle", "Racing", "Random", "Remake",
     "Registered", "Retro", "RPG", "Sci-Fi", "Shareware", "Shooter",
     "Simulation", "Space", "Sports", "Story", "Strategy", "Toolkit",
-    "Trippy", "Trivia", "Unlicensed", "Update", "Utility", "WoZZT"
+    "Trippy", "Trivia", "Update", "Utility", "WoZZT"
 )
 
 SORT_CODES = {
