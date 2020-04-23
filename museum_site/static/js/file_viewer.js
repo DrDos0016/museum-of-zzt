@@ -114,6 +114,13 @@ var renderer = null;
 var oop_style = "modern";
 var raw_doc = "";
 
+var KEY = {
+    "NP_PLUS": 107, "NP_MINUS": 109,
+    "NP_UP": 104, "NP_DOWN": 98, "NP_RIGHT": 102, "NP_LEFT": 100,
+    "PLUS": 61, "MINUS": 173,
+    "B": 66, "E": 69, "J": 74, "K": 75, "P": 80, "S": 83, "W": 87,
+};
+
 var overlay = {
     corner: "TL",
     hover_x: 0,
@@ -917,7 +924,7 @@ function render_board()
                 var displayed_title = world.boards[board[props[idx]]].title;
             else
                 var displayed_title = `Undefined Board ${parseInt(idx)+1}`;
-            output += `<td><a class="board-link" data-board="${board[props[idx]]}" href="?file=${loaded_file}&board=${board[props[idx]]}">${board[props[idx]]}. ${displayed_title}</a></td>`;
+            output += `<td><a class="board-link" data-direction="${props[idx]}" data-board="${board[props[idx]]}" href="?file=${loaded_file}&board=${board[props[idx]]}">${board[props[idx]]}. ${displayed_title}</a></td>`;
         }
         else
             output += `<td>None</td>`;
@@ -1205,27 +1212,36 @@ $(window).bind("load", function() {
         if ($("input[name=q]").is(":focus") || $("input[name=code-search]").is(":focus"))
             return false;
 
-        if (e.keyCode == 107 || e.keyCode == 61 || e.keyCode == 74) // Next Board
+        if (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J) // Next Board
         {
             // Need to iterate over these until a non-hidden one is found.
             if (match = $(".board.selected").nextAll(".board"))
-                match[0].click()
+                match[0].click();
         }
-        else if (e.keyCode == 109 || e.keyCode == 173 || e.keyCode == 75) // Previous Board
+        else if (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K) // Previous Board
         {
             if (match = $(".board.selected").prevAll(".board"))
-                match[0].click()
+                match[0].click();
         }
-        else if (e.keyCode == 87) // World
+        else if (e.keyCode == KEY.W) // World
             $("div[name=world-info]").click();
-        else if (e.keyCode == 66) // Board
+        else if (e.keyCode == KEY.B) // Board
             $("div[name=board-info]").click();
-        else if (e.keyCode == 69) // Element
+        else if (e.keyCode == KEY.E) // Element
             $("div[name=element-info]").click();
-        else if (e.keyCode == 83) // Stat
+        else if (e.keyCode == KEY.S) // Stat
             $("div[name=stat-info]").click();
-        else if (e.keyCode == 80) // Prefs.
+        else if (e.keyCode == KEY.P) // Prefs.
             $("div[name=preferences]").click();
+        else if (e.keyCode == 104 && $("a.board-link[data-direction=exit_north]")) // Board to North
+                $("a.board-link[data-direction=exit_north]").click();
+        else if (e.keyCode == 98 && $("a.board-link[data-direction=exit_south]")) // Board to South
+                $("a.board-link[data-direction=exit_south]").click();
+        else if (e.keyCode == 102 && $("a.board-link[data-direction=exit_east]")) // Board to East
+                $("a.board-link[data-direction=exit_east]").click();
+        else if (e.keyCode == 100 && $("a.board-link[data-direction=exit_west]")) // Board to West
+                $("a.board-link[data-direction=exit_west]").click();
+
     });
 
     // History
