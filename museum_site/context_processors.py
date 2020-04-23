@@ -7,8 +7,13 @@ from museum_site.common import DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLO
 
 
 def museum_global(request):
-    use_debug = True if (DEBUG or request.GET.get("DEBUG")) else False
-    data = {"debug": use_debug}
+    data = {}
+
+    # Debug mode
+    if DEBUG or request.GET.get("DEBUG") or request.session.get("DEBUG"):
+        data["debug"] = True
+    else:
+        data["debug"] = False
 
     # Server info
     data["HOST"] = request.get_host()

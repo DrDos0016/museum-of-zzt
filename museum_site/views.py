@@ -771,6 +771,12 @@ def search(request):
 
     if request.GET.get("q"):  # Basic Search
         q = request.GET["q"].strip()
+
+        if request.GET["q"] == "+DEBUG":
+            request.session["DEBUG"] = 1
+        if request.GET["q"] == "-DEBUG":
+            request.session["DEBUG"] = 0
+
         data["q"] = request.GET["q"]
         qs = File.objects.filter(
             Q(title__icontains=q) |
