@@ -434,8 +434,10 @@ def file(request, letter, filename, local=False):
         data["letter"] = letter
 
         # Check for recommended custom charset
-        if data["file"].id in list(CUSTOM_CHARSET_MAP.keys()):
-            data["custom_charset"] = CUSTOM_CHARSET_MAP[data["file"].id]
+        for charset in CUSTOM_CHARSETS:
+            if data["file"].id == charset["id"]:
+                data["custom_charset"] = charset["filename"]
+                break
 
         if data["file"].is_uploaded():
             letter = "uploaded"
@@ -459,8 +461,24 @@ def file(request, letter, filename, local=False):
         data["file"] = "Local File Viewer"
         data["letter"] = letter
 
-    data["charsets"] = CHARSET_LIST
-    data["custom_charsets"] = CUSTOM_CHARSET_LIST
+    data["charsets"] = []
+    data["custom_charsets"] = []
+
+    if data["file"].is_zzt():
+        for charset in CHARSETS:
+            if charset["engine"] == "ZZT":
+                data["charsets"].append(charset)
+        for charset in CUSTOM_CHARSETS:
+            if charset["engine"] == "ZZT":
+                data["custom_charsets"].append(charset)
+    elif data["file"].is_super_zzt():
+        for charset in CHARSETS:
+            if charset["engine"] == "SZZT":
+                data["charsets"].append(charset)
+        for charset in CUSTOM_CHARSETS:
+            if charset["engine"] == "SZZT":
+                data["custom_charsets"].append(charset)
+
     return render(request, "museum_site/file.html", data)
 
 

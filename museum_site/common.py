@@ -85,10 +85,6 @@ LETTERS = (
     "r", "s", "t", "u", "v", "w", "x", "y", "z"
 )
 
-CHARSET_LIST = (
-    ("cp437.png", "Code Page 437 -- RECOMMENDED"),
-)
-
 DETAIL_LIST = (
     "Contest"
     "Etc."

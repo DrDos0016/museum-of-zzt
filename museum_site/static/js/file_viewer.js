@@ -1362,7 +1362,8 @@ function str_read(data, bytes, idx)
 
 function load_charset()
 {
-    var selected_charset = $("select[name=charset]").val() + ($("input[name=2x]").prop("checked") ? "-2x" : "");
+    var selected_charset = $("select[name=charset]").val();
+    console.log("Loading charset", selected_charset);
 
     if ($("#world-canvas").length == 0)
         var no_canvas = true;
@@ -1372,11 +1373,6 @@ function load_charset()
     // Charset needs to be loaded and/or canvas doesn't exist
     if (CHARSET_NAME != selected_charset || no_canvas)
     {
-        if (world && world.format == "szt")
-        {
-            selected_charset = "szzt-cp437.png";
-        }
-
         CHARSET_NAME = selected_charset;
         CHARSET_IMAGE = new Image();
         CHARSET_IMAGE.src = "/static/images/charsets/"+CHARSET_NAME;

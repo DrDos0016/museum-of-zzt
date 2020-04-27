@@ -68,8 +68,21 @@ CATEGORY_LIST = (
 )
 
 # Character Sets
-CUSTOM_CHARSET_LIST = []
-CUSTOM_CHARSET_MAP = {}
+CHARSETS = [
+    {
+        "id": 0,
+        "filename": "cp437.png",
+        "name": "Code Page 437",
+        "engine": "ZZT",
+    },
+    {
+        "id": 0,
+        "filename": "szzt-cp437.png",
+        "name": "Code Page 437 (SZZT)",
+        "engine": "SZZT",
+    }
+]
+CUSTOM_CHARSETS = []
 
 pngs = sorted(glob.glob(
     os.path.join(
@@ -77,13 +90,22 @@ pngs = sorted(glob.glob(
     )
 ))
 for png in pngs:
-    base = os.path.basename(png)
-    if base.startswith("cp437") or base.startswith("szzt"):
+    filename = os.path.basename(png)
+    if filename.find("cp437") != -1:  # Skip non-custom fonts
         continue
 
-    try:
-        CUSTOM_CHARSET_MAP[int(base.split('-', 1)[0])] = base
-    except ValueError:
-        pass
+    if filename.startswith("szzt"):
+        charset_id = int(filename.split("-")[1])
+    else:
+        charset_id = int(filename.split("-")[0])
 
-    CUSTOM_CHARSET_LIST.append(base)
+    name = filename.split("-")[-1][:-4]
+    engine = "ZZT" if "szzt" not in filename else "SZZT"
+    CUSTOM_CHARSETS.append({
+        "id": charset_id,
+        "filename": filename,
+        "name": name,
+        "engine": engine,
+    })
+
+CUSTOM_CHARSETS.sort(key=lambda charset: charset["name"].lower())
