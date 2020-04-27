@@ -176,6 +176,7 @@ def browse(
         data["mode"] = "new"
         data["title"] = "New Additions"
         data["category"] = "New Additions"
+        data["og_image"] = "images/new-preview.png"
         sort = SORT_CODES["published"]
     elif request.path == "/roulette":
         sort = SORT_CODES["roulette"]
