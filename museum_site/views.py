@@ -478,6 +478,9 @@ def file(request, letter, filename, local=False):
         for charset in CUSTOM_CHARSETS:
             if charset["engine"] == "SZZT":
                 data["custom_charsets"].append(charset)
+    elif data["file"].is_uploaded():
+        data["charsets"] = CHARSETS
+        data["custom_charsets"] = CUSTOM_CHARSETS
 
     return render(request, "museum_site/file.html", data)
 

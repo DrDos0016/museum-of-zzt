@@ -295,23 +295,29 @@ function pull_file()
     // COM files can avoid calling the actual ZIP
     if (ext == "com")
     {
+        // TODO this is really hacky for Super ZZT fonts even if it works
         var format = "img";
         var font_filename = ("0000" +db_id).slice(-4) + "-" + filename.slice(0, -4) + ".png";
+        var font_to_load = "";
 
         // Check if the font is on the list of dumped fonts
         var font_exists = false;
         $("select[name=charset]").find("option").each(function (){
-            if ($(this).val() == font_filename || ("szzt-" + $(this).val()) == font_filename)
+            console.log($(this).val() + " / " + font_filename);
+            if ($(this).val() == font_filename || $(this).val() == ("szzt-" + font_filename))
+            {
                 font_exists = true;
+                font_to_load = $(this).val();
+            }
         });
 
         // Load the font
         if (font_exists)
         {
-            $("select[name=charset]").val(font_filename);
+            $("select[name=charset]").val(font_to_load);
 
             // Display the font
-            $("#fv-image").attr("src", `/static/images/charsets/${font_filename}`);
+            $("#fv-image").attr("src", `/static/images/charsets/${font_to_load}`);
             $("#fv-image").css("background", "#000");
 
             set_active_envelope("image");
