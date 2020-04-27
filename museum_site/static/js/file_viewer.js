@@ -301,7 +301,7 @@ function pull_file()
         // Check if the font is on the list of dumped fonts
         var font_exists = false;
         $("select[name=charset]").find("option").each(function (){
-            if ($(this).val() == font_filename)
+            if ($(this).val() == font_filename || ("szzt-" + $(this).val()) == font_filename)
                 font_exists = true;
         });
 
