@@ -161,9 +161,9 @@ class ZztScroll(template.Node):
                 output += "<div class='white'>" + line[1:] + "</div>\n"
             elif line and line[0] == "!":
                 output += ("<div class='hypertext'>" + line.split(";", 1)[-1] +
-                           "</div>\n")
+                           "</div><br>\n")
             else:
-                output += line + "<br>\n"
+                output += "<span class='plaintext'>" + line + "</span><br>\n"
 
         if raw[-1] == "":  # Strip trailing empty string resulting in newline
             output = output[:-5]

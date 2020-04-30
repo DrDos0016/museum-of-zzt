@@ -1,7 +1,10 @@
 .zzt-scroll
 {
     background-image:url("/static/images/zzt-scroll.png");
-    max-width:392px;
+    background-repeat:no-repeat;
+    background-position: top 14px left 8px;
+    background-color:#000;
+    min-width:392px;
     height:266px;
     font-family:"cp437", monospace;
     font-size:12pt;
@@ -9,6 +12,8 @@
     text-align:left;
     color:#FF5;
     margin:0.25em auto 0.25em auto;
+    padding:14px 8px 14px 8px;
+    display:inline-block;
 }
 
 .zzt-scroll .name
@@ -21,15 +26,23 @@
 .zzt-scroll .content
 {
     padding-left:32px;
-    width:360px; /*336*/
+    min-width:336px; /*336*/
     height:210px;
     overflow-y:scroll;
     -webkit-overflow-scrolling: touch;
 }
 
+.zzt-scroll .plaintext
+{
+    background-color:#00A;
+}
+
 .zzt-scroll .white
 {
     color:#FFF;
+    background-color:#00A;
+    text-align:center;
+    width:336px;
 }
 
 .zzt-scroll .hypertext
@@ -39,6 +52,9 @@ background-position:16px;
 background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAOCAYAAAASVl2WAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMTJDBGvsAAAAQ0lEQVQoU5WMQQoAIAzD9kn//5SqSNmEOPAQBk1YSGrBsRIa64AwJ2iiDB7RHUDIgfn/UITJAOTmBCAMjhUcKzgmigkcKlhhXdQ3uAAAAABJRU5ErkJggg==);
 color:white;
 padding-left:40px;
+background-color:#00A;
+min-width:296px;
+display:inline-block;
 }
 
 .zzt-img
