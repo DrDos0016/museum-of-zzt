@@ -7,6 +7,8 @@ vault
 venv
 zgames
 
+private*
+
 comic/static/comic/bencomic/*
 comic/static/comic/frost/*
 comic/static/comic/kaddar/*
@@ -30,7 +32,6 @@ tools/db_dump.py
 tools/fonts
 tools/intro.png
 tools/private
-museum/*
 museum_site/patron_secrets.py
 museum_site/static/.well-known
 museum_site/static/admin
