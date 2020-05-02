@@ -16,8 +16,10 @@ sys.path.append("/var/projects/museum")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
-from museum_site.models import (
-    File, DETAIL_ZZT, DETAIL_SZZT, DETAIL_ZIG, DETAIL_UTILITY
+from museum_site.models import File
+
+from museum_site.constants import (
+    DETAIL_ZZT, DETAIL_SZZT, DETAIL_ZIG, DETAIL_UTILITY
 )
 from museum_site.common import SITE_ROOT
 
