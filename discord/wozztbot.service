@@ -1,0 +1,12 @@
+[Unit]
+Description=Worlds of ZZT Discord Bot
+StartLimitInterval=200
+StartLimitBurst=5
+
+[Service]
+Restart=always
+RestartSec=30
+ExecStart=/var/projects/museum/venv/bin/python3 /var/projects/museum/discord/bot.py >> /var/projects/museum/log/discord.log 2>&1
+
+[Install]
+WantedBy=multi-user.target
