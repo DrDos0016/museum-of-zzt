@@ -34,7 +34,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.path.isfile("/var/projects/DEV") else False
+DEBUG = True if os.path.isfile(os.path.join(BASE_DIR, "DEV")) else False
 
 ALLOWED_HOSTS = [
     "django.pi",
