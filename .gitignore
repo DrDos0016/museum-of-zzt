@@ -28,6 +28,7 @@ tools/data
 tools/db_dump.py
 tools/fonts
 tools/intro.png
+tools/private
 museum/*
 museum_site/patron_secrets.py
 museum_site/static/data/temp.png
