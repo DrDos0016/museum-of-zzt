@@ -32,7 +32,7 @@ def worlds_of_zzt(request):
     ts = int(time())
 
     # Select a randomly displayable file
-    f = displayable_files().order_by("?")[0]
+    f = File.objects.filter(details__in=[DETAIL_ZZT]).exclude(details__in=[DETAIL_UPLOADED, DETAIL_GFX]).order_by("?")[0]
 
     # Open it
     zh = zipfile.ZipFile(f.phys_path())
@@ -70,6 +70,7 @@ def worlds_of_zzt(request):
     # Check if the file is playable online
     museum_link = "https://museumofzzt.com" + f.file_url()
     archive_link = "https://archive.org/details/" + f.archive_name if f.archive_name else None
+    play_link = "https://museumofzzt.com" + f.play_url()
 
     output = {
         "status": "SUCCESS",
@@ -81,6 +82,7 @@ def worlds_of_zzt(request):
             "board": {"title": title, "number": board_num},
             "b64_image": b64,
             "museum_link": museum_link,
+            "play_link": play_link,
             "archive_link": archive_link,
         }
     }
