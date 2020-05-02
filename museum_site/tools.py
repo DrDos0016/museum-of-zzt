@@ -280,7 +280,7 @@ def set_screenshot(request, pk):
     data["file_list"] = []
 
     if not HAS_ZOOKEEPER:
-        return server_error_500(request)
+        return HttpResponse("Zookeeper library not found.")
 
     with ZipFile(SITE_ROOT + file.download_url(), "r") as zf:
         all_files = zf.namelist()
