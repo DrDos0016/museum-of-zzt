@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .common import *
 from .constants import *
+from .models import *
 
 def debug(request):
     data = {"title": "DEBUG PAGE"}
