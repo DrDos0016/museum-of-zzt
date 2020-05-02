@@ -1,6 +1,7 @@
 import base64
 import io
 import random
+import sys
 import time
 
 import discord
@@ -10,7 +11,13 @@ from discord.ext import commands
 from discord.utils import get
 
 from constants import *
-from private import TOKEN
+try:
+    from private import TOKEN
+except ImportError:
+    print("ERROR: private.py not found\n\
+    This file contians a constant named TOKEN with the Discord API key.\n\
+    Exiting.")
+    sys.exit()
 
 SERVER = None
 PUBLIC_ROLES = ["ZZTer", "MZXer", "He/Him", "She/Her", "They/Them"]
