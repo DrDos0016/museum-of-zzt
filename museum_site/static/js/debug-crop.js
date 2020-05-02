@@ -2,10 +2,10 @@
 
 var CROP_CONTROLS = `<div id='crop-controls'>
 <div id="active"></div>
-T: <input name="top" value="">
-L: <input name="left" value="">
-B: <input name="bottom" value="">
-R: <input name="right" value="">
+L: <input name="top" value="">
+T: <input name="left" value="">
+R: <input name="bottom" value="">
+B: <input name="right" value="">
 Crop: <input id="crop-output"></div>
 </div>`;
 
