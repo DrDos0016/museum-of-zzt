@@ -32,6 +32,7 @@ tools/intro.png
 tools/private
 museum/*
 museum_site/patron_secrets.py
+museum_site/static/.well-known
 museum_site/static/admin
 museum_site/static/comic
 museum_site/static/data/temp.png
