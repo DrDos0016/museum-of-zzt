@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     "museum_site",
     "comic",
     "poll",
-    "auditor",
     "museum_api",
 ]
 
