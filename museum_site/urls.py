@@ -1,6 +1,8 @@
+import os
+
 from django.conf.urls import url
 
-from museum.settings import DEBUG
+from museum.settings import BASE_DIR, DEBUG
 if DEBUG:
     from django.conf.urls.static import static
 
@@ -224,4 +226,4 @@ urlpatterns = [
 ]
 
 if DEBUG:
-    urlpatterns += static("/zgames", document_root="/var/projects/museum/zgames/")
+    urlpatterns += static("/zgames", document_root=os.path.join(BASE_DIR, "zgames"))
