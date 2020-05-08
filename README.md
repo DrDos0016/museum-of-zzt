@@ -50,13 +50,13 @@ in included for MariaDB/MySQL.
 
 This is the folder which contains all the ZZT (related) files hosted on the Museum.
 
-Use wget to obtain these files (from the project root): `wget -m -np -nH -w 1 -R "index.html*" "https://museumofzzt.com/zgames/"`
+Use wget to obtain these files (from the project root): `wget -m -np -nH -R "index.html*" "https://museumofzzt.com/zgames/"`
 
 ### Comics
 
 These are the images used for the ZZTer comics section of the site.
 
-Using wget to obtain these images (from project_root/comic): `wget -m -np -nH -w 1 -R "index.html*" "https://museumofzzt.com/static/comic/"`
+Using wget to obtain these images (from project_root/comic): `wget -m -np -nH -R "index.html*" "https://museumofzzt.com/static/comic/"`
 
 ### Zeta
 
