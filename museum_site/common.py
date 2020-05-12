@@ -73,12 +73,6 @@ else:
 
 EMAIL_ADDRESS = "doctordos@gmail.com"
 
-print("MUSEUM OF ZZT STARTUP")
-print(START_TIME)
-print("Site Root:", SITE_ROOT)
-print("Python:", PYTHON_VERSION)
-print("Django:", DJANGO_VERSION)
-
 LETTERS = (
     "1", "a", "b", "c", "d", "e", "f", "g", "h",
     "i", "j", "k", "l", "m", "n", "o", "p", "q",
