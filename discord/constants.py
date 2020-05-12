@@ -506,4 +506,19 @@ How do you say "Good Night" in Spanish?""",
 Let's get 'im, boys!""",
 "source":"https://museumofzzt.com/file/f/fquest15.zip?file=FQUEST15.ZZT&board=6#50,22"
 },
+
+{
+"text":"""|---------------|
+|-={[Warning]}=-|
+|---------------|
+       ||
+       ||
+       ||
+_______||______________________________
+
+If you use this I'll rip your head off
+and use it for a balling ball.
+_______________________________________""",
+"source":"https://museumofzzt.com/file/t/Test.zip?file=TEST.ZZT&board=8#31,3"
+},
 ]
