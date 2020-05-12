@@ -30,6 +30,11 @@ BLACKLISTED_FILES = [
     1077,  #S**n (Plenty of N-bombs)
     1933,  #S (Some impressively detailed nudity)
     2010,  #S*****u (Racial caricatures)
+    966,  #L*s R******s 1 (Harassing)
+    688,  #L*s R******s 6 (Harassing)
+    2824,  #L*s R******s 7 (Harassing)
+    2825,  #L*s R******s 8 (Harassing)
+    689,  #L*s R******s 9 (Harassing)
 ]
 
 
