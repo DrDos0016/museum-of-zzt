@@ -26,7 +26,7 @@ import urllib.parse
 import zipfile
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TEMP_PATH = os.path.join(SITE_ROOT, "tmp")
+TEMP_PATH = os.path.join(SITE_ROOT, "temp")
 BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
 STATIC_PATH = os.path.join(SITE_ROOT, "museum_site", "static")
 CSS_INCLUDES = ["grid.css", "zzt.css", "low-res.css"]
