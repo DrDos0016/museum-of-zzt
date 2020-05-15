@@ -137,6 +137,9 @@ class File(models.Model):
         null=True, blank=True, default=None, editable=False
     )
 
+    #zeta_config = models.ForeignKey("Zeta_Config", null=True, blank=True,
+    #default=None, on_delete=models.SET_NULL)
+
     class Meta:
         ordering = ["sort_title", "letter"]
 
@@ -450,14 +453,21 @@ class File(models.Model):
             if 0 not in to_explore:
                 to_explore.append(0)
 
-            self.playable_boards = len(to_explore) - false_positives
-            self.total_boards = len(z.boards)
+            temp_playable += len(to_explore) - false_positives
+            temp_total += len(z.boards)
+
+            # Delete the extracted file from the temp folder
+            os.remove(os.path.join(temp_path, file))
 
         # Use null instead of 0 to avoid showing up in searches w/ board limits
         if self.playable_boards == 0:
             self.playable_boards = None
+        else:
+            self.playable_boards = temp_playable
         if self.total_boards == 0:
             self.total_boards = None
+        else:
+            self.total_boards = temp_total
 
         return True
 
