@@ -1148,6 +1148,8 @@ def zeta_launcher(request, letter=None, filename=None, components=["controls", "
     # Override config with user requested options
     if data["zeta_config"]:
         data["zeta_config"].user_configure(request.GET)
+    else:
+        data["zeta_config"] = Zeta_Config.objects.get(pk=1)  # TODO make this a constant
 
     # Override for "Live" Zeta edits
     if request.GET.get("live"):
