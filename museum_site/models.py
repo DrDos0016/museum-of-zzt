@@ -4,3 +4,4 @@ from .comment import Comment
 from .file import File
 from .detail import Detail
 from .review import Review
+from .zeta_config import Zeta_Config

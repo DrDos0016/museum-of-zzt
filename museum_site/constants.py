@@ -109,3 +109,28 @@ for png in pngs:
     })
 
 CUSTOM_CHARSETS.sort(key=lambda charset: charset["name"].lower())
+
+exe_names = {
+    "szzt.zip": "Super ZZT v2.0 (Registered)",
+    "wozzt356.zip": "Worlds of ZZT v3.56",
+    "zzt.zip": "ZZT v3.2 (Registered)",
+    "zzt20.zip": "ZZT v2.0",
+    "zzt30.zip": "ZZT v3.0",
+    "zzt31.zip": "ZZT v3.1",
+    "zzt32sw.zip": "ZZT v3.2 (Shareware)",
+
+}
+ZETA_EXECUTABLES = []
+exes = sorted(glob.glob(
+    os.path.join(
+        SITE_ROOT, "museum_site", "static", "data", "zeta86_engines", "*.zip"
+    )
+))
+for exe in exes:
+    filename = os.path.basename(exe)
+    ZETA_EXECUTABLES.append({
+        "filename": filename,
+        "name": exe_names.get(filename, filename)
+    })
+
+ZETA_EXECUTABLES.sort(key=lambda executable: executable["name"].lower())

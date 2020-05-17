@@ -1,0 +1,15 @@
+{% extends base %}
+
+{% block world_content %}
+<p>No compatible player was found for this file.</p>
+
+<p>For Zeta, files must run on standard versions of ZZT and/or Super ZZT.</p>
+
+<p>For Archive.org's DOSBox player, the file must be mirrored on archive.org, support being ran in browser via DOSBox,
+and be marked as an available host for this file in the Museum's database.</p>
+
+{% if file.archive_name %}<p>This file's archive.org identifier is set to <a href="https://archive.org/details/{{file.archive_name}}" target="_blank">"{{file.archive_name}}"</a>.</p>
+{% else %}<p>This file does not have an archive.org identifier set. You may search for it on <a href="https://archive.org/details/softwarelibrary_msdos_zzt" target="_blank">The Internet Archive's ZZT Software Library</a> and see if it
+is available there (or perhaps elsewhere on the site and not yet in the proper collection).</p>
+{% endif %}
+{% endblock %}

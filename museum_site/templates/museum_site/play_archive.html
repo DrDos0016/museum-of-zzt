@@ -1,0 +1,60 @@
+{% extends base %}
+
+{% block style %}
+<style>
+#play-area
+{
+    text-align:center;
+    margin:auto;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    var speed = 3000;
+    $(window).keyup(function (e){
+        if (e.ctrlKey)
+            console.log(e.keyCode);
+    });
+
+    $("select[name=player]").change(function (){
+        window.location = "?player=" + $(this).val();
+    });
+});
+</script>
+{% endblock %}
+
+{% block world_content %}
+<div id="play-area">
+    <iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
+</div>
+
+{% if components.controls %}<div id="archive-controls" class="c">
+    <p><a href="https://archive.org/details/{{file.archive_name}}" target="_blank">Open this file on archive.org</a></p>
+</div>
+{% endif %}
+
+{% if components.players %}
+<div id="player-list" class="c">
+    <b>Play Method</b><br>
+    <select name="player">
+        {% for k, info in players.items %}
+        <option value="{{k}}"{% if k == player %} selected{% endif %}>{{info.name}}</option>
+        {% endfor %}
+    </select>
+</div>
+{% endif %}
+
+{% if components.instructions %}<div class="archive-instructions">
+<p>If the world appears to be running slowly, pressing <b>Control+F12</b> will increase the emulated CPU instructions.
+Similarly, <b>Control+F11</b> will decrease emulated CPU instructions.</p>
+
+<p><a href="https://archive.org/about/faqs.php#MS-DOS_Emulation" target="_blank">Internet Archive MS-DOS Emulation Help</a></p>
+</div>{% endif %}
+
+{% if components.credits %}<div class="archive-credits">
+    <p>This file is hosted on <a href="https://archive.org/details/softwarelibrary_msdos_zzt" target="_blank">The Internet Archive's ZZT Software Library</a>.</p>
+</div>{% endif %}
+{% endblock %}

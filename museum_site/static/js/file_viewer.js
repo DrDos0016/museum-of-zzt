@@ -1715,7 +1715,8 @@ function play_board()
     var base_w = 640;
     var base_h = 350;
     console.log("PLAYING THIS BOARD");
-    window.open("/play/"+letter+"/"+zip+"?player=zeta&popout=1&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number, "popout-"+zip, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+    window.open("/play/"+letter+"/"+zip+"?player=zeta&mode=popout&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number, "popout-"+zip, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+
 }
 
 function render_zzt_oop(stat)

@@ -121,11 +121,11 @@ class File(models.Model):
 
     aliases = models.ManyToManyField("Alias", default=None, blank=True)
     upload_date = models.DateTimeField(
-        null=True, auto_now_add=True, db_index=True,
+        null=True, auto_now_add=True, db_index=True, blank=True,
         help_text="Date File was uploaded to the Museum"
     )
     publish_date = models.DateTimeField(
-        null=True, default=None, db_index=True,
+        null=True, default=None, db_index=True, blank=True,
         help_text="Date File was published on the Museum"
     )
     last_modified = models.DateTimeField(
@@ -137,8 +137,8 @@ class File(models.Model):
         null=True, blank=True, default=None, editable=False
     )
 
-    #zeta_config = models.ForeignKey("Zeta_Config", null=True, blank=True,
-    #default=None, on_delete=models.SET_NULL)
+    zeta_config = models.ForeignKey("Zeta_Config", null=True, blank=True,
+    default=None, on_delete=models.SET_NULL)
 
     class Meta:
         ordering = ["sort_title", "letter"]
