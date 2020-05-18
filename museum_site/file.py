@@ -329,7 +329,7 @@ class File(models.Model):
         return True if DETAIL_SZZT in lost else False
 
     def supports_zeta_player(self):
-        return self.id != 85 and (self.is_zzt() or self.is_super_zzt())
+        return (self.is_zzt() or self.is_super_zzt())
 
     def calculate_article_count(self):
         if self.id is not None:
