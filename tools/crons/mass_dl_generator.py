@@ -175,6 +175,7 @@ def main():
     # Get all files by release date
     qs = File.objects.all().order_by("release_date", "letter", "title")
 
+    print("Iterating over files...")
     for f in qs:
         if f.is_zzt():
             if f.release_date is None:
@@ -199,14 +200,17 @@ def main():
             file_list["zig_worlds"].append(f)
             id_list["zig_worlds"] += str(f.id)
 
+    print("Files iterated.")
+
     # Set up names for zip files
     zip_names = file_list.keys()
 
     # Populate the zips
     for zip_name in zip_names:
+        print("Creating", zip_name)
         file_listing = ""
         zf = zipfile.ZipFile(
-            os.path.join(CRON_ROOT, zip_name + ".zip"), "w"
+            os.path.join(SITE_ROOT, "temp", zip_name + ".zip"), "w"
         )
 
         # Add the relevant files
@@ -269,7 +273,7 @@ def main():
 
             # Replace any zips that need to be replaced
             try:
-                src = os.path.join(SITE_ROOT, "tools", "crons", "{}.zip".format(zip_name))
+                src = os.path.join(SITE_ROOT, "temp", "{}.zip".format(zip_name))
                 dst = os.path.join(SITE_ROOT, "zgames", "mass", "{}.zip".format(zip_name))
                 shutil.move(src, dst)
             except:
@@ -285,6 +289,7 @@ def main():
     with open(os.path.join(SITE_ROOT, "museum_site", "static", "data", "mass_dl.json"), "w") as fh:
         fh.write(json.dumps(new_info))
 
+    print("Zips created.")
     return True
 
 if __name__ == "__main__":
