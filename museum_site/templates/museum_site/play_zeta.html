@@ -163,9 +163,6 @@ $(document).ready(function (){
 
 {% block world_content %}
 <div id="play-area">
-    {{zeta_config.executable|default:"No executable"}}
-    {{zeta_config.commands|default:"No commands"}}
-    {{zeta_config.blink_duration|default:"No blink duration?"}}
     {% if player == "archive" %}
     <iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
     {% elif player == "zeta" %}
