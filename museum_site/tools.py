@@ -21,6 +21,15 @@ except ImportError:
 
 
 @staff_member_required
+def audit_zeta_config(request):
+    data = {
+        "title": "Zeta Config Audit",
+    }
+    data["special"] = File.objects.filter(details__in=[DETAIL_ZZT, DETAIL_SZZT]).exclude(zeta_config_id__in=[1, 4]).order_by("zeta_config")
+    return render(request, "museum_site/tools/audit_zeta_config.html", data)
+
+
+@staff_member_required
 def calculate(request, field, pk):
     f = File.objects.get(pk=pk)
     data = {

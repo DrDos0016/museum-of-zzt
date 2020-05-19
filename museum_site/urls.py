@@ -215,6 +215,7 @@ urlpatterns = [
     url(r"^tools/replace_zip/(?P<pk>[0-9]+)$", museum_site.tools.replace_zip, name="replace_zip"),
     url(r"^tools/scan$", museum_site.tools.scan, name="scan"),
     url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tools.set_screenshot, name="set_screenshot"),
+    url(r"^tools/audit/zeta-config$", museum_site.tools.audit_zeta_config, name="audit_zeta_config"),
 
     # Debug
     url(r"^debug$", museum_site.debug.debug),
