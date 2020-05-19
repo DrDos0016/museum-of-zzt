@@ -114,16 +114,17 @@ exe_names = {
     "szzt.zip": "Super ZZT v2.0 (Registered)",
     "wozzt356.zip": "Worlds of ZZT v3.56",
     "zzt.zip": "ZZT v3.2 (Registered)",
-    "zzt20.zip": "ZZT v2.0",
-    "zzt30.zip": "ZZT v3.0",
-    "zzt31.zip": "ZZT v3.1",
+    "zzt20.zip": "ZZT v2.0 (Shareware)",
+    "zzt30.zip": "ZZT v3.0 (Shareware)",
+    "zzt31.zip": "ZZT v3.1 (Shareware)",
     "zzt32sw.zip": "ZZT v3.2 (Shareware)",
+    "cleanzzt.zip": "CleanZZT",
 
 }
 ZETA_EXECUTABLES = []
 exes = sorted(glob.glob(
     os.path.join(
-        SITE_ROOT, "museum_site", "static", "data", "zeta86_engines", "*.zip"
+        SITE_ROOT, "museum_site", "static", "data", "zeta86_engines", "*.[zZ][iI][pP]"
     )
 ))
 for exe in exes:
