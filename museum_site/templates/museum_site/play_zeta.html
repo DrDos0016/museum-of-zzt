@@ -288,13 +288,6 @@ $(document).ready(function (){
     <div class="setting">
         <div class="heading">Included Files (<span id="included-file-count">{{file_count}}</span>)</div>
         <div class="list" id="all-files">
-            {% comment %}
-            <label class="option"><input name="file_id" value="23" type="checkbox"> Aceland</label>
-            <label class="option"><input name="file_id" value="850" type="checkbox"> Pac Man Vs. Zac Man</label>
-            <label class="option"><input name="file_id" value="935" type="checkbox"> QFG</label>
-            <label class="option"><input name="file_id" value="1673" type="checkbox"> PureSTK</label>
-            <label class="option"><input name="file_id" value="1775" type="checkbox"> Frost 1</label>
-            {% endcomment %}
             {% for f in all_files %}
             <label class="option"><input name="file_id" value="{{f.id}}" type="checkbox"{% if f.id in file_ids %} checked{% endif %}> {{f.title}}</label>
             {% endfor %}
@@ -311,7 +304,7 @@ $(document).ready(function (){
 </form>
 
 <h3>Information on Advanced Options</h3>
-<p>&bull; When choosing a custom executable, it may be overridden by the Zeta configurations launch commands. Disable them if needed.</p>
+<p>&bull; When choosing a custom executable, it may be overridden by the Zeta configuration's launch commands. Disable them if needed.</p>
 
 <p>&bull; Support for custom charsets is not yet implemented.</p>
 
