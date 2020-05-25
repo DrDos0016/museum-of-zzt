@@ -21,6 +21,77 @@ except ImportError:
 
 
 @staff_member_required
+def add_livestream(request, pk):
+    """ Returns page to add a livestream VOD article """
+    data = {
+        "title": "Tools",
+        "file": File.objects.get(pk=pk),
+        "today": str(datetime.now())[:10]
+    }
+    print(SITE_ROOT)
+
+    if request.POST.get("action"):
+        if request.POST.get("pk"):
+            a = Article.objects.get(pk=int(request.POST["pk"]))
+        else:
+            a = Article()
+
+        # Convert video URL
+        url = request.POST.get("url")
+        if request.POST.get("url").startswith("http"):
+            url = url.replace("https://youtu.be/", "")
+            url = url.replace("https://www.youtube.com/watch?v=", "")
+            url = url.replace("https://studio.youtube.com/video/", "")
+            url = url.replace("/edit", "")
+            if "&" in url:
+                url = url[:url.find("&")]
+        data["video_id"] = url
+
+        a.title = "Livestream - " + request.POST.get("title")
+        a.author = request.POST.get("author")
+        a.category = "Livestream"
+        a.schema = "django"
+        a.date = request.POST.get("date")
+        a.published = PUBLISHED_ARTICLE
+        a.summary = request.POST.get("summary")
+        a.allow_comments = True
+
+        # Open the template
+        file_path = os.path.join(SITE_ROOT, "tools", "data", "youtube_template.html")
+        with open(file_path) as fh:
+            template = fh.read()
+
+        # Process the description
+        final_desc = request.POST.get("desc")
+        final_desc = final_desc[:final_desc.find("Download:")]
+        final_desc = "<p>" + final_desc.replace("\r\n", "</p>\n<p>")
+        final_desc = final_desc[:-3]
+        final_desc = final_desc.replace("<p></p>", "")
+
+        a.content = template.format(video_id=data["video_id"], desc=final_desc)
+
+        a.save()
+        data["article_pk"] = str(a.id)
+
+        # Upload the preview
+        if request.FILES.get("preview"):
+            # Save the file to the uploaded folder
+            file_path = os.path.join(SITE_ROOT, "museum_site", "static", "images", "articles", "streams", (str(a.id) + ".png"))
+            with open(file_path, 'wb+') as fh:
+                for chunk in request.FILES["preview"].chunks():
+                    fh.write(chunk)
+
+            a.preview = "articles/streams/" + str(a.id) + ".png"
+            a.save()
+
+        # Associate the article with the relevant file
+        data["file"].articles.add(a)
+        data["file"].save()
+
+    return render(request, "museum_site/tools/add_livestream.html", data)
+
+
+@staff_member_required
 def audit_zeta_config(request):
     data = {
         "title": "Zeta Config Audit",

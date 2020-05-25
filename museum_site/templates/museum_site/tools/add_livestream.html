@@ -1,0 +1,126 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+#tool-info
+{
+    font-family:monospace;font-size:12pt;
+}
+
+#tool-info td
+{
+    padding:0.25em;
+}
+
+#tool-info td.True { background-color:#0F0; text-align:center; }
+#tool-info td.False { background-color:#F00; text-align:center; }
+
+input[name=today]
+{
+    max-width:20%;
+    margin-left:8px;
+}
+
+#desc
+{
+    height:200px;
+}
+
+#submit-button
+{
+    width:100%;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function (){
+        $("input[name=today]").click(function (){
+        var today = new Date();
+        $("#date").val(today.toISOString().slice(0,10));
+        reload_preview();
+    });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Tool List - {{file}}</h1>
+<a href="/tools/{{file.id|add:-1}}">Previous</a> |
+<a href="/tools/{{file.id|add:1}}">Next</a>
+
+{% include "museum_site/blocks/file_block.html" %}
+
+<form method="POST" enctype="multipart/form-data" id="upload-form">
+{% csrf_token %}
+<input name="action" value="add-video" type="hidden">
+
+<div class="field">
+    <label for="author">Author<br>
+    </label>
+    <input id="author" name="author" maxlength="80" value="{{request.POST.author|default:'Dr. Dos'}}">
+</div>
+
+<div class="field">
+    <label for="title">Title<br>
+        <span class="sub">"Livestream - " prefix added automatically.</span>
+    </label>
+    <input id="title" name="title" maxlength="80" value="{{request.POST.title}}">
+</div>
+
+<div class="field">
+    <label for="date">Date<br>
+    </label>
+    <div class="field-group">
+        <input id="date" name="date" maxlength="10" type="date" value="{{request.POST.date|default:today}}"> <input type="button" value="Today" name="today">
+    </div>
+</div>
+
+<div class="field">
+    <label for="url">Video URL<br>
+        <span class="sub">https://youtu.be/<b>{id}</b>,<br>
+        https://www.youtube.com/watch?v=<b>{id}</b>&amp;feature=youtu.be, or<br>
+        https://studio.youtube.com/video/<b>{id}</b>/edit format.</span>
+    </label>
+    <div class="field-group">
+        <input id="url" name="url" maxlength="150" value="{{request.POST.url}}">
+        {% if video_id %}<div>({{video_id}})</div>{% endif %}
+    </div>
+</div>
+
+<div class="field">
+    <label for="desc">Description<br>
+        <span class="sub">Copy/Paste from YouTube video details editor.<br>
+        Everything from "Download:" onward will be removed.</span>
+    </label>
+    <textarea id="desc" name="desc">{{request.POST.desc}}</textarea>
+</div>
+
+<div class="field">
+    <label for="summary">Summary<br>
+    </label>
+    <input id="summary" name="summary" maxlength="150" value="{{request.POST.summary}}">
+</div>
+
+<div class="field">
+    <label for="preview">Preview Image<br>
+        <span class="sub">Leaving blank will use existing image if there is one.</span>
+    </label>
+    <input id="preview" name="preview" type="file" accept=".png">
+</div>
+
+<div class="field">
+    <button type="submit" id="submit-button">Create VOD Article</button>
+</div>
+
+<input type="pk" name="pk" value="{{article_pk}}"> Article PK override for editing an existing article
+</form>
+{% if article_pk %}
+<a href="/article/{{article_pk}}/preview" target="_blank">View Article</a>
+{% endif %}
+
+</section>
+{% endblock %}
