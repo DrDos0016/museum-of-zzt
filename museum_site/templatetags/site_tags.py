@@ -85,8 +85,12 @@ def patreon_plug(*args, **kwargs):
     return mark_safe(output + "\n")
 
 @register.simple_tag()
-def cl_info(id):
-    file = File.objects.get(pk=id)
+def cl_info(pk=None):
+    if pk is None:
+        file = File()
+        file.id = -1
+    else:
+        file = File.objects.get(pk=pk)
 
     if file.company:
         company = "Published Under: {}<br>".format(file.company)
@@ -97,7 +101,6 @@ def cl_info(id):
         release = file.release_date.strftime("%B %m, %Y")
     else:
         release = "Unknown"
-
 
     output = """
         <div class="c">
