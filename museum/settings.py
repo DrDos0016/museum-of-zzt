@@ -42,6 +42,7 @@ ALLOWED_HOSTS = [
     "museum.pokyfriends.com",
     "museumofzzt.com",
     "openbeta.museumofzzt.com",
+    "merbotia.museumofzzt.com",
     "beta.museumofzzt.com",
     "api.museumofzzt.com",
     "192.168.1.66",
