@@ -32,7 +32,6 @@ tools/db_dump.py
 tools/fonts
 tools/intro.png
 tools/private
-museum_site/patron_secrets.py
 museum_site/static/.well-known
 museum_site/static/admin
 museum_site/static/comic
@@ -47,6 +46,8 @@ museum_site/static/data/base/*
 museum_site/static/data/24hozzt-raw-scores
 museum_site/templates/museum_site/debug.html
 .htpasswd
+DEV
+PROD
 ia.cfg
 patron_plans.txt
 
