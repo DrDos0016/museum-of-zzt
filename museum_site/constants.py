@@ -3,13 +3,19 @@ import os
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Patron Locked Content
+# Private settings - (Patron Locked Content, IA API)
 try:
-    from museum_site.patron_secrets import PASSWORD2DOLLARS, PASSWORD5DOLLARS
+    from museum_site.private import (
+        PASSWORD2DOLLARS, PASSWORD5DOLLARS, IA_ACCESS, IA_SECRET
+    )
+    IA_SUPPORT = True
 except ModuleNotFoundError:
-    print("PATRON_SECRETS.PY NOT FOUND. USING DEV VALUES")
+    print("PRIVATE.PY NOT FOUND. USING DEV VALUES")
     PASSWORD2DOLLARS = "test2dollars"
     PASSWORD5DOLLARS = "test5dollars"
+    IA_ACCESS = "Not found"
+    IA_SECRET = "Not found"
+    IA_SUPPORT = False
 
 # Article publish states
 PUBLISHED_ARTICLE = 1

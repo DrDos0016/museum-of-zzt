@@ -61,16 +61,6 @@ FILE_VIEWER_AUDIO_EXTENSIONS = (
     ".wav", ".mp3", ".ogg", ".mid", ".midi"
 )
 
-if os.path.isfile(os.path.join(SITE_ROOT, "ia.cfg")):
-    with open(os.path.join(SITE_ROOT, "ia.cfg")) as fh:
-        IA_SUPPORT = True
-        IA_ACCESS = fh.readline().strip()
-        IA_SECRET = fh.readline().strip()
-else:
-    IA_SUPPORT = False
-    IA_ACCESS = None
-    IA_SECRET = None
-
 EMAIL_ADDRESS = "doctordos@gmail.com"
 
 LETTERS = (
