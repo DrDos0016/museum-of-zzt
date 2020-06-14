@@ -268,7 +268,7 @@ def main():
             }
 
         # Compare data and replace the zip if needed
-        if (new_info[zip_name]["md5"] != info["md5"]) or (new_info[zip_name]["file_count"] != info["file_count"]):
+        if (new_info[zip_name]["md5"] != info["md5"]) or (new_info[zip_name]["file_count"] != info["file_count"]) or ("force" in sys.argv):
             print(zip_name, "HAS CHANGED")
 
             # Replace any zips that need to be replaced
