@@ -14,12 +14,11 @@ import requests
 from twitter import *
 from PIL import Image
 
-sys.path.append("/var/projects/museum")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
 from museum_site.file import File
-from museum_site.constants import DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST
+from museum_site.constants import DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST, SITE_ROOT
 
 import zookeeper
 
@@ -35,8 +34,8 @@ from blacklist import BLACKLISTED_FILES, BLACKLISTED_BOARDS, BOARD_TITLE_BLACKLI
 def main():
 
     POST = True if "NOPOST" not in sys.argv else False
-    CRON_ROOT = "/var/projects/museum/tools/crons/"
-    ROOT = "/var/projects/museum"
+    CRON_ROOT = os.path.join(SITE_ROOT, "tools", "crons")
+    ROOT = SITE_ROOT
     QUEUE = os.path.join(CRON_ROOT, "woz_queue.txt")
     APRIL = True if datetime.now().strftime("%m-%d") == "04-01" else False
 
