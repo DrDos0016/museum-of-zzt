@@ -214,6 +214,9 @@ async def zzt(ctx):
                 discord_post,
                 file=discord.File(image, filename="wozzt.png")
             )
+        else:
+            print("ERROR:")
+            print(WOZZT_URL, "raised status", resp.status_code)
     else:
         print(status.get("REASON"))
         if status.get("RESPONSE"):
