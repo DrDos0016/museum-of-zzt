@@ -65,7 +65,7 @@ def main():
     print("[3/3] Backing up museum", datetime.now())
     print("Compressing...")
     tar_name = os.path.join(BACKUPS, today + "_museum.tar.gz")
-    command = "tar --exclude='.git' --exclude='backups/*' --exclude='log/*' --exclude='temp/*' --exclude='venv' --exclude='zgames' -czf {} -C {} museum".format(
+    command = "tar --exclude='.git' --exclude='backups/*' --exclude='log/*' --exclude='temp/*' --exclude='venv' --exclude='zgames' -czf {} -C {} museum-of-zzt".format(
         tar_name,
         PROJECTS,
     )
