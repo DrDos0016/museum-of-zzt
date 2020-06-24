@@ -390,11 +390,21 @@ def set_screenshot(request, pk):
 
     if request.POST.get("save"):
         src = SITE_ROOT + "/museum_site/static/data/temp.png"
-        dst =  SITE_ROOT + "/museum_site/static/images/screenshots/" + file.letter + "/" + file.filename[:-4] + ".png"
+        dst = SITE_ROOT + "/museum_site/static/images/screenshots/" + file.letter + "/" + file.filename[:-4] + ".png"
         shutil.copyfile(src, dst)
 
         file.screenshot = file.filename[:-4] + ".png"
         file.save()
+    elif request.POST.get("b64img"):
+        raw = request.POST.get("b64img").replace("data:image/png;base64,", "", 1)
+        from PIL import Image
+        from io import BytesIO
+        import base64
+
+        image = Image.open(BytesIO(base64.b64decode(raw)))
+        image = image.crop((0, 0, 480, 350))
+        image.save(SITE_ROOT + "/museum_site/static/images/screenshots/" + file.letter + "/" + file.filename[:-4] + ".png")
+
 
     if os.path.isfile(SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")):
         os.remove(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])

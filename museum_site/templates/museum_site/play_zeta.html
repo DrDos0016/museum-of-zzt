@@ -159,6 +159,18 @@ $(document).ready(function (){
 
 });
 </script>
+{% if request.user.is_staff %}
+<script>
+// Staff functions
+$(document).ready(function (){
+    $("#debug-screenshot").click(function (){
+        data_url = document.getElementById("zzt_canvas").toDataURL();
+        $("#b64img").val(data_url);
+        $("#screenshot-submit").click();
+    });
+});
+</script>
+{% endif %}
 {% endblock %}
 
 {% block world_content %}
@@ -177,6 +189,14 @@ $(document).ready(function (){
     <button id="zoom-in" class="zoom" value="+"{% if zeta_player_scale == 2 %} disabled{% endif %}>+</button>
     <button id="fullscreen">Fullscreen</button>
     {% if not components.advanced %}<button id="advanced-settings">Advanced Settings</button>{% endif %}
+    {% if request.user.is_staff %}
+    <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.id}}">
+        {% csrf_token %}
+        <button id="debug-screenshot">Set Screenshot</button>
+        <input type="hidden" name="b64img" id="b64img">
+        <input type="submit" id="screenshot-submit" style="display:none">
+    </form>
+    {% endif %}
 </div>{% endif %}
 
 {% if components.players %}

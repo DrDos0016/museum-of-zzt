@@ -86,7 +86,7 @@
 
     <div class="col">
         <b>Current (Cached?) Screenshot</b><br>
-        <img src="{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}">
+        <img src="{% static file.screenshot_url %}">
     </div>
 </div>
 
@@ -95,6 +95,10 @@
     {% csrf_token %}
     <input type="submit" name="save" id="save" value="Save Screenshot">
 </form>
+
+<hr>
+
+<canvas id="zzt_canvas" width="640" height="350"></canvas>
 
 </section>
 {% endblock %}
