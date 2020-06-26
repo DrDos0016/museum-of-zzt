@@ -11,6 +11,7 @@ BLACKLISTED_FILES = [
     2064,  # M*****a R***s SE
     1496,  # B******! (Author's request)
     2542,  # E**e K****e M****m-M***k! (Author's request)
+    1539, # F*x F***e F**e (Racial caricatures, edgy sexual opinions)
     493,  # G***D P**t 1! (Author's request)
     494,  # G***D P**t 2! (Author's request)
     2246,  # G***D S********k! (Author's request)
