@@ -91,7 +91,7 @@ def main():
         # Select a random zip
         # - Zip must have a ZZT World in it and be published
         # - Zip must not have modified graphics
-        qs = File.objects.filter(details__in=[DETAIL_ZZT]).exclude(details__in=[DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST]).order_by("?")
+        qs = File.objects.filter(details__in=[DETAIL_ZZT]).exclude(details__in=[DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST], author__icontains="_ry0suke_").order_by("?")
 
         # Filter out blacklisted files
         for file_obj in qs:
