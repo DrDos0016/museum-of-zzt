@@ -51,8 +51,8 @@ class WoZZT_Queue(models.Model):
         self.uuid = str(uuid.uuid4())
         self.category = category
 
-        #qs = File.objects.filter(details__in=[DETAIL_ZZT]).exclude(details__in=[DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST], author__icontains="_ry0suke_").order_by("?")
-        qs = File.objects.filter(pk=1319)
+        qs = File.objects.filter(details__in=[DETAIL_ZZT]).exclude(details__in=[DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST], author__icontains="_ry0suke_").order_by("?")
+        #qs = File.objects.filter(pk=1319)
 
         # Find first non-banned file
         for f in qs:
