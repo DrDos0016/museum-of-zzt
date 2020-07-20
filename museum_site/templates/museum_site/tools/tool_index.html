@@ -1,0 +1,20 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Tools</h1>
+
+<ul>
+    <li><a href="{% url 'scan' %}">Museum Scan</a></li>
+    <li><a href="{% url 'audit_zeta_config'">Audit Zeta Config</a></li>
+    <li><a href="{% url 'worlds_of_zzt' %}">WoZZT Queue</a></li>
+</ul>
+
+</section>
+{% endblock %}
