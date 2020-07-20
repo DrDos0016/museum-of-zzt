@@ -1,3 +1,4 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from .common import *
@@ -1024,6 +1025,7 @@ def zeta_live(request):
     response.write(temp_zip.getvalue())
     return response
 
+@staff_member_required
 def worlds_of_zzt_queue(request):
     data = {"title": "Worlds of ZZT Queue"}
     category = request.GET.get("category", "wozzt")
