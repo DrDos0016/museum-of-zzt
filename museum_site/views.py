@@ -1024,6 +1024,36 @@ def zeta_live(request):
     response.write(temp_zip.getvalue())
     return response
 
+def worlds_of_zzt_queue(request):
+    data = {"title": "Worlds of ZZT Queue"}
+    category = request.GET.get("category", "wozzt")
+
+    if request.user.is_staff:
+        if request.POST.get("action"):
+            if request.POST["action"] == "roll":
+                count = request.POST.get("count")
+                category = request.POST.get("category")
+                title = True if category == "tuesday" else False
+
+                for x in range(0, int(count)):
+                    WoZZT_Queue().roll(category=category, title_screen=title)
+
+            elif request.POST["action"] == "set-priority":
+                pk = int(request.POST.get("id"))
+                entry = WoZZT_Queue.objects.get(pk=pk)
+                entry.priority = int(request.POST.get("priority"))
+                entry.save()
+
+            elif request.POST["action"] == "delete":
+                pk = int(request.POST.get("id"))
+                entry = WoZZT_Queue.objects.get(pk=pk)
+                entry.delete_image()
+                entry.delete()
+
+    data["queue"] = WoZZT_Queue.objects.filter(category=category).order_by("-priority", "id")
+    data["queue_size"] = len(data["queue"])
+    return render(request, "museum_site/wozzt-queue.html", data)
+
 
 def zeta_launcher(request, letter=None, filename=None, components=["controls", "instructions", "credits", "advanced", "players"]):
     data = {"title": "Zeta Launcher"}

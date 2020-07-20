@@ -7,6 +7,7 @@ from .comment import Comment
 from .file import File
 from .detail import Detail
 from .review import Review
+from .wozzt_queue import WoZZT_Queue
 from .zeta_config import Zeta_Config
 
 admin.site.register(File)
@@ -14,4 +15,5 @@ admin.site.register(Article)
 admin.site.register(Detail)
 admin.site.register(Review)
 admin.site.register(Alias)
+admin.site.register(WoZZT_Queue)
 admin.site.register(Zeta_Config)

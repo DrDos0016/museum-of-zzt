@@ -185,6 +185,9 @@ urlpatterns = [
         ),
     url(r"^search$", museum_site.views.search, name="search"),
 
+    # World of ZZT
+    url(r"^worlds-of-zzt$", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
+
     # Uploads
     url(r"^upload$", museum_site.views.upload, name="upload"),
 
@@ -209,6 +212,7 @@ urlpatterns = [
     url(r"^github$", museum_site.views.redir, {"url": "https://github.com/DrDos0016/z2"}),
 
     # Tools
+    url(r"^tools$", museum_site.tools.tool_index, name="tool_index"),
     url(r"^tools/(?P<pk>[0-9]+)$", museum_site.tools.tool_list, name="tool_list"),
     url(r"^tools/mirror/(?P<pk>[0-9]+)$", museum_site.tools.mirror, name="mirror"),
     url(r"^tools/publish/(?P<pk>[0-9]+)$", museum_site.tools.publish, name="publish"),

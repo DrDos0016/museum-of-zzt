@@ -312,6 +312,13 @@ def scan(request):
 
 
 @staff_member_required
+def tool_index(request):
+    data = {"title": "Tool Index"}
+    data["file"] = {"id": 1}
+    return render(request, "museum_site/tools/tool_index.html", data)
+
+
+@staff_member_required
 def tool_list(request, pk):
     """ Returns page listing tools available for a file and file information """
     data = {
