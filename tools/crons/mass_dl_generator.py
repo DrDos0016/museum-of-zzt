@@ -281,7 +281,7 @@ def main():
 
         # Remove the zip
         try:
-            os.remove(os.path.join(SITE_ROOT, "tools", "crons", "{}.zip".format(zip_name)))
+            os.remove(os.path.join(SITE_ROOT, "temp", "{}.zip".format(zip_name)))
         except:
             continue
 
