@@ -35,6 +35,9 @@ needs to be changed in order to download/play files.
 
 Sorry!
 
+As I return to various files which are using the old /var/projects/museum path I am making changes to make sure things work from any directory as the project's root folder.
+For your own files it's advised to instead set the environment variable PYTHONPATH to include the directory you've cloned this repository into.
+
 ## Non-Repository Content
 
 I generally avoid including *binary* content in the Museum repository which isn't in some way "mine".
@@ -82,3 +85,7 @@ tools/crons/private.py needs to have Twitter API credentials as well as Zookeepe
 ### Discord Bot
 
 The Worlds of ZZT Discord bot requires a token to authenticate itself. Create a file `discord/private.py` and include a variable named `TOKEN` with your token to run the bot.
+
+### Django Admin
+
+The Django administration (accessible at /admin) requires that a user with access to it exists. One can be created from the commandline with `python manage.py createsuperuser`.
