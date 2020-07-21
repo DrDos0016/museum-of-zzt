@@ -59,13 +59,18 @@
 {% block style %}{% endblock %}
 </head>
 
-<body class="grid-root">
+<body class="grid-root" id="top">
+
+<nav id="low-res-shortcuts" class="cp437 c">
+    <div class="nav-link"><a href="#top-links">▼ Site navigation ▼</a></div>
+</nav>
 
 <header id="logo-area">
     <a href="/" id="logo"></a>
 </header>
 
 <nav id="top-links" class="cp437">
+    <div class="nav-link"><a href="#top">Top of page</a></div>
     <div class="nav-link"><a href="{% url 'about_zzt' %}"><span class="key">A</span> About<span class="optional"> ZZT</span></a></div>
     <div class="nav-link"><a href="{% url 'upload' %}"><span class="key">U</span> Upload</a></div>
     <div class="nav-link"><a href="http://zzt.org/fora"><span class="key">Z</span> <span class="optional"> z2 </span>Forums</a></div>

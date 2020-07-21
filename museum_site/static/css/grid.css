@@ -168,6 +168,8 @@ input[type=number]
     grid-gap:14px 8px;
 }
 
+#low-res-shortcuts { display:none; }
+
 #logo-area
 {
     grid-area: logo;

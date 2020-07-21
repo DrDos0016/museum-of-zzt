@@ -3,6 +3,7 @@
 {
     display:grid;
     grid-template-areas:
+    "low-res low-res"
     "content content"
     "links links"
     "left right"
@@ -11,6 +12,19 @@
     grid-template-columns:1fr 1fr;
     grid-template-rows:repeat(4, auto);
     justify-items:stretch;
+}
+
+#low-res-shortcuts
+{
+    grid-area:low-res;
+    display:block;
+    width:100%;
+}
+
+#low-res-shortcuts .nav-link
+{
+    font-size:42px;
+    line-height:42px;
 }
 
 #sidebar-left
