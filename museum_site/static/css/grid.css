@@ -263,6 +263,8 @@ input[type=number]
     color:#000;
 }
 
+#top-link-div { display:none }
+
 /* Adjust special links on low-res devices */
 @media (max-width:1499px) {
     .grid-root
@@ -489,7 +491,8 @@ a.inline[target=_blank]::after
 #worlds-block form
 {
     border:0px;
-    padding:0px;
+    padding:1px;
+    border-top:1px dashed #AAA;
 }
 
 input[name=q]

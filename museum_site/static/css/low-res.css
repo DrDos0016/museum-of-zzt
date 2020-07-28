@@ -49,6 +49,8 @@
 
 #wozzt-block, #downloads-block {margin-bottom: 0px; }
 
+#top-link-div { display:block; }
+
 .overview-block
 {
     border:1px solid #000;
