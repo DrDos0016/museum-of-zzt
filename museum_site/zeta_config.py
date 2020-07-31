@@ -31,7 +31,6 @@ class Zeta_Config(models.Model):
 
     def category_as_text(self):
         categories = ["Recommended", "Alternative", "File Specific"]
-        print(self.category, "is category!")
         return categories[int(self.category)]
 
     def user_configure(self, params):
