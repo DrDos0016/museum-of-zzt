@@ -1018,7 +1018,9 @@ def zeta_live(request):
 
     # Create new zip
     with zipfile.ZipFile(temp_zip, "w") as mem_zip:
-        mem_zip.writestr(fname, modded_file)
+        # Using the basename of the filepath within the zip allows playing
+        # something in a folder. It's hacky, but works.
+        mem_zip.writestr(os.path.basename(fname), modded_file)
 
     response = HttpResponse(content_type="application/octet-stream")
     response["Content-Disposition"] = "attachment; filename=TEST.ZIP"
