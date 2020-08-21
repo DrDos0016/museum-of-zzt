@@ -1185,6 +1185,16 @@ def zeta_launcher(request, letter=None, filename=None, components=["controls", "
     else:
         data["zeta_config"] = Zeta_Config.objects.get(pk=1)  # TODO make this a constant
 
+    # Extra work for custom fonts
+    if data["zeta_config"].name == "Custom Font - Generic":
+        generic_font = ""
+        zip_file = zipfile.ZipFile(os.path.join(data["file"].phys_path()))
+        files = zip_file.namelist()
+        for f in files:
+            if f.lower().endswith(".com"):
+                generic_font = f
+        data["zeta_config"].commands = data["zeta_config"].commands.replace("{font_file}", generic_font)
+
     # Override for "Live" Zeta edits
     if request.GET.get("live"):
         data["zeta_live"] = True
