@@ -450,7 +450,7 @@ def file(request, letter, filename, local=False):
             zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
             files = zip_file.namelist()
             files.sort(key=str.lower)
-            data["zip_info"] = zip_file.infolist()
+            data["zip_info"] = sorted(zip_file.infolist(), key=lambda k: k.filename.lower())
 
             # Filter out directories (but not their contents)
             for f in files:

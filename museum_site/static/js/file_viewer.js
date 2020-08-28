@@ -249,6 +249,43 @@ var World = function (data) {
         this.idx += bytes * 2;
         return output;
     };
+
+    this.lock_check = function ()
+    {
+        this.locks = [];
+
+        // Regular Lock
+        for (var idx in this.flags)
+        {
+            if (this.flags[idx].toUpperCase() == "SECRET")
+                this.locks.push("Regular Lock");
+        }
+
+        // Super Lock
+        var last_idx = this.boards.length - 1;
+        if (this.boards[last_idx].title == ":c" && this.boards[last_idx].corrupt)
+            this.locks.push("Super Lock");
+
+        // Save Lock
+        if (this.save)
+            this.locks.push("Save Lock");
+
+
+        if (this.locks)
+            return this.locks;
+        else
+            return ["None"];
+    }
+
+    this.locks_as_string = function ()
+    {
+        var output = "";
+        for (var idx in this.locks)
+        {
+            output += this.locks[idx] + ", ";
+        }
+        return output.slice(0, -2);
+    }
 };
 
 var switch_board = function (e)
@@ -619,7 +656,8 @@ function parse_world(type, data)
     {
         world.z = world.read(2); // z-counter
     }
-    // End Parsing World information
+
+    // End Parsing (basic) World information
 
     // Parse Boards
     world.idx = ENGINE.first_board_index;
@@ -627,6 +665,8 @@ function parse_world(type, data)
     {
         world.boards.push(parse_board(world));
     }
+
+    world.lock_check(); // Boards needs to be parsed to check for Super Locks
 
     if (world.brd)
         var world_kind = "Board";
@@ -660,6 +700,8 @@ function parse_world(type, data)
         <tr><td>Torch Cycles:</td><td>${world.torch_cycles}</td></tr>
         <tr><td>Energizer Cycles:</td><td>${world.energizer_cycles}</td></tr>
         <tr><td>Time Elapsed:</td><td>${world.time_passed}</td></tr>
+        <tr><td>Save:</td><td>${(world.save ? "Yes" : "No")}</td></tr>
+        <tr><td>Lock:</td><td>${world.locks_as_string()}</td></tr>
     `;
     output += `</table>`;
 
