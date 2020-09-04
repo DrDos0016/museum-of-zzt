@@ -1139,14 +1139,19 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     padding-right:8px;
 }
 
+#analysis .fv
+{
+    margin-bottom:7px;
+}
+
+#analysis .fv-hidden, #analysis .fv-hidden-row
+{
+    display:none;
+}
+
 #file-tabs .selected, #zip-name.selected { background:#619F9F; }
 #analysis .toggle { display:none; }
 #file-list ul li.code-match { padding-left:3ch; }
-
-#analysis #search-table
-{
-    margin-top:7px;
-}
 
 #analysis #search-table input
 {

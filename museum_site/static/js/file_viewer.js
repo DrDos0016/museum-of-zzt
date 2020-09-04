@@ -209,6 +209,7 @@ var World = function (data) {
     this.hex = data;                    // World file as hex string
     this.idx = 0;                       // Index of world file data
     this.flags = [];                    // List of flags
+    this.unterminated_flags = [];       // List of unterminated flags
     this.boards = [];                   // List of boards
 
     // World Methods
@@ -270,11 +271,8 @@ var World = function (data) {
         if (this.save)
             this.locks.push("Save Lock");
 
-
-        if (this.locks)
-            return this.locks;
-        else
-            return ["None"];
+        if (this.locks.length == 0)
+            this.locks = ["None"];
     }
 
     this.locks_as_string = function ()
@@ -383,7 +381,10 @@ function pull_file()
         if (ext == "zzt" || ext == "sav" || ext == "szt" || ext == "mwz")
         {
             if (ext == "sav")
-                format = identify_save_type(data);
+            {
+                //format = identify_save_type(data);
+                format = "zzt";
+            }
             else
                 format = (ext != "szt") ? "zzt" : "szt";
 
@@ -531,7 +532,10 @@ function load_local_file()
         var ext = file["name"].slice(-3).toLowerCase();
 
         if (ext == "sav")
-            identify_save_type(data);
+        {
+            //identify_save_type(data);
+            var format = "zzt";
+        }
 
 
         var format = (ext != "szt") ? "zzt" : "szt";
@@ -629,7 +633,9 @@ function parse_world(type, data)
         world.read(2); // Unused bytes
         world.score = world.read(2);
         world.name_length = world.read(1);
-        world.name = world.str_read(ENGINE.max_world_length).substr(0,world.name_length);
+        world.unterminated_name = world.str_read(ENGINE.max_world_length);
+        world.name = world.unterminated_name.substr(0,world.name_length);
+
     }
     else if (type == "szt")
     {
@@ -644,8 +650,9 @@ function parse_world(type, data)
     // Parse Flags
     for (var x = 0; x < ENGINE.max_flags; x++)
     {
-        var len = world.read(1);                              // Read flag length
-        world.flags.push(world.str_read(20).substr(0,len));   // Read flag name
+        var len = world.read(1); // Read flag length
+        world.unterminated_flags.push(world.str_read(20)) // Read flag name
+        world.flags.push(world.unterminated_flags[x].substr(0,len));
     }
 
     world.time_passed = world.read(2);
@@ -657,6 +664,8 @@ function parse_world(type, data)
         world.z = world.read(2); // z-counter
     }
 
+    world.unused = world.str_read(14);
+    world.watermark = world.str_read((ENGINE.first_board_index - world.idx) / 2);
     // End Parsing (basic) World information
 
     // Parse Boards
@@ -690,6 +699,7 @@ function parse_world(type, data)
     var output = `<table class='fv col' name='world-table'>
         <tr><td>Format:</td><td>${type.toUpperCase()} ${world_kind}</td></tr>
         <tr><td>Name:</td><td>${world.name}</td></tr>
+        <tr class='fv-hidden-row'><td>Unterminated Name:</td><td>${world.unterminated_name}</td></tr>
         <tr><td>Boards:</td><td>${world.board_count + 1}</td></tr>
         <tr><td>Health:</td><td>${world.health}</td></tr>
         <tr><td>Ammo:</td><td>${world.ammo}</td></tr>
@@ -701,11 +711,17 @@ function parse_world(type, data)
         <tr><td>Energizer Cycles:</td><td>${world.energizer_cycles}</td></tr>
         <tr><td>Time Elapsed:</td><td>${world.time_passed}</td></tr>
         <tr><td>Save:</td><td>${(world.save ? "Yes" : "No")}</td></tr>
-        <tr><td>Lock:</td><td>${world.locks_as_string()}</td></tr>
     `;
+
+    if (world.locks)
+        output += `<tr><td>Lock:</td><td>${world.locks_as_string()}</td></tr>`;
+
+    if (world.watermark.replace(/\u0000/g, ""))
+        output += `<tr><td>Watermark:</td><td>${world.watermark}</td></tr>`;
+
     output += `</table>`;
 
-    output += `<table class='fv col' name='flag-table'>`;
+    output += `<table class='fv' name='flag-table'>`;
     for (var idx in world.flags)
     {
         if (world.flags[idx])
@@ -717,8 +733,17 @@ function parse_world(type, data)
         <tr><td>ZZT-OOP Search:</td><td><input name="code-search"><button id="code-search-submit" type="button">Search</button> <button id="code-search-reset" type="button">Reset</button></tr>
     </table>`;
 
+    output += `<a class="jsLink" id="show-unterminated">Show unterminated values</a>`;
+
+    output += `<table class='fv fv-hidden' name='unterminated-flag-table'>`;
+    for (var idx in world.unterminated_flags)
+    {
+        output += `<tr><td>Flag ${idx}:</td><td>${world.unterminated_flags[idx]}</td></tr>`;
+    }
+    output += `</table>`;
+
     $("#world-info").html(output);
-    bind_search();
+    bind_world_widgets();
     return world;
 }
 
@@ -1739,10 +1764,18 @@ function code_search_reset()
     $("li.code-match").remove();
 }
 
-function bind_search()
+function show_unterminated()
+{
+    $(this).hide();
+    $("#world-info .fv-hidden").show();
+    $("#world-info .fv-hidden-row").css("display", "table-row");
+}
+
+function bind_world_widgets()
 {
     $("#code-search-submit").click(code_search);
     $("#code-search-reset").click(code_search_reset);
+    $("#show-unterminated").click(show_unterminated);
     return true;
 }
 
