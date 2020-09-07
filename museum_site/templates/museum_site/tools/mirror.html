@@ -33,7 +33,7 @@ var check_launch_file = function (){
     var val = $("select[name=launch]").val().toUpperCase();
     console.log(val);
 
-    if (val.indexOf(".ZZT") == -1)
+    if (val.indexOf(".ZZT") == -1 && val.indexOf(".SZT") == -1)
         $("#launch-field").addClass("error");
     else
         $("#launch-field").removeClass("error");
