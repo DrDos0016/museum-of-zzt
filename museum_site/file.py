@@ -87,7 +87,7 @@ class File(models.Model):
         max_length=80, blank=True, null=True, default=None
     )
     company = models.CharField(
-        max_length=80, default="", blank=True, null=True
+        max_length=80, default="", blank=True,
     )
     description = models.TextField(null=True, blank=True, default="")
     review_count = models.IntegerField(
