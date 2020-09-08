@@ -277,6 +277,7 @@ BANNED_FILES = [
     2540,  #M****m B***s 4 (Harassing)
     2087,  #M****m B***s 1 (Harassing)
     2084,  #M****m B***s 2 (Harassing)
+    1823,  #P******e P****e (Nudity)
     1077,  #S**n (Plenty of N-bombs)
     1933,  #S (Some impressively detailed nudity)
     2010,  #S*****u (Racial caricatures)
