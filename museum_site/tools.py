@@ -137,11 +137,11 @@ def mirror(request, pk):
             package = PACKAGE_PROFILES[int(request.POST.get("package", 0))]
 
             # Advanced settings
-            zip_name = package["prefix"] + f.filename
-
             if request.POST.get("upload_name"):
                 upload_name = request.POST["upload_name"]
+                zip_name = upload_name + ".zip"
             else:
+                zip_name = package["prefix"] + f.filename
                 upload_name = zip_name[:-4]
 
             # Copy the base package zip
