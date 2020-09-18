@@ -217,13 +217,14 @@ def browse(
         data["files"] = File.objects.filter(details__id__in=details).distinct()
         if letter:
             data["files"] = data["files"].filter(letter=letter)
-        data["files"] = data["files"].order_by(*sort)[
+        data["files"] = data["files"].order_by(*sort)
+        data["count"] = data["files"].count()
+
+        # Limit files to the current page
+        data["files"] = data["files"][
             (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
         ]
-        data["count"] = File.objects.filter(details__id__in=details)
-        if letter:
-            data["count"] = data["count"].filter(letter=letter)
-        data["count"] = data["count"].count()
+
         data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
         data["page_range"] = range(1, data["pages"] + 1)
         data["prev"] = max(1, data["page"] - 1)
