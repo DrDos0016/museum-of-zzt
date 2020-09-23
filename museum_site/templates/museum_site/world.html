@@ -6,6 +6,14 @@
 {% if file and not local%}
 <div class="file-header">
     <h1>{{file.title}}</h1>
+    {% if multifile %}
+    <br>
+    <select id="alt-file-listing" name="associated_file">
+        <option value="{{file.filename}}">Other associated files...</option>
+        {% for zgame in zgames %}
+            {% if zgame.id != file.id %}<option value="{{zgame.filename}}">{{zgame.title}}</option>{% endif %}
+        {% endfor %}
+    </select>{% endif %}
     {% if debug %} <span class="debug"><a href="/admin/museum_site/file/{{file.id}}/change/">Edit {{file.id}}</a> | <a href="/tools/{{file.id}}">Tools {{file.id}}</a></span>{% endif %}
 </div>
 <div class="file-links">

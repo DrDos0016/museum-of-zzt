@@ -942,6 +942,12 @@ form .field .genre-checklist
 }
 
 .file-header { grid-area: header;}
+
+#alt-file-listing
+{
+    max-width:25%;
+}
+
 #expand-contract { grid-area: expand;}
 
 #content h1

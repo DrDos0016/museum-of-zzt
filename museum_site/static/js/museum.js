@@ -92,6 +92,11 @@ $(document).ready(function (){
         }
     });
 
+    // File association selection
+    $("#alt-file-listing").change(function (){
+        window.location = "?alt_file=" + $(this).val();
+    });
+
     $("code.zzt-oop").each(function (){
         var raw = $(this).text();
         var processed = syntax_highlight(raw);
