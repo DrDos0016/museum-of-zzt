@@ -199,16 +199,19 @@ def mirror(request, pk):
         if DEBUG:
             upload_name = "test-" + upload_name
 
-        print("I'm gonna upload:", os.path.join(TEMP_PATH, zip_name))
         file_path = os.path.join(TEMP_PATH, zip_name)
 
-        r = upload(
-            upload_name,
-            files=[file_path],
-            metadata=meta,
-            access_key=IA_ACCESS,
-            secret_key=IA_SECRET,
-        )
+        try:
+            r = upload(
+                upload_name,
+                files=[file_path],
+                metadata=meta,
+                access_key=IA_ACCESS,
+                secret_key=IA_SECRET,
+            )
+        except HTTPError as e:
+            data["status"] = "FAILURE"
+            data["archive_resp"] = r
 
         if r[0].status_code == 200:
             data["status"] = "SUCCESS"
