@@ -82,15 +82,15 @@ def article_directory(request, category="all", page_num=1):
 
 def article_view(request, id, page=0):
     """ Returns an article pulled from the database """
-    id = int(id)
-    if id == 1:
+    a_id = int(id)
+    if a_id == 1:
         uri = request.build_absolute_uri()
         if uri.lower().endswith(".zip"):
             return article(request, "1", uri.split("/")[-1])
 
     slug = request.path.split("/")[-1]
     page = int(page)
-    data = {"id": id}
+    data = {"id": a_id}
     data["custom_layout"] = "article"
 
     if request.GET.get("secret") is None:
@@ -102,7 +102,7 @@ def article_view(request, id, page=0):
         data["article"] = get_object_or_404(
             Article,
             Q(published=PUBLISHED_ARTICLE) | Q(published=UPCOMING_ARTICLE),
-            pk=id
+            pk=a_id
         )
         data["private_disclaimer"] = True
 
@@ -113,7 +113,7 @@ def article_view(request, id, page=0):
             Q(published=PUBLISHED_ARTICLE) |
             Q(published=UPCOMING_ARTICLE) |
             Q(published=UNPUBLISHED_ARTICLE),
-            pk=id,
+            pk=a_id,
         )
         data["private_disclaimer"] = True
     data["page"] = page
@@ -129,6 +129,13 @@ def article_view(request, id, page=0):
     if zgames:
         # TODO: Handle an article w/ multiple files (ex Zem + Zem 2)
         data["file"] = zgames[0]
+        if len(zgames) > 1:
+            data["multifile"] = True
+            data["zgames"] = zgames
+
+            if request.GET.get("alt_file"):
+                #data["file"] = zgames.get(filename=request.GET["alt_file"])
+                data["file"] = get_object_or_404(zgames, filename=request.GET["alt_file"])
 
     # Split article to current page
     data["article"].content = data["article"].content.split(
