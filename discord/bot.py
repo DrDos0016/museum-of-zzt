@@ -20,7 +20,7 @@ except ImportError:
     sys.exit()
 
 SERVER = None
-PUBLIC_ROLES = ["ZZTer", "MZXer", "He/Him", "She/Her", "They/Them"]
+PUBLIC_ROLES = ["ZZTer", "MZXer", "He/Him", "She/Her", "They/Them", "Stream-Alerts"]
 COMMANDS = ["addrole", "help", "removerole", "scroll", "zzt"]
 CHANNELS = []
 LAST_TIME = {

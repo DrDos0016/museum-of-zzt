@@ -16,7 +16,9 @@ List of commands:
   !zzt         Shows a random ZZT board. (15 sec. cooldown)
 
 List of roles:
-  ZZTer       MZXer       He/Him      She/Her     They/Them
+  ZZTer       MZXer
+  He/Him      She/Her     They/Them
+  Stream-Alerts
 
 All commands are restricted to the #bots channel, excluding !zzt which also functions in #worlds.
 ```"""
