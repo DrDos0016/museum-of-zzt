@@ -874,27 +874,25 @@ function parse_board(world)
             stat.x = world.read(1);
             stat.y = world.read(1);
             stat.tile_idx = ((stat.y-1) * ENGINE.board_width) + (stat.x-1);
-            stat.x_step = world.read(2);
-            stat.y_step = world.read(2);
-            stat.cycle = world.read(2);
+            stat.x_step = signed(world.read(2));
+            stat.y_step = signed(world.read(2));
+            stat.cycle = signed(world.read(2));
             stat.param1 = world.read(1);
             stat.param2 = world.read(1);
             stat.param3 = world.read(1);
-            stat.follower = world.read(2);
-            stat.leader = world.read(2);
+            stat.follower = signed(world.read(2));
+            stat.leader = signed(world.read(2));
             stat.under_id = world.read(1);
             stat.under_color = world.read(1);
             stat.pointer = world.read(4);
-            stat.oop_idx = world.read(2);
-            stat.oop_length = world.read(2);
+            stat.oop_idx = signed(world.read(2));
+            stat.oop_length = signed(world.read(2));
+            stat.direction = step_direction(stat.x_step, stat.y_step);
 
             if (world.format == "zzt")
                 world.read(8); // Padding
 
-            if (stat.oop_length > 32767) // Pre-bound element
-                stat.oop_length = 0;
-
-            if (stat.oop_length)
+            if (stat.oop_length > 0)
             {
                 stat.oop = world.str_read(stat.oop_length);
                 oop_read += stat.oop_length;
@@ -903,9 +901,13 @@ function parse_board(world)
                 stat.oop = stat.oop.replace(/</g, "&lt;");
                 stat.oop = stat.oop.replace(/>/g, "&gt;");
             }
-            else
+            else if (stat.oop_length == 0)
             {
                 stat.oop = "";
+            }
+            else
+            {
+                stat.oop = ""; // Pre-bound
             }
 
             board.stats.push(stat);
@@ -1047,7 +1049,9 @@ function draw_board()
     {
         var sliced = hash_coords.slice(1);
         var split = sliced.split(",");
-        var e = {"data":{"x":split[0], "y":split[1]}};
+        var e = {"data":{"x":split[0], "y":split[1], "idx":-1}};
+        if (split[2])
+            e["data"]["idx"] = split[2];
         stat_info(e);
     }
 }
@@ -1097,14 +1101,21 @@ function stat_info(e)
         var x = parseInt(raw_x / (TILE_WIDTH * SCALE)) + 1;
         var y = parseInt(raw_y / (TILE_HEIGHT * SCALE)) + 1;
         var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
+        var stat_idx = -1 // Sentinel to just use first match
     }
     else
     {
         var x = e.data.x;
         var y = e.data.y;
+        var stat_idx = e.data.idx;
     }
+
+
     var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
     var hash_coords = "#" + x + "," + y;
+
+    if (stat_idx != -1)
+        hash_coords += "," + stat_idx;
 
     // Check for out of bounds coordinates
     if (tile_idx < 0 || tile_idx >= ENGINE.tile_count)
@@ -1118,12 +1129,13 @@ function stat_info(e)
 
     // Iterate over stat elements
     var stat = null;
-    for (var stat_idx = 0; stat_idx < world.boards[board_number].stats.length; stat_idx++)
+    for (var idx = 0; idx < world.boards[board_number].stats.length; idx++)
     {
-        if (world.boards[board_number].stats[stat_idx].x == x && world.boards[board_number].stats[stat_idx].y == y)
+        if (world.boards[board_number].stats[idx].x == x && world.boards[board_number].stats[idx].y == y)
         {
-            stat = world.boards[board_number].stats[stat_idx];
-            break;
+            stat = world.boards[board_number].stats[idx];
+            if ((stat_idx == -1) || (stat_idx == world.boards[board_number].stats[idx].idx))
+                break;
         }
     }
 
@@ -1187,7 +1199,7 @@ function stat_info(e)
         </tr>
         <tr>
             <th>${p1name}</td><td>${param1_display}</td>
-            <th>X/Y-Step</td><td>(${stat.x_step}, ${stat.y_step})</td>
+            <th>X/Y-Step</td><td>(${stat.x_step}, ${stat.y_step}) ${stat.direction}</td>
         </tr>
         <tr>
             <th>${p2name}</td><td>${param2_display}</td>
@@ -1603,7 +1615,7 @@ function render_stat_list()
         else
             stat_list += `<li>`;
         stat_list += `
-            <a class='jsLink' name='stat-link' data-x='${stat.x}' data-y='${stat.y}'>
+            <a class='jsLink' name='stat-link' data-x='${stat.x}' data-y='${stat.y}' data-idx='${stat.idx}'>
             (${("00"+stat.x).slice(-2)}, ${("00"+stat.y).slice(-2)}) [${(("0000"+(stat.tile_idx+1)).slice(-4))}]
             ${stat_name}</a> `;
         if (stat.oop.length)
@@ -1612,7 +1624,7 @@ function render_stat_list()
     }
     $("#stat-info ol").html(stat_list);
     $("a[name=stat-link]").click(function (){
-        var e = {"data":{"x":$(this).data("x"), "y":$(this).data("y")}};
+        var e = {"data":{"x":$(this).data("x"), "y":$(this).data("y"), "idx":$(this).data("idx")}};
         stat_info(e);
     });
 
@@ -1662,7 +1674,6 @@ function create_board_list()
 
         var formatted_num = (x >= 10 ? x : `&nbsp;` + x);
         var formatted_title = world.boards[x].title ? world.boards[x].title.replace(/</g, "&lt;").replace(/>/g, "&gt;") : `-untitled`;
-        console.log(formatted_title);
         board_list += `
             <div name='board_idx'>${formatted_num}.</div>
             <div name='board_name'>${formatted_title}
@@ -1877,4 +1888,31 @@ function identify_save_type(data)
         return "szt";
     else
         return null;
+}
+
+function step_direction(x, y)
+{
+    var vector = [x, y].toString();
+    var directions = {
+        "0,0":"Idle",
+        "1,0":"East",
+        "1,1":"Southeast",
+        "0,1":"South",
+        "-1,1":"Southwest",
+        "-1,0":"West",
+        "-1,-1":"Northwest",
+        "0,-1":"North",
+        "1,-1":"Northeast",
+    };
+    var output = directions[vector];
+    if (output == undefined)
+        return "";
+    return output;
+}
+
+function signed(i)
+{
+    if (i > 32767)
+        return i - 65536;
+    return i;
 }
