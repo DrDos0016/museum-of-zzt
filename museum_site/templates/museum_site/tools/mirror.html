@@ -55,6 +55,7 @@ $(document).ready(function (){
 
 {% if archive_resp %}
 <h2>{{status}} - {{archive_resp.status_code}}</h2>
+<p>{{archive_resp}</p>
 <a href="https://archive.org/details/{{file.archive_name}}" target="_blank">Archive.org Mirror</a>
 {% endif %}
 
@@ -119,6 +120,12 @@ $(document).ready(function (){
     <h2>Advanced</h2>
     <div class="field">
         <label for="creator">Custom Upload Name:<br>
+        <span class="sub">4-100 chars. alphanumerics, underscores, periods, and hypens (ex: zzt_town)</span>
+        </label>
+        <input name="upload_name" value="">
+    </div>
+    <div class="field">
+        <label for="creator">Custom Zipfile Name:<br>
         <span class="sub">4-100 chars. alphanumerics, underscores, periods, and hypens (ex: zzt_town)</span>
         </label>
         <input name="upload_name" value="">
