@@ -9,6 +9,7 @@ from urllib.parse import quote
 
 import requests
 from django.db import models
+from django.db.models import Q
 from twitter import *
 from PIL import Image
 
