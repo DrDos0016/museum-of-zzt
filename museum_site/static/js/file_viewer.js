@@ -1135,7 +1135,10 @@ function stat_info(e)
         {
             stat = world.boards[board_number].stats[idx];
             if ((stat_idx == -1) || (stat_idx == world.boards[board_number].stats[idx].idx))
+            {
+                stat_idx = idx;
                 break;
+            }
         }
     }
 
