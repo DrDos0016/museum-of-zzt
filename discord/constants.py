@@ -523,4 +523,16 @@ and use it for a balling ball.
 _______________________________________""",
 "source":"https://museumofzzt.com/file/t/Test.zip?file=TEST.ZZT&board=8#31,3"
 },
+
+{
+"text":"""This room is made by Nadir for this game
+$ONLY
+If you copy this board into one of your
+games, I will track you down and kill you
+with a humongous chainsaw. Thank you.
+
+This scroll is (c) by Crazy Panda in 2002
+""",
+"source":"https://museumofzzt.com/file/s/magicflamingo.zip?file=MagFlam.ZZT&board=31#33,3"
+},
 ]
