@@ -190,6 +190,7 @@ urlpatterns = [
 
     # Uploads
     url(r"^upload$", museum_site.views.upload, name="upload"),
+    url(r"^upload/complete$", museum_site.views.upload_complete, name="upload_complete"),
 
     # Zeta Live
     url(r"^zeta-live$", museum_site.views.zeta_live),

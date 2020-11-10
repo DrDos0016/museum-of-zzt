@@ -8,8 +8,9 @@
 {% if mode == "browse" %}<h1>Browse - {{letter|upper}}</h1>{% endif %}
 {% if mode == "search" %}<h1>Search - {{q}}</h1>{% endif %}
 {% else %}
-<h1>{{category|default:"Uhh"}}</h1>
+<h1>{{category|default:"Default Category?"}}</h1>
 {% endif %}
+
 {% if files %}
 {% include "museum_site/blocks/file_page_block.html" %}
 

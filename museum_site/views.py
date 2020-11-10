@@ -957,40 +957,79 @@ def upload(request):
     # Convert POST genres to a list to easily recheck boxes on failed upload
     data["requested_genres"] = request.POST.getlist("genre")
 
-    if request.POST.get("action") == "upload" and request.FILES.get("file"):
-        upload = File()
-        upload_resp = upload.from_request(request)
+    if request.POST.get("action") == "upload":
 
-        if upload_resp.get("status") != "success":
-            data["error"] = upload_resp["msg"]
-            return render(request, "museum_site/upload.html", data)
+        # Edit an existing upload
+        if request.POST.get("token"):
+            upload_info = Upload.objects.get(edit_token=request.POST["token"])
+            upload = upload_info.file
 
-        # Upload limit
-        if request.FILES.get("file").size > UPLOAD_CAP:
-            data["error"] = "Uploaded file size is too large. Contact staff for a manual upload."
+            # Check that the upload isn't published
+            if DETAIL_UPLOADED not in list(upload.details.all().values_list(flat=True)):
+                # TODO: Properly error out
+                return redirect("/")
 
-            return render(request, "museum_site/upload.html", data)
+            upload_resp = upload.from_request(request, editing=True)
+            if upload_resp.get("status") != "success":
+                data["error"] = upload_resp["msg"]
+                return render(request, "museum_site/upload.html", data)
 
-        try:
-            upload.full_clean(exclude=["publish_date"])
-            upload.save(new_upload=True)
+            try:
+                upload.full_clean(exclude=["publish_date"])
+                upload.save(new_upload=True)
 
-            # Flag it as an upload
-            upload.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
+                upload_info.from_request(request, upload.id, save=True)
 
-            # Calculate upload queue size
-            request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
+                return redirect("/upload/complete?edit_token={}".format(upload_info.edit_token))
+            except ValidationError as e:
+                data["results"] = e
+                print(data["results"])
 
-            return redirect("/uploaded#" + upload.filename)
-        except ValidationError as e:
-            data["results"] = e
-            print(data["results"])
+        # Create a new upload
+        elif request.FILES.get("file"):
+            upload = File()
+            upload_resp = upload.from_request(request)
+
+            if upload_resp.get("status") != "success":
+                data["error"] = upload_resp["msg"]
+                return render(request, "museum_site/upload.html", data)
+
+            # Upload limit
+            if request.FILES.get("file").size > UPLOAD_CAP:
+                data["error"] = "Uploaded file size is too large. Contact staff for a manual upload."
+
+                return render(request, "museum_site/upload.html", data)
+
+            try:
+                upload.full_clean(exclude=["publish_date"])
+                upload.save(new_upload=True)
+
+                # Flag it as an upload
+                upload.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
+
+                # Create upload info model
+                upload_info = Upload()
+                upload_info.from_request(request, upload.id, save=True)
+
+                # Calculate upload queue size
+                request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
+
+                return redirect("/upload/complete?edit_token={}".format(upload_info.edit_token))
+            except ValidationError as e:
+                data["results"] = e
+                print(data["results"])
+
     return render(request, "museum_site/upload.html", data)
 
 
-def uploaded_redir(request, filename):
-    zgame = File.objects.get(filename=filename)
-    return redirect(zgame.file_url())
+def upload_complete(request, edit_token=None):
+    data = {}
+
+    # If there's an edit token, gather that information
+    if request.GET.get("edit_token"):
+        data["your_upload"] = get_object_or_404(Upload, edit_token=request.GET["edit_token"])
+        data["file"] = File.objects.get(pk=data["your_upload"].file_id)
+    return render(request, "museum_site/upload_complete.html", data)
 
 
 def zeta_live(request):

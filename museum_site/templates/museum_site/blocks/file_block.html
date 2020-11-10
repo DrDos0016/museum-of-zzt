@@ -2,8 +2,6 @@
 <div class="overview-block" id="{{file.filename}}" data-pk="{{file.id}}">
     <h1 class="title"><a href="{{file.file_url}}">{{file.title|default:"NO NAME"}}</a></h1>
     <img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">
-
-
     <div class="basic-info">
         <div class="field">
             <div class="key">Author{{file.author_list|pluralize}}</div><div class="value">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>

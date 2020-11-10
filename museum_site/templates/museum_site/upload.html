@@ -5,6 +5,7 @@
 #upload-form
 {
     margin-top:14px;
+    border-top: 1px dashed #000;
 }
 #desc
 {
@@ -21,6 +22,11 @@ input[name=today]
 {
     max-width:20%;
     margin-left:8px;
+}
+
+.overview-block
+{
+    margin-bottom:14px;
 }
 </style>
 {% endblock %}
@@ -128,9 +134,26 @@ $(document).ready(function (){
     </div>
 </div>
 
+{% if request.GET.edit %}
+<h3>Notes On Editing an Existing Upload</h3>
+<p>Editing an existing upload requires the "Edit Token" that was given when the file was first uploaded.</p>
+
+<p>If you are only editing metadata and not uploading a replacement zip, you may leave the "File" field blank to continue using the current zip file.</p>
+
+<p>Note that all other information must be re-entered.</p>
+{% endif %}
+
 <form method="POST" enctype="multipart/form-data" id="upload-form">
 {% csrf_token %}
 <input type="hidden" name="action" value="upload">
+{% if request.GET.edit %}
+<div class="field">
+    <label for="token">Edit Token:<br>
+        <span class="sub">The token that identifies which upload should be modified</span>
+    </label>
+    <input id="token" name="token" value="{{request.GET.edit_token}}" maxlength="16">
+</div>
+{% endif %}
 <div class="field">
     <label>File:<br>
         <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must no larger than <b>{{UPLOAD_CAP|filesizeformat}}</b></span>
@@ -182,11 +205,36 @@ $(document).ready(function (){
     </label>
     <textarea id="desc" name="desc">{{request.POST.desc}}</textarea>
 </div>
-
+<div class="field" style="display:none">
+    <label for="desc">Notifications:<br>
+        <span class="sub"></span>
+    </label>
+    <select name="contact" id="contact">
+        <option value="0"{% if request.POST.contact == "0" %} selected{% endif %}>Do not contact me about this upload.</option>
+        <option value="1"{% if request.POST.contact == "1" %} selected{% endif %}>Contact me if this upload is rejected.</option>
+        <option value="2"{% if request.POST.contact == "2" %} selected{% endif %}>Contact if this upload is rejected or upload is published</option>
+    </select>
+</div>
+<div class="field" style="display:none">
+    <label for="desc">Uploader E-mail:<br>
+        <span class="sub">Used only if you've requested notifications about this upload. Leave blank otherwise.</span>
+    </label>
+    <input name="email" id="email" value="{{request.POST.email}}">
+</div>
+<div class="field">
+    <label for="desc">Upload Notes:<br>
+        <span class="sub">Notes for the uploader. Consider anything entered in this field to be public.</span>
+    </label>
+    <textarea id="notes" name="notes">{{request.POST.desc}}</textarea>
+</div>
 <div class="field">
     <button type="submit" id="submit-upload-button">Upload File</button>
 </div>
 </form>
+{% if not request.GET.edit %}
+<h2>Advanced</h2>
+<a href="?edit=1">Edit an existing upload</a> (Requires Edit Token)
+{% endif %}
 
 </section>
 {% endblock %}
