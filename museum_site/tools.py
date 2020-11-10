@@ -12,6 +12,7 @@ from zipfile import ZipFile
 from .models import *
 
 from internetarchive import upload
+from PIL import Image
 
 try:
     import zookeeper
@@ -83,6 +84,12 @@ def add_livestream(request, pk):
 
             a.preview = "articles/streams/" + str(a.id) + ".png"
             a.save()
+
+        # Chop off the sidebar if needed
+        if request.POST.get("480crop"):
+            image = Image.open(file_path)
+            image = image.crop((0, 0, 480, 350))
+            image.save(file_path)
 
         # Associate the article with the relevant file
         data["file"].articles.add(a)
@@ -407,7 +414,6 @@ def set_screenshot(request, pk):
         file.save()
     elif request.POST.get("b64img"):
         raw = request.POST.get("b64img").replace("data:image/png;base64,", "", 1)
-        from PIL import Image
         from io import BytesIO
         import base64
 
