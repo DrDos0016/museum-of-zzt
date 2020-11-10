@@ -104,9 +104,6 @@ urlpatterns = [
     url(r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.file,
         name="file"
         ),
-    url(r"^file/uploaded/(?P<filename>.*)$", museum_site.views.uploaded_redir,
-        name="redir_file"
-        ),
     url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.zeta_launcher,
         {"components": ["credits", "controls", "instructions", "players"]},
         name="play"
