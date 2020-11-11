@@ -1688,8 +1688,7 @@ function create_board_list()
         var formatted_title = world.boards[x].title ? world.boards[x].title.replace(/</g, "&lt;").replace(/>/g, "&gt;") : `-untitled`;
         board_list += `
             <div name='board_idx'>${formatted_num}.</div>
-            <div name='board_name'>${formatted_title}
-            </div>
+            <div name='board_name'>${formatted_title}</div>
         `;
 
         if (world.starting_board == x)

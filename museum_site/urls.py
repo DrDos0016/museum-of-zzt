@@ -197,8 +197,10 @@ urlpatterns = [
     ###########################################################################
 
     # AJAX
-    url(r"^ajax/get_zip_file$", museum_site.ajax.get_zip_file),
     url(r"^ajax/deep-search/phase-(?P<phase>[0-9])$", museum_site.ajax.deep_search),
+    url(r"^ajax/get_zip_file$", museum_site.ajax.get_zip_file),
+    url(r"^ajax/wozzt_queue_add$", museum_site.ajax.wozzt_queue_add),
+
 
     # Redirects
     url(r"^twitter$", museum_site.views.redir, {"url": "https://twitter.com/worldsofzzt"}),
