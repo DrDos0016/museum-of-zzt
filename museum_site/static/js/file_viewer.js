@@ -1196,26 +1196,35 @@ function stat_info(e)
 
         output += `
         <tr>
-            <th>Under ID</td><td>${ELEMENTS[stat.under_id].name}</td>
-            <th>Under Color</td><td>${color_desc(stat.under_color)}</td>
+            <th>Under ID</th><td>${ELEMENTS[stat.under_id].name}</td>
+            <th>Under Color</th><td>${color_desc(stat.under_color)}</td>
 
         </tr>
         <tr>
-            <th>${p1name}</td><td>${param1_display}</td>
-            <th>X/Y-Step</td><td>(${stat.x_step}, ${stat.y_step}) ${stat.direction}</td>
+            <th>${p1name}</th><td>${param1_display}</td>
+            <th>X/Y-Step</th><td>(${stat.x_step}, ${stat.y_step}) ${stat.direction}</td>
         </tr>
         <tr>
-            <th>${p2name}</td><td>${param2_display}</td>
-            <th>Leader</td><td>${stat.leader}</td>
+            <th>${p2name}</th><td>${param2_display}</td>
+            <th>Leader</th><td>${stat.leader}</td>
         </tr>
         <tr>
-            <th>${p3name}</td><td>${param3_display}</td>
-            <th>Follower</td><td>${stat.follower}</td>
+            <th>${p3name}</th><td>${param3_display}</td>
+            <th>Follower</th><td>${stat.follower}</td>
         </tr>
-        <tr>
-            <th>OOP Length</td><td>${stat.oop_length}</td>
-            <th>Instruction</td><td>${stat.oop_idx}</td>
-        </tr>
+        <tr>`
+
+        // Pre-bound stat / OOP Length
+        var oop_length_text = stat.oop_length;
+        if (stat.oop_length < 0)
+        {
+            output += `<th>Bound Stat</th><td>${Math.abs(stat.oop_length)}`;
+        }
+        else
+        {
+            output += `<th>OOP Length</th><td>${oop_length_text}</td>`;
+        }
+        output += `<th>Instruction</th><td>${stat.oop_idx}</td></tr>
         </table>
 
         ZZT-OOP style:
