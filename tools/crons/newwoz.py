@@ -16,7 +16,7 @@ def main():
     if now.weekday() == 1:  # Tuesday
         entry = WoZZT_Queue.objects.filter(category="tuesday")
     else:
-        entry = WoZZT_Queue.objects.all(category="wozzt")
+        entry = WoZZT_Queue.objects.filter(category="wozzt")
 
     entry = entry.order_by("-priority", "id")[0]
     entry.send_tweet()
