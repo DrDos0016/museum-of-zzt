@@ -3,6 +3,7 @@ import io
 import random
 import sys
 import time
+import urllib
 
 import discord
 import requests
@@ -194,9 +195,9 @@ async def zzt(ctx):
                 )
             discord_post += "`[{}] - \"{}\"` \n"
             discord_post += (
-                "Explore: <" + data["museum_link"] + "?file=" +
+                urllib.parse.quote("Explore: <" + data["museum_link"] + "?file=" +
                 data["world"] + "&board=" +
-                str(data["board"]["number"]) + ">\n"
+                str(data["board"]["number"]) + ">\n")
             )
             if data["file"]["archive_name"]:
                 discord_post += (
