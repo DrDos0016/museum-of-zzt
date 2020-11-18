@@ -3,7 +3,7 @@
 {% block scripts %}
 <script>
 $(document).ready(function (){
-    $("#advanced-search-form button").click(function (){
+    $("#deep-search-form button").click(function (){
         if ($(this).text() == "All")
             $("input[name=details]").prop("checked", "checked");
         else if ($(this).text() == "None")
@@ -16,6 +16,24 @@ $(document).ready(function (){
             $("input[name=details][value=15]").prop("checked", "checked");
         }
     });
+
+    $("#submit-search-button").click(function (e){
+        e.preventDefault();
+        $("#search-debug").val("Beginning search...\n");
+        //$("#deep-search-form").hide();
+
+        $.ajax({
+            url:"/ajax/deep-search/phase-1",
+            data:{
+                "title":$("#title").val(),
+                "author":$("#author").val(),
+                "query":$("#query").val(),
+            }
+        }).done(function (resp){
+           console.log("Done", resp);
+           $("#search-debug").val($("#search-debug").val() + resp + "\n");
+        });
+    });
 });
 </script>
 {% endblock %}
@@ -23,9 +41,17 @@ $(document).ready(function (){
 {% block content %}
 <section id="content" class="block">
 
-<h1>Advanced Search</h1>
+<h1>Deep Search</h1>
 
-<form method="GET" action="{% url 'search' %}" id="advanced-search-form">
+<div class="content-warning">
+    <div class="text">
+    <b class="heading">DISCLAIMER</b>
+    <p>This feature is currently very experimental. It is highly recommended to narrow down your search
+    as much as possible to minimize processing power used and time spent performing a deep search.</p>
+    </div>
+</div>
+
+<form id="deep-search-form">
 <div class="field">
     <label for="title">Title contains:</label>
         <span class="sub"></span>
@@ -135,12 +161,19 @@ $(document).ready(function (){
         <option value="release"{% if request.GET.sort == "release" %} selected {% endif %}>Release Date</option>
     </select>
 </div>
+<div class="field">
+    <label for="query">Text to find:<br>
+    </label>
+    <input id="query" name="query" value="" maxlength="32">
+</div>
 
 <div class="field">
-    <button type="submit" id="submit-search-button">Search</button>
+    <button type="submit" id="submit-search-button">Perform a Deep Search</button>
 </div>
-<input type="hidden" name="advanced" value="1">
+<input type="hidden" name="deep" value="1">
 </form>
+
+<textarea id="search-debug"></textarea>
 
 </section>
 {% endblock %}
