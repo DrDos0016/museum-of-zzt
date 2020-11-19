@@ -2,7 +2,7 @@
 
 {% block style %}
 <style>
-#upload-form
+#content form
 {
     margin-top:14px;
     border-top: 1px dashed #000;
@@ -27,6 +27,11 @@ input[name=today]
 .overview-block
 {
     margin-bottom:14px;
+}
+
+#content form .field > label
+{
+    flex:1 1 33%;
 }
 </style>
 {% endblock %}
@@ -109,6 +114,26 @@ $(document).ready(function (){
 </div>
 {% endif %}
 
+{% if request.GET.edit %}
+<h3>Notes On Editing an Existing Upload</h3>
+<p>Editing an existing upload requires the <i>Edit Token</i> that was given when the file was first uploaded.</p>
+
+<p>If you are only editing metadata and not uploading a replacement zip, you may leave the "File" field blank to continue using the current zip file.</p>
+
+<form id="edit-upload-form">
+<div class="field">
+    <label for="token">Edit Token:<br>
+        <span class="sub">The token that identifies which upload should be modified</span>
+    </label>
+    <input id="token" name="token" value="{{request.GET.edit_token}}" maxlength="16">
+</div>
+<div class="field">
+    <button type="submit" class="full-width-submit">Begin Editing</button>
+</div>
+</form>
+{% endif %}
+
+{% if not request.GET.edit %}
 <div class="overview-block">
     <h1 class="title"><span id="pre-title">&lt;Title&gt;</span></h1>
     <img src="/static/images/screenshots/no_screenshot.png" class="screenshot-thumb" alt="{{file.screenshot}}">
@@ -134,29 +159,13 @@ $(document).ready(function (){
     </div>
 </div>
 
-{% if request.GET.edit %}
-<h3>Notes On Editing an Existing Upload</h3>
-<p>Editing an existing upload requires the "Edit Token" that was given when the file was first uploaded.</p>
-
-<p>If you are only editing metadata and not uploading a replacement zip, you may leave the "File" field blank to continue using the current zip file.</p>
-
-<p>Note that all other information must be re-entered.</p>
-{% endif %}
-
 <form method="POST" enctype="multipart/form-data" id="upload-form">
 {% csrf_token %}
 <input type="hidden" name="action" value="upload">
-{% if request.GET.edit %}
-<div class="field">
-    <label for="token">Edit Token:<br>
-        <span class="sub">The token that identifies which upload should be modified</span>
-    </label>
-    <input id="token" name="token" value="{{request.GET.edit_token}}" maxlength="16">
-</div>
-{% endif %}
+<input id="token" name="token" type="hidden" value="{{request.GET.token}}" maxlength="16">
 <div class="field">
     <label>File:<br>
-        <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must no larger than <b>{{UPLOAD_CAP|filesizeformat}}</b></span>
+        <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must no larger than <b>{{UPLOAD_CAP|filesizeformat}}</b>.</span>
     </label>
     <input id="file" name="file" type="file" accept=".zip">
 </div>
@@ -225,16 +234,16 @@ $(document).ready(function (){
     <label for="desc">Upload Notes:<br>
         <span class="sub">Notes for the uploader. Consider anything entered in this field to be public.</span>
     </label>
-    <textarea id="notes" name="notes">{{request.POST.desc}}</textarea>
+    <textarea id="notes" name="notes">{{request.POST.notes}}</textarea>
 </div>
 <div class="field">
-    <button type="submit" id="submit-upload-button">Upload File</button>
+    <button type="submit" id="submit-upload-button" class="full-width-submit">Upload File</button>
 </div>
 </form>
-{% if not request.GET.edit %}
-<h2>Advanced</h2>
-<a href="?edit=1">Edit an existing upload</a> (Requires Edit Token)
+    {% if not request.GET.token %}
+    <h2>Advanced</h2>
+    <a href="?edit=1">Edit an existing upload</a> (Requires Edit Token)
+    {% endif %}
 {% endif %}
-
 </section>
 {% endblock %}

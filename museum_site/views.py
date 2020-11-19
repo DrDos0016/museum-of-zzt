@@ -127,14 +127,12 @@ def article_view(request, id, page=0):
 
     zgames = data["article"].file_set.all()
     if zgames:
-        # TODO: Handle an article w/ multiple files (ex Zem + Zem 2)
         data["file"] = zgames[0]
         if len(zgames) > 1:
             data["multifile"] = True
             data["zgames"] = zgames
 
             if request.GET.get("alt_file"):
-                #data["file"] = zgames.get(filename=request.GET["alt_file"])
                 data["file"] = get_object_or_404(zgames, filename=request.GET["alt_file"])
 
     # Split article to current page
@@ -958,7 +956,6 @@ def upload(request):
     data["requested_genres"] = request.POST.getlist("genre")
 
     if request.POST.get("action") == "upload":
-
         # Edit an existing upload
         if request.POST.get("token"):
             upload_info = Upload.objects.get(edit_token=request.POST["token"])
@@ -1018,6 +1015,19 @@ def upload(request):
             except ValidationError as e:
                 data["results"] = e
                 print(data["results"])
+
+    # If you intend to edit a file, pull it's information
+    if request.GET.get("token"):
+        upload_info = Upload.objects.get(edit_token=request.GET["token"])
+        request.POST = {
+            "title": upload_info.file.title,
+            "author": upload_info.file.author,
+            "company": upload_info.file.company,
+            "release_date": str(upload_info.file.release_date),
+            "desc": upload_info.file.description,
+            "notes": upload_info.notes,
+        }
+        data["requested_genres"] = upload_info.file.genre.split("/")
 
     return render(request, "museum_site/upload.html", data)
 
