@@ -175,6 +175,7 @@ def browse(
     # Determine the viewing method
     data["view"] = get_view_format(request)
 
+    # Default sorting
     sort = SORT_CODES[request.GET.get("sort", "title").strip()]
 
     # Handle special paths
@@ -193,8 +194,13 @@ def browse(
     elif request.path == "/uploaded":
         data["mode"] = "uploaded"
         data["category"] = "Upload Queue"
+        data["extra_sort_methods"] = [("Upload Date", "uploaded")]
         # Calculate upload queue size
         request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
+
+        # Sort by upload date by default
+        if not request.GET.get("sort"):
+            sort = SORT_CODES["uploaded"]
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")

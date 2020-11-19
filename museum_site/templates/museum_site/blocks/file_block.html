@@ -32,12 +32,12 @@
             <div class="field">
                 <div class="key">Boards</div><div class="value">{% if file.total_boards %}<span title="Playable/Total - Values are not 100% accurate">{{file.playable_boards}} / {{file.total_boards}}</span>{% endif %}</div>
             </div>
-            {% if debug %}<div class="field debug">
-                <div class="key">Debug</div><div class="value">{{file.id}} / <a href="/admin/museum_site/file/{{file.id}}/change/">Edit</a> / <a href="/tools/{{file.id}}">Tools</a></div>
-            </div>
             {% if file.is_uploaded %}<div class="field">
                 <div class="key">Upload Date</div><div class="value">{{file.upload_date}}</span></div>
             </div>{% endif %}
+            {% if debug %}<div class="field debug">
+                <div class="key">Debug</div><div class="value">{{file.id}} / <a href="/admin/museum_site/file/{{file.id}}/change/">Edit</a> / <a href="/tools/{{file.id}}">Tools</a></div>
+            </div>
             {% endif %}
     </div>
     {% if show_description %}
