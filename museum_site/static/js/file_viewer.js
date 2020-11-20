@@ -1342,13 +1342,11 @@ $(window).bind("load", function() {
         // File navigation
         if (e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next
         {
-            console.log("NEXT FILE");
             if (match = $(".zip-content.selected").nextAll(".zip-content"))
                 match[0].click();
         }
         else if (e.shiftKey && (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K)) // Previous
         {
-            console.log("PREV FILE");
             if (match = $(".zip-content.selected").prevAll(".zip-content"))
                 match[0].click();
         }
