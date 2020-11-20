@@ -1309,13 +1309,13 @@ $(window).bind("load", function() {
         if ($("input[name=q]").is(":focus") || $("input[name=code-search]").is(":focus"))
             return false;
 
-        if (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J) // Next Board
+        if (! e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next Board
         {
             // Need to iterate over these until a non-hidden one is found.
             if (match = $(".board.selected").nextAll(".board"))
                 match[0].click();
         }
-        else if (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K) // Previous Board
+        else if (! e.shiftKey && (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K)) // Previous Board
         {
             if (match = $(".board.selected").prevAll(".board"))
                 match[0].click();
@@ -1339,6 +1339,19 @@ $(window).bind("load", function() {
         else if (e.keyCode == 100 && $("a.board-link[data-direction=exit_west]")) // Board to West
                 $("a.board-link[data-direction=exit_west]").click();
 
+        // File navigation
+        if (e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next
+        {
+            console.log("NEXT FILE");
+            if (match = $(".zip-content.selected").nextAll(".zip-content"))
+                match[0].click();
+        }
+        else if (e.shiftKey && (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K)) // Previous
+        {
+            console.log("PREV FILE");
+            if (match = $(".zip-content.selected").prevAll(".zip-content"))
+                match[0].click();
+        }
     });
 
     // History
