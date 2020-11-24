@@ -18,7 +18,7 @@
             <div class="key">Author</div><div class="value">{{article.author}}</div>
         </div>
         <div class="field">
-            <div class="key">Date</div><div class="value">{{article.date}}</div>
+            <div class="key">Date</div><div class="value">{% if article.date|date:"Y-m-d" != '1970-01-01' %}{{article.date|date:"N jS"}}{% endif %}</div>
         </div>
         <div class="field">
             <div class="key">Summary</div><div class="value">{{article.summary}}</div>
