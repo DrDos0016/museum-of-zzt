@@ -335,6 +335,7 @@ def tool_list(request, pk):
         "title": "Tools",
         "file": File.objects.get(pk=pk)
     }
+    data["upload_info"] = Upload.objects.filter(file_id=data["file"]).first()
 
     # Simple validation tools
     data["valid_letter"] = True if data["file"].letter in LETTERS else False
