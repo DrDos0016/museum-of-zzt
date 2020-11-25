@@ -1,12 +1,18 @@
-from django.http import HttpResponse
-
-from .models import *
-from .common import *
-
+import base64
+import uuid
 import zipfile
 import binascii
 import base64
 import os
+
+from io import BytesIO
+
+from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
+from PIL import Image
+
+from .models import *
+from .common import *
 
 
 def get_zip_file(request):
@@ -90,7 +96,9 @@ def get_zip_file(request):
 
         return response
     else:
-        return HttpResponse("This file type is not currently supported for embedded content.")
+        return HttpResponse(
+            "This file type is not currently supported for embedded content."
+        )
 
 
 def deep_search(request, phase):
@@ -112,7 +120,9 @@ def deep_search(request, phase):
         for f in qs:
             print(f)
 
-    return HttpResponse("Criteria narrowed to {} files. Beginning search.".format(count))
+    return HttpResponse(
+        "Criteria narrowed to {} files. Beginning search.".format(count)
+    )
 
 
 def debug_file(request):
@@ -120,3 +130,39 @@ def debug_file(request):
         return HttpResponse("Not on production.")
     file = open(request.GET.get("file"), "rb")
     return HttpResponse(binascii.hexlify(file.read()))
+
+
+@staff_member_required
+def wozzt_queue_add(request):
+    resp = "SUCCESS"
+    d = request.POST
+    e = WoZZT_Queue()
+
+    # Create queue object
+    try:
+        e.file_id = int(d["file_id"])
+        e.zzt_file = d["zzt_file"]
+        e.board = int(d["board"])
+        e.board_name = d["board_name"]
+        e.dark = d["dark"]
+        e.zap = int(d["zap"])
+        e.shot_limit = int(d["shot_limit"])
+        e.time_limit = int(d["time_limit"])
+        e.category = d["category"]
+        e.priority = int(d["priority"])
+        e.uuid = str(uuid.uuid4())
+    except ValueError:
+        resp = "FAILED"
+
+    # Save image
+    raw = d["b64img"].replace("data:image/png;base64,", "", 1)
+
+    image = Image.open(BytesIO(base64.b64decode(raw)))
+    filepath = os.path.join(
+        SITE_ROOT, "museum_site", "static", "wozzt-queue", e.uuid + ".png"
+    )
+
+    image.save(filepath)
+    e.save()
+
+    return HttpResponse(resp)

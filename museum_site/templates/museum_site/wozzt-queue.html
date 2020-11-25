@@ -86,7 +86,7 @@ $(document).ready(function (){
 {% endblock %}
 
 {% block content %}
-<section id="content" class="col block">
+<section id="content" class="block">
 <h1>Worlds of ZZT Queue{% if request.user.is_staff %}[STAFF MODE]{% endif %}</h1>
 <p>Category: <b>{{request.GET.category|default:"wozzt"}}</b><br>
 <a href="?category=wozzt">Worlds of ZZT</a> | <a href="?category=tuesday">Title Screen Tuesday</a></p>

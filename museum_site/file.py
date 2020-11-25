@@ -157,9 +157,8 @@ class File(models.Model):
         # Sort genres
         self.genre = slash_separated_sort(self.genre)
 
-        # Create sorted title if not set
-        if self.sort_title == "":
-            self.sort_title = self.sorted_title()
+        # Create sorted title
+        self.sort_title = self.sorted_title()
 
         # Recalculate Article Count
         self.calculate_article_count()
@@ -474,19 +473,22 @@ class File(models.Model):
     def calculate_size(self):
         self.size = os.path.getsize(self.phys_path())
 
-    def from_request(self, request):
+    def from_request(self, request, editing=False):
         upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
 
         if request.method != "POST":
             return False
 
-        # First handle the easy stuff
-        self.filename = str(request.FILES.get("file"))
+        # For editing, force the original zip's filename
+        if str(request.FILES.get("file", "")):
+            if not editing:
+                self.filename = str(request.FILES.get("file"))
+            self.size = int(request.FILES.get("file").size)
+
         self.title = request.POST.get("title")
         self.letter = self.letter_from_title()
         # sort_title handled by saving
         self.author = request.POST.get("author")
-        self.size = int(request.FILES.get("file").size)
         self.release_date = request.POST.get("release_date")
         if self.release_date == "":
             self.release_date = None
@@ -500,37 +502,38 @@ class File(models.Model):
         # SCREENSHOT -- Currently manual
         # DETAILS -- Currently manual
         # Check for a duplicate filename
-        exists = File.objects.filter(filename=self.filename).exists()
-        if exists:
-            return {"status": "error",
-                    "msg": "The chosen filename is already in use."}
+        if str(request.FILES.get("file", "")):
+            dupe = File.objects.filter(filename=self.filename)
+            if dupe and (dupe[0].id != self.id):  # Replace the file for edits
+                return {"status": "error",
+                        "msg": "The chosen filename is already in use."}
 
-        # Save the file to the uploaded folder
-        file_path = os.path.join(upload_directory, self.filename)
-        with open(file_path, 'wb+') as fh:
-            for chunk in request.FILES["file"].chunks():
-                fh.write(chunk)
+            # Save the file to the uploaded folder
+            file_path = os.path.join(upload_directory, self.filename)
+            with open(file_path, 'wb+') as fh:
+                for chunk in request.FILES["file"].chunks():
+                    fh.write(chunk)
 
-        # Check for unsupported compression
-        zip_file = zipfile.ZipFile(os.path.join(file_path))
-        files = zip_file.namelist()
-        zip_info = zip_file.infolist()
-        rezip = False
-        for i in zip_info:
-            if i.compress_type not in [
-                zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED
-            ]:
-                rezip = True
-                break
+            # Check for unsupported compression
+            zip_file = zipfile.ZipFile(os.path.join(file_path))
+            files = zip_file.namelist()
+            zip_info = zip_file.infolist()
+            rezip = False
+            for i in zip_info:
+                if i.compress_type not in [
+                    zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED
+                ]:
+                    rezip = True
+                    break
 
-        # Check if the file needs to be rezipped
-        if rezip:
-            None
-            # TODO This feature should wait until the Museum is on a new server
-            # print("I'm gonna rezip")
+            # Check if the file needs to be rezipped
+            if rezip:
+                None
+                # TODO This feature should wait until the Museum is on a new server
+                # print("I'm gonna rezip")
 
-        # Calculate checksum
-        self.calculate_checksum(file_path)
+            # Calculate checksum
+            self.calculate_checksum(file_path)
 
         # SITE META
         return {"status": "success"}

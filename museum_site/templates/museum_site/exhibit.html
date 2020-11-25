@@ -1,0 +1,179 @@
+{% extends "museum_site/world.html" %}
+{% load static %}
+
+{% block scripts %}
+<script>
+var letter = "{{letter}}";
+var zip = "{{file.filename}}";
+var load_file = "{{load_file|safe}}";
+var load_board = "{{load_board}}";
+var hash_coords = window.location.hash;
+var db_id = {{file.id|default:0}};
+var uploaded = {% if uploaded %}true{% else %}false{% endif %};
+var can_live_edit = {% if file.size < 1048576 %}true{% else %}false{% endif %};
+var custom_charset = "{{custom_charset}}";
+</script>
+<script src="{% static 'js/elements.js' %}?{{BOOT_TS}}"></script>
+<script src="{% static 'js/renderer.js' %}?{{BOOT_TS}}"></script>
+<script src="{% static 'js/runtime.js' %}?{{BOOT_TS}}"></script>
+<script async src="{% static 'js/file_viewer.js' %}?{{BOOT_TS}}"></script>
+
+<script>
+$(document).ready(function (){
+    $(".file-links a").click(function(e) {
+    e.preventDefault();
+    var new_section = $(this).attr("id").split("-link")[0];
+
+    alert("Switching to " + new_section);
+    });
+});
+
+
+</script>
+{% endblock %}
+
+{% block world_content %}
+<div id="fv-main">
+    <div class="output image active" id="image-envelope">
+        <img src="{% static file.screenshot_url|default:'images/no_screenshot.png' %}" class="image" id="fv-image">
+    </div>
+    <div class="output canvas" id="canvas-envelope">
+        <div id="fv-left-sidebar"></div>
+        <canvas id="world-canvas" height="350" width="480"></canvas>
+        <div id="fv-right-sidebar"></div>
+    </div>
+    <div class="output zeta" id="zeta-envelope">
+        Zeta
+    </div>
+    <div class="output audio" id="audio-envelope">
+        <i>Audio formats are not yet supported</i>
+    </div>
+    <div class="output video" id="video-envelope">
+        <i>Video formats are not yet supported</i>
+    </div>
+    <div class="output text" id="text-envelope">
+        <div id="text-body"></div>
+    </div>
+</div>
+
+<div id="zip-name" name="zip-info">{{file.filename}}</div>
+<div id="file-tabs">
+    <div name="world-info">World</div>
+    <div name="board-info">Board</div>
+    <div name="element-info">Element</div>
+    <div name="stat-info">Stats</div>
+    <div name="preferences">Prefs.</div>
+    <div name="help">?</div>
+</div>
+
+<div id="file-list">
+    <ul>
+    <li class="preview-image-link selected" data-img="{% static file.screenshot_url %}">Preview Image</li>
+    {% for file in files %}
+    <li class="zip-content">{{file}}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div id="analysis">
+    <div id="file-data">
+        <div id="world-info" class="toggle"></div>
+        <div id="board-info" class="toggle"></div>
+        <div id="element-info" class="toggle"></div>
+        <div id="stat-info" class="toggle">
+            <a id='stat-toggle' class='jsLink'>Toggle Codeless Stats</a><br>
+            Sort by:
+            <select name="stat-sort">
+                <option value="code">Code Length</option>
+                <option value="coord">Coordinates</option>
+                <option value="name" selected>Name</option>
+                <option value="stat">Stat Index</option>
+            </select>
+            <ol></ol>
+        </div>
+        <div id="preferences" class="toggle">
+            <div class="field">
+                <label for="pref-charset">Charset</label>
+                <select name="charset" id="pref-charset">
+                    <optgroup label="Standard Fonts">
+                        {% for charset in charsets %}<option value="{{charset.0}}">{{charset.1}}</option>{% endfor %}
+                    </optgroup>
+                    <optgroup label="Custom Fonts">
+                        {% for charset in custom_charsets %}<option value="{{charset}}"{% if request.charset == charset %} selected{% endif %}>{{charset|slice:"5:-4"}}{% if file.id|stringformat:"i" == charset|slice:":4" %} (RECOMMENDED){% endif %}</option>
+                        {% endfor %}
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-renderer">Board Rendering</label>
+                <select name="renderer" id="pref-renderer">
+                    <option value="zzt_standard" selected>Standard</option>
+                    <option value="zzt_objects">Object Highlight</option>
+                    <option value="zzt_code">Code Highlight</option>
+                    <option value="zzt_fake">Fake Wall Highlight</option>
+                    <option value="zzt_dark">Dark Board</option>
+                    <option value="zzt_empty">Visible Empties</option>
+                    <option value="zzt_empty_text">Empties as Text</option>
+                    <!--<option value="zzt_torch">Dark Board - Lit Torch</option>TODO-->
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-intensity">High Intensity Backgrounds</label>
+                <select name="intensity" id="pref-intensity">
+                    <option value="high">On</option>
+                    <option value="low" selected>Off</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-invisibles" id="pref-invisibles">Invisible Walls</label>
+                <select name="invisibles">
+                    <option value="revealed">Visible - Revealed</option>
+                    <option value="editor" selected>Visible - Editor</option>
+                    <option value="invisible">Invisible</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-monitors">Monitors</label>
+                <select name="monitors" id="pref-monitors">
+                    <option value="hidden">Hidden - ZZT Style</option>
+                    <option value="m" selected>M - KevEdit Style</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-edges">Board Edges</label>
+                <select name="edges" id="pref-edges">
+                    <option value="hidden" selected>Hidden - ZZT Style</option>
+                    <option value="e">E - KevEdit Style</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="pref-edges">2x Zoom</label>
+                <input name="pref-board-scale" id="board-scale" type="checkbox"{% if request.COOKIES.file_viewer_scale == "2" %} checked{% endif %}>
+            </div>
+        </div>
+
+        <div id="help" class="toggle">
+            <b>Board Navigation</b>
+            <ul>
+                <li>+/J Next board</li>
+                <li>-/K Previous board</li>
+                <li>Double click on a passage (≡) to travel to its destination</li>
+            </ul>
+            <b>Tab Hotkeys</b>
+            <ul>
+                <li>W - World tab</li>
+                <li>B - Board tab</li>
+                <li>E - Element tab</li>
+                <li>S - Stat tab</li>
+                <li>P - Preferences tab</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

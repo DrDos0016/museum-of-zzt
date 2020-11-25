@@ -747,7 +747,7 @@ form .field .board-type-select
 #detail-list label { font-weight:normal; }
 #submit-search-button, #submit-upload-button {width:100%;font-size:larger;}
 
-#upload-form .sub
+.sub
 {
     font-size:medium;
     font-weight:normal;
@@ -755,15 +755,16 @@ form .field .board-type-select
 
 @media (max-width: 1024px)
 {
-    #upload-form .sub
+    .sub
     {
         font-size:smaller;
     }
 }
 
-#upload-form .field > label
+form .full-width-submit
 {
-    flex:1 1 33%;
+    width: 100%;
+    font-size: larger;
 }
 
 form .field .genre-checklist

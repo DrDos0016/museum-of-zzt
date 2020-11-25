@@ -1,0 +1,51 @@
+<hr>
+<style>
+    #queue-priority { width:3ch; text-align:center; }
+</style>
+<script>
+$(document).ready(function (){
+    $("#queue-add").click(function (){
+        $("#queue-output").text("");
+        $("#queue-output").css({opacity: 0});
+        var wozzt_info = {};
+        var queue_board = world.boards[board_number];
+        wozzt_info.file_id = {{file.id|default:"0"}};
+        wozzt_info.zzt_file = filename;
+        wozzt_info.board = board_number;
+        wozzt_info.board_name = queue_board.title;
+        wozzt_info.dark = queue_board.dark;
+        wozzt_info.zap = queue_board.zap;
+        wozzt_info.shot_limit = queue_board.max_shots;
+        wozzt_info.time_limit = queue_board.time_limit;
+        wozzt_info.priority = $("#queue-priority").val();
+        wozzt_info.category = "wozzt";
+        wozzt_info.csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+        wozzt_info.b64img = document.getElementById("world-canvas").toDataURL();
+
+        $.ajax({
+        url:"/ajax/wozzt_queue_add",
+        method:"POST",
+        data:wozzt_info
+        }).done(function (resp){
+            $("#queue-output").text(resp);
+            $("#queue-output").animate({opacity: 1, }, 400);
+        });
+    });
+
+    $("#hide-player").click(function (){
+        var x = world.boards[board_number].stats[0].x - 1;
+        var y = world.boards[board_number].stats[0].y - 1;
+        print(ctx, 32, 0, x, y);
+    });
+});
+</script>
+<b>Staff Functions</b>
+<br><br>
+<div>
+    {% csrf_token %}
+    <input type="button" id="queue-add" value="Add to WoZZT Queue">
+    Priority: <input id="queue-priority" maxlength="2" value="1">
+    <span id="queue-output" class="cp437"></span>
+    <br>
+    <input type="button" id="hide-player" value="Hide Player">
+</div>

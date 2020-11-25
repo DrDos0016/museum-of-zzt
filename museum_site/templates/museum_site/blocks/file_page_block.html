@@ -32,6 +32,9 @@
             <option value="company"{% if request.GET.sort == "company" %} selected {%endif %}>Company</option>
             <option value="rating"{% if request.GET.sort == "rating" %} selected {%endif %}>Rating</option>
             <option value="release"{% if request.GET.sort == "release" %} selected {%endif %}>Release Date</option>
+            {% for k,v in extra_sort_methods %}
+                <option value="{{v}}"{% if request.GET.sort == v %} selected {%endif %}>{{k}}</option>
+            {% endfor %}
         </select>
     </div>
     {% else %}

@@ -1135,7 +1135,10 @@ function stat_info(e)
         {
             stat = world.boards[board_number].stats[idx];
             if ((stat_idx == -1) || (stat_idx == world.boards[board_number].stats[idx].idx))
+            {
+                stat_idx = idx;
                 break;
+            }
         }
     }
 
@@ -1193,26 +1196,35 @@ function stat_info(e)
 
         output += `
         <tr>
-            <th>Under ID</td><td>${ELEMENTS[stat.under_id].name}</td>
-            <th>Under Color</td><td>${color_desc(stat.under_color)}</td>
+            <th>Under ID</th><td>${ELEMENTS[stat.under_id].name}</td>
+            <th>Under Color</th><td>${color_desc(stat.under_color)}</td>
 
         </tr>
         <tr>
-            <th>${p1name}</td><td>${param1_display}</td>
-            <th>X/Y-Step</td><td>(${stat.x_step}, ${stat.y_step}) ${stat.direction}</td>
+            <th>${p1name}</th><td>${param1_display}</td>
+            <th>X/Y-Step</th><td>(${stat.x_step}, ${stat.y_step}) ${stat.direction}</td>
         </tr>
         <tr>
-            <th>${p2name}</td><td>${param2_display}</td>
-            <th>Leader</td><td>${stat.leader}</td>
+            <th>${p2name}</th><td>${param2_display}</td>
+            <th>Leader</th><td>${stat.leader}</td>
         </tr>
         <tr>
-            <th>${p3name}</td><td>${param3_display}</td>
-            <th>Follower</td><td>${stat.follower}</td>
+            <th>${p3name}</th><td>${param3_display}</td>
+            <th>Follower</th><td>${stat.follower}</td>
         </tr>
-        <tr>
-            <th>OOP Length</td><td>${stat.oop_length}</td>
-            <th>Instruction</td><td>${stat.oop_idx}</td>
-        </tr>
+        <tr>`
+
+        // Pre-bound stat / OOP Length
+        var oop_length_text = stat.oop_length;
+        if (stat.oop_length < 0)
+        {
+            output += `<th>Bound Stat</th><td>${Math.abs(stat.oop_length)}`;
+        }
+        else
+        {
+            output += `<th>OOP Length</th><td>${oop_length_text}</td>`;
+        }
+        output += `<th>Instruction</th><td>${stat.oop_idx}</td></tr>
         </table>
 
         ZZT-OOP style:
@@ -1297,13 +1309,13 @@ $(window).bind("load", function() {
         if ($("input[name=q]").is(":focus") || $("input[name=code-search]").is(":focus"))
             return false;
 
-        if (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J) // Next Board
+        if (! e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next Board
         {
             // Need to iterate over these until a non-hidden one is found.
             if (match = $(".board.selected").nextAll(".board"))
                 match[0].click();
         }
-        else if (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K) // Previous Board
+        else if (! e.shiftKey && (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K)) // Previous Board
         {
             if (match = $(".board.selected").prevAll(".board"))
                 match[0].click();
@@ -1327,6 +1339,17 @@ $(window).bind("load", function() {
         else if (e.keyCode == 100 && $("a.board-link[data-direction=exit_west]")) // Board to West
                 $("a.board-link[data-direction=exit_west]").click();
 
+        // File navigation
+        if (e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next
+        {
+            if (match = $(".zip-content.selected").nextAll(".zip-content"))
+                match[0].click();
+        }
+        else if (e.shiftKey && (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K)) // Previous
+        {
+            if (match = $(".zip-content.selected").prevAll(".zip-content"))
+                match[0].click();
+        }
     });
 
     // History
@@ -1676,8 +1699,7 @@ function create_board_list()
         var formatted_title = world.boards[x].title ? world.boards[x].title.replace(/</g, "&lt;").replace(/>/g, "&gt;") : `-untitled`;
         board_list += `
             <div name='board_idx'>${formatted_num}.</div>
-            <div name='board_name'>${formatted_title}
-            </div>
+            <div name='board_name'>${formatted_title}</div>
         `;
 
         if (world.starting_board == x)

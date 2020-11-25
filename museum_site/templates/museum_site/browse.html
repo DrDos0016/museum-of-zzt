@@ -2,14 +2,15 @@
 {% load static %}
 
 {% block content %}
-<section id="content" class="col block">
+<section id="content" class="block">
 <button class="fr contracted" id="expand-contract" title="Toggle sidebars">&larr; &rarr;</button>
 {% if category == "ZZT" %}
 {% if mode == "browse" %}<h1>Browse - {{letter|upper}}</h1>{% endif %}
 {% if mode == "search" %}<h1>Search - {{q}}</h1>{% endif %}
 {% else %}
-<h1>{{category|default:"Uhh"}}</h1>
+<h1>{{category|default:"Default Category?"}}</h1>
 {% endif %}
+
 {% if files %}
 {% include "museum_site/blocks/file_page_block.html" %}
 

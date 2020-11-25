@@ -127,14 +127,12 @@ def article_view(request, id, page=0):
 
     zgames = data["article"].file_set.all()
     if zgames:
-        # TODO: Handle an article w/ multiple files (ex Zem + Zem 2)
         data["file"] = zgames[0]
         if len(zgames) > 1:
             data["multifile"] = True
             data["zgames"] = zgames
 
             if request.GET.get("alt_file"):
-                #data["file"] = zgames.get(filename=request.GET["alt_file"])
                 data["file"] = get_object_or_404(zgames, filename=request.GET["alt_file"])
 
     # Split article to current page
@@ -177,6 +175,7 @@ def browse(
     # Determine the viewing method
     data["view"] = get_view_format(request)
 
+    # Default sorting
     sort = SORT_CODES[request.GET.get("sort", "title").strip()]
 
     # Handle special paths
@@ -195,8 +194,13 @@ def browse(
     elif request.path == "/uploaded":
         data["mode"] = "uploaded"
         data["category"] = "Upload Queue"
+        data["extra_sort_methods"] = [("Upload Date", "uploaded")]
         # Calculate upload queue size
         request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
+
+        # Sort by upload date by default
+        if not request.GET.get("sort"):
+            sort = SORT_CODES["uploaded"]
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
@@ -957,40 +961,91 @@ def upload(request):
     # Convert POST genres to a list to easily recheck boxes on failed upload
     data["requested_genres"] = request.POST.getlist("genre")
 
-    if request.POST.get("action") == "upload" and request.FILES.get("file"):
-        upload = File()
-        upload_resp = upload.from_request(request)
+    if request.POST.get("action") == "upload":
+        # Edit an existing upload
+        if request.POST.get("token"):
+            upload_info = Upload.objects.get(edit_token=request.POST["token"])
+            upload = upload_info.file
 
-        if upload_resp.get("status") != "success":
-            data["error"] = upload_resp["msg"]
-            return render(request, "museum_site/upload.html", data)
+            # Check that the upload isn't published
+            if DETAIL_UPLOADED not in list(upload.details.all().values_list(flat=True)):
+                # TODO: Properly error out
+                return redirect("/")
 
-        # Upload limit
-        if request.FILES.get("file").size > UPLOAD_CAP:
-            data["error"] = "Uploaded file size is too large. Contact staff for a manual upload."
+            upload_resp = upload.from_request(request, editing=True)
+            if upload_resp.get("status") != "success":
+                data["error"] = upload_resp["msg"]
+                return render(request, "museum_site/upload.html", data)
 
-            return render(request, "museum_site/upload.html", data)
+            try:
+                upload.full_clean(exclude=["publish_date"])
+                upload.save(new_upload=True)
 
-        try:
-            upload.full_clean(exclude=["publish_date"])
-            upload.save(new_upload=True)
+                upload_info.from_request(request, upload.id, save=True)
 
-            # Flag it as an upload
-            upload.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
+                return redirect("/upload/complete?edit_token={}".format(upload_info.edit_token))
+            except ValidationError as e:
+                data["results"] = e
+                print(data["results"])
 
-            # Calculate upload queue size
-            request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
+        # Create a new upload
+        elif request.FILES.get("file"):
+            upload = File()
+            upload_resp = upload.from_request(request)
 
-            return redirect("/uploaded#" + upload.filename)
-        except ValidationError as e:
-            data["results"] = e
-            print(data["results"])
+            if upload_resp.get("status") != "success":
+                data["error"] = upload_resp["msg"]
+                return render(request, "museum_site/upload.html", data)
+
+            # Upload limit
+            if request.FILES.get("file").size > UPLOAD_CAP:
+                data["error"] = "Uploaded file size is too large. Contact staff for a manual upload."
+
+                return render(request, "museum_site/upload.html", data)
+
+            try:
+                upload.full_clean(exclude=["publish_date"])
+                upload.save(new_upload=True)
+
+                # Flag it as an upload
+                upload.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
+
+                # Create upload info model
+                upload_info = Upload()
+                upload_info.from_request(request, upload.id, save=True)
+
+                # Calculate upload queue size
+                request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
+
+                return redirect("/upload/complete?edit_token={}".format(upload_info.edit_token))
+            except ValidationError as e:
+                data["results"] = e
+                print(data["results"])
+
+    # If you intend to edit a file, pull it's information
+    if request.GET.get("token"):
+        upload_info = Upload.objects.get(edit_token=request.GET["token"])
+        request.POST = {
+            "title": upload_info.file.title,
+            "author": upload_info.file.author,
+            "company": upload_info.file.company,
+            "release_date": str(upload_info.file.release_date),
+            "desc": upload_info.file.description,
+            "notes": upload_info.notes,
+        }
+        data["requested_genres"] = upload_info.file.genre.split("/")
+
     return render(request, "museum_site/upload.html", data)
 
 
-def uploaded_redir(request, filename):
-    zgame = File.objects.get(filename=filename)
-    return redirect(zgame.file_url())
+def upload_complete(request, edit_token=None):
+    data = {}
+
+    # If there's an edit token, gather that information
+    if request.GET.get("edit_token"):
+        data["your_upload"] = get_object_or_404(Upload, edit_token=request.GET["edit_token"])
+        data["file"] = File.objects.get(pk=data["your_upload"].file_id)
+    return render(request, "museum_site/upload_complete.html", data)
 
 
 def zeta_live(request):

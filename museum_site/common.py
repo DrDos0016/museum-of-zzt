@@ -109,7 +109,8 @@ SORT_CODES = {
     "rating": ["-rating", "sort_title"],
     "release": ["release_date", "sort_title"],
     "published": ["-publish_date", "-id"],
-    "roulette": ["?"]
+    "roulette": ["?"],
+    "uploaded": ["-upload_date", "-id"],
 }
 
 ADV_SEARCH_DEFAULTS = [
