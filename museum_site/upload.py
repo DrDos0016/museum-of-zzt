@@ -67,3 +67,9 @@ class Upload(models.Model):
 
         if save:
             self.save()
+
+    def contact_str(self):
+        return UPLOAD_CONTACT_LIST[self.contact]
+
+    def edit_token_url(self):
+        return self.edit_token
