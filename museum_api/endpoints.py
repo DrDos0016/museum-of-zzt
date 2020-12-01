@@ -1,3 +1,6 @@
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render
+
 import base64
 import random
 
@@ -13,6 +16,7 @@ from museum_site.constants import (
 )
 
 from museum_site.common import *
+from museum_site.constants import *
 
 try:
     import zookeeper
@@ -86,4 +90,81 @@ def worlds_of_zzt(request):
             "archive_link": archive_link,
         }
     }
+    return JsonResponse(output)
+
+def get_file(request):
+    output = {
+        "status": "SUCCESS",
+        "request_time": int(time()),
+        "data": {
+        }
+    }
+
+    f = File.objects.get(pk=int(request.GET["id"]))
+
+    output["data"] = f.jsoned()
+
+    return JsonResponse(output)
+
+def help(request):
+    data = {}
+    return render(request, "museum_api/help.html", data)
+
+def search_files(request):
+    output = {
+        "status": "SUCCESS",
+        "request_time": int(time()),
+        "count": 0,
+        "next_offset": int(request.GET.get("offset", 0)) + PAGE_SIZE,
+        "data": {
+            "results": []
+        }
+    }
+
+    qs = File.objects.all()
+
+    if request.GET.get("title", "").strip():
+        qs = qs.filter(
+            title__icontains=request.GET.get("title", "").strip()
+        )
+    if request.GET.get("author", "").strip():
+        qs = qs.filter(
+            author__icontains=request.GET.get("author", "").strip()
+        )
+    if request.GET.get("filename", "").strip():
+        qs = qs.filter(
+            filename__icontains=request.GET.get(
+                "filename", ""
+            ).replace(
+                ".zip", ""
+            ).strip()
+        )
+    if request.GET.get("company", "").strip():
+        qs = qs.filter(
+            company__icontains=request.GET.get("company", "").strip()
+        )
+    if (request.GET.get("genre", "").strip() and
+            request.GET.get("genre", "") != "Any"):
+        qs = qs.filter(
+            genre__icontains=request.GET.get("genre", "").strip()
+        )
+    if (request.GET.get("year", "").strip() and
+            request.GET.get("year", "") != "Any" and
+            request.GET.get("year", "") != "Unk"):
+        qs = qs.filter(
+            release_date__gte=request.GET.get("year", "1991") + "-01-01",
+            release_date__lte=request.GET.get("year", "2091") + "-12-31"
+        )
+    elif (request.GET.get("year", "").strip() == "Unk"):
+        qs = qs.filter(release_date=None)
+
+
+    sort = SORT_CODES[request.GET.get("sort", "title").strip()]
+    qs = qs.order_by(*sort)[int(request.GET.get("offset", 0)):int(request.GET.get("offset", 0)) + PAGE_SIZE]
+
+    for f in qs:
+        output["data"]["results"].append(f.jsoned())
+
+    output["count"] = len(output["data"]["results"])
+
     return JsonResponse(output)

@@ -1,0 +1,44 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Museum API v1 Help</h1>
+
+<p>Hastily written. Incredibly not thoroghly tested. Incredibly not helpful if you have errors.</p>
+
+<h2>Requests</h2>
+<p>API requests should be sent to: <b>https://museumofzzt.com/api/<i>&lt;version_number&gt;</i>/</b></p>
+
+<p>This is currently <b>v1</b>.</p>
+
+<h2>Parameters</h2>
+
+<p>All parameters are sent using GET. There are no tokens, keys, headers, or authentication required currently.</p>
+
+<h2>Endpoints</h2>
+
+<h3>/get/file</h3>
+<h4>Parameters:</h4>
+<ul>
+    <li><i>id</i>: The id of the File object on the Museum.</li>
+</ul>
+
+<h3>/search/files</h3>
+<h4>Parameters:</h4>
+<ul>
+    <li><i>title</i>: String to search for in a File's title field</li>
+    <li><i>author</i>: String to search for in a File's author field</li>
+    <li><i>filename</i>: String to search for in a File's filename field</li>
+    <li><i>company</i>: String to search for in a File's company field</li>
+    <li><i>genre</i>: String to search for in a File's genre field</li>
+    <li><i>year</i>: Integer year to search for in a File's release_date field (the range is automatically expanded to cover Jan. 1 through Dec. 31 of the given year)</li>
+    <li><i>sort</i>: String to determine how results are sorted. Defaults to "title". See <span class="cp437"><a href="https://github.com/DrDos0016/museum-of-zzt/blob/master/museum_site/common.py#L104" target="_blank">SORT_CODES</a></span> in source file museum_site/common.py for complete list.</li>
+    <li><i>offset</i>: Integer to determine starting row in search results. Results are restricted to 25 at a time.</li>
+</ul>
+
+<h2>Responses</h2>
+
+<p>All endpoints return JSON data on a successful call, and fail spectacularly when they fail. (Nah, you'll just get a 500 error probably. I just haven't coded any error handling at all right now.)
+</section>
+{% endblock %}

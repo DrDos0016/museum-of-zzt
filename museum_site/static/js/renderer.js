@@ -62,11 +62,11 @@ class Renderer {
                         else if (element.id == 40) // Pusher
                         {
                             var pusher_char = 16;
-                            if (board.stats[stat_idx].y_step > 32767)
+                            if (board.stats[stat_idx].y_step < 0)
                                 pusher_char = 30;
                             else if (board.stats[stat_idx].y_step > 0)
                                 pusher_char = 31;
-                            else if (board.stats[stat_idx].x_step > 32767)
+                            else if (board.stats[stat_idx].x_step < 0)
                                 pusher_char = 17;
 
                             print(ctx, pusher_char, element.color_id, x, y);
@@ -74,11 +74,11 @@ class Renderer {
                         else if (element.id == 30) // Transporter
                         {
                             var transporter_char = 62;
-                            if (board.stats[stat_idx].y_step > 32767)
+                            if (board.stats[stat_idx].y_step < 0)
                                 transporter_char = 94;
                             else if (board.stats[stat_idx].y_step > 0)
                                 transporter_char = 118;
-                            else if (board.stats[stat_idx].x_step > 32767)
+                            else if (board.stats[stat_idx].x_step < 0)
                                 transporter_char = 60;
 
                             print(ctx, transporter_char, element.color_id, x, y);
@@ -214,11 +214,11 @@ class Renderer {
                             if (chunk[1] == 40) // Pusher
                             {
                                 var pusher_char = 16;
-                                if (board.stats[stat_idx].y_step > 32767)
+                                if (board.stats[stat_idx].y_step < 0)
                                     pusher_char = 30;
                                 else if (board.stats[stat_idx].y_step > 0)
                                     pusher_char = 31;
-                                else if (board.stats[stat_idx].x_step > 32767)
+                                else if (board.stats[stat_idx].x_step < 0)
                                     pusher_char = 17;
 
                                 print(ctx, pusher_char, 8, x, y);
@@ -226,11 +226,11 @@ class Renderer {
                             if (chunk[1] == 30) // Transporter
                             {
                                 var transporter_char = 62;
-                                if (board.stats[stat_idx].y_step > 32767)
+                                if (board.stats[stat_idx].y_step < 0)
                                     transporter_char = 94;
                                 else if (board.stats[stat_idx].y_step > 0)
                                     transporter_char = 118;
-                                else if (board.stats[stat_idx].x_step > 32767)
+                                else if (board.stats[stat_idx].x_step < 0)
                                     transporter_char = 60;
 
                                 print(ctx, transporter_char, 8, x, y);
@@ -339,11 +339,11 @@ class Renderer {
                             if (chunk[1] == 40) // Pusher
                             {
                                 var pusher_char = 16;
-                                if (board.stats[stat_idx].y_step > 32767)
+                                if (board.stats[stat_idx].y_step < 0)
                                     pusher_char = 30;
                                 else if (board.stats[stat_idx].y_step > 0)
                                     pusher_char = 31;
-                                else if (board.stats[stat_idx].x_step > 32767)
+                                else if (board.stats[stat_idx].x_step < 0)
                                     pusher_char = 17;
 
                                 print(ctx, pusher_char, 8, x, y);
@@ -351,11 +351,11 @@ class Renderer {
                             if (chunk[1] == 30) // Transporter
                             {
                                 var transporter_char = 62;
-                                if (board.stats[stat_idx].y_step > 32767)
+                                if (board.stats[stat_idx].y_step < 0)
                                     transporter_char = 94;
                                 else if (board.stats[stat_idx].y_step > 0)
                                     transporter_char = 118;
-                                else if (board.stats[stat_idx].x_step > 32767)
+                                else if (board.stats[stat_idx].x_step < 0)
                                     transporter_char = 60;
 
                                 print(ctx, transporter_char, 8, x, y);
@@ -485,11 +485,11 @@ class Renderer {
                             if (chunk[1] == 40) // Pusher
                             {
                                 var pusher_char = 16;
-                                if (board.stats[stat_idx].y_step > 32767)
+                                if (board.stats[stat_idx].y_step < 0)
                                     pusher_char = 30;
                                 else if (board.stats[stat_idx].y_step > 0)
                                     pusher_char = 31;
-                                else if (board.stats[stat_idx].x_step > 32767)
+                                else if (board.stats[stat_idx].x_step < 0)
                                     pusher_char = 17;
 
                                 print(ctx, pusher_char, 8, x, y);
@@ -497,11 +497,11 @@ class Renderer {
                             if (chunk[1] == 30) // Transporter
                             {
                                 var transporter_char = 62;
-                                if (board.stats[stat_idx].y_step > 32767)
+                                if (board.stats[stat_idx].y_step < 0)
                                     transporter_char = 94;
                                 else if (board.stats[stat_idx].y_step > 0)
                                     transporter_char = 118;
-                                else if (board.stats[stat_idx].x_step > 32767)
+                                else if (board.stats[stat_idx].x_step < 0)
                                     transporter_char = 60;
 
                                 print(ctx, transporter_char, 8, x, y);
@@ -600,11 +600,11 @@ class Renderer {
                         else if (element.id == 40) // Pusher
                         {
                             var pusher_char = 16;
-                            if (board.stats[stat_idx].y_step > 32767)
+                            if (board.stats[stat_idx].y_step < 0)
                                 pusher_char = 30;
                             else if (board.stats[stat_idx].y_step > 0)
                                 pusher_char = 31;
-                            else if (board.stats[stat_idx].x_step > 32767)
+                            else if (board.stats[stat_idx].x_step < 0)
                                 pusher_char = 17;
 
                             print(ctx, pusher_char, element.color_id, x, y);
@@ -612,11 +612,11 @@ class Renderer {
                         else if (element.id == 30) // Transporter
                         {
                             var transporter_char = 62;
-                            if (board.stats[stat_idx].y_step > 32767)
+                            if (board.stats[stat_idx].y_step < 0)
                                 transporter_char = 94;
                             else if (board.stats[stat_idx].y_step > 0)
                                 transporter_char = 118;
-                            else if (board.stats[stat_idx].x_step > 32767)
+                            else if (board.stats[stat_idx].x_step < 0)
                                 transporter_char = 60;
 
                             print(ctx, transporter_char, element.color_id, x, y);
@@ -749,11 +749,11 @@ class Renderer {
                         else if (element.id == 40) // Pusher
                         {
                             var pusher_char = 16;
-                            if (board.stats[stat_idx].y_step > 32767)
+                            if (board.stats[stat_idx].y_step < 0)
                                 pusher_char = 30;
                             else if (board.stats[stat_idx].y_step > 0)
                                 pusher_char = 31;
-                            else if (board.stats[stat_idx].x_step > 32767)
+                            else if (board.stats[stat_idx].x_step < 0)
                                 pusher_char = 17;
 
                             print(ctx, pusher_char, element.color_id, x, y);
@@ -761,11 +761,11 @@ class Renderer {
                         else if (element.id == 30) // Transporter
                         {
                             var transporter_char = 62;
-                            if (board.stats[stat_idx].y_step > 32767)
+                            if (board.stats[stat_idx].y_step < 0)
                                 transporter_char = 94;
                             else if (board.stats[stat_idx].y_step > 0)
                                 transporter_char = 118;
-                            else if (board.stats[stat_idx].x_step > 32767)
+                            else if (board.stats[stat_idx].x_step < 0)
                                 transporter_char = 60;
 
                             print(ctx, transporter_char, element.color_id, x, y);
@@ -906,11 +906,11 @@ class Renderer {
                             else if (chunk[1] == 40) // Pusher
                             {
                                 var pusher_char = 16;
-                                if (board.stats[stat_idx].y_step > 32767)
+                                if (board.stats[stat_idx].y_step < 0)
                                     pusher_char = 30;
                                 else if (board.stats[stat_idx].y_step > 0)
                                     pusher_char = 31;
-                                else if (board.stats[stat_idx].x_step > 32767)
+                                else if (board.stats[stat_idx].x_step < 0)
                                     pusher_char = 17;
 
                                 print(ctx, pusher_char, chunk[2], x, y);
@@ -918,11 +918,11 @@ class Renderer {
                             else if (chunk[1] == 30) // Transporter
                             {
                                 var transporter_char = 62;
-                                if (board.stats[stat_idx].y_step > 32767)
+                                if (board.stats[stat_idx].y_step < 0)
                                     transporter_char = 94;
                                 else if (board.stats[stat_idx].y_step > 0)
                                     transporter_char = 118;
-                                else if (board.stats[stat_idx].x_step > 32767)
+                                else if (board.stats[stat_idx].x_step < 0)
                                     transporter_char = 60;
 
                                 print(ctx, transporter_char, chunk[2], x, y);
