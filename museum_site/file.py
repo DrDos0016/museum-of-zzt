@@ -204,15 +204,27 @@ class File(models.Model):
             "description": self.description,
             "review_count": self.review_count,
             "rating": self.rating,
-            # "details": list(self.details.all()),
-            # "articles": self.articles,
+            "details": [],
+            "articles": [],
+            "aliases": [],
             "article_count": self.article_count,
             "checksum": self.checksum,
-            # "superceded": self.superceded,
             "playable_boards": self.playable_boards,
             "total_boards": self.total_boards,
             "archive_name": self.archive_name,
+            "upload_date": self.upload_date,
+            "publish_date": self.publish_date,
+            "last_modified": self.last_modified,
         }
+
+        for d in self.details.all():
+            data["details"].append({"id": d.id, "detail": d.detail})
+
+        for a in self.articles.all().only("id", "title"):
+            data["articles"].append({"id": a.id, "title": a.title})
+
+        for a in self.aliases.all():
+            data["aliases"].append({"id": a.id, "alias": a.alias})
 
         return data
 
