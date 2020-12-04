@@ -50,4 +50,8 @@
         <a href="{% url 'play_collection' %}{{collection_params}}">Play Collection</a>
     </div>
     {% endif %}
+    <div class="guide-words">
+    <span><a class="left" href="#{{first.filename}}">{{first.title}}</a></span>
+    <span><a class="right" href="#{{last.filename}}">{{last.title}}</a></span>
+    </div>
 </div>

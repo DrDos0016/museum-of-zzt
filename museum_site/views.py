@@ -241,6 +241,10 @@ def browse(
         data["prev"] = max(1, data["page"] - 1)
         data["next"] = min(data["pages"], data["page"] + 1)
 
+    # First/Last
+    data["first"] = data["files"][0]
+    data["last"] = data["files"][PAGE_SIZE - 1]
+
     # Show descriptions for lost worlds
     if DETAIL_LOST in details:
         data["show_description"] = True

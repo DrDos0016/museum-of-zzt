@@ -552,6 +552,21 @@ input[name=q]
     margin:14px auto 14px auto;
 }
 
+.guide-words
+{
+    display:flex;
+    justify-content:space-between;
+    max-width:100%;
+    margin:auto;
+    border-bottom:1px solid #000;
+}
+
+.guide-words a
+{
+    font-style:oblique;
+}
+
+
 #years
 {
     margin:auto;
