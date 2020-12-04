@@ -201,6 +201,7 @@ def browse(
         # Sort by upload date by default
         if not request.GET.get("sort"):
             sort = SORT_CODES["uploaded"]
+            data["default_sort"] = "uploaded"
 
     # Query strings
     data["qs_sans_page"] = qs_sans(request.GET, "page")
