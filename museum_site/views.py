@@ -1050,6 +1050,10 @@ def upload_complete(request, edit_token=None):
     if request.GET.get("edit_token"):
         data["your_upload"] = get_object_or_404(Upload, edit_token=request.GET["edit_token"])
         data["file"] = File.objects.get(pk=data["your_upload"].file_id)
+
+    # Generate a screenshot
+    data["file"].generate_screenshot()
+
     return render(request, "museum_site/upload_complete.html", data)
 
 

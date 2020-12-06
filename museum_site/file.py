@@ -1,4 +1,5 @@
 import hashlib
+import io
 import os
 import subprocess
 import zipfile
@@ -15,7 +16,7 @@ try:
 except ImportError:
     HAS_ZOOKEEPER = False
 
-from .common import slash_separated_sort
+from .common import slash_separated_sort, UPLOAD_CAP
 from .constants import SITE_ROOT
 from .review import Review
 
@@ -579,3 +580,43 @@ class File(models.Model):
         features["article"] = True
 
         return features
+
+    def generate_screenshot(self, world=None, board=0, font=None):
+        # Get zip contents
+        zf = zipfile.ZipFile(self.phys_path())
+
+        # Guess the earliest dated world with a ZZT extension
+        if world is None:
+            all_files = zf.infolist()
+            worlds = []
+            for f in all_files:
+                if (
+                    f.file_size < UPLOAD_CAP and
+                    f.filename.lower().endswith(".zzt")
+                ):
+                    worlds.append(f)
+
+            sorted(worlds, key=lambda k: k.date_time)
+
+            if worlds:
+                world = worlds[0].filename
+
+        if world is None:
+            return False
+
+        # Extract the file and render
+        zf.extract(world, path=SITE_ROOT + "/museum_site/static/data/")
+        z = zookeeper.Zookeeper(SITE_ROOT + "/museum_site/static/data/" + world)
+        z.boards[board].screenshot(
+            SITE_ROOT + "/museum_site/static/images/screenshots/" +
+            self.letter + "/" + self.filename[:-4],
+            title_screen=(not bool(board))
+        )
+        self.screenshot = self.filename[:-4] + ".png"
+        self.save()
+
+        # Delete the extracted world
+        # TODO: This leaves lingering folders for zips in folders
+        os.remove(SITE_ROOT + "/museum_site/static/data/" + world)
+
+        return True
