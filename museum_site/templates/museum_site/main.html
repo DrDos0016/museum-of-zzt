@@ -215,6 +215,9 @@ Absolute URI: {{request.build_absolute_uri}}
 HTTP_HOST: {{request.META.HTTP_HOST}} | Host: {{HOST}} | Env: {{ENV}}
 </textarea><br>
 View this page on: <a href="https://beta.museumofzzt.com{{request.path}}" target="_blank">BETA</a> <a href="https://museumofzzt.com{{request.path}}" target="_blank">LIVE</a>
+<br>
+<table id="meta-tags" class="data-table" style="max-width:800px;margin:auto;background:#FFF;">
+</table>
 </div>
 
 <script>
@@ -227,6 +230,16 @@ $("#debug-view").text($("body").width() + "x" + $("body").height());
 <script>
 $("#showdebug").click(function (){
     $(".debug").toggle();
+});
+
+$("meta").each(function (){
+    var key = $(this).attr("name");
+    if (! key)
+        key = $(this).attr("property");
+
+    var val = $(this).attr("content");
+    var row = `<tr><th>${key}</th><td class="l">${val}</td></tr>`;
+    $("#meta-tags").html($("#meta-tags").html() + row);
 });
 </script>
 {% endif %}
