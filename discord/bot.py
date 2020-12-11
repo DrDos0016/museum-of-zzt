@@ -195,9 +195,9 @@ async def zzt(ctx):
                 )
             discord_post += "`[{}] - \"{}\"` \n"
             discord_post += (
-                urllib.parse.quote("Explore: <" + data["museum_link"] + "?file=" +
-                data["world"] + "&board=" +
-                str(data["board"]["number"]) + ">\n")
+                "Explore: <" + data["museum_link"] + "?file=" +
+                urllib.parse.quote(data["world"]) + "&board=" +
+                str(data["board"]["number"]) + ">\n"
             )
             if data["file"]["archive_name"]:
                 discord_post += (
