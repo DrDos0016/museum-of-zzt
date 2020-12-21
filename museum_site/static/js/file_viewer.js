@@ -960,7 +960,7 @@ function render_board()
 
     output += `<table class='fv col'>
     <tr>
-        <td>Title:</td><td colspan="3">${board.title}</td>
+        <td>Title:</td><td colspan="3"><pre>${board.title}</pre></td>
     </tr>
     <tr>
         <td>Can Fire:</td><td>${board.max_shots} shot${((board.max_shots != 1) ? "s" : "")}</td>
@@ -1699,7 +1699,7 @@ function create_board_list()
         var formatted_title = world.boards[x].title ? world.boards[x].title.replace(/</g, "&lt;").replace(/>/g, "&gt;") : `-untitled`;
         board_list += `
             <div name='board_idx'>${formatted_num}.</div>
-            <div name='board_name'>${formatted_title}</div>
+            <div name='board_name'><pre>${formatted_title}</pre></div>
         `;
 
         if (world.starting_board == x)
