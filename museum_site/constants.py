@@ -17,6 +17,9 @@ except ModuleNotFoundError:
     IA_SECRET = "Not found"
     IA_SUPPORT = False
 
+# Admin information
+ADMIN_NAME = "Dr. Dos"
+
 # Article publish states
 PUBLISHED_ARTICLE = 1
 UPCOMING_ARTICLE = 2
