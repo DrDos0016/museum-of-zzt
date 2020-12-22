@@ -1,5 +1,8 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
+{% load site_tags %}
+
+{% block meta %}{% meta_tags url=request.build_absolute_uri og_image="images/early-access-preview.png" %}{% endblock %}
 
 {% block content %}
 <section id="content" class="block">

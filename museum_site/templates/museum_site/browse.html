@@ -1,5 +1,8 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
+{% load site_tags %}
+
+{% if mode == "new" %}{% block meta %}{% meta_tags url=request.build_absolute_uri og_image="images/new-preview.png" %}{% endblock %}{% endif %}
 
 {% block content %}
 <section id="content" class="block">

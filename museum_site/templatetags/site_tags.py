@@ -7,7 +7,9 @@ from django.template import Template, Context, Library
 from django.template import defaultfilters as filters
 from django.utils.safestring import mark_safe
 
+from museum.settings import STATIC_URL
 from museum_site.models import File
+from museum_site.constants import ADMIN_NAME
 
 register = Library()
 
@@ -60,6 +62,62 @@ def content_warning(*args, **kwargs):
     output = output.format(", ".join(args).title(), skip_link, skip_text)
 
     return mark_safe(output + "\n")
+
+
+@register.simple_tag()
+def meta_tags(*args, **kwargs):
+    url = kwargs.get("url", "https://museumofzzt.com/")
+
+    # Default values
+    tags = {
+        "author": ["name", ADMIN_NAME],
+        "description": ["name",  "The Museum of ZZT is a website dedicated towards the preservation and curation of ZZT worlds. Explore 30 years of indie gaming history."],
+        "og:type": ["property", "website"],
+        "og:url": ["property", url],
+        "og:title": ["property", "Museum of ZZT"],
+        "og:image": ["property", url + STATIC_URL[1:] + "images/og_default.jpg"],
+    }
+
+    if kwargs.get("article"):
+        tags["author"][1] = kwargs["article"].author
+        tags["description"][1] = kwargs["article"].summary
+        tags["og:title"][1] = kwargs["article"].title + " - Museum of ZZT"
+        tags["og:image"][1] = "https://museumofzzt.com/" + STATIC_URL[1:] + "images/" + kwargs["article"].preview
+    elif kwargs.get("file"):
+        print("File...")
+        tags["author"][1] = kwargs["file"].author
+        tags["description"][1] = '{} by {}'.format(kwargs["file"].title, kwargs["file"].author)
+        if kwargs["file"].company and kwargs["file"].company != "None":
+            tags["description"][1] += " of {}".format(kwargs["file"].company)
+        if kwargs["file"].release_date:
+            tags["description"][1] += " ({})".format(kwargs["file"].release_date.year)
+        tags["og:title"][1] = kwargs["file"].title + " - Museum of ZZT"
+        tags["og:image"][1] = "https://museumofzzt.com/" + STATIC_URL[1:] + kwargs["file"].screenshot_url()
+
+    # Overrides
+    if kwargs.get("author"):
+        tags["author"][1] = kwargs["author"]
+    if kwargs.get("description"):
+        tags["author"][1] = kwargs["description"]
+    if kwargs.get("title"):
+        tags["author"][1] = kwargs["title"] + " - Museum of ZZT"
+    if kwargs.get("og_image"):
+        tags["og:image"][1] = "https://museumofzzt.com/" + STATIC_URL[1:] + kwargs["og_image"]
+
+    # Twitter tags
+    tags["twitter:site"] = ["name", "@worldsofzzt"]
+    tags["twitter:card"] = ["name", "summary_large_image"]
+    tags["twitter:title"] = ["name", tags["og:title"][1]]
+    tags["twitter:description"] = ["name", tags["description"][1]]
+    tags["twitter:image"] = ["name", tags["og:image"][1]]
+
+    # Assemble HTML meta tags
+    BLANK = '<meta {}="{}" content="{}">\n'
+    meta_tag_html = ""
+    for key in tags.keys():
+        meta_tag_html += BLANK.format(tags[key][0], key, tags[key][1])
+
+    return mark_safe(meta_tag_html[:-1])
 
 
 @register.simple_tag()

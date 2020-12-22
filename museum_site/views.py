@@ -183,7 +183,6 @@ def browse(
         data["mode"] = "new"
         data["title"] = "New Additions"
         data["category"] = "New Additions"
-        data["og_image"] = "images/new-preview.png"
         sort = SORT_CODES["published"]
     elif request.path == "/roulette":
         sort = SORT_CODES["roulette"]
@@ -565,7 +564,6 @@ def patron_articles(request):
     data = {}
     data["early"] = Article.objects.filter(published=UPCOMING_ARTICLE)
     data["really_early"] = Article.objects.filter(published=UNPUBLISHED_ARTICLE)
-    data["og_image"] = "images/early-access-preview.png"
 
     if request.POST.get("secret") == PASSWORD2DOLLARS:
         data["access"] = "early"
