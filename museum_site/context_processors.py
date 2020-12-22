@@ -17,10 +17,7 @@ def museum_global(request):
 
     # Server info
     data["HOST"] = request.get_host()
-
     data["ENV"] = env_from_host(data["HOST"])
-
-
     data["PROTOCOL"] = "https" if request.is_secure() else "http"
     data["DOMAIN"] = data["PROTOCOL"] + "://" + data["HOST"]
 
