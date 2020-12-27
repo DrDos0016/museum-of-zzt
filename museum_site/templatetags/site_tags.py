@@ -67,6 +67,7 @@ def content_warning(*args, **kwargs):
 @register.simple_tag()
 def meta_tags(*args, **kwargs):
     url = kwargs.get("url", "https://museumofzzt.com/")
+    print(kwargs)
 
     # Default values
     tags = {
@@ -83,8 +84,7 @@ def meta_tags(*args, **kwargs):
         tags["description"][1] = kwargs["article"].summary
         tags["og:title"][1] = kwargs["article"].title + " - Museum of ZZT"
         tags["og:image"][1] = "https://museumofzzt.com/" + STATIC_URL[1:] + "images/" + kwargs["article"].preview
-    elif kwargs.get("file"):
-        print("File...")
+    elif kwargs.get("file") and kwargs.get("file") != "Local File Viewer":
         tags["author"][1] = kwargs["file"].author
         tags["description"][1] = '{} by {}'.format(kwargs["file"].title, kwargs["file"].author)
         if kwargs["file"].company and kwargs["file"].company != "None":
