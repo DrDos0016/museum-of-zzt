@@ -98,6 +98,10 @@ CHARSETS = [
 ]
 CUSTOM_CHARSETS = []
 
+# Paths
+DATA_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data") + os.sep
+CHARSET_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "images", "charsets") + os.sep
+
 pngs = sorted(glob.glob(
     os.path.join(
         SITE_ROOT, "museum_site", "static", "images", "charsets", "*.png"

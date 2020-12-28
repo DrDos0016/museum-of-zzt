@@ -43,6 +43,7 @@
     {% endif %}
     <li><a href="{% url 'replace_zip' file.id %}">Replace Zip</a></li>
     <li><a href="{% url 'add_livestream' file.id %}">Add Livestream VOD</a></li>
+    <li><a href="{% url 'extract_font' file.id %}">Extract Font</a></li>
 </ul>
 
 {% if request.GET.recalculate %}

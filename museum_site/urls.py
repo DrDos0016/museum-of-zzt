@@ -221,6 +221,7 @@ urlpatterns = [
     url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tools.set_screenshot, name="set_screenshot"),
     url(r"^tools/audit/zeta-config$", museum_site.tools.audit_zeta_config, name="audit_zeta_config"),
     url(r"^tools/add-livestream/(?P<pk>[0-9]+)$", museum_site.tools.add_livestream, name="add_livestream"),
+    url(r"^tools/extract-font/(?P<pk>[0-9]+)$", museum_site.tools.extract_font, name="extract_font"),
 
     # Debug
     url(r"^debug$", museum_site.debug.debug),

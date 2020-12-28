@@ -117,6 +117,36 @@ def calculate(request, field, pk):
 
 
 @staff_member_required
+def extract_font(request, pk):
+    data = {"title": "Extract Font"}
+    f = File.objects.get(pk=pk)
+    data["file"] = f
+
+    zip_file = zipfile.ZipFile(f.phys_path())
+    data["files"] = zip_file.namelist()
+    data["files"].sort(key=str.lower)
+
+    if request.GET.get("font"):
+        # Extract the file
+        zip_file.extract(request.GET["font"], path=DATA_PATH)
+
+        try:
+            f_id = ("0000"+str(f.id))[-4:]
+            z = zookeeper.Zookeeper()
+            z.export_font(
+                os.path.join(DATA_PATH, request.GET["font"]),
+                os.path.join(CHARSET_PATH, "{}-{}.png".format(f_id, f.filename[:-4])),
+                1
+            )
+            data["result"] = "Ripped {}-{}.png".format(f_id, f.filename[:-4])
+        except Exception as e:
+            data["result"] = "Could not rip font!"
+            print(e)
+
+    return render(request, "museum_site/tools/extract_font.html", data)
+
+
+@staff_member_required
 def mirror(request, pk):
     """ Returns page to publish file on Archive.org """
     f = File.objects.get(pk=pk)

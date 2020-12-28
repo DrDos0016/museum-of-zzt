@@ -1,0 +1,24 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Tool List - {{file}}</h1>
+
+<a href="{% url 'tool_list' file.id %}">Back to Tool List</a>
+<br>
+
+<b>Extract Font From:</b>
+<ul>
+{% for zf in files %}
+    <li><a href="?font={{zf}}">{{zf}}</a></li>
+{% endfor %}
+</ul>
+
+{% if request.GET.font %}
+<hr>
+Extracting {{request.GET.font}}...<br>
+{{result}}
+{% endif %}
+</section>
+{% endblock %}
