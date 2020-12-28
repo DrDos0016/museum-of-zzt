@@ -143,6 +143,9 @@ def extract_font(request, pk):
             data["result"] = "Could not rip font!"
             print(e)
 
+        # Remove the file
+        os.remove(os.path.join(DATA_PATH, request.GET["font"]))
+
     return render(request, "museum_site/tools/extract_font.html", data)
 
 
