@@ -84,6 +84,17 @@ img.zzt-sidebar
     max-width:none;
 }
 
+.zzt-img.zzt-board
+{
+    width:480px;
+}
+
+img.zzt-board
+{
+    position:relative;
+    max-width:none;
+}
+
 .zzt-img.zzt-hud
 {
     width:160px;
