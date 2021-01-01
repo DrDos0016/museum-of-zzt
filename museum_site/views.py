@@ -242,8 +242,9 @@ def browse(
         data["next"] = min(data["pages"], data["page"] + 1)
 
     # First/Last
-    data["first"] = data["files"][0]
-    data["last"] = data["files"][len(data["files"]) - 1]
+    if len(data["files"]):
+        data["first"] = data["files"][0]
+        data["last"] = data["files"][len(data["files"]) - 1]
 
     # Show descriptions for lost worlds
     if DETAIL_LOST in details:
@@ -556,7 +557,21 @@ def livestreams(request):
 def mass_downloads(request):
     """ Returns a page for downloading files by release year """
     data = {"title": "Mass Downloads"}
-    # Read the json
+
+    # Counts for each year
+    """
+    data["counts"] = {}
+    dates = File.objects.all().only("release_date")
+    for row in dates:
+        year = str(row.release_date)[:4]
+        if year not in data["counts"].keys():
+            data["counts"][year] = 1
+        else:
+            data["counts"][year] += 1
+    print(data["counts"])
+    """
+
+
     return render(request, "museum_site/mass_downloads.html", data)
 
 
