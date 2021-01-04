@@ -9,7 +9,7 @@ COOLDOWN_MESSAGE = "`!{}` is on cooldown for {} more second(s)."
 
 HELP = """```
 List of commands:
-  !addrole     Add a role.
+  !addrole     Add one or more roles.
   !help        Shows this message.
   !removerole  Remove a role.
   !scroll      Some reading material. (10 sec. cooldown)
