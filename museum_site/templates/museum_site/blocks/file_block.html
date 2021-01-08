@@ -1,4 +1,5 @@
 {% load static %}
+{% load site_tags %}
 <div class="overview-block" id="{{file.filename}}" data-pk="{{file.id}}">
     <h1 class="title"><a href="{{file.file_url}}">{{file.title|default:"NO NAME"}}</a></h1>
     <img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">
@@ -7,7 +8,7 @@
             <div class="key">Author{{file.author_list|pluralize}}</div><div class="value">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
         </div>
         <div class="field">
-            <div class="key">Company</div><div class="value"><a href="{% url 'search'%}?company={{file.company}}">{{file.company}}</a></div>
+            <div class="key">Company</div><div class="value"><a href="{% url 'search'%}?company={{file.company|url_parse}}">{{file.company}}</a></div>
         </div>
         <div class="field">
             <div class="key">Released</div><div class="value"><a href="{% url 'search'%}?year={{file.release_date.year|default:'any'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
