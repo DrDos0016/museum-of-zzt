@@ -59,6 +59,7 @@ def get_zip_file(request):
             output = "HEXADECIMAL"
             encding = "hex"
 
+        """
         output = output.replace(
             "&", "&amp;"
         ).replace(
@@ -73,8 +74,11 @@ def get_zip_file(request):
             "\r", "<br>"
         ).replace(
             "\n", "<br>"
-        )
-        output = "<div class='text-file " + encoding + "'>" + output + "</div>"
+        )"""
+
+
+        output = "<div class='text-file " + encoding + "'><pre class='cp437'>" + output + "</pre></div>"
+        #output = "<div class='text-file " + encoding + "'>" + output + "</div>"
 
         return HttpResponse(output)
     elif ext in (FILE_VIEWER_HEX_EXTENSIONS):
