@@ -297,7 +297,10 @@ var switch_board = function (e)
 function pull_file()
 {
     if ($(this).hasClass("selected"))
+    {
+        close_file($(this));
         return false;
+    }
 
     $("#file-list li").removeClass("selected");
     $("#file-list li ol").remove();
@@ -926,8 +929,11 @@ function parse_board(world)
     return board;
 }
 
-function render_board()
+function render_board(e)
 {
+    if (e)
+        e.stopPropagation();
+
     board_number = $(this).data("board-number") || 0; // idk why this breaks if var is gone
     var coordinates = $(this).data("coords") || 0;
     $("li.board").removeClass("selected");
@@ -1937,4 +1943,10 @@ function signed(i)
     if (i > 32767)
         return i - 65536;
     return i;
+}
+
+function close_file(f)
+{
+    f.removeClass("selected");
+    f.find("ol").remove();
 }
