@@ -11,7 +11,7 @@
             <div class="key">Company</div><div class="value"><a href="{% url 'search'%}?company={{file.company|url_parse}}">{{file.company}}</a></div>
         </div>
         <div class="field">
-            <div class="key">Released</div><div class="value"><a href="{% url 'search'%}?year={{file.release_date.year|default:'any'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
+            <div class="key">Released</div><div class="value"><a href="{% url 'search'%}?year={{file.release_date.year|default:'Unk'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
         </div>
         <div class="field">
             <div class="key">Genre{{file.genre_list|pluralize}}</div><div class="value">{% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
