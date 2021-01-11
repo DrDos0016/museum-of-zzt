@@ -982,7 +982,7 @@ function render_board(e)
     </tr>
     <tr>
         <td>Stat Elements:</td><td>${board.stat_count + 1} / 151</td>
-        <td>Board Size:</td><td>${board.size + 2} bytes</td>
+        <td>Board Size:</td><td>${board.size} bytes</td>
     </tr>`;
 
     if (board.message != "")
