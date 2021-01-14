@@ -937,6 +937,11 @@ form .field .genre-checklist
     grid-template-columns: repeat(5, auto);
     text-align:center;
 }
+
+.download-link.explicit::after
+{
+    content:" 🔞";
+}
 /* End File Structures */
 
 /* File Viewer */

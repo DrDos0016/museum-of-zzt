@@ -1,5 +1,5 @@
-<div{% if file.is_lost %} class="hidden"{% endif %}><a href="{{file.download_url}}" id="download-link">Download</a></div>
-<div{% if file.is_lost or file.is_zig %} class="hidden"{% endif %}><a href="{{file.play_url}}" id="play-link">Play Online</a></div>
-<div{% if file.is_lost %} class="hidden"{% endif %}><a href="{{file.file_url}}" id="view-link">View Files</a></div>
-<div{% if file.is_uploaded %} class="hidden"{% endif %}><a href="{{file.review_url}}" id="review-link">Reviews ({{file.review_count|default:0}})</a></div>
-<div{% if file.is_uploaded or file.article_count == 0 %} class="hidden"{% endif %}><a href="{{file.article_url}}" id="article-link">Articles ({{file.article_count|default:0}})</a></div>
+<div{% if file.is_lost %} class="hidden"{% endif %}><a href="{{file.download_url}}" class="download-link{% if 'Explicit' in file.genre %} explicit{% endif %}">Download</a></div>
+<div{% if file.is_lost or file.is_zig %} class="hidden"{% endif %}><a href="{{file.play_url}}" class="play-link">Play Online</a></div>
+<div{% if file.is_lost %} class="hidden"{% endif %}><a href="{{file.file_url}}" class="view-link">View Files</a></div>
+<div{% if file.is_uploaded %} class="hidden"{% endif %}><a href="{{file.review_url}}" class="review-link">Reviews ({{file.review_count|default:0}})</a></div>
+<div{% if file.is_uploaded or file.article_count == 0 %} class="hidden"{% endif %}><a href="{{file.article_url}}" class="article-link">Articles ({{file.article_count|default:0}})</a></div>

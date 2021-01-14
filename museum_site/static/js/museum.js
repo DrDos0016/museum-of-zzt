@@ -138,6 +138,13 @@ $(document).ready(function (){
         $(this).html(processed);
     })
 
+    // Explicit Download Warning
+    $(".download-link.explicit").click(function (e){
+        var explicit_warning = "This file is known to contain content not suitable for minors.\n\nPress 'OK' to confirm that you are of age to download such content and wish to do so.";
+        if (! confirm(explicit_warning))
+            e.preventDefault();
+    });
+
 });
 
 // ZZT-OOP Syntax highlighting
