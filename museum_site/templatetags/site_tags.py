@@ -67,7 +67,6 @@ def content_warning(*args, **kwargs):
 @register.simple_tag()
 def meta_tags(*args, **kwargs):
     url = kwargs.get("url", "https://museumofzzt.com/")
-    print(kwargs)
 
     # Default values
     tags = {
@@ -98,9 +97,9 @@ def meta_tags(*args, **kwargs):
     if kwargs.get("author"):
         tags["author"][1] = kwargs["author"]
     if kwargs.get("description"):
-        tags["author"][1] = kwargs["description"]
+        tags["description"][1] = kwargs["description"]
     if kwargs.get("title"):
-        tags["author"][1] = kwargs["title"] + " - Museum of ZZT"
+        tags["og:title"][1] = kwargs["title"] + " - Museum of ZZT"
     if kwargs.get("og_image"):
         tags["og:image"][1] = "https://museumofzzt.com/" + STATIC_URL[1:] + kwargs["og_image"]
 

@@ -1,5 +1,8 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
+{% load site_tags %}
+
+{% block meta %}{% meta_tags url=request.build_absolute_uri title=display_poll.title description="A patron exclusive poll" og_image="previews/poll.png" %}{% endblock %}
 
 {% block style %}
 <style>
