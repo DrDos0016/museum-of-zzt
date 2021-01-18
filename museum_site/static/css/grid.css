@@ -90,7 +90,7 @@ p
     margin:14px auto 14px auto;
 }
 
-pre { margin:0; }
+pre { margin:0; white-space: pre-wrap; }
 
 table
 {
@@ -938,7 +938,7 @@ form .field .genre-checklist
     text-align:center;
 }
 
-.download-link.explicit::after
+.download-link.explicit::after, .play-link.explicit::after, .view-link.explicit::after
 {
     content:" 🔞";
 }
