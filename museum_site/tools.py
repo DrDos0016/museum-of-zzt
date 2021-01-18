@@ -286,6 +286,7 @@ def publish(request, pk):
             data["file"].details.add(Detail.objects.get(pk=detail))
 
         # Save
+        data["file"].spotlight = request.POST.get("spotlight", False)
         data["file"].publish_date = datetime.now()
         data["file"].save()
 

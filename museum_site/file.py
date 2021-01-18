@@ -68,6 +68,7 @@ class File(models.Model):
     total_boards    -- Number of boards in file that exist period
     archive_name    -- name on archive.org (ex: zzt_burgerj)
     aliases         -- Link to Alias objects
+    spotlight       -- Allow appearance on front page
     """
 
     letter = models.CharField(max_length=1, db_index=True)
@@ -140,6 +141,8 @@ class File(models.Model):
 
     zeta_config = models.ForeignKey("Zeta_Config", null=True, blank=True,
     default=None, on_delete=models.SET_NULL)
+
+    spotlight = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["sort_title", "letter"]

@@ -38,6 +38,7 @@ class Article(models.Model):
     summary         -- Summary for Opengraph
     preview         -- Path to preview image
     allow_comments  -- Allow user comments on the article
+    spotlight       -- Allow appearance on front page
     """
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=50)
@@ -53,6 +54,7 @@ class Article(models.Model):
     summary = models.CharField(max_length=150, default="", blank=True)
     preview = models.CharField(max_length=80, default="", blank=True)
     allow_comments = models.BooleanField(default=False)
+    spotlight = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["title"]
