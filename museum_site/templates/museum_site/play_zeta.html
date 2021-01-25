@@ -155,8 +155,6 @@ $(document).ready(function (){
         console.log(hex_string)
     }
 
-    file_reader.readAsArrayBuffer("/static/images/charsets/0758-CRAZY.png");
-
     ZetaLoad({
         path: "/static/zeta86/",
         render: {
@@ -169,9 +167,6 @@ $(document).ready(function (){
         storage: {
             type: "auto",
             database: "{{zeta_database|default:'generic-zeta-save-db'}}"
-        },
-        engine: {
-            charset: "/static/images/charsets/0758-CRAZY.png",
         },
         audio : {
             bufferSize: {{zeta_config.audio_buffer}},
