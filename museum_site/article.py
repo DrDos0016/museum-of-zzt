@@ -81,13 +81,13 @@ class Article(models.Model):
             qs = qs.filter(
                 content__icontains=p["text"].strip()
             )
-        if p.get("date"):
-            if p["date"] == "Any":
+        if p.get("year"):
+            if p["year"] == "Any":
                 None
-            elif p["date"] == "Unk":
+            elif p["year"] == "Unk":
                 None
             else:
-                year = p["date"].strip()
+                year = p["year"].strip()
                 qs = qs.filter(
                     date__gte=year + "-01-01",
                     date__lte=year + "-12-31",
