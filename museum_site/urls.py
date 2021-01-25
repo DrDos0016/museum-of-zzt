@@ -10,6 +10,7 @@ import museum_site.admin
 import museum_site.ajax
 import museum_site.debug
 #import museum_site.errors
+import museum_site.help
 import museum_site.views
 import museum_site.tools
 
@@ -46,6 +47,9 @@ urlpatterns = [
     # Articles
     url(r"^article$", museum_site.views.article_directory,
         name="article_directory"
+        ),
+    url(r"^article/search$", museum_site.views.article_search,
+        name="article_search"
         ),
     url(r"^article/(?P<category>[a-z- ]+)$",
         museum_site.views.article_directory,
@@ -152,6 +156,10 @@ urlpatterns = [
 
     url(r"^new$", museum_site.views.browse,
         name="new_files"),
+
+    # Help
+    url(r"^help/genres$", museum_site.help.genres,
+        name="help_genre"),
 
     # Mass Downloads
     url(r"^mass-downloads$", museum_site.views.mass_downloads,

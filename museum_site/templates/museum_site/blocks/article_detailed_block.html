@@ -1,0 +1,21 @@
+{% load static %}
+<div class="overview-block" data-pk="{{article.id}}" data-model="article">
+    <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+    class="screenshot-thumb"
+    alt="{{article.preview}}">
+    <h1 class="title"><a href="{{article.url}}">{{article.title}}</a></h1>
+    <div class="wide-info">
+        <div class="field">
+            <div class="key">Author</div><div class="value">{{article.author}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Date</div><div class="value">{{article.date}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Category</div><div class="value">{{article.category}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Summary</div><div class="value">{{article.summary}}</div>
+        </div>
+    </div>
+</div>

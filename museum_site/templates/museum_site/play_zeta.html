@@ -134,6 +134,29 @@ $(document).ready(function (){
         window.location = url;
     });
 
+    // FONT STUFF
+
+    var file_reader = new FileReader();
+    file_reader.onload = function (e) {
+        var byte_array = new Uint8Array(file_reader.result);
+        var hex_string = "";
+
+        for (var idx in byte_array)
+        {
+            hex_string += ("0" + byte_array[idx].toString(16)).slice(-2);
+        }
+
+        // Create world info for BRD files
+        if (ext == "brd")
+        {
+            hex_string = "ffff000000000000000000000000006400000000000000000000000000084155544f47454e57" + "0".repeat(948) + hex_string;
+        }
+
+        console.log(hex_string)
+    }
+
+    file_reader.readAsArrayBuffer("/static/images/charsets/0758-CRAZY.png");
+
     ZetaLoad({
         path: "/static/zeta86/",
         render: {
@@ -146,6 +169,9 @@ $(document).ready(function (){
         storage: {
             type: "auto",
             database: "{{zeta_database|default:'generic-zeta-save-db'}}"
+        },
+        engine: {
+            charset: "/static/images/charsets/0758-CRAZY.png",
         },
         audio : {
             bufferSize: {{zeta_config.audio_buffer}},

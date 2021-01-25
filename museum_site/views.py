@@ -33,51 +33,51 @@ def article(request, letter, filename):
 def article_directory(request, category="all", page_num=1):
     """ Returns page listing all articles sorted either by date or name """
     data = {"title": "Article Directory"}
-    data["sort"] = request.GET.get("sort", "date")
-    data["view"] = get_view_format(request)
-    page_num = request.GET.get("page", page_num)
 
-    # Query strings
-    data["qs_sans_page"] = qs_sans(request.GET, "page")
-    data["qs_sans_view"] = qs_sans(request.GET, "view")
+    # Pull articles for page
+    qs = Article.search(request.GET)
 
-    articles = Article.objects.defer("content", "css").filter(
-        published=PUBLISHED_ARTICLE
-    )
+    if request.GET.get("sort", "date") == "date":
+        qs = qs.order_by("-date")
+    elif request.GET.get("sort") == "title":
+        qs = qs.order_by("title")
+    elif request.GET.get("sort") == "author":
+        qs = qs.order_by("author")
+    elif request.GET.get("sort") == "category":
+        qs = qs.order_by("category")
 
-    if data["sort"] == "date":
-        articles = articles.order_by("-date", "title")
-    elif data["sort"] == "category":
-        articles = articles.order_by("category", "title")
-    else:
-        articles = articles.order_by("title")
+    page_number = int(request.GET.get("page", 1))
+    start = (page_number - 1) * PAGE_SIZE
+    data["paginator"] = Paginator(qs, PAGE_SIZE)
+    data["page"] = data["paginator"].get_page(page_number)
+    data["page_number"] = page_number
 
-    if category != "all":
-        articles = articles.filter(
-            category=category.replace("-", " ").title()
-        )
+    data["sort_options"] = [
+        {"text": "Date", "val": "date"},
+        {"text": "Title", "val": "title"},
+        {"text": "Author", "val": "author"},
+        {"text": "Category", "val": "category"},
+    ]
 
-    # Limit articles
-    page_size = PAGE_SIZE if data["view"] == "detailed" else LIST_PAGE_SIZE
-    p = Paginator(articles, page_size)
-    data["page"] = p.get_page(page_num)
-    data["articles"] = data["page"].object_list
+    return render(request, "museum_site/article_directory.html", data)
 
-    # Determine destination template
-    if data["view"] == "list":
-        destination = "museum_site/article_directory_list.html"
-    else:  # Detailed
-        destination = "museum_site/article_directory.html"
+def article_search(request):
+    """ Returns page containing multiple filters to use when searching """
+    data = {
+        "title": "Article Search",
+        "years": [str(x) for x in range(YEAR, 1990, -1)]
+    }
 
-    response = render(request, destination, data)
-    # Set page view cookie
-    response.set_cookie(
-        "article_view",
-        data["view"],
-        expires=datetime(3000, 12, 31)
-    )
+    data["sort_options"] = [
+        {"text": "Title", "val": "title"},
+        {"text": "Author", "val": "author"},
+        {"text": "Category", "val": "category"},
+        {"text": "Date", "val": "date"},
+    ]
 
-    return response
+    data["categories"] = Article.objects.filter(published=PUBLISHED_ARTICLE).only("category").distinct().order_by("category").values_list("category", flat=True)
+
+    return render(request, "museum_site/article_search.html", data)
 
 
 def article_view(request, id, page=0):
@@ -1271,7 +1271,7 @@ def zeta_launcher(request, letter=None, filename=None, components=["controls", "
         data["zeta_config"] = Zeta_Config.objects.get(pk=1)  # TODO make this a constant
 
     # Extra work for custom fonts
-    if data["zeta_config"].name == "Custom Font - Generic":
+    if data["zeta_config"].name.startswith("Custom Font - Generic"):
         generic_font = ""
         zip_file = zipfile.ZipFile(os.path.join(data["file"].phys_path()))
         files = zip_file.namelist()

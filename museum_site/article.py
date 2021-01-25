@@ -65,3 +65,35 @@ class Article(models.Model):
 
     def url(self):
         return "/article/" + str(self.id) + "/" + slugify(self.title)
+
+    def search(p):
+        qs = Article.objects.filter(published=PUBLISHED_ARTICLE)
+
+        if p.get("title"):
+            qs = qs.filter(
+                title__icontains=p["title"].strip()
+            )
+        if p.get("author"):
+            qs = qs.filter(
+                author__icontains=p["author"].strip()
+            )
+        if p.get("text"):
+            qs = qs.filter(
+                content__icontains=p["text"].strip()
+            )
+        if p.get("date"):
+            if p["date"] == "Any":
+                None
+            elif p["date"] == "Unk":
+                None
+            else:
+                year = p["date"].strip()
+                qs = qs.filter(
+                    date__gte=year + "-01-01",
+                    date__lte=year + "-12-31",
+                )
+
+        if p.getlist("category"):
+            qs = qs.filter(category__in=p.getlist("category"))
+
+        return qs

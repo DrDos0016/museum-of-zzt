@@ -1,0 +1,8 @@
+{% load static %}
+<div class="gallery-block" data-pk="{{article.id}}" data-model="article">
+    <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+    class="screenshot-thumb"
+    alt="{{article.preview}}">
+    <div class="title c"><a href="{{file.file_url}}">{{article.title}}</a></div>
+    <div class="author c">{{article.author}}</div>
+</div>

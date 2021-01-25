@@ -1,44 +1,33 @@
 {% extends "museum_site/main.html" %}
-{% load static %}
 
 {% block content %}
 <section id="content" class="block">
-<h1>Article Directory</h1>
+<h1>Articles</h1>
 
-{% if sort == "category" and view == "list" %}
-<div id="categories">
-<ul>
-{% for article in articles %}
-    {% ifchanged %}<li><a href="#{{article.category}}">{{article.category}}</a></li>{% endifchanged %}
+{% include "museum_site/blocks/paginator_block.html" %}
+
+{% if view == "list" %}
+<table>
+<tr>
+    <th>Title</th>
+    <th>Author</th>
+    <th>Date</th>
+    <th>Category</th>
+    <th>Summary</th>
+</tr>
+{% elif view == "gallery" %}
+<div class="gallery-list">
+{% endif %}
+{% for article in page %}
+{% include "museum_site/blocks/article_"|add:view|add:"_block.html" %}
 {% endfor %}
-</ul>
-{% endif %}
-
-{% include "museum_site/blocks/article_page_block.html" %}
-
-{% for article in articles %}
-{% if sort == "category" %}
-    {% ifchanged %}<h2 class="article-category-heading c">{{article.category}}</h2>{% endifchanged %}
-{% endif %}
-<div class="overview-block" data-pk="{{article.id}}">
-    <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
-    class="screenshot-thumb"
-    alt="{{article.preview}}">
-    <h1 class="title"><a href="{{article.url}}">{{article.title}}</a></h1>
-    <div class="wide-info">
-        <div class="field">
-            <div class="key">Author</div><div class="value">{{article.author}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Date</div><div class="value">{{article.date}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Summary</div><div class="value">{{article.summary}}</div>
-        </div>
-    </div>
+{% if view == "list" %}
+</table>
+{% elif view == "gallery" %}
 </div>
-{% endfor %}
+{% endif %}
 
-{% include "museum_site/blocks/article_page_block.html" %}
+{% include "museum_site/blocks/paginator_block.html" %}
+
 </section>
 {% endblock %}

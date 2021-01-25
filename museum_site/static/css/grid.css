@@ -805,6 +805,7 @@ form .field .genre-checklist
 {
     display:flex;
     flex-wrap:wrap;
+    align-items:flex-start;
     justify-content:center;
     margin:14px auto 14px auto;
 }
@@ -1442,3 +1443,85 @@ article.closer-look img { max-width:640px; } /* Stretched screenshots in old CLs
     padding-top:7px;
 }
 /* End Comics */
+
+/* Paginator */
+.paginator-block
+{
+    text-align:center;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:cp437;
+    font-size:larger;
+}
+
+.prev-page-link, .next-page-link
+{
+    font-weight:bold;
+    padding-left:8px;
+    padding-right:8px;
+}
+
+.paginator-block .selected
+{
+    background:#619F9F;
+}
+
+.paginator-block a:hover
+{
+    background:#98C9C9;
+}
+
+.paginator-block .page-range
+{
+    display:flex;
+    flex-wrap:wrap;
+}
+
+.page-range .current-page, .page-range .num-pages
+{
+    display:inline-block;
+    min-width:3ch;
+}
+
+.paginator-block .page-info
+{
+    flex:0 0 100%;
+}
+
+.paginator-block .page-range a
+{
+    flex:0 0 10%;
+}
+
+.page-number-link
+{
+    display:inline-block;
+    min-width:2.25ch;
+}
+
+.view-links
+{
+    font-family:cp437;
+    font-size:larger;
+    margin:auto;
+    text-align:center;
+    margin-top:4px;
+}
+
+.sort-methods
+{
+    margin:auto;
+    margin-top:4px;
+    text-align:center;
+    font-family:cp437;
+    font-size:larger;
+}
+
+
+.sort-methods select
+{
+    font-family:cp437;
+}
+/* End Paginator */

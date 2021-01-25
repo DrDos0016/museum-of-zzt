@@ -55,7 +55,43 @@ $(document).ready(function (){
     });
 
     // Reload on sort change
+    // TODO: This function should be removed when files/articles are both using the same pagination system
+    // TODO: Also the next one should likely reset you to page 1
     $(".pages select[name=sort]").change(function (){
+        var location = ("" + window.location);
+
+        if (location.indexOf("?") == -1)
+            window.location = "?sort="+$(this).val();
+        else
+        {
+            var qs = location.split("?")[1];
+            var params = qs.split("&");
+            var new_qs = "?";
+            console.log(qs);
+            console.log(params);
+
+            for (var idx in params)
+            {
+                var key = params[idx].split("=")[0];
+                var val = params[idx].split("=")[1];
+
+                if (key == "sort")
+                    new_qs += key + "=" + $(this).val();
+                else
+                    new_qs += key + "=" + val;
+                new_qs += "&";
+            }
+            new_qs = new_qs.slice(0, -1);
+
+            // Make sure there's a sort param
+            if (new_qs.indexOf("sort=") == -1)
+                new_qs += "&sort="+$(this).val();
+
+            window.location = new_qs;
+        }
+    });
+
+    $(".sort-methods select[name='sort']").change(function (){
         var location = ("" + window.location);
 
         if (location.indexOf("?") == -1)
