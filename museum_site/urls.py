@@ -11,6 +11,7 @@ import museum_site.ajax
 import museum_site.debug
 #import museum_site.errors
 import museum_site.help
+import museum_site.search
 import museum_site.views
 import museum_site.tools
 
@@ -48,7 +49,7 @@ urlpatterns = [
     url(r"^article$", museum_site.views.article_directory,
         name="article_directory"
         ),
-    url(r"^article/search$", museum_site.views.article_search,
+    url(r"^article/search$", museum_site.search.article_search,
         name="article_search"
         ),
     url(r"^article/(?P<category>[a-z- ]+)$",
@@ -182,13 +183,13 @@ urlpatterns = [
     url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", museum_site.views.review),
 
     # Search
-    url(r"^advanced-search$", museum_site.views.advanced_search,
+    url(r"^advanced-search$", museum_site.search.advanced_search,
         name="advanced_search"
         ),
-    url(r"^deep-search$", museum_site.views.deep_search,
+    url(r"^deep-search$", museum_site.search.deep_search,
         name="deep_search"
         ),
-    url(r"^search$", museum_site.views.search, name="search"),
+    url(r"^search$", museum_site.search.search, name="search"),
 
     # World of ZZT
     url(r"^worlds-of-zzt$", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
