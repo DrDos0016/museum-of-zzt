@@ -8,12 +8,17 @@ if DEBUG:
 
 import museum_site.admin
 import museum_site.ajax
+import museum_site.article_views
+import museum_site.file_views
 import museum_site.debug
 #import museum_site.errors
 import museum_site.help
 import museum_site.search_views
-import museum_site.views
 import museum_site.tools
+import museum_site.upload_views
+import museum_site.views
+import museum_site.zeta_views
+
 
 
 from museum_site.constants import (
@@ -42,38 +47,35 @@ urlpatterns = [
     url(r"^credits$", museum_site.views.site_credits),
     url(r"^data-integrity$", museum_site.views.generic, {"template": "data", "title":"Data Integrity"}, name="data_integrity"),
 
-    # Accounts
-    url(r"^register$", museum_site.views.register, name="register"),
-
     # Articles
-    url(r"^article$", museum_site.views.article_directory,
+    url(r"^article$", museum_site.article_views.article_directory,
         name="article_directory"
         ),
     url(r"^article/search$", museum_site.search_views.article_search,
         name="article_search"
         ),
     url(r"^article/(?P<category>[a-z- ]+)$",
-        museum_site.views.article_directory,
+        museum_site.article_views.article_directory,
         name="article_directory"
         ),
 
     url(r"^article/(?P<id>[0-9]+)/page/(?P<page>[0-9]+)/(.*)$",
-        museum_site.views.article_view,
+        museum_site.article_views.article_view,
         name="article_view_page"),
     url(r"^article/(?P<id>[0-9]+)/(.*)$",
-        museum_site.views.article_view,
+        museum_site.article_views.article_view,
         {"page": 1},
         name="article_view",),
 
     # Special Article Pages (those with urls besides /article/#/title)
-    url(r"^about-zzt$", museum_site.views.article_view, {"id": 1}, name="about_zzt"),
-    url(r"^ascii$", museum_site.views.article_view, {"id": 3}, name="ascii"),
-    url(r"^clones$", museum_site.views.article_view, {"id": 6}, name="clones"),
-    url(r"^zzt-cheats$", museum_site.views.article_view, {"id": 22}, name="zzt_cheats"),
-    url(r"^credits$", museum_site.views.article_view, {"id": 164}, name="credits"),
-    url(r"^getting-started$", museum_site.views.article_view, {"id": 5}, name="zzt_dosbox"),
-    url(r"^zzt$", museum_site.views.article_view, {"id": 2}, name="zzt_dl"),
-    url(r"^zeta$", museum_site.views.article_view, {"id": 399}, name="zeta"),
+    url(r"^about-zzt$", museum_site.article_views.article_view, {"id": 1}, name="about_zzt"),
+    url(r"^ascii$", museum_site.article_views.article_view, {"id": 3}, name="ascii"),
+    url(r"^clones$", museum_site.article_views.article_view, {"id": 6}, name="clones"),
+    url(r"^zzt-cheats$", museum_site.article_views.article_view, {"id": 22}, name="zzt_cheats"),
+    url(r"^credits$", museum_site.article_views.article_view, {"id": 164}, name="credits"),
+    url(r"^getting-started$", museum_site.article_views.article_view, {"id": 5}, name="zzt_dosbox"),
+    url(r"^zzt$", museum_site.article_views.article_view, {"id": 2}, name="zzt_dl"),
+    url(r"^zeta$", museum_site.article_views.article_view, {"id": 399}, name="zeta"),
 
     # Collections
     url(r"^collection/play$", museum_site.views.play_collection,
@@ -81,8 +83,8 @@ urlpatterns = [
         ),
 
     # Closer Looks
-    url(r"^closer-looks$", museum_site.views.closer_look, name="closer_looks"),
-    url(r"^livestreams$", museum_site.views.livestreams, name="livestreams"),
+    url(r"^closer-looks$", museum_site.article_views.closer_look, name="closer_looks"),
+    url(r"^livestreams$", museum_site.article_views.livestreams, name="livestreams"),
 
     # Directories
     url(r"^directory/(?P<category>[a-z].*)$", museum_site.views.directory,
@@ -102,18 +104,18 @@ urlpatterns = [
 
     # Files
     url(r"^article/(?P<letter>[a-z1!])/(?P<filename>.*)$",
-        museum_site.views.article,
+        museum_site.file_views.file_articles,
         name="article"
         ),
     url(r"^browse/(?P<letter>[a-z1])$", museum_site.views.browse, name="browse_letter"),
-    url(r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.file,
+    url(r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.file_views.file_viewer,
         name="file"
         ),
-    url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.views.zeta_launcher,
+    url(r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$", museum_site.zeta_views.zeta_launcher,
         {"components": ["credits", "controls", "instructions", "players"]},
         name="play"
         ),
-    url(r"^file/local$", museum_site.views.file,
+    url(r"^file/local$", museum_site.file_views.file_viewer,
         {"local": True, "letter":"!", "filename":""},
         name="local_file",
         ),
@@ -167,7 +169,7 @@ urlpatterns = [
         name="mass_downloads"),
 
     # Patrons Only
-    url(r"^patron-articles$", museum_site.views.patron_articles, name="patron_articles"),
+    url(r"^patron-articles$", museum_site.article_views.patron_articles, name="patron_articles"),
 
     # Policies
     url(r"^policy/correction$", museum_site.views.generic, {"template": "correction_policy", "title":"Correction Policy"}, name="correction_policy"),
@@ -180,7 +182,7 @@ urlpatterns = [
     url(r"^roulette$", museum_site.views.browse, {"details": [DETAIL_ZZT]}, name="roulette"),
 
     # Reviews
-    url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", museum_site.views.review),
+    url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", museum_site.file_views.review),
 
     # Search
     url(r"^advanced-search$", museum_site.search_views.advanced_search,
@@ -195,12 +197,12 @@ urlpatterns = [
     url(r"^worlds-of-zzt$", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
 
     # Uploads
-    url(r"^upload$", museum_site.views.upload, name="upload"),
-    url(r"^upload/complete$", museum_site.views.upload_complete, name="upload_complete"),
+    url(r"^upload$", museum_site.upload_views.upload, name="upload"),
+    url(r"^upload/complete$", museum_site.upload_views.upload_complete, name="upload_complete"),
 
     # Zeta Live
-    url(r"^zeta-live$", museum_site.views.zeta_live),
-    url(r"^zeta-launcher$", museum_site.views.zeta_launcher),
+    url(r"^zeta-live$", museum_site.zeta_views.zeta_live),
+    url(r"^zeta-launcher$", museum_site.zeta_views.zeta_launcher),
 
     ###########################################################################
     ###########################################################################
