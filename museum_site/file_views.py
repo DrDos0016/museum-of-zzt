@@ -4,6 +4,7 @@ from django.shortcuts import render
 from .common import *
 from .constants import *
 from .models import *
+from .private import BANNED_IPS
 
 
 def file_articles(request, letter, filename):
@@ -104,7 +105,10 @@ def review(request, letter, filename):
     data["title"] = data["file"].title + " - Reviews"
 
     # POST review
-    if request.POST.get("action") == "post-review":
+    if request.POST.get("action") == "post-review" and data["file"].can_review:
+        if request.META["REMOTE_ADDR"] in BANNED_IPS:
+            return HttpResponse("Banned account.")
+
         review = Review()
         created = review.from_request(request)
         if created:

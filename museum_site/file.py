@@ -143,6 +143,7 @@ class File(models.Model):
     default=None, on_delete=models.SET_NULL)
 
     spotlight = models.BooleanField(default=True)
+    can_review = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["sort_title", "letter"]

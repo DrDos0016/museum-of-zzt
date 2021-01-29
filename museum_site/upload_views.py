@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .common import *
 from .constants import *
 from .models import *
+from .private import BANNED_IPS
 
 
 def upload(request):
@@ -10,6 +11,9 @@ def upload(request):
 
     if not UPLOADS_ENABLED:
         return redirect("/")
+
+    if request.META["REMOTE_ADDR"] in BANNED_IPS:
+        return HttpResponse("Banned account.")
 
     # Convert POST genres to a list to easily recheck boxes on failed upload
     data["requested_genres"] = request.POST.getlist("genre")

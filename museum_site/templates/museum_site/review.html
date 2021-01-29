@@ -3,6 +3,7 @@
 {% load markdown_deux_tags %}
 
 {% block scripts %}
+{% if file.can_review %}
 <script>
 $(document).ready(function (){
     $("#submit-review").click(function (e){
@@ -61,6 +62,7 @@ function clear_error(identifier)
     return true;
 }
 </script>
+{% endif %}
 {% endblock %}
 
 {% block world_content %}
@@ -83,6 +85,7 @@ function clear_error(identifier)
 </div>
 {% endfor %}
 
+{% if file.can_review %}
 <h2>Review {{file.title}}</h2>
 <form method="POST" id="review-form">
 {% csrf_token %}
@@ -140,4 +143,8 @@ function clear_error(identifier)
     <button type="submit" id="submit-review">Post Review</button>
 </div>
 </form>
+{% else %}
+<h2>Reviews Disabled</h2>
+This file is no longer accepting new reviews at this time.
+{% endif %}
 {% endblock %}
