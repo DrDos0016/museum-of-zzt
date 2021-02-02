@@ -63,16 +63,25 @@ blockquote footer
     font-style:normal;
 }
 
+figure
+{
+    text-align:center;
+}
+
+figure figcaption
+{
+    font-family:"cp437";
+}
+
 figure.zzt-figure
 {
+    width:480px;
     padding:14px 8px 0px 8px;
     background:#0AA;
-    text-align:center;
     margin:auto;
-    margin-bottom:7px;
-    width:480px;
     color:#FFF;
     font-family:"cp437";
+    border:1px solid #000;
 }
 
 figure.zzt-figure figcaption
