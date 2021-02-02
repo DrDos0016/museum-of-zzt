@@ -30,7 +30,7 @@ community can be easily discovered and that their importance can be recognized.
         <div class="author c">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
     </div>
     {% endfor %}
-    <div class="gallery-footer">
+    <div class="view-more">
         <a href="{% url 'new_files' %}">View More</a>
     </div>
 </div>
@@ -71,6 +71,9 @@ community can be easily discovered and that their importance can be recognized.
     </tr>
     {% endfor %}
 </table>
+<div class="view-more">
+        <a href="{% url 'article_directory' %}">View More</a>
+</div>
 
 <h1>Latest Reviews</h1>
 <table>
@@ -87,5 +90,8 @@ community can be easily discovered and that their importance can be recognized.
     </tr>
     {% endfor %}
 </table>
+<div class="view-more">
+        <a href="{% url 'review_directory' %}">View More</a>
+</div>
 </section>
 {% endblock %}

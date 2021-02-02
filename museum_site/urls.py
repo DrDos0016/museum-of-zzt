@@ -13,6 +13,7 @@ import museum_site.file_views
 import museum_site.debug
 #import museum_site.errors
 import museum_site.help
+import museum_site.review_views
 import museum_site.search_views
 import museum_site.tools
 import museum_site.upload_views
@@ -182,6 +183,7 @@ urlpatterns = [
     url(r"^roulette$", museum_site.views.browse, {"details": [DETAIL_ZZT]}, name="roulette"),
 
     # Reviews
+    url(r"^review$", museum_site.review_views.review_directory, name="review_directory"),
     url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", museum_site.file_views.review),
 
     # Search
