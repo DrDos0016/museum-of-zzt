@@ -22,20 +22,27 @@ def main():
     confirm = input("Type 'yes' to confirm: ")
 
     if confirm == "yes":
-        print("Deleting articles...")
+        print("Deleting removed articles...")
         for a in Article.objects.filter(published=REMOVED_ARTICLE):
             print(a)
             a.delete()
         print("Done!")
-        print("Deleting file objects...")
+        print("Deleting removed file objects...")
         for f in File.objects.filter(details__id=DETAIL_REMOVED):
             print(f)
             f.delete()
         print("Done!")
+        print("Blanking review objects...")
+        for r in Review.objects.all():
+            r.email = ""
+            r.ip = ""
+            r.save()
+        print("Done!")
+
         print("Deleting sessions...")
         Session.objects.all().delete()
         print("Done!")
-        print("Clearing accounts...")
+        print("Blanking user accounts...")
         qs = User.objects.all()
         for u in qs:
             u.username = "USER #" + str(u.id)
