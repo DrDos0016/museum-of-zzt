@@ -28,22 +28,10 @@ def museum_global(request):
     if data["datetime"].day == 1 and data["datetime"].month == 4:  # This is very important
         data["april"] = True
 
-    # Default view methods
-    data["views"] = ["detailed", "list", "gallery"]
-    # GET > Session > Default
-    view  = None
-    if request.GET.get("view"):
-        view = request.GET["view"]
-    elif request.session.get("view"):
-        view = request.session["view"]
-    if view not in data["views"]:  # Default
-        view = "detailed"
-    data["view"] = view
-    request.session["view"] = view
-
     # Common query string modifications
     data["qs_sans_page"] = qs_sans(request.GET, "page")
     data["qs_sans_view"] = qs_sans(request.GET, "view")
+    data["qs_sans_both"] = qs_sans(request.GET, ["page", "view"])
 
     # E-mail
     data["EMAIL_ADDRESS"] = EMAIL_ADDRESS

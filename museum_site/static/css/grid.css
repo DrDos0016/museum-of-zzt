@@ -1510,7 +1510,7 @@ article.closer-look img { max-width:640px; } /* Stretched screenshots in old CLs
     min-width:2.25ch;
 }
 
-.view-links
+.view-links, .roulette-links
 {
     font-family:cp437;
     font-size:larger;

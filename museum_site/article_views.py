@@ -22,9 +22,15 @@ def article_directory(request, category="all", page_num=1):
     elif request.GET.get("sort") == "category":
         qs = qs.order_by("category")
 
+    data["available_views"] = ["detailed", "list", "gallery"]
+    data["view"] = get_selected_view_format(request, data["available_views"])
+
     page_number = int(request.GET.get("page", 1))
-    start = (page_number - 1) * PAGE_SIZE
-    data["paginator"] = Paginator(qs, PAGE_SIZE)
+    page_size = get_page_size(data["view"])
+    start = (page_number - 1) * page_size
+    data["paginator"] = Paginator(qs, page_size)
+    if page_number > data["paginator"].num_pages:
+        page_number = 1
     data["page"] = data["paginator"].get_page(page_number)
     data["page_number"] = page_number
 

@@ -1,0 +1,9 @@
+{% load site_tags %}
+<tr data-pk="{{file.id}}" data-model="file">
+    <td><a href="{{file.file_url}}" class="view-link{% if 'Explicit' in file.genre %} explicit{% endif %}">{{file.title|default:"NO NAME"}}</a></td>
+    <td>{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a|url_parse}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+    <td><a href="{% url 'search'%}?company={{file.company|url_parse}}">{{file.company}}</a></td>
+    <td>{% for g in file.genre_list %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+    <td><a href="{% url 'search'%}?year={{file.release_date.year|default:'Unk'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></td>
+    <td class="r">{%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}}</span>{% else %}&mdash;{% endif %}</td>
+</tr>

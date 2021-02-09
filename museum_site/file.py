@@ -624,3 +624,7 @@ class File(models.Model):
         os.remove(SITE_ROOT + "/museum_site/static/data/" + world)
 
         return True
+
+    def search(p):
+        qs = File.objects.all()
+        return qs

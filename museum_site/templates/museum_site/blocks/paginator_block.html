@@ -11,8 +11,9 @@
     {% endif %}
 </nav>
 <div class="view-links">
-    {% for v in views %}
-    {% if v == view %}<span class="view selected">{{v|title}} View</span>{% else %}<a class="view" href="?view={{v}}{% if qs_sans_view %}&{{qs_sans_view}}{% endif %}">{{v|title}} View</a>{% endif %}
+    {% for v in available_views %}
+    {% if v == "list" and v != view %}<a class="view" href="?view={{v}}{% if qs_sans_both %}&{{qs_sans_both}}{% endif %}">{{v|title}} View</a>
+    {% elif v == view %}<span class="view selected">{{v|title}} View</span>{% else %}<a class="view" href="?view={{v}}{% if qs_sans_view %}&{{qs_sans_view}}{% endif %}">{{v|title}} View</a>{% endif %}
     {% if not forloop.last %} ♦ {% endif %}
     {% endfor %}
 </div>
@@ -23,3 +24,9 @@
             {% endfor %}
         </select>
 </div>
+{% if guide_words %}
+<div class="guide-words">
+    <span><a class="left" href="#{{first_item.filename}}">{{first_item.title}}</a></span>
+    <span><a class="right" href="#{{last_item.filename}}">{{last_item.title}}</a></span>
+</div>
+{% endif %}

@@ -33,7 +33,7 @@ CSS_INCLUDES = ["grid.css", "zzt.css", "low-res.css"]
 TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25
-LIST_PAGE_SIZE = 300
+LIST_PAGE_SIZE = 250
 UPLOADS_ENABLED = True
 UPLOAD_CAP = 1048576  # 1 Megabyte
 YEAR = datetime.now().year
@@ -260,11 +260,18 @@ def qs_sans(params, key):
     """ Returns a query string with a key removed """
     qs = params.copy()
 
-    if key in qs:
+    # If key is actually a list
+    if isinstance(key, list):
         qs_nokey = qs.copy()
-        qs_nokey.pop(key)
+        for k in key:
+            if k in qs:
+                qs_nokey.pop(k)
     else:
-        qs_nokey = qs
+        if key in qs:
+            qs_nokey = qs.copy()
+            qs_nokey.pop(key)
+        else:
+            qs_nokey = qs
 
     return qs_nokey.urlencode()
 
@@ -341,3 +348,23 @@ def prod_only(func, *args, **kwargs):
         else:
             return func(*args, **kwargs)
     return inner
+
+def get_selected_view_format(request, available_views):
+    # GET > Session > Default
+    view = None
+    if request.GET.get("view"):
+        view = request.GET["view"]
+    elif request.session.get("view"):
+        view = request.session["view"]
+    if view not in available_views:  # Default
+        view = "detailed"
+    request.session["view"] = view
+    return view
+
+def get_page_size(view):
+    page_sizes = {
+    "detailed": PAGE_SIZE,
+    "list": LIST_PAGE_SIZE,
+    "gallery": PAGE_SIZE,
+    }
+    return page_sizes.get(view, PAGE_SIZE)

@@ -7,6 +7,91 @@ from .models import *
 from .private import BANNED_IPS
 
 
+def file_directory(
+    request,
+    letter=None,
+    details=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY],
+    page_num=1,
+    show_description=False
+):
+    """ Returns page listing all articles sorted either by date or name """
+    data = {"title": "Browse"}
+
+    data["sort_options"] = [
+        {"text": "Title", "val": "title"},
+        {"text": "Author", "val": "author"},
+        {"text": "Company", "val": "company"},
+        {"text": "Rating", "val": "rating"},
+        {"text": "Release Date", "val": "release"},
+    ]
+
+    default_sort = None
+
+    # Pull files based on page
+    qs = File.search(request.GET)
+    if details:
+        qs = qs.filter(details__in=details)
+        if len(details) == 1:
+            data["title"] = "Browse - " + CATEGORY_LIST[details[0]][1]
+            data["header"] = data["title"]
+    if letter:
+        qs = qs.filter(letter=letter)
+        data["title"] = "Browse - " + letter.upper()
+        data["header"] = data["title"]
+    if request.path == "/new":
+        data["title"] = "New Additions"
+        data["header"] = data["title"]
+    elif request.path == "/uploaded":
+        data["title"] = "Upload Queue"
+        data["header"] = data["title"]
+        # Calculate upload queue size
+        request.session["FILES_IN_QUEUE"] = File.objects.filter(
+            details__id__in=[DETAIL_UPLOADED]
+        ).count()
+        # Add sort by upload date
+        data["sort_options"] = (
+            [{"text": "Upload Date", "val": "uploaded"}] + data["sort_options"]
+        )
+        default_sort = "-upload_date"
+
+    if request.GET.get("sort") == "title":
+        qs = qs.order_by("sort_title")
+    elif request.GET.get("sort") == "author":
+        qs = qs.order_by("author")
+    elif request.GET.get("sort") == "company":
+        qs = qs.order_by("company")
+    elif request.GET.get("sort") == "rating":
+        qs = qs.order_by("-rating")
+    elif request.GET.get("sort") == "release":
+        qs = qs.order_by("-release_date")
+    elif request.GET.get("sort") == "uploaded":
+        qs = qs.order_by("-upload_date")
+    elif default_sort:
+        qs = qs.order_by(default_sort)
+
+    data["available_views"] = ["detailed", "list", "gallery"]
+    data["view"] = get_selected_view_format(request, data["available_views"])
+
+    page_number = int(request.GET.get("page", 1))
+    page_size = get_page_size(data["view"])
+    start = (page_number - 1) * page_size
+    data["paginator"] = Paginator(qs, page_size)
+    if page_number > data["paginator"].num_pages:
+        page_number = 1
+    data["page"] = data["paginator"].get_page(page_number)
+    data["page_number"] = page_number
+
+    data["guide_words"] = True
+    data["first_item"] = data["page"].object_list[0]
+    data["last_item"] = data["page"].object_list[PAGE_SIZE - 1]
+
+    # Show description for certain views
+    if DETAIL_LOST in details:
+        data["show_description"] = True
+
+    return render(request, "museum_site/file_directory.html", data)
+
+
 def file_articles(request, letter, filename):
     """ Returns page listing all articles associated with a provided file. """
     data = {}
@@ -121,3 +206,31 @@ def review(request, letter, filename):
 
     data["reviews"] = Review.objects.filter(file_id=data["file"].id)
     return render(request, "museum_site/review.html", data)
+
+
+def roulette(
+    request,
+    letter=None,
+    details=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY],
+    page_num=1,
+    show_description=False
+):
+    data = {"title": "Browse", "mode": "Roulette", "header": "Roulette"}
+
+    ids = list(
+        File.objects.filter(
+            details__id__in=details
+        ).values_list("id", flat=True)
+    )
+    data["rng_seed"] = str(int(request.GET.get("seed", time())))
+    seed(data["rng_seed"])
+    shuffle(ids)
+    qs = File.objects.filter(id__in=ids[:PAGE_SIZE]).order_by("?")
+
+    data["available_views"] = ["detailed"]
+    data["view"] = get_selected_view_format(request, data["available_views"])
+
+    data["paginator"] = Paginator(qs, PAGE_SIZE)
+    data["page"] = data["paginator"].get_page(1)
+
+    return render(request, "museum_site/file_directory.html", data)

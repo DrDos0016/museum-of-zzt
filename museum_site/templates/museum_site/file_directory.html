@@ -1,0 +1,43 @@
+{% extends "museum_site/main.html" %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>{{header|default:"Browse"}}</h1>
+
+{% if mode == "Roulette" %}
+<div class="roulette-links">
+    Seed <a href="{% url 'roulette' %}?seed={{rng_seed}}">{{rng_seed}}</a> ♦
+    <a href="{% url 'roulette' %}">Reroll</a>
+</div>
+{% else %}
+{% include "museum_site/blocks/paginator_block.html" %}
+{% endif %}
+
+{% if view == "list" %}
+<table>
+<tr>
+    <th>Title</th>
+    <th>Author</th>
+    <th>Company</th>
+    <th>Genre</th>
+    <th>Date</th>
+    <th>Rating</th>
+</tr>
+{% elif view == "gallery" %}
+<div class="gallery-list">
+{% endif %}
+{% for file in page %}
+{% include "museum_site/blocks/file_"|add:view|add:"_block.html" %}
+{% endfor %}
+{% if view == "list" %}
+</table>
+{% elif view == "gallery" %}
+</div>
+{% endif %}
+
+{% if mode != "Roulette" %}
+{% include "museum_site/blocks/paginator_block.html" %}
+{% endif %}
+
+</section>
+{% endblock %}
