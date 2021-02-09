@@ -133,7 +133,6 @@ def browse(
 
     return response
 
-
 def directory(request, category):
     """ Returns a directory of all authors/companies/genres in the database """
     data = {}
@@ -357,8 +356,10 @@ def random(request):
 
     zgame = None
     while not zgame:
-        id = randint(1, max_pk)
-        zgames = File.objects.filter(pk=id, details__id=DETAIL_ZZT)
+        pk = randint(1, max_pk)
+        zgames = File.objects.filter(pk=pk, details__id=DETAIL_ZZT).exclude(
+            details__id_in=[DETAIL_LOST, DETAIL_REMOVED]
+        ).exclude(genre__icontains="Explicit")
         if zgames:
             zgame = zgames[0]
 
