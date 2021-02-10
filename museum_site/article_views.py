@@ -13,6 +13,9 @@ def article_directory(request, category="all", page_num=1):
     # Pull articles for page
     qs = Article.search(request.GET)
 
+    if category != "all":
+        qs = qs.filter(category=category)
+
     if request.GET.get("sort", "date") == "date":
         qs = qs.order_by("-date")
     elif request.GET.get("sort") == "title":
