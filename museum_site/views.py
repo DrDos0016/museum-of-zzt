@@ -358,7 +358,7 @@ def random(request):
     while not zgame:
         pk = randint(1, max_pk)
         zgames = File.objects.filter(pk=pk, details__id=DETAIL_ZZT).exclude(
-            details__id_in=[DETAIL_LOST, DETAIL_REMOVED]
+            details__id__in=[DETAIL_LOST, DETAIL_REMOVED]
         ).exclude(genre__icontains="Explicit")
         if zgames:
             zgame = zgames[0]
