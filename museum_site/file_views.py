@@ -41,6 +41,8 @@ def file_directory(
     if request.path == "/new":
         data["title"] = "New Additions"
         data["header"] = data["title"]
+        data["sort_options"] = []
+        default_sort = ["-publish_date", "-id"]
     elif request.path == "/uploaded":
         data["title"] = "Upload Queue"
         data["header"] = data["title"]
@@ -52,7 +54,7 @@ def file_directory(
         data["sort_options"] = (
             [{"text": "Upload Date", "val": "uploaded"}] + data["sort_options"]
         )
-        default_sort = "-upload_date"
+        default_sort = ["-upload_date"]
 
     if request.GET.get("sort") == "title":
         qs = qs.order_by("sort_title")
@@ -67,7 +69,7 @@ def file_directory(
     elif request.GET.get("sort") == "uploaded":
         qs = qs.order_by("-upload_date")
     elif default_sort:
-        qs = qs.order_by(default_sort)
+        qs = qs.order_by(*default_sort)
 
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = get_selected_view_format(request, data["available_views"])

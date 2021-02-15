@@ -17,13 +17,13 @@
     {% if not forloop.last %} ♦ {% endif %}
     {% endfor %}
 </div>
-<div class="sort-methods">
+{% if sort_options %}<div class="sort-methods">
     Sort: <select name="sort">
             {% for option in sort_options %}
                 <option value="{{option.val}}"{% if request.GET.sort == option.val %} selected {%endif %}>{{option.text}}</option>
             {% endfor %}
         </select>
-</div>
+</div>{% endif %}
 {% if guide_words %}
 <div class="guide-words">
     <span><a class="left" href="#{{first_item.filename}}">{{first_item.title}}</a></span>
