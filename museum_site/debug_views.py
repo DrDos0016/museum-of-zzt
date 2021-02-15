@@ -32,18 +32,19 @@ def debug_article(request):
     data["TODO"] = "TODO"
     data["CROP"] = "CROP"
 
-    filepath = "/var/projects/museum/private/" + request.GET.get("file")
+    filepath = "/var/projects/museum/wip/" + request.GET.get("file")
     if not os.path.isfile(filepath):
         filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")
 
     with open(filepath) as fh:
         article = Article.objects.get(pk=1)
-        article.title = "TEST ARTICLE"
+        article.title = filepath
         article.category = "TEST"
         article.content = fh.read().replace("<!--Page-->", "<hr><b>PAGE BREAK</b><hr>")
         article.schema = request.GET.get("format", "django")
     data["article"] = article
     data["veryspecial"] = True
+    data["file_path"] = filepath
     return render(request, "museum_site/article_view.html", data)
 
 

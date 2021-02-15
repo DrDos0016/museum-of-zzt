@@ -10,12 +10,12 @@ import museum_site.admin
 import museum_site.ajax
 import museum_site.article_views
 import museum_site.file_views
-import museum_site.debug
+import museum_site.debug_views
 #import museum_site.errors
-import museum_site.help
+import museum_site.help_views
 import museum_site.review_views
 import museum_site.search_views
-import museum_site.tools
+import museum_site.tool_views
 import museum_site.upload_views
 import museum_site.views
 import museum_site.zeta_views
@@ -160,7 +160,7 @@ urlpatterns = [
         name="new_files"),
 
     # Help
-    url(r"^help/genres$", museum_site.help.genres,
+    url(r"^help/genres$", museum_site.help_views.genres,
         name="help_genre"),
 
     # Mass Downloads
@@ -223,22 +223,22 @@ urlpatterns = [
     url(r"^github$", museum_site.views.redir, {"url": "https://github.com/DrDos0016/z2"}),
 
     # Tools
-    url(r"^tools$", museum_site.tools.tool_index, name="tool_index"),
-    url(r"^tools/(?P<pk>[0-9]+)$", museum_site.tools.tool_list, name="tool_list"),
-    url(r"^tools/mirror/(?P<pk>[0-9]+)$", museum_site.tools.mirror, name="mirror"),
-    url(r"^tools/publish/(?P<pk>[0-9]+)$", museum_site.tools.publish, name="publish"),
-    url(r"^tools/replace_zip/(?P<pk>[0-9]+)$", museum_site.tools.replace_zip, name="replace_zip"),
-    url(r"^tools/scan$", museum_site.tools.scan, name="scan"),
-    url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tools.set_screenshot, name="set_screenshot"),
-    url(r"^tools/audit/zeta-config$", museum_site.tools.audit_zeta_config, name="audit_zeta_config"),
-    url(r"^tools/add-livestream/(?P<pk>[0-9]+)$", museum_site.tools.add_livestream, name="add_livestream"),
-    url(r"^tools/extract-font/(?P<pk>[0-9]+)$", museum_site.tools.extract_font, name="extract_font"),
+    url(r"^tools$", museum_site.tool_views.tool_index, name="tool_index"),
+    url(r"^tools/(?P<pk>[0-9]+)$", museum_site.tool_views.tool_list, name="tool_list"),
+    url(r"^tools/mirror/(?P<pk>[0-9]+)$", museum_site.tool_views.mirror, name="mirror"),
+    url(r"^tools/publish/(?P<pk>[0-9]+)$", museum_site.tool_views.publish, name="publish"),
+    url(r"^tools/replace_zip/(?P<pk>[0-9]+)$", museum_site.tool_views.replace_zip, name="replace_zip"),
+    url(r"^tools/scan$", museum_site.tool_views.scan, name="scan"),
+    url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tool_views.set_screenshot, name="set_screenshot"),
+    url(r"^tools/audit/zeta-config$", museum_site.tool_views.audit_zeta_config, name="audit_zeta_config"),
+    url(r"^tools/add-livestream/(?P<pk>[0-9]+)$", museum_site.tool_views.add_livestream, name="add_livestream"),
+    url(r"^tools/extract-font/(?P<pk>[0-9]+)$", museum_site.tool_views.extract_font, name="extract_font"),
 
     # Debug
-    url(r"^debug$", museum_site.debug.debug),
-    url(r"^debug/article$", museum_site.debug.debug_article),
-    url(r"^debug/colors$", museum_site.debug.debug_colors),
-    url(r"^debug/z0x$", museum_site.debug.debug_z0x),
+    url(r"^debug$", museum_site.debug_views.debug),
+    url(r"^debug/article$", museum_site.debug_views.debug_article),
+    url(r"^debug/colors$", museum_site.debug_views.debug_colors),
+    url(r"^debug/z0x$", museum_site.debug_views.debug_z0x),
     url(r"^ajax/debug_file$", museum_site.ajax.debug_file),
 
     #url(r"^error/(?P<status>[0-9]+)$", museum_site.errors.raise_error)
