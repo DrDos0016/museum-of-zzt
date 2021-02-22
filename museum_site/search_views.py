@@ -233,6 +233,20 @@ def search(request):
         if (request.GET.getlist("details")):
             qs = qs.filter(details__id__in=request.GET.getlist("details"))
 
+        # Filter by reviews
+        if (request.GET.get("reviews", "any") != "any"):
+            if request.GET["reviews"] == "yes":
+                qs = qs.filter(review_count__gt=0)
+            elif request.GET["reviews"] == "no":
+                qs = qs.filter(review_count=0)
+
+        # Filter by articles
+        if (request.GET.get("articles", "any") != "any"):
+            if request.GET["articles"] == "yes":
+                qs = qs.filter(article_count__gt=0)
+            elif request.GET["articles"] == "no":
+                qs = qs.filter(article_count=0)
+
         # Select distinct IDs
         qs = qs.distinct()
 

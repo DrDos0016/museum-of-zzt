@@ -101,6 +101,24 @@ $(document).ready(function (){
     </div>
 </div>
 <div class="field">
+    <label for="min">Associated Content:<br>
+    </label>
+
+    <div id="associated-content" class="field-group">
+        <div class="field-row">
+            <label><input name="reviews" type="radio" value="yes"{% if request.GET.reviews == 'yes' %} checked{% endif %}> Show files with reviews</label>
+            <label><input name="reviews" type="radio" value="no"{% if request.GET.reviews == 'no' %} checked{% endif %}> Show files without reviews</label>
+            <label><input name="reviews" type="radio" value="any"{% if request.GET.reviews == 'any' or not request.GET.reviews %} checked{% endif %}> Show both</label>
+        </div>
+
+        <div class="field-row">
+            <label><input name="articles" type="radio" value="yes"{% if request.GET.articles == 'yes' %} checked{% endif %}> Show files with articles</label>
+            <label><input name="articles" type="radio" value="no"{% if request.GET.articles == 'no' %} checked{% endif %}> Show files without articles</label>
+            <label><input name="articles" type="radio" value="any"{% if request.GET.articles == 'any' or not request.GET.articles %} checked{% endif %}> Show both</label>
+        </div>
+    </div>
+</div>
+<div class="field">
     <label>Details:<br>
     </label>
 

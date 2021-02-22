@@ -752,6 +752,14 @@ form .field input, form .field textarea, form .field select, form .field div
     flex:1 1 25%;
 }
 
+.field div.field-row
+{
+    flex:0 0 100%;
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:4px;
+}
+
 #review-content
 {
     min-height:140px;
