@@ -84,8 +84,8 @@ urlpatterns = [
         ),
 
     # Closer Looks
-    url(r"^closer-looks$", museum_site.article_views.closer_look, name="closer_looks"),
-    url(r"^livestreams$", museum_site.article_views.livestreams, name="livestreams"),
+    url(r"^closer-looks$", museum_site.article_views.article_directory, {"category": "Closer Look"}, name="closer_looks"),
+    url(r"^livestreams$", museum_site.article_views.article_directory, {"category": "Livestream"}, name="livestreams"),
 
     # Directories
     url(r"^directory/(?P<category>[a-z].*)$", museum_site.views.directory,

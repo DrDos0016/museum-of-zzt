@@ -2,7 +2,20 @@
 
 {% block content %}
 <section id="content" class="block">
-<h1>Articles</h1>
+<h1>{% if category %}{{category}} {% endif %}Articles</h1>
+
+{% if category == "Closer Look" %}
+<p>Closer Looks are one of the main components of the Worlds of ZZT project.
+The Closer Look series consists primarily of (re)visiting ZZT worlds and
+looking at them from a contemporary perspective, attemping to give both a
+complete playthrough of them while also pointing out noteworthy design
+decisions.</p>
+{% elif category == "Livestream" %}
+<p>Recordings of Livestreams are posted here. They (along with other videos) can all be watched directly on
+the <a href="https://www.youtube.com/c/WorldsofZZT" target="_blank">Worlds of ZZT YouTube channel</a>.</p>
+
+<p>Livestreams typically occur every Sunday on the <a href="https://twitch.tv/worldsofzzt">Worlds of ZZT Twitch channel</a> at 2pm PST / 5pm EST.</p>
+{% endif %}
 
 {% include "museum_site/blocks/paginator_block.html" %}
 

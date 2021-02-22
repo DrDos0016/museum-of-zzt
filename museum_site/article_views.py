@@ -15,6 +15,8 @@ def article_directory(request, category="all", page_num=1):
 
     if category != "all":
         qs = qs.filter(category=category)
+        data["title"] = category.title() + " Directory"
+        data["category"] = category.title()
 
     if request.GET.get("sort", "date") == "date":
         qs = qs.order_by("-date")
@@ -110,63 +112,6 @@ def article_view(request, id, page=0):
         "<!--Page-->"
     )[data["page"]-1]
     return render(request, "museum_site/article_view.html", data)
-
-
-def closer_look(request):
-    """ Returns a listing of all Closer Look articles """
-    data = {"title": "Closer Looks"}
-    data["articles"] = Article.objects.filter(
-        category="Closer Look", published=PUBLISHED_ARTICLE,
-    )
-    sort = request.GET.get("sort", "date")
-    if sort == "title":
-        data["articles"] = data["articles"].order_by("title")
-    elif sort == "date":
-        data["articles"] = data["articles"].order_by("-date")
-
-    data["sort"] = sort
-    data["page"] = int(request.GET.get("page", 1))
-    data["articles"] = data["articles"][
-        (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
-    ]
-    data["count"] = Article.objects.filter(
-        category="Closer Look", published=PUBLISHED_ARTICLE
-    ).count()
-    data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
-    data["page_range"] = range(1, data["pages"] + 1)
-    data["prev"] = max(1, data["page"] - 1)
-    data["next"] = min(data["pages"], data["page"] + 1)
-    data["qs_sans_page"] = qs_sans(request.GET, "page")
-
-    return render(request, "museum_site/closer_look.html", data)
-
-
-def livestreams(request):
-    """ Returns a listing of all Livestream articles """
-    data = {"title": "Livestreams"}
-    data["articles"] = Article.objects.filter(
-        category="Livestream", published=PUBLISHED_ARTICLE
-    )
-    sort = request.GET.get("sort", "date")
-    if sort == "title":
-        data["articles"] = data["articles"].order_by("title")
-    elif sort == "date":
-        data["articles"] = data["articles"].order_by("-date")
-
-    data["sort"] = sort
-    data["page"] = int(request.GET.get("page", 1))
-    data["articles"] = data["articles"][
-        (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
-    ]
-    data["count"] = Article.objects.filter(
-        category="Livestream", published=PUBLISHED_ARTICLE
-    ).count()
-    data["pages"] = int(math.ceil(1.0 * data["count"] / PAGE_SIZE))
-    data["page_range"] = range(1, data["pages"] + 1)
-    data["prev"] = max(1, data["page"] - 1)
-    data["next"] = min(data["pages"], data["page"] + 1)
-    data["qs_sans_page"] = qs_sans(request.GET, "page")
-    return render(request, "museum_site/livestreams.html", data)
 
 
 def patron_articles(request):
