@@ -46,7 +46,7 @@ from museum_site.constants import (
 urlpatterns = [
     url(r"^$", museum_site.views.index, name="index"),
     url(r"^credits$", museum_site.views.site_credits),
-    url(r"^data-integrity$", museum_site.views.generic, {"template": "data", "title":"Data Integrity"}, name="data_integrity"),
+    url(r"^data-integrity$", museum_site.views.generic, {"template": "policy-data", "title":"Data Integrity"}, name="data_integrity"),
 
     # Articles
     url(r"^article$", museum_site.article_views.article_directory,
@@ -171,10 +171,10 @@ urlpatterns = [
     url(r"^patron-articles$", museum_site.article_views.patron_articles, name="patron_articles"),
 
     # Policies
-    url(r"^policy/correction$", museum_site.views.generic, {"template": "correction_policy", "title":"Correction Policy"}, name="correction_policy"),
-    url(r"^policy/removal$", museum_site.views.generic, {"template": "removal_policy", "title":"Removal Policy"}, name="removal_policy"),
-    url(r"^policy/review$", museum_site.views.generic, {"template": "review_policy", "title":"Review Policy"}, name="review_policy"),
-    url(r"^policy/upload$", museum_site.views.generic, {"template": "upload_policy", "title":"Upload Policy"}, name="upload_policy"),
+    url(r"^policy/correction$", museum_site.views.generic, {"template": "policy-correction", "title":"Correction Policy"}, name="correction_policy"),
+    url(r"^policy/removal$", museum_site.views.generic, {"template": "policy-removal", "title":"Removal Policy"}, name="removal_policy"),
+    url(r"^policy/review$", museum_site.views.generic, {"template": "policy-review", "title":"Review Policy"}, name="review_policy"),
+    url(r"^policy/upload$", museum_site.views.generic, {"template": "policy-upload", "title":"Upload Policy"}, name="upload_policy"),
 
     # Random ZZT Worlds
     url(r"^random$", museum_site.views.random, name="random"),
