@@ -42,6 +42,4 @@ def review_directory(request, page_num=1):
         {"text": "Rating", "val": "rating"},
     ]
 
-    print("WHAT")
-
     return render(request, "museum_site/review_directory.html", data)

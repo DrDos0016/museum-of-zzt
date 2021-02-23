@@ -51,7 +51,6 @@ def article_directory(request, category="all", page_num=1):
 
 def article_view(request, id, page=0):
     """ Returns an article pulled from the database """
-    print("Article View!")
     a_id = int(id)
     if a_id == 1:
         uri = request.build_absolute_uri()
