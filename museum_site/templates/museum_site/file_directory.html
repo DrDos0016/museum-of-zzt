@@ -4,6 +4,19 @@
 <section id="content" class="block">
 <h1>{{header|default:"Browse"}}</h1>
 
+{% if category == "Featured Worlds" %}
+<p>Featured Worlds, are worlds which have been deemed exemplary in the context of what ZZT has to offer.
+Often these worlds show a higher quality than their peers, and have been given their place in the spotlight here.</p>
+
+<p>Originally, the ZZT community awarded worlds "Game of the Month" and "Classic Game of the Month" designation, for the best worlds released in a given month,
+or notable worlds released at any time. These awards eventually stopped, and were later revived in spirit with "Featured Games" and "M‍a‍d‍T‍o‍m‍'s Pick" awards.
+The former replacing CGotM, and the latter replacing GoTM.</p>
+
+<p>Worlds which received any of these awards have been merged into the Featured Worlds list, typically accompanied by a review and short description of the world.</p>
+
+<p>On the Museum of ZZT, "Featured World" status is given to worlds not just of high quality, but also of considerable interest to those looking to see what ZZT offers.</p>
+{% endif %}
+
 {% if mode == "Roulette" %}
 <div class="roulette-links">
     Seed <a href="{% url 'roulette' %}?seed={{rng_seed}}">{{rng_seed}}</a> ♦

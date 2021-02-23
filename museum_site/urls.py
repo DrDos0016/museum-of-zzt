@@ -100,9 +100,6 @@ urlpatterns = [
         name="exhibit-section"
         ),
 
-    # Featured Games
-    url(r"^featured$", museum_site.views.featured_games, name="featured_games"),
-
     # Files
     url(r"^article/(?P<letter>[a-z1!])/(?P<filename>.*)$",
         museum_site.file_views.file_articles,
@@ -155,6 +152,8 @@ urlpatterns = [
         name="lost_worlds"),
     url(r"^uploaded$", museum_site.file_views.file_directory, {"details": [DETAIL_UPLOADED]},
         name="uploaded_worlds"),
+    url(r"^featured$", museum_site.file_views.file_directory, {"details": [DETAIL_FEATURED], "show_description": True, "show_featured": True},
+        name="featured_games"),
 
     url(r"^new$", museum_site.file_views.file_directory,
         name="new_files"),

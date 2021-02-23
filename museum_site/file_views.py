@@ -12,10 +12,15 @@ def file_directory(
     letter=None,
     details=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY],
     page_num=1,
-    show_description=False
+    show_description=False,
+    show_featured=False
 ):
     """ Returns page listing all articles sorted either by date or name """
-    data = {"title": "Browse"}
+    data = {
+        "title": "Browse",
+        "show_description": show_description,
+        "show_featured": show_featured,
+    }
 
     data["sort_options"] = [
         {"text": "Title", "val": "title"},
@@ -55,6 +60,10 @@ def file_directory(
             [{"text": "Upload Date", "val": "uploaded"}] + data["sort_options"]
         )
         default_sort = ["-upload_date"]
+    elif request.path == "/featured":
+        data["title"] = "Featured Worlds"
+        data["header"] = data["title"]
+        data["category"] = "Featured Worlds"
 
     if request.GET.get("sort") == "title":
         qs = qs.order_by("sort_title")
@@ -85,7 +94,9 @@ def file_directory(
 
     data["guide_words"] = True
     data["first_item"] = data["page"].object_list[0]
-    data["last_item"] = data["page"].object_list[len(data["page"].object_list) - 1]
+    data["last_item"] = (
+        data["page"].object_list[len(data["page"].object_list) - 1]
+    )
 
     # Show description for certain views
     if DETAIL_LOST in details:
