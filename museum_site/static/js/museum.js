@@ -181,6 +181,13 @@ $(document).ready(function (){
             e.preventDefault();
     });
 
+    // Change pages via select input
+    $("select[name=page-selector]").change(function (){
+        var params = $(this).data("params");
+        var dest = "?page=" + $(this).val() + params;
+        window.location = dest;
+    });
+
 });
 
 // ZZT-OOP Syntax highlighting

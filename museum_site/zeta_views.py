@@ -1,5 +1,4 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.paginator import Paginator
 from django.shortcuts import render
 from .common import *
 from .constants import *

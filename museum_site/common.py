@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.shortcuts import redirect, get_object_or_404
 from django.db import connection
 from django.db.models import Count, Avg, Sum, Q
+from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
 # from django.utils.timezone import utc
 # from django.contrib.auth import logout, authenticate, login as auth_login
@@ -33,6 +34,7 @@ CSS_INCLUDES = ["grid.css", "zzt.css", "low-res.css"]
 TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25
+PAGE_LINKS_DISPLAYED = 30
 LIST_PAGE_SIZE = 250
 UPLOADS_ENABLED = True
 UPLOAD_CAP = 1048576  # 1 Megabyte
@@ -368,3 +370,26 @@ def get_page_size(view):
     "gallery": PAGE_SIZE,
     }
     return page_sizes.get(view, PAGE_SIZE)
+
+
+def get_pagination_data(request, data, qs):
+    data["page_number"] = int(request.GET.get("page", 1))
+    data["paginator"] = Paginator(qs, get_page_size(data["view"]))
+    data["page"] = data["paginator"].get_page(data["page_number"])
+
+    # Bounds checking
+    if data["page_number"] < 1:
+        data["page_number"] = 1
+    elif data["page_number"] > data["paginator"].num_pages:
+        data["page_number"] = data["paginator"].num_pages
+
+    # Determine lowest and highest visible page
+    lower = max(1, data["page_number"] - (PAGE_LINKS_DISPLAYED // 2))
+    upper = lower + PAGE_LINKS_DISPLAYED
+
+    # Don't display too many pages
+    if upper > data["paginator"].num_pages + 1:
+        upper = data["paginator"].num_pages + 1
+
+    data["page_range"] = range(lower, upper)
+    return data

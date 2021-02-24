@@ -1480,6 +1480,19 @@ article.closer-look img { max-width:640px; } /* Stretched screenshots in old CLs
     font-size:larger;
 }
 
+.paginator-block .page-info
+{
+    margin-bottom:4px;
+}
+
+select[name=page-selector]
+{
+    font-family:cp437;
+    text-align:center;
+    width:5ch;
+    font-size:14pt;
+}
+
 .prev-page-link, .next-page-link
 {
     font-weight:bold;
