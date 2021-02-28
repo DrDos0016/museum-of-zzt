@@ -1,5 +1,4 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.paginator import Paginator
 from django.shortcuts import render
 from .common import *
 from .constants import *
@@ -66,12 +65,19 @@ def search(request):
     data["page"] = int(request.GET.get("page", 1))
 
     # Query strings
-    data["qs_sans_page"] = qs_sans(request.GET, "page")
-    data["qs_sans_view"] = qs_sans(request.GET, "view")
     sort = SORT_CODES[request.GET.get("sort", "title").strip()]
 
     # Determine the viewing method
     data["view"] = get_view_format(request)
+
+    data["sort_options"] = [
+        {"text": "Title", "val": "title"},
+        {"text": "Author", "val": "author"},
+        {"text": "Company", "val": "company"},
+        {"text": "Rating", "val": "rating"},
+        {"text": "Release Date", "val": "release"},
+    ]
+    default_sort = ["sort_title"]
 
     if request.GET.get("q"):  # Basic Search
         q = request.GET["q"].strip()
@@ -89,43 +95,6 @@ def search(request):
             Q(filename__icontains=q) |
             Q(company__icontains=q)
         ).exclude(details__id__in=[DETAIL_UPLOADED]).distinct()
-
-        # Auto redirect for Italicized-Links in Closer Looks
-        if request.GET.get("auto"):
-            qs.order_by("id")
-            params = qs_sans(request.GET, "q")
-            return redirect(qs[0].file_url() + "?" + params)
-
-        # Debug override
-        if DEBUG:
-            if request.GET.get("q") == "debug=blank":
-                qs = File.objects.filter(screenshot="").exclude(
-                    details__id__in=[DETAIL_LOST]
-                )
-            elif request.GET.get("q").startswith("debug="):
-                ids = request.GET.get("q").split("=", maxsplit=1)[-1]
-                qs = File.objects.filter(id__in=ids.split(",")).order_by("id")
-
-        if data["view"] == "list":
-            page_size = LIST_PAGE_SIZE
-        else:
-            page_size = PAGE_SIZE
-
-        data["files"] = qs.order_by(
-            *sort
-        )[(data["page"] - 1) * page_size:data["page"] * page_size]
-        data["count"] = qs.count()
-        data["pages"] = int(1.0 * math.ceil(data["count"] / page_size))
-        data["page_range"] = range(1, data["pages"] + 1)
-        data["prev"] = max(1, data["page"] - 1)
-        data["next"] = min(data["pages"], data["page"] + 1)
-
-        if data["view"] == "gallery":
-            destination = "museum_site/browse_gallery.html"
-        elif data["view"] == "list":
-            destination = "museum_site/browse_list.html"
-        else:
-            destination = "museum_site/browse.html"
     else:  # Advanced Search
         # Clean up empty params
         if request.GET.get("advanced"):
@@ -250,28 +219,28 @@ def search(request):
         # Select distinct IDs
         qs = qs.distinct()
 
-        # Show results
-        sort = SORT_CODES[request.GET.get("sort", "title").strip()]
-        if data["view"] == "list":
-            data["files"] = qs.order_by(*sort)
+    if data["view"] == "list":
+        page_size = LIST_PAGE_SIZE
+    else:
+        page_size = PAGE_SIZE
 
-            destination = "museum_site/browse_list.html"
-        else:
-            data["files"] = qs.order_by(*sort)[
-                (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
-            ]
-            data["count"] = qs.count()
-            data["pages"] = int(1.0 * math.ceil(data["count"] / PAGE_SIZE))
-            data["page_range"] = range(1, data["pages"] + 1)
-            data["prev"] = max(1, data["page"] - 1)
-            data["next"] = min(data["pages"], data["page"] + 1)
+    if request.GET.get("sort") == "title":
+        qs = qs.order_by("sort_title")
+    elif request.GET.get("sort") == "author":
+        qs = qs.order_by("author")
+    elif request.GET.get("sort") == "company":
+        qs = qs.order_by("company")
+    elif request.GET.get("sort") == "rating":
+        qs = qs.order_by("-rating")
+    elif request.GET.get("sort") == "release":
+        qs = qs.order_by("-release_date")
+    elif request.GET.get("sort") == "uploaded":
+        qs = qs.order_by("-upload_date")
+    elif default_sort:
+        qs = qs.order_by(*default_sort)
 
-            if data["view"] == "gallery":
-                destination = "museum_site/browse_gallery.html"
-            else:
-                destination = "museum_site/browse.html"
+    data["available_views"] = ["detailed", "list", "gallery"]
+    data["view"] = get_selected_view_format(request, data["available_views"])
+    data = get_pagination_data(request, data, qs)
 
-    # Set page view cookie
-    response = render(request, destination, data)
-    response.set_cookie("view", data["view"], expires=datetime(3000, 12, 31))
-    return response
+    return render(request, "museum_site/file_directory.html", data)

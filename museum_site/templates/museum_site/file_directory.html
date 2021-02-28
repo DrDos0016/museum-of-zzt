@@ -3,7 +3,6 @@
 {% block content %}
 <section id="content" class="block">
 <h1>{{header|default:"Browse"}}</h1>
-
 {% if category == "Featured Worlds" %}
 <p>Featured Worlds, are worlds which have been deemed exemplary in the context of what ZZT has to offer.
 Often these worlds show a higher quality than their peers, and have been given their place in the spotlight here.</p>
@@ -25,7 +24,6 @@ The former replacing CGotM, and the latter replacing GoTM.</p>
 {% else %}
 {% include "museum_site/blocks/paginator_block.html" %}
 {% endif %}
-
 {% if view == "list" %}
 <table>
 <tr>
@@ -51,6 +49,5 @@ The former replacing CGotM, and the latter replacing GoTM.</p>
 {% if mode != "Roulette" %}
 {% include "museum_site/blocks/paginator_block.html" %}
 {% endif %}
-
 </section>
 {% endblock %}
