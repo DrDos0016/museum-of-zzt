@@ -551,6 +551,7 @@ input[name=q]
 {
     text-align:center;
     margin:14px auto 14px auto;
+    font-size: larger;
 }
 
 .guide-words
@@ -1352,6 +1353,27 @@ code .char:hover { cursor:help; }
 #oop-wrapper.zzt-scroll code::before, #oop-wrapper.zzt-scroll code::after { content:"  •    •    •    •    •    •    •    •    •\A"; }
 /* End ZZT-OOP Syntax */
 /* Article Globals -- Copied directly from old CSS */
+#article-meta
+{
+    display:grid;
+    grid-template-areas:
+    "title preview"
+    "info preview";
+    align-items:start;
+    grid-template-rows:auto 1fr;
+}
+
+#article-meta h1 { grid-area:title; }
+#article-meta .info { grid-area:info; }
+#article-meta .preview { grid-area:preview; margin: 7px 4px 7px 7px; border:1px solid; height:175px;}
+#article-meta .preview.zoomed { height:auto; }
+#article-meta .summary,#article-meta .modified-date { font-style:italic; }
+
+.file-data + #article-meta
+{
+    border-top:1px solid #000;
+}
+
 #plain-text-article
 {
     padding:0;

@@ -51,6 +51,10 @@ class Article(models.Model):
         default=UNPUBLISHED_ARTICLE,
         choices=ARTICLE_PUBLISH
     )
+    last_modified = models.DateTimeField(
+        auto_now=True,
+        help_text="Date DB entry was last modified"
+    )
     summary = models.CharField(max_length=150, default="", blank=True)
     preview = models.CharField(max_length=80, default="", blank=True)
     allow_comments = models.BooleanField(default=False)
@@ -97,3 +101,6 @@ class Article(models.Model):
             qs = qs.filter(category__in=p.getlist("category"))
 
         return qs
+
+    def is_modified(self):
+        return True if str(self.last_modified)[:10] != str(self.date)[:10] else False

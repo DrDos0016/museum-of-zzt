@@ -58,8 +58,13 @@
 {% block world_content %}
 <div id="article-meta">
     <h1>{{article.title}}</h1>
-    <div>By: {{article.author}}</div>
-    <div>Date: {{article.date}}</div>
+    <div class="info">
+        <div class="author">By: {{article.author}}</div>
+        <div class="publish-date">Published: {{article.date}}</div>
+        {% if article.is_modified %}<div class="modified-date">(Last updated: {{article.last_modified}})</div>{% endif %}
+        <p class="summary">{{article.summary}}</p>
+    </div>
+     {% if article.preview %}<img src="{% static 'images/'|add:article.preview %}" class="screenshot-thumb preview">{% endif %}
 </div>
 
 {% if private_disclaimer %}
