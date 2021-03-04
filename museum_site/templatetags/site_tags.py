@@ -16,7 +16,7 @@ register = Library()
 
 @register.filter
 def as_template(raw):
-    context_data = {"TODO":"TODO", "CROP":"CROP"}
+    context_data = {"TODO": "TODO", "CROP": "CROP"}
     raw = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
     return Template(raw).render(Context(context_data))
 
@@ -55,9 +55,11 @@ def content_warning(*args, **kwargs):
     skip_link = kwargs.get("key", "#end-cw")
 
     if not kwargs.get("noskip"):
-        skip_text = ' | <a href="{}">Jump past warned content</a>'.format(skip_link)
+        skip_text = ' | <a href="{}">Jump past warned content</a>'.format(
+            skip_link
+        )
     else:
-        skip_text= ""
+        skip_text = ""
 
     output = output.format(", ".join(args).title(), skip_link, skip_text)
 
@@ -141,6 +143,7 @@ def patreon_plug(*args, **kwargs):
 
     return mark_safe(output + "\n")
 
+
 @register.simple_tag()
 def cl_info(pk=None, engine=None, emulator=None):
     if pk is None:
@@ -165,7 +168,9 @@ def cl_info(pk=None, engine=None, emulator=None):
             By: {author}<br>
             {company}
             Released: {release}
-    """.format(title=file.title, author=file.author, company=company, release=release)
+    """.format(
+        title=file.title, author=file.author, company=company, release=release
+    )
 
     if engine:
         output += "<br>Played Using: " + engine
@@ -184,6 +189,7 @@ def commentary(parser, token):
     nodelist = parser.parse(('endcommentary',))
     parser.delete_first_token()
     return Commentary(nodelist)
+
 
 class Commentary(template.Node):
     def __init__(self, nodelist):
@@ -216,7 +222,6 @@ class Commentary(template.Node):
         if (commentary and commentary[0] != "<") or commentary.startswith("<!"):
             commentary = "<p>" + commentary.replace("\n\n", "</p><p>") + "</p>"
 
-
         debug_classes = ""
         if "TODO" in commentary:
             debug_classes += " TODO"
@@ -233,7 +238,11 @@ class Commentary(template.Node):
     </div>
 </div>
 """
-        return output.format(debug_classes=debug_classes, material=material, commentary=commentary)
+        return output.format(
+            debug_classes=debug_classes,
+            material=material,
+            commentary=commentary
+        )
 
 
 @register.tag(name="il")
@@ -243,6 +252,7 @@ def il(parser, token):
     # Strip the leading "il " before splitting args
     raw_args = token.contents[3:] if len(token.contents.split()) >= 2 else ""
     return IL(nodelist, raw_args)
+
 
 class IL(template.Node):
     def __init__(self, nodelist, raw_args=""):
@@ -256,5 +266,7 @@ class IL(template.Node):
         board = "&board=" + self.args[2] if self.args[2] != "" else ""
         coords = "#" + self.args[3] if self.args[3] != "" else ""
         url = "/search?q={}&auto=1".format(q) + filename + board + coords
-        output = "<a class='il' target='_blank' href='{url}'>{text}</a>".format(url=url, text=text)
+        output = "<a class='il' target='_blank' href='{url}'>{text}</a>".format(
+            url=url, text=text
+        )
         return output
