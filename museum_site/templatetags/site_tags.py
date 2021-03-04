@@ -142,7 +142,7 @@ def patreon_plug(*args, **kwargs):
     return mark_safe(output + "\n")
 
 @register.simple_tag()
-def cl_info(pk=None):
+def cl_info(pk=None, engine=None, emulator=None):
     if pk is None:
         file = File()
         file.id = -1
@@ -164,11 +164,17 @@ def cl_info(pk=None):
             <h2>{title}</h2>
             By: {author}<br>
             {company}
-            Released: {release}<br>
-            <a href="{download}" target="_blank">Download</a> | <a href="{play}" target="_blank">Play Online</a> | <a href="{view}" target="_blank">View Files</a><br>
-        </div>
+            Released: {release}
+    """.format(title=file.title, author=file.author, company=company, release=release)
 
-    """.format(title=file.title, author=file.author, company=company, release=release, download=file.download_url(), play=file.play_url(), view=file.file_url())
+    if engine:
+        output += "<br>Played Using: " + engine
+    if emulator:
+        output += " via " + emulator
+
+    output += '<br><a href="{download}" target="_blank">Download</a> | <a href="{play}" target="_blank">Play Online</a> | <a href="{view}" target="_blank">View Files</a><br>'.format(download=file.download_url(), play=file.play_url(), view=file.file_url())
+
+    output += "<br>\t</div>"
 
     return mark_safe(output + "\n")
 
