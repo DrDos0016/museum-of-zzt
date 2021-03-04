@@ -34,18 +34,11 @@
     <div class="nav-link"><a href="#top-links">▼ Navigation ▼</a></div>
 </nav>
 
-<header id="logo-area">
-    <a href="/" id="logo"></a>
-</header>
-
-<nav id="top-links" class="cp437">
-    <div class="nav-link" id="top-link-div"><a href="#top">Top of page</a></div>
-    <div class="nav-link"><a href="{% url 'about_zzt' %}"><span class="key">A</span> About<span class="optional"> ZZT</span></a></div>
-    <div class="nav-link"><a href="{% url 'upload' %}"><span class="key">U</span> Upload</a></div>
-    <div class="nav-link"><a href="http://zzt.org/fora"><span class="key">Z</span> <span class="optional"> z2 </span>Forums</a></div>
-</nav>
-
 <section id="sidebar-left" class="sidebar">
+    <header id="logo-area">
+        <a href="/" id="logo"><img src="{% static 'images/logos/museum-logo-by-lazymoth.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
+    </header>
+
     <div id="featured" class="block c">
         <h1 class="l">Featured World</h1>
         <a class="nohover" href="{{fg.file_url}}">{{fg.title}}</a>
@@ -110,6 +103,15 @@
 {% endblock %}
 
 <section id="sidebar-right" class="sidebar">
+    <nav id="top-links" class="cp437">
+        <div class="nav-link" id="top-link-div"><a href="#top">Top of page</a></div>
+        <div class="nav-link"><a href="{% url 'about_zzt' %}" class="nohover"><span class="key">A</span> About<span class="optional"> ZZT</span></a></div>
+        <div class="nav-link"><a href="{% url 'upload' %}" class="nohover"><span class="key">U</span> Upload</a></div>
+        <div class="nav-link"><a href="https://patreon.com/worldsofzzt" class="nohover"><span class="key">S</span> Support</a></div>
+        <div class="nav-link"><a href="/discord" class="nohover"><span class="key">D</span> Discord</a></div>
+        <div class="nav-link"><a href="http://zzt.org/fora" class="nohover"><span class="key">Z</span> <span class="optional"> z2 </span>Forums</a></div>
+    </nav>
+
     <div class="block">
         <h1>Exhibits</h1>
 
@@ -148,7 +150,7 @@
         <h1>Worlds of ZZT</h1>
         <div id="social">
             <a class="inline nohover" href="https://twitter.com/worldsofzzt" target="_blank"><img src="{% static 'images/social/Twitter_Social_Icon_Rounded_Square_Color.png' %}" alt="Twitter" title="Twitter"></a>
-            <a class="inline nohover" href="https://discordapp.com/invite/Nar4Upf" target="_blank"><img src="{% static 'images/social/Discord-Logo-Color.png' %}" alt="Discord" title="Worlds of ZZT Discord"></a>
+            <a class="inline nohover" href="{% url 'discord_invite' %}" target="_blank"><img src="{% static 'images/social/Discord-Logo-Color.png' %}" alt="Discord" title="Worlds of ZZT Discord"></a>
             <a class="inline nohover" href="https://patreon.com/worldsofzzt" target="_blank"><img src="{% static 'images/social/patreon_logo.png' %}" alt="Patreon" title="Patreon"></a>
             <a class="inline nohover" href="https://www.youtube.com/c/WorldsofZZT" target="_blank"><img src="{% static 'images/social/YouTube-social-squircle_red_24px.png' %}" alt="YouTube" title="YouTube"></a>
             <a class="inline nohover" href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'images/social/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>

@@ -215,7 +215,7 @@ urlpatterns = [
     # Redirects
     url(r"^twitter$", museum_site.views.redir, {"url": "https://twitter.com/worldsofzzt"}),
     url(r"^tumblr$", museum_site.views.redir, {"url": "http://worldsofzzt.tumblr.com"}),
-    url(r"^discord$", museum_site.views.redir, {"url": "https://discordapp.com/invite/Nar4Upf"}),
+    url(r"^discord$", museum_site.views.redir, {"url": "https://discordapp.com/invite/Nar4Upf"}, name="discord_invite"),
     url(r"^patreon$", museum_site.views.redir, {"url": "https://patreon.com/worldsofzzt"}),
     url(r"^youtube$", museum_site.views.redir, {"url": "https://www.youtube.com/c/WorldsofZZT"}),
     url(r"^twitch$", museum_site.views.redir, {"url": "https://twitch.tv/worldsofzzt"}),

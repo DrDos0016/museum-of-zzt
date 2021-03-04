@@ -170,45 +170,27 @@ input[type=number]
 {
     display:grid;
     grid-template-areas:
-    "logo content links"
     "left content right"
     "footer footer footer";
 
     grid-template-columns:3fr 14fr 3fr;
-    grid-template-rows:86px auto auto;
+    grid-template-rows:auto auto;
     grid-gap:14px 8px;
 }
 
-#low-res-shortcuts { display:none; }
+#low-res-shortcuts { display:none; background-color:#00A; }
 
 #logo-area
 {
-    grid-area: logo;
-}
-
-@media (min-width: 10px)
-{
-    #logo
-    {
-        background-image:url("/static/images/logos/museum_of_zzt_logo_nocat.png");
-        background-repeat:no-repeat;
-        background-position:left bottom;
-        background-size:contain;
-        height:70px;
-        display:block;
-        position:relative;
-    }
+    margin-bottom:0;
 }
 
 @media (min-width: 1500px)
 {
-    #logo
+    #logo-area
     {
-        background-image:url("/static/images/logos/museum_of_zzt_logo_wide_v3.png");
-        background-repeat:no-repeat;
-        background-position:center bottom;
-        background-size:contain;
-        height:100px;
+        grid-area: logo;
+        margin-bottom:-24px;
     }
 }
 
@@ -222,15 +204,16 @@ input[type=number]
     .low-res-break { display:none; }
 }
 
-#logo-area
+#logo:hover
 {
-    height:50px;
+    background-color:transparent;
 }
 
 #top-links
 {
-    border:1px solid #000;
-    grid-area: links;
+    margin-bottom:14px;
+    background-color:#00A;
+    padding-bottom:2px;
 }
 
 .nav-link
@@ -240,7 +223,6 @@ input[type=number]
     height:28px;
     line-height:28px;
     width:100%;
-    background-color:#00A;
 }
 
 @media (max-width:1024px)
@@ -280,13 +262,8 @@ input[type=number]
 @media (max-width:1499px) {
     .grid-root
     {
-        grid-template-rows:65px auto auto;
     }
 
-    #logo
-    {
-        height:50px;
-    }
 
     .nav-link
     {
@@ -314,7 +291,7 @@ input[type=number]
     }
 }
 
-#sidebar-left { grid-area: left; margin-top: -28px} /* Margin is for the logo */
+#sidebar-left { grid-area: left; }
 #content { grid-area: content; margin-bottom: 0px;}
 #sidebar-right { grid-area: right; }
 
@@ -337,6 +314,12 @@ input[type=number]
 .sidebar a:hover, .sidebar a[target=_blank]:hover
 {
     background-color:#98C9C9;
+}
+
+#top-links a:hover
+{
+    background-color:inherit;
+    text-decoration:none;
 }
 
 .sidebar a[target=_blank]::after
