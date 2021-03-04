@@ -6,7 +6,7 @@ SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Private settings - (Patron Locked Content, IA API)
 try:
     from museum_site.private import (
-        PASSWORD2DOLLARS, PASSWORD5DOLLARS, IA_ACCESS, IA_SECRET
+        PASSWORD2DOLLARS, PASSWORD5DOLLARS, IA_ACCESS, IA_SECRET, BANNED_IPS
     )
     IA_SUPPORT = True
 except ModuleNotFoundError:
@@ -16,6 +16,7 @@ except ModuleNotFoundError:
     IA_ACCESS = "Not found"
     IA_SECRET = "Not found"
     IA_SUPPORT = False
+    BANNED_IPS = [""]
 
 # Admin information
 ADMIN_NAME = "Dr. Dos"
