@@ -139,7 +139,10 @@ class WoZZT_Queue(models.Model):
         return True
 
     def tweet_text(self):
-        output = f"https://museumofzzt.com{self.file.file_url()}?file={self.zzt_file}&board={self.board}\n"
+        escaped_file_url = quote(self.file.file_url())
+        escaped_zzt_url = quote(self.zzt_file)
+
+        output = f"https://museumofzzt.com{escaped_file_url}?file={escaped_zzt_url}&board={self.board}\n"
         output += f"{self.file.title} by {self.file.author}"
         if self.file.release_date:
             output += " (" + str(self.file.release_date)[:4] + ")\n"
@@ -173,7 +176,8 @@ class WoZZT_Queue(models.Model):
         output += f"[{self.zzt_file}] - \"{self.board_name}\"{bp}\n"
 
         if self.file.supports_zeta_player:
-            output += f"https://museumofzzt.com{self.file.play_url()}"
+            escaped_play_url = quote(self.file.play_url())
+            output += f"https://museumofzzt.com{escaped_play_url}"
 
         return output
 
@@ -230,7 +234,7 @@ class WoZZT_Queue(models.Model):
             if self.file.archive_name:
                 discord_post += "Play: https://museumofzzt.com" + quote(self.file.play_url())
 
-            discord_post = discord_post.format(twitter_id, self.file.title, self.file.author, str(self.file.release_date)[:4], self.zzt_file, self.board_name, bp)
+            discord_post = discord_post.format(twitter_id, self.file.title, self.file.author, str(self.file.release_date)[:4], quote(self.zzt_file), self.board_name, bp)
 
             discord_data = {
                 "content": discord_post,
