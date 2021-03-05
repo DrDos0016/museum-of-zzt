@@ -1,4 +1,4 @@
-{% extends "museum_site/main.html" %}
+{% extends "museum_site/world.html" %}
 {% load static %}
 
 {% block style %}
@@ -46,13 +46,7 @@ $(document).ready(function (){
 </script>
 {% endblock %}
 
-{% block content %}
-<section id="content" class="col block">
-<h1>Tool List - {{file}}</h1>
-
-<a href="{% url 'tool_list' file.id %}">Back to Tool List</a>
-<br>
-
+{% block world_content %}
 {% if archive_resp %}
 <h2>{{status}} - {{archive_resp.status_code}}</h2>
 <p>{{archive_resp}}</p>
@@ -143,5 +137,4 @@ $(document).ready(function (){
         <input name="alt_launch" value="">
     </div>
 </form>
-</section>
 {% endblock %}

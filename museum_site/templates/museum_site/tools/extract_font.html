@@ -1,13 +1,7 @@
-{% extends "museum_site/main.html" %}
+{% extends "museum_site/world.html" %}
 {% load static %}
 
-{% block content %}
-<section id="content" class="col block">
-<h1>Tool List - {{file}}</h1>
-
-<a href="{% url 'tool_list' file.id %}">Back to Tool List</a>
-<br>
-
+{% block world_content %}
 <b>Extract Font From:</b>
 <ul>
 {% for zf in files %}

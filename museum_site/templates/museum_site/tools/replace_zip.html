@@ -1,4 +1,4 @@
-{% extends "museum_site/main.html" %}
+{% extends "museum_site/world.html" %}
 {% load static %}
 
 {% block style %}
@@ -26,10 +26,7 @@
 </style>
 {% endblock %}
 
-{% block content %}
-<section id="content" class="col block">
-<h1>Replace Zip - {{file}}</h1>
-
+{% block world_content %}
 <form method="POST" enctype="multipart/form-data" id="replace-zip-form">
     {% csrf_token %}
     <input type="hidden" name="action" value="replace-zip">
@@ -108,5 +105,4 @@
     <td>{{new_file_user.pw_name}}:{{new_file_group.gr_name}} ({{new_stat.st_uid}}:{{new_stat.st_gid}})</td>
 </tr>
 </table>
-</section>
 {% endblock %}

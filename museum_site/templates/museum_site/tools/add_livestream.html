@@ -1,4 +1,4 @@
-{% extends "museum_site/main.html" %}
+{% extends "museum_site/world.html" %}
 {% load static %}
 
 {% block style %}
@@ -46,13 +46,8 @@ input[name=today]
 </script>
 {% endblock %}
 
-{% block content %}
-<section id="content" class="col block">
-<h1>Tool List - {{file}}</h1>
-<a href="/tools/{{file.id|add:-1}}">Previous</a> |
-<a href="/tools/{{file.id|add:1}}">Next</a>
-
-{% include "museum_site/blocks/file_block.html" %}
+{% block world_content %}
+{% include "museum_site/blocks/file_detailed_block.html" %}
 
 <form method="POST" enctype="multipart/form-data" id="upload-form">
 {% csrf_token %}
@@ -123,11 +118,13 @@ input[name=today]
     <button type="submit" id="submit-button">Create VOD Article</button>
 </div>
 
-<input type="pk" name="pk" value="{{article_pk}}"> Article PK override for editing an existing article
+<div class="field">
+    <label for="pk">PK Override (to edit existing article)<br>
+    </label>
+    <input type="pk" name="pk" value="{{article_pk}}">
+</div>
 </form>
 {% if article_pk %}
 <a href="/article/{{article_pk}}/preview" target="_blank">View Article</a>
 {% endif %}
-
-</section>
 {% endblock %}

@@ -31,7 +31,7 @@
 <a href="/tools/{{file.id|add:-1}}">Previous</a> |
 <a href="/tools/{{file.id|add:1}}">Next</a>
 
-{% include "museum_site/blocks/file_block.html" %}
+{% include "museum_site/blocks/file_detailed_block.html" %}
 
 <ul>
     <li><a href="/admin/museum_site/file/{{file.id}}/change/">Django Admin</a></li>
@@ -44,6 +44,7 @@
     <li><a href="{% url 'replace_zip' file.id %}">Replace Zip</a></li>
     <li><a href="{% url 'add_livestream' file.id %}">Add Livestream VOD</a></li>
     <li><a href="{% url 'extract_font' file.id %}">Extract Font</a></li>
+    <li><a href="{% url 'reletter' file.id %}">Re-Letter Zip</a></li>
 </ul>
 
 {% if request.GET.recalculate %}

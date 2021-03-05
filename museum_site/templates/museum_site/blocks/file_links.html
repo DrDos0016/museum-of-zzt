@@ -3,3 +3,7 @@
 <div{% if file.is_lost %} class="hidden"{% endif %}><a href="{{file.file_url}}" class="view-link{% if 'Explicit' in file.genre %} explicit{% endif %}">View Files</a></div>
 <div{% if file.is_uploaded %} class="hidden"{% endif %}><a href="{{file.review_url}}" class="review-link">Reviews ({{file.review_count|default:0}})</a></div>
 <div{% if file.is_uploaded or file.article_count == 0 %} class="hidden"{% endif %}><a href="{{file.article_url}}" class="article-link">Articles ({{file.article_count|default:0}})</a></div>
+{% if debug %}
+<div class="debug"><a href="/admin/museum_site/file/{{file.id}}/change/">Edit {{file.id}}</a></div>
+<div class="debug"><a href="/tools/{{file.id}}">Tools {{file.id}}</a></div>
+{% endif %}
