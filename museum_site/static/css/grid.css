@@ -1361,11 +1361,12 @@ code .char:hover { cursor:help; }
     "info preview";
     align-items:start;
     grid-template-rows:auto 1fr;
+    grid-template-columns:auto auto;
 }
 
 #article-meta h1 { grid-area:title; }
 #article-meta .info { grid-area:info; }
-#article-meta .preview { grid-area:preview; margin: 7px 4px 7px 7px; border:1px solid; height:175px;}
+#article-meta .preview { grid-area:preview; margin: 7px 0px 7px 7px; border:1px solid; height:175px; justify-self:end;}
 #article-meta .preview.zoomed { height:auto; }
 #article-meta .summary,#article-meta .modified-date { font-style:italic; }
 
