@@ -1,0 +1,17 @@
+{% extends "museum_site/world.html" %}
+{% load static %}
+
+{% block world_content %}
+<form method="POST">
+    {% csrf_token %}
+    Current letter: <b>{{file.letter|title}}</b><br>
+    New letter: (A-Z, or "1") <input name="new_letter" maxlength="1" autocomplete="off" style="width:3ch;text-align:center;">
+    <input type="submit" value="Re-Letter World">
+</form>
+
+<hr>
+{% if request.POST %}
+{{results|safe}}
+{{error}}
+{% endif %}
+{% endblock %}
