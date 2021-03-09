@@ -157,6 +157,20 @@ def file_viewer(request, letter, filename, local=False):
         data["file"] = "Local File Viewer"
         data["letter"] = letter
 
+    # Sort files into ZZT, Super ZZT, SAV, BRD, and non-ZZT extensions
+    all_files = {"zzt": [], "szzt": [], "sav": [], "brd": [], "misc": []}
+    keys = list(all_files.keys())
+    for fname in data["files"]:
+        ext = fname.split(".")[-1].lower()
+        if ext in keys:
+            all_files[ext].append(fname)
+        else:
+            all_files["misc"].append(fname)
+    data["files"] = []
+    for k in keys:
+        sorted(all_files[k])
+        data["files"] += all_files[k]
+
     data["charsets"] = []
     data["custom_charsets"] = []
 
