@@ -16,7 +16,7 @@ try:
 except ImportError:
     HAS_ZOOKEEPER = False
 
-from .common import slash_separated_sort, UPLOAD_CAP
+from .common import slash_separated_sort, UPLOAD_CAP, STATIC_PATH
 from .constants import SITE_ROOT
 from .review import Review
 
@@ -289,6 +289,19 @@ class File(models.Model):
 
     def phys_path(self):
         return os.path.join(SITE_ROOT + self.download_url())
+
+    def screenshot_phys_path(self):
+        """ Returns the physical path to the preview image. If the file has no
+        preview image set or is using a shared screenshot, return an empty
+        string.
+        """
+        SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
+        if self.screenshot and self.screenshot not in SPECIAL_SCREENSHOTS:
+            return os.path.join(STATIC_PATH, "images/screenshots/{}/{}".format(
+                self.letter, self.screenshot
+            ))
+        else:
+            return ""
 
     def screenshot_url(self):
         SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
