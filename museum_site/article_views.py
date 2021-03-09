@@ -5,6 +5,8 @@ from .common import *
 from .constants import *
 from .models import *
 
+from .file_views import file_articles  # Kludge
+
 
 def article_directory(request, category="all", page_num=1):
     """ Returns page listing all articles sorted either by date or name """
@@ -40,22 +42,22 @@ def article_directory(request, category="all", page_num=1):
     return render(request, "museum_site/article_directory.html", data)
 
 
-def article_view(request, id, page=0):
+def article_view(request, article_id, page=0):
     """ Returns an article pulled from the database """
-    a_id = int(id)
-    if a_id == 1:
+    # Awful kludge to deal with a url conflict
+    if article_id == "1":
         uri = request.build_absolute_uri()
-        if uri.lower().endswith(".zip"):
-            return article(request, "1", uri.split("/")[-1])
+        filename = uri.split("/")[-1]
+        return file_articles(request, article_id, filename)
 
     slug = request.path.split("/")[-1]
     page = int(page)
-    data = {"id": a_id}
+    data = {"id": article_id}
     data["custom_layout"] = "article"
 
     if request.GET.get("secret") is None:
         data["article"] = get_object_or_404(
-            Article, pk=id, published=PUBLISHED_ARTICLE
+            Article, pk=article_id, published=PUBLISHED_ARTICLE
         )
     elif request.GET.get("secret") == PASSWORD2DOLLARS:
         data["access"] = "early"
