@@ -68,7 +68,11 @@ def content_warning(*args, **kwargs):
 
 @register.simple_tag()
 def meta_tags(*args, **kwargs):
-    url = kwargs.get("url", "https://museumofzzt.com/")
+    url = kwargs.get("url", "https://museumofzzt.com/").split("?")[0]
+    if url.endswith("/"):
+        og_default = url + STATIC_URL[1:] + "images/og_default.jpg"
+    else:
+        og_default = url + "/" + STATIC_URL[1:] + "images/og_default.jpg"
 
     # Default values
     tags = {
@@ -77,7 +81,7 @@ def meta_tags(*args, **kwargs):
         "og:type": ["property", "website"],
         "og:url": ["property", url],
         "og:title": ["property", "Museum of ZZT"],
-        "og:image": ["property", url + STATIC_URL[1:] + "images/og_default.jpg"],
+        "og:image": ["property", og_default],
     }
 
     if kwargs.get("article"):
