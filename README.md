@@ -46,8 +46,8 @@ As such, the following features are deliberately missing by default:
 ### museum/private.py
 
 This file contains the DATABASES and SECRET_KEY variables used by Django. You'll need to specify the backend, database name, and login credentials.
-[Django Settings Documentation](https://docs.djangoproject.com/en/3.0/ref/settings/) will provide examples. A (irregularly updated) dump of the database
-in included for MariaDB/MySQL.
+[Django Settings Documentation](https://docs.djangoproject.com/en/3.0/ref/settings/) will provide examples. A dump of the database (irregularly updated)
+is included for MariaDB/MySQL.
 
 ### /zgames/
 
