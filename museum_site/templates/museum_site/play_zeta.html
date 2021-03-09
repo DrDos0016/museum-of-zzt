@@ -95,10 +95,11 @@ $(document).ready(function (){
     $("#zzt_canvas").height(base_h * scale);
 
     $("#popout").click(function (e){
-        url.searchParams.set("player", "zeta");
-        url.searchParams.set("mode", "popout");
-        url.searchParams.set("scale", scale);
-        window.open(url, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+        var popout_url = new URL(url);
+        popout_url.searchParams.set("player", "zeta");
+        popout_url.searchParams.set("mode", "popout");
+        popout_url.searchParams.set("scale", scale);
+        window.open(popout_url, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
     });
 
     $(".zoom").click(function (){
