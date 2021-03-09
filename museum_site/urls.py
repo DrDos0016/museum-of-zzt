@@ -60,23 +60,23 @@ urlpatterns = [
         name="article_directory"
         ),
 
-    url(r"^article/(?P<id>[0-9]+)/page/(?P<page>[0-9]+)/(.*)$",
+    url(r"^article/(?P<article_id>[0-9]+)/page/(?P<page>[0-9]+)/(.*)$",
         museum_site.article_views.article_view,
         name="article_view_page"),
-    url(r"^article/(?P<id>[0-9]+)/(.*)$",
+    url(r"^article/(?P<article_id>[0-9]+)/(.*)$",
         museum_site.article_views.article_view,
         {"page": 1},
         name="article_view",),
 
     # Special Article Pages (those with urls besides /article/#/title)
-    url(r"^about-zzt$", museum_site.article_views.article_view, {"id": 1}, name="about_zzt"),
-    url(r"^ascii$", museum_site.article_views.article_view, {"id": 3}, name="ascii"),
-    url(r"^clones$", museum_site.article_views.article_view, {"id": 6}, name="clones"),
-    url(r"^zzt-cheats$", museum_site.article_views.article_view, {"id": 22}, name="zzt_cheats"),
-    url(r"^credits$", museum_site.article_views.article_view, {"id": 164}, name="credits"),
-    url(r"^getting-started$", museum_site.article_views.article_view, {"id": 5}, name="zzt_dosbox"),
-    url(r"^zzt$", museum_site.article_views.article_view, {"id": 2}, name="zzt_dl"),
-    url(r"^zeta$", museum_site.article_views.article_view, {"id": 399}, name="zeta"),
+    url(r"^about-zzt$", museum_site.article_views.article_view, {"article_id": 1}, name="about_zzt"),
+    url(r"^ascii$", museum_site.article_views.article_view, {"article_id": 3}, name="ascii"),
+    url(r"^clones$", museum_site.article_views.article_view, {"article_id": 6}, name="clones"),
+    url(r"^zzt-cheats$", museum_site.article_views.article_view, {"article_id": 22}, name="zzt_cheats"),
+    url(r"^credits$", museum_site.article_views.article_view, {"article_id": 164}, name="credits"),
+    url(r"^getting-started$", museum_site.article_views.article_view, {"article_id": 5}, name="zzt_dosbox"),
+    url(r"^zzt$", museum_site.article_views.article_view, {"article_id": 2}, name="zzt_dl"),
+    url(r"^zeta$", museum_site.article_views.article_view, {"article_id": 399}, name="zeta"),
 
     # Collections
     url(r"^collection/play$", museum_site.views.play_collection,
@@ -224,14 +224,15 @@ urlpatterns = [
     # Tools
     url(r"^tools$", museum_site.tool_views.tool_index, name="tool_index"),
     url(r"^tools/(?P<pk>[0-9]+)$", museum_site.tool_views.tool_list, name="tool_list"),
+    url(r"^tools/add-livestream/(?P<pk>[0-9]+)$", museum_site.tool_views.add_livestream, name="add_livestream"),
+    url(r"^tools/audit/zeta-config$", museum_site.tool_views.audit_zeta_config, name="audit_zeta_config"),
+    url(r"^tools/extract-font/(?P<pk>[0-9]+)$", museum_site.tool_views.extract_font, name="extract_font"),
     url(r"^tools/mirror/(?P<pk>[0-9]+)$", museum_site.tool_views.mirror, name="mirror"),
     url(r"^tools/publish/(?P<pk>[0-9]+)$", museum_site.tool_views.publish, name="publish"),
+    url(r"^tools/reletter/(?P<pk>[0-9]+)$", museum_site.tool_views.reletter, name="reletter"),
     url(r"^tools/replace_zip/(?P<pk>[0-9]+)$", museum_site.tool_views.replace_zip, name="replace_zip"),
     url(r"^tools/scan$", museum_site.tool_views.scan, name="scan"),
     url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tool_views.set_screenshot, name="set_screenshot"),
-    url(r"^tools/audit/zeta-config$", museum_site.tool_views.audit_zeta_config, name="audit_zeta_config"),
-    url(r"^tools/add-livestream/(?P<pk>[0-9]+)$", museum_site.tool_views.add_livestream, name="add_livestream"),
-    url(r"^tools/extract-font/(?P<pk>[0-9]+)$", museum_site.tool_views.extract_font, name="extract_font"),
 
     # Debug
     url(r"^debug$", museum_site.debug_views.debug),
