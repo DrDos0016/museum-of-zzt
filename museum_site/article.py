@@ -103,4 +103,8 @@ class Article(models.Model):
         return qs
 
     def is_modified(self):
-        return True if str(self.last_modified)[:10] != str(self.date)[:10] else False
+        print("COMP", str(self.last_modified)[:10])
+        if (str(self.last_modified)[:10] > "2021-03-09"):
+            if str(self.last_modified)[:10] != str(self.date)[:10]:
+                return True
+        return False
