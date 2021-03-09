@@ -305,6 +305,78 @@ def publish(request, pk):
 
 
 @staff_member_required
+def reletter(request, pk):
+    data = {"title": "Re-Letter Zip"}
+    data["file"] = File.objects.get(pk=pk)
+
+    if request.POST.get("new_letter"):
+        letter = request.POST["new_letter"].lower()
+        old_letter = data["file"].letter
+
+        # Validate letter
+        if letter not in "abcdefghijklmnopqrstuvwxyz1":
+            data["results"] = "Invalid letter specified"
+            return render(request, "museum_site/tools/reletter.html", data)
+
+        # Validate that nothing will be clobbered
+        dst = os.path.join(SITE_ROOT, "zgames", letter, data["file"].filename)
+        if os.path.isfile(dst):
+            data["results"] = "A zip with the same name already exists in that letter!"
+            return render(request, "museum_site/tools/reletter.html", data)
+
+        # Copy the file to the new letter directory
+        src = data["file"].phys_path()
+        dst = os.path.join(SITE_ROOT, "zgames", letter, data["file"].filename)
+
+        try:
+            shutil.copy(src, dst)
+            shutil.copystat(src, dst)
+        except FileNotFoundError as e:
+            data["results"] = "Copy failure!"
+            data["error"] = str(e)
+            return render(request, "museum_site/tools/reletter.html", data)
+
+        # Remove the old zipfile
+        try:
+            os.remove(src)
+        except FileNotFoundError as e:
+            data["results"] = "Failed to remove {}.".format(src)
+            data["error"] = str(e)
+            return render(request, "museum_site/tools/reletter.html", data)
+
+        # Copy the screenshot to the new letter directory
+        src = data["file"].screenshot_phys_path()
+        dst = os.path.join(STATIC_PATH, "images", "screenshots", letter, data["file"].screenshot)
+
+        try:
+            shutil.copy(src, dst)
+            shutil.copystat(src, dst)
+        except FileNotFoundError as e:
+            data["results"] = "Screenshot copy failure!"
+            data["error"] = str(e)
+            return render(request, "museum_site/tools/reletter.html", data)
+
+        # Remove the old screenshot
+        try:
+            os.remove(src)
+        except FileNotFoundError as e:
+            data["results"] = "Failed to remove {}.".format(src)
+            data["error"] = str(e)
+            return render(request, "museum_site/tools/reletter.html", data)
+
+        data["results"] = "Successfully Re-Lettered from <b>{}</b> to <b>{}</b>".format(
+            old_letter.upper(),
+            letter.upper()
+        )
+
+        # Update the database entry
+        data["file"].letter = letter
+        data["file"].save()
+
+    return render(request, "museum_site/tools/reletter.html", data)
+
+
+@staff_member_required
 def replace_zip(request, pk):
     """ Returns page with latest Museum scan results"""
     data = {"title": "Replace Zip"}
