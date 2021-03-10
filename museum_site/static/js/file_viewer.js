@@ -1663,7 +1663,7 @@ function render_stat_list()
         unhighlight($(this).data("x"), $(this).data("y"));
     });
 
-    $("#stat-toggle").click(function (){
+    $("#stat-toggle").off("click").click(function (){
         if ($(this).hasClass("activated")) // Redisplay
             $("#stat-info li.empty").css({"visibility": "visible", "height":"auto"});
         else // Hide
