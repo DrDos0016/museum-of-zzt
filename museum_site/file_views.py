@@ -114,6 +114,7 @@ def file_viewer(request, letter, filename, local=False):
     data["year"] = YEAR
     data["details"] = []  # Required to show all download links
     data["local"] = local
+    data["files"] = []
     if not local:
         data["file"] = File.objects.get(letter=letter, filename=filename)
         data["title"] = data["file"].title
@@ -128,8 +129,6 @@ def file_viewer(request, letter, filename, local=False):
         if data["file"].is_uploaded():
             letter = "uploaded"
             data["uploaded"] = True
-
-        data["files"] = []
 
         if ".zip" in filename.lower():
             zip_file = zipfile.ZipFile(
