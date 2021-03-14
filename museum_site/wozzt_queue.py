@@ -35,7 +35,7 @@ class WoZZT_Queue(models.Model):
     time_limit = models.IntegerField(default=0)
     uuid = models.CharField(max_length=36)
     priority = models.IntegerField(
-        default=1,
+        default=10,
         help_text="Higher priority is used first"
     )
     category = models.CharField(max_length=32, default="wozzt")
