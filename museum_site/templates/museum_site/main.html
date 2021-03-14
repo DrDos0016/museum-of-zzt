@@ -181,7 +181,8 @@
 {% if drupe %}Happy Drupe Day! -{% endif %}
 <br>
 &copy; 2015-{{datetime.year}} <a href="mailto:{{EMAIL_ADDRESS}}">Dr. Dos</a><br>
-Additional content copyright its  <a href="{% url 'credits' %}">respective owners</a>
+Additional content copyright its  <a href="{% url 'credits' %}">respective owners</a><br>
+<a href="{% url 'user_data' %}">View my data</a>
 <br>
 {% if debug %}
 <div class="debug">

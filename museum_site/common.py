@@ -248,16 +248,6 @@ def populate_collection_params(data):
     return params
 
 
-def get_view_format(request):
-    """ Returns Detailed/List/Gallery based on selected View type """
-    if request.GET.get("view"):
-        return request.GET["view"]
-    elif request.COOKIES.get("view"):
-        return request.COOKIES["view"]
-    else:
-        return "detailed"
-
-
 def qs_sans(params, key):
     """ Returns a query string with a key removed """
     qs = params.copy()
@@ -351,7 +341,11 @@ def prod_only(func, *args, **kwargs):
             return func(*args, **kwargs)
     return inner
 
-def get_selected_view_format(request, available_views):
+
+def get_selected_view_format(
+    request,
+    available_views=["detailed", "list", "gallery"]
+):
     # GET > Session > Default
     view = None
     if request.GET.get("view"):
@@ -362,6 +356,7 @@ def get_selected_view_format(request, available_views):
         view = "detailed"
     request.session["view"] = view
     return view
+
 
 def get_page_size(view):
     page_sizes = {

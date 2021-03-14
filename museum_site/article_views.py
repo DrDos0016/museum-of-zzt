@@ -64,7 +64,7 @@ def article_view(request, article_id, page=0):
         data["article"] = get_object_or_404(
             Article,
             Q(published=PUBLISHED_ARTICLE) | Q(published=UPCOMING_ARTICLE),
-            pk=a_id
+            pk=article_id
         )
         data["private_disclaimer"] = True
 
@@ -75,7 +75,7 @@ def article_view(request, article_id, page=0):
             Q(published=PUBLISHED_ARTICLE) |
             Q(published=UPCOMING_ARTICLE) |
             Q(published=UNPUBLISHED_ARTICLE),
-            pk=a_id,
+            pk=article_id,
         )
         data["private_disclaimer"] = True
     data["page"] = page

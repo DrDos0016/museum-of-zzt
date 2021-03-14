@@ -68,7 +68,7 @@ def search(request):
     sort = SORT_CODES[request.GET.get("sort", "title").strip()]
 
     # Determine the viewing method
-    data["view"] = get_view_format(request)
+    data["view"] = get_selected_view_format(request)
 
     data["sort_options"] = [
         {"text": "Title", "val": "title"},

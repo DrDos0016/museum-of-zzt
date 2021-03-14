@@ -16,6 +16,7 @@ import museum_site.help_views
 import museum_site.review_views
 import museum_site.search_views
 import museum_site.tool_views
+import museum_site.user_views
 import museum_site.upload_views
 import museum_site.views
 import museum_site.zeta_views
@@ -192,6 +193,9 @@ urlpatterns = [
         ),
     url(r"^search$", museum_site.search_views.search, name="search"),
 
+    # User
+    url(r"^user/data$", museum_site.user_views.user_data, name="user_data"),
+
     # World of ZZT
     url(r"^worlds-of-zzt$", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
 
@@ -210,6 +214,7 @@ urlpatterns = [
     url(r"^ajax/deep-search/phase-(?P<phase>[0-9])$", museum_site.ajax.deep_search),
     url(r"^ajax/get_zip_file$", museum_site.ajax.get_zip_file),
     url(r"^ajax/wozzt_queue_add$", museum_site.ajax.wozzt_queue_add),
+    url(r"^ajax/render-review-text$", museum_site.ajax.render_review_text),
 
 
     # Redirects

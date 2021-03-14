@@ -1,0 +1,22 @@
+{% extends "museum_site/main.html" %}
+
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>User Data</h1>
+
+<table>
+    {% for k,v in user_data %}
+    <tr>
+        <th>{{k}}</th>
+        <td>{{v}}</td>
+        <td class="c"><a href="?delete={{k}}">Delete</a></td>
+    </tr>
+    {% endfor %}
+</table>
+</section>
+{% endblock %}

@@ -10,6 +10,7 @@ from io import BytesIO
 from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from PIL import Image
+from markdown_deux.templatetags import markdown_deux_tags
 
 from .models import *
 from .common import *
@@ -124,6 +125,13 @@ def debug_file(request):
         return HttpResponse("Not on production.")
     file = open(request.GET.get("file"), "rb")
     return HttpResponse(binascii.hexlify(file.read()))
+
+
+def render_review_text(request):
+    output = request.POST.get("text", "")
+    if output:
+        output = markdown_deux_tags.markdown_filter(output)
+    return HttpResponse(output)
 
 
 @staff_member_required
