@@ -32,6 +32,9 @@
             {% endfor %}
         </select>
 </div>{% endif %}
+{% if advanced_search %}<div class="modify-query">
+    <a href="{% url 'advanced_search' %}?{{request.META.QUERY_STRING}}">Modify Search Query</a>
+</div>{% endif %}
 {% if guide_words %}
 <div class="guide-words">
     <span><a class="left" href="#{{first_item.filename}}">{{first_item.title}}</a></span>

@@ -1561,9 +1561,16 @@ select[name=page-selector]
     font-size:larger;
 }
 
-
 .sort-methods select
 {
     font-family:cp437;
+}
+
+.modify-query
+{
+    margin-top:4px;
+    text-align:center;
+    font-family:cp437;
+    font-size:larger;
 }
 /* End Paginator */
