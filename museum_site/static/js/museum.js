@@ -188,6 +188,11 @@ $(document).ready(function (){
         window.location = dest;
     });
 
+    // Spoiler text
+    $(".spoiler").click(function (){
+        $(this).toggleClass("revealed");
+    });
+
 });
 
 // ZZT-OOP Syntax highlighting

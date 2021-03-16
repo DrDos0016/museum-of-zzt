@@ -37,8 +37,23 @@
     <li><a href="#cl-info">cl_info</a></li>
     <li><a href="#commentary">commentary</a></li>
     <li><a href="#il">il</a></li>
+    <li><a href="#spoiler">spoiler</a></li>
 </ul>
 </p>
+<hr>
+<b>Spoiler Test:</b><br><br>
+The combination to the bank of ZZT is: {% spoiler %}42069{% endspoiler %}
+
+{% spoiler %}<p>And then you...</p>
+
+<p>Beat him up</p>
+
+<p>And <b>WIN</b></p>
+{% endspoiler %}
+
+<p> This is a block: {% spoiler block %}<b>And then you...</b>{% endspoiler %}</p>
+<hr>
+
 <hr>
 <h2 id="char">Char</h2>
 <p>The "{% char 248 %}",  "{% char 65 'red' 'gray' %}", and "{% char 2 'white' 'darkblue' %}" characters all rule. "{% char 42 'green' %}", "{% char 2 bg='darkblue' %}"</p>
@@ -649,8 +664,6 @@ And cool.
 Key 1: <input name="key1"><br>
 Key 2: <input name="key2"><br>
 </form>
-
-
 
 <b>Italicized Link Test:</b><br><br>
 <p>Some classic ZZT worlds include {% il %}Frost 1; Power{% endil %}, by

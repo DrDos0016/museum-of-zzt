@@ -141,6 +141,19 @@ input[type=number]
 {
     padding:2px;
 }
+
+.spoiler
+{
+    color:transparent;
+    cursor:pointer;
+    background-image:url('/static/images/spoiler-bg.png');
+}
+
+.spoiler.revealed
+{
+    color:#000;
+    background-image:none;
+}
 /* End Basic Elements */
 
 /* Fonts */

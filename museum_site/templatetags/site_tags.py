@@ -274,3 +274,25 @@ class IL(template.Node):
             url=url, text=text
         )
         return output
+
+
+@register.tag(name="spoiler")
+def spoiler(parser, token):
+    nodelist = parser.parse(('endspoiler',))
+    parser.delete_first_token()
+    args = token.split_contents()
+    display = "inline-block"
+    if len(args) > 1:
+        display = token.split_contents()[1]
+    return Spoiler(nodelist, display)
+
+
+class Spoiler(template.Node):
+    def __init__(self, nodelist, display):
+        self.nodelist = nodelist
+        self.display = display
+
+    def render(self, context):
+        text = self.nodelist[0].render(context)
+        output = "<div class='spoiler' style='display:{}'>{}</div>".format(self.display, text)
+        return output
