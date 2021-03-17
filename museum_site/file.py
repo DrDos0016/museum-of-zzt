@@ -330,6 +330,9 @@ class File(models.Model):
     def author_list(self):
         return self.author.split("/")
 
+    def company_list(self):
+        return self.company.split("/")
+
     def genre_list(self):
         return self.genre.split("/")
 

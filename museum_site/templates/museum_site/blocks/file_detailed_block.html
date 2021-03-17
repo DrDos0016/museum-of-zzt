@@ -8,7 +8,7 @@
             <div class="key">Author{{file.author_list|pluralize}}</div><div class="value">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a|url_parse}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
         </div>
         <div class="field">
-            <div class="key">Company</div><div class="value"><a href="{% url 'search'%}?company={{file.company|url_parse}}">{{file.company}}</a></div>
+            <div class="key">Company</div><div class="value">{% for c in file.company_list %}<a href="{% url 'search'%}?company={{c|url_parse}}">{{c}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
         </div>
         <div class="field">
             <div class="key">Released</div><div class="value"><a href="{% url 'search'%}?year={{file.release_date.year|default:'Unk'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
