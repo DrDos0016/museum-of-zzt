@@ -139,10 +139,14 @@ class ZztScroll(template.Node):
         raw = self.nodelist.render(context)
         output = "<div class='zzt-scroll'>\n"
 
-        raw = raw.split("\n")
+        if not str(raw).strip():
+            raw = ["", "TODO: SCROLL HAS NO TEXT"]
+        else:
+            raw = raw.split("\n")
+
+
         if raw[0] == "" and raw[1][0] == "@":  # It's okay to start on the second line
             raw = raw[1:]
-
         if raw[0] != "" and raw[0][0] == "@":
             output += "<div class='name'>" + raw[0][1:] + "</div>\n"
         else:
@@ -178,16 +182,20 @@ class ZztScroll(template.Node):
 
 
 @register.simple_tag()
-def zzt_img(source, shorthand="", alt="", tl="", br="", css="", sh=""):
-    has_coords = True if tl != "" and br != "" else False
+def zzt_img(*args, **kwargs):
+    # Combine basic args into the image path
+    source = os.path.join(*args)
 
-    if sh:  # Shorthand for "shorthand"
-        shorthand = sh
+    # Pull kwargs
+    shorthand = kwargs.get("shorthand", kwargs.get("sh", ""))
+    alt = kwargs.get("alt", "")
+    tl = kwargs.get("tl", "")
+    br = kwargs.get("br", "")
+    css = kwargs.get("br", "")
 
-    if source.find(".") == -1:  # Default extension
-        source = source + ".png"
+    has_coords = True if tl and br else False
 
-    if shorthand != "":
+    if shorthand:
         shorthand = " zzt-" + shorthand
 
     # Custom cropping (should not be mixed with shorthand)
