@@ -233,7 +233,7 @@ def search(request):
     elif request.GET.get("sort") == "rating":
         qs = qs.order_by("-rating")
     elif request.GET.get("sort") == "release":
-        qs = qs.order_by("-release_date")
+        qs = qs.order_by("release_date")
     elif request.GET.get("sort") == "uploaded":
         qs = qs.order_by("-upload_date")
     elif default_sort:
