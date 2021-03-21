@@ -211,15 +211,17 @@ def review(request, letter, filename):
         if request.META["REMOTE_ADDR"] in BANNED_IPS:
             return HttpResponse("Banned account.")
 
-        review = Review()
-        created = review.from_request(request)
-        if created:
-            review.full_clean()
-            review.save()
+        # Duplicate check
+        if len(Review.objects.filter(file_id=data["file"].id, ip=request.META["REMOTE_ADDR"], email=request.POST.get("email"))) == 0:
+            review = Review()
+            created = review.from_request(request)
+            if created:
+                review.full_clean()
+                review.save()
 
-        # Update file's review count/scores
-        data["file"].calculate_reviews()
-        data["file"].save()
+            # Update file's review count/scores
+            data["file"].calculate_reviews()
+            data["file"].save()
 
     data["reviews"] = Review.objects.filter(file_id=data["file"].id)
     return render(request, "museum_site/review.html", data)
