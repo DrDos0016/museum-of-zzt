@@ -150,7 +150,6 @@ $(document).ready(function (){
         $(this).toggleClass("expanded", "contracted");
         if ($(this).hasClass("expanded")) // Expand
         {
-            console.log("EXPANDING")
             $(this).html("→ ←");
             $(".sidebar, #top-links, #logo-area").hide();
             $("body").removeClass("grid-root");
