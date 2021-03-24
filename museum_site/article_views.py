@@ -21,7 +21,7 @@ def article_directory(request, category="all", page_num=1):
         data["category"] = category.title()
 
     if request.GET.get("sort", "date") == "date":
-        qs = qs.order_by("-date")
+        qs = qs.order_by("-publish_date")
     elif request.GET.get("sort") == "title":
         qs = qs.order_by("title")
     elif request.GET.get("sort") == "author":

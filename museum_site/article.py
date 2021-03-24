@@ -34,7 +34,7 @@ class Article(models.Model):
     content         -- Body of the article
     css             -- Custom CSS for the article
     schema          -- Whether the article is in text/md/html/django form
-    date            -- Date the article was written
+    publish_date    -- Date the article was written
     published       -- If the article is available to the public
     summary         -- Summary for Opengraph
     preview         -- Path to preview image
@@ -51,7 +51,7 @@ class Article(models.Model):
         choices=ARTICLE_FORMATS,
         default="django"
     )
-    date = models.DateField(default="1970-01-01")
+    publish_date = models.DateField(default="1970-01-01")
     published = models.IntegerField(
         default=UNPUBLISHED_ARTICLE,
         choices=ARTICLE_PUBLISH
@@ -103,8 +103,8 @@ class Article(models.Model):
             else:
                 year = p["year"].strip()
                 qs = qs.filter(
-                    date__gte=year + "-01-01",
-                    date__lte=year + "-12-31",
+                    publish_date__gte=year + "-01-01",
+                    publish_date__lte=year + "-12-31",
                 )
 
         if p.getlist("category"):
@@ -115,12 +115,12 @@ class Article(models.Model):
     def is_modified(self):
         print("COMP", str(self.last_modified)[:10])
         if (str(self.last_modified)[:10] > "2021-03-09"):
-            if str(self.last_modified)[:10] != str(self.date)[:10]:
+            if str(self.last_modified)[:10] != str(self.publish_date)[:10]:
                 return True
         return False
 
     def path(self):
-        return ("articles/{}/{}/".format(self.date.year, self.static_directory))
+        return ("articles/{}/{}/".format(self.publish_date.year, self.static_directory))
 
     def render(self):
         """ Render article content as a django template """

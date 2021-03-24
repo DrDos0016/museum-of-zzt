@@ -47,7 +47,7 @@ community can be easily discovered and that their importance can be recognized.
             <div class="key">Author</div><div class="value">{{article.author}}</div>
         </div>
         <div class="field">
-            <div class="key">Date</div><div class="value">{{article.date}}</div>
+            <div class="key">Date</div><div class="value">{{article.publish_date}}</div>
         </div>
         <div class="field">
             <div class="key">Summary</div><div class="value">{{article.summary}}</div>
@@ -66,7 +66,7 @@ community can be easily discovered and that their importance can be recognized.
     <tr>
     <td><a href="{{article.url}}">{{article.title}}</a></td>
     <td>{{article.author}}</td>
-    <td class="td-date">{% if article.date|date:"Y-m-d" != '1970-01-01' %}{{article.date|date:"N jS"}}{% endif %}</td>
+    <td class="td-date">{% if article.publish_date|date:"Y-m-d" != '1970-01-01' %}{{article.publish_date|date:"N jS"}}{% endif %}</td>
     <td class="">{{article.summary}}</td>
     </tr>
     {% endfor %}

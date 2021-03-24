@@ -52,7 +52,7 @@ def add_livestream(request, pk):
         a.author = request.POST.get("author")
         a.category = "Livestream"
         a.schema = "django"
-        a.date = request.POST.get("date")
+        a.publish_date = request.POST.get("date")
         a.published = PUBLISHED_ARTICLE
         a.summary = request.POST.get("summary")
         a.allow_comments = True
