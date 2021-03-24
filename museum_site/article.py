@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.db import models
+from django.template import Template, Context
 from django.template.defaultfilters import slugify
 
 from .constants import (
@@ -45,7 +46,11 @@ class Article(models.Model):
     category = models.CharField(max_length=50)
     content = models.TextField(default="")
     css = models.TextField(default="", blank=True)
-    schema = models.CharField(max_length=6, choices=ARTICLE_FORMATS)
+    schema = models.CharField(
+        max_length=6,
+        choices=ARTICLE_FORMATS,
+        default="django"
+    )
     date = models.DateField(default="1970-01-01")
     published = models.IntegerField(
         default=UNPUBLISHED_ARTICLE,
@@ -59,6 +64,11 @@ class Article(models.Model):
     preview = models.CharField(max_length=80, default="", blank=True)
     allow_comments = models.BooleanField(default=False)
     spotlight = models.BooleanField(default=True)
+    static_directory = models.CharField(
+        max_length=120,
+        default="", blank=True,
+        help_text="Name of directory where static files for the article are stored."
+    )
 
     class Meta:
         ordering = ["title"]
@@ -108,3 +118,15 @@ class Article(models.Model):
             if str(self.last_modified)[:10] != str(self.date)[:10]:
                 return True
         return False
+
+    def path(self):
+        return ("articles/{}/{}/".format(self.date.year, self.static_directory))
+
+    def render(self):
+        """ Render article content as a django template """
+        context_data = {"TODO": "TODO", "CROP": "CROP",
+            "path": self.path,
+        }
+        head = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}"
+        return Template(head + self.content).render(Context(context_data))
+

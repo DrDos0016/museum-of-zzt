@@ -184,14 +184,18 @@ class ZztScroll(template.Node):
 @register.simple_tag()
 def zzt_img(*args, **kwargs):
     # Combine basic args into the image path
-    source = os.path.join(*args)
+    if len(args) == 1:
+        source = args[0]
+    elif len(args) >= 2 and args[1].endswith(".png"):
+        source = os.path.join(args[0], args[1])
+
 
     # Pull kwargs
     shorthand = kwargs.get("shorthand", kwargs.get("sh", ""))
     alt = kwargs.get("alt", "")
     tl = kwargs.get("tl", "")
     br = kwargs.get("br", "")
-    css = kwargs.get("br", "")
+    css = kwargs.get("css", "")
 
     has_coords = True if tl and br else False
 
@@ -236,7 +240,7 @@ def zzt_img(*args, **kwargs):
         img = img + " style='{}'".format(img_css)
 
     crop = ""
-    if "CROP" in shorthand:
+    if "CROP" in args:
         crop = "<div class='debug-crop'>CROP</div>"
 
     output = mark_safe("<{}><{}></div>{}\n".format(div, img, crop))

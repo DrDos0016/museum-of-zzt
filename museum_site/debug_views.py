@@ -40,6 +40,7 @@ def debug_article(request):
         article = Article.objects.get(pk=1)
         article.title = filepath
         article.category = "TEST"
+        article.static_directory = "wip-" + request.GET.get("file")[:-5]
         article.content = fh.read().replace("<!--Page-->", "<hr><b>PAGE BREAK</b><hr>")
         article.schema = request.GET.get("format", "django")
     data["article"] = article

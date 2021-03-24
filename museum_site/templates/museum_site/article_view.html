@@ -101,7 +101,7 @@
 {% elif article.schema == "text" %}
     {{article.content|safe|linebreaks}}
 {% else %}
-    {{article.content|as_template|safe}}
+    {{article.render}}
 {% endif %}
 </article>
 
