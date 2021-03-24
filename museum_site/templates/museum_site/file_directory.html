@@ -2,7 +2,10 @@
 
 {% block content %}
 <section id="content" class="block">
-<h1>{{header|default:"Browse"}}</h1>
+<section id="content-header">
+    <h1>{{header|default:"Browse"}}</h1>
+    <button id="expand-contract">→ ←</button>
+</section>
 {% if category == "Featured Worlds" %}
 <p>Featured Worlds, are worlds which have been deemed exemplary in the context of what ZZT has to offer.
 Often these worlds show a higher quality than their peers, and have been given their place in the spotlight here.</p>

@@ -359,6 +359,13 @@ input[type=number]
     text-align: center;
     font-size: smaller;
 }
+
+#content-header
+{
+    display:flex;
+    justify-content:space-between;
+
+}
 /* End Site Layout */
 
 /* Utility Classes */
@@ -396,9 +403,6 @@ a.inline[target=_blank]::after
 
 .zoomed { cursor:zoom-out; width:auto; }
 /* End Utility Classes */
-
-
-
 
 /* Generic Structures */
 .block
