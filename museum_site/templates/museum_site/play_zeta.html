@@ -179,7 +179,7 @@ $(document).ready(function (){
             {% if zeta_config.executable %}"/static/data/zeta86_engines/{{zeta_config.executable}}",{% endif %}
             {% for file in included_files %}"{{file}}",
             {% endfor %}
-            {% if zeta_url %}"{{zeta_url}}",{% endif %}
+            {% if zeta_url %}"{{zeta_url|safe}}",{% endif %}
         ],
     }, function(zeta) {
         ZETA = zeta;
