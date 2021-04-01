@@ -186,7 +186,7 @@ def zzt_img(*args, **kwargs):
     # Combine basic args into the image path
     if len(args) == 1:
         source = args[0]
-    elif len(args) >= 2 and args[1].endswith(".png"):
+    elif len(args) >= 2 and args[1][-4:].lower() in [".png", ".gif", ".jpg"]:
         source = os.path.join(args[0], args[1])
 
 

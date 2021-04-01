@@ -36,10 +36,12 @@ class Article(models.Model):
     schema          -- Whether the article is in text/md/html/django form
     publish_date    -- Date the article was written
     published       -- If the article is available to the public
+    last_modified   -- Last time file was modified
     summary         -- Summary for Opengraph
     preview         -- Path to preview image
     allow_comments  -- Allow user comments on the article
     spotlight       -- Allow appearance on front page
+    static_directory-- Directory for static files used in the article
     """
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=50)
@@ -113,7 +115,6 @@ class Article(models.Model):
         return qs
 
     def is_modified(self):
-        print("COMP", str(self.last_modified)[:10])
         if (str(self.last_modified)[:10] > "2021-03-09"):
             if str(self.last_modified)[:10] != str(self.publish_date)[:10]:
                 return True
@@ -121,6 +122,7 @@ class Article(models.Model):
 
     def path(self):
         return ("articles/{}/{}/".format(self.publish_date.year, self.static_directory))
+
 
     def render(self):
         """ Render article content as a django template """

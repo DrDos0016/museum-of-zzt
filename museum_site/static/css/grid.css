@@ -149,10 +149,20 @@ input[type=number]
     background-image:url('/static/images/spoiler-bg.png');
 }
 
+.spoiler img
+{
+    visibility:hidden;
+}
+
 .spoiler.revealed
 {
     color:#000;
     background-image:none;
+}
+
+.spoiler.revealed img
+{
+    visibility:visible;
 }
 /* End Basic Elements */
 
