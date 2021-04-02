@@ -190,6 +190,38 @@ def play_collection(request):
     return response
 
 
+def patreon_pledge_drive(request):
+    data = {"title": "Patreon Pledge Drive"}
+
+    data["char_list"] = list(range(0,256))
+    data["characters"] = " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀ɑϐᴦᴨ∑ơµᴛɸϴΩẟ∞∅∈∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ "
+    data["colors"] = ["black", "blue", "green", "cyan", "red", "purple", "yellow", "white", "darkgray", "darkblue", "darkgreen", "darkcyan", "darkred", "darkpurple", "darkyellow", "gray"]
+    datetime.now()
+
+    if request.POST.get("action") == "submit":
+        now = datetime.now()
+        log = "========================================\n"
+        log += "SUBMISSION AT: {}\n".format(str(now))
+        log += "EMAIL        : {}\n".format(request.POST.get("email"))
+        log += "SITE CREDITS : {}\n".format(request.POST.get("credit-me"))
+        log += "SITE CR. NAME: {}\n".format(request.POST.get("credit-name"))
+        log += "ASCII        : char {} {} on {}\n".format(request.POST.get("credit-character"), request.POST.get("credit-fg"), request.POST.get("credit-bg"))
+        log += "CR. IMAGE    : {}\n".format(request.POST.get("credit-image"))
+        log += "STREAM CREDIT: {}\n".format(request.POST.get("stream-credit-me"))
+        log += "STR. CR. NAME: {}\n".format(request.POST.get("stream-credit-name"))
+        log += "STREAM NOM 1 : {}\n".format(request.POST.get("stream-poll-nomination-1"))
+        log += "STREAM NOM 2 : {}\n".format(request.POST.get("stream-poll-nomination-2"))
+
+        data["recorded_info"] = log
+
+        with open(os.path.join(SITE_ROOT, "PATREON-FORM-DATA.TXT"), "a") as fh:
+            fh.write(log)
+            fh.write("IP           : {}\n".format(request.META["REMOTE_ADDR"]))
+            fh.write("VALIDATION   : {}\n".format(request.POST.get("referrer")))
+
+    return render(request, "museum_site/patreon_pledge_drive.html", data)
+
+
 def random(request):
     """ Returns a random ZZT file page """
     max_pk = File.objects.all().order_by("-id")[0].id

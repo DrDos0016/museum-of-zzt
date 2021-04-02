@@ -1,0 +1,237 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load zzt_tags %}
+
+{% block style %}
+<style>
+.color-button
+{
+    width:16px;
+    height:28px;
+    border:1px solid #000;
+    margin:2px;
+}
+
+#char-preview
+{
+    font-size:28pt;
+}
+
+#recorded-info
+{
+    width:80%;
+    height:250px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var CP437_TO_UNICODE = [0, 9786,  9787, 9829, 9830, 9827, 9824, 8226,
+    9688, 9675, 9689, 9794, 9792, 9834, 9835, 9788,
+    9658, 9668, 8597, 8252, 182, 167, 9644, 8616,
+    8593, 8595,8594, 8592, 8735, 8596, 9650, 9660,
+    32, 33, 34, 35, 36, 37, 38, 39,
+    40, 41, 42, 43, 44, 45, 46, 47,
+    48, 49, 50, 51, 52, 53, 54, 55,
+    56, 57, 58, 59, 60, 61, 62, 63,
+    64, 65, 66, 67, 68, 69, 70, 71,
+    72, 73, 74, 75, 76, 77, 78, 79,
+    80, 81, 82, 83, 84, 85, 86, 87,
+    88, 89, 90, 91, 92, 93, 94, 95,
+    96, 97, 98, 99, 100, 101, 102, 103,
+    104, 105, 106, 107, 108, 109, 110, 111,
+    112, 113, 114, 115, 116, 117, 118, 119,
+    120, 121, 122, 123, 124, 125, 126, 8962,
+    199, 252, 233, 226, 228, 224, 229, 231,
+    234, 235, 232, 239, 238, 236, 196, 197,
+    201, 230, 198, 244, 246, 242, 251, 249,
+    255, 214, 220, 162, 163, 165, 8359, 402,
+    225, 237, 243, 250, 241, 209, 170, 186,
+    191, 8976, 172, 189, 188, 161, 171, 187,
+    9617, 9618, 9619, 9474, 9508, 9569, 9570, 9558,
+    9557, 9571, 9553, 9559, 9565, 9564, 9563, 9488,
+    9492, 9524, 9516, 9500, 9472, 9532, 9566, 9567,
+    9562, 9556, 9577, 9574, 9568, 9552, 9580, 9575,
+    9576, 9572, 9573, 9561, 9560, 9554, 9555, 9579,
+    9578, 9496, 9484, 9608, 9604, 9612, 9616, 9600,
+    945, 223, 915, 960, 931, 963, 181, 964,
+    934, 920, 937, 948, 8734, 966, 949, 8745,
+    8801, 177, 8805, 8804, 8992, 8993, 247, 8776,
+    176, 8729, 183, 8730, 8319, 178, 9632, 160];
+
+$(document).ready(function (){
+    $("button[name=fg]").click(set_fg);
+    $("button[name=bg]").click(set_bg);
+    $("select[name=char-list]").change(set_char);
+});
+
+function set_fg()
+{
+    var fg  = $(this).val();
+    $("input[name=credit-fg]").val(fg);
+    update_preview();
+}
+
+function set_bg()
+{
+    var bg  = $(this).val();
+    $("input[name=credit-bg]").val(bg);
+    update_preview();
+}
+
+function set_char()
+{
+    var ch  = $(this).val();
+    $("input[name=credit-character]").val(ch);
+    update_preview();
+}
+
+function update_preview()
+{
+    var fg = $("input[name=credit-fg]").val();
+    var bg = $("input[name=credit-bg]").val();
+    var ch = $("input[name=credit-character]").val();
+    $("#char-preview").html("&#" + CP437_TO_UNICODE[ch] + ";");
+    $("#char-preview").removeClass();
+    $("#char-preview").addClass("cp437 ascii-char ega-" + fg + " ega-" + bg + "-bg");
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+
+{% if request.POST.action %}
+<h2>Thank You!</h2>
+
+<p>Your information has been saved. If you need to update anything, please send me a message on <a href="https://patreon.com/worldsofzzt" target="_blank">Patreon</a> or via <a href="mailto:{{EMAIL_ADDRESS}}" target="_blank">email</a>.</p>
+
+<textarea id="recorded-info">{{recorded_info}}</textarea>
+{% else %}
+<h2>Welcome Patrons!</h2>
+
+<p>Yes, hello, and welcome! In order to get all my information nicely arranged I threw together this form to get all the needed info for Patreon perks and pledge drive bonuses. Information sent via this form will be dumped to a text file on the server but hosted anywhere accessible on the Museum to anyone. Please fill out this information to help ensure that your choices for how to be credited or what game you'd like to see streamed in the near future can be properly recorded!</p>
+
+
+<form method="POST">
+    <h3>Patron Information</h3>
+
+    <p>First, so I know whose information this is, please provide the email address you're using for your Patreon pledge to the Worlds of ZZT project.</p>
+    Patreon Email: <input name="email">
+
+    <hr>
+
+    <h3>Site Credits</h3>
+
+    <p>I'd like to give thanks to any patrons on the Museum's <a href="/credits" target="_blank">Credits</a> page. Would you like to be credited?</p>
+
+    <input name="credit-me" value="yes" type="radio" checked> Yes! Please list me as a supporter!<br>
+    <input name="credit-me" value="no" type="radio"> No! I'd like my patronage to remain private.<br>
+
+    <p>If yes, how would you like to be credited?</p>
+    Name for site credits: <input name="credit-name" maxlength="100">
+
+    <p>Credited patrons can choose an ASCII representation of themselves as well. What color/character combination would you like?</p>
+
+    <div style="display:none">
+    <input name="credit-character" value="2" maxlength="100"> <input name="credit-fg" value="white" maxlength="100"> <input name="credit-bg" value="darkblue" maxlength="100">
+    </div>
+
+    <div>
+        Foreground:<br>
+        {% for c in colors %}
+        <button type="button" name="fg" value="{{c}}" class="color-button ega-{{c}}-bg"></button>
+        {% endfor %}
+        <br>
+        Background:<br>
+        {% for c in colors %}
+        <button type="button" name="bg" value="{{c}}" class="color-button ega-{{c}}-bg"></button>
+        {% endfor %}
+        <button type="button" name="bg" value="transparent" class="color-button"> </button>
+        <br>
+        Character:<br>
+        <select name="char-list" class="cp437">
+            {% for c in characters %}<option value="{{forloop.counter0}}" {% if forloop.counter0 == 2 %} selected {% endif %}>{{c}} (Char {{forloop.counter0}})</option>{% endfor %}
+        </select>
+
+        Preview: <span id="char-preview" class='cp437 ascii-char'>&#9787;</span><br>
+    </div>
+
+    <p>If your pledge is <b>at least $20 USD</b> per month (The ZZT River Stream or 20 KB Board Size tiers and above) you may provide an image to use as well.</p>
+    <p>Note that this image will be clamped and display at just 100 pixels tall. This form is just logging text, so if you have a link to provide to the image file you may do so. Alternatively, send Dr. Dos a message on <a href="https:patreon.com/worldsofzzt" target="_blank">Patreon</a>, <a href="/discord" target="_blank">Discord</a>, or <a href="mailto:{{EMAIL_ADDRESS}}" target="_blank">email</a> providing the image to use. (No animations please).</p>
+
+    $20+ Image credit link: <input name="credit-image" maxlength="255">
+
+    <hr>
+
+    <h3>Stream Credits</h3>
+
+    <p>I'd like to give thanks to any patrons pledging <b>at least $2 USD</b> per month (The Char 2 tier and above) at the end of any ZZT live streams as well! Since these credits will be part of recorded videos they'll be more promintently displayed on Twitch and YouTube compared to a credits page on a website. You may opt out or choose to use a different name on videos if you like.</p>
+
+    <input name="stream-credit-me" value="yes" type="radio" checked> Yes! Please list me as a supporter!<br>
+    <input name="stream-credit-me" value="no" type="radio"> No! I'd like my patronage to remain private.<br>
+
+    <p>If yes, how would you like to be credited?</p>
+    Name for stream credits: <input name="stream-credit-name" maxlength="100">
+
+    <hr>
+
+    <h3>Stream Poll Choices</h3>
+
+    <p>If your pledge is <b>at least $5 USD</b> per month (The Five Purple Keys tier and above), you're able to submit ZZT worlds or themes to be used in a public Twitter poll for subjects to stream. Themes provided here will be picked randomly for Twitter polls.</p>
+
+    Nomination 1: <input name="stream-poll-nomination-1" maxlength="100"><br>
+    Nomination 2: <input name="stream-poll-nomination-2" maxlength="100"><br>
+
+    <p>Some example themes (feel free to use something on this list as your actual nomination as well!):</p>
+    <div style="height:200px;border:1px solid #000;overflow:auto;">
+        <ul>
+            <li>A game from 1999</li>
+            <li>Gem Hunter 2</li>
+            <li>A Game of the Month winner</li>
+            <li>A Game that is red</li>
+            <li>A ZZTers only game</li>
+            <li>A game that never got a sequel</li>
+            <li>A game by Alexis Janson</li>
+            <li>A game that hasn't held up well</li>
+            <li>A game made for a contest</li>
+            <li>An RPG game</li>
+            <li>A game published by Eaglerock Interactive</li>
+            <li>A fan game</li>
+            <li>A game with lots of dark rooms</li>
+            <li>A game that doesn't use STK graphics</li>
+            <li>Just smash that random ZZT world link</li>
+            <li>A game with yellow borders</li>
+            <li>A Super ZZT game</li>
+            <li>A demo of a game that never got finished</li>
+            <li>The original release of a game with a remake</li>
+            <li>A remake of a ZZT game</li>
+            <li>A game by a ZZTer that recently returned</li>
+            <li>A game that's underrated (to Dr. Dos at least)</li>
+            <li>A game by an author that's made non-ZZT games</li>
+        </ul>
+    </div>
+
+    <p>Only your first nomation will be in the potential themes selected until it wins, and then the 2nd will replace it. This is just to reduce the chances of not having any theme available for an active patron. Once the first wins, I'll contact you via Patreon to nominate something else.</p>
+
+    <p>If you are choosing a specific world and not a general theme, I'd suggest providing the link to the world on the Museum rather than just typing the name. Themes are accepted to make it easier to come up with something for those who aren't as familiar with ZZT worlds out there. Nominations of themes or worlds are equally welcome!</p>
+
+    <hr>
+
+    <h3>Bonus Streams and Closer Looks</h3>
+
+    <p>As a bonus for supporting the pledge drive, depending on how much you were pledging before the drive and how much you're pledging now, you might be able to select a ZZT world to stream as a bonus!</p>
+
+    <p>Check your messages on Patreon where I've sent those <a href="https://www.patreon.com/posts/48200316" target="_blank">eligible</a> a request for a world/worlds to receive a bonus stream and/or Closer Look.</p>
+
+    <p>If you haven't received a request for either of these and believe I've made a mistake, contact me on <a href="https://patreon.com/worldsofzzt" target="_blank">Patreon</a> because I probably did in fact make a mistake.</p>
+
+    {% csrf_token %}
+    <input type="hidden" name="referrer" value="{{request.GET.referrer}}" maxlength="100">
+    <input type="hidden" name="action" value="submit">
+    <input type="submit" value="Submit Form">
+</form>
+{% endif %}
+</section>
+{% endblock %}

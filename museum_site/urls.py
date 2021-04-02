@@ -169,6 +169,7 @@ urlpatterns = [
 
     # Patrons Only
     url(r"^patron-articles$", museum_site.article_views.patron_articles, name="patron_articles"),
+    url(r"^patreon-pledge-drive$", museum_site.views.patreon_pledge_drive, name="patreon_pledge_drive"),
 
     # Policies
     url(r"^policy/correction$", museum_site.views.generic, {"template": "policy-correction", "title":"Correction Policy"}, name="correction_policy"),
