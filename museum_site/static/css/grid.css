@@ -1,4 +1,5 @@
 /* Basic Elements */
+/* Basic Elements */
 body
 {
     font-family:sans-serif;
@@ -1021,9 +1022,11 @@ form .field .genre-checklist
     justify-content:space-evenly;
     border-top:1px solid #000;
     border-bottom:1px solid #000;
-    padding:7px;
+    padding-top:3px;
+    padding-bottom:3px;
     font-weight:bold;
     grid-area: links;
+    width:100%;
 }
 
 .file-data
@@ -1032,7 +1035,10 @@ form .field .genre-checklist
     flex-wrap:wrap;
     justify-content:space-evenly;
     text-align:center;
-    grid-area:data
+    grid-area:data;
+    border-bottom:1px solid #000;
+    padding-top:3px;
+    padding-bottom:3px;
 }
 .file-data > div
 {
@@ -1396,11 +1402,6 @@ code .char:hover { cursor:help; }
 #article-meta .preview.zoomed { height:auto; }
 #article-meta .summary,#article-meta .modified-date { font-style:italic; }
 
-.file-data + #article-meta
-{
-    border-top:1px solid #000;
-}
-
 #plain-text-article
 {
     padding:0;
@@ -1465,13 +1466,6 @@ article aside
     float:right;
 }
 /* End Article Globals */
-
-
-#content.article .file-links
-{
-    padding:7px 0px 7px 0px;
-    width:100%;
-}
 
 /* Hotfixes */
 /* Screenshots in MTP reviews */
