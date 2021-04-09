@@ -352,12 +352,20 @@ class File(models.Model):
         return True if DETAIL_ZIG in zig else False
 
     def is_zzt(self):
-        lost = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_ZZT in lost else False
+        zzt = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_ZZT in zzt else False
 
     def is_super_zzt(self):
-        lost = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_SZZT in lost else False
+        szzt = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_SZZT in szzt else False
+
+    def is_zzm(self):
+        zzm = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_ZZM in zzm else False
+
+    def is_featured_world(self):
+        featured = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_FEATURED in featured else False
 
     def supports_zeta_player(self):
         return (self.is_zzt() or self.is_super_zzt() or self.zeta_config is not None)

@@ -94,6 +94,24 @@ A compiliation of all utilities hosted on the Museum of ZZT.
 
 """[1:]
 
+ZZM_HEADER = """
+T H E   M U S E U M   O F   Z Z T   P R E S E N T S
+
+A compiliation of all ZZT Audio Files hosted on the Museum of ZZT.
+
+{} files are included in this compilation:
+
+"""[1:]
+
+FEATURED_HEADER = """
+T H E   M U S E U M   O F   Z Z T   P R E S E N T S
+
+A compiliation of all Featured Worlds hosted on the Museum of ZZT.
+
+{} files are included in this compilation:
+
+"""[1:]
+
 FOOTER = """
 - https://museumofzzt.com -
 """
@@ -126,6 +144,8 @@ def main():
         "szzt_worlds": [],
         "utilities": [],
         "zig_worlds": [],
+        "zzm_audio": [],
+        "featured_worlds": [],
     }
 
     id_list = {
@@ -154,6 +174,8 @@ def main():
         "szzt_worlds": "",
         "utilities": "",
         "zig_worlds": "",
+        "zzm_audio": "",
+        "featured_worlds": "",
     }
 
     new_info = {}
@@ -162,15 +184,19 @@ def main():
         "szzt_worlds": "Super ZZT Worlds",
         "utilities": "Utilities",
         "zig_worlds": "ZIG Worlds",
+        "zzm_audio": "ZZM Audio Files",
+        "featured_worlds": "Featured Worlds",
     }
 
     readme_bodies = {
         "szzt_worlds": SZZT_HEADER,
         "utilities": UTIL_HEADER,
-        "zig_worlds": ZIG_HEADER
+        "zig_worlds": ZIG_HEADER,
+        "zzm_audio": ZZM_HEADER,
+        "featured_worlds": FEATURED_HEADER,
     }
 
-    special_zips = ("szzt_worlds", "utilities", "zig_worlds")
+    special_zips = ("szzt_worlds", "utilities", "zig_worlds", "zzm_audio", "featured_worlds")
 
     # Get all files by release date
     qs = File.objects.all().order_by("release_date", "letter", "title")
@@ -199,6 +225,12 @@ def main():
         if f.is_zig():
             file_list["zig_worlds"].append(f)
             id_list["zig_worlds"] += str(f.id)
+        if f.is_zzm():
+            file_list["zzm_audio"].append(f)
+            id_list["zzm_audio"] += str(f.id)
+        if f.is_featured_world():
+            file_list["featured_worlds"].append(f)
+            id_list["featured_worlds"] += str(f.id)
 
     print("Files iterated.")
 
