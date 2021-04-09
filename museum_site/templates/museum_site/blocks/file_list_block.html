@@ -1,5 +1,6 @@
 {% load site_tags %}
 <tr data-pk="{{file.id}}" data-model="file">
+    <td class="c"><a href="{{file.download_url}}" title="Download File" class="download-link{% if 'Explicit' in file.genre %} explicit{% endif %}{% if file.is_lost %} hidden{% endif %}">DL</a></td>
     <td><a href="{{file.file_url}}" class="view-link{% if 'Explicit' in file.genre %} explicit{% endif %}">{{file.title|default:"NO NAME"}}</a></td>
     <td>{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a|url_parse}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
     <td>{% for c in file.company_list %}<a href="{% url 'search'%}?company={{c|url_parse}}">{{c}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
