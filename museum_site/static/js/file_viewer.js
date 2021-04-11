@@ -298,6 +298,8 @@ function pull_file()
 {
     if ($(this).hasClass("selected"))
     {
+        console.log("CLOSING");
+        console.log("Zip-content?", $(this).hasClass("zip-content"));
         close_file($(this));
         return false;
     }
@@ -1477,7 +1479,6 @@ function str_read(data, bytes, idx)
 function load_charset()
 {
     var selected_charset = $("select[name=charset]").val();
-    console.log("Loading charset", selected_charset);
 
     if ($("#world-canvas").length == 0)
         var no_canvas = true;
@@ -1487,6 +1488,7 @@ function load_charset()
     // Charset needs to be loaded and/or canvas doesn't exist
     if (CHARSET_NAME != selected_charset || no_canvas)
     {
+        console.log("Loading charset", selected_charset);
         CHARSET_NAME = selected_charset;
         CHARSET_IMAGE = new Image();
         CHARSET_IMAGE.src = "/static/images/charsets/"+CHARSET_NAME;
@@ -1789,10 +1791,12 @@ function code_search()
     });
 
     // Bind the matches to click
-    $(".code-match").click(function (){
+    $(".code-match").click(function (event){
+        event.stopPropagation();
         $(this).prev().click();
         var e = {"data":{"x":$(this).data("x"), "y":$(this).data("y")}};
         stat_info(e);
+        // HERE
     });
 
     console.log("Matches:", board_matches);
@@ -1896,7 +1900,7 @@ function update_scale()
     var time = now.getTime();
     var expireTime = time + (1000 * 31536000); // 1yr
     now.setTime(expireTime);
-    document.cookie = "file_viewer_scale=" + SCALE + ";expires=" + now.toGMTString() + ";path=/";
+    document.cookie = `file_viewer_scale=${SCALE};expires=${now.toGMTString()};path=/;SameSite=Strict`;
 }
 
 function color_desc(color)
