@@ -9,6 +9,11 @@
     list-style:none;
 }
 
+#content h2
+{
+    margin-top:14px;
+}
+
 .listing
 {
     display:flex;
@@ -47,7 +52,17 @@
     flex:0 0 100%;
 }
 
-.credit img.icon
+.credit .icon-frame
+{
+    height:100px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:7px 4px 7px 4px;
+
+}
+
+.credit .icon
 {
     max-height:100px;
 }
@@ -66,13 +81,17 @@
     overflow:hidden;
     background:#CCC;
 }
+
+.credit .stub
+{
+    visibility:hidden;
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <section id="content" class="block">
 <h1>Credits</h1>
-
 
 <h2>Site Development</h2>
 <ul>
@@ -87,7 +106,6 @@
     <li>Zeta Emulator: <a href="https://zeta.asie.pl" target="_blank">Asie</a></li>
 </ul>
 
-
 <h2>Articles</h2>
 <div class="directory">
 {% for row in list %}
@@ -95,7 +113,7 @@
     <div class="column">
     {% endif %}
         <div class="row">
-            {{row}}
+            <a href="/article?&author={{row}}&sort=title&action=search">{{row}}</a>
             </div>
     {% if forloop.counter|divisibleby:split or forloop.last %}
     </div>
@@ -106,19 +124,29 @@
 <h2>Patreon Supporters</h2>
 <div class="listing">
     <div class="credit xl">
-        <div class="icon"><img src="/static/images/articles/credits/tim.jpg" class="icon"></div>
+        <div class="icon-frame"><img src="/static/images/articles/credits/tim.jpg" class="icon"></div>
         {% char 2 'white' 'darkblue' %} Tim Sweeney
     </div>
     <div class="credit xl">
-        <div class="icon"><img class="icon" style="height:100px;width:100px;"></div>
+        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
         {% char 2 'white' 'darkblue' %} Chris A.
     </div>
 
     <div class="flex-break"></div>
 
+    <div class="credit">
+        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
+        {% char 12 'purple' 'black' %} Anna Anthropy
+    </div>
+
     <div class="credit large">
-        <div class="icon"><img src="/static/images/articles/credits/geight.png" class="icon"></div>
-        {% char 132 'purple' 'black' %} Geight
+        <div class="icon-frame"><img src="/static/images/articles/credits/zzthink.png" class="icon"></div>
+        {% char 3 'purple' 'transparent' %} Archenoth
+    </div>
+
+    <div class="credit">
+        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
+        {% char 165 'blue' 'black' %} Arun R.
     </div>
 
     <div class="credit large">
@@ -126,35 +154,60 @@
         {% char 15 'purple' 'darkpurple' %} Celine Kalante
     </div>
 
+    <div class="credit large">
+        <div class="icon-frame"><img src="/static/images/articles/credits/geight.png" class="icon"></div>
+        {% char 132 'purple' 'black' %} Geight
+    </div>
+
+    <div class="credit large">
+        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
+        {% char 237 'white' 'darkpurple' %} Josh Matthews
+    </div>
+
+    <div class="credit">
+        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
+        {% char 2 'white' 'darkyellow' %} Zinfandel Z.T.
+    </div>
+
+    <div class="credit stub"></div>
+    <div class="credit stub"></div>
+
     <div class="flex-break"></div>
 
     <div class="credit">{% char 2 'white' 'darkblue' %} Adrian S.</div>
-    <div class="credit">{% char 12 'purple' 'black' %} Anna Anthropy</div>
-    <div class="credit">{% char 224 'purple' 'black' %} Archenoth</div>
-    <div class="credit">{% char 2 'white' 'darkblue' %} Arun R.</div>
     <div class="credit">{% char 2 'white' 'darkblue' %} Ashley</div>
+    <div class="credit">{% char 233 'red' 'transparent' %} Avalix</div>
     <div class="credit">{% char 2 'white' 'darkblue' %} Beau G.</div>
     <div class="credit">{% char 12 'green' 'darkgreen' %} Colin Matthew</div>
-    <div class="credit">{% char 19 'yellow' 'black' %} DavidN</div>
+    <div class="credit">{% char 19 'yellow' 'black' %} David X Newton</div>
+    <div class="credit">{% char 100 'yellow' 'darkred' %} Espilan</div>
     <div class="credit">{% char 2 'cyan' 'darkcyan' %} Jeanne T.</div>
+    <div class="credit">{% char 19 'red' 'white' %} Jeremy W. Kaufmann</div>
     <div class="credit">{% char 2 'white' 'darkblue' %} Jimantha</div>
-    <div class="credit">{% char 224 'darkcyan' 'transparent' %} John D. Moore</div>
+    <div class="credit">{% char 224 'cyan' 'darkcyan' %} John D. "Newt" Moore</div>
     <div class="credit">{% char 141 'white' 'black' %} John Thyer</div>
-    <div class="credit">{% char 2 'white' 'darkblue' %} JohnWWells</div>
+    <div class="credit">{% char 2 'darkgray' 'white' %} JohnWWells</div>
+
+    <div class="credit">{% char 216 'yellow' 'darkred' %} KA</div>
     <div class="credit">{% char 2 'white' 'darkblue' %} Kevin C.</div>
     <div class="credit">{% char 2 'white' 'darkblue' %} Leonard R.</div>
-    <div class="credit">{% char 2 'gray' 'darkblue' %} Mike W.</div>
+    <div class="credit">{% char 6 'green' 'black' %} meapineapple</div>
+    <div class="credit">{% char 2 'darkblue' 'transparent' %} Mike Wasson</div>
     <div class="credit">{% char 164 'white' 'darkpurple' %} Nidoran</div>
+    <div class="credit">{% char 148 'white' 'darkblue' %} Phil Salvador</div>
     <div class="credit">{% char 188 'red' 'black' %} Rabbitboots</div>
     <div class="credit">{% char 3 'yellow' 'black' %} RavenWorks</div>
     <div class="credit">{% char 2 'white' 'darkblue' %} Sarkath</div>
     <div class="credit">{% char 159 'gray' 'darkpurple' %} Saxxon</div>
     <div class="credit">{% char 2 'darkred' 'darkblue' %} Skullie</div>
+    <div class="credit">{% char 6 'cyan' 'darkcyan' %} Snorb</div>
     <div class="credit">{% char 227 'darkpurple' 'darkblue' %} SpellWeavre</div>
     <div class="credit">{% char 2 'white' 'darkblue' %} That Deer</div>
-    <div class="credit">{% char 2 'darkblue' 'black' %} Zephyr</div>
+    <div class="credit">{% char 1 'black' 'red' %} Zephyr</div>
     <div class="credit">{% char 2 'white' 'darkyellow' %} Zinfandel Z.T.</div>
-    <div class="credit">{% char 63 'white' 'black' %} Anonymous Patrons!</div>
+
+    <div class="flex-break"></div>
+    <div class="credit">{% char 63 'white' 'black' %} And Many Anonymous Patrons!</div>
 </div>
 </section>
 {% endblock %}
