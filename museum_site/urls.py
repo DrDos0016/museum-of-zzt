@@ -70,7 +70,7 @@ urlpatterns = [
         name="article_view",),
 
     # Special Article Pages (those with urls besides /article/#/title)
-    url(r"^about-zzt$", museum_site.article_views.article_view, {"article_id": 1}, name="about_zzt"),
+    url(r"^about-zzt$", museum_site.article_views.article_view, {"article_id": 534}, name="about_zzt"),
     url(r"^ascii$", museum_site.article_views.article_view, {"article_id": 3}, name="ascii"),
     url(r"^clones$", museum_site.article_views.article_view, {"article_id": 6}, name="clones"),
     url(r"^zzt-cheats$", museum_site.article_views.article_view, {"article_id": 22}, name="zzt_cheats"),
