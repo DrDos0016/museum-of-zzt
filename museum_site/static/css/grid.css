@@ -150,7 +150,7 @@ input[type=number]
     background-image:url('/static/images/spoiler-bg.png');
 }
 
-.spoiler img
+.spoiler img, .spoiler code
 {
     visibility:hidden;
 }
@@ -161,7 +161,7 @@ input[type=number]
     background-image:none;
 }
 
-.spoiler.revealed img
+.spoiler.revealed img, .spoiler.revealed code
 {
     visibility:visible;
 }
@@ -427,7 +427,7 @@ a.inline[target=_blank]::after
 .td-date { width:5em; }
 .top-margin { margin-top:7px; }
 .screenshot-thumb { width:240px; }
-.screenshot-thumb.zoomed { width:auto; }
+.screenshot-thumb.zoomed { width:auto; height:auto; }
 .screenshot-thumb:hover { cursor:zoom-in; }
 
 @media (max-width: 1100px)
