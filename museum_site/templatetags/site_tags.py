@@ -1,3 +1,4 @@
+import os
 import urllib.parse
 
 from datetime import datetime
@@ -9,7 +10,7 @@ from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
 from museum_site.models import File
-from museum_site.constants import ADMIN_NAME
+from museum_site.constants import ADMIN_NAME, SITE_ROOT
 
 register = Library()
 
@@ -19,6 +20,19 @@ def as_template(raw):
     context_data = {"TODO": "TODO", "CROP": "CROP"}
     raw = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
     return Template(raw).render(Context(context_data))
+
+
+@register.filter
+def get_files_by_id(raw):
+    ids = list(map(int, raw.split(",")))
+    print(ids)
+    qs = File.objects.filter(pk__in=ids)
+    files = {}
+    for f in qs:
+        print(f.title)
+        files[str(f.id)] = f
+    print(files.keys())
+    return files
 
 
 @register.filter
