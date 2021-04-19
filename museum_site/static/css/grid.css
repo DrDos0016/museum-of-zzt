@@ -446,6 +446,21 @@ a.inline[target=_blank]::after
 }
 
 .img-set img { border:1px solid #AAA; }
+
+.image-set /* Used in Publication Packs */
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+}
+
+.image-set img
+{
+    width:240px;
+    height:175px;
+    margin:14px 8px 14px 8px;
+    border:1px solid #000;
+}
 /* End Generic Structures */
 
 /* Specific Structures */
