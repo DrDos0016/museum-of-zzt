@@ -64,7 +64,7 @@
         {% if article.is_modified %}<div class="modified-date">(Last updated: {{article.last_modified}})</div>{% endif %}
         <p class="summary">{{article.summary}}</p>
     </div>
-     {% if article.preview %}<img src="{% static 'images/'|add:article.preview %}" class="screenshot-thumb preview">{% endif %}
+     <img src="{{article.preview}}" class="screenshot-thumb preview">
 </div>
 
 {% if private_disclaimer %}
