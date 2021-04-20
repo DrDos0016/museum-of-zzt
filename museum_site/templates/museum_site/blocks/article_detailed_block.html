@@ -1,6 +1,6 @@
 {% load static %}
 <div class="overview-block" data-pk="{{article.id}}" data-model="article">
-    <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+    <img src="{{article.preview}}"
     class="screenshot-thumb"
     alt="{{article.preview}}">
     <h1 class="title"><a href="{{article.url}}">{{article.title}}</a></h1>

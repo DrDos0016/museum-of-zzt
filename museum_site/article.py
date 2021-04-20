@@ -1,8 +1,12 @@
+import os
+
 from datetime import datetime
 
 from django.db import models
 from django.template import Template, Context
 from django.template.defaultfilters import slugify
+
+from museum.settings import STATIC_URL
 
 from .constants import (
     PUBLISHED_ARTICLE, UPCOMING_ARTICLE, UNPUBLISHED_ARTICLE, REMOVED_ARTICLE
@@ -63,7 +67,7 @@ class Article(models.Model):
         help_text="Date DB entry was last modified"
     )
     summary = models.CharField(max_length=150, default="", blank=True)
-    preview = models.CharField(max_length=80, default="", blank=True)
+    #preview = models.CharField(max_length=80, default="", blank=True)
     allow_comments = models.BooleanField(default=False)
     spotlight = models.BooleanField(default=True)
     static_directory = models.CharField(
@@ -81,6 +85,12 @@ class Article(models.Model):
 
     def url(self):
         return "/article/" + str(self.id) + "/" + slugify(self.title)
+
+
+    @property
+    def preview(self):
+        return os.path.join(STATIC_URL, self.path(), "preview.png")
+
 
     def search(p):
         qs = Article.objects.filter(published=PUBLISHED_ARTICLE)
@@ -121,7 +131,11 @@ class Article(models.Model):
         return False
 
     def path(self):
-        return ("articles/{}/{}/".format(self.publish_date.year, self.static_directory))
+        if self.publish_date.year == 1970:
+            year = "unk"
+        else:
+            year = self.publish_date.year
+        return ("articles/{}/{}/".format(year, self.static_directory))
 
 
     def render(self):
