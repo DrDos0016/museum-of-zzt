@@ -15,7 +15,7 @@ from museum_site.models import *  # noqa: E402
 def main():
     qs = Article.objects.all()
 
-    old = glob.glob("/var/projects/museum/museum_site/static/images/articles/previews/*.png")
+    old = glob.glob("/var/projects/museum-of-zzt/museum_site/static/images/articles/previews/*.png")
 
     nums = []
     for i in old:
@@ -28,9 +28,9 @@ def main():
     for a in qs:
         if a.id in nums:
             print(a.id, a.title, a.static_directory)
-            dst = os.path.join("/var/projects/museum/museum_site/static/", a.path(), "preview.png")
+            dst = os.path.join("/var/projects/museum-of-zzt/museum_site/static/", a.path(), "preview.png")
             try:
-                shutil.move("/var/projects/museum/museum_site/static/images/articles/previews/{}.png".format(a.id), dst)
+                shutil.move("/var/projects/museum-of-zzt/museum_site/static/images/articles/previews/{}.png".format(a.id), dst)
             except FileNotFoundError:
                 print("FAILED ON", a.id, a.title)
 
