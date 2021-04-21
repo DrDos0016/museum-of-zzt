@@ -219,7 +219,10 @@ urlpatterns = [
     url(r"^ajax/render-review-text$", museum_site.ajax.render_review_text),
 
     # RSS
+    url("rss/articles/", museum_site.feeds.LatestArticlesFeed()),
+    url("rss/files/", museum_site.feeds.LatestFilesFeed()),
     url("rss/reviews/", museum_site.feeds.LatestReviewsFeed()),
+    url("rss/uploads/", museum_site.feeds.LatestUploadsFeed()),
 
 
     # Redirects
