@@ -651,3 +651,7 @@ class File(models.Model):
     def search(p):
         qs = File.objects.all()
         return qs
+
+    @property
+    def identifier(self):
+        return self.letter + "/" + self.filename

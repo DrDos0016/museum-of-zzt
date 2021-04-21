@@ -9,9 +9,10 @@ if DEBUG:
 import museum_site.admin
 import museum_site.ajax
 import museum_site.article_views
-import museum_site.file_views
 import museum_site.debug_views
+import museum_site.file_views
 #import museum_site.errors
+import museum_site.feeds
 import museum_site.help_views
 import museum_site.review_views
 import museum_site.search_views
@@ -183,7 +184,7 @@ urlpatterns = [
 
     # Reviews
     url(r"^review$", museum_site.review_views.review_directory, name="review_directory"),
-    url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", museum_site.file_views.review),
+    url(r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$", museum_site.file_views.review, name="reviews"),
 
     # Search
     url(r"^advanced-search$", museum_site.search_views.advanced_search,
@@ -216,6 +217,9 @@ urlpatterns = [
     url(r"^ajax/get_zip_file$", museum_site.ajax.get_zip_file),
     url(r"^ajax/wozzt_queue_add$", museum_site.ajax.wozzt_queue_add),
     url(r"^ajax/render-review-text$", museum_site.ajax.render_review_text),
+
+    # RSS
+    url("rss/reviews/", museum_site.feeds.LatestReviewsFeed()),
 
 
     # Redirects
