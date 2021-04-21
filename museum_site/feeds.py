@@ -17,4 +17,4 @@ class LatestReviewsFeed(Feed):
         return item.content[:140]
 
     def item_link(self, item):
-        return reverse("reviews", args=[item.file.letter, item.file.identifier]) + "rev-" + str(item.pk)
+        return reverse("reviews", args=[item.file.letter, item.file.identifier]) + "#rev-" + str(item.pk)
