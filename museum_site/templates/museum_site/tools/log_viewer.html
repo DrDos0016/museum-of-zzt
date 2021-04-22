@@ -1,0 +1,70 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+#log-content
+{
+    width:98%;
+    height:800px;
+    margin:auto;
+    display:block;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$("document").ready(function (){
+    $(".log-cat").change(function (){
+        window.location = "?log=" + $(this).val();
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<button class="fr contracted" id="expand-contract" title="Toggle sidebars">&larr; &rarr;</button>
+<h1>Log Viewer</h1>
+
+<table class="dataTable">
+<tr>
+    <th>Access</th>
+    <th>Backup</th>
+    <th>Discord</th>
+    <th>Error</th>
+    <th>Mass DL</th>
+    <th>WoZZTBot</th>
+</tr>
+<tr>
+    {% for category in logs %}
+    <td class="c">
+        <select name="{{category}}" class="log-cat">
+            <option selected>Choose...</option>
+            {% for i in range %}
+            {% if forloop.counter0 == 0 %}
+            <option>{{category}}.log</option>
+            {% elif forloop.counter0 == 1 %}
+            <option>{{category}}.log.{{forloop.counter0}}</option>
+            {% else %}
+            <option>{{category}}.log.{{forloop.counter0}}.gz</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        {{logs.access.2}}
+    </td>
+    {% endfor %}
+</tr>
+</table>
+
+{% if request.GET.log %}
+<h2 class="c">{{request.GET.log}}</h2>
+<div class="i c">{{size|filesizeformat}} - {{modified|date:"N jS"}}</div>
+
+<textarea id="log-content">{{text}}</textarea>
+{% endif %}
+
+
+</section>
+{% endblock %}

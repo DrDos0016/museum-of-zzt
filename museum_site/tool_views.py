@@ -1,5 +1,6 @@
 import codecs
 import grp
+import gzip
 import os
 import pwd
 import shutil
@@ -8,6 +9,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from .common import *
 from .constants import *
+from io import StringIO
 from zipfile import ZipFile
 from .models import *
 
@@ -147,6 +149,33 @@ def extract_font(request, pk):
         os.remove(os.path.join(DATA_PATH, request.GET["font"]))
 
     return render(request, "museum_site/tools/extract_font.html", data)
+
+
+@staff_member_required
+def log_viewer(request):
+    data = {
+        "title": "Log Viewer",
+        "range": range(1, 16),
+        "logs": ["access", "backup", "discord", "error", "mass_dl", "wozztbot"]
+    }
+
+    if request.GET.get("log"):
+        path = os.path.join(SITE_ROOT, "log", request.GET["log"])
+        print(path)
+
+        stat = os.stat(path)
+        data["size"] = stat.st_size
+        data["modified"] = datetime.fromtimestamp(stat.st_mtime)
+
+        if request.GET["log"].endswith(".gz"):
+            with gzip.open(path) as fh:
+                data["text"] = fh.read().decode("utf-8")
+                data["size"] = len(data["text"])
+        else:
+            with open(path) as fh:
+                data["text"] = fh.read()
+
+    return render(request, "museum_site/tools/log_viewer.html", data)
 
 
 @staff_member_required

@@ -235,11 +235,12 @@ urlpatterns = [
     url(r"^github$", museum_site.views.redir, {"url": "https://github.com/DrDos0016/z2"}),
 
     # Tools
-    url(r"^tools$", museum_site.tool_views.tool_index, name="tool_index"),
+    url(r"^tools/$", museum_site.tool_views.tool_index, name="tool_index"),
     url(r"^tools/(?P<pk>[0-9]+)$", museum_site.tool_views.tool_list, name="tool_list"),
     url(r"^tools/add-livestream/(?P<pk>[0-9]+)$", museum_site.tool_views.add_livestream, name="add_livestream"),
     url(r"^tools/audit/zeta-config$", museum_site.tool_views.audit_zeta_config, name="audit_zeta_config"),
     url(r"^tools/extract-font/(?P<pk>[0-9]+)$", museum_site.tool_views.extract_font, name="extract_font"),
+    url(r"^tools/log-viewer$", museum_site.tool_views.log_viewer, name="log_viewer"),
     url(r"^tools/mirror/(?P<pk>[0-9]+)$", museum_site.tool_views.mirror, name="mirror"),
     url(r"^tools/publish/(?P<pk>[0-9]+)$", museum_site.tool_views.publish, name="publish"),
     url(r"^tools/reletter/(?P<pk>[0-9]+)$", museum_site.tool_views.reletter, name="reletter"),
