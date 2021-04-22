@@ -60,7 +60,9 @@ def add_livestream(request, pk):
         a.allow_comments = True
 
         # Open the template
-        file_path = os.path.join(SITE_ROOT, "tools", "data", "youtube_template.html")
+        file_path = os.path.join(
+            SITE_ROOT, "tools", "data", "youtube_template.html"
+        )
         with open(file_path) as fh:
             template = fh.read()
 
@@ -79,7 +81,11 @@ def add_livestream(request, pk):
         # Upload the preview
         if request.FILES.get("preview"):
             # Save the file to the uploaded folder
-            file_path = os.path.join(SITE_ROOT, "museum_site", "static", "images", "articles", "streams", (str(a.id) + ".png"))
+            folder = os.path.join(
+                SITE_ROOT, "museum_site", "static",
+                "images", "articles", "streams"
+            )
+            file_path = os.path.join(folder, (str(a.id) + ".png"))
             with open(file_path, 'wb+') as fh:
                 for chunk in request.FILES["preview"].chunks():
                     fh.write(chunk)
@@ -105,7 +111,10 @@ def audit_zeta_config(request):
     data = {
         "title": "Zeta Config Audit",
     }
-    data["special"] = File.objects.filter(details__in=[DETAIL_ZZT, DETAIL_SZZT]).exclude(zeta_config_id__in=[1, 4]).order_by("zeta_config")
+    data["special"] = File.objects.filter(
+        details__in=[DETAIL_ZZT, DETAIL_SZZT]).exclude(
+            zeta_config_id__in=[1, 4]
+        ).order_by("zeta_config")
     return render(request, "museum_site/tools/audit_zeta_config.html", data)
 
 
@@ -137,7 +146,9 @@ def extract_font(request, pk):
             z = zookeeper.Zookeeper()
             z.export_font(
                 os.path.join(DATA_PATH, request.GET["font"]),
-                os.path.join(CHARSET_PATH, "{}-{}.png".format(f_id, f.filename[:-4])),
+                os.path.join(
+                    CHARSET_PATH, "{}-{}.png".format(f_id, f.filename[:-4])
+                ),
                 1
             )
             data["result"] = "Ripped {}-{}.png".format(f_id, f.filename[:-4])
