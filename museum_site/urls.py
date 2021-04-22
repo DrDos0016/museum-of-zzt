@@ -219,11 +219,12 @@ urlpatterns = [
     url(r"^ajax/render-review-text$", museum_site.ajax.render_review_text),
 
     # RSS
-    url("rss/articles/", museum_site.feeds.LatestArticlesFeed()),
-    url("rss/files/", museum_site.feeds.LatestFilesFeed()),
-    url("rss/reviews/", museum_site.feeds.LatestReviewsFeed()),
-    url("rss/uploads/", museum_site.feeds.LatestUploadsFeed()),
-
+    url("rss/", museum_site.views.generic, {"template": "rss-info", "title":"RSS Feeds"}, name="rss_feeds"),
+    url(r"^data-integrity$", museum_site.views.generic, {"template": "policy-data", "title":"Data Integrity"}),
+    url("rss/articles/", museum_site.feeds.LatestArticlesFeed(), name="rss_articles"),
+    url("rss/files/", museum_site.feeds.LatestFilesFeed(), name="rss_files"),
+    url("rss/reviews/", museum_site.feeds.LatestReviewsFeed(), name="rss_reviews"),
+    url("rss/uploads/", museum_site.feeds.LatestUploadsFeed(), name="rss_uploads"),
 
     # Redirects
     url(r"^twitter$", museum_site.views.redir, {"url": "https://twitter.com/worldsofzzt"}),

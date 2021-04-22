@@ -1,0 +1,64 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+#rss-table
+{
+    margin:auto;
+    max-width:800px;
+}
+
+#rss-table input
+{
+    margin:auto;
+    display:block;
+    width:90%;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("input[name=url]").click(function (){
+        $(this).select();
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+
+<h1>RSS Feeds</h1>
+
+<table id="rss-table">
+<tr>
+    <th>Feed</th>
+    <th>URL</th>
+    <th>Link</th>
+</tr>
+<tr>
+    <td>Latest Articles</td>
+    <td><input name="url" value="{{DOMAIN}}{% url 'rss_articles' %}"></td>
+    <td class="c"><a href="{% url 'rss_articles' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Icon"></a></td>
+</tr>
+<tr>
+    <td>Latest Published Files</td>
+    <td><input name="url" value="{{DOMAIN}}{% url 'rss_files' %}"></td>
+    <td class="c"><a href="{% url 'rss_files' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Icon"></a></td>
+</tr>
+<tr>
+    <td>Latest Reviews</td>
+    <td><input name="url" value="{{DOMAIN}}{% url 'rss_reviews' %}"></td>
+    <td class="c"><a href="{% url 'rss_reviews' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Icon"></a></td>
+</tr>
+<tr>
+    <td>Latest Uploaded Files</td>
+    <td><input name="url" value="{{DOMAIN}}{% url 'rss_uploads' %}"></td>
+    <td class="c"><a href="{% url 'rss_uploads' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Icon"></a></td>
+</tr>
+</table>
+</section>
+{% endblock %}

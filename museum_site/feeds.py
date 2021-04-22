@@ -17,7 +17,7 @@ class LatestArticlesFeed(Feed):
     def items(self):
         return Article.objects.filter(
             published=PUBLISHED_ARTICLE
-        ).order_by("-id")[:10]
+        ).order_by("-id")[:25]
 
     def item_title(self, item):
         return item.title
@@ -37,7 +37,7 @@ class LatestFilesFeed(Feed):
     def items(self):
         return File.objects.exclude(
             details__id__in=[DETAIL_UPLOADED, DETAIL_LOST]
-        ).order_by("-publish_date", "-id")[:10]
+        ).order_by("-publish_date", "-id")[:25]
 
     def item_title(self, item):
         return item.title
@@ -63,7 +63,7 @@ class LatestReviewsFeed(Feed):
     description = "Museum of ZZT review feed"
 
     def items(self):
-        return Review.objects.order_by("-id")[:10]
+        return Review.objects.order_by("-id")[:25]
 
     def item_title(self, item):
         return item.title
@@ -90,7 +90,7 @@ class LatestUploadsFeed(Feed):
     def items(self):
         return File.objects.filter(
             details__id__in=[DETAIL_UPLOADED]
-        ).order_by("-id")[:10]
+        ).order_by("-id")[:25]
 
     def item_title(self, item):
         return item.title
