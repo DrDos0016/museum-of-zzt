@@ -25,13 +25,10 @@ def as_template(raw):
 @register.filter
 def get_files_by_id(raw):
     ids = list(map(int, raw.split(",")))
-    print(ids)
     qs = File.objects.filter(pk__in=ids)
     files = {}
     for f in qs:
-        print(f.title)
         files[str(f.id)] = f
-    print(files.keys())
     return files
 
 
