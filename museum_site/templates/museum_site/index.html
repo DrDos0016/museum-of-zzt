@@ -21,17 +21,24 @@ preserved. It is the hope of the Museum that the generally unknown works of ZZT
 community can be easily discovered and that their importance can be recognized.
 </p>
 
-<h1>Latest Files</h1>
-<div class="gallery-list scrolling">
-    {% for file in files %}
-    <div class="gallery-block">
-        <img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">
-        <div class="title c"><a href="{{file.file_url}}">{{file.title}}</a></div>
-        <div class="author c">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+<div id="fp-new-files-grid">
+    <h1 id="new-releases-heading">New Releases Spotlight</h1>
+    <div class="gallery-list scrolling">
+        {% for file in new_releases %}
+        {% include "museum_site/blocks/file_gallery_block.html" %}
+        {% endfor %}
+        <div class="view-more">
+            <a href="{% url 'new_releases' %}">View All New Releases</a>
+        </div>
     </div>
-    {% endfor %}
-    <div class="view-more">
-        <a href="{% url 'new_files' %}">View More</a>
+    <h1 id="latest-additions-heading">Latest Additions Spotlight</h1>
+    <div class="gallery-list scrolling">
+        {% for file in files %}
+        {% include "museum_site/blocks/file_gallery_block.html" %}
+        {% endfor %}
+        <div class="view-more">
+            <a href="{% url 'new_files' %}">View All Files</a>
+        </div>
     </div>
 </div>
 

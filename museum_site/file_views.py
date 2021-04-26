@@ -47,6 +47,11 @@ def file_directory(
         data["header"] = data["title"]
         data["sort_options"] = []
         default_sort = ["-publish_date", "-id"]
+    elif request.path == "/new-releases":
+        data["title"] = "New Releases"
+        data["header"] = data["title"]
+        data["sort_options"] = []
+        default_sort = ["-release_date", "-id"]
     elif request.path == "/uploaded":
         data["title"] = "Upload Queue"
         data["header"] = data["title"]

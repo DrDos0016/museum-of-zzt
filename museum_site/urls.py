@@ -159,6 +159,8 @@ urlpatterns = [
 
     url(r"^new$", museum_site.file_views.file_directory,
         name="new_files"),
+    url(r"^new-releases$", museum_site.file_views.file_directory,
+        name="new_releases"),
 
     # Help
     url(r"^help/genres$", museum_site.help_views.genres,

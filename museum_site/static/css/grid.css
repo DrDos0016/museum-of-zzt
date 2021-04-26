@@ -903,6 +903,22 @@ form .field .genre-checklist
     padding-bottom:14px;
 }
 
+/* Front page gallery grid */
+#fp-new-files-grid
+{
+    display:grid;
+    grid-template-areas:
+    "lefthead righthead"
+    "leftcontent rightcontent";
+
+    grid-gap:0px 8px;
+}
+
+#fp-new-files-grid .gallery-list { margin-top:0; }
+#new-releases-heading { grid-area:lefthead; }
+#latest-additions-heading { grid-area:righthead; }
+/* End front page gallery grid */
+
 .article-category-heading
 {
     margin-top:8px;
