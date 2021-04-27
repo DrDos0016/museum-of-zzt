@@ -383,7 +383,7 @@ function pull_file()
     }).done(function (data){
         var format = "txt";  // Default to text mode
 
-        if (ext == "zzt" || ext == "sav" || ext == "szt" || ext == "mwz")
+        if (ext == "zzt" || ext == "sav" || ext == "szt" || ext == "mwz" || ext == "z_t")
         {
             if (ext == "sav")
             {
