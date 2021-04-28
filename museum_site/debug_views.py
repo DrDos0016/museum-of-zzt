@@ -32,7 +32,7 @@ def debug_article(request):
     data["TODO"] = "TODO"
     data["CROP"] = "CROP"
 
-    filepath = "/var/projects/museum/wip/" + request.GET.get("file")
+    filepath = os.path.join(SITE_ROOT, "wip", request.GET.get("file", ""))
     if not os.path.isfile(filepath):
         filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")
 
