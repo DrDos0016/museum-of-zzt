@@ -1,4 +1,18 @@
 {% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+#no-results
+{
+    text-align:center;
+    margin:7px 4px 7px 4px;
+    font-family:cp437;
+    font-size:24pt;
+}
+</style>
+{% endblock %}
+
 
 {% block content %}
 <section id="content" class="block">
@@ -37,6 +51,12 @@ the <a href="https://www.youtube.com/c/WorldsofZZT" target="_blank">Worlds of ZZ
 {% if view == "list" %}
 </table>
 {% elif view == "gallery" %}
+</div>
+{% endif %}
+{% if not page %}
+<div id="no-results">
+<img src="{% static 'images/blank-board.png' %}">
+<p>Your query returned zero results!</p>
 </div>
 {% endif %}
 
