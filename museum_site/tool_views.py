@@ -113,8 +113,11 @@ def audit_zeta_config(request):
     }
     data["special"] = File.objects.filter(
         details__in=[DETAIL_ZZT, DETAIL_SZZT]).exclude(
-            zeta_config_id__in=[1, 4]
+            Q(zeta_config_id=None) |
+            Q(zeta_config_id=1) |
+            Q(zeta_config_id=4)
         ).order_by("zeta_config")
+
     return render(request, "museum_site/tools/audit_zeta_config.html", data)
 
 
