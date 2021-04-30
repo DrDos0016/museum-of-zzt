@@ -63,7 +63,7 @@
     <div class="info">
         <div class="author">By: {{article.author}}</div>
         <div class="publish-date">Published: {{article.publish_date}}</div>
-        {% if article.is_modified %}<div class="modified-date">(Last updated: {{article.last_modified}})</div>{% endif %}
+        {% if article.last_revised %}<div class="revised-date">(Latest revision: {{article.last_revised}})</div>{% endif %}
         <p class="summary">{{article.summary}}</p>
     </div>
      <img src="{{article.preview}}" class="screenshot-thumb preview">

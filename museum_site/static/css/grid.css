@@ -1431,7 +1431,7 @@ code .char:hover { cursor:help; }
 #article-meta .info { grid-area:info; }
 #article-meta .preview { grid-area:preview; margin: 7px 0px 7px 7px; border:1px solid; height:175px; justify-self:end;}
 #article-meta .preview.zoomed { height:auto; }
-#article-meta .summary,#article-meta .modified-date { font-style:italic; }
+#article-meta .summary,#article-meta .revised-date { font-style:italic; }
 
 #plain-text-article
 {

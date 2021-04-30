@@ -66,8 +66,11 @@ class Article(models.Model):
         auto_now=True,
         help_text="Date DB entry was last modified"
     )
+    last_revised = models.DateTimeField(
+        help_text="Date article content was last revised",
+        default=None, null=True, blank=True
+    )
     summary = models.CharField(max_length=150, default="", blank=True)
-    #preview = models.CharField(max_length=80, default="", blank=True)
     allow_comments = models.BooleanField(default=False)
     spotlight = models.BooleanField(default=True)
     static_directory = models.CharField(
@@ -124,11 +127,6 @@ class Article(models.Model):
 
         return qs
 
-    def is_modified(self):
-        if (str(self.last_modified)[:10] > "2021-03-09"):
-            if str(self.last_modified)[:10] != str(self.publish_date)[:10]:
-                return True
-        return False
 
     def path(self):
         if self.publish_date.year == 1970:
