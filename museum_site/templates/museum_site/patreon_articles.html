@@ -32,7 +32,7 @@ can stay ahead of the game and read this upcoming article right away:
 
 {% for article in early %}
 <div class="overview-block" data-pk="{{article.id}}">
-    <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+    <img src="{{article.preview}}"
     class="screenshot-thumb"
     alt="{{article.preview}}">
     <h1 class="title">{% if access == 'early' or access == 'really_early' %}<a href="{{article.url}}?secret={{request.POST.secret}}">{{article.title}}</a>{% else %}LOCKED -- {{article.title}}{% endif %}</h1>
@@ -59,7 +59,7 @@ can <i>also</i> read whatever the entire article queue which additionally includ
 
 {% for article in really_early %}
 <div class="overview-block" data-pk="{{article.id}}">
-    <img src="{% if article.preview %}{% static 'images/'|add:article.preview %}{% else %}{% static 'images/screenshots/no_screenshot.png' %}{% endif %}"
+    <img src="{{article.preview}}"
     class="screenshot-thumb"
     alt="{{article.preview}}">
     <h1 class="title">{% if access == 'really_early' %}<a href="{{article.url}}?secret={{request.POST.secret}}">{{article.title}}</a>{% else %}LOCKED -- {{article.title}}{% endif %}</h1>
