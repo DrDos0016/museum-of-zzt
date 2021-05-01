@@ -18,7 +18,8 @@ List of commands:
 List of roles:
   ZZTer       MZXer
   He/Him      She/Her     They/Them
-  Stream-Alerts
+  Stream-Alerts-All       Stream-Alerts-Asie
+  Stream-Alerts-Dos       Stream-Alerts-Meap
 
 All commands are restricted to the #bots channel, excluding !zzt which also functions in #worlds.
 ```"""
