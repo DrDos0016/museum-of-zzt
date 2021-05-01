@@ -143,6 +143,9 @@ def extract_font(request, pk):
     if request.GET.get("font"):
         # Extract the file
         zip_file.extract(request.GET["font"], path=DATA_PATH)
+        charset_name = os.path.splitext(
+            os.path.basename(request.GET["font"])
+        )[0]
 
         try:
             f_id = ("0000"+str(f.id))[-4:]
@@ -150,11 +153,11 @@ def extract_font(request, pk):
             z.export_font(
                 os.path.join(DATA_PATH, request.GET["font"]),
                 os.path.join(
-                    CHARSET_PATH, "{}-{}.png".format(f_id, f.filename[:-4])
+                    CHARSET_PATH, "{}-{}.png".format(f_id, charset_name)
                 ),
                 1
             )
-            data["result"] = "Ripped {}-{}.png".format(f_id, f.filename[:-4])
+            data["result"] = "Ripped {}-{}.png".format(f_id, charset_name)
         except Exception as e:
             data["result"] = "Could not rip font!"
             print(e)
