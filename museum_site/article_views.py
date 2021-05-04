@@ -108,14 +108,38 @@ def article_view(request, article_id, page=0):
 
 def patron_articles(request):
     data = {}
-    data["early"] = Article.objects.filter(published=UPCOMING_ARTICLE)
-    data["really_early"] = Article.objects.filter(published=UNPUBLISHED_ARTICLE)
+    upcoming = Article.objects.filter(published=UPCOMING_ARTICLE)
+    unpublished = Article.objects.filter(published=UNPUBLISHED_ARTICLE)
 
+    data["upcoming"] = []
+    data["unpublished"] = []
+    data["access"] = None
+
+    # Parse the password
     if request.POST.get("secret") == PASSWORD2DOLLARS:
-        data["access"] = "early"
+        data["access"] = "upcoming"
     elif request.POST.get("secret") == PASSWORD5DOLLARS:
-        data["access"] = "really_early"
+        data["access"] = "unpublished"
     elif request.POST.get("secret") is not None:
         data["wrong_password"] = True
+
+    # Tweak titles and URLs for this page
+    for a in upcoming:
+        if data["access"] == "upcoming":
+            a.url = a.url() + "?secret=" + PASSWORD2DOLLARS
+        elif data["access"] == "unpublished":
+            a.url = a.url() + "?secret=" + PASSWORD5DOLLARS
+        else:
+            a.title = '🔒 $2+ Locked Article "{}" 🔒'.format(a.title)
+            a.url = "#"
+        data["upcoming"].append(a)
+
+    for a in unpublished:
+        if data["access"] == "unpublished":
+            a.url = a.url() + "?secret=" + PASSWORD5DOLLARS
+        else:
+            a.title = '🔒 $5+ Locked Article "{}" 🔒'.format(a.title)
+            a.url = "#"
+        data["upcoming"].append(a)
 
     return render(request, "museum_site/patreon_articles.html", data)

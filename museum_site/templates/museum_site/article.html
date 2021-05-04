@@ -11,23 +11,7 @@
 {% if articles %}
 <h2>Articles</h2>
 {% for article in articles %}
-<div class="overview-block" data-pk="{{article.id}}">
-    <img src="{{article.preview}}"
-    class="screenshot-thumb"
-    alt="{{article.preview}}">
-    <h1 class="title"><a href="{{article.url}}">{{article.title}}</a></h1>
-    <div class="wide-info">
-        <div class="field">
-            <div class="key">Author</div><div class="value">{{article.author}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Date</div><div class="value">{% if article.publish_date|date:"Y-m-d" != '1970-01-01' %}{{article.publish_date}}{% endif %}</div>
-        </div>
-        <div class="field">
-            <div class="key">Summary</div><div class="value">{{article.summary}}</div>
-        </div>
-    </div>
-</div>
+{% include "museum_site/blocks/article_detailed_block.html" %}
 {% endfor %}
 {% else %}
 No articles found!

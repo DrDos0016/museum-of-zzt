@@ -4,6 +4,12 @@
 
 {% block meta %}{% meta_tags url=request.build_absolute_uri og_image="images/early-access-preview.png" %}{% endblock %}
 
+{% block style %}
+<style>
+a[href="#"] { color:red; cursor:not-allowed; }
+</style>
+{% endblock%}
+
 {% block content %}
 <section id="content" class="block">
 <h1>Patrons Only!</h1>
@@ -30,26 +36,9 @@
 <b>$2</b> per month or more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>
 can stay ahead of the game and read this upcoming article right away:
 
-{% for article in early %}
-<div class="overview-block" data-pk="{{article.id}}">
-    <img src="{{article.preview}}"
-    class="screenshot-thumb"
-    alt="{{article.preview}}">
-    <h1 class="title">{% if access == 'early' or access == 'really_early' %}<a href="{{article.url}}?secret={{request.POST.secret}}">{{article.title}}</a>{% else %}LOCKED -- {{article.title}}{% endif %}</h1>
-    <div class="wide-info">
-        <div class="field">
-            <div class="key">Author</div><div class="value">{{article.author}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Date</div><div class="value">{{article.publish_date}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Summary</div><div class="value">{{article.summary}}</div>
-        </div>
-    </div>
-</div>
+{% for article in upcoming %}
+{% include "museum_site/blocks/article_detailed_block.html" %}
 {% endfor %}
-
 
 <h2>Early Access to Every Article</h2>
 
@@ -57,24 +46,8 @@ can stay ahead of the game and read this upcoming article right away:
 <b>$5</b> per month or more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>
 can <i>also</i> read whatever the entire article queue which additionally includes:
 
-{% for article in really_early %}
-<div class="overview-block" data-pk="{{article.id}}">
-    <img src="{{article.preview}}"
-    class="screenshot-thumb"
-    alt="{{article.preview}}">
-    <h1 class="title">{% if access == 'really_early' %}<a href="{{article.url}}?secret={{request.POST.secret}}">{{article.title}}</a>{% else %}LOCKED -- {{article.title}}{% endif %}</h1>
-    <div class="wide-info">
-        <div class="field">
-            <div class="key">Author</div><div class="value">{{article.author}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Date</div><div class="value">{{article.publish_date}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Summary</div><div class="value">{{article.summary}}</div>
-        </div>
-    </div>
-</div>
+{% for article in unpublished %}
+{% include "museum_site/blocks/article_detailed_block.html" %}
 {% endfor %}
 
 <p>If you're not a Patron, this is one of the perks that can be made available to you! Other perks include:</p>

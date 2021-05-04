@@ -44,37 +44,18 @@ community can be easily discovered and that their importance can be recognized.
 
 <h1>Latest Articles</h1>
 {% for article in articles|slice:":3" %}
-<div class="overview-block" data-pk="{{article.id}}">
-    <img src="{{article.preview}}"
-    class="screenshot-thumb"
-    alt="{{article.preview}}">
-    <h1 class="title"><a href="{{article.url}}">{{article.title}}</a></h1>
-    <div class="wide-info">
-        <div class="field">
-            <div class="key">Author</div><div class="value">{{article.author}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Date</div><div class="value">{{article.publish_date}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Summary</div><div class="value">{{article.summary}}</div>
-        </div>
-    </div>
-</div>
+{% include "museum_site/blocks/article_detailed_block.html" %}
 {% endfor %}
 <table>
     <tr>
         <th>Title</th>
         <th>Author</th>
         <th>Date</th>
+        <th>Category</th>
         <th class="">Summary</th>
     </tr>
     {% for article in articles|slice:"3:" %}
-    <tr>
-    <td><a href="{{article.url}}">{{article.title}}</a></td>
-    <td>{{article.author}}</td>
-    <td class="td-date">{% if article.publish_date|date:"Y-m-d" != '1970-01-01' %}{{article.publish_date|date:"N jS"}}{% endif %}</td>
-    <td class="">{{article.summary}}</td>
+    {% include "museum_site/blocks/article_list_block.html" %}
     </tr>
     {% endfor %}
 </table>
@@ -85,16 +66,14 @@ community can be easily discovered and that their importance can be recognized.
 <h1>Latest Reviews</h1>
 <table>
     <tr>
+        <th>Title</th>
         <th>File</th>
         <th>Author</th>
+        <th>Date</th>
         <th>Rating</th>
     </tr>
     {% for review in reviews %}
-    <tr>
-        <td><a href="{{review.file.review_url}}#rev-{{review.id}}"><i>{{review.file.title}}</i></a></td>
-        <td>{{review.author}}</td>
-        <td>{% if review.rating > -1 %} {{review.rating}} / 5.0{% else %}&mdash;{% endif %}</td>
-    </tr>
+    {% include "museum_site/blocks/review_list_block.html" %}
     {% endfor %}
 </table>
 <div class="view-more">
