@@ -1,6 +1,6 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .common import *
 from .constants import *
 from .models import *
@@ -104,7 +104,7 @@ def file_directory(
 def file_articles(request, letter, filename):
     """ Returns page listing all articles associated with a provided file. """
     data = {}
-    data["file"] = File.objects.get(letter=letter, filename=filename)
+    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
     data["title"] = data["file"].title + " - Articles"
     data["articles"] = data["file"].articles.all()
     data["letter"] = letter
