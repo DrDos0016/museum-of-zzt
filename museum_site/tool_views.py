@@ -57,6 +57,7 @@ def add_livestream(request, pk):
         a.publish_date = request.POST.get("date")
         a.published = PUBLISHED_ARTICLE
         a.summary = request.POST.get("summary")
+        a.static_directory = "ls-" + data["video_id"]
         a.allow_comments = True
 
         # Open the template
@@ -80,17 +81,18 @@ def add_livestream(request, pk):
 
         # Upload the preview
         if request.FILES.get("preview"):
-            # Save the file to the uploaded folder
             folder = os.path.join(
                 SITE_ROOT, "museum_site", "static",
-                "images", "articles", "streams"
+                "articles", request.POST.get("date")[:4], a.static_directory
             )
-            file_path = os.path.join(folder, (str(a.id) + ".png"))
+            os.mkdir(folder)
+
+            # Save the file to the uploaded folder
+            file_path = os.path.join(folder, "preview.png")
             with open(file_path, 'wb+') as fh:
                 for chunk in request.FILES["preview"].chunks():
                     fh.write(chunk)
 
-            a.preview = "articles/streams/" + str(a.id) + ".png"
             a.save()
 
         # Chop off the sidebar if needed
