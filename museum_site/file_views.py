@@ -84,6 +84,8 @@ def file_directory(
     elif default_sort:
         qs = qs.order_by(*default_sort)
 
+    qs = qs.distinct()
+
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = get_selected_view_format(request, data["available_views"])
     data = get_pagination_data(request, data, qs)
