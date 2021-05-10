@@ -112,10 +112,10 @@ def index(request):
     data = {}
 
     # Obtain latest content
-    data["articles"] = Article.objects.filter(published=PUBLISHED_ARTICLE, spotlight=True).order_by("-publish_date")[:FP_ARTICLES_SHOWN]
+    data["articles"] = Article.objects.filter(published=PUBLISHED_ARTICLE, spotlight=True).order_by("-publish_date", "-id")[:FP_ARTICLES_SHOWN]
     data["new_releases"] = File.objects.filter(spotlight=True, release_date__gte="2021-01-01").exclude(details__id__in=[DETAIL_UPLOADED]).order_by("-publish_date", "-id")[:FP_NEW_RELEASES_SHOWN]
     data["files"] = File.objects.filter(spotlight=True).exclude(Q(details__id__in=[DETAIL_UPLOADED]) | Q(release_date__gte="2021-01-01")).order_by("-publish_date", "-id")[:FP_FILES_SHOWN]
-    data["reviews"] = Review.objects.all().order_by("-date")[:FP_REVIEWS_SHOWN]
+    data["reviews"] = Review.objects.all().order_by("-date", "-id")[:FP_REVIEWS_SHOWN]
 
     # Calculate upload queue size
     request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
