@@ -18,6 +18,13 @@ except ModuleNotFoundError:
     IA_SUPPORT = False
     BANNED_IPS = [""]
 
+# Accounts
+ALLOW_REGISTRATION = False
+REQUIRE_CAPTCHA = False
+TERMS = """
+MUSEUM OF ZZT USER ACCOUNT TERMS (v.YYYY.M.D)
+"""
+
 # Admin information
 ADMIN_NAME = "Dr. Dos"
 
