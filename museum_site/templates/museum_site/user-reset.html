@@ -1,0 +1,34 @@
+{% extends "museum_site/main.html" %}
+
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Password Reset</h1>
+
+<hr>
+
+<h1>Forgot Username</h1>
+
+<p>If you have forgotten your username, please provide the email address you signed up with. An email will be sent to that address providing your username.</p>
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="action" value="forgot-username">
+
+<div class="field{% if errors.email %} error{% endif %}">
+    <label for="reg-email">Email Address:<br>
+    </label>
+    <input id="email" name="email" maxlength="150" value="">
+    {% if errors.email %}<p>{{errors.email}}</p>{% endif %}
+</div>
+
+<div class="field">
+    <button type="submit" id="submit-forgotten-username-button" class="full-width-submit">Find username</button>
+</div>
+
+</form>
+</section>
+{% endblock %}

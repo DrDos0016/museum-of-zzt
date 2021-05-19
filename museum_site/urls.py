@@ -198,7 +198,16 @@ urlpatterns = [
     url(r"^search$", museum_site.search_views.search, name="search"),
 
     # User
-    url(r"^user/data$", museum_site.user_views.user_data, name="user_data"),
+    url("user/login/", museum_site.user_views.login_user, name="login_user"),
+    url("user/logout/", museum_site.user_views.logout_user, name="logout_user"),
+    url("user/profile/", museum_site.user_views.user_profile, name="user_profile"),
+    url("user/registered/", museum_site.user_views.user_profile, name="registration_complete"),
+    url("user/forgot-username/", museum_site.user_views.forgot_username, name="forgot_username"),
+    url("user/forgot-username/complete/", museum_site.user_views.user_profile, name="forgot_username_complete"),
+    url("user/forgot-password/", museum_site.user_views.forgot_password, name="forgot_password"),
+    url("user/reset-password/complete/", museum_site.views.generic, {"template": "user-reset-password-complete", "title":"Reset Password Complete"}, name="reset_password_complete"),
+    url("user/reset-password/(?P<token>.*)/", museum_site.user_views.reset_password, name="reset_password_with_token"),
+    url("user/reset-password/", museum_site.user_views.reset_password, name="reset_password"),
 
     # World of ZZT
     url(r"^worlds-of-zzt$", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),

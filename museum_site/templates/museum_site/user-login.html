@@ -1,0 +1,146 @@
+{% extends "museum_site/main.html" %}
+
+{% block style %}
+<style>
+.error
+{
+    background-color:#F55;
+}
+
+.block-group
+{
+    flex:4;
+}
+
+#terms
+{
+    width:84ch;
+    height:26ch;
+}
+
+#user-registration-form p
+{
+    flex:0 0 100%;
+    font-weight:bold;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+{% if errors.etc %}<p style="font-weight:bold">{{errors.etc}}</p>{% endif %}
+
+{% if request.POST.action != "register" %}
+    <h1>Account Login</h1>
+
+    <form method="POST" id="user-login-form">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="login">
+
+    <div class="field{% if errors.username %} error{% endif %}">
+        <label for="username">Username:<br>
+            <span class="sub"></span>
+        </label>
+        <input id="username" name="username" maxlength="150" value="{{request.POST.username}}">
+        {% if errors.username %}<p>{{errors.username}}</p>{% endif %}
+    </div>
+
+    <div class="field{% if errors.pwd %} error{% endif %}">
+        <label for="moz-pw">Password:<br>
+            <span class="sub"></span>
+        </label>
+        <input id="moz-pw" name="moz-pw" maxlength="150" type="password" value="">
+        {% if errors.pwd %}<p>{{errors.pwd}}</p>{% endif %}
+    </div>
+
+    <div class="field">
+        <button type="submit" id="submit-login-button" class="full-width-submit">Login</button>
+    </div>
+    </form>
+
+    <p><a href="{% url 'forgot_username' %}">Forgot Username</a></p>
+    <p><a href="{% url 'forgot_password' %}">Forgot Password</a></p>
+{% endif %}
+
+<hr>
+
+<h1>Register an Account</h1>
+
+{% if registration_open %}
+<form method="POST" id="user-registration-form">
+{% csrf_token %}
+<input type="hidden" name="action" value="register">
+
+<!--- Shh! -->
+<div style="width:0px;height:0px;overflow:hidden;">
+    <label for="first-name">First Name:<br>
+        <span class="sub"></span>
+    </label>
+    <div class="field-group">
+        <input id="first-name" name="first-name" maxlength="20" value="">
+    </div>
+</div>
+
+<div class="field{% if errors.username %} error{% endif %}">
+    <label for="reg-username">Username:<br>
+        <span class="sub"></span>
+    </label>
+    <input id="reg-username" name="reg-username" maxlength="150" value="{{request.POST.username}}">
+    {% if errors.username %}<p>{{errors.username}}</p>{% endif %}
+</div>
+
+<div class="field{% if errors.email %} error{% endif %}">
+    <label for="reg-email">Email Address:<br>
+        <span class="sub">A valid email address is required to verify your account.</span>
+    </label>
+    <input id="reg-email" name="reg-email" maxlength="150" value="{{request.POST.email}}">
+    {% if errors.email %}<p>{{errors.email}}</p>{% endif %}
+</div>
+
+<div class="field{% if errors.pwd %} error{% endif %}">
+    <label for="reg-moz-pw">Password:<br>
+        <span class="sub">Use a unique password for your account. Passwords are hashed and will not be viewable.</span>
+    </label>
+    <input id="reg-moz-pw" name="reg-moz-pw" maxlength="150" type="password" value="">
+    {% if errors.pwd %}<p>{{errors.pwd}}</p>{% endif %}
+</div>
+
+<div class="field">
+    <label for="reg-moz-pw-conf">Confirm Password:<br>
+        <span class="sub"></span>
+    </label>
+    <input id="reg-moz-pw-conf" name="reg-moz-pw-conf" maxlength="150" type="password" value="">
+</div>
+
+<div class="field{% if errors.tos %} error{% endif %}">
+    <label for="terms">Terms:<br>
+        <span class="sub"></span>
+    </label>
+    <div class="block-group">
+        <textarea id="terms" readonly>{{terms}}</textarea><br>
+        <label><input type="checkbox" name="tos-agreement" value="agree"> I agree to the above terms of service.</label>
+        {% if errors.tos %}<p>{{errors.tos}}</p>{% endif %}
+    </div>
+</div>
+
+{% comment %}
+<div class="field">
+    <label for="reg-moz-z-cap">Captcha:<br>
+        <span class="sub"></span>
+    </label>
+    <div class="field-group">
+        <input id="reg-moz-z-cap" name="reg-moz-z-cap" maxlength="6" value="">
+    </div>
+</div>
+{% endcomment %}
+
+<div class="field">
+    <button type="submit" id="submit-registration-button" class="full-width-submit">Register Account</button>
+</div>
+</form>
+{% else %}
+<p>Account registration is temporarily closed.</p>
+{% endif %}
+
+</section>
+{% endblock %}

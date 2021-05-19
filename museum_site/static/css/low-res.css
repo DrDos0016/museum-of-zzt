@@ -19,12 +19,15 @@
     grid-area:low-res;
     display:block;
     width:100%;
+    text-align:center;
 }
 
-#low-res-shortcuts .nav-link
+#low-res-shortcuts a
 {
     font-size:42px;
     line-height:42px;
+    color:#FF5;
+    text-decoration:none;
 }
 
 #sidebar-left

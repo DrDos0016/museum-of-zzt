@@ -1,4 +1,5 @@
 {% extends "museum_site/main.html" %}
+{% load zzt_tags %}
 
 {% block style %}
 <style>
@@ -13,6 +14,10 @@
     <tr>
         <th>Username</th>
         <td>{{user_obj.username}}</td>
+    </tr>
+    <tr>
+        <th>Password</th>
+        <td><a href="">Change Password</a></td>
     </tr>
     <tr>
         <th>Email</th>
@@ -37,11 +42,11 @@
 
     <tr>
         <th>ASCII Avatar</th>
-        <td>Char {{user_obj.profile.char}} {{user_obj.profile.fg}} on {{user_obj.profile.bg}}</td>
+        <td>{% char user_obj.profile.char user_obj.profile.fg user_obj.profile.bg scale=2 %} Char{{user_obj.profile.char}} {{user_obj.profile.fg}} on {{user_obj.profile.bg}}</td>
     </tr>
     <tr>
         <th>Maximum Upload Size</th>
-        <td>{{user_obj.profile.max_upload_size}}</td>
+        <td>{{user_obj.profile.max_upload_size|filesizeformat}} ({{user_obj.profile.max_upload_size}} bytes)</td>
     </tr>
     <tr>
         <th>Files Uploaded</th>
@@ -68,6 +73,18 @@
         <td>{{user_obj.profile.patron_level}}</td>
     </tr>
 </table>
+{% else %}
+<h1>Non-Registered User Data</h1>
+<table>
+    <tr>
+        <th>ASCII Avatar</th>
+        <td>{% char 2 'white' 'darkblue' scale=2 %} Char 2 white on dark blue</td>
+    </tr>
+    <tr>
+        <th>Maximum Upload Size</th>
+        <td>{{UPLOAD_CAP|filesizeformat}} ({{UPLOAD_CAP}} bytes)</td>
+    </tr>
+</table>
 {% endif %}
 
 <h1>Session Data</h1>
@@ -82,6 +99,8 @@
     {% endfor %}
 </table>
 
+{% if user.is_authenticated %}
 <a href="{% url 'logout_user' %}">Log out</a>
+{% endif %}
 </section>
 {% endblock %}

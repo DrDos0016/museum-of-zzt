@@ -3,6 +3,7 @@ from .article import Article
 from .comment import Comment
 from .file import File
 from .detail import Detail
+from .profile import Profile
 from .review import Review
 from .upload import Upload
 from .wozzt_queue import WoZZT_Queue

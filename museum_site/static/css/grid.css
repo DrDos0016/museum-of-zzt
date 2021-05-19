@@ -237,16 +237,14 @@ input[type=number]
 {
     margin-bottom:14px;
     background-color:#00A;
-    padding-bottom:2px;
 }
 
 .nav-link
 {
-    margin:auto;
+    color:#FF5;
     font-size:28px;
-    height:28px;
-    line-height:28px;
-    width:100%;
+    display:flex;
+    justify-content:flex-start;
 }
 
 @media (max-width:1024px)
@@ -257,27 +255,24 @@ input[type=number]
 .nav-link:nth-child(even) .key { background-color:#AAA; }
 .nav-link:nth-child(odd) .key { background-color:#0AA; }
 
-.nav-link a
-{
-    color:#FF5;
-    padding-left:14px;
-    padding-right:14px;
-    display:block;
-}
 
-.nav-link a:hover
-{
-    text-decoration:none;
-}
+.nav-link:visited { color:#FF5; }
+.nav-link:hover { text-decoration:none; }
 
 .nav-link .key
 {
+
     text-align:center;
     margin:auto;
-    display:inline-block;
-    padding-left:14px;
-    padding-right:14px;
     color:#000;
+    flex:0 0 42px;
+    margin-left:14px;
+}
+
+.nav-link .text
+{
+    flex:1;
+    margin-left:14px;
 }
 
 #top-link-div { display:none }
@@ -292,8 +287,6 @@ input[type=number]
     .nav-link
     {
         font-size:21px;
-        height:21px;
-        line-height:21px;
     }
 }
 
@@ -319,13 +312,13 @@ input[type=number]
 #content { grid-area: content; margin-bottom: 0px;}
 #sidebar-right { grid-area: right; }
 
-.sidebar a {
+.sidebar .block a {
     display:block;
     padding-top:1px;
     padding-bottom:1px;
 }
 
-.sidebar a + a
+.sidebar .block a + a
 {
     border-top:1px dashed #AAA;
 }
@@ -335,7 +328,7 @@ input[type=number]
     background:none;
 }
 
-.sidebar a:hover, .sidebar a[target=_blank]:hover
+.sidebar .block a:hover, .sidebar a[target=_blank]:hover
 {
     background-color:#98C9C9;
 }
@@ -758,6 +751,7 @@ form,
 form .field
 {
     display:flex;
+    flex-wrap:wrap;
     padding:14px 0px 14px 0px;
 }
 
