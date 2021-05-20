@@ -176,10 +176,24 @@ $(document).ready(function (){
             volume: {{zeta_config.volume}},
         },
         files: [
-            {% if zeta_config.executable %}"/static/data/zeta86_engines/{{zeta_config.executable}}",{% endif %}
-            {% for file in included_files %}"{{file}}",
+            {% if zeta_config.executable %}
+            {
+                "type": "zip",
+                "url": "/static/data/zeta86_engines/{{zeta_config.executable}}",
+            },
+            {% endif %}
+            {% for file in included_files %}
+            {
+                "type": "zip",
+                "url": "{{file}}",
+            }
             {% endfor %}
-            {% if zeta_url %}"{{zeta_url|safe}}",{% endif %}
+            {% if zeta_url %}
+            {
+                "type": "zip",
+                "url": "{{zeta_url|safe}}",
+            },
+            {% endif %}
         ],
     }, function(zeta) {
         ZETA = zeta;
