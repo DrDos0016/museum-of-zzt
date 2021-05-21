@@ -235,7 +235,7 @@ class Commentary(template.Node):
 
         commentary = commentary.strip()
         if (commentary and commentary[0] != "<") or commentary.startswith("<!"):
-            commentary = "<p>" + commentary.replace("\n\n", "</p><p>") + "</p>"
+            commentary = "<p>" + commentary.replace("\r\n\r\n", "</p><p>").replace("\n\n", "</p><p>") + "</p>"
 
         debug_classes = ""
         if "TODO" in commentary:
