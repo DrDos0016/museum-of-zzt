@@ -53,7 +53,7 @@ def museum_global(request):
     data["UPLOAD_CAP"] = UPLOAD_CAP
 
     # Queue size
-    if (not request.SESSION.get("FILES_IN_QUEUE") or (request.path in [
+    if (not request.session.get("FILES_IN_QUEUE") or (request.path in [
         "/", "/uploaded/", "/upload/", "/upload/complete"
     ])):
         request.session["FILES_IN_QUEUE"] = File.objects.filter(
