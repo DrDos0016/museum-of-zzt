@@ -42,10 +42,8 @@
 
     <div id="featured" class="block c">
         <h1 class="l">Featured World</h1>
-        <a class="nohover" href="{{fg.file_url}}">{{fg.title}}</a>
-        <a class="nohover" href="{{fg.file_url}}"><img src="{% static fg.screenshot_url %}" alt="{{fg.title}}" title="{{fg.title}}" id="fg-screenshot"></a>
-        by {% for author in fg.author_list %}<a class="inline nohover" href="{% url 'search' %}?author={{author}}">{{author}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
-        <a class="nohover" href="{% url 'featured_games' %}">Featured Worlds</a>
+        <a href="{% url 'featured_games' %}">Featured Worlds</a>
+        {% with file=fg fg_link=True %}{% include "museum_site/blocks/file_gallery_block.html" %}{% endwith %}
     </div>
 
     <div id="worlds-block" class="block l">

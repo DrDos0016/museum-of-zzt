@@ -478,9 +478,18 @@ a.inline[target=_blank]::after
     padding-top:7px;
 }
 
+#featured .gallery-block
+{
+    border:0;
+    padding:0;
+}
+
+#featured .gallery-block .screenshot-thumb:hover { cursor:pointer; }
+
 #featured a
 {
     border-top:0px;
+    display: inline;
 }
 
 #featured a.nohover:hover

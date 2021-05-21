@@ -1,7 +1,7 @@
 {% load static %}
 {% load site_tags %}
 <div class="gallery-block" data-pk="{{file.id}}" data-model="file">
-    <img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">
+    {% if fg_link %}<a href="{{file.file_url}}" class="nohover">{% endif %}<img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">{% if fg_link %}</a>{% endif %}
     <div class="title c"><a href="{{file.file_url}}" class="view-link{% if 'Explicit' in file.genre %} explicit{% endif %}">{{file.title|default:"NO NAME"}}</a></div>
     <div class="author c">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a|url_parse}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
 </div>
