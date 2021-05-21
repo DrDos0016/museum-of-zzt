@@ -139,11 +139,6 @@ def index(request):
         "-date", "-id"
     )[:FP_REVIEWS_SHOWN]
 
-    # Calculate upload queue size
-    request.session["FILES_IN_QUEUE"] = File.objects.filter(
-        details__id__in=[DETAIL_UPLOADED]
-    ).count()
-
     return render(request, "museum_site/index.html", data)
 
 

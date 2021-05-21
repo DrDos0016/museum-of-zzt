@@ -55,10 +55,7 @@ def file_directory(
     elif request.path == "/uploaded":
         data["title"] = "Upload Queue"
         data["header"] = data["title"]
-        # Calculate upload queue size
-        request.session["FILES_IN_QUEUE"] = File.objects.filter(
-            details__id__in=[DETAIL_UPLOADED]
-        ).count()
+
         # Add sort by upload date
         data["sort_options"] = (
             [{"text": "Upload Date", "val": "uploaded"}] + data["sort_options"]
