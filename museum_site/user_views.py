@@ -207,12 +207,13 @@ def user_profile(request):
 
     to_delete = request.GET.get("delete")
     if to_delete and to_delete not in excluded_keys:
-        del request.session[request.GET["delete"]]
+        if request.session.get(request.GET["delete"]):
+            del request.session[request.GET["delete"]]
 
     data["user_data"] = []
     for k, v in request.session.items():
         if k not in excluded_keys:
-            data["user_data"].append((k, v))
+            data["user_data"].append((k.replace("_", " ").title(), v))
 
     if request.user.is_authenticated:
         data["user_obj"] = request.user
