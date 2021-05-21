@@ -55,39 +55,34 @@ def article_view(request, article_id, page=0):
     data = {"id": article_id}
     data["custom_layout"] = "article"
 
-    if request.GET.get("secret") is None:
-        data["article"] = get_object_or_404(
-            Article, pk=article_id, published=PUBLISHED_ARTICLE
-        )
+    a = get_object_or_404(Article, pk=article_id)
+
+    # Verify the article is readable with the permissions supplied
+    if a.published == REMOVED_ARTICLE:
+            return redirect("index")
+
+    if request.GET.get("secret") == PASSWORD5DOLLARS:
+        access = UNPUBLISHED_ARTICLE
     elif request.GET.get("secret") == PASSWORD2DOLLARS:
-        data["access"] = "early"
-        data["article"] = get_object_or_404(
-            Article,
-            Q(published=PUBLISHED_ARTICLE) | Q(published=UPCOMING_ARTICLE),
-            pk=article_id
-        )
+        access = UPCOMING_ARTICLE
+    else:
+        access = PUBLISHED_ARTICLE
+
+    if a.published > access: # Access level too low for article
+        return redirect("patron_articles")
+    elif a.published != PUBLISHED_ARTICLE:
         data["private_disclaimer"] = True
 
-    elif request.GET.get("secret") == PASSWORD5DOLLARS:
-        data["access"] = "really_early"
-        data["article"] = get_object_or_404(
-            Article,
-            Q(published=PUBLISHED_ARTICLE) |
-            Q(published=UPCOMING_ARTICLE) |
-            Q(published=UNPUBLISHED_ARTICLE),
-            pk=article_id,
-        )
-        data["private_disclaimer"] = True
+    # Set up pages
     data["page"] = page
-    data["page_count"] = data["article"].content.count("<!--Page-->") + 1
+    data["page_count"] = a.content.count("<!--Page-->") + 1
     data["page_range"] = list(range(1, data["page_count"] + 1))
     data["next"] = None if page + 1 > data["page_count"] else page + 1
     data["prev"] = page - 1
     data["slug"] = str(slug)
 
-    data["title"] = data["article"].title
-
-    zgames = data["article"].file_set.all()
+    # Set up related files
+    zgames = a.file_set.all()
     if zgames:
         data["file"] = zgames[0]
         if len(zgames) > 1:
@@ -100,9 +95,10 @@ def article_view(request, article_id, page=0):
                 )
 
     # Split article to current page
-    data["article"].content = data["article"].content.split(
-        "<!--Page-->"
-    )[data["page"]-1]
+    a.content = a.content.split("<!--Page-->")[data["page"]-1]
+
+    data["article"] = a
+    data["title"] = a.title
     return render(request, "museum_site/article_view.html", data)
 
 

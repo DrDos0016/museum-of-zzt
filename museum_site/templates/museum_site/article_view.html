@@ -64,6 +64,7 @@
         <div class="author">By: {{article.author}}</div>
         <div class="publish-date">Published: {{article.publish_date}}</div>
         {% if article.last_revised %}<div class="revised-date">(Latest revision: {{article.last_revised}})</div>{% endif %}
+        {% if request.session.DEBUG %}<a href="/admin/museum_site/article/{{article.id}}/change/" class="debug">Edit Article {{article.id}}</a>{% endif %}
         <p class="summary">{{article.summary}}</p>
     </div>
      <img src="{{article.preview}}" class="screenshot-thumb preview">
@@ -113,7 +114,6 @@
 
 <a href="{% url 'article_directory' %}">Article directory</a><br>
 <a href="{% url 'index' %}">Main page</a>
-{% if debug %}<div class="debug"><a href="/admin/museum_site/article/{{article.id}}/change/">Edit Article {{article.id}}</a></div>{% endif %}
 
 {% if article.allow_comments %}
 <hr>
