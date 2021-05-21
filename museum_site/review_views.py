@@ -22,7 +22,6 @@ def review_directory(request, page_num=1):
     elif request.GET.get("sort") == "rating":
         qs = qs.order_by("-rating")
 
-
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = get_selected_view_format(request, data["available_views"])
     data = get_pagination_data(request, data, qs)

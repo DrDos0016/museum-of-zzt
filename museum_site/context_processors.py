@@ -3,7 +3,10 @@ from datetime import datetime
 from museum_site.detail import Detail
 from museum_site.file import File
 from museum_site.constants import DETAIL_FEATURED, DETAIL_UPLOADED
-from museum_site.common import DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP, env_from_host, qs_sans
+from museum_site.common import (
+    DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP, env_from_host,
+    qs_sans
+)
 
 
 def museum_global(request):
@@ -23,9 +26,9 @@ def museum_global(request):
 
     # Server date/time
     data["datetime"] = datetime.utcnow()
-    if data["datetime"].day == 27:  # This is very important
+    if data["datetime"].day == 27:  # Drupe Day
         data["drupe"] = True
-    if data["datetime"].day == 1 and data["datetime"].month == 4:  # This is very important
+    if data["datetime"].day == 1 and data["datetime"].month == 4:  # April 1st
         data["april"] = True
 
     # Common query string modifications
@@ -51,5 +54,7 @@ def museum_global(request):
 
     # Queue size
     if not request.session.get("FILES_IN_QUEUE"):
-        request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
+        request.session["FILES_IN_QUEUE"] = File.objects.filter(
+            details__id__in=[DETAIL_UPLOADED]
+        ).count()
     return data

@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Alias(models.Model):
     """ Alias object for File aliases
     """

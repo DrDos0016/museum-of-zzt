@@ -109,7 +109,9 @@ CUSTOM_CHARSETS = []
 
 # Paths
 DATA_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data") + os.sep
-CHARSET_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "images", "charsets") + os.sep
+CHARSET_PATH = os.path.join(
+    SITE_ROOT, "museum_site", "static", "images", "charsets"
+) + os.sep
 
 pngs = sorted(glob.glob(
     os.path.join(
@@ -145,7 +147,7 @@ exe_names = {
     "zzt30.zip": "ZZT v3.0 (Shareware)",
     "zzt31.zip": "ZZT v3.1 (Shareware)",
     "zzt32sw.zip": "ZZT v3.2 (Shareware)",
-    #"cleanzzt.zip": "CleanZZT",
+    # "cleanzzt.zip": "CleanZZT",
     "czoo412.zip": "ClassicZoo v4.12",
     "cleenzzt-moz.zip": "CleenZZT",
 
@@ -154,7 +156,8 @@ exe_names = {
 ZETA_EXECUTABLES = []
 exes = sorted(glob.glob(
     os.path.join(
-        SITE_ROOT, "museum_site", "static", "data", "zeta86_engines", "*.[zZ][iI][pP]"
+        SITE_ROOT, "museum_site", "static", "data", "zeta86_engines",
+        "*.[zZ][iI][pP]"
     )
 ))
 for exe in exes:

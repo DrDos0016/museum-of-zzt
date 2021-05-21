@@ -6,12 +6,15 @@ ZETA_CONFIG_CATEGORIES = (
     (2, "File Specific"),
 )
 
+
 class Zeta_Config(models.Model):
     name = models.CharField(max_length=64)
     executable = models.CharField(max_length=128, default="zzt.zip", blank=True)
     arguments = models.CharField(max_length=128, default="", blank=True)
     commands = models.CharField(max_length=256, default="", blank=True)
-    blink_duration = models.DecimalField(max_digits=6, decimal_places=3, default=0.466)
+    blink_duration = models.DecimalField(
+        max_digits=6, decimal_places=3, default=0.466
+    )
     charset = models.CharField(max_length=64, default="cp437")
     audio_buffer = models.IntegerField(default=2048)
     sample_rate = models.IntegerField(default=48000)
@@ -59,4 +62,3 @@ class Zeta_Config(models.Model):
             self.executable = params["executable"]
         if self.executable == "NONE":
             self.executable = None
-

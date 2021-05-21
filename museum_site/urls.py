@@ -11,7 +11,7 @@ import museum_site.ajax
 import museum_site.article_views
 import museum_site.debug_views
 import museum_site.file_views
-#import museum_site.errors
+# import museum_site.errors
 import museum_site.feeds
 import museum_site.help_views
 import museum_site.review_views
@@ -263,7 +263,6 @@ urlpatterns = [
     url(r"^debug$", museum_site.debug_views.debug),
     url(r"^debug/article$", museum_site.debug_views.debug_article),
     url(r"^debug/colors$", museum_site.debug_views.debug_colors),
-    url(r"^debug/z0x$", museum_site.debug_views.debug_z0x),
     url(r"^ajax/debug_file$", museum_site.ajax.debug_file),
 
     #url(r"^error/(?P<status>[0-9]+)$", museum_site.errors.raise_error)

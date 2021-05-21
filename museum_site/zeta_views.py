@@ -5,7 +5,12 @@ from .constants import *
 from .models import *
 
 
-def zeta_launcher(request, letter=None, filename=None, components=["controls", "instructions", "credits", "advanced", "players"]):
+def zeta_launcher(
+    request, letter=None, filename=None,
+    components=[
+        "controls", "instructions", "credits", "advanced", "players"
+    ]
+):
     data = {"title": "Zeta Launcher"}
     # Template rendering mode
     # full - Extends "world.html", has a file header
@@ -30,16 +35,16 @@ def zeta_launcher(request, letter=None, filename=None, components=["controls", "
     if data["mode"] == "popout":
         data["base"] = "museum_site/play-popout.html"
         data["components"] = {
-        "controls": False,
-        "instructions": False,
-        "credits": False,
-        "advanced": False,
-        "players": False,
+            "controls": False,
+            "instructions": False,
+            "credits": False,
+            "advanced": False,
+            "players": False,
         }
         player = "zeta"
 
     if data["components"]["advanced"]:
-        #data["charsets"] = CUSTOM_CHARSET_LIST
+        # data["charsets"] = CUSTOM_CHARSET_LIST
         data["all_files"] = File.objects.filter(
             details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED]
         ).order_by("sort_title", "id").only("id", "title")
@@ -92,7 +97,10 @@ def zeta_launcher(request, letter=None, filename=None, components=["controls", "
                 compatible_players.append("archive")
 
         # Is there a manually selected preferred player?
-        if request.GET.get("player") and request.GET.get("player") in all_play_methods:
+        if (
+            request.GET.get("player") and
+            request.GET.get("player") in all_play_methods
+        ):
             preferred_player = request.GET.get("player")
         else:  # If not, use Zeta as the default player
             preferred_player = "zeta"
@@ -123,13 +131,16 @@ def zeta_launcher(request, letter=None, filename=None, components=["controls", "
     # Get Zeta Config for file
     data["zeta_config"] = data["file"].zeta_config
     if request.GET.get("zeta_config"):  # User override
-        data["zeta_config"] = Zeta_Config.objects.get(pk=int(request.GET["zeta_config"]))
+        data["zeta_config"] = Zeta_Config.objects.get(
+            pk=int(request.GET["zeta_config"])
+        )
 
     # Override config with user requested options
     if data["zeta_config"]:
         data["zeta_config"].user_configure(request.GET)
     else:
-        data["zeta_config"] = Zeta_Config.objects.get(pk=1)  # TODO make this a constant
+        # TODO make this a constant
+        data["zeta_config"] = Zeta_Config.objects.get(pk=1)
 
     # Extra work for custom fonts
     if data["zeta_config"].name.startswith("Custom Font - Generic"):
@@ -139,7 +150,9 @@ def zeta_launcher(request, letter=None, filename=None, components=["controls", "
         for f in files:
             if f.lower().endswith(".com"):
                 generic_font = f
-        data["zeta_config"].commands = data["zeta_config"].commands.replace("{font_file}", generic_font)
+        data["zeta_config"].commands = (
+            data["zeta_config"].commands.replace("{font_file}", generic_font)
+        )
 
     # Override for "Live" Zeta edits
     if request.GET.get("live"):
@@ -161,7 +174,10 @@ def zeta_launcher(request, letter=None, filename=None, components=["controls", "
 
 def zeta_live(request):
     if request.GET.get("discord"):
-        with open("/var/projects/museum/museum_site/static/data/discord-zzt/" + request.GET.get("filename"), "rb") as fh:
+        with open(
+            "/var/projects/museum/museum_site/static/data/discord-zzt/" +
+            request.GET.get("filename"), "rb"
+        ) as fh:
             response = HttpResponse(content_type="application/octet-stream")
             response["Content-Disposition"] = "attachment; filename=DISCORD.ZIP"
             response.write(fh.read())
@@ -200,4 +216,3 @@ def zeta_live(request):
     response["Content-Disposition"] = "attachment; filename=TEST.ZIP"
     response.write(temp_zip.getvalue())
     return response
-

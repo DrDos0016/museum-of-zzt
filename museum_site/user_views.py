@@ -25,7 +25,11 @@ def forgot_password(request):
             u.profile.reset_token = token
             u.profile.reset_time = datetime.utcnow()
             u.profile.save()
-            send_forgotten_password_email(u, request.META["HTTP_HOST"] + reverse("reset_password_with_token", args=[token]))
+            send_forgotten_password_email(
+                u, request.META["HTTP_HOST"] + reverse(
+                    "reset_password_with_token", args=[token]
+                )
+            )
 
         return redirect("reset_password")
 
@@ -95,26 +99,31 @@ def login_user(request):
             username = request.POST.get("reg-username")
             if not username:
                 create_account = False
-                data["errors"]["username"] = "A valid username was not provided."
+                data["errors"]["username"] = ("A valid username was not "
+                                              "provided.")
             elif User.objects.filter(username=username).exists():
                 create_account = False
-                data["errors"]["username"] = "A user with this username already exists."
+                data["errors"]["username"] = ("A user with this username "
+                                              "already exists.")
 
             # Check for unique email
             email = request.POST.get("reg-email")
             if not email:
                 create_account = False
-                data["errors"]["email"] = "A valid email address was not provided."
+                data["errors"]["email"] = ("A valid email address was not "
+                                           "provided.")
             elif User.objects.filter(email=email).exists():
                 create_account = False
-                data["errors"]["email"] = "An account with this email address already exists."
+                data["errors"]["email"] = ("An account with this email "
+                                           "address already exists.")
 
             # Check for matching passwords
             pwd = request.POST.get("reg-moz-pw")
             pwd_conf = request.POST.get("reg-moz-pw-conf")
             if pwd != pwd_conf:
                 create_account = False
-                data["errors"]["pwd"] = "Your password and password confirmation did not match."
+                data["errors"]["pwd"] = ("Your password and password "
+                                         "confirmation did not match.")
             elif not pwd or not pwd_conf:
                 create_account = False
                 data["errors"]["pwd"] = "A valid password was not provided."
@@ -123,7 +132,8 @@ def login_user(request):
             tos = True if request.POST.get("tos-agreement") else False
             if not tos:
                 create_account = False
-                data["errors"]["tos"] = "You must agree to the terms of service to register."
+                data["errors"]["tos"] = ("You must agree to the terms of "
+                                         "service to register.")
 
             # Create account
             if create_account:
@@ -168,14 +178,14 @@ def reset_password(request, token=None):
             pwd_conf = request.POST.get("moz-pw-conf")
             if pwd != pwd_conf:
                 success = False
-                data["errors"]["pwd"] = "Your password and password confirmation did not match."
+                data["errors"]["pwd"] = ("Your password and password "
+                                         "confirmation did not match.")
             elif not pwd or not pwd_conf:
                 success = False
                 data["errors"]["pwd"] = "A valid password was not provided."
 
         else:
             print("Exists was false")
-
 
         if success:
             u = User.objects.get(profile__reset_token=token)
@@ -185,6 +195,7 @@ def reset_password(request, token=None):
             return redirect("reset_password_complete")
 
     return render(request, "museum_site/user-reset-password.html", data)
+
 
 def user_profile(request):
     data = {"title": "User Profile"}

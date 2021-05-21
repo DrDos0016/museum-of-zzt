@@ -25,7 +25,11 @@ def upload(request):
             upload = upload_info.file
 
             # Check that the upload isn't published
-            if DETAIL_UPLOADED not in list(upload.details.all().values_list(flat=True)):
+            if (
+                DETAIL_UPLOADED not in list(
+                    upload.details.all().values_list(flat=True)
+                )
+            ):
                 # TODO: Properly error out
                 return redirect("/")
 
@@ -40,7 +44,9 @@ def upload(request):
 
                 upload_info.from_request(request, upload.id, save=True)
 
-                return redirect("/upload/complete?edit_token={}".format(upload_info.edit_token))
+                return redirect("/upload/complete?edit_token={}".format(
+                    upload_info.edit_token)
+                )
             except ValidationError as e:
                 data["results"] = e
                 print(data["results"])
@@ -56,7 +62,8 @@ def upload(request):
 
             # Upload limit
             if request.FILES.get("file").size > UPLOAD_CAP:
-                data["error"] = "Uploaded file size is too large. Contact staff for a manual upload."
+                data["error"] = ("Uploaded file size is too large. Contact "
+                                 "staff for a manual upload.")
 
                 return render(request, "museum_site/upload.html", data)
 
@@ -72,9 +79,13 @@ def upload(request):
                 upload_info.from_request(request, upload.id, save=True)
 
                 # Calculate upload queue size
-                request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
+                request.session["FILES_IN_QUEUE"] = File.objects.filter(
+                    details__id__in=[DETAIL_UPLOADED]
+                ).count()
 
-                return redirect("/upload/complete?edit_token={}".format(upload_info.edit_token))
+                return redirect("/upload/complete?edit_token={}".format(
+                    upload_info.edit_token)
+                )
             except ValidationError as e:
                 data["results"] = e
                 print(data["results"])
@@ -100,7 +111,9 @@ def upload_complete(request, edit_token=None):
 
     # If there's an edit token, gather that information
     if request.GET.get("edit_token"):
-        data["your_upload"] = get_object_or_404(Upload, edit_token=request.GET["edit_token"])
+        data["your_upload"] = get_object_or_404(
+            Upload, edit_token=request.GET["edit_token"]
+        )
         data["file"] = File.objects.get(pk=data["your_upload"].file_id)
 
     # Generate a screenshot (but not on DEV!)

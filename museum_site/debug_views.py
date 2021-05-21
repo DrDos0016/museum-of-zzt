@@ -3,15 +3,16 @@ from .common import *
 from .constants import *
 from .models import *
 
+
 def debug(request):
     data = {"title": "DEBUG PAGE"}
     data["ARTICLE_DEBUG"] = True
     data["TODO"] = "TODO"
     data["CROP"] = "CROP"
 
-    #results = File.objects.filter(Q(author="Dr. Dos") | Q(review))
-    #print("Found", len(results), "by me")
-    #data["results"] = results
+    # results = File.objects.filter(Q(author="Dr. Dos") | Q(review))
+    # print("Found", len(results), "by me")
+    # data["results"] = results
 
     set_captcha_seed(request)
 
@@ -20,7 +21,6 @@ def debug(request):
 
     if request.GET.get("serve"):
         return serve_file(request.GET.get("serve"), request.GET.get("as", ""))
-
 
     print(request.session["captcha-seed"])
 
@@ -41,7 +41,9 @@ def debug_article(request):
         article.title = filepath
         article.category = "TEST"
         article.static_directory = "wip-" + request.GET.get("file")[:-5]
-        article.content = fh.read().replace("<!--Page-->", "<hr><b>PAGE BREAK</b><hr>")
+        article.content = fh.read().replace(
+            "<!--Page-->", "<hr><b>PAGE BREAK</b><hr>"
+        )
         article.schema = request.GET.get("format", "django")
     data["article"] = article
     data["veryspecial"] = True
@@ -50,7 +52,7 @@ def debug_article(request):
 
 
 def debug_colors(request):
-    data = {"title": "DEBUG COLORS", "stylesheets":{}}
+    data = {"title": "DEBUG COLORS", "stylesheets": {}}
 
     for stylesheet in CSS_INCLUDES:
         data["stylesheets"][stylesheet] = []
@@ -67,7 +69,6 @@ def debug_colors(request):
             "#F55", "#F5F", "#FF5", "#FFF",
         ]
         path = os.path.join(STATIC_PATH, "css", stylesheet)
-        print("PATH", path)
         with open(path) as fh:
             for line in fh.readlines():
                 matches = re.findall("#(?:[0-9a-fA-F]{3}){1,2}", line)
@@ -75,11 +76,6 @@ def debug_colors(request):
                     if m not in data["stylesheets"][stylesheet]:
                         data["stylesheets"][stylesheet].append(m)
 
-
             data["stylesheets"][stylesheet].sort()
 
     return render(request, "museum_site/debug_colors.html", data)
-
-def debug_z0x(request):
-    data = {}
-    return render(request, "museum_site/z0x.html", data)

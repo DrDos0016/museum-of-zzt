@@ -76,7 +76,8 @@ class Article(models.Model):
     static_directory = models.CharField(
         max_length=120,
         default="", blank=True,
-        help_text="Name of directory where static files for the article are stored."
+        help_text=("Name of directory where static files for the article are"
+                   "stored.")
     )
 
     class Meta:
@@ -89,11 +90,9 @@ class Article(models.Model):
     def url(self):
         return "/article/" + str(self.id) + "/" + slugify(self.title)
 
-
     @property
     def preview(self):
         return os.path.join(STATIC_URL, self.path(), "preview.png")
-
 
     def search(p):
         qs = Article.objects.filter(published=PUBLISHED_ARTICLE)
@@ -127,7 +126,6 @@ class Article(models.Model):
 
         return qs
 
-
     def path(self):
         if self.publish_date.year == 1970:
             year = "unk"
@@ -135,12 +133,11 @@ class Article(models.Model):
             year = self.publish_date.year
         return ("articles/{}/{}/".format(year, self.static_directory))
 
-
     def render(self):
         """ Render article content as a django template """
-        context_data = {"TODO": "TODO", "CROP": "CROP",
+        context_data = {
+            "TODO": "TODO", "CROP": "CROP",
             "path": self.path,
         }
         head = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}"
         return Template(head + self.content).render(Context(context_data))
-

@@ -56,7 +56,6 @@ class LatestFilesFeed(Feed):
         return reverse("file", args=[item.letter, item.filename])
 
 
-
 class LatestReviewsFeed(Feed):
     title = "Museum of ZZT - Latest Reviews RSS"
     link = "/reviews/"
@@ -79,7 +78,6 @@ class LatestReviewsFeed(Feed):
         return reverse("reviews", args=[
             item.file.letter, item.file.identifier]
         ) + "#rev-" + str(item.pk)
-
 
 
 class LatestUploadsFeed(Feed):

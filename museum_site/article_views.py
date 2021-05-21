@@ -59,7 +59,7 @@ def article_view(request, article_id, page=0):
 
     # Verify the article is readable with the permissions supplied
     if a.published == REMOVED_ARTICLE:
-            return redirect("index")
+        return redirect("index")
 
     if request.GET.get("secret") == PASSWORD5DOLLARS:
         access = UNPUBLISHED_ARTICLE
@@ -68,7 +68,7 @@ def article_view(request, article_id, page=0):
     else:
         access = PUBLISHED_ARTICLE
 
-    if a.published > access: # Access level too low for article
+    if a.published > access:  # Access level too low for article
         return redirect("patron_articles")
     elif a.published != PUBLISHED_ARTICLE:
         data["private_disclaimer"] = True

@@ -41,7 +41,9 @@ def directory(request, category):
         data_list = GENRE_LIST
 
     # Break the list of results into 4 columns
-    data_list = sorted(data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.lower()))
+    data_list = sorted(
+        data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.lower())
+    )
     # data_list = sorted(data_list, key=lambda s: s.lower())
     first_letters = []
 
@@ -81,7 +83,9 @@ def exhibit(request, letter, filename, section=None, local=False):
         data["files"] = []
 
         if ".zip" in filename.lower():
-            zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, filename))
+            zip_file = zipfile.ZipFile(
+                os.path.join(SITE_ROOT, "zgames", letter, filename)
+            )
             files = zip_file.namelist()
             files.sort(key=str.lower)
             data["zip_info"] = zip_file.infolist()
@@ -90,7 +94,9 @@ def exhibit(request, letter, filename, section=None, local=False):
             for f in files:
                 if f and f[-1] != os.sep:
                     data["files"].append(f)
-            data["load_file"] = urllib.parse.unquote(request.GET.get("file", ""))
+            data["load_file"] = (
+                urllib.parse.unquote(request.GET.get("file", ""))
+            )
             data["load_board"] = request.GET.get("board", "")
     else:  # Local files
         data["file"] = "Local File Viewer"
@@ -112,13 +118,31 @@ def index(request):
     data = {}
 
     # Obtain latest content
-    data["articles"] = Article.objects.filter(published=PUBLISHED_ARTICLE, spotlight=True).order_by("-publish_date", "-id")[:FP_ARTICLES_SHOWN]
-    data["new_releases"] = File.objects.filter(spotlight=True, release_date__gte="2021-01-01").exclude(details__id__in=[DETAIL_UPLOADED]).order_by("-publish_date", "-id")[:FP_NEW_RELEASES_SHOWN]
-    data["files"] = File.objects.filter(spotlight=True).exclude(Q(details__id__in=[DETAIL_UPLOADED]) | Q(release_date__gte="2021-01-01")).order_by("-publish_date", "-id")[:FP_FILES_SHOWN]
-    data["reviews"] = Review.objects.all().order_by("-date", "-id")[:FP_REVIEWS_SHOWN]
+    data["articles"] = Article.objects.filter(
+        published=PUBLISHED_ARTICLE, spotlight=True
+    ).order_by("-publish_date", "-id")[:FP_ARTICLES_SHOWN]
+
+    data["new_releases"] = File.objects.filter(
+        spotlight=True, release_date__gte="2021-01-01"
+    ).exclude(
+        details__id__in=[DETAIL_UPLOADED]
+    ).order_by("-publish_date", "-id")[:FP_NEW_RELEASES_SHOWN]
+
+    data["files"] = File.objects.filter(
+        spotlight=True
+    ).exclude(
+        Q(details__id__in=[DETAIL_UPLOADED]) |
+        Q(release_date__gte="2021-01-01")
+    ).order_by("-publish_date", "-id")[:FP_FILES_SHOWN]
+
+    data["reviews"] = Review.objects.all().order_by(
+        "-date", "-id"
+    )[:FP_REVIEWS_SHOWN]
 
     # Calculate upload queue size
-    request.session["FILES_IN_QUEUE"] = File.objects.filter(details__id__in=[DETAIL_UPLOADED]).count()
+    request.session["FILES_IN_QUEUE"] = File.objects.filter(
+        details__id__in=[DETAIL_UPLOADED]
+    ).count()
 
     return render(request, "museum_site/index.html", data)
 
@@ -139,7 +163,6 @@ def mass_downloads(request):
             data["counts"][year] += 1
     print(data["counts"])
     """
-
 
     return render(request, "museum_site/mass_downloads.html", data)
 
@@ -248,7 +271,9 @@ def site_credits(request):
     data = {"title": "Credits"}
 
     # Get all article authors
-    data["authors"] = Article.objects.exclude(author="N/A").distinct().values_list("author", flat=True)
+    data["authors"] = Article.objects.exclude(
+        author="N/A"
+    ).distinct().values_list("author", flat=True)
     data["list"] = []
     for author in data["authors"]:
         split = author.split("/")
@@ -287,6 +312,8 @@ def worlds_of_zzt_queue(request):
                 entry.delete_image()
                 entry.delete()
 
-    data["queue"] = WoZZT_Queue.objects.filter(category=category).order_by("-priority", "id")
+    data["queue"] = WoZZT_Queue.objects.filter(category=category).order_by(
+        "-priority", "id"
+    )
     data["queue_size"] = len(data["queue"])
     return render(request, "museum_site/wozzt-queue.html", data)

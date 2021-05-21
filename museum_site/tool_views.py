@@ -576,7 +576,6 @@ def set_screenshot(request, pk):
         image = image.crop((0, 0, 480, 350))
         image.save(SITE_ROOT + "/museum_site/static/images/screenshots/" + file.letter + "/" + file.filename[:-4] + ".png")
 
-
     if os.path.isfile(SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")):
         os.remove(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])
     return render(request, "museum_site/tools/set_screenshot.html", data)

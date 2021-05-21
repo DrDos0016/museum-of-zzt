@@ -138,8 +138,10 @@ class File(models.Model):
         null=True, blank=True, default=None, editable=False
     )
 
-    zeta_config = models.ForeignKey("Zeta_Config", null=True, blank=True,
-    default=None, on_delete=models.SET_NULL)
+    zeta_config = models.ForeignKey(
+        "Zeta_Config", null=True, blank=True, default=None,
+        on_delete=models.SET_NULL
+    )
 
     spotlight = models.BooleanField(default=True)
     can_review = models.BooleanField(default=True)
@@ -368,7 +370,14 @@ class File(models.Model):
         return True if DETAIL_FEATURED in featured else False
 
     def supports_zeta_player(self):
-        return (self.is_zzt() or self.is_super_zzt() or self.zeta_config is not None)
+        if self.is_zzt():
+            return True
+        elif self.is_super_zzt():
+            return True
+        elif self.zeta_config is not None:
+            return True
+
+        return False
 
     def calculate_article_count(self):
         if self.id is not None:

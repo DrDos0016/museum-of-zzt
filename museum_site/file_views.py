@@ -219,7 +219,12 @@ def review(request, letter, filename):
             return HttpResponse("Banned account.")
 
         # Duplicate check
-        if len(Review.objects.filter(file_id=data["file"].id, ip=request.META["REMOTE_ADDR"], email=request.POST.get("email"))) == 0:
+        if len(
+            Review.objects.filter(
+                file_id=data["file"].id, ip=request.META["REMOTE_ADDR"],
+                email=request.POST.get("email")
+            )
+        ) == 0:
             review = Review()
             created = review.from_request(request)
             if created:

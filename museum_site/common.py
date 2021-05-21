@@ -151,7 +151,9 @@ PACKAGE_PROFILES = (
         "prefix": "cleanzzt_",
         "executable": "CLEANZZT.EXE",
         "engine": "ZZT",
-        "auto_desc": "World created using the ZZT engine, and running under Clean ZZT, a customized ZZT executable that removes certain default sound effects and messages",
+        "auto_desc": ("World created using the ZZT engine, and running under "
+                      "Clean ZZT, a customized ZZT executable that removes "
+                      "certain default sound effects and messages"),
     },
     {
         "name": "Super ZZT v4.0",
@@ -161,7 +163,9 @@ PACKAGE_PROFILES = (
         "prefix": "superzzt40_",
         "executable": "s.bat",
         "engine": "Super ZZT",
-        "auto_desc": "World created using the Super ZZT engine, and running under Super ZZT 4.0, a customized Super ZZT executable to increase certain memory limitations",
+        "auto_desc": ("World created using the Super ZZT engine, and running "
+                      "under Super ZZT 4.0, a customized Super ZZT executable "
+                      "to increase certain memory limitations"),
     },
     {
         "name": "ZZT v2.0 Shareware",
@@ -171,7 +175,8 @@ PACKAGE_PROFILES = (
         "prefix": "zzt20sw_",
         "executable": "ZZT.EXE",
         "engine": "ZZT",
-        "auto_desc": "World created using the ZZT engine, and running under ZZT 2.0 Shareware edition.",
+        "auto_desc": ("World created using the ZZT engine, and running under "
+                      "ZZT 2.0 Shareware edition."),
     },
     {
         "name": "ZZT v3.1 Shareware",
@@ -181,7 +186,8 @@ PACKAGE_PROFILES = (
         "prefix": "zzt31sw_",
         "executable": "ZZT.EXE",
         "engine": "ZZT",
-        "auto_desc": "World created using the ZZT engine, and running under ZZT 3.1 Shareware edition.",
+        "auto_desc": ("World created using the ZZT engine, and running under "
+                      "ZZT 3.1 Shareware edition."),
     },
     {
         "name": "ZZT v3.2 Shareware",
@@ -191,7 +197,8 @@ PACKAGE_PROFILES = (
         "prefix": "zztsw_",
         "executable": "ZZT.EXE",
         "engine": "ZZT",
-        "auto_desc": "World created using the ZZT engine, and running under ZZT 3.2 Shareware edition.",
+        "auto_desc": ("World created using the ZZT engine, and running under "
+                      "ZZT 3.2 Shareware edition."),
     },
     {
         "name": "ZZT v4.0",
@@ -201,7 +208,10 @@ PACKAGE_PROFILES = (
         "prefix": "zzt40_",
         "executable": "zzt.EXE",
         "engine": "ZZT",
-        "auto_desc": "World created using the ZZT engine, and running under ZZT 4.0, a customized ZZT executable to increase certain memory limitations and fix bugs with the original program.",
+        "auto_desc": ("World created using the ZZT engine, and running under "
+                      "ZZT 4.0, a customized ZZT executable to increase "
+                      "certain memory limitations and fix bugs with the "
+                      "original program."),
     },
     {
         "name": "ZZT v4.0 - No MSG",
@@ -211,7 +221,11 @@ PACKAGE_PROFILES = (
         "prefix": "zzt40nomsg_",
         "executable": "zztnomsg.EXE",
         "engine": "ZZT",
-        "auto_desc": "World created using the ZZT engine, and running under ZZT 4.0 No MSG, a customized ZZT executable to increase certain memory limitations, fix bugs with the original program, and remove certain default sounds and messages.",
+        "auto_desc": ("World created using the ZZT engine, and running under "
+                      "ZZT 4.0 No MSG, a customized ZZT executable to "
+                      "increase certain memory limitations, fix bugs with the "
+                      "original program, and remove certain default sounds"
+                      "and messages."),
     },
     {
         "name": "ZZT v4.1",
@@ -221,7 +235,11 @@ PACKAGE_PROFILES = (
         "prefix": "zzt41_",
         "executable": "zzt41.exe",
         "engine": "ZZT",
-        "auto_desc": "World created using the ZZT engine, and running under ZZT 4.1 No MSG, a customized ZZT executable to increase certain memory limitations, fix bugs with the original program, and remove certain default sounds and messages.",
+        "auto_desc": ("World created using the ZZT engine, and running under "
+                      "ZZT 4.1 No MSG, a customized ZZT executable to "
+                      "increase certain memory limitations, fix bugs with the "
+                      "original program, and remove certain default sounds "
+                      "and messages."),
     },
     {
         "name": "ZZT Music Player v2.0",
@@ -229,18 +247,28 @@ PACKAGE_PROFILES = (
         "prefix": "zztmp20_",
         "executable": "ZZTMPLAY.EXE",
         "engine": "ZZM",
-        "auto_desc": "ZZM files being played using ZZT Music Player v2.0, a program to play ZZM music, a format designed to play ZZT's PC speaker sounds in a more traditional audio player. Note that ZZM files do not sound identical to the same sounds produced in ZZT. (If both formats are available, ZZT is the superior choice for playback accuracy.)",
+        "auto_desc": ("ZZM files being played using ZZT Music Player v2.0, a "
+                      "program to play ZZM music, a format designed to play "
+                      "ZZT's PC speaker sounds in a more traditional audio "
+                      "player. Note that ZZM files do not sound identical to "
+                      "the same sounds produced in ZZT. (If both formats are "
+                      "available, ZZT is the superior choice for playback "
+                      "accuracy."),
     }
 )
 
 PLAY_METHODS = {
-    "archive": {"name":"Archive.org - DosBox Embed"},
-    "zeta": {"name":"Zeta"},
+    "archive": {"name": "Archive.org - DosBox Embed"},
+    "zeta": {"name": "Zeta"},
 }
+
 
 def populate_collection_params(data):
     params = "?"
-    keys = ["mode", "rng_seed", "author", "year", "genre", "company", "letter", "page", "sort"]
+    keys = [
+        "mode", "rng_seed", "author", "year", "genre", "company", "letter",
+        "page", "sort"
+    ]
     for k in keys:
         if data.get(k):
             params += k + "=" + str(data[k]) + "&"
@@ -269,7 +297,9 @@ def qs_sans(params, key):
 
 
 def serve_file(file_path="", named=""):
-    """ Returns an HTTPResponse containing the given file with an optional name """
+    """ Returns an HTTPResponse containing the given file with an optional
+        name
+    """
     if not named:
         named = os.path.basename(file_path)
 
@@ -289,6 +319,7 @@ def slash_separated_sort(orig):
     output = "/".join(temp_list)
     return output
 
+
 def env_from_host(host):
     if host in ["beta.museumofzzt.com"]:
         return "BETA"
@@ -299,7 +330,17 @@ def env_from_host(host):
 
 
 def set_captcha_seed(request):
-    request.session["captcha-seed"] = str(datetime.now()).replace("-", "").replace(":", "").replace(".", "").replace(" ", "")
+    request.session["captcha-seed"] = (
+        str(datetime.now()).replace(
+            "-", ""
+        ).replace(
+            ":", ""
+        ).replace(
+            ".", ""
+        ).replace(
+            " ", ""
+        )
+    )
 
 
 # Decorators
@@ -360,9 +401,9 @@ def get_selected_view_format(
 
 def get_page_size(view):
     page_sizes = {
-    "detailed": PAGE_SIZE,
-    "list": LIST_PAGE_SIZE,
-    "gallery": PAGE_SIZE,
+        "detailed": PAGE_SIZE,
+        "list": LIST_PAGE_SIZE,
+        "gallery": PAGE_SIZE,
     }
     return page_sizes.get(view, PAGE_SIZE)
 
