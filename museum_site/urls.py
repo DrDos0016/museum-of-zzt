@@ -152,7 +152,7 @@ urlpatterns = [
         name="win64"),
     url(r"^lost-worlds$", museum_site.file_views.file_directory, {"details": [DETAIL_LOST]},
         name="lost_worlds"),
-    url(r"^uploaded$", museum_site.file_views.file_directory, {"details": [DETAIL_UPLOADED]},
+    url(r"^uploaded/$", museum_site.file_views.file_directory, {"details": [DETAIL_UPLOADED]},
         name="uploaded_worlds"),
     url(r"^featured$", museum_site.file_views.file_directory, {"details": [DETAIL_FEATURED], "show_description": True, "show_featured": True},
         name="featured_games"),
@@ -213,8 +213,8 @@ urlpatterns = [
     url(r"^worlds-of-zzt$", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
 
     # Uploads
-    url(r"^upload$", museum_site.upload_views.upload, name="upload"),
-    url(r"^upload/complete$", museum_site.upload_views.upload_complete, name="upload_complete"),
+    url(r"^upload/$", museum_site.upload_views.upload, name="upload"),
+    url(r"^upload/complete/$", museum_site.upload_views.upload_complete, name="upload_complete"),
 
     # Zeta Live
     url(r"^zeta-live$", museum_site.zeta_views.zeta_live),
