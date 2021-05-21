@@ -140,6 +140,6 @@ def patron_articles(request):
         else:
             a.title = '🔒 $5+ Locked Article "{}" 🔒'.format(a.title)
             a.url = "#"
-        data["upcoming"].append(a)
+        data["unpublished"].append(a)
 
     return render(request, "museum_site/patreon_articles.html", data)
