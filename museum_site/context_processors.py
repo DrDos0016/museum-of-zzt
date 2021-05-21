@@ -43,6 +43,8 @@ def museum_global(request):
     # Featured Games
     featured = Detail.objects.get(pk=DETAIL_FEATURED)
     data["fg"] = featured.file_set.all().order_by("?")[0]
+    if request.GET.get("fgid"):
+        data["fg"] = File.objects.get(pk=int(request.GET["fgid"]))
 
     # Upload Cap
     data["UPLOAD_CAP"] = UPLOAD_CAP
