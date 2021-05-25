@@ -9,7 +9,7 @@ register = Library()
 
 
 @register.simple_tag()
-def char(num, fg="white", bg="black", scale=1):
+def char(num=2, fg="white", bg="black", scale=1):
     CP437_TO_UNICODE = (
     0, 9786,  9787, 9829, 9830, 9827, 9824, 8226,
     9688, 9675, 9689, 9794, 9792, 9834, 9835, 9788,
@@ -51,6 +51,10 @@ def char(num, fg="white", bg="black", scale=1):
         scale = ""
     else:
         scale = " style='font-size:{}px'".format(scale * 14)
+
+    if not num:
+        num = 2
+
     output = output.format(fg, bg, scale, CP437_TO_UNICODE[num])
 
     return mark_safe(output)
