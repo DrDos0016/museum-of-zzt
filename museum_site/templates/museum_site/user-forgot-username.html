@@ -1,10 +1,5 @@
 {% extends "museum_site/main.html" %}
 
-{% block style %}
-<style>
-</style>
-{% endblock %}
-
 {% block content %}
 <section id="content" class="block">
 <h1>Forgot Username</h1>
@@ -17,8 +12,10 @@
 <div class="field{% if errors.email %} error{% endif %}">
     <label for="reg-email">Email Address:<br>
     </label>
-    <input id="email" name="email" maxlength="150" value="">
-    {% if errors.email %}<p>{{errors.email}}</p>{% endif %}
+    <div class="field-group">
+        <input id="email" name="email" maxlength="150" value="">
+        <p class="form-error">{{errors.email}}</p>
+    </div>
 </div>
 
 <div class="field">

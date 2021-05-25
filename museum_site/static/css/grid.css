@@ -1,5 +1,4 @@
 /* Basic Elements */
-/* Basic Elements */
 body
 {
     font-family:sans-serif;
@@ -92,6 +91,13 @@ figure.zzt-figure figcaption
 }
 
 h1, h2, h3 { margin:0; margin-bottom:7px; }
+
+hr
+{
+    height:14px;
+    border:0px;
+    background-image:url("/static/chrome/hr-center.png");
+}
 
 img:not(.screenshot-thumb) { max-width:100%; }
 
@@ -761,10 +767,10 @@ form .field
 {
     display:flex;
     flex-wrap:wrap;
-    padding:14px 0px 14px 0px;
+    padding:14px 8px 14px 8px;
 }
 
-form .field + .field { border-top:1px dashed #000; }
+form .field + .field { border-top:1px dashed #000; margin-top:7px; }
 
 form .field > label
 {

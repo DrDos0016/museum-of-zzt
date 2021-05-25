@@ -1,56 +1,35 @@
 {% extends "museum_site/main.html" %}
 
-{% block style %}
-<style>
-.error
-{
-    background-color:#F55;
-}
-
-.block-group
-{
-    flex:4;
-}
-
-#terms
-{
-    width:84ch;
-    height:26ch;
-}
-
-#user-registration-form p
-{
-    flex:0 0 100%;
-    font-weight:bold;
-}
-</style>
-{% endblock %}
-
 {% block content %}
 <section id="content" class="block">
-{% if errors.etc %}<p style="font-weight:bold">{{errors.etc}}</p>{% endif %}
-
 {% if request.POST.action != "register" %}
     <h1>Account Login</h1>
+    {% if errors.etc %}<p style="font-weight:bold">{{errors.etc}}</p>{% endif %}
 
     <form method="POST" id="user-login-form">
     {% csrf_token %}
     <input type="hidden" name="action" value="login">
 
-    <div class="field{% if errors.username %} error{% endif %}">
+    <div class="field{% if errors.username or errors.etc %} error{% endif %}">
         <label for="username">Username:<br>
             <span class="sub"></span>
         </label>
-        <input id="username" name="username" maxlength="150" value="{{request.POST.username}}">
-        {% if errors.username %}<p>{{errors.username}}</p>{% endif %}
+        <div class="field-group">
+            <input id="username" name="username" maxlength="150" value="{{request.POST.username}}">
+            <p class="form-error">{{errors.username}}</p>
+            <p><a href="{% url 'forgot_username' %}" tabindex="-1">Forgot Username</a></p>
+        </div>
     </div>
 
     <div class="field{% if errors.pwd %} error{% endif %}">
         <label for="moz-pw">Password:<br>
             <span class="sub"></span>
         </label>
-        <input id="moz-pw" name="moz-pw" maxlength="150" type="password" value="">
-        {% if errors.pwd %}<p>{{errors.pwd}}</p>{% endif %}
+        <div class="field-group">
+            <input id="moz-pw" name="moz-pw" maxlength="150" type="password" value=""><br>
+            <p class="form-error">{{errors.pwd}}</p>
+            <p><a href="{% url 'forgot_password' %}" tabindex="-1">Forgot Password</a></p>
+        </div>
     </div>
 
     <div class="field">
@@ -58,11 +37,8 @@
     </div>
     </form>
 
-    <p><a href="{% url 'forgot_username' %}">Forgot Username</a></p>
-    <p><a href="{% url 'forgot_password' %}">Forgot Password</a></p>
-{% endif %}
-
 <hr>
+{% endif %}
 
 <h1>Register an Account</h1>
 
@@ -81,45 +57,53 @@
     </div>
 </div>
 
-<div class="field{% if errors.username %} error{% endif %}">
+<div class="field{% if reg_errors.username %} error{% endif %}">
     <label for="reg-username">Username:<br>
         <span class="sub"></span>
     </label>
-    <input id="reg-username" name="reg-username" maxlength="150" value="{{request.POST.username}}">
-    {% if errors.username %}<p>{{errors.username}}</p>{% endif %}
+    <div class="field-group">
+        <input id="reg-username" name="reg-username" maxlength="150" value="{{request.POST.username}}">
+        <p class="form-error">{{reg_errors.username}}</p>
+    </div>
 </div>
 
-<div class="field{% if errors.email %} error{% endif %}">
+<div class="field{% if reg_errors.email %} error{% endif %}">
     <label for="reg-email">Email Address:<br>
         <span class="sub">A valid email address is required to verify your account.</span>
     </label>
-    <input id="reg-email" name="reg-email" maxlength="150" value="{{request.POST.email}}">
-    {% if errors.email %}<p>{{errors.email}}</p>{% endif %}
+    <div class="field-group">
+        <input id="reg-email" name="reg-email" maxlength="150" value="{{request.POST.email}}">
+        {% if reg_errors.email %}<p class="form-error">{{reg_errors.email}}</p>{% endif %}
+    </div>
 </div>
 
-<div class="field{% if errors.pwd %} error{% endif %}">
+<div class="field{% if reg_errors.pwd %} error{% endif %}">
     <label for="reg-moz-pw">Password:<br>
         <span class="sub">Use a unique password for your account. Passwords are hashed and will not be viewable.</span>
     </label>
-    <input id="reg-moz-pw" name="reg-moz-pw" maxlength="150" type="password" value="">
-    {% if errors.pwd %}<p>{{errors.pwd}}</p>{% endif %}
+    <div class="field-group">
+        <input id="reg-moz-pw" name="reg-moz-pw" maxlength="150" type="password" value="">
+        {% if reg_errors.pwd %}<p class="form-error">{{reg_errors.pwd}}</p>{% endif %}
+    </div>
 </div>
 
 <div class="field">
     <label for="reg-moz-pw-conf">Confirm Password:<br>
         <span class="sub"></span>
     </label>
-    <input id="reg-moz-pw-conf" name="reg-moz-pw-conf" maxlength="150" type="password" value="">
+    <div class="field-group">
+        <input id="reg-moz-pw-conf" name="reg-moz-pw-conf" maxlength="150" type="password" value="">
+    </div>
 </div>
 
-<div class="field{% if errors.tos %} error{% endif %}">
+<div class="field{% if reg_errors.tos %} error{% endif %}">
     <label for="terms">Terms:<br>
         <span class="sub"></span>
     </label>
-    <div class="block-group">
+    <div class="field-group">
         <textarea id="terms" readonly>{{terms}}</textarea><br>
-        <label><input type="checkbox" name="tos-agreement" value="agree"> I agree to the above terms of service.</label>
-        {% if errors.tos %}<p>{{errors.tos}}</p>{% endif %}
+        <p{% if reg_errors.tos %} style="background-color:#FCC;"{% endif %}><label><input type="checkbox" name="tos-agreement" value="agree"> I agree to the above terms of service.</label></p>
+        {% if reg_errors.tos %}<p class="form-error">{{reg_errors.tos}}</p>{% endif %}
     </div>
 </div>
 
@@ -136,6 +120,9 @@
 
 <div class="field">
     <button type="submit" id="submit-registration-button" class="full-width-submit">Register Account</button>
+</div>
+<div class="field-group">
+    <p class="form-error" style="background-color:#FCC;">{{reg_errors.etc|safe}}</p>
 </div>
 </form>
 {% else %}

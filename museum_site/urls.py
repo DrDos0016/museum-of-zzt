@@ -201,13 +201,15 @@ urlpatterns = [
     url("user/login/", museum_site.user_views.login_user, name="login_user"),
     url("user/logout/", museum_site.user_views.logout_user, name="logout_user"),
     url("user/profile/", museum_site.user_views.user_profile, name="user_profile"),
-    url("user/registered/", museum_site.user_views.user_profile, name="registration_complete"),
     url("user/forgot-username/", museum_site.user_views.forgot_username, name="forgot_username"),
     url("user/forgot-username/complete/", museum_site.user_views.user_profile, name="forgot_username_complete"),
     url("user/forgot-password/", museum_site.user_views.forgot_password, name="forgot_password"),
     url("user/reset-password/complete/", museum_site.views.generic, {"template": "user-reset-password-complete", "title":"Reset Password Complete"}, name="reset_password_complete"),
     url("user/reset-password/(?P<token>.*)/", museum_site.user_views.reset_password, name="reset_password_with_token"),
     url("user/reset-password/", museum_site.user_views.reset_password, name="reset_password"),
+    url("user/activate-account/(?P<token>.*)/", museum_site.user_views.activate_account, name="activate_account_with_token"),
+    url("user/activate-account/", museum_site.user_views.activate_account, name="activate_account"),
+    url("user/resend-activation/", museum_site.user_views.resend_account_activation, name="resend_activation"),
 
     # World of ZZT
     url(r"^worlds-of-zzt$", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
@@ -263,6 +265,7 @@ urlpatterns = [
     url(r"^debug$", museum_site.debug_views.debug),
     url(r"^debug/article$", museum_site.debug_views.debug_article),
     url(r"^debug/colors$", museum_site.debug_views.debug_colors),
+    url(r"^debug/forms$", museum_site.views.generic, {"template": "debug-forms", "title":"Form Debug"}),
     url(r"^ajax/debug_file$", museum_site.ajax.debug_file),
 
     #url(r"^error/(?P<status>[0-9]+)$", museum_site.errors.raise_error)

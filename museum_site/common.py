@@ -13,7 +13,7 @@ from django.core.exceptions import ValidationError
 
 from museum_site.models import *
 from museum_site.constants import *
-from datetime import datetime
+from datetime import datetime, timezone
 from io import BytesIO
 from random import randint, shuffle, seed
 from time import time
@@ -30,7 +30,7 @@ SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMP_PATH = os.path.join(SITE_ROOT, "temp")
 BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
 STATIC_PATH = os.path.join(SITE_ROOT, "museum_site", "static")
-CSS_INCLUDES = ["grid.css", "zzt.css", "low-res.css"]
+CSS_INCLUDES = ["grid.css", "zzt.css", "low-res.css", "forms.css"]
 TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25

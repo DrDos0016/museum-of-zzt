@@ -1,0 +1,28 @@
+/* Raw elements */
+
+/* End raw elements */
+
+#terms
+{
+    height:20ch;
+}
+
+.field.error input
+{
+    background: #FCC;
+}
+
+.field-group textarea
+{
+    flex:1;
+}
+
+.field-group p
+{ flex:1 1 100%; margin:0; }
+
+.form-error { font-weight:bold; }
+
+.prepop-data
+{
+    font-weight:bold;
+}

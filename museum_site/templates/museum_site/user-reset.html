@@ -19,10 +19,12 @@
 <input type="hidden" name="action" value="forgot-username">
 
 <div class="field{% if errors.email %} error{% endif %}">
-    <label for="reg-email">Email Address:<br>
+    <label for="reg-email">Email Address:
     </label>
-    <input id="email" name="email" maxlength="150" value="">
-    {% if errors.email %}<p>{{errors.email}}</p>{% endif %}
+    <div class="field-group">
+        <input id="email" name="email" maxlength="150" value="">
+        <p class="form-error">{{errors.email}}</p>
+    </div>
 </div>
 
 <div class="field">

@@ -59,8 +59,15 @@ class Profile(models.Model):
     )
     max_upload_size = models.IntegerField(default=UPLOAD_CAP)
     files_uploaded = models.IntegerField(default=0)
-    pronouns = models.CharField(max_length=50)
+    pronouns = models.CharField(max_length=50, blank=True)
+
+    # Account activation
+    activation_token = models.CharField(max_length=64, blank=True)
+    activation_time = models.DateTimeField(null=True, blank=True)
 
     # Password reset
     reset_token = models.CharField(max_length=64, blank=True)
     reset_time = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return "Profile for user #{} - {}".format(self.user.id, self.user.username)

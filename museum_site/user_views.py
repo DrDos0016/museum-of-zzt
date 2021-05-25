@@ -9,14 +9,55 @@ from django.urls import reverse
 from .common import *
 from .constants import *
 from .models import *
-from .mail import send_forgotten_username_email, send_forgotten_password_email
+from .mail import (
+    send_forgotten_username_email,
+    send_forgotten_password_email,
+    send_account_verification_email,
+)
+
+
+def activate_account(request, token=None):
+    data = {
+        "title": "Activate Your Account",
+        "token": token,
+        "resp": "WAITING"
+    }
+
+    if request.POST.get("action") == "activate-account":
+        qs = User.objects.filter(
+            profile__activation_token=request.POST.get("token")
+        )
+        if qs and len(qs) == 1:
+            u = qs[0]
+            u.is_active = True
+            u.profile.activation_token = ""
+            u.profile.activation_time = None
+            u.profile.save()
+            u.save()
+            data["resp"] = "SUCCESS"
+        else:
+            data["resp"] = "FAILURE"
+
+    return render(request, "museum_site/user-activate-account.html", data)
 
 
 def forgot_password(request):
-    data = {"title": "Forgot Password"}
+    data = {
+        "title": "Forgot Password",
+        "errors": {
+            "email": "",
+        }
+    }
 
     if request.POST.get("action") == "forgot-password":
         email = request.POST.get("email")
+
+        if not email:
+            data["errors"]["email"] = "A valid email address was not provided."
+            return render(
+                request, "museum_site/user-forgot-password.html", data
+            )
+
         # Check that the email is even in use
         exists = User.objects.filter(email=email).exists()
         if exists:
@@ -37,10 +78,22 @@ def forgot_password(request):
 
 
 def forgot_username(request):
-    data = {"title": "Forgot Username"}
+    data = {
+        "title": "Forgot Username",
+        "errors": {
+            "email": "",
+        }
+    }
 
     if request.POST.get("action") == "forgot-username":
         email = request.POST.get("email")
+
+        if not email:
+            data["errors"]["email"] = "A valid email address was not provided."
+            return render(
+                request, "museum_site/user-forgot-username.html", data
+            )
+
         # Check that the email is even in use
         exists = User.objects.filter(email=email).exists()
         if exists:
@@ -60,6 +113,11 @@ def login_user(request):
     data = {
         "title": "Account Login/Registration",
         "errors": {
+            "username": "",
+            "pwd": "",
+            "etc": "",
+        },
+        "reg_errors": {
             "username": "",
             "pwd": "",
             "etc": "",
@@ -89,7 +147,7 @@ def login_user(request):
             login(request, user)
             return redirect("user_profile")
         else:
-            data["errors"]["etc"] = "Invalid credentials provided!"
+            data["errors"]["pwd"] = "Invalid credentials provided!"
     elif request.POST.get("action") == "register":
         if request.POST and ALLOW_REGISTRATION:
             create_account = True
@@ -99,54 +157,71 @@ def login_user(request):
             username = request.POST.get("reg-username")
             if not username:
                 create_account = False
-                data["errors"]["username"] = ("A valid username was not "
-                                              "provided.")
+                data["reg_errors"]["username"] = ("A valid username was not "
+                                                  "provided.")
             elif User.objects.filter(username=username).exists():
                 create_account = False
-                data["errors"]["username"] = ("A user with this username "
-                                              "already exists.")
+                data["reg_errors"]["username"] = ("A user with this username "
+                                                  "already exists.")
 
             # Check for unique email
             email = request.POST.get("reg-email")
             if not email:
                 create_account = False
-                data["errors"]["email"] = ("A valid email address was not "
-                                           "provided.")
+                data["reg_errors"]["email"] = ("A valid email address was not "
+                                               "provided.")
             elif User.objects.filter(email=email).exists():
                 create_account = False
-                data["errors"]["email"] = ("An account with this email "
-                                           "address already exists.")
+                data["reg_errors"]["email"] = ("An account with this email "
+                                               "address already exists.")
 
             # Check for matching passwords
             pwd = request.POST.get("reg-moz-pw")
             pwd_conf = request.POST.get("reg-moz-pw-conf")
             if pwd != pwd_conf:
                 create_account = False
-                data["errors"]["pwd"] = ("Your password and password "
-                                         "confirmation did not match.")
+                data["reg_errors"]["pwd"] = ("Your password and password "
+                                             "confirmation did not match.")
             elif not pwd or not pwd_conf:
                 create_account = False
-                data["errors"]["pwd"] = "A valid password was not provided."
+                data["reg_errors"]["pwd"] = "A valid password was not provided."
 
             # Check for TOS agreement
             tos = True if request.POST.get("tos-agreement") else False
             if not tos:
                 create_account = False
-                data["errors"]["tos"] = ("You must agree to the terms of "
-                                         "service to register.")
+                data["reg_errors"]["tos"] = ("You must agree to the terms of "
+                                             "service to register.")
 
             # Create account
             if create_account:
                 try:
                     user = User.objects.create_user(username, email, pwd)
+                    user.is_active = False
+                    user.save()
                     Profile.objects.create(user=user)
-                    data["errors"]["etc"] = "Account created successfully!"
-                    return redirect("registration_complete")
+                    success = True
                 except Exception:
-                    data["errors"]["etc"] = "Something went wrong when \
+                    success = False
+                    data["reg_errors"]["etc"] = "Something went wrong when \
                     creating your account. Try again later and contact \
                     <a href='mailto:{}'>staff</a> if the problem \
                     persists.".format(EMAIL_ADDRESS)
+
+                if success:
+                    # Create a token to verify with
+                    token = secrets.token_urlsafe()
+                    user.profile.activation_token = token
+                    user.profile.activation_time = datetime.now(timezone.utc)
+                    user.profile.save()
+
+                    # Email user verification link
+                    send_account_verification_email(
+                        user, request.META["HTTP_HOST"] + reverse(
+                            "activate_account_with_token", args=[token]
+                        )
+                    )
+                    return redirect("activate_account")
 
     return render(request, "museum_site/user-login.html", data)
 
@@ -154,6 +229,57 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect("index")
+
+
+def resend_account_activation(request):
+    data = {
+        "title": "Resend Account Activation Email",
+        "errors": {
+            "email": "",
+            "etc": "",
+        },
+    }
+
+    if request.POST.get("action") == "resend-activation-email":
+        success = True
+        email = request.POST.get("email")
+
+        if not email:
+            data["errors"]["email"] = "A valid email address was not provided"
+            success = False
+
+        exists = User.objects.filter(email=email).exists()
+
+        if not exists:
+            data["errors"]["email"] = ("No account with that email address "
+                                       "was found")
+            success = False
+        else:
+            user = User.objects.get(email=email)
+            if user.is_active:
+                data["errors"]["etc"] = ("The account with that email address "
+                                         "is already active.")
+                success = False
+
+            if success:
+                # Create a token to verify with
+                token = secrets.token_urlsafe()
+                user.profile.activation_token = token
+                user.profile.activation_time = datetime.now(timezone.utc)
+                user.profile.save()
+
+                # Email user verification link
+                send_account_verification_email(
+                    user, request.META["HTTP_HOST"] + reverse(
+                        "activate_account_with_token", args=[token]
+                    )
+                )
+
+                return redirect("activate_account")
+
+    return render(
+        request, "museum_site/user-resend-account-activation.html", data
+    )
 
 
 def reset_password(request, token=None):
@@ -164,15 +290,20 @@ def reset_password(request, token=None):
             "username": "",
             "pwd": "",
             "etc": "",
-            },
-        }
+            "token": "",
+        },
+    }
 
     success = True
+
     if request.POST.get("action") == "reset-password":
+        if token is None:
+            token = request.POST.get("token")
+
         # Check that the token is valid
         exists = Profile.objects.filter(reset_token=token).exists()
 
-        if exists:
+        if token and exists:
             # Check for matching passwords
             pwd = request.POST.get("moz-pw")
             pwd_conf = request.POST.get("moz-pw-conf")
@@ -185,14 +316,30 @@ def reset_password(request, token=None):
                 data["errors"]["pwd"] = "A valid password was not provided."
 
         else:
-            print("Exists was false")
+            data["errors"]["token"] = ("Invalid password reset token.")
+            success = False
 
         if success:
             u = User.objects.get(profile__reset_token=token)
-            # Update the password
-            u.set_password(pwd)
-            u.save()
-            return redirect("reset_password_complete")
+
+            # Check that the token hasn't expired
+            now = datetime.now(timezone.utc)
+            print("NOW       ", now)
+            print("RESET TIME", u.profile.reset_time)
+            diff = now - u.profile.reset_time
+            print("DIFF", diff)
+            print("DIFF SEC", diff.seconds)
+            if diff.seconds > TOKEN_EXPIRATION_SECS:
+                data["errors"]["token"] = ("Your password reset token has "
+                                           "expired. Please request another "
+                                           "password reset.")
+                success = False
+
+            if success:
+                # Update the password
+                u.set_password(pwd)
+                u.save()
+                return redirect("reset_password_complete")
 
     return render(request, "museum_site/user-reset-password.html", data)
 
