@@ -157,9 +157,9 @@ urlpatterns = [
     url(r"^featured$", museum_site.file_views.file_directory, {"details": [DETAIL_FEATURED], "show_description": True, "show_featured": True},
         name="featured_games"),
 
-    url(r"^new$", museum_site.file_views.file_directory,
+    url(r"^new/$", museum_site.file_views.file_directory,
         name="new_files"),
-    url(r"^new-releases$", museum_site.file_views.file_directory,
+    url(r"^new-releases/$", museum_site.file_views.file_directory,
         name="new_releases"),
 
     # Help

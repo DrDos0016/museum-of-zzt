@@ -42,17 +42,17 @@ def file_directory(
         qs = qs.filter(letter=letter)
         data["title"] = "Browse - " + letter.upper()
         data["header"] = data["title"]
-    if request.path == "/new":
+    if request.path == "/new/":
         data["title"] = "New Additions"
         data["header"] = data["title"]
         data["sort_options"] = []
         default_sort = ["-publish_date", "-id"]
-    elif request.path == "/new-releases":
+    elif request.path == "/new-releases/":
         data["title"] = "New Releases"
         data["header"] = data["title"]
         data["sort_options"] = []
         default_sort = ["-release_date", "-id"]
-    elif request.path == "/uploaded":
+    elif request.path == "/uploaded/":
         data["title"] = "Upload Queue"
         data["header"] = data["title"]
 
