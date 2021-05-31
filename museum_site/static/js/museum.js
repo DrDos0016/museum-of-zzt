@@ -197,8 +197,6 @@ $(document).ready(function (){
 // ZZT-OOP Syntax highlighting
 function syntax_highlight(oop)
 {
-    console.log("Running syntax highlight");
-    console.log(oop);
     var oop = oop.split("\n");
     for (var idx in oop)
     {
