@@ -1,9 +1,10 @@
 import secrets
 
 from django.core.exceptions import SuspiciousOperation
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 
 from .common import *
@@ -39,6 +40,184 @@ def activate_account(request, token=None):
             data["resp"] = "FAILURE"
 
     return render(request, "museum_site/user-activate-account.html", data)
+
+
+def change_password(request):
+    data = {
+        "title": "Change Password",
+        "errors": {
+        },
+        "changed": False
+    }
+
+    success = True
+    if request.POST.get("action") == "change-password":
+        # Check current password
+        cur = request.POST.get("moz-pwd-cur")
+        if not cur:
+            success = False
+            data["errors"]["cur_pwd"] = ("You must authenticate this action "
+                                         "by providing your current password.")
+
+        # Check current password matches
+        if not check_password(cur, request.user.password):
+            success = False
+            data["errors"]["cur_pwd"] = "Invalid credentials provided!"
+
+        # Check for matching passwords
+        pwd = request.POST.get("moz-pw")
+        pwd_conf = request.POST.get("moz-pw-conf")
+        if pwd != pwd_conf:
+            success = False
+            data["errors"]["pwd"] = ("Your password and password "
+                                     "confirmation did not match.")
+        elif not pwd or not pwd_conf:
+            success = False
+            data["errors"]["pwd"] = "A valid password was not provided."
+
+        # Change the password
+        if success:
+            request.user.set_password(pwd)
+            request.user.save()
+            logout(request)
+            data["changed"] = True
+
+    return render(request, "museum_site/user-change-password.html", data)
+
+
+def change_char(request):
+    data = {
+        "title": "Change ASCII Char",
+        "errors": {
+        },
+        "changed": False
+    }
+
+    data["char_list"] = list(range(0, 256))
+    data["characters"] = ASCII_UNICODE_CHARS
+    data["colors"] = [
+        "black", "blue", "green", "cyan", "red", "purple", "yellow", "white",
+        "darkgray", "darkblue", "darkgreen", "darkcyan", "darkred",
+        "darkpurple", "darkyellow", "gray"
+    ]
+
+    success = True
+    if request.POST.get("action") == "change-ascii-char":
+        character = request.POST.get("character")
+        fg = request.POST.get("foreground")
+        bg = request.POST.get("background")
+
+        request.user.profile.char = character
+        request.user.profile.fg = fg
+        request.user.profile.bg = bg
+
+        try:
+            request.user.profile.save()
+            return redirect("my_profile")
+        except Exception:
+            data["error"] = ("Something went wrong. Your ASCII character was "
+                             "not updated.")
+
+    return render(request, "museum_site/user-change-ascii-char.html", data)
+
+
+def change_email(request):
+    data = {
+        "title": "Change Email",
+        "errors": {
+        },
+        "changed": False
+    }
+
+    success = True
+    if request.POST.get("action") == "change-email":
+        # Check current password
+        cur = request.POST.get("moz-pwd-cur")
+        if not cur:
+            success = False
+            data["errors"]["cur_pwd"] = ("You must authenticate this action "
+                                         "by providing your current password.")
+
+        # Check current password matches
+        if not check_password(cur, request.user.password):
+            success = False
+            data["errors"]["cur_pwd"] = "Invalid credentials provided!"
+
+        # Check for matching emails
+        email = request.POST.get("email")
+        email_conf = request.POST.get("conf-email")
+        if email != email_conf:
+            success = False
+            data["errors"]["email"] = ("Your email address and email address "
+                                       "confirmation did not match.")
+
+        # Check for blank
+        if email == "":
+            success = False
+            data["errors"]["email"] = "A valid email address was not provided."
+
+        # Check email availability
+        if User.objects.filter(username__iexact=email).exists():
+            success = False
+            data["errors"]["email"] = "Requested email address is unavailable."
+
+        # Change the email address
+        if success:
+            request.user.email = email
+            request.user.save()
+            return redirect("my_profile")
+
+    return render(request, "museum_site/user-change-email.html", data)
+
+
+def change_username(request):
+    data = {
+        "title": "Change Username",
+        "errors": {
+        },
+        "changed": False
+    }
+
+    success = True
+    if request.POST.get("action") == "change-username":
+        # Check current password
+        cur = request.POST.get("moz-pwd-cur")
+        if not cur:
+            success = False
+            data["errors"]["cur_pwd"] = ("You must authenticate this action "
+                                         "by providing your current password.")
+
+        # Check current password matches
+        if not check_password(cur, request.user.password):
+            success = False
+            data["errors"]["cur_pwd"] = "Invalid credentials provided!"
+
+        # Check for matching usernames
+        uname = request.POST.get("username")
+        uname_conf = request.POST.get("conf-username")
+        if uname != uname_conf:
+            success = False
+            data["errors"]["username"] = ("Your username and username "
+                                          "confirmation did not match.")
+
+        # Check for blank
+        if uname == "":
+            success = False
+            data["errors"]["username"] = "A valid username was not provided."
+
+        # Check username availability
+        if User.objects.filter(username__iexact=uname).exists():
+            success = False
+            data["errors"]["username"] = "Requested username is unavailable."
+
+        # Change the password
+        if success:
+            request.user.username = uname
+            request.user.save()
+            logout(request)
+            return redirect("login_user")
+
+    return render(request, "museum_site/user-change-username.html", data)
 
 
 def forgot_password(request):
@@ -145,7 +324,7 @@ def login_user(request):
                 Profile.objects.create(user=user)
 
             login(request, user)
-            return redirect("user_profile")
+            return redirect("my_profile")
         else:
             data["errors"]["pwd"] = "Invalid credentials provided!"
     elif request.POST.get("action") == "register":
@@ -344,7 +523,7 @@ def reset_password(request, token=None):
     return render(request, "museum_site/user-reset-password.html", data)
 
 
-def user_profile(request):
+def user_profile(request, user_id=None):
     data = {"title": "User Profile"}
     excluded_keys = [
         "_auth_user_id",
@@ -358,11 +537,27 @@ def user_profile(request):
             del request.session[request.GET["delete"]]
 
     data["user_data"] = []
+    data["show_session"] = True
     for k, v in request.session.items():
         if k not in excluded_keys:
-            data["user_data"].append((k.replace("_", " ").title(), v))
+            data["user_data"].append((k, v, k.replace("_", " ").title()))
 
-    if request.user.is_authenticated:
-        data["user_obj"] = request.user
+    # Find the user
+    data["private"] = False
+    if user_id is None:
+        if request.user.is_authenticated:
+            data["user_obj"] = request.user
+            data["private"] = True
+    else:
+        data["show_session"] = False
+        user_id = int(user_id)
+        data["user_obj"] = get_object_or_404(User, pk=user_id)
+        if user_id == request.user.id:
+            data["private"] = True
+            data["show_session"] = True
 
-    return render(request, "museum_site/user_profile.html", data)
+    # Overrides
+    if request.GET.get("public"):
+        data["private"] = False
+
+    return render(request, "museum_site/user-profile.html", data)

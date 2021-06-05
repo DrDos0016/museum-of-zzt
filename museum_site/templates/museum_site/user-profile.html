@@ -9,70 +9,88 @@
 {% block content %}
 <section id="content" class="block">
 {% if user_obj %}
-<h1>User Data</h1>
+<h1>Public User Data</h1>
 <table>
     <tr>
         <th>Username</th>
         <td>{{user_obj.username}}</td>
+        {% if private %}<td><a href="{% url 'change_username' %}">Change Username</a></td>{% endif %}
     </tr>
     <tr>
-        <th>Password</th>
-        <td><a href="">Change Password</a></td>
+        <th>ASCII Char</th>
+        <td>{% char user_obj.profile.char user_obj.profile.fg user_obj.profile.bg scale=2 %} Char {{user_obj.profile.char}} {{user_obj.profile.fg}} on {{user_obj.profile.bg}}</td>
+        {% if private %}<td><a href="{% url 'change_char' %}">Change ASCII Char</a></td>{% endif %}
     </tr>
     <tr>
-        <th>Email</th>
-        <td>{{user_obj.email}}</td>
-    </tr>
-    <tr>
-        <th>Active</th>
-        <td>{{user_obj.is_active|yesno|title}}</td>
-    </tr>
-    <tr>
-        <th>Staff</th>
-        <td>{{user_obj.is_staff|yesno|title}}</td>
-    </tr>
-    <tr>
-        <th>Last Login</th>
-        <td>{{user_obj.last_login}}</td>
-    </tr>
-    <tr>
-        <th>Date Joined</th>
-        <td>{{user_obj.date_joined}}</td>
-    </tr>
-
-    <tr>
-        <th>ASCII Avatar</th>
-        <td>{% char user_obj.profile.char user_obj.profile.fg user_obj.profile.bg scale=2 %} Char{{user_obj.profile.char}} {{user_obj.profile.fg}} on {{user_obj.profile.bg}}</td>
-    </tr>
-    <tr>
-        <th>Maximum Upload Size</th>
-        <td>{{user_obj.profile.max_upload_size|filesizeformat}} ({{user_obj.profile.max_upload_size}} bytes)</td>
-    </tr>
-    <tr>
-        <th>Files Uploaded</th>
-        <td>{{user_obj.profile.files_uploaded}}</td>
-    </tr>
-    <tr>
-        <th>Pronouns</th>
-        <td>{{user_obj.profile.pronouns}}</td>
+        <th>Profile Link</th>
+        <td colspan="2"><a href="{{user_obj.profile.link}}">Public Profile</a></td>
     </tr>
     <tr>
         <th>Patron</th>
         <td>{{user_obj.profile.patron|yesno|title}}</td>
+        {% if private %}<td><a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patreon</a></td>{% endif %}
+    </tr>
+    <tr>
+        <th>Active</th>
+        <td colspan="2">{{user_obj.is_active|yesno|title}}</td>
+    </tr>
+    <tr>
+        <th>Staff</th>
+        <td colspan="2">{{user_obj.is_staff|yesno|title}}</td>
+    </tr>
+    <tr>
+        <th>Date Joined</th>
+        <td colspan="2">{{user_obj.date_joined}}</td>
+    </tr>
+    <tr>
+        <th>Files Uploaded</th>
+        <td colspan="2">{{user_obj.profile.files_uploaded}}</td>
+    </tr>
+    <tr>
+        <th>Pronouns</th>
+        <td colspan="2">{{user_obj.profile.pronouns|default:"<i>Not provided</i>"}}</td>
+    </tr>
+</table>
+
+{% if private %}
+<h1>Private User Data</h1>
+
+<table>
+    <tr>
+        <th>Password</th>
+        <td>&bull;&bull;&bull;&bull;&bull;&bull;</td>
+        <td><a href="{% url 'change_password' %}">Change Password</a></td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>{{user_obj.email}}</td>
+        <td><a href="{% url 'change_email' %}">Change Email</a></td>
+    </tr>
+    <tr>
+        <th>Last Login</th>
+        <td colspan="2">{{user_obj.last_login}}</td>
+    </tr>
+    <tr>
+        <th>Maximum Upload Size</th>
+        <td colspan="2">{{user_obj.profile.max_upload_size|filesizeformat}} ({{user_obj.profile.max_upload_size}} bytes)</td>
     </tr>
     <tr>
         <th>Patron Level</th>
-        <td>{{user_obj.profile.patron_level}}</td>
+        <td colspan="2">{{user_obj.profile.patron_level}}</td>
     </tr>
     <tr>
-        <th>Site Credits Name</th>
-        <td>{{user_obj.profile.patron_level}}</td>
+        <th>Site Credits Name*</th>
+        <td colspan="2">{{user_obj.profile.patron_level}}</td>
     </tr>
     <tr>
-        <th>Stream Credits Name</th>
-        <td>{{user_obj.profile.patron_level}}</td>
+        <th>Stream Credits Name*</th>
+        <td colspan="2">{{user_obj.profile.patron_level}}</td>
     </tr>
 </table>
+
+<p><i>* This information is not displayed on your public profile, but is publicly displayed elsewhere.</i></p>
+{% endif %}
+
 {% else %}
 <h1>Non-Registered User Data</h1>
 <table>
@@ -84,22 +102,27 @@
         <th>Maximum Upload Size</th>
         <td>{{UPLOAD_CAP|filesizeformat}} ({{UPLOAD_CAP}} bytes)</td>
     </tr>
+
 </table>
 {% endif %}
 
-<h1>Session Data</h1>
+{% if show_session %}
+<h1>Private Session Data</h1>
 
 <table>
-    {% for k,v in user_data %}
+    {% for k,v,hr in user_data %}
     <tr>
-        <th>{{k}}</th>
+        <th>{{hr}}</th>
         <td>{{v}}</td>
         <td class="c"><a href="?delete={{k}}">Delete</a></td>
     </tr>
+    {% empty %}
+    <tr><td class="c b">No Data Found</td></tr>
     {% endfor %}
 </table>
+{% endif %}
 
-{% if user.is_authenticated %}
+{% if user.is_authenticated and private %}
 <a href="{% url 'logout_user' %}">Log out</a>
 {% endif %}
 </section>

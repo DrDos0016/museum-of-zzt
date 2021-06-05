@@ -1,0 +1,46 @@
+{% extends "museum_site/main.html" %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Change Email Address</h1>
+
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="action" value="change-email">
+
+<div class="field{% if errors.pwd %} error{% endif %}">
+    <label for="moz-pwd-cur">Current Password:<br>
+        <span class="sub"></span>
+    </label>
+    <div class="field-group">
+        <input id="moz-pwd-cur" name="moz-pwd-cur" maxlength="150" type="password" value="">
+        <p class="form-error">{{errors.cur_pwd}}</p>
+    </div>
+</div>
+
+<div class="field{% if errors.email %} error{% endif %}">
+    <label for="email">New Email Address:<br>
+        <span class="sub"></span>
+    </label>
+    <div class="field-group">
+        <input id="email" name="email" maxlength="150" value="">
+        <p class="form-error">{{errors.email}}</p>
+    </div>
+</div>
+
+<div class="field">
+    <label for="conf-username">Confirm Email Address:<br>
+        <span class="sub"></span>
+    </label>
+    <div class="field-group">
+        <input id="conf-email" name="conf-email" maxlength="150" value="">
+    </div>
+</div>
+
+<div class="field">
+    <button type="submit" id="submit-change-email-button" class="full-width-submit">Change Email Address</button>
+</div>
+
+</form>
+</section>
+{% endblock %}

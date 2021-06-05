@@ -200,7 +200,8 @@ urlpatterns = [
     # User
     url("user/login/", museum_site.user_views.login_user, name="login_user"),
     url("user/logout/", museum_site.user_views.logout_user, name="logout_user"),
-    url("user/profile/", museum_site.user_views.user_profile, name="user_profile"),
+    url(r"^user/profile/(?P<user_id>[0-9])/", museum_site.user_views.user_profile, name="user_profile"),
+    url("user/profile/", museum_site.user_views.user_profile, name="my_profile"),
     url("user/forgot-username/", museum_site.user_views.forgot_username, name="forgot_username"),
     url("user/forgot-username/complete/", museum_site.user_views.user_profile, name="forgot_username_complete"),
     url("user/forgot-password/", museum_site.user_views.forgot_password, name="forgot_password"),
@@ -210,6 +211,10 @@ urlpatterns = [
     url("user/activate-account/(?P<token>.*)/", museum_site.user_views.activate_account, name="activate_account_with_token"),
     url("user/activate-account/", museum_site.user_views.activate_account, name="activate_account"),
     url("user/resend-activation/", museum_site.user_views.resend_account_activation, name="resend_activation"),
+    url("user/change-char/", museum_site.user_views.change_char, name="change_char"),
+    url("user/change-email/", museum_site.user_views.change_email, name="change_email"),
+    url("user/change-password/", museum_site.user_views.change_password, name="change_password"),
+    url("user/change-username/", museum_site.user_views.change_username, name="change_username"),
 
     # World of ZZT
     url(r"^worlds-of-zzt$", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
@@ -242,7 +247,7 @@ urlpatterns = [
     url(r"^twitter$", museum_site.views.redir, {"url": "https://twitter.com/worldsofzzt"}),
     url(r"^tumblr$", museum_site.views.redir, {"url": "http://worldsofzzt.tumblr.com"}),
     url(r"^discord$", museum_site.views.redir, {"url": "https://discordapp.com/invite/Nar4Upf"}, name="discord_invite"),
-    url(r"^patreon$", museum_site.views.redir, {"url": "https://patreon.com/worldsofzzt"}),
+    url(r"^patreon$", museum_site.views.redir, {"url": "https://patreon.com/worldsofzzt"}, name="patreon"),
     url(r"^youtube$", museum_site.views.redir, {"url": "https://www.youtube.com/c/WorldsofZZT"}),
     url(r"^twitch$", museum_site.views.redir, {"url": "https://twitch.tv/worldsofzzt"}),
     url(r"^github$", museum_site.views.redir, {"url": "https://github.com/DrDos0016/z2"}),
