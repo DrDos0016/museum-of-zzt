@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.template.defaultfilters import slugify
 
 from museum_site.common import UPLOAD_CAP
 
@@ -71,3 +72,7 @@ class Profile(models.Model):
 
     def __str__(self):
         return "Profile for user #{} - {}".format(self.user.id, self.user.username)
+
+    def link(self):
+        slug = slugify(self.user.username)
+        return "/user/profile/{}/{}/".format(self.user.id, slug)
