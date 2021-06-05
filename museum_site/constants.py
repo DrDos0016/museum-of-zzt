@@ -166,3 +166,22 @@ for exe in exes:
     })
 
 ZETA_EXECUTABLES.sort(key=lambda executable: executable["name"].lower())
+
+ASCII_UNICODE_CHARS = (
+    " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼"
+    "►◄↕‼¶§▬↨↑↓→←∟↔▲▼"
+    " !\"#$%&'()*+,-./"
+    "0123456789:;<=>?"
+    "@ABCDEFGHIJKLMNO"
+    "PQRSTUVWXYZ[\\]^_"
+    "`abcdefghijklmno"
+    "pqrstuvwxyz{|}~⌂"
+    "ÇüéâäàåçêëèïîìÄÅ"
+    "ÉæÆôöòûùÿÖÜ¢£¥₧ƒ"
+    "áíóúñÑªº¿⌐¬½¼¡«»"
+    "░▒▓│┤╡╢╖╕╣║╗╝╜╛┐"
+    "└┴┬├─┼╞╟╚╔╩╦╠═╬╧"
+    "╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀"
+    "ɑϐᴦᴨ∑ơµᴛɸϴΩẟ∞∅∈∩"
+    "≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ "
+)
