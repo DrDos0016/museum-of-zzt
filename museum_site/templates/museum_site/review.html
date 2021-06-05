@@ -115,7 +115,8 @@ function clear_error(identifier)
 <div class="review block" id="rev-{{review.id}}">
 <div class="review-meta">
     <h2>{{review.title}}</h2>
-    <i>Written by {{review.author}}<br>{{review.date}}</i>
+    <i>Written by {{review.author}}<br>{{review.date}}</i><br>
+    <a href="{{request.path}}#rev-{{review.id}}">Link</a><br>
 </div>
 
 <article>
