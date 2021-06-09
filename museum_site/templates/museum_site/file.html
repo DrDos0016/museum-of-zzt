@@ -30,8 +30,11 @@ if (! confirm(explicit_warning))
 
 {% block world_content %}
 <div id="fv-main">
-    <div class="output image active" id="image-envelope">
-        <img src="{% static file.screenshot_url|default:'images/no_screenshot.png' %}" class="image" id="fv-image">
+    <div class="output preview active" id="preview-envelope">
+        <img src="{% static file.screenshot_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview">
+    </div>
+    <div class="output image" id="image-envelope">
+        <img src="" class="image" id="fv-image">
     </div>
     <div class="output canvas" id="canvas-envelope">
         <div id="fv-left-sidebar"></div>

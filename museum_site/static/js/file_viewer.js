@@ -320,7 +320,7 @@ function pull_file()
     console.log("Pull File:", $(this).html());
     if ($(this).hasClass("preview-image-link"))
     {
-        set_active_envelope("image")
+        set_active_envelope("preview");
         return true;
     }
 
