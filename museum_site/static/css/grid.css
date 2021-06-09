@@ -1098,10 +1098,15 @@ form .field .genre-checklist
     padding-top:3px;
     padding-bottom:3px;
 }
+
 .file-data > div
 {
     flex:1;
 }
+
+/* TODO: This could be better genercized probably */
+.file-data + .review { border-top:0px; }
+.file-data + #fv-main { border-top:0px; }
 
 #fv-main
 {
@@ -1373,14 +1378,14 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     z-index:2;
 }
 
-#image-envelope {
+#image-envelope, #preview-envelope {
     height:100%;
     text-align:center;
     display:flex;
     justify-content:center;
     align-items:center;
 }
-#fv-image { border:1px solid #AAA;}
+#fv-image, #fv-preview { border:1px solid #AAA;}
 
 #text-body { font-family:cp437; }
 #doc-header { color:#F00; text-align:center;}
