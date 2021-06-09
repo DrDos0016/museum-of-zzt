@@ -45,6 +45,7 @@ class Profile(models.Model):
     )
     patron = models.BooleanField(default=False)
     patron_level = models.IntegerField(default=0)
+    patron_visibility = models.BooleanField(default=True)
     char = models.IntegerField(default=2)
     fg = models.CharField(max_length=11, default="white")
     bg = models.CharField(max_length=11, default="darkblue")
@@ -76,3 +77,9 @@ class Profile(models.Model):
     def link(self):
         slug = slugify(self.user.username)
         return "/user/profile/{}/{}/".format(self.user.id, slug)
+
+    def public_patron_status(self):
+        if self.patron_visibility:
+            return self.patron
+        else:
+            return False

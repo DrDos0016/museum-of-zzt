@@ -1,0 +1,49 @@
+{% extends "museum_site/main.html" %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Change Credit Preferences</h1>
+
+<p>Choose how you wish to be credited on the Museum of ZZT's <a href="{% url 'credits' %}" target="_blank">Site Credits</a> as well as on Worlds of ZZT's <a href="{% url 'livestreams' %}" target="_blank">Livestreams</a>. Note that currently stream credits are done from within ZZT so the use of characters that can't be represented in <a href="{% url 'ascii' %}" target="_blank">ZZT's default font</a> are discouraged.</p>
+
+<p>These credits are only used as thanks for <a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT patrons</a>, however non-patrons may wish to fill them out anyway in the event they they become patrons in the future.</p>
+
+<p>If you would prefer to remain anonymous, simply leave these fields blank.</p>
+
+{% if error %}
+<p><b>{{error}}</b></p>
+{% endif %}
+
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="action" value="change-credit-preferences">
+
+{% if error %}
+<p class="error">{{error}}</p>
+{% endif %}
+
+<div class="field">
+    <label for="site-credits">Site Credits Name:<br>
+        <span class="sub"></span>
+    </label>
+    <div class="field-group">
+        <input id="site-credits" name="site-credits" maxlength="100" value="{{request.user.profile.site_credits_name}}">
+    </div>
+</div>
+
+<div class="field">
+    <label for="stream-credits">Livestream Credits Name:<br>
+        <span class="sub"></span>
+    </label>
+    <div class="field-group">
+        <input id="stream-credits" name="stream-credits" maxlength="100" value="{{request.user.profile.stream_credits_name}}">
+    </div>
+</div>
+
+<div class="field">
+    <button type="submit" id="submit-change-credit-preferences-button" class="full-width-submit">Change Credit Preferences</button>
+</div>
+
+</form>
+</section>
+{% endblock %}

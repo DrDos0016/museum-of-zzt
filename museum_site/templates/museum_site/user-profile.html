@@ -25,11 +25,11 @@
         <th>Profile Link</th>
         <td colspan="2"><a href="{{user_obj.profile.link}}">Public Profile</a></td>
     </tr>
-    <tr>
+    {% if user_obj.profile.public_patron_status %}<tr>
         <th>Patron</th>
         <td>{{user_obj.profile.patron|yesno|title}}</td>
-        {% if private %}<td><a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patreon</a></td>{% endif %}
-    </tr>
+        <td><a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patreon</a></td>
+    </tr>{% endif %}
     <tr>
         <th>Active</th>
         <td colspan="2">{{user_obj.is_active|yesno|title}}</td>
@@ -48,7 +48,8 @@
     </tr>
     <tr>
         <th>Pronouns</th>
-        <td colspan="2">{{user_obj.profile.pronouns|default:"<i>Not provided</i>"}}</td>
+        <td>{{user_obj.profile.pronouns|default:"<i>Not provided</i>"}}</td>
+        <td><a href="{% url 'change_pronouns' %}">Change Pronouns</a>
     </tr>
 </table>
 
@@ -67,6 +68,16 @@
         <td><a href="{% url 'change_email' %}">Change Email</a></td>
     </tr>
     <tr>
+        <th>Patron</th>
+        <td>{{user_obj.profile.patron|yesno|title}}</td>
+        <td><a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patreon</a></td>
+    </tr>
+    <tr>
+        <th>Patronage Visibility</th>
+        <td>{{user_obj.profile.patron_visibility|yesno|title}}</td>
+        {% if private %}<td><a href="{% url 'change_patronage_visibility' %}">Change Patronage Visibility</a></td>{% endif %}
+    </tr>
+    <tr>
         <th>Last Login</th>
         <td colspan="2">{{user_obj.last_login}}</td>
     </tr>
@@ -80,11 +91,12 @@
     </tr>
     <tr>
         <th>Site Credits Name*</th>
-        <td colspan="2">{{user_obj.profile.patron_level}}</td>
+        <td>{{user_obj.profile.site_credits_name|default:"<i>Not provided</i>"}}</td>
+        <td rowspan="2"><a href="{% url 'change_credit_preferences' %}">Change Credit Preferences</a></td>
     </tr>
     <tr>
         <th>Stream Credits Name*</th>
-        <td colspan="2">{{user_obj.profile.patron_level}}</td>
+        <td>{{user_obj.profile.stream_credits_name|default:"<i>Not provided</i>"}}</td>
     </tr>
 </table>
 
@@ -123,7 +135,10 @@
 {% endif %}
 
 {% if user.is_authenticated and private %}
-<a href="{% url 'logout_user' %}">Log out</a>
+<h1>Account Actions</h1>
+<ul>
+    <li><a href="{% url 'logout_user' %}">Log out</a></li>
+</ul>
 {% endif %}
 </section>
 {% endblock %}

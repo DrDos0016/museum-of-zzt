@@ -121,6 +121,35 @@ def change_char(request):
     return render(request, "museum_site/user-change-ascii-char.html", data)
 
 
+def change_credit_preferences(request):
+    data = {
+        "title": "Change Credit Preferences",
+        "errors": {
+        },
+        "changed": False,
+    }
+
+    success = True
+    if request.POST.get("action") == "change-credit-preferences":
+
+        site_credits = request.POST.get("site-credits", "")
+        stream_credits = request.POST.get("stream-credits", "")
+
+        request.user.profile.site_credits_name = site_credits
+        request.user.profile.stream_credits_name = stream_credits
+
+        try:
+            request.user.profile.save()
+            return redirect("my_profile")
+        except Exception:
+            data["error"] = ("Something went wrong. Your crediting "
+                             "preferences were not updated.")
+
+    return render(
+        request, "museum_site/user-change-credit-preferences.html", data
+    )
+
+
 def change_email(request):
     data = {
         "title": "Change Email",
@@ -168,6 +197,61 @@ def change_email(request):
             return redirect("my_profile")
 
     return render(request, "museum_site/user-change-email.html", data)
+
+
+def change_patronage_visibility(request):
+    data = {
+        "title": "Change Patronage Visibliity",
+        "errors": {
+        },
+        "changed": False
+    }
+
+    success = True
+    if request.POST.get("action") == "change-patronage-visibility":
+
+        visibility = True if request.POST.get("visibility") == "on" else False
+
+        request.user.profile.patron_visibility = visibility
+
+        try:
+            request.user.profile.save()
+            return redirect("my_profile")
+        except Exception:
+            data["error"] = ("Something went wrong. Your patronage visibility "
+                             "was not updated.")
+
+    return render(
+        request, "museum_site/user-change-patronage-visibility.html", data
+    )
+
+
+def change_pronouns(request):
+    data = {
+        "title": "Change Pronouns",
+        "errors": {
+        },
+        "changed": False,
+        "common_pronouns": ["", "He/Him", "It/Its", "She/Her", "They/Them"],
+    }
+
+    success = True
+    if request.POST.get("action") == "change-pronouns":
+
+        pronouns = request.POST.get("pronouns", "")
+        if pronouns == "CUSTOM":
+            pronouns = request.POST.get("custom", "")
+
+        request.user.profile.pronouns = pronouns
+
+        try:
+            request.user.profile.save()
+            return redirect("my_profile")
+        except Exception:
+            data["error"] = ("Something went wrong. Your pronouns were not "
+                             "updated.")
+
+    return render(request, "museum_site/user-change-pronouns.html", data)
 
 
 def change_username(request):

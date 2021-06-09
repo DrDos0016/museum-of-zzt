@@ -1,0 +1,49 @@
+{% extends "museum_site/main.html" %}
+
+{% block style %}
+<style>
+.field-group > label
+{
+    display:block;
+    margin-bottom:7px;
+    flex:0 0 100%;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Change Patronage Visibility</h1>
+
+{% if error %}
+<p><b>{{error}}</b></p>
+{% endif %}
+
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="action" value="change-patronage-visibility">
+
+<p>Choose whether or not to disclose your status as a Worlds of ZZT patron on your public profile.</p>
+
+<p>This option has no effect for non-patrons. For patrons, selecting "Off" will result in your public profile not listing the patron status.</p>
+
+{% if error %}
+<p class="error">{{error}}</p>
+{% endif %}
+
+<div class="field">
+    <label>Visible Patronage:<br>
+    </label>
+    <div class="field-group">
+        <label><input type="radio" name="visibility" value="on"{% if request.user.profile.patron_visibility %} checked{% endif %}> On</label><br>
+        <label><input type="radio" name="visibility" value="off"{% if not request.user.profile.patron_visibility %} checked{% endif %}> Off</label<br>
+    </div>
+</div>
+
+<div class="field">
+    <button type="submit" id="submit-change-patronage-visibility-button" class="full-width-submit">Change Patronage Visibility</button>
+</div>
+
+</form>
+</section>
+{% endblock %}

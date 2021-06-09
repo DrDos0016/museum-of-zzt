@@ -215,6 +215,9 @@ urlpatterns = [
     url("user/change-email/", museum_site.user_views.change_email, name="change_email"),
     url("user/change-password/", museum_site.user_views.change_password, name="change_password"),
     url("user/change-username/", museum_site.user_views.change_username, name="change_username"),
+    url("user/change-patronage-visibility/", museum_site.user_views.change_patronage_visibility, name="change_patronage_visibility"),
+    url("user/change-pronouns/", museum_site.user_views.change_pronouns, name="change_pronouns"),
+    url("user/change-credit-preferences/", museum_site.user_views.change_credit_preferences, name="change_credit_preferences"),
 
     # World of ZZT
     url(r"^worlds-of-zzt$", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
