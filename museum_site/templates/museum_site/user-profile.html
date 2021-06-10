@@ -63,9 +63,9 @@
         <td><a href="{% url 'change_password' %}">Change Password</a></td>
     </tr>
     <tr>
-        <th>Email</th>
+        <th>Email Address</th>
         <td>{{user_obj.email}}</td>
-        <td><a href="{% url 'change_email' %}">Change Email</a></td>
+        <td><a href="{% url 'change_email' %}">Change Email Address</a></td>
     </tr>
     <tr>
         <th>Patron</th>
@@ -74,7 +74,7 @@
     </tr>
     <tr>
         <th>Patronage Visibility</th>
-        <td>{{user_obj.profile.patron_visibility|yesno|title}}</td>
+        <td>{{user_obj.profile.patron_visibility|yesno:"On,Off"}}</td>
         {% if private %}<td><a href="{% url 'change_patronage_visibility' %}">Change Patronage Visibility</a></td>{% endif %}
     </tr>
     <tr>

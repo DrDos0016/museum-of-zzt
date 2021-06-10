@@ -1,9 +1,27 @@
+import smtplib, ssl
+
 from django.contrib.auth.models import User
 from .common import *
 from .constants import *
 from .models import *
 
 NOREPLY = "noreply@museumofzzt.com"
+
+
+def send(to, frm, subj, body):
+    if not DEBUG:
+        message = """From: Musuem of ZZT <{}>
+To: <{}>
+Subject: {}
+
+{}""".format(frm, to[0], subj, body)
+        s = smtplib.SMTP("localhost")
+        s.sendmail(frm, to, message)
+    else:
+        print("========== DEBUG EMAIL ==========")
+        print(to, frm, subj, body)
+        print("=================================")
+
 
 
 def send_account_verification_email(user, domain):
@@ -22,7 +40,7 @@ Alternativey, you may manually supply the verification token of: {}
 """
 
     body = body_template.format(domain, user.profile.activation_token)
-    print(to, frm, subj, body)
+    send(to, frm, subj, body)
     return True
 
 
@@ -45,7 +63,7 @@ This reset token will only be accepted for 10 minutes.
 """
 
     body = body_template.format(domain, user.profile.reset_token)
-    print(to, frm, subj, body)
+    send(to, frm, subj, body)
     return True
 
 
@@ -63,5 +81,5 @@ Your username is: {}
 """
 
     body = body_template.format(user.username)
-    print(to, frm, subj, body)
+    send(to, frm, subj, body)
     return True

@@ -107,16 +107,32 @@ def change_char(request):
         fg = request.POST.get("foreground")
         bg = request.POST.get("background")
 
-        request.user.profile.char = character
-        request.user.profile.fg = fg
-        request.user.profile.bg = bg
-
         try:
-            request.user.profile.save()
-            return redirect("my_profile")
-        except Exception:
+            character = int(character)
+        except ValueError:
             data["error"] = ("Something went wrong. Your ASCII character was "
                              "not updated.")
+            success = False
+
+        # Override invalid values
+        if character < 0 or character > 255:
+            character = 2
+        if fg not in data["colors"]:
+            fg = "white"
+        if bg not in data["colors"] and bg != "transparent":
+            bg = "darkblue"
+
+        if success:
+            request.user.profile.char = character
+            request.user.profile.fg = fg
+            request.user.profile.bg = bg
+
+            try:
+                request.user.profile.save()
+                return redirect("my_profile")
+            except Exception:
+                data["error"] = ("Something went wrong. Your ASCII character "
+                                 "was not updated.")
 
     return render(request, "museum_site/user-change-ascii-char.html", data)
 
@@ -410,6 +426,17 @@ def login_user(request):
             login(request, user)
             return redirect("my_profile")
         else:
+            # Does the usename exist?
+            qs = User.objects.filter(username=acct)
+            if qs and not qs[0].is_active:
+                data["errors"]["username"] = (
+                    "This account has not been activated. Check the email "
+                    "address you signed up with for instructions on how to "
+                    "activate your account. "
+                    "<a href='/user/resend-activation/'>"
+                    "Resend Activation Email</a>"
+                )
+
             data["errors"]["pwd"] = "Invalid credentials provided!"
     elif request.POST.get("action") == "register":
         if request.POST and ALLOW_REGISTRATION:
@@ -514,14 +541,14 @@ def resend_account_activation(request):
         exists = User.objects.filter(email=email).exists()
 
         if not exists:
-            data["errors"]["email"] = ("No account with that email address "
-                                       "was found")
+            data["errors"]["email"] = ("No inactive account with that email "
+                                       "address was found")
             success = False
         else:
             user = User.objects.get(email=email)
             if user.is_active:
-                data["errors"]["etc"] = ("The account with that email address "
-                                         "is already active.")
+                data["errors"]["email"] = ("No inactive account with that "
+                                           "email address was found")
                 success = False
 
             if success:

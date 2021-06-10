@@ -12,7 +12,7 @@
 
 <p>You may now <a href="{% url 'login_user' %}">login</a>.</p>
 {% elif resp == "FAILURE" %}
-<p>Account verification failed. You may have provided an invalid or expired activation token. If you feel this is in error, please <a href="mailto:{{EMAIL_ADDRESS}}">contact staff</a>.</p>
+<p><b>Account verification failed.</b> You may have provided an invalid or expired activation token. If you feel this is in error, please <a href="mailto:{{EMAIL_ADDRESS}}">contact staff</a>.</p>
 {% endif %}
 
 {% if resp != "SUCCESS" %}
@@ -23,7 +23,7 @@
 <input type="hidden" name="action" value="activate-account">
 
 {% if token %}
-<div class="field">
+<div class="field{% if resp == 'FAILURE' %} error{% endif %}">
     <label for="token">Activation Token:<br>
     </label>
     <div class="field-group">
@@ -32,7 +32,7 @@
     </div>
 </div>
 {% else %}
-<div class="field">
+<div class="field{% if resp == 'FAILURE' %} error{% endif %}">
     <label for="token">Activation Token:<br>
     </label>
     <div class="field-group">

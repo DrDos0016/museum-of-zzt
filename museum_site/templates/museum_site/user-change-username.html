@@ -13,7 +13,7 @@
 {% csrf_token %}
 <input type="hidden" name="action" value="change-username">
 
-<div class="field{% if errors.pwd %} error{% endif %}">
+<div class="field{% if errors.cur_pwd %} error{% endif %}">
     <label for="moz-pwd-cur">Current Password:<br>
         <span class="sub"></span>
     </label>
