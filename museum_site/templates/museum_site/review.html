@@ -30,11 +30,6 @@ $(document).ready(function (){
         else
             clear_error("name");
 
-        if (email.trim() == "" || (! email.match(/.+@.+/)))
-            valid = valid && error_message("email", "Please enter a valid email address.");
-        else
-            clear_error("email");
-
         if (title.trim() == "")
             valid = valid && error_message("title", "Title cannot be blank.");
         else
@@ -115,7 +110,8 @@ function clear_error(identifier)
 <div class="review block" id="rev-{{review.id}}">
 <div class="review-meta">
     <h2>{{review.title}}</h2>
-    <i>Written by {{review.author}}<br>{{review.date}}</i><br>
+    <i>Written by {{review.author_link|safe}}<br>
+    {{review.date}}</i><br>
     <a href="{{request.path}}#rev-{{review.id}}">Link</a><br>
 </div>
 
@@ -137,6 +133,17 @@ function clear_error(identifier)
 {% csrf_token %}
 <input name="action" value="post-review" type="hidden">
 <input name="file_id" value="{{file.id}}" type="hidden">
+
+{% if user.is_authenticated %}
+<input id="name" name="name" value="{{user.username}}" type="hidden" readonly>
+<div class="field">
+    <label>Your Name:<br>
+        <div class="sub"></div>
+        <div class="sub error"></div>
+    </label>
+    <div><b>{{user.username}}</b></div>
+</div>
+{% else %}
 <div class="field">
     <label for="name">Your Name:<br>
         <div class="sub"></div>
@@ -151,6 +158,7 @@ function clear_error(identifier)
     </label>
     <input id="email" name="email" value="" maxlength="50" type="email">
 </div>
+{% endif %}
 <div class="field">
     <label for="title">Review Title:<br>
         <div class="sub"></div>
@@ -160,7 +168,7 @@ function clear_error(identifier)
 </div>
 <div class="field">
     <label for="review-content">Review:<br>
-        <div class="sub"><a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown syntax</a> is supported for formatting.</div>
+        <div class="sub"><a href="http://daringfireball.net/projects/markdown/syntax" target="_blank" tabindex="-1">Markdown syntax</a> is supported for formatting.</div>
         <div class="sub error"></div>
     </label>
     <textarea id="review-content" name="content"></textarea>

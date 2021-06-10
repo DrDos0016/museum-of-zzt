@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Review(models.Model):
@@ -10,16 +11,15 @@ class Review(models.Model):
     file            -- Link to File object
     title           -- Title of the review
     author          -- Author of the review
-    email           -- Author's email (hide this? Optional?)
     content         -- Body of review
     rating          -- Rating given to file from 0.0 - 5.0
     date            -- Date review was written
     ip              -- IP address posting the review
     """
     file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=50)
     author = models.CharField(max_length=50, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
     content = models.TextField()
     rating = models.FloatField(default=5.0)
     date = models.DateField()
@@ -41,13 +41,28 @@ class Review(models.Model):
         if request.method != "POST":
             return False
 
+        if request.user.is_authenticated:
+            self.author = request.user.username
+            self.user = request.user
+        else:
+            self.author = request.POST.get("name")  # NAME not author
+
         self.file_id = int(request.POST.get("file_id"))
         self.title = request.POST.get("title")
-        self.author = request.POST.get("name")  # NAME not author
-        self.email = request.POST.get("email")
         self.content = request.POST.get("content")
         self.rating = round(float(request.POST.get("rating")), 2)
         self.date = datetime.utcnow()
         self.ip = request.META["REMOTE_ADDR"]
 
         return True
+
+    def author_link(self):
+        if self.user:
+            link = '<a href="{}">{}</a>'.format(
+                self.user.profile.link(),
+                self.user.username
+            )
+        else:
+            link = self.author
+
+        return link

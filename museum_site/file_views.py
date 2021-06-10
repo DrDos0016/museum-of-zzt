@@ -219,7 +219,6 @@ def review(request, letter, filename):
         if len(
             Review.objects.filter(
                 file_id=data["file"].id, ip=request.META["REMOTE_ADDR"],
-                email=request.POST.get("email")
             )
         ) == 0:
             review = Review()
