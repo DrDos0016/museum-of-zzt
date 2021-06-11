@@ -5,7 +5,7 @@ from .common import *
 from .constants import *
 from .models import *
 
-NOREPLY = "noreply@museumofzzt.com"
+NOREPLY = "noreply@" + DOMAIN
 
 
 def send(to, frm, subj, body):
