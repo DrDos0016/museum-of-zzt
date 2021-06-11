@@ -15,10 +15,15 @@
 
 {% block content %}
 <section id="content" class="block">
+<!--file_directory.html-->
 <section id="content-header">
     <h1>{{header|default:"Browse"}}</h1>
     <button id="expand-contract">→ ←</button>
 </section>
+{% if request.GET.err == "404" %}
+<h2>Broken Link!</h2>
+<p>The URL provided returned an error when trying to find the requested file. A search has been performed using the zip name which may lead you to what you were after if the file was moved to a different letter.</p>
+{% endif %}
 {% if category == "Featured Worlds" %}
 <p>Featured Worlds, are worlds which have been deemed exemplary in the context of what ZZT has to offer.
 Often these worlds show a higher quality than their peers, and have been given their place in the spotlight here.</p>

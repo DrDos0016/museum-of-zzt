@@ -3,6 +3,8 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
+from museum_site.templatetags.zzt_tags import char
+
 
 class Review(models.Model):
     """ Review object repesenting an review to a file
@@ -58,7 +60,8 @@ class Review(models.Model):
 
     def author_link(self):
         if self.user:
-            link = '<a href="{}">{}</a>'.format(
+            link = '{} <a href="{}">{}</a>'.format(
+                char(self.user.profile.char, self.user.profile.fg, self.user.profile.bg, scale=2),
                 self.user.profile.link(),
                 self.user.username
             )

@@ -120,7 +120,13 @@ def file_viewer(request, letter, filename, local=False):
     data["local"] = local
     data["files"] = []
     if not local:
-        data["file"] = File.objects.get(letter=letter, filename=filename)
+        res = File.objects.filter(letter=letter, filename=filename)
+        matches = len(res)
+        if matches == 1:
+            data["file"] = res[0]
+        else:
+            return redirect("/search?filename={}&err=404".format(filename))
+
         data["title"] = data["file"].title
         data["letter"] = letter
 
@@ -216,9 +222,11 @@ def review(request, letter, filename):
             return HttpResponse("Banned account.")
 
         # Duplicate check
+        today = datetime.now()
         if len(
             Review.objects.filter(
                 file_id=data["file"].id, ip=request.META["REMOTE_ADDR"],
+                date=today
             )
         ) == 0:
             review = Review()
