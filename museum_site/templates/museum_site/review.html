@@ -19,7 +19,6 @@ $(document).ready(function (){
     $("#submit-review").click(function (e){
         e.preventDefault();
         var name = $("#name").val();
-        var email = $("#email").val();
         var title = $("#title").val();
         var review = $("#review-content").val();
 
@@ -109,10 +108,9 @@ function clear_error(identifier)
 {% for review in reviews %}
 <div class="review block" id="rev-{{review.id}}">
 <div class="review-meta">
-    <h2>{{review.title}}</h2>
-    <i>Written by {{review.author_link|safe}}<br>
-    {{review.date}}</i><br>
-    <a href="{{request.path}}#rev-{{review.id}}">Link</a><br>
+    <h2><a href="{{request.path}}#rev-{{review.id}}">{{review.title}}</a></h2>
+    By: {{review.author_link|safe}}<br>
+    Published: {{review.date}}<br>
 </div>
 
 <article>
@@ -150,13 +148,6 @@ function clear_error(identifier)
         <div class="sub error"></div>
     </label>
     <input id="name" name="name" value="" maxlength="50">
-</div>
-<div class="field">
-    <label for="email">Email Address:<br>
-        <div class="sub">Will not be displayed.</div>
-        <div class="sub error"></div>
-    </label>
-    <input id="email" name="email" value="" maxlength="50" type="email">
 </div>
 {% endif %}
 <div class="field">
