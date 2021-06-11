@@ -40,7 +40,6 @@ def main():
 
         print("Blanking review objects...")
         for r in Review.objects.all():
-            r.email = ""
             r.ip = ""
             r.save()
         print("Done!")
@@ -69,6 +68,12 @@ def main():
             u.is_staff = False
             u.is_superuser = False
             u.save()
+
+        print("Blanking user profiles...")
+        qs = Profile.objects.all()
+        for p in qs:
+            p.scrub()
+            p.save()
 
         print("Private data has removed. Database can be publicly shared.")
         print("DONE.")

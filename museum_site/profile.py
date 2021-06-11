@@ -83,3 +83,21 @@ class Profile(models.Model):
             return self.patron
         else:
             return False
+
+    def scrub(self):
+        self.patron = False
+        self.patron_level = 0
+        self.patron_visibility = True
+        self.char = 2
+        self.fg = "white"
+        self.bg = "darkblue"
+        self.site_credits_name = ""
+        self.stream_credits_name = ""
+        self.max_upload_size = UPLOAD_CAP
+        self.file_uploaded = 0
+        self.pronouns = ""
+        self.activation_token = ""
+        self.activation_time = None
+        self.reset_token = ""
+        self.reset_time = None
+        return True
