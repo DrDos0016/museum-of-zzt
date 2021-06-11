@@ -29,6 +29,23 @@ TOKEN_EXPIRATION_SECS = 600
 # Admin information
 ADMIN_NAME = "Dr. Dos"
 
+# Host/Environment information
+if os.path.isfile(os.path.join(SITE_ROOT, "PROD")):
+    URL_ROOT = "https://museumofzzt.com/"
+    PROTOCOL = "https"
+    DOMAIN = "museumofzzt.com"
+    ENV = "PROD"
+elif os.path.isfile(os.path.join(SITE_ROOT, "DEV")):
+    HOST = "http://django.pi:8000/"
+    PROTOCOL = "http"
+    DOMAIN = "django.pi"
+    ENV = "DEV"
+elif os.path.isfile(os.path.join(SITE_ROOT, "BETA")):
+    HOST = "https://beta.museumofzzt.com/"
+    PROTOCOL = "https"
+    DOMAIN = "beta.museumofzzt.com"
+    ENV = "BETA"
+
 # Article publish states
 PUBLISHED_ARTICLE = 1
 UPCOMING_ARTICLE = 2
