@@ -146,18 +146,18 @@ def search(request):
                 company__icontains=request.GET.get("company", "").strip()
             )
         if (request.GET.get("genre", "").strip() and
-                request.GET.get("genre", "") != "Any"):
+                request.GET.get("genre", "").title() != "Any"):
             qs = qs.filter(
                 genre__icontains=request.GET.get("genre", "").strip()
             )
         if (request.GET.get("year", "").strip() and
-                request.GET.get("year", "") != "Any" and
-                request.GET.get("year", "") != "Unk"):
+                request.GET.get("year", "").title() != "Any" and
+                request.GET.get("year", "").title() != "Unk"):
             qs = qs.filter(
                 release_date__gte=request.GET.get("year", "1991") + "-01-01",
                 release_date__lte=request.GET.get("year", "2091") + "-12-31"
             )
-        elif (request.GET.get("year", "").strip() == "Unk"):
+        elif (request.GET.get("year", "").strip().title() == "Unk"):
             qs = qs.filter(release_date=None)
         if (request.GET.get("min", "").strip() and
                 float(request.GET.get("min", "")) > 0):
