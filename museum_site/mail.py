@@ -36,7 +36,7 @@ A request was recently submitted to create an account with the Museum of ZZT.
 You can verify your account by visiting the following link:
 {}
 
-Alternativey, you may manually supply the verification token of: {}
+Alternatively, you may manually supply the verification token of: {}
 """
 
     body = body_template.format(domain, user.profile.activation_token)
