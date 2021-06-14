@@ -200,7 +200,7 @@ urlpatterns = [
     # User
     url("user/login/", museum_site.user_views.login_user, name="login_user"),
     url("user/logout/", museum_site.user_views.logout_user, name="logout_user"),
-    url(r"^user/profile/(?P<user_id>[0-9].*)/", museum_site.user_views.user_profile, name="user_profile"),
+    url(r"^user/profile/(?P<user_id>[0-9]+)/", museum_site.user_views.user_profile, name="user_profile"),
     url("user/profile/", museum_site.user_views.user_profile, name="my_profile"),
     url("user/forgot-username/", museum_site.user_views.forgot_username, name="forgot_username"),
     url("user/forgot-username/complete/", museum_site.user_views.user_profile, name="forgot_username_complete"),
