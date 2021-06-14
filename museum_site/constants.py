@@ -19,7 +19,7 @@ except ModuleNotFoundError:
     BANNED_IPS = [""]
 
 # Accounts
-ALLOW_REGISTRATION = False
+ALLOW_REGISTRATION = True
 REQUIRE_CAPTCHA = False
 TERMS = """
 MUSEUM OF ZZT USER ACCOUNT TERMS (v.YYYY.M.D)
