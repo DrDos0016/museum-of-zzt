@@ -145,6 +145,7 @@ class File(models.Model):
 
     spotlight = models.BooleanField(default=True)
     can_review = models.BooleanField(default=True)
+    license = models.CharField(max_length=150, default="Unknown")
 
     class Meta:
         ordering = ["sort_title", "letter"]
