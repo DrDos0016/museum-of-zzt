@@ -22,7 +22,12 @@ except ModuleNotFoundError:
 ALLOW_REGISTRATION = True
 REQUIRE_CAPTCHA = False
 TERMS = """
-MUSEUM OF ZZT USER ACCOUNT TERMS (v.YYYY.M.D)
+MUSEUM OF ZZT USER ACCOUNT TERMS (v.2021.06.14)
+
+Oops this isn't quite ready yet.
+
+But the gist will be to ensure that your contributions to this community
+result in a welcoming, helpful, and inclusive environment.
 """
 TOKEN_EXPIRATION_SECS = 600
 
