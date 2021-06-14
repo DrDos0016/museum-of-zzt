@@ -34,6 +34,7 @@ tools/db_dump.py
 tools/fonts
 tools/intro.png
 tools/private
+tools/retired
 museum_site/static/.well-known
 museum_site/static/admin
 museum_site/static/comic
