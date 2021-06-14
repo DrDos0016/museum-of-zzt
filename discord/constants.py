@@ -347,7 +347,7 @@ chaos, bloodshed, and human suffering.
 
 (Wild cheers erupt from the crowd. The
 debate is clearly over.)""",
-"source":"http://django.pi:8000/file/e/Esp.zip?file=ESPFILE1.ZZT&board=15#2,17"
+"source":"https://museumofzzt.com/file/e/Esp.zip?file=ESPFILE1.ZZT&board=15#2,17"
 },
 
 {
@@ -535,5 +535,288 @@ with a humongous chainsaw. Thank you.
 This scroll is (c) by Crazy Panda in 2002
 """,
 "source":"https://museumofzzt.com/file/s/magicflamingo.zip?file=MagFlam.ZZT&board=31#33,3"
+},
+
+{
+"text":"""I'm sorry Red, but you were too slow.
+But we do have these great fifty dollar
+savings bonds for you courtesy of Nestle.
+
+$ _______________________________________
+$|50|             NESTLE              |50|
+$|~~              _______              ~~|
+$|               /       \               |
+$|       H      |  O   O  |      8       |
+$|\             |    >    |             /|
+$|50\           |   \_/   |           /50|
+$|____\__________\_______/__________/____|""",
+"source":"https://museumofzzt.com/file/l/legends.zip?file=LEGENDS.ZZT&board=1#7,24"
+},
+
+{
+"text":"""You didn't really think I'd program in
+a women's lingerie store did you???!!!!!
+You should be ashamed to have tried to
+come in here in the first place!
+Geez....
+$           -the programmer""",
+"source":"https://museumofzzt.com/file/s/ancient.zip?file=ANCIENT2.ZZT&board=64#31,13"
+},
+
+{
+"text":"""It's the food conjurer.
+
+Charlie-I want some nachos!
+
+$...BEEP! BEEP!...
+
+Charlie-Nachos rule!""",
+"source":"https://museumofzzt.com/file/o/overflow.zip?file=OVERFLOW.ZZT&board=41#45,13"
+},
+
+{
+"text":"""You punch him in the face and his head
+bangs into his friend's head.  His friend
+plumetts into the water where he is
+devoured by sharks.  The soldier lays on
+the ground dead.  You figure that
+the only way to get around here is to have
+a British uniform.  You take his uniform
+and put it on.  My, what a handsom fellow!""",
+"source":"https://museumofzzt.com/file/t/timewii.zip?file=timewii.zzt&board=20#2,5"
+},
+
+{
+"text":"""$Greed has taken over the World. Mobs
+$are creating 98% percent of deaths
+$each year just for money.""",
+"source":"https://museumofzzt.com/file/u/U-A.zip?file=UA.zzt&board=7#2,22,1"
+},
+
+{
+"text":"""This room contains explicit,
+        adult, graphic, material.
+  Please enter only if you are over 21!
+     (Don't stumble over the Lions.)""",
+"source":"https://museumofzzt.com/file/d/Darby.zip?file=DARBYTWN.ZZT&board=3#49,16"
+},
+
+{
+"text":"""Dear trooper
+well....
+if your reading this..
+then you must have lived...
+and I must be dead...
+we just can't have that..
+can we???
+
+love,
+Ma alien
+
+p.s...
+
+you lose...""",
+"source":"https://museumofzzt.com/file/a/alien.zip?file=ALIEN.ZZT&board=14#47,15"
+},
+
+{
+"text":"""HEY MAN THIS IS J.P. FORMER LEAD SINGER
+FROM LED ZEPPLIN. TAKE THE AMMO AND GEMS
+AND FIND OUT WHO IS THE GUY THAT IS TRYING
+TO KILL ALL THE ROCK STARS.  HURRY!""",
+"source":"https://museumofzzt.com/file/a/ArcadeBBSRemainder.zip?file=ROCKLAND.ZZT&board=1#55,15"
+},
+
+{
+"text":"""$\"This is the escape hatch, I use it
+$when ever I am in deep shit.\"""",
+"source":"https://museumofzzt.com/file/b/baloo.zip?file=BALOO.ZZT&board=40#16,13"
+},
+
+{
+"text":"""$\"The door says: Please use other door,
+$lives have been lost.\"""",
+"source":"https://museumofzzt.com/file/b/baloo.zip?file=BALOO.ZZT&board=48#17,7"
+},
+
+{
+"text":"""$
+DIZZY: OHH DEAR THE HOSS IS HEEEEERE
+DRAGON: I AM THE HOSS
+$""",
+"source":"https://museumofzzt.com/file/f/dizzy.zip?file=DIZZY.ZZT&board=22#44,6"
+},
+
+{
+"text":"""An attractive picture of Drew Barrymore.
+Wow! She's really pretty!""",
+"source":"https://museumofzzt.com/file/i/invasionzztr.zip?file=INVZZTRV.ZZT&board=19#39,7"
+},
+
+{
+"text":"""This pond is for everyone. Don't pollute.
+
+Many people have left stuff in the lake.
+If you find anything let us know...
+
+Pond caretakers
+1 - (555) 555 - 5555
+
+LOST:
+1. Watch
+2. Glitter gewlery
+3. Pokémon squirtle gun""",
+"source":"https://museumofzzt.com/file/i/invasionzztr.zip?file=INVZZTRV.ZZT&board=38#21,19"
+},
+
+{
+"text":"""There is a reason I won.
+I was in control of myself even in the
+heat of battle.
+
+When the anger is in control only blind
+fury exists. Intelligence is the key to
+everything, and you lost yours while I
+kept mine.
+
+Now you are a murderer and a looser.""",
+"source":"https://museumofzzt.com/file/i/invasionzztr.zip?file=INVZZTRV.ZZT&board=51#39,14"
+},
+
+{
+"text":"""$Don't be a dick:
+
+    If this game goes into basic,  please
+type RUN at the \"]\" prompt.""",
+"source":"https://museumofzzt.com/file/f/FLIMTOWN.zip?file=FLIMTOWN.zzt&board=12#30,20"
+},
+
+{
+"text":"""This puzzle has a mean trick in it.""",
+"source":"https://museumofzzt.com/file/r/RRPUZZLE.zip?file=RRPUZZLE.ZZT&board=1#23,18"
+},
+
+{
+"text":"""Gandalf forewarned me of your arrival here
+in Bree.
+
+Listen, to get out, you must kill everyone
+in Bree (except me) and talk to the Yellow
+Man, who will let you open the gate."
+
+\"Good luck!\"""",
+"source":"https://museumofzzt.com/file/l/TROLLOL.zip?file=TROLLOL.ZZT&board=4#47,9,16"
+},
+
+{
+"text":"""Prisoner No. 7
+Donkey Kong
+Wanted for stealing bananas and making a
+jerk of himself.""",
+"source":"https://museumofzzt.com/file/y/yoshiadv.zip?file=YOSHIADV.ZZT&board=21#38,6"
+},
+
+{
+"text":"""Alternatively, I'll bet you're wondering
+how there is a 500 foot chasm in a cloud
+castle. WELL I'M NOT TELLING YOU YOU DEAD
+PERSON""",
+"source":"https://museumofzzt.com/file/z/dizzyzzt.zip?file=DIZZY.ZZT&board=38#16,18,1"
+},
+
+{
+"text":"""$
+$\"Eeew! A dead bear in a pool of blood!\"
+$
+JOE:\"It'll have to do.\"
+$""",
+"source":"https://museumofzzt.com/file/c/Cwars.zip?file=CWARS5.ZZT&board=11#36,6"
+},
+
+{
+"text":"""Don't you hate having to read all these
+dumb scrolls?""",
+"source":"https://museumofzzt.com/file/c/COOLZAP.ZIP?file=COOLZAP1.ZZT&board=3#18,2"
+},
+
+{
+"text":"""REMEMBER THIS SPECIAL BEAR??
+THE GOOD BEAR???""",
+"source":"https://museumofzzt.com/file/c/TIPS.ZIP?file=TIPS.ZZT&board=1#48,8"
+},
+
+{
+"text":"""Addison just asked if we're still in love.
+
+          Oh Jesus. That girl.
+
+Yeah, but, we are still in love.
+
+Aren't we?
+
+          Let's talk about it when I get
+          home.""",
+"source":"https://museumofzzt.com/file/a/ana.zip?file=ANA.ZZT&board=20#23,18"
+},
+
+{
+"text":"""YOU: What did the five fingers say to the
+face?
+
+KEY CUTTER: (uncomprehending) ...what???""",
+"source":"https://museumofzzt.com/file/l/TROLLOL.zip?file=TROLLOL.ZZT&board=4#47,9"
+},
+
+{
+"text":"""  Growf. I give up. Here,take my wealth.""",
+"source":"https://museumofzzt.com/file/l/landxfix.zip?file=LAND2FIX.ZZT&board=18#42,2"
+},
+
+{
+"text":"""Com # 7rQ-eosProt
+Re: Penitentiary LOC
+
+Proteus recently lost contact with the
+penal colony on Bo-BOO35 ("BooBoo").
+It is believed that a prisoner revolt may
+be responsible for the loss of contact.
+Investigate Bo-BOO35 and gather data.
+Then go on to your next mission (see other
+message rod).
+""",
+"source":"https://museumofzzt.com/file/l/land.zip?file=LANDV20.ZZT&board=2#36,19"
+},
+
+{
+"text":"""$
+JANE: But what about the systems governing
+      life support?
+$
+
+$
+HUDSON: Oh, yeah. I'll protect the life
+        support program. <click, click>
+$""",
+"source":"https://museumofzzt.com/file/c/cwars9.zip?file=CWARS9.ZZT&board=22#30,21"
+},
+
+{
+"text":"""$
+GUARD: Something's wrong with the computer
+       on this level of the tower. Does
+       this have something to do with YOU
+       bimbos?!?!
+$""",
+"source":"https://museumofzzt.com/file/c/cwars9.zip?file=CWARS9.ZZT&board=25#39,14"
+},
+
+{
+"text":"""$
+$Big Gaping Hole
+$
+  A viewing hole to look through the
+viewing hole below!
+$""",
+"source":"https://museumofzzt.com/file/c/cwars9.zip?file=CWARS9.ZZT&board=45#12,10"
 },
 ]
