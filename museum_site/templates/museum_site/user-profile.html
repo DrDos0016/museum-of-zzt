@@ -49,7 +49,7 @@
     <tr>
         <th>Pronouns</th>
         <td>{{user_obj.profile.pronouns|default:"<i>Not provided</i>"}}</td>
-        <td><a href="{% url 'change_pronouns' %}">Change Pronouns</a>
+        {% if private %}<td><a href="{% url 'change_pronouns' %}">Change Pronouns</a>{% endif %}
     </tr>
 </table>
 
