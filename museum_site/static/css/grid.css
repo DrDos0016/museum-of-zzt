@@ -193,6 +193,7 @@ input[type=number]
 }
 
 .cp437 { font-family: "cp437";}
+.mono { font-family: "monospace";}
 /* End Fonts */
 
 /* Site Layout */
