@@ -5,6 +5,7 @@ from datetime import datetime
 
 from django import template
 from django.template import Template, Context, Library
+from django.template.defaultfilters import stringfilter
 from django.template import defaultfilters as filters
 from django.utils.safestring import mark_safe
 
@@ -30,6 +31,16 @@ def get_files_by_id(raw):
     for f in qs:
         files[str(f.id)] = f
     return files
+
+
+@register.filter(name="zfill")
+@stringfilter
+def zfill_filter(raw, length, char="0"):
+    if char == "0":
+        output = raw.zfill(length)
+    else:
+        output = ((char * length) + raw)[-1 * length]
+    return output
 
 
 @register.filter
