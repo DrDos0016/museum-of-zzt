@@ -705,7 +705,7 @@ in Bree (except me) and talk to the Yellow
 Man, who will let you open the gate."
 
 \"Good luck!\"""",
-"source":"https://museumofzzt.com/file/l/TROLLOL.zip?file=TROLLOL.ZZT&board=4#47,9,16"
+"source":"https://museumofzzt.com/file/m/midearth.zip?file=MIDLERTH.ZZT&board=25#37,7,8"
 },
 
 {
