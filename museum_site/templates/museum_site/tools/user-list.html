@@ -1,0 +1,37 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>User List</h1>
+<button class="fr contracted" id="expand-contract" title="Toggle sidebars">&larr; &rarr;</button>
+
+<table class="mono">
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Act.</th>
+        <th>Staff</th>
+        <th>Patron</th>
+    </tr>
+    {% for u in users %}
+    <tr>
+        <td><a href="/admin/auth/user/{{u.id}}/change/">{{u.id|zfill:3}}</a> (<a href="/admin/museum_site/profile/{{u.profile.pk}}/change/">profile</a>)</td>
+        <td><a href="{{u.profile.link}}">{{u.username}}</a></td>
+        <td>{{u.email}}</td>
+        <td class="c">{{u.is_active|yesno:"✅,❌"}}</td>
+        <td class="c">{{u.is_staff|yesno:"✅, "}}</td>
+        <td class="c">{{u.profile.patron|yesno:"✅,❌"}} ({{u.profile.patron_level|default:"0"}})</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</section>
+{% endblock %}

@@ -268,6 +268,7 @@ urlpatterns = [
     url(r"^tools/replace_zip/(?P<pk>[0-9]+)$", museum_site.tool_views.replace_zip, name="replace_zip"),
     url(r"^tools/scan$", museum_site.tool_views.scan, name="scan"),
     url(r"^tools/set_screenshot/(?P<pk>[0-9]+)$", museum_site.tool_views.set_screenshot, name="set_screenshot"),
+    url(r"^tools/user-list$", museum_site.tool_views.user_list, name="user_list"),
 
     # Debug
     url(r"^debug$", museum_site.debug_views.debug),

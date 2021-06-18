@@ -5,7 +5,9 @@ import os
 import pwd
 import shutil
 
+
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from .common import *
 from .constants import *
@@ -518,7 +520,17 @@ def tool_list(request, pk):
 
         data["file"].basic_save()
 
-    return render(request, "museum_site/tools/list.html", data)
+    return render(request, "museum_site/tools/tool-file-tools.html", data)
+
+@staff_member_required
+def user_list(request):
+    """ Returns page listing users and info for reference """
+    data = {
+        "title": "User List",
+        "users": User.objects.order_by("-id")
+    }
+
+    return render(request, "museum_site/tools/user-list.html", data)
 
 
 @staff_member_required
