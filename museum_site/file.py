@@ -16,7 +16,7 @@ except ImportError:
     HAS_ZOOKEEPER = False
 
 from .common import slash_separated_sort, UPLOAD_CAP, STATIC_PATH
-from .constants import SITE_ROOT
+from .constants import SITE_ROOT, ZETA_RESTRICTED
 from .review import Review
 
 DETAIL_DOS = 1
@@ -139,7 +139,7 @@ class File(models.Model):
     )
 
     zeta_config = models.ForeignKey(
-        "Zeta_Config", null=True, blank=True, default=None,
+        "Zeta_Config", null=True, blank=True, default=1,
         on_delete=models.SET_NULL
     )
 
@@ -371,14 +371,17 @@ class File(models.Model):
         return True if DETAIL_FEATURED in featured else False
 
     def supports_zeta_player(self):
+        output = False
         if self.is_zzt():
-            return True
+            output = True
         elif self.is_super_zzt():
-            return True
-        elif self.zeta_config is not None:
-            return True
+            output = True
 
-        return False
+        # Forcibly Restrict Zeta via a specific config
+        if self.zeta_config and self.zeta_config.id == ZETA_RESTRICTED:
+            output = False
+
+        return output
 
     def calculate_article_count(self):
         if self.id is not None:

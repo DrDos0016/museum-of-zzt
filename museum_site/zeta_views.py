@@ -126,7 +126,9 @@ def zeta_launcher(
 
     # Get info for all Zeta configs if needed
     if data["components"]["advanced"]:
-        data["config_list"] = Zeta_Config.objects.only("id", "name")
+        data["config_list"] = Zeta_Config.objects.exclude(
+            pk=ZETA_RESTRICTED
+        ).only("id", "name")
 
     # Get Zeta Config for file
     data["zeta_config"] = data["file"].zeta_config

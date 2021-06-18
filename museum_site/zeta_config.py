@@ -4,6 +4,7 @@ ZETA_CONFIG_CATEGORIES = (
     (0, "Recommended"),
     (1, "Alternative"),
     (2, "File Specific"),
+    (3, "Hidden"),
 )
 
 
@@ -33,7 +34,7 @@ class Zeta_Config(models.Model):
         return self.name
 
     def category_as_text(self):
-        categories = ["Recommended", "Alternative", "File Specific"]
+        categories = ["Recommended", "Alternative", "File Specific", "Hidden"]
         return categories[int(self.category)]
 
     def user_configure(self, params):
