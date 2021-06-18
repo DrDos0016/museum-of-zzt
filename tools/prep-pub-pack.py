@@ -12,8 +12,7 @@ from museum_site.models import *  # noqa: E402
 from museum_site.constants import SITE_ROOT
 
 now = datetime.datetime.now()
-HEADER = """
-{% with "articles/2021/publish-<date>/" as path %}
+HEADER = """{% with "articles/2021/publish-<date>/" as path %}
 <p></p>
 
 """.replace("<date>", now.strftime("%b-%d").lower())
@@ -38,7 +37,6 @@ ENTRY = """{% with files.<f_id> as file %}
 FOOTER = """{% endwith %}
 {% patreon_plug %}
 {% endwith %}
-
 """
 
 def main():
@@ -54,7 +52,13 @@ def main():
         if not f_id:
             break
 
-        f = File.objects.filter(pk=int(f_id))
+        try:
+            f_id_int = int(f_id)
+        except ValueError:
+            print("Invalid ID!")
+            continue
+
+        f = File.objects.filter(pk=f_id_int)
         if f:
             print(f[0])
         else:
