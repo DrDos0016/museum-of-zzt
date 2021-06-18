@@ -35,11 +35,8 @@ def get_files_by_id(raw):
 
 @register.filter(name="zfill")
 @stringfilter
-def zfill_filter(raw, length, char="0"):
-    if char == "0":
-        output = raw.zfill(length)
-    else:
-        output = ((char * length) + raw)[-1 * length]
+def zfill_filter(raw, length):
+    output = raw.zfill(length)
     return output
 
 
