@@ -19,7 +19,7 @@ class Review(models.Model):
     ip              -- IP address posting the review
     """
     file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=50)
     author = models.CharField(max_length=50, blank=True, null=True)
     content = models.TextField()
