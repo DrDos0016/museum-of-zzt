@@ -88,10 +88,12 @@ def file_directory(
     data = get_pagination_data(request, data, qs)
 
     data["guide_words"] = True
-    data["first_item"] = data["page"].object_list[0]
-    data["last_item"] = (
-        data["page"].object_list[len(data["page"].object_list) - 1]
-    )
+
+    if data["page"].object_list:
+        data["first_item"] = data["page"].object_list[0]
+        data["last_item"] = (
+            data["page"].object_list[len(data["page"].object_list) - 1]
+        )
 
     # Show description for certain views
     if DETAIL_LOST in details:
