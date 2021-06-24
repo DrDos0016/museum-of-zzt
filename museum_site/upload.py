@@ -48,9 +48,10 @@ class Upload(models.Model):
         ordering = ["id"]
 
     def __str__(self):
+        title = self.file.title if self.file else "NULL"
         output = "[{}] Upload of '{}'".format(
             self.id,
-            self.file.title
+            title
         )
         return output
 
