@@ -1479,6 +1479,13 @@ code .char:hover { cursor:help; }
     color:#000;
 }
 
+article[data-schema="80col"]
+{
+    font-family:"cp437", monospace;
+    font-size:14pt;
+    width:80ch;
+}
+
 .side-commentary
 {
     margin-bottom:0.25em;

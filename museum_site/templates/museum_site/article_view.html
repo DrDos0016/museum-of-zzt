@@ -92,7 +92,7 @@
 {% include "museum_site/blocks/article_view_page_block.html" %}
 {% endif %}
 
-<article class="{{article.category|slugify}}" data-article_id="{{article.id}}">
+<article class="{{article.category|slugify}}" data-article_id="{{article.id}}" data-schema="{{article.schema}}">
 {% if veryspecial %}
 <div class="debug">
     <script src="/static/js/debug-crop.js"></script>
@@ -102,6 +102,8 @@
 {% if article.schema == "html" %}
     {{article.content|safe}}
 {% elif article.schema == "text" %}
+    {{article.content|safe|linebreaks}}
+{% elif article.schema == "80col" %}
     {{article.content|safe|linebreaks}}
 {% else %}
     {{article.render}}

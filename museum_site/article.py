@@ -18,6 +18,7 @@ ARTICLE_FORMATS = (
     ("md", "Markdown"),
     ("html", "HTML"),
     ("django", "Django"),
+    ("80col", "80 Column Text"),
 )
 
 ARTICLE_PUBLISH = (
