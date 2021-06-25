@@ -8,9 +8,10 @@ import time
 def main():
     print("=" * 78)
     now = int(time.time())
-    cutoff = 90000 # 25 hours
+    cutoff = 90000  # 25 hours
     path = sys.argv[-1]
 
+    progress = 0
     success_count = 0
     successes = []
     fail_count = 0
@@ -42,7 +43,12 @@ def main():
         else:
             fail_count += 1
             failures.append(f)
+        progress += 1
+        if progress > 5:
+            progress = 1
+            print(".", end="")
 
+    print("")
     print("Completed optimizations.")
     print("Successes :", success_count)
     print("Failures  :", fail_count)
