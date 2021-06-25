@@ -17,7 +17,7 @@ def main():
     fail_count = 0
     failures = []
 
-    raw_files = glob.glob(path + "**/*.[Pp][Nn][Gg]")
+    raw_files = glob.glob(path + "/**/*.[Pp][Nn][Gg]")
 
     print("Image path:", path)
     print("Checking  :", len(raw_files), "files...")
