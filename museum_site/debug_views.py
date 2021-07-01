@@ -37,7 +37,7 @@ def debug_article(request):
         filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")
 
     with open(filepath) as fh:
-        article = Article.objects.get(pk=1)
+        article = Article.objects.get(pk=2)
         article.title = filepath
         article.category = "TEST"
         article.static_directory = "wip-" + request.GET.get("file")[:-5]
