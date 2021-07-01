@@ -320,6 +320,12 @@ def change_username(request):
     return render(request, "museum_site/user-change-username.html", data)
 
 
+def error_login(request):
+    data = {"title": "Access Restricted"}
+    data["now"] = datetime.now()
+    return render(request, "museum_site/user-error-login.html", data)
+
+
 def forgot_password(request):
     data = {
         "title": "Forgot Password",
@@ -406,6 +412,23 @@ def login_user(request):
     }
 
     if request.POST.get("action") == "login":
+        now = str(datetime.now())[:19]
+        if request.session.get("login_attempts"):
+            request.session["login_attempts"] += 1
+        else:
+            request.session["login_attempts"] = 1
+            request.session["lockout_expiration"] = "2000-01-01 00:00:00"
+
+        if now > request.session["lockout_expiration"] and request.session.get("login_attempts") > 1:
+            request.session["login_attempts"] = 1
+            request.session["lockout_expiration"] = "2000-01-01 00:00:00"
+
+        # Lockout
+        if request.session["login_attempts"] > MAX_LOGIN_ATTEMPTS:
+            delta = timedelta(minutes=5)
+            #request.session["lockout_expiration"] = str(now + delta)
+            return redirect("error_login")
+
         acct = request.POST.get("username")
         pwd = request.POST.get("moz-pw")
 
@@ -424,6 +447,9 @@ def login_user(request):
                 Profile.objects.create(user=user)
 
             login(request, user)
+            # Reset login attempts
+            del request.session["login_attempts"]
+            del request.session["lockout_expiration"]
             return redirect("my_profile")
         else:
             # Does the usename exist?
@@ -438,13 +464,20 @@ def login_user(request):
                 )
 
             data["errors"]["pwd"] = "Invalid credentials provided!"
+
+        # Check login threshold
     elif request.POST.get("action") == "register":
-        if request.POST and ALLOW_REGISTRATION:
+        if request.session.get("registration_attempts"):
+            request.session["registration_attempts"] += 1
+        else:
+            request.session["registration_attempts"] = 1
+
+        if ALLOW_REGISTRATION:
             create_account = True
             if request.POST.get("first-name"):  # Cheeky
                 raise SuspiciousOperation("Invalid request")
 
-            username = request.POST.get("reg-username")
+            username = request.POST.get("reg_username")
             if not username:
                 create_account = False
                 data["reg_errors"]["username"] = ("A valid username was not "
@@ -455,7 +488,7 @@ def login_user(request):
                                                   "already exists.")
 
             # Check for unique email
-            email = request.POST.get("reg-email")
+            email = request.POST.get("reg_email")
             if not email:
                 create_account = False
                 data["reg_errors"]["email"] = ("A valid email address was not "
@@ -465,9 +498,9 @@ def login_user(request):
                 data["reg_errors"]["email"] = ("An account with this email "
                                                "address already exists.")
 
-            # Check for matching passwords
-            pwd = request.POST.get("reg-moz-pw")
-            pwd_conf = request.POST.get("reg-moz-pw-conf")
+            # Check for matching passwords of minimum length
+            pwd = request.POST.get("reg_moz-pw")
+            pwd_conf = request.POST.get("reg_moz-pw-conf")
             if pwd != pwd_conf:
                 create_account = False
                 data["reg_errors"]["pwd"] = ("Your password and password "
@@ -475,6 +508,10 @@ def login_user(request):
             elif not pwd or not pwd_conf:
                 create_account = False
                 data["reg_errors"]["pwd"] = "A valid password was not provided."
+            elif len(pwd) < MIN_PASSWORD_LENGTH:
+                create_account = False
+                data["reg_errors"]["pwd"] = ("Your password must be at least "
+                                             "eight characters in length.")
 
             # Check for TOS agreement
             tos = True if request.POST.get("tos-agreement") else False
@@ -640,6 +677,8 @@ def user_profile(request, user_id=None):
         "_auth_user_id",
         "_auth_user_backend",
         "_auth_user_hash",
+        "login_attempts",
+        "lockout_expiration",
     ]
 
     to_delete = request.GET.get("delete")
