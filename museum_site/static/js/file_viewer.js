@@ -94,7 +94,7 @@ var CP437_TO_UNICODE = {
     232:934, 233:920, 234:937, 235:948, 236:8734, 237:966, 238:949, 239:8745,
     240:8801, 241:177, 242:8805, 243:8804, 244:8992, 245:8993, 246:247, 247:8776,
     248:176, 249:8729, 250:183, 251:8730, 252:8319, 253:178, 254:9632, 255:160,
-}
+};
 
 var world = null;
 var board_number = null;
@@ -163,7 +163,7 @@ var overlay = {
         $("#overlay-element").text(element.name);
 
         // Color
-        var bg_x = parseInt((element.foreground) * -8)
+        var bg_x = parseInt((element.foreground) * -8);
         var bg_y = parseInt((element.background) * -14);
         $("#fv-left-sidebar .color-swatch").css("background-position", bg_x+"px "+ bg_y + "px");
 
@@ -189,7 +189,7 @@ var overlay = {
         return true;
     }
 
-}
+};
 
 function init()
 {
@@ -229,7 +229,7 @@ var World = function (data) {
 
             output = endian.join("");
         }
-        output = parseInt(output, 16)
+        output = parseInt(output, 16);
         this.idx += bytes * 2;
         return output;
     };
@@ -273,7 +273,7 @@ var World = function (data) {
 
         if (this.locks.length == 0)
             this.locks = ["None"];
-    }
+    };
 
     this.locks_as_string = function ()
     {
@@ -283,7 +283,7 @@ var World = function (data) {
             output += this.locks[idx] + ", ";
         }
         return output.slice(0, -2);
-    }
+    };
 };
 
 var switch_board = function (e)
@@ -292,7 +292,7 @@ var switch_board = function (e)
     var board_number = $(this).attr("data-board");
     $("li.board[data-board-number="+board_number+"]").click();
     return true;
-}
+};
 
 function pull_file()
 {
@@ -327,7 +327,7 @@ function pull_file()
     // Add to history
     var state = {"load_file": encodeURIComponent(filename), "load_board":"", "tab":""};
     var qs = "?file=" + encodeURIComponent(filename) + window.location.hash;
-    if (! history.state || (history.state["load_file"] != encodeURIComponent(filename)))
+    if (! history.state || (history.state.load_file != encodeURIComponent(filename)))
     {
         history.pushState(state, "", qs);
     }
@@ -529,12 +529,12 @@ function load_local_file()
     console.log(file);
     var url = window.URL || window.webkitURL;
     var blob = url.createObjectURL(file);
-    console.log(blob)
+    console.log(blob);
 
     var file_reader = new FileReader();
     file_reader.onload = function (e) {
         // Determine engine
-        var ext = file["name"].slice(-3).toLowerCase();
+        var ext = file.name.slice(-3).toLowerCase();
 
         if (ext == "sav")
         {
@@ -547,7 +547,7 @@ function load_local_file()
         ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
         ENGINE = engines[format];
 
-        $("#local-file-name").text(file["name"]);
+        $("#local-file-name").text(file.name);
         $("#local-file-name").addClass("selected");
         var byte_array = new Uint8Array(file_reader.result);
         var hex_string = "";
@@ -563,13 +563,13 @@ function load_local_file()
             hex_string = "ffff000000000000000000000000006400000000000000000000000000084155544f47454e57" + "0".repeat(948) + hex_string;
         }
 
-        console.log(hex_string)
+        console.log(hex_string);
         world = parse_world(format, hex_string);
 
         var board_list = create_board_list();
         $("#file-list li.selected").append(board_list);
         $("li.board").click(render_board); // Bind event
-    }
+    };
 
     file_reader.readAsArrayBuffer(file);
 }
@@ -582,9 +582,9 @@ function parse_world(type, data)
 
     if (world.format == "szt")
     {
-        renderer.render = renderer["szzt_standard"];
-        CANVAS_WIDTH = 16 * 96;
-        CANVAS_HEIGHT = 14 * 80;
+        renderer.render = renderer.szzt_standard;
+        CANVAS_WIDTH = 1536;
+        CANVAS_HEIGHT = 1120;
         if (custom_charset)
             $("select[name=charset]").val(custom_charset);
         else
@@ -594,7 +594,7 @@ function parse_world(type, data)
     {
         // Default these out
         $("select[name=renderer]").val("zzt_standard");
-        renderer.render = renderer["zzt_standard"];
+        renderer.render = renderer.zzt_standard;
         CANVAS_WIDTH = 480;
         CANVAS_HEIGHT = 350;
         if (custom_charset)
@@ -606,7 +606,7 @@ function parse_world(type, data)
     // Parse World Bytes
     world.world_bytes = world.read(2);
 
-    if (world.world_bytes != engines[type]["identifier"])
+    if (world.world_bytes != engines[type].identifier)
     {
         let bad_identifier = world.world_bytes.toString(16);
         bad_identifier = bad_identifier.slice(2,4) + bad_identifier.slice(0,2);
@@ -621,8 +621,8 @@ function parse_world(type, data)
     world.board_count = world.read(2);
 
     // Parse World Stats
-    world.ammo = world.read(2)
-    world.gems = world.read(2)
+    world.ammo = world.read(2);
+    world.gems = world.read(2);
     world.keys = [];
     for (var x = 0; x < 7; x++)
         world.keys.push(world.read(1));
@@ -656,7 +656,7 @@ function parse_world(type, data)
     for (var x = 0; x < ENGINE.max_flags; x++)
     {
         var len = world.read(1); // Read flag length
-        world.unterminated_flags.push(world.str_read(20)) // Read flag name
+        world.unterminated_flags.push(world.str_read(20)); // Read flag name
         world.flags.push(world.unterminated_flags[x].substr(0,len));
     }
 
