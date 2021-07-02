@@ -1098,6 +1098,7 @@ function passage_travel(e) {
 
 function stat_info(e)
 {
+    console.log("Clicky");
     if (! e.data)
     {
         // Calculate position on canvas
@@ -1118,22 +1119,35 @@ function stat_info(e)
         var stat_idx = e.data.idx;
     }
 
-
     var tile_idx = ((y-1) * ENGINE.board_width) + (x-1);
     var hash_coords = "#" + x + "," + y;
 
     if (stat_idx != -1)
         hash_coords += "," + stat_idx;
 
-    // Check for out of bounds coordinates
-    if (tile_idx < 0 || tile_idx >= ENGINE.tile_count)
-        return false;
-
     //window.location.hash = ;
     history.replaceState(undefined, undefined, hash_coords)
 
     // Get the current tile
-    var tile = world.boards[board_number].elements[tile_idx];
+    if (tile_idx < 0 || tile_idx >= ENGINE.tile_count)
+    {
+        // Use a stub element for out-of-bounds stats
+        var tile = {
+            "id":0,
+            "tile":tile_idx,
+            "name":"Out of bounds",
+            "character":63, // "?"
+            "color_id":0,
+            "foreground":0,
+            "background":0,
+        }
+    }
+    else
+    {
+        var tile = world.boards[board_number].elements[tile_idx];
+        console.log("TILE INFO");
+        console.log(tile);
+    }
 
     // Iterate over stat elements
     var stat = null;
@@ -1149,6 +1163,8 @@ function stat_info(e)
             }
         }
     }
+
+    console.log("IDX", idx);
 
     var output = `<table class="fv">
     <tr>
@@ -1583,18 +1599,27 @@ function render_stat_list()
     else if (sort == "name")
     {
         board.stats.sort(function(a, b){
-            // TODO -- Technically messenger shouldn't be hard coded?
             if (a.tile_idx == -61)
-                var stat_name1 = "Messenger";
+                var stat_name1 = "Messenger(?)";
             else
-                var stat_name1 = world.boards[board_number].elements[a.tile_idx].name;
+            {
+                if (a.tile_idx >= world.boards[board_number].elements.length || a.tile_idx < 0)
+                    var stat_name1 = "Out of bounds stat";
+                else
+                    var stat_name1 = world.boards[board_number].elements[a.tile_idx].name;
+            }
             if ((stat_name1 == "Scroll" || stat_name1 == "Object") && a.oop[0] == "@")
                 stat_name1 = a.oop.slice(0, a.oop.indexOf("\r"));
 
             if (b.tile_idx == -61)
-                var stat_name2 = "Messenger";
+                var stat_name2 = "Messenger(?)";
             else
-                var stat_name2 = world.boards[board_number].elements[b.tile_idx].name;
+            {
+                if (b.tile_idx >= world.boards[board_number].elements.length || b.tile_idx < 0)
+                    var stat_name2 = "Out of bounds stat";
+                else
+                    var stat_name2 = world.boards[board_number].elements[b.tile_idx].name;
+            }
             if ((stat_name2 == "Scroll" || stat_name2 == "Object") && b.oop[0] == "@")
                 stat_name2 = b.oop.slice(0, b.oop.indexOf("\r"));
 
@@ -1622,22 +1647,19 @@ function render_stat_list()
     {
         var stat = board.stats[stat_idx];
 
-        // Invalid stat check
+        // Out of bounds stat check
         if ((stat.tile_idx < 0) || (stat.tile_idx >= ENGINE.tile_count))
         {
-            if (stat.oop.length == 0)
-                stat_list += `<li class='empty'>`;
+            if (stat.tile_idx == -61)
+                var stat_name = "Messenger(?)";
             else
-                stat_list += `<li>`;
-            stat_list += `
-                <span>
-                (${("00"+stat.x).slice(-2)}, ${("00"+stat.y).slice(-2)}) [${stat.tile_idx+1}] Messenger</span> `
-            if (stat.oop.length)
-                stat_list += `${stat.oop.length} bytes`;
-            stat_list += `</li>\n`;
-            continue;
+                var stat_name = "Out of bounds stat";
         }
-        var stat_name = board.elements[stat.tile_idx].name;
+        else
+        {
+            var stat_name = board.elements[stat.tile_idx].name;
+        }
+
         if ((stat_name == "Scroll" || stat_name == "Object") && stat.oop[0] == "@")
             stat_name = stat.oop.slice(0, stat.oop.indexOf("\r"));
 
