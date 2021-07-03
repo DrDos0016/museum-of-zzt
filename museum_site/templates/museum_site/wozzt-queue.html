@@ -34,6 +34,7 @@ var dow_str = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 $(document).ready(function (){
 
     var now = new Date();
+    var dow = now.getDay()
 
     // Calculate the next time to tweet
     var h = now.getHours();
@@ -45,37 +46,43 @@ $(document).ready(function (){
         h++;
     }
     var next_hour = h;
-
     tweet_date.setHours(next_hour);
+
+    {% if request.GET.category == "tuesday" %}
+    // Tuesday code
+    var distance = (dow % 7);
+    if (distance)
+    {
+        tweet_date.setDate(tweet_date.getDate() + distance);
+        tweet_date.setHours(2);
+    }
+    {% endif %}
+
     tweet_date.setSeconds(0);
     tweet_date.setMinutes(45);
 
     $("h1.title").each(function (){
-        var dow = tweet_date.getDay();
-
         {% if request.GET.category != "tuesday" %}
-        console.log("Included tuesday skip code");
         // Skip Tuesdays
         if (tweet_date.getDay() == 2)
         {
             tweet_date.setHours(26);
-            console.log("Skipping Tuesday my dudes");
-            console.log($(this));
             var element = $(this).parent();
             $("<div class='tuesday-skip'>SKIPPING TITLE SCREEN TUESDAY</div>").insertBefore(element);
         }
-        {% else %}
-        // Force Tuesday
-        console.log("Included tuesday force code");
-        if (tweet_date.getDay() != 2)
-        {
-            tweet_date.setDate(tweet_date.getDate() + 6);
-        }
         {% endif %}
+
 
         $(this).text(dow_str[tweet_date.getDay()] + ". " + tweet_date.toLocaleString());
         tweet_date.setHours(tweet_date.getHours() + 3);
 
+        {% if request.GET.category == "tuesday" %}
+        if (tweet_date.getDay() != 2)
+        {
+            tweet_date.setDate(tweet_date.getDate() + 6);
+            tweet_date.setHours(2);
+        }
+        {% endif %}
 
         $("#queue-end").text(tweet_date.toLocaleString());
     });
@@ -87,7 +94,7 @@ $(document).ready(function (){
 
 {% block content %}
 <section id="content" class="block">
-<h1>Worlds of ZZT Queue{% if request.user.is_staff %}[STAFF MODE]{% endif %}</h1>
+<h1>Worlds of ZZT Queue{% if request.user.is_staff %} [STAFF MODE]{% endif %}</h1>
 <p>Category: <b>{{request.GET.category|default:"wozzt"}}</b><br>
 <a href="?category=wozzt">Worlds of ZZT</a> | <a href="?category=tuesday">Title Screen Tuesday</a></p>
 <p>Times are displayed in your local time zone.</p>
@@ -100,7 +107,7 @@ $(document).ready(function (){
     Quantity: <input name="count" value="{{request.POST.count|default:56}}" maxlength="2"> |
     Category: <select name="category">
         <option value="wozzt">Worlds of ZZT</option>
-        <option value="tuesday">Title Screen Tuesday</option>
+        <option value="tuesday"{% if request.GET.category == 'tuesday' %} selected{% endif %}>Title Screen Tuesday</option>
     </select> |
     <input type="submit" value="Roll">
 </form>
