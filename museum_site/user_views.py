@@ -74,6 +74,10 @@ def change_password(request):
         elif not pwd or not pwd_conf:
             success = False
             data["errors"]["pwd"] = "A valid password was not provided."
+        elif len(pwd) < MIN_PASSWORD_LENGTH:
+            success = False
+            data["errors"]["pwd"] = ("Your password must be at least eight "
+                                     "characters in length.")
 
         # Change the password
         if success:
@@ -641,6 +645,10 @@ def reset_password(request, token=None):
             elif not pwd or not pwd_conf:
                 success = False
                 data["errors"]["pwd"] = "A valid password was not provided."
+            elif len(pwd) < MIN_PASSWORD_LENGTH:
+                success = False
+                data["errors"]["pwd"] = ("Your password must be at least "
+                                         "eight characters in length.")
 
         else:
             data["errors"]["token"] = ("Invalid password reset token.")
