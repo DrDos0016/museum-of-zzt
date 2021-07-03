@@ -16,7 +16,7 @@ except ImportError:
     HAS_ZOOKEEPER = False
 
 from .common import slash_separated_sort, UPLOAD_CAP, STATIC_PATH
-from .constants import SITE_ROOT, ZETA_RESTRICTED
+from .constants import SITE_ROOT, REMOVED_ARTICLE
 from .review import Review
 
 DETAIL_DOS = 1
@@ -385,8 +385,8 @@ class File(models.Model):
 
     def calculate_article_count(self):
         if self.id is not None:
-            self.article_count = self.articles.all().filter(
-                published=True
+            self.article_count = self.articles.all().exclude(
+                published=REMOVED_ARTICLE
             ).count()
 
     def calculate_reviews(self):

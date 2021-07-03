@@ -142,3 +142,15 @@ class Article(models.Model):
         }
         head = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}"
         return Template(head + self.content).render(Context(context_data))
+
+    @property
+    def is_restricted(self):
+        if self.published in [UPCOMING_ARTICLE, UNPUBLISHED_ARTICLE]:
+            return True
+        return False
+
+    @property
+    def published_string(self):
+        """ Returns a human readable string for the article's publication
+        state. """
+        return ARTICLE_PUBLISH[self.published - 1][1].lower()

@@ -54,6 +54,7 @@ def article_view(request, article_id, page=0):
     page = int(page)
     data = {"id": article_id}
     data["custom_layout"] = "article"
+    restricted = False
 
     a = get_object_or_404(Article, pk=article_id)
 
@@ -61,15 +62,26 @@ def article_view(request, article_id, page=0):
     if a.published == REMOVED_ARTICLE:
         return redirect("index")
 
+    access = PUBLISHED_ARTICLE
     if request.GET.get("secret") == PASSWORD5DOLLARS:
         access = UNPUBLISHED_ARTICLE
     elif request.GET.get("secret") == PASSWORD2DOLLARS:
         access = UPCOMING_ARTICLE
-    else:
-        access = PUBLISHED_ARTICLE
+    elif request.GET.get("secret"):  # Invalid password
+        return redirect("patron_articles")
+
 
     if a.published > access:  # Access level too low for article
-        return redirect("patron_articles")
+        restricted = True
+        if a.published == UPCOMING_ARTICLE:
+            cost = "2"
+        elif a.published == UNPUBLISHED_ARTICLE:
+            cost = "5"
+        release = a.publish_date.strftime("%A %B %d")
+        a.content = LOCKED_ARTICLE_TEXT.replace("[COST]", cost)
+        a.content = a.content.replace("[RELEASE]", release)
+        a.schema = "django"
+
     elif a.published != PUBLISHED_ARTICLE:
         data["private_disclaimer"] = True
 
@@ -125,17 +137,11 @@ def patron_articles(request):
             a.url = a.url() + "?secret=" + PASSWORD2DOLLARS
         elif data["access"] == "unpublished":
             a.url = a.url() + "?secret=" + PASSWORD5DOLLARS
-        else:
-            a.title = '🔒 $2+ Locked Article "{}" 🔒'.format(a.title)
-            a.url = "#"
         data["upcoming"].append(a)
 
     for a in unpublished:
         if data["access"] == "unpublished":
             a.url = a.url() + "?secret=" + PASSWORD5DOLLARS
-        else:
-            a.title = '🔒 $5+ Locked Article "{}" 🔒'.format(a.title)
-            a.url = "#"
         data["unpublished"].append(a)
 
     return render(request, "museum_site/patreon_articles.html", data)

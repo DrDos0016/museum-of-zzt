@@ -210,3 +210,25 @@ ASCII_UNICODE_CHARS = (
     "ɑϐᴦᴨ∑ơµᴛɸϴΩẟ∞∅∈∩"
     "≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ "
 )
+
+LOCKED_ARTICLE_TEXT = """
+<h2>Locked Article!</h2>
+
+<p>The article you have requested is currently only available to patrons
+making a monthly pledge to the Worlds of ZZT Patreon of at least <b>$[COST] USD</b>
+per month.</p>
+
+<p>If you are a patron that meets these requirements you can enter your
+password to access this article in the field below:</p>
+
+<p><form>
+<input name="secret" type="password" value="">
+<input type="submit" value="Unlock">
+</form></p>
+
+If you need your password please see the
+<a href="{% url 'patron_articles' %}">early articles</a> page for instructions.
+
+<p>All articles published on the Museum of ZZT are eventually made public. The
+estimated release date for this article is <b>[RELEASE]</b>, however the exact
+release date may change.</p>"""

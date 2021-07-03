@@ -6,12 +6,19 @@
 
 {% block style %}
 <style>
-a[href="#"] { color:red; cursor:not-allowed; }
 #content h2
 {
     margin-top:14px;
     margin-bottom:14px;
 }
+
+{% if access == "upcoming" or access == "unpublished" %}
+a.restricted[data-published=upcoming] { color:green; }
+a.restricted[data-published=upcoming]::before { content: "🔑 " }
+{% endif %}{% if access == "unpublished" %}
+a.restricted[data-published=unpublished] { color:green; }
+a.restricted[data-published=unpublished]::before { content: "🔑 " }
+{% endif %}
 </style>
 {% endblock%}
 
@@ -37,9 +44,10 @@ a[href="#"] { color:red; cursor:not-allowed; }
 
 <h2>Early Access To The Next Article</h2>
 
-<p>Want to read the next Closer Look or other article in advance? Patrons pledging at least
-<b>$2</b> per month or more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>
-can stay ahead of the game and read this upcoming article right away:
+<p>Want to read the next Closer Look or other article in advance?</p>
+
+<p>Patrons pledging at least <b>$2</b> per month or more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>
+can read this upcoming article right away:
 
 {% for article in upcoming %}
 {% include "museum_site/blocks/article_detailed_block.html" %}
@@ -47,9 +55,10 @@ can stay ahead of the game and read this upcoming article right away:
 
 <h2>Early Access to Every Article</h2>
 
-<p>Want to read the complete article backlog? Patrons pledging at least
-<b>$5</b> per month or more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>
-can <i>also</i> read whatever the entire article queue which additionally includes:
+<p>Want to read the complete article backlog?</p>
+
+<p>Patrons pledging at least <b>$5</b> per month or more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>
+can <i>also</i> read anything in the article queue which additionally includes:
 
 {% for article in unpublished %}
 {% include "museum_site/blocks/article_detailed_block.html" %}
@@ -61,11 +70,11 @@ can <i>also</i> read whatever the entire article queue which additionally includ
 <li><b>$1+</b> &mdash; Voting for the subject of a monthly Closer Look</li>
 <li><b>$2+</b> &mdash; Access to a private patrons room on the <a href="/discord" target="_blank">Museum of ZZT Discord server</a></li>
 <li><b>$5+</b> &mdash; Access to the (mostly defunct) private beta site which sometimes gets features before the public site</li>
-<li>And more for those fortunate enough to be able to pledge larger amounts!</li>
+<li>And more for those able to pledge larger amounts!</li>
 </ul>
 
 <div class="c" style="border:1px solid #000">
-    <a href="https://patreon.com/worldsofzzt" target="_blank" style="font-size:24pt">Make a monthly pledge to the Worlds of ZZT via Patreon!
+    <a href="https://patreon.com/worldsofzzt" target="_blank" style="font-size:24pt" class="noext">Make a monthly pledge to the Worlds of ZZT via Patreon!
     <br>
     <img src="{% static 'images/wozzt_pinned_tweet.png' %}"></a>
 </div>
