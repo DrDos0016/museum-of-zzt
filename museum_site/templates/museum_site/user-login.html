@@ -58,41 +58,41 @@
 </div>
 
 <div class="field{% if reg_errors.username %} error{% endif %}">
-    <label for="reg-username">Username:<br>
+    <label for="reg_username">Username:<br>
         <span class="sub"></span>
     </label>
     <div class="field-group">
-        <input id="reg-username" name="reg-username" maxlength="150" value="{{request.POST.username}}">
+        <input id="reg_username" name="reg_username" maxlength="150" value="{{request.POST.reg_username}}">
         <p class="form-error">{{reg_errors.username}}</p>
     </div>
 </div>
 
 <div class="field{% if reg_errors.email %} error{% endif %}">
-    <label for="reg-email">Email Address:<br>
+    <label for="reg_email">Email Address:<br>
         <span class="sub">A valid email address is required to verify your account.</span>
     </label>
     <div class="field-group">
-        <input id="reg-email" name="reg-email" maxlength="150" value="{{request.POST.email}}">
+        <input id="reg_email" name="reg_email" maxlength="150" value="{{request.POST.reg_email}}">
         {% if reg_errors.email %}<p class="form-error">{{reg_errors.email}}</p>{% endif %}
     </div>
 </div>
 
 <div class="field{% if reg_errors.pwd %} error{% endif %}">
-    <label for="reg-moz-pw">Password:<br>
-        <span class="sub">Use a unique password for your account. Passwords are hashed and will not be viewable.</span>
+    <label for="reg_moz-pw">Password:<br>
+        <span class="sub">Use a unique password for your account with a minimum length of eight characters. Passwords are hashed and cannot be viewed by anyone.</span>
     </label>
     <div class="field-group">
-        <input id="reg-moz-pw" name="reg-moz-pw" maxlength="150" type="password" value="">
+        <input id="reg_moz-pw" name="reg_moz-pw" maxlength="150" type="password" value="">
         {% if reg_errors.pwd %}<p class="form-error">{{reg_errors.pwd}}</p>{% endif %}
     </div>
 </div>
 
 <div class="field">
-    <label for="reg-moz-pw-conf">Confirm Password:<br>
+    <label for="reg_moz-pw-conf">Confirm Password:<br>
         <span class="sub"></span>
     </label>
     <div class="field-group">
-        <input id="reg-moz-pw-conf" name="reg-moz-pw-conf" maxlength="150" type="password" value="">
+        <input id="reg_moz-pw-conf" name="reg_moz-pw-conf" maxlength="150" type="password" value="">
     </div>
 </div>
 
@@ -109,11 +109,11 @@
 
 {% comment %}
 <div class="field">
-    <label for="reg-moz-z-cap">Captcha:<br>
+    <label for="reg_moz-z-cap">Captcha:<br>
         <span class="sub"></span>
     </label>
     <div class="field-group">
-        <input id="reg-moz-z-cap" name="reg-moz-z-cap" maxlength="6" value="">
+        <input id="reg_moz-z-cap" name="reg_moz-z-cap" maxlength="6" value="">
     </div>
 </div>
 {% endcomment %}
