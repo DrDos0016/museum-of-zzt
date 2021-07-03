@@ -1,22 +1,68 @@
 {% extends "museum_site/main.html" %}
 
+{% block style %}
+<style>
+.detail-cat
+{
+    border:1px solid red;
+}
+</style>
+{% endblock %}
+
 {% block scripts %}
 <script>
 $(document).ready(function (){
     $("#advanced-search-form button").click(function (){
         if ($(this).text() == "All")
+        {
             $("input[name=details]").prop("checked", "checked");
+            $("input[name=details]").parent().addClass("selected");
+        }
         else if ($(this).text() == "None")
+        {
             $("input[name=details]").prop("checked", "");
+            $("input[name=details]").parent().removeClass("selected");
+        }
         else if ($(this).text() == "Default")
         {
             $("input[name=details]").prop("checked", "");
+            $("input[name=details]").parent().removeClass("selected");
             $("input[name=details][value=13]").prop("checked", "checked");
+            $("input[name=details][value=13]").parent().addClass("selected");
             $("input[name=details][value=14]").prop("checked", "checked");
+            $("input[name=details][value=14]").parent().addClass("selected");
             $("input[name=details][value=15]").prop("checked", "checked");
+            $("input[name=details][value=15]").parent().addClass("selected");
+        }
+        update_selected_details();
+    });
+
+    $("input[name=details]").click(function (){
+        $(this).parent().toggleClass("selected");
+        update_selected_details();
+    });
+
+    update_selected_details();
+});
+
+function update_selected_details()
+{
+    console.log("UPDATING");
+    var output = "";
+    $("input[name=details]").each(function (){
+        if ($(this).prop("checked"))
+        {
+            output += $(this).parent().text() + ", "
         }
     });
-});
+
+    if (output != "")
+        output = "Selected Criteria:<br>" + output.slice(0, -2);
+    else
+        output = "Selected Criteria:<br>None";
+
+    $("#details-selected").html(output)
+}
 </script>
 {% endblock %}
 
@@ -119,27 +165,21 @@ $(document).ready(function (){
     </div>
 </div>
 <div class="field">
-    <label>Details:<br>
+    <label>Contents:<br>
+    <span class="sub"></span>
     </label>
 
-    <div id="detail-list" class="field-group">
-        <label><input name="details" type="checkbox" {% if "15" in details_list %}checked {% endif %}value="15"> ZZT Worlds</label>
-        <label><input name="details" type="checkbox" {% if "7" in details_list %}checked {% endif %}value="7"> Featured Games</label>
-        <label><input name="details" type="checkbox" {% if "10" in details_list %}checked {% endif %}value="10"> Modified GFX</label>
-        <label><input name="details" type="checkbox" {% if "1" in details_list %}checked {% endif %}value="1"> MS-DOS</label>
-        <label><input name="details" type="checkbox" {% if "13" in details_list %}checked {% endif %}value="13"> Super ZZT Worlds</label>
-        <label><input name="details" type="checkbox" {% if "16" in details_list %}checked {% endif %}value="16"> ZIG Worlds</label>
-        <label><input name="details" type="checkbox" {% if "11" in details_list %}checked {% endif %}value="11"> Modified EXE</label>
-        <label><input name="details" type="checkbox" {% if "2" in details_list %}checked {% endif %}value="2"> Windows 16-Bit</label>
-        <label><input name="details" type="checkbox" {% if "14" in details_list %}checked {% endif %}value="14"> Utilities</label>
-        <label><input name="details" type="checkbox" {% if "6" in details_list %}checked {% endif %}value="6"> OSX</label>
-        <label><input name="details" type="checkbox" {% if "3" in details_list %}checked {% endif %}value="3"> Windows 32-Bit</label>
-        <label><input name="details" type="checkbox" {% if "9" in details_list %}checked {% endif %}value="9"> ZZM Audio</label>
-        <label><input name="details" type="checkbox" {% if "17" in details_list %}checked {% endif %}value="17"> Lost Worlds</label>
-        <label><input name="details" type="checkbox" {% if "5" in details_list %}checked {% endif %}value="5"> Linux</label>
-        <label><input name="details" type="checkbox" {% if "4" in details_list %}checked {% endif %}value="4"> Windows 64-Bit</label>
-        <label class="hidden"></label>
+    <!--<label><input name="details" type="checkbox" {% if d.id in details_list %}checked {% endif %}value="{{d.id}}"> {{d.detail}}</label>-->
+    <div id="detail-list" class="">
+        <div class="scrolling-checklist">
+            {% for cat in detail_cats %}
+            {% ifchanged %}<div class="checklist-header">{{cat.header}}</div>{% endifchanged %}
+            <label{% if cat.d.id in details_list %} class="selected"{% endif %}><input name="details" type="checkbox" value="{{cat.d.id}}"{% if cat.d.id in details_list %} checked{% endif %}> {{cat.d.detail}}{% if cat.d.detail.description %} - {{cat.d.detail.description}}{% endif %}</label>
+            {% endfor %}
+        </div>
+        <br>
         <button type="button">All</button> <button type="button">None</button> <button type="button">Default</button>
+        <div id="details-selected" class="mono">Selected Criteria:<br>None</div>
     </div>
 </div>
 <div class="field">

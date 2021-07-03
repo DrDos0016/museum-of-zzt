@@ -15,6 +15,9 @@ def advanced_search(request):
     }
 
     data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
+    data["details_list"] = list(map(int, data["details_list"]))
+    data["detail_cats"] = Detail.objects.advanced_search_categories()
+
     return render(request, "museum_site/advanced_search.html", data)
 
 
@@ -52,7 +55,7 @@ def deep_search(request):
         "years": [str(x) for x in range(1991, YEAR + 1)]
     }
 
-    data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
+    #data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
     return render(request, "museum_site/deep_search.html", data)
 
 

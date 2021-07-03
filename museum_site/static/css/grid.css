@@ -36,6 +36,11 @@ a.broken
     color:#F00;
 }
 
+a.restricted { color:#F00; }
+
+a.restricted::before { content: "🔒 " }
+a.unrestricted::before { content: "🔓 " }
+
 a.il
 {
     font-style:italic;
@@ -192,7 +197,8 @@ input[type=number]
     font-style: normal;
 }
 
-.cp437 { font-family: "cp437";}
+.cp437 { font-family: "cp437"; }
+pre.cp437 { line-height:14px;}
 .mono { font-family: "monospace";}
 /* End Fonts */
 
@@ -854,7 +860,7 @@ form .full-width-submit
     font-size: larger;
 }
 
-form .field .genre-checklist
+form .field .scrolling-checklist
 {
     font-family:mono;
     height: 150px;
@@ -864,11 +870,22 @@ form .field .genre-checklist
     background: #AAA;
 }
 
-.genre-checklist label { display:block; }
-.genre-checklist label + label {  border-top: 1px dotted #000; }
-.genre-checklist label.selected { background:#619F9F;}
-.genre-checklist label:hover { background:#98C9C9; }
-/* Forms */
+.scrolling-checklist label { display:block; }
+.scrolling-checklist label + label {  border-top: 1px dotted #000; }
+.scrolling-checklist label.selected { background:#619F9F;}
+.scrolling-checklist label:hover { background:#98C9C9; }
+
+.checklist-header
+{
+    font-weight:bold;
+    background:#619F9F;
+    border-top:1px solid #000;
+    border-bottom:1px solid #000;
+    padding-left:3.5ch;
+}
+
+.scrolling-checklist .checklist-header:first-child { border-top:0px; }
+/* End Forms */
 
 /* File Structures */
 .gallery-list
