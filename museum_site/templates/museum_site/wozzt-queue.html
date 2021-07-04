@@ -50,7 +50,7 @@ $(document).ready(function (){
 
     {% if request.GET.category == "tuesday" %}
     // Tuesday code
-    var distance = (dow % 7);
+    var distance = (2 - dow);
     if (distance)
     {
         tweet_date.setDate(tweet_date.getDate() + distance);
