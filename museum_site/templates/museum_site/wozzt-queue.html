@@ -95,7 +95,7 @@ $(document).ready(function (){
 {% block content %}
 <section id="content" class="block">
 <h1>Worlds of ZZT Queue{% if request.user.is_staff %} [STAFF MODE]{% endif %}</h1>
-<p>Category: <b>{{request.GET.category|default:"wozzt"}}</b><br>
+<p>Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
 <a href="?category=wozzt">Worlds of ZZT</a> | <a href="?category=tuesday">Title Screen Tuesday</a></p>
 <p>Times are displayed in your local time zone.</p>
 <p><b>{{queue_size}}</b> entries in queue ending on <span id="queue-end">-</span>.</p>
