@@ -95,6 +95,11 @@ figure.zzt-figure figcaption
     padding-bottom:7px;
 }
 
+figure.zzt-figure figcaption a
+{
+    color:#FF5;
+}
+
 h1, h2, h3 { margin:0; margin-bottom:7px; }
 
 hr
