@@ -429,3 +429,30 @@ def get_pagination_data(request, data, qs):
 
     data["page_range"] = range(lower, upper)
     return data
+
+
+def throttle_check(
+    request, attempt_name, expiration_name, max_attempts,
+    lockout_mins=5
+):
+    # Origin time for calculating lockout
+    now = datetime.now()
+
+    # Increment attempts
+    request.session[attempt_name] = request.session.get(attempt_name, 0) + 1
+
+    # Lockout after <max_attempts>
+    if request.session[attempt_name] > max_attempts:
+        # If they're already locked out and the timer's expired, resume
+        if request.session.get(expiration_name) and (str(now)[:19] > request.session[expiration_name]):
+            request.session[attempt_name] = 1
+            del request.session[attempt_name]
+            del request.session[expiration_name]
+            return True
+
+        # Otherwise lock them out
+        #delta = timedelta(minutes=lockout_mins)
+        delta = timedelta(seconds=20)
+        request.session[expiration_name] = str(now + delta)
+        return False
+    return True

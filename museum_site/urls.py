@@ -219,6 +219,8 @@ urlpatterns = [
     url("user/change-pronouns/", museum_site.user_views.change_pronouns, name="change_pronouns"),
     url("user/change-credit-preferences/", museum_site.user_views.change_credit_preferences, name="change_credit_preferences"),
     url("error/login/", museum_site.user_views.error_login, name="error_login"),
+    url("error/registrations/", museum_site.user_views.error_registration, name="error_registration"),
+    url("error/password-reset/", museum_site.user_views.error_password_reset, name="error_password_reset"),
 
     # World of ZZT
     url(r"^worlds-of-zzt$", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
@@ -272,7 +274,7 @@ urlpatterns = [
     url(r"^tools/user-list$", museum_site.tool_views.user_list, name="user_list"),
 
     # Debug
-    url(r"^debug$", museum_site.debug_views.debug),
+    url(r"^debug/$", museum_site.debug_views.debug),
     url(r"^debug/article$", museum_site.debug_views.debug_article),
     url(r"^debug/colors$", museum_site.debug_views.debug_colors),
     url(r"^debug/forms$", museum_site.views.generic, {"template": "debug-forms", "title":"Form Debug"}),

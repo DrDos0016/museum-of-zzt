@@ -330,6 +330,18 @@ def error_login(request):
     return render(request, "museum_site/user-error-login.html", data)
 
 
+def error_registration(request):
+    data = {"title": "Access Restricted"}
+    data["now"] = datetime.now()
+    return render(request, "museum_site/user-error-registration.html", data)
+
+
+def error_password_reset(request):
+    data = {"title": "Access Restricted"}
+    data["now"] = datetime.now()
+    return render(request, "museum_site/user-error-password-reset.html", data)
+
+
 def forgot_password(request):
     data = {
         "title": "Forgot Password",
@@ -339,6 +351,13 @@ def forgot_password(request):
     }
 
     if request.POST.get("action") == "forgot-password":
+
+        if not (throttle_check(
+            request, "pw_reset_attempts", "pw_reset_expiration",
+            MAX_PASSWORD_RESETS, lockout_mins=60
+        )):
+            return redirect("error_password_reset")
+
         email = request.POST.get("email")
 
         if not email:
@@ -416,21 +435,10 @@ def login_user(request):
     }
 
     if request.POST.get("action") == "login":
-        now = str(datetime.now())[:19]
-        if request.session.get("login_attempts"):
-            request.session["login_attempts"] += 1
-        else:
-            request.session["login_attempts"] = 1
-            request.session["lockout_expiration"] = "2000-01-01 00:00:00"
-
-        if now > request.session["lockout_expiration"] and request.session.get("login_attempts") > 1:
-            request.session["login_attempts"] = 1
-            request.session["lockout_expiration"] = "2000-01-01 00:00:00"
-
-        # Lockout
-        if request.session["login_attempts"] > MAX_LOGIN_ATTEMPTS:
-            delta = timedelta(minutes=5)
-            #request.session["lockout_expiration"] = str(now + delta)
+        if not (throttle_check(
+            request, "login_attempts", "lockout_expiration",
+            MAX_LOGIN_ATTEMPTS,
+        )):
             return redirect("error_login")
 
         acct = request.POST.get("username")
@@ -469,14 +477,14 @@ def login_user(request):
 
             data["errors"]["pwd"] = "Invalid credentials provided!"
 
-        # Check login threshold
     elif request.POST.get("action") == "register":
-        if request.session.get("registration_attempts"):
-            request.session["registration_attempts"] += 1
-        else:
-            request.session["registration_attempts"] = 1
-
         if ALLOW_REGISTRATION:
+            if not (throttle_check(
+                request, "reg_attempts", "reg_expiration",
+                MAX_REGISTRATION_ATTEMPTS,
+            )):
+                return redirect("error_registration")
+
             create_account = True
             if request.POST.get("first-name"):  # Cheeky
                 raise SuspiciousOperation("Invalid request")
@@ -659,11 +667,7 @@ def reset_password(request, token=None):
 
             # Check that the token hasn't expired
             now = datetime.now(timezone.utc)
-            print("NOW       ", now)
-            print("RESET TIME", u.profile.reset_time)
             diff = now - u.profile.reset_time
-            print("DIFF", diff)
-            print("DIFF SEC", diff.seconds)
             if diff.seconds > TOKEN_EXPIRATION_SECS:
                 data["errors"]["token"] = ("Your password reset token has "
                                            "expired. Please request another "
