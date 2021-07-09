@@ -16,7 +16,7 @@
         </label>
         <div class="field-group">
             <input id="username" name="username" maxlength="150" value="{{request.POST.username}}">
-            <p class="form-error">{{errors.username}}</p>
+            <p class="form-error">{{errors.username|safe}}</p>
             <p><a href="{% url 'forgot_username' %}" tabindex="-1">Forgot Username</a></p>
         </div>
     </div>
