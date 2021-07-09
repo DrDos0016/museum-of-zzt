@@ -184,6 +184,8 @@ def play_collection(request):
         files = File.objects.all().order_by(*SORT_CODES["published"])
     elif request.GET.get("mode") == "browse":
         files = File.objects.filter(letter=data["letter"])
+    else:
+        files = File.objects.filter(pk=1015)
 
     # TODO: WEIRDLY BROKEN TITLES
     files = files.exclude(pk=431)  # 4 by Jojoisjo
@@ -205,7 +207,8 @@ def play_collection(request):
             else:
                 data["extra_files"] += '"{}",\n'.format(f.download_url())
 
-    response = render(request, "museum_site/play_collection.html", data)
+    #response = render(request, "museum_site/play_collection.html", data)
+    response = HttpResponse("Unimplemented.")
     return response
 
 
