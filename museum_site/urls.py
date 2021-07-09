@@ -1,5 +1,6 @@
 import os
 
+from django.views.generic.base import RedirectView
 from django.urls import include, path
 from django.conf.urls import url
 
@@ -287,15 +288,15 @@ urlpatterns = [
             "title": "Reset Password Complete"
         },
         name="reset_password_complete"),
-    url(
-        "user/reset-password/(?P<token>.*)/",
+    path(
+        "user/reset-password/<str:token>/",
         museum_site.user_views.reset_password,
         name="reset_password_with_token"),
     path(
         "user/reset-password/", museum_site.user_views.reset_password,
         name="reset_password"),
-    url(
-        "user/activate-account/(?P<token>.*)/",
+    path(
+        "user/activate-account/<str:token>/",
         museum_site.user_views.activate_account,
         name="activate_account_with_token"),
     path(
@@ -353,9 +354,7 @@ urlpatterns = [
     path("zeta-live/", museum_site.zeta_views.zeta_live),
 
     # AJAX
-    url(
-        r"^ajax/deep-search/phase-(?P<phase>[0-9])$",
-        museum_site.ajax.deep_search),
+    path("ajax/deep-search/phase-<int:phase>/", museum_site.ajax.deep_search),
     path("ajax/get_zip_file/", museum_site.ajax.get_zip_file),
     path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add),
     path("ajax/render-review-text/", museum_site.ajax.render_review_text),
@@ -403,49 +402,49 @@ urlpatterns = [
 
     # Tools
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
-    url(
-        r"^tools/(?P<pk>[0-9]+)$", museum_site.tool_views.tool_list,
+    path(
+        "tools/<int:pk>/", museum_site.tool_views.tool_list,
         name="tool_list"),
-    url(
-        r"^tools/add-livestream/(?P<pk>[0-9]+)$",
+    path(
+        "tools/add-livestream/<int:pk>/",
         museum_site.tool_views.add_livestream, name="add_livestream"),
     path(
         "tools/audit/zeta-config/", museum_site.tool_views.audit_zeta_config,
         name="audit_zeta_config"),
-    url(
-        r"^tools/extract-font/(?P<pk>[0-9]+)$",
+    path(
+        "tools/extract-font/<int:pk>/",
         museum_site.tool_views.extract_font, name="extract_font"),
     path(
         "tools/log-viewer/", museum_site.tool_views.log_viewer,
         name="log_viewer"),
-    url(
-        r"^tools/mirror/(?P<pk>[0-9]+)$", museum_site.tool_views.mirror,
+    path(
+        "tools/mirror/<int:pk>/", museum_site.tool_views.mirror,
         name="mirror"),
-    url(
-        r"^tools/publish/(?P<pk>[0-9]+)$", museum_site.tool_views.publish,
+    path(
+        "tools/publish/<int:pk>/", museum_site.tool_views.publish,
         name="publish"),
-    url(
-        r"^tools/reletter/(?P<pk>[0-9]+)$", museum_site.tool_views.reletter,
+    path(
+        "tools/reletter/<int:pk>/", museum_site.tool_views.reletter,
         name="reletter"),
-    url(
-        r"^tools/replace_zip/(?P<pk>[0-9]+)$",
+    path(
+        "tools/replace_zip/<int:pk>/",
         museum_site.tool_views.replace_zip, name="replace_zip"),
     path("tools/scan/", museum_site.tool_views.scan, name="scan"),
-    url(
-        r"^tools/set_screenshot/(?P<pk>[0-9]+)$",
+    path(
+        "tools/set_screenshot/<int:pk>/",
         museum_site.tool_views.set_screenshot, name="set_screenshot"),
     path(
         "tools/user-list/", museum_site.tool_views.user_list,
         name="user_list"),
 
     # Debug
-    url(r"^debug/$", museum_site.debug_views.debug),
-    url(r"^debug/article$", museum_site.debug_views.debug_article),
-    url(r"^debug/colors$", museum_site.debug_views.debug_colors),
-    url(
-        r"^debug/forms$", museum_site.views.generic,
+    path("debug/", museum_site.debug_views.debug),
+    path("debug/article/", museum_site.debug_views.debug_article),
+    path("debug/colors/", museum_site.debug_views.debug_colors),
+    path(
+        "debug/forms/", museum_site.views.generic,
         {"template": "debug-forms", "title": "Form Debug"}),
-    url(r"^ajax/debug_file$", museum_site.ajax.debug_file),
+    path("ajax/debug_file/", museum_site.ajax.debug_file),
 ]
 
 if DEBUG:
