@@ -459,9 +459,6 @@ def login_user(request):
                 Profile.objects.create(user=user)
 
             login(request, user)
-            # Reset login attempts
-            del request.session["login_attempts"]
-            del request.session["lockout_expiration"]
             return redirect("my_profile")
         else:
             # Does the usename exist?
