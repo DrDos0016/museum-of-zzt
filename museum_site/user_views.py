@@ -680,7 +680,7 @@ def reset_password(request, token=None):
     return render(request, "museum_site/user-reset-password.html", data)
 
 
-def user_profile(request, user_id=None):
+def user_profile(request, user_id=None, **kwargs):
     data = {"title": "User Profile"}
     excluded_keys = [
         "_auth_user_id",
