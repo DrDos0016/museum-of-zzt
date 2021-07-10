@@ -248,8 +248,8 @@ urlpatterns = [
     path(
         "review/", museum_site.review_views.review_directory,
         name="review_directory"),
-    url(
-        r"^review/(?P<letter>[a-z1])/(?P<filename>.*)$",
+    path(
+        "review/<str:letter>/<str:filename>/",
         museum_site.file_views.review, name="reviews"),
 
     # Search
@@ -266,9 +266,10 @@ urlpatterns = [
     path(
         "user/logout/", museum_site.user_views.logout_user,
         name="logout_user"),
-    url(
-        r"^user/profile/(?P<user_id>[0-9]+)/",
+    path(
+        "user/profile/<int:user_id>/<str:unused_slug>/",
         museum_site.user_views.user_profile, name="user_profile"),
+
     path(
         "user/profile/", museum_site.user_views.user_profile,
         name="my_profile"),
