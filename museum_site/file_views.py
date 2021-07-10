@@ -211,7 +211,7 @@ def file_viewer(request, letter, filename, local=False):
     return render(request, "museum_site/file.html", data)
 
 
-def review(request, letter, filename):
+def review(request, letter, filename, **kwargs):
     """ Returns a page of reviews for a file. Handles POSTing new reviews """
     data = {}
     data["file"] = File.objects.get(letter=letter, filename=filename)
