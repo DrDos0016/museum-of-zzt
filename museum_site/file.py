@@ -16,7 +16,7 @@ except ImportError:
     HAS_ZOOKEEPER = False
 
 from .common import slash_separated_sort, UPLOAD_CAP, STATIC_PATH
-from .constants import SITE_ROOT, REMOVED_ARTICLE
+from .constants import SITE_ROOT, REMOVED_ARTICLE, ZETA_RESTRICTED
 from .review import Review
 
 DETAIL_DOS = 1
