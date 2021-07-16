@@ -1688,3 +1688,9 @@ select[name=page-selector]
     font-size:larger;
 }
 /* End Paginator */
+
+.itch-badge
+{
+    height:64px;
+    margin:7px 4px 7px 4px;
+}
