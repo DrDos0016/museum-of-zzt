@@ -84,6 +84,10 @@ class Profile(models.Model):
         else:
             return False
 
+    @property
+    def get_pledge(self):
+        return ("$" + str(self.patron_level / 100))
+
     def scrub(self):
         self.patron = False
         self.patron_level = 0

@@ -57,10 +57,6 @@ function iso8601_to_user_tz(selector)
         <td><a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patreon</a></td>
     </tr>{% endif %}
     <tr>
-        <th>Active</th>
-        <td colspan="2">{{user_obj.is_active|yesno|title}}</td>
-    </tr>
-    <tr>
         <th>Staff</th>
         <td colspan="2">{{user_obj.is_staff|yesno|title}}</td>
     </tr>
@@ -104,6 +100,10 @@ function iso8601_to_user_tz(selector)
         {% if private %}<td><a href="{% url 'change_patronage_visibility' %}">Change Patronage Visibility</a></td>{% endif %}
     </tr>
     <tr>
+        <th>Active</th>
+        <td colspan="2">{{user_obj.is_active|yesno|title}}</td>
+    </tr>
+    <tr>
         <th>Last Login</th>
         <td id="last-login" colspan="2" data-iso8601="{{user_obj.last_login|date:'c'}}" title="UTC: {{user_obj.last_login|date:'c'}}">{{user_obj.last_login}}</td>
     </tr>
@@ -113,7 +113,7 @@ function iso8601_to_user_tz(selector)
     </tr>
     <tr>
         <th>Patron Level</th>
-        <td colspan="2">{{user_obj.profile.patron_level}}</td>
+        <td colspan="2">{{user_obj.profile.get_pledge}}</td>
     </tr>
     <tr>
         <th>Site Credits Name*</th>
