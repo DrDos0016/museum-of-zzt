@@ -15,7 +15,7 @@ now = datetime.datetime.now()
 HEADER = """{% with "articles/2021/publish-<date>/" as path %}
 <p></p>
 
-""".replace("<date>", now.strftime("%b-%d").lower())
+""".replace("<date>", now.strftime("%m-%d").lower())
 
 QUERY = """{% with "<ids_string>"|get_files_by_id as files %}
 
