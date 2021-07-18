@@ -163,7 +163,7 @@ input[type=number]
 {
     color:transparent;
     cursor:pointer;
-    background-image:url('/static/images/spoiler-bg.png');
+    background-image:url('/static/chrome/spoiler-bg.png');
 }
 
 .spoiler img, .spoiler code
