@@ -75,9 +75,19 @@ def hyperlink(text, inline=False):
 def message(parser, token):
     nodelist = parser.parse(('endmessage',))
     parser.delete_first_token()
-    #color = token.contents if token.contents else "auto"
-    color = token.contents.split()[-1] if len(token.contents.split()) >= 2 else "auto"
-    return ZztMessage(nodelist, color)
+
+    # Defaults
+    color = "auto"
+    scrolling = False
+
+    for arg in token.contents.split():
+        if arg == "scrolling":
+            scrolling = True
+        elif arg in ["yellow", "purple", "red", "cyan", "green", "blue", "white"]:
+            color = arg
+
+
+    return ZztMessage(nodelist, color, scrolling)
 
 
 class ZztMessage(template.Node):
