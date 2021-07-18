@@ -28,7 +28,7 @@
         <td>{{u.email}}</td>
         <td class="c">{{u.is_active|yesno:"✅,❌"}}</td>
         <td class="c">{{u.is_staff|yesno:"✅, "}}</td>
-        <td class="c">{{u.profile.patron|yesno:"✅,❌"}} ({{u.profile.patron_level|default:"0"}})</td>
+        <td class="c">{{u.profile.patron|yesno:"✅,❌"}} ({{u.profile.get_pledge|floatformat:2}})</td>
     </tr>
     {% endfor %}
 </table>
