@@ -1,13 +1,17 @@
 "use strict";
 
-var CROP_CONTROLS = `<div id='crop-controls'>
-<div id="active"></div>
+var CROP_CONTROLS = `<div id='crop-controls' class="cp437">
+[<div id="active"></div>]
 L: <input name="top" value="">
 T: <input name="left" value="">
 R: <input name="bottom" value="">
 B: <input name="right" value="">
-Crop: <input id="crop-output"></div>
+(​r0p: <input id="crop-output">
+Raw X/Y: <input name="raw-xy" value="-/-">
+Tile X/Y: <input name="tile-xy" value="-/-">
 </div>`;
+
+var click_coord = null;
 
 $(document).ready(function (){
     console.log("Loaded debug crop tool.");
@@ -18,18 +22,27 @@ $(document).ready(function (){
     $("#crop-controls input").click(function (){$(this).select()});
     $("#crop-controls input").keyup(function (e){ adjust(e) });
     $("#crop-controls input").keyup(preview);
+    $("body").keyup(function (e){ reset(e) });
 });
 
 
-var crop = function (){
+var crop = function (data){
+    if ($(this).hasClass("editing"))
+    {
+        translate_click(data);
+        return true;
+    }
+    click_coord = null;
     $(".zzt-img").removeClass("editing");
-    $(this).addClass("editing");
     $("#active").html($(this).children().attr("alt"));
     $("input[name=top]").val(1);
     $("input[name=left]").val(1);
     $("input[name=bottom]").val(80);
     $("input[name=right]").val(25);
     $("input[name=top]").click();
+    $("input[name=raw-xy]").val("0/0");
+    $("input[name=tile-xy]").val("0/0");
+    $(this).addClass("editing");
 };
 
 
@@ -49,7 +62,6 @@ var adjust = function (e){
 
 var preview = function (){
     console.log("Applying...");
-    //4,5, 15,20
     var t = parseInt($("input[name=top]").val()) - 1;
     var l = parseInt($("input[name=left]").val()) - 1;
     var b = parseInt($("input[name=bottom]").val()) - 1;
@@ -66,3 +78,44 @@ var preview = function (){
     $("#crop-output").val(`tl='${t+1},${l+1}' br='${b+1},${r+1}'`);
 
 };
+
+function translate_click(data){
+    var rect = $(".editing").children()[0].getBoundingClientRect();
+    var raw_x = data.pageX - rect.left - document.querySelector("html").scrollLeft - 1;
+    var raw_y = data.pageY - rect.top - document.querySelector("html").scrollTop - 1; // minus 1px for the left and top border
+    var tile_x = parseInt(raw_x / 8) + 1;
+    var tile_y = parseInt(raw_y / 14) + 1;
+    $("input[name=raw-xy]").val(raw_x + "/" + raw_y);
+    $("input[name=tile-xy]").val(tile_x + "/" + tile_y);
+
+    if (click_coord)
+    {
+        $("input[name=top]").val(click_coord[0]);
+        $("input[name=left]").val(click_coord[1]);
+        $("input[name=bottom]").val(tile_x);
+        $("input[name=right]").val(tile_y);
+        preview();
+
+    }
+    else
+    {
+        click_coord = [tile_x, tile_y];
+    }
+}
+
+function reset(e)
+{
+    // R to reset the current crop
+    if (e.keyCode != 82)
+        return false;
+
+    click_coord = null;
+    $("input[name=top]").val(1);
+    $("input[name=left]").val(1);
+    $("input[name=bottom]").val(80);
+    $("input[name=right]").val(25);
+    $("input[name=top]").click();
+    $("input[name=raw-xy]").val("0/0");
+    $("input[name=tile-xy]").val("0/0");
+    preview();
+}
