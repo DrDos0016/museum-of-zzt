@@ -33,11 +33,9 @@ from museum_site.constants import (  # noqa: E402
     DETAIL_LINUX,
     DETAIL_OSX,
     DETAIL_FEATURED,
-    DETAIL_CONTEST,
     DETAIL_ZZM,
     DETAIL_GFX,
     DETAIL_MOD,
-    DETAIL_ETC,
     DETAIL_SZZT,
     DETAIL_UTILITY,
     DETAIL_ZZT,
@@ -160,9 +158,6 @@ urlpatterns = [
     path(
         "zig-worlds/", museum_site.file_views.file_directory,
         {"details": [DETAIL_ZIG]}, name="zig_worlds"),
-    path(
-        "etc/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_ETC]}, name="etc"),
     path(
         "modified-gfx/", museum_site.file_views.file_directory,
         {"details": [DETAIL_GFX]}, name="modified_gfx"),
