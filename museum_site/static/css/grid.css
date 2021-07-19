@@ -424,6 +424,11 @@ a.inline[target=_blank]::after
 .r { text-align:right; }
 
 .zoomed { cursor:zoom-out; width:auto; }
+
+.flex-container
+{
+    display:flex;
+}
 /* End Utility Classes */
 
 /* Generic Structures */

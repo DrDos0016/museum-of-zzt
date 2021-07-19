@@ -74,11 +74,9 @@ DETAIL_WIN64 = 4
 DETAIL_LINUX = 5
 DETAIL_OSX = 6
 DETAIL_FEATURED = 7
-DETAIL_CONTEST = 8
 DETAIL_ZZM = 9
 DETAIL_GFX = 10
 DETAIL_MOD = 11
-DETAIL_ETC = 12
 DETAIL_SZZT = 13
 DETAIL_UTILITY = 14
 DETAIL_ZZT = 15
@@ -86,6 +84,23 @@ DETAIL_ZIG = 16
 DETAIL_LOST = 17
 DETAIL_UPLOADED = 18
 DETAIL_REMOVED = 19
+DETAIL_CORRUPT = 20
+DETAIL_ZZT_BOARD = 21
+DETAIL_ZZT_SAVE = 22
+DETAIL_SZZT_BOARD = 23
+DETAIL_SZZT_SAVE = 24
+DETAIL_ZZT_SCORE = 25
+DETAIL_SZZT_SCORE = 26
+DETAIL_CLONE_WORLD = 27  # NEW
+DETAIL_SOURCE_CODE = 28
+DETAIL_TEXT = 29
+DETAIL_HTML = 30
+DETAIL_IMAGE = 31
+DETAIL_VIDEO = 32
+DETAIL_PROGRAM = 33
+DETAIL_COMPRESSED = 34
+DETAIL_ROM = 35
+DETAIL_AUDIO = 36
 
 # Front Page
 FP_ARTICLES_SHOWN = 10
@@ -217,8 +232,8 @@ LOCKED_ARTICLE_TEXT = """
 <h2>Locked Article!</h2>
 
 <p>The article you have requested is currently only available to patrons
-making a monthly pledge to the Worlds of ZZT Patreon of at least <b>$[COST] USD</b>
-per month.</p>
+making a monthly pledge to the Worlds of ZZT Patreon of at least <b>$[COST]
+USD</b> per month.</p>
 
 <p>If you are a patron that meets these requirements you can enter your
 password to access this article in the field below:</p>
@@ -234,3 +249,190 @@ If you need your password please see the
 <p>All articles published on the Museum of ZZT are eventually made public. The
 estimated release date for this article is <b>[RELEASE]</b>, however the exact
 release date may change.</p>"""
+
+EXTENSION_HINTS = {
+    # ZZT
+    ".BRD": ("Board File", [DETAIL_ZZT_BOARD], "OR"),
+    ".ZZT": ("ZZT World", [DETAIL_ZZT_BOARD]),
+    ".Z_T": ("ZZT World", [DETAIL_ZZT_BOARD]),
+    ".HI": ("High Score File", [DETAIL_ZZT_SCORE, DETAIL_SZZT_SCORE], "OR"),
+    ".MH": ("High Score File", [DETAIL_ZZT_SCORE], "AND"),
+    ".MWZ": ("Mystic Winds ZZT World", [DETAIL_ZZT]),
+    ".SAV": ("Saved Game", [DETAIL_ZZT_SAVE]),
+
+    # Super ZZT
+    ".SZT": ("Super ZZT World", [DETAIL_SZZT]),
+    ".HGS": ("Super ZZT High Score File", [DETAIL_SZZT_SCORE]),
+
+    # Custom Charsets
+    ".CHR": ("Charset", [DETAIL_GFX]),
+    ".COM": ("Charset MAYBE", [DETAIL_GFX]),
+    ".FNT": ("Charset", [DETAIL_GFX]),
+
+    # Custom Palettes
+    ".PAL": ("Palette", [DETAIL_GFX]),
+    ".PLD": ("Palette", [DETAIL_GFX]),
+
+    # ZIG
+    ".INF": ("ZIG Information File", [DETAIL_ZIG]),
+    ".ZIG": ("ZIG World", [DETAIL_ZIG]),
+    ".ZBR": ("ZIG Board", [DETAIL_ZIG]),
+    ".ZCH": ("ZIG Charset", [DETAIL_ZIG]),
+    ".ZPL": ("ZIG Palette", [DETAIL_ZIG]),
+    ".OLF": ("ZIG Object Library", [DETAIL_ZIG]),
+
+    # ZZMs
+    ".ZZM": ("ZZM Audio", [DETAIL_ZZM]),
+
+    # ZZT Clone World
+
+    ".ZZ3": ("ZZ3 World", [DETAIL_CLONE_WORLD]),
+    ".SWW": ("??? World", [DETAIL_CLONE_WORLD]),
+    ".PGF": ("Plastic Game File", [DETAIL_CLONE_WORLD]),  # Plastic Game File
+    ".PWORLD": ("Plastic Game File", [DETAIL_CLONE_WORLD]),  # Platic World
+
+    # Source Code
+    ".ASM": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".BAS": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".BI": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".C": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".CC": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".CPP": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".E": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".EX": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".JAVA": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".INC": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".JSON": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".LUA": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".OBJ": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),  # Maybe
+    ".PAS": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+    ".PY": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
+
+    # Text
+    ".135": ("Text File", [DETAIL_TEXT], "AND"),
+    ".ASC": ("Text File", [DETAIL_TEXT], "AND"),
+    "ASP": ("Text File", [DETAIL_TEXT], "AND"),
+    ".1ST": ("Text File", [DETAIL_TEXT], "AND"),
+    ".ANS": ("Text File", [DETAIL_TEXT], "AND"),
+    ".BB": ("Text File", [DETAIL_TEXT], "AND"),
+    ".CFG": ("Text File", [DETAIL_TEXT], "AND"),
+    "COPYING": ("Text File", [DETAIL_TEXT], "AND"),
+    ".CRD": ("Text File", [DETAIL_TEXT], "AND"),
+    ".DAT": ("Text File", [DETAIL_TEXT], "AND"),  # MIGHT NOT BE VIEWABLE
+    "DESC": ("Text File", [DETAIL_TEXT], "AND"),
+    ".DEF": ("Text File", [DETAIL_TEXT], "AND"),  # Z2 element defintions
+    ".DEU": ("Text File", [DETAIL_TEXT], "AND"),
+    ".DIZ": ("Text File", [DETAIL_TEXT], "AND"),
+    ".DOC": ("Text File", [DETAIL_TEXT], "AND"),
+    ".EED": ("Text File", [DETAIL_TEXT], "AND"),  # ZZT: The Next Generation
+    ".ENG": ("Text File", [DETAIL_TEXT], "AND"),
+    ".ERR": ("Text File", [DETAIL_TEXT], "AND"),
+    "EXCLUDE": ("Text File", [DETAIL_TEXT], "AND"),
+    ".FAQ": ("Text File", [DETAIL_TEXT], "AND"),
+    ".FRM": ("Text File", [DETAIL_TEXT], "AND"),
+    ".FYI": ("Text File", [DETAIL_TEXT], "AND"),
+    ".GITIGNORE": ("Text File", [DETAIL_TEXT], "AND"),
+    ".GUD": ("Text File", [DETAIL_TEXT], "AND"),
+    ".H": ("Text File", [DETAIL_TEXT], "AND"),
+    "HINTS": ("Text File", [DETAIL_TEXT], "AND"),  # Hints?
+    ".HLP": ("Text File", [DETAIL_TEXT], "AND"),  # TODO Might not be plaintxt
+    ".INI": ("Text File", [DETAIL_TEXT], "AND"),
+    "LASTSG": ("Text File", [DETAIL_TEXT], "AND"),
+    "LICENSE": ("Text File", [DETAIL_TEXT], "AND"),  # License detail?
+    "LPT1": ("Text File", [DETAIL_TEXT], "AND"),
+    ".LOG": ("Text File", [DETAIL_TEXT], "AND"),
+    ".LST": ("Text File", [DETAIL_TEXT], "AND"),
+    ".MAC": ("Text File", [DETAIL_TEXT], "AND"),
+    ".MAP": ("Text File", [DETAIL_TEXT], "AND"),
+    ".MD": ("Text File", [DETAIL_TEXT], "AND"),
+    ".ME": ("Text File", [DETAIL_TEXT], "AND"),
+    ".MSG": ("Text File", [DETAIL_TEXT], "AND"),
+    ".MUZ": ("Text File", [DETAIL_TEXT], "AND"),
+    ".NEW": ("Text File", [DETAIL_TEXT], "AND"),
+    "NEWS": ("Text File", [DETAIL_TEXT], "AND"),
+    ".NFO": ("Text File", [DETAIL_TEXT], "AND"),
+    ".NOW": ("Text File", [DETAIL_TEXT], "AND"),
+    "ORDER": ("Text File", [DETAIL_TEXT], "AND"),
+    ".PDF": ("Text File", [DETAIL_TEXT], "AND"),
+    "README": ("Text File", [DETAIL_TEXT], "AND"),
+    ".REG": ("Text File", [DETAIL_TEXT], "AND"),
+    "REGISTER": ("Text File", [DETAIL_TEXT], "AND"),
+    ".RTF": ("Text File", [DETAIL_TEXT], "AND"),
+    "SAVES": ("Text File", [DETAIL_TEXT], "AND"),
+    ".SDI": ("Text File", [DETAIL_TEXT], "AND"),
+    ".SH": ("Text File", [DETAIL_TEXT], "AND"),
+    ".SOL": ("Text File", [DETAIL_TEXT], "AND"),  # Walkthrough?
+    ".SLV": ("Text File", [DETAIL_TEXT], "AND"),  # Walkthrough?
+    ".ST": ("Text File", [DETAIL_TEXT], "AND"),
+    ".THEME": ("Text File", [DETAIL_TEXT], "AND"),  # Windows 98 Theme
+    ".TXT": ("Text File", [DETAIL_TEXT], "AND"),
+    "WORLDS": ("Text File", [DETAIL_TEXT], "AND"),
+    ".WPS": ("Text File", [DETAIL_TEXT], "AND"),
+    ".WRI": ("Text File", [DETAIL_TEXT], "AND"),
+    ".ZLN": ("Text File", [DETAIL_TEXT], "AND"),
+    ".ZML": ("Text File", [DETAIL_TEXT], "AND"),
+    ".ZZL": ("ZZL Object Library", [DETAIL_TEXT], "AND"),
+
+    # HTML
+    ".HTM": ("HTML File", [DETAIL_HTML], "AND"),
+    ".HTML": ("HTML File", [DETAIL_HTML], "AND"),
+
+    # Audio
+    ".IT": ("Audio File", [DETAIL_AUDIO], "AND"),
+    ".MID": ("Audio File", [DETAIL_AUDIO], "AND"),
+    ".MOD": ("Audio File", [DETAIL_AUDIO], "AND"),
+    ".MP3": ("Audio File", [DETAIL_AUDIO], "AND"),
+    ".WAV": ("Audio File", [DETAIL_AUDIO], "AND"),
+    ".XM": ("Audio File", [DETAIL_AUDIO], "AND"),
+    ".PTF": ("Audio File", [DETAIL_AUDIO], "AND"),
+
+    # Image
+    ".BMP": ("Image", [DETAIL_IMAGE], "AND"),
+    ".GIF": ("Image", [DETAIL_IMAGE], "AND"),
+    ".ICO": ("Image", [DETAIL_IMAGE], "AND"),
+    ".JPG": ("Image", [DETAIL_IMAGE], "AND"),
+    ".PCX": ("Image", [DETAIL_IMAGE], "AND"),
+    ".PNG": ("Image", [DETAIL_IMAGE], "AND"),
+
+    # Video
+    ".AVI": ("Video", [DETAIL_VIDEO], "AND"),
+
+    # Program
+    ".EXE": ("Executable", [DETAIL_PROGRAM], "AND"),
+    ".JAR": ("Java Jar", [DETAIL_PROGRAM], "AND"),
+
+    # More Zips
+    ".ZIP": ("Compressed File", [DETAIL_COMPRESSED], "AND"),
+
+    # Roms
+    ".GBA": ("GBA Rom", [DETAIL_ROM], "AND"),
+    ".NES": ("NES Rom", [DETAIL_ROM], "AND"),
+    ".PRG": ("TODO_DETAIL_OTHER_FILE", "Miscellaneous File"),  # C64 Program
+
+    # No suggestions
+    "/": ("", "IGNORE"),
+    ".---": ("?", "IGNORE"),
+    ".~~~": ("Organizer", []),
+    "._3DSKULL": ("?", []),
+    ".ANI": ("Windows Animated Cursor", []),
+    ".BAT": ("Batch File", []),
+    ".BIN": ("Binary", []),  # Various (sometimes garbled text files?)
+    ".BSV": ("The Draw File", []),
+    ".CER": ("?", []),
+    ".CORRUPT": ("Known Corrupt File", []),
+    ".CUR": ("Windows Cursor", []),
+    ".DB": ("?", []),
+    ".DLL": ("DLL File", []),
+    ".DLM": ("?", []),
+    ".DS_STORE": ("OSX Folder Information", []),
+    ".GITIGNORE": ("?", []),
+    ".LNK": ("Link File", []),
+    ".MS": ("?", []),  # Weird file in "Trash Fleet 3.0"
+    ".OZ": ("?", []),
+    ".PIF": ("Windows Shortcut", []),
+    ".SCR": ("BSV2BRD", []),
+    ".TRS": ("?", []),  # Weird file in "Operation Blundabo"
+    ".VSP": ("?", []),
+    ".WAR": ("?", []),
+    ".ZR": ("?", []),
+}

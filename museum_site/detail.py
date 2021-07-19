@@ -17,13 +17,15 @@ class DetailManager(models.Manager):
 
         for d in qs:
             if d.detail.startswith("ZZT "):
-                cats.append({"priority": 1, "header": "ZZT", "d": d})
+                cats.append({"priority": 10, "header": "ZZT", "d": d})
             elif d.detail.startswith("Super ZZT "):
-                cats.append({"priority": 2, "header": "Super ZZT", "d": d})
+                cats.append({"priority": 20, "header": "Super ZZT", "d": d})
+            elif d.detail in ["Image", "Video", "Audio", "Text", "ZZM Audio", "HTML Document"]:  # Media
+                cats.append({"priority": 30, "header": "Media", "d": d})
             elif d.id in os_details:
-                cats.append({"priority": 4, "header": "OS", "d": d})
+                cats.append({"priority": 90, "header": "OS", "d": d})
             else:
-                cats.append({"priority": 3, "header": "Other", "d": d})
+                cats.append({"priority": 80, "header": "Other", "d": d})
 
         cats.sort(key=lambda k: k["priority"])
         return cats

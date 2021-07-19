@@ -1,0 +1,22 @@
+{% comment %}
+Note that JS needs to be included for these buttons to function
+{% endcomment %}
+<div class="field" id="content-field">
+    <label>Contents:<br>
+    <span class="sub"></span>
+    </label>
+
+    <div id="detail-list" class="">
+        <div class="scrolling-checklist">
+            {% for cat in detail_cats %}
+            {% ifchanged %}<div class="checklist-header">{{cat.header}}</div>{% endifchanged %}
+            <label{% if cat.d.id in details_list %} class="selected"{% endif %}><input name="details" type="checkbox" value="{{cat.d.id}}"{% if cat.d.id in details_list %} checked{% endif %}> {{cat.d.detail}}{% if cat.d.detail.description %} - {{cat.d.detail.description}}{% endif %}</label>
+            {% endfor %}
+        </div>
+        <br>
+        <button type="button">All</button> <button type="button">None</button>
+        {% if suggested_button %} <button type="button" name="suggested">Suggested</button>
+        {% else %} <button type="button">Default</button>{% endif %}
+        <div id="details-selected" class="mono">Selected Criteria:<br>None</div>
+    </div>
+</div>

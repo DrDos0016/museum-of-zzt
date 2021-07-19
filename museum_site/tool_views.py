@@ -321,8 +321,12 @@ def publish(request, pk):
     data = {
         "title": "Publish",
         "file": File.objects.get(pk=pk),
-        "file_list": []
+        "file_list": [],
+        "suggested_button": True,  # Show "Suggested" button after detail list
+        "hints": [],
+        "hint_ids": [],
     }
+    data["detail_cats"] = Detail.objects.advanced_search_categories()
 
     if request.POST.get("publish"):
         # Move the file
@@ -346,11 +350,28 @@ def publish(request, pk):
     with ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
         data["file_list"] = zf.namelist()
     data["file_list"].sort()
-    data["extension_list"] = []
 
-    for f in data["file_list"]:
-        data["extension_list"].append(f.split(".")[-1].upper())
 
+    # Get suggested fetails based on the file list
+    unknown_extensions = []
+    for name in data["file_list"]:
+        ext = os.path.splitext(os.path.basename(name).upper())
+        if ext[1] == "":
+            ext = ext[0]
+        else:
+            ext = ext[1]
+
+        if ext in EXTENSION_HINTS:
+            suggest = (EXTENSION_HINTS[ext][1])
+            data["hints"].append((name, EXTENSION_HINTS[ext][0], suggest))
+            data["hint_ids"] += EXTENSION_HINTS[ext][1]
+
+
+        elif ext == "":  # Folders hit this
+            continue
+
+    data["unknown_extensions"] = unknown_extensions
+    data["hint_ids"] = set(data["hint_ids"])
     return render(request, "museum_site/tools/publish.html", data)
 
 
