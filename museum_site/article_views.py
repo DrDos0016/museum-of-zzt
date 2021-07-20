@@ -8,6 +8,13 @@ from .models import *
 from .file_views import file_articles  # Kludge
 
 
+def article_categories(request, category="all", page_num=1):
+    """ Returns page listing all articles sorted either by date or name """
+    data = {"title": "Article Categories"}
+
+    return render(request, "museum_site/article-categories.html", data)
+
+
 def article_directory(request, category="all", page_num=1):
     """ Returns page listing all articles sorted either by date or name """
     data = {"title": "Article Directory"}

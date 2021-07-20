@@ -54,14 +54,17 @@ urlpatterns = [
 
     # Articles
     path(
-        "article/", museum_site.article_views.article_directory,
-        name="article_directory"),
+        "article/categories", museum_site.article_views.article_categories,
+        name="article_categories"),
     path(
         "article/search", museum_site.search_views.article_search,
         name="article_search"),
-    url(
-        r"^article/(?P<category>[a-z- ]+)$",
+    path(
+        "article/",
         museum_site.article_views.article_directory, name="article_directory"),
+    path(
+        "article/<slug:category>",
+        museum_site.article_views.article_directory, name="article_category"),
     url(
         r"^article/(?P<article_id>[0-9]+)/page/(?P<page>[0-9]+)/(.*)$",
         museum_site.article_views.article_view, name="article_view_page"),
@@ -86,6 +89,10 @@ urlpatterns = [
     path(
         "getting-started/", museum_site.article_views.article_view,
         {"article_id": 5}, name="zzt_dosbox"),
+    path(
+        "support/", museum_site.article_views.article_view,
+        {"article_id": 586},
+        name="support"),
     path(
         "zzt/", museum_site.article_views.article_view, {"article_id": 2},
         name="zzt_dl"),
