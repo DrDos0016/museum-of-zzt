@@ -645,7 +645,10 @@ class File(models.Model):
             return False
 
         # Extract the file and render
-        zf.extract(world, path=SITE_ROOT + "/museum_site/static/data/")
+        try:
+            zf.extract(world, path=SITE_ROOT + "/museum_site/static/data/")
+        except NotImplementedError:
+            return False
         z = zookeeper.Zookeeper(SITE_ROOT + "/museum_site/static/data/" + world)
         z.boards[board].screenshot(
             SITE_ROOT + "/museum_site/static/images/screenshots/" +
