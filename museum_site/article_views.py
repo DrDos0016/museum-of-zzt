@@ -21,7 +21,6 @@ def article_categories(request, category="all", page_num=1):
         key = entry["category"].split(" ")[0].lower().replace("'", "")
         data["totals"][key] = entry["total"]
 
-
     return render(request, "museum_site/article-categories.html", data)
 
 
@@ -65,7 +64,7 @@ def article_directory(request, category="all", page_num=1):
     return render(request, "museum_site/article_directory.html", data)
 
 
-def article_view(request, article_id, page=0):
+def article_view(request, article_id, page=0, slug=""):
     """ Returns an article pulled from the database """
     # Awful kludge to deal with a url conflict
     if article_id == "1":
@@ -73,7 +72,6 @@ def article_view(request, article_id, page=0):
         filename = uri.split("/")[-1]
         return file_articles(request, article_id, filename)
 
-    slug = request.path.split("/")[-1]
     page = int(page)
     data = {"id": article_id}
     data["custom_layout"] = "article"
@@ -92,7 +90,6 @@ def article_view(request, article_id, page=0):
         access = UPCOMING_ARTICLE
     elif request.GET.get("secret"):  # Invalid password
         return redirect("patron_articles")
-
 
     if a.published > access:  # Access level too low for article
         restricted = True

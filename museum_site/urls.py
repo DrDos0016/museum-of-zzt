@@ -2,7 +2,6 @@ import os
 
 from django.views.generic.base import RedirectView
 from django.urls import include, path
-from django.conf.urls import url
 
 from museum.settings import BASE_DIR, DEBUG
 if DEBUG:
@@ -65,11 +64,11 @@ urlpatterns = [
     path(
         "article/<slug:category>/",
         museum_site.article_views.article_directory, name="article_category"),
-    url(
-        r"^article/(?P<article_id>[0-9]+)/page/(?P<page>[0-9]+)/(.*)$",
+    path(
+        "article/<int:article_id>/page/<int:page>/<slug:slug>",
         museum_site.article_views.article_view, name="article_view_page"),
-    url(
-        r"^article/(?P<article_id>[0-9]+)/(.*)$",
+    path(
+        "article/<int:article_id>/<slug:slug>",
         museum_site.article_views.article_view, {"page": 1},
         name="article_view"),
 
@@ -106,33 +105,35 @@ urlpatterns = [
         name="play_collection"),
 
     # Directories
-    url(
-        r"^directory/(?P<category>[a-z].*)$", museum_site.views.directory,
+    path(
+        "directory/<slug:category>", museum_site.views.directory,
         name="directory"),
 
     # Exhibit
-    url(
-        r"^exhibit/(?P<letter>[a-z1!])/(?P<filename>.*)$",
+    path(
+        "exhibit/<str:letter>/<str:filename>",
         museum_site.views.exhibit,
         name="exhibit"),
-    url(
-        r"^exhibit/(?P<letter>[a-z1!])/(?P<filename>.*)/(?P<section>.*)$",
+    path(
+        "exhibit/<str:letter>/<str:filename>/<str:section>",
         museum_site.views.exhibit, name="exhibit-section"),
 
     # Files
-    url(
-        r"^article/(?P<letter>[a-z1!])/(?P<filename>.*)$",
+    path(
+        "article/<str:letter>/<str:filename>",
         museum_site.file_views.file_articles,
-        name="article"),
+        name="article"
+    ),
     path("browse/", museum_site.file_views.file_directory, name="browse"),
-    url(
-        r"^browse/(?P<letter>[a-z1])$", museum_site.file_views.file_directory,
-        name="browse_letter"),
-    url(
-        r"^file/(?P<letter>[a-z1!])/(?P<filename>.*)$",
+    path(
+        "browse/<str:letter>", museum_site.file_views.file_directory,
+        name="browse_letter"
+    ),
+    path(
+        "file/<str:letter>/<str:filename>",
         museum_site.file_views.file_viewer, name="file"),
-    url(
-        r"^play/(?P<letter>[a-z1!])/(?P<filename>.*)$",
+    path(
+        "play/<str:letter>/<str:filename>",
         museum_site.zeta_views.zeta_launcher,
         {"components": ["credits", "controls", "instructions", "players"]},
         name="play"),
@@ -373,27 +374,26 @@ urlpatterns = [
 
     # Redirects
     path(
-        "twitter/", museum_site.views.redir,
-        {"url": "https://twitter.com/worldsofzzt"}),
+        "twitter/", RedirectView.as_view(url="https://twitter.com/worldsofzzt"),
+    ),
     path(
-        "tumblr/", museum_site.views.redir,
-        {"url": "http://worldsofzzt.tumblr.com"}),
+        "tumblr/", RedirectView.as_view(url="http://worldsofzzt.tumblr.com"),
+    ),
     path(
-        "discord/", museum_site.views.redir,
-        {"url": "https://discordapp.com/invite/Nar4Upf"},
+        "discord/", RedirectView.as_view(url="https://discordapp.com/invite/Nar4Upf"),
         name="discord_invite"),
     path(
-        "patreon/", museum_site.views.redir,
-        {"url": "https://patreon.com/worldsofzzt"}, name="patreon"),
+        "patreon/", RedirectView.as_view(url="https://patreon.com/worldsofzzt"),
+        name="patreon"),
     path(
-        "youtube/", museum_site.views.redir,
-        {"url": "https://www.youtube.com/c/WorldsofZZT"}),
+        "youtube/", RedirectView.as_view(url="https://www.youtube.com/c/WorldsofZZT"),
+        ),
     path(
-        "twitch/", museum_site.views.redir,
-        {"url": "https://twitch.tv/worldsofzzt"}),
+        "twitch/", RedirectView.as_view(url="https://twitch.tv/worldsofzzt"),
+        ),
     path(
-        "github/", museum_site.views.redir,
-        {"url": "https://github.com/DrDos0016/z2"}),
+        "github/", RedirectView.as_view(url="https://github.com/DrDos0016/museum-of-zzt"),
+        ),
 
     # Legacy Redirects
     path(

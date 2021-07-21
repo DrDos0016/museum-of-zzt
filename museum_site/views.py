@@ -260,10 +260,6 @@ def random(request):
     return redirect(zgame.file_url())
 
 
-def redir(request, url):
-    return redirect(url, permanent=True)
-
-
 def site_credits(request):
     """ Returns page for site credits """
     data = {"title": "Credits"}
