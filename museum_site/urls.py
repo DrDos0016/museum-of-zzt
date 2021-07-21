@@ -63,7 +63,7 @@ urlpatterns = [
         "article/",
         museum_site.article_views.article_directory, name="article_directory"),
     path(
-        "article/<slug:category>",
+        "article/<slug:category>/",
         museum_site.article_views.article_directory, name="article_category"),
     url(
         r"^article/(?P<article_id>[0-9]+)/page/(?P<page>[0-9]+)/(.*)$",
@@ -91,7 +91,7 @@ urlpatterns = [
         {"article_id": 5}, name="zzt_dosbox"),
     path(
         "support/", museum_site.article_views.article_view,
-        {"article_id": 586},
+        {"article_id": 576},
         name="support"),
     path(
         "zzt/", museum_site.article_views.article_view, {"article_id": 2},
@@ -104,14 +104,6 @@ urlpatterns = [
     path(
         "collection/play/", museum_site.views.play_collection,
         name="play_collection"),
-
-    # Closer Looks
-    path(
-        "closer-looks/", museum_site.article_views.article_directory,
-        {"category": "Closer Look"}, name="closer_looks"),
-    path(
-        "livestreams/", museum_site.article_views.article_directory,
-        {"category": "Livestream"}, name="livestreams"),
 
     # Directories
     url(
@@ -402,6 +394,12 @@ urlpatterns = [
     path(
         "github/", museum_site.views.redir,
         {"url": "https://github.com/DrDos0016/z2"}),
+
+    # Legacy Redirects
+    path(
+        "closer-looks/", RedirectView.as_view(url="/article/closer-look/")),
+    path(
+        "livestreams/", RedirectView.as_view(url="/article/livestream/")),
 
     # Tools
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),

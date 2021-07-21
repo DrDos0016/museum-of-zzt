@@ -117,8 +117,8 @@
         <h1>Exhibits</h1>
 
         <h2>Worlds of ZZT</h2>
-        <a href="{% url 'closer_looks' %}">Closer Looks</a>
-        <a href="{% url 'livestreams' %}">Livestreams</a>
+        <a href="{% url 'article_category' 'closer-look' %}">Closer Looks</a>
+        <a href="{% url 'article_category' 'livestream' %}">Livestreams</a>
         <a href="https://github.com/DrDos0016/zookeeper" target="_blank">Zookeeper</a>
 
         <h2>Directories</h2>
@@ -128,13 +128,14 @@
         <a href="{% url 'directory' 'genre' %}">Genre Directory</a>
         <a href="{% url 'review_directory' %}">Review Directory</a>
 
-        <h2>Search</h2>
+        <h2>Articles</h2>
+        <a href="{% url 'article_categories' %}">Article Categories</a>
         <a href="{% url 'article_search' %}">Search Articles</a>
 
         <h2>Playing</h2>
         <a href="{% url 'zeta' %}">Using ZZT with Zeta</a>
         <a href="{% url 'zzt_dosbox' %}">Using ZZT with DOSBox</a>
-        <a href="{% url 'article_directory' 'walkthrough' %}">Walkthroughs</a>
+        <a href="{% url 'article_category' 'walkthrough' %}">Walkthroughs</a>
         <a href="{% url 'zzt_cheats' %}">ZZT Cheats</a>
 
         <h2>Editing</h2>

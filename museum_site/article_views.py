@@ -12,6 +12,16 @@ def article_categories(request, category="all", page_num=1):
     """ Returns page listing all articles sorted either by date or name """
     data = {"title": "Article Categories"}
 
+    qs = Article.objects.exclude(category=REMOVED_ARTICLE).values(
+        "category"
+    ).annotate(total=Count("category")).order_by("category")
+
+    data["totals"] = {}
+    for entry in qs:
+        key = entry["category"].split(" ")[0].lower().replace("'", "")
+        data["totals"][key] = entry["total"]
+
+
     return render(request, "museum_site/article-categories.html", data)
 
 
@@ -23,6 +33,12 @@ def article_directory(request, category="all", page_num=1):
     qs = Article.search(request.GET)
 
     if category != "all":
+        if category == "lets-play":  # Special case for apostrophe
+            category = "Let's Play"
+        elif "-" in category:
+            category = category.replace("-", " ")
+        category = category.title()
+
         qs = qs.filter(category=category)
         data["title"] = category.title() + " Directory"
         data["category"] = category.title()
