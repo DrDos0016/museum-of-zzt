@@ -380,19 +380,23 @@ urlpatterns = [
         "tumblr/", RedirectView.as_view(url="http://worldsofzzt.tumblr.com"),
     ),
     path(
-        "discord/", RedirectView.as_view(url="https://discordapp.com/invite/Nar4Upf"),
+        "discord/", RedirectView.as_view(
+            url="https://discordapp.com/invite/Nar4Upf"),
         name="discord_invite"),
     path(
         "patreon/", RedirectView.as_view(url="https://patreon.com/worldsofzzt"),
         name="patreon"),
     path(
-        "youtube/", RedirectView.as_view(url="https://www.youtube.com/c/WorldsofZZT"),
+        "youtube/", RedirectView.as_view(
+            url="https://www.youtube.com/c/WorldsofZZT"),
         ),
     path(
         "twitch/", RedirectView.as_view(url="https://twitch.tv/worldsofzzt"),
         ),
     path(
-        "github/", RedirectView.as_view(url="https://github.com/DrDos0016/museum-of-zzt"),
+        "github/", RedirectView.as_view(
+            url="https://github.com/DrDos0016/museum-of-zzt"
+            ),
         ),
 
     # Legacy Redirects
