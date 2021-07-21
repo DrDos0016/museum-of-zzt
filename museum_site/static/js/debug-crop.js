@@ -7,8 +7,11 @@ T: <input name="left" value="">
 R: <input name="bottom" value="">
 B: <input name="right" value="">
 (​r0p: <input id="crop-output">
+<label><input id="mcrop" type="checkbox" value="mcrop" style="height:20px"> M(r0p</label>
+<div style="display:none">
 Raw X/Y: <input name="raw-xy" value="-/-">
 Tile X/Y: <input name="tile-xy" value="-/-">
+</div>
 </div>`;
 
 var click_coord = null;
@@ -32,8 +35,11 @@ var crop = function (data){
         translate_click(data);
         return true;
     }
+
+    // First click
     click_coord = null;
     $(".zzt-img").removeClass("editing");
+    $("#mcrop").prop("checked", false);
     $("#active").html($(this).children().attr("alt"));
     $("input[name=top]").val(1);
     $("input[name=left]").val(1);
@@ -75,7 +81,10 @@ var preview = function (){
     $(".zzt-img.editing").children().css({"max-width": "none", "position": "relative", "left": -1 * left, "top": -1 * top});
     $(".zzt-img.editing").css({"width": w, "height":h});
 
-    $("#crop-output").val(`tl='${t+1},${l+1}' br='${b+1},${r+1}'`);
+    var output = `tl='${t+1},${l+1}' br='${b+1},${r+1}'`;
+    if ($("#mcrop").is(":checked"))
+        output += " mc=1";
+    $("#crop-output").val(output);
 
 };
 
