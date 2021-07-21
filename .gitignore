@@ -11,7 +11,6 @@ zookeeper
 
 private*
 
-comic/static/comic/bencomic/*
 comic/static/comic/frost/*
 comic/static/comic/kaddar/*
 comic/static/comic/lemmy/*
@@ -20,30 +19,15 @@ comic/static/comic/nomad/*
 comic/static/comic/revvy/*
 comic/static/comic/ubgs/*
 comic/static/comic/zamros/*
-discord/discord.log
 discord/private.py
-tools/comic/json/*
-tools/comic/necocone.co/*
 tools/crons/private.py
-tools/crons/woz_queue.txt
-tools/extract
-tools/zookeeper
-tools/crons/*.png
 tools/data
-tools/db_dump.py
-tools/fonts
-tools/intro.png
-tools/private
 tools/retired
 museum_site/static/.well-known
 museum_site/static/admin
+museum_site/static/articles
 museum_site/static/comic
 museum_site/static/data/temp.png
-museum_site/static/images/articles/bugs/*
-museum_site/static/images/articles/cl/*
-museum_site/static/images/articles/frost-ost/*
-museum_site/static/images/articles/streams/*
-museum_site/static/images/articles/walkthrough/zombinator/*
 museum_site/static/data/mass_dl.json
 museum_site/static/data/scan.log
 museum_site/static/data/base/*
@@ -53,12 +37,8 @@ museum_site/templates/museum_site/debug.html
 .htpasswd
 DEV
 PROD
-ia.cfg
-patron_plans.txt
 
 *.conf
 *.exe
 *.pyc
-*.pnws
-*.vhost
 *.[zZ][iI][pP]
