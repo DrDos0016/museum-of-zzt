@@ -232,7 +232,7 @@ $(document).ready(function (){
     <button id="fullscreen">Fullscreen</button>
     {% if not components.advanced %}<button id="advanced-settings">Advanced Settings</button>{% endif %}
     {% if request.user.is_staff %}
-    <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.id}}">
+    <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.id}}/">
         {% csrf_token %}
         <button id="debug-screenshot">Set Screenshot</button>
         <input type="hidden" name="b64img" id="b64img">
