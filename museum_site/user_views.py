@@ -433,6 +433,8 @@ def login_user(request):
         "registration_open": ALLOW_REGISTRATION,
         "terms": TERMS,
     }
+    # TODO: Use this while the account system isn't "official"
+    request.session["account_beta"] = True
 
     if request.POST.get("action") == "login":
         if not (throttle_check(

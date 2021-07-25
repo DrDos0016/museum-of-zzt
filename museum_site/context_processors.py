@@ -59,4 +59,9 @@ def museum_global(request):
         request.session["FILES_IN_QUEUE"] = File.objects.filter(
             details__id__in=[DETAIL_UPLOADED]
         ).count()
+
+    # User beta
+    if request.user.is_authenticated:
+        request.session["account_beta"] = True
+
     return data
