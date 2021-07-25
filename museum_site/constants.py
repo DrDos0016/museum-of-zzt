@@ -253,8 +253,8 @@ release date may change.</p>"""
 EXTENSION_HINTS = {
     # ZZT
     ".BRD": ("Board File", [DETAIL_ZZT_BOARD], "OR"),
-    ".ZZT": ("ZZT World", [DETAIL_ZZT_BOARD]),
-    ".Z_T": ("ZZT World", [DETAIL_ZZT_BOARD]),
+    ".ZZT": ("ZZT World", [DETAIL_ZZT]),
+    ".Z_T": ("ZZT World", [DETAIL_ZZT]),
     ".HI": ("High Score File", [DETAIL_ZZT_SCORE, DETAIL_SZZT_SCORE], "OR"),
     ".MH": ("High Score File", [DETAIL_ZZT_SCORE], "AND"),
     ".MWZ": ("Mystic Winds ZZT World", [DETAIL_ZZT]),
