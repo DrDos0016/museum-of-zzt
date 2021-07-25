@@ -1300,6 +1300,11 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     padding-right:8px;
 }
 
+#analysis #zip-comment
+{
+    width:81ch;
+}
+
 #analysis .fv
 {
     margin-bottom:7px;

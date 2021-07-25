@@ -98,6 +98,11 @@ if (! confirm(explicit_warning))
                 </tr>
                 {% endfor %}
             </table>
+            {% if zip_comment %}
+            <hr>
+            <b>ZIP Comment:</b><br>
+            <pre class="cp437" readonly id="zip-comment">{{zip_comment}}</pre>
+            {% endif %}
         </div>
         <div id="world-info" class="toggle"></div>
         <div id="board-info" class="toggle"></div>

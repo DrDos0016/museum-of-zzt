@@ -151,6 +151,8 @@ def file_viewer(request, letter, filename, local=False):
             data["zip_info"] = sorted(
                 zip_file.infolist(), key=lambda k: k.filename.lower()
             )
+            data["zip_comment"] = zip_file.comment.decode("latin-1")
+            # TODO: "latin-1" may or may not actually be the case
 
             # Filter out directories (but not their contents)
             for f in files:
