@@ -52,7 +52,7 @@ $(document).ready(function (){
     $("#preview-review").click(function (){
         console.log("Previewing...");
         $.ajax({
-        url:"/ajax/render-review-text",
+        url:"/ajax/render-review-text/",
         method:"POST",
         data:{
             "text":$("#review-content").val(),

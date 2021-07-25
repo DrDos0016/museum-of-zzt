@@ -23,7 +23,7 @@ $(document).ready(function (){
         wozzt_info.b64img = document.getElementById("world-canvas").toDataURL();
 
         $.ajax({
-        url:"/ajax/wozzt_queue_add",
+        url:"/ajax/wozzt_queue_add/",
         method:"POST",
         data:wozzt_info
         }).done(function (resp){
