@@ -1513,9 +1513,7 @@ code .char:hover { cursor:help; }
 
 article[data-schema="80col"]
 {
-    font-family:"cp437", monospace;
     font-size:14pt;
-    width:80ch;
 }
 
 .side-commentary

@@ -73,6 +73,28 @@ body
 {% endif %}
 {% endblock %}
 
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("select[name=80col-font]").change(function (){
+        var new_font = $(this).val();
+        console.log(new_font);
+
+        if (new_font == "mono")
+        {
+            $("#80col-content").removeClass("cp437");
+            $("#80col-content").addClass("mono");
+        }
+        else
+        {
+            $("#80col-content").removeClass("mono");
+            $("#80col-content").addClass("cp437");
+        }
+    });
+});
+</script>
+{% endblock %}
+
 {% block world_content %}
 <div id="article-meta">
     <h1>{{article.title}}</h1>
@@ -108,6 +130,17 @@ body
 {% include "museum_site/blocks/article_view_page_block.html" %}
 {% endif %}
 
+{% if article.schema == "80col" %}
+<div id="article-controls">
+    <label for="80col-font"><b>Document Font:</b>
+    <select name="80col-font">
+        <option value="cp437">Classic - Preserves ASCII art</option>
+        <option value="mono">Modern - Preserves your eyes</option>
+    </select>
+    </label>
+</div>
+<hr>
+{% endif %}
 <article class="{{article.category|slugify}}" data-article_id="{{article.id}}" data-schema="{{article.schema}}">
 {% if veryspecial %}
 <div class="debug">
@@ -120,7 +153,7 @@ body
 {% elif article.schema == "text" %}
     {{article.content|safe|linebreaks}}
 {% elif article.schema == "80col" %}
-    <pre class="cp437">{{article.content|safe}}</pre>
+    <pre class="80col cp437" id="80col-content">{{article.content}}</pre>
 {% else %}
     {{article.render}}
 {% endif %}
