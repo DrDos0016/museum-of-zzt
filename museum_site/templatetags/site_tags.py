@@ -10,7 +10,7 @@ from django.template import defaultfilters as filters
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
-from museum_site.models import File
+from museum_site.models import File, Article
 from museum_site.constants import ADMIN_NAME, SITE_ROOT
 
 register = Library()
@@ -21,6 +21,19 @@ def as_template(raw):
     context_data = {"TODO": "TODO", "CROP": "CROP"}
     raw = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
     return Template(raw).render(Context(context_data))
+
+@register.filter
+def get_articles_by_id(raw):
+    if "-" in raw:
+        ends = raw.split("-")
+        ids = list(range(int(ends[0]), int(ends[1]) + 1))
+    else:
+        ids = list(map(int, raw.split(",")))
+    qs = Article.objects.filter(pk__in=ids)
+    articles = {}
+    for a in qs:
+        articles[str(a.id)] = a
+    return articles
 
 
 @register.filter
