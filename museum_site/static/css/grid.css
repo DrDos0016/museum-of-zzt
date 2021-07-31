@@ -19,6 +19,14 @@ a[target=_blank]
     background-repeat:no-repeat;
 }
 
+a[href^="https://www.digitalmzx.com"]
+{
+    padding-left:12px;
+    background:url("/static/chrome/mzx-smiley.png"), url("/static/images/external_link.png");
+    background-position:center left, top right;
+    background-repeat:no-repeat;
+}
+
 a.noext[target=_blank]
 {
     padding-right:0;
