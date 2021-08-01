@@ -99,9 +99,6 @@ def field_check(f):
     if DETAIL_LOST in detail_list and exists:
         issues["warnings"].append("File is marked as 'Lost', but a Zip exists.")
 
-    if DETAIL_CONTEST in detail_list:
-        issues["warnings"].append("File is marked as 'Contest', a deprecated Detail.")
-
     articles = f.articles.all()
     article_len = len(articles)
     if article_len != f.article_count:
