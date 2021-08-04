@@ -35,6 +35,8 @@ var CP437_TO_UNICODE = {
     248:176, 249:8729, 250:183, 251:8730, 252:8319, 253:178, 254:9632, 255:160,
 }
 
+var IS_SEARCHING = false;
+
 $(document).ready(function (){
     // Screenshot Zoom
     $(".screenshot-thumb").click(function (){
@@ -55,42 +57,6 @@ $(document).ready(function (){
     });
 
     // Reload on sort change
-    // TODO: This function should be removed when files/articles are both using the same pagination system
-    // TODO: Also the next one should likely reset you to page 1
-    $(".pages select[name=sort]").change(function (){
-        var location = ("" + window.location);
-
-        if (location.indexOf("?") == -1)
-            window.location = "?sort="+$(this).val();
-        else
-        {
-            var qs = location.split("?")[1];
-            var params = qs.split("&");
-            var new_qs = "?";
-            console.log(qs);
-            console.log(params);
-
-            for (var idx in params)
-            {
-                var key = params[idx].split("=")[0];
-                var val = params[idx].split("=")[1];
-
-                if (key == "sort")
-                    new_qs += key + "=" + $(this).val();
-                else
-                    new_qs += key + "=" + val;
-                new_qs += "&";
-            }
-            new_qs = new_qs.slice(0, -1);
-
-            // Make sure there's a sort param
-            if (new_qs.indexOf("sort=") == -1)
-                new_qs += "&sort="+$(this).val();
-
-            window.location = new_qs;
-        }
-    });
-
     $(".sort-methods select[name='sort']").change(function (){
         var location = ("" + window.location);
 
@@ -111,6 +77,8 @@ $(document).ready(function (){
 
                 if (key == "sort")
                     new_qs += key + "=" + $(this).val();
+                else if (key == "page")
+                    new_qs += "page=1";
                 else
                     new_qs += key + "=" + val;
                 new_qs += "&";
@@ -192,7 +160,35 @@ $(document).ready(function (){
         $(this).toggleClass("revealed");
     });
 
+    // Search suggestions
+    $("input[name=q]").bind("input", function (){
+        clearTimeout($(this).data("timeout"));
+        setTimeout(pre_search, 200);
+    });
 });
+
+function pre_search()
+{
+    var query = $("input[name=q]").val();
+    if (! query)
+        return false;
+
+    $.ajax({
+        url:"/ajax/get-search-suggestions/",
+        data:{
+            "q":query,
+        }
+    }).done(function (data){
+        var output = "";
+        for (var idx in data["suggestions"])
+        {
+            output += '<option value="'+data["suggestions"][idx]+'">';
+            console.log(idx, data["suggestions"][idx]);
+        }
+        $("#search-suggestions").html(output);
+        $("input[name=q]").focus();
+    });
+};
 
 // ZZT-OOP Syntax highlighting
 function syntax_highlight(oop)
