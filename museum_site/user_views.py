@@ -473,8 +473,8 @@ def login_user(request):
                     "<a href='/user/resend-activation/'>"
                     "Resend Activation Email</a>"
                 )
-
-            data["errors"]["pwd"] = "Invalid credentials provided!"
+            else:
+                data["errors"]["pwd"] = "Invalid credentials provided!"
 
     elif request.POST.get("action") == "register":
         if ALLOW_REGISTRATION:
