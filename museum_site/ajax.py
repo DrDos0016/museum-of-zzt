@@ -7,7 +7,7 @@ import os
 
 from io import BytesIO
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from PIL import Image
 from markdown_deux.templatetags import markdown_deux_tags
@@ -124,6 +124,37 @@ def debug_file(request):
         return HttpResponse("Not on production.")
     file = open(request.GET.get("file"), "rb")
     return HttpResponse(binascii.hexlify(file.read()))
+
+
+def get_search_suggestions(request, max_suggestions=25):
+    query = request.GET.get("q", "")
+    output = {"suggestions": []}
+
+    if query:
+        qs = File.objects.filter(
+            title__istartswith=query
+        ).exclude(
+            details__id__in=[DETAIL_UPLOADED]
+        ).only("title").distinct().order_by("sort_title")
+        for f in qs:
+            if f.title not in output["suggestions"]:
+                output["suggestions"].append(f.title)
+            if len(output["suggestions"]) >= max_suggestions:
+                break
+
+        if len(output["suggestions"]) < max_suggestions:
+            qs = File.objects.filter(
+                title__icontains=query
+            ).exclude(
+                details__id__in=[DETAIL_UPLOADED]
+            ).only("title").distinct().order_by("sort_title")
+
+            for f in qs:
+                if f.title not in output["suggestions"]:
+                    output["suggestions"].append(f.title)
+                if len(output["suggestions"]) >= max_suggestions:
+                    break
+    return JsonResponse(output)
 
 
 def render_review_text(request):

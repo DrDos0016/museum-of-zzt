@@ -352,6 +352,9 @@ urlpatterns = [
     # AJAX
     path("ajax/deep-search/phase-<int:phase>/", museum_site.ajax.deep_search),
     path("ajax/get_zip_file/", museum_site.ajax.get_zip_file),
+    path(
+        "ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions
+    ),
     path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add),
     path("ajax/render-review-text/", museum_site.ajax.render_review_text),
 

@@ -71,7 +71,7 @@
 
         <form method="GET" action="{% url 'search' %}">
         <div id="search-form">
-            <input name="q" value="{{q}}"><div class="low-res-break"></div>
+            <input name="q" value="{{q}}" list="search-suggestions" autocomplete="off"><div class="low-res-break"></div>
             <input id="search-button" type="submit" value="Search">
         </div>
         </form>
@@ -226,6 +226,9 @@ $("meta").each(function (){
 </script>
 {% endif %}
 </footer>
+
+<datalist id="search-suggestions">
+</datalist>
 
 </body>
 </html>
