@@ -111,6 +111,7 @@ SORT_CODES = {
     "id": ["-id"],
     "rating": ["-rating", "sort_title"],
     "release": ["release_date", "sort_title"],
+    "-release": ["-release_date", "sort_title"],
     "published": ["-publish_date", "-id"],
     "roulette": ["?"],
     "uploaded": ["-upload_date", "-id"],

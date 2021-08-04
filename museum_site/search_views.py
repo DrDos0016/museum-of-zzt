@@ -32,8 +32,14 @@ def article_search(request):
         {"text": "Title", "val": "title"},
         {"text": "Author", "val": "author"},
         {"text": "Category", "val": "category"},
-        {"text": "Date", "val": "date"},
+        {"text": "Newest", "val": "-date"},
+        {"text": "Oldest", "val": "date"},
     ]
+    if request.session.get("DEBUG"):
+        data["sort_options"] += [
+            {"text": "!ID New", "val": "-id"},
+            {"text": "!ID Old", "val": "id"}
+        ]
 
     data["categories"] = Article.objects.filter(
         published=PUBLISHED_ARTICLE
@@ -78,7 +84,8 @@ def search(request):
         {"text": "Author", "val": "author"},
         {"text": "Company", "val": "company"},
         {"text": "Rating", "val": "rating"},
-        {"text": "Release Date", "val": "release"},
+        {"text": "Release Date (Newest)", "val": "-release"},
+        {"text": "Release Date (Oldest)", "val": "release"},
     ]
     default_sort = ["sort_title"]
 
@@ -235,6 +242,8 @@ def search(request):
         qs = qs.order_by("company")
     elif request.GET.get("sort") == "rating":
         qs = qs.order_by("-rating")
+    elif request.GET.get("sort") == "-release":
+        qs = qs.order_by("-release_date")
     elif request.GET.get("sort") == "release":
         qs = qs.order_by("release_date")
     elif request.GET.get("sort") == "uploaded":

@@ -42,24 +42,36 @@ def article_directory(request, category="all", page_num=1):
         data["title"] = category.title() + " Directory"
         data["category"] = category.title()
 
-    if request.GET.get("sort", "date") == "date":
-        qs = qs.order_by("-publish_date")
+    if request.GET.get("sort") == "date":
+        qs = qs.order_by("publish_date")
     elif request.GET.get("sort") == "title":
         qs = qs.order_by("title")
     elif request.GET.get("sort") == "author":
         qs = qs.order_by("author")
     elif request.GET.get("sort") == "category":
         qs = qs.order_by("category")
+    elif request.GET.get("sort") == "id":
+        qs = qs.order_by("id")
+    elif request.GET.get("sort") == "-id":
+        qs = qs.order_by("-id")
+    else:  # Default (newest)
+        qs = qs.order_by("-publish_date")
 
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = get_selected_view_format(request, data["available_views"])
     data = get_pagination_data(request, data, qs)
     data["sort_options"] = [
-        {"text": "Date", "val": "date"},
+        {"text": "Newest", "val": "-date"},
+        {"text": "Oldest", "val": "date"},
         {"text": "Title", "val": "title"},
         {"text": "Author", "val": "author"},
         {"text": "Category", "val": "category"},
     ]
+    if request.session.get("DEBUG"):
+        data["sort_options"] += [
+            {"text": "!ID New", "val": "-id"},
+            {"text": "!ID Old", "val": "id"}
+        ]
 
     return render(request, "museum_site/article_directory.html", data)
 

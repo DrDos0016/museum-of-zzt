@@ -26,8 +26,14 @@ def file_directory(
         {"text": "Author", "val": "author"},
         {"text": "Company", "val": "company"},
         {"text": "Rating", "val": "rating"},
-        {"text": "Release Date", "val": "release"},
+        {"text": "Release Date (Newest)", "val": "-release"},
+        {"text": "Release Date (Oldest)", "val": "release"},
     ]
+    if request.session.get("DEBUG"):
+        data["sort_options"] += [
+            {"text": "!ID New", "val": "-id"},
+            {"text": "!ID Old", "val": "id"}
+        ]
 
     default_sort = None
 
@@ -76,6 +82,8 @@ def file_directory(
         qs = qs.order_by("-rating")
     elif request.GET.get("sort") == "release":
         qs = qs.order_by("release_date")
+    elif request.GET.get("sort") == "-release":
+        qs = qs.order_by("-release_date")
     elif request.GET.get("sort") == "uploaded":
         qs = qs.order_by("-upload_date")
     elif default_sort:
