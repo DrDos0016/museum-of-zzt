@@ -185,8 +185,8 @@
 <br>
 &copy; 2015-{{datetime.year}} <a href="mailto:{{EMAIL_ADDRESS}}">Dr. Dos</a><br>
 Additional content copyright its  <a href="{% url 'credits' %}">respective owners</a><br>
-<a href="{% url 'my_profile' %}">View my data</a>
-<br>
+Server Time: {{datetime}}<br>
+<a href="{% url 'my_profile' %}">View my data</a><br>
 {% if debug %}
 <div class="debug">
 Device Resolution: <span id="debug-res"></span><br>
