@@ -174,7 +174,7 @@ input[type=number]
     background-image:url('/static/chrome/spoiler-bg.png');
 }
 
-.spoiler img, .spoiler code
+.spoiler img, .spoiler code, .spoiler p a
 {
     visibility:hidden;
 }
@@ -185,7 +185,7 @@ input[type=number]
     background-image:none;
 }
 
-.spoiler.revealed img, .spoiler.revealed code
+.spoiler.revealed img, .spoiler.revealed code, .spoiler.revealed p a
 {
     visibility:visible;
 }
@@ -707,7 +707,7 @@ input[name=q]
     background:#98C9C9;
 }
 
-.content-warning
+.content-warning, .sticky-note
 {
     background:#DEF;
     display:flex;
@@ -719,26 +719,19 @@ input[name=q]
     margin-bottom:1em;
 }
 
-.content-warning .img
-{;
-    flex:0 0 150px;
-    height:50px;
-    padding:1em;
-}
-
-.content-warning .text
+.content-warning .text, .sticky-note .text
 {
     flex:1;
     font-size:smaller;
 }
 
-.content-warning .text p
+.content-warning .text p, .sticky-note .text
 {
     margin-top:0.25em;
     margin-bottom:0.25em;
 }
 
-.content-warning .text b.heading
+.content-warning .text b.heading, .sticky-note .text b.heading
 {
     font-size:larger;
     letter-spacing:0.5em;
