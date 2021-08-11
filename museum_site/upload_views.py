@@ -83,8 +83,11 @@ def upload(request):
                     details__id__in=[DETAIL_UPLOADED]
                 ).count()
 
-                return redirect("/upload/complete?edit_token={}".format(
-                    upload_info.edit_token)
+                return redirect(
+                    "/upload/complete?edit_token={}&generate_preview={}".format(
+                        upload_info.edit_token,
+                        request.POST.get("generate_preview", "0")
+                    )
                 )
             except ValidationError as e:
                 data["results"] = e
@@ -116,8 +119,8 @@ def upload_complete(request, edit_token=None):
         )
         data["file"] = File.objects.get(pk=data["your_upload"].file_id)
 
-    # Generate a screenshot (but not on DEV!)
-    if env_from_host(request.get_host()) != "DEV":
+    # Generate a screenshot if requested
+    if request.GET.get("generate_preview") == "1":
         data["file"].generate_screenshot()
 
     return render(request, "museum_site/upload_complete.html", data)

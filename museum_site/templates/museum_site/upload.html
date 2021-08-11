@@ -33,6 +33,13 @@ input[name=today]
 {
     flex:1 1 33%;
 }
+
+#generate_preview
+{
+    height:150px;
+    background:red;
+    padding:4px;
+}
 </style>
 {% endblock %}
 
@@ -230,6 +237,12 @@ $(document).ready(function (){
     </label>
     <input name="email" id="email" value="{{request.POST.email}}">
 </div>
+{% if not request.GET.token %}<div class="field">
+    <label for="company">Generate Preview Image:<br>
+        <span class="sub">If checked a preview image for the file will be generated (if possible) of the oldest contained ZZT file's title screen. This image may be changed during publication. This option cannot be changed after upload.</span>
+    </label>
+    <input id="generate_preview" name="generate_preview" type="checkbox" value="1" {% if request.POST.generate_preview or not request.POST %} checked{% endif %}>
+</div>{% endif %}
 <div class="field">
     <label for="desc">Upload Notes:<br>
         <span class="sub">Notes for the uploader. Consider anything entered in this field to be public.</span>
