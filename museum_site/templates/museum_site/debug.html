@@ -29,6 +29,8 @@
 </ul>
 </p>
 
+RG Test: {% if request.GET.test %}{{request.GET.test}}{% endif %}
+
 <p>Site Tags:
 <ul>
     <li><a href="#as-template">as_template</a></li>
@@ -703,9 +705,26 @@ And cool.
 
 <h2 id="il">Italicized Link</h2>
 
+<h2 id="il">Crop w/ Message ZZT_IMG</h2>
+
+{% commentary %}
+{% zzt_img 'articles/2021/gem-hunter-2/screen40.png' mc=1 tl='30,10' br='40,18' %}
+Kim and Gem Hunter are talking.
+{% endcommentary %}
+
 <h2>ETC</h2>
+
+<div class="sticky-note">
+    <div class="text">
+        <b class="heading">DEPRECATION WARNING</b>
+        <p>The following content contains material that is known to be outdated.</p>
+
+        <p></p>
+    </div>
+</div>
+
 <b>Edible Vomit running on WoZ v3.56 with blinking disabled</b><br>
-<iframe class="zeta-iframe" src="/zeta-launcher?executable=wozzt356.zip&arg=&commands=&blink_cycle=-1&charset_override=&bufferSize=2048&sampleRate=48000&noteDelay=1&volume=0.2&file_id=1277&mode=popout">
+<iframe class="zeta-iframe" src="/zeta-launcher?executable=wozzt356.zip&arg=&commands=&blink_cycle=-1&charset_override=&bufferSize=2048&sampleRate=48000&noteDelay=1&volume=0.2&file_id=1277&mode=popout"></iframe>
 <h2>
 {{f}}<br>
 
