@@ -10,6 +10,7 @@ zgames
 zookeeper
 
 private*
+test-*
 
 comic/static/comic/frost/*
 comic/static/comic/kaddar/*
