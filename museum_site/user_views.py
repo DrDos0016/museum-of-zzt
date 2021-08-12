@@ -15,6 +15,7 @@ from .mail import (
     send_forgotten_password_email,
     send_account_verification_email,
 )
+from .private import BETA_USERNAME, BETA_PASSWORD
 
 
 def activate_account(request, token=None):
@@ -683,7 +684,11 @@ def reset_password(request, token=None):
 
 
 def user_profile(request, user_id=None, **kwargs):
-    data = {"title": "User Profile"}
+    data = {
+        "title": "User Profile",
+        "BETA_USERNAME": BETA_USERNAME,
+        "BETA_PASSWORD": BETA_PASSWORD,
+    }
     excluded_keys = [
         "_auth_user_id",
         "_auth_user_backend",
