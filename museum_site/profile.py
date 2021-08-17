@@ -45,6 +45,7 @@ class Profile(models.Model):
     )
     patron = models.BooleanField(default=False)
     patronage = models.IntegerField(default=0)
+    patron_email = models.EmailField(blank=True, unique=True)
     patron_tier = models.CharField(max_length=10, default=0)
     patron_visibility = models.BooleanField(default=True)
     char = models.IntegerField(default=2)
@@ -106,6 +107,7 @@ class Profile(models.Model):
 
     def scrub(self):
         self.patron = False
+        self.patron_email = "test{}@example.com".format(self.user.id)
         self.patronage = 0
         self.patron_visibility = True
         self.patron_tier = "0"

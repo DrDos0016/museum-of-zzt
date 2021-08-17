@@ -312,6 +312,10 @@ urlpatterns = [
         "user/change-password/", museum_site.user_views.change_password,
         name="change_password"),
     path(
+        "user/change-patron-email/",
+        museum_site.user_views.change_patron_email,
+        name="change_patron_email"),
+    path(
         "user/change-username/", museum_site.user_views.change_username,
         name="change_username"),
     path(

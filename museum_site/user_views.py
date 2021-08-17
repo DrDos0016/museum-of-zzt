@@ -220,6 +220,34 @@ def change_email(request):
     return render(request, "museum_site/user-change-email.html", data)
 
 
+def change_patron_email(request):
+    data = {
+        "title": "Change Patron Email",
+        "errors": {
+        },
+        "changed": False,
+    }
+
+    success = True
+    if request.POST.get("action") == "change-patron-email":
+
+        email = request.POST.get("email", "")
+
+        request.user.profile.patron_email = email
+
+        try:
+            request.user.profile.save()
+            return redirect("my_profile")
+        except Exception:
+            data["error"] = ("Something went wrong. Your Patreon "
+                             "email address were not updated.")
+
+    return render(
+        request, "museum_site/user-change-patron-email.html", data
+    )
+
+
+
 def change_patronage_visibility(request):
     data = {
         "title": "Change Patronage Visibliity",

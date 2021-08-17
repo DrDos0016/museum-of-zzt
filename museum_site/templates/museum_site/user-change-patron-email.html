@@ -1,0 +1,32 @@
+{% extends "museum_site/main.html" %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Change Patron Email Address</h1>
+
+<p>In order for your account to be recognized as a patron account, your email address must match with an active patron account. By default, the email address you signed up for your Museum of ZZT account with is used. If this is not the same email address as your Patreon email address you may specify the correct email address here.</p>
+
+{% if error %}
+<p><b>{{error}}</b></p>
+{% endif %}
+
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="action" value="change-patron-email">
+
+<div class="field">
+    <label for="email">Patreon Account Email Address:<br>
+        <span class="sub"></span>
+    </label>
+    <div class="field-group">
+        <input id="email" name="email" maxlength="100" value="{{request.user.profile.patron_email}}">
+    </div>
+</div>
+
+<div class="field">
+    <button type="submit" id="submit-change-patron-email-button" class="full-width-submit">Change Patron Email Address</button>
+</div>
+
+</form>
+</section>
+{% endblock %}

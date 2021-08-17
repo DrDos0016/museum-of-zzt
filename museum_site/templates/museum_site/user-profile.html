@@ -108,6 +108,13 @@ function iso8601_to_user_tz(selector)
         <td>{{user_obj.profile.patron|yesno|title}}</td>
         <td><a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patreon</a></td>
     </tr>
+    {% if user_obj.profile.patron %}
+    <tr>
+        <th>Patron Email Address</th>
+        <td>{{user_obj.profile.patron_email}}</td>
+        <td><a href="{% url 'change_patron_email' %}">Change Patron Email</a></td>
+    </tr>
+    {% endif %}
     <tr>
         <th>Active</th>
         <td colspan="2">{{user_obj.is_active|yesno|title}}</td>
