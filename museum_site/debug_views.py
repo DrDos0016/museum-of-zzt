@@ -27,12 +27,14 @@ def debug(request):
     return render(request, "museum_site/debug.html", data)
 
 
-def debug_article(request):
+def debug_article(request, fname=""):
     data = {"id": 0}
     data["TODO"] = "TODO"
     data["CROP"] = "CROP"
 
-    filepath = os.path.join(SITE_ROOT, "wip", request.GET.get("file", ""))
+    fname = request.GET.get("file", fname)
+
+    filepath = os.path.join(SITE_ROOT, "wip", fname)
     if not os.path.isfile(filepath):
         filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")
 
@@ -40,7 +42,7 @@ def debug_article(request):
         article = Article.objects.get(pk=2)
         article.title = filepath
         article.category = "TEST"
-        article.static_directory = "wip-" + request.GET.get("file")[:-5]
+        article.static_directory = "wip-" + fname[:-5]
         article.content = fh.read().replace(
             "<!--Page-->", "<hr><b>PAGE BREAK</b><hr>"
         )

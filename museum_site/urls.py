@@ -447,6 +447,7 @@ urlpatterns = [
 
     # Debug
     path("debug/", museum_site.debug_views.debug),
+    path("debug/article/<str:fname>/", museum_site.debug_views.debug_article),
     path("debug/article/", museum_site.debug_views.debug_article),
     path("debug/colors/", museum_site.debug_views.debug_colors),
     path(
