@@ -19,16 +19,23 @@ def main():
     print("Starting...")
 
     #print("Getting Identity")
-    #get_identity()
+    #r = get_identity()
+    #print (r)
 
     #print("Getting campaigns")
-    #get_campaign()
+    #r = get_campaign()
+    #print(r)
+    #sys.exit()
 
     r = get_campaign_members()
+    #print(json.dumps(r["resp"]["included"], indent=4, sort_keys=True))
+    #sys.exit()
+
+    print(r)
     if r["success"]:
         data = r["resp"]["data"]
         for patron in data:
-            #print(json.dumps(patron, indent=4, sort_keys=True))
+            print(json.dumps(patron, indent=4, sort_keys=True))
             email = patron["attributes"]["email"]
             status = patron["attributes"]["patron_status"].split("_")[0]
             pledge = patron["attributes"]["currently_entitled_amount_cents"]
@@ -63,9 +70,18 @@ def get_campaign():
     return process_response(r)
 
 
+def get_tiers():
+    url = "https://www.patreon.com/api/oauth2/v2/campaigns/{}/tiers".format(WOZZT_CAMPAIGN_ID)
+    qs = "?fields[tier]=amount_cents,created_at,description,discord_role_ids,edited_at,patron_count,published,published_at,requires_shipping,title,url"
+    headers = {"Authorization": "Bearer {}".format(PATREON_ACCESS_TOKEN)}
+    print(url + qs)
+    r = requests.get(url + qs, headers=headers)
+    return process_response(r)
+
+
 def get_campaign_members():
     url = "https://www.patreon.com/api/oauth2/v2/campaigns/{}/members".format(WOZZT_CAMPAIGN_ID)
-    qs = "?include=currently_entitled_tiers&fields[member]=patron_status,email,currently_entitled_amount_cents,last_charge_date,last_charge_status"
+    qs = "?include=currently_entitled_tiers&fields[member]=patron_status,email,currently_entitled_amount_cents,last_charge_date,last_charge_status&fields[tier]=amount_cents,created_at,description,discord_role_ids,edited_at,patron_count,published,published_at,requires_shipping,title,url"
     headers = {"Authorization": "Bearer {}".format(PATREON_ACCESS_TOKEN)}
     r = requests.get(url + qs, headers=headers)
     return process_response(r)
