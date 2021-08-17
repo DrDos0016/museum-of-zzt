@@ -45,6 +45,9 @@
     <li><a href="{% url 'add_livestream' file.id %}">Add Livestream VOD</a></li>
     <li><a href="{% url 'extract_font' file.id %}">Extract Font</a></li>
     <li><a href="{% url 'reletter' file.id %}">Re-Letter Zip</a></li>
+    {% if file.is_uploaded %}
+    <li><a href="{% url 'queue_removal' file.letter file.filename %}">Upload Queue Removal</a></li>
+    {% endif %}
 </ul>
 
 {% if request.GET.recalculate %}

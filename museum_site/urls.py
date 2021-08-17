@@ -462,6 +462,10 @@ urlpatterns = [
         "tools/publish/<int:pk>/", museum_site.tool_views.publish,
         name="publish"),
     path(
+        "tools/queue-removal/<str:letter>/<str:filename>",
+        museum_site.tool_views.queue_removal,
+        name="queue_removal"),
+    path(
         "tools/reletter/<int:pk>/", museum_site.tool_views.reletter,
         name="reletter"),
     path(

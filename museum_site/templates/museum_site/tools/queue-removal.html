@@ -1,0 +1,26 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<section id="content" class="block">
+{% if file and not success %}
+<br>
+<form method="POST">
+{% csrf_token %}
+<input name="action" value="queue-removal" type="hidden">
+<label for="confirm">Confirm Removal</label>
+<input type="checkbox" id="confirm" name="confirm" value="confirm">
+<br><br>
+<input type="submit" value="Remove Zipfile, File object, and Upload object">
+</form>
+{% else %}
+    {% if success %}
+        <br>
+        <p>Successfully removed file from queue!</p>
+        <p><a href="{% url 'uploaded_worlds' %}">Upload Queue</a></p>
+    {% else %}
+        <p>Could not find file. Results: {{length|default:"?"}}</p>
+    {% endif %}
+{% endif %}
+</section>
+{% endblock %}

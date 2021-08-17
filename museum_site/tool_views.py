@@ -376,6 +376,46 @@ def publish(request, pk):
 
 
 @staff_member_required
+def queue_removal(request, letter, filename):
+    data = {"title": "Queue Removal"}
+    qs = File.objects.filter(letter=letter, filename=filename)
+    if len(qs) != 1:
+        data["results"] = len(qs)
+    else:
+        data["file"] = qs[0]
+
+    if request.POST.get("action") == "queue-removal" and request.POST.get("confirm"):
+        # Remove the physical file
+        path = data["file"].phys_path()
+        print(path)
+        if os.path.isfile(path):
+            os.remove(path)
+
+        # Remove the Upload object
+        qs = Upload.objects.filter(file_id=data["file"].id)
+        if qs:
+            upload = qs[0]
+            print(upload)
+            upload.delete()
+
+        # Remove the preview image
+        screenshot_path = data["file"].screenshot_phys_path()
+        if screenshot_path:
+            print(screenshot_path)
+            if os.path.isfile(screenshot_path):
+                os.remove(screenshot_path)
+
+        # Remove the file object
+        data["file"].delete()
+
+        # TODO: Adjust user upload count if applicable
+
+        data["success"] = True
+
+    return render(request, "museum_site/tools/queue-removal.html", data)
+
+
+@staff_member_required
 def reletter(request, pk):
     data = {"title": "Re-Letter Zip"}
     data["file"] = File.objects.get(pk=pk)
