@@ -88,9 +88,9 @@ function iso8601_to_user_tz(selector)
     </tr>
 </table>
 <hr>
+{% if private %}
 <h1>Private Data</h1>
 <br><br>
-{% if private %}
 <h2>User Data</h2>
 <table>
     <tr>
@@ -134,7 +134,7 @@ function iso8601_to_user_tz(selector)
 <table>
     <tr>
         <th>Patronage</th>
-        <td colspan="2">{{user_obj.profile.get_pledge}} - TIER</td>
+        <td colspan="2">{{user_obj.profile.get_pledge}} - <i>"{{user_obj.profile.patron_tier|tiername}}"</i></td>
     </tr>
     <tr>
         <th>Patronage Visibility</th>

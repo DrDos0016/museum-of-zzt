@@ -49,7 +49,7 @@ def get_files_by_id(raw):
 @register.filter(name="tiername")
 @stringfilter
 def tiername_filter(raw):
-    output = TIER_NAMES.get(raw, "UNKNOWN")
+    output = TIER_NAMES.get(raw, "Unknown Tier Or No Tier Selected")
     return output
 
 
