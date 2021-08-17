@@ -35,18 +35,31 @@ def main():
                 )
                 last_date = patron["attributes"]["last_charge_date"]
                 last_status = patron["attributes"]["last_charge_status"]
-                # print(pledge, status, last_date, last_status, email)
+                tier_id = 0
+                if patron["relationships"]["currently_entitled_tiers"]["data"]:
+                    tier_id = (
+                        patron["relationships"]["currently_entitled_tiers"]
+                        ["data"][0]["id"]
+                    )
+
+                #print(pledge, status, last_date, last_status, email)
 
                 if status == "active":
                     qs = User.objects.filter(
-                        email=email, is_active=True
+                        profile__patron_email=email, is_active=True
                     ).only("id")
                     if qs:
                         profile = Profile.objects.get(user_id=qs[0].id)
                         profile.patron = True
-                        profile.patron_level = pledge
+                        profile.patronage = pledge
+                        print(tier_id)
+                        if tier_id:
+                            profile.patron_tier = tier_id
                         profile.save()
-                        print("Marked", profile, "as Patron")
+                        print(
+                            "Marked", profile, "as Patron with pledge of",
+                            pledge, "tier", tier_id
+                        )
         else:
             break
 
