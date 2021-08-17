@@ -20,15 +20,19 @@
         <th>Act.</th>
         <th>Staff</th>
         <th>Patron</th>
+        <th>Pledge</th>
+        <th>Tier</th>
     </tr>
     {% for u in users %}
     <tr>
-        <td><a href="/admin/auth/user/{{u.id}}/change/">{{u.id|zfill:3}}</a> (<a href="/admin/museum_site/profile/{{u.profile.pk}}/change/">profile</a>)</td>
+        <td><a href="/admin/auth/user/{{u.id}}/change/">{{u.id|zfill:3}}</a> / <a href="/admin/museum_site/profile/{{u.profile.pk}}/change/">profile</a></td>
         <td><a href="{{u.profile.link}}">{{u.username}}</a></td>
         <td>{{u.email}}</td>
         <td class="c">{{u.is_active|yesno:"✅,❌"}}</td>
         <td class="c">{{u.is_staff|yesno:"✅, "}}</td>
-        <td class="c">{{u.profile.patron|yesno:"✅,❌"}} ({{u.profile.get_pledge|floatformat:2}})</td>
+        <td class="c">{{u.profile.patron|yesno:"✅,❌"}}</td>
+        <td class="r">({{u.profile.get_pledge}})</td>
+        <td class="c">{{u.profile.patron_tier|tiername}}</td>
     </tr>
     {% endfor %}
 </table>
