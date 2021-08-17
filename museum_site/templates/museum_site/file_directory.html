@@ -36,6 +36,13 @@ The former replacing CGotM, and the latter replacing GoTM.</p>
 
 <p>On the Museum of ZZT, "Featured World" status is given to worlds not just of high quality, but also of considerable interest to those looking to see what ZZT offers.</p>
 {% endif %}
+{% if request.path == "/uploaded/" %}
+<p>The upload queue is a collection of files which have been submitted for publication, but not yet looked at in detail. These files could potentially contain anything and have not had any vetting whatsoever. Unpublished files are to be downloaded at your own risk. If a file is in some way malicious or outside the scope of what the Museum offers, contact <a href="mailto:{{EMAIL_ADDRESS}}">Dr. Dos</a> to get them removed as quickly as possible.</p>
+
+<p>Additionally because these files have not have any verification, some functionality like the "Play Online" feature will use default settings which may not be appropriate for the upload.</p>
+
+<p>If you're looking to submit a file for upload yourself, check ou the <a href="{% url 'upload' %}">upload page</a>.
+{% endif %}
 
 {% if mode == "Roulette" %}
 <div class="roulette-links">
