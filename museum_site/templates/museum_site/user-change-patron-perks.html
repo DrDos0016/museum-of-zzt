@@ -1,0 +1,40 @@
+{% extends "museum_site/main.html" %}
+
+{% block style %}
+<style>
+#value
+{
+    height:200px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>{{title}}</h1>
+
+<p>{% if changed %}<b>Your {{label}} have been updated successfully!</b>{% else %}<br>{% endif %}</p>
+
+<form method="POST">
+<input type="hidden" name="action" value="{{function}}">
+{% csrf_token %}
+<div class="field{% if errors.etc %} error{% endif %}">
+    <label for="value">{{label}}<br>
+        <span class="sub">2000 character limit.<br><br>
+        Ideally keep one suggestion per line.<br><br>
+        This data isn't parsed in any way so you may write whatever you like as long as it can be understood by Dr. Dos.<br><br>
+        Suggestions will be used from top to bottom. If you have any questions, <a href="mailto:{{EMAIL_ADDRESS}}">contact me</a>.<br><br>
+
+        If your suggestion cannot be used for whatever reason (author request or some other conflict) you will be contacted.</span>
+    </label>
+    <div class="field-group">
+        <textarea id="value" name="value" maxlength="2000">{{current}}</textarea>
+        <p class="form-error">{{errors.etc}}</p>
+    </div>
+</div>
+<div class="field">
+    <button type="submit" id="submit-change-perk-button" class="full-width-submit">Change {{label}}</button>
+</div>
+</form>
+</section>
+{% endblock %}

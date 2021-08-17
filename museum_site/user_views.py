@@ -275,6 +275,60 @@ def change_pronouns(request):
     return render(request, "museum_site/user-change-pronouns.html", data)
 
 
+def change_patron_perks(request):
+    """ Generic function to handle poll nominations, stream selections, etc """
+    data = {
+        "errors": {},
+        "changed": False
+    }
+    labels = {
+        "change-stream-poll-nominations":"Stream Poll Nominations",
+        "change-stream-selections":"Stream Selections",
+        "change-closer-look-poll-nominations": "Closer Look Poll Nominations",
+        "change-guest-stream-selections": "Guest Stream Selections",
+        "change-closer-look-selections":"Closer Look Selections",
+        "change-bkzzt-topics":"BKZZT Topics",
+    }
+
+    data["function"] = request.path.replace("/user/", "")[:-1]
+    data["title"] = data["function"].title().replace("-", " ")
+    data["label"] = labels[data["function"]]
+
+    if data["function"] == "change-stream-poll-nominations":
+        data["current"] = request.user.profile.stream_poll_nominations
+    elif data["function"] == "change-stream-selections":
+        data["current"] = request.user.profile.stream_selections
+    elif data["function"] == "change-closer-look-poll-nominations":
+        data["current"] = request.user.profile.closer_look_nominations
+    elif data["function"] == "change-guest-stream-selections":
+        data["current"] = request.user.profile.guest_stream_selections
+    elif data["function"] == "change-closer-look-selections":
+        data["current"] = request.user.profile.closer_look_selections
+    elif data["function"] == "change-bkzzt-topics":
+        data["current"] = request.user.profile.bkzzt_topics
+
+    if request.POST.get("action") and request.POST.get("value"):
+        action = request.POST["action"]
+        value = request.POST.get("value")
+        if action == "change-stream-poll-nominations":
+            request.user.profile.stream_poll_nominations = value
+        elif action == "change-stream-selections":
+            request.user.profile.stream_selections = value
+        elif action == "change-closer-look-poll-nominations":
+            request.user.profile.closer_look_nominations = value
+        elif action == "change-guest-stream-selections":
+            request.user.profile.guest_stream_selections = value
+        elif action == "change-closer-look-selections":
+            request.user.profile.closer_look_selections = value
+        elif action == "change-bkzzt-topics":
+            request.user.profile.bkzzt_topics = value
+
+        request.user.profile.save()
+        return redirect("my_profile")
+
+    return render(request, "museum_site/user-change-patron-perks.html", data)
+
+
 def change_username(request):
     data = {
         "title": "Change Username",
@@ -695,6 +749,8 @@ def user_profile(request, user_id=None, **kwargs):
         "_auth_user_hash",
         "login_attempts",
         "lockout_expiration",
+        "reg_attempts",
+        "pw_reset_attempts",
     ]
 
     to_delete = request.GET.get("delete")

@@ -315,16 +315,8 @@ urlpatterns = [
         "user/change-username/", museum_site.user_views.change_username,
         name="change_username"),
     path(
-        "user/change-patronage-visibility/",
-        museum_site.user_views.change_patronage_visibility,
-        name="change_patronage_visibility"),
-    path(
         "user/change-pronouns/", museum_site.user_views.change_pronouns,
         name="change_pronouns"),
-    path(
-        "user/change-credit-preferences/",
-        museum_site.user_views.change_credit_preferences,
-        name="change_credit_preferences"),
     path(
         "error/login/", museum_site.user_views.error_login,
         name="error_login"),
@@ -334,6 +326,40 @@ urlpatterns = [
     path(
         "error/password-reset/", museum_site.user_views.error_password_reset,
         name="error_password_reset"),
+
+    # User Patron Pages
+    path(
+        "user/change-credit-preferences/",
+        museum_site.user_views.change_credit_preferences,
+        name="change_credit_preferences"),
+    path(
+        "user/change-patronage-visibility/",
+        museum_site.user_views.change_patronage_visibility,
+        name="change_patronage_visibility"),
+    path(
+        "user/change-stream-poll-nominations/",
+        museum_site.user_views.change_patron_perks,
+        name="change_stream_poll_nominations"),
+    path(
+        "user/change-stream-selections/",
+        museum_site.user_views.change_patron_perks,
+        name="change_stream_selections"),
+    path(
+        "user/change-closer-look-poll-nominations/",
+        museum_site.user_views.change_patron_perks,
+        name="change_closer_look_poll_nominations"),
+    path(
+        "user/change-guest-stream-selections/",
+        museum_site.user_views.change_patron_perks,
+        name="change_guest_stream_selections"),
+    path(
+        "user/change-closer-look-selections/",
+        museum_site.user_views.change_patron_perks,
+        name="change_closer_look_selections"),
+    path(
+        "user/change-bkzzt-topics/",
+        museum_site.user_views.change_patron_perks,
+        name="change_bkzzt_topics"),
 
     # Worlds of ZZT
     path(

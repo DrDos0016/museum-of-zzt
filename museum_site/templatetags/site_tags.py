@@ -11,7 +11,7 @@ from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
 from museum_site.models import File, Article
-from museum_site.constants import ADMIN_NAME, SITE_ROOT
+from museum_site.constants import ADMIN_NAME, SITE_ROOT, TIER_NAMES
 
 register = Library()
 
@@ -44,6 +44,13 @@ def get_files_by_id(raw):
     for f in qs:
         files[str(f.id)] = f
     return files
+
+
+@register.filter(name="tiername")
+@stringfilter
+def tiername_filter(raw):
+    output = TIER_NAMES.get(raw, "UNKNOWN")
+    return output
 
 
 @register.filter(name="zfill")

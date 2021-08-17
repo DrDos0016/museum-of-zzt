@@ -10,6 +10,16 @@
 {% endif %}
 {% endblock %}
 
+{% block style %}
+<style>
+.table-textarea
+{
+    width:99%;
+    height:90px;
+}
+</style>
+{% endblock %}
+
 {% block scripts %}
 <script>
 $(document).ready(function (){
@@ -24,9 +34,10 @@ function iso8601_to_user_tz(selector)
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
-    console.log("RAW", raw);
     var d = new Date(raw);
-    output = months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear() + ", " + d.getHours() + ":" + d.getMinutes();
+    var h = ("0" + d.getHours()).slice(-2);
+    var m = ("0" + d.getMinutes()).slice(-2);
+    output = months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear() + ", " + h + ":" + m;
     $(selector).html(output);
 }
 </script>
@@ -35,7 +46,9 @@ function iso8601_to_user_tz(selector)
 {% block content %}
 <section id="content" class="block">
 {% if user_obj %}
-<h1>Public User Data</h1>
+<h1>Profile for {{user_obj.username}}</h1>
+{% if request.session.DEBUG %}<a href="/admin/auth/user/{{user_obj.id}}/change/" class="debug">Edit User</a>
+<a href="/admin/museum_site/profile/{{user_obj.profile.pk}}/change/" class="debug">Edit Profile</a>{% endif %}
 <table>
     <tr>
         <th>Username</th>
@@ -74,10 +87,11 @@ function iso8601_to_user_tz(selector)
         {% if private %}<td><a href="{% url 'change_pronouns' %}">Change Pronouns</a>{% endif %}
     </tr>
 </table>
-
+<hr>
+<h1>Private Data</h1>
+<br><br>
 {% if private %}
-<h1>Private User Data</h1>
-
+<h2>User Data</h2>
 <table>
     <tr>
         <th>Password</th>
@@ -95,11 +109,6 @@ function iso8601_to_user_tz(selector)
         <td><a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patreon</a></td>
     </tr>
     <tr>
-        <th>Patronage Visibility</th>
-        <td>{{user_obj.profile.patron_visibility|yesno:"On,Off"}}</td>
-        {% if private %}<td><a href="{% url 'change_patronage_visibility' %}">Change Patronage Visibility</a></td>{% endif %}
-    </tr>
-    <tr>
         <th>Active</th>
         <td colspan="2">{{user_obj.is_active|yesno|title}}</td>
     </tr>
@@ -111,9 +120,19 @@ function iso8601_to_user_tz(selector)
         <th>Maximum Upload Size</th>
         <td colspan="2">{{user_obj.profile.max_upload_size|filesizeformat}} ({{user_obj.profile.max_upload_size}} bytes)</td>
     </tr>
+</table>
+
+{% if user_obj.profile.patron %}
+<h2>Worlds of ZZT Patronage</h2>
+<table>
     <tr>
-        <th>Patron Level</th>
-        <td colspan="2">{{user_obj.profile.get_pledge}}</td>
+        <th>Patronage</th>
+        <td colspan="2">{{user_obj.profile.get_pledge}} - TIER</td>
+    </tr>
+    <tr>
+        <th>Patronage Visibility</th>
+        <td>{{user_obj.profile.patron_visibility|yesno:"On,Off"}}</td>
+        <td><a href="{% url 'change_patronage_visibility' %}">Change Patronage Visibility</a></td>
     </tr>
     <tr>
         <th>Site Credits Name*</th>
@@ -124,10 +143,71 @@ function iso8601_to_user_tz(selector)
         <th>Stream Credits Name*</th>
         <td>{{user_obj.profile.stream_credits_name|default:"<i>Not provided</i>"}}</td>
     </tr>
+    <tr>
+        <th>Stream Poll Nominations<br>[$2+]</th>
+        <td colspan="2">{% if user_obj.profile.patronage >= 200 %}<textarea readonly class="table-textarea">{{user_obj.profile.stream_poll_nominations}}</textarea>
+        <p class="r"><a href="{% url 'change_stream_poll_nominations' %}">Change Stream Poll Nominations</a></p>
+        {% else %}<i>Unavailable at your current pledge and/or tier.</i>
+        {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Stream Selections<br>[$20+, "ZZT River Stream" Tier]</th>
+        <td colspan="2">{% if user_obj.profile.patronage >= 2000 %}<textarea readonly class="table-textarea">{{user_obj.profile.stream_selections}}</textarea>
+        <p class="r"><a href="{% url 'change_stream_selections' %}">Change Stream Selections</a></p>{% else %}
+        <i>Unavailable at your current pledge and/or tier.</i>
+        {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Closer Look Poll Nominations<br>[$20+, "20 KB Board Size" Tier]</th>
+        <td colspan="2">{% if user_obj.profile.patronage >= 2000 %}<textarea readonly class="table-textarea">{{user_obj.profile.closer_look_nominations}}</textarea>
+        <p class="r"><a href="{% url 'change_closer_look_poll_nominations' %}">Change Closer Look Poll Nominations</a></p>
+        {% else %}
+        <i>Unavailable at your current pledge and/or tier.</i>
+        {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Guest Stream Selections<br>[$30+, "Throwstar Seek" Tier]</th>
+        <td colspan="2">{% if user_obj.profile.patronage >= 3000 %}<textarea readonly class="table-textarea">{{user_obj.profile.guest_stream_selections}}</textarea>
+        <p class="r"><a href="{% url 'change_guest_stream_selections' %}">Change Guest Stream Selections</a></p>
+        {% else %}
+        <i>Unavailable at your current pledge and/or tier.</i>
+        {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Closer Look Selection<br>[$50+, "?HEALTH" Tier]</th>
+        <td colspan="2">{% if user_obj.profile.patronage >= 5000 %}<textarea readonly class="table-textarea">{{user_obj.profile.closer_look_selections}}</textarea>
+        <p class="r"><a href="{% url 'change_closer_look_selections' %}">Change Closer Look Selections</a></p>
+        {% else %}
+        <i>Unavailable at your current pledge and/or tier.</i>
+        {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>BKZZT Topics<br>[$100+, "Bribe the Mayor..." Tier]</th>
+        <td colspan="2">{% if user_obj.profile.patronage >= 10000 %}<textarea readonly class="table-textarea">{{user_obj.profile.bkzzt_topics}}</textarea>
+        <p class="r"><a href="{% url 'change_bkzzt_topics' %}">Change BKZZT Topics</a></p>
+        {% else %}
+        <i>Unavailable at your current pledge and/or tier.</i>
+        {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Beta Site Credentials<br>[$5+]</th>
+        {% if user_obj.profile.patronage >= 500 %}<td class="mono">Username: {{BETA_USERNAME}}<br>Password: {{BETA_PASSWORD}}</td>
+        <td><a href="https://beta.museumofzzt.com" target="_blank">Visit Beta Site</a></td>
+        {% else %}
+        <td colspan="2"><i>Unavailable at your current pledge and/or tier.</i></td>
+        {% endif %}
+    </tr>
 </table>
-
-<p><i>* This information is not displayed on your public profile, but is publicly displayed elsewhere.</i></p>
+<p>Patronage information is updated nightly. If information is inaccurate and you are unable to access functionality you should be able to access, contact <a href="mailto:{{EMAIL_ADDRESS}}">Dr. Dos</a>.
+<p class="r"><i>* This information is not displayed on your public profile, but is publicly displayed elsewhere.</i></p>
 {% endif %}
+{% endif %}{% comment %}End private check{% endcomment %}
 
 {% else %}
 <h1>Non-Registered User Data</h1>
@@ -140,12 +220,11 @@ function iso8601_to_user_tz(selector)
         <th>Maximum Upload Size</th>
         <td>{{UPLOAD_CAP|filesizeformat}} ({{UPLOAD_CAP}} bytes)</td>
     </tr>
-
 </table>
 {% endif %}
 
 {% if show_session %}
-<h1>Private Session Data</h1>
+<h1>Session Data</h1>
 
 <table>
     {% for k,v,hr in user_data %}

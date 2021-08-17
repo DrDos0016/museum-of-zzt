@@ -44,7 +44,8 @@ class Profile(models.Model):
         primary_key=True,
     )
     patron = models.BooleanField(default=False)
-    patron_level = models.IntegerField(default=0)
+    patronage = models.IntegerField(default=0)
+    patron_tier = models.CharField(max_length=10, default=0)
     patron_visibility = models.BooleanField(default=True)
     char = models.IntegerField(default=2)
     fg = models.CharField(max_length=11, default="white")
@@ -71,6 +72,14 @@ class Profile(models.Model):
     reset_token = models.CharField(max_length=64, blank=True)
     reset_time = models.DateTimeField(null=True, blank=True)
 
+    # Patron perks
+    stream_poll_nominations = models.TextField(max_length=2000, blank=True)
+    stream_selections = models.TextField(max_length=2000, blank=True)
+    closer_look_nominations = models.TextField(max_length=2000, blank=True)
+    guest_stream_selections = models.TextField(max_length=2000, blank=True)
+    closer_look_selections = models.TextField(max_length=2000, blank=True)
+    bkzzt_topics = models.TextField(max_length=2000, blank=True)
+
     def __str__(self):
         return "Profile for user #{} - {}".format(self.user.id, self.user.username)
 
@@ -86,12 +95,20 @@ class Profile(models.Model):
 
     @property
     def get_pledge(self):
-        return ("$" + str(self.patron_level / 100))
+        strval = str(self.patronage)
+        if self.patronage >= 100:
+            amount = ("$" + strval[:-2] + "." + strval[-2:])
+        elif self.patronage >= 10:
+            amount = ("$0." + strval)
+        else:
+            amount = ("$0.0" + strval)
+        return amount
 
     def scrub(self):
         self.patron = False
-        self.patron_level = 0
+        self.patronage = 0
         self.patron_visibility = True
+        self.patron_tier = "0"
         self.char = 2
         self.fg = "white"
         self.bg = "darkblue"
@@ -104,4 +121,10 @@ class Profile(models.Model):
         self.activation_time = None
         self.reset_token = ""
         self.reset_time = None
+        self.stream_poll_nominations = ""
+        self.stream_selections = ""
+        self.closer_look_nominations = ""
+        self.guest_stream_selections = ""
+        self.closer_look_selections = ""
+        self.bkzzt_topics = ""
         return True
