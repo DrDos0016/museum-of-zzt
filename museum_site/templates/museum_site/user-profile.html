@@ -160,7 +160,7 @@ function iso8601_to_user_tz(selector)
     </tr>
     <tr>
         <th>Stream Selections<br>[$20+, "ZZT River Stream" Tier]</th>
-        <td colspan="2">{% if user_obj.profile.patronage >= 2000 %}<textarea readonly class="table-textarea">{{user_obj.profile.stream_selections}}</textarea>
+        <td colspan="2">{% if user_obj.profile.patronage >= 2000 and user_obj.profile.patron_tier == TIERS.ZZT_RIVER %}<textarea readonly class="table-textarea">{{user_obj.profile.stream_selections}}</textarea>
         <p class="r"><a href="{% url 'change_stream_selections' %}">Change Stream Selections</a></p>{% else %}
         <i>Unavailable at your current pledge and/or tier.</i>
         {% endif %}
@@ -168,7 +168,7 @@ function iso8601_to_user_tz(selector)
     </tr>
     <tr>
         <th>Closer Look Poll Nominations<br>[$20+, "20 KB Board Size" Tier]</th>
-        <td colspan="2">{% if user_obj.profile.patronage >= 2000 %}<textarea readonly class="table-textarea">{{user_obj.profile.closer_look_nominations}}</textarea>
+        <td colspan="2">{% if user_obj.profile.patronage >= 2000 and user_obj.profile.patron_tier == TIERS.BOARD_SIZE %}<textarea readonly class="table-textarea">{{user_obj.profile.closer_look_nominations}}</textarea>
         <p class="r"><a href="{% url 'change_closer_look_poll_nominations' %}">Change Closer Look Poll Nominations</a></p>
         {% else %}
         <i>Unavailable at your current pledge and/or tier.</i>
@@ -177,7 +177,7 @@ function iso8601_to_user_tz(selector)
     </tr>
     <tr>
         <th>Guest Stream Selections<br>[$30+, "Throwstar Seek" Tier]</th>
-        <td colspan="2">{% if user_obj.profile.patronage >= 3000 %}<textarea readonly class="table-textarea">{{user_obj.profile.guest_stream_selections}}</textarea>
+        <td colspan="2">{% if user_obj.profile.patronage >= 3000  and user_obj.profile.patron_tier == TIERS.THROWSTAR_SEEK %}<textarea readonly class="table-textarea">{{user_obj.profile.guest_stream_selections}}</textarea>
         <p class="r"><a href="{% url 'change_guest_stream_selections' %}">Change Guest Stream Selections</a></p>
         {% else %}
         <i>Unavailable at your current pledge and/or tier.</i>
@@ -186,7 +186,7 @@ function iso8601_to_user_tz(selector)
     </tr>
     <tr>
         <th>Closer Look Selection<br>[$50+, "?HEALTH" Tier]</th>
-        <td colspan="2">{% if user_obj.profile.patronage >= 5000 %}<textarea readonly class="table-textarea">{{user_obj.profile.closer_look_selections}}</textarea>
+        <td colspan="2">{% if user_obj.profile.patronage >= 5000  and user_obj.profile.patron_tier == TIERS.HEALTH %}<textarea readonly class="table-textarea">{{user_obj.profile.closer_look_selections}}</textarea>
         <p class="r"><a href="{% url 'change_closer_look_selections' %}">Change Closer Look Selections</a></p>
         {% else %}
         <i>Unavailable at your current pledge and/or tier.</i>
@@ -195,7 +195,7 @@ function iso8601_to_user_tz(selector)
     </tr>
     <tr>
         <th>BKZZT Topics<br>[$100+, "Bribe the Mayor..." Tier]</th>
-        <td colspan="2">{% if user_obj.profile.patronage >= 10000 %}<textarea readonly class="table-textarea">{{user_obj.profile.bkzzt_topics}}</textarea>
+        <td colspan="2">{% if user_obj.profile.patronage >= 10000  and user_obj.profile.patron_tier == TIERS.BRIBE_THE_MAYOR %}<textarea readonly class="table-textarea">{{user_obj.profile.bkzzt_topics}}</textarea>
         <p class="r"><a href="{% url 'change_bkzzt_topics' %}">Change BKZZT Topics</a></p>
         {% else %}
         <i>Unavailable at your current pledge and/or tier.</i>

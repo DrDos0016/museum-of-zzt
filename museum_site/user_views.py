@@ -781,6 +781,16 @@ def user_profile(request, user_id=None, **kwargs):
         "pw_reset_attempts",
     ]
 
+    data["TIERS"] = {
+        "CHAR_2": TIER_CHAR_2,
+        "PURPLE_KEYS": TIER_5_PURPLE_KEYS,
+        "ZZT_RIVER": TIER_ZZT_RIVER,
+        "BOARD_SIZE": TIER_BOARD_SIZE,
+        "THROWSTAR_SEEK": TIER_THROWSTAR_SEEK,
+        "HEALTH": TIER_HEALTH,
+        "BRIBE_THE_MAYOR": TIER_BRIBE_THE_MAYOR
+    }
+
     to_delete = request.GET.get("delete")
     if to_delete and to_delete not in excluded_keys:
         if request.session.get(request.GET["delete"]):
