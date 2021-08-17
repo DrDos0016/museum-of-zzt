@@ -250,6 +250,26 @@ If you need your password please see the
 estimated release date for this article is <b>[RELEASE]</b>, however the exact
 release date may change.</p>"""
 
+# Patreon Tiers IDs
+TIER_NONE = "0"
+TIER_CHAR_2 = "659278"  # $2
+TIER_5_PURPLE_KEYS = "659279"  # $5
+TIER_ZZT_RIVER = "6848286"  # $20
+TIER_BOARD_SIZE = "659281"  # $20
+TIER_THROWSTAR_SEEK = "6848302"  # $30
+TIER_HEALTH = "659282"  # $50
+TIER_BRIBE_THE_MAYOR = "659283"  # $100
+TIER_NAMES = {
+    TIER_NONE: "No tier selected",
+    TIER_CHAR_2: "Char 2",
+    TIER_5_PURPLE_KEYS: "5 Purple Keys",
+    TIER_ZZT_RIVER: "ZZT River Stream",
+    TIER_BOARD_SIZE: "20 KB Board Size",
+    TIER_THROWSTAR_SEEK: "Throwstar Seek",
+    TIER_HEALTH: "?HEALTH",
+    TIER_BRIBE_THE_MAYOR: "Bribe the Mayor..."
+}
+
 EXTENSION_HINTS = {
     # ZZT
     ".BRD": ("Board File", [DETAIL_ZZT_BOARD], "OR"),
