@@ -5,6 +5,7 @@ import requests
 from datetime import datetime
 
 from django.db import models
+from django.contrib.auth.models import User
 
 from .constants import (
     UPLOAD_CONTACT_NONE, UPLOAD_CONTACT_REJECTION, UPLOAD_CONTACT_ALL,
@@ -28,6 +29,7 @@ class Upload(models.Model):
     date            -- Date of upload
     edit_token      -- Token to modify upload
     ip              -- Uploader IP
+    user            -- Uploader user account
     notes           -- Uploader notes
     email           -- Uploader email
     contact         -- Contact preferences
@@ -40,6 +42,9 @@ class Upload(models.Model):
     )
     edit_token = models.CharField(max_length=16)
     ip = models.GenericIPAddressField(blank=True, null=True)
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
     notes = models.TextField(blank=True)
     email = models.EmailField(blank=True, null=True)
     contact = models.IntegerField(
@@ -70,6 +75,10 @@ class Upload(models.Model):
         self.email = request.POST.get("email")
         self.contact = int(request.POST.get("contact", 0))
         self.ip = request.META.get("REMOTE_ADDR")
+
+        # Assign user if logged in
+        if request.user.is_authenticated:
+            self.user_id = request.user.id
 
         if save:
             self.save()

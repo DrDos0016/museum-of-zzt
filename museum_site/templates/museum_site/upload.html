@@ -138,6 +138,25 @@ $(document).ready(function (){
     <button type="submit" class="full-width-submit">Begin Editing</button>
 </div>
 </form>
+<hr>
+<h2>User Uploads</h2>
+<p>If you uploaded a file while logged into an account, then you may edit any still unpublished worlds without having to enter an edit token. Below is a list of all uploads associated with your account that remain unpublished.
+
+<table>
+<tr>
+    <th>Title</th>
+    <th>Upload Time</th>
+    <th>Upload Token</th>
+{% for u in my_uploads %}
+{% if u.file.is_uploaded %}
+<tr>
+<td>{{u.file.title}}</td>
+<td>{{u.date}}</td>
+<td><a href="?token={{u.edit_token}}">{{u.edit_token}}</a></td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
 {% endif %}
 
 {% if not request.GET.edit %}
@@ -172,7 +191,7 @@ $(document).ready(function (){
 <input id="token" name="token" type="hidden" value="{{request.GET.token}}" maxlength="16">
 <div class="field">
     <label>File:<br>
-        <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must no larger than <b>{{UPLOAD_CAP|filesizeformat}}</b>.</span>
+        <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must no larger than <b title="{{request.user.profile.max_upload_size|default:UPLOAD_CAP}} bytes">{{request.user.profile.max_upload_size|default:UPLOAD_CAP|filesizeformat}}</b>.</span>
     </label>
     <input id="file" name="file" type="file" accept=".zip">
 </div>
@@ -255,7 +274,7 @@ $(document).ready(function (){
 </form>
     {% if not request.GET.token %}
     <h2>Advanced</h2>
-    <a href="?edit=1">Edit an existing upload</a> (Requires Edit Token)
+    <a href="?edit=1">Edit an existing upload</a> (Requires an Edit Token for guest users)
     {% endif %}
 {% endif %}
 </section>

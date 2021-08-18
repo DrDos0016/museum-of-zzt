@@ -15,6 +15,11 @@ def upload(request):
     if request.META["REMOTE_ADDR"] in BANNED_IPS:
         return HttpResponse("Banned account.")
 
+    if request.GET.get("edit") and request.user.is_authenticated:
+        data["my_uploads"] = Upload.objects.filter(
+            user_id=request.user.id
+        ).order_by("file__title")
+
     # Convert POST genres to a list to easily recheck boxes on failed upload
     data["requested_genres"] = request.POST.getlist("genre")
 

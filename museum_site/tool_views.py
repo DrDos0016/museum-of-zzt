@@ -408,8 +408,6 @@ def queue_removal(request, letter, filename):
         # Remove the file object
         data["file"].delete()
 
-        # TODO: Adjust user upload count if applicable
-
         data["success"] = True
 
     return render(request, "museum_site/tools/queue-removal.html", data)
