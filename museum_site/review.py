@@ -19,7 +19,9 @@ class Review(models.Model):
     ip              -- IP address posting the review
     """
     file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
     title = models.CharField(max_length=50)
     author = models.CharField(max_length=50, blank=True, null=True)
     content = models.TextField()
@@ -61,7 +63,10 @@ class Review(models.Model):
     def author_link(self):
         if self.user:
             link = '{} <a href="{}">{}</a>'.format(
-                char(self.user.profile.char, self.user.profile.fg, self.user.profile.bg, scale=2),
+                char(
+                    self.user.profile.char, self.user.profile.fg,
+                    self.user.profile.bg, scale=2
+                ),
                 self.user.profile.link(),
                 self.user.username
             )
