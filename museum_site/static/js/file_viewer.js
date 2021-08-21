@@ -1346,7 +1346,7 @@ $(window).bind("load", function() {
         }
         else if (e.keyCode == KEY.W) // World
             $("div[name=world-info]").click();
-        else if (e.keyCode == KEY.B) // Board
+        else if (! e.shiftKey && e.keyCode == KEY.B) // Board
             $("div[name=board-info]").click();
         else if (e.keyCode == KEY.E) // Element
             $("div[name=element-info]").click();
@@ -1362,6 +1362,13 @@ $(window).bind("load", function() {
                 $("a.board-link[data-direction=exit_east]").click();
         else if (e.keyCode == 100 && $("a.board-link[data-direction=exit_west]")) // Board to West
                 $("a.board-link[data-direction=exit_west]").click();
+        else if (e.shiftKey && e.keyCode == KEY.B) // Toggle blinking
+        {
+            var cur = $("#pref-intensity").val();
+            var now = (cur == "low" ? 'high' : 'low');
+            $("#pref-intensity").val(now);
+            $("select[name=intensity]").change();
+        }
 
         // File navigation
         if (e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next
