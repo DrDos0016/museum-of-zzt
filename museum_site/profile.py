@@ -62,7 +62,7 @@ class Profile(models.Model):
         default=""
     )
     max_upload_size = models.IntegerField(default=UPLOAD_CAP)
-    files_uploaded = models.IntegerField(default=0)
+    files_published = models.IntegerField(default=0)
     pronouns = models.CharField(max_length=50, blank=True)
 
     # Account activation
