@@ -22,6 +22,7 @@
     width:60ch;
     font-size:smaller;
 }
+
 </style>
 {% endblock %}
 
@@ -33,22 +34,81 @@
 
 {% include "museum_site/blocks/file_detailed_block.html" %}
 
-<ul>
-    <li><a href="/admin/museum_site/file/{{file.id}}/change/">Django Admin</a></li>
-    <li><a href="{% url 'set_screenshot' file.id %}">Set Screenshot</a></li>
-    {% if file.is_uploaded %}
-    <li><a href="{% url 'publish' file.id %}">Publish</a></li>
-    {% else %}
-    <li><a href="{% url 'mirror' file.id %}">Archive.org Mirror</a> ({{file.archive_name}})</li>
-    {% endif %}
-    <li><a href="{% url 'replace_zip' file.id %}">Replace Zip</a></li>
-    <li><a href="{% url 'add_livestream' file.id %}">Add Livestream VOD</a></li>
-    <li><a href="{% url 'extract_font' file.id %}">Extract Font</a></li>
-    <li><a href="{% url 'reletter' file.id %}">Re-Letter Zip</a></li>
-    {% if file.is_uploaded %}
-    <li><a href="{% url 'queue_removal' file.letter file.filename %}">Upload Queue Removal</a></li>
-    {% endif %}
-</ul>
+<hr>
+
+<div class="flex-container justify-space-between">
+<div>
+    <h3>Tools</h3>
+    <ul>
+        <li><a href="/admin/museum_site/file/{{file.id}}/change/">Django Admin</a></li>
+        <li><a href="{% url 'set_screenshot' file.id %}">Set Screenshot</a></li>
+        {% if file.is_uploaded %}
+        <li><a href="{% url 'publish' file.id %}">Publish</a></li>
+        {% else %}
+        <li><a href="{% url 'mirror' file.id %}">Archive.org Mirror</a> ({{file.archive_name}})</li>
+        {% endif %}
+        <li><a href="{% url 'replace_zip' file.id %}">Replace Zip</a></li>
+        <li><a href="{% url 'add_livestream' file.id %}">Add Livestream VOD</a></li>
+        <li><a href="{% url 'extract_font' file.id %}">Extract Font</a></li>
+        <li><a href="{% url 'reletter' file.id %}">Re-Letter Zip</a></li>
+        {% if file.is_uploaded %}
+        <li><a href="{% url 'queue_removal' file.letter file.filename %}">Upload Queue Removal</a></li>
+        {% endif %}
+    </ul>
+</div>
+{% if upload_info %}
+<div>
+    <h3>Upload Info</h3>
+    <table class="dataTable" id="tool-info">
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>Upload ID</td>
+            <td>{{upload_info.id}}</td>
+            <td class="c"><a href="/admin/museum_site/upload/{{upload_info.id}}/change/">Admin</a></td>
+        </tr>
+        <tr>
+            <td>Date</td>
+            <td>{{upload_info.date}}</td>
+            <td class="c">-</td>
+        </tr>
+        <tr>
+            <td>Edit Token</td>
+            <td>{{upload_info.edit_token}}</td>
+            <td class="c"><a href="/upload?token={{upload_info.edit_token}}">Edit Upload</a></td>
+        </tr>
+        <tr>
+            <td>IP</td>
+            <td>{{upload_info.ip}}</td>
+            <td class="c">-</td>
+        </tr>
+        <tr>
+            <td>Notes</td>
+            <td>{% if upload_info.notes %}<textarea id="upload-notes">{{upload_info.notes}}</textarea>{% else %}<i>None</i>{% endif %}</td>
+            <td class="c">-</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>{{upload_info.email}}</td>
+            <td class="c">-</td>
+        </tr>
+        <tr>
+            <td>Contact?</td>
+            <td>{{upload_info.contact_str.0}} - {{upload_info.contact_str.1}}</td>
+            <td class="c">-</td>
+        </tr>
+        <tr>
+            <td>Contacted</td>
+            <td>{{upload_info.contacted}}</td>
+            <td class="c">-</td>
+        </tr>
+    </table>
+</div>
+{% endif %}
+</div>
 
 {% if request.GET.recalculate %}
 <div><b>Recalculated {{request.GET.recalculate|title}}</b><br>
@@ -173,57 +233,5 @@
         <td class="c">-</td>
     </tr>
 </table>
-
-
-{% if upload_info %}
-<h3>Upload Info</h3>
-<table class="dataTable" id="tool-info">
-    <tr>
-        <th>Field</th>
-        <th>Value</th>
-        <th>Status</th>
-    </tr>
-    <tr>
-        <td>Upload ID</td>
-        <td>{{upload_info.id}}</td>
-        <td class="c"><a href="/admin/museum_site/upload/{{upload_info.id}}/change/">Admin</a></td>
-    </tr>
-    <tr>
-        <td>Date</td>
-        <td>{{upload_info.date}}</td>
-        <td class="c">-</td>
-    </tr>
-    <tr>
-        <td>Edit Token</td>
-        <td>{{upload_info.edit_token}}</td>
-        <td class="c"><a href="/upload?token={{upload_info.edit_token}}">Edit Upload</a></td>
-    </tr>
-    <tr>
-        <td>IP</td>
-        <td>{{upload_info.ip}}</td>
-        <td class="c">-</td>
-    </tr>
-    <tr>
-        <td>Notes</td>
-        <td><textarea id="upload-notes">{{upload_info.notes}}</textarea></td>
-        <td class="c">-</td>
-    </tr>
-    <tr>
-        <td>Email</td>
-        <td>{{upload_info.email}}</td>
-        <td class="c">-</td>
-    </tr>
-    <tr>
-        <td>Contact?</td>
-        <td>{{upload_info.contact_str.0}} - {{upload_info.contact_str.1}}</td>
-        <td class="c">-</td>
-    </tr>
-    <tr>
-        <td>Contacted</td>
-        <td>{{upload_info.contacted}}</td>
-        <td class="c">-</td>
-    </tr>
-</table>
-{% endif %}
 </section>
 {% endblock %}

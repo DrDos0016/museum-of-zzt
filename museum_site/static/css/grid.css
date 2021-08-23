@@ -433,10 +433,8 @@ a.inline[target=_blank]::after
 
 .zoomed { cursor:zoom-out; width:auto; }
 
-.flex-container
-{
-    display:flex;
-}
+.flex-container { display:flex; }
+.flex-container.justify-space-between { justify-content: space-between; }
 /* End Utility Classes */
 
 /* Generic Structures */
