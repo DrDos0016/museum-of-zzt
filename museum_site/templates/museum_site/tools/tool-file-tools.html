@@ -63,47 +63,30 @@
         <tr>
             <th>Field</th>
             <th>Value</th>
-            <th>Status</th>
         </tr>
         <tr>
             <td>Upload ID</td>
-            <td>{{upload_info.id}}</td>
-            <td class="c"><a href="/admin/museum_site/upload/{{upload_info.id}}/change/">Admin</a></td>
+            <td><a href="/admin/museum_site/upload/{{upload_info.id}}/change/">{{upload_info.id}}</a></td>
+        </tr>
+        <tr>
+            <td>User</td>
+            <td>{% if upload_info.user_id %}<a href="{{upload_info.user.profile.link}}">{{upload_info.user.username}}</a>{% else %}<i>Unregistered Guest</i> {% endif %}</td>
         </tr>
         <tr>
             <td>Date</td>
             <td>{{upload_info.date}}</td>
-            <td class="c">-</td>
         </tr>
         <tr>
             <td>Edit Token</td>
-            <td>{{upload_info.edit_token}}</td>
-            <td class="c"><a href="/upload?token={{upload_info.edit_token}}">Edit Upload</a></td>
+            <td><a href="/upload?token={{upload_info.edit_token}}">{{upload_info.edit_token}}</a></td>
         </tr>
         <tr>
             <td>IP</td>
             <td>{{upload_info.ip}}</td>
-            <td class="c">-</td>
         </tr>
         <tr>
             <td>Notes</td>
             <td>{% if upload_info.notes %}<textarea id="upload-notes">{{upload_info.notes}}</textarea>{% else %}<i>None</i>{% endif %}</td>
-            <td class="c">-</td>
-        </tr>
-        <tr>
-            <td>Email</td>
-            <td>{{upload_info.email}}</td>
-            <td class="c">-</td>
-        </tr>
-        <tr>
-            <td>Contact?</td>
-            <td>{{upload_info.contact_str.0}} - {{upload_info.contact_str.1}}</td>
-            <td class="c">-</td>
-        </tr>
-        <tr>
-            <td>Contacted</td>
-            <td>{{upload_info.contacted}}</td>
-            <td class="c">-</td>
         </tr>
     </table>
 </div>
