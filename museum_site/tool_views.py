@@ -368,7 +368,9 @@ def publish(request, pk):
     if request.POST.get("publish"):
         # Move the file
         src = SITE_ROOT + data["file"].download_url()
-        dst = SITE_ROOT + "/zgames/" + data["file"].letter + "/" + data["file"].filename
+        dst = "{}/zgames/{}/{}".format(
+            SITE_ROOT, data["file"].letter, data["file"].filename
+        )
         shutil.move(src, dst)
 
         # Adjust the details
@@ -381,13 +383,19 @@ def publish(request, pk):
         data["file"].publish_date = datetime.now()
         data["file"].save()
 
+        # Increment publish count for users
+        upload = Upload.objects.get(file__id=data["file"].id)
+        if upload.user_id:
+            profile = Profile.objects.get(pk=upload.user_id)
+            profile.files_published += 1
+            profile.save()
+
         # Redirect
         return redirect("tool_list", pk=pk)
 
     with ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
         data["file_list"] = zf.namelist()
     data["file_list"].sort()
-
 
     # Get suggested fetails based on the file list
     unknown_extensions = []
@@ -402,8 +410,6 @@ def publish(request, pk):
             suggest = (EXTENSION_HINTS[ext][1])
             data["hints"].append((name, EXTENSION_HINTS[ext][0], suggest))
             data["hint_ids"] += EXTENSION_HINTS[ext][1]
-
-
         elif ext == "":  # Folders hit this
             continue
 
