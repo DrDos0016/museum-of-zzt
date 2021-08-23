@@ -1,0 +1,43 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+#content textarea
+{
+    width:99%;
+    height:90px;
+    margin-left:auto;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Patron Input - {{category}}</h1>
+
+<div>
+    Categories:<br>
+    <a href="?category=stream-poll-nominatons">Stream Poll Nominations</a> |
+    <a href="?category=stream-selections">Stream Selections</a> |
+    <a href="?category=closer-look-nominations">Closer Look Nominations</a> |
+    <a href="?category=guest-stream-selections">Guest Stream Selections</a> |
+    <a href="?category=closer-look-selections">Closer Look Selections</a> |
+    <a href="?category=bkzzt-topics">BKZZT Topics</a>
+</div>
+
+<table>
+<tr>
+    <th style="width:20%">Patron</th>
+    <th>Data</th>
+</tr>
+{% for p in patrons %}
+<tr>
+    <td>{{p.username}}</td>
+    <td>{% if p.value %}<textarea>{{p.value}}</textarea>{% else %}<i>None</i>{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+
+</section>
+{% endblock %}

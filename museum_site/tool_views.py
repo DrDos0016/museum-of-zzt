@@ -315,6 +315,43 @@ def mirror(request, pk):
 
     return render(request, "museum_site/tools/mirror.html", data)
 
+
+@staff_member_required
+def patron_input(request):
+    """ Returns page listing patron users' suggestions/nominations/input """
+    data = {
+        "title": "Patron Input",
+        "users": User.objects.order_by("-id")
+    }
+
+    category = request.GET.get("category", "stream-poll-nominations")
+    data["category"] = category.replace("-", " ").title()
+
+    patrons = Profile.objects.filter(
+        patron=True
+    ).order_by("user__username")
+
+    data["patrons"] = []
+    for p in patrons:
+        if category == "stream-poll-nominatons":
+            value = p.stream_poll_nominations
+        elif category == "stream-selections":
+            value = p.stream_selections
+        elif category == "closer-look-nominations":
+            value = p.closer_look_nominations
+        elif category == "guest-stream-selections":
+            value = p.guest_stream_selections
+        elif category == "closer-look-selections":
+            value = p.closer_look_selections
+        else:
+            value = p.bkzzt_topics
+        data["patrons"].append(
+            {"username": p.user.username, "value": value}
+        )
+
+    return render(request, "museum_site/tools/patron-input.html", data)
+
+
 @staff_member_required
 def publish(request, pk):
     """ Returns page to publish a file marked as uploaded """
@@ -580,6 +617,7 @@ def tool_list(request, pk):
         data["file"].basic_save()
 
     return render(request, "museum_site/tools/tool-file-tools.html", data)
+
 
 @staff_member_required
 def user_list(request):

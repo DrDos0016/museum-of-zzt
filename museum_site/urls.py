@@ -459,6 +459,9 @@ urlpatterns = [
         "tools/mirror/<int:pk>/", museum_site.tool_views.mirror,
         name="mirror"),
     path(
+        "tools/patron-input/", museum_site.tool_views.patron_input,
+        name="patron_input"),
+    path(
         "tools/publish/<int:pk>/", museum_site.tool_views.publish,
         name="publish"),
     path(
