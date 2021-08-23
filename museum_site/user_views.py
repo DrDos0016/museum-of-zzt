@@ -767,7 +767,7 @@ def reset_password(request, token=None):
 
 def user_profile(request, user_id=None, **kwargs):
     data = {
-        "title": "User Profile",
+        "title": "",
         "BETA_USERNAME": BETA_USERNAME,
         "BETA_PASSWORD": BETA_PASSWORD,
     }
@@ -820,4 +820,5 @@ def user_profile(request, user_id=None, **kwargs):
     if request.GET.get("public"):
         data["private"] = False
 
+    data["title"] = "Profile for " + data["user_obj"].username
     return render(request, "museum_site/user-profile.html", data)
