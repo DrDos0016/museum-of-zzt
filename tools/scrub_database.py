@@ -51,6 +51,7 @@ def main():
             u.notes = "Blanked notes."
             u.contact = UPLOAD_CONTACT_NONE
             u.contacted = False
+            u.user_id = None
             u.save()
         print("Done!")
 
