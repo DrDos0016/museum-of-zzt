@@ -38,6 +38,8 @@ a.nohover:hover
     background-color:none;
 }
 
+a.noul a.noul:hover { text-decoration:none; }
+
 a.broken
 {
     text-decoration:line-through;
@@ -435,6 +437,7 @@ a.inline[target=_blank]::after
 
 .flex-container { display:flex; }
 .flex-container.justify-space-between { justify-content: space-between; }
+.flex-container.justify-center { justify-content: center; }
 /* End Utility Classes */
 
 /* Generic Structures */
@@ -1406,8 +1409,15 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 {
     grid-area:canvas;
     align-self:center;
-    image-rendering: crisp-edges;
     z-index:2;
+    -ms-interpolation-mode: nearest-neighbor;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: -o-pixelated;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
 
 #image-envelope, #preview-envelope {
