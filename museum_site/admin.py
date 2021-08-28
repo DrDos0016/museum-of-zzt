@@ -6,6 +6,7 @@ from .article import Article
 from .comment import Comment
 from .file import File
 from .detail import Detail
+from .download import Download
 from .profile import Profile
 from .review import Review
 from .upload import Upload
@@ -15,6 +16,7 @@ from .zeta_config import Zeta_Config
 admin.site.register(File)
 admin.site.register(Article)
 admin.site.register(Detail)
+admin.site.register(Download)
 admin.site.register(Review)
 admin.site.register(Upload)
 admin.site.register(Alias)

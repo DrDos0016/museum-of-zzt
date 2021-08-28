@@ -1,0 +1,80 @@
+{% extends "museum_site/world.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+.download-source-button
+{
+    font-family:"cp437", monospace;
+    text-align:center;
+    color:#FFF;
+    background-color:#AAA;
+    font-size:24pt;
+    padding:0.5em;
+    border:4px double #FFF;
+    display:flex;
+    justify-content:space-between;
+    min-height:120px;
+    margin:14px 8px 14px 8px;
+}
+
+.download-source-button img { max-height:100px; max-width:100px; }
+
+.download-source-button.zgames { background-color: #00AAAA; outline: #00AAAA solid 4px;}
+.download-source-button.itch { background-color: #AA0000; outline: #AA0000 solid 4px; }
+.download-source-button.personal { background-color: #AA00AA; outline: #AA00AA solid 4px; }
+.download-source-button.other { background-color: #0000AA; outline: #0000AA solid 4px; }
+
+.dl-info
+{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    margin-left:0.5em;
+}
+
+.logo
+{
+    height:100px;
+    width:100px;
+}
+</style>
+{% endblock %}
+
+{% block world_content %}
+<h2>Download Options</h2>
+
+<div class="flex-container justify-space-between">
+    {% for d in downloads %}
+    <a href="{{d.url}}" target="_blank" class="noext noul">
+    <div class="download-source-button {{d.kind}}">
+    <div class="logo">{{d.logo|safe}}</div>
+    <div class="dl-info">
+        <div>“<i class="dl-title">{{file.title}}</i>”</div>
+        <div class="sub">{{d.hosted_on}}</div>
+    </div>
+    </div>
+    </a>
+    {% endfor %}
+
+    <a href="{{file.download_url}}" target="_blank" class="noext noul">
+    <div class="download-source-button zgames">
+    <div class="logo"><img src="/static/icons/moz-dl-icon.png" alt="Museum of ZZT Download Icon"></div>
+    <div class="dl-info">
+        <div>“<i class="dl-title">{{file.title}}</i>”</div>
+        <div class="sub">Hosted on the Museum of ZZT</div>
+    </div>
+    </div>
+    </a>
+</div>
+
+<h2>Why Download ZZT Worlds From Alternate Sources?</h2>
+
+<p>By acquiring ZZT worlds from other sources, you're helping to support the developers in ways that the Museum does not. Most files available on other sites are found on aggregate sites such as <a href="https://itch.io" target="_blank">itch</a> which provide anayltics letting authors see how often their world's page was viewed and files downloaded. Increasing these metrics isn't just an ego boost for the author, but may be used when determining where the file is displayed elsewhere on the site for users browsing content. Acquiring files from these sites can help spread a ZZT world to an audience not specifically looking for ZZT games and subsequently also help introduce ZZT to a wider audience.</p>
+
+<p>Additionally, non-Museum sites also provide payment systems allowing authors to use "Pay What You Want" models or set an explicit price on a download. The Museum of ZZT will not freely distribute any files that require payment to download.</p>
+
+<p>For better preservation, file viewer support, and in some cases the ability to play in the browser, these freely available files are are mirrored here and still available for download from the Museum of ZZT.</p>
+
+{% endblock %}

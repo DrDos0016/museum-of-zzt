@@ -110,6 +110,17 @@ def file_directory(
     return render(request, "museum_site/file_directory.html", data)
 
 
+def file_download(request, letter, filename):
+    """ Returns page listing all download locations with a provided file """
+    data = {}
+    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["title"] = data["file"].title + " - Downloads"
+    data["downloads"] = data["file"].downloads.all()
+    data["letter"] = letter
+
+    return render(request, "museum_site/download.html", data)
+
+
 def file_articles(request, letter, filename):
     """ Returns page listing all articles associated with a provided file. """
     data = {}

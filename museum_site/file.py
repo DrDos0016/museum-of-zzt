@@ -68,6 +68,10 @@ class File(models.Model):
     archive_name    -- name on archive.org (ex: zzt_burgerj)
     aliases         -- Link to Alias objects
     spotlight       -- Allow appearance on front page
+    can_review      -- Allow reviews on the file
+    license         -- File license if available
+    downloads       -- Reference to Download sources
+
     """
 
     letter = models.CharField(max_length=1, db_index=True)
@@ -146,6 +150,7 @@ class File(models.Model):
     spotlight = models.BooleanField(default=True)
     can_review = models.BooleanField(default=True)
     license = models.CharField(max_length=150, default="Unknown")
+    downloads = models.ManyToManyField("Download", default=None, blank=True)
 
     class Meta:
         ordering = ["sort_title", "letter"]
@@ -276,6 +281,25 @@ class File(models.Model):
             return "/zgames/uploaded/" + self.filename
         else:
             return "/zgames/" + self.letter + "/" + self.filename
+
+    def download_anchor(self, text="Download"):
+        url = self.download_url()
+        ellipses = ""
+
+        if self.downloads.count():
+            url = "/download/{}/{}".format(self.letter, self.filename)
+            ellipses = "s…"
+
+        html = '<a href="{url}" class="download-link{explicit_class}">{text}{ellipses}</a>'.format(
+            url=url,
+            text=text,
+            explicit_class=(" explicit" if "Explicit" in self.genre else ""),
+            ellipses=ellipses
+        )
+        return html
+
+    def download_anchor_small(self):
+        return self.download_anchor(text="DL")
 
     def file_exists(self):
         return True if os.path.isfile(self.phys_path()) else False

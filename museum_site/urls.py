@@ -130,6 +130,9 @@ urlpatterns = [
         name="browse_letter"
     ),
     path(
+        "download/<str:letter>/<str:filename>",
+        museum_site.file_views.file_download, name="file_download"),
+    path(
         "file/<str:letter>/<str:filename>",
         museum_site.file_views.file_viewer, name="file"),
     path(
