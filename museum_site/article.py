@@ -96,7 +96,7 @@ class Article(models.Model):
         return os.path.join(STATIC_URL, self.path(), "preview.png")
 
     def search(p):
-        qs = Article.objects.filter(published=PUBLISHED_ARTICLE)
+        qs = Article.objects.exclude(published=REMOVED_ARTICLE)
 
         if p.get("title"):
             qs = qs.filter(

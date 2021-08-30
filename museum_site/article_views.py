@@ -95,7 +95,13 @@ def article_view(request, article_id, page=0, slug=""):
     if a.published == REMOVED_ARTICLE:
         return redirect("index")
 
-    access = PUBLISHED_ARTICLE
+    # Figure out the user's access
+    access = PUBLISHED_ARTICLE  # Default
+    if request.user.is_authenticated:
+        if request.user.profile.patronage >= 5000:
+            access = UNPUBLISHED_ARTICLE
+        elif request.user.profile.patronage >= 2000:
+            access = UPCOMING_ARTICLE
     if request.GET.get("secret") == PASSWORD5DOLLARS:
         access = UNPUBLISHED_ARTICLE
     elif request.GET.get("secret") == PASSWORD2DOLLARS:
