@@ -332,8 +332,9 @@ def patron_input(request):
     ).order_by("user__username")
 
     data["patrons"] = []
+    print("CAT IS", category)
     for p in patrons:
-        if category == "stream-poll-nominatons":
+        if category == "stream-poll-nominations":
             value = p.stream_poll_nominations
         elif category == "stream-selections":
             value = p.stream_selections
