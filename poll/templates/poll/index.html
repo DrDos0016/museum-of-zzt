@@ -109,7 +109,11 @@
     <label style="background-color:#00AAAA">{{display_poll.option3.file.title}} <input name="vote" type="radio" value="{{display_poll.option3_id}}"></label>
     <label style="background-color:#AA0000">{{display_poll.option4.file.title}} <input name="vote" type="radio" value="{{display_poll.option4_id}}"></label>
     <label style="background-color:#AA00AA">{{display_poll.option5.file.title}} <input name="vote" type="radio" value="{{display_poll.option5_id}}"></label>
+    {% if request.user.profile.patron %}
+    <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value="{{request.user.profile.patron_email}}" type="hidden" readonly><div>{{request.user.profile.patron_email}}</div></label>
+    {% else %}
     <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value=""></label>
+    {% endif %}
     <label style="background-color:#AAAAAA"><a href="/poll/results/{{display_poll.id}}">View Results</a><input type="submit" name="action" value="Vote"></label>
     {% comment %}<input type="hidden" name="key" value="{{key}}">{% endcomment %}
 </form>
@@ -155,7 +159,7 @@
     <li>Votes which do not provide an e-mail address associated with an active Patron will be rejected.</li>
     <li>Patrons at the $20/month level can select a game to be featured in the poll. Patrons who do so will have their chosen game
         in all subsequent polls until it either wins or the patron opts to change it to something else.</li>
-    <li>Patrons who do not select a game will have one substitued by me.</li>
+    <li>Patrons who do not select a game will have one substituted by staff.</li>
     <li>Only the last vote for an e-mail address will be counted, you may change your vote by simply placing a new vote.</li>
 </ul>
 
