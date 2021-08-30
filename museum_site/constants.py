@@ -119,7 +119,7 @@ if os.path.isfile(os.path.join(SITE_ROOT, "PROD")):
 elif os.path.isfile(os.path.join(SITE_ROOT, "DEV")):
     HOST = "http://django.pi:8000/"
     PROTOCOL = "http"
-    DOMAIN = "django.pi"
+    DOMAIN = "django.pi:8000"
     ENV = "DEV"
 elif os.path.isfile(os.path.join(SITE_ROOT, "BETA")):
     HOST = "https://beta.museumofzzt.com/"
