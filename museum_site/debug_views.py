@@ -34,6 +34,9 @@ def debug_article(request, fname=""):
 
     fname = request.GET.get("file", fname)
 
+    if not fname or fname == "<str:fname>":  # Blank/test values
+        return redirect("index")
+
     filepath = os.path.join(SITE_ROOT, "wip", fname)
     if not os.path.isfile(filepath):
         filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")

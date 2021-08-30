@@ -821,6 +821,8 @@ def user_profile(request, user_id=None, **kwargs):
         if request.user.is_authenticated:
             data["user_obj"] = request.user
             data["private"] = True
+        else:
+            return redirect("login_user")
     else:
         data["show_session"] = False
         user_id = int(user_id)

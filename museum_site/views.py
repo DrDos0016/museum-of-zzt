@@ -279,6 +279,11 @@ def site_credits(request):
     return render(request, "museum_site/credits.html", data)
 
 
+def stub(request, *args, **kwargs):
+    data = {"title": "STUB VIEW"}
+    return render(request, "museum_site/index.html", data)
+
+
 @staff_member_required
 def worlds_of_zzt_queue(request):
     data = {"title": "Worlds of ZZT Queue"}

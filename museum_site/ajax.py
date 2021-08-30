@@ -122,8 +122,11 @@ def deep_search(request, phase):
 def debug_file(request):
     if not os.path.isfile("/var/projects/DEV"):
         return HttpResponse("Not on production.")
-    file = open(request.GET.get("file"), "rb")
-    return HttpResponse(binascii.hexlify(file.read()))
+    if request.GET.get("file"):
+        file = open(request.GET["file"], "rb")
+        return HttpResponse(binascii.hexlify(file.read()))
+    else:
+        return HttpResponse("No file provided.")
 
 
 def get_search_suggestions(request, max_suggestions=25):
