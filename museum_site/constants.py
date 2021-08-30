@@ -112,7 +112,7 @@ ADMIN_NAME = "Dr. Dos"
 
 # Host/Environment information
 if os.path.isfile(os.path.join(SITE_ROOT, "PROD")):
-    URL_ROOT = "https://museumofzzt.com/"
+    HOST = "https://museumofzzt.com/"
     PROTOCOL = "https"
     DOMAIN = "museumofzzt.com"
     ENV = "PROD"
