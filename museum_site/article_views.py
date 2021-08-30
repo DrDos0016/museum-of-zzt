@@ -147,7 +147,7 @@ def article_view(request, article_id, page=0, slug=""):
 
 
 def patron_articles(request):
-    data = {}
+    data = {"title": "Early Article Access"}
     upcoming = Article.objects.filter(published=UPCOMING_ARTICLE)
     unpublished = Article.objects.filter(published=UNPUBLISHED_ARTICLE)
 

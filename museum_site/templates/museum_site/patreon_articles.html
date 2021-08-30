@@ -2,7 +2,7 @@
 {% load static %}
 {% load site_tags %}
 
-{% block meta %}{% meta_tags url=request.build_absolute_uri og_image="cards/early-access-preview.png" %}{% endblock %}
+{% block meta %}{% meta_tags path=request.get_full_path og_image="cards/early-access-preview.png" %}{% endblock %}
 
 {% block style %}
 <style>

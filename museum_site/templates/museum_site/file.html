@@ -3,7 +3,7 @@
 {% load site_tags %}
 {% load zzt_tags %}
 
-{% block meta %}{% meta_tags url=request.build_absolute_uri file=file %}{% endblock %}
+{% block meta %}{% meta_tags path=request.get_full_path file=file %}{% endblock %}
 
 {% block scripts %}
 <script>

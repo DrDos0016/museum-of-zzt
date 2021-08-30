@@ -4,9 +4,9 @@
 
 {% block meta %}
 {% if user_obj %}
-{% meta_tags url="https://museumofzzt.com"|add:user_obj.profile.link title=title description="User profile for "|add:user_obj.username %}
+{% meta_tags path=user_obj.profile.link title=title description="User profile for "|add:user_obj.username %}
 {% else %}
-{% meta_tags url=request.build_absolute_uri title=title description="User profile" %}
+{% meta_tags path=request.get_full_path title=title description="User profile" %}
 {% endif %}
 {% endblock %}
 

@@ -11,7 +11,9 @@ from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
 from museum_site.models import File, Article
-from museum_site.constants import ADMIN_NAME, SITE_ROOT, TIER_NAMES
+from museum_site.constants import (
+    ADMIN_NAME, SITE_ROOT, TIER_NAMES, PROTOCOL, DOMAIN
+)
 
 register = Library()
 
@@ -21,6 +23,7 @@ def as_template(raw):
     context_data = {"TODO": "TODO", "CROP": "CROP"}
     raw = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
     return Template(raw).render(Context(context_data))
+
 
 @register.filter
 def get_articles_by_id(raw):
@@ -107,16 +110,16 @@ def content_warning(*args, **kwargs):
 
 @register.simple_tag()
 def meta_tags(*args, **kwargs):
-    url = kwargs.get("url", "https://museumofzzt.com/").split("?")[0]
-    if url.endswith("/"):
-        og_default = url + STATIC_URL[1:] + "images/og_default.jpg"
-    else:
-        og_default = url + "/" + STATIC_URL[1:] + "images/og_default.jpg"
+    #url = kwargs.get("url", "https://museumofzzt.com/").split("?")[0]
 
     # Default values
+    base_url = "{}://{}".format(PROTOCOL, DOMAIN)
+    path = kwargs.get("path", "").split("?")[0]  # Sans QS
+    url = base_url + path
+    og_default = "{}{}images/og_default.jpg".format(base_url, STATIC_URL)
     tags = {
         "author": ["name", ADMIN_NAME],
-        "description": ["name",  "The Museum of ZZT is a website dedicated towards the preservation and curation of ZZT worlds. Explore 30 years of indie gaming history."],
+        "description": ["name",  "The Museum of ZZT is dedicated towards the preservation and curation of ZZT worlds. Explore 30 years of indie gaming history."],
         "og:type": ["property", "website"],
         "og:url": ["property", url],
         "og:title": ["property", "Museum of ZZT"],
@@ -127,7 +130,7 @@ def meta_tags(*args, **kwargs):
         tags["author"][1] = kwargs["article"].author
         tags["description"][1] = kwargs["article"].summary
         tags["og:title"][1] = kwargs["article"].title + " - Museum of ZZT"
-        tags["og:image"][1] = "https://museumofzzt.com/" + kwargs["article"].preview
+        tags["og:image"][1] = base_url + kwargs["article"].preview
     elif kwargs.get("file") and kwargs.get("file") != "Local File Viewer":
         tags["author"][1] = kwargs["file"].author
         tags["description"][1] = '{} by {}'.format(kwargs["file"].title, kwargs["file"].author)
@@ -136,7 +139,7 @@ def meta_tags(*args, **kwargs):
         if kwargs["file"].release_date:
             tags["description"][1] += " ({})".format(kwargs["file"].release_date.year)
         tags["og:title"][1] = kwargs["file"].title + " - Museum of ZZT"
-        tags["og:image"][1] = "https://museumofzzt.com/" + STATIC_URL[1:] + kwargs["file"].screenshot_url()
+        tags["og:image"][1] = base_url + STATIC_URL + kwargs["file"].screenshot_url()
 
     # Overrides
     if kwargs.get("author"):
@@ -333,5 +336,7 @@ class Spoiler(template.Node):
 
     def render(self, context):
         text = self.nodelist[0].render(context)
-        output = "<div class='spoiler' style='display:{}'>{}</div>".format(self.display, text)
+        output = "<div class='spoiler' style='display:{}'>{}</div>".format(
+            self.display, text
+        )
         return output
