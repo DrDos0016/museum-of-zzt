@@ -66,7 +66,14 @@ class Vote(models.Model):
 class Option(models.Model):
     summary = models.CharField(max_length=300)
     backer = models.BooleanField(default=False)
+    played = models.BooleanField(default=False)
     file = models.ForeignKey(File, on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        ordering = ["played", "file__title"]
+
     def __str__(self):
-        return self.file.title + " by " + self.file.author
+        checked = "X" if self.played else " "
+        return '[{}] "{}" by {}'.format(
+            checked, self.file.title, self.file.author
+        )
