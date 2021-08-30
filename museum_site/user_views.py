@@ -3,6 +3,7 @@ import secrets
 from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from django.urls import reverse
@@ -43,6 +44,7 @@ def activate_account(request, token=None):
     return render(request, "museum_site/user-activate-account.html", data)
 
 
+@login_required()
 def change_password(request):
     data = {
         "title": "Change Password",
@@ -90,6 +92,7 @@ def change_password(request):
     return render(request, "museum_site/user-change-password.html", data)
 
 
+@login_required()
 def change_char(request):
     data = {
         "title": "Change ASCII Char",
@@ -142,6 +145,7 @@ def change_char(request):
     return render(request, "museum_site/user-change-ascii-char.html", data)
 
 
+@login_required()
 def change_credit_preferences(request):
     data = {
         "title": "Change Credit Preferences",
@@ -171,6 +175,7 @@ def change_credit_preferences(request):
     )
 
 
+@login_required()
 def change_email(request):
     data = {
         "title": "Change Email",
@@ -220,6 +225,7 @@ def change_email(request):
     return render(request, "museum_site/user-change-email.html", data)
 
 
+@login_required()
 def change_patron_email(request):
     data = {
         "title": "Change Patron Email",
@@ -247,7 +253,7 @@ def change_patron_email(request):
     )
 
 
-
+@login_required()
 def change_patronage_visibility(request):
     data = {
         "title": "Change Patronage Visibliity",
@@ -274,7 +280,7 @@ def change_patronage_visibility(request):
         request, "museum_site/user-change-patronage-visibility.html", data
     )
 
-
+@login_required()
 def change_pronouns(request):
     data = {
         "title": "Change Pronouns",
@@ -303,6 +309,7 @@ def change_pronouns(request):
     return render(request, "museum_site/user-change-pronouns.html", data)
 
 
+@login_required()
 def change_patron_perks(request):
     """ Generic function to handle poll nominations, stream selections, etc """
     data = {
@@ -357,6 +364,7 @@ def change_patron_perks(request):
     return render(request, "museum_site/user-change-patron-perks.html", data)
 
 
+@login_required()
 def change_username(request):
     data = {
         "title": "Change Username",
@@ -544,7 +552,11 @@ def login_user(request):
                 Profile.objects.create(user=user)
 
             login(request, user)
-            return redirect("my_profile")
+
+            if request.GET.get("next"):
+                return redirect(request.GET["next"])
+            else:
+                return redirect("my_profile")
         else:
             # Does the usename exist?
             qs = User.objects.filter(username=acct)
@@ -703,6 +715,7 @@ def resend_account_activation(request):
     )
 
 
+@login_required()
 def reset_password(request, token=None):
     data = {
         "title": "Reset Password",
