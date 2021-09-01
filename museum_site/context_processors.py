@@ -2,7 +2,7 @@ from datetime import datetime
 
 from museum_site.detail import Detail
 from museum_site.file import File
-from museum_site.constants import DETAIL_FEATURED, DETAIL_UPLOADED
+from museum_site.constants import DETAIL_FEATURED, DETAIL_UPLOADED, TERMS_DATE
 from museum_site.common import (
     DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP, env_from_host,
     qs_sans
@@ -63,5 +63,17 @@ def museum_global(request):
     # User beta
     if request.user.is_authenticated:
         request.session["account_beta"] = True
+
+        if (
+            TERMS_DATE > request.user.profile.accepted_tos and
+            request.method == "GET" and
+            request.path != "/user/update-tos/"
+        ):
+            # Force a new login
+            for key in [
+                "_auth_user_id", "_auth_user_backend", "_auth_user_hash"
+            ]:
+                if request.session.get(key):
+                    del request.session[key]
 
     return data

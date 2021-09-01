@@ -1,0 +1,35 @@
+{% extends "museum_site/main.html" %}
+
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Updated Terms of Service</h1>
+
+<p>The Museum of ZZT's terms of service have updated! In order to continue using your account you must accept the latest version of the terms. Upon accepting the new terms you will be returned to your profile page.</p>
+
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="action" value="update-tos">
+
+<div class="field{% if reg_errors.tos %} error{% endif %}">
+    <label for="terms">Terms:<br>
+        <span class="sub"></span>
+    </label>
+    <div class="field-group">
+        <textarea id="terms" readonly>{{terms}}</textarea><br>
+        <p{% if reg_errors.tos %} style="background-color:#FCC;"{% endif %}><label><input type="checkbox" name="tos-agreement" value="agree"> I agree to the above terms of service.</label></p>
+        {% if reg_errors.tos %}<p class="form-error">{{reg_errors.tos}}</p>{% endif %}
+    </div>
+</div>
+
+<div class="field">
+    <button type="submit" id="submit-forgotten-password-button" class="full-width-submit">Accept Terms of Service</button>
+</div>
+
+</form>
+</section>
+{% endblock %}

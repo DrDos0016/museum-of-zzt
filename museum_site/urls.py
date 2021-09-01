@@ -333,6 +333,10 @@ urlpatterns = [
     path(
         "error/password-reset/", museum_site.user_views.error_password_reset,
         name="error_password_reset"),
+    path(
+        "user/update-tos/",
+        museum_site.user_views.update_tos,
+        name="update_tos"),
 
     # User Patron Pages
     path(

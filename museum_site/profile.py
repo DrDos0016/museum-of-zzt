@@ -68,6 +68,7 @@ class Profile(models.Model):
     # Account activation
     activation_token = models.CharField(max_length=64, blank=True)
     activation_time = models.DateTimeField(null=True, blank=True)
+    accepted_tos = models.CharField(max_length=10, blank=True)
 
     # Password reset
     reset_token = models.CharField(max_length=64, blank=True)

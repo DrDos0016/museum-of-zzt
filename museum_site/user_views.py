@@ -280,6 +280,7 @@ def change_patronage_visibility(request):
         request, "museum_site/user-change-patronage-visibility.html", data
     )
 
+
 @login_required()
 def change_pronouns(request):
     data = {
@@ -317,12 +318,12 @@ def change_patron_perks(request):
         "changed": False
     }
     labels = {
-        "change-stream-poll-nominations":"Stream Poll Nominations",
-        "change-stream-selections":"Stream Selections",
+        "change-stream-poll-nominations": "Stream Poll Nominations",
+        "change-stream-selections": "Stream Selections",
         "change-closer-look-poll-nominations": "Closer Look Poll Nominations",
         "change-guest-stream-selections": "Guest Stream Selections",
-        "change-closer-look-selections":"Closer Look Selections",
-        "change-bkzzt-topics":"BKZZT Topics",
+        "change-closer-look-selections": "Closer Look Selections",
+        "change-bkzzt-topics": "BKZZT Topics",
     }
 
     data["function"] = request.path.replace("/user/", "")[:-1]
@@ -553,6 +554,11 @@ def login_user(request):
 
             login(request, user)
 
+            # Check for a newer TOS
+            print("CHECKING...")
+            if TERMS_DATE > user.profile.accepted_tos:
+                return redirect("update_tos")
+
             if request.GET.get("next"):
                 return redirect(request.GET["next"])
             else:
@@ -776,6 +782,25 @@ def reset_password(request, token=None):
                 return redirect("reset_password_complete")
 
     return render(request, "museum_site/user-reset-password.html", data)
+
+
+def update_tos(request):
+    data = {
+        "title": "Updated Terms of Service",
+        "terms": TERMS,
+        "reg_errors": {}
+    }
+
+    if request.POST.get("action") == "update-tos":
+        if not request.POST.get("tos-agreement"):
+            data["reg_errors"]["tos"] = ("You must accept the latest terms to "
+                                         "continue using your account.")
+        else:
+            request.user.profile.accepted_tos = TERMS_DATE
+            request.user.profile.save()
+            return redirect("my_profile")
+
+    return render(request, "museum_site/user-update-tos.html", data)
 
 
 def user_profile(request, user_id=None, **kwargs):
