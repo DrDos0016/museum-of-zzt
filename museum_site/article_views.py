@@ -98,9 +98,9 @@ def article_view(request, article_id, page=0, slug=""):
     # Figure out the user's access
     access = PUBLISHED_ARTICLE  # Default
     if request.user.is_authenticated:
-        if request.user.profile.patronage >= 5000:
+        if request.user.profile.patronage >= 500:
             access = UNPUBLISHED_ARTICLE
-        elif request.user.profile.patronage >= 2000:
+        elif request.user.profile.patronage >= 200:
             access = UPCOMING_ARTICLE
     if request.GET.get("secret") == PASSWORD5DOLLARS:
         access = UNPUBLISHED_ARTICLE
