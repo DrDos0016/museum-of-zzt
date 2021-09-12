@@ -34,7 +34,7 @@ Hello!
 A request was recently submitted to create an account with the Museum of ZZT.
 
 You can verify your account by visiting the following link:
-{}
+https://{}
 
 Alternatively, you may manually supply the verification token of: {}
 """
@@ -55,7 +55,7 @@ A request was recently submitted to reset the password associated with this
 account on the Musuem of ZZT.
 
 You can choose a new password by visiting the following link:
-{}
+https://{}
 
 Alternatively, you may manually supply the your reset token of: {}
 
