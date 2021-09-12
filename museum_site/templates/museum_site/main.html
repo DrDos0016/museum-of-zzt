@@ -109,7 +109,7 @@
         <a href="/discord" class="nav-link nohover"><div class="key">D</div><div class="text">Discord</div></a>
         <a href="http://zzt.org/fora" class="nav-link nohover"><div class="key">Z</div><div class="text"><span class="optional"> z2 </span>Forums</div></a>
         {% if user.is_authenticated %}<a href="{% url 'my_profile' %}" class="nav-link nohover" title="Logged in as: {{user.username}}"><div class="key">{% char user.profile.char user.profile.fg user.profile.bg scale=2 %}</div><div class="text">Profile</div></a>{% else %}
-        {% if request.session.account_beta %}<a href="{% url 'login_user' %}" class="nav-link nohover"><div class="key">{% char 1 "black" "transparent" %}</div><div class="text">Account</div></a>{% endif %}{% endif %}
+        <a href="{% url 'login_user' %}" class="nav-link nohover"><div class="key">{% char 1 "black" "transparent" %}</div><div class="text">Account</div></a>{% endif %}
     </nav>
 
     <div class="block">

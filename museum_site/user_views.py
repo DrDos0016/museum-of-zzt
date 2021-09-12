@@ -525,8 +525,6 @@ def login_user(request):
         "registration_open": ALLOW_REGISTRATION,
         "terms": TERMS,
     }
-    # TODO: Use this while the account system isn't "official"
-    request.session["account_beta"] = True
 
     if request.POST.get("action") == "login":
         if not (throttle_check(
@@ -555,7 +553,6 @@ def login_user(request):
             login(request, user)
 
             # Check for a newer TOS
-            print("CHECKING...")
             if TERMS_DATE > user.profile.accepted_tos:
                 return redirect("update_tos")
 
@@ -638,7 +635,7 @@ def login_user(request):
                     user = User.objects.create_user(username, email, pwd)
                     user.is_active = False
                     user.save()
-                    Profile.objects.create(user=user)
+                    Profile.objects.create(user=user, patron_email=email)
                     success = True
                 except Exception:
                     success = False
@@ -650,6 +647,7 @@ def login_user(request):
                 if success:
                     # Create a token to verify with
                     token = secrets.token_urlsafe()
+                    user.profile.accepted_tos = TERMS_DATE
                     user.profile.activation_token = token
                     user.profile.activation_time = datetime.now(timezone.utc)
                     user.profile.save()
@@ -843,11 +841,12 @@ def user_profile(request, user_id=None, **kwargs):
     # Find the user
     data["private"] = False
     if user_id is None:
+        data["user_obj"] = request.user
         if request.user.is_authenticated:
-            data["user_obj"] = request.user
             data["private"] = True
         else:
-            return redirect("login_user")
+            data["show_session"] = True
+            data["guest"] = True
     else:
         data["show_session"] = False
         user_id = int(user_id)
