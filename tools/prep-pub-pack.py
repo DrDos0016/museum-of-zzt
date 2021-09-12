@@ -30,6 +30,7 @@ ENTRY = """{% with files.<f_id> as file %}
     <img src='{% static path|add:"<thumb>-2.png" %}' class="screenshot-thumb">
     <img src='{% static path|add:"<thumb>-3.png" %}' class="screenshot-thumb">
 </div>
+<hr>
 {% endwith %}
 
 """
