@@ -12,7 +12,7 @@ class DetailManager(models.Manager):
             DETAIL_DOS, DETAIL_WIN16, DETAIL_WIN32, DETAIL_WIN64, DETAIL_OSX,
             DETAIL_LINUX
         ]
-        qs = super().get_queryset().exclude(pk=DETAIL_REMOVED)
+        qs = self.exclude(pk=DETAIL_REMOVED)
         cats = []
 
         for d in qs:
