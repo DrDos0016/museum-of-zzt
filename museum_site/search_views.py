@@ -41,8 +41,7 @@ def article_search(request):
             {"text": "!ID Old", "val": "id"}
         ]
 
-    data["categories"] = Article.objects.filter(
-        published=PUBLISHED_ARTICLE
+    data["categories"] = Article.objects.published(
     ).only("category").distinct().order_by("category").values_list(
         "category", flat=True
     )
@@ -61,7 +60,7 @@ def deep_search(request):
         "years": [str(x) for x in range(1991, YEAR + 1)]
     }
 
-    #data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
+    # data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
     return render(request, "museum_site/deep_search.html", data)
 
 

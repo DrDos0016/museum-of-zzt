@@ -12,7 +12,7 @@ def article_categories(request, category="all", page_num=1):
     """ Returns page listing all articles sorted either by date or name """
     data = {"title": "Article Categories"}
 
-    qs = Article.objects.exclude(category=REMOVED_ARTICLE).values(
+    qs = Article.objects.not_removed().values(
         "category"
     ).annotate(total=Count("category")).order_by("category")
 
@@ -29,7 +29,7 @@ def article_directory(request, category="all", page_num=1):
     data = {"title": "Article Directory"}
 
     # Pull articles for page
-    qs = Article.search(request.GET)
+    qs = Article.objects.search(request.GET)
 
     if category != "all":
         if category == "lets-play":  # Special case for apostrophe
@@ -154,8 +154,8 @@ def article_view(request, article_id, page=0, slug=""):
 
 def patron_articles(request):
     data = {"title": "Early Article Access"}
-    upcoming = Article.objects.filter(published=UPCOMING_ARTICLE)
-    unpublished = Article.objects.filter(published=UNPUBLISHED_ARTICLE)
+    upcoming = Article.objects.upcoming()
+    unpublished = Article.objects.unpublished()
 
     data["upcoming"] = []
     data["unpublished"] = []

@@ -3,13 +3,14 @@ import os
 from datetime import datetime
 
 from django.db import models
+from django.db.models import Q
 from django.template import Template, Context
 from django.template.defaultfilters import slugify
 
 from museum.settings import STATIC_URL
 
 from .constants import (
-    PUBLISHED_ARTICLE, UPCOMING_ARTICLE, UNPUBLISHED_ARTICLE, REMOVED_ARTICLE
+    PUBLISHED_ARTICLE, UPCOMING_ARTICLE, UNPUBLISHED_ARTICLE, REMOVED_ARTICLE,
 )
 
 
@@ -29,9 +30,69 @@ ARTICLE_PUBLISH = (
 )
 
 
-class Article(models.Model):
-    """ Article object repesenting a page from an article
+class ArticleManager(models.Manager):
+    def credited_authors(self):
+        return self.exclude(Q(author="Unknown") | Q(author="N/A"))
 
+    def published(self):
+        return self.filter(published=PUBLISHED_ARTICLE)
+
+    def upcoming(self):
+        return self.filter(published=UPCOMING_ARTICLE)
+
+    def unpublished(self):
+        return self.filter(published=UNPUBLISHED_ARTICLE)
+
+    def removed(self):
+        return self.filter(category=REMOVED_ARTICLE)
+
+    def not_removed(self):
+        return self.exclude(category=REMOVED_ARTICLE)
+
+    def spotlight(self):
+        return self.filter(
+            published=PUBLISHED_ARTICLE, spotlight=True
+        ).order_by("-publish_date", "-id")
+
+    def search(self, p):
+        qs = self.exclude(published=REMOVED_ARTICLE)
+
+        if p.get("title"):
+            qs = qs.filter(
+                title__icontains=p["title"].strip()
+            )
+        if p.get("author"):
+            qs = qs.filter(
+                author__icontains=p["author"].strip()
+            )
+        if p.get("text"):
+            qs = qs.filter(
+                content__icontains=p["text"].strip()
+            )
+        if p.get("year"):
+            if p["year"] == "Any":
+                None
+            elif p["year"] == "Unk":
+                None
+            else:
+                year = p["year"].strip()
+                qs = qs.filter(
+                    publish_date__gte=year + "-01-01",
+                    publish_date__lte=year + "-12-31",
+                )
+
+        if p.getlist("category"):
+            qs = qs.filter(category__in=p.getlist("category"))
+
+        return qs
+
+
+class Article(models.Model):
+    """ Article object repesenting a page from an article"""
+
+    objects = ArticleManager()
+
+    """
     Fields:
     title           -- Title of the article
     author          -- Author of the article
@@ -94,38 +155,6 @@ class Article(models.Model):
     @property
     def preview(self):
         return os.path.join(STATIC_URL, self.path(), "preview.png")
-
-    def search(p):
-        qs = Article.objects.exclude(published=REMOVED_ARTICLE)
-
-        if p.get("title"):
-            qs = qs.filter(
-                title__icontains=p["title"].strip()
-            )
-        if p.get("author"):
-            qs = qs.filter(
-                author__icontains=p["author"].strip()
-            )
-        if p.get("text"):
-            qs = qs.filter(
-                content__icontains=p["text"].strip()
-            )
-        if p.get("year"):
-            if p["year"] == "Any":
-                None
-            elif p["year"] == "Unk":
-                None
-            else:
-                year = p["year"].strip()
-                qs = qs.filter(
-                    publish_date__gte=year + "-01-01",
-                    publish_date__lte=year + "-12-31",
-                )
-
-        if p.getlist("category"):
-            qs = qs.filter(category__in=p.getlist("category"))
-
-        return qs
 
     def path(self):
         if self.publish_date.year == 1970:

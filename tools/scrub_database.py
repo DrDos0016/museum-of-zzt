@@ -24,7 +24,7 @@ def main():
 
     if confirm == "yes":
         print("Deleting removed articles...")
-        for a in Article.objects.filter(published=REMOVED_ARTICLE):
+        for a in Article.objects.removed():
             print(a)
             a.delete()
         print("Done!")

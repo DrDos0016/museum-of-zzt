@@ -15,9 +15,7 @@ class LatestArticlesFeed(Feed):
     description = "Museum of ZZT article feed"
 
     def items(self):
-        return Article.objects.filter(
-            published=PUBLISHED_ARTICLE
-        ).order_by("-id")[:25]
+        return Article.objects.published().order_by("-id")[:25]
 
     def item_title(self, item):
         return item.title
