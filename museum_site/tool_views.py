@@ -57,7 +57,7 @@ def add_livestream(request, pk):
         a.category = "Livestream"
         a.schema = "django"
         a.publish_date = request.POST.get("date")
-        a.published = PUBLISHED_ARTICLE
+        a.published = int(request.POST.get("published", 1))
         a.summary = request.POST.get("summary")
         a.static_directory = "ls-" + data["video_id"]
         a.allow_comments = True

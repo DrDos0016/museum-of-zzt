@@ -115,6 +115,16 @@ input[name=today]
 </div>
 
 <div class="field">
+    <label for="published">Publication Status<br>
+    </label>
+    <select id="published" name="published">
+        <option value="1"{% if request.POST.published == "1" %} selected {% endif %}>Published</option>
+        <option value="2"{% if request.POST.published == "2" %} selected {% endif %}>Upcoming</option>
+        <option value="3"{% if request.POST.published == "3" %} selected {% endif %}>Unpublished</option>
+    </select>
+</div>
+
+<div class="field">
     <button type="submit" id="submit-button">Create VOD Article</button>
 </div>
 
