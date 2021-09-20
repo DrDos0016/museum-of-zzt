@@ -136,8 +136,6 @@ def get_search_suggestions(request, max_suggestions=25):
     if query:
         qs = File.objects.filter(
             title__istartswith=query
-        ).exclude(
-            details__id__in=[DETAIL_UPLOADED]
         ).only("title").distinct().order_by("sort_title")
         for f in qs:
             if f.title not in output["suggestions"]:
@@ -148,8 +146,6 @@ def get_search_suggestions(request, max_suggestions=25):
         if len(output["suggestions"]) < max_suggestions:
             qs = File.objects.filter(
                 title__icontains=query
-            ).exclude(
-                details__id__in=[DETAIL_UPLOADED]
             ).only("title").distinct().order_by("sort_title")
 
             for f in qs:
