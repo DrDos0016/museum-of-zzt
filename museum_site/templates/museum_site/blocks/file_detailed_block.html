@@ -1,6 +1,7 @@
 {% load static %}
 {% load site_tags %}
-<div class="overview-block" id="{{file.filename}}" data-pk="{{file.id}}" data-model="file">
+<div class="overview-block{% if file.is_uploaded %} unpublished{% endif %}" id="{{file.filename}}" data-pk="{{file.id}}" data-model="file">
+    {% if file.is_uploaded %}<div class="prefix unpublished-warning">UNPUBLISHED FILE - This file's contents have not been fully checked by staff.</div>{% endif %}
     <img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">
     <h1 class="title"><a href="{{file.file_url}}" class="view-link{% if 'Explicit' in file.genre %} explicit{% endif %}">{{file.title|default:"NO NAME"}}</a></h1>
     <div class="basic-info">

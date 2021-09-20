@@ -988,13 +988,14 @@ form .field .scrolling-checklist
     margin:14px auto auto auto;
     display:grid;
     grid-template-areas:
+    "prefix prefix prefix"
     "screenshot title title"
     "screenshot basic advanced"
     "feat desc desc"
     "links links links";
 
     grid-template-columns: minmax(240px, auto) 1fr 1fr;
-    grid-template-rows:auto minmax(0px, 1fr) auto auto;
+    grid-template-rows:auto auto minmax(0px, 1fr) auto auto;
 }
 
 .overview-block.ob-zoomed
@@ -1021,6 +1022,11 @@ form .field .scrolling-checklist
     max-width:100%;
 }
 
+.unpublished { background:#98C9C9; }
+.overview-block.unpublished { background:#98C9C9; }
+.overview-block.unpublished + .overview-links { background:#98C9C9; }
+
+.overview-block .prefix { grid-area:prefix; font-family:"cp437"; font-size:larger; text-align:center; padding-bottom:14px;}
 .overview-block .title { grid-area:title; margin-left:8px;}
 .overview-block .basic-info { grid-area:basic; margin-left:8px;}
 .overview-block .advanced-info { grid-area:advanced; margin-left:8px;}
@@ -1029,6 +1035,10 @@ form .field .scrolling-checklist
 
 .overview-block .key { flex:1; min-width:10ch; }
 .overview-block .value { flex:3; }
+
+.unpublished-warning
+{
+}
 
 .featured-reviews {
     grid-area: feat;
