@@ -34,13 +34,13 @@ def article_directory(request, category="all", page_num=1):
     if category != "all":
         if category == "lets-play":  # Special case for apostrophe
             category = "Let's Play"
-        elif "-" in category:
+        else:
             category = category.replace("-", " ")
-        category = category.title()
+            category = category.title()
 
         qs = qs.filter(category=category)
-        data["title"] = category.title() + " Directory"
-        data["category"] = category.title()
+        data["title"] = category + " Directory"
+        data["category"] = category
 
     if request.GET.get("sort") == "date":
         qs = qs.order_by("publish_date")
