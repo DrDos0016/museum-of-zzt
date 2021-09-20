@@ -5,9 +5,10 @@ import subprocess
 import zipfile
 
 from datetime import datetime
+from random import randint, seed, shuffle
 
 from django.db import models
-from django.db.models import Avg
+from django.db.models import Avg, Q
 
 try:
     import zookeeper
@@ -38,11 +39,109 @@ DETAIL_ZIG = 16
 DETAIL_LOST = 17
 DETAIL_UPLOADED = 18
 DETAIL_REMOVED = 19
+DETAIL_CORRUPT = 20
+
+
+class FileManager(models.Manager):
+    def basic_search(self, q):
+        return self.filter(
+            Q(title__icontains=q) |
+            Q(aliases__alias__icontains=q) |
+            Q(author__icontains=q) |
+            Q(filename__icontains=q) |
+            Q(company__icontains=q)
+        ).distinct()
+
+    def directory(self, category):
+        if category == "company":
+            return self.values(
+                "company"
+            ).exclude(
+                company=None
+            ).exclude(
+                company=""
+            ).distinct().order_by("company")
+        elif category == "author":
+            return self.values("author").distinct().order_by("author")
+
+    def identifier(self, identifier=None, letter=None, filename=None):
+        if identifier is None:
+            return self.filter(letter=letter, filename=filename)
+
+    def latest_additions(self):
+        return self.filter(
+            spotlight=True
+        ).exclude(
+            Q(details__id__in=[DETAIL_UPLOADED]) |
+            Q(release_date__gte="2021-01-01")
+        ).order_by("-publish_date", "-id")
+
+    def new_releases(self):
+        return self.filter(
+            spotlight=True, release_date__gte="2021-01-01"
+        ).exclude(
+            details__id__in=[DETAIL_UPLOADED]
+        ).order_by("-publish_date", "-id")
+
+    def published(self):
+        return self.exclude(details__id__in=[DETAIL_UPLOADED, DETAIL_LOST])
+
+    def standard_worlds(self):
+        return self.filter(
+            details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED]
+        )
+
+    def random_zzt_world(self):
+        excluded_details = [
+            DETAIL_LOST, DETAIL_REMOVED, DETAIL_UPLOADED, DETAIL_CORRUPT
+        ]
+        max_pk = self.all().order_by("-id")[0].id
+
+        zgame = None
+        while not zgame:
+            pk = randint(1, max_pk)
+            zgame = self.filter(pk=pk, details__id=DETAIL_ZZT).exclude(
+                details__id__in=excluded_details
+            ).exclude(genre__icontains="Explicit").first()
+
+        return zgame
+
+    def roulette(self, rng_seed, limit):
+        details = [DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY]
+
+        # Get all valid file IDs
+        ids = list(
+            self.filter(details__id__in=details).values_list("id", flat=True)
+        )
+
+        # Shuffle them
+        seed(rng_seed)
+        shuffle(ids)
+
+        # Return them in a random order
+        return File.objects.filter(id__in=ids[:limit]).order_by("?")
+
+    def unpublished(self):
+        return self.filter(details__id__in=[DETAIL_UPLOADED])
+
+    def wozzt(self):
+        excluded_details = [
+            DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST, DETAIL_CORRUPT
+        ]
+        return self.filter(
+            details__in=[DETAIL_ZZT]
+        ).exclude(
+            Q(details__in=excluded_details) |
+            Q(author__icontains="_ry0suke_")
+        )
 
 
 class File(models.Model):
-    """ File object repesenting an upload to the site
+    """ File object repesenting an upload to the site """
 
+    objects = FileManager()
+
+    """
     Fields:
     letter          -- Letter the file can be found under via browse pages
     filename        -- Name of the (Zip) file (ex: Respite.zip)

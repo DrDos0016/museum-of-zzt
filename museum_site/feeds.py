@@ -33,9 +33,7 @@ class LatestFilesFeed(Feed):
     description = "Museum of ZZT published file feed"
 
     def items(self):
-        return File.objects.exclude(
-            details__id__in=[DETAIL_UPLOADED, DETAIL_LOST]
-        ).order_by("-publish_date", "-id")[:25]
+        return File.objects.published().order_by("-publish_date", "-id")[:25]
 
     def item_title(self, item):
         return item.title

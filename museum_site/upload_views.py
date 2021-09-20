@@ -84,9 +84,7 @@ def upload(request):
                 upload_info.from_request(request, upload.id, save=True)
 
                 # Calculate upload queue size
-                request.session["FILES_IN_QUEUE"] = File.objects.filter(
-                    details__id__in=[DETAIL_UPLOADED]
-                ).count()
+                request.session["FILES_IN_QUEUE"] = File.objects.unpublished().count()
 
                 return redirect(
                     "/upload/complete?edit_token={}&generate_preview={}".format(

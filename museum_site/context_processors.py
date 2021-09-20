@@ -56,9 +56,7 @@ def museum_global(request):
     if (not request.session.get("FILES_IN_QUEUE") or (request.path in [
         "/", "/uploaded/", "/upload/", "/upload/complete"
     ])):
-        request.session["FILES_IN_QUEUE"] = File.objects.filter(
-            details__id__in=[DETAIL_UPLOADED]
-        ).count()
+        request.session["FILES_IN_QUEUE"] = File.objects.unpublished().count()
 
     # User beta
     if request.user.is_authenticated:

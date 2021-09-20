@@ -93,17 +93,13 @@ def search(request):
 
         if request.GET["q"] == "+DEBUG":
             request.session["DEBUG"] = 1
+            return redirect("/")
         if request.GET["q"] == "-DEBUG":
             request.session["DEBUG"] = 0
+            return redirect("/")
 
-        data["q"] = request.GET["q"]
-        qs = File.objects.filter(
-            Q(title__icontains=q) |
-            Q(aliases__alias__icontains=q) |
-            Q(author__icontains=q) |
-            Q(filename__icontains=q) |
-            Q(company__icontains=q)
-        ).exclude(details__id__in=[DETAIL_UPLOADED]).distinct()
+        data["q"] = q
+        qs = File.objects.basic_search(q)
     else:  # Advanced Search
         # Clean up empty params
         if request.GET.get("advanced"):

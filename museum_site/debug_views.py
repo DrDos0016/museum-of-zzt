@@ -10,10 +10,6 @@ def debug(request):
     data["TODO"] = "TODO"
     data["CROP"] = "CROP"
 
-    # results = File.objects.filter(Q(author="Dr. Dos") | Q(review))
-    # print("Found", len(results), "by me")
-    # data["results"] = results
-
     set_captcha_seed(request)
 
     f = File.objects.filter(pk=int(request.GET.get("id", 420)))

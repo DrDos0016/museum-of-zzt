@@ -422,7 +422,7 @@ def publish(request, pk):
 @staff_member_required
 def queue_removal(request, letter, filename):
     data = {"title": "Queue Removal"}
-    qs = File.objects.filter(letter=letter, filename=filename)
+    qs = File.objects.identifier(letter=letter, filename=filename)
     if len(qs) != 1:
         data["results"] = len(qs)
     else:

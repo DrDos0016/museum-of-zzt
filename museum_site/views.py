@@ -16,13 +16,7 @@ def directory(request, category):
     data_list = []
     if category == "company":
         data["title"] = "Companies"
-        companies = File.objects.values(
-            "company"
-        ).exclude(
-            company=None
-        ).exclude(
-            company=""
-        ).distinct().order_by("company")
+        companies = File.objects.directory("company")
         for c in companies:
             split = c["company"].split("/")
             for credited in split:
@@ -30,7 +24,7 @@ def directory(request, category):
                     data_list.append(credited)
     elif category == "author":
         data["title"] = "Authors"
-        authors = File.objects.values("author").distinct().order_by("author")
+        authors = File.objects.directory("author")
         for a in authors:
             split = a["author"].split("/")
             for credited in split:
@@ -66,7 +60,9 @@ def exhibit(request, letter, filename, section=None, local=False):
     data["custom_layout"] = "fv-grid"
     data["year"] = YEAR
     data["details"] = []  # Required to show all download links
-    data["file"] = File.objects.get(letter=letter, filename=filename)
+    data["file"] = File.objects.identifier(
+        letter=letter, filename=filename
+    ).first()
     data["local"] = local
     if not local:
         data["title"] = data["file"].title
@@ -119,19 +115,8 @@ def index(request):
 
     # Obtain latest content
     data["articles"] = Article.objects.spotlight()[:FP_ARTICLES_SHOWN]
-
-    data["new_releases"] = File.objects.filter(
-        spotlight=True, release_date__gte="2021-01-01"
-    ).exclude(
-        details__id__in=[DETAIL_UPLOADED]
-    ).order_by("-publish_date", "-id")[:FP_NEW_RELEASES_SHOWN]
-
-    data["files"] = File.objects.filter(
-        spotlight=True
-    ).exclude(
-        Q(details__id__in=[DETAIL_UPLOADED]) |
-        Q(release_date__gte="2021-01-01")
-    ).order_by("-publish_date", "-id")[:FP_FILES_SHOWN]
+    data["new_releases"] = File.objects.new_releases()[:FP_NEW_RELEASES_SHOWN]
+    data["files"] = File.objects.latest_additions()[:FP_FILES_SHOWN]
 
     data["reviews"] = Review.objects.all().order_by(
         "-date", "-id"
@@ -212,18 +197,8 @@ def play_collection(request):
 
 def random(request):
     """ Returns a random ZZT file page """
-    max_pk = File.objects.all().order_by("-id")[0].id
-
-    zgame = None
-    while not zgame:
-        pk = randint(1, max_pk)
-        zgames = File.objects.filter(pk=pk, details__id=DETAIL_ZZT).exclude(
-            details__id__in=[DETAIL_LOST, DETAIL_REMOVED]
-        ).exclude(genre__icontains="Explicit")
-        if zgames:
-            zgame = zgames[0]
-
-    return redirect(zgame.file_url())
+    selection = File.objects.random_zzt_world()
+    return redirect(selection.file_url())
 
 
 def site_credits(request):

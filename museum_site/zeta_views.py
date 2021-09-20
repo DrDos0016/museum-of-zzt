@@ -45,9 +45,9 @@ def zeta_launcher(
 
     if data["components"]["advanced"]:
         # data["charsets"] = CUSTOM_CHARSET_LIST
-        data["all_files"] = File.objects.filter(
-            details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED]
-        ).order_by("sort_title", "id").only("id", "title")
+        data["all_files"] = File.objects.standard_worlds().order_by(
+            "sort_title", "id"
+        ).only("id", "title")
 
     data["charset_override"] = request.GET.get("charset_override", "")
     data["executable"] = request.GET.get("executable", "AUTO")
@@ -56,7 +56,9 @@ def zeta_launcher(
 
     # Get files requested
     if letter and filename:
-        data["file"] = File.objects.get(letter=letter, filename=filename)
+        data["file"] = File.objects.identifier(
+            letter=letter, filename=filename
+        ).first()
     else:
         data["file"] = None  # This will be the "prime" file
 

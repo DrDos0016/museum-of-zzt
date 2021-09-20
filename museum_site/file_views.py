@@ -141,7 +141,7 @@ def file_viewer(request, letter, filename, local=False):
     data["local"] = local
     data["files"] = []
     if not local:
-        res = File.objects.filter(letter=letter, filename=filename)
+        res = File.objects.identifier(letter=letter, filename=filename)
         matches = len(res)
         if matches == 1:
             data["file"] = res[0]
@@ -235,7 +235,9 @@ def file_viewer(request, letter, filename, local=False):
 def review(request, letter, filename, **kwargs):
     """ Returns a page of reviews for a file. Handles POSTing new reviews """
     data = {}
-    data["file"] = File.objects.get(letter=letter, filename=filename)
+    data["file"] = File.objects.identifier(
+        letter=letter, filename=filename
+    ).first()
     data["letter"] = letter
     data["title"] = data["file"].title + " - Reviews"
 
@@ -274,16 +276,9 @@ def roulette(
     show_description=False
 ):
     data = {"title": "Browse", "mode": "Roulette", "header": "Roulette"}
-
-    ids = list(
-        File.objects.filter(
-            details__id__in=details
-        ).values_list("id", flat=True)
-    )
     data["rng_seed"] = str(int(request.GET.get("seed", time())))
-    seed(data["rng_seed"])
-    shuffle(ids)
-    qs = File.objects.filter(id__in=ids[:PAGE_SIZE]).order_by("?")
+
+    qs = File.objects.roulette(data["rng_seed"], PAGE_SIZE)
 
     data["available_views"] = ["detailed"]
     data["view"] = get_selected_view_format(request, data["available_views"])
