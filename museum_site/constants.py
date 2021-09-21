@@ -530,3 +530,17 @@ EXTENSION_HINTS = {
     ".WAR": ("?", []),
     ".ZR": ("?", []),
 }
+
+# https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+LANGUAGES = {
+    "da": "Danish",
+    "nl": "Dutch",
+    "en": "English",
+    "fr": "French",
+    "de": "German",
+    "it": "Italian",
+    "no": "Norwegian",
+    "pl": "Polish",
+    "es": "Spanish",
+    "xx": "Other"
+}

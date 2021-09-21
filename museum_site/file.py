@@ -17,7 +17,7 @@ except ImportError:
     HAS_ZOOKEEPER = False
 
 from .common import slash_separated_sort, UPLOAD_CAP, STATIC_PATH
-from .constants import SITE_ROOT, REMOVED_ARTICLE, ZETA_RESTRICTED
+from .constants import SITE_ROOT, REMOVED_ARTICLE, ZETA_RESTRICTED, LANGUAGES
 from .review import Review
 
 DETAIL_DOS = 1
@@ -170,7 +170,7 @@ class File(models.Model):
     can_review      -- Allow reviews on the file
     license         -- File license if available
     downloads       -- Reference to Download sources
-
+    language        -- / sep. ABC list of language codes (ISO 639-1)
     """
 
     letter = models.CharField(max_length=1, db_index=True)
@@ -249,6 +249,7 @@ class File(models.Model):
     spotlight = models.BooleanField(default=True)
     can_review = models.BooleanField(default=True)
     license = models.CharField(max_length=150, default="Unknown")
+    language = models.CharField(max_length=50, default="en")
     downloads = models.ManyToManyField("Download", default=None, blank=True)
 
     class Meta:
@@ -460,6 +461,10 @@ class File(models.Model):
 
     def genre_list(self):
         return self.genre.split("/")
+
+    def language_list(self):
+        short = self.language.split("/")
+        return ", ".join(map(LANGUAGES.get, short))
 
     def is_lost(self):
         lost = self.details.all().values_list("id", flat=True)
