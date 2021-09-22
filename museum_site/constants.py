@@ -408,6 +408,7 @@ EXTENSION_HINTS = {
     "ASP": ("Text File", [DETAIL_TEXT], "AND"),
     ".1ST": ("Text File", [DETAIL_TEXT], "AND"),
     ".ANS": ("Text File", [DETAIL_TEXT], "AND"),
+    ".BAT": ("Batch File", [DETAIL_TEXT]),
     ".BB": ("Text File", [DETAIL_TEXT], "AND"),
     ".CFG": ("Text File", [DETAIL_TEXT], "AND"),
     "COPYING": ("Text File", [DETAIL_TEXT], "AND"),
@@ -509,7 +510,6 @@ EXTENSION_HINTS = {
     ".~~~": ("Organizer", []),
     "._3DSKULL": ("?", []),
     ".ANI": ("Windows Animated Cursor", []),
-    ".BAT": ("Batch File", []),
     ".BIN": ("Binary", []),  # Various (sometimes garbled text files?)
     ".BSV": ("The Draw File", []),
     ".CER": ("?", []),
