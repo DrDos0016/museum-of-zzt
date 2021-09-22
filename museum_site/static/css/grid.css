@@ -38,7 +38,7 @@ a.nohover:hover
     background-color:none;
 }
 
-a.noul a.noul:hover { text-decoration:none; }
+a.noul, a.noul:hover { text-decoration:none; }
 
 a.broken
 {
