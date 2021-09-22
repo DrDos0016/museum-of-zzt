@@ -54,6 +54,7 @@
         <p>A short collection of comics included with Eurakarte's Mr. Shapiro series of games. It is very reminiscent of Pokey the Penguin.</p>
         </div>
     </div>
+    {% if user.is_authenticated %}
     <div class="comic">
         <div class="image"><img src="{% static 'comic/zamros-comic.png' %}" alt="Zamros: The Comic"></div>
         <div class="desc">
@@ -61,6 +62,8 @@
         <p>Zamros the comic is a story of the daily trials of a young man living in the cushy suburbs of New York. Created by Dave2.</p>
         </div>
     </div>
+    {% endif %}
+    {% if user.is_authenticated %}
     <div class="comic">
         <div class="image"><img src="{% static 'comic/lemmy.jpg' %}" alt="Lemmy"></div>
         <div class="desc">
@@ -69,6 +72,7 @@
         this comic lets us imagine what that might be like. Lots of DDR, Satanic rituals, and just trying to survive high school.</p>
         </div>
     </div>
+    {% endif %}
     <div class="comic">
         <div class="image"><img src="{% static 'comic/revvy.png' %}" alt="The Prophesies of Revvy"></div>
         <div class="desc">
@@ -83,7 +87,7 @@
         <p>A short lived webcomic by Zenith Nadir based on his own ZZT hit: "Frost 1; Power". The comic covers the events in the first half of the game. Ran from 2008-2009.</p>
         </div>
     </div>
-
+    {% comment %}
     <div class="comic">
         <div class="image"><img src="{% static 'comic/ubgs.png' %}" alt="Ol' Uncle Bo's Gamblin' Shack"></div>
         <div class="desc">
@@ -92,5 +96,6 @@
         Drawn with clipart and MS Paint, UBGS spans over 100 strips, sometimes referencing the ZZT community. Let's just call it a historical curiosity.</p>
         </div>
     </div>
+    {% endcomment %}
 </section>
 {% endblock %}
