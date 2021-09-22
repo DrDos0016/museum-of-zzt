@@ -819,4 +819,32 @@ viewing hole below!
 $""",
 "source":"https://museumofzzt.com/file/c/cwars9.zip?file=CWARS9.ZZT&board=45#12,10"
 },
+
+{
+"text":"""Ah, welcome to Ikari Warriors. Control one
+of two (really just one) overweight, head
+band wearing, Rambo wannabes. Invaded by
+an evil communist foriegn power, Ikari is
+a young nation, ruled by Shinji, a nerdy
+14 year old Japanese kid. This is SKC
+Soft's first game, so there might be a
+few bugs. Good Luck!""",
+"source":"https://museumofzzt.com/file/i/Ikari.zip?file=Ikari.zzt&board=2#3,22"
+},
+
+{
+"text":"""$November-6, 15th, 1997
+Stopped watching MTV. And started to watch
+VH1. VH1 simply kicks MTV's ass.""",
+"source":"http://museumofzzt.com/file/g/ghanth.zip?file=Ghrpg.zzt&board=5#37,16"
+},
+
+{
+"text":""" These are the Mountain Porters. If you
+get aggrivated easily then this board was
+madee specially for you. But if you are
+the patient type then this screen just
+wasted me half an hour.""",
+"source":"https://museumofzzt.com/file/l/LCROWN_3.ZIP?file=LCROWN-3.ZZT&board=26#4,15"
+},
 ]
