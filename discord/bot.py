@@ -195,11 +195,12 @@ async def zzt(ctx):
                     data["file"]["company"]
                 )
             discord_post += "`[{}] - \"{}\"` \n"
-            discord_post += (
-                "Explore: <" + data["museum_link"] + "?file=" +
-                urllib.parse.quote(data["world"]) + "&board=" +
-                str(data["board"]["number"]) + ">\n"
+            discord_post += "Explore: <{url}?file={f}&board={b}>\n".format(
+                url=data["museum_link"].replace(" ", "%20%"),
+                f=urllib.parse.quote(data["world"]),
+                b=str(data["board"]["number"])
             )
+
             if data["file"]["archive_name"]:
                 discord_post += (
                     "Play: <{}>".format(data["play_link"])
