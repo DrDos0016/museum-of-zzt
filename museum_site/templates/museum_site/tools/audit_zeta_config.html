@@ -32,7 +32,7 @@
     {% ifchanged %}<th colspan="3">Using: [{{file.zeta_config.id|default:"-"}}] "{{file.zeta_config.name|default:"None"}}" {% if file.zeta_config %}<a href="/admin/museum_site/zeta_config/{{file.zeta_config.id}}/change/">Edit Config</a>{% endif %}</th>{% endifchanged %}
     <tr>
         <td><a href="{{file.file_url}}">{{file.title}}</a></td>
-        <td class="c"><a href="">Play Online</a></td>
+        <td class="c"><a href="{{file.play_url}}">Play Online</a></td>
         <td class="c"><a href="/admin/museum_site/file/{{f.id}}/change/">Edit</a></td>
     </tr>
 {% endfor %}
