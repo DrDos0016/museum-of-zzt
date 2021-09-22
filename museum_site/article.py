@@ -132,6 +132,7 @@ class Article(models.Model):
         help_text="Date article content was last revised",
         default=None, null=True, blank=True
     )
+    revision_details = models.TextField(default="", blank=True)
     summary = models.CharField(max_length=150, default="", blank=True)
     allow_comments = models.BooleanField(default=False)
     spotlight = models.BooleanField(default=True)
