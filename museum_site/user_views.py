@@ -719,7 +719,6 @@ def resend_account_activation(request):
     )
 
 
-@login_required()
 def reset_password(request, token=None):
     data = {
         "title": "Reset Password",
