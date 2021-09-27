@@ -582,7 +582,7 @@ class File(models.Model):
                 # Extract the file
                 try:
                     zf.extract(file, path=temp_path)
-                except:
+                except Exception:
                     print("Could not extract {}. Aborting.".format(file))
                     return False
             else:
