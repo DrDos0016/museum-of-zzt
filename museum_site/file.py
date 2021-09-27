@@ -86,6 +86,10 @@ class FileManager(models.Manager):
     def published(self):
         return self.exclude(details__id__in=[DETAIL_UPLOADED, DETAIL_LOST])
 
+    def search(self, p):
+        qs = File.objects.all()
+        return qs
+
     def standard_worlds(self):
         return self.filter(
             details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED]
@@ -791,10 +795,6 @@ class File(models.Model):
         os.remove(SITE_ROOT + "/museum_site/static/data/" + world)
 
         return True
-
-    def search(p):
-        qs = File.objects.all()
-        return qs
 
     @property
     def identifier(self):

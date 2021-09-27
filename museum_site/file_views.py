@@ -38,7 +38,7 @@ def file_directory(
     default_sort = None
 
     # Pull files based on page
-    qs = File.search(request.GET)
+    qs = File.objects.search(request.GET)
     if details:
         qs = qs.filter(details__in=details)
         if len(details) == 1:
