@@ -3,6 +3,10 @@ from django.shortcuts import render
 from .common import *
 from .constants import *
 from .models import *
+from .private import (
+    UNREGISTERED_SUPPORTERS, UNREGISTERED_BIGGER_SUPPORTERS,
+    UNREGISTERED_BIGGEST_SUPPORTERS
+)
 
 
 def directory(request, category):
@@ -213,11 +217,83 @@ def site_credits(request):
     for author in data["authors"]:
         split = author.split("/")
         for name in split:
-            if name not in data["list"]:
+            if name != "Various" and name not in data["list"]:
                 data["list"].append(name)
     data["list"].sort(key=str.lower)
     data["split"] = math.ceil(len(data["list"]) / 4.0)
-    return render(request, "museum_site/credits.html", data)
+
+    # Hardcoded credits
+    supporters = UNREGISTERED_SUPPORTERS
+    bigger_supporters = UNREGISTERED_BIGGER_SUPPORTERS
+    biggest_supporters = UNREGISTERED_BIGGEST_SUPPORTERS
+
+    # Emails to reference
+    hc_emails = []
+    bigger_hc_emails = []
+    biggest_hc_emails = []
+    for row in supporters:
+        hc_emails.append(row["email"])
+    for row in bigger_supporters:
+        bigger_hc_emails.append(row["email"])
+    for row in biggest_supporters:
+        biggest_hc_emails.append(row["email"])
+
+    # Get users known to be patrons
+    no_longer_hardcoded = []
+    patrons = Profile.objects.filter(patron=True).order_by("patronage")
+    for p in patrons:
+        if p.site_credits_name:
+            info = {
+                "name": p.site_credits_name,
+                "char": p.char,
+                "fg": p.fg,
+                "bg": p.bg,
+                "img": "blank-portrait.png",
+                "email": p.patron_email
+            }
+
+            if p.patron_email in hc_emails:
+                idx = hc_emails.index(p.patron_email)
+                hc_emails[idx] = info
+                no_longer_hardcoded.append(p.patron_email)
+                continue
+            elif p.patron_email in bigger_hc_emails:
+                idx = bigger_hc_emails.index(p.patron_email)
+                bigger_hc_emails[idx] = info
+                no_longer_hardcoded.append(p.patron_email)
+                continue
+            elif p.patron_email in biggest_hc_emails:
+                idx = biggest_hc_emails.index(p.patron_email)
+                biggest_hc_emails[idx] = info
+                no_longer_hardcoded.append(p.patron_email)
+                continue
+
+            if p.patronage >= 10000:
+                biggest_supporters.append(info)
+            elif p.patronage >= 2000:
+                bigger_supporters.append(info)
+            else:
+                supporters.append(info)
+
+    supporters.sort(key=lambda k: k["name"].lower())
+    bigger_supporters.sort(key=lambda k: k["name"].lower())
+    biggest_supporters.sort(key=lambda k: k["name"].lower())
+
+    # Pad out entries to look cleaner
+    while len(bigger_supporters) % 3 != 0:
+        bigger_supporters.append({"name": "ZZZZZZZZZZSTUB", "email": "STUB"})
+    while len(biggest_supporters) % 2 != 0:
+        biggest_supporters.append({"name": "ZZZZZZZZZZSTUB", "email": "STUB"})
+    while len(supporters) % 3 != 0:
+        supporters.append({"name": "ZZZZZZZZZZSTUB", "email": "STUB"})
+
+    data["supporters"] = supporters
+    data["bigger_supporters"] = bigger_supporters
+    data["biggest_supporters"] = biggest_supporters
+
+    #print(no_longer_hardcoded)
+
+    return render(request, "museum_site/site-credits.html", data)
 
 
 def stub(request, *args, **kwargs):
