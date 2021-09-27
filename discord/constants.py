@@ -21,7 +21,7 @@ List of roles:
   Stream-Alerts-All       Stream-Alerts-Asie
   Stream-Alerts-Dos       Stream-Alerts-Meap
 
-All commands are restricted to the #bots channel, excluding !zzt which also functions in #worlds.
+All commands are restricted to the #bots channel, excluding !zzt which also functions in #worlds-of-zzt-feed.
 ```"""
 
 SCROLL_TOP = """```

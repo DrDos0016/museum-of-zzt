@@ -179,7 +179,7 @@ async def scroll(ctx, idx="?"):
 
 @bot.command(help="Posts a random ZZT board. (15 sec cooldown)")
 async def zzt(ctx):
-    VALID_ROOMS = ("worlds", "bots", "bot-dev")
+    VALID_ROOMS = ("worlds-of-zzt-feed", "bots", "bot-dev")
     VALID_USERS = ()
     COOLDOWN = 15
     params = ()
