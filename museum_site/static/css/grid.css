@@ -198,7 +198,7 @@ input[type=number]
 {
     /* http://int10h.org/oldschool-pc-fonts/readme/ */
     font-family: 'cp437';
-    src: url('/static/fonts/Px437_IBM_EGA8.ttf');
+    src: url('/static/fonts/PxPlus_IBM_EGA_8x14.ttf');
     font-weight: normal;
     font-style: normal;
 }
