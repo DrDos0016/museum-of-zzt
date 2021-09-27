@@ -1,0 +1,204 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load zzt_tags %}
+
+{% block style %}
+<style>
+#content ul
+{
+    list-style:none;
+}
+
+#content h2
+{
+    margin-top:14px;
+}
+
+.listing
+{
+    display:flex;
+    width:100%;
+    flex-wrap:wrap;
+    justify-content:space-around;
+}
+
+.listing
+{
+    text-align:center;
+}
+
+.credit
+{
+    flex:1 1 25%;
+    padding:0.5em;
+    border:1px solid #000;
+    margin:0.5em;
+    font-family:monospace;
+    font-size:14pt;
+}
+
+.credit .ascii-char
+{
+    font-size:28pt;
+}
+
+.credit.xl
+{
+    flex:0 0 35%;
+}
+
+.flex-break
+{
+    flex:0 0 100%;
+}
+
+.credit .icon-frame
+{
+    height:100px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:14px 8px 14px 8px;
+
+}
+
+.credit .icon
+{
+    max-height:114px;
+}
+
+.smiley img
+{
+    position:relative;
+    max-width:none;
+}
+
+.smiley
+{
+    display:inline-block;
+    width:8px;
+    height:14px;
+    overflow:hidden;
+    background:#CCC;
+}
+
+.credit .stub
+{
+    visibility:hidden;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Credits</h1>
+
+<h2>Site Development</h2>
+<ul>
+    <li>Code: <a href="https://twitter.com/worldsofzzt" target="_blank">Dr. Dos</a></li>
+    <li>Logo: <a href="https://twitter.com/dopterra" target="_blank">Lazymoth</a></li>
+    <li>Fonts:
+        <ul>
+            <li>"<a href="https://int10h.org/oldschool-pc-fonts/" target="_blank">The Ultimate Oldschool PC Font Pack</a>" © 2015-2016 VileR (licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0</a>)</li>
+            <li>"<a href="https://design.ubuntu.com/font/" target="_blank">Ubuntu font family</a> © 2019 Canonical Ltd. (licensed under <a href="{% static 'fonts/LICENCE.txt' %}" target="_blank">Ubuntu Font License</a>)</li>
+        </ul>
+    </li>
+    <li>Zeta Emulator: <a href="https://zeta.asie.pl" target="_blank">asie</a></li>
+</ul>
+
+<h2>Articles</h2>
+<div class="directory">
+{% for row in list %}
+    {% if forloop.counter0|divisibleby:split %}
+    <div class="column">
+    {% endif %}
+        <div class="row">
+            <a href="/article?&author={{row}}&sort=title&action=search">{{row}}</a>
+            </div>
+    {% if forloop.counter|divisibleby:split or forloop.last %}
+    </div>
+    {% endif %}
+{% endfor %}
+</div>
+
+<h2>Patreon Supporters</h2>
+<div class="listing">
+    {% for s in biggest_supporters %}
+    {%if s.email == "STUB" %}
+    <div class="credit stub"></div>
+    {% else %}
+    <div class="credit xl">
+        <div class="icon-frame"><img src="{% static 'credits/'|add:s.img %}" class="icon"></div>
+        {% char s.char s.fg s.bg %} {{s.name}}
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    <div class="flex-break"></div>
+
+    {% for s in bigger_supporters %}
+    {%if s.email == "STUB" %}
+    <div class="credit stub"></div>
+    {% else %}
+    <div class="credit">
+        <div class="icon-frame"><img src="{% static 'credits/'|add:s.img %}" class="icon"></div>
+        {% char s.char s.fg s.bg %} {{s.name}}
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    {% comment %}
+    <div class="credit">
+        <div class="icon-frame"><img src="{% static 'credits/AnnaCommission_icon.png' %}" class="icon"></div>
+        {% char 12 'purple' 'black' %} Anna Anthropy
+    </div>
+
+    <div class="credit large">
+        <div class="icon-frame"><img src="{% static 'credits/zzthink.png' %}" class="icon"></div>
+        {% char 3 'purple' 'transparent' %} Archenoth
+    </div>
+
+    <div class="credit">
+        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
+        {% char 165 'blue' 'black' %} Arun R.
+    </div>
+
+    <div class="credit large">
+        <div class="icon"><img src="{% static 'credits/celine_kalante.png' %}" class="icon"></div>
+        {% char 15 'purple' 'darkpurple' %} Celine Kalante
+    </div>
+
+    <div class="credit large">
+        <div class="icon-frame"><img src="{% static 'credits/geight.png' %}" class="icon"></div>
+        {% char 132 'purple' 'black' %} Geight
+    </div>
+
+    <div class="credit large">
+        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
+        {% char 237 'white' 'darkpurple' %} Josh Matthews
+    </div>
+
+    <div class="credit">
+        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
+        {% char 2 'white' 'darkyellow' %} Zinfandel Z.T.
+    </div>
+
+    <div class="credit stub"></div>
+    <div class="credit stub"></div>
+    {% endcomment %}
+
+    <div class="flex-break"></div>
+
+    {% for s in supporters %}
+    {%if s.email == "STUB" %}
+    <div class="credit stub"></div>
+    {% else %}
+    <div class="credit"><div class="ascii-icon">{% char s.char s.fg s.bg %}</div> <div class="credited-name">{{s.name}}</div></div>
+    {% endif %}
+    {% endfor %}
+
+    <div class="flex-break"></div>
+    <div class="credit">{% char 63 'white' 'black' %} And Many Anonymous Patrons!</div>
+</div>
+</section>
+{% endblock %}
