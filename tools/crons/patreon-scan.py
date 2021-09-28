@@ -50,16 +50,20 @@ def main():
                     ).only("id")
                     if qs:
                         profile = Profile.objects.get(user_id=qs[0].id)
+                        was_patron = profile.patron
+                        old_pledge = profile.patronage
                         profile.patron = True
                         profile.patronage = pledge
-                        print(tier_id)
-                        if tier_id:
-                            profile.patron_tier = tier_id
-                        profile.save()
-                        print(
-                            "Marked", profile, "as Patron with pledge of",
-                            pledge, "tier", tier_id
-                        )
+
+                        if not was_patron or (old_pledge != profile.patronage):
+                            print(tier_id)
+                            if tier_id:
+                                profile.patron_tier = tier_id
+                            profile.save()
+                            print(
+                                "Marked", profile, "as Patron with pledge of",
+                                pledge, "tier", tier_id
+                            )
         else:
             break
 

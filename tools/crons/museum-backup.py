@@ -6,20 +6,6 @@ from datetime import datetime
 from museum_site.constants import SITE_ROOT
 
 
-"""
-Database
-
-ALL ROOT FOLDERS EXCEPT...
-    "backups"
-    "log"
-    "private"
-    "temp"
-    "venv"
-    "zgames"
-
-zgames
-"""
-
 def main():
     PYTHON = os.path.join(SITE_ROOT, "venv", "bin", "python3")
     BACKUPS = os.path.join(SITE_ROOT, "backups")
@@ -46,7 +32,7 @@ def main():
         tar_name,
         TEMP,
         "database.sql"
-    )
+        )
     #print(command)
     os.system(command)
     os.remove(os.path.join(TEMP, "database.sql"))
