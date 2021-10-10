@@ -6,8 +6,6 @@ import urllib.request
 import django
 import requests
 
-sys.path.append("/var/projects/museum/")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
 from museum_site.models import *
@@ -37,6 +35,20 @@ def main():
                 print("<li class='error'>{}</li>\n".format(e))
             print("</ul>\n")
 
+    # Find zips without file entries
+    print("<hr>\n<ul>")
+    all_files = glob.glob(os.path.join(SITE_ROOT, "zgames", "*", "**"))
+    for f in all_files:
+        name = os.path.basename(f)
+        if "/zgames/mass" in f or "/zgames/uploaded" in f:
+            continue
+        start = len(os.path.join(SITE_ROOT, "zgames")) + 1
+        letter = f[start:start+1]
+        #print(letter, name)
+        match = File.objects.filter(letter=letter, filename=name).count()
+        if not match:
+            print("<li>ORPHANED ZIP", f, "</li>")
+    print("</ul>")
 
     return True
 
@@ -98,6 +110,7 @@ def field_check(f):
     # Confirm LOST does not exist
     if DETAIL_LOST in detail_list and exists:
         issues["warnings"].append("File is marked as 'Lost', but a Zip exists.")
+
 
     articles = f.articles.all()
     article_len = len(articles)
