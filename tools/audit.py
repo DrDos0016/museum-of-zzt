@@ -4,51 +4,14 @@ import sys
 import urllib.request
 
 import django
-
-sys.path.append("/var/projects/museum/")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
-from museum_site.models import File, Detail
-from museum_site.common import DETAIL_LOST
+from museum_site.models import File, Detail  # noqa: E402
+from museum_site.common import DETAIL_LOST  # noqa: E402
 
 
 def main():
-
-    """
-    skipped_urls = [
-        "http://django.pi:8000/file/d/Dragon.zip",
-        "http://django.pi:8000/file/d/prison.zip",
-        "http://django.pi:8000/file/k/kevedit-setup-0.5.0-win32.exe",
-        "http://django.pi:8000/file/m/MADTOM3.ZIP",
-        "http://django.pi:8000/file/m/mystZZT.zip",
-        "http://django.pi:8000/file/r/rings2.zip",
-        "http://django.pi:8000/file/s/Bob.zip",
-        "http://django.pi:8000/file/z/zztpiano.exe",
-    ]
-    """
     skipped_urls = []
-
-    # Iterate over File objects
-    # Finds Files() that have no Zips (and aren't known Lost Worlds)
-    zip_ignore = [904, 2095, 2137]  # Known missing zips
-    zip_ignore = []
-    print("Finding File objects with missing Zip files:")
-
-    count = 0
-    for file in File.objects.all().exclude(details__in=[DETAIL_LOST]).order_by("letter", "filename"):
-        file_path = "/var/projects/museum" + file.download_url()
-        if not os.path.isfile(file_path):
-
-            if file.id in zip_ignore:
-                continue
-
-            print(str(file.id).zfill(4), file.letter, file.filename)
-            count += 1
-
-    print(count, "MISSING ZIPS")
-    print(len(zip_ignore), "IDs purposely ignored")
-    print("=" * 40)
 
     # Iterate over Zips
     # Find zips without Files()
@@ -57,10 +20,10 @@ def main():
     count = 0
     files_ignore = 0
     for zip in zips:
-        letter, file = zip.replace(
+        letter, filename = zip.replace(
             "/var/projects/museum/zgames/", ""
         ).split("/")
-        exists = File.objects.filter(letter=letter, filename=file).count()
+        exists = File.objects.filter(letter=letter, filename=filename).count()
         # Some zgames folders are excluded deliberately
         if exists == 0 and letter not in ["extra", "mass"]:
             count += 1
@@ -91,34 +54,32 @@ def main():
     print("=" * 40)
 
     # Test files with no details
-
-
     print("=" * 40)
     no_details_count = 0
-    for file in File.objects.all().order_by("letter", "filename"):
-        if file.details.all().count() == 0:
+    for f in File.objects.all().order_by("letter", "filename"):
+        if f.details.all().count() == 0:
             no_details_count += 1
-            print(file, "has no details!")
+            print(f, "has no details!")
     print(no_details_count, "files without details.")
-
 
     # Test URLs
     # Find 404s
     print("Finding viewer URLs which result in error:")
     lost = Detail.objects.get(pk=DETAIL_LOST)
     count = 0
-    for file in File.objects.all().order_by("letter", "filename"):
-        dl_url = file_path = "http://django.pi:8000" + file.file_url()
+    for f in File.objects.all().order_by("letter", "filename"):
+        url = "http://django.pi:8000" + urllib.parse.quote(f.file_url())
         try:
-            urllib.request.urlopen(dl_url)
+            urllib.request.urlopen(url)
         except urllib.error.HTTPError as e:
-            if (lost not in file.details.all()):
-                print(dl_url)
+            if (lost not in f.details.all()):
+                print(url)
                 count += 1
     print(count, "INVALID URLS")
     print(len(skipped_urls), "SKIPPED.")
 
     return True
+
 
 if __name__ == "__main__":
     main()
