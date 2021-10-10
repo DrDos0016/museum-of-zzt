@@ -16,14 +16,17 @@ sys.path.append("/var/projects/museum")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
-from museum_site.models import File
+from museum_site.models import File  # noqa: E402
 
-from museum_site.constants import (
+from museum_site.constants import (  # noqa: E402
     DETAIL_ZZT, DETAIL_SZZT, DETAIL_ZIG, DETAIL_UTILITY
 )
-from museum_site.common import SITE_ROOT
+from museum_site.common import SITE_ROOT  # noqa: E402
 
 CRON_ROOT = os.path.join(SITE_ROOT, "tools", "crons")
+MASS_DL_DATA_PATH = os.path.join(
+    SITE_ROOT, "museum_site", "static", "data", "mass_dl.json"
+)
 
 HEADER = """
 T H E   M U S E U M   O F   Z Z T   P R E S E N T S
@@ -116,6 +119,36 @@ FOOTER = """
 - https://museumofzzt.com -
 """
 
+TEMPLATE_JSON = {
+    "zzt_worlds_unknown": {"md5": "", "file_count": 0},
+    "zzt_worlds_1991": {"md5": "", "file_count": 0},
+    "zzt_worlds_1992": {"md5": "", "file_count": 0},
+    "zzt_worlds_1993": {"md5": "", "file_count": 0},
+    "zzt_worlds_1994": {"md5": "", "file_count": 0},
+    "zzt_worlds_1995": {"md5": "", "file_count": 0},
+    "zzt_worlds_1996": {"md5": "", "file_count": 0},
+    "zzt_worlds_1997": {"md5": "", "file_count": 0},
+    "zzt_worlds_1998": {"md5": "", "file_count": 0},
+    "zzt_worlds_1999": {"md5": "", "file_count": 0},
+    "zzt_worlds_2000": {"md5": "", "file_count": 0},
+    "zzt_worlds_2001": {"md5": "", "file_count": 0},
+    "zzt_worlds_2002": {"md5": "", "file_count": 0},
+    "zzt_worlds_2003": {"md5": "", "file_count": 0},
+    "zzt_worlds_2004": {"md5": "", "file_count": 0},
+    "zzt_worlds_2005": {"md5": "", "file_count": 0},
+    "zzt_worlds_2006": {"md5": "", "file_count": 0},
+    "zzt_worlds_2007": {"md5": "", "file_count": 0},
+    "zzt_worlds_2008": {"md5": "", "file_count": 0},
+    "zzt_worlds_2009": {"md5": "", "file_count": 0},
+    "zzt_worlds_2010-2019": {"md5": "", "file_count": 0},
+    "zzt_worlds_2020-2029": {"md5": "", "file_count": 0},
+    "szzt_worlds": {"md5": "", "file_count": 0},
+    "utilities": {"md5": "", "file_count": 0},
+    "zig_worlds": {"md5": "", "file_count": 0},
+    "zzm_audio": {"md5": "", "file_count": 0},
+    "featured_worlds": {"md5": "", "file_count": 0},
+}
+
 
 def main():
     file_list = {
@@ -196,7 +229,9 @@ def main():
         "featured_worlds": FEATURED_HEADER,
     }
 
-    special_zips = ("szzt_worlds", "utilities", "zig_worlds", "zzm_audio", "featured_worlds")
+    special_zips = (
+        "szzt_worlds", "utilities", "zig_worlds", "zzm_audio", "featured_worlds"
+    )
 
     # Get all files by release date
     qs = File.objects.all().order_by("release_date", "letter", "title")
@@ -250,7 +285,9 @@ def main():
             try:
                 zf.write(f.phys_path(), arcname=os.path.basename(f.phys_path()))
                 f_rd = str(f.release_date) if f.release_date is not None else ""
-                file_listing += '{} "{}" by {} [{}]'.format(f_rd, f.title, f.author, f.filename).strip() + "\n"
+                file_listing += '{} "{}" by {} [{}]'.format(
+                    f_rd, f.title, f.author, f.filename
+                ).strip() + "\n"
                 pass
             except FileNotFoundError:
                 print('File not found: "{}"'.format(f.phys_path()))
@@ -261,7 +298,9 @@ def main():
         readme_name = "Museum of ZZT Collection - {}.txt".format(category)
         readme_body = readme_bodies.get(zip_name, HEADER)
         if zip_name not in special_zips:
-            readme_body = readme_body.format(zip_name.split("_")[-1], len(file_list[zip_name]))
+            readme_body = readme_body.format(
+                zip_name.split("_")[-1], len(file_list[zip_name])
+            )
         else:
             readme_body = readme_body.format(len(file_list[zip_name]))
 
@@ -270,7 +309,7 @@ def main():
         readme_body += FOOTER
         zf.writestr(readme_name, readme_body)
 
-        # Calculate md5 checksum (zips will have new md5s every time so it has to be something else)
+        # Calculate md5 checksum (zips will have new md5s every time)
         md5 = hashlib.md5()
         md5.update(id_list[zip_name].encode("utf-8"))
         md5 = md5.hexdigest()
@@ -284,10 +323,13 @@ def main():
         }
 
     # Check for different checksums against existing JSON data
-    to_replace = [] # Groups of files to actually update
-    with open(os.path.join(SITE_ROOT, "museum_site", "static", "data", "mass_dl.json"), "r") as fh:
-        raw = fh.read()
-        data = json.loads(raw)
+    to_replace = []  # Groups of files to actually update
+    try:
+        with open(MASS_DL_DATA_PATH, "r") as fh:
+            raw = fh.read()
+            data = json.loads(raw)
+    except FileNotFoundError:
+        data = TEMPLATE_JSON
 
     for zip_name in zip_names:
         info = data.get(zip_name)
@@ -300,29 +342,38 @@ def main():
             }
 
         # Compare data and replace the zip if needed
-        if (new_info[zip_name]["md5"] != info["md5"]) or (new_info[zip_name]["file_count"] != info["file_count"]) or ("force" in sys.argv):
+        if (
+            (new_info[zip_name]["md5"] != info["md5"]) or
+            (new_info[zip_name]["file_count"] != info["file_count"]) or
+            ("force" in sys.argv)
+        ):
             print(zip_name, "HAS CHANGED")
 
             # Replace any zips that need to be replaced
             try:
                 src = os.path.join(SITE_ROOT, "temp", "{}.zip".format(zip_name))
-                dst = os.path.join(SITE_ROOT, "zgames", "mass", "{}.zip".format(zip_name))
+                dst = os.path.join(
+                    SITE_ROOT, "zgames", "mass", "{}.zip".format(zip_name)
+                )
                 shutil.move(src, dst)
-            except:
+            except Exception:
                 print("Failed to move", src)
 
         # Remove the zip
         try:
-            os.remove(os.path.join(SITE_ROOT, "temp", "{}.zip".format(zip_name)))
-        except:
+            os.remove(
+                os.path.join(SITE_ROOT, "temp", "{}.zip".format(zip_name))
+            )
+        except Exception:
             continue
 
     # Save the new information
-    with open(os.path.join(SITE_ROOT, "museum_site", "static", "data", "mass_dl.json"), "w") as fh:
+    with open(MASS_DL_DATA_PATH, "w") as fh:
         fh.write(json.dumps(new_info))
 
     print("Zips created.")
     return True
+
 
 if __name__ == "__main__":
     main()

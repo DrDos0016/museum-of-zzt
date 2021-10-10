@@ -17,8 +17,9 @@ $(document).ready(function() {
             $("tr[name="+key+"] td[name=zips]").text(data[key]["file_count"]);
             $("tr[name="+key+"] td[name=updated]").text(data[key]["date"].slice(0,10));
         }
-    }
-);
+    }).fail(function (data){
+        $("#mass-dl-failure").show();
+    });
 });
 </script>
 {% endblock %}
@@ -43,6 +44,8 @@ td[name=zips]
 {
     text-align:right;
 }
+
+#mass-dl-failure { display:none; }
 </style>
 {% endblock %}
 
@@ -58,6 +61,10 @@ they have been split up by release year for ZZT worlds and by file type for non-
 
 <p>Note that since these downloads consist of nothing more than a zip file filled with dozens of zip files you may wind up downloading
 plenty of duplicate copies of executables, fonts, or other content.</p>
+
+<div id="mass-dl-failure">
+<p><b>Error: JSON data file is currently missing or corrupt. If missing, run "mass-dl-generator.py" from the cron directory.</b></p>
+</div>
 
 <table class="mass-dl-table">
 <tr>
