@@ -2,56 +2,46 @@
 
 ## Installation And Initial Setup
 
-### Prerequisites
+These instructions were based on the experience of setting up a development
+environment in October 2021. They can definitely be made friendlier. My
+apologies.
 
-* Python 3.7.5 or newer
+## Prerequisites
+
+* Python 3.8.10 or newer (or potentially older)
 * MariaDB (or MySQL)
 
 1. Clone Repo: `git clone https://github.com/DrDos0016/museum-of-zzt.git`
-2. Create Python3 virtural environment: `python3 -m venv venv`
-3. Activate the virtual envrionment: `source venv/bin/activate`
-4. Update pip: `pip install --upgrade pip`
-5. Download libraries from requirements.txt: `pip install -r requirements.txt`
-6. Create your private settings file (see Non-Repository Content section)
-7. Create the database in MariaDB/MySQL: `CREATE DATABASE museum_of_zzt`
-8. Import the repo's provided database dump: `python3 tools/import_database.py museum_repo_db.sql`
-9. Run the Django development server: `python3 manage.py runserver`
-10. The site should be running at [127.0.0.1:8000](http://127.0.0.1:8000) albeit without static files like CSS and images.
-11. Enable debug mode.
+. In the repository's root directory, create Python3 virtural environment: `python3 -m venv venv`
+. Activate the virtual envrionment: `source venv/bin/activate`
+. Update pip: `pip install --upgrade pip`
+. Download libraries from requirements.txt: `pip install -r requirements.txt`
+. (You may need to install the package "libmariadb-dev-compat")
+. If you get an error about conflicting requirements, install idna and requests via `pip install idna`, `pip install requests`, and then comment out the line in requirements.txt for `idna`.
+. Copy the `museum/example-private.py` settings file to `museum/private.py` and configure your database settings and secret key  (see Non-Repository Content section)
+. Copy the `museum_site/example-private.py` settings file to `museum_site/private.py` and configure any site settings to your environment if needed (see Non-Repository Content section)
+. Install the Zookeeper ZZT Python library version 1. Clone the repository `git clone https://github.com/DrDos0016/zookeeper.git` and copy the `zookeeper` directory into the project root or symlink it as appropriate.
+. Mark your development environment as such by creating a file in the project root named `DEV`
+. Create the database in MariaDB/MySQL: `CREATE DATABASE museum_of_zzt`
+. Import the repo's provided database dump: `python3 tools/import_database.py museum_repo_db.sql`
+. Run any database migrations `python3 manage.py migrate`
+. Run the Django development server: `python3 manage.py runserver`
+. The site should be running at [127.0.0.1:8000](http://127.0.0.1:8000)
 
-### Debug mode
+## Using Tools
 
-Django's DEBUG setting in museum/settings.py looks for a file called "DEV" in
-the project's root directory. If it finds this file, DEBUG will be True.
-You'll need to create this file or manually set this variable in order to allow
-Django to serve static assets.
+Several older (and some newer) Python scripts in the tools directory have hardcoded paths to `/var/projects/museum-of-zzt` or `/var/projects/museum`.
 
-## Unfriendly Decisions
-
-While the main site is properly able to run in whatever directory you choose, the tools folder is loaded with files that assume the repository is located in "/var/projects/museum".
-
-Almost, one exception as I type this up to fix later: museum_site/urls.py has the path hardcoded at the very end for serving the /zgames/ directory in the development server. This
-needs to be changed in order to download/play files.
-
-Sorry!
-
-As I return to various files which are using the old /var/projects/museum path I am making changes to make sure things work from any directory as the project's root folder.
-For your own files it's advised to instead set the environment variable PYTHONPATH to include the directory you've cloned this repository into.
+These are slowly being transitioned to a more agnostic setup to allow the Museum to run from any directory. In the meantime, it can be helpful to set the environment variables `PYTHONPATH` and `DJANGO_SETTINGS_MODULE` in your virtual environment. Depending on how you start your development server you may want to find a place to automatically set these variables.
 
 ## Non-Repository Content
 
 I generally avoid including *binary* content in the Museum repository which isn't in some way "mine".
 As such, the following features are deliberately missing by default:
 
-### museum/private.py
-
-This file contains the DATABASES and SECRET_KEY variables used by Django. You'll need to specify the backend, database name, and login credentials.
-[Django Settings Documentation](https://docs.djangoproject.com/en/3.0/ref/settings/) will provide examples. A dump of the database (irregularly updated)
-is included for MariaDB/MySQL.
-
 ### /zgames/
 
-This is the folder which contains all the ZZT (related) files hosted on the Museum.
+This directory contains all the ZZT (related) files hosted on the Museum.
 
 Use wget to obtain these files (from the project root): `wget -m -np -nH -R "index.html*" "https://museumofzzt.com/zgames/"`
 
@@ -69,18 +59,9 @@ Firstly acquire the Museum Zeta build for the repo: `git submodule update --init
 
 Then acquire the various engies which Zeta can run using wget (from project_root/museum_site): `wget -m -np -nH -R "index.html*" "https://museumofzzt.com/static/data/zeta86_engines/"`
 
-### Zookeeper
-
-Zookeeper is a Python library I have written to help parse ZZT files in Python. It is technically an optional component for the site, but without it the "Set Screenshot" web tool
-and the Worlds of ZZT Twitter Bot (and likely some other random things) will not function. You can get Zookeeper from its [repository](https://github.com/DrDos0016/zookeeper). It may
-either be installed with `python setup.py install`, or the zookeeper module folder with the repository can be copied and pasted into the root of this repository.
-
-Keep in mind, if you install it, Zookeeper will show up when running `pip freeze`. If you try to install Zookeeper via pip, you will get a different library that has nothing to do
-with ZZT and make some issues for yourself.
-
 ### Twitter bot
 
-tools/crons/private.py needs to have Twitter API credentials as well as Zookeeper.
+`tools/crons/private.py` needs to have Twitter API credentials as well as Zookeeper.
 
 ### Discord Bot
 
