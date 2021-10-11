@@ -1,0 +1,27 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Crediting Preferences</h1>
+
+<table>
+    <tr>
+        <th>Username</th><th>Site</th><th>Stream</th>
+    </tr>
+    {% for p in patrons %}
+    <tr>
+        <td>{{p.user.username}}</td>
+        <td>{{p.site_credits_name|default:"&mdash;"}}</td>
+        <td>{{p.stream_credits_name|default:"&mdash;"}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</section>
+{% endblock %}

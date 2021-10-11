@@ -135,6 +135,16 @@ def calculate(request, field, pk):
 
 
 @staff_member_required
+def crediting_preferences(request):
+    p = Profile.objects.filter(patron=True)
+    data = {
+        "title": "Crediting Preferences",
+        "patrons": p,
+    }
+    return render(request, "museum_site/tools/crediting-preferences.html", data)
+
+
+@staff_member_required
 def extract_font(request, pk):
     data = {"title": "Extract Font"}
     f = File.objects.get(pk=pk)

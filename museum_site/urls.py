@@ -457,6 +457,10 @@ urlpatterns = [
         "tools/audit/zeta-config/", museum_site.tool_views.audit_zeta_config,
         name="audit_zeta_config"),
     path(
+        "tools/crediting-preferences/",
+        museum_site.tool_views.crediting_preferences,
+        name="crediting_preferences"),
+    path(
         "tools/extract-font/<int:pk>/",
         museum_site.tool_views.extract_font, name="extract_font"),
     path(
