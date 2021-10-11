@@ -118,10 +118,11 @@ class Profile(models.Model):
         self.site_credits_name = ""
         self.stream_credits_name = ""
         self.max_upload_size = UPLOAD_CAP
-        self.file_uploaded = 0
+        self.files_published = 0
         self.pronouns = ""
         self.activation_token = ""
         self.activation_time = None
+        self.accepted_tos = "2099-12-31"
         self.reset_token = ""
         self.reset_time = None
         self.stream_poll_nominations = ""

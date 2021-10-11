@@ -64,11 +64,15 @@ def main():
             u.username = "USER #" + str(u.id)
             u.first_name = ""
             u.last_name = ""
-            u.email = "test@example.com"
+            u.email = "test{}@example.com".format(u.id)
             u.set_password("password")
             if u.id != 1:
                 u.is_staff = False
                 u.is_superuser = False
+            else:
+                u.username = "admin"
+                u.is_staff = True
+                u.is_superuser = True
             u.save()
 
         print("Blanking user profiles...")
