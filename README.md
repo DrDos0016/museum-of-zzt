@@ -69,4 +69,4 @@ The Worlds of ZZT Discord bot requires a token to authenticate itself. Create a 
 
 ### Django Admin
 
-The Django administration (accessible at /admin) requires that a user with access to it exists. One can be created from the commandline with `python manage.py createsuperuser`.
+The Django administration (accessible at /admin) requires that a user with access to it exists. One can be created from the commandline with `python manage.py createsuperuser`. If you are using the included database dump, there should be a user named "admin" with a password of "password" that is already marked as one.
