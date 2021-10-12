@@ -29,6 +29,7 @@ var web_characters = {
 };
 var ELEMENTS = null;
 var ENGINE = null;
+var DETAIL_SZZT_BOARD = 23;
 
 var engines = {
     "zzt":{
@@ -423,10 +424,30 @@ function pull_file()
         }
         else if (ext == "brd")
         {
-            format = "zzt";
-            ELEMENTS = (format == "szt") ? SZZT_ELEMENTS : ZZT_ELEMENTS;
-            ENGINE = engines[format];
-            world = new World(data);
+            if (details.indexOf(DETAIL_SZZT_BOARD) != -1)
+            {
+                format = "szt";
+                renderer.render = renderer.szzt_standard;
+                CANVAS_WIDTH = 1536;
+                CANVAS_HEIGHT = 1120;
+                ELEMENTS = SZZT_ELEMENTS;
+                ENGINE = engines[format];
+                world = new World(data);
+            }
+            else
+            {
+
+                format = "zzt";
+                ELEMENTS = ZZT_ELEMENTS;
+                ENGINE = engines[format];
+                world = new World(data);
+            }
+
+            // Adjust the canvas size based on engine
+            var canvas_w = ENGINE.character_width * ENGINE.board_width;
+            var canvas_h = ENGINE.character_height * ENGINE.board_height;
+            $("#world-canvas").attr({"width": canvas_w + "px", "height": canvas_h + "px"});
+
             world.brd = true;
             world.format = format;
             var board = parse_board(world);
