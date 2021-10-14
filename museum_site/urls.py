@@ -473,6 +473,10 @@ urlpatterns = [
         "tools/patron-input/", museum_site.tool_views.patron_input,
         name="patron_input"),
     path(
+        "tools/pub-pack-file-assocs/",
+        museum_site.tool_views.publication_pack_file_associations,
+        name="pub_pack_file_assocs"),
+    path(
         "tools/publish/<int:pk>/", museum_site.tool_views.publish,
         name="publish"),
     path(

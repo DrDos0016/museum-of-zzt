@@ -1,0 +1,30 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Publication Packs</h1>
+
+<p><b>Added associations for {{count}} files.</b></p>
+
+<table style="max-width:800px;margin:auto;">
+<tr>
+    <th>Pack</th>
+    <th>Summary</th>
+    <th>Action</th>
+</tr>
+{% for p in packs %}
+<tr>
+    <td><a href="{{p.url}}">{{p.title}}</a></td>
+    <td>{{p.summary}}</td>
+    <td><a href="?pk={{p.id}}">Assoc. Files</a></td>
+</tr>
+{% endfor %}
+</table>
+</section>
+{% endblock %}

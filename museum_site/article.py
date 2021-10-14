@@ -49,6 +49,11 @@ class ArticleManager(models.Manager):
     def not_removed(self):
         return self.exclude(category=REMOVED_ARTICLE)
 
+    def publication_packs(self):
+        return self.filter(
+            category="Publication Pack", published=PUBLISHED_ARTICLE
+        ).order_by("-publish_date", "-id")
+
     def spotlight(self):
         return self.filter(
             published=PUBLISHED_ARTICLE, spotlight=True
