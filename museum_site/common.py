@@ -53,7 +53,7 @@ FILE_VIEWER_TEXT_EXTENSIONS = (
     ".wri",
 )
 FILE_VIEWER_HEX_EXTENSIONS = (
-    ".hi", ".zzt", ".brd", ".mh", ".sav", ".szt", ".mwz", ".z_t"
+    ".hi", ".zzt", ".brd", ".mh", ".sav", ".szt", ".mwz", ".z_t", ".hgs",
 )
 
 FILE_VIEWER_B64_EXTENSIONS = (

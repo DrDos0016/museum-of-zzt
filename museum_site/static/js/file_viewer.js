@@ -454,19 +454,23 @@ function pull_file()
             world.boards.push(board);
             render_board();
         }
-        else if (ext == "hi" || ext == "mh")
+        else if (ext == "hi" || ext == "mh" || ext == "hgs")
         {
             console.log("High score file");
             format = "txt";
-            var scores = parse_scores(data);
-            var output = `<div class='high-scores'>Score &nbsp;Name<br>\n`;
-            output += `----- &nbsp;----------------------------------<br>\n`;
+            if (ext != "hgs")
+                var scores = parse_scores(data);
+            else
+                var scores = parse_szzt_scores(data);
+            var output = `<div class='high-scores'>Score &nbsp;Name<br>\n<pre class="cp437">`;
+            output += `-----  ----------------------------------\n`;
             for (var idx in scores)
             {
                 //output += scores[idx].score + " &nbsp;" + scores[idx].name + "<br>";
-                output +=`<div class="score">${scores[idx].score}</div> <div class="name">${scores[idx].name}</div><br>`;
+                //output +=`<div class="score">${scores[idx].score}</div> <div class="name">${scores[idx].name}</div><br>`;
+                output += `${scores[idx].spaced_score} ${scores[idx].name}\n`;
             }
-            output += "</div>";
+            output += "</pre></div>";
 
             set_active_envelope("text");
             $("#text-body").html(output);
@@ -1483,7 +1487,39 @@ function parse_scores(data)
         var score = read(data, 2, idx);
         idx += 4;
 
-        scores.push({"name":name, "score":score});
+        var spaced_score = "" + score
+        while (spaced_score.length != 5)
+            spaced_score = " " + spaced_score;
+
+        scores.push({"name":name, "score":score, "spaced_score":spaced_score});
+    }
+    return scores;
+}
+
+function parse_szzt_scores(data)
+{
+    var scores = [];
+    var idx = 0;
+    while (true)
+    {
+        // Read the first byte for length of name
+        var name_length = read(data, 1, idx);
+        idx += 2;
+
+        if (name_length == 0)
+            break;
+
+        var name= str_read(data, 15, idx).substr(0,name_length);
+        idx += 120;
+
+        var score = read(data, 2, idx);
+        idx += 4;
+
+        var spaced_score = "" + score
+        while (spaced_score.length != 5)
+            spaced_score = " " + spaced_score;
+
+        scores.push({"name":name, "score":score, "spaced_score":spaced_score});
     }
     return scores;
 }
