@@ -388,8 +388,7 @@ function pull_file()
         {
             if (ext == "sav")
             {
-                //format = identify_save_type(data);
-                format = "zzt";
+                format = identify_save_type(data);
             }
             else
                 format = (ext != "szt") ? "zzt" : "szt";
@@ -1996,7 +1995,6 @@ function color_desc(color)
 
 function identify_save_type(data)
 {
-    console.log("IDENTIFY SAVE...");
     var file_identifier = read(data, 2, 0);
 
     if (file_identifier == engines["zzt"]["identifier"])
