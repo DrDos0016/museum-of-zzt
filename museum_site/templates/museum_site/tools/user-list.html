@@ -16,6 +16,7 @@
     <tr>
         <th>ID</th>
         <th>Username</th>
+        <th>Joined</th>
         <th>Email</th>
         <th>Act.</th>
         <th>Staff</th>
@@ -27,6 +28,7 @@
     <tr>
         <td><a href="/admin/auth/user/{{u.id}}/change/">{{u.id|zfill:3}}</a> / <a href="/admin/museum_site/profile/{{u.profile.pk}}/change/">profile</a></td>
         <td><a href="{{u.profile.link}}">{{u.username}}</a></td>
+        <td>{{u.date_joined|date:"M d, Y"}}</td>
         <td>{{u.email}}</td>
         <td class="c">{{u.is_active|yesno:"✅,❌"}}</td>
         <td class="c">{{u.is_staff|yesno:"✅, "}}</td>
