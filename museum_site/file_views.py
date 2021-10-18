@@ -6,6 +6,15 @@ from .constants import *
 from .models import *
 
 
+def file_attributes(request, letter, filename):
+    data = {}
+    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["upload_info"] = Upload.objects.filter(file_id=data["file"]).first()
+    data["reviews"] = Review.objects.filter(file__id=data["file"].pk).defer("content")
+    data["title"] = data["file"].title + " - Attributes"
+
+    return render(request, "museum_site/attributes.html", data)
+
 def file_directory(
     request,
     letter=None,
@@ -126,7 +135,7 @@ def file_articles(request, letter, filename):
     data = {}
     data["file"] = get_object_or_404(File, letter=letter, filename=filename)
     data["title"] = data["file"].title + " - Articles"
-    data["articles"] = data["file"].articles.all()
+    data["articles"] = data["file"].articles.not_removed()
     data["letter"] = letter
 
     return render(request, "museum_site/article.html", data)

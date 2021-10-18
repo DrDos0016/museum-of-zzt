@@ -421,6 +421,7 @@ a.inline[target=_blank]::after
 
 .b { font-weight: bold; }
 .i { font-style: oblique; }
+.caps { text-transform: uppercase; }
 .smaller { font-size: smaller; }
 .larger { font-size: larger; }
 
@@ -1068,7 +1069,7 @@ form .field .scrolling-checklist
     display:grid;
     border:1px solid #000;
     border-top:0px;
-    grid-template-columns: repeat(5, auto);
+    grid-template-columns: repeat(6, auto);
     text-align:center;
 }
 

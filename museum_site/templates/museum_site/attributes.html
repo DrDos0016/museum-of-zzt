@@ -1,0 +1,151 @@
+{% extends "museum_site/world.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+.dataTable
+{
+    font-family:monospace;
+    font-size:12pt;
+}
+
+#tool-info td
+{
+    padding:0.25em;
+}
+
+#tool-info td.True { background-color:#0F0; text-align:center; }
+#tool-info td.False { background-color:#F00; text-align:center; }
+
+#upload-notes
+{
+    height:16ch;
+    width:60ch;
+    font-size:smaller;
+}
+
+#content h2
+{
+    margin-top:7px;
+}
+</style>
+{% endblock %}
+
+{% block world_content %}
+{% include "museum_site/blocks/file_detailed_block.html" %}
+
+{% comment %}
+            "spotlight", "supported_actions", "supports_zeta_player", "title",
+            "total_boards", "upload_date", "zeta_config", "zeta_config_id"
+{% endcomment %}
+
+<h2 id="heading-attr">File Attributes</h2>
+<table class="dataTable">
+<tr><th>Aliases</th><td><a href="#heading-aliases">{{file.aliases.count}}</a></td></tr>
+<tr><th>Articles</th><td><a href="#heading-articles">{{file.article_count}}</a></td></tr>
+<tr><th>Author</th><td>{{file.author}}</td></tr>
+<tr><th>Boards Playable/Total</th><td>{{file.playable_boards}} / {{file.total_boards}}</td></tr>
+<tr><th>MD5 Checksum</td><td class="caps">{{file.checksum}}</td></tr>
+<tr><th>Company</th><td>{{file.company|default:"<i>None</i>"}}</td></tr>
+<tr><th>Description</th><td>{% if file.description %}<textarea>{{file.description}}</textarea>{% else %}<i>None</i>{% endif %}</td></tr>
+<tr><th>Alternate Downloads</th><td><a href="#heading-downloads">{{file.downloads.count}}</a></td></tr>
+<tr><th>Details</th><td><a href="#heading-details">{{file.details.count}}</a></td></tr>
+<tr><th>File Exists</th><td>{{file.file_exists}}</td></tr>
+<tr><th>Filename</th><td>{{file.filename}}</td></tr>
+<tr><th>Genre</th><td>{{file.genre}}</td></tr>
+<tr><th>ID</th><td>{{file.id}}</td></tr>
+<tr><th>Identifier</th><td>{{file.identifier}}</td></tr>
+<tr><th>Internet Archive Identifier</th><td>{% if file.archive_name %}<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">{{file.archive_name}}{% else %}<i>None</i>{% endif %}</td></tr>
+<tr><th>Language</th><td>{{file.language_list}}</td></tr>
+<tr><th>Last Modified</th><td>{{file.last_modified}}</td></tr>
+<tr><th>Letter</th><td class="caps">{{file.letter}}</td></tr>
+{% comment %}<tr><th>License</th><td>{{file.license}}</i></td></tr>{% endcomment %}
+<tr><th>Publish Date</th><td>{{file.publish_date}}</td></tr>
+<tr><th>Rating</th><td>{{file.rating}} / 5.00</td></tr>
+<tr><th>Release Date</th><td>{{file.release_date}}</td></tr>
+<tr><th>Release Date Source</th><td>{{file.release_source}}</td></tr>
+<tr><th>Reviews</th><td><a href="#heading-reviews">{{file.review_count}}</a></td></tr>
+<tr><th>Preview Image Filename</th><td><a href="{% static file.screenshot_url %}" target="_blank">{{file.screenshot}}</a></td></tr>
+<tr><th>Size</th><td>{{file.size}} bytes ({{file.size|filesizeformat}})</td></tr>
+<tr><th>Supports Zeta Player</th><td>{{file.supports_zeta_player}}</td></tr>
+<tr><th>Title</th><td>{{file.title}}</td></tr>
+<tr><th>Upload Date</th><td>{{file.upload_date}}</td></tr>
+<tr><th>Zeta Configuration</th><td>{{file.zeta_config}}</td></tr>
+</table>
+
+<h2 id="heading-permissions">File Permissions</h2>
+{% with file.supported_actions as supported_actions %}
+<table>
+<tr><th>Can Review</th><td>{{file.can_review}}</td></tr>
+<tr><th>Can Spotlight</th><td>{{file.spotlight}}</td></tr>
+<tr><th>Can Download</th><td>{{supported_actions.download}}</td></tr>
+<tr><th>Can Play</th><td>{{supported_actions.play}}</td></tr>
+<tr><th>Can View</th><td>{{supported_actions.view}}</td></tr>
+<tr><th>Can Article</th><td>{{supported_actions.article}}</td></tr>
+</table>
+{% endwith %}
+
+
+{% if upload_info %}
+<h2 id="heading-upload">File Upload Info</h2>
+<table class="dataTable" id="tool-info">
+    <tr>
+        <th>Upload ID</th>
+        <td>{{upload_info.id}}</a></td>
+    </tr>
+    <tr>
+        <th>User</th>
+        <td>{% if upload_info.user_id %}Registered User{% else %}Unregistered Guest{% endif %}</td>
+    </tr>
+    <tr>
+        <th>Date</th>
+        <td>{{upload_info.date}}</td>
+    </tr>
+</table>
+{% endif %}
+
+<h2 id="heading-aliases">File Aliases</h2>
+<ul class="dataTable">
+{% for a in file.aliases.all %}
+    <li>{{a.alias}}</li>
+{% empty %}
+    <li><i>None</i></li>
+{% endfor %}
+</ul>
+
+<h2 id="heading-articles">File Articles</h2>
+<ul class="dataTable">
+{% for a in file.articles.not_removed %}
+    <li><a href="{{a.url}}">{{a.title}}</a></li>
+{% empty %}
+    <li><i>None</i></li>
+{% endfor %}
+</ul>
+
+<h2 id="heading-details">File Details</h2>
+<ul class="dataTable">
+{% for d in file.details.all %}
+<li>{{d.detail}}</li>
+{% endfor %}
+</ul>
+
+<h2 id="heading-downloads">File Downloads</h2>
+<ul class="dataTable">
+{% for d in file.downloads.all %}
+    <li><a href="{{d.url}}" target="_blank">{{d.kind}}</a></li>
+{% empty %}
+    <li><i>None</i></li>
+{% endfor %}
+</ul>
+
+<h2 id="heading-reviews">File Reviews</h2>
+<ul class="dataTable">
+{% for r in reviews %}
+    <li><a href="{{file.review_url}}/#rev-{{r.pk}}">{{r.title}}</a></li>
+{% empty %}
+    <li><i>None</i></li>
+{% endfor %}
+</ul>
+
+</section>
+{% endblock %}

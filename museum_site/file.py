@@ -417,6 +417,9 @@ class File(models.Model):
     def file_url(self):
         return "/file/" + self.letter + "/" + self.filename
 
+    def attributes_url(self):
+        return "/attributes/" + self.letter + "/" + self.filename
+
     def phys_path(self):
         return os.path.join(SITE_ROOT + self.download_url())
 
@@ -745,7 +748,7 @@ class File(models.Model):
             features["view"] = True
 
         # Review
-        if features["download"]:
+        if features["download"] and self.can_review:
             features["review"] = True
 
         # Article

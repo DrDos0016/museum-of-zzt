@@ -124,6 +124,9 @@ urlpatterns = [
         museum_site.file_views.file_articles,
         name="article"
     ),
+    path(
+        "attributes/<str:letter>/<str:filename>",
+        museum_site.file_views.file_attributes, name="file_attributes"),
     path("browse/", museum_site.file_views.file_directory, name="browse"),
     path(
         "browse/<str:letter>", museum_site.file_views.file_directory,
