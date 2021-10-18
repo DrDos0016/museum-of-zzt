@@ -44,10 +44,10 @@ class ArticleManager(models.Manager):
         return self.filter(published=UNPUBLISHED_ARTICLE)
 
     def removed(self):
-        return self.filter(category=REMOVED_ARTICLE)
+        return self.filter(published=REMOVED_ARTICLE)
 
     def not_removed(self):
-        return self.exclude(category=REMOVED_ARTICLE)
+        return self.exclude(published=REMOVED_ARTICLE)
 
     def publication_packs(self):
         return self.filter(
