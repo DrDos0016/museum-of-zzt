@@ -136,7 +136,8 @@ class FileManager(models.Manager):
             details__in=[DETAIL_ZZT]
         ).exclude(
             Q(details__in=excluded_details) |
-            Q(author__icontains="_ry0suke_")
+            Q(author__icontains="_ry0suke_") |
+            Q(genre_icontains="explicit")
         )
 
 
