@@ -1,6 +1,8 @@
 import glob
 import os
 
+from collections import namedtuple
+
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Private settings - (Patron Locked Content, IA API)
@@ -177,10 +179,15 @@ DETAIL_ROM = 35
 DETAIL_AUDIO = 36
 
 # Front Page
-FP_ARTICLES_SHOWN = 10
-FP_NEW_RELEASES_SHOWN = 12
-FP_FILES_SHOWN = 12
-FP_REVIEWS_SHOWN = 10
+FP = namedtuple(
+    "FrontPageItems",
+    ["ARTICLES_SHOWN", "NEW_RELEASES_SHOWN", "FILES_SHOWN", "REVIEWS_SHOWN"],
+)(
+    ARTICLES_SHOWN=10,
+    NEW_RELEASES_SHOWN=12,
+    FILES_SHOWN=12,
+    REVIEWS_SHOWN=10
+)
 
 # File categories
 CATEGORY_LIST = (

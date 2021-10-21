@@ -118,13 +118,13 @@ def index(request):
     data = {}
 
     # Obtain latest content
-    data["articles"] = Article.objects.spotlight()[:FP_ARTICLES_SHOWN]
-    data["new_releases"] = File.objects.new_releases()[:FP_NEW_RELEASES_SHOWN]
-    data["files"] = File.objects.latest_additions()[:FP_FILES_SHOWN]
+    data["articles"] = Article.objects.spotlight()[:FP.ARTICLES_SHOWN]
+    data["new_releases"] = File.objects.new_releases()[:FP.NEW_RELEASES_SHOWN]
+    data["files"] = File.objects.latest_additions()[:FP.FILES_SHOWN]
 
     data["reviews"] = Review.objects.all().order_by(
         "-date", "-id"
-    )[:FP_REVIEWS_SHOWN]
+    )[:FP.REVIEWS_SHOWN]
 
     return render(request, "museum_site/index.html", data)
 
