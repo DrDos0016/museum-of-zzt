@@ -357,8 +357,8 @@ EXTENSION_HINTS = {
     ".ZZT": ("ZZT World", [DETAIL_ZZT]),
     ".Z_T": ("ZZT World", [DETAIL_ZZT]),
     ".HI": ("High Score File", [DETAIL_ZZT_SCORE], "OR"),
-    ".MH": ("High Score File", [DETAIL_ZZT_SCORE], "AND"),
-    ".MWZ": ("Mystic Winds ZZT World", [DETAIL_ZZT]),
+    ".MH": ("Mystical Winds ZZT High Score File", [DETAIL_ZZT_SCORE], "AND"),
+    ".MWZ": ("Mystical Winds ZZT World", [DETAIL_ZZT]),
     ".SAV": ("Saved Game", [DETAIL_ZZT_SAVE]),
 
     # Super ZZT
@@ -386,9 +386,8 @@ EXTENSION_HINTS = {
     ".ZZM": ("ZZM Audio", [DETAIL_ZZM]),
 
     # ZZT Clone World
-
     ".ZZ3": ("ZZ3 World", [DETAIL_CLONE_WORLD]),
-    ".SWW": ("??? World", [DETAIL_CLONE_WORLD]),
+    ".SWW": ("SuperWAD World", [DETAIL_CLONE_WORLD]),
     ".PGF": ("Plastic Game File", [DETAIL_CLONE_WORLD]),  # Plastic Game File
     ".PWORLD": ("Plastic Game File", [DETAIL_CLONE_WORLD]),  # Platic World
 
@@ -405,7 +404,6 @@ EXTENSION_HINTS = {
     ".INC": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
     ".JSON": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
     ".LUA": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
-    ".OBJ": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),  # Maybe
     ".PAS": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
     ".PY": ("Source Code", [DETAIL_SOURCE_CODE], "AND"),
 
@@ -529,6 +527,7 @@ EXTENSION_HINTS = {
     ".GITIGNORE": ("?", []),
     ".LNK": ("Link File", []),
     ".MS": ("?", []),  # Weird file in "Trash Fleet 3.0"
+    ".OBJ": ("?", []),  # pazzt
     ".OZ": ("?", []),
     ".PIF": ("Windows Shortcut", []),
     ".SCR": ("BSV2BRD", []),
