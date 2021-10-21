@@ -50,7 +50,8 @@ FILE_VIEWER_TEXT_EXTENSIONS = (
     ".c", ".ds_store", ".faq", ".frm", ".fyi", ".gud", ".h", ".hlp", ".lst",
     ".me", ".nfo", ".pas", ".reg", ".sol", ".zln", ".zml", ".zzl", ".zzm",
     ".135", ".1st", ".asm", ".bb", ".bin", ".chr", ".sdi", ".now", ".md",
-    ".wri",
+    ".wri", ".inf", ".olf", ".bi", ".cc", ".cpp", ".e", ".ex", ".java", ".inc",
+    ".json", ".lua", ".py",
 )
 FILE_VIEWER_HEX_EXTENSIONS = (
     ".hi", ".zzt", ".brd", ".mh", ".sav", ".szt", ".mwz", ".z_t", ".hgs",
