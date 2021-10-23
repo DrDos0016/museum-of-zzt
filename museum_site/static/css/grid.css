@@ -1483,6 +1483,14 @@ code .yellow, code .go, code .try { color:#B58900; }
 code .orange, code .label { color:#CB4B16; }
 code .char:hover { cursor:help; }
 
+code.cheat {
+    font-family:cp437;
+    background:#000;
+    color:#FFF;
+    font-size:medium;
+    line-height:14px;
+}
+
 #oop-wrapper.zzt-scroll { margin:0; }
 #oop-wrapper.zzt-scroll code
 {
