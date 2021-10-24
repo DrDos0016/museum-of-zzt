@@ -111,6 +111,29 @@ def add_livestream(request, pk):
 
 
 @staff_member_required
+def audit_genres(request):
+    data = {
+        "title": "Genre Audit",
+    }
+
+    data["canon_genres"] = GENRE_LIST
+    all_genres = File.objects.all().only("genre")
+    observed = {}
+
+    for raw in all_genres:
+        gs = raw.genre.split("/")
+        for g in gs:
+            observed[g] = True
+
+    data["observed"] = list(observed.keys())
+    data["observed"].sort()
+
+
+
+    return render(request, "museum_site/tools/audit_genres.html", data)
+
+
+@staff_member_required
 def audit_zeta_config(request):
     data = {
         "title": "Zeta Config Audit",

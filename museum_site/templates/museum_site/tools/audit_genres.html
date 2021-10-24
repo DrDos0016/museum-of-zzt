@@ -1,0 +1,32 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+.col
+{
+    display:inline-block;
+    vertical-align:top;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Genre Audit</h1>
+<hr>
+<div class="col">
+<b>Genre List</b><br>
+{% for g in canon_genres %}
+{{g}}<br>
+{% endfor %}
+</div>
+<div class="col">
+<b>Observed Genres</b><br>
+{% for g in observed %}
+{{g}}<br>
+{% endfor %}
+
+</div>
+</section>
+{% endblock %}

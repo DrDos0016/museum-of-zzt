@@ -457,6 +457,9 @@ urlpatterns = [
         "tools/add-livestream/<int:pk>/",
         museum_site.tool_views.add_livestream, name="add_livestream"),
     path(
+        "tools/audit/genres/", museum_site.tool_views.audit_genres,
+        name="audit_genres"),
+    path(
         "tools/audit/zeta-config/", museum_site.tool_views.audit_zeta_config,
         name="audit_zeta_config"),
     path(
