@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 
 from .constants import (
     UPLOAD_CONTACT_NONE, UPLOAD_CONTACT_REJECTION, UPLOAD_CONTACT_ALL,
+    HOST
 )
 
 from .private import NEW_UPLOAD_WEBHOOK_URL
@@ -34,6 +35,7 @@ class Upload(models.Model):
     email           -- Uploader email
     contact         -- Contact preferences
     contacted       -- Has been contacted: Y/N
+    announced       -- Announced on Discord via webhook: Y/N
     """
     file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
     date = models.DateTimeField(
@@ -52,6 +54,7 @@ class Upload(models.Model):
         choices=UPLOAD_CONTACT_LIST
     )
     contacted = models.BooleanField(default=False)
+    announced = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["id"]
@@ -64,7 +67,7 @@ class Upload(models.Model):
         )
         return output
 
-    def from_request(self, request, file_id, save=True, discord=False):
+    def from_request(self, request, file_id, save=True):
         self.file_id = file_id
         if not self.edit_token:
             self.edit_token = ""
@@ -82,20 +85,6 @@ class Upload(models.Model):
 
         if save:
             self.save()
-            if discord:
-                discord_post = "*A new item has been uploaded to the Museum queue!*\n" + self.file.title
-                discord_data = {
-                    "content": discord_post,
-                    "embeds": [
-                        #{"image": {"url": self.file.screenshot_url()}}
-                        {"image": {"url": "https://museumofzzt.com/static/images/screenshots/m/The_Monk_beta1.png"}}
-                    ]
-                }
-                resp = requests.post(
-                    NEW_UPLOAD_WEBHOOK_URL, headers={"Content-Type": "application/json"},
-                    data=json.dumps(discord_data)
-                )
-                print(resp.content)
 
     def contact_str(self):
         return UPLOAD_CONTACT_LIST[self.contact]

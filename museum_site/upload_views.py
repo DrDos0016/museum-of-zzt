@@ -1,8 +1,13 @@
+import json
+
+import requests
+
 from django.shortcuts import render
 from .common import *
 from .constants import *
 from .models import *
 from .constants import BANNED_IPS
+from .private import NEW_UPLOAD_WEBHOOK_URL
 
 
 def upload(request):
@@ -122,8 +127,40 @@ def upload_complete(request, edit_token=None):
         )
         data["file"] = File.objects.get(pk=data["your_upload"].file_id)
 
-    # Generate a screenshot if requested
-    if request.GET.get("generate_preview") == "1":
-        data["file"].generate_screenshot()
+        # Generate a screenshot if requested
+        if request.GET.get("generate_preview") == "1":
+            data["file"].generate_screenshot()
+
+        # See if the upload needs to be announced
+        if not data["your_upload"].announced:
+            preview_url = HOST + "static/" + data["file"].screenshot_url()
+
+            if data["file"].release_date:
+                year = " ({})".format(str(data["file"].release_date)[:4])
+            else:
+                year = ""
+            discord_post = (
+                "*A new item has been uploaded to the Museum queue!*\n"
+                "**{}** by {}{}\n"
+                "Explore: https://museumofzzt.com{}\n"
+            ).format(
+                data["file"].title, data["file"].author,
+                year,
+                data["file"].file_url()
+            )
+
+            discord_data = {
+                "content": discord_post,
+                "embeds": [{"image": {"url": preview_url}}]
+            }
+            resp = requests.post(
+                NEW_UPLOAD_WEBHOOK_URL,
+                headers={"Content-Type": "application/json"},
+                data=json.dumps(discord_data)
+            )
+            print("PREVIEW URL", preview_url)
+
+            data["your_upload"].announced = True
+            data["your_upload"].save()
 
     return render(request, "museum_site/upload_complete.html", data)
