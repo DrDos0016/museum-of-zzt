@@ -20,8 +20,15 @@
 </nav>
 <div class="view-links">
     {% for v in available_views %}
-    {% if v == "list" and v != view %}<a class="view" href="?view={{v}}{% if qs_sans_both %}&{{qs_sans_both}}{% endif %}">{{v|title}} View</a>
-    {% elif v == view %}<span class="view selected">{{v|title}} View</span>{% else %}<a class="view" href="?view={{v}}{% if qs_sans_view %}&{{qs_sans_view}}{% endif %}">{{v|title}} View</a>{% endif %}
+    {% if view == "list" %}
+        {% if v == view %}<span class="view selected">{{v|title}} View</span></a>
+        {% else %}<a class="view" href="?view={{v}}{% if qs_sans_both %}&{{qs_sans_both}}{% endif %}">{{v|title}} View{% endif %}
+    {% else %}
+        {% if v == view %}<span class="view selected">{{v|title}} View</span>
+        {% elif v == "list" %}<a class="view" href="?view={{v}}{% if qs_sans_both %}&{{qs_sans_both}}{% endif %}">{{v|title}} View</a>
+        {% else %}<a class="view" href="?view={{v}}{% if qs_sans_view %}&{{qs_sans_view}}{% endif %}">{{v|title}} View</a>
+        {% endif %}
+    {% endif %}
     {% if not forloop.last %} ♦ {% endif %}
     {% endfor %}
 </div>
