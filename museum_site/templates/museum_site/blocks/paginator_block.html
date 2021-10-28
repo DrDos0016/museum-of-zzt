@@ -22,7 +22,7 @@
     {% for v in available_views %}
     {% if view == "list" %}
         {% if v == view %}<span class="view selected">{{v|title}} View</span></a>
-        {% else %}<a class="view" href="?view={{v}}{% if qs_sans_both %}&{{qs_sans_both}}{% endif %}">{{v|title}} View{% endif %}
+        {% else %}<a class="view" href="?view={{v}}{% if qs_sans_both %}&{{qs_sans_both}}{% endif %}">{{v|title}} View</a>{% endif %}
     {% else %}
         {% if v == view %}<span class="view selected">{{v|title}} View</span>
         {% elif v == "list" %}<a class="view" href="?view={{v}}{% if qs_sans_both %}&{{qs_sans_both}}{% endif %}">{{v|title}} View</a>
