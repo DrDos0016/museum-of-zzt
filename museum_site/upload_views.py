@@ -2,6 +2,8 @@ import json
 
 import requests
 
+from urllib.parse import quote
+
 from django.shortcuts import render
 from .common import *
 from .constants import *
@@ -89,7 +91,9 @@ def upload(request):
                 upload_info.from_request(request, upload.id, save=True)
 
                 # Calculate upload queue size
-                request.session["FILES_IN_QUEUE"] = File.objects.unpublished().count()
+                request.session["FILES_IN_QUEUE"] = (
+                    File.objects.unpublished().count()
+                )
 
                 return redirect(
                     "/upload/complete?edit_token={}&generate_preview={}".format(
@@ -133,7 +137,9 @@ def upload_complete(request, edit_token=None):
 
         # See if the upload needs to be announced
         if not data["your_upload"].announced:
-            preview_url = HOST + "static/" + data["file"].screenshot_url()
+            preview_url = quote(
+                HOST + "static/" + data["file"].screenshot_url()
+            )
 
             if data["file"].release_date:
                 year = " ({})".format(str(data["file"].release_date)[:4])
