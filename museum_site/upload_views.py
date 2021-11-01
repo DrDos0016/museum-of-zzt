@@ -137,8 +137,8 @@ def upload_complete(request, edit_token=None):
 
         # See if the upload needs to be announced
         if not data["your_upload"].announced:
-            preview_url = quote(
-                HOST + "static/" + data["file"].screenshot_url()
+            preview_url = HOST + "static/" + quote(
+                 data["file"].screenshot_url()
             )
 
             if data["file"].release_date:
