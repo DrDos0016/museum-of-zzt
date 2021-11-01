@@ -185,9 +185,9 @@ class File(models.Model):
         max_length=100, db_index=True, default="", blank=True,
         help_text="Leave blank to set automatically"
     )
-    author = models.CharField(max_length=80)
+    author = models.CharField(max_length=255)
     size = models.IntegerField(default=0)
-    genre = models.CharField(max_length=80, blank=True, default="")
+    genre = models.CharField(max_length=255, blank=True, default="")
     release_date = models.DateField(default=None, null=True, blank=True)
     release_source = models.CharField(
         max_length=20, null=True, default=None, blank=True
@@ -196,7 +196,7 @@ class File(models.Model):
         max_length=80, blank=True, null=True, default=None
     )
     company = models.CharField(
-        max_length=80, default="", blank=True,
+        max_length=255, default="", blank=True,
     )
     description = models.TextField(null=True, blank=True, default="")
     review_count = models.IntegerField(
