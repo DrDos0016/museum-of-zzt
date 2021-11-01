@@ -1,0 +1,71 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/new_forms.css' %}?{{BOOT_TS}}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/upload.js' %}?{{BOOT_TS}}"></script>
+<script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Upload File</h1>
+
+<h2>File Information</h2>
+<form>
+{% csrf_token %}
+{% for field in zgame_form %}
+<div class="field-wrapper">
+    {{field.errors}}
+    {{field.label_tag}}
+    <div class="field-value">
+        {% if field.id_for_label == "id_title" %}
+        <div class="chars-remaining" data-field="{{field.id_for_label}}"><span id="{{field.id_for_label}}-remaining" data-max="{{field.field.max_length}}">{{field.field.max_length}}</span> characters remaining</div>
+        {% endif %}
+        {% if field.id_for_label == "id_zfile" %}
+        <div class="size-limit">Your maximum upload size: <b title="{{user.profile.max_upload_size}} bytes">{{user.profile.max_upload_size|filesizeformat}}</b></div>
+        {% endif %}
+        {{field}}
+        {% if field.id_for_label == "id_release_date" %}
+        <input name="today" value="Today" type="button">
+        {% endif %}
+    </div>
+    {% if field.help_text %}
+    <p class="field-help">{{field.help_text|safe}}</p>
+    {% endif %}
+</div>
+{% endfor %}
+<hr>
+<h2>Upload Settings</h2>
+{% for field in upload_form %}
+<div class="field-wrapper">
+    {{field.errors}}
+    {{field.label_tag}}
+    <div class="field-value">
+        {% if field.field.max_length %}
+        <div class="chars-remaining" data-field="{{field.id_for_label}}"><span id="{{field.id_for_label}}-remaining" data-max="{{field.field.max_length}}">{{field.field.max_length}}</span> characters remaining</div>
+        {% endif %}
+        {% if field.id_for_label == "id_zfile" %}
+        <div class="size-limit">Your maximum upload size: <b title="{{user.profile.max_upload_size}} bytes">{{user.profile.max_upload_size|filesizeformat}}</b></div>
+        {% endif %}
+        {{field}}
+        {% if field.id_for_label == "id_release_date" %}
+        <input name="today" value="Today" type="button">
+        {% endif %}
+    </div>
+    {% if field.help_text %}
+    <p class="field-help">{{field.help_text|safe}}</p>
+    {% endif %}
+</div>
+{% endfor %}
+<hr>
+<input type="submit" value="Submit">
+<!--Suggestions-->
+<datalist id="author-suggestions"></datalist>
+<datalist id="company-suggestions"></datalist>
+</form>
+</section>
+{% endblock %}

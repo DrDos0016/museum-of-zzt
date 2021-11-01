@@ -1,0 +1,138 @@
+form
+{
+    margin:auto;
+}
+
+.field-wrapper
+{
+    padding-top:7px;
+    padding-bottom:7px;
+    border-top:1px dashed #000;
+    display:grid;
+    grid-template-areas:
+     "label value"
+     "help  value"
+     "error error";
+    grid-template-columns:50% auto;
+    grid-template-rows:auto 1fr auto;
+    column-gap:4px;
+}
+
+label
+{
+    font-weight:bold;
+    grid-area: label;
+}
+
+.field-help
+{
+    grid-area: help;
+    margin:7px 4px 7px 4px;
+}
+
+.field-value
+{
+    grid-area: value;
+}
+
+.field-value input[type=text], .field-value textarea, .field-value input[type=file], .field-value input[type=date],
+.field-value select
+{
+    box-sizing:border-box;
+    width:100%;
+}
+
+.field-value input[type=checkbox]
+{
+    width:auto;
+}
+
+.field-value input[type=button]
+{
+    margin-top:7px;
+    float:right;
+    background:#DEF;
+    font-family:cp437;
+    padding:7px 4px 7px 4px;
+}
+
+.field-value textarea
+{
+    height:100px;
+}
+
+.chars-remaining, .size-limit
+{
+    font-size:smaller;
+    text-align:right;
+}
+
+/* Specialty Forms */
+.scrolling-checklist
+{
+    font-family:mono;
+    min-height: 150px;
+    height: 150px;
+    overflow: auto;
+    min-width: 300px;
+    border: 1px solid #000;
+    background: #AAA;
+    resize: vertical;
+}
+
+.scrolling-checklist label { display:block; }
+.scrolling-checklist label + label {  border-top: 1px dotted #000; }
+.scrolling-checklist label.selected { background:#619F9F;}
+.scrolling-checklist label:hover { background:#98C9C9; }
+
+#genre-checklist label
+{
+    font-weight:normal;
+}
+
+.upload-area
+{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-sizing:border-box;
+    height:100px;
+    font-family:cp437;
+    border:3px dashed #000;
+    flex:1;
+    cursor:pointer;
+    background:#619F9F;
+}
+
+.upload-area.dragging
+{
+    background:#98C9C9;
+}
+
+.ssv-list
+{
+    min-height:45px;
+}
+
+.ssv-val
+{
+    display:inline-block;
+    background:#619F9F;
+    border-radius:8px;
+    margin:4px;
+    padding:7px 8px 7px 8px;
+    font-weight:bold;
+}
+
+.ssv-val:hover
+{
+    background:#98C9C9;
+    cursor:pointer;
+}
+
+.ssv-remove
+{
+    margin-left:4px;
+    padding-left:4px;
+    border-left:1px solid #000;
+}
