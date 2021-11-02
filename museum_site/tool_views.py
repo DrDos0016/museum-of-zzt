@@ -322,6 +322,8 @@ def mirror(request, pk):
         if DEBUG:
             upload_name = "test-" + upload_name
 
+        upload_name = upload_name.replace(" ", "_")
+
         file_path = os.path.join(TEMP_PATH, zip_name)
 
         try:
@@ -332,11 +334,11 @@ def mirror(request, pk):
                 access_key=IA_ACCESS,
                 secret_key=IA_SECRET,
             )
-        except HTTPError as e:
+        except Exception as e:
+            r = None
             data["status"] = "FAILURE"
-            data["archive_resp"] = r
-
-        if r[0].status_code == 200:
+            data["error"] = e
+        if r and r[0].status_code == 200:
             data["status"] = "SUCCESS"
             f.archive_name = upload_name
             f.save()
