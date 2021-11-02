@@ -241,6 +241,12 @@ def file_viewer(request, letter, filename, local=False):
     return render(request, "museum_site/file.html", data)
 
 
+def get_file_by_pk(request, pk):
+    data = {}
+    f = get_object_or_404(File, pk=pk)
+    return redirect(f.attributes_url())
+
+
 def review(request, letter, filename, **kwargs):
     """ Returns a page of reviews for a file. Handles POSTing new reviews """
     data = {}

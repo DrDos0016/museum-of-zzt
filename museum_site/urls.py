@@ -146,6 +146,9 @@ urlpatterns = [
     path(
         "file/local/", museum_site.file_views.file_viewer,
         {"local": True, "letter": "!", "filename": ""}, name="local_file"),
+    path(
+        "pk/<int:pk>/",
+        museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),
 
     # Files (alternate categories)
     path(
@@ -391,6 +394,13 @@ urlpatterns = [
 
     # AJAX
     path("ajax/deep-search/phase-<int:phase>/", museum_site.ajax.deep_search),
+    path(
+        "ajax/get-author-suggestions/", museum_site.ajax.get_author_suggestions
+    ),
+    path(
+        "ajax/get-company-suggestions/",
+        museum_site.ajax.get_company_suggestions
+    ),
     path("ajax/get_zip_file/", museum_site.ajax.get_zip_file),
     path(
         "ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions
@@ -512,6 +522,7 @@ urlpatterns = [
         "debug/forms/", museum_site.views.generic,
         {"template": "debug-forms", "title": "Form Debug"}),
     path("ajax/debug_file/", museum_site.ajax.debug_file),
+    path("debug/upload/", museum_site.debug_views.debug_upload),
 ]
 
 if DEBUG:
