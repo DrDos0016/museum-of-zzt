@@ -129,6 +129,68 @@ def debug_file(request):
         return HttpResponse("No file provided.")
 
 
+def get_author_suggestions(request, max_suggestions=20):
+    query = request.GET.get("q", "")
+    output = {"suggestions": []}
+
+    if query:
+        qs = File.objects.filter(
+            author__istartswith=query
+        ).only("author").distinct().order_by("author")
+        for f in qs:
+            all_authors = f.author.split("/")
+            for a in all_authors:
+                if a not in output["suggestions"]:
+                    output["suggestions"].append(a)
+            if len(output["suggestions"]) >= max_suggestions:
+                break
+
+        if len(output["suggestions"]) < max_suggestions:
+            qs = File.objects.filter(
+                author__icontains=query
+            ).only("author").distinct().order_by("author")
+            for f in qs:
+                all_authors = f.author.split("/")
+                for a in all_authors:
+                    if a not in output["suggestions"]:
+                        output["suggestions"].append(a)
+                if len(output["suggestions"]) >= max_suggestions:
+                    break
+
+    return JsonResponse(output)
+
+
+def get_company_suggestions(request, max_suggestions=20):
+    query = request.GET.get("q", "")
+    output = {"suggestions": []}
+
+    if query:
+        qs = File.objects.filter(
+            company__istartswith=query
+        ).only("company").distinct().order_by("company")
+        for f in qs:
+            all_companies = f.company.split("/")
+            for c in all_companies:
+                if c not in output["suggestions"]:
+                    output["suggestions"].append(c)
+            if len(output["suggestions"]) >= max_suggestions:
+                break
+
+        if len(output["suggestions"]) < max_suggestions:
+            qs = File.objects.filter(
+                company__icontains=query
+            ).only("company").distinct().order_by("company")
+            for f in qs:
+                all_companies = f.company.split("/")
+                for c in all_companies:
+                    if c not in output["suggestions"]:
+                        output["suggestions"].append(c)
+                if len(output["suggestions"]) >= max_suggestions:
+                    break
+
+    return JsonResponse(output)
+
+
 def get_search_suggestions(request, max_suggestions=25):
     query = request.GET.get("q", "")
     output = {"suggestions": []}

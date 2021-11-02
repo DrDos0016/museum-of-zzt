@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .common import *
 from .constants import *
 from .models import *
+from .forms import *
 
 
 def debug(request):
@@ -80,3 +81,15 @@ def debug_colors(request):
             data["stylesheets"][stylesheet].sort()
 
     return render(request, "museum_site/debug_colors.html", data)
+
+
+def debug_upload(request):
+    data = {
+        "title": "New Upload System"
+    }
+
+    data["zgame_form"] = ZGameForm()
+    data["upload_form"] = UploadForm()
+
+    print(data["zgame_form"].fields)
+    return render(request, "museum_site/new_upload.html", data)

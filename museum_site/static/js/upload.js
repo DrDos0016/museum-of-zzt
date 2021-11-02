@@ -121,14 +121,24 @@ function parse_zip_file(file)
     zip = new JSZip();
     console.log("Parsing Zip File...");
     zip.loadAsync(file).then(function(zip){
+
+        $(".upload-info").html(
+        `<div class="file-name">${file.name}</div>
+        <div class="file-size">${file.size} bytes</div>
+        <ul class="file-list">
+        </ul>
+        `);
+
         for(let [filename, file] of Object.entries(zip.files)) {
             //console.log(filename, file);
             if (filename.toUpperCase().endsWith(".ZZT"))
             {
                 $("#id_generate_preview_image").append(`<option label='${filename}'></option>`);
             }
+            $(".file-list").append(`<li>${filename}</li>\n`);
         }
 
+        $(".upload-info").show();
     });
 
 }
