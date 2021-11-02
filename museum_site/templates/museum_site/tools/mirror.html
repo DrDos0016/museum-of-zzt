@@ -47,12 +47,16 @@ $(document).ready(function (){
 {% endblock %}
 
 {% block world_content %}
-{% if archive_resp %}
-<h2>{{status}} - {{archive_resp.status_code}}</h2>
-<p>{{archive_resp}}</p>
-<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">Archive.org Mirror</a>
+{% if status %}
+    <h2>{{status}} - {{archive_resp.status_code}}</h2>
+    <p>{{archive_resp}}</p>
+    <p>{{error}}</p>
+    {% if file.archive_name %}<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">Archive.org Link</a>
+    {% else %}
+    <p><i>File not archived!</i></p>
+    {% endif %}
 {% endif %}
-
+<hr>
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="field">
