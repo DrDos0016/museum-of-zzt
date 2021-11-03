@@ -550,3 +550,20 @@ LANGUAGES = {
     "es": "Spanish",
     "xx": "Other"
 }
+
+LICENSE_CHOICES = [
+    ("UNK", "Unknown"),
+    ("PD", "Public Domain"),
+    ("MIT", "MIT License"),
+    ("GPL", "GNU General Public License"),
+    ("CC", "Creative Commons"),
+    ("AUTH", "Author Defined"),
+    ("ARR", "All Rights Reserved")
+]
+
+LICENSE_SOURCE_CHOICES = [
+    ("NONE", "None"),
+    ("LICENSE", "License File"),
+    ("DOCS", "Documentation File"),
+    ("WORLD", "World File"),
+]
