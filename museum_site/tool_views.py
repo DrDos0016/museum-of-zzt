@@ -656,10 +656,13 @@ def tool_list(request, pk):
         "title": "Tools",
         "file": File.objects.get(pk=pk)
     }
+
+    letters = "1abcdefghijklmnopqrstuvwxyz"
+
     data["upload_info"] = Upload.objects.filter(file_id=data["file"]).first()
 
     # Simple validation tools
-    data["valid_letter"] = True if data["file"].letter in LETTERS else False
+    data["valid_letter"] = True if data["file"].letter in letters else False
     data["valid_filename"] = True if data["file"].phys_path() else False
 
     if request.GET.get("recalculate"):
