@@ -426,8 +426,7 @@ def throttle_check(
             return True
 
         # Otherwise lock them out
-        #delta = timedelta(minutes=lockout_mins)
-        delta = timedelta(seconds=20)
+        delta = timedelta(minutes=lockout_mins)
         request.session[expiration_name] = str(now + delta)
         return False
     return True
