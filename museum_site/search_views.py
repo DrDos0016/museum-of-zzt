@@ -4,6 +4,12 @@ from .common import *
 from .constants import *
 from .models import *
 
+ADV_SEARCH_DEFAULTS = [
+    DETAIL_ZZT,
+    DETAIL_SZZT,
+    DETAIL_UTILITY,
+]
+
 
 def advanced_search(request):
     """ Returns page containing multiple filters to use when searching """
