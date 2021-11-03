@@ -46,13 +46,16 @@ BOOT_TS = START_TIME.strftime("%m%d%H%M%S")
 ARCHIVE_COLLECTION = "open_source_software" if not DEBUG else "test_collection"
 
 FILE_VIEWER_TEXT_EXTENSIONS = (
-    "", ".doc", ".txt", ".bat", ".cfg", ".nfo", ".dat", ".bas", ".deu", ".diz",
-    ".c", ".ds_store", ".faq", ".frm", ".fyi", ".gud", ".h", ".hlp", ".lst",
-    ".me", ".nfo", ".pas", ".reg", ".sol", ".zln", ".zml", ".zzl", ".zzm",
-    ".135", ".1st", ".asm", ".bb", ".bin", ".chr", ".sdi", ".now", ".md",
-    ".wri", ".inf", ".olf", ".bi", ".cc", ".cpp", ".e", ".ex", ".java", ".inc",
-    ".json", ".lua", ".py",
+    "", ".135", ".135.asc", ".1st", ".ans", ".asm", ".bas", ".bat", ".bb",
+    ".bi", ".bin", ".c", ".cc", ".cfg", ".chr", ".cpp", ".crd", ".dat", ".def",
+    ".deu", ".diz", ".doc", ".ds_store", ".e", ".eed", ".eng", ".err", ".ex",
+    ".faq", ".frm", ".fyi", ".gitignore", ".gud", ".h", ".hlp", ".inc", ".inf",
+    ".ini", ".java", ".json", ".log", ".lst", ".lua", ".mac", ".map", ".md",
+    ".me", ".msg", ".muz", ".new", ".nfo", ".now", ".olf", ".pas", ".py",
+    ".reg", ".rtf", ".sdi", ".sh", ".slv", ".sol", ".st", ".theme", ".txt",
+    ".wps", ".wri", ".zln", ".zml", ".zzl", ".zzm",
 )
+
 FILE_VIEWER_HEX_EXTENSIONS = (
     ".hi", ".zzt", ".brd", ".mh", ".sav", ".szt", ".mwz", ".z_t", ".hgs",
 )
@@ -67,30 +70,6 @@ FILE_VIEWER_AUDIO_EXTENSIONS = (
 
 EMAIL_ADDRESS = "doctordos@gmail.com"
 
-LETTERS = (
-    "1", "a", "b", "c", "d", "e", "f", "g", "h",
-    "i", "j", "k", "l", "m", "n", "o", "p", "q",
-    "r", "s", "t", "u", "v", "w", "x", "y", "z"
-)
-
-DETAIL_LIST = (
-    "Contest"
-    "Etc."
-    "Featured Game"
-    "Modified Graphics"
-    "Linux Compatible Program"
-    "Modified Executable"
-    "MS-DOS Compatible Program"
-    "OSX Compatible"
-    "Super ZZT World"
-    "Utility"
-    "Windows 16-bit"
-    "Windows 32-bit"
-    "Windows 64-bit"
-    "ZZT World"
-    "ZZM Audio"
-    "ZIG World"
-)
 
 GENRE_LIST = (
     "24HoZZT", "Action", "Adventure", "Advertisement", "Arcade", "Art",
