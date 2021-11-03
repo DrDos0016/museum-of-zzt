@@ -10,10 +10,13 @@ def file_attributes(request, letter, filename):
     data = {}
     data["file"] = get_object_or_404(File, letter=letter, filename=filename)
     data["upload_info"] = Upload.objects.filter(file_id=data["file"]).first()
-    data["reviews"] = Review.objects.filter(file__id=data["file"].pk).defer("content")
+    data["reviews"] = Review.objects.filter(
+        file__id=data["file"].pk
+    ).defer("content")
     data["title"] = data["file"].title + " - Attributes"
 
     return render(request, "museum_site/attributes.html", data)
+
 
 def file_directory(
     request,

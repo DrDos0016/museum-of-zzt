@@ -20,7 +20,12 @@ class DetailManager(models.Manager):
                 cats.append({"priority": 10, "header": "ZZT", "d": d})
             elif d.detail.startswith("Super ZZT "):
                 cats.append({"priority": 20, "header": "Super ZZT", "d": d})
-            elif d.detail in ["Image", "Video", "Audio", "Text", "ZZM Audio", "HTML Document"]:  # Media
+            elif (
+                d.detail in [
+                    "Image", "Video", "Audio", "Text", "ZZM Audio",
+                    "HTML Document"
+                ]
+            ):  # Media
                 cats.append({"priority": 30, "header": "Media", "d": d})
             elif d.id in os_details:
                 cats.append({"priority": 90, "header": "OS", "d": d})

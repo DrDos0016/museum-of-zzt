@@ -100,11 +100,14 @@ class MetaTagTest(TestCase):
                 'content="{}static/images/og_default.jpg">'.format(HOST)
             ):
                 valid["og:image"] = 1
-            elif tag == '<meta property="og:url" content="{}credits/">'.format(HOST):
+            elif tag == '<meta property="og:url" content="{}credits/">'.format(
+                HOST
+            ):
                 valid["og:url"] = 1
             elif tag == '<meta property="og:title" content="Museum of ZZT">':
                 valid["og:title"] = 1
         self.assertEqual(valid, expected)
+
 
 """
 http://django.pi:8000/article/f/frost1.zip

@@ -419,7 +419,10 @@ def throttle_check(
     # Lockout after <max_attempts>
     if request.session[attempt_name] > max_attempts:
         # If they're already locked out and the timer's expired, resume
-        if request.session.get(expiration_name) and (str(now)[:19] > request.session[expiration_name]):
+        if (
+            request.session.get(expiration_name) and
+            (str(now)[:19] > request.session[expiration_name])
+        ):
             request.session[attempt_name] = 1
             del request.session[attempt_name]
             del request.session[expiration_name]

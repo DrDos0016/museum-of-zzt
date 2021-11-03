@@ -291,7 +291,7 @@ def site_credits(request):
     data["bigger_supporters"] = bigger_supporters
     data["biggest_supporters"] = biggest_supporters
 
-    #print(no_longer_hardcoded)
+    #  print(no_longer_hardcoded)
 
     return render(request, "museum_site/site-credits.html", data)
 

@@ -398,7 +398,8 @@ class File(models.Model):
             url = "/download/{}/{}".format(self.letter, self.filename)
             ellipses = "s…"
 
-        html = '<a href="{url}" class="download-link{explicit_class}">{text}{ellipses}</a>'.format(
+        html = ('<a href="{url}" class="download-link{explicit_class}">'
+                '{text}{ellipses}</a>').format(
             url=url,
             text=text,
             explicit_class=(" explicit" if "Explicit" in self.genre else ""),
@@ -618,20 +619,34 @@ class File(models.Model):
                 accessible.append(idx)
 
                 # Get the connected boards via edges
-                if z.boards[idx].board_north != 0 and z.boards[idx].board_north not in to_explore:
+                if (
+                    z.boards[idx].board_north != 0 and
+                    z.boards[idx].board_north not in to_explore
+                ):
                     to_explore.append(z.boards[idx].board_north)
-                if z.boards[idx].board_south != 0 and z.boards[idx].board_south not in to_explore:
+                if (
+                    z.boards[idx].board_south != 0 and
+                    z.boards[idx].board_south not in to_explore
+                ):
                     to_explore.append(z.boards[idx].board_south)
-                if z.boards[idx].board_east != 0 and z.boards[idx].board_east not in to_explore:
+                if (
+                    z.boards[idx].board_east != 0
+                    and z.boards[idx].board_east not in to_explore
+                ):
                     to_explore.append(z.boards[idx].board_east)
-                if z.boards[idx].board_west != 0 and z.boards[idx].board_west not in to_explore:
+                if (
+                    z.boards[idx].board_west != 0
+                    and z.boards[idx].board_west not in to_explore
+                ):
                     to_explore.append(z.boards[idx].board_west)
 
                 # Get the connected boards via passages
                 for stat in z.boards[idx].stats:
                     # print("ON BOARD IDX", idx)
                     try:
-                        stat_name = z.boards[idx].get_element((stat.x, stat.y)).name
+                        stat_name = z.boards[idx].get_element(
+                            (stat.x, stat.y)
+                        ).name
                         if stat_name == "Passage":
                             # print("Found a passage at", stat.x, stat.y)
                             if stat.param3 not in to_explore:
@@ -721,7 +736,7 @@ class File(models.Model):
             # Check if the file needs to be rezipped
             if rezip:
                 None
-                # TODO This feature should wait until the Museum is on a new server
+                # TODO
                 # print("I'm gonna rezip")
 
             # Calculate checksum

@@ -1,4 +1,5 @@
-import smtplib, ssl
+import smtplib
+import ssl
 
 from django.contrib.auth.models import User
 from .common import *
@@ -21,7 +22,6 @@ Subject: {}
         print("========== DEBUG EMAIL ==========")
         print(to, frm, subj, body)
         print("=================================")
-
 
 
 def send_account_verification_email(user, domain):

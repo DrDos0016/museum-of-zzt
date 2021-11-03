@@ -83,7 +83,9 @@ class Profile(models.Model):
     bkzzt_topics = models.TextField(max_length=2000, blank=True)
 
     def __str__(self):
-        return "Profile for user #{} - {}".format(self.user.id, self.user.username)
+        return "Profile for user #{} - {}".format(
+            self.user.id, self.user.username
+        )
 
     def link(self):
         slug = slugify(self.user.username)
