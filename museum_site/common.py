@@ -97,12 +97,6 @@ SORT_CODES = {
     "uploaded": ["-upload_date", "-id"],
 }
 
-ADV_SEARCH_DEFAULTS = [
-    DETAIL_ZZT,
-    DETAIL_SZZT,
-    DETAIL_UTILITY,
-]
-
 PACKAGE_PROFILES = (
     {
         "name": "ZZT v3.2 Registered",
