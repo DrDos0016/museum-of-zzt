@@ -78,6 +78,8 @@ $(document).ready(function (){
         if (val.endsWith(","))
         {
             val = val.slice(0, -1);
+            if (! val.trim() )  // Make sure there's data
+                return false;
             $("#"+key+"-list").append("<div class='ssv-val' data-val='"+val+"' data-key='"+key+"'>"+val+"<span class='ssv-remove'>✖</span></div>");
             $(".ssv-val").unbind("click").click(function (){
                 remove_ssv_entry($(this), $(this).data("key"));
@@ -87,6 +89,24 @@ $(document).ready(function (){
         }
     });
 
+    $(".ssv-entry").blur(function (){
+        $(this).val($(this).val() + ",");
+        $(this).keyup();
+        $(this).val("");
+    });
+
+    // Select + Custom Fields
+    $(".spc-select").change(function (){
+        if ($(this).val() == "CUSTOM")
+        {
+            $(this).parent().children(".spc-custom").show();
+        }
+        else
+        {
+            $(this).parent().children(".spc-custom").hide();
+        }
+
+    });
 
 });
 
@@ -123,8 +143,8 @@ function parse_zip_file(file)
     zip.loadAsync(file).then(function(zip){
 
         $(".upload-info").html(
-        `<div class="file-name">${file.name}</div>
-        <div class="file-size">${file.size} bytes</div>
+        `<span class="file-name">${file.name}</span>
+        <span class="file-size">${file.size} bytes</span>
         <ul class="file-list">
         </ul>
         `);
