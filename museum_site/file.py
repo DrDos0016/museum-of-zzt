@@ -174,6 +174,8 @@ class File(models.Model):
     spotlight       -- Allow appearance on front page
     can_review      -- Allow reviews on the file
     license         -- File license if available
+    license_source  -- Source of license information
+                       (ex: LICENSE file, documentation, game.zzt)
     downloads       -- Reference to Download sources
     language        -- / sep. ABC list of language codes (ISO 639-1)
     """
@@ -254,6 +256,7 @@ class File(models.Model):
     spotlight = models.BooleanField(default=True)
     can_review = models.BooleanField(default=True)
     license = models.CharField(max_length=150, default="Unknown")
+    license_source = models.CharField(max_length=150, default="", blank=True)
     language = models.CharField(max_length=50, default="en")
     downloads = models.ManyToManyField("Download", default=None, blank=True)
 
