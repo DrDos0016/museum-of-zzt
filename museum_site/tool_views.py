@@ -128,9 +128,9 @@ def audit_genres(request):
     data["observed"] = list(observed.keys())
     data["observed"].sort()
 
-
-
-    return render(request, "museum_site/tools/audit_genres.html", data)
+    return render(
+        request, "museum_site/tools/audit_genres.html", data
+    )
 
 
 @staff_member_required
@@ -291,19 +291,24 @@ def mirror(request, pk):
 
             # Create ZZT.CFG if needed
             if package.get("use_cfg"):
-                config_content = request.POST.get("launch")[:-4].upper()  # Remove .ZZT extension
+                # Remove .ZZT extension
+                config_content = request.POST.get("launch")[:-4].upper()
                 if package["registered"]:
                     config_content += "\r\nREGISTERED"
                 z.writestr("ZZT.CFG", config_content)
 
         # Create description
-        description = "{}\n\n{}".format(package["auto_desc"], request.POST.get("description", ""))
+        description = "{}\n\n{}".format(
+            package["auto_desc"], request.POST.get("description", "")
+        )
 
         # Determine the launch command
         if request.POST.get("alt_launch"):
             launch_command = request.POST["alt_launch"]
         else:
-            launch_command = package["executable"] + " " + request.POST.get("launch", "").upper()
+            launch_command = package["executable"] + " " + request.POST.get(
+                "launch", ""
+            ).upper()
 
         # Zip file is completed, prepare the upload
         meta = {
@@ -386,6 +391,7 @@ def patron_input(request):
         )
 
     return render(request, "museum_site/tools/patron-input.html", data)
+
 
 @staff_member_required
 def publication_pack_file_associations(request):
@@ -490,7 +496,10 @@ def queue_removal(request, letter, filename):
     else:
         data["file"] = qs[0]
 
-    if request.POST.get("action") == "queue-removal" and request.POST.get("confirm"):
+    if (
+        request.POST.get("action") == "queue-removal" and
+        request.POST.get("confirm")
+    ):
         # Remove the physical file
         path = data["file"].phys_path()
         print(path)
@@ -536,7 +545,8 @@ def reletter(request, pk):
         # Validate that nothing will be clobbered
         dst = os.path.join(SITE_ROOT, "zgames", letter, data["file"].filename)
         if os.path.isfile(dst):
-            data["results"] = "A zip with the same name already exists in that letter!"
+            data["results"] = ("A zip with the same name already exists in "
+                               "that letter!")
             return render(request, "museum_site/tools/reletter.html", data)
 
         # Copy the file to the new letter directory
@@ -561,7 +571,10 @@ def reletter(request, pk):
 
         # Copy the screenshot to the new letter directory
         src = data["file"].screenshot_phys_path()
-        dst = os.path.join(STATIC_PATH, "images", "screenshots", letter, data["file"].screenshot)
+        dst = os.path.join(
+            STATIC_PATH, "images", "screenshots", letter,
+            data["file"].screenshot
+        )
 
         try:
             shutil.copy(src, dst)
@@ -579,7 +592,8 @@ def reletter(request, pk):
             data["error"] = str(e)
             return render(request, "museum_site/tools/reletter.html", data)
 
-        data["results"] = "Successfully Re-Lettered from <b>{}</b> to <b>{}</b>".format(
+        data["results"] = ("Successfully Re-Lettered from <b>{}</b> to "
+                           "<b>{}</b>").format(
             old_letter.upper(),
             letter.upper()
         )
@@ -629,13 +643,14 @@ def replace_zip(request, pk):
     return render(request, "museum_site/tools/replace_zip.html", data)
 
 
-
 @staff_member_required
 def scan(request):
     """ Returns page with latest Museum scan results"""
     data = {"title": "Museum Scan"}
     try:
-        with codecs.open(os.path.join(STATIC_PATH, "data", "scan.log"), "r", "utf-8") as fh:
+        with codecs.open(
+            os.path.join(STATIC_PATH, "data", "scan.log"), "r", "utf-8"
+        ) as fh:
             data["scan"] = fh.read()
     except FileNotFoundError:
         data["scan"] = ""
@@ -672,19 +687,23 @@ def tool_list(request, pk):
             data["new"] = data["file"].sort_title
         elif field == "size":
             data["file"].calculate_size()
-            data["new"] =  data["file"].size
+            data["new"] = data["file"].size
         elif field == "reviews":
             data["file"].calculate_reviews()
-            data["new"] =  "{}/{}".format(data["file"].review_count, data["file"].rating)
+            data["new"] = "{}/{}".format(
+                data["file"].review_count, data["file"].rating
+            )
         elif field == "articles":
             data["file"].calculate_article_count()
-            data["new"] =  data["file"].article_count
+            data["new"] = data["file"].article_count
         elif field == "checksum":
             data["file"].calculate_checksum()
             data["new"] = data["file"].checksum
         elif field == "boards":
             data["file"].calculate_boards()
-            data["new"] = "{}/{}".format(data["file"].playable_boards, data["file"].total_boards)
+            data["new"] = "{}/{}".format(
+                data["file"].playable_boards, data["file"].total_boards
+            )
 
         data["file"].basic_save()
 
@@ -724,9 +743,14 @@ def set_screenshot(request, pk):
 
     if request.GET.get("file"):
         with ZipFile(SITE_ROOT + file.download_url(), "r") as zf:
-            zf.extract(request.GET["file"], path=SITE_ROOT + "/museum_site/static/data/")
+            zf.extract(
+                request.GET["file"],
+                path=SITE_ROOT + "/museum_site/static/data/"
+            )
 
-        z = zookeeper.Zookeeper(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])
+        z = zookeeper.Zookeeper(
+            SITE_ROOT + "/museum_site/static/data/" + request.GET["file"]
+        )
         data["board_list"] = []
         for board in z.boards:
             print(board.title)
@@ -736,27 +760,39 @@ def set_screenshot(request, pk):
         data["board_num"] = int(request.GET["board"])
 
         if data["board_num"] != 0:
-            z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp")
+            z.boards[data["board_num"]].screenshot(
+                SITE_ROOT + "/museum_site/static/data/temp"
+            )
         else:
-            z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp", title_screen=True)
+            z.boards[data["board_num"]].screenshot(
+                SITE_ROOT + "/museum_site/static/data/temp", title_screen=True
+            )
         data["show_preview"] = True
 
     if request.POST.get("save"):
         src = SITE_ROOT + "/museum_site/static/data/temp.png"
-        dst = SITE_ROOT + "/museum_site/static/images/screenshots/" + file.letter + "/" + file.filename[:-4] + ".png"
+        dst = (SITE_ROOT + "/museum_site/static/images/screenshots/" +
+               file.letter + "/" + file.filename[:-4] + ".png")
         shutil.copyfile(src, dst)
 
         file.screenshot = file.filename[:-4] + ".png"
         file.save()
     elif request.POST.get("b64img"):
-        raw = request.POST.get("b64img").replace("data:image/png;base64,", "", 1)
+        raw = request.POST.get("b64img").replace(
+            "data:image/png;base64,", "", 1
+        )
         from io import BytesIO
         import base64
 
         image = Image.open(BytesIO(base64.b64decode(raw)))
         image = image.crop((0, 0, 480, 350))
-        image.save(SITE_ROOT + "/museum_site/static/images/screenshots/" + file.letter + "/" + file.filename[:-4] + ".png")
+        image.save(
+            SITE_ROOT + "/museum_site/static/images/screenshots/" +
+            file.letter + "/" + file.filename[:-4] + ".png"
+        )
 
-    if os.path.isfile(SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")):
+    if os.path.isfile(
+        SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")
+    ):
         os.remove(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])
     return render(request, "museum_site/tools/set_screenshot.html", data)
