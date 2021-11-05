@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 
 from .constants import (
     DETAIL_REMOVED, DETAIL_DOS, DETAIL_WIN16, DETAIL_WIN32, DETAIL_WIN64,
@@ -40,6 +41,7 @@ class Detail(models.Model):
     detail = models.CharField(max_length=20)
     description = models.TextField(default="")
     visible = models.BooleanField(default=True)
+    slug = models.SlugField(max_length=20, editable=False)
 
     objects = DetailManager()
 
@@ -48,3 +50,8 @@ class Detail(models.Model):
 
     def __str__(self):
         return "[" + str(self.id) + "] " + self.detail
+
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.detail)
+        super(Detail, self).save(*args, **kwargs)
