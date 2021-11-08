@@ -1488,9 +1488,12 @@ function parse_scores(data)
 
         var spaced_score = "" + score
         while (spaced_score.length != 5)
-            spaced_score = " " + spaced_score;
+            spaced_score = "  " + spaced_score;
 
         scores.push({"name":name, "score":score, "spaced_score":spaced_score});
+
+        if (scores.length >= 30)
+            break;
     }
     return scores;
 }
@@ -1516,9 +1519,12 @@ function parse_szzt_scores(data)
 
         var spaced_score = "" + score
         while (spaced_score.length != 5)
-            spaced_score = " " + spaced_score;
+            spaced_score = "  " + spaced_score;
 
         scores.push({"name":name, "score":score, "spaced_score":spaced_score});
+
+        if (scores.length >= 30)
+            break;
     }
     return scores;
 }
