@@ -44,40 +44,20 @@ class Download(models.Model):
     def __str__(self):
         return "{} - {}".format(self.kind, self.url)
 
-
     def hosted_on(self):
         if self.kind == "itch":
             return "Hosted on itch.io"
         else:
             return "Hosted on " + self.hosted_text
 
-
     def logo(self):
         if self.kind == "itch":
             src = "itchio-textless-white.svg"
             alt = "itch"
         else:
-            src= "generic-download-logo.png"
-            alt="Generic"
+            src = "generic-download-logo.png"
+            alt = "Generic"
         output = '<img src="/static/icons/{}" alt="{} Download Icon">'.format(
             src, alt
         )
         return output
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
