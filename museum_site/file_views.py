@@ -18,6 +18,11 @@ def file_attributes(request, letter, filename):
     return render(request, "museum_site/attributes.html", data)
 
 
+def files_by_detail(request, slug):
+    d = get_object_or_404(Detail, slug=slug)
+    return file_directory(request, details=[d.pk])
+
+
 def file_directory(
     request,
     letter=None,
@@ -54,7 +59,8 @@ def file_directory(
     if details:
         qs = qs.filter(details__in=details)
         if len(details) == 1:
-            data["title"] = "Browse - " + CATEGORY_LIST[details[0]][1]
+            d = Detail.objects.get(pk=details[0])
+            data["title"] = "Browse - " + d.detail
             data["header"] = data["title"]
     if letter:
         qs = qs.filter(letter=letter)

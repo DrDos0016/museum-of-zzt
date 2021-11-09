@@ -104,6 +104,11 @@ urlpatterns = [
         "collection/play/", museum_site.views.play_collection,
         name="play_collection"),
 
+    # Details
+    path(
+        "detail/<slug:slug>/", museum_site.file_views.files_by_detail,
+        name="files_by_detail"),
+
     # Directories
     path(
         "directory/<slug:category>", museum_site.views.directory,
