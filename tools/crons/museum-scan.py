@@ -58,7 +58,7 @@ def field_check(f):
     issues = {"warnings": [], "errors": []}
 
     # Validate letter
-    if f.letter not in "1ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+    if f.letter not in "1abcdefghijklmnopqrstuvwxyz":
         issues["errors"].append("Invalid letter '{}'".format(f.letter))
 
     # Validate filename exists
