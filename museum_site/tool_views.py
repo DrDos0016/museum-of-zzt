@@ -210,7 +210,10 @@ def log_viewer(request):
     data = {
         "title": "Log Viewer",
         "range": range(1, 16),
-        "logs": ["access", "backup", "discord", "error", "mass_dl", "wozztbot"]
+        "logs": [
+            "access", "backup", "cron", "discord", "error", "mass_dl",
+            "wozztbot"
+        ]
     }
 
     if request.GET.get("log"):
