@@ -136,7 +136,8 @@ def upload_complete(request, edit_token=None):
             data["file"].generate_screenshot()
 
         # See if the upload needs to be announced
-        if not data["your_upload"].announced:
+        env = env_from_host(request.get_host())
+        if (not data["your_upload"].announced) and env == "PROD":
             preview_url = HOST + "static/" + quote(
                  data["file"].screenshot_url()
             )
