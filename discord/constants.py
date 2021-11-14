@@ -1,9 +1,9 @@
 import os
 
 if os.path.isfile("/var/projects/DEV"):
-    WOZZT_URL = "http://django.pi:8000/api/worlds-of-zzt"
+    WOZZT_URL = "http://django.pi:8000/api/worlds-of-zzt?category=discord"
 else:
-    WOZZT_URL = "https://museumofzzt.com/api/worlds-of-zzt"
+    WOZZT_URL = "https://museumofzzt.com/api/worlds-of-zzt?category=discord"
 
 COOLDOWN_MESSAGE = "`!{}` is on cooldown for {} more second(s)."
 
