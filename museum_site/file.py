@@ -178,6 +178,7 @@ class File(models.Model):
                        (ex: LICENSE file, documentation, game.zzt)
     downloads       -- Reference to Download sources
     language        -- / sep. ABC list of language codes (ISO 639-1)
+    explicit        -- If the file contains explicit content
     """
 
     letter = models.CharField(max_length=1, db_index=True)
@@ -258,6 +259,8 @@ class File(models.Model):
     license = models.CharField(max_length=150, default="Unknown")
     license_source = models.CharField(max_length=150, default="", blank=True)
     language = models.CharField(max_length=50, default="en")
+    explicit = models.BooleanField(default=False)
+
     downloads = models.ManyToManyField("Download", default=None, blank=True)
 
     class Meta:
