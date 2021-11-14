@@ -96,7 +96,7 @@ $(document).ready(function (){
 <section id="content" class="block">
 <h1>Worlds of ZZT Queue{% if request.user.is_staff %} [STAFF MODE]{% endif %}</h1>
 <p>Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
-<a href="?category=wozzt">Worlds of ZZT</a> | <a href="?category=tuesday">Title Screen Tuesday</a></p>
+<a href="?category=wozzt">Worlds of ZZT</a> | <a href="?category=tuesday">Title Screen Tuesday</a> | <a href="?category=discord">Discord Queue</a></p>
 <p>Times are displayed in your local time zone.</p>
 <p><b>{{queue_size}}</b> entries in queue ending on <span id="queue-end">-</span>.</p>
 
@@ -108,6 +108,7 @@ $(document).ready(function (){
     Category: <select name="category">
         <option value="wozzt">Worlds of ZZT</option>
         <option value="tuesday"{% if request.GET.category == 'tuesday' %} selected{% endif %}>Title Screen Tuesday</option>
+        <option value="discord"{% if request.GET.category == 'discord' %} selected{% endif %}>Discord Queue</option>
     </select> |
     <input type="submit" value="Roll">
 </form>
