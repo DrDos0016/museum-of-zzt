@@ -10,7 +10,7 @@ from io import BytesIO
 from PIL import Image
 
 
-from museum_site.file import File
+from museum_site.models import File, WoZZT_Queue
 from museum_site.constants import (
     DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_GFX
 )
@@ -35,46 +35,70 @@ def worlds_of_zzt(request):
     # Timestamp
     ts = int(time())
 
-    # Select a randomly displayable file
-    f = File.objects.filter(details__in=[DETAIL_ZZT]).exclude(details__in=[DETAIL_UPLOADED, DETAIL_GFX]).order_by("?")[0]
+    if request.GET.get("category") == "discord":
+        entry = WoZZT_Queue.objects.filter(
+            category="discord"
+        ).order_by("-priority", "id").first()
+        img_path = entry.image_path()
+        f = entry.file
+        selected = entry.zzt_file
+        title = entry.board_name
+        board_num = entry.board
+        museum_link = f.file_url()
+        play_link = f.play_url()
+        archive_link = "https://archive.org/details/" + f.archive_name if f.archive_name else None
 
-    # Open it
-    zh = zipfile.ZipFile(f.phys_path())
+        # Convert the image to base64
+        with open(img_path, "rb") as fh:
+            data = fh.read()
+        b64 = base64.b64encode(data).decode("utf-8")
 
-    # Find available ZZT worlds
-    contents = zh.namelist()
-    contents.sort()
+        # Roll the next image
+        WoZZT_Queue().roll(category="discord")
+        entry.delete_image()
+        entry.delete()
 
-    world_choices = []
-    for content in contents:
-        filename = content.lower()
-        if filename.endswith(".zzt"):
-            world_choices.append(content)
+    else:
+        # Select a randomly displayable file
+        f = File.objects.filter(details__in=[DETAIL_ZZT]).exclude(details__in=[DETAIL_UPLOADED, DETAIL_GFX]).order_by("?")[0]
 
-    # Select a world and extract it
-    selected = random.choice(world_choices)
-    zh.extract(selected, TEMP_PATH)
+        # Open it
+        zh = zipfile.ZipFile(f.phys_path())
 
-    # Parse the world with Zookeeper
-    z = zookeeper.Zookeeper(os.path.join(TEMP_PATH, selected))
-    board_num = random.randint(0, len(z.boards) - 1)
-    img_path = os.path.join(TEMP_PATH, str(ts))
-    z.boards[board_num].screenshot(img_path, title_screen=(board_num == 0), format="RGB")
-    title = z.boards[board_num].title
+        # Find available ZZT worlds
+        contents = zh.namelist()
+        contents.sort()
 
-    # Convert the image to base64
-    with open(img_path + ".png", "rb") as fh:
-        data = fh.read()
-    b64 = base64.b64encode(data).decode("utf-8")
+        world_choices = []
+        for content in contents:
+            filename = content.lower()
+            if filename.endswith(".zzt"):
+                world_choices.append(content)
 
-    # Delete the files
-    os.remove(img_path + ".png")
-    os.remove(os.path.join(TEMP_PATH, selected))
+        # Select a world and extract it
+        selected = random.choice(world_choices)
+        zh.extract(selected, TEMP_PATH)
 
-    # Check if the file is playable online
-    museum_link = "https://museumofzzt.com" + f.file_url()
-    archive_link = "https://archive.org/details/" + f.archive_name if f.archive_name else None
-    play_link = "https://museumofzzt.com" + f.play_url()
+        # Parse the world with Zookeeper
+        z = zookeeper.Zookeeper(os.path.join(TEMP_PATH, selected))
+        board_num = random.randint(0, len(z.boards) - 1)
+        img_path = os.path.join(TEMP_PATH, str(ts))
+        z.boards[board_num].screenshot(img_path, title_screen=(board_num == 0), format="RGB")
+        title = z.boards[board_num].title
+
+        # Convert the image to base64
+        with open(img_path + ".png", "rb") as fh:
+            data = fh.read()
+        b64 = base64.b64encode(data).decode("utf-8")
+
+        # Delete the files
+        os.remove(img_path + ".png")
+        os.remove(os.path.join(TEMP_PATH, selected))
+
+        # Check if the file is playable online
+        museum_link = "https://museumofzzt.com" + f.file_url()
+        archive_link = "https://archive.org/details/" + f.archive_name if f.archive_name else None
+        play_link = "https://museumofzzt.com" + f.play_url()
 
     output = {
         "status": "SUCCESS",
