@@ -44,9 +44,6 @@ def worlds_of_zzt(request):
         selected = entry.zzt_file
         title = entry.board_name
         board_num = entry.board
-        museum_link = f.file_url()
-        play_link = f.play_url()
-        archive_link = "https://archive.org/details/" + f.archive_name if f.archive_name else None
 
         # Convert the image to base64
         with open(img_path, "rb") as fh:
@@ -95,10 +92,10 @@ def worlds_of_zzt(request):
         os.remove(img_path + ".png")
         os.remove(os.path.join(TEMP_PATH, selected))
 
-        # Check if the file is playable online
-        museum_link = "https://museumofzzt.com" + f.file_url()
-        archive_link = "https://archive.org/details/" + f.archive_name if f.archive_name else None
-        play_link = "https://museumofzzt.com" + f.play_url()
+    # Check if the file is playable online
+    museum_link = "https://museumofzzt.com" + f.file_url()
+    archive_link = "https://archive.org/details/" + f.archive_name if f.archive_name else None
+    play_link = "https://museumofzzt.com" + f.play_url()
 
     output = {
         "status": "SUCCESS",
