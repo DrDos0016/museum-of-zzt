@@ -190,7 +190,7 @@ class File(models.Model):
     )
     author = models.CharField(max_length=255)
     size = models.IntegerField(default=0)
-    genre = models.CharField(max_length=255, blank=True, default="")
+    genre = models.CharField(max_length=255)
     release_date = models.DateField(default=None, null=True, blank=True)
     release_source = models.CharField(
         max_length=20, null=True, default=None, blank=True
