@@ -8,7 +8,20 @@ ZETA_CONFIG_CATEGORIES = (
 )
 
 
+class Zeta_Config_Manager(models.Manager):
+    def select_list(self):
+        # Only show generic options
+        qs = self.filter(category__lte=1).order_by("category")
+        output = []
+        for zc in qs:
+            output.append((zc.id, zc.name))
+        output.append((-1, "Incompatible with Zeta"))
+        return output
+
+
 class Zeta_Config(models.Model):
+    objects = Zeta_Config_Manager()
+
     name = models.CharField(max_length=64)
     executable = models.CharField(max_length=128, default="zzt.zip", blank=True)
     arguments = models.CharField(max_length=128, default="", blank=True)
