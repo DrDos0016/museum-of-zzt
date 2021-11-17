@@ -433,3 +433,10 @@ def throttle_check(
         request.session[expiration_name] = str(now + delta)
         return False
     return True
+
+
+def get_max_upload_size(request):
+    max_upload_size = UPLOAD_CAP
+    if request.user.is_authenticated:
+        max_upload_size = request.user.profile.max_upload_size
+    return max_upload_size
