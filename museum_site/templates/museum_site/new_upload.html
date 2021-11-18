@@ -59,6 +59,24 @@
 </div>
 <hr>
 
+<h2 class="cut-heading">Download Settings<div class="fr cut-state">➕</div></h2>
+<div class="cut-wrapper cut-closed">
+{% for field in download_form %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}">
+    {{field.errors}}
+    {{field.label_tag}}
+    <div class="field-value">
+        {{field}}
+    </div>
+    {% if field.help_text %}
+    <p class="field-help">{{field.help_text|safe}}</p>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
+<hr>
+
+
 <h2 class="cut-heading">Upload Settings<div class="fr cut-state">➕</div></h2>
 <div class="cut-wrapper cut-closed">
 {% for field in upload_form %}
@@ -70,23 +88,6 @@
         {% if field.id_for_label == "id_release_date" %}
         <input name="today" value="Today" type="button">
         {% endif %}
-    </div>
-    {% if field.help_text %}
-    <p class="field-help">{{field.help_text|safe}}</p>
-    {% endif %}
-</div>
-{% endfor %}
-</div>
-<hr>
-
-<h2 class="cut-heading">Download Settings<div class="fr cut-state">➕</div></h2>
-<div class="cut-wrapper cut-closed">
-{% for field in download_form %}
-<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}">
-    {{field.errors}}
-    {{field.label_tag}}
-    <div class="field-value">
-        {{field}}
     </div>
     {% if field.help_text %}
     <p class="field-help">{{field.help_text|safe}}</p>

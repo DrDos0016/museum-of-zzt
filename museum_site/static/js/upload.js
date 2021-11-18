@@ -167,9 +167,13 @@ function parse_zip_file(file)
     console.log("Parsing Zip File...");
     zip.loadAsync(file).then(function(zip){
 
+        var hr_size = filesize_format(file.size);
+
         $(".upload-info").html(
-        `<span class="file-name">${file.name}</span>
-        <span class="file-size">${file.size} bytes</span>
+        `<div class="file-header">
+            <span class="file-name">${file.name}</span>
+            <span class="file-size">${hr_size}</span>
+        </div>
         <ul class="file-list">
         </ul>
         `);

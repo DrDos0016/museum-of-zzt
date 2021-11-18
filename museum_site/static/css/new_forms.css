@@ -121,11 +121,24 @@ label
 .upload-info
 {
     display:none;
+    font-family:monospace;
+    font-size:larger;
+}
+
+.upload-info .file-header
+{
+    border-bottom:1px solid #000;
+    font-weight:bold;
 }
 
 .upload-info .file-size
 {
     float:right;
+}
+
+.upload-info .file-list li
+{
+    border-bottom:1px dotted #000;
 }
 
 .ssv-list

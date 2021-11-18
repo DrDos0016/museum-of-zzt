@@ -8,6 +8,7 @@ class ZGameForm(forms.ModelForm):
     zfile = forms.FileField(help_text="Select the file you wish to upload. All uploads <i>must</i> be zipped.", label="File", widget=UploadFileWidget())
 
     use_required_attribute = False
+    max_upload_size = 0  # Properly set this value in a view
 
     class Meta:
         model = File
@@ -24,9 +25,9 @@ class ZGameForm(forms.ModelForm):
                       "For files with many authors, consider using the compiler as the author with \"Various\" to represent the rest.",
             "company": "The company this file is published under. If there is none, leave this field blank. If there are multiple, separate them with a comma.",
             "genre": "Check any applicable genres that describe the content of the uploaded file.",
-            "release_date": "The date this file was first made public. If this is a new release, it should be the modified date of the most recent ZZT world (or executable, or other primary file). If the release date is not known, leave this field blank.",
+            "release_date": "Enter the date this file was first made public. If this is a new release, it should be the modified date of the most recent ZZT world (or executable, or other primary file). If the release date is not known, leave this field blank.",
             "release_source": "Where the data for the release date is coming from",
-            "language": 'Any languages the player is expected to understand to comprehend the files in the upload. For worlds using created languages exclusively, use "Other".',
+            "language": 'Check any languages the player is expected to understand to comprehend the files in the upload. For worlds exclusively using created languages, use "Other".',
             "license": "The license under which this world is published.",
             "license_source": "Where the license can be found. Use a source contained within the uploaded file when possible.",
             "description": "An optional description of the upload. For utilities, please be sure to fill this out.",
@@ -68,6 +69,12 @@ class ZGameForm(forms.ModelForm):
             "zfile": UploadFileWidget(),
         }
 
+    def clean_zfile(self):
+        zfile = self.cleaned_data["zfile"]
+
+        if zfile.size > self.max_upload_size:
+            raise forms.ValidationError("File exceeds your maximum upload size! Contact Dr. Dos for a manual upload.")
+
 
 class PlayForm(forms.Form):
     name = forms.ChoiceField(choices=Zeta_Config.objects.select_list(), label="Configuration", help_text='Choose the intended configuration for playing the upload in the browser. If this upload cannot be ran with Zeta, select "Incompatible with Zeta" at the end of the list. For the vast majority of ZZT worlds "ZZT v3.2R" is the correct choice.' )
@@ -82,14 +89,22 @@ class UploadForm(forms.ModelForm):
 
     class Meta:
         model = Upload
-        fields = ["generate_preview_image", "notes"]
+        fields = ["generate_preview_image", "notes", "announced"]
 
         labels = {
-            "notes": "Upload Notes"
+            "notes": "Upload Notes",
+            "announced": "Announce On Discord",
             }
 
         help_texts = {
             "notes": "Notes for staff to read before publication such as special instructions before publishing. While not visible to users on the site directly, consider anything entered in this field to be public.",
+            "announced": "New uploads are automatically shared to the Discord of ZZT's announcements channel. You may choose to not announce the upload. The upload will still appear publically in the upload queue and on RSS feeds.",
+        }
+
+        widgets = {
+            "announced": forms.RadioSelect(
+                choices=((0, "Announce this upload"), (1, "Do not announce this upload")),
+            )
         }
 
 

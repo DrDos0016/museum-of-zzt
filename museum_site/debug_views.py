@@ -105,6 +105,9 @@ def debug_upload(request):
         if gpi and gpi not in ("AUTO", "NONE"):
             upload.fields["generate_preview_image"].choices = upload.fields["generate_preview_image"].choices + [(gpi, gpi)]
 
+        # Set the maximum upload size properly
+        zgame.max_upload_size = get_max_upload_size(request)
+
         # Validate
         success = True
         if zgame.is_valid():
@@ -135,13 +138,6 @@ def debug_upload(request):
             print("SUCCESS IS TRUE")
             # Handle editing uploads
 
-            # Handle file size limit
-            max_upload_size = UPLOAD_CAP
-            if request.user.is_authenticated:
-                max_upload_size = request.user.profile.max_upload_size
-            if request.FILES.get("zfile").size > max_upload_size:
-                zgame.add_error("zfile", "Oh dang man that's too gosh darn big.")
-
             # zfile().full_clean()  # Exclude publish date?
             # zfile().save(new_upload=True)
             # Add the uploaded detail
@@ -154,7 +150,7 @@ def debug_upload(request):
     else:  # Blank form
         zgame = ZGameForm(initial={"author": "", "explicit": 0, "language": "en",})
         play = PlayForm()
-        upload = UploadForm()
+        upload = UploadForm(initial={"announced": 0})
         download = DownloadForm()
 
     data["zgame_form"] = zgame
