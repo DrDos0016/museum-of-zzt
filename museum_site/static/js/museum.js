@@ -262,3 +262,9 @@ function int_to_char(number)
 {
     return String.fromCharCode(CP437_TO_UNICODE[number]);
 }
+
+function filesize_format(bytes)
+{
+    var i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return (bytes / Math.pow(1024, i)).toFixed(1) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
+}
