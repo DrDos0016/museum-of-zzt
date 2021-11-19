@@ -88,8 +88,73 @@ def debug_upload(request):
         "title": "New Upload System"
     }
 
-    data["zgame_form"] = ZGameForm()
-    data["upload_form"] = UploadForm()
+    if not UPLOADS_ENABLED:
+        return redirect("/")
 
-    print(data["zgame_form"].fields)
+    if request.META["REMOTE_ADDR"] in BANNED_IPS:
+        return HttpResponse("Banned account.")
+
+    if request.method == "POST":
+        zgame = ZGameForm(request.POST, request.FILES)
+        play = PlayForm(request.POST)
+        upload = UploadForm(request.POST)
+        download = DownloadForm(request.POST)
+
+        # Patch in the specified filename to use for preview images as valid
+        gpi = request.POST.get("generate_preview_image")
+        if gpi and gpi not in ("AUTO", "NONE"):
+            upload.fields["generate_preview_image"].choices = upload.fields["generate_preview_image"].choices + [(gpi, gpi)]
+
+        # Set the maximum upload size properly
+        zgame.max_upload_size = get_max_upload_size(request)
+
+        # Validate
+        success = True
+        if zgame.is_valid():
+            print("Zgame component is correct")
+        else:
+            success = False
+            print("Zgame component is INCORRECT")
+
+        if play.is_valid():
+            print("Play component is correct")
+        else:
+            success = False
+            print("Play component is INCORRECT")
+
+        if upload.is_valid():
+            print("Upload component is correct")
+        else:
+            success = False
+            print("Upload component is INCORRECT")
+
+        if download.is_valid():
+            print("Download component is correct")
+        else:
+            success = False
+            print("Download component is INCORRECT")
+
+        if success:
+            print("SUCCESS IS TRUE")
+            # Handle editing uploads
+
+            # zfile().full_clean()  # Exclude publish date?
+            # zfile().save(new_upload=True)
+            # Add the uploaded detail
+            # upload(), upload.from_request(request, upload.id, save=True)
+            # Calculate queue size
+
+        else:
+            print("AN ERROR WAS DETECTED SOMEWHERE!")
+
+    else:  # Blank form
+        zgame = ZGameForm(initial={"author": "", "explicit": 0, "language": "en",})
+        play = PlayForm()
+        upload = UploadForm(initial={"announced": 0})
+        download = DownloadForm()
+
+    data["zgame_form"] = zgame
+    data["play_form"] = play
+    data["upload_form"] = upload
+    data["download_form"] = download
     return render(request, "museum_site/new_upload.html", data)

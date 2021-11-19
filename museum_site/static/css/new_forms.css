@@ -5,8 +5,7 @@ form
 
 .field-wrapper
 {
-    padding-top:7px;
-    padding-bottom:7px;
+    padding:7px 4px 7px 4px;
     border-top:1px dashed #000;
     display:grid;
     grid-template-areas:
@@ -36,10 +35,20 @@ label
 }
 
 .field-value input[type=text], .field-value textarea, .field-value input[type=file], .field-value input[type=date],
-.field-value select
+.field-value input[type=url], .field-value select
 {
     box-sizing:border-box;
     width:100%;
+}
+
+.field-value ul {
+    margin:0;
+    padding:0;
+    list-style: none;
+}
+.field-value label
+{
+    font-weight:normal;
 }
 
 .field-value input[type=checkbox]
@@ -112,11 +121,24 @@ label
 .upload-info
 {
     display:none;
+    font-family:monospace;
+    font-size:larger;
+}
+
+.upload-info .file-header
+{
+    border-bottom:1px solid #000;
+    font-weight:bold;
 }
 
 .upload-info .file-size
 {
     float:right;
+}
+
+.upload-info .file-list li
+{
+    border-bottom:1px dotted #000;
 }
 
 .ssv-list
@@ -156,4 +178,16 @@ label
 {
     margin-top:4px;
     display:none;
+}
+
+#id_zfile { display:none; }
+
+.field-with-error
+{
+    background-color:#FCC;
+}
+
+.errorlist
+{
+    font-weight: bold;
 }

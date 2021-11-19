@@ -1,0 +1,6 @@
+<div class="scrolling-checklist" id="{{name}}-checklist">
+<input id="id_{{name}}" name="{{name}}" type="hidden" value="{{value|default:""}}">
+{% for v, k in choices %}
+<label><input name="{{name}}-checkbox" class="ssv-checkbox" type="checkbox" value="{{v}}"> {{k}}</label>
+{% endfor %}
+</div>

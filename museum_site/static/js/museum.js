@@ -165,6 +165,24 @@ $(document).ready(function (){
         clearTimeout($(this).data("timeout"));
         setTimeout(pre_search, 200);
     });
+
+    // Open/Close Cuts
+    $(".cut-heading").click(function (){
+        var state = $(this).find(".cut-state");
+        var cur = state.text();
+        if (cur == "➖")
+        {
+            state.text("➕");
+            $(this).next().removeClass("cut-open");
+            $(this).next().addClass("cut-closed");
+        }
+        else if (cur == "➕")
+        {
+            state.text("➖");
+            $(this).next().removeClass("cut-closed");
+            $(this).next().addClass("cut-open");
+        }
+    });
 });
 
 function pre_search()
@@ -243,4 +261,10 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 function int_to_char(number)
 {
     return String.fromCharCode(CP437_TO_UNICODE[number]);
+}
+
+function filesize_format(bytes)
+{
+    var i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return (bytes / Math.pow(1024, i)).toFixed(1) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
 }

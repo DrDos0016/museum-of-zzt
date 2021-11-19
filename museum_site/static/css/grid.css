@@ -193,6 +193,21 @@ input[type=number]
 {
     visibility:visible;
 }
+
+.cut-heading:hover
+{
+    cursor:pointer;
+}
+
+.cut-wrapper.cut-open
+{
+    display:block;
+}
+
+.cut-wrapper.cut-closed
+{
+    display:none;
+}
 /* End Basic Elements */
 
 /* Fonts */

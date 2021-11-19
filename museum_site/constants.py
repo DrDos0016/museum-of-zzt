@@ -551,6 +551,8 @@ LANGUAGES = {
     "xx": "Other"
 }
 
+LANGUAGE_CHOICES = tuple(LANGUAGES.items())
+
 LICENSE_CHOICES = [
     ("UNK", "Unknown"),
     ("PD", "Public Domain"),
