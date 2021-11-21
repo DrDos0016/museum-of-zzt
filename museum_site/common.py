@@ -440,3 +440,17 @@ def get_max_upload_size(request):
     if request.user.is_authenticated:
         max_upload_size = request.user.profile.max_upload_size
     return max_upload_size
+
+
+def zipinfo_datetime_tuple_to_str(raw):
+    dt = raw.date_time
+    y = str(dt[0])
+    m = str(dt[1]).zfill(2)
+    d = str(dt[2]).zfill(2)
+    h = str(dt[3]).zfill(2)
+    mi = str(dt[4]).zfill(2)
+    s = str(dt[5]).zfill(2)
+    print(raw.filename)
+    out = "{}-{}-{} {}:{}:{}".format(y, m, d, h, mi, s)
+    print(out)
+    return out
