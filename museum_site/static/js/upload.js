@@ -121,9 +121,6 @@ $(document).ready(function (){
     $(".ssv-checkbox").click(function (){
         var checked = $(this).prop("checked");
         var name = $(this).attr("name").slice(0, -9); // Strip "-checked"
-        console.log(checked);
-        console.log(name);
-
         var ssv = "";
         $("input[name=" + name + "-checkbox]").each(function (idx){
             if ($(this).prop("checked"))

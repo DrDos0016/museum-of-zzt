@@ -180,6 +180,15 @@ label
     display:none;
 }
 
+.hr-checklist-values
+{
+    font-family:monospace;
+    font-size:larger;
+    border:1px solid #000;
+    border-top:0px;
+    padding:7px 4px 7px 4px;
+}
+
 #id_zfile { display:none; }
 
 .field-with-error

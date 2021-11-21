@@ -77,12 +77,11 @@ class ZGameForm(forms.ModelForm):
 
 
 class PlayForm(forms.Form):
-    name = forms.ChoiceField(choices=Zeta_Config.objects.select_list(), label="Configuration", help_text='Choose the intended configuration for playing the upload in the browser. If this upload cannot be ran with Zeta, select "Incompatible with Zeta" at the end of the list. For the vast majority of ZZT worlds "ZZT v3.2R" is the correct choice.' )
+    zeta_config = forms.ChoiceField(choices=Zeta_Config.objects.select_list(), label="Configuration", help_text='Choose the intended configuration for playing the upload in the browser. If this upload cannot be ran with Zeta, select "Incompatible with Zeta" at the end of the list. For the vast majority of ZZT worlds "ZZT v3.2R" is the correct choice.' )
 
 
 class UploadForm(forms.ModelForm):
     generate_preview_image = forms.ChoiceField(
-        label = "Preview Image",
         help_text="Select a ZZT file whose title screen will be used for the world's preview image. Leave set to 'Automatic' to use the oldest file in the zip file. This image may be changed during publication. This option cannot be changed after upload.",
         choices=[("AUTO", "Automatic"), ("NONE", "Do Not Generate Preview Image")]  # Must be a list to be added to later
         )
@@ -92,8 +91,9 @@ class UploadForm(forms.ModelForm):
         fields = ["generate_preview_image", "notes", "announced"]
 
         labels = {
-            "notes": "Upload Notes",
-            "announced": "Announce On Discord",
+            "generate_preview_image": "Preview image",
+            "notes": "Upload notes",
+            "announced": "Announce on Discord",
             }
 
         help_texts = {
