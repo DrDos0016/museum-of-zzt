@@ -16,7 +16,7 @@ try:
 except ImportError:
     HAS_ZOOKEEPER = False
 
-from .common import slash_separated_sort, UPLOAD_CAP, STATIC_PATH
+from .common import slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP, STATIC_PATH
 from .constants import SITE_ROOT, REMOVED_ARTICLE, ZETA_RESTRICTED, LANGUAGES
 from .review import Review
 
@@ -181,38 +181,21 @@ class File(models.Model):
     explicit        -- If the file contains explicit content
     """
 
-    letter = models.CharField(max_length=1, db_index=True)
+    letter = models.CharField(max_length=1, db_index=True, editable=False)
     filename = models.CharField(max_length=50)
+    size = models.IntegerField(default=0, editable=False)
     title = models.CharField(max_length=80)
-    sort_title = models.CharField(
-        max_length=100, db_index=True, default="", blank=True,
-        help_text="Leave blank to set automatically"
-    )
     author = models.CharField(max_length=255)
-    size = models.IntegerField(default=0)
+    company = models.CharField(
+        max_length=255, default="", blank=True,
+    )
     genre = models.CharField(max_length=255)
     release_date = models.DateField(default=None, null=True, blank=True)
     release_source = models.CharField(
         max_length=20, null=True, default=None, blank=True
     )
-    screenshot = models.CharField(
-        max_length=80, blank=True, null=True, default=None
-    )
-    company = models.CharField(
-        max_length=255, default="", blank=True,
-    )
+    language = models.CharField(max_length=50, default="en")
     description = models.TextField(null=True, blank=True, default="")
-    review_count = models.IntegerField(
-        default=0, help_text="Set automatically. Do not adjust."
-    )
-    rating = models.FloatField(null=True, default=None, blank=True)
-    details = models.ManyToManyField("Detail", default=None, blank=True)
-    articles = models.ManyToManyField("Article", default=None, blank=True)
-    article_count = models.IntegerField(
-        default=0, help_text="Set automatically. Do not adjust."
-    )
-    checksum = models.CharField(max_length=32, null=True,
-                                blank=True, default="")
     superceded = models.ForeignKey("File", db_column="superceded_id",
                                    null=True, blank=True, default=None,
                                    on_delete=models.SET_NULL)
@@ -231,11 +214,32 @@ class File(models.Model):
         help_text="ex: zzt_burgerj"
     )
 
-    aliases = models.ManyToManyField("Alias", default=None, blank=True)
-    upload_date = models.DateTimeField(
-        null=True, auto_now_add=True, db_index=True, blank=True,
-        help_text="Date File was uploaded to the Museum"
+    screenshot = models.CharField(
+        max_length=80, blank=True, null=True, default=None
     )
+
+    license = models.CharField(max_length=150, default="Unknown")
+    license_source = models.CharField(max_length=150, default="", blank=True)
+
+    # Derived Data
+    checksum = models.CharField(
+        max_length=32, null=True, blank=True, default=""
+    )
+    sort_title = models.CharField(
+        max_length=100, db_index=True, default="", blank=True,
+        help_text="Leave blank to set automatically"
+    )
+
+    # Reviews
+    review_count = models.IntegerField(
+        default=0, help_text="Set automatically. Do not adjust."
+    )
+    rating = models.FloatField(null=True, default=None, blank=True)
+
+    # Museum Properties
+    explicit = models.BooleanField(default=False)
+    spotlight = models.BooleanField(default=True)
+    can_review = models.BooleanField(default=True)
     publish_date = models.DateTimeField(
         null=True, default=None, db_index=True, blank=True,
         help_text="Date File was published on the Museum"
@@ -245,23 +249,27 @@ class File(models.Model):
         help_text="Date DB entry was last modified"
     )
 
+    # Defunct(?)
     uploader_ip = models.GenericIPAddressField(
         null=True, blank=True, default=None, editable=False
     )
+    upload_date = models.DateTimeField(
+        null=True, auto_now_add=True, db_index=True, blank=True,
+        help_text="Date File was uploaded to the Museum"
+    )
 
+    # Associations
+    aliases = models.ManyToManyField("Alias", default=None, blank=True)
+    articles = models.ManyToManyField("Article", default=None, blank=True, editable=False)
+    article_count = models.IntegerField(
+        default=0, editable=False
+    )
+    details = models.ManyToManyField("Detail", default=None, blank=True)
+    downloads = models.ManyToManyField("Download", default=None, blank=True)
     zeta_config = models.ForeignKey(
         "Zeta_Config", null=True, blank=True, default=1,
         on_delete=models.SET_NULL
     )
-
-    spotlight = models.BooleanField(default=True)
-    can_review = models.BooleanField(default=True)
-    license = models.CharField(max_length=150, default="Unknown")
-    license_source = models.CharField(max_length=150, default="", blank=True)
-    language = models.CharField(max_length=50, default="en")
-    explicit = models.BooleanField(default=False)
-
-    downloads = models.ManyToManyField("Download", default=None, blank=True)
 
     class Meta:
         ordering = ["sort_title", "letter"]
@@ -281,7 +289,7 @@ class File(models.Model):
         self.genre = slash_separated_sort(self.genre)
 
         # Create sorted title
-        self.sort_title = self.sorted_title()
+        self.sort_title = self.calculate_sort_title()
 
         # Recalculate Article Count
         self.calculate_article_count()
@@ -351,7 +359,7 @@ class File(models.Model):
 
         return data
 
-    def sorted_title(self):
+    def calculate_sort_title(self):
         # Handle titles that start with A/An/The
         sort_title = self.title.lower()
 
@@ -369,7 +377,8 @@ class File(models.Model):
                 expanded.append(word)
         sort_title = " ".join(expanded)
 
-        return sort_title
+        self.sort_title = sort_title
+        return True
 
     def letter_from_title(self):
         """ Returns the letter a file should be listed under after removing
@@ -388,7 +397,7 @@ class File(models.Model):
         return letter
 
     def download_url(self):
-        if self.is_uploaded():
+        if (not self.id) or self.is_uploaded():
             return "/zgames/uploaded/" + self.filename
         else:
             return "/zgames/" + self.letter + "/" + self.filename
@@ -564,14 +573,11 @@ class File(models.Model):
         return True
 
     def calculate_boards(self):
-        if self.is_uploaded():
-            return False
-
         self.playable_boards = None
         self.total_boards = None
         temp_playable = 0
         temp_total = 0
-        zip_path = os.path.join(SITE_ROOT, "zgames", self.letter, self.filename)
+        zip_path = self.phys_path()
         temp_path = os.path.join(SITE_ROOT, "temp")
 
         try:
@@ -787,15 +793,11 @@ class File(models.Model):
             all_files = zf.infolist()
             worlds = []
             for f in all_files:
-                if (
-                    f.file_size < UPLOAD_CAP and
-                    f.filename.lower().endswith(".zzt")
-                ):
+                if (f.filename.lower().endswith(".zzt")):
                     worlds.append(f)
 
-            sorted(worlds, key=lambda k: k.date_time)
-
             if worlds:
+                worlds = sorted(worlds, key=zipinfo_datetime_tuple_to_str)
                 world = worlds[0].filename
 
         if world is None:
