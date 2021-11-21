@@ -686,7 +686,7 @@ def tool_list(request, pk):
     if request.GET.get("recalculate"):
         field = request.GET["recalculate"]
         if field == "sort-title":
-            data["file"].sorted_title()
+            data["file"].calculate_sort_title()
             data["new"] = data["file"].sort_title
         elif field == "size":
             data["file"].calculate_size()
