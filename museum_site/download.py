@@ -47,8 +47,12 @@ class Download(models.Model):
     def hosted_on(self):
         if self.kind == "itch":
             return "Hosted on itch.io"
-        else:
+        elif self.hosted_text:
             return "Hosted on " + self.hosted_text
+        elif self.kind == "personal":
+            return "Hosted on the author's website"
+        else:
+            return "Hosted elsewhere"
 
     def logo(self):
         if self.kind == "itch":
