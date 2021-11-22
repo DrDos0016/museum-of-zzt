@@ -51,7 +51,6 @@ $(document).ready(function (){
     $(".upload-area").on("dragover", function(e) {
         e.preventDefault();
         e.stopPropagation();
-        $(this).addClass("dragging");
     });
 
     $(".upload-area").on("dragleave", function(e) {
@@ -90,14 +89,13 @@ $(document).ready(function (){
             if (! val.trim() )  // Make sure there's data
                 return false;
             add_ssv_entry(key, val);
-            $(".ssv-val").unbind("click").click(function (){
-                remove_ssv_entry($(this), $(this).data("key"));
-            });
+            bind_ssv_entries(key);
             update_ssv(key);
             $(this).val("");
         }
     });
 
+    // Adding SSV data
     $(".ssv-entry").blur(function (){
         $(this).val($(this).val() + ",");
         $(this).keyup();
@@ -132,9 +130,121 @@ $(document).ready(function (){
     });
 });
 
+
+function update_ssv(key)
+{
+    $("#id_"+key).val("");
+    console.log(key);
+    $("#"+key+"-list .ssv-val").each(function (){
+        var cur = $("#id_"+key).val();
+        var entry = $(this).data("val");
+        $("#id_"+key).val(cur + entry + "/");
+    });
+    var cur = $("#id_"+key).val().slice(0, -1);
+    $("#id_"+key).val(cur);
+}
+
+function add_ssv_entry(key, val)
+{
+    $("#"+key+"-list").append("<div class='ssv-tag' draggable='true'><div class='ssv-val' data-val='"+val+"' data-key='"+key+"'>"+val+"</div><div class='ssv-remove' title='Click to remove'>✖</span></div>");
+}
+
+function remove_ssv_entry(selector, key)
+{
+    console.log(selector);
+    selector.parent().remove();
+    update_ssv(key);
+}
+
+
+function repopulate_checkboxes(name)
+{
+    // Convert previously posted SSV to other input formats
+    var raw = $("#id_" + name).val();
+    var list = raw.split("/");
+    $("input[name=" + name + "-checkbox]").each(function (idx){
+        if (list.indexOf($(this).val()) != -1)
+            $(this).prop("checked", true);
+    });
+}
+
+
+function repopulate_ssv(name)
+{
+    var raw = $("#id_" + name).val();
+    var list = raw.split("/");
+    for (var idx in list)
+    {
+        if (list[idx])
+            add_ssv_entry(name, list[idx]);
+    }
+}
+
+
+function bind_ssv_entries()
+{
+    $(".ssv-tag").unbind();
+    $(".ssv-tag .ssv-remove").unbind("click").click(function (){
+        remove_ssv_entry($(this), $(this).prev().data("key"));
+    });
+
+    $(".ssv-tag").on("dragstart", function (e){
+        const dt = e.originalEvent.dataTransfer;
+        dt.effectAllowed = "move";
+        dt.setData("text/html", $(this).prop("outerHTML"));
+        $(this).addClass("dragging");
+        console.log(dt);
+    });
+    $(".ssv-tag").on("dragend", function (e){
+        $(this).removeClass("dragging");
+    });
+    $(".ssv-tag").on("dragover", function(e){
+        e.preventDefault()
+        if ($(this).hasClass("dragging") || $(this).data("has-ghost")) // Dropping onto dragged tag
+            return false;
+        $(this).data("has-ghost", 1);
+        $(this).after("<div class='ssv-tag-ghost'>...</div>");
+    });
+    $(".ssv-tag").on("dragleave", function (e){
+        $(this).data("has-ghost", 0);
+        $(".ssv-tag-ghost").remove();
+    });
+    $(".ssv-tag").on("drop", function (e){
+        e.preventDefault();
+        e.stopPropagation();
+        $(".ssv-tag-ghost").remove();
+        if ($(this).hasClass("dragging")) // Dropping onto dragged tag
+            return false;
+        console.log("Drop!");
+        const key = $(".dragging").find(".ssv-val").data("key");
+        console.log("Dropping onto type", $(this).find(".ssv-val").data("key"));
+        console.log("Key var is", key);
+        console.log("OwO", $(this));
+        if ($(this).find(".ssv-val").data("key") != key)  // Dropping onto a _different_ set of tags
+            return false;
+
+        // Reposition
+        const data = e.originalEvent.dataTransfer.getData("text/html");
+        $(".dragging").remove();
+        $(this).after(data);
+
+        // Update the true input field
+        var ssv = "";
+        $("#" + key + "-list .ssv-val").each(function (){
+            ssv += $(this).data("val") + "/";
+            console.log(ssv);
+        });
+
+        ssv = ssv.slice(0, -1);
+        $("#id_"+key).val(ssv);
+
+        // Rebind!
+        bind_ssv_entries();
+    });
+}
+
 function get_suggestions(selector, kind)
 {
-    console.log("Getting suggestions", selector, kind);
     var query = $(selector).val();
     if (! query)
         return false;
@@ -149,11 +259,9 @@ function get_suggestions(selector, kind)
         for (var idx in data["suggestions"])
         {
             output += '<option value="'+data["suggestions"][idx]+'">';
-            console.log(idx, data["suggestions"][idx]);
         }
         $("#"+kind+"-suggestions").html(output);
         $(selector).focus();
-        console.log("Suggestions to", "#"+kind+"-suggestions");
     });
 };
 
@@ -187,54 +295,4 @@ function parse_zip_file(file)
         $(".upload-info").show();
     });
 
-}
-
-
-function update_ssv(key)
-{
-    $("#id_"+key).val("");
-    console.log(key);
-    $("#"+key+"-list .ssv-val").each(function (){
-        var cur = $("#id_"+key).val();
-        var entry = $(this).data("val");
-        $("#id_"+key).val(cur + entry + "/");
-    });
-    var cur = $("#id_"+key).val().slice(0, -1);
-    $("#id_"+key).val(cur);
-}
-
-function add_ssv_entry(key, val)
-{
-    $("#"+key+"-list").append("<div class='ssv-val' data-val='"+val+"' data-key='"+key+"'>"+val+"<span class='ssv-remove'>✖</span></div>");
-}
-
-function remove_ssv_entry(selector, key)
-{
-    console.log(selector);
-    selector.remove();
-    update_ssv(key);
-}
-
-
-function repopulate_checkboxes(name)
-{
-    // Convert previously posted SSV to other input formats
-    var raw = $("#id_" + name).val();
-    var list = raw.split("/");
-    $("input[name=" + name + "-checkbox]").each(function (idx){
-        if (list.indexOf($(this).val()) != -1)
-            $(this).prop("checked", true);
-    });
-}
-
-
-function repopulate_ssv(name)
-{
-    var raw = $("#id_" + name).val();
-    var list = raw.split("/");
-    for (var idx in list)
-    {
-        if (list[idx])
-            add_ssv_entry(name, list[idx]);
-    }
 }

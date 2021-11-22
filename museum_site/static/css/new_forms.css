@@ -144,29 +144,62 @@ label
 .ssv-list
 {
     min-height:45px;
+    border:1px dashed red;
+}
+
+.ssv-tag, .ssv-tag-ghost
+{
+    display:inline-block;
+    margin:4px;
+    font-weight:bold;
+}
+
+.ssv-tag-ghost
+{
+    display:inline-block;
+    border:1px dashed #000;
+    border-radius:8px;
+    padding:7px 8px 7px 8px;
+    width:4ch;
+    text-align:center;
+    font-weight:normal;
+}
+
+.ssv-tag.dragging
+{
+    opacity:0.25;
 }
 
 .ssv-val
 {
     display:inline-block;
-    background:#619F9F;
-    border-radius:8px;
-    margin:4px;
+    background:#AAA;
+    border:1px solid #000;
+    border-right:0;
+    border-radius:8px 0 0 8px;
     padding:7px 8px 7px 8px;
-    font-weight:bold;
 }
 
 .ssv-val:hover
 {
     background:#98C9C9;
-    cursor:pointer;
+    cursor:grab;
 }
 
 .ssv-remove
 {
-    margin-left:4px;
-    padding-left:4px;
-    border-left:1px solid #000;
+    display:inline-block;
+    border:1px solid #000;
+    border-left:1px dashed #000;
+    border-radius:0 8px 8px 0;
+    background:#619F9F;
+    padding:7px 8px 7px 8px;
+}
+
+.ssv-remove:hover
+{
+    cursor:pointer;
+    background:#98C9C9;
 }
 
 .spc-wrapper

@@ -143,7 +143,6 @@ def debug_upload(request):
             # Move the uploaded file to its destination directory
             upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
             uploaded_file = request.FILES["zfile"]
-            print(uploaded_file)
             file_path = os.path.join(upload_directory, uploaded_file.name)
             with open(file_path, 'wb+') as fh:
                 for chunk in uploaded_file.chunks():
@@ -187,7 +186,8 @@ def debug_upload(request):
                 if gpi == "AUTO":
                     zfile.generate_screenshot()
 
-            # Make Announcement
+            # Make Announcement (if needed)
+            discord_announce_upload(upload)
 
             # Calculate queue size
             request.session["FILES_IN_QUEUE"] = (
