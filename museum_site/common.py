@@ -13,11 +13,14 @@ from django.core.exceptions import ValidationError
 
 from museum_site.models import *
 from museum_site.constants import *
+from .private import NEW_UPLOAD_WEBHOOK_URL
+
 from datetime import datetime, timezone, timedelta
 from io import BytesIO
 from random import randint, shuffle, seed
 from time import time
 import glob
+import json
 import math
 import os
 import re
@@ -25,6 +28,8 @@ import subprocess
 import sys
 import urllib.parse
 import zipfile
+
+import requests
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMP_PATH = os.path.join(SITE_ROOT, "temp")
@@ -450,7 +455,52 @@ def zipinfo_datetime_tuple_to_str(raw):
     h = str(dt[3]).zfill(2)
     mi = str(dt[4]).zfill(2)
     s = str(dt[5]).zfill(2)
-    print(raw.filename)
     out = "{}-{}-{} {}:{}:{}".format(y, m, d, h, mi, s)
-    print(out)
     return out
+
+
+def discord_announce_upload(upload, env=None):
+    if upload.announced:
+        return False
+
+    if env is None:
+        env = ENV
+
+    if env != "PROD":
+        print("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
+        return False
+
+
+    zfile = upload.file
+
+    preview_url = HOST + "static/" + urllib.parse.quote(
+         zfile.screenshot_url()
+    )
+
+    if zfile.release_date:
+        year = " ({})".format(str(zfile.release_date)[:4])
+    else:
+        year = ""
+    discord_post = (
+        "*A new item has been uploaded to the Museum queue!*\n"
+        "**{}** by {}{}\n"
+        "Explore: https://museumofzzt.com{}\n"
+    ).format(
+        zfile.title, zfile.author,
+        year,
+        zfile.file_url()
+    )
+
+    discord_data = {
+        "content": discord_post,
+        "embeds": [{"image": {"url": preview_url}}]
+    }
+    resp = requests.post(
+        NEW_UPLOAD_WEBHOOK_URL,
+        headers={"Content-Type": "application/json"},
+        data=json.dumps(discord_data)
+    )
+
+    upload.announced = True
+    upload.save()
+    return True
