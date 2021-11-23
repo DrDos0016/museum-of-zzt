@@ -1,6 +1,7 @@
 from django import forms
 from .models import File, Upload, Zeta_Config, Download
 from .widgets import *
+from .common import GENRE_LIST
 from .constants import LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES
 
 

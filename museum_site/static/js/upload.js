@@ -120,13 +120,27 @@ $(document).ready(function (){
         var checked = $(this).prop("checked");
         var name = $(this).attr("name").slice(0, -9); // Strip "-checked"
         var ssv = "";
+        var hr = "";
         $("input[name=" + name + "-checkbox]").each(function (idx){
             if ($(this).prop("checked"))
+            {
                 ssv += $(this).val() + "/";
+                hr += $(this).parent().text() + ", ";
+                $(this).parent().addClass("selected");
+            }
+            else
+            {
+                $(this).parent().removeClass("selected");
+            }
         });
         if (ssv.endsWith("/"))
             ssv = ssv.slice(0, -1);
+        if (hr.endsWith(", "))
+            hr = hr.slice(0, -2);
+        if (hr == "")
+            hr = "...";
         $("#id_" + name).val(ssv);
+        $("#" + name + "-checklist-hr").html(hr);
     });
 });
 
@@ -164,8 +178,15 @@ function repopulate_checkboxes(name)
     var list = raw.split("/");
     $("input[name=" + name + "-checkbox]").each(function (idx){
         if (list.indexOf($(this).val()) != -1)
+        {
             $(this).prop("checked", true);
+            $(this).parent().addClass("selected");
+            $("#" + name + "-checklist-hr").append($(this).parent().text() + ", ");
+        }
     });
+    $("#" + name + "-checklist-hr").html(
+        $("#" + name + "-checklist-hr").html().slice(4, -2)
+    );
 }
 
 
@@ -178,6 +199,7 @@ function repopulate_ssv(name)
         if (list[idx])
             add_ssv_entry(name, list[idx]);
     }
+    bind_ssv_entries(name);
 }
 
 
