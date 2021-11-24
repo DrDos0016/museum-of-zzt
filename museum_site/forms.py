@@ -73,7 +73,7 @@ class ZGameForm(forms.ModelForm):
     def clean_zfile(self):
         zfile = self.cleaned_data["zfile"]
 
-        if zfile.size > self.max_upload_size:
+        if zfile and zfile.size > self.max_upload_size:
             raise forms.ValidationError("File exceeds your maximum upload size! Contact Dr. Dos for a manual upload.")
 
 
@@ -85,11 +85,11 @@ class UploadForm(forms.ModelForm):
     generate_preview_image = forms.ChoiceField(
         help_text="Select a ZZT file whose title screen will be used for the world's preview image. Leave set to 'Automatic' to use the oldest file in the zip file. This image may be changed during publication. This option cannot be changed after upload.",
         choices=[("AUTO", "Automatic"), ("NONE", "Do Not Generate Preview Image")]  # Must be a list to be added to later
-        )
+    )
 
     class Meta:
         model = Upload
-        fields = ["generate_preview_image", "notes", "announced"]
+        fields = ["generate_preview_image", "notes", "announced", "edit_token"]
 
         labels = {
             "generate_preview_image": "Preview image",
@@ -105,7 +105,8 @@ class UploadForm(forms.ModelForm):
         widgets = {
             "announced": forms.RadioSelect(
                 choices=((0, "Announce this upload"), (1, "Do not announce this upload")),
-            )
+            ),
+            "Xedit_token": forms.HiddenInput(),
         }
 
 
@@ -115,7 +116,7 @@ class DownloadForm(forms.ModelForm):
 
     class Meta:
         model = Download
-        fields = ["url", "kind"]
+        fields = ["url", "kind", "hosted_text"]
 
         labels = {
             "url": "URL",
@@ -123,5 +124,6 @@ class DownloadForm(forms.ModelForm):
         }
 
         help_texts = {
-            "kind": "The type of webpage this file is hosted on. This is used to determine an icon to display when selecting an alternate download source."
+            "kind": "The type of webpage this file is hosted on. This is used to determine an icon to display when selecting an alternate download source.",
+            "hosted_text": "For non-Itch download sources only. On the file's downloads page, the text entereed here will be prefixed with \"Hosted on\".",
         }

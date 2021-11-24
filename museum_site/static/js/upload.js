@@ -142,6 +142,18 @@ $(document).ready(function (){
         $("#id_" + name).val(ssv);
         $("#" + name + "-checklist-hr").html(hr);
     });
+
+    // Toggle "Hosted text" visibility based on Category
+    $("#id_kind").change(function (){
+        if ($("#id_kind").val() != "itch")
+            $(".field-wrapper[data-field='hosted_text']").show();
+        else
+        {
+            $(".field-wrapper[data-field='hosted_text']").hide();
+            $("#id_hosted_text").val("");
+        }
+    });
+    $("#id_kind").change() // Call event on page load
 });
 
 

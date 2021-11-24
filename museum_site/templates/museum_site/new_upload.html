@@ -12,14 +12,14 @@
 
 {% block content %}
 <section id="content" class="block">
-<h1>Upload File</h1>
+<h1>{{title}}</h1>
 
 <form method="POST" enctype="multipart/form-data">
 <h2 class="cut-heading">File Information<div class="fr cut-state">➖</div></h2>
 <div class="cut-wrapper cut-open">
 {% csrf_token %}
-{% for field in zgame_form %}
-<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}">
+{% for field in zgame_form.visible_fields %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
     {{field.label_tag}}
     <div class="field-value">
         {% if field.id_for_label == "id_title" %}
@@ -39,13 +39,16 @@
     {{field.errors}}
 </div>
 {% endfor %}
+{% for field in zgame_form.hidden_fields %}
+{{field}}
+{% endfor %}
 </div>
 <hr>
 
 <h2 class="cut-heading">Play Online Settings<div class="fr cut-state">➕</div></h2>
 <div class="cut-wrapper cut-closed">
-{% for field in play_form %}
-<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}">
+{% for field in play_form.visible_fields %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
     {{field.errors}}
     {{field.label_tag}}
     <div class="field-value">
@@ -56,22 +59,28 @@
     {% endif %}
 </div>
 {% endfor %}
+{% for field in play_form.hidden_fields %}
+{{field}}
+{% endfor %}
 </div>
 <hr>
 
 <h2 class="cut-heading">Download Settings<div class="fr cut-state">➕</div></h2>
 <div class="cut-wrapper cut-closed">
-{% for field in download_form %}
-<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}">
+{% for field in download_form.visible_fields %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
     {{field.errors}}
     {{field.label_tag}}
     <div class="field-value">
-        {{field}}
+        {% if field.name == "hosted_text" %}<div class="r">Hosted on...</div>{% endif %}{{field}}
     </div>
     {% if field.help_text %}
     <p class="field-help">{{field.help_text|safe}}</p>
     {% endif %}
 </div>
+{% endfor %}
+{% for field in download_form.hidden_fields %}
+{{field}}
 {% endfor %}
 </div>
 <hr>
@@ -79,8 +88,8 @@
 
 <h2 class="cut-heading">Upload Settings<div class="fr cut-state">➕</div></h2>
 <div class="cut-wrapper cut-closed">
-{% for field in upload_form %}
-<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}">
+{% for field in upload_form.visible_fields %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
     {{field.errors}}
     {{field.label_tag}}
     <div class="field-value">
@@ -94,10 +103,15 @@
     {% endif %}
 </div>
 {% endfor %}
+{% for field in upload_form.hidden_fields %}
+{{field}}
+{% endfor %}
 </div>
 <hr>
 
 <input type="submit" name="action" value="Upload File">
+
+<p><a href="/debug/upload/edit">Edit an existing upload</a> (Requires an Edit Token for guest users)</p>
 <!--Suggestions-->
 <datalist id="author-suggestions"></datalist>
 <datalist id="company-suggestions"></datalist>

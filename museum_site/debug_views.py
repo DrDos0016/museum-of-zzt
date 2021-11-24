@@ -85,8 +85,12 @@ def debug_colors(request):
 
 def debug_upload(request):
     data = {
-        "title": "New Upload System"
+        "title": "Upload File"
     }
+
+    # Adjust title if you're editing
+    if request.GET.get("token") or request.POST.get("edit_token"):
+        data["title"] = "Edit Unpublished Upload"
 
     # Edit -- ArticleForm(request.POST, instance=a)
 
@@ -96,12 +100,40 @@ def debug_upload(request):
     if request.META["REMOTE_ADDR"] in BANNED_IPS:
         return HttpResponse("Banned account.")
 
-    if request.method == "POST":
+    # Select the proper form
+    editing = False
+    if request.GET.get("token") and request.method == "GET":  # Edit
+        print("Editing an existing upload")
+        editing = True
+        upload_obj = Upload.objects.get(edit_token=request.GET["token"])
+        zgame_obj = upload_obj.file
+
+        zgame_form = ZGameForm(initial={"explicit": int(zgame_obj.explicit), "release_date": str(zgame_obj.release_date),}, instance=zgame_obj)
+        zgame_form.fields["zfile"].help_text += "<br><br>If you upload a file while editing an upload, you will then replace the currently uploaded file. If you only need to adjust data, then leave this field blank."
+
+        play_form = PlayForm()
+
+        upload_form = UploadForm(initial={"announced": 0}, instance=upload_obj)
+
+        download_form = DownloadForm()
+        exp = zgame_form.fields["explicit"]
+        print(zgame_form.data)
+    elif request.method == "POST":  # User Submitted
+        print("Form submitted...")
+        if request.POST.get("edit_token"):
+            editing = True
         zgame_form = ZGameForm(request.POST, request.FILES)
         play_form = PlayForm(request.POST)
         upload_form = UploadForm(request.POST)
         download_form = DownloadForm(request.POST)
+    else:  # Blank form
+        print("Blank form")
+        zgame_form = ZGameForm(initial={"author": "", "explicit": 0, "language": "en",})
+        play_form = PlayForm()
+        upload_form = UploadForm(initial={"announced": 0})
+        download_form = DownloadForm()
 
+    if request.method == "POST":
         # Patch in the specified filename to use for preview images as valid
         gpi = request.POST.get("generate_preview_image")
         if gpi and gpi not in ("AUTO", "NONE"):
@@ -109,6 +141,11 @@ def debug_upload(request):
 
         # Set the maximum upload size properly
         zgame_form.max_upload_size = get_max_upload_size(request)
+
+        # For edits, a file upload is optional
+        if editing:
+            zgame_form.fields["zfile"].required = False
+            print("Making zgame optional...")
 
         # Validate
         success = True
@@ -141,22 +178,25 @@ def debug_upload(request):
             # TODO Handle editing uploads
 
             # Move the uploaded file to its destination directory
-            upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
-            uploaded_file = request.FILES["zfile"]
-            file_path = os.path.join(upload_directory, uploaded_file.name)
-            with open(file_path, 'wb+') as fh:
-                for chunk in uploaded_file.chunks():
-                    fh.write(chunk)
+            if request.FILES.get("zfile"):
+                upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
+                uploaded_file = request.FILES["zfile"]
+                file_path = os.path.join(upload_directory, uploaded_file.name)
+                with open(file_path, 'wb+') as fh:
+                    for chunk in uploaded_file.chunks():
+                        fh.write(chunk)
+                # TODO if editing replace the old zip
 
             # Create and prepare new File object
             zfile = zgame_form.save(commit=False)
-            zfile.filename = uploaded_file.name
-            zfile.size = uploaded_file.size
+            if request.FILES.get("zfile"):  # Only set if there's a zip
+                zfile.filename = uploaded_file.name
+                zfile.size = uploaded_file.size
+                zfile.calculate_checksum(file_path)
+                zfile.calculate_boards()
             zfile.letter = zfile.letter_from_title()
             zfile.release_source = "User upload"
-            zfile.calculate_checksum(file_path)
             zfile.calculate_sort_title()
-            zfile.calculate_boards()
             zfile.basic_save()
             zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
 
@@ -202,14 +242,22 @@ def debug_upload(request):
         else:
             print("AN ERROR WAS DETECTED SOMEWHERE!")
 
-    else:  # Blank form
-        zgame_form = ZGameForm(initial={"author": "", "explicit": 0, "language": "en",})
-        play_form = PlayForm()
-        upload_form = UploadForm(initial={"announced": 0})
-        download_form = DownloadForm()
-
     data["zgame_form"] = zgame_form
     data["play_form"] = play_form
     data["upload_form"] = upload_form
     data["download_form"] = download_form
     return render(request, "museum_site/new_upload.html", data)
+
+
+def debug_upload_edit(request):
+    data = {
+        "title": "Edit An Unpublished Upload"
+    }
+
+    if request.user.is_authenticated:
+        data["my_uploads"] = Upload.objects.filter(
+            user_id=request.user.id,
+            file__details__in=[DETAIL_UPLOADED],
+        ).order_by("-id")
+
+    return render(request, "museum_site/upload-edit.html", data)

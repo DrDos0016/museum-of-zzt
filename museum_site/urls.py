@@ -528,6 +528,7 @@ urlpatterns = [
         {"template": "debug-forms", "title": "Form Debug"}),
     path("ajax/debug_file/", museum_site.ajax.debug_file),
     path("debug/upload/", museum_site.debug_views.debug_upload),
+    path("debug/upload/edit", museum_site.debug_views.debug_upload_edit),
 ]
 
 if DEBUG:
