@@ -200,6 +200,9 @@ function repopulate_checkboxes(name)
     $("#" + name + "-checklist-hr").html(
         $("#" + name + "-checklist-hr").html().slice(4, -2)
     );
+
+    if ($("#" + name + "-checklist-hr").html() == "")
+        $("#" + name + "-checklist-hr").html("...");
 }
 
 
