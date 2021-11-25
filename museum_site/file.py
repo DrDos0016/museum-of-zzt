@@ -823,6 +823,13 @@ class File(models.Model):
 
         return True
 
+    def get_zip_info(self):
+        try:
+            zfh = zipfile.ZipFile(self.phys_path())
+        except FileNotFoundError:
+            return []
+        return zfh.infolist()
+
     @property
     def identifier(self):
         return self.letter + "/" + self.filename
