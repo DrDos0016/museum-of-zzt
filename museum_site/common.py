@@ -468,6 +468,8 @@ def discord_announce_upload(upload, env=None):
 
     if env != "PROD":
         print("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
+        upload.announced = True
+        upload.save()
         return False
 
 
