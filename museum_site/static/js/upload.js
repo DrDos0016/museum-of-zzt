@@ -321,6 +321,11 @@ function parse_zip_file(file)
         </ul>
         `);
 
+        // Generate options for preview images
+        $("#id_generate_preview_image > option").each(function (){
+            if ($(this).val() != "AUTO" && $(this).val() != "NONE")
+                $(this).remove();
+        });
         for(let [filename, file] of Object.entries(zip.files)) {
             //console.log(filename, file);
             if (filename.toUpperCase().endsWith(".ZZT"))
