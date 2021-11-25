@@ -192,19 +192,14 @@ def debug_upload(request):
         if success:
             print("SUCCESS IS TRUE")
 
-
-
-
             if request.FILES.get("zfile"):
                 upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
 
-                # If uploading a replace zip, erase the old one
-                if edit_token:
-                    os.remove(zgame_obj.phys_path())
-
                 # Move the uploaded file to its destination directory
                 uploaded_file = request.FILES["zfile"]
-                file_path = os.path.join(upload_directory, uploaded_file.name)
+                upload_filename = zgame_obj.filename if zgame_obj else uploaded_file.name
+                print("Using filename...", upload_filename)
+                file_path = os.path.join(upload_directory, upload_filename)
                 with open(file_path, 'wb+') as fh:
                     for chunk in uploaded_file.chunks():
                         fh.write(chunk)
@@ -212,7 +207,7 @@ def debug_upload(request):
             # Create and prepare new File object
             zfile = zgame_form.save(commit=False)
             if request.FILES.get("zfile"):  # Only set if there's a zip
-                zfile.filename = uploaded_file.name
+                zfile.filename = upload_filename
                 zfile.size = uploaded_file.size
                 zfile.calculate_checksum(file_path)
                 zfile.calculate_boards()
@@ -237,16 +232,22 @@ def debug_upload(request):
             zfile.zeta_config_id = zeta_config_id
 
             # Download Form
-            download = download_form.save()
-            zfile.downloads.add(download)
+            if download_form.cleaned_data["url"]:
+                download = download_form.save()
+                zfile.downloads.add(download)
 
             # Generate Screenshot
             gpi = upload_form.cleaned_data["generate_preview_image"]
+            if zgame_obj:
+                screenshot_filename = zgame_obj.screenshot
+            else:
+                screenshot_filename = upload_filename[:-4] + ".png"
+            print("SCREENSHOT FILENAME IS", screenshot_filename)
             if gpi != "NONE":
                 if gpi.upper().endswith(".ZZT"):
-                    zfile.generate_screenshot(world=gpi)
+                    zfile.generate_screenshot(world=gpi, filename=screenshot_filename)
                 if gpi == "AUTO" and not zfile.screenshot:
-                    zfile.generate_screenshot()
+                    zfile.generate_screenshot(filename=screenshot_filename)
             else:
                 os.remove(zfile.screenshot_phys_path())  # Delete current screenshot if one exists
                 zfile.screenshot = None
