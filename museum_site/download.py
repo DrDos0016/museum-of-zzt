@@ -42,7 +42,7 @@ class Download(models.Model):
         super(Download, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "{} - {}".format(self.kind, self.url)
+        return "[{}] {} - {}".format(self.id, self.kind, self.url)
 
     def hosted_on(self):
         if self.kind == "itch":
