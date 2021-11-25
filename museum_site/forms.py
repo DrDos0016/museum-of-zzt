@@ -84,8 +84,9 @@ class PlayForm(forms.Form):
 class UploadForm(forms.ModelForm):
     generate_preview_image = forms.ChoiceField(
         help_text="Select a ZZT file whose title screen will be used for the world's preview image. Leave set to 'Automatic' to use the oldest file in the zip file. This image may be changed during publication. This option cannot be changed after upload.",
-        choices=[("AUTO", "Automatic"), ("NONE", "Do Not Generate Preview Image")]  # Must be a list to be added to later
+        choices=[("AUTO", "Automatic"), ("NONE", "None")]  # List rather than tuple so it can be modified later
     )
+    edit_token = forms.CharField(required=False, widget=forms.HiddenInput())
 
     class Meta:
         model = Upload

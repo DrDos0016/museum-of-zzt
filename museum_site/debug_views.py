@@ -100,38 +100,54 @@ def debug_upload(request):
     if request.META["REMOTE_ADDR"] in BANNED_IPS:
         return HttpResponse("Banned account.")
 
-    # Select the proper form
-    editing = False
-    if request.GET.get("token") and request.method == "GET":  # Edit
-        print("Editing an existing upload")
-        editing = True
-        upload_obj = Upload.objects.get(edit_token=request.GET["token"])
-        zgame_obj = upload_obj.file
+    # Prepare the proper form
+    edit_token = ""
+    zgame_obj = None
+    upload_obj = None
+    download_obj = None
+    edit_token = (request.GET.get("token", "") + request.POST.get("edit_token", ""))[-16:]  # Galaxy brain
 
-        zgame_form = ZGameForm(initial={"explicit": int(zgame_obj.explicit), "release_date": str(zgame_obj.release_date),}, instance=zgame_obj)
+    if edit_token:
+        upload_obj = Upload.objects.get(edit_token=edit_token)
+        zgame_obj = upload_obj.file
+        download_obj = zgame_obj.downloads.first()
+
+    if request.method == "POST":  # User Submitted
+        print("Form submitted...")
+        zgame_form = ZGameForm(request.POST, request.FILES, instance=zgame_obj)
+        play_form = PlayForm(request.POST)
+        upload_form = UploadForm(request.POST, instance=upload_obj)
+        download_form = DownloadForm(request.POST, instance=download_obj)
+    else:  # Unbound Form
+        print("Unbound Form")
+        zgame_initial = {"author": "", "explicit": 0, "language": "en"}
+        if zgame_obj:
+            zgame_initial = {
+                "explicit": int(zgame_obj.explicit),
+                "language": zgame_obj.language,
+                "release_date": str(zgame_obj.release_date)}
+            play_form = PlayForm(initial={"zeta_config": zgame_obj.zeta_config_id})
+        else:
+            play_form = PlayForm()
+
+        zgame_form = ZGameForm(initial=zgame_initial, instance=zgame_obj)
+        upload_form = UploadForm(initial={"announced": 0}, instance=upload_obj)
+        download_form = DownloadForm(instance=download_obj)
+
+    if edit_token:
+        # Update help for zfile when editing an upload
         zgame_form.fields["zfile"].help_text += "<br><br>If you upload a file while editing an upload, you will then replace the currently uploaded file. If you only need to adjust data, then leave this field blank."
 
-        play_form = PlayForm()
+        # Prevent re-announcing
+        del upload_form.fields["announced"]
 
-        upload_form = UploadForm(initial={"announced": 0}, instance=upload_obj)
+        # Get files for preview images and zip info
+        file_list = zgame_obj.get_zip_info()
+        zgame_form.fields["zfile"].widget.set_info(zgame_obj.filename, file_list, zgame_obj.size)
 
-        download_form = DownloadForm()
-        exp = zgame_form.fields["explicit"]
-        print(zgame_form.data)
-    elif request.method == "POST":  # User Submitted
-        print("Form submitted...")
-        if request.POST.get("edit_token"):
-            editing = True
-        zgame_form = ZGameForm(request.POST, request.FILES)
-        play_form = PlayForm(request.POST)
-        upload_form = UploadForm(request.POST)
-        download_form = DownloadForm(request.POST)
-    else:  # Blank form
-        print("Blank form")
-        zgame_form = ZGameForm(initial={"author": "", "explicit": 0, "language": "en",})
-        play_form = PlayForm()
-        upload_form = UploadForm(initial={"announced": 0})
-        download_form = DownloadForm()
+        for f in file_list:
+            if f.filename.upper().endswith(".ZZT"):
+                upload_form.fields["generate_preview_image"].choices = upload_form.fields["generate_preview_image"].choices + [(f.filename, f.filename)]
 
     if request.method == "POST":
         # Patch in the specified filename to use for preview images as valid
@@ -143,7 +159,7 @@ def debug_upload(request):
         zgame_form.max_upload_size = get_max_upload_size(request)
 
         # For edits, a file upload is optional
-        if editing:
+        if edit_token:
             zgame_form.fields["zfile"].required = False
             print("Making zgame optional...")
 
@@ -175,17 +191,23 @@ def debug_upload(request):
 
         if success:
             print("SUCCESS IS TRUE")
-            # TODO Handle editing uploads
 
-            # Move the uploaded file to its destination directory
+
+
+
             if request.FILES.get("zfile"):
                 upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
+
+                # If uploading a replace zip, erase the old one
+                if edit_token:
+                    os.remove(zgame_obj.phys_path())
+
+                # Move the uploaded file to its destination directory
                 uploaded_file = request.FILES["zfile"]
                 file_path = os.path.join(upload_directory, uploaded_file.name)
                 with open(file_path, 'wb+') as fh:
                     for chunk in uploaded_file.chunks():
                         fh.write(chunk)
-                # TODO if editing replace the old zip
 
             # Create and prepare new File object
             zfile = zgame_form.save(commit=False)
@@ -203,7 +225,7 @@ def debug_upload(request):
             # Create and prepare new Upload object
             upload = upload_form.save(commit=False)
             upload.file_id = zfile.id
-            upload.generate_edit_token()
+            upload.generate_edit_token(force=False)
             upload.ip = request.META.get("REMOTE_ADDR")
             if request.user.is_authenticated:
                 upload.user_id = request.user.id
@@ -220,11 +242,14 @@ def debug_upload(request):
 
             # Generate Screenshot
             gpi = upload_form.cleaned_data["generate_preview_image"]
-            if gpi is not None:
+            if gpi != "NONE":
                 if gpi.upper().endswith(".ZZT"):
                     zfile.generate_screenshot(world=gpi)
-                if gpi == "AUTO":
+                if gpi == "AUTO" and not zfile.screenshot:
                     zfile.generate_screenshot()
+            else:
+                os.remove(zfile.screenshot_phys_path())  # Delete current screenshot if one exists
+                zfile.screenshot = None
 
             # Make Announcement (if needed)
             discord_announce_upload(upload)
@@ -251,7 +276,7 @@ def debug_upload(request):
 
 def debug_upload_edit(request):
     data = {
-        "title": "Edit An Unpublished Upload"
+        "title": "Select Unpublished Upload"
     }
 
     if request.user.is_authenticated:

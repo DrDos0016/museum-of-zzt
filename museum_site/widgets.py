@@ -34,3 +34,19 @@ class SlashSeparatedValueWidget(forms.Widget):
 
 class UploadFileWidget(forms.FileInput):
     template_name = "museum_site/widgets/upload-file-widget.html"
+    zfi = []
+    filename = ""
+    size = 0
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["zfi"] = self.zfi
+        context["filename"] = self.filename
+        context["size"] = self.size
+        return context
+
+
+    def set_info(self, filename, file_list, size):
+        self.filename = filename
+        self.zfi = file_list
+        self.size = size

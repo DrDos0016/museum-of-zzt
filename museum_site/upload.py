@@ -89,7 +89,9 @@ class Upload(models.Model):
     def edit_token_url(self):
         return self.edit_token
 
-    def generate_edit_token(self):
+    def generate_edit_token(self, force=True):
+        if self.edit_token and not force:
+            return False
         self.edit_token = ""
         while len(self.edit_token) < 12:
             self.edit_token += random.choice("0123456789ABCDEF")

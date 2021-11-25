@@ -172,12 +172,13 @@ function update_ssv(key)
 
 function add_ssv_entry(key, val)
 {
-    $("#"+key+"-list").append("<div class='ssv-tag' draggable='true'><div class='ssv-val' data-val='"+val+"' data-key='"+key+"'>"+val+"</div><div class='ssv-remove' title='Click to remove'>✖</span></div>");
+    var idx = $("#"+key+"-list").data("idx") + 1;
+    $("#"+key+"-list").data("idx", idx);
+    $("#"+key+"-list").append("<div class='ssv-tag' draggable='true' data-idx='"+idx+"'><div class='ssv-val' data-val='"+val+"' data-key='"+key+"'>"+val+"</div><div class='ssv-remove' title='Click to remove'>✖</span></div>");
 }
 
 function remove_ssv_entry(selector, key)
 {
-    console.log(selector);
     selector.parent().remove();
     update_ssv(key);
 }
