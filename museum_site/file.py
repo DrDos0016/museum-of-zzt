@@ -16,7 +16,10 @@ try:
 except ImportError:
     HAS_ZOOKEEPER = False
 
-from .common import slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP, STATIC_PATH
+from .common import (
+    slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP,
+    STATIC_PATH
+)
 from .constants import SITE_ROOT, REMOVED_ARTICLE, ZETA_RESTRICTED, LANGUAGES
 from .review import Review
 
@@ -260,7 +263,9 @@ class File(models.Model):
 
     # Associations
     aliases = models.ManyToManyField("Alias", default=None, blank=True)
-    articles = models.ManyToManyField("Article", default=None, blank=True, editable=False)
+    articles = models.ManyToManyField(
+        "Article", default=None, blank=True, editable=False
+    )
     article_count = models.IntegerField(
         default=0, editable=False
     )
@@ -784,7 +789,9 @@ class File(models.Model):
 
         return features
 
-    def generate_screenshot(self, world=None, board=0, font=None):
+    def generate_screenshot(
+        self, world=None, board=0, font=None, filename=None
+    ):
         # Get zip contents
         zf = zipfile.ZipFile(self.phys_path())
 
@@ -814,7 +821,11 @@ class File(models.Model):
             self.letter + "/" + self.filename[:-4],
             title_screen=(not bool(board))
         )
-        self.screenshot = self.filename[:-4] + ".png"
+
+        if filename is None:
+            self.screenshot = self.filename[:-4] + ".png"
+        else:
+            self.screenshot = filename
         self.save()
 
         # Delete the extracted world
