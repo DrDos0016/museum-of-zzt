@@ -267,6 +267,9 @@ def debug_upload(request):
             zfile.basic_save()
             print("End of success block!")
 
+            # Redirect
+            return redirect("/debug/upload/complete/" + upload.edit_token)
+
 
         else:
             print("AN ERROR WAS DETECTED SOMEWHERE!")
@@ -277,6 +280,16 @@ def debug_upload(request):
     data["download_form"] = download_form
     return render(request, "museum_site/new_upload.html", data)
 
+
+def debug_upload_complete(request, token):
+    data = {
+        "title": "Upload Complete"
+    }
+
+    data["upload"] = Upload.objects.get(edit_token=token)
+    data["file"] = File.objects.get(pk=data["upload"].file.id)
+
+    return render(request, "museum_site/new-upload-complete.html", data)
 
 def debug_upload_edit(request):
     data = {
