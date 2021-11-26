@@ -31,7 +31,7 @@ class ZGameForm(forms.ModelForm):
             "genre": "Check any applicable genres that describe the content of the uploaded file. Use 'Other' if a genre isn't represented and mention it in the upload notes field in the Upload Settings section.",
             "release_date": "Enter the date this file was first made public. If this is a new release, it should be the modified date of the most recent ZZT world (or executable, or other primary file). If the release date is not known, leave this field blank.",
             "release_source": "Where the data for the release date is coming from",
-            "language": 'Check any languages the player is expected to understand to comprehend the files in the upload. For worlds exclusively using created languages, use "Other".',
+            "language": 'Check any languages the player is expected to understand to comprehend the files in the upload. For worlds exclusively using created languages, use "Other". If a language is not listed, use "Other" and specify the correct language in the upload notes section.',
             "license": "The license under which this world is published.",
             "license_source": "Where the license can be found. Use a source contained within the uploaded file when possible.",
             "description": "An optional description of the upload. For utilities, please be sure to fill this out.",
