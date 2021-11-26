@@ -9,7 +9,10 @@ class ZGameForm(forms.ModelForm):
     zfile = forms.FileField(help_text="Select the file you wish to upload. All uploads <i>must</i> be zipped.", label="File", widget=UploadFileWidget())
 
     use_required_attribute = False
-    max_upload_size = 0  # Properly set this value in a view
+    # Properties handled in view
+    max_upload_size = 0
+    editing = False
+    expected_file_id = 0  # For replacing a zip
 
     class Meta:
         model = File
@@ -23,9 +26,9 @@ class ZGameForm(forms.ModelForm):
         help_texts = {
             "title": "Leave A/An/The as the first word if applicable.",
             "author": "Separate multiple authors with a comma. Do not abbreviate names. "
-                      "For files with many authors, consider using the compiler as the author with \"Various\" to represent the rest.",
-            "company": "The company this file is published under. If there is none, leave this field blank. If there are multiple, separate them with a comma.",
-            "genre": "Check any applicable genres that describe the content of the uploaded file.",
+                      "For files with many authors, consider using the compiler as the author with \"Various\" to represent the rest. Try to Sort multiple authors from most to least important on this particular upload.",
+            "company": "Any companies this file is published under. If there are none, leave this field blank. If there are multiple, separate them with a comma.",
+            "genre": "Check any applicable genres that describe the content of the uploaded file. Use 'Other' if a genre isn't represented and mention it in the upload notes field in the Upload Settings section.",
             "release_date": "Enter the date this file was first made public. If this is a new release, it should be the modified date of the most recent ZZT world (or executable, or other primary file). If the release date is not known, leave this field blank.",
             "release_source": "Where the data for the release date is coming from",
             "language": 'Check any languages the player is expected to understand to comprehend the files in the upload. For worlds exclusively using created languages, use "Other".',
@@ -73,12 +76,19 @@ class ZGameForm(forms.ModelForm):
     def clean_zfile(self):
         zfile = self.cleaned_data["zfile"]
 
+        print(zfile.name)
+
+        if zfile and zfile.name:
+            dupe = File.objects.filter(filename=zfile.name).first()
+            if dupe and dupe.id != self.expected_file_id:
+                raise forms.ValidationError("The selected filename is already in use. Please rename your zipfile.")
+
         if zfile and zfile.size > self.max_upload_size:
             raise forms.ValidationError("File exceeds your maximum upload size! Contact Dr. Dos for a manual upload.")
 
 
 class PlayForm(forms.Form):
-    zeta_config = forms.ChoiceField(choices=Zeta_Config.objects.select_list(), label="Configuration", help_text='Choose the intended configuration for playing the upload in the browser. If this upload cannot be ran with Zeta, select "Incompatible with Zeta" at the end of the list. For the vast majority of ZZT worlds "ZZT v3.2R" is the correct choice.' )
+    zeta_config = forms.ChoiceField(choices=Zeta_Config.objects.select_list(), label="Configuration", help_text='Choose the intended configuration for playing the upload in the browser. If this upload cannot be ran with Zeta, select "Incompatible with Zeta" at the end of the list. For the vast majority of ZZT worlds "	ZZT v3.2 (Registered)" is the correct choice.' )
 
 
 class UploadForm(forms.ModelForm):
@@ -126,5 +136,5 @@ class DownloadForm(forms.ModelForm):
 
         help_texts = {
             "kind": "The type of webpage this file is hosted on. This is used to determine an icon to display when selecting an alternate download source.",
-            "hosted_text": "For non-Itch download sources only. On the file's downloads page, the text entereed here will be prefixed with \"Hosted on\".",
+            "hosted_text": "For non-Itch download sources only. On the file's downloads page, the text entered here will be prefixed with \"Hosted on\".",
         }
