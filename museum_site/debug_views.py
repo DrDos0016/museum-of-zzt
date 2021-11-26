@@ -91,6 +91,7 @@ def debug_upload(request):
     # Adjust title if you're editing
     if request.GET.get("token") or request.POST.get("edit_token"):
         data["title"] = "Edit Unpublished Upload"
+        data["submit_text"] = "Edit Upload"
 
     # Edit -- ArticleForm(request.POST, instance=a)
 
@@ -136,7 +137,7 @@ def debug_upload(request):
 
     if edit_token:
         # Update help for zfile when editing an upload
-        zgame_form.fields["zfile"].help_text += "<br><br>If you upload a file while editing an upload, you will then replace the currently uploaded file. If you only need to adjust data, then leave this field blank."
+        zgame_form.fields["zfile"].help_text += "<br><br>If you upload a file while editing an upload, you will then replace the currently uploaded file. The filename of the original upload will continue to be used. If you only need to adjust data, then leave this field blank."
 
         # Prevent re-announcing
         del upload_form.fields["announced"]
@@ -158,10 +159,12 @@ def debug_upload(request):
         # Set the maximum upload size properly
         zgame_form.max_upload_size = get_max_upload_size(request)
 
-        # For edits, a file upload is optional
+        # For edits, a file upload is optional and the same name is okay
         if edit_token:
             zgame_form.fields["zfile"].required = False
-            print("Making zgame optional...")
+            zgame_form.editing = True
+            zgame_form.expected_file_id = zgame_obj.id
+            print("Modifying zgame form...")
 
         # Validate
         success = True
