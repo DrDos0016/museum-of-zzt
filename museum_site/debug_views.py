@@ -106,7 +106,9 @@ def debug_upload(request):
     zgame_obj = None
     upload_obj = None
     download_obj = None
-    edit_token = (request.GET.get("token", "") + request.POST.get("edit_token", ""))[-16:]  # Galaxy brain
+    edit_token = (
+        request.GET.get("token", "") + request.POST.get("edit_token", "")
+    )[-16:]  # Galaxy brain
 
     if edit_token:
         upload_obj = Upload.objects.get(edit_token=edit_token)
@@ -127,7 +129,9 @@ def debug_upload(request):
                 "explicit": int(zgame_obj.explicit),
                 "language": zgame_obj.language,
                 "release_date": str(zgame_obj.release_date)}
-            play_form = PlayForm(initial={"zeta_config": zgame_obj.zeta_config_id})
+            play_form = PlayForm(
+                initial={"zeta_config": zgame_obj.zeta_config_id}
+            )
         else:
             play_form = PlayForm()
 
@@ -137,24 +141,37 @@ def debug_upload(request):
 
     if edit_token:
         # Update help for zfile when editing an upload
-        zgame_form.fields["zfile"].help_text += "<br><br>If you upload a file while editing an upload, you will then replace the currently uploaded file. The filename of the original upload will continue to be used. If you only need to adjust data, then leave this field blank."
+        zgame_form.fields["zfile"].help_text += (
+            "<br><br>If you upload a file while editing an upload, you will "
+            "then replace the currently uploaded file. The filename of the "
+            "original upload will continue to be used. If you only need to "
+            "adjust data, then leave this field blank."
+        )
 
         # Prevent re-announcing
         del upload_form.fields["announced"]
 
         # Get files for preview images and zip info
         file_list = zgame_obj.get_zip_info()
-        zgame_form.fields["zfile"].widget.set_info(zgame_obj.filename, file_list, zgame_obj.size)
+        zgame_form.fields["zfile"].widget.set_info(
+            zgame_obj.filename, file_list, zgame_obj.size
+        )
 
         for f in file_list:
             if f.filename.upper().endswith(".ZZT"):
-                upload_form.fields["generate_preview_image"].choices = upload_form.fields["generate_preview_image"].choices + [(f.filename, f.filename)]
+                upload_form.fields["generate_preview_image"].choices = (
+                    upload_form.fields["generate_preview_image"].choices +
+                    [(f.filename, f.filename)]
+                )
 
     if request.method == "POST":
         # Patch in the specified filename to use for preview images as valid
         gpi = request.POST.get("generate_preview_image")
         if gpi and gpi not in ("AUTO", "NONE"):
-            upload_form.fields["generate_preview_image"].choices = upload_form.fields["generate_preview_image"].choices + [(gpi, gpi)]
+            upload_form.fields["generate_preview_image"].choices = (
+                upload_form.fields["generate_preview_image"].choices +
+                [(gpi, gpi)]
+            )
 
         # Set the maximum upload size properly
         zgame_form.max_upload_size = get_max_upload_size(request)
@@ -167,40 +184,22 @@ def debug_upload(request):
             print("Modifying zgame form...")
 
         # Validate
-        success = True
-        if zgame_form.is_valid():
-            print("Zgame component is correct")
-        else:
-            success = False
-            print("Zgame component is INCORRECT")
-
-        if play_form.is_valid():
-            print("Play component is correct")
-        else:
-            success = False
-            print("Play component is INCORRECT")
-
-        if upload_form.is_valid():
-            print("Upload component is correct")
-        else:
-            success = False
-            print("Upload component is INCORRECT")
-
-        if download_form.is_valid():
-            print("Download component is correct")
-        else:
-            success = False
-            print("Download component is INCORRECT")
+        success = False
+        if (
+            zgame_form.is_valid() and play_form.is_valid() and
+            upload_form.is_valid() and download_form.is_valid()
+        ):
+            success = True
 
         if success:
-            print("SUCCESS IS TRUE")
-
             if request.FILES.get("zfile"):
                 upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
 
                 # Move the uploaded file to its destination directory
                 uploaded_file = request.FILES["zfile"]
-                upload_filename = zgame_obj.filename if zgame_obj else uploaded_file.name
+                upload_filename = (
+                    zgame_obj.filename if zgame_obj else uploaded_file.name
+                )
                 print("Using filename...", upload_filename)
                 file_path = os.path.join(upload_directory, upload_filename)
                 with open(file_path, 'wb+') as fh:
@@ -248,11 +247,14 @@ def debug_upload(request):
             print("SCREENSHOT FILENAME IS", screenshot_filename)
             if gpi != "NONE":
                 if gpi.upper().endswith(".ZZT"):
-                    zfile.generate_screenshot(world=gpi, filename=screenshot_filename)
+                    zfile.generate_screenshot(
+                        world=gpi, filename=screenshot_filename
+                    )
                 if gpi == "AUTO" and not zfile.screenshot:
                     zfile.generate_screenshot(filename=screenshot_filename)
             else:
-                os.remove(zfile.screenshot_phys_path())  # Delete current screenshot if one exists
+                # Delete current screenshot if one exists
+                os.remove(zfile.screenshot_phys_path())
                 zfile.screenshot = None
 
             # Make Announcement (if needed)
@@ -265,11 +267,9 @@ def debug_upload(request):
 
             # Final save
             zfile.basic_save()
-            print("End of success block!")
 
             # Redirect
             return redirect("/debug/upload/complete/" + upload.edit_token)
-
 
         else:
             print("AN ERROR WAS DETECTED SOMEWHERE!")
@@ -290,6 +290,7 @@ def debug_upload_complete(request, token):
     data["file"] = File.objects.get(pk=data["upload"].file.id)
 
     return render(request, "museum_site/new-upload-complete.html", data)
+
 
 def debug_upload_edit(request):
     data = {
