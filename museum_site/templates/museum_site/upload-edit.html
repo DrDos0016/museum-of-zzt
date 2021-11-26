@@ -2,11 +2,9 @@
 
 {% block content %}
 <section id="content" class="block">
+<h1>Select An Upload To Edit</h1>
 
-<h3>Notes On Editing an Existing Upload</h3>
 <p>Editing an existing upload requires entering the <i>Edit Token</i> that was generated when the file was first uploaded.</p>
-
-<p>If you are only editing metadata and not uploading a replacement zip, you may leave the "File" field blank to continue using the current zip file.</p>
 
 <form id="edit-upload-form" action="/debug/upload/">
 <div class="field">
@@ -21,7 +19,7 @@
 </form>
 <hr>
 <h2>User Uploads</h2>
-<p>If you uploaded a file while logged into an account, then you may edit any still unpublished worlds without having to enter an edit token. Below is a list of all uploads associated with your account that remain unpublished.
+<p>If you uploaded a file while <a href="{% url 'login_user' %}">logged in</a> to an account, then you may edit any still unpublished worlds without having to enter an edit token. Below is a list of all uploads associated with your account that remain unpublished.
 
 <table>
 <tr>
