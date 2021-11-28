@@ -122,8 +122,6 @@ class ZGameForm(forms.ModelForm):
     def clean_zfile(self):
         zfile = self.cleaned_data["zfile"]
 
-        print(zfile.name)
-
         if zfile and zfile.name:
             dupe = File.objects.filter(filename=zfile.name).first()
             if dupe and dupe.id != self.expected_file_id:
