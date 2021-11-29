@@ -1,6 +1,241 @@
-/* Raw elements */
+form
+{
+    margin:auto;
+}
 
-/* End raw elements */
+.field-wrapper
+{
+    padding:7px 4px 7px 4px;
+    border-top:1px dashed #000;
+    display:grid;
+    grid-template-areas:
+     "label value"
+     "help  value"
+     "error error";
+    grid-template-columns:50% auto;
+    grid-template-rows:auto 1fr auto;
+    column-gap:4px;
+}
+
+label
+{
+    font-weight:bold;
+    grid-area: label;
+}
+
+.field-help
+{
+    grid-area: help;
+    margin:7px 4px 7px 4px;
+}
+
+.field-value
+{
+    grid-area: value;
+}
+
+.field-value input[type=text], .field-value textarea, .field-value input[type=file], .field-value input[type=date],
+.field-value input[type=url], .field-value select
+{
+    box-sizing:border-box;
+    width:100%;
+}
+
+.field-value ul {
+    margin:0;
+    padding:0;
+    list-style: none;
+}
+.field-value label
+{
+    font-weight:normal;
+}
+
+.field-value input[type=checkbox]
+{
+    width:auto;
+}
+
+.field-value input[type=button]
+{
+    margin-top:7px;
+    float:right;
+    background:#DEF;
+    font-family:cp437;
+    padding:7px 4px 7px 4px;
+}
+
+.field-value textarea
+{
+    height:100px;
+}
+
+.chars-remaining, .size-limit
+{
+    font-size:smaller;
+    text-align:right;
+}
+
+/* Specialty Forms */
+.scrolling-checklist
+{
+    font-family:mono;
+    min-height: 150px;
+    height: 150px;
+    overflow: auto;
+    min-width: 300px;
+    border: 1px solid #000;
+    background: #AAA;
+    resize: vertical;
+}
+
+.scrolling-checklist label { display:block; }
+.scrolling-checklist label + label {  border-top: 1px dotted #000; }
+.scrolling-checklist label.selected { background:#619F9F;}
+.scrolling-checklist label:hover { background:#98C9C9; }
+
+#genre-checklist label
+{
+    font-weight:normal;
+}
+
+.upload-area
+{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-sizing:border-box;
+    height:100px;
+    font-family:cp437;
+    border:3px dashed #000;
+    flex:1;
+    cursor:pointer;
+    background:#619F9F;
+}
+
+.upload-area.dragging
+{
+    background:#98C9C9;
+}
+
+.upload-info
+{
+    font-family:monospace;
+    font-size:larger;
+}
+
+.upload-info .file-header
+{
+    border-bottom:1px solid #000;
+    font-weight:bold;
+}
+
+.upload-info .file-size
+{
+    float:right;
+}
+
+.upload-info .file-list li
+{
+    border-bottom:1px dotted #000;
+}
+
+.ssv-list
+{
+    min-height:45px;
+}
+
+.ssv-tag, .ssv-tag-ghost
+{
+    display:inline-block;
+    margin:4px;
+    font-weight:bold;
+}
+
+.ssv-tag-ghost
+{
+    display:inline-block;
+    border:1px dashed #000;
+    border-radius:8px;
+    padding:7px 8px 7px 8px;
+    width:4ch;
+    text-align:center;
+    font-weight:normal;
+}
+
+.ssv-tag.dragging
+{
+    opacity:0.25;
+}
+
+.ssv-val
+{
+    display:inline-block;
+    background:#AAA;
+    border:1px solid #000;
+    border-right:0;
+    border-radius:8px 0 0 8px;
+    padding:7px 8px 7px 8px;
+}
+
+.ssv-val:hover
+{
+    background:#98C9C9;
+    cursor:grab;
+}
+
+.ssv-remove
+{
+    display:inline-block;
+    border:1px solid #000;
+    border-left:1px dashed #000;
+    border-radius:0 8px 8px 0;
+    background:#619F9F;
+    padding:7px 8px 7px 8px;
+}
+
+.ssv-remove:hover
+{
+    cursor:pointer;
+    background:#98C9C9;
+}
+
+.spc-wrapper
+{
+    min-height:80px;
+}
+
+.spc-custom
+{
+    margin-top:4px;
+    display:none;
+}
+
+.hr-checklist-values
+{
+    font-family:monospace;
+    font-size:larger;
+    border:1px solid #000;
+    border-bottom:0px;
+    padding:7px 4px 7px 4px;
+    min-height:2.1ch;
+    background-color:#619F9F;
+    font-weight:bold;
+}
+
+#id_zfile { display:none; }
+
+.field-with-error
+{
+    background-color:#FCC;
+}
+
+.errorlist
+{
+    font-weight: bold;
+}
+
+/* Older non-django form CSS below */
 
 #terms
 {
