@@ -113,6 +113,7 @@ class Article(models.Model):
     allow_comments  -- Allow user comments on the article
     spotlight       -- Allow appearance on front page
     static_directory-- Directory for static files used in the article
+    series          -- Series the article is a part of
     """
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=50)
@@ -147,6 +148,9 @@ class Article(models.Model):
         help_text=("Name of directory where static files for the article are"
                    "stored.")
     )
+
+    # Associations
+    series = models.ManyToManyField("Series", default=None, blank=True)
 
     class Meta:
         ordering = ["title"]
