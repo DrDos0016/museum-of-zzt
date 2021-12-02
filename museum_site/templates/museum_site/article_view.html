@@ -101,6 +101,7 @@ $(document).ready(function (){
     <div class="info">
         <div class="author">By: {{article.author}}</div>
         <div class="publish-date">Published: {{article.publish_date}}</div>
+        {% if article.series.all %}<div class="author">Series: {{article.series_links|safe}}</div>{% endif %}
         {% if article.last_revised %}<div class="revised-date">(Latest revision: {{article.last_revised}})</div>{% endif %}
         {% if article.revision_details %}<div class="revision-details">Revisions:<br><textarea id="revision-text">{{article.revision_details}}</textarea></div>{% endif %}
         {% if request.session.DEBUG %}<a href="/admin/museum_site/article/{{article.id}}/change/" class="debug">Edit Article {{article.id}}</a>{% endif %}

@@ -41,7 +41,7 @@ class Series(models.Model):
         super(Series, self).save(*args, **kwargs)
 
     def url(self):
-        return str(self.id) + "/" + self.slug
+        return "/series/" + str(self.id) + "/" + self.slug
 
     def preview_url(self):
         if self.preview:

@@ -267,8 +267,8 @@ urlpatterns = [
         "series/", museum_site.series_views.series_directory,
         name="series_directory"),
     path(
-        "series/<int:series_id>/<slug:slug>", museum_site.series_views.series_view,
-        name="series_view"),
+        "series/<int:series_id>/<slug:slug>", museum_site.series_views.series_overview,
+        name="series_overview"),
 
     # Search
     path(

@@ -1,0 +1,18 @@
+<div class="overview-block" data-pk="{{series.id}}" data-model="series">
+    <img src="{{series.preview_url}}"
+    class="screenshot-thumb"
+    alt="{{series.title}} preview image">
+    <h1 class="title"><a href="{{series.url}}"}>{{series.title}}</a></h1>
+    <div class="wide-info">
+        <div class="field">
+            <div class="key">First Entry</div><div class="value">{{series.first_entry_date}}</div>
+        </div>
+        <div class="field">
+            <div class="key">Latest Entry</div><div class="value">{{series.last_entry_date}}</div>
+        </div>
+        <div class="field">
+            {{series.article_set.count}} article{{series.article_set.count|pluralize}}
+        </div>
+        <p>{{series.description|safe}}</p>
+    </div>
+</div>

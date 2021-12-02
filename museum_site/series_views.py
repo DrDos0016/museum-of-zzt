@@ -38,11 +38,13 @@ def series_directory(request, page_num=1):
     return render(request, "museum_site/series-directory.html", data)
 
 
-def series_view(request, series_id, slug=""):
+def series_overview(request, series_id, slug=""):
     data = {
-        "title": "Series"
+        "title": "Series Overview"
     }
 
-    data["series"] = Series.objects.filter(pk=series_id, visible=True).first()
+    series = Series.objects.filter(pk=series_id, visible=True).first()
+    data["series"] = series
+    data["articles"] = series.article_set.all().order_by("publish_date")
 
     return render(request, "museum_site/series-view.html", data)

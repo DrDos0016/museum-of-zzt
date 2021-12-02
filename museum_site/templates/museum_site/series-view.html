@@ -4,29 +4,13 @@
 {% block content %}
 <section id="content" class="block">
 
-<h1>{{series.title}}</h1>
+<h1>Series Overview</h1>
 
-{% include "museum_site/blocks/paginator_block.html" %}
+{% include "museum_site/blocks/series-detailed-block.html" %}
 
-{% for i in page %}
-<div class="overview-block" data-pk="{{i.id}}" data-model="series">
-    <img src="{{i.preview_url}}"
-    class="screenshot-thumb"
-    alt="{{i.title}} preview image">
-    <h1 class="title"><a href="{{i.url}}"}>{{i.title}}</a></h1>
-    <div class="wide-info">
-        <div class="field">
-            <div class="key">First Entry</div><div class="value">{{i.first_entry_date}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Latest Entry</div><div class="value">{{i.last_entry_date}}</div>
-        </div>
-        <div class="field">
-            {{i.article_set.count}} article{{i.article_set.count|pluralize}}
-        </div>
-        <p>{{i.description|safe}}</p>
-    </div>
-</div>
+<h2>Articles in Series</h2>
+{% for article in articles %}
+{% include "museum_site/blocks/article_detailed_block.html" %}
 {% endfor %}
 </section>
 {% endblock %}
