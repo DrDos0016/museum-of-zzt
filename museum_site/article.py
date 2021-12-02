@@ -159,6 +159,14 @@ class Article(models.Model):
         output = "[" + str(self.id) + "] " + self.title + " by " + self.author
         return output
 
+    def save(self, *args, **kwargs):
+        # Update dates for series
+        all_series = self.series.all()
+        if all_series:
+            for s in all_series:
+                s.save()
+        super(Article, self).save(*args, **kwargs)
+
     def url(self):
         return "/article/" + str(self.id) + "/" + slugify(self.title)
 
@@ -193,3 +201,13 @@ class Article(models.Model):
         """ Returns a human readable string for the article's publication
         state. """
         return ARTICLE_PUBLISH[self.published - 1][1].lower()
+
+
+    def series_links(self):
+        """ Returns HTML links to related series """
+        output = ""
+
+        for s in self.series.all():
+            output += '<a href="{}">{}</a>, '.format(s.url(), s.title)
+
+        return output[:-2]

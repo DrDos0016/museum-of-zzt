@@ -17,6 +17,7 @@ import museum_site.feeds  # noqa: E402
 import museum_site.help_views  # noqa: E402
 import museum_site.review_views  # noqa: E402
 import museum_site.search_views  # noqa: E402
+import museum_site.series_views  # noqa: E402
 import museum_site.tool_views  # noqa: E402
 import museum_site.user_views  # noqa: E402
 import museum_site.upload_views  # noqa: E402
@@ -260,6 +261,14 @@ urlpatterns = [
     path(
         "review/<str:letter>/<str:filename>/",
         museum_site.file_views.review, name="reviews"),
+
+    # Series
+    path(
+        "series/", museum_site.series_views.series_directory,
+        name="series_directory"),
+    path(
+        "series/<int:series_id>/<slug:slug>", museum_site.series_views.series_view,
+        name="series_view"),
 
     # Search
     path(

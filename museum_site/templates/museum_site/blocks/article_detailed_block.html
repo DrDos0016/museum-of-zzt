@@ -14,6 +14,9 @@
         <div class="field">
             <div class="key">Category</div><div class="value">{{article.category}}</div>
         </div>
+        {% if article.series.count %}<div class="field">
+            <div class="key">Series</div><div class="value">{{article.series_links|safe}}</div>
+        </div>{% endif %}
         <div class="field">
             <div class="key">Summary</div><div class="value">{{article.summary}}</div>
         </div>
