@@ -5,6 +5,18 @@
 {% block meta %}{% meta_tags path=request.get_full_path article=article %}{% endblock %}
 
 {% block style %}
+<style>
+.series-range .gallery-block
+{
+    max-width:15%;
+}
+
+.series-range .gallery-block .screenshot-thumb
+{
+    max-width:100%;
+    max-height:100px;
+}
+</style>
 {% if article.parent_id %}
 {{article.parent.css|safe}}
 {% endif %}
@@ -101,7 +113,7 @@ $(document).ready(function (){
     <div class="info">
         <div class="author">By: {{article.author}}</div>
         <div class="publish-date">Published: {{article.publish_date}}</div>
-        {% if article.series.all %}<div class="author">Series: {{article.series_links|safe}}</div>{% endif %}
+        {% if article.series.all %}<div class="series">Series: {{article.series_links|safe}}</div>{% endif %}
         {% if article.last_revised %}<div class="revised-date">(Latest revision: {{article.last_revised}})</div>{% endif %}
         {% if article.revision_details %}<div class="revision-details">Revisions:<br><textarea id="revision-text">{{article.revision_details}}</textarea></div>{% endif %}
         {% if request.session.DEBUG %}<a href="/admin/museum_site/article/{{article.id}}/change/" class="debug">Edit Article {{article.id}}</a>{% endif %}
@@ -165,8 +177,20 @@ $(document).ready(function (){
 {% include "museum_site/blocks/article_view_page_block.html" %}
 {% endif %}
 
+<hr>
 <a href="{% url 'article_directory' %}">Article directory</a><br>
 <a href="{% url 'index' %}">Main page</a>
+{% if article.series.all %}
+<h3>More In This Series</h3>
+<div class="series-range gallery-list">
+    {% for article in article.series_range %}
+    {% include "museum_site/blocks/article_gallery_block.html" %}
+    {% endfor %}
+</div>
+<div class="c">
+<a href="{{article.series.all.first.url}}">View All</a>
+</div>
+{% endif %}
 
 {% if article.allow_comments %}
 <hr>

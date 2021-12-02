@@ -17,6 +17,9 @@
         {% if article.series.count %}<div class="field">
             <div class="key">Series</div><div class="value">{{article.series_links|safe}}</div>
         </div>{% endif %}
+        {% if debug %}<div class="field debug">
+            <div class="key">ID</div><div class="value"><a href="">{{article.id}}</a></div>
+        </div>{% endif %}
         <div class="field">
             <div class="key">Summary</div><div class="value">{{article.summary}}</div>
         </div>

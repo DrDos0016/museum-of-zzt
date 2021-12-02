@@ -211,3 +211,24 @@ class Article(models.Model):
             output += '<a href="{}">{}</a>, '.format(s.url(), s.title)
 
         return output[:-2]
+
+    def series_range(self):
+        """ Returns a list of Articles with this article in the middle """
+        output = []
+        # TODO Better handling an article being in multiple series
+        series = self.series.all().first()
+
+        found_self = False
+        remaining = 2
+        for a in series.article_set.all().order_by("publish_date"):
+            if remaining < 1:
+                break
+            if found_self:
+                remaining -= 1
+
+            output.append(a)
+
+            if a.id == self.id:
+                found_self = True
+
+        return output[-5:]
