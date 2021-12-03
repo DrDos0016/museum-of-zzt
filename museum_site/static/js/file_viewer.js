@@ -461,15 +461,14 @@ function pull_file()
                 var scores = parse_scores(data);
             else
                 var scores = parse_szzt_scores(data);
-            var output = `<div class='high-scores'>Score &nbsp;Name<br>\n<pre class="cp437">`;
+            var output = `<pre class="cp437 high-scores">Score  Name\n`;
             output += `-----  ----------------------------------\n`;
             for (var idx in scores)
             {
-                //output += scores[idx].score + " &nbsp;" + scores[idx].name + "<br>";
-                //output +=`<div class="score">${scores[idx].score}</div> <div class="name">${scores[idx].name}</div><br>`;
-                output += `${scores[idx].spaced_score} ${scores[idx].name}\n`;
+                if (scores[idx].score <= 32767)
+                    output += `${scores[idx].spaced_score}  ${scores[idx].name}\n`;
             }
-            output += "</pre></div>";
+            output += "</pre>";
 
             set_active_envelope("text");
             $("#text-body").html(output);
@@ -1471,14 +1470,12 @@ function parse_scores(data)
 {
     var scores = [];
     var idx = 0;
-    while (true)
+
+    while (idx < data.length)
     {
         // Read the first byte for length of name
         var name_length = read(data, 1, idx);
         idx += 2;
-
-        if (name_length == 0)
-            break;
 
         var name = str_read(data, 50, idx).substr(0,name_length);
         idx += 100;
@@ -1486,10 +1483,8 @@ function parse_scores(data)
         var score = read(data, 2, idx);
         idx += 4;
 
-        var spaced_score = "" + score
-        while (spaced_score.length != 5)
-            spaced_score = "  " + spaced_score;
-
+        var spaced_score = "     " + score
+        spaced_score = spaced_score.slice(-5);
         scores.push({"name":name, "score":score, "spaced_score":spaced_score});
 
         if (scores.length >= 30)
@@ -1502,7 +1497,7 @@ function parse_szzt_scores(data)
 {
     var scores = [];
     var idx = 0;
-    while (true)
+    while (idx < data.length)
     {
         // Read the first byte for length of name
         var name_length = read(data, 1, idx);
@@ -1517,10 +1512,8 @@ function parse_szzt_scores(data)
         var score = read(data, 2, idx);
         idx += 4;
 
-        var spaced_score = "" + score
-        while (spaced_score.length != 5)
-            spaced_score = "  " + spaced_score;
-
+        var spaced_score = "     " + score
+        spaced_score = spaced_score.slice(-5);
         scores.push({"name":name, "score":score, "spaced_score":spaced_score});
 
         if (scores.length >= 30)
