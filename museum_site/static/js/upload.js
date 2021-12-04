@@ -51,6 +51,7 @@ $(document).ready(function (){
     $(".upload-area").on("dragover", function(e) {
         e.preventDefault();
         e.stopPropagation();
+        $(this).addClass("dragging");
     });
 
     $(".upload-area").on("dragleave", function(e) {
