@@ -36,7 +36,7 @@ def search(request, comic_account):
     return render(request, "comic/search.html", data)
 
 
-def strip(request, comic_account, id=None):
+def strip(request, comic_account, id=None, name=None):
     data = {"comic_account": comic_account}
     if id is None:
         # TODO: This is terrible.
