@@ -3,7 +3,7 @@
 <div class="overview-block{% if file.is_uploaded %} unpublished{% endif %}" id="{{file.filename}}" data-pk="{{file.id}}" data-model="file">
     {% if file.is_uploaded %}<div class="prefix unpublished-warning">UNPUBLISHED FILE - This file's contents have not been fully checked by staff.</div>{% endif %}
     <img src="{% static file.screenshot_url %}" class="screenshot-thumb" alt="{{file.screenshot}}">
-    <h1 class="title"><a href="{{file.file_url}}" class="view-link{% if 'Explicit' in file.genre %} explicit{% endif %}">{{file.title|default:"NO NAME"}}</a></h1>
+    <h1 class="title"><a href="{{file.file_url}}" class="view-link{% if file.explicit %} explicit{% endif %}">{{file.title|default:"NO NAME"}}</a></h1>
     <div class="basic-info">
         <div class="field">
             <div class="key">Author{{file.author_list|pluralize}}</div><div class="value">{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a|url_parse}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
