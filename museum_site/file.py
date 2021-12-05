@@ -298,7 +298,7 @@ class File(models.Model):
         self.genre = slash_separated_sort(self.genre)
 
         # Create sorted title
-        self.sort_title = self.calculate_sort_title()
+        self.calculate_sort_title()
 
         # Recalculate Article Count
         self.calculate_article_count()
