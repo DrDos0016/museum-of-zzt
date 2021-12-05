@@ -146,6 +146,20 @@ function update_selected_details()
     </div>
 </div>
 <div class="field">
+    <label for="lang">Language:<br>
+    </label>
+    <select id="lang" name="lang">
+        <option value="Any">- ANY - </option>
+        {% for l in languages %}
+            {% if l == request.GET.lang %}
+            <option value="{{l.0}}" selected>{{l.1}}</option>
+            {% else %}
+            <option value="{{l.0}}">{{l.1}}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+</div>
+<div class="field">
     <label for="min">Associated Content:<br>
     </label>
 

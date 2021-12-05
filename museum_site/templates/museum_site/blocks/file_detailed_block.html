@@ -35,7 +35,7 @@
                 <div class="key">Boards</div><div class="value">{% if file.total_boards %}<span title="Playable/Total - Values are not 100% accurate">{{file.playable_boards}} / {{file.total_boards}}</span>{% endif %}</div>
             </div>
             <div class="field">
-                <div class="key">Language</div><div class="value">{{file.language_list}}</div>
+                <div class="key">Language</div><div class="value">{% ssv_links file.language "lang" lookup="language" %}</div>
             </div>
             {% if file.is_uploaded %}<div class="field">
                 <div class="key">Upload Date</div><div class="value">{{file.upload_date}}</span></div>
