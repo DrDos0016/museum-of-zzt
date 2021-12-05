@@ -13,7 +13,7 @@
 {% block scripts %}
 <script>
 $(document).ready(function (){
-    {% if "Explicit" in file.genre %}
+    {% if file.explicit %}
     var explicit_warning = "This file is known to contain content not suitable for minors.\n\nPress 'OK' to confirm that you are of age to view such content and wish to do so.";
     if (! confirm(explicit_warning))
         window.location = "/";
