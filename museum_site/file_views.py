@@ -288,6 +288,9 @@ def review(request, letter, filename, **kwargs):
             data["file"].calculate_reviews()
             data["file"].save()
 
+            # Make Announcement
+            discord_announce_review(review, env="PROD")
+
     data["reviews"] = Review.objects.filter(file_id=data["file"].id)
     return render(request, "museum_site/review.html", data)
 
