@@ -29,6 +29,7 @@ def main():
             new_gs = "/".join(gs)
             print(new_gs)
             f.genre = new_gs
+            f.explicit = True
             f.save()
     return True
 
