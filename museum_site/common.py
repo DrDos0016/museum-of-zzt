@@ -13,7 +13,7 @@ from django.core.exceptions import ValidationError
 
 from museum_site.models import *
 from museum_site.constants import *
-from .private import NEW_UPLOAD_WEBHOOK_URL
+from .private import NEW_UPLOAD_WEBHOOK_URL, NEW_REVIEW_WEBHOOK_URL
 
 from datetime import datetime, timezone, timedelta
 from io import BytesIO
@@ -457,6 +457,39 @@ def zipinfo_datetime_tuple_to_str(raw):
     s = str(dt[5]).zfill(2)
     out = "{}-{}-{} {}:{}:{}".format(y, m, d, h, mi, s)
     return out
+
+
+def discord_announce_review(review, env=None):
+    if env is None:
+        env = ENV
+
+    if env != "PROD":
+        print("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
+        return False
+
+    preview_url = HOST + "static/" + urllib.parse.quote(
+         review.file.screenshot_url()
+    )
+
+    discord_post = (
+        "*A new review for *{}* has been posted!*\n"
+        "**{}** written by {}\n"
+        "Read: https://museumofzzt.com{}#rev-{}\n"
+    ).format(
+        review.file.title, review.title, review.author,
+        review.file.file_url(), review.id
+    )
+
+    discord_data = {
+        "content": discord_post,
+        "embeds": [{"image": {"url": preview_url}}]
+    }
+    resp = requests.post(
+        NEW_REVIEW_WEBHOOK_URL,
+        headers={"Content-Type": "application/json"},
+        data=json.dumps(discord_data)
+    )
+    return True
 
 
 def discord_announce_upload(upload, env=None):
