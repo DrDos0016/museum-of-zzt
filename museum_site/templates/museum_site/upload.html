@@ -1,281 +1,120 @@
 {% extends "museum_site/main.html" %}
+{% load static %}
 
 {% block style %}
-<style>
-#content form
-{
-    margin-top:14px;
-    border-top: 1px dashed #000;
-}
-#desc
-{
-    height:7em;
-    flex:4;
-}
-
-.upload-error
-{
-    background:#FAA;
-}
-
-input[name=today]
-{
-    max-width:20%;
-    margin-left:8px;
-}
-
-.overview-block
-{
-    margin-bottom:14px;
-}
-
-#content form .field > label
-{
-    flex:1 1 33%;
-}
-
-#generate_preview
-{
-    height:150px;
-    background:red;
-    padding:4px;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="{% static 'css/new_forms.css' %}?{{BOOT_TS}}">
 {% endblock %}
 
 {% block scripts %}
-<script>
-function load_local_file()
-{
-    return false;
-}
-
-function reload_preview()
-{
-    var filename = $("input[name=file]").val().split("\\").reverse()[0];
-    var title = $("input[name=title]").val();
-    var authors = $("input[name=author]").val();
-    var company = $("input[name=company]").val();
-    if ($("input[name=file]").val())
-        var size = Math.round($("input[name=file]").get(0).files[0].size / 1024.0);
-    var released = $("input[name=release_date]").val();
-
-    var genres = "";
-    $("input[name=genre]:checked").each(function (){
-        genres += $(this).val() + ", ";
-    });
-    genres = genres.slice(0, (genres.length - 2));
-
-    $("#pre-title").text(title ? title : "<Title>");
-    $("#pre-authors").text(authors ? authors : "<Authors>");
-    $("#pre-filename").text(filename ? filename : "<Filename>");
-    $("#pre-released").text(released ? released : "<Release Date>");
-    $("#pre-genres").text(genres ? genres : "<Genres>");
-    $("#pre-company").text(company ? company : "<Company>");
-    $("#pre-size").text(size);
-}
-
-$(document).ready(function (){
-    $("#file").change(load_local_file);
-    $("input").change(reload_preview);
-    $("input[name=genre]").click(function (){
-        if ($(this).prop("checked"))
-            $(this).parent().addClass("selected");
-        else
-            $(this).parent().removeClass("selected");
-    });
-    $("input[name=today]").click(function (){
-        var today = new Date();
-        $("#release_date").val(today.toISOString().slice(0,10));
-        reload_preview();
-    });
-
-    // Keep background on genre labels between refreshes
-    $("input[name=genre]").each(function (){
-        if ($(this).prop("checked"))
-            $(this).parent().addClass("selected");
-        else
-            $(this).parent().removeClass("selected");
-    });
-
-    reload_preview();
-});
-</script>
+<script src="{% static 'js/upload.js' %}?{{BOOT_TS}}"></script>
+<script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
 {% endblock %}
 
 {% block content %}
 <section id="content" class="block">
+<h1>{{title}}</h1>
 
-<h1>Upload File</h1>
-
-{% if error %}
-<h2>File Not Uploaded!</h2>
-
-<div class="upload-error">
-<p>Your file could not be uploaded.</p>
-
-<p>Reason: {{error}}</p>
-
-<p>Please correct any errors and try again. If the problem persists, contact
-<a href="mailto:{{EMAIL_ADDRESS}}?subj=Upload error">Dr. Dos</a>.</p>
-</div>
-{% endif %}
-
-{% if request.GET.edit %}
-<h3>Notes On Editing an Existing Upload</h3>
-<p>Editing an existing upload requires the <i>Edit Token</i> that was given when the file was first uploaded.</p>
-
-<p>If you are only editing metadata and not uploading a replacement zip, you may leave the "File" field blank to continue using the current zip file.</p>
-
-<form id="edit-upload-form">
-<div class="field">
-    <label for="token">Edit Token:<br>
-        <span class="sub">The token that identifies which upload should be modified</span>
-    </label>
-    <input id="token" name="token" value="{{request.GET.edit_token}}" maxlength="16">
-</div>
-<div class="field">
-    <button type="submit" class="full-width-submit">Begin Editing</button>
-</div>
-</form>
-<hr>
-<h2>User Uploads</h2>
-<p>If you uploaded a file while logged into an account, then you may edit any still unpublished worlds without having to enter an edit token. Below is a list of all uploads associated with your account that remain unpublished.
-
-<table>
-<tr>
-    <th>Title</th>
-    <th>Upload Time</th>
-    <th>Upload Token</th>
-{% for u in my_uploads %}
-{% if u.file.is_uploaded %}
-<tr>
-<td>{{u.file.title}}</td>
-<td>{{u.date}}</td>
-<td><a href="?token={{u.edit_token}}">{{u.edit_token}}</a></td>
-</tr>
-{% endif %}
-{% endfor %}
-</table>
-{% endif %}
-
-{% if not request.GET.edit %}
-<div class="overview-block">
-    <h1 class="title"><span id="pre-title">&lt;Title&gt;</span></h1>
-    <img src="/static/images/screenshots/no_screenshot.png" class="screenshot-thumb" alt="{{file.screenshot}}">
-    <div class="basic-info">
-        <div class="field">
-            <div class="key">Author(s)</div><div class="value"><span id="pre-authors">&lt;Author(s)&gt;</div>
-        </div>
-        <div class="field">
-            <div class="key">Company</div><div class="value"><span id="pre-company">&lt;Company&gt;</div>
-        </div>
-        <div class="field">
-            <div class="key">Released</div><div class="value"><span id="pre-released">&lt;Release Date&gt;</span></div>
-        </div>
-        <div class="field">
-            <div class="key">Genre(s)</div><div class="value"><span id="pre-genres">&lt;Genre(s)&gt;</span></div>
-        </div>
-        <div class="field">
-            <div class="key">Filename</div><div class="value"><span id="pre-filename">&lt;Filename&gt;</span></div>
-        </div>
-        <div class="field">
-            <div class="key">Size</div><div class="value"><span id="pre-size">&lt;File Size&gt;</span></div>
-        </div>
-    </div>
-</div>
-
-<form method="POST" enctype="multipart/form-data" id="upload-form">
+<form method="POST" enctype="multipart/form-data">
+<h2 class="cut-heading">File Information<div class="fr cut-state">➖</div></h2>
+<div class="cut-wrapper cut-open">
 {% csrf_token %}
-<input type="hidden" name="action" value="upload">
-<input id="token" name="token" type="hidden" value="{{request.GET.token}}" maxlength="16">
-<div class="field">
-    <label>File:<br>
-        <span class="sub">Select the file you wish to upload. All uploads MUST be zipped. The zip file must no larger than <b title="{{request.user.profile.max_upload_size|default:UPLOAD_CAP}} bytes">{{request.user.profile.max_upload_size|default:UPLOAD_CAP|filesizeformat}}</b>.</span>
-    </label>
-    <input id="file" name="file" type="file" accept=".zip">
-</div>
-<div class="field">
-    <label for="title">Title:<br>
-        <span class="sub">The title of your upload. Maximum 80 characters. Leave A/An/The as the first word if applicable.<br>
-        ("The Town of ZZT" is good. "Town of ZZT, The" is bad.)</span>
-    </label>
-    <input id="title" name="title" maxlength="80" value="{{request.POST.title}}">
-</div>
-<div class="field">
-    <label for="author">Author(s):<br>
-        <span class="sub">The author(s) of your upload. Maximum 80 characters. Separate multiple authors with a forward slash (/). Do not abbreviate names.<br>
-        ("Hercules/Hydra78" is good. "Herc, Hydra" is bad.) For files with many authors, consider using the compiler as the author with "Various" to represent the rest.</span>
-    </label>
-    <input id="author" name="author" maxlength="80" value="{{request.POST.author}}">
-</div>
-<div class="field">
-    <label for="company">Company:<br>
-        <span class="sub">The company this file is published under. Maximum 80 characters. This field is optional and may be left blank.</span>
-    </label>
-    <input id="company" name="company" value="{{request.POST.company}}" maxlength="80">
-</div>
-<div class="field">
-    <label for="genre">Genre(s):<br>
-        <span class="sub">Any genres which this file may fall under. At least one genre must be selected.</span>
-    </label>
-    <div class="scrolling-checklist">
-        {% for genre in genres %}
-        <label><input name="genre" type="checkbox" value="{{genre}}"{% if genre in requested_genres %} checked{% endif %}> {{genre}}</label>
-        {% endfor %}
+{% for field in zgame_form.visible_fields %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
+    {{field.label_tag}}
+    <div class="field-value">
+        {% if field.id_for_label == "id_title" %}
+        <div class="chars-remaining" data-field="{{field.id_for_label}}"><span id="{{field.id_for_label}}-remaining" data-max="{{field.field.max_length}}">{{field.field.max_length}}</span> characters remaining</div>
+        {% endif %}
+        {% if field.id_for_label == "id_zfile" %}
+        <div class="size-limit">Your maximum upload size: <b title="{{user.profile.max_upload_size}} bytes">{{user.profile.max_upload_size|filesizeformat}}</b></div>
+        {% endif %}
+        {{field|safe}}
+        {% if field.id_for_label == "id_release_date" %}
+        <input name="today" value="Today" type="button">
+        {% endif %}
     </div>
-</div>
-<div class="field">
-    <label for="release_date">Release Date:<br>
-        <span class="sub">The date this file was first made public. Use YYYY-MM-DD for the format. If this is a new release, it should be the modified date of the most recent ZZT world (or executable, or other primary file).
-        If the release date is not known, leave this field blank.</span>
-    </label>
-    <div class="field-group">
-        <input id="release_date" name="release_date" value="{{request.POST.release_date}}" maxlength="10" type="date"> <input type="button" value="Today" name="today">
-    </div>
-</div>
-<div class="field">
-    <label for="desc">Utility Description:<br>
-        <span class="sub">If you are uploading a utility, please describe it here. Otherwise, leave this field blank.</span>
-    </label>
-    <textarea id="desc" name="desc">{{request.POST.desc}}</textarea>
-</div>
-<div class="field" style="display:none">
-    <label for="desc">Notifications:<br>
-        <span class="sub"></span>
-    </label>
-    <select name="contact" id="contact">
-        <option value="0"{% if request.POST.contact == "0" %} selected{% endif %}>Do not contact me about this upload.</option>
-        <option value="1"{% if request.POST.contact == "1" %} selected{% endif %}>Contact me if this upload is rejected.</option>
-        <option value="2"{% if request.POST.contact == "2" %} selected{% endif %}>Contact if this upload is rejected or upload is published</option>
-    </select>
-</div>
-<div class="field" style="display:none">
-    <label for="desc">Uploader E-mail:<br>
-        <span class="sub">Used only if you've requested notifications about this upload. Leave blank otherwise.</span>
-    </label>
-    <input name="email" id="email" value="{{request.POST.email}}">
-</div>
-{% if not request.GET.token %}<div class="field">
-    <label for="company">Generate Preview Image:<br>
-        <span class="sub">If checked a preview image for the file will be generated (if possible) of the oldest contained ZZT file's title screen. This image may be changed during publication. This option cannot be changed after upload.</span>
-    </label>
-    <input id="generate_preview" name="generate_preview" type="checkbox" value="1" {% if request.POST.generate_preview or not request.POST %} checked{% endif %}>
-</div>{% endif %}
-<div class="field">
-    <label for="desc">Upload Notes:<br>
-        <span class="sub">Notes for the uploader. Consider anything entered in this field to be public.</span>
-    </label>
-    <textarea id="notes" name="notes">{{request.POST.notes}}</textarea>
-</div>
-<div class="field">
-    <button type="submit" id="submit-upload-button" class="full-width-submit">Upload File</button>
-</div>
-</form>
-    {% if not request.GET.token %}
-    <h2>Advanced</h2>
-    <a href="?edit=1">Edit an existing upload</a> (Requires an Edit Token for guest users)
+    {% if field.help_text %}
+    <p class="field-help">{{field.help_text|safe}}</p>
     {% endif %}
-{% endif %}
+    {{field.errors}}
+</div>
+{% endfor %}
+{% for field in zgame_form.hidden_fields %}
+{{field}}
+{% endfor %}
+</div>
+<hr>
+
+<h2 class="cut-heading">Play Online Settings<div class="fr cut-state">➕</div></h2>
+<div class="cut-wrapper cut-closed">
+{% for field in play_form.visible_fields %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
+    {{field.errors}}
+    {{field.label_tag}}
+    <div class="field-value">
+        {{field}}
+    </div>
+    {% if field.help_text %}
+    <p class="field-help">{{field.help_text|safe}}</p>
+    {% endif %}
+</div>
+{% endfor %}
+{% for field in play_form.hidden_fields %}
+{{field}}
+{% endfor %}
+</div>
+<hr>
+
+<h2 class="cut-heading">Download Settings<div class="fr cut-state">➕</div></h2>
+<div class="cut-wrapper cut-closed">
+{% for field in download_form.visible_fields %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
+    {{field.errors}}
+    {{field.label_tag}}
+    <div class="field-value">
+        {% if field.name == "hosted_text" %}<div class="r">Hosted on...</div>{% endif %}{{field}}
+    </div>
+    {% if field.help_text %}
+    <p class="field-help">{{field.help_text|safe}}</p>
+    {% endif %}
+</div>
+{% endfor %}
+{% for field in download_form.hidden_fields %}
+{{field}}
+{% endfor %}
+</div>
+<hr>
+
+
+<h2 class="cut-heading">Upload Settings<div class="fr cut-state">➕</div></h2>
+<div class="cut-wrapper cut-closed">
+{% for field in upload_form.visible_fields %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
+    {{field.errors}}
+    {{field.label_tag}}
+    <div class="field-value">
+        {{field}}
+        {% if field.id_for_label == "id_release_date" %}
+        <input name="today" value="Today" type="button">
+        {% endif %}
+    </div>
+    {% if field.help_text %}
+    <p class="field-help">{{field.help_text|safe}}</p>
+    {% endif %}
+</div>
+{% endfor %}
+{% for field in upload_form.hidden_fields %}
+{{field}}
+{% endfor %}
+</div>
+<hr>
+
+<input type="submit" name="action" value="{{submit_text|default:'Upload File'}}">
+
+<p><a href="{% url 'upload_edit' %}">Edit an existing upload</a> (Requires an Edit Token for guest users)</p>
+<!--Suggestions-->
+<datalist id="author-suggestions"></datalist>
+<datalist id="company-suggestions"></datalist>
+</form>
 </section>
 {% endblock %}

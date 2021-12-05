@@ -6,7 +6,7 @@
     <p>The following file has been added to the upload queue. Please wait patiently for it to be published. Typically publication occurs when the queue has eight or more uploads, though this is not a hard rule.</p>
 
     <p>If you have discovered an error with your uploaded file, or its data, you may edit it prior to its publication/rejection using the following edit token:
-    <b><a href="/debug/upload?token={{upload.edit_token}}">{{upload.edit_token}}</a></b></p>
+    <b><a href="{% url 'upload' %}?token={{upload.edit_token}}">{{upload.edit_token}}</a></b></p>
 
     {% include "museum_site/blocks/file_detailed_block.html" %}
 </section>

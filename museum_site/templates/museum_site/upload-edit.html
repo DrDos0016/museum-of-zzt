@@ -6,7 +6,7 @@
 
 <p>Editing an existing upload requires entering the <i>Edit Token</i> that was generated when the file was first uploaded.</p>
 
-<form id="edit-upload-form" action="/debug/upload/">
+<form id="edit-upload-form" action="{% url 'upload' %}">
 <div class="field">
     <label for="token">Edit Token:<br>
         <span class="sub">The token that identifies which upload should be modified</span>
@@ -30,7 +30,7 @@
 <tr>
 <td>{{u.file.title}}</td>
 <td>{{u.date}}</td>
-<td><a href="/debug/upload/?token={{u.edit_token}}">{{u.edit_token}}</a></td>
+<td><a href="{% url 'upload' %}?token={{u.edit_token}}">{{u.edit_token}}</a></td>
 </tr>
 {% endfor %}
 </table>

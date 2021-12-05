@@ -400,8 +400,11 @@ urlpatterns = [
     # Uploads
     path("upload/", museum_site.upload_views.upload, name="upload"),
     path(
-        "upload/complete/", museum_site.upload_views.upload_complete,
+        "upload/complete/<str:token>/", museum_site.upload_views.upload_complete,
         name="upload_complete"),
+    path(
+        "upload/edit/", museum_site.upload_views.upload_edit,
+        name="upload_edit"),
 
     # Zeta Live
     path("zeta-live/", museum_site.zeta_views.zeta_live),
@@ -536,9 +539,9 @@ urlpatterns = [
         "debug/forms/", museum_site.views.generic,
         {"template": "debug-forms", "title": "Form Debug"}),
     path("ajax/debug_file/", museum_site.ajax.debug_file),
-    path("debug/upload/", museum_site.debug_views.debug_upload),
-    path("debug/upload/complete/<str:token>/", museum_site.debug_views.debug_upload_complete),
-    path("debug/upload/edit/", museum_site.debug_views.debug_upload_edit),
+    #path("debug/upload/", museum_site.debug_views.debug_upload),
+    #path("debug/upload/complete/<str:token>/", museum_site.debug_views.debug_upload_complete),
+    #path("debug/upload/edit/", museum_site.debug_views.debug_upload_edit),
 ]
 
 if DEBUG:
