@@ -36,8 +36,9 @@ class Series(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        self.first_entry_date = self.article_set.all().order_by("publish_date").first().publish_date
-        self.last_entry_date = self.article_set.all().order_by("publish_date").last().publish_date
+        if self.id:
+            self.first_entry_date = self.article_set.all().order_by("publish_date").first().publish_date
+            self.last_entry_date = self.article_set.all().order_by("publish_date").last().publish_date
         super(Series, self).save(*args, **kwargs)
 
     def url(self):
