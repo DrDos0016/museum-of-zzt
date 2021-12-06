@@ -1,0 +1,6 @@
+<select name="{{widget.name}}" id="{{widget.attrs.id}}">
+    <option value="any">- ANY -</option>
+    {% for k,v  in choices %}
+    <option value="{{k}}">{{v}}</option>
+    {% endfor %}
+</select>

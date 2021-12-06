@@ -1,12 +1,12 @@
-from django.conf.urls import include, url
+from django.urls import include, path
 from django.contrib import admin
 
 urlpatterns = [
-    url(r"^admin/", admin.site.urls),
-    url(r"^api/", include("museum_api.urls")),
-    url(r"^comic/", include("comic.urls")),
-    url(r"^poll/", include("poll.urls")),
-    url(r"^", include("museum_site.urls")),
+    path("admin/", admin.site.urls),
+    path("api/", include("museum_api.urls")),
+    path("comic/", include("comic.urls")),
+    path("poll/", include("poll.urls")),
+    path("", include("museum_site.urls")),
 ]
 
 #handler400 = "museum_site.errors.bad_request_400"

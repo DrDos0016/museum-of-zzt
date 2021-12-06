@@ -12,6 +12,7 @@ from django.test import TestCase
 
 from museum_site.common import *
 from museum_site.constants import *
+from museum_site.forms import *
 from museum_site.models import *
 from museum_site.templatetags.site_tags import *
 
@@ -43,6 +44,9 @@ class URLStatusTest(TestCase):
             url = url.replace("<int:pk>", "1015")
             url = url.replace("<int:user_id>", "1")
             url = url.replace("<str:unused_slug>", "account-name")
+            url = url.replace("<int:series_id>", "1")
+            url = url.replace("<slug:slug>", "slug")
+            url = url.replace("<str:token>", "8A194C8A21493395")
 
             # More oddball features that will likely be cut
             url = url.replace("<int:phase>", "1")
@@ -108,6 +112,57 @@ class MetaTagTest(TestCase):
                 valid["og:title"] = 1
         self.assertEqual(valid, expected)
 
+
+class ZGameFormTest(TestCase):
+    def test_blank_form(self):
+        form = ZGameForm(data={})
+
+        errors = form.errors.get_json_data()
+
+        self.assertEqual(
+            list(errors.keys()),
+            ["zfile", "title", "author", "genre", "language"]
+        )
+
+
+class FileTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        File.objects.create(
+            filename="zzt.zip",
+            title="ZZT v3.2 (Registered)",
+            author="Tim Sweeney",
+            size=1234,
+            genre="Official/Puzzle/Adventure/Registered",
+            zeta_config=None,
+        )
+        File.objects.create(
+            filename="ZOMBINAT.ZIP",
+            title="The Zombinator",
+            author="Mazeo",
+            size=1234,
+            genre="Adventure",
+            zeta_config=None,
+        )
+        File.objects.create(
+            filename="thetamag1.zip",
+            title="ThetaMag #1",
+            author="Theta14",
+            size=1234,
+            genre="Adventure",
+            zeta_config=None,
+        )
+
+    def test_sorted_genre(self):
+        """ Genre should be sorted alphabetically after save """
+        f = File.objects.get(pk=1)
+        self.assertEqual(f.genre, "Adventure/Official/Puzzle/Registered")
+
+    def test_letter_identification(self):
+        letters = File.objects.filter(pk__lte=3).order_by("id").values_list(
+            "letter", flat=True
+        )
+        self.assertEqual(list(letters), ["z", "z", "t"])
 
 """
 http://django.pi:8000/article/f/frost1.zip

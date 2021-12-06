@@ -1,14 +1,12 @@
 from django import forms
 
-from .common import GENRE_LIST
 
-
-class GenreCheckboxWidget(forms.Widget):
-    template_name = "museum_site/widgets/genre-checkbox-widget.html"
+class SelectPlusAnyWidget(forms.Select):
+    template_name = "museum_site/widgets/select-plus-any-widget.html"
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context["genres"] = GENRE_LIST
+        context["choices"] = self.choices
         return context
 
 
@@ -22,7 +20,9 @@ class SelectPlusCustomWidget(forms.Select):
 
 
 class SlashSeparatedValueCheckboxWidget(forms.Select):
-    template_name = "museum_site/widgets/slash-separated-value-checkbox-widget.html"
+    template_name = (
+        "museum_site/widgets/slash-separated-value-checkbox-widget.html"
+    )
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
@@ -43,3 +43,31 @@ class SlashSeparatedValueWidget(forms.Widget):
 
 class UploadFileWidget(forms.FileInput):
     template_name = "museum_site/widgets/upload-file-widget.html"
+    zfi = []
+    filename = ""
+    size = 0
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["zfi"] = self.zfi
+        context["filename"] = self.filename
+        context["size"] = self.size
+        return context
+
+
+    def set_info(self, filename, file_list, size):
+        self.filename = filename
+        self.zfi = file_list
+        self.size = size
+
+
+class GroupedCheckboxWidget(forms.Widget):
+    template_name = "museum_site/widgets/grouped-checkbox-widget.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["choices"] = self.choices
+        context["name"] = name
+        context["value"] = value
+        print("VALUE", value)
+        return context

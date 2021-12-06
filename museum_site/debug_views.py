@@ -24,6 +24,18 @@ def debug(request):
     return render(request, "museum_site/debug.html", data)
 
 
+def debug_advanced_search(request):
+    data = {"title": "Advanced Search"}
+
+    if request.method == "POST":
+        form = AdvancedSearchForm(request.POST)
+    else:
+        form = AdvancedSearchForm(initial={"reviews": "any", "articles": "any", "details":[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY]})
+
+    data["form"] = form
+    return render(request, "museum_site/debug-advanced-search.html", data)
+
+
 def debug_article(request, fname=""):
     data = {"id": 0}
     data["TODO"] = "TODO"
@@ -81,135 +93,3 @@ def debug_colors(request):
             data["stylesheets"][stylesheet].sort()
 
     return render(request, "museum_site/debug_colors.html", data)
-
-
-def debug_upload(request):
-    data = {
-        "title": "New Upload System"
-    }
-
-    # Edit -- ArticleForm(request.POST, instance=a)
-
-    if not UPLOADS_ENABLED:
-        return redirect("/")
-
-    if request.META["REMOTE_ADDR"] in BANNED_IPS:
-        return HttpResponse("Banned account.")
-
-    if request.method == "POST":
-        zgame_form = ZGameForm(request.POST, request.FILES)
-        play_form = PlayForm(request.POST)
-        upload_form = UploadForm(request.POST)
-        download_form = DownloadForm(request.POST)
-
-        # Patch in the specified filename to use for preview images as valid
-        gpi = request.POST.get("generate_preview_image")
-        if gpi and gpi not in ("AUTO", "NONE"):
-            upload_form.fields["generate_preview_image"].choices = upload_form.fields["generate_preview_image"].choices + [(gpi, gpi)]
-
-        # Set the maximum upload size properly
-        zgame_form.max_upload_size = get_max_upload_size(request)
-
-        # Validate
-        success = True
-        if zgame_form.is_valid():
-            print("Zgame component is correct")
-        else:
-            success = False
-            print("Zgame component is INCORRECT")
-
-        if play_form.is_valid():
-            print("Play component is correct")
-        else:
-            success = False
-            print("Play component is INCORRECT")
-
-        if upload_form.is_valid():
-            print("Upload component is correct")
-        else:
-            success = False
-            print("Upload component is INCORRECT")
-
-        if download_form.is_valid():
-            print("Download component is correct")
-        else:
-            success = False
-            print("Download component is INCORRECT")
-
-        if success:
-            print("SUCCESS IS TRUE")
-            # TODO Handle editing uploads
-
-            # Move the uploaded file to its destination directory
-            upload_directory = os.path.join(SITE_ROOT, "zgames/uploaded")
-            uploaded_file = request.FILES["zfile"]
-            file_path = os.path.join(upload_directory, uploaded_file.name)
-            with open(file_path, 'wb+') as fh:
-                for chunk in uploaded_file.chunks():
-                    fh.write(chunk)
-
-            # Create and prepare new File object
-            zfile = zgame_form.save(commit=False)
-            zfile.filename = uploaded_file.name
-            zfile.size = uploaded_file.size
-            zfile.letter = zfile.letter_from_title()
-            zfile.release_source = "User upload"
-            zfile.calculate_checksum(file_path)
-            zfile.calculate_sort_title()
-            zfile.calculate_boards()
-            zfile.basic_save()
-            zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
-
-            # Create and prepare new Upload object
-            upload = upload_form.save(commit=False)
-            upload.file_id = zfile.id
-            upload.generate_edit_token()
-            upload.ip = request.META.get("REMOTE_ADDR")
-            if request.user.is_authenticated:
-                upload.user_id = request.user.id
-            upload.file_id = zfile.id
-            upload.save()
-
-            # Play Form
-            zeta_config_id = int(play_form.cleaned_data["zeta_config"])
-            zfile.zeta_config_id = zeta_config_id
-
-            # Download Form
-            download = download_form.save()
-            zfile.downloads.add(download)
-
-            # Generate Screenshot
-            gpi = upload_form.cleaned_data["generate_preview_image"]
-            if gpi is not None:
-                if gpi.upper().endswith(".ZZT"):
-                    zfile.generate_screenshot(world=gpi)
-                if gpi == "AUTO":
-                    zfile.generate_screenshot()
-
-            # Make Announcement (if needed)
-            discord_announce_upload(upload)
-
-            # Calculate queue size
-            request.session["FILES_IN_QUEUE"] = (
-                File.objects.unpublished().count()
-            )
-
-            # Final save
-            zfile.basic_save()
-            print("End of success block!")
-
-
-        else:
-            print("AN ERROR WAS DETECTED SOMEWHERE!")
-
-    else:  # Blank form
-        zgame_form = ZGameForm(initial={"author": "", "explicit": 0, "language": "en",})
-        play_form = PlayForm()
-        upload_form = UploadForm(initial={"announced": 0})
-        download_form = DownloadForm()
-
-    data["zgame_form"] = zgame_form
-    data["play_form"] = play_form
-    data["upload_form"] = upload_form
-    data["download_form"] = download_form
-    return render(request, "museum_site/new_upload.html", data)

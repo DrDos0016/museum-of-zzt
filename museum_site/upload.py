@@ -70,7 +70,7 @@ class Upload(models.Model):
     def from_request(self, request, file_id, save=True):
         self.file_id = file_id
         if not self.edit_token:
-            self.generate_edit_token
+            self.generate_edit_token()
         self.notes = request.POST.get("notes", "")
         self.email = request.POST.get("email")
         self.contact = int(request.POST.get("contact", 0))
@@ -89,7 +89,9 @@ class Upload(models.Model):
     def edit_token_url(self):
         return self.edit_token
 
-    def generate_edit_token(self):
+    def generate_edit_token(self, force=True):
+        if self.edit_token and not force:
+            return False
         self.edit_token = ""
         while len(self.edit_token) < 12:
             self.edit_token += random.choice("0123456789ABCDEF")

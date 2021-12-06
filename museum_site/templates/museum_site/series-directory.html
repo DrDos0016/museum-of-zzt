@@ -1,0 +1,15 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<section id="content" class="block">
+
+<h1>Series Directory</h1>
+
+{% include "museum_site/blocks/paginator_block.html" %}
+
+{% for series in page %}
+{% include "museum_site/blocks/series-detailed-block.html" %}
+{% endfor %}
+</section>
+{% endblock %}

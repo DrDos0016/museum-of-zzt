@@ -2,11 +2,11 @@
 
 {% block content %}
 <section id="content" class="block">
-    <b>Upload Successful!</b><br>
-    <p>The following file has been added to the upload queue. Please wait patiently for it to be published.</p>
+    <h1>Upload Complete</h1>
+    <p>The following file has been added to the upload queue. Please wait patiently for it to be published. Typically publication occurs when the queue has eight or more uploads, though this is not a hard rule.</p>
 
     <p>If you have discovered an error with your uploaded file, or its data, you may edit it prior to its publication/rejection using the following edit token:
-    <b><a href="/upload?token={{your_upload.edit_token}}">{{your_upload.edit_token}}</a></b></p>
+    <b><a href="{% url 'upload' %}?token={{upload.edit_token}}">{{upload.edit_token}}</a></b></p>
 
     {% include "museum_site/blocks/file_detailed_block.html" %}
 </section>

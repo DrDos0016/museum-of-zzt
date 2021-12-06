@@ -1,0 +1,16 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<section id="content" class="block">
+
+<h1>Series Overview</h1>
+
+{% include "museum_site/blocks/series-detailed-block.html" %}
+
+<h2>Articles in Series</h2>
+{% for article in articles %}
+{% include "museum_site/blocks/article_detailed_block.html" %}
+{% endfor %}
+</section>
+{% endblock %}

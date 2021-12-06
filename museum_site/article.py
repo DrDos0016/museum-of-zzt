@@ -113,6 +113,7 @@ class Article(models.Model):
     allow_comments  -- Allow user comments on the article
     spotlight       -- Allow appearance on front page
     static_directory-- Directory for static files used in the article
+    series          -- Series the article is a part of
     """
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=50)
@@ -148,12 +149,23 @@ class Article(models.Model):
                    "stored.")
     )
 
+    # Associations
+    series = models.ManyToManyField("Series", default=None, blank=True)
+
     class Meta:
         ordering = ["title"]
 
     def __str__(self):
         output = "[" + str(self.id) + "] " + self.title + " by " + self.author
         return output
+
+    def save(self, *args, **kwargs):
+        # Update dates for series
+        all_series = self.series.all()
+        if all_series:
+            for s in all_series:
+                s.save()
+        super(Article, self).save(*args, **kwargs)
 
     def url(self):
         return "/article/" + str(self.id) + "/" + slugify(self.title)
@@ -189,3 +201,34 @@ class Article(models.Model):
         """ Returns a human readable string for the article's publication
         state. """
         return ARTICLE_PUBLISH[self.published - 1][1].lower()
+
+
+    def series_links(self):
+        """ Returns HTML links to related series """
+        output = ""
+
+        for s in self.series.all():
+            output += '<a href="{}">{}</a>, '.format(s.url(), s.title)
+
+        return output[:-2]
+
+    def series_range(self):
+        """ Returns a list of Articles with this article in the middle """
+        output = []
+        # TODO Better handling an article being in multiple series
+        series = self.series.all().first()
+
+        found_self = False
+        remaining = 2
+        for a in series.article_set.all().order_by("publish_date"):
+            if remaining < 1:
+                break
+            if found_self:
+                remaining -= 1
+
+            output.append(a)
+
+            if a.id == self.id:
+                found_self = True
+
+        return output[-5:]

@@ -78,7 +78,7 @@ class WoZZT_Queue(models.Model):
         world_choices = []
         for f in files:
             filename = f.lower()
-            if filename.endswith(".zzt"):
+            if filename.endswith(".zzt") and ("__MACOSX" not in filename):
                 world_choices.append(f)
 
         if not world_choices:

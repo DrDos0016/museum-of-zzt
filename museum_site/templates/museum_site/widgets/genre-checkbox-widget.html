@@ -1,5 +1,0 @@
-<div class="scrolling-checklist" id="genre-checklist">
-{% for genre in genres %}
-<label><input name="genre" type="checkbox" value="{{genre}}"{% if genre in requested_genres %} checked{% endif %}> {{genre}}</label>
-{% endfor %}
-</div>

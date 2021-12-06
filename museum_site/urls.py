@@ -17,6 +17,7 @@ import museum_site.feeds  # noqa: E402
 import museum_site.help_views  # noqa: E402
 import museum_site.review_views  # noqa: E402
 import museum_site.search_views  # noqa: E402
+import museum_site.series_views  # noqa: E402
 import museum_site.tool_views  # noqa: E402
 import museum_site.user_views  # noqa: E402
 import museum_site.upload_views  # noqa: E402
@@ -261,6 +262,14 @@ urlpatterns = [
         "review/<str:letter>/<str:filename>/",
         museum_site.file_views.review, name="reviews"),
 
+    # Series
+    path(
+        "series/", museum_site.series_views.series_directory,
+        name="series_directory"),
+    path(
+        "series/<int:series_id>/<slug:slug>", museum_site.series_views.series_overview,
+        name="series_overview"),
+
     # Search
     path(
         "advanced-search/", museum_site.search_views.advanced_search,
@@ -391,8 +400,11 @@ urlpatterns = [
     # Uploads
     path("upload/", museum_site.upload_views.upload, name="upload"),
     path(
-        "upload/complete/", museum_site.upload_views.upload_complete,
+        "upload/complete/<str:token>/", museum_site.upload_views.upload_complete,
         name="upload_complete"),
+    path(
+        "upload/edit/", museum_site.upload_views.upload_edit,
+        name="upload_edit"),
 
     # Zeta Live
     path("zeta-live/", museum_site.zeta_views.zeta_live),
@@ -527,7 +539,10 @@ urlpatterns = [
         "debug/forms/", museum_site.views.generic,
         {"template": "debug-forms", "title": "Form Debug"}),
     path("ajax/debug_file/", museum_site.ajax.debug_file),
-    path("debug/upload/", museum_site.debug_views.debug_upload),
+    path("debug/advanced-search/", museum_site.debug_views.debug_advanced_search),
+    #path("debug/upload/", museum_site.debug_views.debug_upload),
+    #path("debug/upload/complete/<str:token>/", museum_site.debug_views.debug_upload_complete),
+    #path("debug/upload/edit/", museum_site.debug_views.debug_upload_edit),
 ]
 
 if DEBUG:

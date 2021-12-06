@@ -9,6 +9,7 @@ from random import randint, seed, shuffle
 
 from django.db import models
 from django.db.models import Avg, Q
+from django.template.defaultfilters import date, filesizeformat
 
 try:
     import zookeeper
@@ -16,7 +17,10 @@ try:
 except ImportError:
     HAS_ZOOKEEPER = False
 
-from .common import slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP, STATIC_PATH
+from .common import (
+    slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP,
+    STATIC_PATH
+)
 from .constants import SITE_ROOT, REMOVED_ARTICLE, ZETA_RESTRICTED, LANGUAGES
 from .review import Review
 
@@ -260,7 +264,9 @@ class File(models.Model):
 
     # Associations
     aliases = models.ManyToManyField("Alias", default=None, blank=True)
-    articles = models.ManyToManyField("Article", default=None, blank=True, editable=False)
+    articles = models.ManyToManyField(
+        "Article", default=None, blank=True, editable=False
+    )
     article_count = models.IntegerField(
         default=0, editable=False
     )
@@ -283,13 +289,16 @@ class File(models.Model):
     def save(self, *args, **kwargs):
         # Pre save
         # Force lowercase letter
-        self.letter = self.letter.lower()
+        if not self.letter:
+            self.letter = self.letter_from_title()
+        else:
+            self.letter = self.letter.lower()
 
         # Sort genres
         self.genre = slash_separated_sort(self.genre)
 
         # Create sorted title
-        self.sort_title = self.calculate_sort_title()
+        self.calculate_sort_title()
 
         # Recalculate Article Count
         self.calculate_article_count()
@@ -414,7 +423,7 @@ class File(models.Model):
                 '{text}{ellipses}</a>').format(
             url=url,
             text=text,
-            explicit_class=(" explicit" if "Explicit" in self.genre else ""),
+            explicit_class=(" explicit" if self.explicit else ""),
             ellipses=ellipses
         )
         return html
@@ -489,6 +498,16 @@ class File(models.Model):
     def language_list(self):
         short = self.language.split("/")
         return ", ".join(map(LANGUAGES.get, short))
+
+    def ssv_list(self, attr):
+        return getattr(self, attr).split("/")
+
+    def ssv_links(self, attr, url):
+        output = ""
+        array = self.ssv_list(attr)
+        for i in array:
+            output += '<a href="{}">{}</a>, '.format(url, i)
+        return output
 
     def is_lost(self):
         lost = self.details.all().values_list("id", flat=True)
@@ -784,7 +803,9 @@ class File(models.Model):
 
         return features
 
-    def generate_screenshot(self, world=None, board=0, font=None):
+    def generate_screenshot(
+        self, world=None, board=0, font=None, filename=None
+    ):
         # Get zip contents
         zf = zipfile.ZipFile(self.phys_path())
 
@@ -814,7 +835,11 @@ class File(models.Model):
             self.letter + "/" + self.filename[:-4],
             title_screen=(not bool(board))
         )
-        self.screenshot = self.filename[:-4] + ".png"
+
+        if filename is None:
+            self.screenshot = self.filename[:-4] + ".png"
+        else:
+            self.screenshot = filename
         self.save()
 
         # Delete the extracted world
@@ -823,6 +848,133 @@ class File(models.Model):
 
         return True
 
+    def get_zip_info(self):
+        try:
+            zfh = zipfile.ZipFile(self.phys_path())
+        except FileNotFoundError:
+            return []
+        return zfh.infolist()
+
     @property
     def identifier(self):
         return self.letter + "/" + self.filename
+
+
+    def links(self):
+        # Defaults
+        output = {
+            "download": {
+                "visible": True,
+                "text": "Download",
+                "url": self.download_url,
+                "classes": [],
+            },
+            "play": {
+                "visible": True,
+                "text": "Play Online",
+                "url": self.play_url,
+                "classes": [],
+            },
+            "view": {
+                "visible": True,
+                "text": "View Files",
+                "url": self.file_url,
+                "classes": [],
+            },
+            "review": {
+                "visible": True,
+                "text": "Reviews ({})".format(self.review_count),
+                "url": self.review_url,
+                "classes": [],
+            },
+            "article": {
+                "visible": True,
+                "text": "Articles ({})".format(self.article_count),
+                "url": self.article_url,
+                "classes": [],
+            },
+            "attributes": {
+                "visible": True,
+                "text": "Attributes",
+                "url": self.attributes_url,
+                "classes": [],
+            },
+        }
+
+        # Modifiers
+        # Multiple Downloads
+        if self.downloads.count():
+            output["download"]["text"] = "Downloads…"
+            output["download"]["url"] = "/download/{}".format(self.identifier)
+
+        # Explicit
+        if self.explicit:
+            output["download"]["classes"].append(" explicit")
+            output["play"]["classes"].append(" explicit")
+            output["view"]["classes"].append(" explicit")
+
+        # Missing File
+        if self.is_lost():
+            output["download"]["visibile"] = False
+            output["play"]["visibile"] = False
+            output["view"]["visible"] = False
+
+        # Unsupported Play Online Functionality
+        if (not self.supports_zeta_player()) or self.archive_name == "":
+            output["play"]["visible"] = False
+        # Exception for uploads
+        if (self.is_uploaded()):
+            output["play"]["visible"] = True
+
+        # Unpublished file
+        if self.is_uploaded():
+            output["review"]["visible"] = False
+
+        # No Articles
+        if self.article_count < 1:
+            output["article"]["visible"] = False
+        return output
+
+    def overview(self):
+        # Defaults
+        output = {
+            "basic": [
+                {
+                    "visible": True,
+                    "label": "Author",
+                    "value": self.ssv_links("author", "---"),
+                    "classes": [],
+                },
+                {
+                    "visible": True,
+                    "label": "Company",
+                    "value": self.ssv_links("company", "---"),
+                    "classes": [],
+                },
+                {
+                    "visible": True,
+                    "label": "Released",
+                    "value": date(self.release_date),
+                    "classes": [],
+                },
+                {
+                    "visible": True,
+                    "label": "Genre",
+                    "value": self.ssv_links("genre", "---"),
+                    "classes": [],
+                },
+                {
+                    "visible": True,
+                    "label": "Filename",
+                    "value": self.filename,
+                    "classes": [],
+                },
+                {
+                    "visible": True,
+                    "label": "Size",
+                    "value": filesizeformat(self.size),
+                    "classes": [],
+                },
+            ],
+        }
+        return output

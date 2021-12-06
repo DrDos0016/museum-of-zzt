@@ -53,6 +53,7 @@
 <tr><th>Boards Playable/Total</th><td>{{file.playable_boards}} / {{file.total_boards}}</td></tr>
 <tr><th>MD5 Checksum</td><td class="caps">{{file.checksum}}</td></tr>
 <tr><th>Company</th><td>{{file.company|default:"<i>None</i>"}}</td></tr>
+<tr><th>Explicit</th><td>{{file.explicit}}</td></tr>
 <tr><th>Description</th><td>{% if file.description %}<textarea>{{file.description}}</textarea>{% else %}<i>None</i>{% endif %}</td></tr>
 <tr><th>Alternate Downloads</th><td><a href="#heading-downloads">{{file.downloads.count}}</a></td></tr>
 <tr><th>Details</th><td><a href="#heading-details">{{file.details.count}}</a></td></tr>

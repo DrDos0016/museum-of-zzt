@@ -1,14 +1,22 @@
 from django import forms
-from .models import File, Upload, Zeta_Config, Download
+from .models import File, Upload, Zeta_Config, Download, Detail
 from .widgets import *
-from .constants import LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES
+from .common import GENRE_LIST, YEAR
+from .constants import LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, DETAIL_REMOVED
 
 
 class ZGameForm(forms.ModelForm):
-    zfile = forms.FileField(help_text="Select the file you wish to upload. All uploads <i>must</i> be zipped.", label="File", widget=UploadFileWidget())
+    zfile = forms.FileField(
+        help_text=("Select the file you wish to upload. "
+                   "All uploads <i>must</i> be zipped."),
+        label="File", widget=UploadFileWidget()
+    )
 
     use_required_attribute = False
-    max_upload_size = 0  # Properly set this value in a view
+    # Properties handled in view
+    max_upload_size = 0
+    editing = False
+    expected_file_id = 0  # For replacing a zip
 
     class Meta:
         model = File
@@ -21,17 +29,56 @@ class ZGameForm(forms.ModelForm):
 
         help_texts = {
             "title": "Leave A/An/The as the first word if applicable.",
-            "author": "Separate multiple authors with a comma. Do not abbreviate names. "
-                      "For files with many authors, consider using the compiler as the author with \"Various\" to represent the rest.",
-            "company": "The company this file is published under. If there is none, leave this field blank. If there are multiple, separate them with a comma.",
-            "genre": "Check any applicable genres that describe the content of the uploaded file.",
-            "release_date": "Enter the date this file was first made public. If this is a new release, it should be the modified date of the most recent ZZT world (or executable, or other primary file). If the release date is not known, leave this field blank.",
-            "release_source": "Where the data for the release date is coming from",
-            "language": 'Check any languages the player is expected to understand to comprehend the files in the upload. For worlds exclusively using created languages, use "Other".',
+            "author": (
+                "Separate multiple authors with a comma. Do not abbreviate "
+                "names.<br>"
+                "For files with many authors, consider using the compiler as "
+                "the author with \"Various\" to represent the rest. Try to "
+                "sort multiple authors from most to least important on this "
+                "particular upload."
+            ),
+            "company": (
+                "Any companies this file is published under. If there are "
+                "none, leave this field blank. If there are multiple, "
+                "separate them with a comma."
+            ),
+            "genre": (
+                "Check any applicable genres that describe the content of the "
+                "uploaded file. Use 'Other' if a genre isn't represented and "
+                "mention it in the upload notes field in the Upload Settings "
+                "section."
+            ),
+            "release_date": (
+                "Enter the date this file was first made public. If this is a "
+                "new release, it should be the modified date of the most "
+                "recent ZZT world (or executable, or other primary file). If "
+                "the release date is not known, leave this field blank."
+            ),
+            "release_source": (
+                "Where the data for the release date is coming from"
+            ),
+            "language": (
+                'Check any languages the player is expected to understand to '
+                'comprehend the files in the upload. For worlds exclusively '
+                'using created languages, use "Other". If a language is not '
+                'listed, use "Other" and specify the correct language in the '
+                'upload notes section.'
+            ),
             "license": "The license under which this world is published.",
-            "license_source": "Where the license can be found. Use a source contained within the uploaded file when possible.",
-            "description": "An optional description of the upload. For utilities, please be sure to fill this out.",
-            "explicit": "Check this box if the upload contains material not suitable for minors or non-consenting adults. Uploads marked as explicit will require confirmation before accessing and never appear in Worlds of ZZT bot posts.",
+            "license_source": (
+                "Where the license can be found. Use a source contained "
+                "within the uploaded file when possible."
+            ),
+            "description": (
+                "An optional description of the upload. For utilities, please "
+                "be sure to fill this out."
+            ),
+            "explicit": (
+                "Check this box if the upload contains material not suitable "
+                "for minors or non-consenting adults. Uploads marked as "
+                "explicit will require confirmation before accessing and "
+                "never appear in Worlds of ZZT bot posts."
+            ),
         }
 
         widgets = {
@@ -51,7 +98,10 @@ class ZGameForm(forms.ModelForm):
                 choices=list(zip(GENRE_LIST, GENRE_LIST))
             ),
             "explicit": forms.RadioSelect(
-                choices=((0, "This upload does not contain explicit content"), (1, "This upload contains explicit content")),
+                choices=(
+                    (0, "This upload does not contain explicit content"),
+                    (1, "This upload contains explicit content")
+                ),
             ),
             "release_date": forms.DateInput(
                 format=("%y-%m-%d"),
@@ -72,23 +122,53 @@ class ZGameForm(forms.ModelForm):
     def clean_zfile(self):
         zfile = self.cleaned_data["zfile"]
 
-        if zfile.size > self.max_upload_size:
-            raise forms.ValidationError("File exceeds your maximum upload size! Contact Dr. Dos for a manual upload.")
+        if zfile and zfile.name:
+            dupe = File.objects.filter(filename=zfile.name).first()
+            if dupe and dupe.id != self.expected_file_id:
+                raise forms.ValidationError(
+                    "The selected filename is already in use. "
+                    "Please rename your zipfile."
+                )
+
+        if zfile and zfile.size > self.max_upload_size:
+            raise forms.ValidationError(
+                "File exceeds your maximum upload size! "
+                "Contact Dr. Dos for a manual upload."
+            )
 
 
 class PlayForm(forms.Form):
-    zeta_config = forms.ChoiceField(choices=Zeta_Config.objects.select_list(), label="Configuration", help_text='Choose the intended configuration for playing the upload in the browser. If this upload cannot be ran with Zeta, select "Incompatible with Zeta" at the end of the list. For the vast majority of ZZT worlds "ZZT v3.2R" is the correct choice.' )
+    zeta_config = forms.ChoiceField(
+        choices=Zeta_Config.objects.select_list(),
+        label="Configuration",
+        help_text=(
+            'Choose the intended configuration for playing the upload in the '
+            'browser. If this upload cannot be ran with Zeta, select '
+            '"Incompatible with Zeta" at the end of the list. For the vast '
+            'majority of ZZT worlds "ZZT v3.2 (Registered)" is the correct '
+            'choice.'
+        )
+    )
 
 
 class UploadForm(forms.ModelForm):
     generate_preview_image = forms.ChoiceField(
-        help_text="Select a ZZT file whose title screen will be used for the world's preview image. Leave set to 'Automatic' to use the oldest file in the zip file. This image may be changed during publication. This option cannot be changed after upload.",
-        choices=[("AUTO", "Automatic"), ("NONE", "Do Not Generate Preview Image")]  # Must be a list to be added to later
-        )
+        choices=[  # List rather than tuple so it can be modified later
+            ("AUTO", "Automatic"),
+            ("NONE", "None")
+        ],
+        help_text=(
+            "Select a ZZT file whose title screen will be used for the world's "
+            "preview image. Leave set to 'Automatic' to use the oldest file in "
+            "the zip file. This image may be changed during publication."
+        ),
+
+    )
+    edit_token = forms.CharField(required=False, widget=forms.HiddenInput())
 
     class Meta:
         model = Upload
-        fields = ["generate_preview_image", "notes", "announced"]
+        fields = ["generate_preview_image", "notes", "announced", "edit_token"]
 
         labels = {
             "generate_preview_image": "Preview image",
@@ -97,24 +177,49 @@ class UploadForm(forms.ModelForm):
             }
 
         help_texts = {
-            "notes": "Notes for staff to read before publication such as special instructions before publishing. While not visible to users on the site directly, consider anything entered in this field to be public.",
-            "announced": "New uploads are automatically shared to the Discord of ZZT's announcements channel. You may choose to not announce the upload. The upload will still appear publically in the upload queue and on RSS feeds.",
+            "notes": (
+                "Notes for staff to read before publication such as special "
+                "instructions before publishing. While not visible to users on "
+                "the site directly, consider anything entered in this field to "
+                "be public."
+            ),
+            "announced": (
+                "New uploads are automatically shared to the Discord of ZZT's "
+                "announcements channel. You may choose to not announce the "
+                "upload. The upload will still appear publically in the upload "
+                "queue and on RSS feeds."
+            ),
         }
 
         widgets = {
             "announced": forms.RadioSelect(
-                choices=((0, "Announce this upload"), (1, "Do not announce this upload")),
-            )
+                choices=(
+                    (0, "Announce this upload"),
+                    (1, "Do not announce this upload")
+                ),
+            ),
+            "Xedit_token": forms.HiddenInput(),
         }
 
 
 class DownloadForm(forms.ModelForm):
     use_required_attribute = False
-    url = forms.URLField(required=False, label="URL", help_text="An alternate location to acquire this file. The link should lead to an active page where the file can be downloaded <b>not</b> a direct link to the hosted file. The URL should direct to a webpage with an official release by the file's author, not an alternative ZZT archive, the Internet Archive, or a defunct but still online webpage.")
+    url = forms.URLField(
+        required=False,
+        label="URL",
+        help_text=(
+            "An alternate location to acquire this file. The link "
+            "should lead to an active page where the file can be downloaded "
+            "<b>not</b> a direct link to the hosted file. The URL should "
+            "direct to a webpage with an official release by the file's "
+            "author, not an alternative ZZT archive, the Internet Archive, or "
+            "any unmaintained webpage."
+        )
+    )
 
     class Meta:
         model = Download
-        fields = ["url", "kind"]
+        fields = ["url", "kind", "hosted_text"]
 
         labels = {
             "url": "URL",
@@ -122,5 +227,71 @@ class DownloadForm(forms.ModelForm):
         }
 
         help_texts = {
-            "kind": "The type of webpage this file is hosted on. This is used to determine an icon to display when selecting an alternate download source."
+            "kind": (
+                "The type of webpage this file is hosted on. This is used to "
+                "determine an icon to display when selecting an alternate "
+                "download source."
+            ),
+            "hosted_text": (
+                "For non-Itch download sources only. On the file's downloads "
+                "page, the text entered here will be prefixed with "
+                "\"Hosted on\"."
+            ),
         }
+
+
+class AdvancedSearchForm(forms.Form):
+    use_required_attribute = False
+    required = False
+
+    title = forms.CharField(label="Title contains")
+    author = forms.CharField(label="Author contains")
+    filename = forms.CharField(label="Filename contains")
+    company = forms.CharField(label="Company contains")
+    genre = forms.ChoiceField(
+        widget=SelectPlusAnyWidget,
+        choices=list(zip(GENRE_LIST, GENRE_LIST))
+    )
+    #min_boards = forms.IntegerField()
+    #max_boards = forms.IntegerField()
+    year = forms.ChoiceField(
+        widget=SelectPlusAnyWidget,
+        choices=((str(x), str(x)) for x in range(1991, YEAR + 1))
+    )
+    #rating
+    language = forms.ChoiceField(
+        widget=SelectPlusAnyWidget,
+        choices=LANGUAGE_CHOICES
+    )
+    reviews = forms.ChoiceField(
+        widget=forms.RadioSelect(),
+        choices=(
+            ("yes", "Show files with reviews"),
+            ("no", "Show files without reviews"),
+            ("any", "Show both")
+        ),
+    )
+    articles = forms.ChoiceField(
+        widget=forms.RadioSelect(),
+        choices=(
+            ("yes", "Show files with articles"),
+            ("no", "Show files without articles"),
+            ("any", "Show both")
+        ),
+    )
+    details = forms.ChoiceField(
+        widget=GroupedCheckboxWidget(
+        ),
+        choices=Detail.objects.advanced_search_categories()
+    )
+    sort = forms.ChoiceField(
+        label="Sort by",
+        choices=(
+            ("title", "Title"),
+            ("author", "Author"),
+            ("company", "Company"),
+            ("rating", "Rating"),
+            ("release", "Release Date"),
+        )
+    )
+

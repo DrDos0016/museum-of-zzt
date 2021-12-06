@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.urls import path
 
 import poll.views
 
 urlpatterns = [
-    url(r"^$", poll.views.index, name="poll_index"),
-    url(r"^results/(?P<poll_id>[0-9]+)$", poll.views.index, name="poll_index"),
+    path("", poll.views.index, name="poll_index"),
+    path("results/<int:poll_id>/", poll.views.index, name="poll_results"),
 ]

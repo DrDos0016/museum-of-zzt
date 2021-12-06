@@ -12,10 +12,14 @@ from django.utils.safestring import mark_safe
 from museum.settings import STATIC_URL
 from museum_site.models import File, Article
 from museum_site.constants import (
-    ADMIN_NAME, SITE_ROOT, TIER_NAMES, PROTOCOL, DOMAIN
+    ADMIN_NAME, SITE_ROOT, TIER_NAMES, PROTOCOL, DOMAIN, LANGUAGES
 )
 
 register = Library()
+
+LOOKUPS = {
+    "language": LANGUAGES,
+}
 
 
 @register.filter
@@ -340,3 +344,17 @@ class Spoiler(template.Node):
             self.display, text
         )
         return output
+
+
+@register.simple_tag()
+def ssv_links(raw, param, lookup=""):
+    output = ""
+    items = raw.split("/")
+    lookup = LOOKUPS.get(lookup, {})
+
+    for i in items:
+        output += "<a href='/search?{}={}'>{}</a>, ".format(
+            param, i, lookup.get(i, i)
+        )
+
+    return mark_safe(output[:-2] + "\n")

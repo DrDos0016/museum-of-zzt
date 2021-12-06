@@ -23,6 +23,7 @@ def advanced_search(request):
     data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
     data["details_list"] = list(map(int, data["details_list"]))
     data["detail_cats"] = Detail.objects.advanced_search_categories()
+    data["languages"] = LANGUAGE_CHOICES
 
     return render(request, "museum_site/advanced_search.html", data)
 
@@ -212,6 +213,9 @@ def search(request):
                 )
         if (request.GET.getlist("details")):
             qs = qs.filter(details__id__in=request.GET.getlist("details"))
+
+        if (request.GET.get("lang") and request.GET["lang"] != "Any"):
+            qs = qs.filter(language__contains=request.GET["lang"])
 
         # Filter by reviews
         if (request.GET.get("reviews", "any") != "any"):

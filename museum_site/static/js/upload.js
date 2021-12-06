@@ -51,6 +51,7 @@ $(document).ready(function (){
     $(".upload-area").on("dragover", function(e) {
         e.preventDefault();
         e.stopPropagation();
+        $(this).addClass("dragging");
     });
 
     $(".upload-area").on("dragleave", function(e) {
@@ -120,14 +121,40 @@ $(document).ready(function (){
         var checked = $(this).prop("checked");
         var name = $(this).attr("name").slice(0, -9); // Strip "-checked"
         var ssv = "";
+        var hr = "";
         $("input[name=" + name + "-checkbox]").each(function (idx){
             if ($(this).prop("checked"))
+            {
                 ssv += $(this).val() + "/";
+                hr += $(this).parent().text() + ", ";
+                $(this).parent().addClass("selected");
+            }
+            else
+            {
+                $(this).parent().removeClass("selected");
+            }
         });
         if (ssv.endsWith("/"))
             ssv = ssv.slice(0, -1);
+        if (hr.endsWith(", "))
+            hr = hr.slice(0, -2);
+        if (hr == "")
+            hr = "...";
         $("#id_" + name).val(ssv);
+        $("#" + name + "-checklist-hr").html(hr);
     });
+
+    // Toggle "Hosted text" visibility based on Category
+    $("#id_kind").change(function (){
+        if ($("#id_kind").val() != "itch")
+            $(".field-wrapper[data-field='hosted_text']").show();
+        else
+        {
+            $(".field-wrapper[data-field='hosted_text']").hide();
+            $("#id_hosted_text").val("");
+        }
+    });
+    $("#id_kind").change() // Call event on page load
 });
 
 
@@ -146,12 +173,13 @@ function update_ssv(key)
 
 function add_ssv_entry(key, val)
 {
-    $("#"+key+"-list").append("<div class='ssv-tag' draggable='true'><div class='ssv-val' data-val='"+val+"' data-key='"+key+"'>"+val+"</div><div class='ssv-remove' title='Click to remove'>✖</span></div>");
+    var idx = $("#"+key+"-list").data("idx") + 1;
+    $("#"+key+"-list").data("idx", idx);
+    $("#"+key+"-list").append("<div class='ssv-tag' draggable='true' data-idx='"+idx+"'><div class='ssv-val' data-val='"+val+"' data-key='"+key+"'>"+val+"</div><div class='ssv-remove' title='Click to remove'>✖</span></div>");
 }
 
 function remove_ssv_entry(selector, key)
 {
-    console.log(selector);
     selector.parent().remove();
     update_ssv(key);
 }
@@ -164,8 +192,18 @@ function repopulate_checkboxes(name)
     var list = raw.split("/");
     $("input[name=" + name + "-checkbox]").each(function (idx){
         if (list.indexOf($(this).val()) != -1)
+        {
             $(this).prop("checked", true);
+            $(this).parent().addClass("selected");
+            $("#" + name + "-checklist-hr").append($(this).parent().text() + ", ");
+        }
     });
+    $("#" + name + "-checklist-hr").html(
+        $("#" + name + "-checklist-hr").html().slice(4, -2)
+    );
+
+    if ($("#" + name + "-checklist-hr").html() == "")
+        $("#" + name + "-checklist-hr").html("...");
 }
 
 
@@ -178,6 +216,7 @@ function repopulate_ssv(name)
         if (list[idx])
             add_ssv_entry(name, list[idx]);
     }
+    bind_ssv_entries(name);
 }
 
 
@@ -283,6 +322,11 @@ function parse_zip_file(file)
         </ul>
         `);
 
+        // Generate options for preview images
+        $("#id_generate_preview_image > option").each(function (){
+            if ($(this).val() != "AUTO" && $(this).val() != "NONE")
+                $(this).remove();
+        });
         for(let [filename, file] of Object.entries(zip.files)) {
             //console.log(filename, file);
             if (filename.toUpperCase().endsWith(".ZZT"))
