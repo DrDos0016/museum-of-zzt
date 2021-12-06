@@ -58,7 +58,7 @@ label
 
 .field-value input[type=button]
 {
-    margin-top:7px;
+    margin:7px 0px 7px 8px;
     float:right;
     background:#DEF;
     font-family:cp437;
@@ -93,6 +93,11 @@ label
 .scrolling-checklist label + label {  border-top: 1px dotted #000; }
 .scrolling-checklist label.selected { background:#619F9F;}
 .scrolling-checklist label:hover { background:#98C9C9; }
+
+.scrolling-checklist-controls
+{
+    /*margin-top:7px;*/
+}
 
 #genre-checklist label
 {

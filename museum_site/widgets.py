@@ -1,6 +1,15 @@
 from django import forms
 
 
+class SelectPlusAnyWidget(forms.Select):
+    template_name = "museum_site/widgets/select-plus-any-widget.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["choices"] = self.choices
+        return context
+
+
 class SelectPlusCustomWidget(forms.Select):
     template_name = "museum_site/widgets/select-plus-custom-widget.html"
 
@@ -50,3 +59,15 @@ class UploadFileWidget(forms.FileInput):
         self.filename = filename
         self.zfi = file_list
         self.size = size
+
+
+class GroupedCheckboxWidget(forms.Widget):
+    template_name = "museum_site/widgets/grouped-checkbox-widget.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["choices"] = self.choices
+        context["name"] = name
+        context["value"] = value
+        print("VALUE", value)
+        return context

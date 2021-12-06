@@ -24,6 +24,18 @@ def debug(request):
     return render(request, "museum_site/debug.html", data)
 
 
+def debug_advanced_search(request):
+    data = {"title": "Advanced Search"}
+
+    if request.method == "POST":
+        form = AdvancedSearchForm(request.POST)
+    else:
+        form = AdvancedSearchForm(initial={"reviews": "any", "articles": "any", "details":[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY]})
+
+    data["form"] = form
+    return render(request, "museum_site/debug-advanced-search.html", data)
+
+
 def debug_article(request, fname=""):
     data = {"id": 0}
     data["TODO"] = "TODO"

@@ -1,8 +1,8 @@
 from django import forms
-from .models import File, Upload, Zeta_Config, Download
+from .models import File, Upload, Zeta_Config, Download, Detail
 from .widgets import *
-from .common import GENRE_LIST
-from .constants import LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES
+from .common import GENRE_LIST, YEAR
+from .constants import LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, DETAIL_REMOVED
 
 
 class ZGameForm(forms.ModelForm):
@@ -238,3 +238,60 @@ class DownloadForm(forms.ModelForm):
                 "\"Hosted on\"."
             ),
         }
+
+
+class AdvancedSearchForm(forms.Form):
+    use_required_attribute = False
+    required = False
+
+    title = forms.CharField(label="Title contains")
+    author = forms.CharField(label="Author contains")
+    filename = forms.CharField(label="Filename contains")
+    company = forms.CharField(label="Company contains")
+    genre = forms.ChoiceField(
+        widget=SelectPlusAnyWidget,
+        choices=list(zip(GENRE_LIST, GENRE_LIST))
+    )
+    #min_boards = forms.IntegerField()
+    #max_boards = forms.IntegerField()
+    year = forms.ChoiceField(
+        widget=SelectPlusAnyWidget,
+        choices=((str(x), str(x)) for x in range(1991, YEAR + 1))
+    )
+    #rating
+    language = forms.ChoiceField(
+        widget=SelectPlusAnyWidget,
+        choices=LANGUAGE_CHOICES
+    )
+    reviews = forms.ChoiceField(
+        widget=forms.RadioSelect(),
+        choices=(
+            ("yes", "Show files with reviews"),
+            ("no", "Show files without reviews"),
+            ("any", "Show both")
+        ),
+    )
+    articles = forms.ChoiceField(
+        widget=forms.RadioSelect(),
+        choices=(
+            ("yes", "Show files with articles"),
+            ("no", "Show files without articles"),
+            ("any", "Show both")
+        ),
+    )
+    details = forms.ChoiceField(
+        widget=GroupedCheckboxWidget(
+        ),
+        choices=Detail.objects.advanced_search_categories()
+    )
+    sort = forms.ChoiceField(
+        label="Sort by",
+        choices=(
+            ("title", "Title"),
+            ("author", "Author"),
+            ("company", "Company"),
+            ("rating", "Rating"),
+            ("release", "Release Date"),
+        )
+    )
+
