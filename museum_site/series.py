@@ -39,6 +39,9 @@ class Series(models.Model):
         if self.id:
             self.first_entry_date = self.article_set.all().order_by("publish_date").first().publish_date
             self.last_entry_date = self.article_set.all().order_by("publish_date").last().publish_date
+        else:
+            self.first_entry_date = "1970-01-01"
+            self.last_entry_date = "1970-01-01"
         super(Series, self).save(*args, **kwargs)
 
     def url(self):
