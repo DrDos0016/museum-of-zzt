@@ -920,7 +920,7 @@ class File(models.Model):
             output["view"]["visible"] = False
 
         # Unsupported Play Online Functionality
-        if (not self.supports_zeta_player()) or self.archive_name == "":
+        if (not self.supports_zeta_player()) and self.archive_name == "":
             output["play"]["visible"] = False
         # Exception for uploads
         if (self.is_uploaded()):
