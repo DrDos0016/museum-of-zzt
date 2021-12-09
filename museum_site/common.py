@@ -472,12 +472,12 @@ def discord_announce_review(review, env=None):
     )
 
     discord_post = (
-        "*A new review for *{}* has been posted!*\n"
+        "*A new review for {} has been posted!*\n"
         "**{}** written by {}\n"
         "Read: https://museumofzzt.com{}#rev-{}\n"
     ).format(
         review.file.title, review.title, review.author,
-        review.file.file_url(), review.id
+        review.file.review_url(), review.id
     )
 
     discord_data = {
