@@ -61,13 +61,40 @@ class UploadFileWidget(forms.FileInput):
         self.size = size
 
 
-class GroupedCheckboxWidget(forms.Widget):
-    template_name = "museum_site/widgets/grouped-checkbox-widget.html"
+class GroupedCheckboxWidget(forms.MultiWidget):
+    template_name = "museum_site/widgets/grouped-checkbox-widget.html",
+
+    def __init__(self, name="", value=[], attrs={}, widgets=[]):
+        #super().__init__(widgets=widgets)
+        self.name = name
+        self.value = value
+        self.attrs = attrs
+        self.widgets = widgets
+
+        pass
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context["choices"] = self.choices
+        #context["choices"] = self.choices
+        context["choices"] = self.add_headers(self.choices)
         context["name"] = name
         context["value"] = value
         print("VALUE", value)
+        print("LIST?", attrs)
         return context
+
+
+    def add_headers(self, choices):
+        output = []
+        for c in choices:
+            header = "Other"
+            if c[1].startswith("ZZT "):
+                header = "ZZT"
+            elif c[1].startswith("Super ZZT "):
+                header = "Super ZZT"
+            elif c[1] in [
+                "Image", "Video", "Audio", "Text", "ZZM Audio", "HTML Document"
+            ]:
+                header = "Media"
+            output.append((c[0], c[1], header))
+        return output

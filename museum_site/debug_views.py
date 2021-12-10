@@ -27,12 +27,16 @@ def debug(request):
 def debug_advanced_search(request):
     data = {"title": "Advanced Search"}
 
-    if request.method == "POST":
-        form = AdvancedSearchForm(request.POST)
+    if len(request.GET):
+        form = AdvancedSearchForm(request.GET)
+        print("HACKY TIME")
+        form.is_valid()
     else:
         form = AdvancedSearchForm(initial={"reviews": "any", "articles": "any", "details":[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY]})
 
     data["form"] = form
+    data["grouped_fields"] = ["board_min", "board_max", "board_type"]
+
     return render(request, "museum_site/debug-advanced-search.html", data)
 
 

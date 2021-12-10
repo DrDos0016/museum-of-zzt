@@ -1,11 +1,12 @@
 <div class="hr-checklist-values" id="{{name}}-checklist-hr">...</div>
 <div class="scrolling-checklist" id="{{name}}-checklist">
     {% for cat in choices %}
-    {% ifchanged %}<div class="checklist-header">{{cat.header}}</div>{% endifchanged %}
-    <label{% if cat.d.id in value %} class="selected"{% endif %}><input name="details" type="checkbox" value="{{cat.d.id}}"{% if cat.d.id in value %} checked{% endif %}> {{cat.d.detail}}</label>
+    {% ifchanged %}<div class="checklist-header">{{cat.2}}</div>{% endifchanged %}
+    <label{% if cat.0 in value %} class="selected"{% endif %}><input name="details" type="checkbox" value="{{cat.0}}"{% if cat.0 == value %} checked{% endif %}> {{cat.1}} [{{cat.0}}]</label>
     {% endfor %}
 </div>
 <div class="scrolling-checklist-controls" id="{{name}}-checklist-controls">
     <input type="button" value="Default Filters">
     <input type="button" value="Remove Filters">
+    {{value}}
 </div>

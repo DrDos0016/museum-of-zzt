@@ -1,7 +1,8 @@
 from django import forms
 from .models import File, Upload, Zeta_Config, Download, Detail
+from .fields import *
 from .widgets import *
-from .common import GENRE_LIST, YEAR
+from .common import GENRE_LIST, YEAR, any_plus
 from .constants import LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, DETAIL_REMOVED
 
 
@@ -244,24 +245,33 @@ class AdvancedSearchForm(forms.Form):
     use_required_attribute = False
     required = False
 
-    title = forms.CharField(label="Title contains")
-    author = forms.CharField(label="Author contains")
-    filename = forms.CharField(label="Filename contains")
-    company = forms.CharField(label="Company contains")
+
+    title = forms.CharField(label="Title contains", required=False)
+    author = forms.CharField(label="Author contains", required=False)
+    filename = forms.CharField(label="Filename contains", required=False)
+    company = forms.CharField(label="Company contains", required=False)
     genre = forms.ChoiceField(
-        widget=SelectPlusAnyWidget,
-        choices=list(zip(GENRE_LIST, GENRE_LIST))
+        choices=any_plus(zip(GENRE_LIST, GENRE_LIST)),
+        required=False
     )
-    #min_boards = forms.IntegerField()
-    #max_boards = forms.IntegerField()
     year = forms.ChoiceField(
-        widget=SelectPlusAnyWidget,
-        choices=((str(x), str(x)) for x in range(1991, YEAR + 1))
+        choices=any_plus(((str(x), str(x)) for x in range(1991, YEAR + 1))),
+        required=False
     )
-    #rating
+    board_min = forms.IntegerField(required=False, label="Minimum/Maximum board count")
+    board_max = forms.IntegerField(required=False)
+    board_type = forms.ChoiceField(
+        widget=forms.RadioSelect,
+        choices =[
+            ("playable", "Playable Boards"),
+            ("total", "Total Boards"),
+        ],
+        required=False,
+        )
+
     language = forms.ChoiceField(
-        widget=SelectPlusAnyWidget,
-        choices=LANGUAGE_CHOICES
+        choices=any_plus(LANGUAGE_CHOICES),
+        required=False,
     )
     reviews = forms.ChoiceField(
         widget=forms.RadioSelect(),
@@ -270,6 +280,7 @@ class AdvancedSearchForm(forms.Form):
             ("no", "Show files without reviews"),
             ("any", "Show both")
         ),
+        required=False,
     )
     articles = forms.ChoiceField(
         widget=forms.RadioSelect(),
@@ -278,11 +289,13 @@ class AdvancedSearchForm(forms.Form):
             ("no", "Show files without articles"),
             ("any", "Show both")
         ),
+        required=False
     )
-    details = forms.ChoiceField(
-        widget=GroupedCheckboxWidget(
-        ),
-        choices=Detail.objects.advanced_search_categories()
+    details = forms.MultipleChoiceField(
+        #widget=forms.SelectMultiple,
+        widget=GroupedCheckboxWidget,
+        choices=Detail.objects.form_list,
+        required=False,
     )
     sort = forms.ChoiceField(
         label="Sort by",
@@ -292,6 +305,14 @@ class AdvancedSearchForm(forms.Form):
             ("company", "Company"),
             ("rating", "Rating"),
             ("release", "Release Date"),
-        )
+        ),
+        required=False
     )
 
+    def clean(self):
+        language = self.data["language"]
+
+        print("SELF.DATA", self.data)
+
+        print("Ok?", language)
+        return language

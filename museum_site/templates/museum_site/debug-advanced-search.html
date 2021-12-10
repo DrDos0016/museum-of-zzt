@@ -9,8 +9,9 @@
 <section id="content" class="block">
 
 <h1>Advanced Search</h1>
-<form method="GET" action="{% url 'search' %}">
+<form>
 {% for field in form.visible_fields %}
+{% if field.name not in grouped_fields %}
 <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
     {{field.label_tag}}
     <div class="field-value">
@@ -21,6 +22,19 @@
     {% endif %}
     {{field.errors}}
 </div>
+{% else %}
+    {% if field.name == "board_min" %}
+    <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
+    {{field.label_tag}}
+    <div class="field-value">
+    {% endif %}
+        {{field|safe}}{% if field.name == "board_min" %} to {% endif %}
+    {% if field.name == "board_type" %}
+    </div><!--Value-->
+    <p class="field-help">{{field.help_text|safe}}</p>
+    </div><!--Wrapper-->
+    {% endif %}
+{% endif %}
 {% endfor %}
 {% for field in form.hidden_fields %}
 {{field}}

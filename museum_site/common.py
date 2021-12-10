@@ -539,3 +539,10 @@ def discord_announce_upload(upload, env=None):
     upload.announced = True
     upload.save()
     return True
+
+
+def any_plus(choices):
+    """ Appends Any as an option to the choices for a form"""
+    choices = list(choices)
+    choices.insert(0, ("any", "- Any -"))
+    return choices
