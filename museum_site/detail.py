@@ -37,6 +37,19 @@ class DetailManager(models.Manager):
         return cats
 
 
+    def form_list(self):
+        os_details = [
+            DETAIL_DOS, DETAIL_WIN16, DETAIL_WIN32, DETAIL_WIN64, DETAIL_OSX,
+            DETAIL_LINUX
+        ]
+        qs = self.all()
+
+        output = []
+        for d in qs:
+            output.append((str(d.id), d.detail))
+
+        return output
+
 class Detail(models.Model):
     detail = models.CharField(max_length=20)
     description = models.TextField(default="")
