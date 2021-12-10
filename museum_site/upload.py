@@ -6,6 +6,7 @@ from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from .constants import (
     UPLOAD_CONTACT_NONE, UPLOAD_CONTACT_REJECTION, UPLOAD_CONTACT_ALL,
@@ -39,7 +40,7 @@ class Upload(models.Model):
     """
     file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
     date = models.DateTimeField(
-        auto_now_add=True,
+        default=timezone.now,
         help_text="Date upload occurred"
     )
     edit_token = models.CharField(max_length=16)
