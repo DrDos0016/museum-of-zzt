@@ -161,10 +161,11 @@ class Article(models.Model):
 
     def save(self, *args, **kwargs):
         # Update dates for series
-        all_series = self.series.all()
-        if all_series:
-            for s in all_series:
-                s.save()
+        if self.series is not None:
+            all_series = self.series.all()
+            if all_series:
+                for s in all_series:
+                    s.save()
         super(Article, self).save(*args, **kwargs)
 
     def url(self):
