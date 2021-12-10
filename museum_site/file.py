@@ -265,7 +265,7 @@ class File(models.Model):
     # Associations
     aliases = models.ManyToManyField("Alias", default=None, blank=True)
     articles = models.ManyToManyField(
-        "Article", default=None, blank=True, editable=False
+        "Article", default=None, blank=True
     )
     article_count = models.IntegerField(
         default=0, editable=False
