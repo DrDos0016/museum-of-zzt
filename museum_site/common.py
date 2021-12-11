@@ -99,7 +99,7 @@ SORT_CODES = {
     "-release": ["-release_date", "sort_title"],
     "published": ["-publish_date", "-id"],
     "roulette": ["?"],
-    "uploaded": ["-upload_date", "-id"],
+    "uploaded": ["-id"],
 }
 
 PACKAGE_PROFILES = (

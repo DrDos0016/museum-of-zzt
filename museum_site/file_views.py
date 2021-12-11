@@ -31,6 +31,7 @@ def file_directory(
     show_description=False,
     show_featured=False
 ):
+    print("File dir?")
     """ Returns page listing all articles sorted either by date or name """
     data = {
         "title": "Browse",
@@ -84,7 +85,7 @@ def file_directory(
         data["sort_options"] = (
             [{"text": "Upload Date", "val": "uploaded"}] + data["sort_options"]
         )
-        default_sort = ["-upload_date"]
+        default_sort = ["-id"]
     elif request.path == "/featured":
         data["title"] = "Featured Worlds"
         data["header"] = data["title"]
@@ -103,7 +104,7 @@ def file_directory(
     elif request.GET.get("sort") == "-release":
         qs = qs.order_by("-release_date")
     elif request.GET.get("sort") == "uploaded":
-        qs = qs.order_by("-upload_date")
+        qs = qs.order_by("-id")
     elif default_sort:
         qs = qs.order_by(*default_sort)
 

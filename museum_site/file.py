@@ -253,15 +253,6 @@ class File(models.Model):
         help_text="Date DB entry was last modified"
     )
 
-    # Defunct(?)
-    uploader_ip = models.GenericIPAddressField(
-        null=True, blank=True, default=None, editable=False
-    )
-    upload_date = models.DateTimeField(
-        null=True, auto_now_add=True, db_index=True, blank=True,
-        help_text="Date File was uploaded to the Museum"
-    )
-
     # Associations
     aliases = models.ManyToManyField("Alias", default=None, blank=True)
     articles = models.ManyToManyField(
@@ -352,7 +343,6 @@ class File(models.Model):
             "playable_boards": self.playable_boards,
             "total_boards": self.total_boards,
             "archive_name": self.archive_name,
-            "upload_date": self.upload_date,
             "publish_date": self.publish_date,
             "last_modified": self.last_modified,
         }
