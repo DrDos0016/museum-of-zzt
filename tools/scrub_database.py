@@ -15,7 +15,7 @@ from django.contrib.auth.models import User  # noqa: E402
 from museum_site.models import *  # noqa: E402
 from museum_site.constants import (
     REMOVED_ARTICLE, DETAIL_REMOVED, UPLOAD_CONTACT_NONE)  # noqa: E402
-
+from poll.models import *  # noqa: E402
 
 def main():
     print("WARNING! THIS WILL PERMANENTLY REMOVE DATA FROM THIS DATABASE")
@@ -80,6 +80,19 @@ def main():
         for p in qs:
             p.scrub()
             p.save()
+
+        # Polls
+        print("Blanking vote info...")
+        qs = Vote.objects.all()
+        for v in qs:
+            v.scrub()
+            v.save()
+
+        print("Blanking option backer info...")
+        qs = Option.objects.all()
+        for o in qs:
+            o.scrub()
+            o.save()
 
         print("Private data has removed. Database can be publicly shared.")
         print("DONE.")

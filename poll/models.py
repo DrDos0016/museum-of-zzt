@@ -53,7 +53,7 @@ class Vote(models.Model):
     poll = models.ForeignKey("Poll", on_delete=models.SET_NULL, null=True)
     ip = models.GenericIPAddressField(default="")
     timestamp = models.DateTimeField(auto_now_add=True)
-    email = models.EmailField()
+    email = models.EmailField(default="", blank=True)
     option = models.ForeignKey("Option", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -62,12 +62,17 @@ class Vote(models.Model):
         )
         return formatted
 
+    def scrub(self):
+        self.ip = "127.0.0.1"
+        self.email = ""
+
 
 class Option(models.Model):
     summary = models.CharField(max_length=300)
     backer = models.BooleanField(default=False)
     played = models.BooleanField(default=False)
     file = models.ForeignKey(File, on_delete=models.SET_NULL, null=True)
+    requested_by = models.CharField(max_length=80, default="", blank=True)
 
     class Meta:
         ordering = ["played", "file__title"]
@@ -77,3 +82,6 @@ class Option(models.Model):
         return '[{}] "{}" by {}'.format(
             checked, self.file.title, self.file.author
         )
+
+    def scrub(self):
+        self.requested_by = ""
