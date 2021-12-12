@@ -57,7 +57,7 @@ class ArticleManager(models.Manager):
     def spotlight(self):
         return self.filter(
             published=PUBLISHED_ARTICLE, spotlight=True
-        ).order_by("-publish_date", "-id")
+        ).order_by("-publish_date", "id")
 
     def search(self, p):
         qs = self.exclude(published=REMOVED_ARTICLE)
