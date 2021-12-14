@@ -546,3 +546,11 @@ def any_plus(choices):
     choices = list(choices)
     choices.insert(0, ("any", "- Any -"))
     return choices
+
+
+def optimize_image(image):
+    if os.path.isfile(image):
+        status = os.system("optipng -o7 -strip=all -fix -nc -quiet " + image)
+        if status == 0:
+            return True
+    return False

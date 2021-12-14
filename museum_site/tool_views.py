@@ -730,14 +730,14 @@ def set_screenshot(request, pk):
     data = {
         "title": "Set Screenshot",
     }
-    file = File.objects.get(pk=pk)
-    data["file"] = file
+    zfile = File.objects.get(pk=pk)
+    data["file"] = zfile
     data["file_list"] = []
 
     if not HAS_ZOOKEEPER:
         return HttpResponse("Zookeeper library not found.")
 
-    with ZipFile(SITE_ROOT + file.download_url(), "r") as zf:
+    with ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
         all_files = zf.namelist()
         for f in all_files:
             if f.lower().endswith(".zzt"):
@@ -745,7 +745,7 @@ def set_screenshot(request, pk):
     data["file_list"].sort()
 
     if request.GET.get("file"):
-        with ZipFile(SITE_ROOT + file.download_url(), "r") as zf:
+        with ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
             zf.extract(
                 request.GET["file"],
                 path=SITE_ROOT + "/museum_site/static/data/"
@@ -772,14 +772,14 @@ def set_screenshot(request, pk):
             )
         data["show_preview"] = True
 
+    image_path = ""
     if request.POST.get("save"):
         src = SITE_ROOT + "/museum_site/static/data/temp.png"
-        dst = (SITE_ROOT + "/museum_site/static/images/screenshots/" +
-               file.letter + "/" + file.filename[:-4] + ".png")
-        shutil.copyfile(src, dst)
+        image_path = zfile.screenshot_phys_path()
+        shutil.copyfile(src, image_path)
 
-        file.screenshot = file.filename[:-4] + ".png"
-        file.save()
+        zfile.screenshot = zfile.filename[:-4] + ".png"
+        zfile.save()
     elif request.POST.get("b64img"):
         raw = request.POST.get("b64img").replace(
             "data:image/png;base64,", "", 1
@@ -789,13 +789,15 @@ def set_screenshot(request, pk):
 
         image = Image.open(BytesIO(base64.b64decode(raw)))
         image = image.crop((0, 0, 480, 350))
-        image.save(
-            SITE_ROOT + "/museum_site/static/images/screenshots/" +
-            file.letter + "/" + file.filename[:-4] + ".png"
-        )
+        image_path = zfile.screenshot_phys_path()
+        image.save(image_path)
 
     if os.path.isfile(
         SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")
     ):
         os.remove(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])
+
+    # Optimize the image
+    optimize_image(image_path)
+
     return render(request, "museum_site/tools/set_screenshot.html", data)

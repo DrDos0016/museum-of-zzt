@@ -19,7 +19,7 @@ except ImportError:
 
 from .common import (
     slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP,
-    STATIC_PATH
+    STATIC_PATH, optimize_image
 )
 from .constants import SITE_ROOT, REMOVED_ARTICLE, ZETA_RESTRICTED, LANGUAGES
 from .review import Review
@@ -814,6 +814,12 @@ class File(models.Model):
         if world is None:
             return False
 
+        # Name the screenshot
+        if filename is None:
+            self.screenshot = self.filename[:-4] + ".png"
+        else:
+            self.screenshot = filename
+
         # Extract the file and render
         try:
             zf.extract(world, path=SITE_ROOT + "/museum_site/static/data/")
@@ -821,20 +827,18 @@ class File(models.Model):
             return False
         z = zookeeper.Zookeeper(SITE_ROOT + "/museum_site/static/data/" + world)
         z.boards[board].screenshot(
-            SITE_ROOT + "/museum_site/static/images/screenshots/" +
-            self.letter + "/" + self.filename[:-4],
+            self.screenshot_phys_path()[:-4],
             title_screen=(not bool(board))
         )
 
-        if filename is None:
-            self.screenshot = self.filename[:-4] + ".png"
-        else:
-            self.screenshot = filename
         self.save()
 
         # Delete the extracted world
         # TODO: This leaves lingering folders for zips in folders
         os.remove(SITE_ROOT + "/museum_site/static/data/" + world)
+
+        # Optimize the image
+        optimize_image(self.screenshot_phys_path())
 
         return True
 
