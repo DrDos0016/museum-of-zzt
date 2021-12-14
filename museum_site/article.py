@@ -114,6 +114,7 @@ class Article(models.Model):
     spotlight       -- Allow appearance on front page
     static_directory-- Directory for static files used in the article
     series          -- Series the article is a part of
+    secret          -- Key to read this article early without being a patron
     """
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=50)
@@ -148,6 +149,7 @@ class Article(models.Model):
         help_text=("Name of directory where static files for the article are"
                    "stored.")
     )
+    secret = models.CharField(max_length=12, default="", blank=True)
 
     # Associations
     series = models.ManyToManyField("Series", default=None, blank=True)

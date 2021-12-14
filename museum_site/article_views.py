@@ -97,15 +97,21 @@ def article_view(request, article_id, page=0, slug=""):
 
     # Figure out the user's access
     access = PUBLISHED_ARTICLE  # Default
+
+    # Check user's Patronage
     if request.user.is_authenticated:
         if request.user.profile.patronage >= 500:
             access = UNPUBLISHED_ARTICLE
         elif request.user.profile.patronage >= 200:
             access = UPCOMING_ARTICLE
+
+    # Check for generic or article specific passwords
     if request.GET.get("secret") == PASSWORD5DOLLARS:
         access = UNPUBLISHED_ARTICLE
     elif request.GET.get("secret") == PASSWORD2DOLLARS:
         access = UPCOMING_ARTICLE
+    elif request.GET.get("secret") and request.GET["secret"] == a.secret:
+        access = UNPUBLISHED_ARTICLE
     elif request.GET.get("secret"):  # Invalid password
         return redirect("patron_articles")
 
