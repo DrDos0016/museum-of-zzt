@@ -102,7 +102,7 @@
 </div>
 
 {% if display_poll.active and not results_mode %}
-<form method="POST" id="poll-form" class="cp437" action="/poll/results/{{display_poll.id}}">
+<form method="POST" id="poll-form" class="cp437" action="/poll/results/{{display_poll.id}}/">
     {% csrf_token %}
     <label style="background-color:#0000AA">{{display_poll.option1.file.title}} <input name="vote" type="radio" value="{{display_poll.option1_id}}"></label>
     <label style="background-color:#00AA00">{{display_poll.option2.file.title}} <input name="vote" type="radio" value="{{display_poll.option2_id}}"></label>
