@@ -13,7 +13,7 @@ def debug(request):
 
     set_captcha_seed(request)
 
-    f = File.objects.filter(pk=int(request.GET.get("id", 420)))
+    f = File.objects.get(pk=int(request.GET.get("id", 420)))
     data["file"] = f
 
     if request.GET.get("serve"):

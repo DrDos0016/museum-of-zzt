@@ -271,3 +271,15 @@ label
 {
     background: #FCC;
 }
+
+.integer-range-widget
+{
+    width:6ch;
+    text-align:right;
+}
+
+#id_board_min, #id_board_max
+{
+    width:8ch;
+    text-align:right;
+}

@@ -2,7 +2,7 @@
 body
 {
     font-family:sans-serif;
-    background:#CCC;
+    background-color:#CCC;
     margin:7px 8px auto 8px;
     overflow-y:scroll;
 }
@@ -1480,7 +1480,6 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 code
 {
     display:block;
-    width:42ch;
     color:#839496;
     background-color:#002B36;
     font-size:larger;
@@ -1499,6 +1498,11 @@ code .purple, code .center { color:#6C71C4; }
 code .yellow, code .go, code .try { color:#B58900; }
 code .orange, code .label { color:#CB4B16; }
 code .char:hover { cursor:help; }
+
+code.zzt-oop
+{
+    width:42ch;
+}
 
 code.cheat {
     font-family:cp437;
