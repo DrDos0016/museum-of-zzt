@@ -26,6 +26,7 @@ def debug(request):
 
 def debug_advanced_search(request):
     data = {"title": "Advanced Search"}
+    print("TODO: Make sure to support non-english!!")
 
     if len(request.GET):
         form = AdvancedSearchForm(request.GET)

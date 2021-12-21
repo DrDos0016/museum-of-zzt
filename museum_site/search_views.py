@@ -214,8 +214,11 @@ def search(request):
         if (request.GET.getlist("details")):
             qs = qs.filter(details__id__in=request.GET.getlist("details"))
 
-        if (request.GET.get("lang") and request.GET["lang"] != "Any"):
-            qs = qs.filter(language__contains=request.GET["lang"])
+        if request.GET.get("lang"):
+            if request.GET["lang"] == "non-english":
+                qs = qs = qs.exclude(language__contains="en")
+            elif request.GET["lang"] != "Any":
+                qs = qs.filter(language__contains=request.GET["lang"])
 
         # Filter by reviews
         if (request.GET.get("reviews", "any") != "any"):

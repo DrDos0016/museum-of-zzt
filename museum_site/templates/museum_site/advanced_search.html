@@ -150,6 +150,7 @@ function update_selected_details()
     </label>
     <select id="lang" name="lang">
         <option value="Any">- ANY - </option>
+        <option value="non-english">- Non-English - </option>
         {% for l in languages %}
             {% if l == request.GET.lang %}
             <option value="{{l.0}}" selected>{{l.1}}</option>
