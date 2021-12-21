@@ -429,6 +429,7 @@ EXTENSION_HINTS = {
     ".ERR": ("Text File", [DETAIL_TEXT], "AND"),
     "EXCLUDE": ("Text File", [DETAIL_TEXT], "AND"),
     ".FAQ": ("Text File", [DETAIL_TEXT], "AND"),
+    ".FLG": ("Text File", [DETAIL_TEXT], "AND"),
     ".FRM": ("Text File", [DETAIL_TEXT], "AND"),
     ".FYI": ("Text File", [DETAIL_TEXT], "AND"),
     ".GITIGNORE": ("Text File", [DETAIL_TEXT], "AND"),
@@ -437,6 +438,7 @@ EXTENSION_HINTS = {
     "HINTS": ("Text File", [DETAIL_TEXT], "AND"),  # Hints?
     ".HLP": ("Text File", [DETAIL_TEXT], "AND"),  # TODO Might not be plaintxt
     ".INI": ("Text File", [DETAIL_TEXT], "AND"),
+    ".KB": ("Text File", [DETAIL_TEXT], "AND"),
     "LASTSG": ("Text File", [DETAIL_TEXT], "AND"),
     "LICENSE": ("Text File", [DETAIL_TEXT], "AND"),  # License detail?
     "LPT1": ("Text File", [DETAIL_TEXT], "AND"),
@@ -452,7 +454,10 @@ EXTENSION_HINTS = {
     "NEWS": ("Text File", [DETAIL_TEXT], "AND"),
     ".NFO": ("Text File", [DETAIL_TEXT], "AND"),
     ".NOW": ("Text File", [DETAIL_TEXT], "AND"),
+    ".OBJ": ("Text File", [DETAIL_TEXT], "AND"),
     "ORDER": ("Text File", [DETAIL_TEXT], "AND"),
+    ".OOP": ("Text File", [DETAIL_TEXT], "AND"),
+    ".PAR": ("Text File", [DETAIL_TEXT], "AND"),
     ".PDF": ("Text File", [DETAIL_TEXT], "AND"),
     "README": ("Text File", [DETAIL_TEXT], "AND"),
     ".REG": ("Text File", [DETAIL_TEXT], "AND"),
