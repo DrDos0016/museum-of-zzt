@@ -123,7 +123,7 @@ def meta_tags(*args, **kwargs):
     og_default = "{}{}images/og_default.jpg".format(base_url, STATIC_URL)
     tags = {
         "author": ["name", ADMIN_NAME],
-        "description": ["name",  "The Museum of ZZT is dedicated towards the preservation and curation of ZZT worlds. Explore 30 years of indie gaming history."],
+        "description": ["name",  "The Museum of ZZT is an online archive dedicated to the preservation and curation of ZZT worlds. Explore more than 3000 indie-made ZZT worlds spanning its 30+ year history"],
         "og:type": ["property", "website"],
         "og:url": ["property", url],
         "og:title": ["property", "Museum of ZZT"],
