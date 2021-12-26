@@ -63,7 +63,7 @@ input[name=today]
     <label for="title">Title<br>
         <span class="sub">"Livestream - " prefix added automatically.</span>
     </label>
-    <input id="title" name="title" maxlength="80" value="{{request.POST.title}}">
+    <input id="title" name="title" maxlength="80" value="{{request.POST.title|default:file.title}}">
 </div>
 
 <div class="field">
