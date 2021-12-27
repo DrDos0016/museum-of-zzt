@@ -173,6 +173,14 @@ def zeta_launcher(
 
     # Set default scale
     data["zeta_player_scale"] = int(request.COOKIES.get("zeta_player_scale", 1))
+
+    # Adjust canvas size if Super ZZT
+    data["zeta_config"].base_width = 640
+    data["zeta_config"].base_height = 350
+
+    if data["file"].is_super_zzt():
+        data["zeta_config"].base_height = 400
+
     return render(request, "museum_site/play_{}.html".format(player), data)
 
 

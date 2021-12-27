@@ -39,16 +39,14 @@ $(document).ready(function (){
 
 function resize_canvas_display()
 {
-    var base_w = 640;
-    var base_h = 350;
+    var base_w = {{zeta_config.base_width|default:640}};
+    var base_h = {{zeta_config.base_height|default:350}};
 
     var w = $("body").width()
     var h = $("body").height()
 
     var x_scale = parseInt(w / base_w);
     var y_scale = parseInt(h / base_h);
-
-    console.log("SCALES", x_scale, y_scale);
 
     var new_scale = Math.min(x_scale, y_scale);
 
@@ -60,8 +58,7 @@ function resize_canvas_display()
         $("canvas").height(base_h * new_scale);
         scale = new_scale;
     }
-}s
-
+}
 </script>
 </head>
 
@@ -78,6 +75,6 @@ body
 }
 </style>
 
-<body><canvas id="zzt_canvas" width="640" height="350"></canvas></body>
+<body><canvas id="zzt_canvas" width="{{zeta_config.base_width|default:640}}" height="{{zeta_config.base_height|default:350}}"></canvas></body>
 
 </html>

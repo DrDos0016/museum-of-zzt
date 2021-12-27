@@ -86,8 +86,8 @@ $(document).ready(function (){
 <script type="text/javascript">
 var url = new URL(window.location);
 var scale = {{zeta_player_scale|default:1}};
-var base_w = 640;
-var base_h = 350;
+var base_w = {{zeta_config.base_width|default:640}};
+var base_h = {{zeta_config.base_height|default:350}};
 var ZETA = null;
 
 $(document).ready(function (){
@@ -220,7 +220,7 @@ $(document).ready(function (){
     {% if player == "archive" %}
     <iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
     {% elif player == "zeta" %}
-    <canvas id="zzt_canvas" width="640" height="350"></canvas>
+    <canvas id="zzt_canvas" width="{{zeta_config.base_width|default:640}}" height="{{zeta_config.base_height|default:350}}"></canvas>
     {% if unpublished %}<p>This file is currently UNPUBLISHED. Support for Zeta has been assumed, but the file may not be compatible.</p>{% endif %}
     {% endif %}
 </div>
