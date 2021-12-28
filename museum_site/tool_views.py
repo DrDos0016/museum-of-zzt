@@ -790,7 +790,16 @@ def set_screenshot(request, pk):
         image = Image.open(BytesIO(base64.b64decode(raw)))
         image = image.crop((0, 0, 480, 350))
         image_path = zfile.screenshot_phys_path()
-        image.save(image_path)
+
+        if image_path:
+            image.save(image_path)
+        else:
+            image_path = os.path.join(
+                SITE_ROOT +
+                "/museum_site/static/images/screenshots/{}/{}".format(
+                    zfile.letter, zfile.filename[:-4]
+                ) + ".png")
+            image.save()
 
     if os.path.isfile(
         SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")
