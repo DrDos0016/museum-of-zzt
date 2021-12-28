@@ -37,6 +37,13 @@ $(document).ready(function (){
         var y = world.boards[board_number].stats[0].y - 1;
         print(ctx, 32, 0, x, y);
     });
+
+    $("#set-screen").click(function (){
+        console.log("Setting screenshot...");
+        data_url = document.getElementById("world-canvas").toDataURL();
+        $("#b64img").val(data_url);
+        $("#screenshot-submit").click();
+    });
 });
 </script>
 <b>Staff Functions</b>
@@ -48,4 +55,14 @@ $(document).ready(function (){
     <span id="queue-output" class="cp437"></span>
     <br>
     <input type="button" id="hide-player" value="Hide Player">
+    <br>
+    <input type="button" id="set-screen" value="Set As Screenshot">
+
+    <hr>
+    <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.id}}/" style="display:none">
+        {% csrf_token %}
+        <button id="debug-screenshot">Set Screenshot</button>
+        <input type="hidden" name="b64img" id="b64img">
+        <input type="submit" id="screenshot-submit" style="display:none">
+    </form>
 </div>
