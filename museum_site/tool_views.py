@@ -799,7 +799,7 @@ def set_screenshot(request, pk):
                 "/museum_site/static/images/screenshots/{}/{}".format(
                     zfile.letter, zfile.filename[:-4]
                 ) + ".png")
-            image.save()
+            image.save(image_path)
 
     if os.path.isfile(
         SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")
