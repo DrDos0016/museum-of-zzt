@@ -800,6 +800,8 @@ def set_screenshot(request, pk):
                     zfile.letter, zfile.filename[:-4]
                 ) + ".png")
             image.save(image_path)
+            zfile.screenshot = zfile.filename[:-4] + ".png"
+            zfile.basic_save()
 
     if os.path.isfile(
         SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")
