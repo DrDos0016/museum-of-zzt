@@ -98,3 +98,47 @@ def debug_colors(request):
             data["stylesheets"][stylesheet].sort()
 
     return render(request, "museum_site/debug_colors.html", data)
+
+
+def mirror(request, letter, filename):
+    data = {"title": "[---] Internet Archive Mirroring"}
+
+    zfile = File.objects.get(letter=letter, filename=filename)
+    engine = None
+    description = ""
+    if zfile.is_zzt():
+        url_prefix = "zzt_"
+        engine = "ZZT"
+    elif zfile.is_szzt():
+        url_prefix = "szzt_"
+        engine = "Super ZZT"
+
+    subject = ",".join(zfile.genre.split("/"))
+    if engine:
+        subject = engine + "," + subject
+        description = "<p>World created using the {} engine.</p>\n\n".format(engine)
+
+    if zfile.description:
+        description += "<p>{}</p>".format(zfile.description)
+
+    raw_contents = zfile.get_zip_info()
+    contents = []
+    for f in raw_contents:
+        contents.append((f.filename, f.filename))
+
+    # Initialize
+    form = MirrorForm()
+    form.fields["title"].initial = zfile.title
+    form.fields["creator"].initial = ",".join(zfile.author.split("/"))
+    form.fields["year"].initial = zfile.release_year()
+    form.fields["subject"].initial = subject
+    form.fields["description"].initial = description
+    form.fields["url"].initial = url_prefix + zfile.filename
+    if engine == "ZZT":
+        form.fields["packages"].initial = ["RecOfZZT.zip"]
+    elif engine == "Super ZZT":
+        form.fields["packages"].initial = ["RecSZZT.zip"]
+    form.fields["highlighted_contents"].choices = contents
+
+    data["form"] = form
+    return render(request, "museum_site/tools/new-mirror.html", data)
