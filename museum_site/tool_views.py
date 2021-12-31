@@ -9,6 +9,7 @@ import shutil
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.shortcuts import render
+from django.template import Context, Template
 from .common import *
 from .constants import *
 from io import StringIO
@@ -394,6 +395,49 @@ def patron_input(request):
         )
 
     return render(request, "museum_site/tools/patron-input.html", data)
+
+
+@staff_member_required
+def prep_publication_pack(request):
+    data = {
+        "title": "Prep Publication Pack",
+    }
+
+    data["year"] = YEAR
+
+    if request.method == "POST":
+        with open(os.path.join(SITE_ROOT, "museum_site", "templates", "museum_site", "tools", "blank-publication-pack.html")) as fh:
+            raw = fh.read().split("=START=")[1]
+        keys = request.POST.keys()
+        publish_date = request.POST.get("publish_date", "XXXX-XX-XX")
+        data["publish_path"] = "publish-" + publish_date[5:]
+
+        file_ids = []
+        for k in keys:
+            if request.POST.get(k) and k.startswith("prefix-"):
+                pk = k.split("-")[1]
+                file_ids.append(pk)
+
+        files = File.objects.filter(pk__in=file_ids)
+        data["file_ids_string"] = ",".join(file_ids)
+
+        data["files"] = []
+        for f in files:
+            f.prefix = request.POST.get("prefix-" + str(f.pk), "XX")
+            data["files"].append(f)
+
+        # Render subtemplate
+        template = Template(raw)
+        context = Context(data)
+        data["rendered"] = template.render(context)
+
+
+    unpublished = File.objects.unpublished()
+    data["unpublished_files"] = unpublished
+
+    return render(
+        request, "museum_site/tools/prep-publication-pack.html", data
+    )
 
 
 @staff_member_required

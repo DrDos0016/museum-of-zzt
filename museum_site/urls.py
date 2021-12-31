@@ -506,6 +506,10 @@ urlpatterns = [
         "tools/patron-input/", museum_site.tool_views.patron_input,
         name="patron_input"),
     path(
+        "tools/prep-publication-pack/",
+        museum_site.tool_views.prep_publication_pack,
+        name="prep_publication_pack"),
+    path(
         "tools/pub-pack-file-assocs/",
         museum_site.tool_views.publication_pack_file_associations,
         name="pub_pack_file_assocs"),
@@ -513,7 +517,7 @@ urlpatterns = [
         "tools/publish/<int:pk>/", museum_site.tool_views.publish,
         name="publish"),
     path(
-        "tools/queue-removal/<str:letter>/<str:filename>",
+        "tools/queue-removal/<str:letter>/<str:filename>/",
         museum_site.tool_views.queue_removal,
         name="queue_removal"),
     path(
@@ -539,6 +543,7 @@ urlpatterns = [
         "debug/forms/", museum_site.views.generic,
         {"template": "debug-forms", "title": "Form Debug"}),
     path("ajax/debug_file/", museum_site.ajax.debug_file),
+    path("debug/mirror/<str:letter>/<str:filename>/", museum_site.debug_views.mirror),
     path("debug/advanced-search/", museum_site.debug_views.debug_advanced_search),
 ]
 

@@ -1,0 +1,25 @@
+This template is used as a base for the Prep Publication Pack Web Tool.
+
+Anything prior to the START line is discarded.
+=START=
+{% templatetag openblock %} with "articles/{{year}}/{{publish_path}}/" as path {% templatetag closeblock %}
+<p></p>
+{% templatetag openblock %} with "{{file_ids_string}}"|get_files_by_id as files {% templatetag closeblock %}
+{% for f in files %}
+<!--{{f.title}}-->
+{% templatetag openblock %} with files.3372 as file {% templatetag closeblock %}
+<h2>"{{file.title}}" {% templatetag openblock %} if file.author != "Unknown" {% templatetag closeblock %} by {{file.author}}{% templatetag openblock %} endif {% templatetag closeblock %}{% templatetag openblock %} if file.release_date {% templatetag closeblock %} ({{file.release_date.year}}){% templatetag openblock %} endif {% templatetag closeblock %}</h2>
+{% templatetag openblock %} include "museum_site/blocks/file_detailed_block.html" {% templatetag closeblock %}
+<p></p>
+<div class="image-set">
+    <img src='{% templatetag openblock %} static path|add:"{{f.prefix}}-1.png" {% templatetag closeblock %}' class="screenshot-thumb">
+    <img src='{% templatetag openblock %} static path|add:"{{f.prefix}}-2.png" {% templatetag closeblock %}' class="screenshot-thumb">
+    <img src='{% templatetag openblock %} static path|add:"{{f.prefix}}-3.png" {% templatetag closeblock %}' class="screenshot-thumb">
+</div>
+<hr>
+{% templatetag openblock %} endwith {% templatetag closeblock %}
+{% endfor %}
+
+{% templatetag openblock %} endwith {% templatetag closeblock %}
+{% templatetag openblock %} patreon_plug {% templatetag closeblock %}
+{% templatetag openblock %} endwith {% templatetag closeblock %}
