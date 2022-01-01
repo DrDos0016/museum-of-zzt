@@ -1,0 +1,99 @@
+{% extends "museum_site/world.html" %}
+{% load static %}
+
+{% block scripts %}
+<script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
+<script>
+$(document).ready(function (){
+    // Drag and Drop Uploading
+    $(".upload-area").click(function (){
+        $("#id_zfile").click();
+    });
+
+    $(".upload-area").on("dragover", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).addClass("dragging");
+    });
+
+    $(".upload-area").on("dragleave", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass("dragging");
+    });
+
+    $(".upload-area").on("drop", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass("dragging");
+
+        const dt = e.originalEvent.dataTransfer;
+        const file = dt.files[0];
+        $("#id_zfile")[0].files = dt.files;
+
+        parse_zip_file(file);
+    });
+
+    $("#id_zfile").change(function (e){
+        const file = $(this)[0].files[0];
+        console.log(file);
+        parse_zip_file(file);
+    });
+});
+
+function parse_zip_file(file)
+{
+    zip = new JSZip();
+    console.log("Parsing Zip File...");
+    zip.loadAsync(file).then(function(zip){
+
+        var hr_size = filesize_format(file.size);
+
+        $(".upload-info").html(
+        `<div class="file-header">
+            <span class="file-name">${file.name}</span>
+            <span class="file-size">${hr_size}</span>
+        </div>
+        <ul class="file-list">
+        </ul>
+        `);
+
+
+        for(let [filename, file] of Object.entries(zip.files)) {
+            //console.log(filename, file);
+            if (filename.toUpperCase().endsWith(".ZZT"))
+            {
+                $("#id_generate_preview_image").append(`<option value='${filename}'>${filename}</option>`);
+            }
+            $(".file-list").append(`<li>${filename}</li>\n`);
+        }
+        $(".upload-info").show();
+    });
+
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<form>
+{% for field in form.visible_fields %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
+    {{field.label_tag}}
+    <div class="field-value">
+        {{field|safe}}
+    </div>
+    {% if field.help_text %}
+    <p class="field-help">{{field.help_text|safe}}</p>
+    {% endif %}
+    {{field.errors}}
+</div>
+{% endfor %}
+{% for field in form.hidden_fields %}
+{{field}}
+{% endfor %}
+<hr>
+<input type="submit" value="Search">
+</form>
+</section>
+{% endblock %}
