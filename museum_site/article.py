@@ -38,10 +38,14 @@ class ArticleManager(models.Manager):
         return self.filter(published=PUBLISHED_ARTICLE)
 
     def upcoming(self):
-        return self.filter(published=UPCOMING_ARTICLE)
+        return self.filter(published=UPCOMING_ARTICLE).order_by(
+            "publish_date", "id"
+        )
 
     def unpublished(self):
-        return self.filter(published=UNPUBLISHED_ARTICLE)
+        return self.filter(published=UNPUBLISHED_ARTICLE).order_by(
+            "publish_date", "id"
+        )
 
     def removed(self):
         return self.filter(published=REMOVED_ARTICLE)
