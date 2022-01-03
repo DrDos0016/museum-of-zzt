@@ -60,7 +60,7 @@ def add_livestream(request, pk):
         a.publish_date = request.POST.get("date")
         a.published = int(request.POST.get("published", 1))
         a.summary = request.POST.get("summary")
-        a.static_directory = "ls-" + data["video_id"]
+        a.static_directory = "ls-" + data["file"].filename[:-4]
         a.allow_comments = True
 
         # Open the template
