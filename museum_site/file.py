@@ -972,3 +972,10 @@ class File(models.Model):
             ],
         }
         return output
+
+
+    def release_year(self):
+        if self.release_date is None:
+            return ""
+        else:
+            return str(self.release_date)[:4]
