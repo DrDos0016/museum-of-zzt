@@ -112,6 +112,7 @@
 <input type="submit" name="action" value="{{submit_text|default:'Upload File'}}">
 
 <p><a href="{% url 'upload_edit' %}">Edit an existing upload</a> (Requires an Edit Token for guest users)</p>
+<p><a href="{% url 'upload_delete' %}">Delete an existing upload</a> (Requires an Edit Token for guest users)</p>
 <!--Suggestions-->
 <datalist id="author-suggestions"></datalist>
 <datalist id="company-suggestions"></datalist>

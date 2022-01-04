@@ -260,7 +260,7 @@ def mirror(request, letter, filename):
         description += "<p>{}</p>\n\n".format(zfile.description)
 
     if engine:
-        description += "<p>DOSBox is no longer the preferred program for playing {} worlds. Worlds frequently run slower, have laggy input, and audio issues. Visit the <a href='https://museumofzzt.com' target='_blank'>Museum of ZZT</a> for more information.</p>".format(engine)
+        description += "<p><i>DOSBox is no longer the preferred program for playing {} worlds. Worlds frequently run slower, have laggy input, and audio issues. Visit the <a href='https://museumofzzt.com' target='_blank'>Museum of ZZT</a> for more information on programs such as Zeta and other ZZT emulators/source ports.</i></p>".format(engine)
 
     raw_contents = zfile.get_zip_info()
     contents = []
@@ -269,8 +269,7 @@ def mirror(request, letter, filename):
 
     # Initialize
     if request.method == "POST":
-        print("Posty Birb")
-        form = MirrorForm(request.POST)
+        form = MirrorForm(request.POST, request.FILES)
     else:
         form = MirrorForm()
     form.fields["title"].initial = zfile.title
@@ -279,6 +278,8 @@ def mirror(request, letter, filename):
     form.fields["subject"].initial = subject
     form.fields["description"].initial = description
     form.fields["url"].initial = url_prefix + zfile.filename
+    if ENV == "PROD":
+        form.fields["collection"].initial = "open_source_software"
     if engine == "ZZT":
         form.fields["packages"].initial = ["RecOfZZT.zip"]
     elif engine == "Super ZZT":
@@ -292,9 +293,14 @@ def mirror(request, letter, filename):
     if len(world_choices) > 1:
         form.fields["default_world"].initial = world_choices[1]
 
-    # Validate submitted forms
+    # Mirror the file
     if request.method == "POST" and form.is_valid():
-        form.mirror(zfile)
+        data["resp"] = form.mirror(zfile, request.FILES)
+        print("RESPONSE[0]")
+        print("raw", data["resp"][0])
+        print("suc", data["resp"][0].get("success"))
+        print("err", data["resp"][0].get("error"))
+        print("val", data["resp"][0].get("value"))
 
     data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
@@ -473,47 +479,6 @@ def publish(request, pk):
     data["unknown_extensions"] = unknown_extensions
     data["hint_ids"] = set(data["hint_ids"])
     return render(request, "museum_site/tools/publish.html", data)
-
-
-@staff_member_required
-def queue_removal(request, letter, filename):
-    data = {"title": "Queue Removal"}
-    qs = File.objects.identifier(letter=letter, filename=filename)
-    if len(qs) != 1:
-        data["results"] = len(qs)
-    else:
-        data["file"] = qs[0]
-
-    if (
-        request.POST.get("action") == "queue-removal" and
-        request.POST.get("confirm")
-    ):
-        # Remove the physical file
-        path = data["file"].phys_path()
-        print(path)
-        if os.path.isfile(path):
-            os.remove(path)
-
-        # Remove the Upload object
-        qs = Upload.objects.filter(file_id=data["file"].id)
-        if qs:
-            upload = qs[0]
-            print(upload)
-            upload.delete()
-
-        # Remove the preview image
-        screenshot_path = data["file"].screenshot_phys_path()
-        if screenshot_path:
-            print(screenshot_path)
-            if os.path.isfile(screenshot_path):
-                os.remove(screenshot_path)
-
-        # Remove the file object
-        data["file"].delete()
-
-        data["success"] = True
-
-    return render(request, "museum_site/tools/queue-removal.html", data)
 
 
 @staff_member_required

@@ -12,7 +12,7 @@ from museum_site.models import *  # noqa: E402
 from museum_site.constants import SITE_ROOT
 
 now = datetime.datetime.now()
-HEADER = """{% with "articles/2021/publish-<date>/" as path %}
+HEADER = """{% with "articles/2022/publish-<date>/" as path %}
 <p></p>
 
 """.replace("<date>", now.strftime("%m-%d").lower())

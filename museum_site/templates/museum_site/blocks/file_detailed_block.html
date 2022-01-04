@@ -38,7 +38,7 @@
                 <div class="key">Language</div><div class="value">{% ssv_links file.language "lang" lookup="language" %}</div>
             </div>
             {% if file.is_uploaded %}<div class="field">
-                <div class="key">Upload Date</div><div class="value">{{file.upload_date}}</span></div>
+                <div class="key">Upload Date</div><div class="value">{{file.upload_set.first.date}}</span></div>
             </div>{% endif %}
             {% if debug %}<div class="field debug">
                 <div class="key">Debug</div><div class="value">{{file.id}} / <a href="/admin/museum_site/file/{{file.id}}/change/">Edit</a> / <a href="/tools/{{file.id}}">Tools</a></div>

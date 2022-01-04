@@ -52,7 +52,7 @@
         <li><a href="{% url 'extract_font' file.id %}">Extract Font</a></li>
         <li><a href="{% url 'reletter' file.id %}">Re-Letter Zip</a></li>
         {% if file.is_uploaded %}
-        <li><a href="{% url 'queue_removal' file.letter file.filename %}">Upload Queue Removal</a></li>
+        <li><a href="{% url 'upload_delete' %}?token={{upload_info.edit_token}}">Upload Queue Removal</a></li>
         {% endif %}
     </ul>
 </div>

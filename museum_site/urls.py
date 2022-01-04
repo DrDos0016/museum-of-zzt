@@ -403,11 +403,17 @@ urlpatterns = [
     path(
         "upload/complete/<str:token>/",
         museum_site.upload_views.upload_complete,
-        name="upload_complete"),
-    #path(
-    #    "upload/delete/", museum_site.upload_views.upload_delete,
-    #    name="upload_delete"
-    #),
+        name="upload_complete"
+    ),
+    path(
+        "upload/delete/", museum_site.upload_views.upload_delete,
+        name="upload_delete"
+    ),
+    path(
+        "upload/delete/complete/", museum_site.views.generic,
+        {"template": "upload-delete-complete", "title": "Upload Deleted"},
+        name="upload_delete_complete",
+    ),
     path(
         "upload/edit/", museum_site.upload_views.upload_edit,
         name="upload_edit"),
@@ -524,10 +530,6 @@ urlpatterns = [
     path(
         "tools/publish/<int:pk>/", museum_site.tool_views.publish,
         name="publish"),
-    path(
-        "tools/queue-removal/<str:letter>/<str:filename>/",
-        museum_site.tool_views.queue_removal,
-        name="queue_removal"),
     path(
         "tools/reletter/<int:pk>/", museum_site.tool_views.reletter,
         name="reletter"),

@@ -224,7 +224,6 @@ def upload(request):
     data["play_form"] = play_form
     data["upload_form"] = upload_form
     data["download_form"] = download_form
-    print("IDK")
     return render(request, "museum_site/upload.html", data)
 
 
@@ -237,6 +236,63 @@ def upload_complete(request, token):
     data["file"] = File.objects.get(pk=data["upload"].file.id)
 
     return render(request, "museum_site/upload-complete.html", data)
+
+
+def upload_delete(request):
+    data = {
+        "title": "Upload Delete"
+    }
+
+    if request.user.is_authenticated:
+        data["my_uploads"] = Upload.objects.filter(
+            user_id=request.user.id,
+            file__details__in=[DETAIL_UPLOADED],
+        ).order_by("-id")
+
+    if request.GET.get("token"):
+        data["selected"] = True
+        token = request.GET.get("token")
+        upload = Upload.objects.filter(edit_token=token).first()
+        zfile = upload.file
+        if not upload:
+            data["no_match"] = True
+        else:
+            data["upload"] = upload
+
+    if request.method == "POST" and data.get("upload"):
+        if request.POST.get("confirmation").upper() == "DELETE":
+            print("DELETING!")
+
+
+            # Remove the physical file
+            path = zfile.phys_path()
+            print("RM", path)
+            if os.path.isfile(path):
+                os.remove(path)
+
+            # Remove the Upload object
+            print("Delete upload")
+            upload.delete()
+
+            # Remove the preview image
+            screenshot_path = zfile.screenshot_phys_path()
+            if screenshot_path:
+                print(screenshot_path)
+                if os.path.isfile(screenshot_path):
+                    os.remove(screenshot_path)
+                    print("Deleting screenshot")
+
+            # Remove the file object
+            zfile.delete()
+            print("Deleting zfile")
+
+            return redirect("upload_delete_complete")
+
+        else:
+            data["wrong"] = True
+
+
+    return render(request, "museum_site/upload-delete.html", data)
 
 
 def upload_edit(request):

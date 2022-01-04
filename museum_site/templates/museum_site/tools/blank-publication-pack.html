@@ -8,7 +8,7 @@ Anything prior to the START line is discarded.
 {% for f in files %}
 <!--{{f.title}}-->
 {% templatetag openblock %} with files.{{f.id}} as file {% templatetag closeblock %}
-<h2>"{{file.title}}" {% templatetag openblock %} if file.author != "Unknown" {% templatetag closeblock %} by {{file.author}}{% templatetag openblock %} endif {% templatetag closeblock %}{% templatetag openblock %} if file.release_date {% templatetag closeblock %} ({{file.release_date.year}}){% templatetag openblock %} endif {% templatetag closeblock %}</h2>
+<h2>"{% templatetag openvariable %}file.title{% templatetag closevariable %}" {% templatetag openblock %} if file.author != "Unknown" {% templatetag closeblock %} by {% templatetag openvariable %}file.author{% templatetag closevariable %}{% templatetag openblock %} endif {% templatetag closeblock %}{% templatetag openblock %} if file.release_date {% templatetag closeblock %} ({% templatetag openvariable %}file.release_date.year{% templatetag closevariable %}){% templatetag openblock %} endif {% templatetag closeblock %}</h2>
 {% templatetag openblock %} include "museum_site/blocks/file_detailed_block.html" {% templatetag closeblock %}
 <p></p>
 <div class="image-set">

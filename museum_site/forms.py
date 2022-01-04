@@ -366,17 +366,17 @@ class MirrorForm(forms.Form):
     description = forms.CharField(label="Description", widget=forms.Textarea(), help_text="Can contain links, formatting and images in html/css")
     collection = forms.ChoiceField(choices=COLLECTIONS)
     language = forms.ChoiceField(choices=IA_LANGUAGES, initial="eng")
-    alternate_zfile = forms.FileField(
+    zfile = forms.FileField(
         required=False,
         help_text=("Alternative zipfile to use instead of the Museum's copy"),
         label="Alternate Zip",
         widget=UploadFileWidget()
     )
     packages = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=PACKAGES, help_text="Additional zipfiles whose contents are to be included")
-    default_world = forms.ChoiceField(choices=[])
+    default_world = forms.ChoiceField(required=False, choices=[])
     launch_command = forms.CharField(required=False)
 
-    def mirror(self, zfile):
+    def mirror(self, zfile, files=None):
         archive_title = self.cleaned_data["title"]
         # Copy the file's zip into a temp directory
         if self.cleaned_data["collection"] == "test_collection":
@@ -393,12 +393,18 @@ class MirrorForm(forms.Form):
         except FileExistsError:
             pass
 
-        # Extract zfile
-        zf = zipfile.ZipFile(zfile.phys_path())
+        # Extract zfile if not using an alternate zip
+        if self.cleaned_data["zfile"]:
+            print("ALT ZIP")
+            print(files)
+            zf = zipfile.ZipFile(files["zfile"])
+            print("I lived")
+        else:
+            zf = zipfile.ZipFile(zfile.phys_path())
+
         files = zf.infolist()
         comment = zf.comment
         for f in files:
-            print(f.filename, f.date_time)
             zf.extract(f, path=wip_dir)
             timestamp = time.mktime(f.date_time + (0, 0, -1))
             os.utime(os.path.join(wip_dir, f.filename), (timestamp, timestamp))
@@ -410,7 +416,6 @@ class MirrorForm(forms.Form):
             zf = zipfile.ZipFile(package_path)
             files = zf.infolist()
             for f in files:
-                print(f.filename, f.date_time)
                 zf.extract(f, path=wip_dir)
                 timestamp = time.mktime(f.date_time + (0, 0, -1))
                 os.utime(os.path.join(wip_dir, f.filename), (timestamp, timestamp))
@@ -442,10 +447,6 @@ class MirrorForm(forms.Form):
         }
 
         # Mirror the file
-        print("HERE I GO!")
-        print("Name", wip_zf_name)
-        print("Path", wip_zf_path)
-
         r = upload(
             wip_zf_name,
             files=[wip_zf_path],
@@ -453,8 +454,4 @@ class MirrorForm(forms.Form):
             access_key=IA_ACCESS,
             secret_key=IA_SECRET,
         )
-        print(r)
-
-        print("Okay...")
-
-        print("MIRRORED?")
+        return r

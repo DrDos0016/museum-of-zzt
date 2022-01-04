@@ -97,7 +97,13 @@ function parse_zip_file(file)
 
 {% block content %}
 <section id="content" class="block">
-<form method="POST">
+<div class="field-wrapper">
+    <label>Response</label>
+    <div class="field-value">
+        <textarea>{{resp}}</textarea>
+    </div>
+</div>
+<form method="POST" enctype="multipart/form-data">
 {% csrf_token %}
 {% for field in form.visible_fields %}
 <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
