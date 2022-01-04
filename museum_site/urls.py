@@ -267,7 +267,8 @@ urlpatterns = [
         "series/", museum_site.series_views.series_directory,
         name="series_directory"),
     path(
-        "series/<int:series_id>/<slug:slug>", museum_site.series_views.series_overview,
+        "series/<int:series_id>/<slug:slug>",
+        museum_site.series_views.series_overview,
         name="series_overview"),
 
     # Search
@@ -400,8 +401,13 @@ urlpatterns = [
     # Uploads
     path("upload/", museum_site.upload_views.upload, name="upload"),
     path(
-        "upload/complete/<str:token>/", museum_site.upload_views.upload_complete,
+        "upload/complete/<str:token>/",
+        museum_site.upload_views.upload_complete,
         name="upload_complete"),
+    #path(
+    #    "upload/delete/", museum_site.upload_views.upload_delete,
+    #    name="upload_delete"
+    #),
     path(
         "upload/edit/", museum_site.upload_views.upload_edit,
         name="upload_edit"),
@@ -500,8 +506,10 @@ urlpatterns = [
         "tools/log-viewer/", museum_site.tool_views.log_viewer,
         name="log_viewer"),
     path(
-        "tools/mirror/<int:pk>/", museum_site.tool_views.mirror,
-        name="mirror"),
+        "tools/mirror/<str:letter>/<str:filename>/",
+        museum_site.tool_views.mirror,
+        name="mirror"
+    ),
     path(
         "tools/patron-input/", museum_site.tool_views.patron_input,
         name="patron_input"),
@@ -543,8 +551,9 @@ urlpatterns = [
         "debug/forms/", museum_site.views.generic,
         {"template": "debug-forms", "title": "Form Debug"}),
     path("ajax/debug_file/", museum_site.ajax.debug_file),
-    path("debug/mirror/<str:letter>/<str:filename>/", museum_site.debug_views.mirror),
-    path("debug/advanced-search/", museum_site.debug_views.debug_advanced_search),
+    path(
+        "debug/advanced-search/", museum_site.debug_views.debug_advanced_search
+    ),
 ]
 
 if DEBUG:

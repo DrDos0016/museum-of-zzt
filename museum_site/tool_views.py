@@ -15,6 +15,7 @@ from .constants import *
 from io import StringIO
 from zipfile import ZipFile
 from .models import *
+from .forms import *
 
 from internetarchive import upload
 from PIL import Image
@@ -237,127 +238,67 @@ def log_viewer(request):
 
 
 @staff_member_required
-def mirror(request, pk):
-    """ Returns page to publish file on Archive.org """
-    f = File.objects.get(pk=pk)
-    data = {
-        "title": "Archive.org Mirror",
-        "file": f,
-        "ret": None,
-        "packages": PACKAGE_PROFILES,
-        "collection": ARCHIVE_COLLECTION,
-    }
+def mirror(request, letter, filename):
+    data = {"title": "[---] Internet Archive Mirroring"}
 
-    package = int(request.GET.get("package", 0))
-    data["package"] = PACKAGE_PROFILES[package]
-    data["split"] = math.ceil(len(data["packages"]) // 2)
+    zfile = File.objects.get(letter=letter, filename=filename)
+    engine = None
+    description = ""
+    if zfile.is_zzt():
+        url_prefix = "zzt_"
+        engine = "ZZT"
+    elif zfile.is_szzt():
+        url_prefix = "szzt_"
+        engine = "Super ZZT"
 
-    zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, f.download_url()[1:]))
+    subject = ",".join(zfile.genre.split("/"))
+    if engine:
+        subject = engine + "," + subject
+        description = "<p>World created using the {} engine.</p>\n\n".format(engine)
 
-    file_list = zip_file.namelist()
-    file_list.sort(key=str.lower)
-    data["file_list"] = file_list
+    if zfile.description:
+        description += "<p>{}</p>\n\n".format(zfile.description)
 
-    # Mirror the file
-    if request.POST.get("mirror"):
-        if request.POST.get("package") != "NONE":
-            package = PACKAGE_PROFILES[int(request.POST.get("package", 0))]
+    if engine:
+        description += "<p>DOSBox is no longer the preferred program for playing {} worlds. Worlds frequently run slower, have laggy input, and audio issues. Visit the <a href='https://museumofzzt.com' target='_blank'>Museum of ZZT</a> for more information.</p>".format(engine)
 
-            # Advanced settings
-            if request.POST.get("upload_name"):
-                upload_name = request.POST["upload_name"]
-                zip_name = upload_name + ".zip"
-            else:
-                zip_name = package["prefix"] + f.filename
-                upload_name = zip_name[:-4]
+    raw_contents = zfile.get_zip_info()
+    contents = []
+    for f in raw_contents:
+        contents.append((f.filename, f.filename))
 
-            # Copy the base package zip
-            shutil.copy(
-                SITE_ROOT + f.download_url(),
-                os.path.join(TEMP_PATH, zip_name)
-            )
+    # Initialize
+    if request.method == "POST":
+        print("Posty Birb")
+        form = MirrorForm(request.POST)
+    else:
+        form = MirrorForm()
+    form.fields["title"].initial = zfile.title
+    form.fields["creator"].initial = ",".join(zfile.author.split("/"))
+    form.fields["year"].initial = zfile.release_year()
+    form.fields["subject"].initial = subject
+    form.fields["description"].initial = description
+    form.fields["url"].initial = url_prefix + zfile.filename
+    if engine == "ZZT":
+        form.fields["packages"].initial = ["RecOfZZT.zip"]
+    elif engine == "Super ZZT":
+        form.fields["packages"].initial = ["RecSZZT.zip"]
 
-        # Handle alternative Zip upload
-        if request.FILES.get("alt_src"):
-            with open(os.path.join(TEMP_PATH, zip_name), "wb") as fh:
-                fh.write(request.FILES["alt_src"].read())
+    world_choices = [("", "None")]
+    for f in zfile.get_zip_info():
+        if f.filename.upper().endswith(".ZZT") or f.filename.upper().endswith(".SZT"):
+            world_choices.append((f.filename, f.filename))
+    form.fields["default_world"].choices = world_choices
+    if len(world_choices) > 1:
+        form.fields["default_world"].initial = world_choices[1]
 
-        temp_zip = os.path.join(TEMP_PATH, zip_name)
+    # Validate submitted forms
+    if request.method == "POST" and form.is_valid():
+        form.mirror(zfile)
 
-        # Open the WIP zip
-        with ZipFile(temp_zip, "a") as z:
-            # Insert the base files
-            to_add = glob.glob(
-                os.path.join(BASE_PATH, package["directory"], "*")
-            )
-            for a in to_add:
-                z.write(a, arcname=os.path.basename(a))
-
-            # Create ZZT.CFG if needed
-            if package.get("use_cfg"):
-                # Remove .ZZT extension
-                config_content = request.POST.get("launch")[:-4].upper()
-                if package["registered"]:
-                    config_content += "\r\nREGISTERED"
-                z.writestr("ZZT.CFG", config_content)
-
-        # Create description
-        description = "{}\n\n{}".format(
-            package["auto_desc"], request.POST.get("description", "")
-        )
-
-        # Determine the launch command
-        if request.POST.get("alt_launch"):
-            launch_command = request.POST["alt_launch"]
-        else:
-            launch_command = package["executable"] + " " + request.POST.get(
-                "launch", ""
-            ).upper()
-
-        # Zip file is completed, prepare the upload
-        meta = {
-            "title": request.POST.get("title"),
-            "mediatype": "software",
-            "collection": ARCHIVE_COLLECTION,
-            "emulator": "dosbox",
-            "emulator_ext": "zip",
-            "emulator_start": launch_command,
-            "year": str(f.release_date)[:4],
-            "subject": [package["engine"]] + f.genre.split("/"),
-            "creator": f.author.split("/"),
-            "description": description
-        }
-
-        if DEBUG:
-            upload_name = "test-" + upload_name
-
-        upload_name = upload_name.replace(" ", "_")
-
-        file_path = os.path.join(TEMP_PATH, zip_name)
-
-        try:
-            r = upload(
-                upload_name,
-                files=[file_path],
-                metadata=meta,
-                access_key=IA_ACCESS,
-                secret_key=IA_SECRET,
-            )
-        except Exception as e:
-            r = None
-            data["status"] = "FAILURE"
-            data["error"] = e
-        if r and r[0].status_code == 200:
-            data["status"] = "SUCCESS"
-            f.archive_name = upload_name
-            f.save()
-            os.remove(os.path.join(TEMP_PATH, zip_name))
-        else:
-            data["status"] = "FAILURE"
-
-        data["archive_resp"] = r
-
+    data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
+
 
 
 @staff_member_required

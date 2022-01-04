@@ -45,7 +45,7 @@
         {% if file.is_uploaded %}
         <li><a href="{% url 'publish' file.id %}">Publish</a></li>
         {% else %}
-        <li><a href="{% url 'mirror' file.id %}">Archive.org Mirror</a> ({{file.archive_name}})</li>
+        <li><a href="{% url 'mirror' file.letter file.filename %}">Archive.org Mirror</a> ({{file.archive_name}})</li>
         {% endif %}
         <li><a href="{% url 'replace_zip' file.id %}">Replace Zip</a></li>
         <li><a href="{% url 'add_livestream' file.id %}">Add Livestream VOD</a></li>

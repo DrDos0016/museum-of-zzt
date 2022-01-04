@@ -1,144 +1,121 @@
 {% extends "museum_site/world.html" %}
 {% load static %}
 
-{% block style %}
-<style>
-    .field label
-    {
-        width:20%;
-    }
-
-    #package-list
-    {
-        margin-bottom:0.25em;
-        font-family:monospace;
-        font-size:larger;
-    }
-
-    .row label
-    {
-        width:auto;
-    }
-
-    .error
-    {
-        background:#F00;
-    }
-</style>
-{% endblock %}
-
 {% block scripts %}
+<script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
 <script>
-var check_launch_file = function (){
-    var val = $("select[name=launch]").val().toUpperCase();
-    console.log(val);
-
-    if (val.indexOf(".ZZT") == -1 && val.indexOf(".SZT") == -1)
-        $("#launch-field").addClass("error");
-    else
-        $("#launch-field").removeClass("error");
-};
-
 $(document).ready(function (){
-    $("select[name=launch]").change(check_launch_file);
-    check_launch_file();
+    // Drag and Drop Uploading
+    $(".upload-area").click(function (){
+        $("#id_zfile").click();
+    });
+
+    $(".upload-area").on("dragover", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).addClass("dragging");
+    });
+
+    $(".upload-area").on("dragleave", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass("dragging");
+    });
+
+    $(".upload-area").on("drop", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass("dragging");
+
+        const dt = e.originalEvent.dataTransfer;
+        const file = dt.files[0];
+        $("#id_zfile")[0].files = dt.files;
+
+        parse_zip_file(file);
+    });
+
+    $("#id_zfile").change(function (e){
+        const file = $(this)[0].files[0];
+        console.log(file);
+        parse_zip_file(file);
+    });
+
+    // Adjust launch command on package/world change
+    $("#id_default_world").change(calc_launch_command);
+    $("input[name=packages]").change(calc_launch_command);
+
+    calc_launch_command();
 });
+
+function calc_launch_command()
+{
+    var engine = "";
+    $("input[name=packages]").each(function (){
+        if ($(this).prop("checked"))
+        {
+            engine = $(this).parent().text().split("::")[1];
+        }
+    });
+
+    var world = $("#id_default_world").val().split(".")[0];
+    var launch_command = (engine + " " + world).trim()
+    $("#id_launch_command").val(launch_command);
+}
+
+function parse_zip_file(file)
+{
+    zip = new JSZip();
+    console.log("Parsing Zip File...");
+    zip.loadAsync(file).then(function(zip){
+
+        var hr_size = filesize_format(file.size);
+
+        $(".upload-info").html(
+        `<div class="file-header">
+            <span class="file-name">${file.name}</span>
+            <span class="file-size">${hr_size}</span>
+        </div>
+        <ul class="file-list">
+        </ul>
+        `);
+
+
+        for(let [filename, file] of Object.entries(zip.files)) {
+            //console.log(filename, file);
+            if (filename.toUpperCase().endsWith(".ZZT"))
+            {
+                $("#id_generate_preview_image").append(`<option value='${filename}'>${filename}</option>`);
+            }
+            $(".file-list").append(`<li>${filename}</li>\n`);
+        }
+        $(".upload-info").show();
+    });
+
+}
 </script>
 {% endblock %}
 
-{% block world_content %}
-{% if status %}
-    <h2>{{status}} - {{archive_resp.status_code}}</h2>
-    <p>{{archive_resp}}</p>
-    <p>{{error}}</p>
-    {% if file.archive_name %}<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">Archive.org Link</a>
-    {% else %}
-    <p><i>File not archived!</i></p>
+{% block content %}
+<section id="content" class="block">
+<form method="POST">
+{% csrf_token %}
+{% for field in form.visible_fields %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
+    {{field.label_tag}}
+    <div class="field-value">
+        {{field|safe}}
+    </div>
+    {% if field.help_text %}
+    <p class="field-help">{{field.help_text|safe}}</p>
     {% endif %}
-{% endif %}
+    {{field.errors}}
+</div>
+{% endfor %}
+{% for field in form.hidden_fields %}
+{{field}}
+{% endfor %}
 <hr>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="field">
-        <label for="package">Package:<br>
-        </label>
-        <select name="package">
-            {% for package in packages %}
-            <option value="{{ forloop.counter0 }}">{{package.name}}</option>
-            {% endfor %}
-            <option value="NONE">None</option>
-        </select>
-    </div>
-
-    <div class="field" id="launch-field">
-        <label for="launch">Default World:<br>
-        </label>
-        <select name="launch">
-            {% for name in file_list %}
-            <option>{{name}}</option>
-            {% endfor %}
-            <option value="">None</option>
-        </select>
-    </div>
-
-    <div class="field">
-        <label for="title">Title:<br>
-        </label>
-        <input name="title" value="{{file.title}}">
-    </div>
-
-    <div class="field">
-        <label for="year">Year:<br>
-        </label>
-        <input name="year" value="{{file.release_date|date:'Y'}}">
-    </div>
-
-    <div class="field">
-        <label for="subject">Subject:<br>
-        </label>
-        <input name="subject" value="{{file.genre}}">
-    </div>
-
-    <div class="field">
-        <label for="creator">Creator:<br>
-        </label>
-        <input name="creator" value="{{file.author}}">
-    </div>
-
-    <div class="field">
-        <label for="description">Description:<br>
-        <span class="sub">"Use of (Super) ZZT engine" added automatically</span>
-        </label>
-        <textarea name="description"></textarea>
-    </div>
-
-    <input type="submit" name="mirror" value="Mirror on Archive.org"> - Collection: "{{collection}}"
-
-    <hr>
-    <h2>Advanced</h2>
-    <div class="field">
-        <label for="creator">Custom Upload Name:<br>
-        <span class="sub">4-100 chars. alphanumerics, underscores, periods, and hypens (ex: zzt_town)</span>
-        </label>
-        <input name="upload_name" value="">
-    </div>
-    <div class="field">
-        <label for="creator">Custom Zipfile Name:<br>
-        <span class="sub">4-100 chars. alphanumerics, underscores, periods, and hypens (ex: zzt_town)</span>
-        </label>
-        <input name="upload_name" value="">
-    </div>
-    <div class="field">
-        <label for="alt_src">Custom Source Zip:<br>
-        <span class="sub">Zip to use instead of the one in /zgames/</span>
-        </label>
-        <input name="alt_src" value="" type="file">
-    </div>
-    <div class="field">
-        <label for="alt_launch">Custom Launch Command:<br>
-        <span class="sub">Command to use when emulator is loaded</span>
-        </label>
-        <input name="alt_launch" value="">
-    </div>
+<input type="submit" value="Mirror">
 </form>
+</section>
 {% endblock %}

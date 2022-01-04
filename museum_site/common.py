@@ -48,7 +48,6 @@ PYTHON_VERSION = sys.version
 DJANGO_VERSION = VERSION
 START_TIME = datetime.utcnow()
 BOOT_TS = START_TIME.strftime("%m%d%H%M%S")
-ARCHIVE_COLLECTION = "open_source_software" if not DEBUG else "test_collection"
 
 FILE_VIEWER_TEXT_EXTENSIONS = (
     "", ".135", ".135.asc", ".1st", ".ans", ".asm", ".bas", ".bat", ".bb",

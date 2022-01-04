@@ -1,9 +1,20 @@
+import glob
+import os
+import shutil
+import time
+import zipfile
+
 from django import forms
 from .models import File, Upload, Zeta_Config, Download, Detail
 from .fields import *
 from .widgets import *
-from .common import GENRE_LIST, YEAR, any_plus
+from .common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT
 from .constants import LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, DETAIL_REMOVED
+from .private import IA_ACCESS, IA_SECRET
+
+
+from internetarchive import upload
+
 
 
 class ZGameForm(forms.ModelForm):
@@ -316,3 +327,134 @@ class AdvancedSearchForm(forms.Form):
 
         print("Ok?", language)
         return language
+
+
+class MirrorForm(forms.Form):
+    use_required_attribute = False
+    required = False
+
+    IA_LANGUAGES = (
+        ("dan", "Danish"),
+        ("dut", "Dutch"),
+        ("eng", "English"),
+        ("fre", "French"),
+        ("ger", "German"),
+        ("ita", "Italian"),
+        ("nor", "Norwegian"),
+        ("pol", "Polish"),
+        ("spa", "Spanish"),
+    )
+
+    COLLECTIONS = (
+        ("test_collection", "Test Collection - Removed in 30 days"),
+        ("open_source_software", "Software"),
+    )
+
+    PACKAGES = (
+        # :: is a delimiter for JS to set launch command for main EXE
+        ("RecOfZZT.zip", "The Reconstruction of ZZT::ZZT.EXE"),
+        ("RecSZZT.zip", "The Reconstruction of Super ZZT::SUPERZ.EXE"),
+        ("czoo420b3-dos.zip", "ClassicZoo v4.20 beta 3::ZZT.EXE"),
+        ("sczo404.zip", "Super ClassicZoo v4.04::SUPERZ.EXE"),
+    )
+
+    title = forms.CharField(label="Title")
+    url = forms.CharField(label="Url", help_text="")
+    creator = forms.CharField(label="Creator")
+    year = forms.IntegerField(label="Year")
+    subject = forms.CharField(label="Subject", help_text="Separate with commas")
+    description = forms.CharField(label="Description", widget=forms.Textarea(), help_text="Can contain links, formatting and images in html/css")
+    collection = forms.ChoiceField(choices=COLLECTIONS)
+    language = forms.ChoiceField(choices=IA_LANGUAGES, initial="eng")
+    alternate_zfile = forms.FileField(
+        required=False,
+        help_text=("Alternative zipfile to use instead of the Museum's copy"),
+        label="Alternate Zip",
+        widget=UploadFileWidget()
+    )
+    packages = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=PACKAGES, help_text="Additional zipfiles whose contents are to be included")
+    default_world = forms.ChoiceField(choices=[])
+    launch_command = forms.CharField(required=False)
+
+    def mirror(self, zfile):
+        archive_title = self.cleaned_data["title"]
+        # Copy the file's zip into a temp directory
+        if self.cleaned_data["collection"] == "test_collection":
+            ts = str(int(time.time()))
+            wip_zf_name = "test_" + ts + "_" + self.cleaned_data["url"]
+            archive_title = "Test - " + ts + "_" + archive_title
+        else:
+            wip_zf_name = self.cleaned_data["url"]
+
+        wip_dir = os.path.join(TEMP_PATH, os.path.splitext(wip_zf_name)[0])
+        wip_zf_path = os.path.join(wip_dir, wip_zf_name)
+        try:
+            os.mkdir(wip_dir)
+        except FileExistsError:
+            pass
+
+        # Extract zfile
+        zf = zipfile.ZipFile(zfile.phys_path())
+        files = zf.infolist()
+        comment = zf.comment
+        for f in files:
+            print(f.filename, f.date_time)
+            zf.extract(f, path=wip_dir)
+            timestamp = time.mktime(f.date_time + (0, 0, -1))
+            os.utime(os.path.join(wip_dir, f.filename), (timestamp, timestamp))
+        zf.close()
+
+        # Extract any additional packages
+        for package in self.cleaned_data["packages"]:
+            package_path = os.path.join(SITE_ROOT, "museum_site", "static", "data", "ia_packages", package)
+            zf = zipfile.ZipFile(package_path)
+            files = zf.infolist()
+            for f in files:
+                print(f.filename, f.date_time)
+                zf.extract(f, path=wip_dir)
+                timestamp = time.mktime(f.date_time + (0, 0, -1))
+                os.utime(os.path.join(wip_dir, f.filename), (timestamp, timestamp))
+            zf.close()
+
+        # Add to WIP archive
+        package_files = glob.glob(os.path.join(wip_dir, "*"))
+        zf = zipfile.ZipFile(wip_zf_path, "w")
+        for f in package_files:
+            if os.path.basename(f) != wip_zf_name:
+                zf.write(f, arcname=os.path.basename(f))
+                os.remove(f)
+        if comment:
+            zf.comment = comment
+        zf.close()
+
+        # Zip file is in its proper state, proceed to upload:
+        meta = {
+            "title": archive_title,
+            "mediatype": "software",
+            "collection": self.cleaned_data["collection"],
+            "emulator": "dosbox",
+            "emulator_ext": "zip",
+            "emulator_start": self.cleaned_data["launch_command"],
+            "year": str(self.cleaned_data["year"]),
+            "subject": self.cleaned_data["subject"],
+            "creator": self.cleaned_data["creator"],
+            "description": self.cleaned_data["description"]
+        }
+
+        # Mirror the file
+        print("HERE I GO!")
+        print("Name", wip_zf_name)
+        print("Path", wip_zf_path)
+
+        r = upload(
+            wip_zf_name,
+            files=[wip_zf_path],
+            metadata=meta,
+            access_key=IA_ACCESS,
+            secret_key=IA_SECRET,
+        )
+        print(r)
+
+        print("Okay...")
+
+        print("MIRRORED?")
