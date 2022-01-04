@@ -108,7 +108,9 @@ def file_directory(
     elif default_sort:
         qs = qs.order_by(*default_sort)
 
-    qs = qs.distinct()
+    qs = qs.prefetch_related("upload_set").distinct()
+
+
 
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = get_selected_view_format(request, data["available_views"])
