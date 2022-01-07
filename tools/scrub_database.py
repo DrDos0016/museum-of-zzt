@@ -33,25 +33,14 @@ def main():
             print(f)
             f.delete()
         print("Done!")
-        print("Blanking file objects...")
-        for f in File.objects.all():
-            f.uploader_ip = None
-            f.save()
-
         print("Blanking review objects...")
         for r in Review.objects.all():
-            r.ip = ""
+            r.scrub()
             r.save()
         print("Done!")
         print("Blanking upload objects...")
         for u in Upload.objects.all():
-            u.email = ""
-            u.edit_token = ""
-            u.ip = ""
-            u.notes = "Blanked notes."
-            u.contact = UPLOAD_CONTACT_NONE
-            u.contacted = False
-            u.user_id = None
+            u.scrub()
             u.save()
         print("Done!")
 

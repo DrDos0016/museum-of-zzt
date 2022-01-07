@@ -200,9 +200,6 @@ class File(models.Model):
     )
     language = models.CharField(max_length=50, default="en")
     description = models.TextField(null=True, blank=True, default="")
-    superceded = models.ForeignKey("File", db_column="superceded_id",
-                                   null=True, blank=True, default=None,
-                                   on_delete=models.SET_NULL)
     playable_boards = models.IntegerField(
         null=True, blank=True, default=None,
         help_text="Set automatically. Do not adjust."

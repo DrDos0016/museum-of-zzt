@@ -9,18 +9,10 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 from .constants import (
-    UPLOAD_CONTACT_NONE, UPLOAD_CONTACT_REJECTION, UPLOAD_CONTACT_ALL,
     HOST
 )
 
 from .private import NEW_UPLOAD_WEBHOOK_URL
-
-
-UPLOAD_CONTACT_LIST = (
-    (UPLOAD_CONTACT_NONE, "No contact"),
-    (UPLOAD_CONTACT_REJECTION, "Contact if rejected"),
-    (UPLOAD_CONTACT_ALL, "Contact if published/rejected"),
-)
 
 
 class Upload(models.Model):
@@ -33,9 +25,6 @@ class Upload(models.Model):
     ip              -- Uploader IP
     user            -- Uploader user account
     notes           -- Uploader notes
-    email           -- Uploader email
-    contact         -- Contact preferences
-    contacted       -- Has been contacted: Y/N
     announced       -- Announced on Discord via webhook: Y/N
     """
     file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
@@ -49,12 +38,6 @@ class Upload(models.Model):
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
     notes = models.TextField(blank=True)
-    email = models.EmailField(blank=True, null=True)
-    contact = models.IntegerField(
-        default=UPLOAD_CONTACT_NONE,
-        choices=UPLOAD_CONTACT_LIST
-    )
-    contacted = models.BooleanField(default=False)
     announced = models.BooleanField(default=False)
 
     class Meta:
@@ -84,9 +67,6 @@ class Upload(models.Model):
         if save:
             self.save()
 
-    def contact_str(self):
-        return UPLOAD_CONTACT_LIST[self.contact]
-
     def edit_token_url(self):
         return self.edit_token
 
@@ -98,3 +78,10 @@ class Upload(models.Model):
             self.edit_token += random.choice("0123456789ABCDEF")
         self.edit_token += str(self.file_id)
         return True
+
+    def scrub(self):
+        self.edit_token = ""
+        self.ip = ""
+        self.notes = "Blanked notes."
+        self.contacted = False
+        self.user_id = None

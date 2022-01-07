@@ -74,3 +74,7 @@ class Review(models.Model):
             link = self.author
 
         return link
+
+    def scrub(self):
+        self.user_id = None
+        self.ip = ""
