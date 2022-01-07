@@ -30,7 +30,7 @@ class Review(models.Model):
     ip = models.GenericIPAddressField(blank=True, null=True)
 
     class Meta:
-        ordering = ["-id"]
+        ordering = ["-date", "-id"]
 
     def __str__(self):
         output = "[{}] Review of '{}' [{}] by {}".format(
