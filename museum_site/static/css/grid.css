@@ -14,7 +14,7 @@ a:visited { color:#00F; }
 a[target=_blank]
 {
     padding-right:16px;
-    background:url("/static/images/external_link.png");
+    background:url("/static/chrome/external_link.png");
     background-position:top right;
     background-repeat:no-repeat;
 }
@@ -1455,7 +1455,19 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     justify-content:center;
     align-items:center;
 }
+
+#preview-envelope p
+{
+    max-width:640px;
+    text-align:justify;
+}
+
 #fv-image, #fv-preview { border:1px solid #AAA;}
+
+.preview-image-link /* Overview link in File Viewer */
+{
+    font-style:italic;
+}
 
 #text-body { font-family:cp437; }
 #doc-header { color:#F00; text-align:center;}

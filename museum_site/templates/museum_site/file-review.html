@@ -1,0 +1,124 @@
+{% extends "museum_site/world.html" %}
+{% load static %}
+{% load markdown_deux_tags %}
+
+{% block style %}
+<style>
+#review-form-controls
+{
+    display:flex;
+    justify-content:space-between;
+    column-gap:30%;
+    border-top:1px dashed #000;
+    padding:7px 4px 7px 4px;
+}
+
+#review-form-controls input
+{
+    flex:1;
+}
+
+#rev-preview-block { display: none; }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("#preview-review").click(function (){
+        $("#rev-preview-block").hide();
+        $.ajax({
+        url:"/ajax/render-review-text/",
+        method:"POST",
+        data:{
+            "text":$("#id_content").val(),
+            "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val()
+        }
+        }).done(function (rendered){
+            var rating = $("select[name=rating]").val();
+            var has_rating = parseInt(rating);
+            console.log("RATING", rating);
+            $("#rev-preview-title").text($("input[name=title]").val());
+            $("#rev-preview-author").text($("input[name=author]").val());
+            $("#rev-preview-text").html(rendered);
+
+            $("#rev-preview-rating").hide();
+            $("#rev-preview-no-rating").hide();
+
+            if (has_rating == -1)
+            {
+                $("#rev-preview-no-rating").show();
+
+            }
+            else
+            {
+                $("#rev-preview-rating-number").text(rating);
+                $("#rev-preview-rating").show();
+            }
+
+            $("#rev-preview-block").show();
+            $("#rev-preview-block").animate({opacity: 1}, 250);
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block world_content %}
+{% for review in reviews %}
+<div class="review block" id="rev-{{review.id}}">
+<div class="review-meta">
+    <h2><a href="{{request.path}}#rev-{{review.id}}">{{review.title}}</a></h2>
+    By: {{review.author_link|safe}}<br>
+    Published: {{review.date}}<br>
+</div>
+
+<article>
+{{review.content|markdown}}
+</article>
+
+{% if review.rating >= 0 %}<b>Rating:</b> {{review.rating}} out of 5.0
+{% else %}
+<i>This user has opted out of providing a numeric rating</i>
+{% endif %}
+{% if debug %}<div class="debug"><a href="/admin/museum_site/review/{{review.id}}/change/">EDIT {{review.id}}</a></div>{% endif %}
+</div>
+{% endfor %}
+
+{% if recent %}
+    <p><i>You have <a href="#rev-{{recent}}">recently reviewed</a> this file and cannot submit an additional review at this time.</i></p>
+{% elif file.can_review %}
+    <h2>New Review</h2>
+    <form method="POST">
+    {% if request.user.is_authenticated %}
+    <div class="field-wrapper" data-field="author">
+        <label for="id_author">Your Name:</label>
+        <div class="field-value">
+            <b>{{request.user.username}}</b>
+        </div>
+    </div>
+    {% endif %}
+    {% include "museum_site/blocks/generic-form.html" %}
+    <div id="review-form-controls">
+        <input type="button" id="preview-review" value="Preview Review">
+        <input type="submit" value="Submit Review">
+    </div>
+    </form>
+{% else %}
+    <h2>Reviews Disabled</h2>
+    <p>This file is no longer accepting new reviews at this time.</p>
+{% endif%}
+
+<div class="review block" id="rev-preview-block">
+    <div class="review-meta">
+        <h2 id="rev-preview-title"></h2>
+        <i>Written by <span id="rev-preview-author">{{request.user.username}}</span></i>
+    </div>
+
+    <article id="rev-preview-text">
+    </article>
+
+    <span id="rev-preview-rating"><b>Rating:</b> <span id="rev-preview-rating-number"></span> out of 5.0</span>
+    <span id="rev-preview-no-rating"><i>This user has opted out of providing a numeric rating</i></span>
+</div>
+{% endblock %}

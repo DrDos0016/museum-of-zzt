@@ -51,22 +51,6 @@ class Upload(models.Model):
         )
         return output
 
-    def from_request(self, request, file_id, save=True):
-        self.file_id = file_id
-        if not self.edit_token:
-            self.generate_edit_token()
-        self.notes = request.POST.get("notes", "")
-        self.email = request.POST.get("email")
-        self.contact = int(request.POST.get("contact", 0))
-        self.ip = request.META.get("REMOTE_ADDR")
-
-        # Assign user if logged in
-        if request.user.is_authenticated:
-            self.user_id = request.user.id
-
-        if save:
-            self.save()
-
     def edit_token_url(self):
         return self.edit_token
 

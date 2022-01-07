@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from .common import *
 from .constants import *
+from .forms import ReviewForm
 from .models import *
 
 
@@ -259,43 +260,58 @@ def get_file_by_pk(request, pk):
     return redirect(f.attributes_url())
 
 
-def review(request, letter, filename, **kwargs):
-    """ Returns a page of reviews for a file. Handles POSTing new reviews """
+def review(request, letter, filename):
     data = {}
-    data["file"] = File.objects.identifier(
+    today = datetime.now()
+    zfile = File.objects.identifier(
         letter=letter, filename=filename
     ).first()
+    reviews = Review.objects.filter(file_id=zfile.id)
     data["letter"] = letter
-    data["title"] = data["file"].title + " - Reviews"
+    data["title"] = zfile.title + " - Reviews"
 
-    # POST review
-    if request.POST.get("action") == "post-review" and data["file"].can_review:
+    review_form = ReviewForm()
+
+    # Prevent doubling up on reviews
+    recent = reviews.filter(
+        ip=request.META.get("REMOTE_ADDR"),
+        date=today
+    )
+    if recent:
+        data["recent"] = recent[0].pk
+    elif request.method == "POST" and zfile.can_review:
         if request.META["REMOTE_ADDR"] in BANNED_IPS:
             return HttpResponse("Banned account.")
 
-        # Duplicate check
-        today = datetime.now()
-        if len(
-            Review.objects.filter(
-                file_id=data["file"].id, ip=request.META["REMOTE_ADDR"],
-                date=today
-            )
-        ) == 0:
-            review = Review()
-            created = review.from_request(request)
-            if created:
-                review.full_clean()
-                review.save()
+        review_form = ReviewForm(request.POST)
+
+        if review_form.is_valid():
+            print(review_form.cleaned_data.keys())
+
+            # Create and prepare new Upload object
+            review = review_form.save(commit=False)
+            if request.user.is_authenticated:
+                review.author = ""
+                review.user_id = request.user.id
+            review.ip = request.META.get("REMOTE_ADDR")
+            review.date = today
+            review.file_id = zfile.id
+            review.save()
 
             # Update file's review count/scores
-            data["file"].calculate_reviews()
-            data["file"].save()
+            zfile.calculate_reviews()
+            zfile.save()
 
             # Make Announcement
-            discord_announce_review(review, env="PROD")
+            discord_announce_review(review)
 
-    data["reviews"] = Review.objects.filter(file_id=data["file"].id)
-    return render(request, "museum_site/review.html", data)
+    if request.user.is_authenticated:
+        del review_form.fields["author"]
+
+    data["reviews"] = reviews
+    data["file"] = zfile
+    data["form"] = review_form
+    return render(request, "museum_site/file-review.html", data)
 
 
 def roulette(

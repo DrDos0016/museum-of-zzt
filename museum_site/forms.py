@@ -5,7 +5,7 @@ import time
 import zipfile
 
 from django import forms
-from .models import File, Upload, Zeta_Config, Download, Detail
+from .models import *
 from .fields import *
 from .widgets import *
 from .common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT
@@ -210,7 +210,6 @@ class UploadForm(forms.ModelForm):
                     (1, "Do not announce this upload")
                 ),
             ),
-            "Xedit_token": forms.HiddenInput(),
         }
 
 
@@ -395,10 +394,7 @@ class MirrorForm(forms.Form):
 
         # Extract zfile if not using an alternate zip
         if self.cleaned_data["zfile"]:
-            print("ALT ZIP")
-            print(files)
             zf = zipfile.ZipFile(files["zfile"])
-            print("I lived")
         else:
             zf = zipfile.ZipFile(zfile.phys_path())
 
@@ -455,3 +451,40 @@ class MirrorForm(forms.Form):
             secret_key=IA_SECRET,
         )
         return r
+
+
+class ReviewForm(forms.ModelForm):
+    RATINGS = (
+        (-1, "No rating"),
+        (0, "0.0"),
+        (0.5, "0.5"),
+        (1.0, "1.0"),
+        (1.5, "1.5"),
+        (2.0, "2.0"),
+        (2.5, "2.5"),
+        (3.0, "3.0"),
+        (3.5, "3.5"),
+        (4.0, "4.0"),
+        (4.5, "4.5"),
+        (5.0, "5.0"),
+    )
+
+    use_required_attribute = False
+    rating = forms.ChoiceField(
+        choices=RATINGS,
+        help_text="Optionally provide a numeric score from 0.0 to 5.0",
+    )
+
+    class Meta:
+        model = Review
+        fields = ["author", "title", "content", "rating"]
+
+        labels = {
+            "title": "Review Title",
+            "author": "Your Name",
+            "content": "Review",
+        }
+
+        help_texts = {
+            "content": '<a href="http://daringfireball.net/projects/markdown/syntax" target="_blank" tabindex="-1">Markdown syntax</a> is supported for formatting.',
+        }
