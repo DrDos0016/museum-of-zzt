@@ -41,25 +41,6 @@ class Review(models.Model):
         )
         return output
 
-    def from_request(self, request):
-        if request.method != "POST":
-            return False
-
-        if request.user.is_authenticated:
-            self.author = request.user.username
-            self.user = request.user
-        else:
-            self.author = request.POST.get("name")  # NAME not author
-
-        self.file_id = int(request.POST.get("file_id"))
-        self.title = request.POST.get("title")
-        self.content = request.POST.get("content")
-        self.rating = round(float(request.POST.get("rating")), 2)
-        self.date = datetime.utcnow()
-        self.ip = request.META["REMOTE_ADDR"]
-
-        return True
-
     def author_link(self):
         if self.user:
             link = '{} <a href="{}">{}</a>'.format(
