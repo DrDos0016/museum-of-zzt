@@ -239,7 +239,7 @@ def log_viewer(request):
 
 @staff_member_required
 def mirror(request, letter, filename):
-    data = {"title": "[---] Internet Archive Mirroring"}
+    data = {"title": "Internet Archive Mirroring"}
 
     zfile = File.objects.get(letter=letter, filename=filename)
     engine = None
@@ -296,11 +296,6 @@ def mirror(request, letter, filename):
     # Mirror the file
     if request.method == "POST" and form.is_valid():
         data["resp"] = form.mirror(zfile, request.FILES)
-        print("RESPONSE[0]")
-        print("raw", data["resp"][0])
-        print("suc", data["resp"][0].get("success"))
-        print("err", data["resp"][0].get("error"))
-        print("val", data["resp"][0].get("value"))
 
     data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
