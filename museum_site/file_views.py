@@ -309,6 +309,7 @@ def review(request, letter, filename):
         del review_form.fields["author"]
 
     data["reviews"] = reviews
+    data["today"] = today
     data["file"] = zfile
     data["form"] = review_form
     return render(request, "museum_site/file-review.html", data)

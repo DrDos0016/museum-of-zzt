@@ -18,7 +18,7 @@
     flex:1;
 }
 
-#rev-preview-block { display: none; }
+#review-preview-wrapper { display: none; opacity: 0; }
 </style>
 {% endblock %}
 
@@ -37,7 +37,6 @@ $(document).ready(function (){
         }).done(function (rendered){
             var rating = $("select[name=rating]").val();
             var has_rating = parseInt(rating);
-            console.log("RATING", rating);
             $("#rev-preview-title").text($("input[name=title]").val());
             $("#rev-preview-author").text($("input[name=author]").val());
             $("#rev-preview-text").html(rendered);
@@ -56,8 +55,8 @@ $(document).ready(function (){
                 $("#rev-preview-rating").show();
             }
 
-            $("#rev-preview-block").show();
-            $("#rev-preview-block").animate({opacity: 1}, 250);
+            $("#review-preview-wrapper").show();
+            $("#review-preview-wrapper").animate({opacity: 1}, 250);
         });
     });
 });
@@ -66,23 +65,7 @@ $(document).ready(function (){
 
 {% block world_content %}
 {% for review in reviews %}
-<div class="review block" id="rev-{{review.id}}">
-<div class="review-meta">
-    <h2><a href="{{request.path}}#rev-{{review.id}}">{{review.title}}</a></h2>
-    By: {{review.author_link|safe}}<br>
-    Published: {{review.date}}<br>
-</div>
-
-<article>
-{{review.content|markdown}}
-</article>
-
-{% if review.rating >= 0 %}<b>Rating:</b> {{review.rating}} out of 5.0
-{% else %}
-<i>This user has opted out of providing a numeric rating</i>
-{% endif %}
-{% if debug %}<div class="debug"><a href="/admin/museum_site/review/{{review.id}}/change/">EDIT {{review.id}}</a></div>{% endif %}
-</div>
+{% include "museum_site/blocks/review-block.html" %}
 {% endfor %}
 
 {% if recent %}
@@ -108,7 +91,22 @@ $(document).ready(function (){
     <h2>Reviews Disabled</h2>
     <p>This file is no longer accepting new reviews at this time.</p>
 {% endif%}
-
+<hr>
+<div id="review-preview-wrapper">
+    <div class="review-block">
+    <h2 id="rev-preview-title"></h2>
+    <div class="info">
+        By: <span id="rev-preview-author">{{request.user.username}}</span><br>
+        Reviewed: <span id="rev-preview-date">{{today|date}}</span><br>
+    </div>
+    <hr>
+    <article id="rev-preview-text"></article>
+    <hr>
+    <span id="rev-preview-rating"><b>Rating:</b> <span id="rev-preview-rating-number"></span> out of 5.0</span>
+    <span id="rev-preview-no-rating"><i>This user has opted out of providing a numeric rating</i></span>
+    </div>
+</div>
+{% comment %}
 <div class="review block" id="rev-preview-block">
     <div class="review-meta">
         <h2 id="rev-preview-title"></h2>
@@ -121,4 +119,5 @@ $(document).ready(function (){
     <span id="rev-preview-rating"><b>Rating:</b> <span id="rev-preview-rating-number"></span> out of 5.0</span>
     <span id="rev-preview-no-rating"><i>This user has opted out of providing a numeric rating</i></span>
 </div>
+{% endcomment %}
 {% endblock %}

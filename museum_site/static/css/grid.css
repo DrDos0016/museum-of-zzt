@@ -1764,3 +1764,19 @@ select[name=page-selector]
     height:64px;
     margin:7px 4px 7px 4px;
 }
+
+/* Review Blocks */
+.review-block
+{
+    padding:14px 8px 14px 8px;
+    margin-bottom:14px;
+    margin-top:14px;
+    border:1px solid #000;
+}
+
+.review-block h2
+{
+    margin-top:0;
+    margin-bottom:0;
+}
+/* End Review Blocks */
