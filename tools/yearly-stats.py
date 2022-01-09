@@ -125,7 +125,9 @@ def main():
     print("UPLOAD QUEUE BY DATE")
 
     print("DATE\tQUEUE")
-    start_date = datetime(year=2020, month=6, day=1, hour=0, minute=0, second=0, tzinfo=timezone.utc)
+    print("--commented out since this is very poorly optimized and takes a few mins")
+    """
+    s_date = datetime(year=2020, month=6, day=1, hour=0, minute=0, second=0, tzinfo=timezone.utc)
     for idx in range(0, 365):
         comp_date = datetime(year=2021, month=1, day=1, hour=11, minute=59, second=59, tzinfo=timezone.utc)
         delta = timedelta(days=idx)
@@ -133,7 +135,7 @@ def main():
         cd_str = str(comp_date)[:10]
 
         # Find Uploads from Start date through Compdate
-        uploads = Upload.objects.filter(date__gte=start_date, date__lte=comp_date)
+        uploads = Upload.objects.filter(date__gte=s_date, date__lte=comp_date)
 
         # Of that set, count the ones that have a publish date in the future
         queue_size = 0
@@ -144,7 +146,32 @@ def main():
                 queue_size += 1
 
         print(cd_str + "\t" + str(queue_size))
+    """
 
+    print("AVG REVIEW SCORE BY YEAR")
+    qs = Review.objects.all().order_by("id")
+    data = {}
+    for r in qs:
+        if not r.rating:
+            continue
+
+        if r.file:
+            f = r.file
+        else:
+            continue
+
+        if f.release_date:
+            year = f.release_date.year
+            if not data.get(year):
+                data[year] = {
+                    "total": 0,
+                    "reviews": 0
+                }
+            data[year]["total"] = data[year]["total"] + r.rating
+            data[year]["total"] = data[year]["reviews"] + 1
+
+    for (k,v) in data.items():
+        print(k, v)
 
 
     return True
