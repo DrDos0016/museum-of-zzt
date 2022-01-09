@@ -148,11 +148,11 @@ def main():
         print(cd_str + "\t" + str(queue_size))
     """
 
-    print("AVG REVIEW SCORE BY YEAR")
+    print("AVG REVIEW SCORE BY YEAR lol")
     qs = Review.objects.all().order_by("id")
     data = {}
     for r in qs:
-        if not r.rating:
+        if r.rating == -1:
             continue
 
         if r.file:
@@ -160,18 +160,27 @@ def main():
         else:
             continue
 
-        if f.release_date:
-            year = f.release_date.year
-            if not data.get(year):
-                data[year] = {
-                    "total": 0,
-                    "reviews": 0
-                }
-            data[year]["total"] = data[year]["total"] + r.rating
-            data[year]["total"] = data[year]["reviews"] + 1
+        if not f.release_date:
+            continue
 
-    for (k,v) in data.items():
-        print(k, v)
+        year = f.release_date.year
+        if not data.get(year):
+            data[year] = {
+                "total": 0,
+                "reviews": 0
+            }
+
+        data[year]["total"] = data[year]["total"] + r.rating
+        data[year]["reviews"] = data[year]["reviews"] + 1
+
+    keys = data.keys()
+    keys = sorted(keys)
+
+    for k in keys:
+        print(
+            str(k) + "\t" +
+            str(round((data[k]["total"] / data[k]["reviews"]), 3))
+        )
 
 
     return True
