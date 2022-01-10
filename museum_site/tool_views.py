@@ -277,8 +277,8 @@ def mirror(request, letter, filename):
     form.fields["year"].initial = zfile.release_year()
     form.fields["subject"].initial = subject
     form.fields["description"].initial = description
-    form.fields["url"].initial = url_prefix + zfile.filename[:-4]
-    form.fields["filename"].initial = url_prefix + zfile.filename
+    form.fields["url"].initial = (url_prefix + zfile.filename[:-4]).replace(" ", "_")
+    form.fields["filename"].initial = (url_prefix + zfile.filename).replace(" ", "_")
     if ENV == "PROD":
         form.fields["collection"].initial = "open_source_software"
     if engine == "ZZT":
