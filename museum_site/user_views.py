@@ -37,6 +37,13 @@ def activate_account(request, token=None):
             u.profile.activation_time = None
             u.profile.save()
             u.save()
+
+            # Check Patron status
+            cron_path = os.path.join(SITE_ROOT, "cron")
+            cron_log_path = os.path.join(SITE_ROOT, "log")
+            cmd = "{}/patreon-scan.sh >> {}/cron.log".format(cron_path, cron_log_path)
+            status = os.system(cmd)
+
             data["resp"] = "SUCCESS"
         else:
             data["resp"] = "FAILURE"
