@@ -353,15 +353,15 @@ class MirrorForm(forms.Form):
         # :: is a delimiter for JS to set launch command for main EXE
         ("RecOfZZT.zip", "The Reconstruction of ZZT::ZZT.EXE"),
         ("RecSZZT.zip", "The Reconstruction of Super ZZT::SUPERZ.EXE"),
-        ("czoo420b3-dos.zip", "ClassicZoo v4.20 beta 3::ZZT.EXE"),
+        ("czoo421-dos.zip", "ClassicZoo v4.21::ZZT.EXE"),
         ("sczo404.zip", "Super ClassicZoo v4.04::SUPERZ.EXE"),
     )
 
     title = forms.CharField(label="Title")
     url = forms.CharField(label="Url", help_text="")
-    creator = forms.CharField(label="Creator")
+    creator = forms.CharField(label="Creator", help_text="Separate with semicolons")
     year = forms.IntegerField(label="Year")
-    subject = forms.CharField(label="Subject", help_text="Separate with commas")
+    subject = forms.CharField(label="Subject", help_text="Separate with semicolons")
     description = forms.CharField(label="Description", widget=forms.Textarea(), help_text="Can contain links, formatting and images in html/css")
     collection = forms.ChoiceField(choices=COLLECTIONS)
     language = forms.ChoiceField(choices=IA_LANGUAGES, initial="eng")
@@ -438,7 +438,7 @@ class MirrorForm(forms.Form):
             "emulator_start": self.cleaned_data["launch_command"],
             "year": str(self.cleaned_data["year"]),
             "subject": self.cleaned_data["subject"],
-            "creator": self.cleaned_data["creator"],
+            "creator": self.cleaned_data["creator"].split(";"),
             "description": self.cleaned_data["description"]
         }
 

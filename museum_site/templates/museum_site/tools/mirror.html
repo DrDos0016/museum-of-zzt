@@ -97,11 +97,12 @@ function parse_zip_file(file)
 
 {% block content %}
 <section id="content" class="block">
-{% if request.METHOD == "POST" %}
+{% if request.method == "POST" %}
 <div class="field-wrapper">
     <label>Response</label>
     <div class="field-value">
-        <textarea>{{resp}}</textarea>
+        <textarea>{{resp}}</textarea><br>
+        <a href="https://archive.org/details/{{request.POST.url}}" target="_blank">{{request.POST.url|default:"Link"}}</a>
     </div>
 </div>
 {% endif %}
