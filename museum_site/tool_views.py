@@ -251,16 +251,16 @@ def mirror(request, letter, filename):
         url_prefix = "szzt_"
         engine = "Super ZZT"
 
-    subject = ",".join(zfile.genre.split("/"))
+    subject = ";".join(zfile.genre.split("/"))
     if engine:
-        subject = engine + "," + subject
+        subject = engine + ";" + subject
         description = "<p>World created using the {} engine.</p>\n\n".format(engine)
 
     if zfile.description:
         description += "<p>{}</p>\n\n".format(zfile.description)
 
     if engine:
-        description += "<p><i>DOSBox is no longer the preferred program for playing {} worlds. Worlds frequently run slower, have laggy input, and audio issues. Visit the <a href='https://museumofzzt.com' target='_blank'>Museum of ZZT</a> for more information on programs such as Zeta and other ZZT emulators/source ports.</i></p>".format(engine)
+        description += "<p><i>Emulation via DOSBox is no longer the preferred method for playing {} worlds. Worlds frequently run slower, have laggy input, and audio issues. Visit the <a href='https://museumofzzt.com' target='_blank'>Museum of ZZT</a> for more information on programs such as Zeta and other ZZT emulators/source ports.</i></p>".format(engine)
 
     raw_contents = zfile.get_zip_info()
     contents = []
@@ -273,11 +273,11 @@ def mirror(request, letter, filename):
     else:
         form = MirrorForm()
     form.fields["title"].initial = zfile.title
-    form.fields["creator"].initial = ",".join(zfile.author.split("/"))
+    form.fields["creator"].initial = ";".join(zfile.author.split("/"))
     form.fields["year"].initial = zfile.release_year()
     form.fields["subject"].initial = subject
     form.fields["description"].initial = description
-    form.fields["url"].initial = url_prefix + zfile.filename
+    form.fields["url"].initial = url_prefix + zfile.filename[:-4]
     if ENV == "PROD":
         form.fields["collection"].initial = "open_source_software"
     if engine == "ZZT":
@@ -296,6 +296,10 @@ def mirror(request, letter, filename):
     # Mirror the file
     if request.method == "POST" and form.is_valid():
         data["resp"] = form.mirror(zfile, request.FILES)
+        if "200" in str(data["resp"]):
+            zfile.archive_name = request.POST.get("url")
+            if request.POST.get("collection") != "test_collection":
+                zfile.basic_save()
 
     data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
