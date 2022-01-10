@@ -17,6 +17,12 @@
     width:99%;
     height:90px;
 }
+
+.table-textarea:read-only
+{
+    border:1px dotted #000;
+    background:transparent;
+}
 </style>
 {% endblock %}
 
@@ -92,6 +98,9 @@ function iso8601_to_user_tz(selector)
 <h1>Private Data</h1>
 <br><br>
 <h2>User Data</h2>
+{% if request.GET.check_patronage %}
+<p>Your Patron status has been refreshed. If you are still not being marked as a Patron, confirm that your Patron Email Address matches the one being used for your Patreon account. If you are still not being properly marked as a Patron, <a href="mailto:{{EMAIL_ADDRESS}}">contact Dr. Dos</a>.</p>
+{% endif %}
 <table>
     <tr>
         <th>Password</th>
@@ -105,16 +114,14 @@ function iso8601_to_user_tz(selector)
     </tr>
     <tr>
         <th>Patron</th>
-        <td>{{user_obj.profile.patron|yesno|title}}</td>
+        <td>{{user_obj.profile.patron|yesno|title}}{% if not user_obj.profile.patron %} [<a href="?check_patronage=1">Refresh</a>]{% endif %}</td>
         <td><a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patreon</a></td>
     </tr>
-    {% if user_obj.profile.patron %}
     <tr>
         <th>Patron Email Address</th>
         <td>{{user_obj.profile.patron_email}}</td>
         <td><a href="{% url 'change_patron_email' %}">Change Patron Email</a></td>
     </tr>
-    {% endif %}
     <tr>
         <th>Active</th>
         <td colspan="2">{{user_obj.is_active|yesno|title}}</td>

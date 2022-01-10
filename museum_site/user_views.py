@@ -858,5 +858,12 @@ def user_profile(request, user_id=None, **kwargs):
     if request.GET.get("public"):
         data["private"] = False
 
+    # Check Patreon Status
+    if data["private"] and request.GET.get("check_patronage"):
+        cron_path = os.path.join(SITE_ROOT, "cron")
+        cron_log_path = os.path.join(SITE_ROOT, "log")
+        cmd = "{}/patreon-scan.sh >> {}/cron.log".format(cron_path, cron_log_path)
+        status = os.system(cmd)
+
     data["title"] = "Profile for " + data["user_obj"].username
     return render(request, "museum_site/user-profile.html", data)
