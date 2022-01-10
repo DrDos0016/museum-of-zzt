@@ -278,6 +278,7 @@ def mirror(request, letter, filename):
     form.fields["subject"].initial = subject
     form.fields["description"].initial = description
     form.fields["url"].initial = url_prefix + zfile.filename[:-4]
+    form.fields["filename"].initial = url_prefix + zfile.filename
     if ENV == "PROD":
         form.fields["collection"].initial = "open_source_software"
     if engine == "ZZT":

@@ -358,7 +358,8 @@ class MirrorForm(forms.Form):
     )
 
     title = forms.CharField(label="Title")
-    url = forms.CharField(label="Url", help_text="")
+    url = forms.CharField(label="URL", help_text="File will being uploaded to /details/[url]")
+    filename = forms.CharField(help_text="Filename for the upload")
     creator = forms.CharField(label="Creator", help_text="Separate with semicolons")
     year = forms.IntegerField(label="Year")
     subject = forms.CharField(label="Subject", help_text="Separate with semicolons")
@@ -380,10 +381,12 @@ class MirrorForm(forms.Form):
         # Copy the file's zip into a temp directory
         if self.cleaned_data["collection"] == "test_collection":
             ts = str(int(time.time()))
-            wip_zf_name = "test_" + ts + "_" + self.cleaned_data["url"]
+            wip_zf_name = "test_" + ts + "_" + self.cleaned_data["filename"]
             archive_title = "Test - " + ts + "_" + archive_title
+            url = "test_" + ts + "_" + self.cleaned_data["url"]
         else:
-            wip_zf_name = self.cleaned_data["url"]
+            wip_zf_name = self.cleaned_data["filename"]
+            url = self.cleaned_data["url"]
 
         wip_dir = os.path.join(TEMP_PATH, os.path.splitext(wip_zf_name)[0])
         wip_zf_path = os.path.join(wip_dir, wip_zf_name)
@@ -444,7 +447,7 @@ class MirrorForm(forms.Form):
 
         # Mirror the file
         r = upload(
-            wip_zf_name,
+            url,
             files=[wip_zf_path],
             metadata=meta,
             access_key=IA_ACCESS,
