@@ -247,7 +247,7 @@ def mirror(request, letter, filename):
     if zfile.is_zzt():
         url_prefix = "zzt_"
         engine = "ZZT"
-    elif zfile.is_szzt():
+    elif zfile.is_super_zzt():
         url_prefix = "szzt_"
         engine = "Super ZZT"
 
