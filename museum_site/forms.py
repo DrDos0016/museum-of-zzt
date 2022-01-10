@@ -358,7 +358,7 @@ class MirrorForm(forms.Form):
     )
 
     title = forms.CharField(label="Title")
-    url = forms.CharField(label="URL", help_text="File will being uploaded to /details/[url]")
+    url = forms.CharField(label="URL", help_text="File will being uploaded to /details/[url] spaces are autoconverted to underscores")
     filename = forms.CharField(help_text="Filename for the upload")
     creator = forms.CharField(label="Creator", help_text="Separate with semicolons")
     year = forms.IntegerField(label="Year")
@@ -388,6 +388,7 @@ class MirrorForm(forms.Form):
             wip_zf_name = self.cleaned_data["filename"]
             url = self.cleaned_data["url"]
 
+        url = url.replace(" ", "_")
         wip_dir = os.path.join(TEMP_PATH, os.path.splitext(wip_zf_name)[0])
         wip_zf_path = os.path.join(wip_dir, wip_zf_name)
         try:
