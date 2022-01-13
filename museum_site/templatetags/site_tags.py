@@ -113,8 +113,72 @@ def content_warning(*args, **kwargs):
 
 
 @register.simple_tag()
+def guide_words(*args, **kwargs):
+    sort = kwargs.get("sort", "")
+    model = kwargs.get("model")
+    items = (kwargs.get("first_item"), kwargs.get("last_item"))
+    link_text = ["???", "???"]
+
+    if sort is None:
+        sort = ""
+
+    output = ""
+    if model == "File":
+        # Figure out link text
+        for x in range(0, len(link_text)):
+            if sort == "author":
+                if items[x].author:
+                    link_text[x] = items[x].author
+                else:
+                    link_text[x] = "-Unknown Author-"  # This shouldn't appear
+            elif sort == "company":
+                if items[x].company:
+                    link_text[x] = items[x].company
+                else:
+                    link_text[x] = "-No company-"
+            elif sort == "rating":
+                if items[x].rating:
+                    link_text[x] = items[x].rating
+                else:
+                    link_text[x] = "-No Rating-"
+            elif "release" in sort:
+                if items[x].release_date:
+                    link_text[x] = items[x].release_date.strftime("%b %d, %Y")
+                else:
+                    link_text[x] = "-Unknown Release Date-"
+            elif "publish_date" in sort:
+                if items[x].publish_date:
+                    link_text[x] = items[x].publish_date.strftime("%b %d, %Y")
+                else:
+                    link_text[x] = "-Unknown Publication Date-"
+            elif "uploaded" in sort:
+                if items[x].upload_set.first().date:
+                    link_text[x] = items[x].upload_set.first().date.strftime(
+                        "%b %d, %Y"
+                    )
+                else:
+                    link_text[x] = "-Unknown Upload Date-"
+            elif "id" in sort:
+                link_text[x] = "[{}] {}".format(items[x].id, items[x].title)
+            else:  # Title
+                link_text[x] = items[x].title
+
+        output = """
+        <div class="guide-words">
+            <span><a class="left" href="#{}">{}</a></span>
+            <span><a class="right" href="#{}">{}</a></span>
+        </div>
+        """.format(
+            items[0].filename, link_text[0],
+            items[1].filename, link_text[1]
+        )
+
+    return mark_safe(output + "\n")
+
+
+@register.simple_tag()
 def meta_tags(*args, **kwargs):
-    #url = kwargs.get("url", "https://museumofzzt.com/").split("?")[0]
+    # url = kwargs.get("url", "https://museumofzzt.com/").split("?")[0]
 
     # Default values
     base_url = "{}://{}".format(PROTOCOL, DOMAIN)
@@ -123,7 +187,12 @@ def meta_tags(*args, **kwargs):
     og_default = "{}{}images/og_default.jpg".format(base_url, STATIC_URL)
     tags = {
         "author": ["name", ADMIN_NAME],
-        "description": ["name",  "The Museum of ZZT is an online archive dedicated to the preservation and curation of ZZT worlds. Explore more than 3000 indie-made ZZT worlds spanning its 30+ year history"],
+        "description": [
+            "name",
+            "The Museum of ZZT is an online archive dedicated to the "
+            "preservation and curation of ZZT worlds. Explore more than 3000 "
+            "indie-made ZZT worlds spanning its 30+ year history"
+        ],
         "og:type": ["property", "website"],
         "og:url": ["property", url],
         "og:title": ["property", "Museum of ZZT"],
@@ -137,13 +206,19 @@ def meta_tags(*args, **kwargs):
         tags["og:image"][1] = base_url + kwargs["article"].preview
     elif kwargs.get("file") and kwargs.get("file") != "Local File Viewer":
         tags["author"][1] = kwargs["file"].author
-        tags["description"][1] = '{} by {}'.format(kwargs["file"].title, kwargs["file"].author)
+        tags["description"][1] = '{} by {}'.format(
+            kwargs["file"].title, kwargs["file"].author
+        )
         if kwargs["file"].company and kwargs["file"].company != "None":
             tags["description"][1] += " of {}".format(kwargs["file"].company)
         if kwargs["file"].release_date:
-            tags["description"][1] += " ({})".format(kwargs["file"].release_date.year)
+            tags["description"][1] += " ({})".format(
+                kwargs["file"].release_date.year
+            )
         tags["og:title"][1] = kwargs["file"].title + " - Museum of ZZT"
-        tags["og:image"][1] = base_url + STATIC_URL + kwargs["file"].screenshot_url()
+        tags["og:image"][1] = base_url + STATIC_URL + (
+            kwargs["file"].screenshot_url()
+        )
 
     # Overrides
     if kwargs.get("author"):
@@ -153,7 +228,9 @@ def meta_tags(*args, **kwargs):
     if kwargs.get("title"):
         tags["og:title"][1] = kwargs["title"] + " - Museum of ZZT"
     if kwargs.get("og_image"):
-        tags["og:image"][1] = "https://museumofzzt.com/" + STATIC_URL[1:] + kwargs["og_image"]
+        tags["og:image"][1] = "https://museumofzzt.com/" + STATIC_URL[1:] + (
+            kwargs["og_image"]
+        )
 
     # Twitter tags
     tags["twitter:site"] = ["name", "@worldsofzzt"]
@@ -176,7 +253,9 @@ def patreon_plug(*args, **kwargs):
     output = """
         <div class="patreon-plug">
         <div class="text">
-            <div class="heading"><span>======</span> A Worlds of ZZT Production <span>======</span></div>
+            <div class="heading">
+            <span>======</span> A Worlds of ZZT Production <span>======</span>
+            </div>
             <p>
                The Worlds of ZZT project is
                committed to the preservation
@@ -185,8 +264,8 @@ def patreon_plug(*args, **kwargs):
                <p> This article was produced
                thanks to supporters on Patreon.</p>
 
-            <a href="https://patreon.com/worldsofzzt" target="_blank">Support Worlds of ZZT on
-            Patreon!</a>
+            <a href="https://patreon.com/worldsofzzt" target="_blank">
+            Support Worlds of ZZT on Patreon!</a>
         </div>
     </div>
     """
@@ -197,18 +276,18 @@ def patreon_plug(*args, **kwargs):
 @register.simple_tag()
 def cl_info(pk=None, engine=None, emulator=None):
     if pk is None:
-        file = File()
-        file.id = -1
+        zfile = File()
+        zfile.id = -1
     else:
-        file = File.objects.get(pk=pk)
+        zfile = File.objects.get(pk=pk)
 
-    if file.company:
-        company = "Published Under: {}<br>".format(file.company)
+    if zfile.company:
+        company = "Published Under: {}<br>".format(zfile.company)
     else:
         company = ""
 
-    if file.release_date is not None:
-        release = file.release_date.strftime("%B %m, %Y")
+    if zfile.release_date is not None:
+        release = zfile.release_date.strftime("%B %m, %Y")
     else:
         release = "Unknown"
 
@@ -219,7 +298,7 @@ def cl_info(pk=None, engine=None, emulator=None):
             {company}
             Released: {release}
     """.format(
-        title=file.title, author=file.author, company=company, release=release
+        title=zfile.title, author=zfile.author, company=company, release=release
     )
 
     if engine:
@@ -227,7 +306,15 @@ def cl_info(pk=None, engine=None, emulator=None):
     if emulator:
         output += " via " + emulator
 
-    output += '<br><a href="{download}" target="_blank">Download</a> | <a href="{play}" target="_blank">Play Online</a> | <a href="{view}" target="_blank">View Files</a><br>'.format(download=file.download_url(), play=file.play_url(), view=file.file_url())
+    output += (
+        '<br><a href="{download}" target="_blank">Download</a> | '
+        '<a href="{play}" target="_blank">Play Online</a> | '
+        '<a href="{view}" target="_blank">View Files</a><br>'
+    ).format(
+        download=zfile.download_url(),
+        play=zfile.play_url(),
+        view=zfile.file_url()
+    )
 
     output += "<br>\t</div>"
 
@@ -270,7 +357,11 @@ class Commentary(template.Node):
 
         commentary = commentary.strip()
         if (commentary and commentary[0] != "<") or commentary.startswith("<!"):
-            commentary = "<p>" + commentary.replace("\r\n\r\n", "</p><p>").replace("\n\n", "</p><p>") + "</p>"
+            commentary = (
+                "<p>" + commentary.replace("\r\n\r\n", "</p><p>").replace(
+                    "\n\n", "</p><p>"
+                ) + "</p>"
+            )
 
         debug_classes = ""
         if "TODO" in commentary:

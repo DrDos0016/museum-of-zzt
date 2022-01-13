@@ -75,7 +75,12 @@ def search(request):
     """ Searches database files. Returns the browse page filtered
         appropriately.
     """
-    data = {"mode": "search", "title": "Search"}
+    data = {
+        "mode": "search",
+        "title": "Search",
+        "model":"File",
+        "sort": request.GET.get("sort")
+    }
     data["category"] = "Search Results"
     data["page"] = int(request.GET.get("page", 1))
 
@@ -262,5 +267,11 @@ def search(request):
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = get_selected_view_format(request, data["available_views"])
     data = get_pagination_data(request, data, qs)
+
+    if data["page"].object_list:
+        data["first_item"] = data["page"].object_list[0]
+        data["last_item"] = (
+            data["page"].object_list[len(data["page"].object_list) - 1]
+        )
 
     return render(request, "museum_site/file_directory.html", data)

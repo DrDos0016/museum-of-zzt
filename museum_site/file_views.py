@@ -32,12 +32,13 @@ def file_directory(
     show_description=False,
     show_featured=False
 ):
-    print("File dir?")
     """ Returns page listing all articles sorted either by date or name """
     data = {
         "title": "Browse",
         "show_description": show_description,
         "show_featured": show_featured,
+        "model": "File",
+        "sort": request.GET.get("sort")
     }
 
     data["sort_options"] = [
@@ -72,6 +73,7 @@ def file_directory(
         data["title"] = "New Additions"
         data["header"] = data["title"]
         data["sort_options"] = []
+        data["sort"] = "-publish_date"
         default_sort = ["-publish_date", "-id"]
     elif request.path == "/new-releases/":
         data["title"] = "New Releases"
