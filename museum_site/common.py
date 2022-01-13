@@ -476,7 +476,7 @@ def discord_announce_review(review, env=None):
         "Read: https://museumofzzt.com{}#rev-{}\n"
     ).format(
         review.file.title, review.title, review.author,
-        review.file.review_url(), review.id
+        urllib.parse.quote(review.file.review_url()), review.id
     )
 
     discord_data = {
@@ -522,7 +522,7 @@ def discord_announce_upload(upload, env=None):
     ).format(
         zfile.title, zfile.author,
         year,
-        zfile.file_url()
+        urllib.parse.quote(zfile.file_url())
     )
 
     discord_data = {
