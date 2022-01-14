@@ -67,7 +67,7 @@ class ArticleManager(models.Manager):
         qs = self.exclude(published=REMOVED_ARTICLE)
 
         # Filter by series first as it excludes almost all articles
-        if p.get("series"):
+        if p.get("series") and p["series"] != "Any":
             qs = qs.filter(series=p["series"])
 
         if p.get("title"):
