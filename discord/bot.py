@@ -1,17 +1,25 @@
 import base64
 import io
+import os
 import random
 import sys
 import time
 import urllib
 
 import discord
+import django
 import requests
 
 from discord.ext import commands
 from discord.utils import get
 
 from constants import *
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
+django.setup()
+
+from museum_site.models import Scroll  # noqa: E402
 try:
     from private import TOKEN
 except ImportError:
@@ -32,6 +40,8 @@ LAST_TIME = {
     "zzt": 0,
     "help": 0,
 }
+
+SCROLLS = list(Scroll.objects.filter(published=True).order_by("id"))
 
 bot = commands.Bot(command_prefix="!")
 bot.remove_command("help")  # Roll our own
@@ -150,27 +160,28 @@ async def removerole(ctx, *args):
 async def scroll(ctx, idx="?"):
     VALID_ROOMS = ("bots", "bot-dev", "title-screen")
     VALID_USERS = ()
-    COOLDOWN = 1
+    COOLDOWN = 10
 
+    request = False
     if idx != "?":
         try:
             idx = int(idx)
+            request = True
         except ValueError:
             idx = "?"
 
     status = check_permissions(ctx, VALID_ROOMS, VALID_USERS, COOLDOWN)
     if status["SUCCESS"]:
-        if idx == "?" or (idx < 1) or (idx >= len(SCROLLS) + 1):
-            idx = random.choice(range(1, len(SCROLLS) + 1))
+        scroll = None
+        if request:
+            scroll = SCROLLS[idx - 1]
 
-        choice = SCROLLS[idx-1]
+        if not scroll:
+            idx = random.choice(range(0, len(SCROLLS)))
+            scroll = SCROLLS[idx]
 
-        scroll = SCROLL_TOP.replace("##", ("0"+str(idx))[-2:])
-        for line in choice["text"].split("\n"):
-            scroll += "\n │  " + (line + " " * 42)[:42] + " │ "
-        scroll += SCROLL_BOTTOM
-
-        await ctx.send(scroll + "*Source: <{}>*".format(choice["source"]))
+        render = scroll.render_for_discord()
+        await ctx.send(render + "*Source: <https://museumofzzt.com{}>*".format(scroll.source))
     else:
         print(status.get("REASON"))
         if status.get("RESPONSE"):
