@@ -1,4 +1,3 @@
-{% csrf_token %}
 {% for field in form.visible_fields %}
 <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
     {{field.errors}}

@@ -9,12 +9,13 @@ from .models import *
 from .fields import *
 from .widgets import *
 from .common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT
-from .constants import LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, DETAIL_REMOVED
+from .constants import (
+    LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, DETAIL_REMOVED
+)
 from .private import IA_ACCESS, IA_SECRET
 
 
 from internetarchive import upload
-
 
 
 class ZGameForm(forms.ModelForm):
@@ -255,7 +256,6 @@ class AdvancedSearchForm(forms.Form):
     use_required_attribute = False
     required = False
 
-
     title = forms.CharField(label="Title contains", required=False)
     author = forms.CharField(label="Author contains", required=False)
     filename = forms.CharField(label="Filename contains", required=False)
@@ -268,11 +268,13 @@ class AdvancedSearchForm(forms.Form):
         choices=any_plus(((str(x), str(x)) for x in range(1991, YEAR + 1))),
         required=False
     )
-    board_min = forms.IntegerField(required=False, label="Minimum/Maximum board count")
+    board_min = forms.IntegerField(
+        required=False, label="Minimum/Maximum board count"
+    )
     board_max = forms.IntegerField(required=False)
     board_type = forms.ChoiceField(
         widget=forms.RadioSelect,
-        choices =[
+        choices=[
             ("playable", "Playable Boards"),
             ("total", "Total Boards"),
         ],
@@ -302,7 +304,7 @@ class AdvancedSearchForm(forms.Form):
         required=False
     )
     details = forms.MultipleChoiceField(
-        #widget=forms.SelectMultiple,
+        # widget=forms.SelectMultiple,
         widget=GroupedCheckboxWidget,
         choices=Detail.objects.form_list,
         required=False,
@@ -326,6 +328,58 @@ class AdvancedSearchForm(forms.Form):
 
         print("Ok?", language)
         return language
+
+
+class ArticleSearchForm(forms.Form):
+    use_required_attribute = False
+    required = False
+
+    YEARS = (
+        [("Any", "- ANY - ")] +
+        [(y, y) for y in range(YEAR, 1990, -1)] +
+        [("Unk", "Unknown")]
+    )
+
+    # TODO this may need to be moved/replaced if DB model changes
+    CATEGORIES = (
+        ("bugs-and-glitches", "Bugs And Glitches"),
+        ("closer-look", "Closer Look"),
+        ("contest", "Contest"),
+        ("featured-game", "Featured Game"),
+        ("help", "Help"),
+        ("historical", "Historical"),
+        ("interview", "Interview"),
+        ("lets-play", "Let's Play"),
+        ("livestream", "Livestream"),
+        ("postmortem", "Postmortem"),
+        ("publication-pack", "Publication Pack"),
+        ("walkthrough", "Walkthrough"),
+        ("misc", "Misc.")
+    )
+
+    SERIES_CHOICES = [("Any", "- ANY -")] + list(
+        Series.objects.filter(visible=True).order_by("title").values_list(
+            "id", "title"
+        )
+    )
+
+    SORTS = (
+        ("title", "Title"),
+        ("author", "Author"),
+        ("category", "Category"),
+        ("-date", "Newest"),
+        ("date", "date"),
+    )
+
+    title = forms.CharField(label="Title contains")
+    author = forms.CharField(label="Author contains")
+    text = forms.CharField(label="Text contains")
+    year = forms.ChoiceField(label="Publication year", choices=YEARS)
+    categories = forms.MultipleChoiceField(
+        required=False, widget=forms.CheckboxSelectMultiple, choices=CATEGORIES
+    )
+    series = forms.ChoiceField(label="In Series", choices=SERIES_CHOICES)
+    sort = forms.ChoiceField(choices=SORTS)
 
 
 class MirrorForm(forms.Form):
@@ -358,12 +412,22 @@ class MirrorForm(forms.Form):
     )
 
     title = forms.CharField(label="Title")
-    url = forms.CharField(label="URL", help_text="File will being uploaded to /details/[url]")
+    url = forms.CharField(
+        label="URL", help_text="File will being uploaded to /details/[url]"
+    )
     filename = forms.CharField(help_text="Filename for the upload")
-    creator = forms.CharField(label="Creator", help_text="Separate with semicolons")
+    creator = forms.CharField(
+        label="Creator", help_text="Separate with semicolons"
+    )
     year = forms.IntegerField(label="Year")
-    subject = forms.CharField(label="Subject", help_text="Separate with semicolons")
-    description = forms.CharField(label="Description", widget=forms.Textarea(), help_text="Can contain links, formatting and images in html/css")
+    subject = forms.CharField(
+        label="Subject", help_text="Separate with semicolons"
+    )
+    description = forms.CharField(
+        label="Description",
+        widget=forms.Textarea(),
+        help_text="Can contain links, formatting and images in html/css"
+    )
     collection = forms.ChoiceField(choices=COLLECTIONS)
     language = forms.ChoiceField(choices=IA_LANGUAGES, initial="eng")
     zfile = forms.FileField(
@@ -372,7 +436,10 @@ class MirrorForm(forms.Form):
         label="Alternate Zip",
         widget=UploadFileWidget()
     )
-    packages = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=PACKAGES, help_text="Additional zipfiles whose contents are to be included")
+    packages = forms.MultipleChoiceField(
+        required=False, widget=forms.CheckboxSelectMultiple, choices=PACKAGES,
+        help_text="Additional zipfiles whose contents are to be included"
+    )
     default_world = forms.ChoiceField(required=False, choices=[])
     launch_command = forms.CharField(required=False)
 
@@ -411,13 +478,18 @@ class MirrorForm(forms.Form):
 
         # Extract any additional packages
         for package in self.cleaned_data["packages"]:
-            package_path = os.path.join(SITE_ROOT, "museum_site", "static", "data", "ia_packages", package)
+            package_path = os.path.join(
+                SITE_ROOT, "museum_site", "static", "data", "ia_packages",
+                package
+            )
             zf = zipfile.ZipFile(package_path)
             files = zf.infolist()
             for f in files:
                 zf.extract(f, path=wip_dir)
                 timestamp = time.mktime(f.date_time + (0, 0, -1))
-                os.utime(os.path.join(wip_dir, f.filename), (timestamp, timestamp))
+                os.utime(
+                    os.path.join(wip_dir, f.filename), (timestamp, timestamp)
+                )
             zf.close()
 
         # Add to WIP archive
@@ -489,5 +561,9 @@ class ReviewForm(forms.ModelForm):
         }
 
         help_texts = {
-            "content": '<a href="http://daringfireball.net/projects/markdown/syntax" target="_blank" tabindex="-1">Markdown syntax</a> is supported for formatting.',
+            "content": (
+                '<a href="http://daringfireball.net/projects/markdown/syntax" '
+                'target="_blank" tabindex="-1">Markdown syntax</a> is '
+                'supported for formatting.'
+            ),
         }

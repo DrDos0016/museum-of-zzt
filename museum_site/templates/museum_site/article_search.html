@@ -1,78 +1,12 @@
 {% extends "museum_site/main.html" %}
 
-{% block scripts %}
-<script>
-$(document).ready(function (){
-    $("#article-search-form button").click(function (){
-        if ($(this).text() == "All")
-            $("input[name=category]").prop("checked", "checked");
-        else if ($(this).text() == "None")
-            $("input[name=category]").prop("checked", "");
-    });
-});
-</script>
-{% endblock %}
-
 {% block content %}
 <section id="content" class="block">
 <h1>Article Search</h1>
-<div class="{% if request.GET %}collapsed{% endif %}">
 <form method="GET" action="{% url 'article_directory' %}" id="article-search-form">
-<div class="field">
-    <label for="title">Title contains:</label>
-        <span class="sub"></span>
-    <input id="title" name="title" value="{{request.GET.title}}" maxlength="80">
-</div>
-<div class="field">
-    <label for="author">Author contains:<br>
-        <span class="sub"></span>
-    </label>
-    <input id="author" name="author" value="{{request.GET.author}}" maxlength="254">
-</div>
-<div class="field">
-    <label for="author">Text contains:<br>
-        <span class="sub"></span>
-    </label>
-    <input id="text" name="text" value="{{request.GET.text}}" maxlength="100">
-</div>
-<div class="field">
-    <label for="year">Publication Year:<br>
-        <span class="sub"></span>
-    </label>
-    <select id="year" name="year">
-        <option value="Any">- ANY - </option>
-        <option value="Unk">Unknown</option>
-        {% for y in years %}<option value="{{y}}"{% if y == request.GET.year %} selected{% endif %}>{{y}}</option>
-        {% endfor %}
-    </select>
-</div>
-<div class="field">
-    <label>Categories:<br>
-    </label>
-
-    <div id="category-list" class="field-group">
-        {% for c in categories %}
-        <label><input name="category" type="checkbox" checked value="{{c}}"> {{c}}</label>
-        {% endfor %}
-        <label class="hidden"></label>
-        <button type="button">All</button> <button type="button">None</button>
-    </div>
-</div>
-<div class="field">
-    <label for="sort">Sort results by:<br>
-    </label>
-    <select id="sort" name="sort">
-        {% for option in sort_options %}
-            <option value="{{option.val}}"{% if request.GET.sort == option.val %} selected {%endif %}>{{option.text}}</option>
-        {% endfor %}
-    </select>
-</div>
-
-<div class="field">
-    <button type="submit" id="submit-search-button">Search</button>
-</div>
-<input type="hidden" name="action" value="search">
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="Search Articles">
 </form>
-</div>
+
 </section>
 {% endblock %}

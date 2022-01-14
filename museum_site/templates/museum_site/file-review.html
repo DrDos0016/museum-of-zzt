@@ -73,6 +73,7 @@ $(document).ready(function (){
 {% elif file.can_review %}
     <h2>New Review</h2>
     <form method="POST">
+    {% csrf_token %}
     {% if request.user.is_authenticated %}
     <div class="field-wrapper" data-field="author">
         <label for="id_author">Your Name:</label>

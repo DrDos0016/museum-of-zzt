@@ -66,6 +66,10 @@ class ArticleManager(models.Manager):
     def search(self, p):
         qs = self.exclude(published=REMOVED_ARTICLE)
 
+        # Filter by series first as it excludes almost all articles
+        if p.get("series"):
+            qs = qs.filter(series=p["series"])
+
         if p.get("title"):
             qs = qs.filter(
                 title__icontains=p["title"].strip()

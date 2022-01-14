@@ -2,6 +2,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from .common import *
 from .constants import *
+from .forms import ArticleSearchForm
 from .models import *
 
 ADV_SEARCH_DEFAULTS = [
@@ -32,26 +33,20 @@ def article_search(request):
     """ Returns page containing multiple filters to use when searching """
     data = {
         "title": "Article Search",
-        "years": [str(x) for x in range(YEAR, 1990, -1)]
     }
 
-    data["sort_options"] = [
-        {"text": "Title", "val": "title"},
-        {"text": "Author", "val": "author"},
-        {"text": "Category", "val": "category"},
-        {"text": "Newest", "val": "-date"},
-        {"text": "Oldest", "val": "date"},
-    ]
+    if request.GET:
+        form = ArticleSearchForm(request.GET)
+    else:
+        form = ArticleSearchForm()
+
     if request.session.get("DEBUG"):
-        data["sort_options"] += [
-            {"text": "!ID New", "val": "-id"},
-            {"text": "!ID Old", "val": "id"}
+        form.fields["sort"].choices += [
+            ("-id", "!ID New"),
+            ("id", "!ID Old"),
         ]
 
-    data["categories"] = Article.objects.published(
-    ).only("category").distinct().order_by("category").values_list(
-        "category", flat=True
-    )
+    data["form"] = form
 
     return render(request, "museum_site/article_search.html", data)
 
