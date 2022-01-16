@@ -342,19 +342,19 @@ class ArticleSearchForm(forms.Form):
 
     # TODO this may need to be moved/replaced if DB model changes
     CATEGORIES = (
-        ("bugs-and-glitches", "Bugs And Glitches"),
-        ("closer-look", "Closer Look"),
-        ("contest", "Contest"),
-        ("featured-game", "Featured Game"),
-        ("help", "Help"),
-        ("historical", "Historical"),
-        ("interview", "Interview"),
-        ("lets-play", "Let's Play"),
-        ("livestream", "Livestream"),
-        ("postmortem", "Postmortem"),
-        ("publication-pack", "Publication Pack"),
-        ("walkthrough", "Walkthrough"),
-        ("misc", "Misc.")
+        ("Bugs And Glitches", "Bugs And Glitches"),
+        ("Closer Look", "Closer Look"),
+        ("Contest", "Contest"),
+        ("Featured Game", "Featured Game"),
+        ("Help", "Help"),
+        ("Historical", "Historical"),
+        ("Interview", "Interview"),
+        ("Let's Play", "Let's Play"),
+        ("Livestream", "Livestream"),
+        ("Postmortem", "Postmortem"),
+        ("Publication Pack", "Publication Pack"),
+        ("Walkthrough", "Walkthrough"),
+        ("Misc", "Misc.")
     )
 
     SERIES_CHOICES = [("Any", "- ANY -")] + list(
@@ -375,7 +375,7 @@ class ArticleSearchForm(forms.Form):
     author = forms.CharField(label="Author contains")
     text = forms.CharField(label="Text contains")
     year = forms.ChoiceField(label="Publication year", choices=YEARS)
-    categories = forms.MultipleChoiceField(
+    category = forms.MultipleChoiceField(
         required=False, widget=forms.CheckboxSelectMultiple, choices=CATEGORIES
     )
     series = forms.ChoiceField(label="In Series", choices=SERIES_CHOICES)
