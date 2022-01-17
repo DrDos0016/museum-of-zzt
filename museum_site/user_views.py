@@ -862,6 +862,8 @@ def user_profile(request, user_id=None, **kwargs):
             data["show_session"] = True
 
     # Overrides
+    if request.user.is_staff:
+        data["private"] = True
     if request.GET.get("public"):
         data["private"] = False
 
