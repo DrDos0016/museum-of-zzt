@@ -62,7 +62,7 @@ def add_livestream(request, pk):
         a.published = int(request.POST.get("published", 1))
         a.summary = request.POST.get("summary")
         a.static_directory = "ls-{}-{}".format(
-            ["file"].filename[:-4].
+            data["file"].filename[:-4],
             data["video_id"]
         )
         a.allow_comments = True
