@@ -119,6 +119,8 @@ def guide_words(*args, **kwargs):
     items = (kwargs.get("first_item"), kwargs.get("last_item"))
     link_text = ["???", "???"]
 
+    print("ITEMS", items)
+
     if sort is None:
         sort = ""
 
@@ -163,15 +165,18 @@ def guide_words(*args, **kwargs):
             else:  # Title
                 link_text[x] = items[x].title
 
-        output = """
-        <div class="guide-words">
-            <span><a class="left" href="#{}">{}</a></span>
-            <span><a class="right" href="#{}">{}</a></span>
-        </div>
-        """.format(
-            items[0].filename, link_text[0],
-            items[1].filename, link_text[1]
-        )
+        if items[0] != "" and items[1] != "":
+            output = """
+            <div class="guide-words">
+                <span><a class="left" href="#{}">{}</a></span>
+                <span><a class="right" href="#{}">{}</a></span>
+            </div>
+            """.format(
+                items[0].filename, link_text[0],
+                items[1].filename, link_text[1]
+            )
+        else:
+            output = ""
 
     return mark_safe(output + "\n")
 
