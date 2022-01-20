@@ -9,62 +9,42 @@ from django.template.defaultfilters import slugify
 
 from museum.settings import STATIC_URL
 
-from .constants import (
-    PUBLISHED_ARTICLE, UPCOMING_ARTICLE, UNPUBLISHED_ARTICLE, REMOVED_ARTICLE,
-)
-
-
-ARTICLE_FORMATS = (
-    ("text", "Plaintext"),
-    ("md", "Markdown"),
-    ("html", "HTML"),
-    ("django", "Django"),
-    ("80col", "80 Column Text"),
-)
-
-ARTICLE_PUBLISH = (
-    (PUBLISHED_ARTICLE, "Published"),
-    (UPCOMING_ARTICLE, "Upcoming"),
-    (UNPUBLISHED_ARTICLE, "Unpublished"),
-    (REMOVED_ARTICLE, "Removed"),
-)
-
 
 class ArticleManager(models.Manager):
     def credited_authors(self):
         return self.exclude(Q(author="Unknown") | Q(author="N/A"))
 
     def published(self):
-        return self.filter(published=PUBLISHED_ARTICLE)
+        return self.filter(published=Article.PUBLISHED)
 
     def upcoming(self):
-        return self.filter(published=UPCOMING_ARTICLE).order_by(
+        return self.filter(published=Article.UPCOMING).order_by(
             "publish_date", "id"
         )
 
     def unpublished(self):
-        return self.filter(published=UNPUBLISHED_ARTICLE).order_by(
+        return self.filter(published=Article.UNPUBLISHED).order_by(
             "publish_date", "id"
         )
 
     def removed(self):
-        return self.filter(published=REMOVED_ARTICLE)
+        return self.filter(published=Article.REMOVED)
 
     def not_removed(self):
-        return self.exclude(published=REMOVED_ARTICLE)
+        return self.exclude(published=Article.REMOVED)
 
     def publication_packs(self):
         return self.filter(
-            category="Publication Pack", published=PUBLISHED_ARTICLE
+            category="Publication Pack", published=Article.ARTICLE
         ).order_by("-publish_date", "-id")
 
     def spotlight(self):
         return self.filter(
-            published=PUBLISHED_ARTICLE, spotlight=True
+            published=Article.PUBLISHED, spotlight=True
         ).order_by("-publish_date", "id")
 
     def search(self, p):
-        qs = self.exclude(published=REMOVED_ARTICLE)
+        qs = self.exclude(published=Article.REMOVED)
 
         # Filter by series first as it excludes almost all articles
         if p.get("series") and p["series"] != "Any":
@@ -101,63 +81,101 @@ class ArticleManager(models.Manager):
 
 
 class Article(models.Model):
-    """ Article object repesenting a page from an article"""
+    """ Article object repesenting an article """
+    SCHEMAS = (
+        ("text", "Plaintext"),
+        ("md", "Markdown"),  # TODO NOT WORKING 2022 (but also not used)
+        ("html", "HTML"),
+        ("django", "Django"),
+        ("80col", "80 Column Text"),
+    )
+
+    REMOVED = 0
+    PUBLISHED = 1
+    UPCOMING = 2
+    UNPUBLISHED = 3
+
+    PUBLICATION_STATES = (
+        (PUBLISHED, "Published"),
+        (UPCOMING, "Upcoming"),
+        (UNPUBLISHED, "Unpublished"),
+        (REMOVED, "Removed"),
+    )
 
     objects = ArticleManager()
 
-    """
-    Fields:
-    title           -- Title of the article
-    author          -- Author of the article
-    category        -- Categorization of the article for the directory
-    content         -- Body of the article
-    css             -- Custom CSS for the article
-    schema          -- Whether the article is in text/md/html/django form
-    publish_date    -- Date the article was written
-    published       -- If the article is available to the public
-    last_modified   -- Last time file was modified
-    summary         -- Summary for Opengraph
-    preview         -- Path to preview image
-    allow_comments  -- Allow user comments on the article
-    spotlight       -- Allow appearance on front page
-    static_directory-- Directory for static files used in the article
-    series          -- Series the article is a part of
-    secret          -- Key to read this article early without being a patron
-    """
-    title = models.CharField(max_length=100)
-    author = models.CharField(max_length=50)
-    category = models.CharField(max_length=50)
-    content = models.TextField(default="")
-    css = models.TextField(default="", blank=True)
+    # Fields
+    title = models.CharField(
+        help_text="Title of the the article.",
+        max_length=100
+    )
+    author = models.CharField(
+        help_text="Author(s) of the article. Slash separated.",
+        max_length=50
+    )
+    category = models.CharField(
+        help_text="Categorization of the article.",
+        max_length=50
+    )
+    content = models.TextField(
+        help_text="Body of the article.",
+        default=""
+    )
+    css = models.TextField(
+        help_text="Custom CSS. Must include <style></style> if set.",
+        default="", blank=True
+    )
     schema = models.CharField(
+        help_text="Schema for the article. Used to determine parsing method.",
         max_length=6,
-        choices=ARTICLE_FORMATS,
+        choices=SCHEMAS,
         default="django"
     )
-    publish_date = models.DateField(default="1970-01-01")
+    publish_date = models.DateField(
+        help_text="Date the article was made public on the Museum",
+        default="1970-01-01"
+    )
     published = models.IntegerField(
-        default=UNPUBLISHED_ARTICLE,
-        choices=ARTICLE_PUBLISH
+        help_text="Publication Status",
+        default=UNPUBLISHED,
+        choices=PUBLICATION_STATES
     )
     last_modified = models.DateTimeField(
+        help_text="Date DB entry was last modified",
         auto_now=True,
-        help_text="Date DB entry was last modified"
     )
     last_revised = models.DateTimeField(
         help_text="Date article content was last revised",
         default=None, null=True, blank=True
     )
-    revision_details = models.TextField(default="", blank=True)
-    summary = models.CharField(max_length=150, default="", blank=True)
-    allow_comments = models.BooleanField(default=False)
-    spotlight = models.BooleanField(default=True)
+    revision_details = models.TextField(
+        help_text="Reference for revisions made to the article",
+        default="", blank=True
+    )
+    summary = models.CharField(
+        help_text="Blurb to summarize/pique interest in the article",
+        max_length=150, default="", blank=True
+    )
+    allow_comments = models.BooleanField(
+        help_text="Add a section for Disqus comments.",
+        default=False
+    )
+    spotlight = models.BooleanField(
+        help_text="Allow this article to be visible on the front page",
+        default=True
+    )
     static_directory = models.CharField(
         max_length=120,
         default="", blank=True,
-        help_text=("Name of directory where static files for the article are"
-                   "stored.")
+        help_text=("Name of directory where static files for the article are "
+                   "stored:<br>"
+                   "/museum_site/static/articles/[year|unk]/[static_directory]")
     )
-    secret = models.CharField(max_length=12, default="", blank=True)
+    secret = models.CharField(
+        help_text=("Per-article key to allow non-patrons to read "
+                   "unpublished articles"),
+        max_length=12, default="", blank=True
+    )
 
     # Associations
     series = models.ManyToManyField("Series", default=None, blank=True)
@@ -166,7 +184,7 @@ class Article(models.Model):
         ordering = ["title"]
 
     def __str__(self):
-        output = "[" + str(self.id) + "] " + self.title + " by " + self.author
+        output = "[{}] {} by {}".format(self.id, self.title, self.author)
         return output
 
     def save(self, *args, **kwargs):
@@ -180,17 +198,17 @@ class Article(models.Model):
         super(Article, self).save(*args, **kwargs)
 
     def url(self):
-        return "/article/" + str(self.id) + "/" + slugify(self.title)
+        return "/article/{}/{}".format(self.id, slugify(self.title))
 
     @property
     def preview(self):
         return os.path.join(STATIC_URL, self.path(), "preview.png")
 
     def path(self):
+        year = self.publish_date.year
         if self.publish_date.year == 1970:
             year = "unk"
-        else:
-            year = self.publish_date.year
+
         return ("articles/{}/{}/".format(year, self.static_directory))
 
     def render(self):
@@ -204,7 +222,7 @@ class Article(models.Model):
 
     @property
     def is_restricted(self):
-        if self.published in [UPCOMING_ARTICLE, UNPUBLISHED_ARTICLE]:
+        if self.published in [Article.UPCOMING, Article.UNPUBLISHED]:
             return True
         return False
 
@@ -212,8 +230,7 @@ class Article(models.Model):
     def published_string(self):
         """ Returns a human readable string for the article's publication
         state. """
-        return ARTICLE_PUBLISH[self.published - 1][1].lower()
-
+        return Article.PUBLICATION_STATES[self.published - 1][1].lower()
 
     def series_links(self):
         """ Returns HTML links to related series """

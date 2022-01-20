@@ -9,7 +9,7 @@
             <div class="key">File</div><div class="value"><a href="{{review.file.file_url}}">{{review.file.title}}</a></div>
         </div>
         <div class="field">
-            <div class="key">Reviewer</div><div class="value">{{review.author|default:"Unknown"}}</div>
+            <div class="key">Reviewer</div><div class="value">{{review.author_link|safe}}</div>
         </div>
         <div class="field">
             <div class="key">Date</div><div class="value">{{review.date}}</div>

@@ -21,8 +21,9 @@ from .common import (
     slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP,
     STATIC_PATH, optimize_image
 )
-from .constants import SITE_ROOT, REMOVED_ARTICLE, ZETA_RESTRICTED, LANGUAGES
+from .constants import SITE_ROOT, ZETA_RESTRICTED, LANGUAGES
 from .review import Review
+from .article import Article
 
 DETAIL_DOS = 1
 DETAIL_WIN16 = 2
@@ -544,7 +545,7 @@ class File(models.Model):
     def calculate_article_count(self):
         if self.id is not None:
             self.article_count = self.articles.all().exclude(
-                published=REMOVED_ARTICLE
+                published=Article.REMOVED
             ).count()
 
     def calculate_reviews(self):

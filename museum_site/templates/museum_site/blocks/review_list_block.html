@@ -1,7 +1,7 @@
 <tr data-pk="{{review.id}}" data-model="review">
     <td><a href="{{review.file.review_url}}#rev-{{review.id}}">"{{review.title|default:"No title"}}"</a></td>
     <td><a href="{{review.file.file_url}}">{{review.file.title}}</a></td>
-    <td>{{review.author|default:"Unknown"}}</td>
+    <td>{{review.author_link|safe}}</td>
     <td>{{review.date}}</td>
     <td class="r">{% if review.rating >= 0 %}{{review.rating}}{% else %}&mdash;{% endif %}</td>
 </tr>

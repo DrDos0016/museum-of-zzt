@@ -5,7 +5,7 @@ from django.template.defaultfilters import slugify
 
 from museum_site.models import Article, File, Review
 from museum_site.constants import (
-    PUBLISHED_ARTICLE, DETAIL_UPLOADED, DETAIL_LOST
+    DETAIL_UPLOADED, DETAIL_LOST
 )
 
 
@@ -65,7 +65,7 @@ class LatestReviewsFeed(Feed):
 
     def item_description(self, item):
         output = 'Review by {} covering "{}".'.format(
-            item.author, item.file.title
+            item.get_author(), item.file.title
         )
         if item.rating >= 0:
             output += " ({}/5.0)".format(item.rating)

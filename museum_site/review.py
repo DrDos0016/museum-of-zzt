@@ -56,6 +56,18 @@ class Review(models.Model):
 
         return link
 
+    def get_author(self):
+        # Returns a string of the username on a review if one exists,
+        # or the manually set name
+        if self.user:
+            output = self.user.username
+        else:
+            output = self.author
+
+        if output == "":
+            output = "Unknown"
+        return output
+
     def scrub(self):
         self.user_id = None
         self.ip = ""

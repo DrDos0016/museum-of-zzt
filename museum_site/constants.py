@@ -131,12 +131,6 @@ elif os.path.isfile(os.path.join(SITE_ROOT, "BETA")):
     DOMAIN = "beta.museumofzzt.com"
     ENV = "BETA"
 
-# Article publish states
-PUBLISHED_ARTICLE = 1
-UPCOMING_ARTICLE = 2
-UNPUBLISHED_ARTICLE = 3
-REMOVED_ARTICLE = 0
-
 # Upload contact settings
 UPLOAD_CONTACT_NONE = 0
 UPLOAD_CONTACT_REJECTION = 1

@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db import models
 
 from .common import slash_separated_sort, UPLOAD_CAP, STATIC_PATH
-from .constants import SITE_ROOT, REMOVED_ARTICLE, ZETA_RESTRICTED
+from .constants import SITE_ROOT, ZETA_RESTRICTED
 
 
 class Download(models.Model):

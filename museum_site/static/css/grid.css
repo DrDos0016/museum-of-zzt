@@ -963,6 +963,11 @@ form .field .scrolling-checklist
     }
 }
 
+.gallery-block .author
+{
+    border-top:1px dotted #000;
+}
+
 .view-more
 {
     width:100%;

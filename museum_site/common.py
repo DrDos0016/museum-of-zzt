@@ -475,7 +475,7 @@ def discord_announce_review(review, env=None):
         "**{}** written by {}\n"
         "Read: https://museumofzzt.com{}#rev-{}\n"
     ).format(
-        review.file.title, review.title, review.author,
+        review.file.title, review.title, review.get_author(),
         urllib.parse.quote(review.file.review_url()), review.id
     )
 
