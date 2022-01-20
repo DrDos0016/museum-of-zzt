@@ -92,41 +92,41 @@ def article_view(request, article_id, page=0, slug=""):
     a = get_object_or_404(Article, pk=article_id)
 
     # Verify the article is readable with the permissions supplied
-    if a.published == REMOVED_ARTICLE:
+    if a.published == Article.REMOVED:
         return redirect("index")
 
     # Figure out the user's access
-    access = PUBLISHED_ARTICLE  # Default
+    access = Article.PUBLISHED  # Default
 
     # Check user's Patronage
     if request.user.is_authenticated:
         if request.user.profile.patronage >= 500:
-            access = UNPUBLISHED_ARTICLE
+            access = Article.UNPUBLISHED
         elif request.user.profile.patronage >= 200:
-            access = UPCOMING_ARTICLE
+            access = Article.UPCOMING
 
     # Check for generic or article specific passwords
     if request.GET.get("secret") == PASSWORD5DOLLARS:
-        access = UNPUBLISHED_ARTICLE
+        access = Article.UNPUBLISHED
     elif request.GET.get("secret") == PASSWORD2DOLLARS:
-        access = UPCOMING_ARTICLE
+        access = Article.UPCOMING
     elif request.GET.get("secret") and request.GET["secret"] == a.secret:
-        access = UNPUBLISHED_ARTICLE
+        access = Article.UNPUBLISHED
     elif request.GET.get("secret"):  # Invalid password
         return redirect("patron_articles")
 
     if a.published > access:  # Access level too low for article
         restricted = True
-        if a.published == UPCOMING_ARTICLE:
+        if a.published == Article.UPCOMING:
             cost = "2"
-        elif a.published == UNPUBLISHED_ARTICLE:
+        elif a.published == Article.UNPUBLISHED:
             cost = "5"
         release = a.publish_date.strftime("%A %B %d")
         a.content = LOCKED_ARTICLE_TEXT.replace("[COST]", cost)
         a.content = a.content.replace("[RELEASE]", release)
         a.schema = "django"
 
-    elif a.published != PUBLISHED_ARTICLE:
+    elif a.published != Article.PUBLISHED:
         data["private_disclaimer"] = True
 
     # Set up pages
