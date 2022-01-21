@@ -34,7 +34,7 @@ class Scroll(models.Model):
         output = self.SCROLL_TOP.replace("###", ("000"+str(self.identifier))[-3:])
         for line in lines:
             line = line.replace("\r", "")
-            line = line.strip()
+            line = line.replace("\n", "")
             output += "\n │  " + (line + " " * 42)[:42] + " │ "
         output += self.SCROLL_BOTTOM
 
