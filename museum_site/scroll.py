@@ -15,7 +15,7 @@ class Scroll(models.Model):
     # Fields
     identifier = models.IntegerField()
     content = models.TextField(
-        default=""
+        default="",
         help_text="Lines starting with @ will be skipped. Initial whitespace is trimmed by DB, so an extra @ line is a fix."
     )
     source = models.CharField(max_length=160)
