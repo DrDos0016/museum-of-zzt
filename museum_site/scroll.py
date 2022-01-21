@@ -29,7 +29,7 @@ class Scroll(models.Model):
         return self.content.split("\n")
 
     def render_for_discord(self):
-        lines = self.lines()
+        lines = self.lines().replace("\r", "")
 
         output = self.SCROLL_TOP.replace("###", ("000"+str(self.identifier))[-3:])
         for line in lines:
