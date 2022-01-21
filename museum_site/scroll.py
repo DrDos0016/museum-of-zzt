@@ -38,7 +38,7 @@ class Scroll(models.Model):
         for line in lines:
             line = line.replace("\r", "")
             line = line.replace("\n", "")
-            if line[0] == "@":
+            if line and line[0] == "@":
                 continue
             output += "\n │  " + (line + " " * 42)[:42] + " │ "
         output += self.SCROLL_BOTTOM
