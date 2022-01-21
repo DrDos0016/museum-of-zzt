@@ -14,7 +14,10 @@ class Scroll(models.Model):
 
     # Fields
     identifier = models.IntegerField()
-    content = models.TextField(default="")
+    content = models.TextField(
+        default=""
+        help_text="Lines starting with @ will be skipped. Initial whitespace is trimmed by DB, so an extra @ line is a fix."
+    )
     source = models.CharField(max_length=160)
     published = models.BooleanField(default=False)
     suggestion = models.CharField(max_length=500, blank=True, default="")
@@ -35,6 +38,8 @@ class Scroll(models.Model):
         for line in lines:
             line = line.replace("\r", "")
             line = line.replace("\n", "")
+            if line[0] == "@":
+                continue
             output += "\n │  " + (line + " " * 42)[:42] + " │ "
         output += self.SCROLL_BOTTOM
 
