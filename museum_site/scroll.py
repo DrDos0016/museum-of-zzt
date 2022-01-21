@@ -29,10 +29,12 @@ class Scroll(models.Model):
         return self.content.split("\n")
 
     def render_for_discord(self):
-        lines = self.lines().replace("\r", "")
+        lines = self.lines()
 
         output = self.SCROLL_TOP.replace("###", ("000"+str(self.identifier))[-3:])
         for line in lines:
+            line = line.replace("\r", "")
+            line = line.strip()
             output += "\n │  " + (line + " " * 42)[:42] + " │ "
         output += self.SCROLL_BOTTOM
 

@@ -173,7 +173,7 @@ async def scroll(ctx, idx="?"):
     status = check_permissions(ctx, VALID_ROOMS, VALID_USERS, COOLDOWN)
     if status["SUCCESS"]:
         scroll = None
-        if request:
+        if request and idx <= len(SCROLLS):
             scroll = SCROLLS[idx - 1]
 
         if not scroll:
