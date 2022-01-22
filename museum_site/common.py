@@ -3,6 +3,7 @@ from django.http import Http404
 from django.http import HttpResponse
 from django.http import QueryDict
 from django.template import RequestContext
+from django.template.defaultfilters import slugify
 from django.shortcuts import redirect, get_object_or_404
 from django.db import connection
 from django.db.models import Count, Avg, Sum, Q
@@ -10,6 +11,7 @@ from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
 # from django.utils.timezone import utc
 # from django.contrib.auth import logout, authenticate, login as auth_login
+
 
 from museum_site.models import *
 from museum_site.constants import *
@@ -30,6 +32,7 @@ import urllib.parse
 import zipfile
 
 import requests
+from PIL import Image
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMP_PATH = os.path.join(SITE_ROOT, "temp")
@@ -418,3 +421,26 @@ def optimize_image(image):
         if status == 0:
             return True
     return False
+
+
+def move_uploaded_file(upload_directory, uploaded_file, custom_name=""):
+    print("SR IS", STATIC_PATH)
+    print("UD IS", upload_directory)
+    upload_filename = (
+        custom_name if custom_name else uploaded_file.name
+    )
+    file_path = os.path.join(STATIC_PATH, upload_directory, upload_filename)
+    print("FP IS", file_path)
+    with open(file_path, 'wb+') as fh:
+        for chunk in uploaded_file.chunks():
+            fh.write(chunk)
+
+    return file_path
+
+
+def crop_file(file_path, size=(480, 350)):
+    image = Image.open(file_path)
+    image = image.crop((0, 0, size[0], size[1]))
+    image.save(file_path)
+    optimize_image(file_path)
+    return True
