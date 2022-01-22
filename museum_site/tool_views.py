@@ -644,6 +644,7 @@ def series_add(request):
             for a in qs:
                 a.series.add(series)
 
+            series.save() # Resave to update dates
             data["success"] = True
             data["series"] = series
 
