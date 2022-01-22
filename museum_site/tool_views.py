@@ -613,6 +613,44 @@ def scan(request):
     return render(request, "museum_site/tools/scan.html", data)
 
 
+
+@staff_member_required
+def series_add(request):
+    data = {
+        "title": "Series - Add",
+    }
+
+    if request.method != "POST":
+        form = SeriesForm()
+    else:
+        form = SeriesForm(request.POST, request.FILES)
+        print("POST...")
+
+        if form.is_valid():
+            series = form.save(commit=False)
+            series.slug = slugify(series.title)
+            file_path = move_uploaded_file(
+                Series.PREVIEW_DIRECTORY_FULL_PATH,
+                request.FILES.get("preview"),
+                custom_name=series.slug + ".png"
+            )
+            crop_file(file_path)
+            series.preview = series.slug + ".png"
+            series.save()
+
+            # Add initial associations
+            ids = [int(i) for i in form.cleaned_data["associations"]]
+            qs = Article.objects.filter(id__in=ids)
+            for a in qs:
+                a.series.add(series)
+
+            data["success"] = True
+            data["series"] = series
+
+
+    data["form"] = form
+    return render(request, "museum_site/tools/series-add.html", data)
+
 @staff_member_required
 def tool_index(request):
     data = {"title": "Tool Index"}

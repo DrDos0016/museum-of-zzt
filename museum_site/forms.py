@@ -567,3 +567,21 @@ class ReviewForm(forms.ModelForm):
                 'supported for formatting.'
             ),
         }
+
+
+class SeriesForm(forms.ModelForm):
+    user_required_attribute = False
+    associations = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple(attrs={"class": "ul-scrolling-checklist"}),
+        choices=list(Article.objects.not_removed().values_list("id", "title")),
+        required=False,
+        label="Associated Files"
+    )
+    preview = forms.FileField(
+        label="Preview Image",
+        help_text="Cropped to 480x350"
+    )
+
+    class Meta:
+        model = Series
+        fields = ["title", "description", "visible"]

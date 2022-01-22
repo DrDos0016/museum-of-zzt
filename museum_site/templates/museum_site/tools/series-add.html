@@ -1,0 +1,18 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Add New Series</h1>
+
+{% if not success %}
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="Add Series">
+</form>
+{% else %}
+<p>Successfully created series <a href="{{series.url}}" target="_blank">{{series.title}}</a>.</p>
+{% endif %}
+</section>
+{% endblock %}

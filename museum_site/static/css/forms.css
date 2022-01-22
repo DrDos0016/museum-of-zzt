@@ -283,3 +283,15 @@ label
     width:8ch;
     text-align:right;
 }
+
+.ul-scrolling-checklist
+{
+    max-height:250px;
+    overflow-x:auto;
+    border:1px solid #000;
+}
+
+.ul-scrolling-checklist li { display:block; }
+.ul-scrolling-checklist li + li {  border-top: 1px dotted #000; }
+.ul-scrolling-checklist li.selected { background:#619F9F;}
+.ul-scrolling-checklist li:hover { background:#98C9C9; }

@@ -537,6 +537,8 @@ urlpatterns = [
         "tools/replace_zip/<int:pk>/",
         museum_site.tool_views.replace_zip, name="replace_zip"),
     path("tools/scan/", museum_site.tool_views.scan, name="scan"),
+    path("tools/series/add", museum_site.tool_views.series_add,
+         name="series_add"),
     path(
         "tools/set_screenshot/<int:pk>/",
         museum_site.tool_views.set_screenshot, name="set_screenshot"),

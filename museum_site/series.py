@@ -5,6 +5,7 @@ from django.db.models import Subquery
 from django.template.defaultfilters import slugify
 
 from museum.settings import STATIC_URL
+from museum_site.common import STATIC_PATH
 
 
 class SeriesManager(models.Manager):
@@ -17,6 +18,7 @@ class Series(models.Model):
 
     # Constants
     PREVIEW_DIRECTORY = os.path.join(STATIC_URL, "pages/series-directory/")
+    PREVIEW_DIRECTORY_FULL_PATH = os.path.join(STATIC_PATH, "pages/series-directory/")
 
     # Fields
     title = models.CharField(max_length=80)
