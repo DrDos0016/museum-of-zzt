@@ -257,13 +257,21 @@ def mirror(request, letter, filename):
     subject = ";".join(zfile.genre.split("/"))
     if engine:
         subject = engine + ";" + subject
-        description = "<p>World created using the {} engine.</p>\n\n".format(engine)
+        description = "<p>World created using the {} engine.</p>\n\n".format(
+            engine
+        )
 
     if zfile.description:
         description += "<p>{}</p>\n\n".format(zfile.description)
 
     if engine:
-        description += "<p><i>Emulation via DOSBox is no longer the preferred method for playing {} worlds. Worlds frequently run slower, have laggy input, and audio issues. Visit the <a href='https://museumofzzt.com' target='_blank'>Museum of ZZT</a> for more information on programs such as Zeta and other ZZT emulators/source ports.</i></p>".format(engine)
+        description += (
+            "<p><i>Emulation via DOSBox is no longer the preferred method for "
+            "playing {} worlds. Worlds frequently run slower, have laggy "
+            "input, and audio issues. Visit the "
+            "<a href='https://museumofzzt.com' target='_blank'>Museum of ZZT"
+            "</a> for more information on programs such as Zeta and other ZZT "
+            "emulators/source ports.</i></p>").format(engine)
 
     raw_contents = zfile.get_zip_info()
     contents = []
@@ -280,8 +288,12 @@ def mirror(request, letter, filename):
     form.fields["year"].initial = zfile.release_year()
     form.fields["subject"].initial = subject
     form.fields["description"].initial = description
-    form.fields["url"].initial = (url_prefix + zfile.filename[:-4]).replace(" ", "_")
-    form.fields["filename"].initial = (url_prefix + zfile.filename).replace(" ", "_")
+    form.fields["url"].initial = (
+        url_prefix + zfile.filename[:-4]
+    ).replace(" ", "_")
+    form.fields["filename"].initial = (
+        url_prefix + zfile.filename
+    ).replace(" ", "_")
     if ENV == "PROD":
         form.fields["collection"].initial = "open_source_software"
     if engine == "ZZT":
@@ -291,7 +303,10 @@ def mirror(request, letter, filename):
 
     world_choices = [("", "None")]
     for f in zfile.get_zip_info():
-        if f.filename.upper().endswith(".ZZT") or f.filename.upper().endswith(".SZT"):
+        if (
+            f.filename.upper().endswith(".ZZT") or
+            f.filename.upper().endswith(".SZT")
+        ):
             world_choices.append((f.filename, f.filename))
     form.fields["default_world"].choices = world_choices
     if len(world_choices) > 1:
@@ -307,7 +322,6 @@ def mirror(request, letter, filename):
 
     data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
-
 
 
 @staff_member_required
@@ -356,7 +370,10 @@ def prep_publication_pack(request):
     data["year"] = YEAR
 
     if request.method == "POST":
-        with open(os.path.join(SITE_ROOT, "museum_site", "templates", "museum_site", "tools", "blank-publication-pack.html")) as fh:
+        with open(os.path.join(
+            SITE_ROOT, "museum_site", "templates", "museum_site",
+            "tools", "blank-publication-pack.html"
+        )) as fh:
             raw = fh.read().split("=START=")[1]
         keys = request.POST.keys()
         publish_date = request.POST.get("publish_date", "XXXX-XX-XX")
@@ -380,7 +397,6 @@ def prep_publication_pack(request):
         template = Template(raw)
         context = Context(data)
         data["rendered"] = template.render(context)
-
 
     unpublished = File.objects.unpublished()
     data["unpublished_files"] = unpublished
@@ -613,7 +629,6 @@ def scan(request):
     return render(request, "museum_site/tools/scan.html", data)
 
 
-
 @staff_member_required
 def series_add(request):
     data = {
@@ -624,7 +639,6 @@ def series_add(request):
         form = SeriesForm()
     else:
         form = SeriesForm(request.POST, request.FILES)
-        print("POST...")
 
         if form.is_valid():
             series = form.save(commit=False)
@@ -644,13 +658,13 @@ def series_add(request):
             for a in qs:
                 a.series.add(series)
 
-            series.save() # Resave to update dates
+            series.save()  # Resave to update dates
             data["success"] = True
             data["series"] = series
 
-
     data["form"] = form
     return render(request, "museum_site/tools/series-add.html", data)
+
 
 @staff_member_required
 def tool_index(request):
