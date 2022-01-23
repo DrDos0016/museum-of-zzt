@@ -1443,12 +1443,6 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     grid-area:canvas;
     align-self:center;
     z-index:2;
-    -ms-interpolation-mode: nearest-neighbor;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: -webkit-crisp-edges;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -o-crisp-edges;
-    image-rendering: -o-pixelated;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 }
