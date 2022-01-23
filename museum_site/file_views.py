@@ -268,7 +268,7 @@ def review(request, letter, filename):
     zfile = File.objects.identifier(
         letter=letter, filename=filename
     ).first()
-    reviews = Review.objects.filter(file_id=zfile.id)
+    reviews = Review.objects.filter(zfile_id=zfile.id)
     data["letter"] = letter
     data["title"] = zfile.title + " - Reviews"
 
@@ -297,7 +297,7 @@ def review(request, letter, filename):
                 review.user_id = request.user.id
             review.ip = request.META.get("REMOTE_ADDR")
             review.date = today
-            review.file_id = zfile.id
+            review.zfile_id = zfile.id
             review.save()
 
             # Update file's review count/scores

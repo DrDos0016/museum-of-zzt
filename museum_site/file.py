@@ -551,12 +551,12 @@ class File(models.Model):
     def calculate_reviews(self):
         # Calculate Review Count
         if self.id is not None:
-            self.review_count = Review.objects.filter(file_id=self.id).count()
+            self.review_count = Review.objects.filter(zfile_id=self.id).count()
 
         # Calculate Rating
         if self.id is not None:
             ratings = Review.objects.filter(
-                file_id=self.id, rating__gte=0
+                zfile_id=self.id, rating__gte=0
             ).aggregate(Avg("rating"))
             if ratings["rating__avg"] is not None:
                 self.rating = round(ratings["rating__avg"], 2)

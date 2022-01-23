@@ -18,7 +18,7 @@ class Review(models.Model):
     date            -- Date review was written
     ip              -- IP address posting the review
     """
-    file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
+    zfile = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -35,8 +35,8 @@ class Review(models.Model):
     def __str__(self):
         output = "[{}] Review of '{}' [{}] by {}".format(
             self.id,
-            self.file.title,
-            self.file.filename,
+            self.zfile.title,
+            self.zfile.filename,
             self.author
         )
         return output
