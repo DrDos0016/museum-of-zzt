@@ -666,8 +666,9 @@ def series_add(request):
     return render(request, "museum_site/tools/series-add.html", data)
 
 
-@staff_member_required
 def stream_card(request):
+    # Does not require staff for simplicity's sake. This page is harmless and
+    # can only read data from the DB, not modify it.
     data = {"title": "Stream Card"}
     data["files"] = File.objects.all().values("id", "title").order_by("sort_title")
 
