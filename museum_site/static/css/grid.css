@@ -454,6 +454,7 @@ a.inline[target=_blank]::after
 .zoomed { cursor:zoom-out; width:auto; }
 
 .flex-container { display:flex; }
+.flex-wrap { flex-wrap: wrap; }
 .flex-container.justify-space-between { justify-content: space-between; }
 .flex-container.justify-center { justify-content: center; }
 /* End Utility Classes */
