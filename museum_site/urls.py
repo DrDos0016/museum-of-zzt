@@ -542,6 +542,8 @@ urlpatterns = [
     path(
         "tools/set_screenshot/<int:pk>/",
         museum_site.tool_views.set_screenshot, name="set_screenshot"),
+    path("tools/stream-card/", museum_site.tool_views.stream_card,
+         name="stream_card"),
     path(
         "tools/user-list/", museum_site.tool_views.user_list,
         name="user_list"),

@@ -667,6 +667,25 @@ def series_add(request):
 
 
 @staff_member_required
+def stream_card(request):
+    data = {"title": "Stream Card"}
+    data["files"] = File.objects.all().values("id", "title").order_by("sort_title")
+
+    if request.GET.get("pk"):
+        data["file"] = File.objects.get(pk=request.GET["pk"])
+
+        data["card"] = {
+            "title": request.GET.get("title", data["file"].title),
+            "author": request.GET.get("author", data["file"].author.replace("/", ", ")),
+            "company": request.GET.get("company", data["file"].company.replace("/", ", ")),
+            "year": request.GET.get("year", data["file"].release_year),
+            "multiple_authors": True if request.GET.get("multiple_authors") else False,
+            "multiple_companies": True if request.GET.get("multiple_companies") else False,
+        }
+
+    return render(request, "museum_site/tools/stream-card.html", data)
+
+@staff_member_required
 def tool_index(request):
     data = {"title": "Tool Index"}
     data["file"] = {"id": 1}
@@ -716,7 +735,7 @@ def tool_list(request, pk):
 
         data["file"].basic_save()
 
-    return render(request, "museum_site/tools/tool-file-tools.html", data)
+    return render(request, "museum_site/tools/file-tools.html", data)
 
 
 @staff_member_required

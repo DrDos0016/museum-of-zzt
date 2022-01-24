@@ -1,0 +1,152 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+.stream-card-wrapper
+{
+}
+
+#stream-card
+{
+    width: 464px;
+    height: 322px;
+    font-size:28px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+.entry
+{
+    flex:0 0 100%;
+}
+
+.entry div
+{
+    display:inline-block;
+}
+
+.entry .key
+{
+    padding-left:1ch;
+    padding-right:1ch;
+    background-color:#0AA;
+}
+.entry:nth-child(2n) .key { background-color:#AAA; }
+
+.entry .label
+{
+    color:#FF5;
+}
+
+.entry + .entry
+{
+
+}
+
+.entry .val
+{
+    color:#FFF;
+    padding-left:7ch;
+}
+
+form textarea
+{
+    height:80px;
+    width:400px;
+}
+
+{% if request.GET.embed %}
+#stream-card
+{
+    position:absolute;
+    top:0;
+    left:0;
+}
+
+body
+{
+    margin-top:350px;
+}
+{% endif %}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Stream Card</h1>
+<hr>
+{% if not request.GET.pk %}
+<form>
+<select name="pk">
+{% for f in files %}<option value="{{f.id}}">{{f.title}}</option>{% endfor %}
+</select>
+<input type="submit" value="Set Base File">
+</form>
+{% else %}
+<p><a href="?">Reselect Base File</a></p>
+
+<div class="flex-container" style="column-gap:14px">
+    <div class="stream-card-wrapper">
+
+    <div id="stream-card" class="cp437 ega-darkblue-bg">
+        {% if card.title %}
+        <div class="entry">
+            <div class="key"> W </div>
+            <div class="label">World:</div>
+            <br>
+            <div class="val">{{card.title|linebreaksbr}}</div>
+        </div>
+        {% endif %}
+        {% if card.author %}
+        <div class="entry">
+            <div class="key"> A </div>
+            <div class="label">Author{% if card.multiple_authors %}s{% endif %}:</div>
+            <br>
+            <div class="val">{{card.author|linebreaksbr}}</div>
+        </div>
+        {% endif %}
+        {% if card.company %}
+        <div class="entry">
+            <div class="key"> C </div>
+            <div class="label">Compan{% if card.multiple_companies %}ies{% else %}y{% endif %}:</div>
+            <br>
+            <div class="val">{{card.company|linebreaksbr}}</div>
+        </div>
+        {% endif %}
+        {% if card.year %}
+        <div class="entry">
+            <div class="key"> Y </div>
+            <div class="label">Year:</div>
+            <br>
+            <div class="val">{{card.year}}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <a href="?{{request.META.QUERY_STRING}}&embed=1" target="_blank">Ship it!</a>
+    </div>
+    <div>
+        <form>
+            <input type="hidden" name="pk" value="{{request.GET.pk}}">
+            <label>World:<br>
+            <textarea name="title">{{card.title}}</textarea><br>
+            </label>
+            <label>Author: <input type="checkbox" value="1" name="multiple_authors"{% if request.GET.multiple_authors %} checked{%endif %}> Multiple<br>
+            <textarea name="author">{{card.author}}</textarea><br>
+            </label>
+            <label>Company: <input type="checkbox" value="1" name="multiple_companies"{% if request.GET.multiple_companies %} checked{%endif %}> Multiple<br>
+            <textarea name="company">{{card.company}}</textarea><br>
+            </label>
+            <label>Year:<br>
+            <input name="year" value="{{card.year}}"><br>
+            </label>
+            <br>
+            <input type="submit" value="Apply">
+        </form>
+    </div>
+</div>
+{% endif %}
+</section>
+{% endblock %}
