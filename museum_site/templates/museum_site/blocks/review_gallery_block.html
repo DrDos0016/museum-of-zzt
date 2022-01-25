@@ -1,9 +1,9 @@
 {% load static %}
 <div class="gallery-block" data-pk="{{review.id}}" data-model="review">
-    <img src="{% static review.file.screenshot_url %}"
+    <img src="{% static review.zfile.screenshot_url %}"
     class="screenshot-thumb"
-    alt="{{review.file.preview}}">
-    <div class="title c"><a href="{{review.file.review_url}}#rev-{{review.id}}">"{{review.title|default:"No title"}}"</a></div>
+    alt="{{review.zfile.preview}}">
+    <div class="title c"><a href="{{review.zfile.review_url}}#rev-{{review.id}}">"{{review.title|default:"No title"}}"</a></div>
     <div class="author c">{{review.author_link|safe}}</div>
     {% if review.rating >= 0 %}<div class="rating c">{{review.rating}} / 5.0</div>{% endif %}
 </div>

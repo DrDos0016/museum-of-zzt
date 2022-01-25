@@ -1,12 +1,12 @@
 {% load static %}
 <div class="overview-block" data-pk="{{review.id}}" data-model="review">
-    <img src="{% static review.file.screenshot_url %}"
+    <img src="{% static review.zfile.screenshot_url %}"
     class="screenshot-thumb"
-    alt="{{review.file.preview}}">
-    <h1 class="title"><a href="{{review.file.review_url}}#rev-{{review.id}}">"{{review.title|default:"No title"}}"</a></h1>
+    alt="{{review.zfile.preview}}">
+    <h1 class="title"><a href="{{review.zfile.review_url}}#rev-{{review.id}}">"{{review.title|default:"No title"}}"</a></h1>
     <div class="wide-info">
         <div class="field">
-            <div class="key">File</div><div class="value"><a href="{{review.file.file_url}}">{{review.file.title}}</a></div>
+            <div class="key">File</div><div class="value"><a href="{{review.zfile.file_url}}">{{review.zfile.title}}</a></div>
         </div>
         <div class="field">
             <div class="key">Reviewer</div><div class="value">{{review.author_link|safe}}</div>
