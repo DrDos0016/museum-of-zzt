@@ -225,7 +225,10 @@ class WoZZT_Queue(models.Model):
 
         # Twitter - Related Articles
         if tweet_related and twitter_id:
-            related_count = self.file.articles.filter(published=True).count()
+            related_count = self.file.articles.filter(
+                published=True
+            ).exclude(category="Publication Pack").count()
+
             if related_count:
                 article_text = (
                     f"More information on \"{self.file.title}\" is available "
