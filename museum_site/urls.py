@@ -489,9 +489,7 @@ urlpatterns = [
 
     # Tools
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
-    path(
-        "tools/<int:pk>/", museum_site.tool_views.tool_list,
-        name="tool_list"),
+    path("tools/<str:letter>/<str:filename>", museum_site.tool_views.tool_index, name="tool_index_with_file"),
     path(
         "tools/add-livestream/<int:pk>/",
         museum_site.tool_views.add_livestream, name="add_livestream"),
@@ -511,6 +509,11 @@ urlpatterns = [
     path(
         "tools/log-viewer/", museum_site.tool_views.log_viewer,
         name="log_viewer"),
+    path(
+        "tools/manage-details/<str:letter>/<str:filename>/",
+        museum_site.tool_views.manage_details,
+        name="manage_details"
+    ),
     path(
         "tools/mirror/<str:letter>/<str:filename>/",
         museum_site.tool_views.mirror,
@@ -536,7 +539,7 @@ urlpatterns = [
     path(
         "tools/replace_zip/<int:pk>/",
         museum_site.tool_views.replace_zip, name="replace_zip"),
-    path("tools/scan/", museum_site.tool_views.scan, name="scan"),
+    path("tools/scan/", museum_site.tool_views.scan, name="musuem_scan"),
     path("tools/series/add", museum_site.tool_views.series_add,
          name="series_add"),
     path(

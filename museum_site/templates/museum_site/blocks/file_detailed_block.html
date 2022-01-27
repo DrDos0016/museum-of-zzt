@@ -41,7 +41,7 @@
                 <div class="key">Upload Date</div><div class="value">{{file.upload_set.first.date}}</span></div>
             </div>{% endif %}
             {% if debug %}<div class="field debug">
-                <div class="key">Debug</div><div class="value">{{file.id}} / <a href="/admin/museum_site/file/{{file.id}}/change/">Edit</a> / <a href="/tools/{{file.id}}">Tools</a></div>
+                <div class="key">Debug</div><div class="value">{{file.id}} / <a href="/admin/museum_site/file/{{file.id}}/change/">Edit</a> / <a href="/tools/{{file.identifier}}">Tools</a></div>
             </div>
             {% endif %}
     </div>

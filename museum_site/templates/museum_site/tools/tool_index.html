@@ -1,29 +1,244 @@
-{% extends "museum_site/main.html" %}
+{% extends "museum_site/world.html" %}
 {% load static %}
 
 {% block style %}
 <style>
+table
+{
+    max-width:45%;
+    margin-right:16px;
+}
+
+#tool-info
+{
+    font-family:monospace;font-size:12pt;
+}
+
+#tool-info td
+{
+    padding:0.25em;
+}
+
+#tool-info td.True { background-color:#0F0; text-align:center; }
+#tool-info td.False { background-color:#F00; text-align:center; }
+
+#upload-notes
+{
+    height:16ch;
+    width:55ch;
+    font-size:smaller;
+}
+
 </style>
 {% endblock %}
 
-{% block content %}
-<section id="content" class="col block">
-<h1>Tools</h1>
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("#file-select").click(function (){
+        var val = $("#file-identifier").val();
+        window.location = window.location + val;
+    });
+});
+</script>
+{% endblock %}
 
-<ul>
-    <li><a href="{% url 'audit_genres' %}">Audit Genres</a></li>
-    <li><a href="{% url 'audit_zeta_config' %}">Audit Zeta Config</a></li>
-    <li><a href="{% url 'crediting_preferences' %}">Crediting Preferences</a></li>
-    <li><a href="{% url 'log_viewer' %}">Log Viewer</a></li>
-    <li><a href="{% url 'scan' %}">Museum Scan Results</a></li>
-    <li><a href="{% url 'patron_input' %}">Patron Input</a></li>
-    <li><a href="{% url 'prep_publication_pack' %}">Prepare Publication Pack</a></li>
-    <li><a href="{% url 'pub_pack_file_assocs' %}">Publication Pack File Associations</a></li>
-    <li><a href="{% url 'series_add' %}">Series - Add</a></li>
-    <li><a href="{% url 'stream_card' %}">Stream Card</a></li>
-    <li><a href="{% url 'user_list' %}">User List</a></li>
-    <li><a href="{% url 'worlds_of_zzt' %}">WoZZT Queue</a></li>
-</ul>
+{% block world_content %}
+{% if file %}{% include "museum_site/blocks/file_detailed_block.html" %}{% endif %}
 
-</section>
+<h2>Tool Index</h2>
+
+<div class="flex-container justify-space-between">
+<table>
+    <tr>
+        <th>General Tools</th>
+    </tr>
+    {% for t in tool_list %}
+    <tr><td><a href="{% url t.url_name %}">{{t.text}}</a></td></tr>
+    {% endfor %}
+
+</table>
+{% if file %}
+<table>
+    <tr>
+        <th>File Specific Tools</th>
+    </tr>
+    {% for t in file_tool_list %}
+    <tr><td><a href="{{t.url}}">{{t.text}}</a></td></tr>
+    {% endfor %}
+</table>
+{% else %}
+<div>
+    <select id="file-identifier">
+        {% for f in all_files %}
+        <option value="{{f.letter}}/{{f.filename}}">{{f.title}}</option>
+        {% endfor %}
+    </select>
+    <input id="file-select" type="button" value="Select File">
+</div>
+{% endif %}
+</div>
+<hr>
+
+{% if request.GET.recalculate %}
+<div><b>Recalculated {{request.GET.recalculate|title}}</b><br>
+<table>
+    <tr><th>Old Value</th><td>{{request.GET.old}}</td></tr>
+    <tr><th>New Value</th><td>{{new}}</td></tr>
+</table>
+</div>
+<br>
+{% endif %}
+
+<div class="flex-container justify-space-between">
+    <div>
+        <h3>Upload Info</h3>
+        <table class="dataTable" id="tool-info">
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Upload ID</td>
+                <td><a href="/admin/museum_site/upload/{{upload_info.id}}/change/">{{upload_info.id}}</a></td>
+            </tr>
+            <tr>
+                <td>User</td>
+                <td>{% if upload_info.user_id %}<a href="{{upload_info.user.profile.link}}">{{upload_info.user.username}}</a>{% else %}<i>Unregistered Guest</i> {% endif %}</td>
+            </tr>
+            <tr>
+                <td>Date</td>
+                <td>{{upload_info.date}}</td>
+            </tr>
+            <tr>
+                <td>Edit Token</td>
+                <td><a href="/upload?token={{upload_info.edit_token}}">{{upload_info.edit_token}}</a></td>
+            </tr>
+            <tr>
+                <td>IP</td>
+                <td>{{upload_info.ip}}</td>
+            </tr>
+            <tr>
+                <td>Notes</td>
+                <td>{% if upload_info.notes %}<textarea id="upload-notes">{{upload_info.notes}}</textarea>{% else %}<i>None</i>{% endif %}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+    <h3>File Info</h3>
+        <table class="dataTable" id="tool-info">
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>Letter</td>
+                <td>{{file.letter}}</td>
+                <td class="c {{valid_letter}}">{{valid_letter}}</td>
+            </tr>
+            <tr>
+                <td>Filename</td>
+                <td>{{file.filename}}</td>
+                <td class="c {{valid_filename}}">{{valid_filename}}</td>
+            </tr>
+            <tr>
+                <td>Title</td>
+                <td>{{file.title}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Sort Title</td>
+                <td>{{file.sort_title}}</td>
+                <td class="c"><a href="?recalculate=sort-title&old={{file.sort_title}}">Recalculate</a></td>
+            </tr>
+            <tr>
+                <td>Author</td>
+                <td>{{file.author}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Size</td>
+                <td>{{file.size|filesizeformat}} ({{file.size}} bytes)</td>
+                <td class="c"><a href="?recalculate=size&old={{file.size}}">Recalculate</a></td>
+            </tr>
+            <tr>
+                <td>Genre</td>
+                <td>{{file.genre}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Release Date / Source</td>
+                <td>{{file.release_date}} / {{file.release_source}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Upload Date</td>
+                <td>{{file.upload_date}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Publish Date</td>
+                <td>{{file.publish_date}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Last Modified</td>
+                <td>{{file.last_modified}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Screenshot</td>
+                <td>{{file.screenshot}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Company</td>
+                <td>{{file.company}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Description</td>
+                <td>{{file.description}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Review Count / Rating</td>
+                <td>{{file.review_count}} / {{file.rating}}</td>
+                <td class="c"><a href="?recalculate=reviews&old={{file.review_count}}%2F{{file.rating}}">Recalculate</a></td>
+            </tr>
+            <tr>
+                <td>Article Count</td>
+                <td>{{file.article_count}}</td>
+                <td class="c"><a href="?recalculate=articles&old={{file.article_count}}">Recalculate</a></td>
+            </tr>
+            <tr>
+                <td>Checksum</td>
+                <td>{{file.checksum}}</td>
+                <td class="c"><a href="?recalculate=checksum&old={{file.checksum}}">Recalculate</a></td>
+            </tr>
+            <tr>
+                <td>Playable/Total Boards</td>
+                <td>{{file.playable_boards}} / {{file.total_boards}}</td>
+                <td class="c"><a href="?recalculate=boards&old={{file.playable_boards}}%2F{{file.total_boards}}">Recalculate</a></td>
+            </tr>
+            <tr>
+                <td>Archive.org Name</td>
+                <td>{{file.archive_name}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Uploader IP</td>
+                <td>{{file.uploader_ip|default:"-"}}</td>
+                <td class="c">-</td>
+            </tr>
+            <tr>
+                <td>Details</td>
+                <td>{% for detail in file.details.all %}[{{detail.id}}] {{detail.detail}}<br>{% endfor %}</td>
+                <td class="c">-</td>
+            </tr>
+        </table>
+    </div>
+</div>
 {% endblock %}

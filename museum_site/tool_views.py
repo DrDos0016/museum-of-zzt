@@ -5,11 +5,11 @@ import os
 import pwd
 import shutil
 
-
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.template import Context, Template
+from django.urls import get_resolver
 from .common import *
 from .constants import *
 from io import StringIO
@@ -238,6 +238,44 @@ def log_viewer(request):
                 data["text"] = fh.read()
 
     return render(request, "museum_site/tools/log_viewer.html", data)
+
+
+@staff_member_required
+def manage_details(request, letter, filename):
+    """ Returns page with latest Museum scan results"""
+    data = {"title": "Replace Zip"}
+    data["file"] = File.objects.get(letter=letter, filename=filename)
+
+    with ZipFile(data["file"].phys_path(), "r") as zf:
+        data["file_list"] = zf.namelist()
+    data["file_list"].sort()
+
+    # Get suggested details based on the file list
+    data["detail_cats"] = Detail.objects.advanced_search_categories()
+    data["suggestions"] = get_detail_suggestions(data["file_list"])
+
+    # Current details
+    data["detail_ids"] = list(
+        data["file"].details.values_list("id", flat=True)
+    )
+
+    if request.method == "POST":
+        data["orig_details"] = data["detail_ids"]
+        data["new_details"] = [int(i) for i in request.POST.getlist("details")]
+
+        print(data["orig_details"])
+        print(data["new_details"])
+
+        for d in data["orig_details"]:
+            if d not in data["new_details"]:
+                data["file"].details.remove(Detail.objects.get(pk=d))
+        for d in data["new_details"]:
+            data["file"].details.add(Detail.objects.get(pk=d))
+
+        # Use the newly adjusted details as the new defaults
+        data["detail_ids"] = data["new_details"]
+
+    return render(request, "museum_site/tools/manage_details.html", data)
 
 
 @staff_member_required
@@ -670,57 +708,113 @@ def stream_card(request):
 
     return render(request, "museum_site/tools/stream-card.html", data)
 
+
 @staff_member_required
-def tool_index(request):
+def tool_index(request, letter=None, filename=None):
     data = {"title": "Tool Index"}
-    data["file"] = {"id": 1}
-    return render(request, "museum_site/tools/tool_index.html", data)
-
-
-@staff_member_required
-def tool_list(request, pk):
-    """ Returns page listing tools available for a file and file information """
-    data = {
-        "title": "Tools",
-        "file": File.objects.get(pk=pk)
-    }
-
+    if letter and filename:
+        data["file"] = File.objects.get(letter=letter, filename=filename)
     letters = "1abcdefghijklmnopqrstuvwxyz"
 
-    data["upload_info"] = Upload.objects.filter(file_id=data["file"]).first()
+    """ Atrocious variable names """
+    url_patterns = get_resolver().url_patterns
+    for p in url_patterns:
+        if p.pattern.describe() == "''":  # Base path for urls
+            urls = p
+            break
 
-    # Simple validation tools
-    data["valid_letter"] = True if data["file"].letter in letters else False
-    data["valid_filename"] = True if data["file"].phys_path() else False
+    url_list = urls.url_patterns
 
-    if request.GET.get("recalculate"):
-        field = request.GET["recalculate"]
-        if field == "sort-title":
-            data["file"].calculate_sort_title()
-            data["new"] = data["file"].sort_title
-        elif field == "size":
-            data["file"].calculate_size()
-            data["new"] = data["file"].size
-        elif field == "reviews":
-            data["file"].calculate_reviews()
-            data["new"] = "{}/{}".format(
-                data["file"].review_count, data["file"].rating
-            )
-        elif field == "articles":
-            data["file"].calculate_article_count()
-            data["new"] = data["file"].article_count
-        elif field == "checksum":
-            data["file"].calculate_checksum()
-            data["new"] = data["file"].checksum
-        elif field == "boards":
-            data["file"].calculate_boards()
-            data["new"] = "{}/{}".format(
-                data["file"].playable_boards, data["file"].total_boards
-            )
+    """ Normalcy """
+    tool_list = []
+    file_tool_list = []
+    restricted_urls = [
+        "tool_index",
+        "tool_index_with_file",
+    ]
+    for u in url_list:
+        url_str = str(u.pattern)
+        if url_str.startswith("tools/") and u.name not in restricted_urls:
+            if url_str.find("<") == -1:
+                tool_list.append({
+                    "url_name": u.name,
+                    "text": u.name.replace("_", " ").title()
+                })
+            elif data.get("file"):
+                formatted_pattern = "/" + str(u.pattern)
+                formatted_pattern = formatted_pattern.replace(
+                    "<int:pk>", str(data["file"].pk)
+                ).replace(
+                    "<str:letter>", data["file"].letter
+                ).replace(
+                    "<str:filename>", data["file"].filename
+                )
+                file_tool_list.append({
+                    "url": formatted_pattern,
+                    "text": u.name.replace("_", " ").title()
+                })
+
+    # Manual additions
+    tool_list.append(
+        {"url_name": "worlds_of_zzt", "text": "WoZZT Queue"},
+    )
+
+    tool_list = sorted(tool_list, key=lambda s: s["text"])
+
+    if data.get("file"):
+        file_tool_list = sorted(file_tool_list, key=lambda s: s["text"])
+        file_tool_list.insert(
+            0, {
+                "url": "/admin/museum_site/file/{}/change/".format(
+                    data["file"].pk
+                ),
+                "text": "Django Admin Page"
+                }
+        )
+
+        data["upload_info"] = Upload.objects.filter(
+            file_id=data["file"]
+        ).first()
+
+        # Simple validation tools
+        data["valid_letter"] = True if data["file"].letter in letters else False
+        data["valid_filename"] = True if data["file"].phys_path() else False
+
+        if request.GET.get("recalculate"):
+            field = request.GET["recalculate"]
+            if field == "sort-title":
+                data["file"].calculate_sort_title()
+                data["new"] = data["file"].sort_title
+            elif field == "size":
+                data["file"].calculate_size()
+                data["new"] = data["file"].size
+            elif field == "reviews":
+                data["file"].calculate_reviews()
+                data["new"] = "{}/{}".format(
+                    data["file"].review_count, data["file"].rating
+                )
+            elif field == "articles":
+                data["file"].calculate_article_count()
+                data["new"] = data["file"].article_count
+            elif field == "checksum":
+                data["file"].calculate_checksum()
+                data["new"] = data["file"].checksum
+            elif field == "boards":
+                data["file"].calculate_boards()
+                data["new"] = "{}/{}".format(
+                    data["file"].playable_boards, data["file"].total_boards
+                )
 
         data["file"].basic_save()
 
-    return render(request, "museum_site/tools/file-tools.html", data)
+    if not data.get("file"):
+        data["all_files"] = File.objects.all().values(
+            "letter", "filename", "title"
+        ).order_by("sort_title")
+
+    data["tool_list"] = tool_list
+    data["file_tool_list"] = file_tool_list
+    return render(request, "museum_site/tools/tool_index.html", data)
 
 
 @staff_member_required

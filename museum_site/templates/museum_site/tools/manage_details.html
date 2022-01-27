@@ -1,68 +1,21 @@
-{% extends "museum_site/main.html" %}
+{% extends "museum_site/world.html" %}
 {% load static %}
 
 {% block style %}
 <style>
-.controls
-{
-    margin:auto;
-    text-align:center;
-}
-
-.controls .col
-{
-    border:1px solid #000;
-    padding:0.25em;
-    width:20%;
-    height:200px;
-    overflow:auto;
-    text-align:left;
-}
-
-.controls ul
-{
-    margin:0;
-    padding:0;
-}
-
-.controls li
-{
-    list-style: none;
-}
-
-.controls li.selected
-{
-    background:#98C9C9;
-}
-
-.controls .col img
-{
-    width:100%;
-}
-
-.preview
-{
-    border:1px solid #AAA;
-    text-align:center;
-    margin:1em auto 1em auto;
-    width:480px;
-    height:350px;
-}
-
+#zip-file-list { flex:1; }
+#content-field { flex:3; }
+#content-field .scrolling-checklist { height:auto; }
 #content-field > label
 {
     display:none;
 }
-
-#zip-file-list { flex:1; }
-#content-field { flex:3; }
-#content-field .scrolling-checklist { height:auto; }
 </style>
 {% endblock %}
 
 {% block scripts %}
 <script>
-var hint_ids = [{% for h in suggestions.hint_ids %}{{h}}{% if not forloop.last %}, {% endif %}{% endfor %}];
+var hint_ids = [{% for d in detail_ids %}{{d}}{% if not forloop.last %}, {% endif %}{% endfor %}];
 $(document).ready(function (){
     $("#detail-list button").click(function (){
         if ($(this).text() == "All")
@@ -75,15 +28,9 @@ $(document).ready(function (){
             $("input[name=details]").prop("checked", "");
             $("input[name=details]").parent().removeClass("selected");
         }
-        else if ($(this).text() == "Suggested")
+        else if ($(this).text() == "Default")
         {
-            $("input[name=details]").prop("checked", "");
-            $("input[name=details]").parent().removeClass("selected");
-            for (var idx in hint_ids)
-            {
-                $("input[name=details][value="+hint_ids[idx]+"]").prop("checked", "checked");
-                $("input[name=details][value="+hint_ids[idx]+"]").parent().addClass("selected");
-            }
+            set_default();
         }
         update_selected_details();
     });
@@ -94,9 +41,20 @@ $(document).ready(function (){
     });
 
     convert_suggested_to_string();
+    set_default();
     update_selected_details();
-    $("button[name=suggested]").click();
 });
+
+function set_default()
+{
+    $("input[name=details]").prop("checked", "");
+    $("input[name=details]").parent().removeClass("selected");
+    for (var idx in hint_ids)
+    {
+        $("input[name=details][value="+hint_ids[idx]+"]").prop("checked", "checked");
+        $("input[name=details][value="+hint_ids[idx]+"]").parent().addClass("selected");
+    }
+}
 
 function update_selected_details()
 {
@@ -133,15 +91,12 @@ function convert_suggested_to_string()
 </script>
 {% endblock %}
 
-{% block content %}
-<section id="content" class="col block">
-<h1>Tool List - {{file}}</h1>
 
-<a href="{% url 'tool_list' file.id %}">Back to Tool List</a>
-<br>
+{% block world_content %}
+<h2>Manage Details</h2>
 
 <form method="POST">
-    {% csrf_token %}
+{% csrf_token %}
 
 <div class="flex-container">
     <div>
@@ -165,13 +120,9 @@ function convert_suggested_to_string()
     {% include "museum_site/blocks/content_field.html" %}
 </div>
 
-    <div class="field">
-        <label>Spotlight:</label>
-        <input type="checkbox" value="1" name="spotlight" checked>
-    </div>
-
-        <input type="submit" name="publish" id="publish" value="Publish File">
+<input type="submit" value="Update File Details">
 </form>
+
 <hr>
 <h2>Content Hints</h2>
 <table>
