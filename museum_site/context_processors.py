@@ -43,11 +43,10 @@ def museum_global(request):
     # CSS Files
     data["CSS_INCLUDES"] = CSS_INCLUDES
 
-    # Featured Games
-    featured = Detail.objects.get(pk=DETAIL_FEATURED)
-    data["fg"] = featured.file_set.all().order_by("?")[0]
+    # Featured Worlds
+    data["fg"] = File.objects.featured_worlds().order_by("?").first()
     if request.GET.get("fgid"):
-        data["fg"] = File.objects.get(pk=int(request.GET["fgid"]))
+        data["fg"] = File.objects.reach(pk=int(request.GET["fgid"]))
 
     # Upload Cap
     data["UPLOAD_CAP"] = UPLOAD_CAP
@@ -58,10 +57,8 @@ def museum_global(request):
     ])):
         request.session["FILES_IN_QUEUE"] = File.objects.unpublished().count()
 
-    # User beta
+    # User TOS Date checks
     if request.user.is_authenticated:
-        request.session["account_beta"] = True
-
         if (
             TERMS_DATE > request.user.profile.accepted_tos and
             request.method == "GET" and
@@ -73,5 +70,4 @@ def museum_global(request):
             ]:
                 if request.session.get(key):
                     del request.session[key]
-
     return data

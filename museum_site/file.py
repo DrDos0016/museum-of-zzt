@@ -145,11 +145,26 @@ class FileManager(models.Manager):
             Q(genre__icontains="explicit")
         )
 
+    def featured_worlds(self):
+        return self.filter(details=DETAIL_FEATURED)
+
+    """ TODO: Move this to something more generic than File objects """
+    def reach(self, *args, **kwargs):
+        try:
+            return self.get(*args, **kwargs)
+        except self.model.DoesNotExist:
+            return None
+
+
 
 class File(models.Model):
     """ File object repesenting an upload to the site """
 
     objects = FileManager()
+
+    ## Newfunc
+    SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
+    ## Endnewfunc
 
     """
     Fields:
@@ -912,3 +927,19 @@ class File(models.Model):
             return ""
         else:
             return str(self.release_date)[:4]
+
+    # New functions for future revisions
+    """
+    def get_preview_image_url(self):
+        if self.preview_image
+            if self.preview_image not in SPECIAL_SCREENSHOTS:
+                return STATIC_URL,
+            else:  # Special cases
+        else:  # Default
+    """
+
+"""
+return os.path.join(STATIC_PATH, "images/screenshots/{}/{}".format(
+                self.letter, self.screenshot
+            ))
+"""
