@@ -81,6 +81,11 @@ body
 {
     cursor:crosshair;
 }
+
+.red
+{
+    background:red;
+}
 </style>
 {% endif %}
 {% endblock %}
@@ -159,7 +164,9 @@ $(document).ready(function (){
 {% if veryspecial %}
 <div class="debug">
     <script src="/static/js/debug-crop.js"></script>
-    <a href="?spellcheck=1&page=all">Spellcheck</a>
+    <script src="/static/js/debug-finalize.js"></script>
+    <a href="?spellcheck=1&page=all">Spellcheck</a><br>
+    <a href="?finalize=1#finalization">Finalize</a>
 </div>
 {% endif %}
 {% if article.schema == "html" %}
@@ -190,6 +197,15 @@ $(document).ready(function (){
 <div class="c">
 <a href="{{article.series.all.first.url}}">View All</a>
 </div>
+{% endif %}
+
+{% if veryspecial and request.GET.finalize %}
+<h2 id="finalization">Finalization</h2>
+
+<h3>Link Audit</h3>
+<table id="link-table">
+    <tr><th>Text</th><th>Target</th><th>Path</th></tr>
+</table>
 {% endif %}
 
 {% if article.allow_comments %}
