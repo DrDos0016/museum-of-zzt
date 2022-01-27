@@ -858,8 +858,6 @@ def set_screenshot(request, pk):
         optimize_image(file_path)
         zfile.screenshot = zfile.filename[:-4] + ".png"
         zfile.basic_save()
-        print("OK!")
-
 
     if request.GET.get("file"):
         with ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
