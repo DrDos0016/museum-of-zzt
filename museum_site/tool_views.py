@@ -511,7 +511,9 @@ def publish(request, pk):
             profile.save()
 
         # Redirect
-        return redirect("tool_list", pk=pk)
+        return redirect(
+            "tool_index_with_file", letter=data["file"].letter, filename=data["file"].filename
+        )
 
     with ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
         data["file_list"] = zf.namelist()
