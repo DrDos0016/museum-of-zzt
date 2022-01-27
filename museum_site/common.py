@@ -372,7 +372,6 @@ def discord_announce_upload(upload, env=None):
         upload.save()
         return False
 
-
     zfile = upload.file
 
     preview_url = HOST + "static/" + urllib.parse.quote(
@@ -444,3 +443,32 @@ def crop_file(file_path, size=(480, 350)):
     image.save(file_path)
     optimize_image(file_path)
     return True
+
+
+def get_detail_suggestions(file_list):
+    suggestions = {
+        "hints": [],
+        "hint_ids": [],
+        "unknown_extensions": [],
+    }
+    for name in file_list:
+        ext = os.path.splitext(os.path.basename(name).upper())
+        if ext[1] == "":
+            ext = ext[0]
+        else:
+            ext = ext[1]
+
+        if ext in EXTENSION_HINTS:
+            suggest = (EXTENSION_HINTS[ext][1])
+            suggestions["hints"].append(
+                (name, EXTENSION_HINTS[ext][0], suggest)
+            )
+            suggestions["hint_ids"] += EXTENSION_HINTS[ext][1]
+        elif ext == "":  # Folders hit this
+            continue
+        else:
+            suggestions["unknown_extensions"].append(ext)
+
+    suggestions["hint_ids"] = set(suggestions["hint_ids"])
+    suggestions["unknown_extensions"] = set(suggestions["unknown_extensions"])
+    return suggestions

@@ -113,8 +113,6 @@ def file_directory(
 
     qs = qs.prefetch_related("upload_set").distinct()
 
-
-
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = get_selected_view_format(request, data["available_views"])
     data = get_pagination_data(request, data, qs)

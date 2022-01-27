@@ -479,24 +479,8 @@ def publish(request, pk):
         data["file_list"] = zf.namelist()
     data["file_list"].sort()
 
-    # Get suggested fetails based on the file list
-    unknown_extensions = []
-    for name in data["file_list"]:
-        ext = os.path.splitext(os.path.basename(name).upper())
-        if ext[1] == "":
-            ext = ext[0]
-        else:
-            ext = ext[1]
-
-        if ext in EXTENSION_HINTS:
-            suggest = (EXTENSION_HINTS[ext][1])
-            data["hints"].append((name, EXTENSION_HINTS[ext][0], suggest))
-            data["hint_ids"] += EXTENSION_HINTS[ext][1]
-        elif ext == "":  # Folders hit this
-            continue
-
-    data["unknown_extensions"] = unknown_extensions
-    data["hint_ids"] = set(data["hint_ids"])
+    # Get suggested details based on the file list
+    data["suggestions"] = get_detail_suggestions(data["file_list"])
     return render(request, "museum_site/tools/publish.html", data)
 
 
