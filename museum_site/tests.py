@@ -8,6 +8,7 @@ import unittest
 
 import requests
 
+from django.contrib.auth.models import User
 from django.test import TestCase
 
 from museum_site.common import *
@@ -163,6 +164,65 @@ class FileTest(TestCase):
             "letter", flat=True
         )
         self.assertEqual(list(letters), ["z", "z", "t"])
+
+
+class ArticleTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Article.objects.create(
+            title='Test Article 1: "Hello World"',
+        )
+
+
+class ReviewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        info = [
+            ("Alpha", "Alpha@localhost", "password123"),
+            ("Beta", "Beta@localhost", "password123"),
+            ("Gamma", "Gamma@localhost", "password123"),
+        ]
+        for i in info:
+            u = User.objects.create_user(i[0], i[1], i[2])
+            Profile.objects.create(user=u, patron_email=u.email)
+
+        f = File.objects.create(
+            filename="zzt.zip",
+            title="ZZT v3.2 (Registered)",
+            author="Tim Sweeney",
+            size=1234,
+            genre="Official/Puzzle/Adventure/Registered",
+            zeta_config=None,
+        )
+
+        Review.objects.create(
+            zfile=f,
+            user_id=1,
+            title="Test Review Title Logged In User",
+            author="IGNORED BECAUSE LOGGED IN",
+            content="Body of *my* review",
+            rating=5.0,
+            date="2022-01-01",
+            ip="127.0.0.1"
+        ),
+
+        Review.objects.create(
+            zfile=f,
+            user_id=None,
+            title="Test Review Title Anon User",
+            author="U.N. Owen",
+            content="Body of *my* review",
+            rating=5.0,
+            date="2022-01-01",
+            ip="127.0.0.1"
+        )
+
+    def test_review_author(self):
+        r = Review.objects.get(pk=1)
+        self.assertEqual(r.get_author(), "Alpha")
+        r = Review.objects.get(pk=2)
+        self.assertEqual(r.get_author(), "U.N. Owen")
+
 
 """
 http://django.pi:8000/article/f/frost1.zip
