@@ -55,6 +55,15 @@
 {% endblock %}
 
 {% block world_content %}
+<br>
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+<input type="hidden" name="manual" value="1">
+<input type="file" name="uploaded_file">
+<input type="submit" value="Upload Screenshot File">
+<p>Manual screenshots ARE NOT cropped.</p>
+</form>
+<hr>
 <div class="controls">
     <div class="col">
         <b>File</b><br>

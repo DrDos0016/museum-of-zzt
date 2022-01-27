@@ -423,13 +423,10 @@ def optimize_image(image):
 
 
 def move_uploaded_file(upload_directory, uploaded_file, custom_name=""):
-    print("SR IS", STATIC_PATH)
-    print("UD IS", upload_directory)
     upload_filename = (
         custom_name if custom_name else uploaded_file.name
     )
     file_path = os.path.join(STATIC_PATH, upload_directory, upload_filename)
-    print("FP IS", file_path)
     with open(file_path, 'wb+') as fh:
         for chunk in uploaded_file.chunks():
             fh.write(chunk)

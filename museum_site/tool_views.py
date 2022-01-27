@@ -848,6 +848,19 @@ def set_screenshot(request, pk):
                 data["file_list"].append(f)
     data["file_list"].sort()
 
+    if request.POST.get("manual"):
+        upload_path = os.path.join(STATIC_PATH, "images/screenshots/{}/".format(zfile.letter))
+        file_path = move_uploaded_file(
+            upload_path,
+            request.FILES.get("uploaded_file"),
+            custom_name=zfile.filename[:-4] + ".png"
+        )
+        optimize_image(file_path)
+        zfile.screenshot = zfile.filename[:-4] + ".png"
+        zfile.basic_save()
+        print("OK!")
+
+
     if request.GET.get("file"):
         with ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
             zf.extract(
