@@ -35,7 +35,7 @@ class ArticleManager(models.Manager):
 
     def publication_packs(self):
         return self.filter(
-            category="Publication Pack", published=Article.ARTICLE
+            category="Publication Pack", published=Article.PUBLISHED
         ).order_by("-publish_date", "-id")
 
     def spotlight(self):
