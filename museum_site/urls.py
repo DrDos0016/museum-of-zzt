@@ -489,7 +489,6 @@ urlpatterns = [
 
     # Tools
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
-    path("tools/<str:letter>/<str:filename>", museum_site.tool_views.tool_index, name="tool_index_with_file"),
     path(
         "tools/add-livestream/<int:pk>/",
         museum_site.tool_views.add_livestream, name="add_livestream"),
@@ -550,6 +549,7 @@ urlpatterns = [
     path(
         "tools/user-list/", museum_site.tool_views.user_list,
         name="user_list"),
+    path("tools/<str:letter>/<str:filename>", museum_site.tool_views.tool_index, name="tool_index_with_file"),
 
     # Debug
     path("debug/", museum_site.debug_views.debug),
