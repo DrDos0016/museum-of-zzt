@@ -127,6 +127,19 @@ def get_file(request):
 
     return JsonResponse(output)
 
+def get_random_file(request):
+    output = {
+        "status": "SUCCESS",
+        "request_time": int(time()),
+        "data": {
+        }
+    }
+
+    f = File.objects.random_zzt_world()
+    output["data"] = f.jsoned()
+
+    return JsonResponse(output)
+
 def help(request):
     data = {}
     return render(request, "museum_api/help.html", data)

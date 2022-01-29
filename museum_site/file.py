@@ -111,7 +111,7 @@ class FileManager(models.Manager):
             pk = randint(1, max_pk)
             zgame = self.filter(pk=pk, details__id=DETAIL_ZZT).exclude(
                 details__id__in=excluded_details
-            ).exclude(genre__icontains="Explicit").first()
+            ).exclude(explicit=True).first()
 
         return zgame
 
@@ -142,7 +142,7 @@ class FileManager(models.Manager):
         ).exclude(
             Q(details__in=excluded_details) |
             Q(author__icontains="_ry0suke_") |
-            Q(genre__icontains="explicit")
+            Q(explicit=True)
         )
 
     def featured_worlds(self):
@@ -358,6 +358,7 @@ class File(models.Model):
             "archive_name": self.archive_name,
             "publish_date": self.publish_date,
             "last_modified": self.last_modified,
+            "explicit": int(self.explicit),
         }
 
         for d in self.details.all():
