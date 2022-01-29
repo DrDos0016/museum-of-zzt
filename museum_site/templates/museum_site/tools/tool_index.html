@@ -80,6 +80,7 @@ $(document).ready(function (){
 </div>
 <hr>
 
+{% if file %}
 {% if request.GET.recalculate %}
 <div><b>Recalculated {{request.GET.recalculate|title}}</b><br>
 <table>
@@ -241,4 +242,5 @@ $(document).ready(function (){
         </table>
     </div>
 </div>
+{% endif %}
 {% endblock %}
