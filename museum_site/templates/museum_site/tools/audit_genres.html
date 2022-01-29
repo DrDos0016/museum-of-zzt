@@ -15,18 +15,17 @@
 <section id="content" class="col block">
 <h1>Genre Audit</h1>
 <hr>
-<div class="col">
-<b>Genre List</b><br>
-{% for g in canon_genres %}
-{{g}}<br>
-{% endfor %}
-</div>
-<div class="col">
-<b>Observed Genres</b><br>
-{% for g in observed %}
-{{g}}<br>
-{% endfor %}
-
-</div>
+<table>
+    <tr>
+        <th>Observed Genres</th>
+        <th>Genre List</th>
+    </tr>
+    {% for g in observed %}
+    <tr>
+        <td>{{g}}</td>
+        <td>{% if g in canon_genres %}✅{% else %}❌{% endif %}</td>
+    </tr>
+    {% endfor %}
+</table>
 </section>
 {% endblock %}
