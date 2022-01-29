@@ -27,6 +27,7 @@ TWITTER_OAUTH_SECRET = ""
 # Upload webhook used to annouce new file uploads (not yet implemented)
 WEBHOOK_URL = ""
 NEW_UPLOAD_WEBHOOK_URL = ""
+NEW_REVIEW_WEBHOOK_URL = ""
 
 # IP Bans
 # TODO: This is janky and temporary
