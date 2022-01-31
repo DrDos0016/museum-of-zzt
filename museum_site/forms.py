@@ -368,7 +368,7 @@ class ArticleSearchForm(forms.Form):
         ("author", "Author"),
         ("category", "Category"),
         ("-date", "Newest"),
-        ("date", "date"),
+        ("date", "Oldest"),
     )
 
     title = forms.CharField(label="Title contains")
