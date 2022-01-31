@@ -3,6 +3,7 @@ import os
 from django.db import models
 from django.db.models import Subquery
 from django.template.defaultfilters import slugify
+from django.template.loader import render_to_string
 
 from museum.settings import STATIC_URL
 from museum_site.common import STATIC_PATH
@@ -13,12 +14,15 @@ class SeriesManager(models.Manager):
         qs = self.exclude(visible=False)
         return qs
 
+
 class Series(models.Model):
     objects = SeriesManager()
 
     # Constants
     PREVIEW_DIRECTORY = os.path.join(STATIC_URL, "pages/series-directory/")
-    PREVIEW_DIRECTORY_FULL_PATH = os.path.join(STATIC_PATH, "pages/series-directory/")
+    PREVIEW_DIRECTORY_FULL_PATH = os.path.join(
+        STATIC_PATH, "pages/series-directory/"
+    )
 
     # Fields
     title = models.CharField(max_length=80)
@@ -29,7 +33,6 @@ class Series(models.Model):
     last_entry_date = models.DateField()
     visible = models.BooleanField(default=True)
 
-
     class Meta:
         ordering = ["title"]
 
@@ -38,19 +41,51 @@ class Series(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        if self.id:
-            self.first_entry_date = self.article_set.all().order_by("publish_date").first().publish_date
-            self.last_entry_date = self.article_set.all().order_by("publish_date").last().publish_date
+        article_set = self.article_set.all()
+        if self.id and article_set:
+            self.first_entry_date = (
+                article_set.order_by("publish_date").first().publish_date
+            )
+            self.last_entry_date = (
+                article_set.order_by("publish_date").last().publish_date
+            )
         else:
             self.first_entry_date = "1970-01-01"
             self.last_entry_date = "1970-01-01"
+
+        # Prevent blank preview URLs
+        if not self.preview:
+            self.preview = self.slug + ".png"
         super(Series, self).save(*args, **kwargs)
 
     def url(self):
         return "/series/" + str(self.id) + "/" + self.slug
 
     def preview_url(self):
-        if self.preview:
-            return os.path.join(self.PREVIEW_DIRECTORY, self.preview)
-        else:
-            return os.path.join(self.PREVIEW_DIRECTORY, self.slug + ".png")
+        return os.path.join(self.PREVIEW_DIRECTORY, self.preview)
+
+    def as_detailed_block(self):
+        template_name = "museum_site/blocks/generic-detailed-block.html"
+        context = {
+            "model_name": "Series",
+            "title": self.title,
+            "description": self.description,
+            "preview_url": self.preview_url,
+            "preview_alt": self.preview,
+            "columns": [
+                {
+                    "meta": {
+                        "classes": "wide-info",
+                    },
+                    "data": {
+                        "first_entry": self.first_entry_date,
+                        "last_entry": self.last_entry_date,
+                        "articles": 0,
+                        "id": self.id,
+                        "description": self.description,
+                    },
+                },
+            ]
+        }
+
+        return render_to_string(template_name, context)
