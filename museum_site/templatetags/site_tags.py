@@ -119,8 +119,6 @@ def guide_words(*args, **kwargs):
     items = (kwargs.get("first_item"), kwargs.get("last_item"))
     link_text = ["???", "???"]
 
-    print("ITEMS", items)
-
     if sort is None:
         sort = ""
 
