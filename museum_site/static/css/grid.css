@@ -420,6 +420,7 @@ pre.cp437 { line-height:14px;}
 /* Utility Classes */
 .debug { background:#F00; }
 .hidden { visibility: hidden; }
+.none { display: none; }
 .inline { display: inline; }
 .fit-height { height: calc(100vh - 44px ); align-self:start; }
 
