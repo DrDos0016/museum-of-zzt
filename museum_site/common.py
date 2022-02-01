@@ -258,7 +258,17 @@ def get_page_size(view):
 def get_pagination_data(request, data, qs):
     data["page_number"] = int(request.GET.get("page", 1))
     data["paginator"] = Paginator(qs, get_page_size(data["view"]))
-    data["page"] = data["paginator"].get_page(data["page_number"])
+    page = data["paginator"].get_page(data["page_number"])
+
+    debug = request.session.get("DEBUG")
+    # Convert models to blocks if possible
+    if (
+        page.object_list and hasattr(page.object_list[0], "as_block")
+    ):
+        page.object_list = [
+            i.as_block(data["view"], debug=debug) for i in page.object_list
+        ]
+    data["page"] = page
 
     # Bounds checking
     if data["page_number"] < 1:
