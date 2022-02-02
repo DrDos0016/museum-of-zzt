@@ -26,7 +26,7 @@ def series_directory(request, page_num=1):
     data["view"] = get_selected_view_format(request, data["available_views"])
     data = get_pagination_data(request, data, qs)
     data["sort_options"] = [
-        {"text": "Latest Entry", "val": "latest"},
+        {"text": "Newest Entry", "val": "latest"},
         {"text": "Title", "val": "title"},
     ]
     if request.session.get("DEBUG"):

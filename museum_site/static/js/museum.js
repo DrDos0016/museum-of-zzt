@@ -38,7 +38,12 @@ var CP437_TO_UNICODE = {
 var IS_SEARCHING = false;
 
 $(document).ready(function (){
-    // Screenshot Zoom
+    // New Screenshot Zoom
+    $(".zoomable").click(function (){
+        $(this).toggleClass("thumbnail zoomed");
+    });
+
+    // Screenshot Zoom (to eventually be removed)
     $(".screenshot-thumb").click(function (){
         $(this).toggleClass("zoomed");
         var parent = $(this).parent();

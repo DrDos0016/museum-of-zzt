@@ -4,9 +4,11 @@ from django.db import models
 from django.db.models import Subquery
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
 from museum_site.common import STATIC_PATH
+from museum_site.datum import *
 
 
 class SeriesManager(models.Manager):
@@ -17,6 +19,8 @@ class SeriesManager(models.Manager):
 
 class Series(models.Model):
     objects = SeriesManager()
+    model_name = "Series"
+    table_fields = ["Series", "Newest Entry", "Oldest Entry", "Articles"]
 
     # Constants
     PREVIEW_DIRECTORY = os.path.join(STATIC_URL, "pages/series-directory/")
@@ -64,28 +68,83 @@ class Series(models.Model):
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)
 
-    def as_detailed_block(self):
-        template_name = "museum_site/blocks/generic-detailed-block.html"
-        context = {
-            "model_name": "Series",
-            "title": self.title,
-            "description": self.description,
-            "preview_url": self.preview_url,
-            "preview_alt": self.preview,
-            "columns": [
-                {
-                    "meta": {
-                        "classes": "wide-info",
-                    },
-                    "data": {
-                        "first_entry": self.first_entry_date,
-                        "last_entry": self.last_entry_date,
-                        "articles": 0,
-                        "id": self.id,
-                        "description": self.description,
-                    },
-                },
-            ]
-        }
+    def as_block(self, view="detailed", *args, **kwargs):
+        return getattr(self, "as_{}_block".format(view))(*args, **kwargs)
 
-        return render_to_string(template_name, context)
+    def as_detailed_block(self, debug=False):
+        template = "museum_site/blocks/generic-detailed-block.html"
+        context = dict(
+            pk=self.pk,
+            model="Series",
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title=self.title,
+            columns=[],
+            description=self.description
+        )
+
+        context["columns"].append([
+            TextDatum(label="Newest Entry", value=self.last_entry_date),
+            TextDatum(label="Oldest Entry", value=self.first_entry_date),
+            TextDatum(label="Articles", value=self.article_set.count()),
+        ])
+
+        if debug:
+            context["columns"][0].append(
+                LinkDatum(
+                    label="ID", value=self.id, target="_blank", kind="debug",
+                    url="/admin/museum_site/series/{}/change/".format(self.id),
+                ),
+            )
+
+        return render_to_string(template, context)
+
+    def as_list_block(self, debug=False):
+        template = "museum_site/blocks/generic-list-block.html"
+        context = dict(
+            pk=self.pk,
+            model="Series",
+            url=self.url,
+            cells=[
+                CellDatum(value=mark_safe(
+                    '<a href="{}">{}</a>'.format(self.url(), self.title)
+                )),
+                CellDatum(value=self.last_entry_date),
+                CellDatum(value=self.first_entry_date),
+                CellDatum(value=self.article_set.count(), kind="r"),
+            ],
+        )
+
+        return render_to_string(template, context)
+
+    def as_gallery_block(self, debug=False):
+        template = "museum_site/blocks/generic-gallery-block.html"
+        context = dict(
+            pk=self.pk,
+            model="Series",
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title=self.title,
+            columns=[],
+        )
+
+        context["columns"].append([
+            TextDatum(value=self.last_entry_date),
+        ])
+
+        if debug:
+            context["columns"][0].append(
+                LinkDatum(
+                    value=self.id, target="_blank", kind="debug",
+                    url="/admin/museum_site/series/{}/change/".format(self.id),
+                ),
+            )
+
+        return render_to_string(template, context)
+
+    @mark_safe
+    def table_header(self):
+        row = ""
+        for f in self.table_fields:
+            row += "<th>{}</th>".format(f)
+        return "<tr>" + row + "</tr>"

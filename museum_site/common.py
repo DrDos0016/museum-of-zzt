@@ -38,7 +38,9 @@ SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMP_PATH = os.path.join(SITE_ROOT, "temp")
 BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
 STATIC_PATH = os.path.join(SITE_ROOT, "museum_site", "static")
-CSS_INCLUDES = ["grid.css", "zzt.css", "low-res.css", "forms.css"]
+CSS_INCLUDES = [
+    "grid.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"
+]
 TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
 PAGE_SIZE = 25
@@ -265,6 +267,8 @@ def get_pagination_data(request, data, qs):
     if (
         page.object_list and hasattr(page.object_list[0], "as_block")
     ):
+        if data["view"] == "list":  # TODO: Probably better elsewhere?
+            data["table_header"] = page.object_list[0].table_header
         page.object_list = [
             i.as_block(data["view"], debug=debug) for i in page.object_list
         ]

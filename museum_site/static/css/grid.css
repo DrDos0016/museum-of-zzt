@@ -1781,3 +1781,15 @@ select[name=page-selector]
     margin-bottom:0;
 }
 /* End Review Blocks */
+
+/* Newer Zoom for thumbnails */
+img.zoomable.thumbnail:hover
+{
+    cursor:zoom-in;
+}
+
+img.zoomable.zoomed:hover
+{
+    cursor:zoom-out;
+}
+/* End Newer Zoom for thumbnails */

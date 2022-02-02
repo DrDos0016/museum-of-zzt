@@ -1,0 +1,117 @@
+.model-block
+{
+    padding:14px 8px 14px 8px;
+    margin:14px auto 14px auto;
+    border:1px solid #000;
+    display:grid;
+}
+
+.model-block.detailed
+{
+    grid-template-areas:
+    "prefix prefix"
+    "screenshot title"
+    "screenshot data"
+    "screenshot desc"
+    "links links";
+
+    column-gap:8px;
+    grid-template-columns: minmax(240px, auto) 1fr;
+    grid-template-rows:auto auto auto minmax(0px, 1fr);
+}
+
+.model-block .preview-image
+{
+    grid-area:screenshot;
+    margin:auto;
+}
+
+.model-block .preview-image.thumbnail
+{
+    width:240px;
+}
+
+.model-block .title
+{
+    grid-area:title;
+    margin:0;
+}
+
+.model-block .data
+{
+    grid-area:data;
+    display:flex;
+    column-gap:8px;
+}
+
+.model-block .data .col
+{
+    flex:1;
+}
+
+.model-block .data .datum
+{
+    display:flex;
+    border-bottom:1px dotted #000;
+}
+
+.model-block .data .datum .label
+{
+    min-width:15ch;
+    flex:1;
+    padding-right:8px;
+}
+
+.model-block .data .datum .value
+{
+    flex:3;
+    align-self:flex-end;
+}
+
+.model-block .description
+{
+    grid-area:desc;
+}
+
+.model-block.gallery
+{
+    grid-template-areas:
+    "screenshot"
+    "title"
+    "data";
+    margin:0;
+}
+
+.gallery-frame /* Container for gallery blocks */
+{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:start;
+    text-align:center;
+    gap: 14px 8px;
+    justify-content:space-evenly;
+    margin:14px 8px 14px 8px;
+    grid-template-columns: minmax(240px, auto) 1fr;
+}
+
+/* Try to fit more than 2 at lower resolutions  TODO: THIS ISN'T VERY GOOD IMO */
+@media (max-width:1300px) {
+    .gallery-frame
+    {
+        gap:7px 2px;
+    }
+}
+
+.model-block.gallery .title
+{
+    font-size:medium;
+    font-weight:normal;
+    border-bottom:1px dotted #000;
+    max-width:240px;
+    margin:auto;
+}
+
+.model-block.gallery .datum
+{
+    border-bottom:0;
+}

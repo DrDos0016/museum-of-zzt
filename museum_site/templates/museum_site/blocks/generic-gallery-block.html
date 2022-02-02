@@ -1,0 +1,13 @@
+<div class="model-block gallery" data-model="{{model}}" data-pk="{{pk}}" >
+    <img class="preview-image thumbnail zoomable" src="{{preview.url}}" alt="{{preview.url}}">
+    <h2 class="title"><a href="{{url}}">{{title}}</a></h2>
+    <div class="data">
+        {% for col in columns %}
+        <div class="col">
+        {% for field in col %}
+        {{field}}
+        {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
