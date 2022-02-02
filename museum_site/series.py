@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
-from museum_site.common import STATIC_PATH
+from museum_site.common import STATIC_PATH, epoch_to_unknown
 from museum_site.datum import *
 
 
@@ -85,7 +85,7 @@ class Series(models.Model):
 
         context["columns"].append([
             TextDatum(label="Newest Entry", value=self.last_entry_date),
-            TextDatum(label="Oldest Entry", value=self.first_entry_date),
+            TextDatum(label="Oldest Entry", value=epoch_to_unknown(self.first_entry_date)),
             TextDatum(label="Articles", value=self.article_set.count()),
         ])
 
@@ -110,7 +110,7 @@ class Series(models.Model):
                     '<a href="{}">{}</a>'.format(self.url(), self.title)
                 )),
                 CellDatum(value=self.last_entry_date),
-                CellDatum(value=self.first_entry_date),
+                CellDatum(value=epoch_to_unknown(self.first_entry_date)),
                 CellDatum(value=self.article_set.count(), kind="r"),
             ],
         )

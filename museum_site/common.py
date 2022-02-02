@@ -483,3 +483,8 @@ def get_detail_suggestions(file_list):
     suggestions["hint_ids"] = set(suggestions["hint_ids"])
     suggestions["unknown_extensions"] = set(suggestions["unknown_extensions"])
     return suggestions
+
+def epoch_to_unknown(calendar_date):
+    if calendar_date.year <= 1970:
+        return "Unknown"
+    return calendar_date
