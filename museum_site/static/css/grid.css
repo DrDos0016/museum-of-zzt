@@ -22,7 +22,7 @@ a[target=_blank]
 a[href^="https://www.digitalmzx.com"]
 {
     padding-left:12px;
-    background:url("/static/chrome/mzx-smiley.png"), url("/static/crhome/external_link.png");
+    background:url("/static/chrome/mzx-smiley.png"), url("/static/chrome/external_link.png");
     background-position:center left, top right;
     background-repeat:no-repeat;
 }
@@ -386,7 +386,7 @@ pre.cp437 { line-height:14px;}
 
 .sidebar a[target=_blank]::after
 {
-    background-image:url("/static/images/external_link.png");
+    background-image:url("/static/chrome/external_link.png");
     background-repeat:no-repeat;
     background-position:top left;
     padding-left:12px;
