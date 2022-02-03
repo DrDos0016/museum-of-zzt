@@ -79,8 +79,9 @@ class Option(models.Model):
 
     def __str__(self):
         checked = "X" if self.played else " "
-        return '[{}] "{}" by {}'.format(
-            checked, self.file.title, self.file.author
+        requested = "(Patron)" if self.requested_by else ""
+        return '[{}] "{}" by {} {}'.format(
+            checked, self.file.title, self.file.author, requested
         )
 
     def scrub(self):
