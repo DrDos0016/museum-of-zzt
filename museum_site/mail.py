@@ -11,7 +11,7 @@ NOREPLY = "noreply@" + DOMAIN
 
 def send(to, frm, subj, body):
     if not DEBUG:
-        message = """From: Musuem of ZZT <{}>
+        message = """From: Museum of ZZT <{}>
 To: <{}>
 Subject: {}
 
@@ -52,7 +52,7 @@ def send_forgotten_password_email(user, domain):
 Hello!
 
 A request was recently submitted to reset the password associated with this
-account on the Musuem of ZZT.
+account on the Museum of ZZT.
 
 You can choose a new password by visiting the following link:
 https://{}
@@ -75,7 +75,7 @@ def send_forgotten_username_email(user):
 Hello!
 
 A request was recently submitted to retreive a forgotten username on the
-Musuem of ZZT.
+Museum of ZZT.
 
 Your username is: {}
 """
