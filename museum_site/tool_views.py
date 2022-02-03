@@ -139,6 +139,16 @@ def audit_genres(request):
 
 
 @staff_member_required
+def audit_scrolls(request):
+    data = {
+        "title": "Scroll Audit",
+    }
+    data["scrolls"] = Scroll.objects.all()
+
+    return render(request, "museum_site/tools/audit-scrolls.html", data)
+
+
+@staff_member_required
 def audit_zeta_config(request):
     data = {
         "title": "Zeta Config Audit",

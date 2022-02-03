@@ -28,6 +28,9 @@ class Scroll(models.Model):
     def __str__(self):
         return "Scroll #{} ID:{} Pub:{}".format(self.identifier, self.id, self.published)
 
+    def admin_url(self):
+        return "/admin/museum_site/scroll/{}/change/".format(self.id)
+
     def lines(self):
         return self.content.split("\n")
 

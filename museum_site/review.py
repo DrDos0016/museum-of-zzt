@@ -7,6 +7,7 @@ from museum_site.templatetags.zzt_tags import char
 
 
 class Review(models.Model):
+    model_name = "Review"
     """ Review object repesenting an review to a file
 
     Fields:

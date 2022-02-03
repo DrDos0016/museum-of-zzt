@@ -496,6 +496,9 @@ urlpatterns = [
         "tools/audit/genres/", museum_site.tool_views.audit_genres,
         name="audit_genres"),
     path(
+        "tools/audit/scrolls/", museum_site.tool_views.audit_scrolls,
+        name="audit_scrolls"),
+    path(
         "tools/audit/zeta-config/", museum_site.tool_views.audit_zeta_config,
         name="audit_zeta_config"),
     path(

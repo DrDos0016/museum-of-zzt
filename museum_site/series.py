@@ -75,7 +75,7 @@ class Series(models.Model):
         template = "museum_site/blocks/generic-detailed-block.html"
         context = dict(
             pk=self.pk,
-            model="Series",
+            model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
             title=self.title,
@@ -103,7 +103,7 @@ class Series(models.Model):
         template = "museum_site/blocks/generic-list-block.html"
         context = dict(
             pk=self.pk,
-            model="Series",
+            model=self.model_name,
             url=self.url,
             cells=[
                 CellDatum(value=mark_safe(
@@ -121,7 +121,7 @@ class Series(models.Model):
         template = "museum_site/blocks/generic-gallery-block.html"
         context = dict(
             pk=self.pk,
-            model="Series",
+            model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
             title=self.title,
