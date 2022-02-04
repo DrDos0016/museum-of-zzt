@@ -21,24 +21,26 @@ preserved. It is the hope of the Museum that the generally unknown works of ZZT
 community can be easily discovered and that their importance can be recognized.
 </p>
 
-<div id="fp-new-files-grid">
-    <h1 id="new-releases-heading">New Releases Spotlight</h1>
+<div id="fp-file-frame">
+    <h2 id="new-releases-heading">New Releases</h2>
+    <h2 id="latest-additions-heading">Latest Additions</h2>
     <div class="gallery-list scrolling">
+        <div class="col">
         {% for file in new_releases %}
         {% include "museum_site/blocks/file_gallery_block.html" %}
         {% endfor %}
-        <div class="view-more">
-            <a href="{% url 'new_releases' %}">View All New Releases</a>
         </div>
-    </div>
-    <h1 id="latest-additions-heading">Latest Additions Spotlight</h1>
-    <div class="gallery-list scrolling">
+        <div class="col">
         {% for file in files %}
         {% include "museum_site/blocks/file_gallery_block.html" %}
         {% endfor %}
-        <div class="view-more">
-            <a href="{% url 'new_files' %}">View All Files</a>
         </div>
+    </div>
+    <div class="view-more l">
+        <a href="{% url 'new_releases' %}">View All New Releases</a>
+    </div>
+    <div class="view-more r">
+        <a href="{% url 'new_files' %}">View All Files</a>
     </div>
 </div>
 
