@@ -29,6 +29,8 @@ import zookeeper
 
 class WoZZT_Queue(models.Model):
     """ Object representing an upcoming Worlds of ZZT Twitter bot post """
+    model_name = "WoZZT-Queue"
+
     file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
     zzt_file = models.CharField(max_length=80)
     board = models.IntegerField()

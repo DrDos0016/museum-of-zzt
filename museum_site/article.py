@@ -82,6 +82,8 @@ class ArticleManager(models.Manager):
 
 class Article(models.Model):
     """ Article object repesenting an article """
+    model_name = "Article"
+
     SCHEMAS = (
         ("text", "Plaintext"),
         ("md", "Markdown"),  # TODO NOT WORKING 2022 (but also not used)

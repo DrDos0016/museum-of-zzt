@@ -7,8 +7,10 @@ from .constants import SITE_ROOT, ZETA_RESTRICTED
 
 
 class Download(models.Model):
-    """ Download object representing a place to acquire a file
+    """ Download object representing a place to acquire a file"""
+    model_name = "Download"
 
+    """
     Fields:
     url             -- URL for download
     priority        -- Priority for listing download sources

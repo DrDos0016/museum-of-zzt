@@ -1,3 +1,7 @@
+# Abstract Models
+from .base import BaseModel
+
+# Distinct Models
 from .alias import Alias
 from .article import Article
 from .file import File

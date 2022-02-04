@@ -159,6 +159,7 @@ class FileManager(models.Manager):
 
 class File(models.Model):
     """ File object repesenting an upload to the site """
+    model_name = "File"
 
     objects = FileManager()
 

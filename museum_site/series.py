@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 from museum.settings import STATIC_URL
 from museum_site.common import STATIC_PATH, epoch_to_unknown
 from museum_site.datum import *
+from museum_site.base import BaseModel
 
 
 class SeriesManager(models.Manager):
@@ -17,7 +18,7 @@ class SeriesManager(models.Manager):
         return qs
 
 
-class Series(models.Model):
+class Series(BaseModel):
     objects = SeriesManager()
     model_name = "Series"
     table_fields = ["Series", "Newest Entry", "Oldest Entry", "Articles"]

@@ -16,8 +16,10 @@ from .private import NEW_UPLOAD_WEBHOOK_URL
 
 
 class Upload(models.Model):
-    """ Review object repesenting an review to a file
+    """ Review object repesenting an review to a file """
+    model_name = "Upload"
 
+    """
     Fields:
     file            -- Link to File object
     date            -- Date of upload

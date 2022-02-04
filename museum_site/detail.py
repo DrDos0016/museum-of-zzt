@@ -51,6 +51,7 @@ class DetailManager(models.Manager):
         return output
 
 class Detail(models.Model):
+    model_name = "Detail"
     detail = models.CharField(max_length=20)
     description = models.TextField(default="")
     visible = models.BooleanField(default=True)

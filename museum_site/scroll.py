@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Scroll(models.Model):
+    model_name = "Scroll"
     # Constants
     SCROLL_TOP = """```
 ╞╤═════════════════════════════════════════════╤╡

@@ -4,6 +4,8 @@ from django.db import models
 class Alias(models.Model):
     """ Alias object for File aliases
     """
+    model_name = "Alias"
+
     alias = models.CharField(max_length=80)
 
     class Meta:

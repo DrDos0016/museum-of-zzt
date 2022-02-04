@@ -10,8 +10,10 @@ from museum_site.common import UPLOAD_CAP
 class Profile(models.Model):
     """ Profile object repesenting a user's profile
     Do not query directly. This is pulled automatically in
-    context_processors.py for any logged in user.
+    context_processors.py for any logged in user. """
+    model_name = "Profile"
 
+    """
     Fields:
     user            -- ID of User object
     patron

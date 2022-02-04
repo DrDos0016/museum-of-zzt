@@ -20,6 +20,7 @@ class Zeta_Config_Manager(models.Manager):
 
 
 class Zeta_Config(models.Model):
+    model_name = "Zeta-Config"
     objects = Zeta_Config_Manager()
 
     name = models.CharField(max_length=64)

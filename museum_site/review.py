@@ -7,11 +7,12 @@ from museum_site.templatetags.zzt_tags import char
 
 
 class Review(models.Model):
+    """ Review object repesenting an review to a file """
     model_name = "Review"
-    """ Review object repesenting an review to a file
 
+    """
     Fields:
-    file            -- Link to File object
+    zfile            -- Link to File object
     title           -- Title of the review
     author          -- Author of the review
     content         -- Body of review
