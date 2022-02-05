@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<section id="content" class="block">
+<section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 
 <h1>Museum of ZZT</h1>
 <p>Welcome to the Museum of ZZT, a site dedicated to the preservation and
@@ -44,7 +44,7 @@ community can be easily discovered and that their importance can be recognized.
     </div>
 </div>
 
-<h1>Latest Articles</h1>
+<h2>Latest Articles</h2>
 {% for article in articles|slice:":3" %}
 {% include "museum_site/blocks/article_detailed_block.html" %}
 {% endfor %}
@@ -65,7 +65,7 @@ community can be easily discovered and that their importance can be recognized.
         <a href="{% url 'article_directory' %}">View More</a>
 </div>
 
-<h1>Latest Reviews</h1>
+<h2>Latest Reviews</h2>
 <table>
     <tr>
         <th>Title</th>
