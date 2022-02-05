@@ -423,6 +423,7 @@ pre.cp437 { line-height:14px;}
 .none { display: none; }
 .inline { display: inline; }
 .fit-height { height: calc(100vh - 44px ); align-self:start; }
+.no-margin { margin:0; }
 
 a.inline
 {
