@@ -5,7 +5,7 @@ from .models import *
 from .forms import *
 
 
-def debug(request):
+def debug(request, filename=None):
     data = {"title": "DEBUG PAGE"}
     data["ARTICLE_DEBUG"] = True
     data["TODO"] = "TODO"
@@ -21,7 +21,12 @@ def debug(request):
 
     print(request.session["captcha-seed"])
 
-    return render(request, "museum_site/debug.html", data)
+    if filename:
+        return render(
+            request, "museum_site/debug/{}.html".format(filename), data
+        )
+    else:
+        return render(request, "museum_site/debug/debug.html", data)
 
 
 def debug_advanced_search(request):
