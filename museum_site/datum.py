@@ -28,6 +28,12 @@ class LinkDatum(Datum):
         super().__init__(kwargs)
 
 
+class MultiLinkDatum(Datum):
+    template_name = "museum_site/datum/multi-link-datum.html"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(kwargs)
+
 class CellDatum(Datum):
     template_name = "museum_site/datum/cell-datum.html"
 
