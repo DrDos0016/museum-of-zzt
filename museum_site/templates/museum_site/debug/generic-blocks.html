@@ -1,0 +1,30 @@
+{% extends "museum_site/main.html" %}
+
+{% load static %}
+{% load zzt_tags %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+.zeta-iframe
+{
+    width:640px;
+    height:350px;
+    overflow:none;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+
+{% for i in page %}
+{% if forloop.first and view == "list" %}<table>{{table_header}}{% endif %}
+{% if forloop.first and view == "gallery" %}<div class="gallery-frame">{% endif %}
+{{i}}
+{% if forloop.last and view == "list" %}</table>{% endif %}
+{% if forloop.last and view == "gallery" %}</div>{% endif %}
+{% endfor %}
+
+</section>
+{% endblock %}
