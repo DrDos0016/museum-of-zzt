@@ -34,6 +34,7 @@ import zipfile
 import requests
 from PIL import Image
 
+USE_GENERIC_BLOCKS = False
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMP_PATH = os.path.join(SITE_ROOT, "temp")
 BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
@@ -265,6 +266,7 @@ def get_pagination_data(request, data, qs):
     debug = request.session.get("DEBUG")
     # Convert models to blocks if possible
     if (
+        USE_GENERIC_BLOCKS and
         page.object_list and hasattr(page.object_list[0], "as_block")
     ):
         if data["view"] == "list":  # TODO: Probably better elsewhere?
