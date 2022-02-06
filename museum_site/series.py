@@ -69,9 +69,6 @@ class Series(BaseModel):
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)
 
-    def as_block(self, view="detailed", *args, **kwargs):
-        return getattr(self, "as_{}_block".format(view))(*args, **kwargs)
-
     def as_detailed_block(self, debug=False):
         template = "museum_site/blocks/generic-detailed-block.html"
         context = dict(
@@ -142,10 +139,3 @@ class Series(BaseModel):
             )
 
         return render_to_string(template, context)
-
-    @mark_safe
-    def table_header(self):
-        row = ""
-        for f in self.table_fields:
-            row += "<th>{}</th>".format(f)
-        return "<tr>" + row + "</tr>"
