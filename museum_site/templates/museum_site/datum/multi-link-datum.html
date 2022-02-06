@@ -1,0 +1,4 @@
+<div class="datum{% if kind %} {{kind}}{% endif %}">
+    {% if label %}<div class="label">{{label}}</div>{% endif %}
+    {% if values %}<div class="value">{% for v in values %}<a href="{{v.url}}"{% if target %} target="{{target}}"{% endif %}>{{v.text}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>{% endif %}
+</div>
