@@ -5,7 +5,7 @@ from museum_site.file import File
 from museum_site.constants import DETAIL_FEATURED, DETAIL_UPLOADED, TERMS_DATE
 from museum_site.common import (
     DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP, env_from_host,
-    qs_sans
+    qs_sans, USE_GENERIC_BLOCKS
 )
 
 
@@ -70,4 +70,10 @@ def museum_global(request):
             ]:
                 if request.session.get(key):
                     del request.session[key]
+
+    # TODO: WIP For generic blocks
+    if USE_GENERIC_BLOCKS:
+        data["USE_GENERIC_BLOCKS"] = True
+    else
+        data["USE_GENERIC_BLOCKS"] = False
     return data
