@@ -13,8 +13,15 @@ def debug(request, filename=None):
 
     set_captcha_seed(request)
 
+
     f = File.objects.get(pk=int(request.GET.get("id", 420)))
-    data["file"] = f
+    a = Article.objects.get(pk=425)
+    a2 = Article.objects.get(pk=453)
+    s = Series.objects.get(pk=10)
+
+    data["available_views"] = ["detailed", "list", "gallery"]
+    data["view"] = get_selected_view_format(request, data["available_views"])
+    data = get_pagination_data(request, data, [a, a2])
 
     if request.GET.get("serve"):
         return serve_file(request.GET.get("serve"), request.GET.get("as", ""))
