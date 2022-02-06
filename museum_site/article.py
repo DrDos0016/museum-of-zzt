@@ -6,8 +6,13 @@ from django.db import models
 from django.db.models import Q
 from django.template import Template, Context
 from django.template.defaultfilters import slugify
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
+from museum_site.datum import *
+from museum_site.base import BaseModel
+from museum_site.common import STATIC_PATH, epoch_to_unknown
 
 
 class ArticleManager(models.Manager):
@@ -80,9 +85,10 @@ class ArticleManager(models.Manager):
         return qs
 
 
-class Article(models.Model):
+class Article(BaseModel):
     """ Article object repesenting an article """
     model_name = "Article"
+    table_fields = ["Title", "Author", "Date", "Category", "Description"]
 
     SCHEMAS = (
         ("text", "Plaintext"),
@@ -204,6 +210,10 @@ class Article(models.Model):
 
     @property
     def preview(self):
+        # TODO: preview calls should be preview_url calls
+        return os.path.join(STATIC_URL, self.path(), "preview.png")
+
+    def preview_url(self):
         return os.path.join(STATIC_URL, self.path(), "preview.png")
 
     def path(self):
@@ -263,3 +273,88 @@ class Article(models.Model):
                 found_self = True
 
         return output[-5:]
+
+    def as_detailed_block(self, debug=False):
+        template = "museum_site/blocks/generic-detailed-block.html"
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title=self.title,
+            columns=[],
+            description=self.summary,
+        )
+
+        context["columns"].append([
+            TextDatum(label="Author", value=self.author),
+            TextDatum(label="Date", value=epoch_to_unknown(self.publish_date)),
+            TextDatum(label="Category", value=self.category),
+        ])
+
+        if self.series.count():
+            context["columns"][0].append(
+                MultiLinkDatum(
+                    label="Series", values=self.get_series_links(),
+                ),
+            )
+
+        if debug:
+            context["columns"][0].append(
+                LinkDatum(
+                    label="ID", value=self.id, target="_blank", kind="debug",
+                    url="/admin/museum_site/article/{}/change/".format(self.id),
+                ),
+            )
+
+        return render_to_string(template, context)
+
+    def as_list_block(self, debug=False):
+        template = "museum_site/blocks/generic-list-block.html"
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            url=self.url,
+            cells=[
+                CellDatum(value=mark_safe(
+                    '<a href="{}">{}</a>'.format(self.url(), self.title)
+                )),
+                CellDatum(value=self.author),
+                CellDatum(value=epoch_to_unknown(self.publish_date)),
+                CellDatum(value=self.category),
+                CellDatum(value=self.summary),
+            ],
+        )
+
+        return render_to_string(template, context)
+
+    def as_gallery_block(self, debug=False):
+        template = "museum_site/blocks/generic-gallery-block.html"
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title=self.title,
+            columns=[],
+        )
+
+        context["columns"].append([
+            TextDatum(value=self.author),
+        ])
+
+        if debug:
+            context["columns"][0].append(
+                LinkDatum(
+                    value=self.id, target="_blank", kind="debug",
+                    url="/admin/museum_site/article/{}/change/".format(self.id),
+                ),
+            )
+
+        return render_to_string(template, context)
+
+    def get_series_links(self):
+        output = []
+        for s in self.series.only("id", "title"):
+            output.append(dict(url=s.url, text=s.title))
+        return output
