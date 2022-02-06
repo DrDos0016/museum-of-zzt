@@ -22,7 +22,8 @@ def series_directory(request, page_num=1):
     else:  # Default (Latest entry)
         qs = qs.order_by("-last_entry_date", "title")
 
-    data["available_views"] = ["detailed", "list", "gallery"]
+    #data["available_views"] = ["detailed", "list", "gallery"]
+    data["available_views"] = ["detailed"]
     data["view"] = get_selected_view_format(request, data["available_views"])
     data = get_pagination_data(request, data, qs)
     data["sort_options"] = [
