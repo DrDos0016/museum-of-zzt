@@ -74,6 +74,6 @@ def museum_global(request):
     # TODO: WIP For generic blocks
     if USE_GENERIC_BLOCKS:
         data["USE_GENERIC_BLOCKS"] = True
-    else
+    else:
         data["USE_GENERIC_BLOCKS"] = False
     return data
