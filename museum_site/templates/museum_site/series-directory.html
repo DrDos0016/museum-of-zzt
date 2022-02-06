@@ -8,12 +8,8 @@
 
 {% include "museum_site/blocks/paginator_block.html" %}
 
-{% for i in page %}
-{% if forloop.first and view == "list" %}<table>{{table_header}}{% endif %}
-{% if forloop.first and view == "gallery" %}<div class="gallery-frame">{% endif %}
-{{i}}
-{% if forloop.last and view == "list" %}</table>{% endif %}
-{% if forloop.last and view == "gallery" %}</div>{% endif %}
+{% for series in page %}
+{% include "museum_site/blocks/series-detailed-block.html" %}
 {% endfor %}
 
 {% include "museum_site/blocks/paginator_block.html" %}
