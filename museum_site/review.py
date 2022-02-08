@@ -116,7 +116,7 @@ class Review(BaseModel):
             context["columns"][0].append(
                 LinkDatum(
                     label="ID", value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/article/{}/change/".format(self.id),
+                    url="/admin/museum_site/review/{}/change/".format(self.id),
                 ),
             )
 
@@ -168,7 +168,7 @@ class Review(BaseModel):
             context["columns"][0].append(
                 LinkDatum(
                     value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/article/{}/change/".format(self.id),
+                    url="/admin/museum_site/review/{}/change/".format(self.id),
                 ),
             )
 

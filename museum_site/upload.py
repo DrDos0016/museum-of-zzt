@@ -8,6 +8,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+from museum_site.base import BaseModel
 from .constants import (
     HOST
 )
@@ -15,7 +16,7 @@ from .constants import (
 from .private import NEW_UPLOAD_WEBHOOK_URL
 
 
-class Upload(models.Model):
+class Upload(BaseModel):
     """ Review object repesenting an review to a file """
     model_name = "Upload"
 
