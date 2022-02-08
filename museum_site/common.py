@@ -34,7 +34,6 @@ import zipfile
 import requests
 from PIL import Image
 
-USE_GENERIC_BLOCKS = False
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMP_PATH = os.path.join(SITE_ROOT, "temp")
 BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
@@ -261,20 +260,7 @@ def get_page_size(view):
 def get_pagination_data(request, data, qs):
     data["page_number"] = int(request.GET.get("page", 1))
     data["paginator"] = Paginator(qs, get_page_size(data["view"]))
-    page = data["paginator"].get_page(data["page_number"])
-
-    debug = request.session.get("DEBUG")
-    # Convert models to blocks if possible
-    if (
-        USE_GENERIC_BLOCKS and
-        page.object_list and hasattr(page.object_list[0], "as_block")
-    ):
-        if data["view"] == "list":  # TODO: Probably better elsewhere?
-            data["table_header"] = page.object_list[0].table_header
-        page.object_list = [
-            i.as_block(data["view"], debug=debug) for i in page.object_list
-        ]
-    data["page"] = page
+    data["page"] = data["paginator"].get_page(data["page_number"])
 
     # Bounds checking
     if data["page_number"] < 1:
