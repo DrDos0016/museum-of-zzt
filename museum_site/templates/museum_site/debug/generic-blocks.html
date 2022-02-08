@@ -17,14 +17,18 @@
 
 {% block content %}
 <section id="content" class="block">
+{% include "museum_site/blocks/paginator_block.html" %}
 
-{% for i in page %}
-{% if forloop.first and view == "list" %}<table>{{table_header}}{% endif %}
-{% if forloop.first and view == "gallery" %}<div class="gallery-frame">{% endif %}
-{{i}}
-{% if forloop.last and view == "list" %}</table>{% endif %}
-{% if forloop.last and view == "gallery" %}</div>{% endif %}
-{% endfor %}
+<b>ZFiles</b><br>
+{% generic_block_loop items=zfiles view=view header=zfile_table_header %}
+<hr>
+
+<b>Articles</b><br>
+{% generic_block_loop items=articles view=view header=article_table_header %}
+<hr>
+
+<b>Series</b><br>
+{% generic_block_loop items=series view=view header=series_table_header %}
 
 </section>
 {% endblock %}

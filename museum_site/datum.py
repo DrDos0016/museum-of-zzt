@@ -34,6 +34,17 @@ class MultiLinkDatum(Datum):
     def __init__(self, *args, **kwargs):
         super().__init__(kwargs)
 
+class SSVLinksDatum(Datum):
+    template_name = "museum_site/datum/ssv-links-datum.html"
+
+    def __init__(self, *args, **kwargs):
+        if not kwargs.get("plural"):
+            kwargs["plural"] = "s"
+        super().__init__(kwargs)
+
+class LanguageLinksDatum(SSVLinksDatum):
+    template_name = "museum_site/datum/language-links-datum.html"
+
 class CellDatum(Datum):
     template_name = "museum_site/datum/cell-datum.html"
 

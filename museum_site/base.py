@@ -13,10 +13,10 @@ class BaseModel(models.Model):
         return "/admin/museum_site/{}/{}/change/".format(name, self.id)
 
     def url(self):
-        return "URL!"
+        raise NotImplementedError('Subclasses must implement "url" method.')
 
     def preview_url(self):
-        return "Preview url"
+        raise NotImplementedError('Subclasses must implement "preview_url" method.')
 
     def as_block(self, view="detailed", *args, **kwargs):
         return getattr(self, "as_{}_block".format(view))(*args, **kwargs)

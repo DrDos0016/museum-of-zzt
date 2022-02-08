@@ -10,6 +10,8 @@ from random import randint, seed, shuffle
 from django.db import models
 from django.db.models import Avg, Q
 from django.template.defaultfilters import date, filesizeformat
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
 try:
     import zookeeper
@@ -17,13 +19,18 @@ try:
 except ImportError:
     HAS_ZOOKEEPER = False
 
+from museum.settings import STATIC_URL
+
 from .common import (
     slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP,
-    STATIC_PATH, optimize_image
+    STATIC_PATH, optimize_image, epoch_to_unknown
 )
 from .constants import SITE_ROOT, ZETA_RESTRICTED, LANGUAGES
 from .review import Review
 from .article import Article
+
+from museum_site.datum import *
+from museum_site.base import BaseModel
 
 DETAIL_DOS = 1
 DETAIL_WIN16 = 2
@@ -156,16 +163,18 @@ class FileManager(models.Manager):
             return None
 
 
-
-class File(models.Model):
+class File(BaseModel):
     """ File object repesenting an upload to the site """
     model_name = "File"
+    table_fields = [
+        "DL", "Title", "Author", "Company", "Genre", "Date", "Rating"
+    ]
 
     objects = FileManager()
 
-    ## Newfunc
+    # Newfunc
     SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
-    ## Endnewfunc
+    # Endnewfunc
 
     """
     Fields:
@@ -504,8 +513,11 @@ class File(models.Model):
         short = self.language.split("/")
         return ", ".join(map(LANGUAGES.get, short))
 
-    def ssv_list(self, attr):
-        return getattr(self, attr).split("/")
+    def ssv_list(self, attr, lookup=None):
+        if lookup is None:
+            return getattr(self, attr).split("/")
+        else:
+            return [lookup.get(i, i) for i in getattr(self, attr).split("/")]
 
     def ssv_links(self, attr, url):
         output = ""
@@ -803,7 +815,6 @@ class File(models.Model):
     def identifier(self):
         return self.letter + "/" + self.filename
 
-
     def links(self):
         # Defaults
         output = {
@@ -923,25 +934,149 @@ class File(models.Model):
         }
         return output
 
-
-    def release_year(self):
+    def release_year(self, default=""):
         if self.release_date is None:
-            return ""
+            return default
         else:
             return str(self.release_date)[:4]
 
-    # New functions for future revisions
-    """
-    def get_preview_image_url(self):
-        if self.preview_image
-            if self.preview_image not in SPECIAL_SCREENSHOTS:
-                return STATIC_URL,
-            else:  # Special cases
-        else:  # Default
-    """
+    def url(self):
+        # For files, the file viewer is considered the file's URL
+        return "/file/" + self.identifier
 
-"""
-return os.path.join(STATIC_PATH, "images/screenshots/{}/{}".format(
-                self.letter, self.screenshot
-            ))
-"""
+    def preview_url(self):
+        if self.screenshot:
+            if self.screenshot not in self.SPECIAL_SCREENSHOTS:
+                return os.path.join(
+                    STATIC_URL, "images/screenshots/{}/{}".format(
+                        self.letter, self.screenshot)
+                )
+            else:
+                return os.path.join(
+                    STATIC_URL, "images/screenshots/{}".format(self.screenshot)
+                )
+
+    @mark_safe
+    def rating_str(self):
+        if self.rating is not None:
+            return "{} / 5.0".format(self.rating)
+        else:
+            return "<i>No rating</i>"
+
+    @mark_safe
+    def boards_str(self):
+        return "{} / {}".format(self.playable_boards, self.total_boards)
+
+    @mark_safe
+    def details_str(self):
+        output = ""
+        for i in self.details.all():
+            output += i.detail + ", "
+        return output[:-2]
+
+    def language_pairs(self):
+        language_list = self.language.split("/")
+        output = []
+
+        for i in language_list:
+            output.append((LANGUAGES.get(i, i), i))
+        return output
+
+    def as_detailed_block(self, show_links=True, debug=False):
+        template = "museum_site/blocks/generic-detailed-block.html"
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            columns=[],
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title=self.title,
+        )
+
+        # Prepare Columns
+        context["columns"].append([
+            SSVLinksDatum(label="Author", values=self.ssv_list("author"), url="/search?author="),
+            (SSVLinksDatum(label="Compan", plural="y,ies", values=self.ssv_list("company"), url="/search?company=") if self.company else ""),
+            LinkDatum(
+                    label="Released", value=(self.release_date or "Unknown"),
+                    url="/search?year={}".format(self.release_year(default="unk")),
+                ),
+            SSVLinksDatum(label="Genre", values=self.ssv_list("genre"), url="/search?genre="),
+            TextDatum(label="Filename", value=self.filename),
+            TextDatum(label="Size", value=filesizeformat(self.size)),
+        ])
+
+        context["columns"].append([
+            TextDatum(label="Details", value=self.details_str()),
+            TextDatum(label="Rating", value=self.rating_str(), title="Based on {} Review{}".format(self.review_count, "s" if self.review_count > 1 else "")),
+            (TextDatum(label="Boards", value=self.boards_str(), title="Playable/Total Boards. Values are not 100% accurate.") if self.total_boards else ""),
+            LanguageLinksDatum(label="Language", plural="s", values=self.language_pairs(), url="/search?lang="),
+        ])
+
+        # Append Debug Links
+        if debug:
+            context["columns"][1].append(
+                LinkDatum(
+                    label="ID", value=self.id, target="_blank", kind="debug",
+                    url="/admin/museum_site/article/{}/change/".format(self.id),
+                ),
+            )
+
+        # Prepare Links
+        if show_links:
+            links = {}
+            context["links"] = links
+
+        return render_to_string(template, context)
+
+    def as_list_block(self, debug=False):
+        # "DL", "Title", "Author", "Company", "Genre", "Date", "Rating"
+        template = "museum_site/blocks/generic-list-block.html"
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            url=self.url,
+            cells=[
+                CellDatum(value=mark_safe(
+                    '<a href="{}">{}</a>'.format(self.download_url(), "DL")
+                )),
+                CellDatum(value=mark_safe(
+                    '<a href="{}">{}</a>'.format(self.file_url(), self.title)
+                )),
+                CellDatum(value=SSVLinksDatum(values=self.ssv_list("author"), url="/search?author=")),
+                CellDatum(value=SSVLinksDatum(values=self.ssv_list("company"), url="/search?company=")),
+                CellDatum(value=SSVLinksDatum(values=self.ssv_list("genre"), url="/search?genre=")),
+                CellDatum(value=LinkDatum(
+                    value=(self.release_date or "Unknown"),
+                    url="/search?year={}".format(self.release_year(default="unk")),
+                )),
+                CellDatum(value=self.rating or "—"),
+            ],
+        )
+
+        return render_to_string(template, context)
+
+    def as_gallery_block(self, debug=False):
+        template = "museum_site/blocks/generic-gallery-block.html"
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title=self.title,
+            columns=[],
+        )
+
+        context["columns"].append([
+            SSVLinksDatum(values=self.ssv_list("author"), url="/search?author=")
+        ])
+
+        if debug:
+            context["columns"][0].append(
+                LinkDatum(
+                    value=self.id, target="_blank", kind="debug",
+                    url="/admin/museum_site/article/{}/change/".format(self.id),
+                ),
+            )
+
+        return render_to_string(template, context)

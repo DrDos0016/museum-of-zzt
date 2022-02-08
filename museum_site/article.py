@@ -284,6 +284,8 @@ class Article(BaseModel):
             title=self.title,
             columns=[],
             description=self.summary,
+            restricted=self.is_restricted,
+            publication_status=self.published_string,
         )
 
         context["columns"].append([

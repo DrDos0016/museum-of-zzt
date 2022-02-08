@@ -57,7 +57,6 @@
 
 .model-block .data .datum .label
 {
-    min-width:15ch;
     flex:1;
     padding-right:8px;
 }

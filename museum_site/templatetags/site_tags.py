@@ -452,3 +452,23 @@ def ssv_links(raw, param, lookup=""):
         )
 
     return mark_safe(output[:-2] + "\n")
+
+
+@register.simple_tag()
+def generic_block_loop(items, view="detailed", header=None):
+    output = ""
+
+    if view == "list":
+        output += "<table>{}".format(header)
+    elif view == "gallery":
+        output += '<div class="gallery-frame">'
+
+    for i in items:
+        output += str(i)
+
+    if view == "list":
+        output += "</table>"
+    elif view == "gallery":
+        output += "</div>"
+
+    return mark_safe(output + "\n")
