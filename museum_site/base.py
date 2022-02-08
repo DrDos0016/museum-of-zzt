@@ -1,12 +1,9 @@
 from django.db import models
 from django.utils.safestring import mark_safe
 
+
 class BaseModel(models.Model):
     model_name = None
-    #title
-    #description
-    #preview
-    #table_fields = []
 
     def admin_url(self):
         name = self.model_name.replace("-", "_").lower()
@@ -16,19 +13,27 @@ class BaseModel(models.Model):
         raise NotImplementedError('Subclasses must implement "url" method.')
 
     def preview_url(self):
-        raise NotImplementedError('Subclasses must implement "preview_url" method.')
+        raise NotImplementedError(
+            'Subclasses must implement "preview_url" method.'
+        )
 
     def as_block(self, view="detailed", *args, **kwargs):
         return getattr(self, "as_{}_block".format(view))(*args, **kwargs)
 
     def as_detailed_block(self, *args, **kwargs):
-        raise NotImplementedError('Subclasses must implement "as_detailed_block" method.')
+        raise NotImplementedError(
+            'Subclasses must implement "as_detailed_block" method.'
+        )
 
     def as_list_block(self, *args, **kwargs):
-        raise NotImplementedError('Subclasses must implement "as_list_block" this method.')
+        raise NotImplementedError(
+            'Subclasses must implement "as_list_block" this method.'
+        )
 
     def as_gallery_block(self, *args, **kwargs):
-        raise NotImplementedError('Subclasses must implement "as_gallery_block" method.')
+        raise NotImplementedError(
+            'Subclasses must implement "as_gallery_block" method.'
+        )
 
     @mark_safe
     def table_header(self, *args, **kwargs):
@@ -37,10 +42,10 @@ class BaseModel(models.Model):
             row += "<th>{}</th>".format(f)
         return "<tr>" + row + "</tr>"
 
-
     def scrub(self):
-        raise NotImplementedError('Subclasses must implement "scrub" method.')
-
+        raise NotImplementedError(
+            'Subclasses must implement "scrub" method.'
+        )
 
     class Meta:
         abstract = True
