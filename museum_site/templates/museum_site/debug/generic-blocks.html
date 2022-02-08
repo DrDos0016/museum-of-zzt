@@ -19,6 +19,10 @@
 <section id="content" class="block">
 {% include "museum_site/blocks/paginator_block.html" %}
 
+<b>Reviews</b><br>
+{% generic_block_loop items=reviews view=view header=review_table_header %}
+<hr>
+
 <b>ZFiles</b><br>
 {% generic_block_loop items=zfiles view=view header=zfile_table_header %}
 <hr>

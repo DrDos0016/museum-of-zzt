@@ -2,13 +2,19 @@ from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
+from museum_site.datum import *
+from museum_site.base import BaseModel
+from museum_site.common import STATIC_PATH, epoch_to_unknown
 from museum_site.templatetags.zzt_tags import char
 
 
-class Review(models.Model):
+class Review(BaseModel):
     """ Review object repesenting an review to a file """
     model_name = "Review"
+    table_fields = ["Title", "File", "Reviewer", "Date", "Rating"]
 
     """
     Fields:
@@ -43,6 +49,7 @@ class Review(models.Model):
         )
         return output
 
+    @mark_safe
     def author_link(self):
         if self.user:
             link = '{} <a href="{}">{}</a>'.format(
@@ -73,3 +80,96 @@ class Review(models.Model):
     def scrub(self):
         self.user_id = None
         self.ip = ""
+
+    def url(self):
+        return self.zfile.review_url() + "#rev-{}".format(self.id)
+
+    def preview_url(self):
+        return self.zfile.preview_url()
+
+    def as_detailed_block(self, debug=False):
+        template = "museum_site/blocks/generic-detailed-block.html"
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title=self.title,
+            columns=[],
+        )
+
+        context["columns"].append([
+            LinkDatum(
+                label="File", value=self.zfile.title,
+                url=self.zfile.url()
+            ),
+            TextDatum(label="Reviewer", value=self.author_link()),
+            TextDatum(label="Date", value=epoch_to_unknown(self.date)),
+        ])
+
+        if self.rating >= 0:
+            context["columns"][0].append(
+                TextDatum(label="Rating", value="{} / 5.0".format(self.rating)),
+            )
+
+        if debug:
+            context["columns"][0].append(
+                LinkDatum(
+                    label="ID", value=self.id, target="_blank", kind="debug",
+                    url="/admin/museum_site/article/{}/change/".format(self.id),
+                ),
+            )
+
+        return render_to_string(template, context)
+
+    def as_list_block(self, debug=False):
+        template = "museum_site/blocks/generic-list-block.html"
+        #table_fields = ["Title", "File", "Reviewer", "Date", "Rating"]
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            url=self.url,
+            cells=[
+                CellDatum(value=mark_safe(
+                    '<a href="{}">{}</a>'.format(self.url(), self.title)
+                )),
+                CellDatum(value=mark_safe(
+                    '<a href="{}">{}</a>'.format(self.zfile.url(), self.zfile.title)
+                )),
+                CellDatum(value=self.author_link()),
+                CellDatum(value=epoch_to_unknown(self.date)),
+                CellDatum(label="Rating", value=("—" if self.rating < 0 else self.rating)),
+            ],
+        )
+
+        return render_to_string(template, context)
+
+    def as_gallery_block(self, debug=False):
+        template = "museum_site/blocks/generic-gallery-block.html"
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title=self.title,
+            columns=[],
+        )
+
+        context["columns"].append([
+            TextDatum(value=self.author_link()),
+        ])
+
+        if self.rating >= 0:
+            context["columns"][0].append(
+                TextDatum(value="{} / 5.0".format(self.rating)),
+            )
+
+        if debug:
+            context["columns"][0].append(
+                LinkDatum(
+                    value=self.id, target="_blank", kind="debug",
+                    url="/admin/museum_site/article/{}/change/".format(self.id),
+                ),
+            )
+
+        return render_to_string(template, context)

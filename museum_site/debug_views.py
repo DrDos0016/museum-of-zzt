@@ -17,6 +17,10 @@ def debug(request, filename=None):
     f = File.objects.get(pk=int(request.GET.get("id", 420)))
     s = Series.objects.get(pk=10)
 
+    test_reviews = Review.objects.filter(
+        id__in=[1700, 1701, 1702, 1703, 100, 200, 300, 1720]
+    )
+
     test_zfiles = File.objects.filter(
         id__in=[420, 1271, 1662, 435, 310, 2367, 2876]
     ).order_by("-id")
@@ -35,6 +39,8 @@ def debug(request, filename=None):
     #data = get_pagination_data(request, data, test_articles)
     #data = get_pagination_data(request, data, test_series)
 
+    data["review_table_header"] = test_reviews[0].table_header
+    data["reviews"] = [i.as_block(data["view"], debug=debug) for i in test_reviews]
     data["zfile_table_header"] = test_zfiles[0].table_header
     data["zfiles"] = [i.as_block(data["view"], debug=debug) for i in test_zfiles]
     data["article_table_header"] = test_articles[0].table_header
