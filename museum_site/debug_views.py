@@ -40,13 +40,14 @@ def debug(request, filename=None):
     #data = get_pagination_data(request, data, test_series)
 
     data["review_table_header"] = test_reviews[0].table_header
-    data["reviews"] = [i.as_block(data["view"], debug=debug) for i in test_reviews]
     data["zfile_table_header"] = test_zfiles[0].table_header
-    data["zfiles"] = [i.as_block(data["view"], debug=debug) for i in test_zfiles]
     data["article_table_header"] = test_articles[0].table_header
-    data["articles"] = [i.as_block(data["view"], debug=debug) for i in test_articles]
     data["series_table_header"] = test_series[0].table_header
-    data["series"] = [i.as_block(data["view"], debug=debug) for i in test_series]
+
+    data["reviews"] = test_reviews
+    data["zfiles"] = test_zfiles
+    data["articles"] = test_articles
+    data["series"] = test_series
 
     if request.GET.get("serve"):
         return serve_file(request.GET.get("serve"), request.GET.get("as", ""))
