@@ -96,7 +96,7 @@ def field_check(f):
         issues["warnings"].append("Company is null. Use empty string for files not published under a company.")
 
     # Review related
-    reviews = Review.objects.filter(file_id=f.id)
+    reviews = Review.objects.filter(zfile_id=f.id)
     rev_len = len(reviews)
     if rev_len != f.review_count:
         issues["warnings"].append("Reviews in DB do not match 'review_count': {}/{}".format(rev_len, f.review_count))
