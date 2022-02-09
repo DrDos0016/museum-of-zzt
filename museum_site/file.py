@@ -816,6 +816,7 @@ class File(BaseModel):
         return self.letter + "/" + self.filename
 
     def links(self):
+        # TODO: IS THIS USED?
         # Defaults
         output = {
             "download": {
@@ -891,6 +892,7 @@ class File(BaseModel):
         return output
 
     def overview(self):
+        # TODO: IS THIS USED?
         # Defaults
         output = {
             "basic": [
@@ -955,6 +957,10 @@ class File(BaseModel):
                 return os.path.join(
                     STATIC_URL, "images/screenshots/{}".format(self.screenshot)
                 )
+        else:
+            return os.path.join(
+                    STATIC_URL, "images/screenshots/no_screenshot.png"
+                )
 
     @mark_safe
     def rating_str(self):
@@ -974,6 +980,13 @@ class File(BaseModel):
             output += i.detail + ", "
         return output[:-2]
 
+    @mark_safe
+    def details_links(self):
+        output = ""
+        for i in self.details.all():
+            output += '<a href="{}">{}</a>, '.format(i.url(), i.detail)
+        return output[:-2]
+
     def language_pairs(self):
         language_list = self.language.split("/")
         output = []
@@ -991,6 +1004,10 @@ class File(BaseModel):
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
             title=self.title,
+            roles=[
+                "explicit" if self.explicit else "",
+                "unpublished" if self.is_uploaded() else "",
+            ]
         )
 
         # Prepare Columns
@@ -1007,7 +1024,7 @@ class File(BaseModel):
         ])
 
         context["columns"].append([
-            TextDatum(label="Details", value=self.details_str()),
+            TextDatum(label="Details", value=self.details_links()),
             TextDatum(label="Rating", value=self.rating_str(), title="Based on {} Review{}".format(self.review_count, "s" if self.review_count > 1 else "")),
             (TextDatum(label="Boards", value=self.boards_str(), title="Playable/Total Boards. Values are not 100% accurate.") if self.total_boards else ""),
             LanguageLinksDatum(label="Language", plural="s", values=self.language_pairs(), url="/search?lang="),
@@ -1024,7 +1041,85 @@ class File(BaseModel):
 
         # Prepare Links
         if show_links:
-            links = {}
+            stub = StubDatum()
+            links = [
+                LinkDatum(
+                    value="Download",
+                    url=self.download_url(),
+                    role="explicit" if self.explicit else ""
+                ),
+                LinkDatum(
+                    value="Play Online",
+                    url=self.play_url(),
+                    role="explicit" if self.explicit else ""
+                ),
+                LinkDatum(
+                    value="View Files",
+                    url=self.file_url(),
+                    role="explicit" if self.explicit else ""
+                ),
+                LinkDatum(
+                    value="Reviews ({})".format(self.review_count),
+                    url=self.review_url(),
+                ),
+                LinkDatum(
+                    value="Articles ({})".format(self.article_count),
+                    url=self.article_url(),
+                ),
+                LinkDatum(
+                    value="Attributes",
+                    url=self.attributes_url(),
+                ),
+            ]
+
+            # Modifiers
+            # Multiple Downloads
+            if self.downloads.count():
+                links[0].context["value"] = "Downloads…"
+                links[0].context["url"] = "/download/{}".format(self.identifier)
+
+            # Explicit?
+            """
+            if self.explicit:
+                output["download"]["classes"].append(" explicit")
+                output["play"]["classes"].append(" explicit")
+                output["view"]["classes"].append(" explicit")
+            """
+
+            # Unsupported Browser Play
+            if (
+                not self.is_uploaded() and
+                (self.archive_name == "" and not self.supports_zeta_player())
+            ):
+                links[1] = stub
+
+            # Missing File
+            if self.is_lost():
+                links[0] = stub
+                links[1] = stub
+                links[2] = stub
+
+            # Unpublished File
+            if self.is_uploaded():
+                links[3] = stub
+
+            # No Articles
+            if self.article_count < 1:
+                links[4] = stub
+
+            if debug:
+                links.append(
+                    LinkDatum(
+                        value="Edit {}".format(self.id), kind="debug",
+                        url="/admin/museum_site/file/{}/change/".format(self.id),
+                    ),
+                )
+                links.append(
+                    LinkDatum(
+                        value="Tools {}".format(self.id), kind="debug",
+                        url="/admin/museum_site/file/{}/change/".format(self.id),
+                    ),
+                )
             context["links"] = links
 
         return render_to_string(template, context)

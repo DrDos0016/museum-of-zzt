@@ -455,8 +455,8 @@ def ssv_links(raw, param, lookup=""):
 
 
 @register.simple_tag()
-def generic_block_loop(items, view="detailed", header=None):
-    print("DEBUG: LOOPING GENERIC BLOCKS")
+def generic_block_loop(items, view="detailed", header=None, debug=False):
+    print("DEBUG: LOOPING GENERIC BLOCKS", debug)
     output = ""
 
     if view == "list":
@@ -465,7 +465,7 @@ def generic_block_loop(items, view="detailed", header=None):
         output += '<div class="gallery-frame">'
 
     for i in items:
-        output += i.as_block(view)
+        output += i.as_block(view, debug=debug)
 
     if view == "list":
         output += "</table>"

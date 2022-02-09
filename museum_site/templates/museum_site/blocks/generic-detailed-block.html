@@ -1,6 +1,10 @@
-<div class="model-block detailed" data-model="{{model}}" data-pk="{{pk}}" data-generic="GENERIC">
+<div class="model-block detailed{% for r in roles %} {{r}}{% endfor %}" data-model="{{model}}" data-pk="{{pk}}" data-generic="GENERIC">
     <img class="preview-image thumbnail zoomable" src="{{preview.url}}" alt="{{preview.url}}">
-    <h2 class="title"><a href="{{url}}"{% if restricted %} class="restricted" data-published="{{publication_status}}"{% endif %}>{{title}}</a></h2>
+    <h2 class="title">
+        <a href="{{url}}"
+        {% if role %} class="{{role}}"{% endif %}
+        {% for d in data_attrs %}data-{{d.key}}="{{d.value}}"{% endfor %}
+        >{{title}}</a></h2>
     <div class="data">
         {% for col in columns %}
         <div class="col">
@@ -14,5 +18,4 @@
         {{description|linebreaks}}
     </div>
 </div>
-{% if links %}
-{% endif %}
+{% if links %}{% include "museum_site/blocks/file-links.html" %}{% endif %}

@@ -1,4 +1,4 @@
 <div class="datum{% if kind %} {{kind}}{% endif %}">
     {% if label %}<div class="label">{{label}}</div>{% endif %}
-    {% if value %}<div class="value"><a href="{{url}}"{% if target %} target="{{target}}"{% endif %}>{{value}}</a></div>{% endif %}
+    {% if value %}<div class="value"><a href="{{url}}"{% if target %} target="{{target}}"{% endif %}{% if role %} class="{{role}}"{% endif %}>{{value}}</a></div>{% endif %}
 </div>

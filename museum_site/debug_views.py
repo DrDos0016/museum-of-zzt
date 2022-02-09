@@ -22,7 +22,7 @@ def debug(request, filename=None):
     )
 
     test_zfiles = File.objects.filter(
-        id__in=[420, 1271, 1662, 435, 310, 2367, 2876]
+        id__in=[420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415]
     ).order_by("-id")
 
     test_articles = Article.objects.filter(
@@ -36,8 +36,6 @@ def debug(request, filename=None):
 
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = get_selected_view_format(request, data["available_views"])
-    #data = get_pagination_data(request, data, test_articles)
-    #data = get_pagination_data(request, data, test_series)
 
     data["review_table_header"] = test_reviews[0].table_header
     data["zfile_table_header"] = test_zfiles[0].table_header

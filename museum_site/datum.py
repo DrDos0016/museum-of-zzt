@@ -2,7 +2,7 @@ from django.template.loader import render_to_string
 
 
 class Datum(object):
-    def __init__(self, context):
+    def __init__(self, context, **kwargs):
         self.context = context
         return
 
@@ -17,6 +17,11 @@ class TextDatum(Datum):
 
     def __init__(self, *args, **kwargs):
         super().__init__(kwargs)
+
+
+class StubDatum(TextDatum):
+    def render(self):
+        return ""
 
 
 class LinkDatum(Datum):
@@ -34,6 +39,7 @@ class MultiLinkDatum(Datum):
     def __init__(self, *args, **kwargs):
         super().__init__(kwargs)
 
+
 class SSVLinksDatum(Datum):
     template_name = "museum_site/datum/ssv-links-datum.html"
 
@@ -42,8 +48,10 @@ class SSVLinksDatum(Datum):
             kwargs["plural"] = "s"
         super().__init__(kwargs)
 
+
 class LanguageLinksDatum(SSVLinksDatum):
     template_name = "museum_site/datum/language-links-datum.html"
+
 
 class CellDatum(Datum):
     template_name = "museum_site/datum/cell-datum.html"

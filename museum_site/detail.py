@@ -1,6 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 
+from museum_site.base import BaseModel
 from .constants import (
     DETAIL_REMOVED, DETAIL_DOS, DETAIL_WIN16, DETAIL_WIN32, DETAIL_WIN64,
     DETAIL_OSX, DETAIL_LINUX
@@ -50,7 +51,7 @@ class DetailManager(models.Manager):
 
         return output
 
-class Detail(models.Model):
+class Detail(BaseModel):
     model_name = "Detail"
     detail = models.CharField(max_length=20)
     description = models.TextField(default="")
@@ -64,6 +65,10 @@ class Detail(models.Model):
 
     def __str__(self):
         return "[" + str(self.id) + "] " + self.detail
+
+
+    def url(self):
+        return "/detail/{}/".format(self.slug)
 
 
     def save(self, *args, **kwargs):

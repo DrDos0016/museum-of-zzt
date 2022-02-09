@@ -1,3 +1,4 @@
+<!--Old file_links.html-->
 {% for k, v in file.links.items %}
 {% if v.visible %}<div class="{{k}}-link {{v.classes|join:" "}}"><a href="{{v.url}}">{{v.text}}</a></div>{% else %}
 <div class="hidden">{{v.text}}</div>{% endif %}

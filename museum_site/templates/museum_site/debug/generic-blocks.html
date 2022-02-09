@@ -20,19 +20,19 @@
 {% include "museum_site/blocks/paginator_block.html" %}
 
 <b>Reviews</b><br>
-{% generic_block_loop items=reviews view=view header=review_table_header %}
+{% generic_block_loop items=reviews view=view header=review_table_header debug=debug %}
 <hr>
 
 <b>ZFiles</b><br>
-{% generic_block_loop items=zfiles view=view header=zfile_table_header %}
+{% generic_block_loop items=zfiles view=view header=zfile_table_header debug=debug %}
 <hr>
 
 <b>Articles</b><br>
-{% generic_block_loop items=articles view=view header=article_table_header %}
+{% generic_block_loop items=articles view=view header=article_table_header debug=debug %}
 <hr>
 
 <b>Series</b><br>
-{% generic_block_loop items=series view=view header=series_table_header %}
+{% generic_block_loop items=series view=view header=series_table_header debug=debug %}
 
 </section>
 {% endblock %}
