@@ -76,7 +76,10 @@ class Series(BaseModel):
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
-            title=self.title,
+            title=LinkDatum(
+                value=self.title,
+                url=self.url()
+            ),
             columns=[],
             description=self.description
         )
@@ -104,12 +107,14 @@ class Series(BaseModel):
             model=self.model_name,
             url=self.url,
             cells=[
-                CellDatum(value=mark_safe(
-                    '<a href="{}">{}</a>'.format(self.url(), self.title)
-                )),
-                CellDatum(value=self.last_entry_date),
-                CellDatum(value=epoch_to_unknown(self.first_entry_date)),
-                CellDatum(value=self.article_set.count(), kind="r"),
+                LinkDatum(
+                    url=self.url(),
+                    value=self.title,
+                    tag="td",
+                ),
+                TextDatum(value=self.last_entry_date, tag="td"),
+                TextDatum(value=epoch_to_unknown(self.first_entry_date), tag="td"),
+                TextDatum(value=self.article_set.count(), kind="r", tag="td"),
             ],
         )
 

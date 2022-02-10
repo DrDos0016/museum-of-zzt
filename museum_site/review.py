@@ -94,7 +94,10 @@ class Review(BaseModel):
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
-            title=self.title,
+            title=LinkDatum(
+                value=self.title,
+                url=self.url()
+            ),
             columns=[],
         )
 
@@ -130,15 +133,19 @@ class Review(BaseModel):
             model=self.model_name,
             url=self.url,
             cells=[
-                CellDatum(value=mark_safe(
-                    '<a href="{}">{}</a>'.format(self.url(), self.title)
-                )),
-                CellDatum(value=mark_safe(
-                    '<a href="{}">{}</a>'.format(self.zfile.url(), self.zfile.title)
-                )),
-                CellDatum(value=self.author_link()),
-                CellDatum(value=epoch_to_unknown(self.date)),
-                CellDatum(label="Rating", value=("—" if self.rating < 0 else self.rating)),
+                LinkDatum(
+                    url=self.url(),
+                    value=self.title,
+                    tag="td",
+                ),
+                LinkDatum(
+                    url=self.zfile.url(),
+                    value=self.zfile.title,
+                    tag="td",
+                ),
+                TextDatum(value=self.author_link(), tag="td"),
+                TextDatum(value=epoch_to_unknown(self.date), tag="td"),
+                TextDatum(value=("—" if self.rating < 0 else self.rating), tag="td"),
             ],
         )
 

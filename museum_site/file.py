@@ -172,9 +172,9 @@ class File(BaseModel):
 
     objects = FileManager()
 
-    # Newfunc
     SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
-    # Endnewfunc
+    PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not \
+    been fully checked by staff."
 
     """
     Fields:
@@ -998,16 +998,24 @@ class File(BaseModel):
     def as_detailed_block(self, show_links=True, debug=False):
         template = "museum_site/blocks/generic-detailed-block.html"
         context = dict(
+            tag=dict(opening="div", closing="/div"),
             pk=self.pk,
             model=self.model_name,
             columns=[],
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
-            title=self.title,
+            title=LinkDatum(
+                value=self.title,
+                url=self.url(),
+                roles=[
+                    "explicit" if self.explicit else "",
+                    "unpublished" if self.is_uploaded() else "",
+                ]
+            ),
             roles=[
-                "explicit" if self.explicit else "",
                 "unpublished" if self.is_uploaded() else "",
-            ]
+            ],
+            prefix=File.PREFIX_UNPUBLISHED if self.is_uploaded() else "",
         )
 
         # Prepare Columns
@@ -1125,29 +1133,40 @@ class File(BaseModel):
         return render_to_string(template, context)
 
     def as_list_block(self, debug=False):
-        # "DL", "Title", "Author", "Company", "Genre", "Date", "Rating"
         template = "museum_site/blocks/generic-list-block.html"
         context = dict(
             pk=self.pk,
             model=self.model_name,
             url=self.url,
             cells=[
-                CellDatum(value=mark_safe(
-                    '<a href="{}">{}</a>'.format(self.download_url(), "DL")
-                )),
-                CellDatum(value=mark_safe(
-                    '<a href="{}">{}</a>'.format(self.file_url(), self.title)
-                )),
-                CellDatum(value=SSVLinksDatum(values=self.ssv_list("author"), url="/search?author=")),
-                CellDatum(value=SSVLinksDatum(values=self.ssv_list("company"), url="/search?company=")),
-                CellDatum(value=SSVLinksDatum(values=self.ssv_list("genre"), url="/search?genre=")),
-                CellDatum(value=LinkDatum(
+                LinkDatum(value="DL", url=self.download_url(), tag="td",
+                    roles=[
+                        "unpublished" if self.is_uploaded() else "",
+                        "explicit" if self.explicit else "",
+                    ]
+                ),
+                LinkDatum(value=self.title, url=self.url(), tag="td",
+                roles=[
+                        "unpublished" if self.is_uploaded() else "",
+                        "explicit" if self.explicit else "",
+                    ]
+                ),
+                SSVLinksDatum(values=self.ssv_list("author"), url="/search?author=", tag="td"),
+                SSVLinksDatum(values=self.ssv_list("company"), url="/search?company=", tag="td"),
+                SSVLinksDatum(values=self.ssv_list("genre"), url="/search?genre=", tag="td"),
+                LinkDatum(
                     value=(self.release_date or "Unknown"),
                     url="/search?year={}".format(self.release_year(default="unk")),
-                )),
-                CellDatum(value=self.rating or "—"),
+                    tag="td",
+                ),
+                TextDatum(value=self.rating or "—", tag="td"),
             ],
+            roles=[
+                "unpublished" if self.is_uploaded() else "",
+                "explicit" if self.explicit else "",
+            ]
         )
+
 
         return render_to_string(template, context)
 
@@ -1158,8 +1177,19 @@ class File(BaseModel):
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
-            title=self.title,
+            title=LinkDatum(
+                value=self.title,
+                url=self.url(),
+                roles=[
+                    "explicit" if self.explicit else "",
+                    "unpublished" if self.is_uploaded() else "",
+                ]
+
+            ),
             columns=[],
+            roles=[
+                "unpublished" if self.is_uploaded() else "",
+            ]
         )
 
         context["columns"].append([

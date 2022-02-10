@@ -6,15 +6,11 @@
     display:grid;
 }
 
-.unpublished
-{
-    background-color:#98C9C9;
-}
+.unpublished { background-color:#98C9C9; }
 
-a.explicit::after
-{
-    content:" 🔞";
-}
+a.explicit::after { content:" 🔞"; }
+a.unpublished::after { content:" 🚧"; }
+a.explicit.unpublished::after { content:" 🔞🚧"; }
 
 .model-block.detailed
 {
@@ -28,6 +24,15 @@ a.explicit::after
     column-gap:8px;
     grid-template-columns: minmax(240px, auto) 1fr;
     grid-template-rows:auto auto auto minmax(0px, 1fr);
+}
+
+.model-block .prefix
+{
+    grid-area:prefix;
+    font-family:"cp437";
+    font-size:larger;
+    text-align:center;
+    padding-bottom:14px;
 }
 
 .model-block .preview-image

@@ -1,10 +1,7 @@
 <div class="model-block detailed{% for r in roles %} {{r}}{% endfor %}" data-model="{{model}}" data-pk="{{pk}}" data-generic="GENERIC">
+    {% if prefix %}<div class="prefix">{{prefix}}</div>{% endif %}
     <img class="preview-image thumbnail zoomable" src="{{preview.url}}" alt="{{preview.url}}">
-    <h2 class="title">
-        <a href="{{url}}"
-        {% if role %} class="{{role}}"{% endif %}
-        {% for d in data_attrs %}data-{{d.key}}="{{d.value}}"{% endfor %}
-        >{{title}}</a></h2>
+    <h2 class="title">{{title}}</h2>
     <div class="data">
         {% for col in columns %}
         <div class="col">

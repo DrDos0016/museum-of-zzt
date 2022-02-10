@@ -281,7 +281,10 @@ class Article(BaseModel):
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
-            title=self.title,
+            title = LinkDatum(
+                value=self.title,
+                url=self.url()
+            ),
             columns=[],
             description=self.summary,
         )
@@ -322,13 +325,15 @@ class Article(BaseModel):
             model=self.model_name,
             url=self.url,
             cells=[
-                CellDatum(value=mark_safe(
-                    '<a href="{}">{}</a>'.format(self.url(), self.title)
-                )),
-                CellDatum(value=self.author),
-                CellDatum(value=epoch_to_unknown(self.publish_date)),
-                CellDatum(value=self.category),
-                CellDatum(value=self.summary),
+                LinkDatum(
+                    url=self.url(),
+                    value=self.title,
+                    tag="td",
+                ),
+                TextDatum(value=self.author, tag="td"),
+                TextDatum(value=epoch_to_unknown(self.publish_date), tag="td"),
+                TextDatum(value=self.category, tag="td"),
+                TextDatum(value=self.summary, tag="td"),
             ],
         )
 
