@@ -1167,6 +1167,11 @@ class File(BaseModel):
             ]
         )
 
+        # Modifications
+        if self.downloads.count():
+            context["cells"][0].context["value"] = "DLs…"
+            context["cells"][0].context["url"] = "/download/{}".format(self.identifier)
+
 
         return render_to_string(template, context)
 
