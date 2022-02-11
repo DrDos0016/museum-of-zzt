@@ -456,7 +456,6 @@ def ssv_links(raw, param, lookup=""):
 
 @register.simple_tag()
 def generic_block_loop(items, view="detailed", header=None, debug=False):
-    print("DEBUG: LOOPING GENERIC BLOCKS", debug)
     output = ""
 
     if view == "list":
