@@ -371,6 +371,23 @@ def mirror(request, letter, filename):
     data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
 
+@staff_member_required
+def patron_article_rotation(request):
+    data = {
+        "title": "Patron Article Rotation",
+        "today": datetime.now()
+    }
+
+    articles = Article.objects.in_early_access()
+    newest = articles.last()
+    rest = list(articles)[:-1]
+
+    data["articles"] = [newest] + rest
+
+    return render(
+        request, "museum_site/tools/patron-article-rotation.html", data
+    )
+
 
 @staff_member_required
 def patron_input(request):

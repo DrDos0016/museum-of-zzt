@@ -522,6 +522,10 @@ urlpatterns = [
         name="mirror"
     ),
     path(
+        "tools/patron-article-rotation/",
+        museum_site.tool_views.patron_article_rotation,
+        name="patron_article_rotation"),
+    path(
         "tools/patron-input/", museum_site.tool_views.patron_input,
         name="patron_input"),
     path(
@@ -552,7 +556,11 @@ urlpatterns = [
     path(
         "tools/user-list/", museum_site.tool_views.user_list,
         name="user_list"),
-    path("tools/<str:letter>/<str:filename>", museum_site.tool_views.tool_index, name="tool_index_with_file"),
+    path(
+        "tools/<str:letter>/<str:filename>",
+        museum_site.tool_views.tool_index,
+        name="tool_index_with_file"
+    ),
 
     # Debug
     path("debug/", museum_site.debug_views.debug),

@@ -1,0 +1,23 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Patron Article Rotation</h1>
+<hr>
+<p><input value="https://museumofzzt.com{% url 'patron_articles' %}" style="width:90%"></p>
+<p><input value='Patron Early Access Articles for {{today|date:"N jS"}} - New! "{{articles.0.title}}"' style="width:90%"></p>
+<hr>
+<p class="c">-- Copy/Paste Everthing below this line --</p>
+{% for a in articles %}
+{% if forloop.first %}<p><b>NEW!</b></p>{% endif %}
+{% if forloop.counter == 2 %}<p><b>Also Available:</b></p>{% endif %}
+<img src="{{a.preview_url}}" width="240px" height="175px"><br>
+<p>[{{a.early_access_price}}] <b><a href="{{a.url}}" target="_blank">{{a.title}}</a></b> - {{a.summary}} [Estimated public release: {{a.publish_date}}]</p>
+<p>============================================================</p>
+{% endfor %}
+
+<p>If you are not using a <a href="https://museumofzzt.com/user/login/" target="_blank">Museum account</a> tied to your patron email, see the main link in this post for information on obtaining your password to read unpublished articles.</p>
+<hr>
+</section>
+{% endblock %}

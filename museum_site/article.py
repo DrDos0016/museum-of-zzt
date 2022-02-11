@@ -19,6 +19,11 @@ class ArticleManager(models.Manager):
     def credited_authors(self):
         return self.exclude(Q(author="Unknown") | Q(author="N/A"))
 
+    def in_early_access(self):
+        return self.exclude(
+            Q(published=Article.PUBLISHED) | Q(published=Article.REMOVED)
+        ).order_by("publish_date", "id")
+
     def published(self):
         return self.filter(published=Article.PUBLISHED)
 
@@ -109,6 +114,11 @@ class Article(BaseModel):
         (UNPUBLISHED, "Unpublished"),
         (REMOVED, "Removed"),
     )
+
+    EARLY_ACCESS_PRICING = {
+        UPCOMING: "$2.00 USD",
+        UNPUBLISHED: "$5.00 USD",
+    }
 
     objects = ArticleManager()
 
@@ -369,3 +379,8 @@ class Article(BaseModel):
         for s in self.series.only("id", "title"):
             output.append(dict(url=s.url, text=s.title))
         return output
+
+    @property
+    def early_access_price(self):
+        print(self.published, "is published for", self.title)
+        return self.EARLY_ACCESS_PRICING.get(self.published, "???")
