@@ -19,6 +19,12 @@
 <section id="content" class="block">
 {% include "museum_site/blocks/paginator_block.html" %}
 
+{% if view == "detailed" %}
+<b>WoZZT</b><br>
+{% generic_block_loop items=wozzt view=view header=wozzt_table_header debug=debug %}
+<hr>
+{% endif %}
+
 <b>Reviews</b><br>
 {% generic_block_loop items=reviews view=view header=review_table_header debug=debug %}
 <hr>
