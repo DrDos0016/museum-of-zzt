@@ -13,6 +13,10 @@ from django.db.models import Q
 from twitter import *
 from PIL import Image
 
+from museum.settings import STATIC_URL
+from museum_site.datum import *
+from museum_site.base import BaseModel
+
 from .common import TEMP_PATH
 from .constants import (SITE_ROOT, DETAIL_ZZT, DETAIL_UPLOADED, DETAIL_GFX,
                         DETAIL_LOST)
@@ -27,9 +31,10 @@ except ModuleNotFoundError:
 import zookeeper
 
 
-class WoZZT_Queue(models.Model):
+class WoZZT_Queue(BaseModel):
     """ Object representing an upcoming Worlds of ZZT Twitter bot post """
     model_name = "WoZZT-Queue"
+    table_fields = ["Date", "Time", "Tweet", "Link"]
 
     file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
     zzt_file = models.CharField(max_length=80)
@@ -59,6 +64,12 @@ class WoZZT_Queue(models.Model):
             self.uuid + ".png"
         )
         return output
+
+    def url(self):
+        return "X"
+
+    def preview_url(self):
+        return os.path.join(STATIC_URL, "wozzt-queue", self.uuid + ".png")
 
     def roll(self, category="wozzt", title_screen=False):
         self.uuid = str(uuid.uuid4())
@@ -308,6 +319,58 @@ class WoZZT_Queue(models.Model):
         except FileNotFoundError:
             None
         return True
+
+    def as_detailed_block(self, debug=False):
+        template = "museum_site/blocks/generic-detailed-block.html"
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            columns=[],
+            title=TextDatum(value="-----")
+        )
+
+        context["columns"].append([
+            TextAreaDatum(label="Tweet", value=self.tweet_text(), readonly=True),
+            LinkDatum(
+                label="Source", value="View",
+                url=self.file.url() + "?file={}&board={}".format(
+                    self.zzt_file, self.board
+                ),
+                target="_blank"
+            ),
+        ])
+
+        if debug:
+            context["columns"][0].append(
+                LinkDatum(
+                    label="ID", value=self.id, target="_blank", kind="debug",
+                    url="/admin/museum_site/wozzt_queue/{}/change/".format(
+                        self.id
+                    ),
+                ),
+            )
+            context["columns"][0].append(
+                CustomDatum(
+                    template="custom-wozzt-priority.html",
+                    pk=self.id,
+                    priority=self.priority,
+                    kind="debug"
+                ),
+            )
+            context["columns"][0].append(
+                CustomDatum(
+                    template="custom-wozzt-delete.html",
+                    pk=self.id,
+                    kind="debug",
+                ),
+            )
+        else:
+            context["columns"][0].append(
+                TextDatum(label="Priority", value=self.priority)
+            )
+        return render_to_string(template, context)
 
 
 # Files banned from Worlds of ZZT Bot's feed

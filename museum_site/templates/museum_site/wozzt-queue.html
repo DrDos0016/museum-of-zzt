@@ -1,5 +1,6 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
+{% load site_tags %}
 
 {% block style %}
 <style>
@@ -20,8 +21,19 @@ input[name=count], input[name=priority]
     font-size:xx-large;
     text-align:center;
     padding:1em;
-    background:#F00;
+    background:#619F9F;
     margin:0.5em;
+    border:4px dashed #000;
+}
+
+#queue-end
+{
+    font-weight:bold;
+}
+
+.model-block .data .datum .value textarea
+{
+    height:150px;
 }
 </style>
 {% endblock %}
@@ -32,6 +44,7 @@ var tweet_date = new Date();
 var dow_str = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 $(document).ready(function (){
+    set_csrf();
 
     var now = new Date();
     var dow = now.getDay()
@@ -61,14 +74,14 @@ $(document).ready(function (){
     tweet_date.setSeconds(0);
     tweet_date.setMinutes(45);
 
-    $("h1.title").each(function (){
+    $("h2.title .datum .value").each(function (){
         {% if request.GET.category != "tuesday" %}
         // Skip Tuesdays
         if (tweet_date.getDay() == 2)
         {
             tweet_date.setHours(26);
-            var element = $(this).parent();
-            $("<div class='tuesday-skip'>SKIPPING TITLE SCREEN TUESDAY</div>").insertBefore(element);
+            var element = $(this).parent().parent().parent();
+            $("<div class='tuesday-skip'>Title Screen Tuesday</div>").insertBefore(element);
         }
         {% endif %}
 
@@ -87,18 +100,25 @@ $(document).ready(function (){
         $("#queue-end").text(tweet_date.toLocaleString());
     });
 
-    $("#content .screenshot-thumb").click();
+    $(".preview-image.zoomable.thumbnail").click();
 });
+
+function set_csrf()
+{
+    var val = $("input[name=csrfmiddlewaretoken]").first().val();
+    $("input[name=csrfmiddlewaretoken]").val(val);
+}
 </script>
 {% endblock %}
 
 {% block content %}
 <section id="content" class="block">
+{% csrf_token %}
 <h1>Worlds of ZZT Queue{% if request.user.is_staff %} [STAFF MODE]{% endif %}</h1>
 <p>Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
 <a href="?category=wozzt">Worlds of ZZT</a> | <a href="?category=tuesday">Title Screen Tuesday</a> | <a href="?category=discord">Discord Queue</a></p>
 <p>Times are displayed in your local time zone.</p>
-<p><b>{{queue_size}}</b> entries in queue ending on <span id="queue-end">-</span>.</p>
+<p>There are currently <b>{{queue_size}}</b> entries in the queue. The queue will be exhausted on <span id="queue-end">-</span>.</p>
 
 {% if request.user.is_staff %}
 <form method="POST" class="controls">
@@ -114,44 +134,7 @@ $(document).ready(function (){
 </form>
 {% endif %}
 
-{% for entry in queue %}
-<div class="wozzt-queue-entry overview-block" id="queue-{{entry.id}}">
-    <img src="{% static "wozzt-queue/"|add:entry.uuid %}.png" class="screenshot-thumb">
-    <h1 class="title" id="test-{{entry.id}}"></h1>
-    <div class="wide-info">
-        <div class="field">
-            <div class="key">Tweet</div><div class="value">{{entry.tweet_text|linebreaks}}</div>
-        </div>
-        <div class="field">
-            <div class="key">Links</div><div class="value">
-                <a href="{{entry.file.file_url}}?file={{entry.zzt_file}}&board={{entry.board}}" target="_blank">File</a>
-            </div>
-        </div>
-        {% if request.user.is_staff %}
-        <div class="field">
-            <div class="key">Priority</div><div class="value">
-                <form method="POST">
-                {% csrf_token %}
-                <input name="action" value="set-priority" type="hidden">
-                <input name="id" value="{{entry.id}}" type="hidden">
-                <input name="priority" value="{{entry.priority}}">
-                <input type="submit" value="Update">
-                </form>
-            </div>
-        </div>
-        <div class="field">
-            <div class="key">Action</div><div class="value">
-                <form method="POST">
-                {% csrf_token %}
-                <input name="action" value="delete" type="hidden">
-                <input name="id" value="{{entry.id}}" type="hidden">
-                <input type="submit" value="Delete">
-                </form>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-</div>
-{% endfor %}
+{% generic_block_loop items=queue view="detailed" debug=debug %}
+
 </section>
 {% endblock %}

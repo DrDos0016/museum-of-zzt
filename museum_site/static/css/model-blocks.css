@@ -82,6 +82,12 @@ a.explicit.unpublished::after { content:" 🔞🚧"; }
     align-self:flex-end;
 }
 
+.model-block .data .datum .value textarea
+{
+    width:100%;
+    height:100px;
+}
+
 .model-block .description
 {
     grid-area:desc;
