@@ -1,0 +1,12 @@
+<div class="datum{% if kind %} {{kind}}{% endif %}">
+    <div class="label">Delete</div>
+    <div class="value">
+        <form method="POST" data-pk="{{pk}}" id="delete-{{pk}}">
+        <input type="hidden" name="csrfmiddlewaretoken" value="">
+        <input name="action" value="delete" type="hidden">
+        <input name="id" value="{{pk}}" type="hidden">
+        <input type="submit" value="Delete">
+        </form>
+    </div>
+</div>
+

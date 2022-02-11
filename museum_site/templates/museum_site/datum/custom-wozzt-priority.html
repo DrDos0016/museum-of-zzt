@@ -1,0 +1,13 @@
+<div class="datum{% if kind %} {{kind}}{% endif %}">
+    <div class="label">Priority</div>
+    <div class="value">
+        <form method="POST" data-pk="{{pk}}" id="delete-{{pk}}">
+        <input type="hidden" name="csrfmiddlewaretoken" value="">
+        <input name="action" value="set-priority" type="hidden">
+        <input name="id" value="{{pk}}" type="hidden">
+        <input name="priority" value="{{priority}}">
+        <input type="submit" value="Update">
+        </form>
+    </div>
+</div>
+

@@ -51,3 +51,14 @@ class SSVLinksDatum(Datum):
 
 class LanguageLinksDatum(SSVLinksDatum):
     template_name = "museum_site/datum/language-links-datum.html"
+
+class TextAreaDatum(Datum):
+    template_name = "museum_site/datum/text-area-datum.html"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(kwargs)
+
+class CustomDatum(Datum):
+    def __init__(self, template, *args, **kwargs):
+        self.template_name = "museum_site/datum/" + template
+        super().__init__(kwargs)

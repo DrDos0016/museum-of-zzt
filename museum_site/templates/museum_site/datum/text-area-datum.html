@@ -1,0 +1,4 @@
+<{{tag|default:"div"}} class="datum{% if kind %} {{kind}}{% endif %}">
+    {% if label %}<div class="label">{{label}}</div>{% endif %}
+    {% if value %}<div class="value"{% if title %}title="{{title}}"{% endif %}><textarea{% if readonly %} readonly{% endif %}>{{value}}</textarea></div>{% endif %}
+</{{tag|default:"div"}}>
