@@ -15,6 +15,13 @@ class Review(BaseModel):
     """ Review object repesenting an review to a file """
     model_name = "Review"
     table_fields = ["Title", "File", "Reviewer", "Date", "Rating"]
+    sort_options = [
+        {"text": "Newest", "val": "-date"},
+        {"text": "Oldest", "val": "date"},
+        {"text": "File", "val": "file"},
+        {"text": "Reviewer", "val": "reviewer"},
+        {"text": "Rating", "val": "rating"},
+    ]
 
     """
     Fields:

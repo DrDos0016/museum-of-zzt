@@ -1,9 +1,12 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
+from django.utils.safestring import mark_safe
+from .datum import *
 from .common import *
 from .constants import *
 from .models import *
+from .text import CATEGORY_DESCRIPTIONS
 
 from .file_views import file_articles  # Kludge
 
@@ -16,17 +19,59 @@ def article_categories(request, category="all", page_num=1):
         "category"
     ).annotate(total=Count("category")).order_by("category")
 
-    data["totals"] = {}
-    for entry in qs:
-        key = entry["category"].split(" ")[0].lower().replace("'", "")
-        data["totals"][key] = entry["total"]
+    # Block
+    block_template = "museum_site/blocks/generic-detailed-block.html"
+    data["page"] = []
 
-    return render(request, "museum_site/article-categories.html", data)
+    for entry in qs:
+        key = entry["category"].lower().replace("'", "").replace(" ", "-")
+        block_context = dict(
+            pk=None,
+            model=None,
+            preview=dict(url="/static/pages/article-categories/{}.png".format(
+                key
+            ), alt=entry["category"]),
+            title=LinkDatum(
+                url="/article/"+key,
+                value=entry["category"],
+            ),
+            columns=[[
+                    TextDatum(label="Numer of Articles", value=entry["total"]),
+            ]],
+            description=mark_safe(
+                CATEGORY_DESCRIPTIONS.get(
+                    key, "<i>No description available</i>"
+                )
+            )
+        )
+
+        # Construct a block
+        data["page"].append(
+            render_to_string(block_template, block_context)
+        )
+
+    return render(request, "museum_site/generic-directory.html", data)
 
 
 def article_directory(request, category="all", page_num=1):
-    """ Returns page listing all articles sorted either by date or name """
-    data = {"title": "Article Directory"}
+    """ Returns page listing all/a category of articles """
+    data = {
+        "title": "Article Directory",
+        "table_header": table_header(Article.table_fields),
+        "available_views": Article.supported_views,
+        "view": get_selected_view_format(request, Article.supported_views),
+        "sort_options": get_sort_options(
+            Article.sort_options, debug=request.session.get("DEBUG")
+        )
+    }
+
+    prefix_templates = {
+        "closer-look": "museum_site/prefixes/closer-look.html",
+        "livestream": "museum_site/prefixes/livestream.html",
+        "publication-pack": "museum_site/prefixes/publication-pack.html",
+    }
+    if prefix_templates.get(category):
+        data["prefix_template"] = prefix_templates[category]
 
     # Pull articles for page
     qs = Article.objects.search(request.GET)
@@ -57,23 +102,8 @@ def article_directory(request, category="all", page_num=1):
     else:  # Default (newest)
         qs = qs.order_by("-publish_date")
 
-    data["available_views"] = ["detailed", "list", "gallery"]
-    data["view"] = get_selected_view_format(request, data["available_views"])
     data = get_pagination_data(request, data, qs)
-    data["sort_options"] = [
-        {"text": "Newest", "val": "-date"},
-        {"text": "Oldest", "val": "date"},
-        {"text": "Title", "val": "title"},
-        {"text": "Author", "val": "author"},
-        {"text": "Category", "val": "category"},
-    ]
-    if request.session.get("DEBUG"):
-        data["sort_options"] += [
-            {"text": "!ID New", "val": "-id"},
-            {"text": "!ID Old", "val": "id"}
-        ]
-
-    return render(request, "museum_site/article_directory.html", data)
+    return render(request, "museum_site/generic-directory.html", data)
 
 
 def article_view(request, article_id, page=0, slug=""):

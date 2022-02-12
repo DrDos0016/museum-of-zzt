@@ -464,7 +464,10 @@ def generic_block_loop(items, view="detailed", header=None, debug=False):
         output += '<div class="gallery-frame">'
 
     for i in items:
-        output += i.as_block(view, debug=debug)
+        if hasattr(i, "as_block"):
+            output += i.as_block(view, debug=debug)
+        else:
+            output += i
 
     if view == "list":
         output += "</table>"

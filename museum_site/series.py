@@ -22,6 +22,10 @@ class Series(BaseModel):
     objects = SeriesManager()
     model_name = "Series"
     table_fields = ["Series", "Newest Entry", "Oldest Entry", "Articles"]
+    sort_options = [
+        {"text": "Newest Entry", "val": "latest"},
+        {"text": "Title", "val": "title"}
+    ]
 
     # Constants
     PREVIEW_DIRECTORY = os.path.join(STATIC_URL, "pages/series-directory/")

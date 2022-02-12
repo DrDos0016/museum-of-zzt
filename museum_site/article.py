@@ -94,6 +94,13 @@ class Article(BaseModel):
     """ Article object repesenting an article """
     model_name = "Article"
     table_fields = ["Title", "Author", "Date", "Category", "Description"]
+    sort_options = [
+        {"text": "Newest", "val": "-date"},
+        {"text": "Oldest", "val": "date"},
+        {"text": "Title", "val": "title"},
+        {"text": "Author", "val": "author"},
+        {"text": "Category", "val": "category"},
+    ]
 
     SCHEMAS = (
         ("text", "Plaintext"),
@@ -300,10 +307,7 @@ class Article(BaseModel):
         )
 
         if self.is_restricted:
-            context["role"] = "restricted"
-            context["data_attrs"] = [
-                {"key": "published", "value": self.published_string}
-            ]
+            context["title"].context["roles"] = ["restricted"]
 
         context["columns"].append([
             TextDatum(label="Author", value=self.author),
@@ -347,6 +351,9 @@ class Article(BaseModel):
             ],
         )
 
+        if self.is_restricted:
+            context["cells"][0].context["roles"] = ["restricted"]
+
         return render_to_string(template, context)
 
     def as_gallery_block(self, debug=False):
@@ -356,7 +363,10 @@ class Article(BaseModel):
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
-            title=self.title,
+            title=LinkDatum(
+                url=self.url(),
+                value=self.title,
+            ),
             columns=[],
         )
 
@@ -371,6 +381,9 @@ class Article(BaseModel):
                     url="/admin/museum_site/article/{}/change/".format(self.id),
                 ),
             )
+
+        if self.is_restricted:
+            context["title"].context["roles"] = ["restricted"]
 
         return render_to_string(template, context)
 

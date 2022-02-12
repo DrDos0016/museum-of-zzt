@@ -4,6 +4,8 @@ from django.utils.safestring import mark_safe
 
 class BaseModel(models.Model):
     model_name = None
+    table_fields = []
+    supported_views = ["detailed", "list", "gallery"]
 
     def admin_url(self):
         name = self.model_name.replace("-", "_").lower()
@@ -34,13 +36,6 @@ class BaseModel(models.Model):
         raise NotImplementedError(
             'Subclasses must implement "as_gallery_block" method.'
         )
-
-    @mark_safe
-    def table_header(self, *args, **kwargs):
-        row = ""
-        for f in self.table_fields:
-            row += "<th>{}</th>".format(f)
-        return "<tr>" + row + "</tr>"
 
     def scrub(self):
         raise NotImplementedError(

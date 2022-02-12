@@ -9,6 +9,7 @@ from django.db import connection
 from django.db.models import Count, Avg, Sum, Q
 from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
+from django.utils.safestring import mark_safe
 # from django.utils.timezone import utc
 # from django.contrib.auth import logout, authenticate, login as auth_login
 
@@ -476,3 +477,20 @@ def epoch_to_unknown(calendar_date):
     if calendar_date.year <= 1970:
         return "Unknown"
     return calendar_date
+
+@mark_safe
+def table_header(items):
+    row = ""
+    for i in items:
+        row += "<th>{}</th>".format(i)
+    return "<tr>" + row + "</tr>"
+
+
+def get_sort_options(options, debug=False):
+    output = options.copy()
+    if debug:
+        output += [
+            {"text": "!ID New", "val": "-id"},
+            {"text": "!ID Old", "val": "id"}
+        ]
+    return output

@@ -1,16 +1,18 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
+{% load site_tags %}
 
 {% block content %}
 <section id="content" class="block">
+<!--generic-directory.html-->
 
-<h1>Series Directory</h1>
+<h1>{{title}}</h1>
+
+{% if prefix_template %}{% include prefix_template %}{% endif %}
 
 {% include "museum_site/blocks/paginator_block.html" %}
 
-{% for series in page %}
-{% include "museum_site/blocks/series-detailed-block.html" %}
-{% endfor %}
+{% generic_block_loop items=page view=view header=table_header debug=debug %}
 
 {% include "museum_site/blocks/paginator_block.html" %}
 </section>
