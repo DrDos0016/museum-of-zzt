@@ -251,8 +251,8 @@ urlpatterns = [
     # Random ZZT Worlds
     path("random/", museum_site.views.random, name="random"),
     path(
-        "roulette/", museum_site.file_views.roulette,
-        {"details": [DETAIL_ZZT]}, name="roulette"),
+        "roulette/", museum_site.file_views.file_directory, name="roulette"
+    ),
 
     # Reviews
     path(
