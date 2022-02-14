@@ -123,7 +123,7 @@ class FileManager(models.Manager):
         return zgame
 
     def roulette(self, rng_seed, limit):
-        details = [DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY]
+        details = [DETAIL_ZZT, DETAIL_SZZT]
 
         # Get all valid file IDs
         ids = list(
@@ -168,6 +168,14 @@ class File(BaseModel):
     model_name = "File"
     table_fields = [
         "DL", "Title", "Author", "Company", "Genre", "Date", "Rating"
+    ]
+    sort_options = [
+        {"text": "Title", "val": "title"},
+        {"text": "Author", "val": "author"},
+        {"text": "Company", "val": "company"},
+        {"text": "Rating", "val": "rating"},
+        {"text": "Release Date (Newest)", "val": "-release"},
+        {"text": "Release Date (Oldest)", "val": "release"}
     ]
 
     objects = FileManager()
@@ -995,12 +1003,14 @@ class File(BaseModel):
             output.append((LANGUAGES.get(i, i), i))
         return output
 
-    def as_detailed_block(self, show_links=True, debug=False):
+    def as_detailed_block(self, show_links=True, debug=False, extras=[]):
         template = "museum_site/blocks/generic-detailed-block.html"
         context = dict(
             tag=dict(opening="div", closing="/div"),
             pk=self.pk,
+            hash_id=self.filename,
             model=self.model_name,
+            extras=extras,
             columns=[],
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
@@ -1036,6 +1046,7 @@ class File(BaseModel):
             TextDatum(label="Rating", value=self.rating_str(), title="Based on {} Review{}".format(self.review_count, "s" if self.review_count > 1 else "")),
             (TextDatum(label="Boards", value=self.boards_str(), title="Playable/Total Boards. Values are not 100% accurate.") if self.total_boards else ""),
             LanguageLinksDatum(label="Language", plural="s", values=self.language_pairs(), url="/search?lang="),
+            (TextDatum(label="Upload Date", value=self.upload_set.first().date) if self.is_uploaded() and self.upload_set.first() else ""),
         ])
 
         # Append Debug Links
@@ -1130,13 +1141,18 @@ class File(BaseModel):
                 )
             context["links"] = links
 
+        # Additional fields when browsing Featured Worlds
+        if extras and "museum_site/blocks/extra-featured-world.html" in extras:
+            context["featured_articles"] = self.articles.filter(category="Featured Game").order_by("-publish_date")
+
         return render_to_string(template, context)
 
-    def as_list_block(self, debug=False):
+    def as_list_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-list-block.html"
         context = dict(
             pk=self.pk,
             model=self.model_name,
+            hash_id=self.filename,
             url=self.url,
             cells=[
                 LinkDatum(value="DL", url=self.download_url(), tag="td",
@@ -1175,13 +1191,13 @@ class File(BaseModel):
 
         return render_to_string(template, context)
 
-    def as_gallery_block(self, debug=False):
+    def as_gallery_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-gallery-block.html"
         context = dict(
             pk=self.pk,
             model=self.model_name,
+            hash_id=self.filename,
             preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
             title=LinkDatum(
                 value=self.title,
                 url=self.url(),

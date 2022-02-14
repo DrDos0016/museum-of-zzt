@@ -38,22 +38,15 @@ def file_directory(
         "show_description": show_description,
         "show_featured": show_featured,
         "model": "File",
-        "sort": request.GET.get("sort")
+        "sort": request.GET.get("sort"),
+        "table_header": table_header(File.table_fields),
+        "available_views": File.supported_views,
+        "view": get_selected_view_format(request, File.supported_views),
+        "sort_options": get_sort_options(
+            File.sort_options, debug=request.session.get("DEBUG")
+        ),
+        "guide_words": True
     }
-
-    data["sort_options"] = [
-        {"text": "Title", "val": "title"},
-        {"text": "Author", "val": "author"},
-        {"text": "Company", "val": "company"},
-        {"text": "Rating", "val": "rating"},
-        {"text": "Release Date (Newest)", "val": "-release"},
-        {"text": "Release Date (Oldest)", "val": "release"},
-    ]
-    if request.session.get("DEBUG"):
-        data["sort_options"] += [
-            {"text": "!ID New", "val": "-id"},
-            {"text": "!ID Old", "val": "id"}
-        ]
 
     default_sort = None
 
@@ -82,17 +75,30 @@ def file_directory(
         default_sort = ["-release_date", "-id"]
     elif request.path == "/uploaded/":
         data["title"] = "Upload Queue"
-        data["header"] = data["title"]
+        data["prefix_template"] = "museum_site/prefixes/upload-queue.html"
 
         # Add sort by upload date
         data["sort_options"] = (
             [{"text": "Upload Date", "val": "uploaded"}] + data["sort_options"]
         )
         default_sort = ["-id"]
-    elif request.path == "/featured":
+    elif request.path == "/featured/":
         data["title"] = "Featured Worlds"
-        data["header"] = data["title"]
-        data["category"] = "Featured Worlds"
+        data["extras"] = ["museum_site/blocks/extra-featured-world.html"]
+    elif request.path == "/roulette/":
+        if not request.GET.get("seed"):
+            return redirect("/roulette?seed={}".format(int(request.GET.get("seed", time()))))
+
+        data["title"] = "Roulette"
+        data["rng_seed"] = request.GET.get("seed")
+        data["prefix_template"] = "museum_site/prefixes/roulette.html"
+
+        # Add sort by random
+        data["sort_options"] = (
+            [{"text": "Random", "val": "random"}] + data["sort_options"]
+        )
+
+        qs = File.objects.roulette(data["rng_seed"], PAGE_SIZE)
 
     if request.GET.get("sort") == "title":
         qs = qs.order_by("sort_title")
@@ -113,11 +119,7 @@ def file_directory(
 
     qs = qs.prefetch_related("upload_set").distinct()
 
-    data["available_views"] = ["detailed", "list", "gallery"]
-    data["view"] = get_selected_view_format(request, data["available_views"])
     data = get_pagination_data(request, data, qs)
-
-    data["guide_words"] = True
 
     if data["page"].object_list:
         data["first_item"] = data["page"].object_list[0]
@@ -129,7 +131,7 @@ def file_directory(
     if DETAIL_LOST in details:
         data["show_description"] = True
 
-    return render(request, "museum_site/file_directory.html", data)
+    return render(request, "museum_site/generic-directory.html", data)
 
 
 def file_download(request, letter, filename):
@@ -313,24 +315,3 @@ def review(request, letter, filename):
     data["file"] = zfile
     data["form"] = review_form
     return render(request, "museum_site/file-review.html", data)
-
-
-def roulette(
-    request,
-    letter=None,
-    details=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY],
-    page_num=1,
-    show_description=False
-):
-    data = {"title": "Browse", "mode": "Roulette", "header": "Roulette"}
-    data["rng_seed"] = str(int(request.GET.get("seed", time())))
-
-    qs = File.objects.roulette(data["rng_seed"], PAGE_SIZE)
-
-    data["available_views"] = ["detailed"]
-    data["view"] = get_selected_view_format(request, data["available_views"])
-
-    data["paginator"] = Paginator(qs, PAGE_SIZE)
-    data["page"] = data["paginator"].get_page(1)
-
-    return render(request, "museum_site/file_directory.html", data)
