@@ -1,4 +1,4 @@
-<div class="model-block detailed{% for r in roles %} {{r}}{% endfor %}" data-model="{{model}}" data-pk="{{pk}}" data-generic="GENERIC">
+<div class="model-block detailed{% for r in roles %} {{r}}{% endfor %}" data-model="{{model}}" data-pk="{{pk}}" id="{{hash_id}}" data-generic="GENERIC">
     {% if prefix %}<div class="prefix">{{prefix}}</div>{% endif %}
     <img class="preview-image thumbnail zoomable" src="{{preview.url}}" alt="{{preview.url}}">
     <h2 class="title">{{title}}</h2>
@@ -11,8 +11,6 @@
         </div>
         {% endfor %}
     </div>
-    <div class="description">
-        {{description|linebreaks}}
-    </div>
+    {% if extras %}{% for extra in extras %}{% include extra %}{% endfor %}{% endif %}
 </div>
 {% if links %}{% include "museum_site/blocks/file-links.html" %}{% endif %}

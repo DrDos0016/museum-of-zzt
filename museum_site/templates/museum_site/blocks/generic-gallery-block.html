@@ -1,6 +1,6 @@
-<div class="model-block gallery{% for r in roles %} {{r}}{% endfor %}" data-model="{{model}}" data-pk="{{pk}}" data-generic="GENERIC">
+<div class="model-block gallery{% for r in roles %} {{r}}{% endfor %}" data-model="{{model}}" data-pk="{{pk}}" id="{{hash_id}}" data-generic="GENERIC">
     <img class="preview-image thumbnail zoomable" src="{{preview.url}}" alt="{{preview.url}}">
-    <h2 class="title"><a href="{{url}}">{{title}}</a></h2>
+    <h2 class="title">{{title}}</h2>
     <div class="data">
         {% for col in columns %}
         <div class="col">
