@@ -455,7 +455,7 @@ def ssv_links(raw, param, lookup=""):
 
 
 @register.simple_tag()
-def generic_block_loop(items, view="detailed", header=None, debug=False):
+def generic_block_loop(items, view="detailed", header=None, debug=False, extras=None):
     output = ""
 
     if view == "list":
@@ -465,7 +465,7 @@ def generic_block_loop(items, view="detailed", header=None, debug=False):
 
     for i in items:
         if hasattr(i, "as_block"):
-            output += i.as_block(view, debug=debug)
+            output += i.as_block(view, debug=debug, extras=extras)
         else:
             output += i
 
