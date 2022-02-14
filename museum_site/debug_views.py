@@ -26,8 +26,8 @@ def debug(request, filename=None):
     )
 
     test_zfiles = File.objects.filter(
-        id__in=[420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415]
-    ).order_by("-id")
+        id__in=[327, 420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415]
+    ).order_by("id")
 
     test_articles = Article.objects.filter(
         id__in=[425, 453, 659, 672]
@@ -48,7 +48,7 @@ def debug(request, filename=None):
     data["series_table_header"] = table_header(test_series[0].table_fields)
 
     data["wozzt"] = test_wozzt
-    data["reviews"] = test_reviews
+    #data["reviews"] = test_reviews
     data["zfiles"] = test_zfiles
     data["articles"] = test_articles
     data["series"] = test_series
