@@ -71,29 +71,20 @@ def search(request):
         appropriately.
     """
     data = {
-        "mode": "search",
-        "title": "Search",
-        "model":"File",
-        "sort": request.GET.get("sort")
+        "title": "Search Results",
+        "model": "File",
+        "sort": request.GET.get("sort"),
+        "table_header": table_header(File.table_fields),
+        "available_views": File.supported_views,
+        "view": get_selected_view_format(request, File.supported_views),
+        "sort_options": get_sort_options(
+            File.sort_options, debug=request.session.get("DEBUG")
+        ),
+        "guide_words": True
     }
-    data["category"] = "Search Results"
-    data["page"] = int(request.GET.get("page", 1))
 
     # Query strings
     sort = SORT_CODES[request.GET.get("sort", "title").strip()]
-
-    # Determine the viewing method
-    data["view"] = get_selected_view_format(request)
-
-    data["sort_options"] = [
-        {"text": "Title", "val": "title"},
-        {"text": "Author", "val": "author"},
-        {"text": "Company", "val": "company"},
-        {"text": "Rating", "val": "rating"},
-        {"text": "Release Date (Newest)", "val": "-release"},
-        {"text": "Release Date (Oldest)", "val": "release"},
-    ]
-    default_sort = ["sort_title"]
 
     if request.GET.get("q"):  # Basic Search
         q = request.GET["q"].strip()
@@ -102,12 +93,13 @@ def search(request):
             request.session["DEBUG"] = 1
             return redirect("/")
         if request.GET["q"] == "-DEBUG":
-            request.session["DEBUG"] = 0
+            del request.session["DEBUG"]
             return redirect("/")
 
         data["q"] = q
         qs = File.objects.basic_search(q)
     else:  # Advanced Search
+        data["advanced_search"] = True
         # Clean up empty params
         if request.GET.get("advanced"):
             new_qs = "?"
@@ -135,7 +127,6 @@ def search(request):
             new_qs = new_qs[:-1]
             return redirect("/search"+new_qs)
 
-        data["advanced_search"] = True
         qs = File.objects.all()
         if request.GET.get("title", "").strip():
             qs = qs.filter(
@@ -237,11 +228,10 @@ def search(request):
         # Select distinct IDs
         qs = qs.distinct()
 
-    if data["view"] == "list":
-        page_size = LIST_PAGE_SIZE
-    else:
-        page_size = PAGE_SIZE
 
+
+    # Sort
+    default_sort = ["sort_title"]
     if request.GET.get("sort") == "title":
         qs = qs.order_by("sort_title")
     elif request.GET.get("sort") == "author":
@@ -259,14 +249,14 @@ def search(request):
     elif default_sort:
         qs = qs.order_by(*default_sort)
 
-    data["available_views"] = ["detailed", "list", "gallery"]
-    data["view"] = get_selected_view_format(request, data["available_views"])
+    # Slice
     data = get_pagination_data(request, data, qs)
 
+    # Guidewords
     if data["page"].object_list:
         data["first_item"] = data["page"].object_list[0]
         data["last_item"] = (
             data["page"].object_list[len(data["page"].object_list) - 1]
         )
 
-    return render(request, "museum_site/file_directory.html", data)
+    return render(request, "museum_site/generic-directory.html", data)
