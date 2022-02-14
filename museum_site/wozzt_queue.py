@@ -320,7 +320,7 @@ class WoZZT_Queue(BaseModel):
             None
         return True
 
-    def as_detailed_block(self, debug=False):
+    def as_detailed_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-detailed-block.html"
         context = dict(
             pk=self.pk,
