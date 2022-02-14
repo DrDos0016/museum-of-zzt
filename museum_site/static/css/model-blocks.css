@@ -10,9 +10,9 @@
 
 a.restricted { color:#F00; }
 a.restricted::before { content:"🔒 "; }
-a.explicit::after { content:" 🔞"; }
-a.unpublished::after { content:" 🚧"; }
-a.explicit.unpublished::after { content:" 🔞🚧"; }
+a.explicit::before { content:"🔞 "; }
+a.unpublished::before { content:"🚧 "; }
+a.explicit.unpublished::before { content:"🔞🚧 "; }
 
 .model-block.detailed
 {
@@ -21,11 +21,12 @@ a.explicit.unpublished::after { content:" 🔞🚧"; }
     "screenshot title"
     "screenshot data"
     "screenshot desc"
+    "extra extra"
     "links links";
 
     column-gap:8px;
     grid-template-columns: minmax(240px, auto) 1fr;
-    grid-template-rows:auto auto auto minmax(0px, 1fr);
+    grid-template-rows:auto auto auto auto minmax(0px, 1fr);
 }
 
 .model-block .prefix
@@ -104,6 +105,17 @@ a.explicit.unpublished::after { content:" 🔞🚧"; }
     margin:0;
 }
 
+.model-block .extra
+{
+    grid-area:extra;
+}
+
+.model-block .extra h3
+{
+    margin:0;
+    margin-top:14px;
+}
+
 .gallery-frame /* Container for gallery blocks */
 {
     display:flex;
@@ -124,13 +136,20 @@ a.explicit.unpublished::after { content:" 🔞🚧"; }
     }
 }
 
+/* Featued World on Front Page */
+#featured .model-block.gallery
+{
+    border:0;
+    padding:0;
+}
+
 .model-block.gallery .title
 {
     font-size:medium;
     font-weight:normal;
     border-bottom:1px dotted #000;
     max-width:240px;
-    margin:auto;
+    margin:0;
 }
 
 .model-block.gallery .datum

@@ -42,8 +42,8 @@
 
     <div id="featured" class="block c">
         <h1 class="l">Featured World</h1>
-        <a href="{% url 'featured_games' %}">Featured Worlds</a>
-        {% with file=fg fg_link=True %}{% include "museum_site/blocks/file_gallery_block.html" %}{% endwith %}
+        {{fg.as_gallery_block}}
+        <a href="{% url 'featured_games' %}">View All Featured Worlds</a>
     </div>
 
     <div id="worlds-block" class="block l">

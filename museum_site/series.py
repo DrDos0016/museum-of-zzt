@@ -73,7 +73,7 @@ class Series(BaseModel):
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)
 
-    def as_detailed_block(self, debug=False):
+    def as_detailed_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-detailed-block.html"
         context = dict(
             pk=self.pk,
@@ -104,7 +104,7 @@ class Series(BaseModel):
 
         return render_to_string(template, context)
 
-    def as_list_block(self, debug=False):
+    def as_list_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-list-block.html"
         context = dict(
             pk=self.pk,
@@ -124,7 +124,7 @@ class Series(BaseModel):
 
         return render_to_string(template, context)
 
-    def as_gallery_block(self, debug=False):
+    def as_gallery_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-gallery-block.html"
         context = dict(
             pk=self.pk,

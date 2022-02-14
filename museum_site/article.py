@@ -291,7 +291,7 @@ class Article(BaseModel):
 
         return output[-5:]
 
-    def as_detailed_block(self, debug=False):
+    def as_detailed_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-detailed-block.html"
         context = dict(
             pk=self.pk,
@@ -332,7 +332,7 @@ class Article(BaseModel):
 
         return render_to_string(template, context)
 
-    def as_list_block(self, debug=False):
+    def as_list_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-list-block.html"
         context = dict(
             pk=self.pk,
@@ -356,7 +356,7 @@ class Article(BaseModel):
 
         return render_to_string(template, context)
 
-    def as_gallery_block(self, debug=False):
+    def as_gallery_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-gallery-block.html"
         context = dict(
             pk=self.pk,
