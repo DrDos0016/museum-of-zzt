@@ -55,6 +55,62 @@ DETAIL_CORRUPT = 20
 
 
 class FileManager(models.Manager):
+    def advanced_search(self, p):
+        qs = self.all()
+
+        # Filter by simple fields
+        for f in ["title", "author", "filename", "company", "genre", "lang"]:
+            if p.get(f):
+                filter_field = "language" if f == "lang" else f
+                field="{}__icontains".format(filter_field)
+                value=p[f]
+                qs = qs.filter(**{field:value})
+
+        # Filter by release year
+        if p.get("year"):
+            year = p["year"]
+            if year == "Unk":  # Unknown release year
+                qs = qs.filter(release_date=None)
+            else:  # Numeric years
+                qs = qs.filter(
+                    release_date__gte="{}-01-01".format(year),
+                    release_date__lte="{}-12-31".format(year),
+                )
+
+        # Filter by rating
+        if p.get("min") and float(p["min"]) > 0:
+            qs = qs.filter(rating__gte=float(p["min"]))
+        if p.get("max") and float(p["max"]) < 5:
+            qs = qs.filter(rating__lte=float(p["max"]))
+
+        # Filter by playable/total board counts
+        if p.get("board_min") and int(p["board_min"]) > 0:
+            field = p.get("board_type", "total") + "_boards__gte"
+            qs = qs.filter(**{field:int(p["board_min"])})
+        if p.get("board_max") and int(p["board_max"]) <= 32767:
+            field = p.get("board_type", "total") + "_boards__lte"
+            qs = qs.filter(**{field:int(p["board_max"])})
+
+
+        # Filter by items with/without reviews
+        if p.get("reviews") == "yes":
+            qs = qs.filter(review_count__gt=0)
+        elif p.get("reviews") == "no":
+            qs = qs.filter(review_count=0)
+
+        # Filter by items with/without articles
+        if p.get("articles") == "yes":
+            qs = qs.filter(article_count__gt=0)
+        elif p.get("articles") == "no":
+            qs = qs.filter(article_count=0)
+
+        # Filter by details
+        if p.get("details"):
+            qs = qs.filter(details__id__in=p.getlist("details"))
+
+        qs = qs.distinct()
+        return qs
+
     def basic_search(self, q):
         return self.filter(
             Q(title__icontains=q) |
@@ -99,7 +155,10 @@ class FileManager(models.Manager):
         return self.exclude(details__id__in=[DETAIL_UPLOADED, DETAIL_LOST])
 
     def search(self, p):
-        qs = File.objects.all()
+        if p.get("q"):
+            return File.objects.basic_search(p["q"])
+        else:
+            qs = File.objects.all()
         return qs
 
     def standard_worlds(self):
@@ -165,6 +224,7 @@ class FileManager(models.Manager):
 
 class File(BaseModel):
     """ File object repesenting an upload to the site """
+    objects = FileManager()
     model_name = "File"
     table_fields = [
         "DL", "Title", "Author", "Company", "Genre", "Date", "Rating"
@@ -177,8 +237,18 @@ class File(BaseModel):
         {"text": "Release Date (Newest)", "val": "-release"},
         {"text": "Release Date (Oldest)", "val": "release"}
     ]
-
-    objects = FileManager()
+    sort_keys = {
+        "title": "sort_title",
+        "author": "author",
+        "company": "company",
+        "rating": "-rating",
+        "release": "release_date",
+        "-release": "-release_date",
+        "uploaded": "-id",
+        "id": "id",
+        "-id": "-id",
+        "-publish_date": "-publish_date"
+    }
 
     SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
     PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not \
@@ -971,11 +1041,25 @@ class File(BaseModel):
                 )
 
     @mark_safe
-    def rating_str(self):
+    def rating_str(self, show_maximum=True):
         if self.rating is not None:
-            return "{} / 5.0".format(self.rating)
+            long_rating = (str(self.rating) + "0")[:4]
+            if show_maximum:
+                return "{} / 5.00".format(long_rating)
+            else:
+                return long_rating
         else:
             return "<i>No rating</i>"
+
+    @mark_safe
+    def publish_date_str(self):
+        if (
+            (self.publish_date is None) or
+            (self.publish_date.strftime("Y-m-d") < "2018-11-07")
+        ):
+            return "<i>Unknown</i>"
+        return self.publish_date.strftime("%b %d, %Y, %I:%M:%S %p")
+
 
     @mark_safe
     def boards_str(self):
@@ -1011,6 +1095,7 @@ class File(BaseModel):
             hash_id=self.filename,
             model=self.model_name,
             extras=extras,
+            model_extras=[],
             columns=[],
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
@@ -1047,9 +1132,10 @@ class File(BaseModel):
             (TextDatum(label="Boards", value=self.boards_str(), title="Playable/Total Boards. Values are not 100% accurate.") if self.total_boards else ""),
             LanguageLinksDatum(label="Language", plural="s", values=self.language_pairs(), url="/search?lang="),
             (TextDatum(label="Upload Date", value=self.upload_set.first().date) if self.is_uploaded() and self.upload_set.first() else ""),
+            (TextDatum(label="Publish Date", value=self.publish_date_str()) if not self.is_uploaded() and self.publish_date else ""),
         ])
 
-        # Append Debug Links
+        # Append Debug Fields
         if debug:
             context["columns"][1].append(
                 LinkDatum(
@@ -1057,6 +1143,11 @@ class File(BaseModel):
                     url="/admin/museum_site/file/{}/change/".format(self.id),
                 ),
             )
+
+        # Show model extras
+        if self.is_utility() and self.description:
+            context["model_extras"].append("museum_site/blocks/extra-utility.html")
+            context["utility_description"] = self.description
 
         # Prepare Links
         if show_links:
@@ -1098,12 +1189,10 @@ class File(BaseModel):
                 links[0].context["url"] = "/download/{}".format(self.identifier)
 
             # Explicit?
-            """
             if self.explicit:
-                output["download"]["classes"].append(" explicit")
-                output["play"]["classes"].append(" explicit")
-                output["view"]["classes"].append(" explicit")
-            """
+                links[0].context["roles"] = ["explicit"]
+                links[1].context["roles"] = ["explicit"]
+                links[2].context["roles"] = ["explicit"]
 
             # Unsupported Browser Play
             if (
@@ -1175,7 +1264,7 @@ class File(BaseModel):
                     url="/search?year={}".format(self.release_year(default="unk")),
                     tag="td",
                 ),
-                TextDatum(value=self.rating or "—", tag="td"),
+                TextDatum(value=self.rating_str(show_maximum=False) if self.rating else "—", tag="td"),
             ],
             roles=[
                 "unpublished" if self.is_uploaded() else "",
