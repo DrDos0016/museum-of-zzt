@@ -1112,6 +1112,8 @@ class File(BaseModel):
             ],
             prefix=File.PREFIX_UNPUBLISHED if self.is_uploaded() else "",
         )
+        if hasattr(self, "extra_context"):
+            context.update(self.extra_context)
 
         # Prepare Columns
         context["columns"].append([
@@ -1271,6 +1273,8 @@ class File(BaseModel):
                 "explicit" if self.explicit else "",
             ]
         )
+        if hasattr(self, "extra_context"):
+            context.update(self.extra_context)
 
         # Modifications
         if self.downloads.count():
@@ -1301,6 +1305,8 @@ class File(BaseModel):
                 "unpublished" if self.is_uploaded() else "",
             ]
         )
+        if hasattr(self, "extra_context"):
+            context.update(self.extra_context)
 
         context["columns"].append([
             SSVLinksDatum(values=self.ssv_list("author"), url="/search?author=")
