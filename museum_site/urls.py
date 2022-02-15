@@ -278,7 +278,7 @@ urlpatterns = [
     path(
         "deep-search/", museum_site.search_views.deep_search,
         name="deep_search"),
-    path("search/", museum_site.search_views.search, name="search"),
+    path("search/", museum_site.file_views.file_directory, name="search"),
 
     # User
     path("user/login/", museum_site.user_views.login_user, name="login_user"),
