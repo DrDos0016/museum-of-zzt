@@ -474,10 +474,12 @@ def get_detail_suggestions(file_list):
     suggestions["unknown_extensions"] = set(suggestions["unknown_extensions"])
     return suggestions
 
+
 def epoch_to_unknown(calendar_date):
     if calendar_date.year <= 1970:
         return "Unknown"
     return calendar_date
+
 
 @mark_safe
 def table_header(items):
@@ -495,3 +497,52 @@ def get_sort_options(options, debug=False):
             {"text": "!ID Old", "val": "id"}
         ]
     return output
+
+
+def sort_qs(qs, key, available_sorts, default_sort):
+    sort_by = available_sorts.get(key)
+    if sort_by is None:
+        sort_by = available_sorts.get(default_sort)
+        if sort_by is None:
+            return qs  # No sorting
+    qs = qs.order_by(sort_by)
+    return qs
+
+
+def simplify_query_string(p, list_items=[], ignore=[]):
+    """ Remove unecessary values from a query string """
+    new_qs = ""
+    for (k, v) in p.items():
+        if k in ignore:
+            continue
+        elif k in list_items:  # Multiple values on a key
+            items = p.getlist(k)
+            for i in items:
+                new_qs += "{}={}&".format(k, i)
+        elif v.lower() == "any":
+            continue
+        elif v.strip() == "":
+            continue
+        else:  # Normal key/value
+            new_qs += "{}={}&".format(k, v)
+    return new_qs[:-1]
+
+
+def clean_params(p, list_items=[]):
+    """ Returns a dictionary (request.GET/POST) with blank/"Any" values removed
+    List items are ignored
+    """
+    to_delete = []
+    for (k, v) in p.items():
+        if k in list_items:
+            continue
+        if k in ["genre", "year", "lang", "reviews", "articles"]:
+            if v.lower() == "any":
+                to_delete.append(k)
+        elif v.strip() == "":
+            to_delete.append(k)
+        else:
+            p[k] = v.strip()
+    for k in to_delete:
+        del p[k]
+    return p
