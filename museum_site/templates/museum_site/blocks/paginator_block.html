@@ -11,7 +11,7 @@
                     {% for p in paginator.page_range %}<option{% if p == page_number %} selected{% endif %}>{{p}}</option>{% endfor %}
                 </select>
             </div>
-            /<div class="num-pages">{{paginator.num_pages}}</div>
+            / <div class="num-pages">{{paginator.num_pages}}</div>
         </div>
         {% for p in page_range %}
         <a class="page-number-link{% if p == page_number %} selected{% endif %}" href="?page={{p}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">{{p}}</a>
