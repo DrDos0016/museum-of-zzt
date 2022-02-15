@@ -48,6 +48,23 @@ def file_directory(
         "guide_words": True
     }
 
+    # If you're searching, clean the params first
+    if request.GET.get("advanced"):
+        ignore = ["advanced"]
+        if (
+            not request.GET.get("board_min") and
+            not request.GET.get("board_max")
+        ):
+            ignore.append("board_type")
+        if request.GET.get("min") == "0.0":
+            ignore.append("min")
+        if request.GET.get("max") == "5.0":
+            ignore.append("max")
+        query_string = simplify_query_string(
+            request.GET.copy(), list_items=["details"], ignore=ignore
+        )
+        return redirect("/search?" + query_string)
+
     default_sort = None
 
     # Pull files based on page
@@ -65,9 +82,9 @@ def file_directory(
     if request.path == "/new/":
         data["title"] = "New Additions"
         data["header"] = data["title"]
-        data["sort_options"] = []
+        data["sort_options"] = None
         data["sort"] = "-publish_date"
-        default_sort = ["-publish_date", "-id"]
+        default_sort = "-publish_date"
     elif request.path == "/new-releases/":
         data["title"] = "New Releases"
         data["header"] = data["title"]
@@ -81,13 +98,15 @@ def file_directory(
         data["sort_options"] = (
             [{"text": "Upload Date", "val": "uploaded"}] + data["sort_options"]
         )
-        default_sort = ["-id"]
+        default_sort = "uploaded"
     elif request.path == "/featured/":
         data["title"] = "Featured Worlds"
         data["extras"] = ["museum_site/blocks/extra-featured-world.html"]
     elif request.path == "/roulette/":
         if not request.GET.get("seed"):
-            return redirect("/roulette?seed={}".format(int(request.GET.get("seed", time()))))
+            return redirect(
+                "/roulette?seed={}".format(int(request.GET.get("seed", time())))
+            )
 
         data["title"] = "Roulette"
         data["rng_seed"] = request.GET.get("seed")
@@ -97,28 +116,31 @@ def file_directory(
         data["sort_options"] = (
             [{"text": "Random", "val": "random"}] + data["sort_options"]
         )
+        default_sort = None
 
         qs = File.objects.roulette(data["rng_seed"], PAGE_SIZE)
+    elif request.path == "/search/":
+        data["title"] = "Search Results"
+        search_type = "basic" if request.GET.get("q") else "advanced"
 
-    if request.GET.get("sort") == "title":
-        qs = qs.order_by("sort_title")
-    elif request.GET.get("sort") == "author":
-        qs = qs.order_by("author")
-    elif request.GET.get("sort") == "company":
-        qs = qs.order_by("company")
-    elif request.GET.get("sort") == "rating":
-        qs = qs.order_by("-rating")
-    elif request.GET.get("sort") == "release":
-        qs = qs.order_by("release_date")
-    elif request.GET.get("sort") == "-release":
-        qs = qs.order_by("-release_date")
-    elif request.GET.get("sort") == "uploaded":
-        qs = qs.order_by("-id")
-    elif default_sort:
-        qs = qs.order_by(*default_sort)
+        # Debug cheat
+        if request.GET.get("q") == "+DEBUG":
+            request.session["DEBUG"] = 1
+            return redirect("index")
+        elif request.GET.get("q") == "-DEBUG":
+            del request.session["DEBUG"]
+            return redirect("index")
+
+        if search_type == "advanced":
+            cleaned_params = clean_params(
+                request.GET.copy(), list_items=["details"]
+            )
+            qs = File.objects.advanced_search(cleaned_params)
+
+    # Sort
+    qs = sort_qs(qs, data["sort"], File.sort_keys, default_sort)
 
     qs = qs.prefetch_related("upload_set").distinct()
-
     data = get_pagination_data(request, data, qs)
 
     if data["page"].object_list:
