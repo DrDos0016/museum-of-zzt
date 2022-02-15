@@ -7,12 +7,13 @@
 <!--generic-directory.html-->
 
 <h1>{{title}}</h1>
+<button id="expand-contract" class="fr">→ ←</button>
 
 {% if prefix_template %}{% include prefix_template %}{% endif %}
 
 {% include "museum_site/blocks/paginator_block.html" %}
 
-{% generic_block_loop items=page view=view header=table_header debug=debug %}
+{% generic_block_loop items=page view=view header=table_header debug=debug extras=extras %}
 
 {% include "museum_site/blocks/paginator_block.html" %}
 </section>
