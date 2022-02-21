@@ -1151,6 +1151,10 @@ class File(BaseModel):
             context["model_extras"].append("museum_site/blocks/extra-utility.html")
             context["utility_description"] = self.description
 
+        if self.is_lost() and self.description:
+            context["model_extras"].append("museum_site/blocks/extra-lost.html")
+            context["lost_description"] = self.description
+
         # Prepare Links
         if show_links:
             stub = StubDatum()

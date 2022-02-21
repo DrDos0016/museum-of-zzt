@@ -85,13 +85,13 @@ class Series(BaseModel):
                 url=self.url()
             ),
             columns=[],
-            description=self.description
         )
 
         context["columns"].append([
             TextDatum(label="Newest Entry", value=self.last_entry_date),
             TextDatum(label="Oldest Entry", value=epoch_to_unknown(self.first_entry_date)),
             TextDatum(label="Articles", value=self.article_set.count()),
+            TextDatum(value=mark_safe("<p>{}</p>".format(self.description))),
         ])
 
         if debug:

@@ -6,18 +6,18 @@
 
 {% block style %}
 <style>
-#content h2
+/*#content h2
 {
     margin-top:14px;
     margin-bottom:14px;
-}
+}*/
 
 {% if access == "upcoming" or access == "unpublished" %}
-a.restricted[data-published=upcoming] { color:green; }
-a.restricted[data-published=upcoming]::before { content: "🔑 " }
+a.restricted.article-upcoming { color:green; }
+a.restricted.article-upcoming::before { content: "🔑 " }
 {% endif %}{% if access == "unpublished" %}
-a.restricted[data-published=unpublished] { color:green; }
-a.restricted[data-published=unpublished]::before { content: "🔑 " }
+a.restricted.article-unpublished { color:green; }
+a.restricted.article-unpublished::before { content: "🔑 " }
 {% endif %}
 </style>
 {% endblock%}
@@ -49,9 +49,7 @@ a.restricted[data-published=unpublished]::before { content: "🔑 " }
 <p>Patrons pledging at least <b>$2</b> per month or more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>
 can read this upcoming article right away:
 
-{% for article in upcoming %}
-{% include "museum_site/blocks/article_detailed_block.html" %}
-{% endfor %}
+{% generic_block_loop items=upcoming view="detailed" debug=debug extras=extras %}
 
 <h2>Early Access to Every Article</h2>
 
@@ -60,9 +58,7 @@ can read this upcoming article right away:
 <p>Patrons pledging at least <b>$5</b> per month or more to the <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT Patreon</a>
 can <i>also</i> read anything in the article queue which additionally includes:
 
-{% for article in unpublished %}
-{% include "museum_site/blocks/article_detailed_block.html" %}
-{% endfor %}
+{% generic_block_loop items=unpublished view="detailed" debug=debug extras=extras %}
 
 <p>If you're not a Patron, this is one of the perks that can be made available to you! Other perks include:</p>
 

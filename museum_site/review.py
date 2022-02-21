@@ -102,7 +102,7 @@ class Review(BaseModel):
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
             title=LinkDatum(
-                value=self.title,
+                value=mark_safe(self.title if self.title else "<i>Untitled Review</i>"),
                 url=self.url()
             ),
             columns=[],

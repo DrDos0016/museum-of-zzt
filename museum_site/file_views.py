@@ -122,6 +122,8 @@ def file_directory(
     elif request.path == "/search/":
         data["title"] = "Search Results"
         search_type = "basic" if request.GET.get("q") else "advanced"
+        if search_type == "basic":
+            data["title"] += ' - "{}"'.format(request.GET["q"].title())
 
         # Debug cheat
         if request.GET.get("q") == "+DEBUG":
@@ -132,6 +134,8 @@ def file_directory(
             return redirect("index")
 
         if search_type == "advanced":
+            data["advanced_search"] = True
+            data["title"] = "Advanced " + data["title"]
             cleaned_params = clean_params(
                 request.GET.copy(), list_items=["details"]
             )
@@ -148,10 +152,6 @@ def file_directory(
         data["last_item"] = (
             data["page"].object_list[len(data["page"].object_list) - 1]
         )
-
-    # Show description for certain views
-    if DETAIL_LOST in details:
-        data["show_description"] = True
 
     return render(request, "museum_site/generic-directory.html", data)
 

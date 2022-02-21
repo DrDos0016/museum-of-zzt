@@ -17,8 +17,6 @@ def series_directory(request, page_num=1):
         )
     }
 
-    print("Series SO", Series.sort_options)
-
     qs = Series.objects.search(request.GET)
 
     if request.GET.get("sort") == "title":

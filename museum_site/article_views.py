@@ -37,12 +37,10 @@ def article_categories(request, category="all", page_num=1):
             ),
             columns=[[
                     TextDatum(label="Numer of Articles", value=entry["total"]),
+                    TextDatum(value=mark_safe(CATEGORY_DESCRIPTIONS.get(
+                        key, "<i>No description available</i>"
+                    )))
             ]],
-            description=mark_safe(
-                CATEGORY_DESCRIPTIONS.get(
-                    key, "<i>No description available</i>"
-                )
-            )
         )
 
         # Construct a block
@@ -193,29 +191,36 @@ def patron_articles(request):
     upcoming = Article.objects.upcoming()
     unpublished = Article.objects.unpublished()
 
-    data["upcoming"] = []
-    data["unpublished"] = []
+    data["upcoming"] = upcoming
+    data["unpublished"] = unpublished
     data["access"] = None
 
     # Parse the password
     if request.POST.get("secret") == PASSWORD2DOLLARS:
         data["access"] = "upcoming"
+        password_qs = "?secret=" + PASSWORD2DOLLARS
     elif request.POST.get("secret") == PASSWORD5DOLLARS:
         data["access"] = "unpublished"
+        password_qs = "?secret=" + PASSWORD5DOLLARS
     elif request.POST.get("secret") is not None:
         data["wrong_password"] = True
+        password_qs = ""
 
     # Tweak titles and URLs for this page
     for a in upcoming:
         if data["access"] == "upcoming":
-            a.url = a.url() + "?secret=" + PASSWORD2DOLLARS
+            a.extra_context = {
+                "password_qs": password_qs
+            }
         elif data["access"] == "unpublished":
-            a.url = a.url() + "?secret=" + PASSWORD5DOLLARS
-        data["upcoming"].append(a)
+            a.extra_context = {
+                "password_qs": password_qs
+            }
 
     for a in unpublished:
         if data["access"] == "unpublished":
-            a.url = a.url() + "?secret=" + PASSWORD5DOLLARS
-        data["unpublished"].append(a)
+            a.extra_context = {
+                "password_qs": password_qs
+            }
 
     return render(request, "museum_site/patreon_articles.html", data)

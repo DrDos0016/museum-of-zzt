@@ -223,7 +223,10 @@ class Article(BaseModel):
         super(Article, self).save(*args, **kwargs)
 
     def url(self):
-        return "/article/{}/{}".format(self.id, slugify(self.title))
+        output = "/article/{}/{}".format(self.id, slugify(self.title))
+        if hasattr(self, "extra_context") and self.extra_context.get("password_qs"):
+            output += self.extra_context["password_qs"]
+        return output
 
     @property
     def preview(self):
@@ -304,15 +307,22 @@ class Article(BaseModel):
             ),
             columns=[],
             description=self.summary,
+            model_extras=[],
         )
 
-        if self.is_restricted:
-            context["title"].context["roles"] = ["restricted"]
+        if hasattr(self, "extra_context"):
+            context.update(self.extra_context)
+
+        if self.published == self.UPCOMING:
+            context["title"].context["roles"] = ["restricted", "article-upcoming"]
+        elif self.published == self.UNPUBLISHED:
+            context["title"].context["roles"] = ["restricted", "article-unpublished"]
 
         context["columns"].append([
             TextDatum(label="Author", value=self.author),
             TextDatum(label="Date", value=epoch_to_unknown(self.publish_date)),
             TextDatum(label="Category", value=self.category),
+            TextDatum(label="Summary", value=self.summary),
         ])
 
         if self.series.count():
@@ -349,7 +359,11 @@ class Article(BaseModel):
                 TextDatum(value=self.category, tag="td"),
                 TextDatum(value=self.summary, tag="td"),
             ],
+            model_extras=[],
         )
+
+        if hasattr(self, "extra_context"):
+            context.update(self.extra_context)
 
         if self.is_restricted:
             context["cells"][0].context["roles"] = ["restricted"]
@@ -368,7 +382,11 @@ class Article(BaseModel):
                 value=self.title,
             ),
             columns=[],
+            model_extras=[],
         )
+
+        if hasattr(self, "extra_context"):
+            context.update(self.extra_context)
 
         context["columns"].append([
             TextDatum(value=self.author),
