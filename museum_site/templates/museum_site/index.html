@@ -1,5 +1,6 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
+{% load site_tags %}
 
 {% block content %}
 <section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
@@ -26,14 +27,10 @@ community can be easily discovered and that their importance can be recognized.
     <h2 id="latest-additions-heading">Latest Additions</h2>
     <div class="gallery-list scrolling">
         <div class="col">
-        {% for file in new_releases %}
-        {% include "museum_site/blocks/file_gallery_block.html" %}
-        {% endfor %}
+        {% generic_block_loop items=new_releases view="gallery" header=table_header debug=debug extras=extras %}
         </div>
         <div class="col">
-        {% for file in files %}
-        {% include "museum_site/blocks/file_gallery_block.html" %}
-        {% endfor %}
+        {% generic_block_loop items=files view="gallery" header=table_header debug=debug extras=extras %}
         </div>
     </div>
     <div class="view-more l">
@@ -45,21 +42,13 @@ community can be easily discovered and that their importance can be recognized.
 </div>
 
 <h2>Latest Articles</h2>
-{% for article in articles|slice:":3" %}
-{% include "museum_site/blocks/article_detailed_block.html" %}
-{% endfor %}
+{% with articles|slice:":3" as spotlight_articles %}
+{% generic_block_loop items=spotlight_articles view="detailed" debug=debug extras=extras %}
+{% endwith %}
 <table>
-    <tr>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Date</th>
-        <th>Category</th>
-        <th class="">Summary</th>
-    </tr>
-    {% for article in articles|slice:"3:" %}
-    {% include "museum_site/blocks/article_list_block.html" %}
-    </tr>
-    {% endfor %}
+    {% with articles|slice:"3:" as spotlight_articles %}
+    {% generic_block_loop items=spotlight_articles view="list" header=article_table_header debug=debug extras=extras %}
+    {% endwith %}
 </table>
 <div class="view-more">
         <a href="{% url 'article_directory' %}">View More</a>
@@ -67,16 +56,7 @@ community can be easily discovered and that their importance can be recognized.
 
 <h2>Latest Reviews</h2>
 <table>
-    <tr>
-        <th>Title</th>
-        <th>File</th>
-        <th>Author</th>
-        <th>Date</th>
-        <th>Rating</th>
-    </tr>
-    {% for review in reviews %}
-    {% include "museum_site/blocks/review_list_block.html" %}
-    {% endfor %}
+    {% generic_block_loop items=reviews view="list" header=review_table_header debug=debug extras=extras %}
 </table>
 <div class="view-more">
         <a href="{% url 'review_directory' %}">View More</a>

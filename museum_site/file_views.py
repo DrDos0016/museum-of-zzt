@@ -88,8 +88,8 @@ def file_directory(
     elif request.path == "/new-releases/":
         data["title"] = "New Releases"
         data["header"] = data["title"]
-        data["sort_options"] = []
-        default_sort = ["-release_date", "-id"]
+        data["sort_options"] = None
+        default_sort = "-release"
     elif request.path == "/uploaded/":
         data["title"] = "Upload Queue"
         data["prefix_template"] = "museum_site/prefixes/upload-queue.html"

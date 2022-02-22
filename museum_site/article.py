@@ -177,9 +177,9 @@ class Article(BaseModel):
         help_text="Reference for revisions made to the article",
         default="", blank=True
     )
-    summary = models.CharField(
+    description = models.CharField(
         help_text="Blurb to summarize/pique interest in the article",
-        max_length=150, default="", blank=True
+        max_length=250, default="", blank=True
     )
     allow_comments = models.BooleanField(
         help_text="Add a section for Disqus comments.",
@@ -306,7 +306,6 @@ class Article(BaseModel):
                 url=self.url()
             ),
             columns=[],
-            description=self.summary,
             model_extras=[],
         )
 
@@ -322,7 +321,7 @@ class Article(BaseModel):
             TextDatum(label="Author", value=self.author),
             TextDatum(label="Date", value=epoch_to_unknown(self.publish_date)),
             TextDatum(label="Category", value=self.category),
-            TextDatum(label="Summary", value=self.summary),
+            TextDatum(label="Description", value=self.description),
         ])
 
         if self.series.count():
@@ -357,7 +356,7 @@ class Article(BaseModel):
                 TextDatum(value=self.author, tag="td"),
                 TextDatum(value=epoch_to_unknown(self.publish_date), tag="td"),
                 TextDatum(value=self.category, tag="td"),
-                TextDatum(value=self.summary, tag="td"),
+                TextDatum(value=self.description, tag="td"),
             ],
             model_extras=[],
         )
