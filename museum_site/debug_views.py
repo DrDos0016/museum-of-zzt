@@ -13,7 +13,6 @@ def debug(request, filename=None):
 
     set_captcha_seed(request)
 
-
     f = File.objects.get(pk=int(request.GET.get("id", 420)))
     s = Series.objects.get(pk=10)
 
@@ -30,7 +29,7 @@ def debug(request, filename=None):
     ).order_by("id")
 
     test_articles = Article.objects.filter(
-        id__in=[425, 453, 659, 672]
+        id__in=[425, 453, 659, 672, 683, 690]
     ).order_by("-id")
 
     test_series = Series.objects.filter(

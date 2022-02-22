@@ -224,7 +224,10 @@ class Article(BaseModel):
 
     def url(self):
         output = "/article/{}/{}".format(self.id, slugify(self.title))
-        if hasattr(self, "extra_context") and self.extra_context.get("password_qs"):
+        if (
+            hasattr(self, "extra_context") and
+            self.extra_context.get("password_qs")
+        ):
             output += self.extra_context["password_qs"]
         return output
 
@@ -296,27 +299,26 @@ class Article(BaseModel):
 
     def as_detailed_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-detailed-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            hash_id="article-{}".format(self.pk),
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
-            title = LinkDatum(
+        context = self.initial_context(view="detailed")
+        context.update(
+            title=LinkDatum(
                 value=self.title,
                 url=self.url()
             ),
             columns=[],
-            model_extras=[],
         )
 
         if hasattr(self, "extra_context"):
             context.update(self.extra_context)
 
         if self.published == self.UPCOMING:
-            context["title"].context["roles"] = ["restricted", "article-upcoming"]
+            context["title"].context["roles"] = [
+                "restricted", "article-upcoming"
+            ]
         elif self.published == self.UNPUBLISHED:
-            context["title"].context["roles"] = ["restricted", "article-unpublished"]
+            context["title"].context["roles"] = [
+                "restricted", "article-unpublished"
+            ]
 
         context["columns"].append([
             TextDatum(label="Author", value=self.author),
@@ -339,12 +341,12 @@ class Article(BaseModel):
                     url="/admin/museum_site/article/{}/change/".format(self.id),
                 ),
             )
-
         return render_to_string(template, context)
 
     def as_list_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-list-block.html"
-        context = dict(
+        context = self.initial_context(view="list")
+        context.update(
             pk=self.pk,
             model=self.model_name,
             hash_id="article-{}".format(self.pk),
@@ -360,7 +362,6 @@ class Article(BaseModel):
                 TextDatum(value=self.category, tag="td"),
                 TextDatum(value=self.description, tag="td"),
             ],
-            model_extras=[],
         )
 
         if hasattr(self, "extra_context"):
@@ -368,23 +369,17 @@ class Article(BaseModel):
 
         if self.is_restricted:
             context["cells"][0].context["roles"] = ["restricted"]
-
         return render_to_string(template, context)
 
     def as_gallery_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-gallery-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            hash_id="article-{}".format(self.pk),
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
+        context = self.initial_context(view="detailed")
+        context.update(
             title=LinkDatum(
                 url=self.url(),
                 value=self.title,
             ),
             columns=[],
-            model_extras=[],
         )
 
         if hasattr(self, "extra_context"):
@@ -404,7 +399,6 @@ class Article(BaseModel):
 
         if self.is_restricted:
             context["title"].context["roles"] = ["restricted"]
-
         return render_to_string(template, context)
 
     def get_series_links(self):
@@ -417,3 +411,15 @@ class Article(BaseModel):
     def early_access_price(self):
         print(self.published, "is published for", self.title)
         return self.EARLY_ACCESS_PRICING.get(self.published, "???")
+
+    def initial_context(self, **kwargs):
+        debug = kwargs.get("debug", False)
+        context = {
+            "pk": self.pk,
+            "model": self.model_name,
+            "hash_id": "article-{}".format(self.pk),
+            "url": self.url,
+            "preview": {"url": self.preview_url, "alt": self.preview_url},
+            "model_extras": [],
+        }
+        return context
