@@ -60,7 +60,7 @@ def add_livestream(request, pk):
         a.schema = "django"
         a.publish_date = request.POST.get("date")
         a.published = int(request.POST.get("published", 1))
-        a.summary = request.POST.get("summary")
+        a.description = request.POST.get("summary")
         a.static_directory = "ls-{}-{}".format(
             data["file"].filename[:-4],
             data["video_id"]
