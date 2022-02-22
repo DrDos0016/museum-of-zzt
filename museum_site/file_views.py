@@ -84,7 +84,6 @@ def file_directory(
         data["header"] = data["title"]
         data["sort_options"] = None
         data["sort"] = "-publish_date"
-        default_sort = "-publish_date"
     elif request.path == "/new-releases/":
         data["title"] = "New Releases"
         data["header"] = data["title"]

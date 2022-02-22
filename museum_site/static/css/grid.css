@@ -378,6 +378,14 @@ pre.cp437 { line-height:14px;}
     border-top:0;
 }
 
+.sidebar #featured.block #fp-fw-link
+{
+    width:100%;
+    display:block;
+    text-align:center;
+}
+
+
 .sidebar a[target=_blank]
 {
     background:none;
