@@ -62,9 +62,9 @@ class FileManager(models.Manager):
         for f in ["title", "author", "filename", "company", "genre", "lang"]:
             if p.get(f):
                 filter_field = "language" if f == "lang" else f
-                field="{}__icontains".format(filter_field)
-                value=p[f]
-                qs = qs.filter(**{field:value})
+                field = "{}__icontains".format(filter_field)
+                value = p[f]
+                qs = qs.filter(**{field: value})
 
         # Filter by release year
         if p.get("year"):
@@ -86,11 +86,10 @@ class FileManager(models.Manager):
         # Filter by playable/total board counts
         if p.get("board_min") and int(p["board_min"]) > 0:
             field = p.get("board_type", "total") + "_boards__gte"
-            qs = qs.filter(**{field:int(p["board_min"])})
+            qs = qs.filter(**{field: int(p["board_min"])})
         if p.get("board_max") and int(p["board_max"]) <= 32767:
             field = p.get("board_type", "total") + "_boards__lte"
-            qs = qs.filter(**{field:int(p["board_max"])})
-
+            qs = qs.filter(**{field: int(p["board_max"])})
 
         # Filter by items with/without reviews
         if p.get("reviews") == "yes":
@@ -253,6 +252,11 @@ class File(BaseModel):
     SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
     PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not \
     been fully checked by staff."
+    ICONS = {
+        "explicit": {"glyph": "🔞", "title": "This file contains explicit content."},
+        "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its content have not been fully checked by staff."},
+        "featured": {"glyph": "🗝️", "title": "This file is a featured world."},
+    }
 
     """
     Fields:
@@ -567,9 +571,6 @@ class File(BaseModel):
 
     def article_url(self):
         return "/article/" + self.letter + "/" + self.filename
-
-    def wiki_url(self):
-        return "http://zzt.org/zu/wiki/" + self.title
 
     def get_detail_ids(self):
         details = self.details.all()
@@ -1060,7 +1061,6 @@ class File(BaseModel):
             return "<i>Unknown</i>"
         return self.publish_date.strftime("%b %d, %Y, %I:%M:%S %p")
 
-
     @mark_safe
     def boards_str(self):
         return "{} / {}".format(self.playable_boards, self.total_boards)
@@ -1087,31 +1087,22 @@ class File(BaseModel):
             output.append((LANGUAGES.get(i, i), i))
         return output
 
-    def as_detailed_block(self, show_links=True, debug=False, extras=[]):
+    def as_detailed_block(self, extras=[], **kwargs):
+        debug = kwargs.get("debug", False)
         template = "museum_site/blocks/generic-detailed-block.html"
-        context = dict(
-            tag=dict(opening="div", closing="/div"),
-            pk=self.pk,
-            hash_id=self.filename,
-            model=self.model_name,
+        context = self.initial_context(view="detailed")
+        context.update(
+            tag={"opening": "div", "closing": "/div"},
             extras=extras,
-            model_extras=[],
             columns=[],
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
             title=LinkDatum(
                 value=self.title,
                 url=self.url(),
-                roles=[
-                    "explicit" if self.explicit else "",
-                    "unpublished" if self.is_uploaded() else "",
-                ]
+                icons=context["icons"],
             ),
-            roles=[
-                "unpublished" if self.is_uploaded() else "",
-            ],
-            prefix=File.PREFIX_UNPUBLISHED if self.is_uploaded() else "",
         )
+
+        # TODO: Awful system
         if hasattr(self, "extra_context"):
             context.update(self.extra_context)
 
@@ -1137,104 +1128,96 @@ class File(BaseModel):
             (TextDatum(label="Publish Date", value=self.publish_date_str()) if not self.is_uploaded() and self.publish_date else ""),
         ])
 
-        # Append Debug Fields
-        if debug:
-            context["columns"][1].append(
-                LinkDatum(
-                    label="ID", value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/file/{}/change/".format(self.id),
-                ),
-            )
-
-        # Show model extras
-        if self.is_utility() and self.description:
-            context["model_extras"].append("museum_site/blocks/extra-utility.html")
-            context["utility_description"] = self.description
-
-        if self.is_lost() and self.description:
-            context["model_extras"].append("museum_site/blocks/extra-lost.html")
-            context["lost_description"] = self.description
-
         # Prepare Links
-        if show_links:
-            stub = StubDatum()
-            links = [
-                LinkDatum(
-                    value="Download",
-                    url=self.download_url(),
-                    role="explicit" if self.explicit else ""
-                ),
-                LinkDatum(
-                    value="Play Online",
-                    url=self.play_url(),
-                    role="explicit" if self.explicit else ""
-                ),
-                LinkDatum(
-                    value="View Files",
-                    url=self.file_url(),
-                    role="explicit" if self.explicit else ""
-                ),
-                LinkDatum(
-                    value="Reviews ({})".format(self.review_count),
-                    url=self.review_url(),
-                ),
-                LinkDatum(
-                    value="Articles ({})".format(self.article_count),
-                    url=self.article_url(),
-                ),
-                LinkDatum(
-                    value="Attributes",
-                    url=self.attributes_url(),
-                ),
-            ]
+        links = []
+        stub = StubDatum()
+        # Download
+        if self.downloads.count():
+            value = "Downloads…"
+            url = "/download/{}".format(self.identifier)
+        else:
+            value = "Download"
+            url=self.download_url()
 
-            # Modifiers
-            # Multiple Downloads
-            if self.downloads.count():
-                links[0].context["value"] = "Downloads…"
-                links[0].context["url"] = "/download/{}".format(self.identifier)
+        link = LinkDatum(
+            value=value,
+            url=url,
+            roles=["download-link"],
+            icons=context["major_icons"],
+        )
+        links.append(link)
+        # Play Online
+        if (
+            not self.is_uploaded() and
+            (self.archive_name == "" and not self.supports_zeta_player())
+        ):
+            link = stub
+        else:
+            link = LinkDatum(
+                value="Play Online", url=self.play_url(),
+                roles=["play-link"], icons=context["major_icons"],
+            )
+        links.append(link)
+        # View Files
+        link = LinkDatum(
+            value="View Files", url=self.file_url(),
+            roles=["view-link"], icons=context["major_icons"],
+        )
+        links.append(link)
+        # Reviews
+        link = LinkDatum(
+            value="Reviews ({})".format(self.review_count),
+            url=self.review_url(), roles=["review-link"]
+        )
+        links.append(link)
+        # Articles
+        link = LinkDatum(
+            value="Articles ({})".format(self.article_count),
+            url=self.article_url(), roles=["article-link"]
+        )
+        links.append(link)
+        # Attributes
+        link = LinkDatum(
+            value="Attributes", url=self.attributes_url(),
+            roles=["attribute-link"]
+        )
+        links.append(link)
 
-            # Explicit?
-            if self.explicit:
-                links[0].context["roles"] = ["explicit"]
-                links[1].context["roles"] = ["explicit"]
-                links[2].context["roles"] = ["explicit"]
+        # Missing File
+        if self.is_lost():
+            (links[0], links[1], links[2]) = (stub, stub, stub)
 
-            # Unsupported Browser Play
-            if (
-                not self.is_uploaded() and
-                (self.archive_name == "" and not self.supports_zeta_player())
-            ):
-                links[1] = stub
+        # Unpublished File
+        if self.is_uploaded():
+            links[3] = stub
 
-            # Missing File
-            if self.is_lost():
-                links[0] = stub
-                links[1] = stub
-                links[2] = stub
+        # No Articles
+        if self.article_count < 1:
+            links[4] = stub
 
-            # Unpublished File
-            if self.is_uploaded():
-                links[3] = stub
+        # Debug
+        if debug:
+            # Debug Fields
+            link = LinkDatum(
+                label="ID", value=self.id, target="_blank", kind="debug",
+                url="/admin/museum_site/file/{}/change/".format(self.id),
+            )
+            context["columns"][1].append(link)
 
-            # No Articles
-            if self.article_count < 1:
-                links[4] = stub
+            # Debug Links
+            link = LinkDatum(
+                value="Edit {}".format(self.id), kind="debug",
+                url="/admin/museum_site/file/{}/change/".format(self.id),
+            )
+            links.append(link)
+            link = LinkDatum(
+                value="Tools {}".format(self.id), kind="debug",
+                url="/admin/museum_site/file/{}/change/".format(self.id),
+            )
+            links.append(link)
 
-            if debug:
-                links.append(
-                    LinkDatum(
-                        value="Edit {}".format(self.id), kind="debug",
-                        url="/admin/museum_site/file/{}/change/".format(self.id),
-                    ),
-                )
-                links.append(
-                    LinkDatum(
-                        value="Tools {}".format(self.id), kind="debug",
-                        url="/admin/museum_site/file/{}/change/".format(self.id),
-                    ),
-                )
-            context["links"] = links
+        # Assemble
+        context["links"] = links
 
         # Additional fields when browsing Featured Worlds
         if extras and "museum_site/blocks/extra-featured-world.html" in extras:
@@ -1244,23 +1227,13 @@ class File(BaseModel):
 
     def as_list_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-list-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            hash_id=self.filename,
-            url=self.url,
+        context = self.initial_context(view="list")
+        context.update(
             cells=[
                 LinkDatum(value="DL", url=self.download_url(), tag="td",
-                    roles=[
-                        "unpublished" if self.is_uploaded() else "",
-                        "explicit" if self.explicit else "",
-                    ]
-                ),
+                    icons=context["major_icons"]),
                 LinkDatum(value=self.title, url=self.url(), tag="td",
-                roles=[
-                        "unpublished" if self.is_uploaded() else "",
-                        "explicit" if self.explicit else "",
-                    ]
+                    icons=context["major_icons"]
                 ),
                 SSVLinksDatum(values=self.ssv_list("author"), url="/search?author=", tag="td"),
                 SSVLinksDatum(values=self.ssv_list("company"), url="/search?company=", tag="td"),
@@ -1272,10 +1245,6 @@ class File(BaseModel):
                 ),
                 TextDatum(value=self.rating_str(show_maximum=False) if self.rating else "—", tag="td"),
             ],
-            roles=[
-                "unpublished" if self.is_uploaded() else "",
-                "explicit" if self.explicit else "",
-            ]
         )
         if hasattr(self, "extra_context"):
             context.update(self.extra_context)
@@ -1283,31 +1252,23 @@ class File(BaseModel):
         # Modifications
         if self.downloads.count():
             context["cells"][0].context["value"] = "DLs…"
-            context["cells"][0].context["url"] = "/download/{}".format(self.identifier)
-
+            context["cells"][0].context["url"] = "/download/{}".format(
+                self.identifier
+            )
 
         return render_to_string(template, context)
 
     def as_gallery_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-gallery-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            hash_id=self.filename,
+        context = self.initial_context(view="gallery")
+        context.update(
             preview=dict(url=self.preview_url, alt=self.preview_url),
             title=LinkDatum(
                 value=self.title,
                 url=self.url(),
-                roles=[
-                    "explicit" if self.explicit else "",
-                    "unpublished" if self.is_uploaded() else "",
-                ]
-
+                icons=context["icons"],
             ),
             columns=[],
-            roles=[
-                "unpublished" if self.is_uploaded() else "",
-            ]
         )
         if hasattr(self, "extra_context"):
             context.update(self.extra_context)
@@ -1325,3 +1286,38 @@ class File(BaseModel):
             )
 
         return render_to_string(template, context)
+
+    def initial_context(self, **kwargs):
+        debug = kwargs.get("debug", False)
+        context = {
+            "pk": self.pk,
+            "model": self.model_name,
+            "hash_id": self.filename,
+            "preview": {"url": self.preview_url, "alt": self.preview_url},
+            "url": self.url(),
+            "roles": [],
+            "icons": [],
+            "major_icons": [],
+            "model_extras": [],
+        }
+
+        if self.explicit:
+            context["roles"].append("explicit")
+            context["icons"].append(File.ICONS["explicit"])
+            context["major_icons"].append(File.ICONS["explicit"])
+        if self.is_uploaded():
+            context["roles"].append("unpublished")
+            context["icons"].append(File.ICONS["unpublished"])
+            context["major_icons"].append(File.ICONS["unpublished"])
+        if self.is_featured_world():
+            context["roles"].append("featured")
+            context["icons"].append(File.ICONS["featured"])
+
+        # Extra modules
+        if self.is_utility() and self.description:
+            context["model_extras"].append("museum_site/blocks/extra-utility.html")
+            context["utility_description"] = self.description
+        if self.is_lost() and self.description:
+            context["model_extras"].append("museum_site/blocks/extra-lost.html")
+            context["lost_description"] = self.description
+        return context

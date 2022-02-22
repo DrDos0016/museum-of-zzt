@@ -168,3 +168,13 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
     text-align:center;
 }
 /* End Links for File blocks */
+
+.link-icons
+{
+    padding-right:0.5ch;
+}
+
+.link-icons .icon:hover
+{
+    cursor:help;
+}

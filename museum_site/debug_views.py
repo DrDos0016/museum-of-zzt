@@ -18,7 +18,7 @@ def debug(request, filename=None):
     s = Series.objects.get(pk=10)
 
     test_wozzt = WoZZT_Queue.objects.filter(
-        id__in=[4610, 4611, 4612, 4613, 4614, 4615, 4616]
+        id__in=[5155, 5156, 5157, 5158]
     )
 
     test_reviews = Review.objects.filter(
@@ -26,7 +26,7 @@ def debug(request, filename=None):
     )
 
     test_zfiles = File.objects.filter(
-        id__in=[327, 420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415]
+        id__in=[327, 420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415, 3471]
     ).order_by("id")
 
     test_articles = Article.objects.filter(
@@ -36,7 +36,6 @@ def debug(request, filename=None):
     test_series = Series.objects.filter(
         id__in=[10, 11, 12, 1]
     ).order_by("-id")
-
 
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = get_selected_view_format(request, data["available_views"])
@@ -48,7 +47,7 @@ def debug(request, filename=None):
     data["series_table_header"] = table_header(test_series[0].table_fields)
 
     data["wozzt"] = test_wozzt
-    #data["reviews"] = test_reviews
+    data["reviews"] = test_reviews
     data["zfiles"] = test_zfiles
     data["articles"] = test_articles
     data["series"] = test_series

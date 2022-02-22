@@ -299,6 +299,7 @@ class Article(BaseModel):
         context = dict(
             pk=self.pk,
             model=self.model_name,
+            hash_id="article-{}".format(self.pk),
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
             title = LinkDatum(
@@ -346,6 +347,7 @@ class Article(BaseModel):
         context = dict(
             pk=self.pk,
             model=self.model_name,
+            hash_id="article-{}".format(self.pk),
             url=self.url,
             cells=[
                 LinkDatum(
@@ -374,6 +376,7 @@ class Article(BaseModel):
         context = dict(
             pk=self.pk,
             model=self.model_name,
+            hash_id="article-{}".format(self.pk),
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
             title=LinkDatum(

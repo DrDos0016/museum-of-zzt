@@ -122,7 +122,7 @@ $(document).ready(function (){
         {% if article.last_revised %}<div class="revised-date">(Latest revision: {{article.last_revised}})</div>{% endif %}
         {% if article.revision_details %}<div class="revision-details">Revisions:<br><textarea id="revision-text" readonly>{{article.revision_details}}</textarea></div>{% endif %}
         {% if request.session.DEBUG %}<a href="/admin/museum_site/article/{{article.id}}/change/" class="debug">Edit Article {{article.id}}</a>{% endif %}
-        <p class="summary">{{article.summary}}</p>
+        <p class="summary">{{article.description}}</p>
     </div>
      <img src="{{article.preview}}" class="screenshot-thumb preview">
 </div>

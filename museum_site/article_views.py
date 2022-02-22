@@ -60,7 +60,9 @@ def article_directory(request, category="all", page_num=1):
         "view": get_selected_view_format(request, Article.supported_views),
         "sort_options": get_sort_options(
             Article.sort_options, debug=request.session.get("DEBUG")
-        )
+        ),
+        "model": "Article",
+        "sort": request.GET.get("sort"),
     }
 
     prefix_templates = {
@@ -101,6 +103,13 @@ def article_directory(request, category="all", page_num=1):
         qs = qs.order_by("-publish_date")
 
     data = get_pagination_data(request, data, qs)
+
+    if data["page"].object_list:
+        data["first_item"] = data["page"].object_list[0]
+        data["last_item"] = (
+            data["page"].object_list[len(data["page"].object_list) - 1]
+        )
+
     return render(request, "museum_site/generic-directory.html", data)
 
 

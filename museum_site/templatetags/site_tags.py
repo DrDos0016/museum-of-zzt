@@ -119,6 +119,9 @@ def guide_words(*args, **kwargs):
     items = (kwargs.get("first_item"), kwargs.get("last_item"))
     link_text = ["???", "???"]
 
+    print("SORT", sort)
+    print("MODEL", model)
+
     if sort is None:
         sort = ""
 
@@ -175,6 +178,38 @@ def guide_words(*args, **kwargs):
             )
         else:
             output = ""
+    elif model == "Article":
+        # Figure out link text
+        for x in range(0, len(link_text)):
+            if sort == "author":
+                if items[x].author:
+                    link_text[x] = items[x].author
+                else:
+                    link_text[x] = "-Unknown Author-"  # This shouldn't appear
+            elif sort == "-date" or sort == "date":
+                if items[x].publish_date and items[x].publish_date.year > 1970:
+                    link_text[x] = items[x].publish_date.strftime("%b %d, %Y")
+                else:
+                    link_text[x] = "-Unknown Date-"
+            elif sort == "category":
+                link_text[x] = items[x].category
+            elif "id" in sort:
+                link_text[x] = "[{}] {}".format(items[x].id, items[x].title)
+            else:  # Title
+                link_text[x] = items[x].title
+
+        if items[0] != "" and items[1] != "":
+            output = """
+            <div class="guide-words">
+                <span><a class="left" href="#article-{}">{}</a></span>
+                <span><a class="right" href="#article-{}">{}</a></span>
+            </div>
+            """.format(
+                items[0].id, link_text[0],
+                items[1].id, link_text[1]
+            )
+        else:
+            output = ""
 
     return mark_safe(output + "\n")
 
@@ -204,7 +239,7 @@ def meta_tags(*args, **kwargs):
 
     if kwargs.get("article"):
         tags["author"][1] = kwargs["article"].author
-        tags["description"][1] = kwargs["article"].summary
+        tags["description"][1] = kwargs["article"].description
         tags["og:title"][1] = kwargs["article"].title + " - Museum of ZZT"
         tags["og:image"][1] = base_url + kwargs["article"].preview
     elif kwargs.get("file") and kwargs.get("file") != "Local File Viewer":
@@ -455,7 +490,9 @@ def ssv_links(raw, param, lookup=""):
 
 
 @register.simple_tag()
-def generic_block_loop(items, view="detailed", header=None, debug=False, extras=None):
+def generic_block_loop(
+    items, view="detailed", header=None, debug=False, extras=None
+):
     output = ""
 
     if view == "list":
