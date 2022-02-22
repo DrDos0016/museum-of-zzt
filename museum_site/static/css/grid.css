@@ -1009,6 +1009,20 @@ form .field .scrolling-checklist
 #fp-file-frame .view-more { grid-area:left-link; }
 #fp-file-frame .view-more + .view-more { grid-area:right-link }
 
+@media (max-width: 1610px)
+{
+    #fp-file-frame .gallery-frame > .model-block .preview-image.thumbnail
+    {
+        width:160px;
+    }
+
+    #fp-file-frame .gallery-frame > .model-block
+    {
+        max-width:180px;
+    }
+}
+*/
+
 /*
 #fp-new-files-grid
 {
