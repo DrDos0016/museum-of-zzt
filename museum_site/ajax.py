@@ -95,30 +95,6 @@ def get_zip_file(request):
         )
 
 
-def deep_search(request, phase):
-    phase = int(phase)
-    if phase == 1:
-        title = request.GET.get("title")
-        author = request.GET.get("author")
-        query = request.GET.get("query")
-
-        qs = File.objects.all()
-        if title:
-            qs = qs.filter(title__icontains=title)
-        if author:
-            qs = qs.filter(author__icontains=author)
-
-        count = qs.count()
-
-        print("QS contains...")
-        for f in qs:
-            print(f)
-
-    return HttpResponse(
-        "Criteria narrowed to {} files. Beginning search.".format(count)
-    )
-
-
 def debug_file(request):
     if not os.path.isfile("/var/projects/DEV"):
         return HttpResponse("Not on production.")

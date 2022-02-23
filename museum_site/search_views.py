@@ -49,19 +49,3 @@ def article_search(request):
     data["form"] = form
 
     return render(request, "museum_site/article_search.html", data)
-
-
-@non_production
-def deep_search(request):
-    """ Returns page containing multiple filters to use when searching """
-    # NOTE: UNIMPLEMENTED
-    data = {
-        "title": "Deep Search",
-        "mode": "search",
-        "genres": GENRE_LIST,
-        "years": [str(x) for x in range(1991, YEAR + 1)]
-    }
-
-    # data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
-    return render(request, "museum_site/deep_search.html", data)
-

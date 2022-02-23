@@ -141,6 +141,11 @@ def file_directory(
             )
             qs = File.objects.advanced_search(cleaned_params)
 
+        # Display information if this was a 404 turned into an auto-search
+        if request.GET.get("err") == "404":
+            data["title"] = "Automatic Search Results"
+            data["prefix_template"] = "museum_site/prefixes/file-404.html"
+
     # Sort
     qs = sort_qs(qs, data["sort"], File.sort_keys, default_sort)
 

@@ -1,16 +1,15 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
+{% load site_tags %}
 
 {% block content %}
 <section id="content" class="block">
 
 <h1>Series Overview</h1>
 
-{% include "museum_site/blocks/series-detailed-block.html" %}
+{{series.as_detailed_block}}
 
 <h2>Articles in Series</h2>
-{% for article in articles %}
-{% include "museum_site/blocks/article_detailed_block.html" %}
-{% endfor %}
+{% generic_block_loop items=articles debug=debug extras=extras %}
 </section>
 {% endblock %}

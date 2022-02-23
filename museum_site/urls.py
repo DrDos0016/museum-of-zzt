@@ -275,9 +275,6 @@ urlpatterns = [
     path(
         "advanced-search/", museum_site.search_views.advanced_search,
         name="advanced_search"),
-    path(
-        "deep-search/", museum_site.search_views.deep_search,
-        name="deep_search"),
     path("search/", museum_site.file_views.file_directory, name="search"),
 
     # User
@@ -422,7 +419,6 @@ urlpatterns = [
     path("zeta-live/", museum_site.zeta_views.zeta_live),
 
     # AJAX
-    path("ajax/deep-search/phase-<int:phase>/", museum_site.ajax.deep_search),
     path(
         "ajax/get-author-suggestions/", museum_site.ajax.get_author_suggestions
     ),
