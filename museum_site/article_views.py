@@ -217,19 +217,11 @@ def patron_articles(request):
 
     # Tweak titles and URLs for this page
     for a in upcoming:
-        if data["access"] == "upcoming":
-            a.extra_context = {
-                "password_qs": password_qs
-            }
-        elif data["access"] == "unpublished":
-            a.extra_context = {
-                "password_qs": password_qs
-            }
+        if data["access"] in ["upcoming", "unpublished"]:
+            a.extra_context = {"password_qs": password_qs}
 
     for a in unpublished:
         if data["access"] == "unpublished":
-            a.extra_context = {
-                "password_qs": password_qs
-            }
+            a.extra_context = {"password_qs": password_qs}
 
     return render(request, "museum_site/patreon_articles.html", data)

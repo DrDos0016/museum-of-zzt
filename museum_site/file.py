@@ -1102,10 +1102,6 @@ class File(BaseModel):
             ),
         )
 
-        # TODO: Awful system
-        if hasattr(self, "extra_context"):
-            context.update(self.extra_context)
-
         # Prepare Columns
         context["columns"].append([
             SSVLinksDatum(label="Author", values=self.ssv_list("author"), url="/search?author="),
@@ -1246,8 +1242,6 @@ class File(BaseModel):
                 TextDatum(value=self.rating_str(show_maximum=False) if self.rating else "—", tag="td"),
             ],
         )
-        if hasattr(self, "extra_context"):
-            context.update(self.extra_context)
 
         # Modifications
         if self.downloads.count():
@@ -1270,8 +1264,6 @@ class File(BaseModel):
             ),
             columns=[],
         )
-        if hasattr(self, "extra_context"):
-            context.update(self.extra_context)
 
         context["columns"].append([
             SSVLinksDatum(values=self.ssv_list("author"), url="/search?author=")
@@ -1300,6 +1292,9 @@ class File(BaseModel):
             "major_icons": [],
             "model_extras": [],
         }
+
+        if hasattr(self, "extra_context"):
+            context.update(self.extra_context)
 
         if self.explicit:
             context["roles"].append("explicit")

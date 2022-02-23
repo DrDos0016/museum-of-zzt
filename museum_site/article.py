@@ -224,11 +224,6 @@ class Article(BaseModel):
 
     def url(self):
         output = "/article/{}/{}".format(self.id, slugify(self.title))
-        if (
-            hasattr(self, "extra_context") and
-            self.extra_context.get("password_qs")
-        ):
-            output += self.extra_context["password_qs"]
         return output
 
     @property
@@ -308,9 +303,6 @@ class Article(BaseModel):
             columns=[],
         )
 
-        if hasattr(self, "extra_context"):
-            context.update(self.extra_context)
-
         if self.published == self.UPCOMING:
             context["title"].context["roles"] = [
                 "restricted", "article-upcoming"
@@ -364,9 +356,6 @@ class Article(BaseModel):
             ],
         )
 
-        if hasattr(self, "extra_context"):
-            context.update(self.extra_context)
-
         if self.is_restricted:
             context["cells"][0].context["roles"] = ["restricted"]
         return render_to_string(template, context)
@@ -381,9 +370,6 @@ class Article(BaseModel):
             ),
             columns=[],
         )
-
-        if hasattr(self, "extra_context"):
-            context.update(self.extra_context)
 
         context["columns"].append([
             TextDatum(value=self.author),
@@ -418,8 +404,17 @@ class Article(BaseModel):
             "pk": self.pk,
             "model": self.model_name,
             "hash_id": "article-{}".format(self.pk),
-            "url": self.url,
+            "url": self.url(),
             "preview": {"url": self.preview_url, "alt": self.preview_url},
+            "icons": [],
+            "major_icons": [],
             "model_extras": [],
         }
+
+        if hasattr(self, "extra_context"):
+            context.update(self.extra_context)
+
+            if self.extra_context.get("password_qs"):
+                context["url"] = context["url"] + self.extra_context["password_qs"]
+
         return context
