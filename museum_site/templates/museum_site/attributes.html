@@ -40,11 +40,6 @@
 {% block world_content %}
 {{file.as_detailed_block}}
 
-{% comment %}
-            "spotlight", "supported_actions", "supports_zeta_player", "title",
-            "total_boards", "upload_date", "zeta_config", "zeta_config_id"
-{% endcomment %}
-
 <h2 id="heading-attr">File Attributes</h2>
 <table class="dataTable">
 <tr><th>Aliases</th><td><a href="#heading-aliases">{{file.aliases.count}}</a></td></tr>
@@ -52,9 +47,9 @@
 <tr><th>Author</th><td>{{file.author}}</td></tr>
 <tr><th>Boards Playable/Total</th><td>{{file.playable_boards}} / {{file.total_boards}}</td></tr>
 <tr><th>MD5 Checksum</td><td class="caps">{{file.checksum}}</td></tr>
-<tr><th>Company</th><td>{{file.company|default:"<i>None</i>"}}</td></tr>
+<tr><th>Company</th><td>{{file.company|default:"<i>No company</i>"}}</td></tr>
 <tr><th>Explicit</th><td>{{file.explicit}}</td></tr>
-<tr><th>Description</th><td>{% if file.description %}<textarea>{{file.description}}</textarea>{% else %}<i>None</i>{% endif %}</td></tr>
+<tr><th>Description</th><td>{% if file.description %}<textarea>{{file.description}}</textarea>{% else %}<i>No description</i>{% endif %}</td></tr>
 <tr><th>Alternate Downloads</th><td><a href="#heading-downloads">{{file.downloads.count}}</a></td></tr>
 <tr><th>Details</th><td><a href="#heading-details">{{file.details.count}}</a></td></tr>
 <tr><th>File Exists</th><td>{{file.file_exists}}</td></tr>
@@ -62,11 +57,10 @@
 <tr><th>Genre</th><td>{{file.genre}}</td></tr>
 <tr><th>ID</th><td>{{file.id}}</td></tr>
 <tr><th>Identifier</th><td>{{file.identifier}}</td></tr>
-<tr><th>Internet Archive Identifier</th><td>{% if file.archive_name %}<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">{{file.archive_name}}{% else %}<i>None</i>{% endif %}</td></tr>
+<tr><th>Internet Archive Identifier</th><td>{% if file.archive_name %}<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">{{file.archive_name}}{% else %}<i>No identifier</i>{% endif %}</td></tr>
 <tr><th>Language</th><td>{{file.language_list}}</td></tr>
 <tr><th>Last Modified</th><td>{{file.last_modified}}</td></tr>
 <tr><th>Letter</th><td class="caps">{{file.letter}}</td></tr>
-{% comment %}<tr><th>License</th><td>{{file.license}}</i></td></tr>{% endcomment %}
 <tr><th>Publish Date</th><td>{{file.publish_date}}</td></tr>
 <tr><th>Rating</th><td>{{file.rating}} / 5.00</td></tr>
 <tr><th>Release Date</th><td>{{file.release_date}}</td></tr>
@@ -78,13 +72,19 @@
 <tr><th>Title</th><td>{{file.title}}</td></tr>
 <tr><th>Upload Date</th><td>{{file.upload_date}}</td></tr>
 <tr><th>Zeta Configuration</th><td>{{file.zeta_config}}</td></tr>
+{% if request.user.is_staff %}
+<tr><th colspan="2" style="background:red">Staff Only Information</th></tr>
+<tr><th>Sort Title</th><td>{{file.sort_title}}</td></tr>
+<tr><th>License</th><td>{{file.license}}</td></tr>
+<tr><th>License Source</th><td>{{file.license_source}}</td></tr>
+<tr><th>Can Spotlight</th><td>{{file.spotlight}}</td></tr>
+{% endif %}
 </table>
 
 <h2 id="heading-permissions">File Permissions</h2>
 {% with file.supported_actions as supported_actions %}
 <table>
 <tr><th>Can Review</th><td>{{file.can_review}}</td></tr>
-<tr><th>Can Spotlight</th><td>{{file.spotlight}}</td></tr>
 <tr><th>Can Download</th><td>{{supported_actions.download}}</td></tr>
 <tr><th>Can Play</th><td>{{supported_actions.play}}</td></tr>
 <tr><th>Can View</th><td>{{supported_actions.view}}</td></tr>
