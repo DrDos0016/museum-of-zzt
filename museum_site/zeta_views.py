@@ -158,6 +158,21 @@ def zeta_launcher(
             data["zeta_config"].commands.replace("{font_file}", generic_font)
         )
 
+    # Extra work for custom EXE
+    if data["zeta_config"].name.startswith("Use Included EXE"):
+        generic_exe = ""
+        zip_file = zipfile.ZipFile(os.path.join(data["file"].phys_path()))
+        files = zip_file.namelist()
+        for f in files:
+            if f.lower().endswith(".exe"):
+                generic_exe = f
+            # Prioritize these two
+            if f.lower() in ["zzt.exe", "superz.exe"]:
+                break
+        data["zeta_config"].commands = (
+            data["zeta_config"].commands.replace("{executable_file}", generic_exe)
+        )
+
     # Override for "Live" Zeta edits
     if request.GET.get("live"):
         data["zeta_live"] = True
