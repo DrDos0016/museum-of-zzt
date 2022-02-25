@@ -103,6 +103,13 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
     "title"
     "data";
     margin:0;
+    max-width
+}
+
+.model-block.gallery .data
+{
+    max-width:240px;
+    margin:auto;
 }
 
 .model-block .extra
@@ -149,7 +156,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
     font-weight:normal;
     border-bottom:1px dotted #000;
     max-width:240px;
-    margin:0;
+    margin:auto;
 }
 
 .model-block.gallery .datum
