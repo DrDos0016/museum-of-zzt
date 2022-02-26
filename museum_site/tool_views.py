@@ -35,7 +35,6 @@ def add_livestream(request, pk):
         "file": File.objects.get(pk=pk),
         "today": str(datetime.now())[:10]
     }
-    print(SITE_ROOT)
 
     if request.POST.get("action"):
         if request.POST.get("pk"):
@@ -212,7 +211,7 @@ def extract_font(request, pk):
             data["result"] = "Ripped {}-{}.png".format(f_id, charset_name)
         except Exception as e:
             data["result"] = "Could not rip font!"
-            print(e)
+            record(e)
 
         # Remove the file
         os.remove(os.path.join(DATA_PATH, request.GET["font"]))
@@ -233,8 +232,6 @@ def log_viewer(request):
 
     if request.GET.get("log"):
         path = os.path.join(SITE_ROOT, "log", request.GET["log"])
-        print(path)
-
         stat = os.stat(path)
         data["size"] = stat.st_size
         data["modified"] = datetime.fromtimestamp(stat.st_mtime)
@@ -272,9 +269,6 @@ def manage_details(request, letter, filename):
     if request.method == "POST":
         data["orig_details"] = data["detail_ids"]
         data["new_details"] = [int(i) for i in request.POST.getlist("details")]
-
-        print(data["orig_details"])
-        print(data["new_details"])
 
         for d in data["orig_details"]:
             if d not in data["new_details"]:
@@ -405,7 +399,6 @@ def patron_input(request):
     ).order_by("user__username")
 
     data["patrons"] = []
-    print("CAT IS", category)
     for p in patrons:
         if category == "stream-poll-nominations":
             value = p.stream_poll_nominations
@@ -487,10 +480,8 @@ def publication_pack_file_associations(request):
                 ids = ids[:ids.find('"')]
                 data["ids"] = ids.split(",")
                 break
-        print(ids)
         if data["ids"]:
             for i in data["ids"]:
-                print(i)
                 f = File.objects.filter(pk=int(i)).first()
                 if f:
                     f.articles.add(int(request.GET["pk"]))
@@ -642,7 +633,6 @@ def replace_zip(request, pk):
 
     if request.POST.get("action") == "replace-zip":
         file_path = data["file"].phys_path()
-        print(request.FILES)
         with open(file_path, 'wb+') as fh:
             for chunk in request.FILES["replacement"].chunks():
                 fh.write(chunk)
@@ -900,7 +890,6 @@ def set_screenshot(request, pk):
         )
         data["board_list"] = []
         for board in z.boards:
-            print(board.title)
             data["board_list"].append(board.title)
 
     if request.GET.get("board"):

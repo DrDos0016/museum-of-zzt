@@ -33,12 +33,12 @@ def get_zip_file(request):
         zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, zip))
         file = zip.open(filename)
     except NotImplementedError as error:
-        print(filename)
+        record(filename)
         return HttpResponse("Unimplemented Compression Method:" + str(error))
     except Exception as error:
-        print(filename)
-        print(type(error))
-        print(error)
+        record(filename)
+        record(type(error))
+        record(error)
         return HttpResponse(
             "An error occurred, and the file could not be retreived."
         )

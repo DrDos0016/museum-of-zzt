@@ -79,8 +79,6 @@ class GroupedCheckboxWidget(forms.MultiWidget):
         context["choices"] = self.add_headers(self.choices)
         context["name"] = name
         context["value"] = value
-        print("VALUE", value)
-        print("LIST?", attrs)
         return context
 
 

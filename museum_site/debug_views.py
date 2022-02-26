@@ -54,7 +54,7 @@ def debug(request, filename=None):
     if request.GET.get("serve"):
         return serve_file(request.GET.get("serve"), request.GET.get("as", ""))
 
-    print(request.session["captcha-seed"])
+    record(request.session["captcha-seed"])
 
     if filename:
         return render(
@@ -66,11 +66,11 @@ def debug(request, filename=None):
 
 def debug_advanced_search(request):
     data = {"title": "Advanced Search"}
-    print("TODO: Make sure to support non-english!!")
+    record("TODO: Make sure to support non-english!!")
 
     if len(request.GET):
         form = AdvancedSearchForm(request.GET)
-        print("HACKY TIME")
+        record("HACKY TIME")
         form.is_valid()
     else:
         form = AdvancedSearchForm(initial={"reviews": "any", "articles": "any", "details":[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY]})

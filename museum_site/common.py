@@ -335,7 +335,7 @@ def discord_announce_review(review, env=None):
         env = ENV
 
     if env != "PROD":
-        print("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
+        record("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
         return False
 
     preview_url = HOST + "static/" + urllib.parse.quote(
@@ -347,7 +347,7 @@ def discord_announce_review(review, env=None):
         "**{}** written by {}\n"
         "Read: https://museumofzzt.com{}#rev-{}\n"
     ).format(
-        review.file.title, review.title, review.get_author(),
+        review.zfile.title, review.title, review.get_author(),
         urllib.parse.quote(review.zfile.review_url()), review.id
     )
 
@@ -371,7 +371,7 @@ def discord_announce_upload(upload, env=None):
         env = ENV
 
     if env != "PROD":
-        print("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
+        common("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
         upload.announced = True
         upload.save()
         return False
@@ -546,3 +546,8 @@ def clean_params(p, list_items=[]):
     for k in to_delete:
         del p[k]
     return p
+
+
+def record(*args, **kwargs):
+    if not os.path.isfile("/var/projects/museum-of-zzt/PROD"):
+        print(*args, **kwargs)

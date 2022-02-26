@@ -23,7 +23,7 @@ from museum.settings import STATIC_URL
 
 from .common import (
     slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP,
-    STATIC_PATH, optimize_image, epoch_to_unknown
+    STATIC_PATH, optimize_image, epoch_to_unknown, record
 )
 from .constants import SITE_ROOT, ZETA_RESTRICTED, LANGUAGES
 from .review import Review
@@ -698,7 +698,7 @@ class File(BaseModel):
         try:
             zf = zipfile.ZipFile(zip_path)
         except (FileNotFoundError, zipfile.BadZipFile):
-            print("Skipping due to bad zip")
+            record("Skipping due to bad zip")
             return False
 
         file_list = zf.namelist()
@@ -715,7 +715,7 @@ class File(BaseModel):
                 try:
                     zf.extract(file, path=temp_path)
                 except Exception:
-                    print("Could not extract {}. Aborting.".format(file))
+                    record("Could not extract {}. Aborting.".format(file))
                     return False
             else:
                 continue
@@ -738,7 +738,7 @@ class File(BaseModel):
                     false_positives += 1
                     continue
 
-                # print(to_explore)
+                # record(to_explore)
                 # This board is clearly accessible
                 accessible.append(idx)
 
@@ -766,13 +766,13 @@ class File(BaseModel):
 
                 # Get the connected boards via passages
                 for stat in z.boards[idx].stats:
-                    # print("ON BOARD IDX", idx)
+                    # record("ON BOARD IDX", idx)
                     try:
                         stat_name = z.boards[idx].get_element(
                             (stat.x, stat.y)
                         ).name
                         if stat_name == "Passage":
-                            # print("Found a passage at", stat.x, stat.y)
+                            # record("Found a passage at", stat.x, stat.y)
                             if stat.param3 not in to_explore:
                                 to_explore.append(stat.param3)
                     except IndexError:

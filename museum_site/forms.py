@@ -322,11 +322,8 @@ class AdvancedSearchForm(forms.Form):
     )
 
     def clean(self):
+        # TODO: IS THIS USED
         language = self.data["language"]
-
-        print("SELF.DATA", self.data)
-
-        print("Ok?", language)
         return language
 
 

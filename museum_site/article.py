@@ -395,7 +395,6 @@ class Article(BaseModel):
 
     @property
     def early_access_price(self):
-        print(self.published, "is published for", self.title)
         return self.EARLY_ACCESS_PRICING.get(self.published, "???")
 
     def initial_context(self, **kwargs):

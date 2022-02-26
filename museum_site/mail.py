@@ -19,9 +19,9 @@ Subject: {}
         s = smtplib.SMTP("localhost")
         s.sendmail(frm, to, message)
     else:
-        print("========== DEBUG EMAIL ==========")
-        print(to, frm, subj, body)
-        print("=================================")
+        record("========== DEBUG EMAIL ==========")
+        record(to, frm, subj, body)
+        record("=================================")
 
 
 def send_account_verification_email(user, domain):

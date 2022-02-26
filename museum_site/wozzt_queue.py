@@ -17,7 +17,7 @@ from museum.settings import STATIC_URL
 from museum_site.datum import *
 from museum_site.base import BaseModel
 
-from .common import TEMP_PATH
+from .common import TEMP_PATH, record
 from .constants import (SITE_ROOT, DETAIL_ZZT, DETAIL_UPLOADED, DETAIL_GFX,
                         DETAIL_LOST)
 from .models import File
@@ -95,7 +95,7 @@ class WoZZT_Queue(BaseModel):
                 world_choices.append(f)
 
         if not world_choices:
-            print("WOZZT_QUEUE.PY: World choices was empty for", self.file_id)
+            record("WOZZT_QUEUE.PY: World choices was empty for", self.file_id)
             return False
 
         selected = random.choice(world_choices)
@@ -105,7 +105,7 @@ class WoZZT_Queue(BaseModel):
         try:
             zf.extract(selected, TEMP_PATH)
         except NotImplementedError:
-            print(
+            record(
                 "WOZZT_QUEUE.PY: Failed to extract using file #", self.file_id
             )
             return False
@@ -135,7 +135,7 @@ class WoZZT_Queue(BaseModel):
                     None  # Already removed earlier
 
         if len(board_possibilities) == 0:
-            print(
+            record(
                 "WOZZT_QUEUE.PY: Ran out of board possibilities #",
                 self.file_id
             )
@@ -232,7 +232,7 @@ class WoZZT_Queue(BaseModel):
             resp = t.statuses.update(
                 status=self.tweet_text(), media_ids=img1, tweet_mode="extended"
             )
-            print(resp)
+            #record(resp)
             twitter_id = resp.get("id")
             twitter_img = resp["entities"]["media"][0]["media_url"]
 
@@ -309,8 +309,8 @@ class WoZZT_Queue(BaseModel):
                 WEBHOOK_URL, headers={"Content-Type": "application/json"},
                 data=json.dumps(discord_data)
             )
-            print(resp)
-            print(resp.content)
+            record(resp)
+            record(resp.content)
         return True
 
     def delete_image(self):

@@ -315,9 +315,7 @@ def review(request, letter, filename):
         review_form = ReviewForm(request.POST)
 
         if review_form.is_valid():
-            print(review_form.cleaned_data.keys())
-
-            # Create and prepare new Upload object
+            # Create and prepare new Review object
             review = review_form.save(commit=False)
             if request.user.is_authenticated:
                 review.author = ""

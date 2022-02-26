@@ -218,7 +218,7 @@ def upload(request):
             return redirect("upload_complete", token=upload.edit_token)
 
         else:
-            print("An upload attempt failed.")
+            record("An upload attempt failed.")
 
     data["zgame_form"] = zgame_form
     data["play_form"] = play_form
@@ -261,30 +261,22 @@ def upload_delete(request):
 
     if request.method == "POST" and data.get("upload"):
         if request.POST.get("confirmation").upper() == "DELETE":
-            print("DELETING!")
-
-
             # Remove the physical file
             path = zfile.phys_path()
-            print("RM", path)
             if os.path.isfile(path):
                 os.remove(path)
 
             # Remove the Upload object
-            print("Delete upload")
             upload.delete()
 
             # Remove the preview image
             screenshot_path = zfile.screenshot_phys_path()
             if screenshot_path:
-                print(screenshot_path)
                 if os.path.isfile(screenshot_path):
                     os.remove(screenshot_path)
-                    print("Deleting screenshot")
 
             # Remove the file object
             zfile.delete()
-            print("Deleting zfile")
 
             return redirect("upload_delete_complete")
 
