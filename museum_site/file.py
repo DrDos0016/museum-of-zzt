@@ -1229,7 +1229,7 @@ class File(BaseModel):
                 LinkDatum(value="DL", url=self.download_url(), tag="td",
                     icons=context["major_icons"]),
                 LinkDatum(value=self.title, url=self.url(), tag="td",
-                    icons=context["major_icons"]
+                    icons=context["icons"]
                 ),
                 SSVLinksDatum(values=self.ssv_list("author"), url="/search?author=", tag="td"),
                 SSVLinksDatum(values=self.ssv_list("company"), url="/search?company=", tag="td"),
