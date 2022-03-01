@@ -146,7 +146,6 @@ def mass_downloads(request):
             data["counts"][year] = 1
         else:
             data["counts"][year] += 1
-    print(data["counts"])
     """
 
     return render(request, "museum_site/mass_downloads.html", data)
@@ -293,8 +292,6 @@ def site_credits(request):
     data["supporters"] = supporters
     data["bigger_supporters"] = bigger_supporters
     data["biggest_supporters"] = biggest_supporters
-
-    #  print(no_longer_hardcoded)
 
     return render(request, "museum_site/site-credits.html", data)
 
