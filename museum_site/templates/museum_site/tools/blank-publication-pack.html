@@ -5,6 +5,12 @@ Anything prior to the START line is discarded.
 {% templatetag openblock %} with "articles/{{year}}/{{publish_path}}/" as path {% templatetag closeblock %}
 <p></p>
 {% templatetag openblock %} with "{{file_ids_string}}"|get_files_by_id as files {% templatetag closeblock %}
+
+<h2>Contents</h2>
+<div class="gallery-frame">
+{% for f in files %}{% templatetag openvariable %}files.{{f.id}}.as_gallery_block{% templatetag closevariable %}
+{% endfor %}</div>
+
 {% for f in files %}
 <!--{{f.title}}-->
 {% templatetag openblock %} with files.{{f.id}} as file {% templatetag closeblock %}
