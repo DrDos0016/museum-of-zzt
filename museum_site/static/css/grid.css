@@ -1847,3 +1847,12 @@ img.zoomable.zoomed:hover
     cursor:zoom-out;
 }
 /* End Newer Zoom for thumbnails */
+
+#no-results
+{
+    margin:14px auto 14px auto;
+    font-family:cp437;
+    font-size:larger;
+    text-align:center;
+
+}

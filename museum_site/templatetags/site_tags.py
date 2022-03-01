@@ -495,6 +495,11 @@ def generic_block_loop(
 ):
     output = ""
 
+    # Empty sets
+    if len(items) == 0:
+        output = "<div id='no-results'><img src='/static/chrome/blank-board.png' %}'><p>Your query returned zero results!</p></div>"
+        return mark_safe(output)
+
     if view == "list":
         output += "<table>{}".format(header)
     elif view == "gallery":
