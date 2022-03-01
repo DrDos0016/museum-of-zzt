@@ -1,10 +1,40 @@
 {% extends "museum_site/main.html" %}
 {% load site_tags %}
 
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("#directory-filter-input").keyup(function (){
+        var val = $(this).val();
+
+        $(".directory .row").each(function (){
+            var entry = $(this).text().toLowerCase();
+
+            if (entry.indexOf(val) == -1)
+                $(this).addClass("none");
+            else
+                $(this).removeClass("none");
+        });
+    });
+
+    $("#clear-filter-input").click(function (){
+        $("#directory-filter-input").val("");
+        $("#directory-filter-input").keyup();
+    });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <section id="content" class="block">
 
 <h1>{{category|title}} Directory</h1>
+
+<div class="controls">
+    <input name="filter" value="" id="directory-filter-input">
+    <input type="button" value="Clear Filter" id="clear-filter-input">
+</div>
+
 <div class="directory">
 {% for row in list %}
     {% if forloop.counter0|divisibleby:split %}
