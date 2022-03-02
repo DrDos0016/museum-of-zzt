@@ -339,7 +339,7 @@ def discord_announce_review(review, env=None):
         return False
 
     preview_url = HOST + "static/" + urllib.parse.quote(
-         review.file.screenshot_url()
+         review.zfile.screenshot_url()
     )
 
     discord_post = (
