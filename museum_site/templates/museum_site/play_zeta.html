@@ -231,9 +231,8 @@ $(document).ready(function (){
     <button id="zoom-out" class="zoom" value="-"{% if zeta_player_scale == 1 %} disabled{% endif %}>-</button>
     <button id="zoom-in" class="zoom" value="+"{% if zeta_player_scale == 2 %} disabled{% endif %}>+</button>
     <button id="fullscreen">Fullscreen</button>
-    <br>
-    <a href="{% url 'manage_saved_data' %}?pk={{file.id}}">Manage Saved Data</a>
     {% if not components.advanced %}<button id="advanced-settings">Advanced Settings</button>{% endif %}
+    <br><a href="{% url 'manage_saved_data' %}?pk={{file.id}}">Manage Saved Data</a>
     {% if request.user.is_staff %}
     <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.id}}/">
         {% csrf_token %}
