@@ -110,6 +110,10 @@ $(document).ready(function (){
     });
 });
 </script>
+{% if veryspecial %}
+<script src="/static/js/debug-crop.js"></script>
+<script src="/static/js/debug-finalize.js"></script>
+{% endif %}
 {% endblock %}
 
 {% block world_content %}
@@ -121,7 +125,11 @@ $(document).ready(function (){
         {% if article.series.all %}<div class="series">Series: {{article.series_links|safe}}</div>{% endif %}
         {% if article.last_revised %}<div class="revised-date">(Latest revision: {{article.last_revised}})</div>{% endif %}
         {% if article.revision_details %}<div class="revision-details">Revisions:<br><textarea id="revision-text" readonly>{{article.revision_details}}</textarea></div>{% endif %}
-        {% if request.session.DEBUG %}<a href="/admin/museum_site/article/{{article.id}}/change/" class="debug">Edit Article {{article.id}}</a>{% endif %}
+        {% if request.session.DEBUG %}
+        <div><a href="/admin/museum_site/article/{{article.id}}/change/" class="debug">Edit Article {{article.id}}</a></div>
+        <div><a href="?spellcheck=1&page=all" class="debug">Spellcheck</a></div>
+        <div><a href="?finalize=1#finalization" class="debug">Finalize</a></div>
+        {% endif %}
         <p class="summary">{{article.description}}</p>
     </div>
      <img src="{{article.preview}}" class="screenshot-thumb preview">
@@ -161,14 +169,6 @@ $(document).ready(function (){
 <hr>
 {% endif %}
 <article class="{{article.category|slugify}}" data-article_id="{{article.id}}" data-schema="{{article.schema}}">
-{% if veryspecial %}
-<div class="debug">
-    <script src="/static/js/debug-crop.js"></script>
-    <script src="/static/js/debug-finalize.js"></script>
-    <a href="?spellcheck=1&page=all">Spellcheck</a><br>
-    <a href="?finalize=1#finalization">Finalize</a>
-</div>
-{% endif %}
 {% if article.schema == "html" %}
     {{article.content|safe}}
 {% elif article.schema == "text" %}
