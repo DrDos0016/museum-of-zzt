@@ -33,6 +33,7 @@ var DETAIL_SZZT_BOARD = 23;
 
 var engines = {
     "zzt":{
+        "name": "ZZT",
         "identifier": 0xFFFF,
         "max_world_length": 20,
         "max_flags": 10,
@@ -47,6 +48,7 @@ var engines = {
         "characters": [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63]
         },
     "szt":{
+        "name": "Super ZZT",
         "identifier": 0xFFFE,
         "max_world_length": 20,
         "max_flags": 16,
@@ -1121,7 +1123,6 @@ function passage_travel(e) {
 
 function stat_info(e)
 {
-    console.log("Clicky");
     if (! e.data)
     {
         // Calculate position on canvas
@@ -1186,8 +1187,6 @@ function stat_info(e)
             }
         }
     }
-
-    console.log("IDX", idx);
 
     var output = `<table class="fv">
     <tr>
@@ -1278,7 +1277,7 @@ function stat_info(e)
         <label><input type="radio" name="oop_style" value="modern"${oop_style == 'modern' ? ' checked' : ''}> Modern</label>
         <label><input type="radio" name="oop_style" value="zzt-scroll"${oop_style == 'zzt-scroll' ? ' checked' : ''}> Classic</label>
 
-        <div id="oop-wrapper"><code id='zzt-oop' class='zzt-oop ${oop_style}' data-stat_idx='${stat_idx}'></code></div>
+        <div id="oop-wrapper"><code id='zzt-oop' class='${ENGINE.name == 'Super ZZT' ? 'super-' : ''}zzt-oop ${oop_style}' data-stat_idx='${stat_idx}'></code></div>
         `;
     }
 

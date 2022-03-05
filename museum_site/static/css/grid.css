@@ -1555,7 +1555,7 @@ code
     margin-left:0.2em;
 }
 
-code.inline { width:auto; padding:0.1em; }
+code.inline { padding:0.1em; }
 code .blue, code .command { color:#268BD2; }
 code .green, code .comment { color:#859900; }
 code .cyan, code .reserved { color:#2AA198; }
@@ -1568,7 +1568,20 @@ code .char:hover { cursor:help; }
 
 code.zzt-oop
 {
-    width:42ch;
+    min-width:42ch;
+    max-width:fit-content;
+    background-image:url("/static/chrome/long-code-divider.png");
+    background-position:44ch; /* +2 for padding */
+    background-repeat:repeat-y;
+}
+
+code.super-zzt-oop
+{
+    min-width:30ch;
+    max-width:fit-content;
+    background-image:url("/static/chrome/long-code-divider.png");
+    background-position:32ch; /* +2 for padding */
+    background-repeat:repeat-y;
 }
 
 code.cheat {
