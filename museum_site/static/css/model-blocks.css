@@ -185,3 +185,5 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
 {
     cursor:help;
 }
+
+.fg-icon { filter:sepia(1) hue-rotate(220deg) saturate(6); }

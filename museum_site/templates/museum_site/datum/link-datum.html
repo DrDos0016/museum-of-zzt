@@ -1,4 +1,4 @@
 <{{tag|default:"div"}} class="datum{% if kind %} {{kind}}{% endif %}">
     {% if label %}<div class="label">{{label}}</div>{% endif %}
-    {% if value %}<div class="value">{% if icons %}<span class="link-icons">{% for i in icons %}<span title="{{i.title}}" class="icon">{{i.glyph}}</span>{% endfor %}</span>{% endif %}<a href="{{url}}"{% if target %} target="{{target}}"{% endif %}{% if roles %} class="{% for r in roles %} {{r}}{% endfor %}"{% endif %}>{{value}}</a></div>{% endif %}
+    {% if value %}<div class="value">{% if icons %}<span class="link-icons">{% for i in icons %}<span title="{{i.title}}" class="icon {{i.role}}">{{i.glyph}}</span>{% endfor %}</span>{% endif %}<a href="{{url}}"{% if target %} target="{{target}}"{% endif %}{% if roles %} class="{% for r in roles %} {{r}}{% endfor %}"{% endif %}>{{value}}</a></div>{% endif %}
 </{{tag|default:"div"}}>

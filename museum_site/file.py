@@ -253,9 +253,9 @@ class File(BaseModel):
     PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not \
     been fully checked by staff."
     ICONS = {
-        "explicit": {"glyph": "🔞", "title": "This file contains explicit content."},
-        "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its content have not been fully checked by staff."},
-        "featured": {"glyph": "🗝️", "title": "This file is a featured world."},
+        "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role":"explicit-icon"},
+        "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its content have not been fully checked by staff.", "role":"unpub-icon"},
+        "featured": {"glyph": "🗝️", "title": "This file is a featured world.", "role":"fg-icon"},
     }
 
     """
