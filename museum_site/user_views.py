@@ -674,6 +674,14 @@ def logout_user(request):
     logout(request)
     return redirect("index")
 
+def manage_saved_data(request):
+    data = {
+        "title": "Manage Saved Data",
+        "pk": request.GET.get("pk"),
+        "file": File.objects.filter(pk=request.GET.get("pk")).first()
+    }
+    return render(request, "museum_site/user-manage-saved-data.html", data)
+
 
 def resend_account_activation(request):
     data = {

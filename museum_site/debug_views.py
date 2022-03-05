@@ -11,6 +11,9 @@ def debug(request, filename=None):
     data["TODO"] = "TODO"
     data["CROP"] = "CROP"
 
+    if filename == "saves.html":
+        return debug_saves(request)
+
     set_captcha_seed(request)
 
     f = File.objects.get(pk=int(request.GET.get("id", 420)))
@@ -140,3 +143,6 @@ def debug_colors(request):
     return render(request, "museum_site/debug_colors.html", data)
 
 
+def debug_saves(request):
+    print("SAVES")
+    return render(request, "museum_site/debug_saves.html", data)

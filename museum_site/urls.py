@@ -355,6 +355,9 @@ urlpatterns = [
         "user/update-tos/",
         museum_site.user_views.update_tos,
         name="update_tos"),
+    path(
+        "user/manage-saved-data/", museum_site.user_views.manage_saved_data,
+        name="manage_saved_data"),
 
     # User Patron Pages
     path(
