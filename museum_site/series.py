@@ -50,14 +50,15 @@ class Series(BaseModel):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        article_set = self.article_set.all()
-        if self.id and article_set:
-            self.first_entry_date = (
-                article_set.order_by("publish_date").first().publish_date
-            )
-            self.last_entry_date = (
-                article_set.order_by("publish_date").last().publish_date
-            )
+        if self.id:
+            article_set = self.article_set.all()
+            if article_set:
+                self.first_entry_date = (
+                    article_set.order_by("publish_date").first().publish_date
+                )
+                self.last_entry_date = (
+                    article_set.order_by("publish_date").last().publish_date
+                )
         else:
             self.first_entry_date = "1970-01-01"
             self.last_entry_date = "1970-01-01"
