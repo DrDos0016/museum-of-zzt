@@ -73,7 +73,6 @@ $(document).ready(function (){
 
             for (var idx in params)
             {
-                console.log("KEY", key);
                 var key = params[idx].split("=")[0];
                 var val = params[idx].split("=")[1];
 
