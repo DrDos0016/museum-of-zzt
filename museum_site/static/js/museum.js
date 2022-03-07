@@ -63,20 +63,17 @@ $(document).ready(function (){
 
     // Reload on sort change
     $(".sort-methods select[name='sort']").change(function (){
-        var location = ("" + window.location);
-
-        if (location.indexOf("?") == -1)
+        if (window.location.search == "") // Query string
             window.location = "?sort="+$(this).val();
         else
         {
-            var qs = location.split("?")[1];
-            var params = qs.split("&");
+            var qs = window.location.search;
+            var params = qs.split("&").slice(1);
             var new_qs = "?";
-            console.log(qs);
-            console.log(params);
 
             for (var idx in params)
             {
+                console.log("KEY", key);
                 var key = params[idx].split("=")[0];
                 var val = params[idx].split("=")[1];
 
@@ -94,7 +91,7 @@ $(document).ready(function (){
             if (new_qs.indexOf("sort=") == -1)
                 new_qs += "&sort="+$(this).val();
 
-            window.location = new_qs;
+            window.location = window.location.pathname + new_qs;
         }
     });
 
