@@ -1208,7 +1208,7 @@ class File(BaseModel):
             links.append(link)
             link = LinkDatum(
                 value="Tools {}".format(self.id), kind="debug",
-                url="/admin/museum_site/file/{}/change/".format(self.id),
+                url="/tools/{}/{}".format(self.letter, self.filename),
             )
             links.append(link)
 
