@@ -295,7 +295,14 @@ def review(request, letter, filename):
     zfile = File.objects.identifier(
         letter=letter, filename=filename
     ).first()
-    reviews = Review.objects.filter(zfile_id=zfile.id)
+    reviews = Review.objects.filter(
+        (
+            Q(approved=True) |
+            Q(ip=request.META["REMOTE_ADDR"]) |
+            Q(user_id = request.user.id)
+        ),
+        zfile_id=zfile.id,
+    )
     data["letter"] = letter
     data["title"] = zfile.title + " - Reviews"
 
@@ -308,7 +315,7 @@ def review(request, letter, filename):
     )
     if recent:
         data["recent"] = recent[0].pk
-    elif request.method == "POST" and zfile.can_review:
+    elif request.method == "POST" and zfile.can_review != File.REVIEW_NO:
         if request.META["REMOTE_ADDR"] in BANNED_IPS:
             return HttpResponse("Banned account.")
 
@@ -323,14 +330,18 @@ def review(request, letter, filename):
             review.ip = request.META.get("REMOTE_ADDR")
             review.date = today
             review.zfile_id = zfile.id
+
+            if review.zfile.can_review == File.REVIEW_APPROVAL:
+                review.approved = False
             review.save()
 
-            # Update file's review count/scores
-            zfile.calculate_reviews()
-            zfile.save()
-
-            # Make Announcement
-            discord_announce_review(review)
+            print("L336", review.zfile.can_review)
+            # Update file's review count/scores is the review is approved
+            if review.zfile.can_review == File.REVIEW_YES:
+                zfile.calculate_reviews()
+                # Make Announcement
+                discord_announce_review(review)
+                zfile.save()
 
     if request.user.is_authenticated:
         del review_form.fields["author"]

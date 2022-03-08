@@ -43,6 +43,7 @@ class Review(BaseModel):
     rating = models.FloatField(default=5.0)
     date = models.DateField()
     ip = models.GenericIPAddressField(blank=True, null=True)
+    approved = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["-date", "-id"]

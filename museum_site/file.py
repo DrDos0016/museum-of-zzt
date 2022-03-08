@@ -258,6 +258,16 @@ class File(BaseModel):
         "featured": {"glyph": "🗝️", "title": "This file is a featured world.", "role":"fg-icon"},
     }
 
+    REVIEW_NO = 0
+    REVIEW_APPROVAL = 1
+    REVIEW_YES = 2
+
+    REVIEW_LEVELS = (
+        (REVIEW_NO, "Can't Review"),
+        (REVIEW_APPROVAL, "Requires Approval"),
+        (REVIEW_YES, "Can Review"),
+    )
+
     """
     Fields:
     letter          -- Letter the file can be found under via browse pages
@@ -348,7 +358,7 @@ class File(BaseModel):
     # Museum Properties
     explicit = models.BooleanField(default=False)
     spotlight = models.BooleanField(default=True)
-    can_review = models.BooleanField(default=True)
+    can_review = models.IntegerField(default=REVIEW_YES, choices=REVIEW_LEVELS)
     publish_date = models.DateTimeField(
         null=True, default=None, db_index=True, blank=True,
         help_text="Date File was published on the Museum"
