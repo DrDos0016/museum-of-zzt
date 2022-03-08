@@ -657,6 +657,37 @@ def replace_zip(request, pk):
 
 
 @staff_member_required
+def review_approvals(request):
+    """ Returns page listing users and info for reference """
+    data = {
+        "title": "Reviews Pending Approval",
+        "reviews": Review.objects.filter(approved=False),
+    }
+
+    if request.method == "POST":
+        approved = True if request.POST.get("action") == "APPROVE" else False
+        pk = int(request.POST.get("id"))
+
+
+        if approved:
+            r = Review.objects.get(pk=pk)
+            r.approved = True
+            r.save()
+            zfile = File.objects.get(pk=r.zfile.id)
+            zfile.calculate_reviews()
+            zfile.save()
+            title = zfile.title
+            data["output"] = "Approved Review for `{}`".format(title)
+        else:
+            r = Review.objects.get(pk=pk)
+            title = r.zfile.title
+            r.delete()
+            data["output"] = "Rejected Review for `{}`".format(title)
+
+    return render(request, "museum_site/tools/review-approvals.html", data)
+
+
+@staff_member_required
 def scan(request):
     """ Returns page with latest Museum scan results"""
     data = {"title": "Museum Scan"}
@@ -730,7 +761,10 @@ def stream_card(request):
 
 @staff_member_required
 def tool_index(request, letter=None, filename=None):
-    data = {"title": "Tool Index"}
+    data = {
+        "title": "Tool Index",
+        "pending_review_count": Review.objects.filter(approved=False).count()
+    }
     if letter and filename:
         data["file"] = File.objects.get(letter=letter, filename=filename)
     letters = "1abcdefghijklmnopqrstuvwxyz"

@@ -52,9 +52,10 @@ $(document).ready(function (){
 <table>
     <tr>
         <th>General Tools</th>
+        <th>Etc</th>
     </tr>
     {% for t in tool_list %}
-    <tr><td><a href="{% url t.url_name %}">{{t.text}}</a></td></tr>
+    <tr><td><a href="{% url t.url_name %}">{{t.text}}</a></td><td id="etc-{{t.url_name}}">{% if t.url_name == "review_approvals" %}<b>{{pending_review_count}}</b>{% endif %}</td></tr>
     {% endfor %}
 
 </table>

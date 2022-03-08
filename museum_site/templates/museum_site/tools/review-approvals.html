@@ -1,0 +1,46 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Review Approvals</h1>
+
+<p>{{output|default:"&mdash;"}}</p>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>User</th>
+        <th>IP</th>
+        <th>ZFile</th>
+        <th>Rating</th>
+        <th>Content</th>
+        <th style="width:200px">Action</th>
+    </tr>
+    {% for r in reviews %}
+    <tr>
+        <td><a href="{{r.admin_url}}">{{r.id}}</td>
+        <td>{{r.get_author}}</td>
+        <td>{{r.date}}</td>
+        <td>{{r.ip}}</td>
+        <td><a href="{{r.zfile.url}}" target="_blank">{{r.zfile.title}}</a></td>
+        <td>{{r.rating}}</td>
+        <td><textarea style="width:400px;height:150px">{{r.content}}</textarea></td>
+        <td>
+            <form method="POST">
+            {% csrf_token %}
+            <input name="id" type="hidden" value="{{r.id}}">
+            <label><input name="action" type="radio" value="APPROVE"> Approve</label><br>
+            <label><input name="action" type="radio" value="REJECT"> Reject</label><br><br>
+            <input type="submit" value="Submit">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+</section>
+{% endblock %}

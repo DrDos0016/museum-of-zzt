@@ -539,6 +539,9 @@ urlpatterns = [
         "tools/publish/<int:pk>/", museum_site.tool_views.publish,
         name="publish"),
     path(
+        "tools/review-approvals/", museum_site.tool_views.review_approvals,
+        name="review_approvals"),
+    path(
         "tools/reletter/<int:pk>/", museum_site.tool_views.reletter,
         name="reletter"),
     path(
