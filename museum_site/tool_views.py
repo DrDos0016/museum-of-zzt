@@ -678,6 +678,7 @@ def review_approvals(request):
             zfile.save()
             title = zfile.title
             data["output"] = "Approved Review for `{}`".format(title)
+            discord_announce_review(r)
         else:
             r = Review.objects.get(pk=pk)
             title = r.zfile.title
