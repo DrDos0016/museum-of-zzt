@@ -135,7 +135,6 @@ class Review(BaseModel):
 
     def as_list_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-list-block.html"
-        #table_fields = ["Title", "File", "Reviewer", "Date", "Rating"]
         context = dict(
             pk=self.pk,
             model=self.model_name,
