@@ -89,7 +89,7 @@ class Renderer {
                             {
                                 var bomb_char = board.stats[stat_idx].param1 + 48
                                 if (bomb_char > 255)
-                                    bomb_char -= 255;
+                                    bomb_char -= 256;
                             }
                             else
                             {
@@ -627,7 +627,7 @@ class Renderer {
                             {
                                 var bomb_char = board.stats[stat_idx].param1 + 48
                                 if (bomb_char > 255)
-                                    bomb_char -= 255;
+                                    bomb_char -= 256;
                             }
                             else
                             {
@@ -776,7 +776,7 @@ class Renderer {
                             {
                                 var bomb_char = board.stats[stat_idx].param1 + 48
                                 if (bomb_char > 255)
-                                    bomb_char -= 255;
+                                    bomb_char -= 256;
                             }
                             else
                             {
@@ -933,7 +933,7 @@ class Renderer {
                                 {
                                     var bomb_char = board.stats[stat_idx].param1 + 48
                                     if (bomb_char > 255)
-                                        bomb_char -= 255;
+                                        bomb_char -= 256;
                                 }
                                 else
                                 {
