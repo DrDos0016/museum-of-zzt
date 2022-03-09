@@ -133,7 +133,7 @@ class FileManager(models.Manager):
 
     def identifier(self, identifier=None, letter=None, filename=None):
         if identifier is None:
-            return self.filter(letter=letter, filename=filename)
+            return self.filter(letter=letter, filename__startswith=filename)
 
     def latest_additions(self):
         return self.filter(
@@ -305,6 +305,7 @@ class File(BaseModel):
 
     letter = models.CharField(max_length=1, db_index=True, editable=False)
     filename = models.CharField(max_length=50)
+    key = models.CharField(max_length=50, db_index=True, default="")
     size = models.IntegerField(default=0, editable=False)
     title = models.CharField(max_length=80)
     author = models.CharField(max_length=255)
