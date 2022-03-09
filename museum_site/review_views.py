@@ -36,8 +36,8 @@ def review_directory(request, page_num=1):
     else:  # Default (newest)
         qs = qs.order_by("-date")
 
-    for x in str(qs.query).split(" "):
-        print(x)
+    #for x in str(qs.query).split(" "):
+    #    print(x)
 
     data = get_pagination_data(request, data, qs)
 
