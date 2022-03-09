@@ -371,7 +371,7 @@ def discord_announce_upload(upload, env=None):
         env = ENV
 
     if env != "PROD":
-        common("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
+        record("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
         upload.announced = True
         upload.save()
         return False
