@@ -947,9 +947,6 @@ class Renderer {
                                 if (board.stats[stat_idx].param1 >= 2 && board.stats[stat_idx].param1 <= 5)
                                     print(ctx, dupe_chars[board.stats[stat_idx].param1], chunk[2], x, y);
                                 // Default case handles the rest
-
-
-
                             }
                         }
                     }
