@@ -1,4 +1,4 @@
 <{{tag|default:"div"}} class="datum{% if kind %} {{kind}}{% endif %}">
     {% if label %}<div class="label">{{label}}{{values|pluralize:plural}}</div>{% endif %}
-    {% if values %}<div class="value">{% for v in values %}<a href="{{url}}{{v}}"{% if target %} target="{{target}}"{% endif %}>{{v}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>{% endif %}
+    {% if values %}<div class="value">{% for v in values %}<a href="{{url}}{{v|urlencode}}"{% if target %} target="{{target}}"{% endif %}>{{v}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>{% endif %}
 </{{tag|default:"div"}}>

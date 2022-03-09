@@ -335,7 +335,6 @@ def review(request, letter, filename):
                 review.approved = False
             review.save()
 
-            print("L336", review.zfile.can_review)
             # Update file's review count/scores is the review is approved
             if review.zfile.can_review == File.REVIEW_YES:
                 zfile.calculate_reviews()
