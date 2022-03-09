@@ -1,0 +1,33 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+#total-bytes-hr { font-weight: bold; }
+.db-delete-button { display:none; }
+.db-delete-stub {
+    color:#AAA;
+    font-style:italic;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/save-manager.js"></script>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Saves</h1>
+
+<table id="save-db-table">
+<tr><th>DB</th><th>Filename</th><th>Size</th><th colspan="2">Actions</th></tr>
+</table>
+<div class="flex-container justify-space-between">
+<div><label>Enable File Deletion:</label><label><input type="radio" name="allow-delete" value="1"> Yes </label><label><input type="radio" name="allow-delete" value="0" checked> No</label></div>
+<div><i>These files are using <span id="total-bytes-hr">-----</span> of storage on this device.</i></div>
+</div>
+<hr>
+<input type="button" id="ping-dbs" value="Ping Databases">
+</section>
+{% endblock %}
