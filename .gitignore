@@ -24,6 +24,7 @@ discord/private.py
 tools/crons/private.py
 tools/data
 tools/retired
+tools/z-extract
 tools/museum_db_dump.sql
 museum_site/static/.well-known
 museum_site/static/admin
