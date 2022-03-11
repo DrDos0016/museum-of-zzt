@@ -63,11 +63,12 @@ $(document).ready(function (){
 
     // Reload on sort change
     $(".sort-methods select[name='sort']").change(function (){
-        if (window.location.search == "") // Query string
+        var qs = window.location.search; // Query string
+        if (qs == "")
             window.location = "?sort="+$(this).val();
         else
         {
-            var qs = window.location.search;
+            qs = "&" + qs.slice(1);
             var params = qs.split("&").slice(1);
             var new_qs = "?";
 
