@@ -7,9 +7,9 @@ from .forms import ReviewForm
 from .models import *
 
 
-def file_attributes(request, letter, filename):
+def file_attributes(request, letter, key):
     data = {}
-    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["file"] = get_object_or_404(File, key=key)
     data["upload_info"] = Upload.objects.filter(file_id=data["file"]).first()
     data["reviews"] = Review.objects.filter(
         zfile__id=data["file"].pk
@@ -172,10 +172,10 @@ def file_download(request, letter, filename):
     return render(request, "museum_site/download.html", data)
 
 
-def file_articles(request, letter, filename):
+def file_articles(request, letter, key):
     """ Returns page listing all articles associated with a provided file. """
     data = {}
-    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+    data["file"] = get_object_or_404(File, key=key)
     data["title"] = data["file"].title + " - Articles"
     data["articles"] = data["file"].articles.not_removed()
     data["letter"] = letter
@@ -183,21 +183,24 @@ def file_articles(request, letter, filename):
     return render(request, "museum_site/article.html", data)
 
 
-def file_viewer(request, letter, filename, local=False):
+def file_viewer(request, letter, key, local=False):
     """ Returns page exploring a file's zip contents """
-    data = {}
-    data["custom_layout"] = "fv-grid"
-    data["year"] = YEAR
-    data["details"] = []  # Required to show all download links
-    data["local"] = local
-    data["files"] = []
+    data = {
+        "custom_layout": "fv-grid",
+        "details": [],
+        "local": local,
+        "files": [],
+    }
+
     if not local:
-        res = File.objects.identifier(letter=letter, filename=filename)
-        matches = len(res)
-        if matches == 1:
-            data["file"] = res[0]
+        qs = File.objects.filter(key=key)
+        if len(qs) == 1:
+            data["file"] = qs[0]
         else:
-            return redirect("/search?filename={}&err=404".format(filename))
+            if key.lower().endswith(".zip"):  # Try old URLs with zip in them
+                return redirect_with_querystring("file", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+            else:
+                return redirect("/search?filename={}&err=404".format(key))
 
         data["title"] = data["file"].title
         data["letter"] = letter
@@ -212,30 +215,29 @@ def file_viewer(request, letter, filename, local=False):
             letter = "uploaded"
             data["uploaded"] = True
 
-        if ".zip" in filename.lower():
-            zip_file = zipfile.ZipFile(
-                os.path.join(SITE_ROOT, "zgames", letter, filename)
-            )
-            files = zip_file.namelist()
-            files.sort(key=str.lower)
-            data["zip_info"] = sorted(
-                zip_file.infolist(), key=lambda k: k.filename.lower()
-            )
-            data["zip_comment"] = zip_file.comment.decode("latin-1")
-            # TODO: "latin-1" may or may not actually be the case
+        zip_file = zipfile.ZipFile(
+            data["file"].phys_path()
+        )
+        files = zip_file.namelist()
+        files.sort(key=str.lower)
+        data["zip_info"] = sorted(
+            zip_file.infolist(), key=lambda k: k.filename.lower()
+        )
+        data["zip_comment"] = zip_file.comment.decode("latin-1")
+        # TODO: "latin-1" may or may not actually be the case
 
-            # Filter out directories (but not their contents)
-            for f in files:
-                if (
-                    f and f[-1] != os.sep
-                    and not f.startswith("__MACOSX" + os.sep)
-                    and not f.upper().endswith(".DS_STORE")
-                ):
-                    data["files"].append(f)
-            data["load_file"] = urllib.parse.unquote(
-                request.GET.get("file", "")
-            )
-            data["load_board"] = request.GET.get("board", "")
+        # Filter out directories (but not their contents)
+        for f in files:
+            if (
+                f and f[-1] != os.sep
+                and not f.startswith("__MACOSX" + os.sep)
+                and not f.upper().endswith(".DS_STORE")
+            ):
+                data["files"].append(f)
+        data["load_file"] = urllib.parse.unquote(
+            request.GET.get("file", "")
+        )
+        data["load_board"] = request.GET.get("board", "")
     else:  # Local files
         data["file"] = "Local File Viewer"
         data["letter"] = letter

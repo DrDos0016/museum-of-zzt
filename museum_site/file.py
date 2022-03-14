@@ -23,7 +23,8 @@ from museum.settings import STATIC_URL
 
 from .common import (
     slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP,
-    STATIC_PATH, optimize_image, epoch_to_unknown, record
+    STATIC_PATH, optimize_image, epoch_to_unknown, record,
+    redirect_with_querystring
 )
 from .constants import SITE_ROOT, ZETA_RESTRICTED, LANGUAGES
 from .review import Review
@@ -542,16 +543,16 @@ class File(BaseModel):
         return True if os.path.isfile(self.phys_path()) else False
 
     def play_url(self):
-        return "/play/" + self.letter + "/" + self.filename
+        return "/play/" + self.letter + "/" + self.key
 
     def review_url(self):
-        return "/review/" + self.letter + "/" + self.filename
+        return "/review/" + self.letter + "/" + self.key
 
     def file_url(self):
-        return "/file/" + self.letter + "/" + self.filename
+        return "/file/" + self.letter + "/" + self.key
 
     def attributes_url(self):
-        return "/attributes/" + self.letter + "/" + self.filename
+        return "/attributes/" + self.letter + "/" + self.key
 
     def phys_path(self):
         return os.path.join(SITE_ROOT + self.download_url())
@@ -581,7 +582,7 @@ class File(BaseModel):
             return "images/screenshots/no_screenshot.png"
 
     def article_url(self):
-        return "/article/" + self.letter + "/" + self.filename
+        return "/article/{}/{}".format(self.letter, self.key)
 
     def get_detail_ids(self):
         details = self.details.all()
@@ -1034,7 +1035,7 @@ class File(BaseModel):
 
     def url(self):
         # For files, the file viewer is considered the file's URL
-        return "/file/" + self.identifier
+        return "/file/{}/{}".format(self.letter, self.key)
 
     def preview_url(self):
         if self.screenshot:

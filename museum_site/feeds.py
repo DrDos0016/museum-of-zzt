@@ -49,7 +49,7 @@ class LatestFilesFeed(Feed):
         return output
 
     def item_link(self, item):
-        return reverse("file", args=[item.letter, item.filename])
+        return reverse("file", args=[item.letter, item.key])
 
 
 class LatestReviewsFeed(Feed):

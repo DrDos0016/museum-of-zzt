@@ -126,12 +126,12 @@ urlpatterns = [
 
     # Files
     path(
-        "article/<str:letter>/<str:filename>",
+        "article/<str:letter>/<str:key>",
         museum_site.file_views.file_articles,
         name="article"
     ),
     path(
-        "attributes/<str:letter>/<str:filename>",
+        "attributes/<str:letter>/<str:key>",
         museum_site.file_views.file_attributes, name="file_attributes"),
     path("browse/", museum_site.file_views.file_directory, name="browse"),
     path(
@@ -142,7 +142,7 @@ urlpatterns = [
         "download/<str:letter>/<str:filename>",
         museum_site.file_views.file_download, name="file_download"),
     path(
-        "file/<str:letter>/<str:filename>",
+        "file/<str:letter>/<str:key>",
         museum_site.file_views.file_viewer, name="file"),
     path(
         "play/<str:letter>/<str:filename>",
@@ -151,7 +151,7 @@ urlpatterns = [
         name="play"),
     path(
         "file/local/", museum_site.file_views.file_viewer,
-        {"local": True, "letter": "!", "filename": ""}, name="local_file"),
+        {"local": True, "letter": "!", "key": ""}, name="local_file"),
     path(
         "pk/<int:pk>/",
         museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),

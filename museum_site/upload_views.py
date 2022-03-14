@@ -144,6 +144,7 @@ def upload(request):
                 zfile.calculate_checksum(file_path)
                 zfile.calculate_boards()
             zfile.letter = set_letter
+            zfile.key = zfile.filename.lower()[:-4]
             zfile.release_source = "User upload"
             zfile.calculate_sort_title()
             zfile.basic_save()

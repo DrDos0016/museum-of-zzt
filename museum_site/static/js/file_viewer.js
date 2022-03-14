@@ -1916,8 +1916,8 @@ function play_board()
     var scale = 1;
     var base_w = 640;
     var base_h = 350;
-    var live_url = "/play/"+letter+"/"+zip+"?player=zeta&mode=popout&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number;
-    window.open(live_url, "popout-"+zip, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+    var live_url = "/play/"+letter+"/"+key+"?player=zeta&mode=popout&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number;
+    window.open(live_url, "popout-"+key, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
 }
 
 function render_zzt_oop(stat)
