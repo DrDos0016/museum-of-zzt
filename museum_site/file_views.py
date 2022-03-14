@@ -9,6 +9,10 @@ from .models import *
 
 def file_attributes(request, letter, key):
     data = {}
+
+    if key.lower().endswith(".zip"):  # Try old URLs with zip in them
+        return redirect_with_querystring("file_attributes", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+
     data["file"] = get_object_or_404(File, key=key)
     data["upload_info"] = Upload.objects.filter(file_id=data["file"]).first()
     data["reviews"] = Review.objects.filter(
@@ -161,10 +165,14 @@ def file_directory(
     return render(request, "museum_site/generic-directory.html", data)
 
 
-def file_download(request, letter, filename):
+def file_download(request, letter, key):
     """ Returns page listing all download locations with a provided file """
     data = {}
-    data["file"] = get_object_or_404(File, letter=letter, filename=filename)
+
+    if key.lower().endswith(".zip"):  # Try old URLs with zip in them
+        return redirect_with_querystring("file_download", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+
+    data["file"] = get_object_or_404(File, key=key)
     data["title"] = data["file"].title + " - Downloads"
     data["downloads"] = data["file"].downloads.all()
     data["letter"] = letter
@@ -175,6 +183,10 @@ def file_download(request, letter, filename):
 def file_articles(request, letter, key):
     """ Returns page listing all articles associated with a provided file. """
     data = {}
+
+    if key.lower().endswith(".zip"):  # Try old URLs with zip in them
+        return redirect_with_querystring("article", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+
     data["file"] = get_object_or_404(File, key=key)
     data["title"] = data["file"].title + " - Articles"
     data["articles"] = data["file"].articles.not_removed()
@@ -291,12 +303,12 @@ def get_file_by_pk(request, pk):
     return redirect(f.attributes_url())
 
 
-def review(request, letter, filename):
+def review(request, letter, key):
     data = {}
     today = datetime.now()
-    zfile = File.objects.identifier(
-        letter=letter, filename=filename
-    ).first()
+    zfile = File.objects.filter(key=key).first()
+    if key.lower().endswith(".zip"):  # Try old URLs with zip in them
+        return redirect_with_querystring("reviews", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
     reviews = Review.objects.filter(
         (
             Q(approved=True) |

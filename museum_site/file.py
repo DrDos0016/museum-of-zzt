@@ -520,6 +520,7 @@ class File(BaseModel):
             return "/zgames/" + self.letter + "/" + self.filename
 
     def download_anchor(self, text="Download"):
+        # TODO IS THIS USED
         url = self.download_url()
         ellipses = ""
 
@@ -537,6 +538,7 @@ class File(BaseModel):
         return html
 
     def download_anchor_small(self):
+        # TODO IS THIS USED
         return self.download_anchor(text="DL")
 
     def file_exists(self):
@@ -952,7 +954,7 @@ class File(BaseModel):
         # Multiple Downloads
         if self.downloads.count():
             output["download"]["text"] = "Downloads…"
-            output["download"]["url"] = "/download/{}".format(self.identifier)
+            output["download"]["url"] = "/download/{}/{}".format(self.letter, self.key)
 
         # Explicit
         if self.explicit:
@@ -1142,7 +1144,7 @@ class File(BaseModel):
         # Download
         if self.downloads.count():
             value = "Downloads…"
-            url = "/download/{}".format(self.identifier)
+            url = "/download/{}/{}".format(self.letter, self.key)
         else:
             value = "Download"
             url=self.download_url()

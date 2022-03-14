@@ -139,13 +139,13 @@ urlpatterns = [
         name="browse_letter"
     ),
     path(
-        "download/<str:letter>/<str:filename>",
+        "download/<str:letter>/<str:key>",
         museum_site.file_views.file_download, name="file_download"),
     path(
         "file/<str:letter>/<str:key>",
         museum_site.file_views.file_viewer, name="file"),
     path(
-        "play/<str:letter>/<str:filename>",
+        "play/<str:letter>/<str:key>",
         museum_site.zeta_views.zeta_launcher,
         {"components": ["credits", "controls", "instructions", "players"]},
         name="play"),
@@ -259,7 +259,7 @@ urlpatterns = [
         "review/", museum_site.review_views.review_directory,
         name="review_directory"),
     path(
-        "review/<str:letter>/<str:filename>/",
+        "review/<str:letter>/<str:key>/",
         museum_site.file_views.review, name="reviews"),
 
     # Series

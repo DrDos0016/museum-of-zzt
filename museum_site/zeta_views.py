@@ -6,12 +6,16 @@ from .models import *
 
 
 def zeta_launcher(
-    request, letter=None, filename=None,
+    request, letter=None, key=None,
     components=[
         "controls", "instructions", "credits", "advanced", "players"
     ]
 ):
     data = {"title": "Zeta Launcher"}
+
+    if key.lower().endswith(".zip"):  # Try old URLs with zip in them
+        return redirect_with_querystring("play", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+
     # Template rendering mode
     # full - Extends "world.html", has a file header
     # popout - Extends "play-popout.html", removes all site components
@@ -56,9 +60,7 @@ def zeta_launcher(
 
     # Get files requested
     if letter and filename:
-        data["file"] = File.objects.identifier(
-            letter=letter, filename=filename
-        ).first()
+        data["file"] = File.objects.filter(key=key).first()
     else:
         data["file"] = None  # This will be the "prime" file
 
