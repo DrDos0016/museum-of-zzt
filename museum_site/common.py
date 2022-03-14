@@ -10,9 +10,7 @@ from django.db.models import Count, Avg, Sum, Q
 from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
-# from django.utils.timezone import utc
-# from django.contrib.auth import logout, authenticate, login as auth_login
-
+from django.urls import reverse
 
 from museum_site.models import *
 from museum_site.constants import *
@@ -551,3 +549,10 @@ def clean_params(p, list_items=[]):
 def record(*args, **kwargs):
     if not os.path.isfile("/var/projects/museum-of-zzt/PROD"):
         print(*args, **kwargs)
+
+
+def redirect_with_querystring(name, qs, *args, **kwargs):
+    url = reverse(name, args=args, kwargs=kwargs)
+    if qs:
+        url += "?" + qs
+    return redirect(url)
