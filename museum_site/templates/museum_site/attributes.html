@@ -54,6 +54,7 @@
 <tr><th>Details</th><td><a href="#heading-details">{{file.details.count}}</a></td></tr>
 <tr><th>File Exists</th><td>{{file.file_exists}}</td></tr>
 <tr><th>Filename</th><td>{{file.filename}}</td></tr>
+<tr><th>Key</th><td>{{file.key|default:"<i>No key set</i>"}}</td></tr>
 <tr><th>Genre</th><td>{{file.genre}}</td></tr>
 <tr><th>ID</th><td>{{file.id}}</td></tr>
 <tr><th>Identifier</th><td>{{file.identifier}}</td></tr>
@@ -84,11 +85,11 @@
 <h2 id="heading-permissions">File Permissions</h2>
 {% with file.supported_actions as supported_actions %}
 <table>
-<tr><th>Can Review</th><td>{{file.can_review}}</td></tr>
-<tr><th>Can Download</th><td>{{supported_actions.download}}</td></tr>
-<tr><th>Can Play</th><td>{{supported_actions.play}}</td></tr>
-<tr><th>Can View</th><td>{{supported_actions.view}}</td></tr>
-<tr><th>Can Article</th><td>{{supported_actions.article}}</td></tr>
+<tr><th>Can Review</th><td>{{file.can_review|yesno|title}}</td></tr>
+<tr><th>Can Download</th><td>{{supported_actions.download|yesno|title}}</td></tr>
+<tr><th>Can Play</th><td>{{supported_actions.play|yesno|title}}</td></tr>
+<tr><th>Can View</th><td>{{supported_actions.view|yesno|title}}</td></tr>
+<tr><th>Can Article</th><td>{{supported_actions.article|yesno|title}}</td></tr>
 </table>
 {% endwith %}
 
