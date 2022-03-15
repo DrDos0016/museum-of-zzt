@@ -519,42 +519,20 @@ class File(BaseModel):
         else:
             return "/zgames/" + self.letter + "/" + self.filename
 
-    def download_anchor(self, text="Download"):
-        # TODO IS THIS USED
-        url = self.download_url()
-        ellipses = ""
-
-        if self.downloads.count():
-            url = "/download/{}/{}".format(self.letter, self.filename)
-            ellipses = "s…"
-
-        html = ('<a href="{url}" class="download-link{explicit_class}">'
-                '{text}{ellipses}</a>').format(
-            url=url,
-            text=text,
-            explicit_class=(" explicit" if self.explicit else ""),
-            ellipses=ellipses
-        )
-        return html
-
-    def download_anchor_small(self):
-        # TODO IS THIS USED
-        return self.download_anchor(text="DL")
-
     def file_exists(self):
         return True if os.path.isfile(self.phys_path()) else False
 
     def play_url(self):
-        return "/play/" + self.letter + "/" + self.key
+        return "/play/{}/{}/".format(self.letter, self.key)
 
     def review_url(self):
-        return "/review/" + self.letter + "/" + self.key
+        return "/review/{}/{}/".format(self.letter, self.key)
 
     def file_url(self):
-        return "/file/" + self.letter + "/" + self.key
+        return "/file/{}/{}/".format(self.letter, self.key)
 
     def attributes_url(self):
-        return "/attributes/" + self.letter + "/" + self.key
+        return "/attributes/{}/{}/".format(self.letter, self.key)
 
     def phys_path(self):
         return os.path.join(SITE_ROOT + self.download_url())
@@ -584,7 +562,7 @@ class File(BaseModel):
             return "images/screenshots/no_screenshot.png"
 
     def article_url(self):
-        return "/article/{}/{}".format(self.letter, self.key)
+        return "/article/{}/{}/".format(self.letter, self.key)
 
     def get_detail_ids(self):
         details = self.details.all()
@@ -712,7 +690,7 @@ class File(BaseModel):
         try:
             zf = zipfile.ZipFile(zip_path)
         except (FileNotFoundError, zipfile.BadZipFile):
-            record("Skipping due to bad zip")
+            record("Skipping Calculate Boards function due to bad zip")
             return False
 
         file_list = zf.namelist()
@@ -1037,7 +1015,7 @@ class File(BaseModel):
 
     def url(self):
         # For files, the file viewer is considered the file's URL
-        return "/file/{}/{}".format(self.letter, self.key)
+        return "/file/{}/{}/".format(self.letter, self.key)
 
     def preview_url(self):
         if self.screenshot:
@@ -1118,13 +1096,13 @@ class File(BaseModel):
 
         # Prepare Columns
         context["columns"].append([
-            SSVLinksDatum(label="Author", values=self.ssv_list("author"), url="/search?author="),
-            (SSVLinksDatum(label="Compan", plural="y,ies", values=self.ssv_list("company"), url="/search?company=") if self.company else ""),
+            SSVLinksDatum(label="Author", values=self.ssv_list("author"), url="/search/?author="),
+            (SSVLinksDatum(label="Compan", plural="y,ies", values=self.ssv_list("company"), url="/search/?company=") if self.company else ""),
             LinkDatum(
                     label="Released", value=(self.release_date or "Unknown"),
-                    url="/search?year={}".format(self.release_year(default="unk")),
+                    url="/search/?year={}".format(self.release_year(default="unk")),
                 ),
-            SSVLinksDatum(label="Genre", values=self.ssv_list("genre"), url="/search?genre="),
+            SSVLinksDatum(label="Genre", values=self.ssv_list("genre"), url="/search/?genre="),
             TextDatum(label="Filename", value=self.filename),
             TextDatum(label="Size", value=filesizeformat(self.size)),
         ])
@@ -1133,7 +1111,7 @@ class File(BaseModel):
             TextDatum(label="Details", value=self.details_links()),
             TextDatum(label="Rating", value=self.rating_str(), title="Based on {} Review{}".format(self.review_count, "s" if self.review_count > 1 else "")),
             (TextDatum(label="Boards", value=self.boards_str(), title="Playable/Total Boards. Values are not 100% accurate.") if self.total_boards else ""),
-            LanguageLinksDatum(label="Language", plural="s", values=self.language_pairs(), url="/search?lang="),
+            LanguageLinksDatum(label="Language", plural="s", values=self.language_pairs(), url="/search/?lang="),
             (TextDatum(label="Upload Date", value=self.upload_set.first().date) if self.is_uploaded() and self.upload_set.first() else ""),
             (TextDatum(label="Publish Date", value=self.publish_date_str()) if not self.is_uploaded() and self.publish_date else ""),
         ])
@@ -1245,12 +1223,12 @@ class File(BaseModel):
                 LinkDatum(value=self.title, url=self.url(), tag="td",
                     icons=context["icons"]
                 ),
-                SSVLinksDatum(values=self.ssv_list("author"), url="/search?author=", tag="td"),
-                SSVLinksDatum(values=self.ssv_list("company"), url="/search?company=", tag="td"),
-                SSVLinksDatum(values=self.ssv_list("genre"), url="/search?genre=", tag="td"),
+                SSVLinksDatum(values=self.ssv_list("author"), url="/search/?author=", tag="td"),
+                SSVLinksDatum(values=self.ssv_list("company"), url="/search/?company=", tag="td"),
+                SSVLinksDatum(values=self.ssv_list("genre"), url="/search/?genre=", tag="td"),
                 LinkDatum(
                     value=(self.release_date or "Unknown"),
-                    url="/search?year={}".format(self.release_year(default="unk")),
+                    url="/search/?year={}".format(self.release_year(default="unk")),
                     tag="td",
                 ),
                 TextDatum(value=self.rating_str(show_maximum=False) if self.rating else "—", tag="td"),
@@ -1280,7 +1258,7 @@ class File(BaseModel):
         )
 
         context["columns"].append([
-            SSVLinksDatum(values=self.ssv_list("author"), url="/search?author=")
+            SSVLinksDatum(values=self.ssv_list("author"), url="/search/?author=")
         ])
 
         if debug:
