@@ -97,7 +97,7 @@ function update_selected_details()
     <label for="genre">Genre:<br>
     </label>
     <select id="genre" name="genre">
-        <option value="Any">- ANY - </option>
+        <option value="any">- ANY - </option>
         {% for genre in genres %}
             {% if genre == request.GET.genre %}
             <option selected>{{genre}}</option>
