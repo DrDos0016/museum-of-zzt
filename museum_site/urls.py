@@ -126,12 +126,12 @@ urlpatterns = [
 
     # Files
     path(
-        "article/<str:letter>/<str:key>",
+        "article/<str:letter>/<str:key>/",
         museum_site.file_views.file_articles,
         name="article"
     ),
     path(
-        "attributes/<str:letter>/<str:key>",
+        "attributes/<str:letter>/<str:key>/",
         museum_site.file_views.file_attributes, name="file_attributes"),
     path("browse/", museum_site.file_views.file_directory, name="browse"),
     path(
@@ -142,10 +142,10 @@ urlpatterns = [
         "download/<str:letter>/<str:key>",
         museum_site.file_views.file_download, name="file_download"),
     path(
-        "file/<str:letter>/<str:key>",
+        "file/<str:letter>/<str:key>/",
         museum_site.file_views.file_viewer, name="file"),
     path(
-        "play/<str:letter>/<str:key>",
+        "play/<str:letter>/<str:key>/",
         museum_site.zeta_views.zeta_launcher,
         {"components": ["credits", "controls", "instructions", "players"]},
         name="play"),
