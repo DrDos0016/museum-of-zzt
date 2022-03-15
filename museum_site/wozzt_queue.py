@@ -169,10 +169,10 @@ class WoZZT_Queue(BaseModel):
         return True
 
     def tweet_text(self):
-        escaped_file_url = quote(self.file.file_url())
+        escaped_file_url = quote(self.file.letter + "/" + self.file.key + "/")
         escaped_zzt_url = quote(self.zzt_file)
 
-        output = (f"https://museumofzzt.com{escaped_file_url}?file="
+        output = (f"https://museumofzzt.com/{escaped_file_url}?file="
                   f"{escaped_zzt_url}&board={self.board}\n")
         output += f"{self.file.title} by {self.file.author}"
         if self.file.release_date:
