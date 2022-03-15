@@ -125,7 +125,7 @@ def index(request):
     data["article_table_header"] = table_header(Article.table_fields)
     data["review_table_header"] = table_header(Review.table_fields)
 
-    data["reviews"] = Review.objects.all().order_by(
+    data["reviews"] = Review.objects.filter(approved=True).order_by(
         "-date", "-id"
     )[:FP.REVIEWS_SHOWN]
 
