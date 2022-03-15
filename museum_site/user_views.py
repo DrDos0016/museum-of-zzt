@@ -413,10 +413,17 @@ def change_username(request):
             success = False
             data["errors"]["username"] = "Requested username is unavailable."
 
-        # Change the password
+        # Change the username
         if success:
             request.user.username = uname
             request.user.save()
+
+            # Update any reviews with author name for sorting
+            qs = Review.objects.filter(user_id=request.user.id)
+            for r in qs:
+                r.author = uname
+                r.save()
+
             logout(request)
             return redirect("login_user")
 
