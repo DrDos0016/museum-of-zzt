@@ -169,7 +169,7 @@ class WoZZT_Queue(BaseModel):
         return True
 
     def tweet_text(self):
-        escaped_file_url = quote(self.file.letter + "/" + self.file.key + "/")
+        escaped_file_url = quote("file/" + self.file.letter + "/" + self.file.key + "/")
         escaped_zzt_url = quote(self.zzt_file)
 
         output = (f"https://museumofzzt.com/{escaped_file_url}?file="
