@@ -68,8 +68,10 @@ class Review(BaseModel):
                 self.user.profile.link(),
                 self.user.username
             )
-        else:
+        elif self.author:
             link = self.author
+        else:
+            link = "Anonymous"
 
         return link
 
@@ -142,7 +144,7 @@ class Review(BaseModel):
             cells=[
                 LinkDatum(
                     url=self.url(),
-                    value=self.title,
+                    value=self.title if self.title else "Untitled",
                     tag="td",
                 ),
                 LinkDatum(
@@ -165,7 +167,10 @@ class Review(BaseModel):
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
-            title=self.title,
+            title=LinkDatum(
+                    url=self.url(),
+                    value=self.title if self.title else "Untitled",
+                ),
             columns=[],
         )
 
