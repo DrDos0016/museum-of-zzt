@@ -82,8 +82,8 @@ EMAIL_ADDRESS = "doctordos@gmail.com"
 GENRE_LIST = (
     "24HoZZT", "Action", "Adventure", "Advertisement", "Arcade", "Art",
     "Beta", "BKZZT", "Bugfix", "Cameo", "Catalog", "Cinema", "Comedy", "Comic",
-    "Compilation", "Contest", "Demo", "Dungeon", "Edutainment", "Engine",
-    "Experimental", "Fangame", "Fantasy", "Fighting", "Font",
+    "Collaboration", "Compilation", "Contest", "Demo", "Dungeon", "Edutainment",
+    "Engine", "Experimental", "Fangame", "Fantasy", "Fighting", "Font",
     "Help", "Horror", "Incomplete", "Ludum Dare", "Magazine", "Maze",
     "Minigame", "Mod", "Multiplayer", "Music", "Mystery",
     "Official", "Other", "Parody", "Platformer", "Puzzle", "Racing", "Random",
