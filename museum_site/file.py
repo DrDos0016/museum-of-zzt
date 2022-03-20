@@ -534,6 +534,9 @@ class File(BaseModel):
     def attributes_url(self):
         return "/attributes/{}/{}/".format(self.letter, self.key)
 
+    def tool_url(self):
+        return "/tools/{}/{}".format(self.letter, self.filename)
+
     def phys_path(self):
         return os.path.join(SITE_ROOT + self.download_url())
 
@@ -1186,10 +1189,13 @@ class File(BaseModel):
         # Debug
         if debug:
             # Debug Fields
-            link = LinkDatum(
-                label="ID", value=self.id, target="_blank", kind="debug",
-                url="/admin/museum_site/file/{}/change/".format(self.id),
-            )
+            link = MultiLinkDatum(
+                    label="Debug", kind="debug", values=[
+                        {"url": self.admin_url(), "text": "Admin ({})".format(self.id)},
+                        {"url": self.tool_url(), "text": "Tools ({})".format(self.id)},
+                    ],
+                )
+
             context["columns"][1].append(link)
 
             # Debug Links
