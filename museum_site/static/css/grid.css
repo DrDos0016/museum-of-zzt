@@ -462,6 +462,8 @@ a.inline[target=_blank]::after
 .smaller { font-size: smaller; }
 .larger { font-size: larger; }
 
+.faded { opacity:0.6 }
+
 .jsLink { cursor:pointer; color:#00F; }
 
 .fl { float:left; }

@@ -70,6 +70,10 @@ $(document).ready(function (){
 
 {% if recent %}
     <p><i>You have <a href="#rev-{{recent}}">recently reviewed</a> this file and cannot submit an additional review at this time.</i></p>
+{% elif file.is_uploaded %}
+    <p>Unpublished files cannot be reviewed as their content may still be modified by the uploader.</p>
+{% elif file.is_lost %}
+    <p>Lost files cannot be reviewed as they cannot be played in order to review them!</p>
 {% elif file.can_review %}
     <h2>New Review</h2>
     <form method="POST">

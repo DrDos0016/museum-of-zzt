@@ -249,6 +249,7 @@ class File(BaseModel):
         "-id": "-id",
         "-publish_date": "-publish_date"
     }
+    actions = None  # Populated by self.get_actions()
 
     SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
     PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not \
@@ -634,12 +635,16 @@ class File(BaseModel):
 
     def supports_zeta_player(self):
         output = False
-        if self.is_zzt():
-            output = True
-        elif self.is_super_zzt():
+
+        # Normally only ZZT/SZZT files should work
+        if self.is_zzt() or self.is_super_zzt():
             output = True
 
-        # Forcibly Restrict Zeta via a specific config
+        # Incorrectly assume uploaded files will work
+        if self.is_uploaded():
+            output = True
+
+        # Forcibly Restrict Zeta via a specific config (applies to uploads as well)
         if self.zeta_config and self.zeta_config.id == ZETA_RESTRICTED:
             output = False
 
@@ -799,8 +804,9 @@ class File(BaseModel):
     def calculate_size(self):
         self.size = os.path.getsize(self.phys_path())
 
-    def supported_actions(self):
-        features = {
+    def init_actions(self):
+        """ Determine which actions may be performed on this zfile """
+        self.actions = {
             "download": False,
             "play": False,
             "view": False,
@@ -810,24 +816,27 @@ class File(BaseModel):
 
         # Download
         if self.file_exists():
-            features["download"] = True
+            self.actions["download"] = True
 
         # Play
-        if features["download"] and (self.is_zzt() or self.is_super_zzt()):
-            features["play"] = True
+        if self.archive_name or (
+            self.actions["download"] and self.supports_zeta_player()
+        ):
+            self.actions["play"] = True
 
         # View
-        if features["download"]:
-            features["view"] = True
+        if self.actions["download"]:
+            self.actions["view"] = True
 
         # Review
-        if features["download"] and self.can_review:
-            features["review"] = True
+        if (self.actions["download"] and self.can_review) or self.review_count:
+            self.actions["review"] = True
+        if self.actions["review"] and self.is_uploaded():
+            self.actions["review"] = False
 
         # Article
-        features["article"] = True
-
-        return features
+        if self.article_count:
+            self.actions["article"] = True
 
     def generate_screenshot(
         self, world=None, board=0, font=None, filename=None
@@ -1120,52 +1129,63 @@ class File(BaseModel):
         ])
 
         # Prepare Links
-        links = []
-        stub = StubDatum()
-        # Download
-        if self.downloads.count():
-            value = "Downloads…"
-            url = "/download/{}/{}".format(self.letter, self.key)
-        else:
-            value = "Download"
-            url=self.download_url()
+        if self.actions is None:
+            self.init_actions()
 
-        link = LinkDatum(
-            value=value,
-            url=url,
-            roles=["download-link"],
-            icons=context["major_icons"],
-        )
+        links = []
+        # Download
+        if self.actions["download"]:
+            if self.downloads.count():
+                value = "Downloads…"
+                url = "/download/{}/{}".format(self.letter, self.key)
+            else:
+                value = "Download"
+                url=self.download_url()
+
+            link = LinkDatum(
+                value=value,
+                url=url,
+                roles=["download-link"],
+                icons=context["major_icons"],
+            )
+        else:
+            link = TextDatum(value="Download", kind="faded")
         links.append(link)
         # Play Online
-        if (
-            not self.is_uploaded() and
-            (self.archive_name == "" and not self.supports_zeta_player())
-        ):
-            link = stub
-        else:
+        if self.actions["play"]:
             link = LinkDatum(
                 value="Play Online", url=self.play_url(),
                 roles=["play-link"], icons=context["major_icons"],
             )
+        else:
+            link = TextDatum(value="Play Online", kind="faded")
         links.append(link)
         # View Files
-        link = LinkDatum(
-            value="View Files", url=self.file_url(),
-            roles=["view-link"], icons=context["major_icons"],
-        )
+        if self.actions["view"]:
+            link = LinkDatum(
+                value="View Files", url=self.file_url(),
+                roles=["view-link"], icons=context["major_icons"],
+            )
+        else:
+            link = TextDatum(value="View Files", kind="faded")
         links.append(link)
         # Reviews
-        link = LinkDatum(
-            value="Reviews ({})".format(self.review_count),
-            url=self.review_url(), roles=["review-link"]
-        )
+        if self.actions["review"]:
+            link = LinkDatum(
+                value="Reviews ({})".format(self.review_count),
+                url=self.review_url(), roles=["review-link"]
+            )
+        else:
+            link = TextDatum(value="Reviews (0)", kind="faded")
         links.append(link)
         # Articles
-        link = LinkDatum(
-            value="Articles ({})".format(self.article_count),
-            url=self.article_url(), roles=["article-link"]
-        )
+        if self.actions["article"]:
+            link = LinkDatum(
+                value="Articles ({})".format(self.article_count),
+                url=self.article_url(), roles=["article-link"],
+            )
+        else:
+            link = TextDatum(value="Articles (0)", kind="faded")
         links.append(link)
         # Attributes
         link = LinkDatum(
@@ -1174,27 +1194,15 @@ class File(BaseModel):
         )
         links.append(link)
 
-        # Missing File
-        if self.is_lost():
-            (links[0], links[1], links[2]) = (stub, stub, stub)
-
-        # Unpublished File
-        if self.is_uploaded():
-            links[3] = stub
-
-        # No Articles
-        if self.article_count < 1:
-            links[4] = stub
-
         # Debug
         if debug:
             # Debug Fields
             link = MultiLinkDatum(
-                    label="Debug", kind="debug", values=[
-                        {"url": self.admin_url(), "text": "Admin ({})".format(self.id)},
-                        {"url": self.tool_url(), "text": "Tools ({})".format(self.id)},
-                    ],
-                )
+                label="Debug", kind="debug", values=[
+                    {"url": self.admin_url(), "text": "Admin ({})".format(self.id)},
+                    {"url": self.tool_url(), "text": "Tools ({})".format(self.id)},
+                ],
+            )
 
             context["columns"][1].append(link)
 
@@ -1222,44 +1230,69 @@ class File(BaseModel):
     def as_list_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-list-block.html"
         context = self.initial_context(view="list")
-        context.update(
-            cells=[
-                LinkDatum(value="DL", url=self.download_url(), tag="td",
-                    icons=context["major_icons"]),
-                LinkDatum(value=self.title, url=self.url(), tag="td",
-                    icons=context["icons"]
-                ),
-                SSVLinksDatum(values=self.ssv_list("author"), url="/search/?author=", tag="td"),
-                SSVLinksDatum(values=self.ssv_list("company"), url="/search/?company=", tag="td"),
-                SSVLinksDatum(values=self.ssv_list("genre"), url="/search/?genre=", tag="td"),
-                LinkDatum(
-                    value=(self.release_date or "Unknown"),
-                    url="/search/?year={}".format(self.release_year(default="unk")),
-                    tag="td",
-                ),
-                TextDatum(value=self.rating_str(show_maximum=False) if self.rating else "—", tag="td"),
-            ],
-        )
 
-        # Modifications
+        # Prepare Links
+        cells = []
+        if self.actions is None:
+            self.init_actions()
+
+        if self.actions["download"]:
+            link = LinkDatum(value="DL", url=self.download_url(), tag="td",
+                    icons=context["major_icons"])
+        else:
+            link = TextDatum(value="DL", kind="faded", tag="td")
+        cells.append(link)
+
+        if self.actions["view"]:
+            link = LinkDatum(value=self.title, url=self.url(), tag="td",
+                icons=context["icons"]
+            )
+        else:
+            link = TextDatum(value=self.title, tag="td", kind="faded")
+        cells.append(link)
+
+
+        cells.append(SSVLinksDatum(values=self.ssv_list("author"), url="/search/?author=", tag="td"))
+        cells.append(SSVLinksDatum(values=self.ssv_list("company"), url="/search/?company=", tag="td"))
+        cells.append(SSVLinksDatum(values=self.ssv_list("genre"), url="/search/?genre=", tag="td"))
+        cells.append(LinkDatum(
+            value=(self.release_date or "Unknown"),
+            url="/search/?year={}".format(self.release_year(default="unk")),
+            tag="td",
+            )
+        )
+        cells.append(TextDatum(value=self.rating_str(show_maximum=False) if self.rating else "—", tag="td"))
+
+        # Modify download text if needed
         if self.downloads.count():
-            context["cells"][0].context["value"] = "DLs…"
-            context["cells"][0].context["url"] = "/download/{}".format(
+            cells[0].context["value"] = "DLs…"
+            cells[0].context["url"] = "/download/{}".format(
                 self.identifier
             )
 
+        context.update(cells=cells)
         return render_to_string(template, context)
 
     def as_gallery_block(self, debug=False, extras=[]):
         template = "museum_site/blocks/generic-gallery-block.html"
         context = self.initial_context(view="gallery")
-        context.update(
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            title=LinkDatum(
+
+        # Prepare Links
+        if self.actions is None:
+            self.init_actions()
+
+        if self.actions["view"]:
+            title_datum = LinkDatum(
                 value=self.title,
                 url=self.url(),
                 icons=context["icons"],
-            ),
+            )
+        else:
+            title_datum = TextDatum(value=self.title, kind="faded")
+
+        context.update(
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            title=title_datum,
             columns=[],
         )
 
