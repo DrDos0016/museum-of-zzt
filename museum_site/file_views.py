@@ -14,6 +14,7 @@ def file_attributes(request, letter, key):
         return redirect_with_querystring("file_attributes", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
 
     data["file"] = get_object_or_404(File, key=key)
+    data["file"].init_actions()
     data["upload_info"] = Upload.objects.filter(file_id=data["file"]).first()
     data["reviews"] = Review.objects.filter(
         zfile__id=data["file"].pk
