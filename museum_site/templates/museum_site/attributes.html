@@ -86,10 +86,10 @@
 {% with file.supported_actions as supported_actions %}
 <table>
 <tr><th>Can Review</th><td>{{file.can_review|yesno|title}}</td></tr>
-<tr><th>Can Download</th><td>{{supported_actions.download|yesno|title}}</td></tr>
-<tr><th>Can Play</th><td>{{supported_actions.play|yesno|title}}</td></tr>
-<tr><th>Can View</th><td>{{supported_actions.view|yesno|title}}</td></tr>
-<tr><th>Can Article</th><td>{{supported_actions.article|yesno|title}}</td></tr>
+<tr><th>Can Download</th><td>{{file.actions.download|yesno|title}}</td></tr>
+<tr><th>Can Play</th><td>{{file.actions.play|yesno|title}}</td></tr>
+<tr><th>Can View</th><td>{{file.actions.view|yesno|title}}</td></tr>
+<tr><th>Can Article</th><td>{{file.actions.article|yesno|title}}</td></tr>
 </table>
 {% endwith %}
 
