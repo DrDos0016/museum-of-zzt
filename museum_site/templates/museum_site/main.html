@@ -44,7 +44,7 @@
 
     <div id="featured" class="block c">
         <h1 class="l">Featured World️</h1>
-        {{fg.as_gallery_block}}
+        {% generic_block_loop items=fg view="gallery" %}
         <a href="{% url 'featured_games' %}" id="fp-fw-link">View All Featured Worlds</a>
     </div>
 
