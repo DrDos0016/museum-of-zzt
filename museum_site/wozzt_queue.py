@@ -372,6 +372,34 @@ class WoZZT_Queue(BaseModel):
             )
         return render_to_string(template, context)
 
+    def detailed_block_context(self, extras=None, *args, **kwargs):
+        debug = True
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            columns=[],
+            title={"datum": "title", "value":"-----"},
+        )
+
+        context["columns"].append([
+            {"datum": "text-area", "label":"Tweet", "value":self.tweet_text(), "readonly":True},
+            {"datum": "link", "label":"Source", "value":"View", "url":self.file.url() + "?file={}&board={}".format(
+                    self.zzt_file, self.board
+                ), "target": "_blank" }
+        ])
+
+        if debug:
+            context["columns"][0].append({"datum": "link", "label":"ID", "value":self.id, "target":"_blank", "kind":"debug", "url":self.admin_url()})
+            context["columns"][0].append({"datum": "custom-wozzt-priority", "pk":self.id, "priority":self.priority, "kind":"debug"})
+            context["columns"][0].append({"datum": "custom-wozzt-delete", "pk":self.id, "kind":"debug"})
+        else:
+            context["columns"][0].append(
+                {"datum": "text", "label":"Priority", "value":self.priority}
+            )
+        return context
+
 
 # Files banned from Worlds of ZZT Bot's feed
 BANNED_FILES = [

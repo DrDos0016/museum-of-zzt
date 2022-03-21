@@ -417,3 +417,74 @@ class Article(BaseModel):
                 context["url"] = context["url"] + self.extra_context["password_qs"]
 
         return context
+
+    def detailed_block_context(self, extras=None, *args, **kwargs):
+        """ Return info to populate a detail block """
+        context = self.initial_context()
+
+        template = "museum_site/blocks/generic-detailed-block.html"
+        context = self.initial_context(view="detailed")
+        context.update(
+            title={"datum": "title", "value":self.title, "url":self.url()},
+            columns=[],
+        )
+
+        if self.published == self.UPCOMING:
+            context["title"]["roles"] = [
+                "restricted", "article-upcoming"
+            ]
+        elif self.published == self.UNPUBLISHED:
+            context["title"]["roles"] = [
+                "restricted", "article-unpublished"
+            ]
+
+        context["columns"].append([
+            {"datum": "text", "label": "Author", "value":self.author},
+            {"datum": "text", "label": "Date", "value":epoch_to_unknown(self.publish_date)},
+            {"datum": "text", "label": "Category", "value":self.category},
+            {"datum": "text", "label": "Description", "value":self.description},
+        ])
+
+        if self.series.count():
+            context["columns"][0].append(
+                {"datum": "multi-link", "label":"Series", "values":self.get_series_links()}
+            )
+
+        return context
+
+    def list_block_context(self, extras=None, *args, **kwargs):
+        context = self.initial_context(view="list")
+        context.update(
+            pk=self.pk,
+            model=self.model_name,
+            hash_id="article-{}".format(self.pk),
+            url=self.url,
+            cells=[
+                {"datum": "link", "url":self.url(), "value":self.title, "tag":"td"},
+                {"datum": "text", "value": self.author, "tag":"td"},
+                {"datum": "text", "value": epoch_to_unknown(self.publish_date), "tag":"td"},
+                {"datum": "text", "value": self.category, "tag":"td"},
+                {"datum": "text", "value": self.description, "tag":"td"},
+            ],
+        )
+
+        if self.is_restricted:
+            context["cells"][0]["roles"] = ["restricted"]
+
+        return context
+
+    def gallery_block_context(self, extras=None, *args, **kwargs):
+        context = self.initial_context(view="detailed")
+        context.update(
+            title={"datum": "title", "url":self.url(), "value":self.title},
+            columns=[],
+        )
+
+        context["columns"].append([
+            {"datum": "text", "value":self.author}
+        ])
+
+
+        if self.is_restricted:
+            context["title"]["roles"] = ["restricted"]
+        return context

@@ -149,3 +149,55 @@ class Series(BaseModel):
             )
 
         return render_to_string(template, context)
+
+    def detailed_block_context(self, extras=None, *args, **kwargs):
+        """ Return info to populate a detail block """
+        template = "museum_site/blocks/generic-detailed-block.html"
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title={"datum": "title", "value": self.title, "url": self.url},
+            columns=[],
+        )
+
+        context["columns"].append([
+            {"datum": "text", "label":"Newest Entry", "value":self.last_entry_date},
+            {"datum": "text", "label":"Oldest Entry", "value":epoch_to_unknown(self.first_entry_date)},
+            {"datum": "text", "label":"Articles", "value":self.article_set.count()},
+            {"datum": "text", "value":mark_safe("<p>{}</p>".format(self.description))},
+        ])
+
+        return context
+
+    def list_block_context(self, extras=None, *args, **kwargs):
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            url=self.url,
+            cells=[
+                {"datum": "link", "url": self.url(), "value": self.title, "tag": "td"},
+                {"datum": "text", "value":self.last_entry_date, "tag":"td"},
+                {"datum": "text", "value":epoch_to_unknown(self.first_entry_date), "tag":"td"},
+                {"datum": "text", "value":self.article_set.count(), "tag":"td"},
+            ],
+        )
+
+        return context
+
+    def gallery_block_context(self, extras=None, *args, **kwargs):
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title={"datum": "title", "url":self.url(), "value":self.title},
+            columns=[],
+        )
+
+        context["columns"].append([
+            {"datum": "text", "value":self.last_entry_date}
+        ])
+
+        return context

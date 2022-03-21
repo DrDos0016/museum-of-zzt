@@ -22,6 +22,7 @@ class Review(BaseModel):
         {"text": "Reviewer", "val": "reviewer"},
         {"text": "Rating", "val": "rating"},
     ]
+    PROFANITY = ["graphics", "coherency", "wtf"]
 
     """
     Fields:
@@ -86,6 +87,23 @@ class Review(BaseModel):
         if output == "":
             output = "Unknown"
         return output
+
+    def get_content(self, profanity=False):
+        if profanity:
+            return self.content
+        else:
+            output = []
+            words = self.content.split(" ")
+            for word in words:
+                for p in self.PROFANITY:
+                    if word.lower().find(p) != -1:
+                        print("P is", p, len(p))
+                        word = word.lower().replace(p, ("*" * len(p)))
+                        print(word)
+                output.append(word)
+
+        return " ".join(output)
+
 
     def scrub(self):
         self.user_id = None
@@ -192,3 +210,61 @@ class Review(BaseModel):
             )
 
         return render_to_string(template, context)
+
+    def detailed_block_context(self, extras=None, *args, **kwargs):
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title={"datum": "title", "value":mark_safe(self.title if self.title else "<i>Untitled Review</i>"), "url":self.url()},
+            columns=[],
+        )
+
+        context["columns"].append([
+            {"datum": "link", "label": "File", "value": self.zfile.title, "url": self.zfile.url()},
+            {"datum": "text", "label": "Reviewer", "value": self.author_link()},
+            {"datum": "text", "label": "Date", "value": epoch_to_unknown(self.date)},
+        ])
+
+        if self.rating >= 0:
+            context["columns"][0].append(
+                {"datum": "text", "label": "Rating", "value": "{} / 5.0".format(self.rating)},
+            )
+
+        return context
+
+    def list_block_context(self, extras=None, *args, **kwargs):
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            url=self.url,
+            cells=[
+                {"datum": "link", "url":self.url(), "value":self.title if self.title else "Untitled", "tag":"td"},
+                {"datum": "link", "url":self.zfile.url(), "value":self.zfile.title, "tag":"td"},
+                {"datum": "text", "value":self.author_link(), "tag":"td"},
+                {"datum": "text", "value":epoch_to_unknown(self.date), "tag":"td"},
+                {"datum": "text", "value":("—" if self.rating < 0 else self.rating), "tag":"td"}
+            ],
+        )
+        return context
+
+    def gallery_block_context(self, extras=None, *args, **kwargs):
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            url=self.url,
+            title={"datum": "link", "url":self.url(), "value":self.title if self.title else "Untitled"},
+            columns=[],
+        )
+
+        context["columns"].append([
+            {"datum": "text", "value":self.author_link()},
+        ])
+
+        if self.rating >= 0:
+            context["columns"][0].append(
+                {"datum": "text", "value":"{} / 5.0".format(self.rating)}
+            )
+        return context

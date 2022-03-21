@@ -20,7 +20,7 @@ class BaseModel(models.Model):
         )
 
     def as_block(self, view="detailed", *args, **kwargs):
-        return getattr(self, "as_{}_block".format(view))(*args, **kwargs)
+        return getattr(self, "{}_block_context".format(view))(*args, **kwargs)
 
     def as_detailed_block(self, *args, **kwargs):
         raise NotImplementedError(

@@ -5,6 +5,7 @@ from datetime import datetime
 
 from django import template
 from django.template import Template, Context, Library
+from django.template.loader import render_to_string
 from django.template.defaultfilters import stringfilter
 from django.template import defaultfilters as filters
 from django.utils.safestring import mark_safe
@@ -490,6 +491,7 @@ def ssv_links(raw, param, lookup=""):
 def generic_block_loop(
     items, view="detailed", header=None, debug=False, extras=None
 ):
+    template = "museum_site/blocks/generic-{}-block.html".format(view)
     output = ""
 
     # Empty sets
@@ -503,10 +505,13 @@ def generic_block_loop(
         output += '<div class="gallery-frame">'
 
     for i in items:
-        if hasattr(i, "as_block"):
-            output += i.as_block(view, debug=debug, extras=extras)
-        else:
-            output += i
+        if view == "detailed":
+            context = i.detailed_block_context(extras=extras, debug=debug)
+        elif view == "list":
+            context = i.list_block_context(extras=extras, debug=debug)
+        elif view == "gallery":
+            context = i.gallery_block_context(extras=extras, debug=debug)
+        output += render_to_string(template, context)
 
     if view == "list":
         output += "</table>"

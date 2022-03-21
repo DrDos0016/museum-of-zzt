@@ -898,127 +898,6 @@ class File(BaseModel):
     def identifier(self):
         return self.letter + "/" + self.filename
 
-    def links(self):
-        # TODO: IS THIS USED?
-        # Defaults
-        output = {
-            "download": {
-                "visible": True,
-                "text": "Download",
-                "url": self.download_url,
-                "classes": [],
-            },
-            "play": {
-                "visible": True,
-                "text": "Play Online",
-                "url": self.play_url,
-                "classes": [],
-            },
-            "view": {
-                "visible": True,
-                "text": "View Files",
-                "url": self.file_url,
-                "classes": [],
-            },
-            "review": {
-                "visible": True,
-                "text": "Reviews ({})".format(self.review_count),
-                "url": self.review_url,
-                "classes": [],
-            },
-            "article": {
-                "visible": True,
-                "text": "Articles ({})".format(self.article_count),
-                "url": self.article_url,
-                "classes": [],
-            },
-            "attributes": {
-                "visible": True,
-                "text": "Attributes",
-                "url": self.attributes_url,
-                "classes": [],
-            },
-        }
-
-        # Modifiers
-        # Multiple Downloads
-        if self.downloads.count():
-            output["download"]["text"] = "Downloads…"
-            output["download"]["url"] = "/download/{}/{}".format(self.letter, self.key)
-
-        # Explicit
-        if self.explicit:
-            output["download"]["classes"].append(" explicit")
-            output["play"]["classes"].append(" explicit")
-            output["view"]["classes"].append(" explicit")
-
-        # Missing File
-        if self.is_lost():
-            output["download"]["visibile"] = False
-            output["play"]["visibile"] = False
-            output["view"]["visible"] = False
-
-        # Unsupported Play Online Functionality
-        if (not self.supports_zeta_player()) and self.archive_name == "":
-            output["play"]["visible"] = False
-        # Exception for uploads
-        if (self.is_uploaded()):
-            output["play"]["visible"] = True
-
-        # Unpublished file
-        if self.is_uploaded():
-            output["review"]["visible"] = False
-
-        # No Articles
-        if self.article_count < 1:
-            output["article"]["visible"] = False
-        return output
-
-    def overview(self):
-        # TODO: IS THIS USED?
-        # Defaults
-        output = {
-            "basic": [
-                {
-                    "visible": True,
-                    "label": "Author",
-                    "value": self.ssv_links("author", "---"),
-                    "classes": [],
-                },
-                {
-                    "visible": True,
-                    "label": "Company",
-                    "value": self.ssv_links("company", "---"),
-                    "classes": [],
-                },
-                {
-                    "visible": True,
-                    "label": "Released",
-                    "value": date(self.release_date),
-                    "classes": [],
-                },
-                {
-                    "visible": True,
-                    "label": "Genre",
-                    "value": self.ssv_links("genre", "---"),
-                    "classes": [],
-                },
-                {
-                    "visible": True,
-                    "label": "Filename",
-                    "value": self.filename,
-                    "classes": [],
-                },
-                {
-                    "visible": True,
-                    "label": "Size",
-                    "value": filesizeformat(self.size),
-                    "classes": [],
-                },
-            ],
-        }
-        return output
-
     def release_year(self, default=""):
         if self.release_date is None:
             return default
@@ -1129,94 +1008,20 @@ class File(BaseModel):
         ])
 
         # Prepare Links
-        if self.actions is None:
-            self.init_actions()
+        links = self.links(icons=context["icons"], major_icons=context["major_icons"], debug=debug)
 
-        links = []
-        # Download
-        if self.actions["download"]:
-            if self.downloads.count():
-                value = "Downloads…"
-                url = "/download/{}/{}".format(self.letter, self.key)
-            else:
-                value = "Download"
-                url=self.download_url()
-
-            link = LinkDatum(
-                value=value,
-                url=url,
-                roles=["download-link"],
-                icons=context["major_icons"],
-            )
-        else:
-            link = TextDatum(value="Download", kind="faded")
-        links.append(link)
-        # Play Online
-        if self.actions["play"]:
-            link = LinkDatum(
-                value="Play Online", url=self.play_url(),
-                roles=["play-link"], icons=context["major_icons"],
-            )
-        else:
-            link = TextDatum(value="Play Online", kind="faded")
-        links.append(link)
-        # View Files
-        if self.actions["view"]:
-            link = LinkDatum(
-                value="View Files", url=self.file_url(),
-                roles=["view-link"], icons=context["major_icons"],
-            )
-        else:
-            link = TextDatum(value="View Files", kind="faded")
-        links.append(link)
-        # Reviews
-        if self.actions["review"]:
-            link = LinkDatum(
-                value="Reviews ({})".format(self.review_count),
-                url=self.review_url(), roles=["review-link"]
-            )
-        else:
-            link = TextDatum(value="Reviews (0)", kind="faded")
-        links.append(link)
-        # Articles
-        if self.actions["article"]:
-            link = LinkDatum(
-                value="Articles ({})".format(self.article_count),
-                url=self.article_url(), roles=["article-link"],
-            )
-        else:
-            link = TextDatum(value="Articles (0)", kind="faded")
-        links.append(link)
-        # Attributes
-        link = LinkDatum(
-            value="Attributes", url=self.attributes_url(),
-            roles=["attribute-link"]
-        )
-        links.append(link)
-
-        # Debug
+        # Debug columns
+        """
         if debug:
-            # Debug Fields
             link = MultiLinkDatum(
-                label="Debug", kind="debug", values=[
-                    {"url": self.admin_url(), "text": "Admin ({})".format(self.id)},
-                    {"url": self.tool_url(), "text": "Tools ({})".format(self.id)},
-                ],
-            )
+                    label="Debug", kind="debug", values=[
+                        {"url": self.admin_url(), "text": "Admin ({})".format(self.id)},
+                        {"url": self.tool_url(), "text": "Tools ({})".format(self.id)},
+                    ],
+                )
 
             context["columns"][1].append(link)
-
-            # Debug Links
-            link = LinkDatum(
-                value="Edit {}".format(self.id), kind="debug",
-                url="/admin/museum_site/file/{}/change/".format(self.id),
-            )
-            links.append(link)
-            link = LinkDatum(
-                value="Tools {}".format(self.id), kind="debug",
-                url="/tools/{}/{}".format(self.letter, self.filename),
-            )
-            links.append(link)
+        """
 
         # Assemble
         context["links"] = links
@@ -1346,4 +1151,169 @@ class File(BaseModel):
         if self.is_lost() and self.description:
             context["model_extras"].append("museum_site/blocks/extra-lost.html")
             context["lost_description"] = self.description
+        return context
+
+    def links(self, major_icons=[], icons=[], debug=False):
+        links = []
+
+        if self.actions is None:
+            self.init_actions()
+
+        # Download
+        if self.actions["download"]:
+            if self.downloads.count():
+                value = "Downloads…"
+                url = "/download/{}/{}".format(self.letter, self.key)
+            else:
+                value = "Download"
+                url=self.download_url()
+
+            link = {"datum": "link", "value":value, "url":url, "roles":["download-link"], "icons":major_icons}
+        else:
+            link = {"datum": "text", "value":"Download", "kind":"faded"}
+
+        links.append(link)
+
+
+        # Play Online
+        if self.actions["play"]:
+            link = {"datum": "link", "value":"Play Online", "url":self.play_url(), "roles":["play-link"], "icons":major_icons}
+        else:
+            link = {"datum": "text", "value":"Play Online", "kind":"faded"}
+        links.append(link)
+
+        # View Files
+        if self.actions["view"]:
+            link = {"datum": "link", "value":"View Files", "url": self.file_url(), "roles":["view-link"], "icons":major_icons}
+        else:
+            link = {"datum": "text", "value":"View Files", "kind":"faded"}
+        links.append(link)
+
+        # Reviews
+        if self.actions["review"]:
+            link = {"datum": "link", "value":"Reviews ({})".format(self.review_count), "url":self.review_url(), "roles":["review-link"]}
+        else:
+            link = {"datum": "text", "value":"Reviews (0)", "kind":"faded"}
+        links.append(link)
+
+        # Articles
+        if self.actions["article"]:
+            link = {"datum": "link", "value":"Articles ({})".format(self.article_count), "url":self.article_url(), "roles":["article-link"]}
+        else:
+            link = {"datum": "text", "value":"Articles (0)", "kind":"faded"}
+        links.append(link)
+
+        # Attributes
+        link = {"datum": "link", "value":"Attributes", "url":self.attributes_url(), "roles":["attribute-link"]}
+        links.append(link)
+
+        return links
+
+    def detailed_block_context(self, extras=None, *args, **kwargs):
+        """ Return info to populate a detail block """
+        context = self.initial_context()
+        debug = kwargs.get("debug", False)
+        context = self.initial_context(view="detailed")
+        context.update(
+            template="museum_site/blocks/generic-detailed-block.html",
+            tag={"opening": "div", "closing": "/div"},
+            extras=extras,
+            columns=[],
+            title={"datum": "title", "value":self.title, "url":self.url(), "icons":context["icons"]},
+        )
+
+        # Prepare Columns
+        context["columns"].append([
+            {"datum": "ssv-links", "label": "Author"+("s" if len(self.ssv_list("author")) > 1 else ""), "values":self.ssv_list("author"), "url":"/search/?author="},
+            {"datum": "ssv-links", "label":"Compan"+("ies" if len(self.ssv_list("company")) > 1 else "y"), "values":self.ssv_list("company"), "url":"/search/?company="},
+            {"datum": "link", "label":"Released", "value":(self.release_date or "Unknown"), "url":"/search/?year={}".format(self.release_year(default="unk"))},
+            {"datum": "ssv-links", "label": "Genre"+("s" if len(self.ssv_list("genre")) > 1 else ""), "values":self.ssv_list("genre"), "url":"/search/?genre="},
+            {"datum": "text", "label": "Filename", "value":self.filename},
+            {"datum": "text", "label": "Size", "value":filesizeformat(self.size)},
+        ])
+
+        context["columns"].append([
+            {"datum": "text", "label": "Details", "value":self.details_links()},
+            {"datum": "text", "label":"Rating", "value":self.rating_str(), "title":"Based on {} review{}".format(self.review_count, "s" if self.review_count != 1 else "")},
+            {"datum": "text", "label":"Boards", "value":self.boards_str(), "title":"Playable/Total Boards. Values are not 100% accurate." if self.total_boards else ""},
+            {"datum": "language-links", "label":"Language"+("s" if len(self.ssv_list("language")) > 1 else ""), "values":self.language_pairs(), "url":"/search/?lang="},
+
+        ])
+
+        if self.is_uploaded() and self.upload_set.first():
+            context["columns"][1].append({"datum": "text", "label":"Upload Date", "value":self.upload_set.first().date})
+        if not self.is_uploaded() and self.publish_date:
+            context["columns"][1].append({"datum": "text", "label":"Publish Date", "value":self.publish_date_str()})
+
+        # Prepare Links
+        context["links"] = self.links(icons=context["icons"], major_icons=context["major_icons"], debug=debug)
+
+        # Additional fields when browsing Featured Worlds
+        if extras and "museum_site/blocks/extra-featured-world.html" in extras:
+            context["featured_articles"] = self.articles.filter(category="Featured Game").order_by("-publish_date")
+
+        return context
+
+    def list_block_context(self, extras=None, *args, **kwargs):
+        template = "museum_site/blocks/generic-list-block.html"
+        context = self.initial_context(view="list")
+
+        # Prepare Links
+        cells = []
+        if self.actions is None:
+            self.init_actions()
+
+        if self.actions["download"]:
+            link = {"datum": "link", "value":"DL", "url":self.download_url(), "tag":"td",
+                    "icons":context["major_icons"]}
+        else:
+            link = {"datum": "text", "value":"DL", "kind":"faded", "tag":"td"}
+        cells.append(link)
+
+        if self.actions["view"]:
+            link = {"datum": "link", "value":self.title, "url":self.url(), "tag":"td",
+                "icons":context["icons"]}
+        else:
+            link = {"datum": "text", "value":self.title, "tag":"td", "kind":"faded"}
+        cells.append(link)
+
+
+        cells.append({"datum": "ssv-links", "values":self.ssv_list("author"), "url":"/search/?author=", "tag":"td"})
+        cells.append({"datum": "ssv-links", "values":self.ssv_list("company"), "url":"/search/?company=", "tag":"td"})
+        cells.append({"datum": "ssv-links", "values":self.ssv_list("genre"), "url":"/search/?genre=", "tag":"td"})
+        cells.append({"datum": "link", "value":(self.release_date or "Unknown"), "url":"/search/?year={}".format(self.release_year(default="unk")), "tag":"td"})
+        cells.append({"datum": "text", "value":self.rating_str(show_maximum=False) if self.rating else "—", "tag":"td"})
+
+        # Modify download text if needed
+        if self.downloads.count():
+            cells[0]["value"] = "DLs…"
+            cells[0]["url"] = "/download/{}".format(
+                self.identifier
+            )
+
+        context.update(cells=cells)
+        return context
+
+    def gallery_block_context(self, extras=None, *args, **kwargs):
+        context = self.initial_context(view="gallery")
+
+        # Prepare Links
+        if self.actions is None:
+            self.init_actions()
+
+        if self.actions["view"]:
+            title_datum = {"datum": "title", "value":self.title, "url":self.url(), "icons":context["icons"]}
+        else:
+            title_datum = {"datum": "text", "value":self.title, "kind":"faded"}
+
+        context.update(
+            preview=dict(url=self.preview_url, alt=self.preview_url),
+            title=title_datum,
+            columns=[],
+        )
+
+        context["columns"].append([
+            {"datum": "ssv-links", "values":self.ssv_list("author"), "url":"/search/?author="}
+        ])
+
         return context

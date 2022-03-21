@@ -1,4 +1,4 @@
-<{{tag|default:"div"}} class="datum{% if kind %} {{kind}}{% endif %}">
-    {% if label %}<div class="label">{{label}}</div>{% endif %}
-    {% if value %}<div class="value"{% if title %}title="{{title}}"{% endif %}>{{value}}</div>{% endif %}
-</{{tag|default:"div"}}>
+<{{f.tag|default:"div"}} class="datum{% if f.kind %} {{f.kind}}{% endif %}">
+    {% if f.label %}<div class="label">{{f.label}}</div>{% endif %}
+    {% if f.value %}<div class="value"{% if f.title %}title="{{f.title}}"{% endif %}>{{f.value}}</div>{% endif %}
+</{{f.tag|default:"div"}}>

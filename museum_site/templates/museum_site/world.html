@@ -16,7 +16,7 @@
     </select>{% endif %}
 </div>
 <div class="file-links">
-    {% include "museum_site/blocks/file_links.html" %}
+    {% include "museum_site/blocks/file-links.html" with links=file.links debug=debug %}
 </div>
 <div class="file-data">
     <div class="author-data">Author<br>{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a|urlencode}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>

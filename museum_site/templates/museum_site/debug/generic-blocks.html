@@ -17,28 +17,46 @@
 
 {% block content %}
 <section id="content" class="block">
+<a href="?show=all">ALL</a> - <a href="?show=wozzt">WoZZT</a> - <a href="?show=reviews">Reviews</a> - <a href="?show=zfiles">ZFiles</a> - <a href="?show=articles">Articles</a> - <a href="?show=series">Series</a> - <a href="?show=test">TEST</a>
 {% include "museum_site/blocks/paginator_block.html" %}
 
+{% if request.GET.show == "wozzt" or request.GET.show == "all" %}
 {% if view == "detailed" %}
 <b>WoZZT</b><br>
 {% generic_block_loop items=wozzt view=view header=wozzt_table_header debug=debug %}
 <hr>
+{% else %}
+<p>WoZZT can only be viewed in detailed form</p>
+{% endif %}
 {% endif %}
 
+{% if request.GET.show == "reviews" or request.GET.show == "all" %}
 <b>Reviews</b><br>
 {% generic_block_loop items=reviews view=view header=review_table_header debug=debug %}
 <hr>
+{% endif %}
 
+{% if request.GET.show == "zfiles" or request.GET.show == "all" %}
 <b>ZFiles</b><br>
 {% generic_block_loop items=zfiles view=view header=zfile_table_header debug=debug %}
 <hr>
+{% endif %}
 
+{% if request.GET.show == "articles" or request.GET.show == "all" %}
 <b>Articles</b><br>
 {% generic_block_loop items=articles view=view header=article_table_header debug=debug %}
 <hr>
+{% endif %}
 
+{% if request.GET.show == "series" or request.GET.show == "all" %}
 <b>Series</b><br>
 {% generic_block_loop items=series view=view header=series_table_header debug=debug %}
+<hr>
+{% endif %}
+
+
+{% if request.GET.show == "test" or request.GET.show == "all" %}
+{% endif %}
 
 </section>
 {% endblock %}

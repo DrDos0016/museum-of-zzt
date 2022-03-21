@@ -174,6 +174,14 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
     grid-template-columns: repeat(6, 1fr);
     text-align:center;
 }
+
+.file-links .model-block-links
+{
+    /* Links when viewing a file */
+    flex:1;
+    margin-top:0;
+    border:0;
+}
 /* End Links for File blocks */
 
 .link-icons
