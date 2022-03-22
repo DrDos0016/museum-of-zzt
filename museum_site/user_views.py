@@ -48,7 +48,7 @@ def activate_account(request, token=None):
         else:
             data["resp"] = "FAILURE"
 
-    return render(request, "museum_site/user-activate-account.html", data)
+    return render(request, "museum_site/user/activate-account.html", data)
 
 
 @login_required()
@@ -96,7 +96,7 @@ def change_password(request):
             logout(request)
             data["changed"] = True
 
-    return render(request, "museum_site/user-change-password.html", data)
+    return render(request, "museum_site/user/change-password.html", data)
 
 
 @login_required()
@@ -149,7 +149,7 @@ def change_char(request):
                 data["error"] = ("Something went wrong. Your ASCII character "
                                  "was not updated.")
 
-    return render(request, "museum_site/user-change-ascii-char.html", data)
+    return render(request, "museum_site/user/change-ascii-char.html", data)
 
 
 @login_required()
@@ -178,7 +178,7 @@ def change_credit_preferences(request):
                              "preferences were not updated.")
 
     return render(
-        request, "museum_site/user-change-credit-preferences.html", data
+        request, "museum_site/user/change-credit-preferences.html", data
     )
 
 
@@ -229,7 +229,7 @@ def change_email(request):
             request.user.save()
             return redirect("my_profile")
 
-    return render(request, "museum_site/user-change-email.html", data)
+    return render(request, "museum_site/user/change-email.html", data)
 
 
 @login_required()
@@ -256,7 +256,7 @@ def change_patron_email(request):
                              "email address were not updated.")
 
     return render(
-        request, "museum_site/user-change-patron-email.html", data
+        request, "museum_site/user/change-patron-email.html", data
     )
 
 
@@ -284,7 +284,7 @@ def change_patronage_visibility(request):
                              "was not updated.")
 
     return render(
-        request, "museum_site/user-change-patronage-visibility.html", data
+        request, "museum_site/user/change-patronage-visibility.html", data
     )
 
 
@@ -314,7 +314,7 @@ def change_pronouns(request):
             data["error"] = ("Something went wrong. Your pronouns were not "
                              "updated.")
 
-    return render(request, "museum_site/user-change-pronouns.html", data)
+    return render(request, "museum_site/user/change-pronouns.html", data)
 
 
 @login_required()
@@ -369,7 +369,7 @@ def change_patron_perks(request):
         request.user.profile.save()
         return redirect("my_profile")
 
-    return render(request, "museum_site/user-change-patron-perks.html", data)
+    return render(request, "museum_site/user/change-patron-perks.html", data)
 
 
 @login_required()
@@ -427,25 +427,25 @@ def change_username(request):
             logout(request)
             return redirect("login_user")
 
-    return render(request, "museum_site/user-change-username.html", data)
+    return render(request, "museum_site/user/change-username.html", data)
 
 
 def error_login(request):
     data = {"title": "Access Restricted"}
     data["now"] = datetime.now()
-    return render(request, "museum_site/user-error-login.html", data)
+    return render(request, "museum_site/user/error-login.html", data)
 
 
 def error_registration(request):
     data = {"title": "Access Restricted"}
     data["now"] = datetime.now()
-    return render(request, "museum_site/user-error-registration.html", data)
+    return render(request, "museum_site/user/error-registration.html", data)
 
 
 def error_password_reset(request):
     data = {"title": "Access Restricted"}
     data["now"] = datetime.now()
-    return render(request, "museum_site/user-error-password-reset.html", data)
+    return render(request, "museum_site/user/error-password-reset.html", data)
 
 
 def forgot_password(request):
@@ -469,7 +469,7 @@ def forgot_password(request):
         if not email:
             data["errors"]["email"] = "A valid email address was not provided."
             return render(
-                request, "museum_site/user-forgot-password.html", data
+                request, "museum_site/user/forgot-password.html", data
             )
 
         # Check that the email is even in use
@@ -488,7 +488,7 @@ def forgot_password(request):
 
         return redirect("reset_password")
 
-    return render(request, "museum_site/user-forgot-password.html", data)
+    return render(request, "museum_site/user/forgot-password.html", data)
 
 
 def forgot_username(request):
@@ -505,7 +505,7 @@ def forgot_username(request):
         if not email:
             data["errors"]["email"] = "A valid email address was not provided."
             return render(
-                request, "museum_site/user-forgot-username.html", data
+                request, "museum_site/user/forgot-username.html", data
             )
 
         # Check that the email is even in use
@@ -516,11 +516,11 @@ def forgot_username(request):
 
         return render(
             request,
-            "museum_site/user-forgot-username-complete.html",
+            "museum_site/user/forgot-username-complete.html",
             data
         )
 
-    return render(request, "museum_site/user-forgot-username.html", data)
+    return render(request, "museum_site/user/forgot-username.html", data)
 
 
 def login_user(request):
@@ -674,7 +674,7 @@ def login_user(request):
                     )
                     return redirect("activate_account")
 
-    return render(request, "museum_site/user-login.html", data)
+    return render(request, "museum_site/user/login.html", data)
 
 
 def logout_user(request):
@@ -687,7 +687,7 @@ def manage_saved_data(request):
         "pk": request.GET.get("pk"),
         "file": File.objects.filter(pk=request.GET.get("pk")).first()
     }
-    return render(request, "museum_site/user-manage-saved-data.html", data)
+    return render(request, "museum_site/user/manage-saved-data.html", data)
 
 
 def resend_account_activation(request):
@@ -737,7 +737,7 @@ def resend_account_activation(request):
                 return redirect("activate_account")
 
     return render(
-        request, "museum_site/user-resend-account-activation.html", data
+        request, "museum_site/user/resend-account-activation.html", data
     )
 
 
@@ -800,7 +800,7 @@ def reset_password(request, token=None):
                 u.save()
                 return redirect("reset_password_complete")
 
-    return render(request, "museum_site/user-reset-password.html", data)
+    return render(request, "museum_site/user/reset-password.html", data)
 
 
 def update_tos(request):
@@ -819,7 +819,7 @@ def update_tos(request):
             request.user.profile.save()
             return redirect("my_profile")
 
-    return render(request, "museum_site/user-update-tos.html", data)
+    return render(request, "museum_site/user/update-tos.html", data)
 
 
 def user_profile(request, user_id=None, **kwargs):
@@ -890,4 +890,4 @@ def user_profile(request, user_id=None, **kwargs):
         status = os.system(cmd)
 
     data["title"] = "Profile for " + data["user_obj"].username
-    return render(request, "museum_site/user-profile.html", data)
+    return render(request, "museum_site/user/profile.html", data)

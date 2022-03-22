@@ -292,7 +292,7 @@ urlpatterns = [
     path(
         "user/reset-password/complete/", museum_site.views.generic,
         {
-            "template": "user-reset-password-complete",
+            "template": "user/reset-password-complete",
             "title": "Reset Password Complete"
         },
         name="reset_password_complete"),
