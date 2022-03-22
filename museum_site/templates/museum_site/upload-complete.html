@@ -1,4 +1,5 @@
 {% extends "museum_site/main.html" %}
+{% load site_tags %}
 
 {% block content %}
 <section id="content" class="block">
@@ -8,6 +9,6 @@
     <p>If you have discovered an error with your uploaded file, or its data, you may edit it prior to its publication/rejection using the following edit token:
     <b><a href="{% url 'upload' %}?token={{upload.edit_token}}">{{upload.edit_token}}</a></b></p>
 
-    {% include "museum_site/blocks/file_detailed_block.html" %}
+    {% gblock file %}
 </section>
 {% endblock %}

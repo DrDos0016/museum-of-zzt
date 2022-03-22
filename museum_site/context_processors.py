@@ -49,7 +49,7 @@ def museum_global(request):
         data["fg"] = File.objects.reach(pk=int(request.GET["fgid"]))
     data["fg"].extra_context = {"nozoom": True} if data["fg"] else None
 
-    data["fg"] = [data["fg"]]
+    data["fg"] = data["fg"]
 
     # Upload Cap
     data["UPLOAD_CAP"] = UPLOAD_CAP

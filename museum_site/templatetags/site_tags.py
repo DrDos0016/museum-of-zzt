@@ -488,6 +488,19 @@ def ssv_links(raw, param, lookup=""):
 
 
 @register.simple_tag()
+def gblock(item, view="detailed", header=None, debug=False, extras=None):
+    template = "museum_site/blocks/generic-{}-block.html".format(view)
+    if view =="detailed":
+        context = item.detailed_block_context(extras=extras, debug=debug)
+    elif view =="list":
+        context = item.list_block_context(extras=extras, debug=debug)
+    elif view == "gallery":
+        context = item.gallery_block_context(extras=extras, debug=debug)
+    output = render_to_string(template, context)
+    return mark_safe(output + "\n")
+
+
+@register.simple_tag()
 def generic_block_loop(
     items, view="detailed", header=None, debug=False, extras=None
 ):
