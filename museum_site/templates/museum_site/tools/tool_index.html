@@ -1,5 +1,6 @@
 {% extends "museum_site/world.html" %}
 {% load static %}
+{% load site_tags %}
 
 {% block style %}
 <style>
@@ -44,7 +45,7 @@ $(document).ready(function (){
 {% endblock %}
 
 {% block world_content %}
-{% if file %}{% include "museum_site/blocks/file_detailed_block.html" %}{% endif %}
+{% if file %}{% gblock file %}{% endif %}
 
 <h2>Tool Index</h2>
 

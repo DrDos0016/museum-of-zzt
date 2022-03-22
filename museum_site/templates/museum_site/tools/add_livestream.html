@@ -1,5 +1,6 @@
 {% extends "museum_site/world.html" %}
 {% load static %}
+{% load site_tags %}
 
 {% block style %}
 <style>
@@ -47,7 +48,7 @@ input[name=today]
 {% endblock %}
 
 {% block world_content %}
-{% include "museum_site/blocks/file_detailed_block.html" %}
+{% gblock file %}
 
 <form method="POST" enctype="multipart/form-data" id="upload-form">
 {% csrf_token %}

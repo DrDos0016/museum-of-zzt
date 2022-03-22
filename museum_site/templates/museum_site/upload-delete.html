@@ -1,13 +1,12 @@
 {% extends "museum_site/main.html" %}
+{% load site_tags %}
 
 {% block content %}
 <section id="content" class="block">
 {% if selected %}
 <h1>Confirm Deletion</h1>
 
-{% with upload.file as file %}
-{% include "museum_site/blocks/file_detailed_block.html" %}
-{% endwith %}
+{% gblock upload.file %}
 
 <div class="sticky-note" style="margin-top:14px">
     <div class="text">
