@@ -115,15 +115,6 @@ urlpatterns = [
         "directory/<slug:category>", museum_site.views.directory,
         name="directory"),
 
-    # Exhibit - TODO: Probably remove this feature
-    path(
-        "exhibit/<str:letter>/<str:filename>",
-        museum_site.views.stub,
-        name="exhibit"),
-    path(
-        "exhibit/<str:letter>/<str:filename>/<str:section>",
-        museum_site.views.stub, name="exhibit-section"),
-
     # Files
     path(
         "article/<str:letter>/<str:key>/",

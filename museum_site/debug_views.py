@@ -81,7 +81,7 @@ def debug_advanced_search(request):
     data["form"] = form
     data["grouped_fields"] = ["board_min", "board_max", "board_type"]
 
-    return render(request, "museum_site/debug-advanced-search.html", data)
+    return render(request, "museum_site/debug/debug-advanced-search.html", data)
 
 
 def debug_article(request, fname=""):
@@ -140,9 +140,4 @@ def debug_colors(request):
 
             data["stylesheets"][stylesheet].sort()
 
-    return render(request, "museum_site/debug_colors.html", data)
-
-
-def debug_saves(request):
-    print("SAVES")
-    return render(request, "museum_site/debug_saves.html", data)
+    return render(request, "museum_site/debug/debug_colors.html", data)

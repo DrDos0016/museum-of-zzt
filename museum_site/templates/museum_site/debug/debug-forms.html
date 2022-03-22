@@ -1,0 +1,60 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+form
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+    gap: 7px 4px;
+    margin:auto;
+    max-width:800px;
+}
+
+.label-area
+{
+    flex:6 1;
+}
+
+/* Label components */
+    .field-name
+    {
+        font-weight:bold;
+    }
+/* End Label components */
+
+.field-area
+{
+    flex:4 1;
+}
+
+.sub
+{
+    font-size:smaller;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Test Form 1</h1>
+<hr>
+<form>
+    <div class="label-area">
+        <label for="text-field">
+            <div class="field-name">Field Label</div>
+            <div class="info">Information on the field.</div>
+            <div class="sub">Subtext.</div>
+        </label>
+    </div>
+    <div class="field-area">
+        <input type="text" id="text-field" name="text-field">
+        <div class="error">ERROR</div>
+        <div class="">Etc.</div>
+    </div>
+</form>
+<hr>
+</section>
+{% endblock %}
