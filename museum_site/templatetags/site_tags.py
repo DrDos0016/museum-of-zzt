@@ -490,6 +490,8 @@ def ssv_links(raw, param, lookup=""):
 @register.simple_tag()
 def gblock(item, view="detailed", header=None, debug=False, extras=None):
     template = "museum_site/blocks/generic-{}-block.html".format(view)
+    if not item:
+        return mark_safe("SITE ERROR: File not found!")
     if view =="detailed":
         context = item.detailed_block_context(extras=extras, debug=debug)
     elif view =="list":

@@ -1,5 +1,6 @@
 {% extends "museum_site/world.html" %}
 {% load static %}
+{% load site_tags %}
 
 {% block style %}
 <style>
@@ -38,7 +39,7 @@
 {% endblock %}
 
 {% block world_content %}
-{{file.as_detailed_block}}
+{% gblock file %}
 
 <h2 id="heading-attr">File Attributes</h2>
 <table class="dataTable">

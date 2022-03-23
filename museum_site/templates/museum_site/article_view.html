@@ -192,7 +192,7 @@ $(document).ready(function (){
 <h3>More In This Series</h3>
 <div class="series-range gallery-frame">
     {% for article in article.series_range %}
-    {{article.as_gallery_block}}
+    {% gblock article "gallery" %}
     {% endfor %}
 </div>
 <div class="c">
