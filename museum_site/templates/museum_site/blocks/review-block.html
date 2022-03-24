@@ -8,7 +8,7 @@
 </div>
 <hr>
 <article>
-{{review.content|markdown}}
+{{review.get_content|markdown}}
 </article>
 <hr>
 {% if review.rating >= 0 %}<b>Rating:</b> {{review.rating}} out of 5.0
