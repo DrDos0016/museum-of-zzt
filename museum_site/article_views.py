@@ -20,7 +20,6 @@ def article_categories(request, category="all", page_num=1):
     ).annotate(total=Count("category")).order_by("category")
 
     # Block
-    block_template = "museum_site/blocks/generic-detailed-block.html"
     data["page"] = []
 
     for entry in qs:
@@ -31,22 +30,17 @@ def article_categories(request, category="all", page_num=1):
             preview=dict(url="/static/pages/article-categories/{}.png".format(
                 key
             ), alt=entry["category"]),
-            title=LinkDatum(
-                url="/article/"+key,
-                value=entry["category"],
-            ),
+            title={"datum": "link", "url": "/article/"+key, "value": entry["category"]},
             columns=[[
-                    TextDatum(label="Numer of Articles", value=entry["total"]),
-                    TextDatum(value=mark_safe(CATEGORY_DESCRIPTIONS.get(
-                        key, "<i>No description available</i>"
-                    )))
+                    {"datum": "text", "label": "Number of Articles", "value":entry["total"]},
+                    {
+                        "datum": "text",
+                        "value":mark_safe(CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>"))
+                    }
             ]],
         )
 
-        # Construct a block
-        data["page"].append(
-            render_to_string(block_template, block_context)
-        )
+        data["page"].append(block_context)
 
     return render(request, "museum_site/generic-directory.html", data)
 

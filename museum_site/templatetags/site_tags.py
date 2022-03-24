@@ -506,8 +506,11 @@ def gblock(item, view="detailed", header=None, debug=False, extras=None):
 def generic_block_loop(
     items, view="detailed", header=None, debug=False, extras=None
 ):
-    template = "museum_site/blocks/generic-{}-block.html".format(view)
     output = ""
+    if view == "":
+        template = "museum_site/blocks/generic-detailed-block.html"
+    else:
+        template = "museum_site/blocks/generic-{}-block.html".format(view)
 
     # Empty sets
     if len(items) == 0:
@@ -520,6 +523,7 @@ def generic_block_loop(
         output += '<div class="gallery-frame">'
 
     for i in items:
+        context = i  # Default
         if view == "detailed":
             context = i.detailed_block_context(extras=extras, debug=debug)
         elif view == "list":
