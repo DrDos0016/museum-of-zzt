@@ -320,58 +320,6 @@ class WoZZT_Queue(BaseModel):
             None
         return True
 
-    def as_detailed_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-detailed-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
-            columns=[],
-            title=TextDatum(value="-----")
-        )
-
-        context["columns"].append([
-            TextAreaDatum(label="Tweet", value=self.tweet_text(), readonly=True),
-            LinkDatum(
-                label="Source", value="View",
-                url=self.file.url() + "?file={}&board={}".format(
-                    self.zzt_file, self.board
-                ),
-                target="_blank"
-            ),
-        ])
-
-        if debug:
-            context["columns"][0].append(
-                LinkDatum(
-                    label="ID", value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/wozzt_queue/{}/change/".format(
-                        self.id
-                    ),
-                ),
-            )
-            context["columns"][0].append(
-                CustomDatum(
-                    template="custom-wozzt-priority.html",
-                    pk=self.id,
-                    priority=self.priority,
-                    kind="debug"
-                ),
-            )
-            context["columns"][0].append(
-                CustomDatum(
-                    template="custom-wozzt-delete.html",
-                    pk=self.id,
-                    kind="debug",
-                ),
-            )
-        else:
-            context["columns"][0].append(
-                TextDatum(label="Priority", value=self.priority)
-            )
-        return render_to_string(template, context)
-
     def detailed_block_context(self, extras=None, *args, **kwargs):
         debug = True
         context = dict(

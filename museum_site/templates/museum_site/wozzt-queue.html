@@ -74,13 +74,13 @@ $(document).ready(function (){
     tweet_date.setSeconds(0);
     tweet_date.setMinutes(45);
 
-    $("h2.title .datum .value").each(function (){
+    $("h2.title .value").each(function (){
         {% if request.GET.category != "tuesday" %}
         // Skip Tuesdays
         if (tweet_date.getDay() == 2)
         {
             tweet_date.setHours(26);
-            var element = $(this).parent().parent().parent();
+            var element = $(this).parent().parent();
             $("<div class='tuesday-skip'>Title Screen Tuesday</div>").insertBefore(element);
         }
         {% endif %}
