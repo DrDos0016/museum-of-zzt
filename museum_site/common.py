@@ -59,7 +59,7 @@ FILE_VIEWER_TEXT_EXTENSIONS = (
     ".deu", ".diz", ".doc", ".ds_store", ".e", ".eed", ".eng", ".err", ".ex",
     ".faq", ".frm", ".fyi", ".gitignore", ".gud", ".h", ".hlp", ".inc", ".inf",
     ".ini", ".java", ".json", ".log", ".lst", ".lua", ".mac", ".map", ".md",
-    ".me", ".msg", ".muz", ".new", ".nfo", ".now", ".olf", ".pas", ".py",
+    ".me", ".msg", ".muz", ".new", ".nfo", ".now", ".obj", ".olf", ".pas", ".py",
     ".reg", ".rtf", ".sdi", ".sh", ".slv", ".sol", ".st", ".theme", ".txt",
     ".wps", ".wri", ".zln", ".zml", ".zzl", ".zzm",
 )
