@@ -8,7 +8,7 @@ Anything prior to the START line is discarded.
 
 <h2>Contents</h2>
 <div class="gallery-frame">
-{% for f in files %}{% templatetag openvariable %}files.{{f.id}}.as_gallery_block{% templatetag closevariable %}
+{% for f in files %}{% templatetag openblock %} gblock files.{{f.id}} "gallery" {% templatetag closeblock %}
 {% endfor %}</div>
 
 {% for f in files %}
@@ -30,4 +30,4 @@ Anything prior to the START line is discarded.
 
 {% templatetag openblock %} endwith {% templatetag closeblock %}
 {% templatetag openblock %} patreon_plug {% templatetag closeblock %}
-{% templatetag openblock %} endwith {% templatetag closeblock %}
+{% templatetag openblock %} endwith {% templatetag closeblock %}<!--with for path-->
