@@ -48,7 +48,8 @@ class ZGameForm(forms.ModelForm):
                 "For files with many authors, consider using the compiler as "
                 "the author with \"Various\" to represent the rest. Try to "
                 "sort multiple authors from most to least important on this "
-                "particular upload."
+                "particular upload. If the author's name is not known, use "
+                "\"Unknown\"."
             ),
             "company": (
                 "Any companies this file is published under. If there are "
@@ -83,7 +84,7 @@ class ZGameForm(forms.ModelForm):
                 "within the uploaded file when possible."
             ),
             "description": (
-                "An optional description of the upload. For utilities, please "
+                "A description for the uploaded file. For utilities, please "
                 "be sure to fill this out."
             ),
             "explicit": (
