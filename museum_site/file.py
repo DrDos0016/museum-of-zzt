@@ -1171,23 +1171,26 @@ class File(BaseModel):
         return context
 
     def _init_icons(self):
-        self.minor_icons = []
-        self.major_icons = []
+        # Populates major and minor icons for file
+        self._minor_icons = []
+        self._major_icons = []
 
         if self.explicit:
-            self.major_icons.append(File.ICONS["explicit"])
+            self._major_icons.append(File.ICONS["explicit"])
         if self.is_uploaded():
-            self.major_icons.append(File.ICONS["unpublished"])
+            self._major_icons.append(File.ICONS["unpublished"])
         if self.is_featured_world():
-            self.minor_icons.append(File.ICONS["featured"])
+            self._minor_icons.append(File.ICONS["featured"])
 
     def get_all_icons(self):
-        if not hasattr(self, "icons"):
+        # Returns combined list of both major and minor icons, populating if needed
+        if not hasattr(self, "_major_icons"):
             self._init_icons()
-        return self.major_icons + self.minor_icons
+        return self._major_icons + self._minor_icons
 
     def get_major_icons(self):
-        if not hasattr(self, "icons"):
+        # Returns list of major icons, populating if needed
+        if not hasattr(self, "_major_icons"):
             self._init_icons()
-        return self.major_icons
+        return self._major_icons
 
