@@ -58,8 +58,7 @@
 <tr><th>Key</th><td>{{file.key|default:"<i>No key set</i>"}}</td></tr>
 <tr><th>Genre</th><td>{{file.genre}}</td></tr>
 <tr><th>ID</th><td>{{file.id}}</td></tr>
-<tr><th>Identifier</th><td>{{file.identifier}}</td></tr>
-<tr><th>Internet Archive Identifier</th><td>{% if file.archive_name %}<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">{{file.archive_name}}{% else %}<i>No identifier</i>{% endif %}</td></tr>
+<tr><th>Internet Archive Identifier</th><td>{% if file.archive_name %}<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">{{file.archive_name}}{% else %}<i>None</i>{% endif %}</td></tr>
 <tr><th>Language</th><td>{{file.language_list}}</td></tr>
 <tr><th>Last Modified</th><td>{{file.last_modified}}</td></tr>
 <tr><th>Letter</th><td class="caps">{{file.letter}}</td></tr>
