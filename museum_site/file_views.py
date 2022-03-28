@@ -305,11 +305,31 @@ def get_file_by_pk(request, pk):
 
 
 def review(request, letter, key):
-    data = {}
+    data = {
+        "sort_options": [
+            {"text": "Review Date (Newest)", "val": "-date"},
+            {"text": "Review Date (Oldest)", "val": "date"},
+            {"text": "Rating", "val": "-rating"},
+        ],
+        "sort": request.GET.get("sort")
+    }
+
+    if not request.session.get("REVIEW_PROFANITY_FILTER"):
+        request.session["REVIEW_PROFANITY_FILTER"] = "on"
+    if request.GET.get("pf"):
+        request.session["REVIEW_PROFANITY_FILTER"] = request.GET.get("pf")
+
     today = datetime.now()
     zfile = File.objects.filter(key=key).first()
     if key.lower().endswith(".zip"):  # Try old URLs with zip in them
         return redirect_with_querystring("reviews", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+
+    sort_keys = {
+        "date": "date",
+        "-date": "-date",
+        "-rating": "-rating",
+    }
+
     reviews = Review.objects.filter(
         (
             Q(approved=True) |
@@ -318,6 +338,10 @@ def review(request, letter, key):
         ),
         zfile_id=zfile.id,
     )
+
+    # Sort queryset
+    reviews = sort_qs(reviews, data["sort"], sort_keys, default_sort="rating")
+
     data["letter"] = letter
     data["title"] = zfile.title + " - Reviews"
 

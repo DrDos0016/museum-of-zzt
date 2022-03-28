@@ -19,24 +19,6 @@ class BaseModel(models.Model):
             'Subclasses must implement "preview_url" method.'
         )
 
-    def as_block(self, view="detailed", *args, **kwargs):
-        return getattr(self, "{}_block_context".format(view))(*args, **kwargs)
-
-    def as_detailed_block(self, *args, **kwargs):
-        raise NotImplementedError(
-            'Subclasses must implement "as_detailed_block" method.'
-        )
-
-    def as_list_block(self, *args, **kwargs):
-        raise NotImplementedError(
-            'Subclasses must implement "as_list_block" this method.'
-        )
-
-    def as_gallery_block(self, *args, **kwargs):
-        raise NotImplementedError(
-            'Subclasses must implement "as_gallery_block" method.'
-        )
-
     def scrub(self):
         raise NotImplementedError(
             'Subclasses must implement "scrub" method.'

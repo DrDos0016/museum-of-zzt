@@ -14,7 +14,6 @@ from twitter import *
 from PIL import Image
 
 from museum.settings import STATIC_URL
-from museum_site.datum import *
 from museum_site.base import BaseModel
 
 from .common import TEMP_PATH, record

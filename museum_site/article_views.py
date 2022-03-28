@@ -2,7 +2,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
-from .datum import *
 from .common import *
 from .constants import *
 from .models import *

@@ -10,7 +10,6 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
-from museum_site.datum import *
 from museum_site.base import BaseModel
 from museum_site.common import STATIC_PATH, epoch_to_unknown
 
@@ -292,101 +291,6 @@ class Article(BaseModel):
 
         return output[-5:]
 
-    def as_detailed_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-detailed-block.html"
-        context = self.initial_context(view="detailed")
-        context.update(
-            title=LinkDatum(
-                value=self.title,
-                url=self.url()
-            ),
-            columns=[],
-        )
-
-        if self.published == self.UPCOMING:
-            context["title"].context["roles"] = [
-                "restricted", "article-upcoming"
-            ]
-        elif self.published == self.UNPUBLISHED:
-            context["title"].context["roles"] = [
-                "restricted", "article-unpublished"
-            ]
-
-        context["columns"].append([
-            TextDatum(label="Author", value=self.author),
-            TextDatum(label="Date", value=epoch_to_unknown(self.publish_date)),
-            TextDatum(label="Category", value=self.category),
-            TextDatum(label="Description", value=self.description),
-        ])
-
-        if self.series.count():
-            context["columns"][0].append(
-                MultiLinkDatum(
-                    label="Series", values=self.get_series_links(),
-                ),
-            )
-
-        if debug:
-            context["columns"][0].append(
-                LinkDatum(
-                    label="ID", value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/article/{}/change/".format(self.id),
-                ),
-            )
-        return render_to_string(template, context)
-
-    def as_list_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-list-block.html"
-        context = self.initial_context(view="list")
-        context.update(
-            pk=self.pk,
-            model=self.model_name,
-            hash_id="article-{}".format(self.pk),
-            url=self.url,
-            cells=[
-                LinkDatum(
-                    url=self.url(),
-                    value=self.title,
-                    tag="td",
-                ),
-                TextDatum(value=self.author, tag="td"),
-                TextDatum(value=epoch_to_unknown(self.publish_date), tag="td"),
-                TextDatum(value=self.category, tag="td"),
-                TextDatum(value=self.description, tag="td"),
-            ],
-        )
-
-        if self.is_restricted:
-            context["cells"][0].context["roles"] = ["restricted"]
-        return render_to_string(template, context)
-
-    def as_gallery_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-gallery-block.html"
-        context = self.initial_context(view="detailed")
-        context.update(
-            title=LinkDatum(
-                url=self.url(),
-                value=self.title,
-            ),
-            columns=[],
-        )
-
-        context["columns"].append([
-            TextDatum(value=self.author),
-        ])
-
-        if debug:
-            context["columns"][0].append(
-                LinkDatum(
-                    value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/article/{}/change/".format(self.id),
-                ),
-            )
-
-        if self.is_restricted:
-            context["title"].context["roles"] = ["restricted"]
-        return render_to_string(template, context)
-
     def get_series_links(self):
         output = []
         for s in self.series.only("id", "title"):
@@ -420,9 +324,6 @@ class Article(BaseModel):
 
     def detailed_block_context(self, extras=None, *args, **kwargs):
         """ Return info to populate a detail block """
-        context = self.initial_context()
-
-        template = "museum_site/blocks/generic-detailed-block.html"
         context = self.initial_context(view="detailed")
         context.update(
             title={"datum": "title", "value":self.title, "url":self.url()},

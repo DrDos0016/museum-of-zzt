@@ -195,6 +195,7 @@ def get_search_suggestions(request, max_suggestions=25):
 
 
 def render_review_text(request):
+    #output = profanity_filter(request.POST.get("text", ""))
     output = request.POST.get("text", "")
     if output:
         output = markdown_deux_tags.markdown_filter(output)

@@ -185,6 +185,16 @@ $(document).ready(function (){
             $(this).next().addClass("cut-open");
         }
     });
+
+    // Review Profanity Filter
+    $("input[name=review-profanity-filter]").change(function (){
+        var val = $(this).val();
+        var qs = window.location.search; // Query string
+        if (qs == "")
+            window.location = "?pf="+$(this).val();
+        else
+            window.location = window.location.pathname + qs + "&pf="+$(this).val();
+    });
 });
 
 function pre_search()

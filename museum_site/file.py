@@ -30,7 +30,6 @@ from .constants import SITE_ROOT, ZETA_RESTRICTED, LANGUAGES
 from .review import Review
 from .article import Article
 
-from museum_site.datum import *
 from museum_site.base import BaseModel
 
 DETAIL_DOS = 1
@@ -256,7 +255,7 @@ class File(BaseModel):
     been fully checked by staff."
     ICONS = {
         "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role":"explicit-icon"},
-        "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its content have not been fully checked by staff.", "role":"unpub-icon"},
+        "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its contents have not been fully checked by staff.", "role":"unpub-icon"},
         "featured": {"glyph": "🗝️", "title": "This file is a featured world.", "role":"fg-icon"},
     }
 
@@ -970,151 +969,6 @@ class File(BaseModel):
             output.append((LANGUAGES.get(i, i), i))
         return output
 
-    def as_detailed_block(self, extras=[], **kwargs):
-        debug = kwargs.get("debug", False)
-        template = "museum_site/blocks/generic-detailed-block.html"
-        context = self.initial_context(view="detailed")
-        context.update(
-            tag={"opening": "div", "closing": "/div"},
-            extras=extras,
-            columns=[],
-            title=LinkDatum(
-                value=self.title,
-                url=self.url(),
-                icons=context["icons"],
-            ),
-        )
-
-        # Prepare Columns
-        context["columns"].append([
-            SSVLinksDatum(label="Author", values=self.ssv_list("author"), url="/search/?author="),
-            (SSVLinksDatum(label="Compan", plural="y,ies", values=self.ssv_list("company"), url="/search/?company=") if self.company else ""),
-            LinkDatum(
-                    label="Released", value=(self.release_date or "Unknown"),
-                    url="/search/?year={}".format(self.release_year(default="unk")),
-                ),
-            SSVLinksDatum(label="Genre", values=self.ssv_list("genre"), url="/search/?genre="),
-            TextDatum(label="Filename", value=self.filename),
-            TextDatum(label="Size", value=filesizeformat(self.size)),
-        ])
-
-        context["columns"].append([
-            TextDatum(label="Details", value=self.details_links()),
-            TextDatum(label="Rating", value=self.rating_str(), title="Based on {} Review{}".format(self.review_count, "s" if self.review_count > 1 else "")),
-            (TextDatum(label="Boards", value=self.boards_str(), title="Playable/Total Boards. Values are not 100% accurate.") if self.total_boards else ""),
-            LanguageLinksDatum(label="Language", plural="s", values=self.language_pairs(), url="/search/?lang="),
-            (TextDatum(label="Upload Date", value=self.upload_set.first().date) if self.is_uploaded() and self.upload_set.first() else ""),
-            (TextDatum(label="Publish Date", value=self.publish_date_str()) if not self.is_uploaded() and self.publish_date else ""),
-        ])
-
-        # Prepare Links
-        links = self.links(icons=context["icons"], major_icons=context["major_icons"], debug=debug)
-
-        # Debug columns
-        """
-        if debug:
-            link = MultiLinkDatum(
-                    label="Debug", kind="debug", values=[
-                        {"url": self.admin_url(), "text": "Admin ({})".format(self.id)},
-                        {"url": self.tool_url(), "text": "Tools ({})".format(self.id)},
-                    ],
-                )
-
-            context["columns"][1].append(link)
-        """
-
-        # Assemble
-        context["links"] = links
-
-        # Additional fields when browsing Featured Worlds
-        if extras and "museum_site/blocks/extra-featured-world.html" in extras:
-            context["featured_articles"] = self.articles.filter(category="Featured Game").order_by("-publish_date")
-
-        return render_to_string(template, context)
-
-    def as_list_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-list-block.html"
-        context = self.initial_context(view="list")
-
-        # Prepare Links
-        cells = []
-        if self.actions is None:
-            self.init_actions()
-
-        if self.actions["download"]:
-            link = LinkDatum(value="DL", url=self.download_url(), tag="td",
-                    icons=context["major_icons"])
-        else:
-            link = TextDatum(value="DL", kind="faded", tag="td")
-        cells.append(link)
-
-        if self.actions["view"]:
-            link = LinkDatum(value=self.title, url=self.url(), tag="td",
-                icons=context["icons"]
-            )
-        else:
-            link = TextDatum(value=self.title, tag="td", kind="faded")
-        cells.append(link)
-
-
-        cells.append(SSVLinksDatum(values=self.ssv_list("author"), url="/search/?author=", tag="td"))
-        cells.append(SSVLinksDatum(values=self.ssv_list("company"), url="/search/?company=", tag="td"))
-        cells.append(SSVLinksDatum(values=self.ssv_list("genre"), url="/search/?genre=", tag="td"))
-        cells.append(LinkDatum(
-            value=(self.release_date or "Unknown"),
-            url="/search/?year={}".format(self.release_year(default="unk")),
-            tag="td",
-            )
-        )
-        cells.append(TextDatum(value=self.rating_str(show_maximum=False) if self.rating else "—", tag="td"))
-
-        # Modify download text if needed
-        if self.downloads.count():
-            cells[0].context["value"] = "DLs…"
-            cells[0].context["url"] = "/download/{}".format(
-                self.identifier
-            )
-
-        context.update(cells=cells)
-        return render_to_string(template, context)
-
-    def as_gallery_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-gallery-block.html"
-        context = self.initial_context(view="gallery")
-
-        # Prepare Links
-        if self.actions is None:
-            self.init_actions()
-
-        if self.actions["view"]:
-            title_datum = LinkDatum(
-                value=self.title,
-                url=self.url(),
-                icons=context["icons"],
-            )
-        else:
-            title_datum = TextDatum(value=self.title, kind="faded")
-
-        context.update(
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            title=title_datum,
-            columns=[],
-        )
-
-        context["columns"].append([
-            SSVLinksDatum(values=self.ssv_list("author"), url="/search/?author=")
-        ])
-
-        if debug:
-            context["columns"][0].append(
-                LinkDatum(
-                    value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/file/{}/change/".format(self.id),
-                ),
-            )
-
-        return render_to_string(template, context)
-
     def initial_context(self, **kwargs):
         debug = kwargs.get("debug", False)
         context = {
@@ -1124,8 +978,8 @@ class File(BaseModel):
             "preview": {"url": self.preview_url, "alt": self.preview_url},
             "url": self.url(),
             "roles": [],
-            "icons": [],
-            "major_icons": [],
+            "icons": self.get_all_icons(),
+            "major_icons": self.get_major_icons(),
             "model_extras": [],
         }
 
@@ -1134,15 +988,10 @@ class File(BaseModel):
 
         if self.explicit:
             context["roles"].append("explicit")
-            context["icons"].append(File.ICONS["explicit"])
-            context["major_icons"].append(File.ICONS["explicit"])
         if self.is_uploaded():
             context["roles"].append("unpublished")
-            context["icons"].append(File.ICONS["unpublished"])
-            context["major_icons"].append(File.ICONS["unpublished"])
         if self.is_featured_world():
             context["roles"].append("featured")
-            context["icons"].append(File.ICONS["featured"])
 
         # Extra modules
         if self.is_utility() and self.description:
@@ -1153,7 +1002,7 @@ class File(BaseModel):
             context["lost_description"] = self.description
         return context
 
-    def links(self, major_icons=[], icons=[], debug=False):
+    def links(self, debug=False):
         links = []
 
         if self.actions is None:
@@ -1168,7 +1017,7 @@ class File(BaseModel):
                 value = "Download"
                 url=self.download_url()
 
-            link = {"datum": "link", "value":value, "url":url, "roles":["download-link"], "icons":major_icons}
+            link = {"datum": "link", "value":value, "url":url, "roles":["download-link"], "icons":self.get_all_icons()}
         else:
             link = {"datum": "text", "value":"Download", "kind":"faded"}
 
@@ -1177,14 +1026,14 @@ class File(BaseModel):
 
         # Play Online
         if self.actions["play"]:
-            link = {"datum": "link", "value":"Play Online", "url":self.play_url(), "roles":["play-link"], "icons":major_icons}
+            link = {"datum": "link", "value":"Play Online", "url":self.play_url(), "roles":["play-link"], "icons":self.get_major_icons()}
         else:
             link = {"datum": "text", "value":"Play Online", "kind":"faded"}
         links.append(link)
 
         # View Files
         if self.actions["view"]:
-            link = {"datum": "link", "value":"View Files", "url": self.file_url(), "roles":["view-link"], "icons":major_icons}
+            link = {"datum": "link", "value":"View Files", "url": self.file_url(), "roles":["view-link"], "icons":self.get_major_icons()}
         else:
             link = {"datum": "text", "value":"View Files", "kind":"faded"}
         links.append(link)
@@ -1215,11 +1064,10 @@ class File(BaseModel):
         debug = kwargs.get("debug", False)
         context = self.initial_context(view="detailed")
         context.update(
-            template="museum_site/blocks/generic-detailed-block.html",
             tag={"opening": "div", "closing": "/div"},
             extras=extras,
             columns=[],
-            title={"datum": "title", "value":self.title, "url":self.url(), "icons":context["icons"]},
+            title={"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons()},
         )
 
         # Prepare Columns
@@ -1246,7 +1094,7 @@ class File(BaseModel):
             context["columns"][1].append({"datum": "text", "label":"Publish Date", "value":self.publish_date_str()})
 
         # Prepare Links
-        context["links"] = self.links(icons=context["icons"], major_icons=context["major_icons"], debug=debug)
+        context["links"] = self.links(debug=debug)
 
         # Additional fields when browsing Featured Worlds
         if extras and "museum_site/blocks/extra-featured-world.html" in extras:
@@ -1255,7 +1103,6 @@ class File(BaseModel):
         return context
 
     def list_block_context(self, extras=None, *args, **kwargs):
-        template = "museum_site/blocks/generic-list-block.html"
         context = self.initial_context(view="list")
 
         # Prepare Links
@@ -1265,14 +1112,14 @@ class File(BaseModel):
 
         if self.actions["download"]:
             link = {"datum": "link", "value":"DL", "url":self.download_url(), "tag":"td",
-                    "icons":context["major_icons"]}
+                    "icons":self.get_all_icons()}
         else:
             link = {"datum": "text", "value":"DL", "kind":"faded", "tag":"td"}
         cells.append(link)
 
         if self.actions["view"]:
             link = {"datum": "link", "value":self.title, "url":self.url(), "tag":"td",
-                "icons":context["icons"]}
+                "icons":self.get_all_icons()}
         else:
             link = {"datum": "text", "value":self.title, "tag":"td", "kind":"faded"}
         cells.append(link)
@@ -1302,7 +1149,7 @@ class File(BaseModel):
             self.init_actions()
 
         if self.actions["view"]:
-            title_datum = {"datum": "title", "value":self.title, "url":self.url(), "icons":context["icons"]}
+            title_datum = {"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons()}
         else:
             title_datum = {"datum": "text", "value":self.title, "kind":"faded"}
 
@@ -1317,3 +1164,30 @@ class File(BaseModel):
         ])
 
         return context
+
+    def title_datum_context(self):
+        # Returns a context for displaying the ZFile's title datum
+        context = {"datum": "title", "tag":"h1", "value":self.title, "icons":self.get_all_icons()}
+        return context
+
+    def _init_icons(self):
+        self.minor_icons = []
+        self.major_icons = []
+
+        if self.explicit:
+            self.major_icons.append(File.ICONS["explicit"])
+        if self.is_uploaded():
+            self.major_icons.append(File.ICONS["unpublished"])
+        if self.is_featured_world():
+            self.minor_icons.append(File.ICONS["featured"])
+
+    def get_all_icons(self):
+        if not hasattr(self, "icons"):
+            self._init_icons()
+        return self.major_icons + self.minor_icons
+
+    def get_major_icons(self):
+        if not hasattr(self, "icons"):
+            self._init_icons()
+        return self.major_icons
+

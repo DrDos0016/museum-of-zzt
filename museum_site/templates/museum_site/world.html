@@ -5,7 +5,7 @@
 <button class="fr contracted" id="expand-contract" title="Toggle sidebars">&larr; &rarr;</button>
 {% if file and not local%}
 <div class="file-header">
-    <h1>{{file.title}}</h1>
+    {% include "museum_site/datum/title-datum.html" with f=file.title_datum_context %}
     {% if multifile %}
     <br>
     <select id="alt-file-listing" name="associated_file">

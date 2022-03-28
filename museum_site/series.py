@@ -8,7 +8,6 @@ from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
 from museum_site.common import STATIC_PATH, epoch_to_unknown
-from museum_site.datum import *
 from museum_site.base import BaseModel
 
 
@@ -74,85 +73,8 @@ class Series(BaseModel):
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)
 
-    def as_detailed_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-detailed-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
-            title=LinkDatum(
-                value=self.title,
-                url=self.url()
-            ),
-            columns=[],
-        )
-
-        context["columns"].append([
-            TextDatum(label="Newest Entry", value=self.last_entry_date),
-            TextDatum(label="Oldest Entry", value=epoch_to_unknown(self.first_entry_date)),
-            TextDatum(label="Articles", value=self.article_set.count()),
-            TextDatum(value=mark_safe("<p>{}</p>".format(self.description))),
-        ])
-
-        if debug:
-            context["columns"][0].append(
-                LinkDatum(
-                    label="ID", value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/series/{}/change/".format(self.id),
-                ),
-            )
-
-        return render_to_string(template, context)
-
-    def as_list_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-list-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            url=self.url,
-            cells=[
-                LinkDatum(
-                    url=self.url(),
-                    value=self.title,
-                    tag="td",
-                ),
-                TextDatum(value=self.last_entry_date, tag="td"),
-                TextDatum(value=epoch_to_unknown(self.first_entry_date), tag="td"),
-                TextDatum(value=self.article_set.count(), kind="r", tag="td"),
-            ],
-        )
-
-        return render_to_string(template, context)
-
-    def as_gallery_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-gallery-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
-            title=self.title,
-            columns=[],
-        )
-
-        context["columns"].append([
-            TextDatum(value=self.last_entry_date),
-        ])
-
-        if debug:
-            context["columns"][0].append(
-                LinkDatum(
-                    value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/series/{}/change/".format(self.id),
-                ),
-            )
-
-        return render_to_string(template, context)
-
     def detailed_block_context(self, extras=None, *args, **kwargs):
         """ Return info to populate a detail block """
-        template = "museum_site/blocks/generic-detailed-block.html"
         context = dict(
             pk=self.pk,
             model=self.model_name,

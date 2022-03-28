@@ -5,9 +5,8 @@ from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
-from museum_site.datum import *
 from museum_site.base import BaseModel
-from museum_site.common import STATIC_PATH, epoch_to_unknown
+from museum_site.common import STATIC_PATH, epoch_to_unknown, profanity_filter
 from museum_site.templatetags.zzt_tags import char
 
 
@@ -22,7 +21,6 @@ class Review(BaseModel):
         {"text": "Reviewer", "val": "reviewer"},
         {"text": "Rating", "val": "rating"},
     ]
-    PROFANITY = ["graphics", "coherency", "wtf"]
 
     """
     Fields:
@@ -88,21 +86,9 @@ class Review(BaseModel):
             output = "Unknown"
         return output
 
-    def get_content(self, profanity=False):
-        if profanity:
-            return self.content
-        else:
-            output = []
-            words = self.content.split(" ")
-            for word in words:
-                for p in self.PROFANITY:
-                    if word.lower().find(p) != -1:
-                        print("P is", p, len(p))
-                        word = word.lower().replace(p, ("*" * len(p)))
-                        print(word)
-                output.append(word)
-
-        return " ".join(output)
+    def filtered_content(self):
+        return self.content
+        return profanity_filter(self.content)
 
 
     def scrub(self):
@@ -114,102 +100,6 @@ class Review(BaseModel):
 
     def preview_url(self):
         return self.zfile.preview_url()
-
-    def as_detailed_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-detailed-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
-            title=LinkDatum(
-                value=mark_safe(self.title if self.title else "<i>Untitled Review</i>"),
-                url=self.url()
-            ),
-            columns=[],
-        )
-
-        context["columns"].append([
-            LinkDatum(
-                label="File", value=self.zfile.title,
-                url=self.zfile.url()
-            ),
-            TextDatum(label="Reviewer", value=self.author_link()),
-            TextDatum(label="Date", value=epoch_to_unknown(self.date)),
-        ])
-
-        if self.rating >= 0:
-            context["columns"][0].append(
-                TextDatum(label="Rating", value="{} / 5.0".format(self.rating)),
-            )
-
-        if debug:
-            context["columns"][0].append(
-                LinkDatum(
-                    label="ID", value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/review/{}/change/".format(self.id),
-                ),
-            )
-
-        return render_to_string(template, context)
-
-    def as_list_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-list-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            url=self.url,
-            cells=[
-                LinkDatum(
-                    url=self.url(),
-                    value=self.title if self.title else "Untitled",
-                    tag="td",
-                ),
-                LinkDatum(
-                    url=self.zfile.url(),
-                    value=self.zfile.title,
-                    tag="td",
-                ),
-                TextDatum(value=self.author_link(), tag="td"),
-                TextDatum(value=epoch_to_unknown(self.date), tag="td"),
-                TextDatum(value=("—" if self.rating < 0 else self.rating), tag="td"),
-            ],
-        )
-
-        return render_to_string(template, context)
-
-    def as_gallery_block(self, debug=False, extras=[]):
-        template = "museum_site/blocks/generic-gallery-block.html"
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
-            title=LinkDatum(
-                    url=self.url(),
-                    value=self.title if self.title else "Untitled",
-                ),
-            columns=[],
-        )
-
-        context["columns"].append([
-            TextDatum(value=self.author_link()),
-        ])
-
-        if self.rating >= 0:
-            context["columns"][0].append(
-                TextDatum(value="{} / 5.0".format(self.rating)),
-            )
-
-        if debug:
-            context["columns"][0].append(
-                LinkDatum(
-                    value=self.id, target="_blank", kind="debug",
-                    url="/admin/museum_site/review/{}/change/".format(self.id),
-                ),
-            )
-
-        return render_to_string(template, context)
 
     def detailed_block_context(self, extras=None, *args, **kwargs):
         context = dict(

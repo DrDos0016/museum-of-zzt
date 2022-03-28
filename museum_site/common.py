@@ -20,6 +20,7 @@ from datetime import datetime, timezone, timedelta
 from io import BytesIO
 from random import randint, shuffle, seed
 from time import time
+import codecs
 import glob
 import json
 import math
@@ -556,3 +557,19 @@ def redirect_with_querystring(name, qs, *args, **kwargs):
     if qs:
         url += "?" + qs
     return redirect(url)
+
+def profanity_filter(text):
+    PROFANITY = [
+        'ergneq', 'snttbg', 'shpx', 'fuvg', 'qnza', 'nff', 'cvff', 'phag', 'avttre', 'ovgpu'
+    ]
+    output = []
+    words = text.split(" ")
+    for word in words:
+        for p in PROFANITY:
+            pword = codecs.encode(p, "rot_13")
+            if word.lower().find(pword) != -1:
+                replacement = ("✖" * len(pword))
+                word = word.lower().replace(pword, replacement)
+        output.append(word)
+
+    return " ".join(output)
