@@ -1,9 +1,9 @@
 {% load markdown_deux_tags %}
 <div class="review-block" id="rev-{{review.id}}" data-pk="{{review.id}}" data-model="review">
 <h2><a href="{{request.path}}#rev-{{review.id}}">{{review.title}}</a></h2>
-<div class="info">
+<div class="info mono">
     By: {{review.author_link|safe}}<br>
-    Reviewed: {{review.date}}<br>
+    Reviewed: {{review.date|timesince}} ago ({{review.date}})<br>
     {% if debug %}<div class="debug"><a href="/admin/museum_site/review/{{review.id}}/change/">Edit Review {{review.id}}</a></div>{% endif %}
 </div>
 <hr>

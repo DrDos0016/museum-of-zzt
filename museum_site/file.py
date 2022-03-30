@@ -59,12 +59,18 @@ class FileManager(models.Manager):
         qs = self.all()
 
         # Filter by simple fields
-        for f in ["title", "author", "filename", "company", "genre", "lang"]:
+        for f in ["title", "author", "filename", "company", "genre"]:
             if p.get(f):
-                filter_field = "language" if f == "lang" else f
-                field = "{}__icontains".format(filter_field)
+                field = "{}__icontains".format(f)
                 value = p[f]
                 qs = qs.filter(**{field: value})
+
+        # Filter by language
+        if p.get("lang"):
+            if p["lang"] == "non-english":
+                qs = qs.exclude(language="en")
+            else:
+                qs = qs.filter(language__icontains=p["lang"])
 
         # Filter by release year
         if p.get("year"):

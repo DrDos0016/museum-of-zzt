@@ -16,7 +16,7 @@ from museum_site.models import *
 from museum_site.constants import *
 from .private import NEW_UPLOAD_WEBHOOK_URL, NEW_REVIEW_WEBHOOK_URL
 
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, date, timezone, timedelta
 from io import BytesIO
 from random import randint, shuffle, seed
 from time import time

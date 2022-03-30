@@ -208,8 +208,8 @@ urlpatterns = [
         name="new_releases"),
 
     # Help
-    path(
-        "help/genres/", museum_site.help_views.genres, name="help_genre"),
+    path("help/genres/", museum_site.help_views.genres, name="help_genre"),
+    path("help/zfiles/", museum_site.help_views.zfiles, name="help_zfiles"),
 
     # Mass Downloads
     path(
