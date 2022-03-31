@@ -86,6 +86,10 @@ class ArticleManager(models.Manager):
         if p.getlist("category"):
             qs = qs.filter(category__in=p.getlist("category"))
 
+        # Get related files
+        print("GETTING FILES")
+        qs = qs.prefetch_related("file_set")
+
         return qs
 
 
@@ -294,7 +298,13 @@ class Article(BaseModel):
     def get_series_links(self):
         output = []
         for s in self.series.only("id", "title"):
-            output.append(dict(url=s.url, text=s.title))
+            output.append({"url": s.url, "text": s.title})
+        return output
+
+    def get_zfile_links(self):
+        output = []
+        for zf in self.file_set.all().order_by("sort_title"):
+            output.append({"url": zf.url, "text": zf.title})
         return output
 
     @property
@@ -343,8 +353,14 @@ class Article(BaseModel):
             {"datum": "text", "label": "Author", "value":self.author},
             {"datum": "text", "label": "Date", "value":epoch_to_unknown(self.publish_date)},
             {"datum": "text", "label": "Category", "value":self.category},
-            {"datum": "text", "label": "Description", "value":self.description},
         ])
+
+        if self.file_set.exists():
+            context["columns"][0].append(
+            {"datum": "multi-link", "label": "Associated Files", "values":self.get_zfile_links()}
+        )
+
+        context["columns"][0].append({"datum": "text", "label": "Description", "value":self.description})
 
         if self.series.count():
             context["columns"][0].append(
