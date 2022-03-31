@@ -229,11 +229,6 @@ class Article(BaseModel):
         output = "/article/{}/{}".format(self.id, slugify(self.title))
         return output
 
-    @property
-    def preview(self):
-        # TODO: preview calls should be preview_url calls
-        return os.path.join(STATIC_URL, self.path(), "preview.png")
-
     def preview_url(self):
         return os.path.join(STATIC_URL, self.path(), "preview.png")
 
