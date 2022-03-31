@@ -173,7 +173,7 @@ def slash_separated_sort(orig):
 def env_from_host(host):
     if host in ["beta.museumofzzt.com"]:
         return "BETA"
-    elif host in ["museumofzzt.com"]:
+    elif host in ["museumofzzt.com", "www.museumofzzt.com"]:
         return "PROD"
     else:
         return "DEV"
