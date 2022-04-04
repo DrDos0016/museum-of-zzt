@@ -207,11 +207,6 @@ def upload(request):
             # Make Announcement (if needed)
             discord_announce_upload(upload)
 
-            # Calculate queue size
-            request.session["FILES_IN_QUEUE"] = (
-                File.objects.unpublished().count()
-            )
-
             # Final save
             zfile.basic_save()
 
@@ -235,6 +230,9 @@ def upload_complete(request, token):
 
     data["upload"] = Upload.objects.get(edit_token=token)
     data["file"] = File.objects.get(pk=data["upload"].file.id)
+
+    # Calculate queue size
+    QUEUE_SIZE.queue_size = File.objects.unpublished().count()
 
     return render(request, "museum_site/upload-complete.html", data)
 
@@ -278,6 +276,9 @@ def upload_delete(request):
 
             # Remove the file object
             zfile.delete()
+
+            # Calculate queue size
+            QUEUE_SIZE.queue_size = File.objects.unpublished().count()
 
             return redirect("upload_delete_complete")
 

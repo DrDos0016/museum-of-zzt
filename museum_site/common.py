@@ -573,3 +573,8 @@ def profanity_filter(text):
         output.append(word)
 
     return " ".join(output)
+
+class Queue_Size(object):
+    queue_size = -1
+
+QUEUE_SIZE = Queue_Size

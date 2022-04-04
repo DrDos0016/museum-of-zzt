@@ -68,7 +68,7 @@
             <a href="{% url 'new_files' %}">New Additions</a>
             <a href="{% url 'random' %}">Random ZZT World</a>
             <a href="{% url 'roulette' %}">Roulette</a>
-            <a href="{% url 'uploaded_worlds' %}">Upload Queue ({{request.session.FILES_IN_QUEUE}})</a>
+            <a href="{% url 'uploaded_worlds' %}">Upload Queue ({{UPLOAD_QUEUE_SIZE}})</a>
         </div>
 
         <form method="GET" action="{% url 'search' %}">

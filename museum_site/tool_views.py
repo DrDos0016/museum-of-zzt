@@ -528,6 +528,9 @@ def publish(request, pk):
             profile.files_published += 1
             profile.save()
 
+        # Calculate queue size
+        QUEUE_SIZE.queue_size = File.objects.unpublished().count()
+
         # Redirect
         return redirect(
             "tool_index_with_file", letter=data["file"].letter, filename=data["file"].filename

@@ -5,9 +5,8 @@ from museum_site.file import File
 from museum_site.constants import DETAIL_FEATURED, DETAIL_UPLOADED, TERMS_DATE
 from museum_site.common import (
     DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP, env_from_host,
-    qs_sans
+    qs_sans, QUEUE_SIZE
 )
-
 
 def museum_global(request):
     data = {}
@@ -55,10 +54,9 @@ def museum_global(request):
     data["UPLOAD_CAP"] = UPLOAD_CAP
 
     # Queue size
-    if (not request.session.get("FILES_IN_QUEUE") or (request.path in [
-        "/", "/uploaded/", "/upload/", "/upload/complete"
-    ])):
-        request.session["FILES_IN_QUEUE"] = File.objects.unpublished().count()
+    if QUEUE_SIZE.queue_size == -1:
+        QUEUE_SIZE.queue_size = File.objects.unpublished().count()
+    data["UPLOAD_QUEUE_SIZE"] = QUEUE_SIZE.queue_size
 
     # User TOS Date checks
     if request.user.is_authenticated:

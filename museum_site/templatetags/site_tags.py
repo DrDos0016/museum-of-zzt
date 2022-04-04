@@ -239,7 +239,7 @@ def meta_tags(*args, **kwargs):
         tags["author"][1] = kwargs["article"].author
         tags["description"][1] = kwargs["article"].description
         tags["og:title"][1] = kwargs["article"].title + " - Museum of ZZT"
-        tags["og:image"][1] = base_url + kwargs["article"].preview
+        tags["og:image"][1] = base_url + kwargs["article"].preview_url()
     elif kwargs.get("file") and kwargs.get("file") != "Local File Viewer":
         tags["author"][1] = kwargs["file"].author
         tags["description"][1] = '{} by {}'.format(
