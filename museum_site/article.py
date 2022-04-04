@@ -87,7 +87,6 @@ class ArticleManager(models.Manager):
             qs = qs.filter(category__in=p.getlist("category"))
 
         # Get related files
-        print("GETTING FILES")
         qs = qs.prefetch_related("file_set")
 
         return qs
@@ -226,7 +225,7 @@ class Article(BaseModel):
         super(Article, self).save(*args, **kwargs)
 
     def url(self):
-        output = "/article/{}/{}".format(self.id, slugify(self.title))
+        output = "/article/{}/{}/".format(self.id, slugify(self.title))
         return output
 
     def preview_url(self):

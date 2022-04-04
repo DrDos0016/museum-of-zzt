@@ -162,7 +162,6 @@ def file_directory(
         data["last_item"] = (
             data["page"].object_list[len(data["page"].object_list) - 1]
         )
-
     return render(request, "museum_site/generic-directory.html", data)
 
 

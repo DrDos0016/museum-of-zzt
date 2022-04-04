@@ -46,30 +46,26 @@ from museum_site.constants import (  # noqa: E402
 
 urlpatterns = [
     path("", museum_site.views.index, name="index"),
-    path("credits/", museum_site.views.site_credits, name="credits"),
-    path(
-        "data-integrity/", museum_site.views.generic,
-        {"template": "policy-data", "title": "Data Integrity"},
-        name="data_integrity"),
+
 
     # Articles
-    path(
-        "article/categories", museum_site.article_views.article_categories,
-        name="article_categories"),
-    path(
-        "article/search", museum_site.search_views.article_search,
-        name="article_search"),
     path(
         "article/",
         museum_site.article_views.article_directory, name="article_directory"),
     path(
+        "article/categories/", museum_site.article_views.article_categories,
+        name="article_categories"),
+    path(
+        "article/search/", museum_site.search_views.article_search,
+        name="article_search"),
+    path(
         "article/<slug:category>/",
         museum_site.article_views.article_directory, name="article_category"),
     path(
-        "article/<int:article_id>/page/<int:page>/<slug:slug>",
+        "article/<int:article_id>/page/<int:page>/<slug:slug>/",
         museum_site.article_views.article_view, name="article_view_page"),
     path(
-        "article/<int:article_id>/<slug:slug>",
+        "article/<int:article_id>/<slug:slug>/",
         museum_site.article_views.article_view, {"page": 1},
         name="article_view"),
 
@@ -84,9 +80,6 @@ urlpatterns = [
         "clones/", museum_site.article_views.article_view, {"article_id": 6},
         name="clones"),
     path(
-        "zzt-cheats/", museum_site.article_views.article_view,
-        {"article_id": 22}, name="zzt_cheats"),
-    path(
         "getting-started/", museum_site.article_views.article_view,
         {"article_id": 5}, name="zzt_dosbox"),
     path(
@@ -94,58 +87,19 @@ urlpatterns = [
         {"article_id": 576},
         name="support"),
     path(
+        "zeta/", museum_site.article_views.article_view, {"article_id": 399},
+        name="zeta"),
+    path(
         "zzt/", museum_site.article_views.article_view, {"article_id": 2},
         name="zzt_dl"),
     path(
-        "zeta/", museum_site.article_views.article_view, {"article_id": 399},
-        name="zeta"),
-
-    # Collections
-    path(
-        "collection/play/", museum_site.views.play_collection,
-        name="play_collection"),
+        "zzt-cheats/", museum_site.article_views.article_view,
+        {"article_id": 22}, name="zzt_cheats"),
 
     # Details
     path(
         "detail/<slug:slug>/", museum_site.file_views.files_by_detail,
         name="files_by_detail"),
-
-    # Directories
-    path(
-        "directory/<slug:category>", museum_site.views.directory,
-        name="directory"),
-
-    # Files
-    path(
-        "article/<str:letter>/<str:key>/",
-        museum_site.file_views.file_articles,
-        name="article"
-    ),
-    path(
-        "attributes/<str:letter>/<str:key>/",
-        museum_site.file_views.file_attributes, name="file_attributes"),
-    path("browse/", museum_site.file_views.file_directory, name="browse"),
-    path(
-        "browse/<str:letter>", museum_site.file_views.file_directory,
-        name="browse_letter"
-    ),
-    path(
-        "download/<str:letter>/<str:key>",
-        museum_site.file_views.file_download, name="file_download"),
-    path(
-        "file/<str:letter>/<str:key>/",
-        museum_site.file_views.file_viewer, name="file"),
-    path(
-        "play/<str:letter>/<str:key>/",
-        museum_site.zeta_views.zeta_launcher,
-        {"components": ["credits", "controls", "instructions", "players"]},
-        name="play"),
-    path(
-        "file/local/", museum_site.file_views.file_viewer,
-        {"local": True, "letter": "!", "key": ""}, name="local_file"),
-    path(
-        "pk/<int:pk>/",
-        museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),
 
     # Files (alternate categories)
     path(
@@ -171,23 +125,8 @@ urlpatterns = [
         "modified-exe/", museum_site.file_views.file_directory,
         {"details": [DETAIL_MOD]}, name="modified_exe"),
     path(
-        "osx/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_OSX]}, name="osx"),
-    path(
-        "linux/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_LINUX]}, name="linux"),
-    path(
         "ms-dos/", museum_site.file_views.file_directory,
         {"details": [DETAIL_DOS]}, name="ms_dos"),
-    path(
-        "win16/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_WIN16]}, name="win16"),
-    path(
-        "win32/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_WIN32]}, name="win32"),
-    path(
-        "win64/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_WIN64]}, name="win64"),
     path(
         "lost-worlds/", museum_site.file_views.file_directory,
         {"details": [DETAIL_LOST]}, name="lost_worlds"),
@@ -202,26 +141,74 @@ urlpatterns = [
         },
         name="featured_games"),
 
+    # Directories
+    path("browse/", museum_site.file_views.file_directory, name="browse"),
+    path(
+        "browse/<str:letter>/", museum_site.file_views.file_directory,
+        name="browse_letter"
+    ),
+    path(
+        "directory/<slug:category>/", museum_site.views.directory,
+        name="directory"),
     path("new/", museum_site.file_views.file_directory, name="new_files"),
     path(
         "new-releases/", museum_site.file_views.file_directory,
         name="new_releases"),
+    path(
+        "review/", museum_site.review_views.review_directory,
+        name="review_directory"),
+    path(
+        "series/", museum_site.series_views.series_directory,
+        name="series_directory"),
+
+    # ZFiles
+    path(
+        "article/<str:letter>/<str:key>/",
+        museum_site.file_views.file_articles,
+        name="article"
+    ),
+    path(
+        "attributes/<str:letter>/<str:key>/",
+        museum_site.file_views.file_attributes, name="file_attributes"),
+    path(
+        "download/<str:letter>/<str:key>/",
+        museum_site.file_views.file_download, name="file_download"),
+    path(
+        "file/local/", museum_site.file_views.file_viewer,
+        {"local": True, "letter": "!", "key": ""}, name="local_file"),
+    path(
+        "file/<str:letter>/<str:key>/",
+        museum_site.file_views.file_viewer, name="file"),
+    path(
+        "pk/<int:pk>/",
+        museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),
+    path(
+        "play/<str:letter>/<str:key>/",
+        museum_site.zeta_views.zeta_launcher,
+        {"components": ["credits", "controls", "instructions", "players"]},
+        name="play"),
+    path(
+        "review/<str:letter>/<str:key>/",
+        museum_site.file_views.review, name="reviews"),
 
     # Help
     path("help/genres/", museum_site.help_views.genres, name="help_genre"),
     path("help/zfiles/", museum_site.help_views.zfiles, name="help_zfiles"),
 
-    # Mass Downloads
+    # Special Pages
+    path("credits/", museum_site.views.site_credits, name="credits"),
     path(
         "mass-downloads/", museum_site.views.mass_downloads,
         name="mass_downloads"),
-
-    # Patrons Only
     path(
         "patron-articles/", museum_site.article_views.patron_articles,
         name="patron_articles"),
 
     # Policies
+    path(
+        "policy/data-integrity/", museum_site.views.generic,
+        {"template": "policy-data", "title": "Data Integrity"},
+        name="data_integrity"),
     path(
         "policy/correction/", museum_site.views.generic,
         {"template": "policy-correction", "title": "Correction Policy"},
@@ -245,20 +232,9 @@ urlpatterns = [
         "roulette/", museum_site.file_views.file_directory, name="roulette"
     ),
 
-    # Reviews
-    path(
-        "review/", museum_site.review_views.review_directory,
-        name="review_directory"),
-    path(
-        "review/<str:letter>/<str:key>/",
-        museum_site.file_views.review, name="reviews"),
-
     # Series
     path(
-        "series/", museum_site.series_views.series_directory,
-        name="series_directory"),
-    path(
-        "series/<int:series_id>/<slug:slug>",
+        "series/<int:series_id>/<slug:slug>/",
         museum_site.series_views.series_overview,
         name="series_overview"),
 
@@ -424,8 +400,8 @@ urlpatterns = [
     path(
         "ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions
     ),
-    path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add),
     path("ajax/render-review-text/", museum_site.ajax.render_review_text),
+    path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add),
 
     # RSS
     path(
@@ -444,7 +420,7 @@ urlpatterns = [
         "rss/uploads/", museum_site.feeds.LatestUploadsFeed(),
         name="rss_uploads"),
 
-    # Redirects
+    # Non-Museum Websites
     path(
         "twitter/", RedirectView.as_view(url="https://twitter.com/worldsofzzt"),
     ),
@@ -476,6 +452,8 @@ urlpatterns = [
         "closer-looks/", RedirectView.as_view(url="/article/closer-look/")),
     path(
         "livestreams/", RedirectView.as_view(url="/article/livestream/")),
+    path(
+        "data-integrity/", RedirectView.as_view(url="/policy/data-integrity/")),
 
     # Tools
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
@@ -539,7 +517,7 @@ urlpatterns = [
         "tools/replace_zip/<int:pk>/",
         museum_site.tool_views.replace_zip, name="replace_zip"),
     path("tools/scan/", museum_site.tool_views.scan, name="musuem_scan"),
-    path("tools/series/add", museum_site.tool_views.series_add,
+    path("tools/series/add/", museum_site.tool_views.series_add,
          name="series_add"),
     path(
         "tools/set_screenshot/<int:pk>/",
@@ -550,7 +528,7 @@ urlpatterns = [
         "tools/user-list/", museum_site.tool_views.user_list,
         name="user_list"),
     path(
-        "tools/<str:letter>/<str:filename>",
+        "tools/<str:letter>/<str:filename>/",
         museum_site.tool_views.tool_index,
         name="tool_index_with_file"
     ),

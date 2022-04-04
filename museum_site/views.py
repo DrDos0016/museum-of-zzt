@@ -151,56 +151,6 @@ def mass_downloads(request):
     return render(request, "museum_site/mass_downloads.html", data)
 
 
-def play_collection(request):
-    """ Returns page to play file in the browser """
-    data = {}
-    data["title"] = " - Play Collection"
-    data["player"] = "zeta"  # Must be Zeta
-    data["custom_charset"] = None  # Modified graphics aren't really viable here
-    data["engine"] = "zzt.zip"  # TODO: Special case for SZZT
-    data["play_base"] = "museum_site/world.html"
-
-    if request.GET.get("letter"):
-        data["letter"] = request.GET.get("letter")
-
-    if request.GET.get("popout"):
-        data["play_base"] = "museum_site/play-popout.html"
-
-    # Get the files in the collection
-    if request.GET.get("mode") == "featured":
-        files = File.objects.filter(details__id__in=[DETAIL_FEATURED])
-    elif request.GET.get("mode") == "new":
-        files = File.objects.all().order_by(*SORT_CODES["published"])
-    elif request.GET.get("mode") == "browse":
-        files = File.objects.filter(letter=data["letter"])
-    else:
-        files = File.objects.filter(pk=1015)
-
-    # TODO: WEIRDLY BROKEN TITLES
-    files = files.exclude(pk=431)  # 4 by Jojoisjo
-    files = files.exclude(pk=85)  # Banana Quest
-
-    # Slice by page
-
-    data["page"] = int(request.GET.get("page", 1))
-    data["files"] = files[
-        (data["page"] - 1) * PAGE_SIZE:data["page"] * PAGE_SIZE
-    ]
-
-    data["file"] = None
-    data["extra_files"] = ""
-    for f in data["files"][1:]:
-        if f.file_exists():
-            if data["file"] is None:
-                data["file"] = f
-            else:
-                data["extra_files"] += '"{}",\n'.format(f.download_url())
-
-    # response = render(request, "museum_site/play_collection.html", data)
-    response = HttpResponse("Unimplemented.")
-    return response
-
-
 def random(request):
     """ Returns a random ZZT file page """
     selection = File.objects.random_zzt_world()
