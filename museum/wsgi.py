@@ -15,18 +15,7 @@ framework.
 """
 import os
 
-from sys import version
-from datetime import datetime
-
-from django import VERSION as DJANGO_VERSION
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
-
-print("MUSEUM OF ZZT STARTUP")
-print(datetime.utcnow())
-print("Site Root:", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-print("Python:", version)
-print("Django:", DJANGO_VERSION)
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
