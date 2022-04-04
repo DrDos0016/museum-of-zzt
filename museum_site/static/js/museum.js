@@ -195,6 +195,9 @@ $(document).ready(function (){
         else
             window.location = window.location.pathname + qs + "&pf="+$(this).val();
     });
+
+    // Resize Youtube Livestream embeds
+    resize_yt_embed();
 });
 
 function pre_search()
@@ -281,4 +284,31 @@ function filesize_format(bytes)
         return "0 B";
     var i = Math.floor(Math.log(bytes) / Math.log(1024));
     return (bytes / Math.pow(1024, i)).toFixed(1) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
+}
+
+function resize_yt_embed()
+{
+    if ($("article.livestream iframe").length == 0)
+        return false;
+
+    var width = $("article.livestream iframe").width()
+    if (width == 640) // 4:3 videos
+    {
+        var ratio = 1.3333;
+        var max_width = 640;
+    }
+    else // 16:9 videos
+    {
+        var ratio = 1.7778;
+        var max_width = 1920;
+    }
+
+    var new_width = $("article.livestream").width() - 20;
+
+    if (new_width >= max_width)
+        new_width = max_width;
+
+    var new_height = parseInt(Math.round(new_width / ratio));
+    $("article.livestream iframe").width(new_width);
+    $("article.livestream iframe").height(new_height);
 }

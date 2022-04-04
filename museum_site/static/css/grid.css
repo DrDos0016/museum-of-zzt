@@ -3,7 +3,7 @@ body
 {
     font-family:sans-serif;
     background-color:#CCC;
-    margin:7px 8px auto 8px;
+    margin-top:7px;
     overflow-y:scroll;
 }
 
@@ -242,9 +242,13 @@ pre.cp437 { line-height:14px;}
     "left content right"
     "footer footer footer";
 
-    grid-template-columns:3fr 14fr 3fr;
+    grid-template-columns:1fr minmax(auto, 1280px) 1fr;
     grid-template-rows:auto auto;
     grid-gap:14px 8px;
+    max-width:1920px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-items:center;
 }
 
 #low-res-shortcuts { display:none; background-color:#00A; }
@@ -353,9 +357,9 @@ pre.cp437 { line-height:14px;}
     }
 }
 
-#sidebar-left { grid-area: left; }
-#content { grid-area: content; margin-bottom: 0px;}
-#sidebar-right { grid-area: right; }
+#sidebar-left { grid-area: left; justify-self:end; min-width:255px; max-width:255px; margin-left:8px; margin-right:8px;}
+#content { grid-area: content; margin-bottom: 0px; justify-self:center; width:100%; }
+#sidebar-right { grid-area: right; justify-self:start; min-width:255px; max-width:255px; margin-left:8px; margin-right:8px;}
 
 .sidebar .block a {
     display:block;
@@ -526,14 +530,15 @@ a.inline[target=_blank]::after
 {
     display:flex;
     flex-wrap:wrap;
+    align-items:flex-start;
     justify-content:space-evenly;
 }
 
 .image-set img
 {
     width:240px;
-    height:175px;
-    margin:14px 8px 14px 8px;
+    max-width:30%;
+    margin:7px 4px 7px 4px;
     border:1px solid #000;
 }
 /* End Generic Structures */
@@ -1630,6 +1635,12 @@ code.cheat {
 #article-meta .summary,#article-meta .revised-date { font-style:italic; }
 #revision-text { width:50%;}
 
+article p, article li, article code, article h1, article h2, article h3, article h4 {
+    max-width:750px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
 #plain-text-article
 {
     padding:0;
@@ -1654,6 +1665,8 @@ article[data-schema="80col"]
     overflow:auto;
     border-bottom:1px solid #000;
     padding-bottom:0.25em;
+    display:flex;
+    flex-wrap:wrap;
 }
 
 .zzt-img + .side-commentary, .zzt-scroll + .side-commentary, p + .side-commentary
@@ -1665,9 +1678,8 @@ article[data-schema="80col"]
 
 .material
 {
-    float:left;
-    min-width:240px;
     margin-right:0.5em;
+    flex:1;
 }
 
 @media (max-width:1280px)
@@ -1680,7 +1692,8 @@ article[data-schema="80col"]
 
 .commentary
 {
-    min-width:20%;
+    min-width:70%;
+    flex:1;
 }
 
 .commentary p
@@ -1714,6 +1727,11 @@ article.featured-game a.screen {
 article.closer-look img { max-width:640px; } /* Stretched screenshots in old CLs */
 
 /* End Hotfixes */
+
+/* Livestream (960x540) */
+@media (max-width:1529px) {article.livestream iframe[src^="https://www.youtube.com"] { width:480px; height:270px; }}
+/*@media (max-width:1469px) {article.livestream iframe[src^="https://www.youtube.com"] { width:800px; height:450px; }}
+@media (max-width:1369px) {article.livestream iframe[src^="https://www.youtube.com"] { width:800px; height:450px; }}*/
 
 /* Comics */
 #comics-nav

@@ -1,4 +1,12 @@
-@media (max-width:800px) {
+@media (max-width:480px) {
+    #sidebar-left a , #sidebar-right a
+    {
+        padding-top:12px;
+        padding-bottom:12px;
+    }
+}
+
+@media (max-width:999px) {
 .grid-root
 {
     display:grid;
@@ -11,15 +19,14 @@
 
     grid-template-columns:1fr 1fr;
     grid-template-rows:repeat(4, auto);
-    justify-items:stretch;
+    justify-items:center;
 }
 
 #low-res-shortcuts
 {
     grid-area:low-res;
-    display:block;
-    width:100%;
-    text-align:center;
+    display:flex;
+    width:100vw;
 }
 
 #low-res-shortcuts a
@@ -28,6 +35,18 @@
     line-height:42px;
     color:#FF5;
     text-decoration:none;
+    flex:1;
+    text-align:center;
+}
+
+#content
+{
+    max-width:95vw;
+}
+
+#sidebar-left, #sidebar-right
+{
+    min-width:auto;
 }
 
 #sidebar-left
