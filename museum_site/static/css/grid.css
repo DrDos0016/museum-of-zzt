@@ -717,11 +717,14 @@ input[name=q]
 
 .column
 {
-    border:1px solid #000;
-    border-top:0px;
     display:inline-block;
     width:24%;
     vertical-align:top;
+}
+
+.column > .header
+{
+    border-top:1px solid #000;
 }
 
 .column .header
@@ -729,16 +732,19 @@ input[name=q]
     background:#619F9F;
     text-align:center;
     font-weight:bold;
+    border-left:1px solid #000;
+    border-right:1px solid #000;
 }
 
 .column .row
 {
     padding-left:0.5em;
+    border:1px solid #000;
 }
 
-.column div
+.column .row + .header, .column .row + .row
 {
-    border-top:1px solid #000;
+    border-top:0px;
 }
 
 .column .row:hover
