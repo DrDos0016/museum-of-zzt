@@ -32,6 +32,11 @@ $(document).ready(function (){
         $("#id_release_date").val(today.toISOString().slice(0,10));
     });
 
+    // Unknown button
+    $("input[name=unknown]").click(function (){
+        $("#id_release_date").val("");
+    });
+
     // Suggestions
     $("#author-entry").bind("input", function (){
         clearTimeout($(this).data("timeout"));
@@ -310,7 +315,6 @@ function parse_zip_file(file)
     zip = new JSZip();
     console.log("Parsing Zip File...");
     zip.loadAsync(file).then(function(zip){
-
         var hr_size = filesize_format(file.size);
 
         $(".upload-info").html(

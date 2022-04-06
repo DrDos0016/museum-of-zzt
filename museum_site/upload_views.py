@@ -49,7 +49,10 @@ def upload(request):
         upload_form = UploadForm(request.POST, instance=upload_obj)
         download_form = DownloadForm(request.POST, instance=download_obj)
     else:  # Unbound Form
-        zgame_initial = {"author": "", "explicit": 0, "language": "en"}
+        zgame_initial = {
+            "author": "", "explicit": 0, "language": "en",
+            "release_date":str(datetime.now())[:10]
+        }
         if zgame_obj:
             zgame_initial = {
                 "explicit": int(zgame_obj.explicit),

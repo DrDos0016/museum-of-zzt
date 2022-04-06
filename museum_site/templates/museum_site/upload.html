@@ -1,10 +1,6 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
 
-{% block style %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/new_forms.css' %}?{{BOOT_TS}}">
-{% endblock %}
-
 {% block scripts %}
 <script src="{% static 'js/upload.js' %}?{{BOOT_TS}}"></script>
 <script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
@@ -31,6 +27,7 @@
         {{field|safe}}
         {% if field.id_for_label == "id_release_date" %}
         <input name="today" value="Today" type="button">
+        <input name="unknown" value="Unknown" type="button">
         {% endif %}
     </div>
     {% if field.help_text %}

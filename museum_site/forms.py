@@ -64,9 +64,12 @@ class ZGameForm(forms.ModelForm):
             ),
             "release_date": (
                 "Enter the date this file was first made public. If this is a "
-                "new release, it should be the modified date of the most "
+                "newly created file, it should be today's date. If this is an "
+                "older release being uploaded now, it should be the "
+                "modification date of the most "
                 "recent ZZT world (or executable, or other primary file). If "
-                "the release date is not known, leave this field blank."
+                "the release date is not known, select \"Unknown\" to leave "
+                "this field blank."
             ),
             "release_source": (
                 "Where the data for the release date is coming from"
@@ -85,7 +88,9 @@ class ZGameForm(forms.ModelForm):
             ),
             "description": (
                 "A description for the uploaded file. For utilities, please "
-                "be sure to fill this out."
+                "be sure to fill this out. If the description is written by "
+                "the file's author, and not a third party please wrap it in "
+                "quotation marks."
             ),
             "explicit": (
                 "Check this box if the upload contains material not suitable "
