@@ -80,6 +80,9 @@ urlpatterns = [
         "clones/", museum_site.article_views.article_view, {"article_id": 6},
         name="clones"),
     path(
+        "detail/", museum_site.article_views.article_view, {"article_id": 163},
+        name="file_details"),
+    path(
         "getting-started/", museum_site.article_views.article_view,
         {"article_id": 5}, name="zzt_dosbox"),
     path(
