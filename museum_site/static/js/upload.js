@@ -88,15 +88,19 @@ $(document).ready(function (){
     $(".ssv-entry").keyup(function (){
         var val = $(this).val();
         var key = $(this).attr("id").slice(0, -6);
-        // TODO THIS NEEDS TO SPLIT ON COMMA AND ADD IN BULK
-        if (val.endsWith(","))
+
+        if (val.indexOf(",") != -1)
         {
-            val = val.slice(0, -1);
-            if (! val.trim() )  // Make sure there's data
-                return false;
-            add_ssv_entry(key, val);
-            bind_ssv_entries(key);
-            update_ssv(key);
+            var entries = val.split(",")
+            for (var idx=0; idx<entries.length; idx++)
+            {
+                var entry = entries[idx];
+                if (! entry.trim())
+                    continue;
+                add_ssv_entry(key, entry)
+                bind_ssv_entries(key);
+                update_ssv(key);
+            }
             $(this).val("");
         }
     });
