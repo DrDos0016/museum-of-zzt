@@ -1641,7 +1641,7 @@ code.cheat {
 #article-meta .summary,#article-meta .revised-date { font-style:italic; }
 #revision-text { width:50%;}
 
-article p, article li, article code, article h1, article h2, article h3, article h4 {
+article p, article li, article code, article h1, article h2, article h3, article h4, article blockquote {
     max-width:750px;
     margin-left:auto;
     margin-right:auto;
