@@ -327,11 +327,6 @@ class AdvancedSearchForm(forms.Form):
         required=False
     )
 
-    def clean(self):
-        # TODO: IS THIS USED
-        language = self.data["language"]
-        return language
-
 
 class ArticleSearchForm(forms.Form):
     use_required_attribute = False
