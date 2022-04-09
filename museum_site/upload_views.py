@@ -2,8 +2,6 @@ import json
 
 import requests
 
-from urllib.parse import quote  # TODO REMOVE WHEN DISCORD FUNC IS REMOVED
-
 from django.shortcuts import render
 from .common import *
 from .constants import *
