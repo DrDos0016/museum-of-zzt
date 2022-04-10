@@ -417,7 +417,7 @@ class MirrorForm(forms.Form):
     creator = forms.CharField(
         label="Creator", help_text="Separate with semicolons"
     )
-    year = forms.IntegerField(label="Year")
+    year = forms.IntegerField(label="Year", required=False)
     subject = forms.CharField(
         label="Subject", help_text="Separate with semicolons"
     )
@@ -449,6 +449,7 @@ class MirrorForm(forms.Form):
             wip_zf_name = "test_" + ts + "_" + self.cleaned_data["filename"]
             archive_title = "Test - " + ts + "_" + archive_title
             url = "test_" + ts + "_" + self.cleaned_data["url"]
+            print(url)
         else:
             wip_zf_name = self.cleaned_data["filename"]
             url = self.cleaned_data["url"]
@@ -509,11 +510,13 @@ class MirrorForm(forms.Form):
             "emulator": "dosbox",
             "emulator_ext": "zip",
             "emulator_start": self.cleaned_data["launch_command"],
-            "year": str(self.cleaned_data["year"]),
             "subject": self.cleaned_data["subject"],
             "creator": self.cleaned_data["creator"].split(";"),
             "description": self.cleaned_data["description"]
         }
+
+        if self.cleaned_data["year"] is not None:
+            meta["year"] = str(self.cleaned_data["year"])
 
         # Mirror the file
         r = upload(

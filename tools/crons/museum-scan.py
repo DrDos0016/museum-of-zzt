@@ -27,7 +27,7 @@ def main():
         issues = field_check(f)
 
         if len(issues["warnings"]) != 0 or len(issues["errors"]) != 0:
-            print("<hr><b><a href='{}'>{}</a> - <a href='/admin/museum_site/file/{}/change/'>Edit</a> - <a href='/tools/{}'>Tools</a></b>\n".format(f.file_url(), f, f.id, f.id))
+            print("<hr><b><a href='{}'>{}</a> - <a href='/admin/museum_site/file/{}/change/'>Edit</a> - <a href='/tools/{}/{}/'>Tools</a></b>\n".format(f.file_url(), f, f.letter, f.key))
             print("<ul>\n")
             for w in issues["warnings"]:
                 print("<li class='warning'>{}</li>\n".format(w))

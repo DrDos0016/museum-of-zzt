@@ -297,14 +297,17 @@ def mirror(request, letter, filename):
         engine = "Super ZZT"
 
     subject = ";".join(zfile.genre.split("/"))
-    if engine:
-        subject = engine + ";" + subject
-        description = "<p>World created using the {} engine.</p>\n\n".format(
-            engine
-        )
 
     if zfile.description:
         description += "<p>{}</p>\n\n".format(zfile.description)
+
+    if engine:
+        subject = engine + ";" + subject
+        description = (
+            "<hr>\n<p>World created using the {} engine.</p>\n\n"
+        ).format(
+            engine
+        )
 
     if engine:
         description += (
@@ -363,6 +366,7 @@ def mirror(request, letter, filename):
 
     data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
+
 
 @staff_member_required
 def patron_article_rotation(request):
@@ -532,7 +536,9 @@ def publish(request, pk):
 
         # Redirect
         return redirect(
-            "tool_index_with_file", letter=data["file"].letter, filename=data["file"].filename
+            "tool_index_with_file",
+            letter=data["file"].letter,
+            filename=data["file"].filename
         )
 
     with ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
@@ -670,7 +676,6 @@ def review_approvals(request):
         approved = True if request.POST.get("action") == "APPROVE" else False
         pk = int(request.POST.get("id"))
 
-
         if approved:
             r = Review.objects.get(pk=pk)
             r.approved = True
@@ -745,18 +750,28 @@ def stream_card(request):
     # Does not require staff for simplicity's sake. This page is harmless and
     # can only read data from the DB, not modify it.
     data = {"title": "Stream Card"}
-    data["files"] = File.objects.all().values("id", "title").order_by("sort_title")
+    data["files"] = File.objects.all().values(
+        "id", "title"
+    ).order_by("sort_title")
 
     if request.GET.get("pk"):
         data["file"] = File.objects.get(pk=request.GET["pk"])
 
         data["card"] = {
             "title": request.GET.get("title", data["file"].title),
-            "author": request.GET.get("author", data["file"].author.replace("/", ", ")),
-            "company": request.GET.get("company", data["file"].company.replace("/", ", ")),
+            "author": request.GET.get(
+                "author", data["file"].author.replace("/", ", ")
+            ),
+            "company": request.GET.get(
+                "company", data["file"].company.replace("/", ", ")
+            ),
             "year": request.GET.get("year", data["file"].release_year),
-            "multiple_authors": True if request.GET.get("multiple_authors") else False,
-            "multiple_companies": True if request.GET.get("multiple_companies") else False,
+            "multiple_authors": (
+                True if request.GET.get("multiple_authors") else False
+            ),
+            "multiple_companies": (
+                True if request.GET.get("multiple_companies") else False
+            ),
         }
 
     return render(request, "museum_site/tools/stream-card.html", data)
@@ -905,7 +920,9 @@ def set_screenshot(request, pk):
     data["file_list"].sort()
 
     if request.POST.get("manual"):
-        upload_path = os.path.join(STATIC_PATH, "images/screenshots/{}/".format(zfile.letter))
+        upload_path = os.path.join(
+            STATIC_PATH, "images/screenshots/{}/".format(zfile.letter)
+        )
         file_path = move_uploaded_file(
             upload_path,
             request.FILES.get("uploaded_file"),
