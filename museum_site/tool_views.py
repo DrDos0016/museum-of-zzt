@@ -299,12 +299,12 @@ def mirror(request, letter, filename):
     subject = ";".join(zfile.genre.split("/"))
 
     if zfile.description:
-        description += "<p>{}</p>\n\n".format(zfile.description)
+        description += "<p>{}</p>\n\n<hr>".format(zfile.description)
 
     if engine:
         subject = engine + ";" + subject
         description = (
-            "<hr>\n<p>World created using the {} engine.</p>\n\n"
+            "\n<p>World created using the {} engine.</p>\n\n"
         ).format(
             engine
         )

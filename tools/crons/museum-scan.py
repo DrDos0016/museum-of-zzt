@@ -28,7 +28,7 @@ def main():
 
         if len(issues["warnings"]) != 0 or len(issues["errors"]) != 0:
             print("<hr><b><a href='{}'>{}</a> - <a href='/admin/museum_site/file/{}/change/'>Edit</a> - <a href='/tools/{}/{}/'>Tools</a></b>\n".format(
-                f.url(), f, f.pk, f.letter, f.key)
+                f.url(), f, f.pk, f.letter, f.filename)
             )
             print("<ul>\n")
             for w in issues["warnings"]:
