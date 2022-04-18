@@ -429,6 +429,8 @@ class Article(BaseModel):
         return self._major_icons
 
     def unlock_check(self, context, view="detailed"):
+        """ Checks if a locked article should unlock based on user profile or
+        a POSTed password """
         patronage = 0
         if context["request"] and context["request"].user.is_authenticated:
             patronage = context["request"].user.profile.patronage
