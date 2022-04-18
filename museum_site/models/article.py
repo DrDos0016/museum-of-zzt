@@ -341,24 +341,7 @@ class Article(BaseModel):
             ]
 
         # Unlock articles for patrons
-        patronage = 0
-        if context["request"] and context["request"].user.is_authenticated:
-            patronage = context["request"].user.profile.patronage
-        elif context["request"] and context["request"].POST.get("secret"):
-            secret = context["request"].POST.get("secret")
-            if secret == PASSWORD2DOLLARS:
-                patronage = 200
-            elif secret == PASSWORD5DOLLARS:
-                patronage = 500
-
-        if self.published == self.UPCOMING and patronage >= 200:
-            context["title"]["icons"] = [self.ICONS["unlocked"]]
-            context["title"]["roles"].remove("restricted")
-            context["title"]["roles"].append("unlocked")
-        if self.published == self.UNPUBLISHED and patronage >= 500:
-            context["title"]["icons"] = [self.ICONS["unlocked"]]
-            context["title"]["roles"].remove("restricted")
-            context["title"]["roles"].append("unlocked")
+        context = self.unlock_check(context)
 
         context["columns"].append([
             {"datum": "text", "label": "Author", "value":self.author},
@@ -388,7 +371,7 @@ class Article(BaseModel):
             hash_id="article-{}".format(self.pk),
             url=self.url,
             cells=[
-                {"datum": "link", "url":self.url(), "value":self.title, "tag":"td"},
+                {"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons(), "tag": "td"},
                 {"datum": "text", "value": self.author, "tag":"td"},
                 {"datum": "text", "value": epoch_to_unknown(self.publish_date), "tag":"td"},
                 {"datum": "text", "value": self.category, "tag":"td"},
@@ -399,12 +382,15 @@ class Article(BaseModel):
         if self.is_restricted:
             context["cells"][0]["roles"] = ["restricted"]
 
+        # Unlock articles for patrons
+        context = self.unlock_check(context, view="list")
+
         return context
 
     def gallery_block_context(self, extras=None, *args, **kwargs):
         context = self.initial_context(*args, **kwargs)
         context.update(
-            title={"datum": "title", "url":self.url(), "value":self.title},
+            title={"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons()},
             columns=[],
         )
 
@@ -412,9 +398,12 @@ class Article(BaseModel):
             {"datum": "text", "value":self.author}
         ])
 
-
         if self.is_restricted:
             context["title"]["roles"] = ["restricted"]
+
+        # Unlock articles for patrons
+        context = self.unlock_check(context, view="gallery")
+
         return context
 
     def _init_icons(self):
@@ -438,3 +427,35 @@ class Article(BaseModel):
         if not hasattr(self, "_major_icons"):
             self._init_icons()
         return self._major_icons
+
+    def unlock_check(self, context, view="detailed"):
+        patronage = 0
+        if context["request"] and context["request"].user.is_authenticated:
+            patronage = context["request"].user.profile.patronage
+        elif context["request"] and context["request"].POST.get("secret"):
+            secret = context["request"].POST.get("secret")
+            if secret == PASSWORD2DOLLARS:
+                patronage = 200
+            elif secret == PASSWORD5DOLLARS:
+                patronage = 500
+
+        if view == "detailed" or view == "gallery":
+            if self.published == self.UPCOMING and patronage >= 200:
+                context["title"]["icons"] = [self.ICONS["unlocked"]]
+                context["title"]["roles"].remove("restricted")
+                context["title"]["roles"].append("unlocked")
+            if self.published == self.UNPUBLISHED and patronage >= 500:
+                context["title"]["icons"] = [self.ICONS["unlocked"]]
+                context["title"]["roles"].remove("restricted")
+                context["title"]["roles"].append("unlocked")
+        elif view == "list":
+            if self.published == self.UPCOMING and patronage >= 200:
+                context["cells"][0]["icons"] = [self.ICONS["unlocked"]]
+                context["cells"][0]["roles"].remove("restricted")
+                context["cells"][0]["roles"].append("unlocked")
+            if self.published == self.UNPUBLISHED and patronage >= 500:
+                context["cells"][0]["icons"] = [self.ICONS["unlocked"]]
+                context["cells"][0]["roles"].remove("restricted")
+                context["cells"][0]["roles"].append("unlocked")
+
+        return context
