@@ -12,6 +12,7 @@ from django.utils.safestring import mark_safe
 from museum.settings import STATIC_URL
 from museum_site.models.base import BaseModel
 from museum_site.common import STATIC_PATH, epoch_to_unknown
+from museum_site.private import PASSWORD2DOLLARS, PASSWORD5DOLLARS
 
 
 class ArticleManager(models.Manager):
@@ -127,6 +128,12 @@ class Article(BaseModel):
     EARLY_ACCESS_PRICING = {
         UPCOMING: "$2.00 USD",
         UNPUBLISHED: "$5.00 USD",
+    }
+
+    ICONS = {
+        "upcoming": {"glyph": "🔒", "title": "This article is currently exclusive to $2+ Patrons.", "role":"upcoming-icon"},
+        "unpublished": {"glyph": "🔒", "title": "This article is currently exclusive to $5+ Patrons", "role":"unpublished-icon"},
+        "unlocked": {"glyph": "🔑", "title": "This early article may be read at your current patronage!", "role":"unlocked-icon"},
     }
 
     objects = ArticleManager()
@@ -320,11 +327,10 @@ class Article(BaseModel):
     def detailed_block_context(self, extras=None, *args, **kwargs):
         """ Return info to populate a detail block """
         context = self.initial_context(*args, **kwargs)
-        context.update(
-            title={"datum": "title", "value":self.title, "url":self.url()},
-            columns=[],
-        )
+        context["title"] = {"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons()}
+        context["columns"] = []
 
+        # Adjust CSS for unpublished articles
         if self.published == self.UPCOMING:
             context["title"]["roles"] = [
                 "restricted", "article-upcoming"
@@ -333,6 +339,26 @@ class Article(BaseModel):
             context["title"]["roles"] = [
                 "restricted", "article-unpublished"
             ]
+
+        # Unlock articles for patrons
+        patronage = 0
+        if context["request"] and context["request"].user.is_authenticated:
+            patronage = context["request"].user.profile.patronage
+        elif context["request"] and context["request"].POST.get("secret"):
+            secret = context["request"].POST.get("secret")
+            if secret == PASSWORD2DOLLARS:
+                patronage = 200
+            elif secret == PASSWORD5DOLLARS:
+                patronage = 500
+
+        if self.published == self.UPCOMING and patronage >= 200:
+            context["title"]["icons"] = [self.ICONS["unlocked"]]
+            context["title"]["roles"].remove("restricted")
+            context["title"]["roles"].append("unlocked")
+        if self.published == self.UNPUBLISHED and patronage >= 500:
+            context["title"]["icons"] = [self.ICONS["unlocked"]]
+            context["title"]["roles"].remove("restricted")
+            context["title"]["roles"].append("unlocked")
 
         context["columns"].append([
             {"datum": "text", "label": "Author", "value":self.author},
@@ -390,3 +416,25 @@ class Article(BaseModel):
         if self.is_restricted:
             context["title"]["roles"] = ["restricted"]
         return context
+
+    def _init_icons(self):
+        # Populates major and minor icons for file
+        self._minor_icons = []
+        self._major_icons = []
+
+        if self.published == self.UPCOMING:
+            self._major_icons.append(self.ICONS["upcoming"])
+        if self.published == self.UNPUBLISHED:
+            self._major_icons.append(self.ICONS["unpublished"])
+
+    def get_all_icons(self):
+        # Returns combined list of both major and minor icons, populating if needed
+        if not hasattr(self, "_major_icons"):
+            self._init_icons()
+        return self._major_icons + self._minor_icons
+
+    def get_major_icons(self):
+        # Returns list of major icons, populating if needed
+        if not hasattr(self, "_major_icons"):
+            self._init_icons()
+        return self._major_icons

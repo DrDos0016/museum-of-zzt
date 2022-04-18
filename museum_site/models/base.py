@@ -25,13 +25,22 @@ class BaseModel(models.Model):
             'Subclasses must implement "scrub" method.'
         )
 
-    def get_all_icons(self, **kwargs):
+    def _init_icons(self):
         # Stub
-        return []
+        self._minor_icons = []
+        self._major_icons = []
 
-    def get_major_icons(self, **kwargs):
-        # Stub
-        return []
+    def get_all_icons(self):
+        # Returns combined list of both major and minor icons, populating if needed
+        if not hasattr(self, "_major_icons"):
+            self._init_icons()
+        return self._major_icons + self._minor_icons
+
+    def get_major_icons(self):
+        # Returns list of major icons, populating if needed
+        if not hasattr(self, "_major_icons"):
+            self._init_icons()
+        return self._major_icons
 
     def initial_context(self, *args, **kwargs):
         context = {

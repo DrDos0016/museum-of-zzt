@@ -9,7 +9,6 @@
 .unpublished { background-color:#98C9C9; }
 
 a.restricted { color:#F00; }
-a.restricted::before { content:"🔒 "; }
 a.explicit::before { content:"🔞 "; }
 a.unpublished::before { content:"🚧 "; }
 a.explicit.unpublished::before { content:"🔞🚧 "; }
