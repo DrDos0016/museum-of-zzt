@@ -18,11 +18,21 @@ def article_categories(request, category="all", page_num=1):
         "category"
     ).annotate(total=Count("category")).order_by("category")
 
+    # TODO: Sloppy way to get this information
+    seen_categories = []
+    cats = {}
+    cats_qs = Article.objects.published().defer("content").order_by("-id")
+    for a in cats_qs:
+        if a.category not in seen_categories:
+            seen_categories.append(a.category)
+            cats[a.category.lower()] = a
+
     # Block
     data["page"] = []
 
     for entry in qs:
         key = entry["category"].lower().replace("'", "").replace(" ", "-")
+        latest = cats[entry["category"].lower()]
         block_context = dict(
             pk=None,
             model=None,
@@ -32,6 +42,7 @@ def article_categories(request, category="all", page_num=1):
             title={"datum": "link", "url": "/article/"+key, "value": entry["category"]},
             columns=[[
                     {"datum": "text", "label": "Number of Articles", "value":entry["total"]},
+                    {"datum": "link", "label": "Latest", "url": latest.url(), "value": latest.title},
                     {
                         "datum": "text",
                         "value":mark_safe(CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>"))
