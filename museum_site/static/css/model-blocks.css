@@ -21,7 +21,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
     "screenshot title"
     "screenshot data"
     "screenshot desc"
-    "extra extra"
+    "extras extras"
     "links links";
 
     column-gap:8px;
@@ -38,7 +38,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
         "title"
         "data"
         "desc"
-        "extra"
+        "extras"
         "links";
 
         grid-template-columns: 1fr;
@@ -129,9 +129,9 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
     margin:auto;
 }
 
-.model-block .extra
+.model-block .extras
 {
-    grid-area:extra;
+    grid-area:extras;
 }
 
 .model-block .extra h3

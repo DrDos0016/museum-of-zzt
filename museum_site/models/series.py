@@ -73,7 +73,7 @@ class Series(BaseModel):
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)
 
-    def detailed_block_context(self, extras=None, *args, **kwargs):
+    def detailed_block_context(self, *args, **kwargs):
         """ Return info to populate a detail block """
         context = dict(
             pk=self.pk,
@@ -93,7 +93,7 @@ class Series(BaseModel):
 
         return context
 
-    def list_block_context(self, extras=None, *args, **kwargs):
+    def list_block_context(self, *args, **kwargs):
         context = dict(
             pk=self.pk,
             model=self.model_name,
@@ -108,7 +108,7 @@ class Series(BaseModel):
 
         return context
 
-    def gallery_block_context(self, extras=None, *args, **kwargs):
+    def gallery_block_context(self, *args, **kwargs):
         context = dict(
             pk=self.pk,
             model=self.model_name,

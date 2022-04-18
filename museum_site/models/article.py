@@ -328,7 +328,8 @@ class Article(BaseModel):
 
     def detailed_block_context(self, extras=None, *args, **kwargs):
         """ Return info to populate a detail block """
-        context = self.initial_context(view="detailed")
+        context = super(Article, self).initial_context()
+        context.update(self.initial_context(view="detailed"))
         context.update(
             title={"datum": "title", "value":self.title, "url":self.url()},
             columns=[],
@@ -364,7 +365,8 @@ class Article(BaseModel):
         return context
 
     def list_block_context(self, extras=None, *args, **kwargs):
-        context = self.initial_context(view="list")
+        context = super(Article, self).initial_context()
+        context.update(self.initial_context(view="list"))
         context.update(
             pk=self.pk,
             model=self.model_name,
@@ -385,7 +387,8 @@ class Article(BaseModel):
         return context
 
     def gallery_block_context(self, extras=None, *args, **kwargs):
-        context = self.initial_context(view="detailed")
+        context = super(Article, self).initial_context()
+        context.update(self.initial_context(view="gallery"))
         context.update(
             title={"datum": "title", "url":self.url(), "value":self.title},
             columns=[],

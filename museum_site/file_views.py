@@ -108,7 +108,6 @@ def file_directory(
         default_sort = "uploaded"
     elif request.path == "/featured/":
         data["title"] = "Featured Worlds"
-        data["extras"] = ["museum_site/blocks/extra-featured-world.html"]
         data["prefix_template"] = ["museum_site/prefixes/featured-world.html"]
     elif request.path == "/roulette/":
         if not request.GET.get("seed"):

@@ -11,7 +11,6 @@
         </div>
         {% endfor %}
     </div>
-    {% if model_extras %}{% for extra in model_extras %}{% include extra %}{% endfor %}{% endif %}
-    {% if extras %}{% for extra in extras %}{% include extra %}{% endfor %}{% endif %}
+    {% if extras %}<div class="extras">{% for extra in extras %}{% include extra %}{% endfor %}</div>{% endif %}
 </div>
 {% if links %}{% include "museum_site/blocks/file-links.html" with links=links %}{% endif %}

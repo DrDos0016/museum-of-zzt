@@ -19,9 +19,9 @@ from museum_site.models.base import BaseModel
 from museum_site.common import TEMP_PATH, record
 from museum_site.constants import (SITE_ROOT, DETAIL_ZZT, DETAIL_UPLOADED, DETAIL_GFX,
                         DETAIL_LOST)
-from museum_site.models.file import File
+from museum_site.models import File
 try:
-    from .private import (
+    from museum_site.private import (
         TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_SECRET,
         TWITTER_OAUTH_TOKEN, WEBHOOK_URL
     )
@@ -319,7 +319,7 @@ class WoZZT_Queue(BaseModel):
             None
         return True
 
-    def detailed_block_context(self, extras=None, *args, **kwargs):
+    def detailed_block_context(self, *args, **kwargs):
         debug = True
         context = dict(
             pk=self.pk,

@@ -976,41 +976,6 @@ class File(BaseModel):
             output.append((LANGUAGES.get(i, i), i))
         return output
 
-    def initial_context(self, **kwargs):
-        debug = kwargs.get("debug", False)
-        context = {
-            "pk": self.pk,
-            "model": self.model_name,
-            "hash_id": self.filename,
-            "preview": {"url": self.preview_url, "alt": self.preview_url},
-            "url": self.url(),
-            "roles": [],
-            "icons": self.get_all_icons(),
-            "major_icons": self.get_major_icons(),
-            "model_extras": [],
-        }
-
-        if hasattr(self, "extra_context"):
-            context.update(self.extra_context)
-
-        if self.explicit:
-            context["roles"].append("explicit")
-        if self.is_uploaded():
-            context["roles"].append("unpublished")
-        if self.is_featured_world():
-            context["roles"].append("featured")
-        if self.is_lost():
-            context["roles"].append("lost")
-
-        # Extra modules
-        if self.is_utility() and self.description:
-            context["model_extras"].append("museum_site/blocks/extra-utility.html")
-            context["utility_description"] = self.description
-        if self.is_lost() and self.description:
-            context["model_extras"].append("museum_site/blocks/extra-lost.html")
-            context["lost_description"] = self.description
-        return context
-
     def links(self, debug=False):
         links = []
 
@@ -1067,14 +1032,45 @@ class File(BaseModel):
 
         return links
 
+    def initial_context(self, **kwargs):
+        debug = kwargs.get("debug", False)
+        context = {
+            "hash_id": self.filename,
+            "roles": [],
+            "extras": [],
+        }
+
+        if hasattr(self, "extra_context"):
+            context.update(self.extra_context)
+
+        # Append roles/extras based on details
+        if self.explicit:
+            context["roles"].append("explicit")
+        if self.is_uploaded():
+            context["roles"].append("unpublished")
+        if self.is_featured_world():
+            context["roles"].append("featured")
+            context["extras"].append("museum_site/blocks/extra-featured-world.html")
+            context["featured_articles"] = self.articles.filter(category="Featured Game").defer("content").order_by("-publish_date")
+        if self.is_lost():
+            context["roles"].append("lost")
+            if self.description:
+                context["extras"].append("museum_site/blocks/extra-lost.html")
+                context["lost_description"] = self.description
+        if self.is_utility() and self.description:
+            context["extras"].append("museum_site/blocks/extra-utility.html")
+            context["utility_description"] = self.description
+
+
+        return context
+
     def detailed_block_context(self, extras=None, *args, **kwargs):
         """ Return info to populate a detail block """
-        context = self.initial_context()
+        context = super(File, self).initial_context()
+        context.update(self.initial_context(view="detailed"))
         debug = kwargs.get("debug", False)
-        context = self.initial_context(view="detailed")
         context.update(
             tag={"opening": "div", "closing": "/div"},
-            extras=extras,
             columns=[],
             title={"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons()},
         )
@@ -1106,13 +1102,15 @@ class File(BaseModel):
         context["links"] = self.links(debug=debug)
 
         # Additional fields when browsing Featured Worlds
-        if extras and "museum_site/blocks/extra-featured-world.html" in extras:
-            context["featured_articles"] = self.articles.filter(category="Featured Game").order_by("-publish_date")
+        #if extras and "museum_site/blocks/extra-featured-world.html" in extras:
+        #context["featured_articles"] = self.articles.filter(category="Featured Game").order_by("-publish_date")
+
 
         return context
 
     def list_block_context(self, extras=None, *args, **kwargs):
-        context = self.initial_context(view="list")
+        context = super(File, self).initial_context()
+        context.update(self.initial_context(view="list"))
 
         # Prepare Links
         cells = []
@@ -1151,7 +1149,8 @@ class File(BaseModel):
         return context
 
     def gallery_block_context(self, extras=None, *args, **kwargs):
-        context = self.initial_context(view="gallery")
+        context = super(File, self).initial_context()
+        context.update(self.initial_context(view="gallery"))
 
         # Prepare Links
         if self.actions is None:
