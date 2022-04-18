@@ -375,7 +375,7 @@ function pull_file()
     }
 
     $.ajax({
-        url:"/ajax/get_zip_file",
+        url:"/ajax/get_zip_file/",
         data:{
             "letter":letter,
             "zip":zip,
