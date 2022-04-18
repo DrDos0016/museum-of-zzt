@@ -32,7 +32,7 @@ def files_by_detail(request, slug):
 def file_directory(
     request,
     letter=None,
-    details=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY],
+    details=[],
     page_num=1,
     show_description=False,
     show_featured=False
@@ -89,10 +89,12 @@ def file_directory(
         data["header"] = data["title"]
         data["sort_options"] = None
         data["sort"] = "-publish_date"
+        data["prefix_template"] = "museum_site/prefixes/new-additions.html"
     elif request.path == "/new-releases/":
         data["title"] = "New Releases"
         data["header"] = data["title"]
         data["sort_options"] = None
+        data["prefix_template"] = "museum_site/prefixes/new-releases.html"
         default_sort = "-release"
     elif request.path == "/uploaded/":
         data["title"] = "Upload Queue"
