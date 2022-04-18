@@ -2,12 +2,12 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
-from .common import *
-from .constants import *
-from .models import *
-from .text import CATEGORY_DESCRIPTIONS
+from museum_site.common import *
+from museum_site.constants import *
+from museum_site.models import *
+from museum_site.text import CATEGORY_DESCRIPTIONS
 
-from .file_views import file_articles  # Kludge
+from museum_site.file_views import file_articles  # Kludge
 
 
 def article_categories(request, category="all", page_num=1):

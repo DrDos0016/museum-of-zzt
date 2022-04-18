@@ -2,8 +2,8 @@ from django.core.cache import cache
 
 from datetime import datetime
 
-from museum_site.detail import Detail
-from museum_site.file import File
+from museum_site.models.detail import Detail
+from museum_site.models.file import File
 from museum_site.constants import DETAIL_FEATURED, DETAIL_UPLOADED, TERMS_DATE
 from museum_site.common import (
     DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP, env_from_host,

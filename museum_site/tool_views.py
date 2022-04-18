@@ -5,17 +5,18 @@ import os
 import pwd
 import shutil
 
+from io import StringIO
+from zipfile import ZipFile
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.template import Context, Template
 from django.urls import get_resolver
-from .common import *
-from .constants import *
-from io import StringIO
-from zipfile import ZipFile
-from .models import *
-from .forms import *
+from museum_site.common import *
+from museum_site.constants import *
+from museum_site.models import *
+from museum_site.forms import *
 
 from internetarchive import upload
 from PIL import Image

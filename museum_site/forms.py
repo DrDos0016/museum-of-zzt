@@ -5,14 +5,14 @@ import time
 import zipfile
 
 from django import forms
-from .models import *
-from .fields import *
-from .widgets import *
-from .common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT
-from .constants import (
+from museum_site.models import *
+from museum_site.fields import *
+from museum_site.widgets import *
+from museum_site.common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT
+from museum_site.constants import (
     LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, DETAIL_REMOVED
 )
-from .private import IA_ACCESS, IA_SECRET
+from museum_site.private import IA_ACCESS, IA_SECRET
 
 
 from internetarchive import upload

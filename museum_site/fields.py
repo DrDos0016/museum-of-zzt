@@ -1,5 +1,5 @@
 from django import forms
-from .widgets import *
+from museum_site.widgets import *
 
 
 class IntegerRangeField(forms.MultiValueField):

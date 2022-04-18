@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .common import *
+from museum_site.common import *
 
 def raise_error(request, status):
     try:

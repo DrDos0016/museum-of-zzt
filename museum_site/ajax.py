@@ -12,8 +12,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from PIL import Image
 from markdown_deux.templatetags import markdown_deux_tags
 
-from .models import *
-from .common import *
+from museum_site.models import *
+from museum_site.common import *
 
 
 def get_zip_file(request):

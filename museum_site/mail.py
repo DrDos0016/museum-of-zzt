@@ -2,9 +2,9 @@ import smtplib
 import ssl
 
 from django.contrib.auth.models import User
-from .common import *
-from .constants import *
-from .models import *
+from museum_site.common import *
+from museum_site.constants import *
+from museum_site.models import *
 
 NOREPLY = "noreply@" + DOMAIN
 

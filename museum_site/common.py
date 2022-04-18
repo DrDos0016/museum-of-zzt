@@ -14,7 +14,7 @@ from django.urls import reverse
 
 from museum_site.models import *
 from museum_site.constants import *
-from .private import NEW_UPLOAD_WEBHOOK_URL, NEW_REVIEW_WEBHOOK_URL
+from museum_site.private import NEW_UPLOAD_WEBHOOK_URL, NEW_REVIEW_WEBHOOK_URL
 
 from datetime import datetime, date, timezone, timedelta
 from io import BytesIO

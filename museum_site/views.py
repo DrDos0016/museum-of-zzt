@@ -1,9 +1,9 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
-from .common import *
-from .constants import *
-from .models import *
-from .private import (
+from museum_site.common import *
+from museum_site.constants import *
+from museum_site.models import *
+from museum_site.private import (
     UNREGISTERED_SUPPORTERS, UNREGISTERED_BIGGER_SUPPORTERS,
     UNREGISTERED_BIGGEST_SUPPORTERS
 )

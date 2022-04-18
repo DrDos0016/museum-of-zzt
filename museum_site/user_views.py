@@ -8,15 +8,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 
-from .common import *
-from .constants import *
-from .models import *
-from .mail import (
+from museum_site.common import *
+from museum_site.constants import *
+from museum_site.models import *
+from museum_site.mail import (
     send_forgotten_username_email,
     send_forgotten_password_email,
     send_account_verification_email,
 )
-from .private import BETA_USERNAME, BETA_PASSWORD
+from museum_site.private import BETA_USERNAME, BETA_PASSWORD
 
 
 def activate_account(request, token=None):

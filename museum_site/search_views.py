@@ -1,9 +1,9 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
-from .common import *
-from .constants import *
-from .forms import ArticleSearchForm
-from .models import *
+from museum_site.common import *
+from museum_site.constants import *
+from museum_site.forms import ArticleSearchForm
+from museum_site.models import *
 
 ADV_SEARCH_DEFAULTS = [
     DETAIL_ZZT,

@@ -1,9 +1,9 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
-from .common import *
-from .constants import *
-from .models import *
+from museum_site.common import *
+from museum_site.constants import *
+from museum_site.models import *
 
 
 def review_directory(request, page_num=1):
