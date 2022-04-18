@@ -1030,15 +1030,17 @@ class File(BaseModel):
         link = {"datum": "link", "value":"Attributes", "url":self.attributes_url(), "roles":["attribute-link"]}
         links.append(link)
 
+        if debug:
+            link = {"datum": "link", "value":"Edit ZF#{}".format(self.id), "url":self.admin_url(), "roles":["debug-link"], "kind":"debug"}
+            links.append(link)
+            link = {"datum": "link", "value":"Tools ZF#{}".format(self.id), "url":self.tool_url(), "roles":["debug-link"], "kind":"debug"}
+            links.append(link)
+
         return links
 
-    def initial_context(self, **kwargs):
-        debug = kwargs.get("debug", False)
-        context = {
-            "hash_id": self.filename,
-            "roles": [],
-            "extras": [],
-        }
+    def initial_context(self, *args, **kwargs):
+        context = super(File, self).initial_context(*args, **kwargs)
+        context["hash_id"] = self.filename
 
         if hasattr(self, "extra_context"):
             context.update(self.extra_context)
@@ -1066,9 +1068,7 @@ class File(BaseModel):
 
     def detailed_block_context(self, extras=None, *args, **kwargs):
         """ Return info to populate a detail block """
-        context = super(File, self).initial_context()
-        context.update(self.initial_context(view="detailed"))
-        debug = kwargs.get("debug", False)
+        context = self.initial_context(*args, **kwargs)
         context.update(
             tag={"opening": "div", "closing": "/div"},
             columns=[],
@@ -1099,13 +1099,20 @@ class File(BaseModel):
             context["columns"][1].append({"datum": "text", "label":"Publish Date", "value":self.publish_date_str()})
 
         # Prepare Links
-        context["links"] = self.links(debug=debug)
+        context["links"] = self.links(context["debug"])
 
-        # Additional fields when browsing Featured Worlds
-        #if extras and "museum_site/blocks/extra-featured-world.html" in extras:
-        #context["featured_articles"] = self.articles.filter(category="Featured Game").order_by("-publish_date")
-
-
+        if context["debug"]:
+            context["columns"][1].append(
+                {
+                    "datum": "multi-link",
+                    "roles":["debug-link"], "kind":"debug",
+                    "label": "Debug",
+                    "values":[
+                        {"url": self.admin_url(), "text": "Edit"},
+                        {"url": self.tool_url(), "text": "Tools"},
+                    ]
+                }
+            )
         return context
 
     def list_block_context(self, extras=None, *args, **kwargs):

@@ -490,23 +490,25 @@ def ssv_links(raw, param, lookup=""):
 
 
 @register.simple_tag()
-def gblock(item, view="detailed", header=None, debug=False, extras=None):
+def gblock(
+    item, view="detailed", header=None, debug=False, request=None
+):
     template = "museum_site/blocks/generic-{}-block.html".format(view)
     if not item:
         return mark_safe("SITE ERROR: File not found!")
-    if view =="detailed":
-        context = item.detailed_block_context(extras=extras, debug=debug)
-    elif view =="list":
-        context = item.list_block_context(extras=extras, debug=debug)
+    if view == "detailed":
+        context = item.detailed_block_context(debug=debug, request=request)
+    elif view == "list":
+        context = item.list_block_context(debug=debug, request=request)
     elif view == "gallery":
-        context = item.gallery_block_context(extras=extras, debug=debug)
+        context = item.gallery_block_context(debug=debug, request=request)
     output = render_to_string(template, context)
     return mark_safe(output + "\n")
 
 
 @register.simple_tag()
 def generic_block_loop(
-    items, view="detailed", header=None, debug=False, extras=None
+    items, view="detailed", header=None, request=None
 ):
     output = ""
     if view == "":
@@ -516,7 +518,12 @@ def generic_block_loop(
 
     # Empty sets
     if len(items) == 0:
-        output = "<div id='no-results'><img src='/static/chrome/blank-board.png' %}'><p>Your query returned zero results!</p></div>"
+        output = (
+            "<div id='no-results'>"
+            "<img src='/static/chrome/blank-board.png' %}'>"
+            "<p>Your query returned zero results!</p>"
+            "</div>"
+        )
         return mark_safe(output)
 
     if view == "list":
@@ -527,11 +534,11 @@ def generic_block_loop(
     for i in items:
         context = i  # Default
         if view == "detailed":
-            context = i.detailed_block_context(extras=extras, debug=debug)
+            context = i.detailed_block_context(request=request)
         elif view == "list":
-            context = i.list_block_context(extras=extras, debug=debug)
+            context = i.list_block_context(request=request)
         elif view == "gallery":
-            context = i.gallery_block_context(extras=extras, debug=debug)
+            context = i.gallery_block_context(request=request)
         output += render_to_string(template, context)
 
     if view == "list":

@@ -27,10 +27,10 @@ community can be easily discovered and that their importance can be recognized.
     <h2 id="latest-additions-heading">Latest Additions</h2>
     <div class="gallery-list scrolling">
         <div class="col">
-        {% generic_block_loop items=new_releases view="gallery" header=table_header debug=debug extras=extras %}
+        {% generic_block_loop items=new_releases view="gallery" header=table_header %}
         </div>
         <div class="col">
-        {% generic_block_loop items=files view="gallery" header=table_header debug=debug extras=extras %}
+        {% generic_block_loop items=files view="gallery" header=table_header %}
         </div>
     </div>
     <div class="view-more l">
@@ -43,11 +43,11 @@ community can be easily discovered and that their importance can be recognized.
 
 <h2>Latest Articles</h2>
 {% with articles|slice:":3" as spotlight_articles %}
-{% generic_block_loop items=spotlight_articles view="detailed" debug=debug extras=extras %}
+{% generic_block_loop items=spotlight_articles view="detailed" request=request %}
 {% endwith %}
 <table>
     {% with articles|slice:"3:" as spotlight_articles %}
-    {% generic_block_loop items=spotlight_articles view="list" header=article_table_header debug=debug extras=extras %}
+    {% generic_block_loop items=spotlight_articles view="list" header=article_table_header %}
     {% endwith %}
 </table>
 <div class="view-more">
@@ -56,7 +56,7 @@ community can be easily discovered and that their importance can be recognized.
 
 <h2>Latest Reviews</h2>
 <table>
-    {% generic_block_loop items=reviews view="list" header=review_table_header debug=debug extras=extras %}
+    {% generic_block_loop items=reviews view="list" header=review_table_header %}
 </table>
 <div class="view-more">
         <a href="{% url 'review_directory' %}">View More</a>

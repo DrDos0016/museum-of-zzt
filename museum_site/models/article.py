@@ -305,18 +305,9 @@ class Article(BaseModel):
     def early_access_price(self):
         return self.EARLY_ACCESS_PRICING.get(self.published, "???")
 
-    def initial_context(self, **kwargs):
-        debug = kwargs.get("debug", False)
-        context = {
-            "pk": self.pk,
-            "model": self.model_name,
-            "hash_id": "article-{}".format(self.pk),
-            "url": self.url(),
-            "preview": {"url": self.preview_url, "alt": self.preview_url},
-            "icons": [],
-            "major_icons": [],
-            "model_extras": [],
-        }
+    def initial_context(self, *args, **kwargs):
+        context = super(Article, self).initial_context(*args, **kwargs)
+        context["hash_id"] = "article-{}".format(self.pk)
 
         if hasattr(self, "extra_context"):
             context.update(self.extra_context)
@@ -328,8 +319,7 @@ class Article(BaseModel):
 
     def detailed_block_context(self, extras=None, *args, **kwargs):
         """ Return info to populate a detail block """
-        context = super(Article, self).initial_context()
-        context.update(self.initial_context(view="detailed"))
+        context = self.initial_context(*args, **kwargs)
         context.update(
             title={"datum": "title", "value":self.title, "url":self.url()},
             columns=[],
@@ -365,8 +355,7 @@ class Article(BaseModel):
         return context
 
     def list_block_context(self, extras=None, *args, **kwargs):
-        context = super(Article, self).initial_context()
-        context.update(self.initial_context(view="list"))
+        context = self.initial_context(*args, **kwargs)
         context.update(
             pk=self.pk,
             model=self.model_name,
@@ -387,8 +376,7 @@ class Article(BaseModel):
         return context
 
     def gallery_block_context(self, extras=None, *args, **kwargs):
-        context = super(Article, self).initial_context()
-        context.update(self.initial_context(view="gallery"))
+        context = self.initial_context(*args, **kwargs)
         context.update(
             title={"datum": "title", "url":self.url(), "value":self.title},
             columns=[],

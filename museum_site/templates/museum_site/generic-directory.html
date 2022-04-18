@@ -13,7 +13,7 @@
 
 {% include "museum_site/blocks/paginator_block.html" %}
 
-{% generic_block_loop items=page view=view header=table_header debug=debug extras=extras %}
+{% generic_block_loop items=page view=view header=table_header request=request %}
 
 {% include "museum_site/blocks/paginator_block.html" %}
 </section>

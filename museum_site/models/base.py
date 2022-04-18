@@ -33,7 +33,7 @@ class BaseModel(models.Model):
         # Stub
         return []
 
-    def initial_context(self, **kwargs):
+    def initial_context(self, *args, **kwargs):
         context = {
             "pk": self.pk,
             "model": self.model_name,

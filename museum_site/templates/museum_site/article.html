@@ -10,6 +10,6 @@
 {% block world_content %}
 <h2>Articles</h2>
 
-{% generic_block_loop items=articles view="detailed" debug=debug extras=extras %}
+{% generic_block_loop items=articles view="detailed" request=request %}
 
 {% endblock %}
