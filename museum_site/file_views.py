@@ -95,6 +95,7 @@ def file_directory(
         data["header"] = data["title"]
         data["sort_options"] = None
         data["prefix_template"] = "museum_site/prefixes/new-releases.html"
+        qs = qs.exclude(details=DETAIL_UPLOADED)
         default_sort = "-release"
     elif request.path == "/uploaded/":
         data["title"] = "Upload Queue"
