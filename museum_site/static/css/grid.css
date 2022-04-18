@@ -47,9 +47,7 @@ a.broken
 }
 
 a.restricted { color:#F00; }
-
-a.restricted::before { content: "🔒 " }
-a.unrestricted::before { content: "🔓 " }
+a.unlocked { color:#080; }
 
 a.il
 {
@@ -398,6 +396,8 @@ pre.cp437 { line-height:14px;}
 .sidebar a[target=_blank]
 {
     background:none;
+    padding-right:0px;
+
 }
 
 .sidebar .block a:hover, .sidebar a[target=_blank]:hover
@@ -494,7 +494,7 @@ a.inline[target=_blank]::after
 .block
 {
     padding:14px 8px 14px 8px;
-    margin-bottom:14px;
+    margin-bottom:7px;
     background:#F0F0F0;
     border:1px solid #000;
 }
@@ -549,12 +549,13 @@ a.inline[target=_blank]::after
 /* End Generic Structures */
 
 /* Specific Structures */
-.sidebar h1
+.sidebar h2
 {
     border-bottom:1px solid #000;
+    font-size:larger;
 }
 
-.sidebar h2
+.sidebar h3
 {
     font-size:smaller;
     border-bottom:1px solid #000;
