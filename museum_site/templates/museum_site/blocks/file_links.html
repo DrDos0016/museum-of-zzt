@@ -1,9 +1,0 @@
-<!--Old file_links.html-->
-{% for k, v in file.links.items %}
-{% if v.visible %}<div class="{{k}}-link {{v.classes|join:" "}}"><a href="{{v.url}}">{{v.text}}</a></div>{% else %}
-<div class="hidden">{{v.text}}</div>{% endif %}
-{% endfor %}
-{% if debug %}
-<div class="debug"><a href="/admin/museum_site/file/{{file.id}}/change/">Edit {{file.id}}</a></div>
-<div class="debug"><a href="/tools/{{file.identifier}}">Tools {{file.id}}</a></div>
-{% endif %}
