@@ -279,7 +279,9 @@ def meta_tags(*args, **kwargs):
     BLANK = '<meta {}="{}" content="{}">\n'
     meta_tag_html = ""
     for key in tags.keys():
-        meta_tag_html += BLANK.format(tags[key][0], key, tags[key][1])
+        meta_tag_html += BLANK.format(
+            tags[key][0], key, tags[key][1].replace('"', "'")
+        )
 
     return mark_safe(meta_tag_html[:-1])
 
