@@ -10,6 +10,7 @@ from zipfile import ZipFile
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.shortcuts import render
 from django.template import Context, Template
 from django.urls import get_resolver
@@ -533,7 +534,7 @@ def publish(request, pk):
             profile.save()
 
         # Calculate queue size
-        QUEUE_SIZE.queue_size = File.objects.unpublished().count()
+        cache.set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count())
 
         # Redirect
         return redirect(
