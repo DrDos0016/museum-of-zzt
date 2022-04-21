@@ -1,3 +1,7 @@
 <div class="model-block-links{% for role in roles %} {{role}}{% endfor %}">
 {% for field in links %}{% include "museum_site/datum/"|add:field.datum|add:"-datum.html" with f=field %}{% endfor %}
+{%if debug %}
+<div class="debug datum"><div class="value"><a class="debug-link" href="{{file.admin_url}}">Edit</a></div></div>
+<div class="debug datum"><div class="value"><a class="debug-link" href="{{file.tool_url}}">Tools</a></div></div>
+{% endif %}
 </div>
