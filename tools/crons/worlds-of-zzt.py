@@ -7,7 +7,7 @@ from datetime import datetime
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
-from museum_site.wozzt_queue import WoZZT_Queue  # noqa: E402
+from museum_site.models.wozzt_queue import WoZZT_Queue  # noqa: E402
 
 
 def main():
