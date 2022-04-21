@@ -195,10 +195,12 @@ urlpatterns = [
         museum_site.file_views.review, name="reviews"),
 
     # Help
+    path("help/", RedirectView.as_view(url="/article/help/")),
     path("help/genres/", museum_site.help_views.genres, name="help_genre"),
     path("help/zfiles/", museum_site.help_views.zfiles, name="help_zfiles"),
 
     # Special Pages
+    path("explicit-warning/", museum_site.views.explicit_warning, name="explicit_warning"),
     path("credits/", museum_site.views.site_credits, name="credits"),
     path(
         "mass-downloads/", museum_site.views.mass_downloads,

@@ -216,6 +216,12 @@ def file_viewer(request, letter, key, local=False):
             else:
                 return redirect("/search?filename={}&err=404".format(key))
 
+        # Check for explicit flag/permissions
+        if data["file"].explicit:
+            check = explicit_redirect_check(request, data["file"].pk)
+            if check != "NO-REDIRECT":
+                return check
+
         data["title"] = data["file"].title
         data["letter"] = letter
 

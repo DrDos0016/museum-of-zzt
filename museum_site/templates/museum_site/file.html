@@ -18,11 +18,6 @@ var uploaded = {% if uploaded %}true{% else %}false{% endif %};
 var can_live_edit = {% if file.size < 1048576 %}true{% else %}false{% endif %};
 var custom_charset = "{{custom_charset}}";
 var details = [{% for d in file.details.all %}{{d.id}}, {% endfor %}];
-{% if file.explicit %}
-var explicit_warning = "This file is known to contain content not suitable for minors.\n\nPress 'OK' to confirm that you are of age to view such content and wish to do so.";
-if (! confirm(explicit_warning))
-    window.location = "/";
-{% endif %}
 </script>
 <script src="{% static 'js/elements.js' %}?{{BOOT_TS}}"></script>
 <script src="{% static 'js/renderer.js' %}?{{BOOT_TS}}"></script>

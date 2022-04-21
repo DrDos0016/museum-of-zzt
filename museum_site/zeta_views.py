@@ -76,6 +76,12 @@ def zeta_launcher(
         if data["file"] is None:
             data["file"] = f
 
+    # Check for explicit flag/permissions
+    if data["file"].explicit:
+        check = explicit_redirect_check(request, data["file"].pk)
+        if check != "NO-REDIRECT":
+            return check
+
     # Set the page title
     if data["file"]:
         data["title"] = data["file"].title + " - Play Online"

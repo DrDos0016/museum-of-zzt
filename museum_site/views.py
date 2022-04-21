@@ -57,6 +57,27 @@ def directory(request, category):
     data["split"] = math.ceil(len(data_list) / 4.0)
     return render(request, "museum_site/directory.html", data)
 
+def explicit_warning(request):
+    data = {}
+    data["title"] = "Explicit Content Ahead!"
+
+    if request.POST.get("action") == "Continue":
+        if request.POST.get("explicit-warning") == "off":
+            request.session["bypass_explicit_content_warnings"] = True
+        else:
+            if request.session.get("bypass_explicit_content_warnings"):
+                del request.session["bypass_explicit_content_warnings"]
+            request.session["show_explicit_for"] = int(request.GET.get("pk", 0))
+
+        next_page = request.GET.get("next")
+        if next_page.startswith("/"):
+            next_page = next_page[1:]
+        return redirect(HOST + next_page)
+    elif request.POST.get("action") == "Go Back":
+        return redirect("index")
+
+    return render(request, "museum_site/explicit-warning.html", data)
+
 
 def exhibit(request, letter, filename, section=None, local=False):
     """ Returns page exploring a file's zip contents """
