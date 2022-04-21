@@ -34,7 +34,7 @@ if (! confirm(explicit_warning))
 <div id="fv-main">
     <div class="output preview active" id="preview-envelope">
         <img src="{% static file.screenshot_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview">
-        {% if file.description %}<p>&ldquo;{{file.description}}&rdquo;</p>{% endif %}
+        {% if file.description %}<p>{{file.description}}</p>{% endif %}
     </div>
     <div class="output image" id="image-envelope">
         <img src="" class="image" id="fv-image">
