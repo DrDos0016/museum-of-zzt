@@ -10,6 +10,6 @@
 {% gblock series %}
 
 <h2>Articles in Series</h2>
-{% generic_block_loop items=articles debug=debug extras=extras %}
+{% generic_block_loop items=articles request=request %}
 </section>
 {% endblock %}
