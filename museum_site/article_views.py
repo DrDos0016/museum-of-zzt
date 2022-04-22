@@ -120,8 +120,10 @@ def article_directory(request, category="all", page_num=1):
 def article_view(request, article_id, page=0, slug=""):
     """ Returns an article pulled from the database """
     # Awful kludge to deal with a url conflict
-    if article_id == "1":
+    if article_id == 1:
         uri = request.build_absolute_uri()
+        if uri.endswith("/"):
+            uri = uri[:-1]
         filename = uri.split("/")[-1]
         return file_articles(request, article_id, filename)
 
