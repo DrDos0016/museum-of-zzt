@@ -35,7 +35,8 @@ def add_livestream(request, pk):
     data = {
         "title": "Tools",
         "file": File.objects.get(pk=pk),
-        "today": str(datetime.now())[:10]
+        "today": str(datetime.now())[:10],
+        "series_choices": Series.objects.all()
     }
 
     if request.POST.get("action"):
@@ -112,6 +113,12 @@ def add_livestream(request, pk):
         # Associate the article with the relevant file
         data["file"].articles.add(a)
         data["file"].save()
+
+        # Associate the article with the selected series (if any)
+        if request.POST.get("series") != "None":
+            series = Series.objects.get(pk=int(request.POST.get("series")))
+            a.series.add(series)
+            a.save()
 
     return render(request, "museum_site/tools/add_livestream.html", data)
 

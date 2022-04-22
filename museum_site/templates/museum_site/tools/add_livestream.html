@@ -62,9 +62,9 @@ input[name=today]
 
 <div class="field">
     <label for="title">Title<br>
-        <span class="sub">"Livestream - " prefix added automatically.</span>
+        <span class="sub"></span>
     </label>
-    <input id="title" name="title" maxlength="80" value="{{request.POST.title|default:file.title}}">
+    <input id="title" name="title" maxlength="80" value="{{request.POST.title|default:'Livestream - '|add:file.title}}">
 </div>
 
 <div class="field">
@@ -122,6 +122,17 @@ input[name=today]
         <option value="1"{% if request.POST.published == "1" %} selected {% endif %}>Published</option>
         <option value="2"{% if request.POST.published == "2" %} selected {% endif %}>Upcoming</option>
         <option value="3"{% if request.POST.published == "3" %} selected {% endif %}>Unpublished</option>
+    </select>
+</div>
+
+<div class="field">
+    <label for="series">Add to Series<br>
+    </label>
+    <select id="series" name="series">
+        <option value="None">- None -</option>
+        {% for series in series_choices %}
+        <option value="{{series.id}}">{{series.title}}</option>
+        {% endfor %}
     </select>
 </div>
 
