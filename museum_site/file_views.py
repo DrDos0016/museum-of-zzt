@@ -337,11 +337,16 @@ def review(request, letter, key):
         "-rating": "-rating",
     }
 
+    # Fix for logged out users seeing pending logged out reviews
+    your_user_id = request.user.id
+    if your_user_id is None:
+        your_user_id = -32767
+
     reviews = Review.objects.filter(
         (
             Q(approved=True) |
             Q(ip=request.META["REMOTE_ADDR"]) |
-            Q(user_id = request.user.id)
+            Q(user_id = your_user_id)
         ),
         zfile_id=zfile.id,
     )
