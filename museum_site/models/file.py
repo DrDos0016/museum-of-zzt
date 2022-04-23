@@ -945,7 +945,7 @@ class File(BaseModel):
     def publish_date_str(self):
         if (
             (self.publish_date is None) or
-            (self.publish_date.strftime("Y-m-d") < "2018-11-07")
+            (self.publish_date.strftime("%Y-%m-%d") < "2018-11-07")
         ):
             return "<i>Unknown</i>"
         return self.publish_date.strftime("%b %d, %Y, %I:%M:%S %p")
