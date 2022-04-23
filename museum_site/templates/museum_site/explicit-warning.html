@@ -1,0 +1,30 @@
+{% extends "museum_site/main.html" %}
+
+{% block content %}
+<section id="content" class="block">
+
+<h1>Explicit Content Ahead!</h1>
+
+<p><b>This file is known to contain content not suitable for minors.</b></p>
+
+<p>Please confirm that you are both of age to view explicit content and that you wish to do so.</p>
+
+<form method="POST">
+{% csrf_token %}
+
+<div class="field-wrapper">
+    <label for="id_explicit_warning">Skip This Warning</label>
+    <div class="field-value">
+        <ul id="id_explicit_warning">
+            <li><label><input type="radio" id="explicit_warning" name="explicit-warning" value="on" checked>Continue to warn about explicit content.</label></li>
+            <li><label><input type="radio" id="explicit_warning" name="explicit-warning" value="off">Do not warn me about explicit content.</label></li>
+        </ul>
+    </div>
+    <p class="field-help">Choose whether or not to be warned about explicit content in the future. If these warnings are skipped, you may re-enable them from <a href="{% url 'my_profile' %}">your profile</a> page.</p>
+</div>
+<hr>
+<input type="submit" name="action" value="Continue">
+<input type="submit" name="action" value="Go Back">
+</form>
+</section>
+{% endblock %}
