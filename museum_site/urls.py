@@ -161,6 +161,9 @@ urlpatterns = [
         "review/", museum_site.review_views.review_directory,
         name="review_directory"),
     path(
+        "review/author/<str:author>/", museum_site.review_views.review_directory,
+        name="reviews_by_author"),
+    path(
         "series/", museum_site.series_views.series_directory,
         name="series_directory"),
 

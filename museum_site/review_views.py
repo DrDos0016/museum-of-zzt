@@ -6,7 +6,7 @@ from museum_site.constants import *
 from museum_site.models import *
 
 
-def review_directory(request, page_num=1):
+def review_directory(request, author=None, page_num=1):
     """ Returns page listing all reviews """
     data = {
         "title": "Review Directory",
@@ -19,7 +19,10 @@ def review_directory(request, page_num=1):
     }
 
     # Pull reviews for page
-    qs = Review.objects.filter(approved=True).select_related("zfile", "user").defer("content")
+    if author is None:
+        qs = Review.objects.filter(approved=True).select_related("zfile", "user").defer("content")
+    else:
+        qs = Review.objects.filter(approved=True, author=author).select_related("zfile", "user").defer("content")
 
     if request.GET.get("sort") == "date":
         qs = qs.order_by("date")
@@ -35,9 +38,6 @@ def review_directory(request, page_num=1):
         qs = qs.order_by("-id")
     else:  # Default (newest)
         qs = qs.order_by("-date")
-
-    #for x in str(qs.query).split(" "):
-    #    print(x)
 
     data = get_pagination_data(request, data, qs)
 
