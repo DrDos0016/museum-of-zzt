@@ -299,6 +299,7 @@ var switch_board = function (e)
 
 function pull_file()
 {
+    $("#fv-prefix").remove();
     if ($(this).hasClass("selected"))
     {
         console.log("CLOSING");

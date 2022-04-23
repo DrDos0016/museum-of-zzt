@@ -26,6 +26,11 @@ var details = [{% for d in file.details.all %}{{d.id}}, {% endfor %}];
 {% endblock %}
 
 {% block world_content %}
+{% if file.is_weave %}
+<div id="fv-prefix">
+    <p>⚠️ Support for Weave ZZT content in the Musuem's File Viewer is very limited. Weave specific features have no yet been implemented. Issues should be expected when exploring Weave ZZT related files (especially visuals).</p>
+</div>
+{% endif %}
 <div id="fv-main">
     <div class="output preview active" id="preview-envelope">
         <img src="{% static file.screenshot_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview">

@@ -52,6 +52,7 @@ DETAIL_LOST = 17
 DETAIL_UPLOADED = 18
 DETAIL_REMOVED = 19
 DETAIL_CORRUPT = 20
+DETAIL_WEAVE = 37
 
 
 class FileManager(models.Manager):
@@ -264,6 +265,7 @@ class File(BaseModel):
         "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its contents have not been fully checked by staff.", "role":"unpub-icon"},
         "featured": {"glyph": "🗝️", "title": "This file is a featured world.", "role":"fg-icon"},
         "lost": {"glyph": "❌", "title": "This file is a known to be lost. No download is available.", "role":"lost-icon"},
+        "weave": {"glyph": "🧵", "title": "This file contains content designed for Weave ZZT.", "role":"weave-icon"},
     }
 
     REVIEW_NO = 0
@@ -618,6 +620,10 @@ class File(BaseModel):
     def is_utility(self):
         utility = self.details.all().values_list("id", flat=True)
         return True if DETAIL_UTILITY in utility else False
+
+    def is_weave(self):
+        weave = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_WEAVE in weave else False
 
     def is_zig(self):
         zig = self.details.all().values_list("id", flat=True)
@@ -1196,5 +1202,7 @@ class File(BaseModel):
             self._major_icons.append(self.ICONS["unpublished"])
         if self.is_lost():
             self._major_icons.append(self.ICONS["lost"])
+        if self.is_weave():
+            self._major_icons.append(self.ICONS["weave"])
         if self.is_featured_world():
             self._minor_icons.append(self.ICONS["featured"])
