@@ -136,6 +136,33 @@ class Article(BaseModel):
         "unlocked": {"glyph": "🔑", "title": "This early article may be read at your current patronage!", "role":"unlocked-icon"},
     }
 
+
+    LOCKED_ARTICLE_TEXT = """
+    <h2>Locked Article!</h2>
+
+    <p>The article you have requested is currently only available to patrons
+    making a monthly pledge to the Worlds of ZZT Patreon of at least <b>$[COST]
+    USD</b> per month.</p>
+
+    <p>If you are a patron that meets these requirements you can enter your
+    password to access this article in the field below:</p>
+
+    <form class="c">
+    <input name="secret" type="password" value="">
+    <input type="submit" value="Unlock">
+    </form>
+
+    <p>If you need your password please see the
+    <a href="{% url 'patron_articles' %}" target="_blank">early articles</a> page for instructions.</p>
+
+    <p>Patrons may also read articles they have early access to by <a href="{% url 'login_user' %}" target="_blank">registering for a
+    Museum of ZZT account</a> and linking their patron e-mail to avoid needing a password
+    in the future.</p>
+
+    <p>All articles published on the Museum of ZZT are eventually made public. The
+    estimated release date for this article is <b>[RELEASE]</b>, however the exact
+    release date may change.</p>"""
+
     objects = ArticleManager()
 
     # Fields
@@ -437,25 +464,25 @@ class Article(BaseModel):
         elif context["request"] and context["request"].POST.get("secret"):
             secret = context["request"].POST.get("secret")
             if secret == PASSWORD2DOLLARS:
-                patronage = 200
+                patronage = UPCOMING_ARTICLE_MINIMUM_PATRONAGE
             elif secret == PASSWORD5DOLLARS:
-                patronage = 500
+                patronage = UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE
 
         if view == "detailed" or view == "gallery":
-            if self.published == self.UPCOMING and patronage >= 200:
+            if self.published == self.UPCOMING and patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
                 context["title"]["icons"] = [self.ICONS["unlocked"]]
                 context["title"]["roles"].remove("restricted")
                 context["title"]["roles"].append("unlocked")
-            if self.published == self.UNPUBLISHED and patronage >= 500:
+            if self.published == self.UNPUBLISHED and patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
                 context["title"]["icons"] = [self.ICONS["unlocked"]]
                 context["title"]["roles"].remove("restricted")
                 context["title"]["roles"].append("unlocked")
         elif view == "list":
-            if self.published == self.UPCOMING and patronage >= 200:
+            if self.published == self.UPCOMING and patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
                 context["cells"][0]["icons"] = [self.ICONS["unlocked"]]
                 context["cells"][0]["roles"].remove("restricted")
                 context["cells"][0]["roles"].append("unlocked")
-            if self.published == self.UNPUBLISHED and patronage >= 500:
+            if self.published == self.UNPUBLISHED and patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
                 context["cells"][0]["icons"] = [self.ICONS["unlocked"]]
                 context["cells"][0]["roles"].remove("restricted")
                 context["cells"][0]["roles"].append("unlocked")

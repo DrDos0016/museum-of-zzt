@@ -143,9 +143,9 @@ def article_view(request, article_id, page=0, slug=""):
 
     # Check user's Patronage
     if request.user.is_authenticated:
-        if request.user.profile.patronage >= 500:
+        if request.user.profile.patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
             access = Article.UNPUBLISHED
-        elif request.user.profile.patronage >= 200:
+        elif request.user.profile.patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
             access = Article.UPCOMING
 
     # Check for generic or article specific passwords
@@ -165,7 +165,7 @@ def article_view(request, article_id, page=0, slug=""):
         elif a.published == Article.UNPUBLISHED:
             cost = "5"
         release = a.publish_date.strftime("%A %B %d")
-        a.content = LOCKED_ARTICLE_TEXT.replace("[COST]", cost)
+        a.content = Article.LOCKED_ARTICLE_TEXT.replace("[COST]", cost)
         a.content = a.content.replace("[RELEASE]", release)
         a.schema = "django"
 

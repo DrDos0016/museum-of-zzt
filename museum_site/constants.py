@@ -131,10 +131,9 @@ elif os.path.isfile(os.path.join(SITE_ROOT, "BETA")):
     DOMAIN = "beta.museumofzzt.com"
     ENV = "BETA"
 
-# Upload contact settings
-UPLOAD_CONTACT_NONE = 0
-UPLOAD_CONTACT_REJECTION = 1
-UPLOAD_CONTACT_ALL = 2
+# Magic Numbers
+UPCOMING_ARTICLE_MINIMUM_PATRONAGE = 200
+UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE = 500
 
 # File details
 DETAIL_DOS = 1
@@ -181,30 +180,6 @@ FP = namedtuple(
     NEW_RELEASES_SHOWN=12,
     FILES_SHOWN=12,
     REVIEWS_SHOWN=10
-)
-
-# File categories
-CATEGORY_LIST = (
-    ("?", "?"),
-    ("MS-DOS", "MS-DOS Programs"),
-    ("WIN16", "16-Bit Windows Programs"),
-    ("WIN32", "32-Bit Windows Programs"),
-    ("WIN64", "64-Bit Windows Programs"),
-    ("LINUX", "Linux Programs"),
-    ("OSX", "OSX Programs"),
-    ("FEATURED", "Featured Worlds"),
-    ("UNUSED-8", "UNUSED Contest Entries"),
-    ("ZZM", "ZZM Soundtracks"),
-    ("GFX", "Modified Graphics"),
-    ("MOD", "Modified Executables"),
-    ("ETC", "Etc."),
-    ("SZZT", "Super ZZT Worlds"),
-    ("UTILITY", "Utilities"),
-    ("ZZT", "ZZT Worlds"),
-    ("ZIG", "ZIG Worlds"),
-    ("LOST", "Lost Worlds"),
-    ("UPLOADED", "Uploaded Worlds"),
-    ("REMOVED", "Removed Worlds"),
 )
 
 # Character Sets
@@ -302,28 +277,6 @@ ASCII_UNICODE_CHARS = (
     "ɑϐᴦᴨ∑ơµᴛɸϴΩẟ∞∅∈∩"
     "≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ "
 )
-
-LOCKED_ARTICLE_TEXT = """
-<h2>Locked Article!</h2>
-
-<p>The article you have requested is currently only available to patrons
-making a monthly pledge to the Worlds of ZZT Patreon of at least <b>$[COST]
-USD</b> per month.</p>
-
-<p>If you are a patron that meets these requirements you can enter your
-password to access this article in the field below:</p>
-
-<p><form>
-<input name="secret" type="password" value="">
-<input type="submit" value="Unlock">
-</form></p>
-
-If you need your password please see the
-<a href="{% url 'patron_articles' %}">early articles</a> page for instructions.
-
-<p>All articles published on the Museum of ZZT are eventually made public. The
-estimated release date for this article is <b>[RELEASE]</b>, however the exact
-release date may change.</p>"""
 
 # Patreon Tiers IDs
 TIER_NONE = "0"
