@@ -649,7 +649,7 @@ class File(BaseModel):
         output = False
 
         # Normally only ZZT/SZZT files should work
-        if self.is_zzt() or self.is_super_zzt():
+        if self.is_zzt() or self.is_super_zzt() or self.is_weave():
             output = True
 
         # Incorrectly assume uploaded files will work
