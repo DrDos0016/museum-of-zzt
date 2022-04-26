@@ -158,10 +158,10 @@ urlpatterns = [
         "new-releases/", museum_site.file_views.file_directory,
         name="new_releases"),
     path(
-        "review/", museum_site.review_views.review_directory,
+        "review/", museum_site.review_views.Review_Directory_View.as_view(),
         name="review_directory"),
     path(
-        "review/author/<str:author>/", museum_site.review_views.review_directory,
+        "review/author/<str:author>/", museum_site.review_views.Review_Directory_View.as_view(),
         name="reviews_by_author"),
     path(
         "series/", museum_site.series_views.series_directory,

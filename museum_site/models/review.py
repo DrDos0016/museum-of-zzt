@@ -10,8 +10,14 @@ from museum_site.common import STATIC_PATH, epoch_to_unknown, profanity_filter
 from museum_site.templatetags.zzt_tags import char
 
 
+class ReviewManager(models.Manager):
+    def directory(self, **kwargs):
+        return self.filter(approved=True).defer("content")
+
 class Review(BaseModel):
     """ Review object repesenting an review to a file """
+    objects = ReviewManager()
+
     model_name = "Review"
     table_fields = ["Title", "File", "Reviewer", "Date", "Rating"]
     sort_options = [
