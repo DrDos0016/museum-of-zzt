@@ -580,3 +580,28 @@ def explicit_redirect_check(request, pk):
         if not request.session.get("bypass_explicit_content_warnings"):
             return redirect_with_querystring("explicit_warning", "next={}&pk={}".format(next_param, pk))
     return "NO-REDIRECT"
+
+def get_page_range(current_page, num_pages):
+    # Determine lowest and highest visible page
+    lower = max(1, current_page - (PAGE_LINKS_DISPLAYED // 2))
+    upper = lower + PAGE_LINKS_DISPLAYED
+
+    # Don't display too many pages
+    if upper > num_pages + 1:
+        upper = num_pages + 1
+
+    return range(lower, upper)
+
+def valid_page_number(requested_page, last_page):
+    """
+    Check the requested page is an integer >= 1 and <= the number of pages.
+    Invalid pages are changed to page 1.
+    """
+    if not isinstance(requested_page, int):
+        return 1
+    if requested_page < 1:
+        return 1
+    if requested_page > last_page:
+        return last_page
+    else:
+        return requested_page
