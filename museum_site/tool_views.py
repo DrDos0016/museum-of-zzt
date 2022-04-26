@@ -56,7 +56,7 @@ def add_livestream(request, pk):
                 url = url[:url.find("&")]
         data["video_id"] = url
 
-        a.title = "Livestream - " + request.POST.get("title")
+        a.title = request.POST.get("title")
         a.author = request.POST.get("author")
         a.category = "Livestream"
         a.schema = "django"
