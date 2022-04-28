@@ -164,7 +164,7 @@ urlpatterns = [
         "review/author/<str:author>/", museum_site.review_views.Review_Directory_View.as_view(),
         name="reviews_by_author"),
     path(
-        "series/", museum_site.series_views.series_directory,
+        "series/", museum_site.series_views.Series_Directory_View.as_view(),
         name="series_directory"),
 
     # ZFiles
@@ -243,7 +243,7 @@ urlpatterns = [
     # Series
     path(
         "series/<int:series_id>/<slug:slug>/",
-        museum_site.series_views.series_overview,
+        museum_site.series_views.Series_Overview_View.as_view(),
         name="series_overview"),
 
     # Search

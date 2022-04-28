@@ -1,45 +1,40 @@
-from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render
-from museum_site.common import *
-from museum_site.constants import *
 from museum_site.models import *
+from museum_site.base_views import *
 
 
-def series_directory(request, page_num=1):
-    """ Returns a directory of all series in the database """
-    data = {
-        "title": "Series Directory",
-        "table_header": table_header(Series.table_fields),
-        "available_views": Series.supported_views,
-        "view":get_selected_view_format(request, Series.supported_views),
-        "sort_options": get_sort_options(
-            Series.sort_options, debug=request.session.get("DEBUG")
-        )
-    }
+class Series_Directory_View(Directory_View):
+    model = Series
+    title = "{} Directory".format(model.model_name)
 
-    qs = Series.objects.search(request.GET)
+    def get_queryset(self):
+        sort_by = self.request.GET.get("sort")
 
-    if request.GET.get("sort") == "title":
-        qs = qs.order_by("title")
-    elif request.GET.get("sort") == "id":
-        qs = qs.order_by("id")
-    elif request.GET.get("sort") == "-id":
-        qs = qs.order_by("-id")
-    else:  # Default (Newest entry)
-        qs = qs.order_by("-last_entry_date", "title")
+        qs = self.model.objects.directory()
 
-    data = get_pagination_data(request, data, qs)
+        if self.request.GET.get("sort") == "title":
+            qs = qs.order_by("title")
+        elif self.request.GET.get("sort") == "id":
+            qs = qs.order_by("id")
+        elif self.request.GET.get("sort") == "-id":
+            qs = qs.order_by("-id")
+        else:  # Default (Newest entry)
+            qs = qs.order_by("-last_entry_date", "title")
 
-    return render(request, "museum_site/generic-directory.html", data)
+        return qs
 
 
-def series_overview(request, series_id, slug=""):
-    data = {
-        "title": "Series Overview",
-    }
+class Series_Overview_View(Directory_View):
+    model = Series
+    template_name = "museum_site/series-view.html"
+    paginate_by = NO_PAGINATION
 
-    series = Series.objects.filter(pk=series_id, visible=True).first()
-    data["series"] = series
-    data["articles"] = series.article_set.all().order_by("publish_date")
+    def get_queryset(self):
+        pk = self.kwargs.get("series_id")
+        self.series = Series.objects.get(pk=pk)
+        return self.series.article_set.all().order_by("publish_date")
 
-    return render(request, "museum_site/series-view.html", data)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Series Overview - {}".format(self.series.title)
+        context["series"] = self.series
+        return context

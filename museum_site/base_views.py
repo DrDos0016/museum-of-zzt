@@ -1,5 +1,6 @@
 from django.views.generic import ListView
 from museum_site.common import *
+from museum_site.constants import NO_PAGINATION
 
 class Directory_View(ListView):
     """ https://docs.djangoproject.com/en/3.2/ref/class-based-views/base/#django.views.generic.base.View.setup """
@@ -35,10 +36,13 @@ class Directory_View(ListView):
         context["available_views"] = self.model.supported_views
         context["view"] = self.view
         context["sort_options"] = self.model.sort_options
-        context["page_number"] = context["page_obj"].number
-        context["page_range"] = get_page_range(
-            context["page_obj"].number,
-            context["paginator"].num_pages
-        )
+
+        if self.paginate_by != NO_PAGINATION:
+            context["page_number"] = context["page_obj"].number
+            context["page_range"] = get_page_range(
+                context["page_obj"].number,
+                context["paginator"].num_pages
+            )
+
         context["page"] = context["page_obj"]
         return context

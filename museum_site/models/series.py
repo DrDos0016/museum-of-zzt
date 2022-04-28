@@ -12,8 +12,8 @@ from museum_site.models.base import BaseModel
 
 
 class SeriesManager(models.Manager):
-    def search(self, p):
-        qs = self.exclude(visible=False)
+    def directory(self):
+        qs = self.filter(visible=True)
         return qs
 
 
@@ -85,10 +85,10 @@ class Series(BaseModel):
         )
 
         context["columns"].append([
-            {"datum": "text", "label":"Newest Entry", "value":self.last_entry_date},
-            {"datum": "text", "label":"Oldest Entry", "value":epoch_to_unknown(self.first_entry_date)},
-            {"datum": "text", "label":"Articles", "value":self.article_set.count()},
-            {"datum": "text", "value":mark_safe("<p>{}</p>".format(self.description))},
+            {"datum": "text", "label": "Newest Entry", "value": self.last_entry_date},
+            {"datum": "text", "label": "Oldest Entry", "value": epoch_to_unknown(self.first_entry_date)},
+            {"datum": "text", "label": "Articles", "value": self.article_set.count()},
+            {"datum": "text", "value": mark_safe("<p>{}</p>".format(self.description))},
         ])
 
         return context
@@ -100,9 +100,9 @@ class Series(BaseModel):
             url=self.url,
             cells=[
                 {"datum": "link", "url": self.url(), "value": self.title, "tag": "td"},
-                {"datum": "text", "value":self.last_entry_date, "tag":"td"},
-                {"datum": "text", "value":epoch_to_unknown(self.first_entry_date), "tag":"td"},
-                {"datum": "text", "value":self.article_set.count(), "tag":"td"},
+                {"datum": "text", "value": self.last_entry_date, "tag": "td"},
+                {"datum": "text", "value": epoch_to_unknown(self.first_entry_date), "tag": "td"},
+                {"datum": "text", "value": self.article_set.count(), "tag": "td"},
             ],
         )
 
@@ -114,12 +114,12 @@ class Series(BaseModel):
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
-            title={"datum": "title", "url":self.url(), "value":self.title},
+            title={"datum": "title", "url": self.url(), "value": self.title},
             columns=[],
         )
 
         context["columns"].append([
-            {"datum": "text", "value":self.last_entry_date}
+            {"datum": "text", "value": self.last_entry_date}
         ])
 
         return context
