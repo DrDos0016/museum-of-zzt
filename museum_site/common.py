@@ -113,19 +113,6 @@ PLAY_METHODS = {
 }
 
 
-def populate_collection_params(data):
-    params = "?"
-    keys = [
-        "mode", "rng_seed", "author", "year", "genre", "company", "letter",
-        "page", "sort"
-    ]
-    for k in keys:
-        if data.get(k):
-            params += k + "=" + str(data[k]) + "&"
-    params = params[:-1]
-    return params
-
-
 def qs_sans(params, key):
     """ Returns a query string with a key removed """
     qs = params.copy()
@@ -179,60 +166,6 @@ def env_from_host(host):
         return "DEV"
 
 
-def set_captcha_seed(request):
-    request.session["captcha-seed"] = (
-        str(datetime.now()).replace(
-            "-", ""
-        ).replace(
-            ":", ""
-        ).replace(
-            ".", ""
-        ).replace(
-            " ", ""
-        )
-    )
-
-
-# Decorators
-def dev_only(func, *args, **kwargs):
-    def inner(*args, **kwargs):
-        request = kwargs.get("request", args[0])
-
-        # Check host
-        host = request.get_host()
-        if env_from_host(host) != "DEV":
-            raise Http404
-        else:
-            return func(*args, **kwargs)
-    return inner
-
-
-def non_production(func, *args, **kwargs):
-    def inner(*args, **kwargs):
-        request = kwargs.get("request", args[0])
-
-        # Check host
-        host = request.get_host()
-        if env_from_host(host) not in ["DEV", "BETA"]:
-            raise Http404
-        else:
-            return func(*args, **kwargs)
-    return inner
-
-
-def prod_only(func, *args, **kwargs):
-    def inner(*args, **kwargs):
-        request = kwargs.get("request", args[0])
-
-        # Check host
-        host = request.get_host()
-        if env_from_host(host) != "PROD":
-            raise Http404
-        else:
-            return func(*args, **kwargs)
-    return inner
-
-
 def get_selected_view_format(
     request,
     available_views=["detailed", "list", "gallery"]
@@ -248,19 +181,15 @@ def get_selected_view_format(
     request.session["view"] = view
     return view
 
-
-def get_page_size(view):
+def get_pagination_data(request, data, qs):
     page_sizes = {
         "detailed": PAGE_SIZE,
         "list": LIST_PAGE_SIZE,
         "gallery": PAGE_SIZE,
     }
-    return page_sizes.get(view, PAGE_SIZE)
 
-
-def get_pagination_data(request, data, qs):
     data["page_number"] = int(request.GET.get("page", 1))
-    data["paginator"] = Paginator(qs, get_page_size(data["view"]))
+    data["paginator"] = Paginator(qs, page_sizes.get(data["view"]))
     data["page"] = data["paginator"].get_page(data["page_number"])
 
     # Bounds checking
@@ -327,88 +256,6 @@ def zipinfo_datetime_tuple_to_str(raw):
     s = str(dt[5]).zfill(2)
     out = "{}-{}-{} {}:{}:{}".format(y, m, d, h, mi, s)
     return out
-
-
-def discord_announce_review(review, env=None):
-    if env is None:
-        env = ENV
-
-    if env != "PROD":
-        record("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
-        return False
-
-    preview_url = HOST + "static/" + urllib.parse.quote(
-         review.zfile.screenshot_url()
-    )
-
-    discord_post = (
-        "*A new review for {} has been posted!*\n"
-        "**{}** written by {}\n"
-        "Read: https://museumofzzt.com{}#rev-{}\n"
-    ).format(
-        review.zfile.title, review.title, review.get_author(),
-        urllib.parse.quote(review.zfile.review_url()), review.id
-    )
-
-    discord_data = {
-        "content": discord_post,
-        "embeds": [{"image": {"url": preview_url}}]
-    }
-    resp = requests.post(
-        NEW_REVIEW_WEBHOOK_URL,
-        headers={"Content-Type": "application/json"},
-        data=json.dumps(discord_data)
-    )
-    return True
-
-
-def discord_announce_upload(upload, env=None):
-    if upload.announced:
-        return False
-
-    if env is None:
-        env = ENV
-
-    if env != "PROD":
-        record("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
-        upload.announced = True
-        upload.save()
-        return False
-
-    zfile = upload.file
-
-    preview_url = HOST + "static/" + urllib.parse.quote(
-         zfile.screenshot_url()
-    )
-
-    if zfile.release_date:
-        year = " ({})".format(str(zfile.release_date)[:4])
-    else:
-        year = ""
-    discord_post = (
-        "*A new item has been uploaded to the Museum queue!*\n"
-        "**{}** by {}{}\n"
-        "Explore: https://museumofzzt.com{}\n"
-    ).format(
-        zfile.title, zfile.author,
-        year,
-        urllib.parse.quote(zfile.file_url())
-    )
-
-    discord_data = {
-        "content": discord_post,
-        "embeds": [{"image": {"url": preview_url}}]
-    }
-    resp = requests.post(
-        NEW_UPLOAD_WEBHOOK_URL,
-        headers={"Content-Type": "application/json"},
-        data=json.dumps(discord_data)
-    )
-
-    upload.announced = True
-    upload.save()
-    return True
-
 
 def any_plus(choices):
     """ Appends Any as an option to the choices for a form"""

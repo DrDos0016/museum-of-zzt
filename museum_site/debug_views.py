@@ -14,8 +14,6 @@ def debug(request, filename=None):
     if filename == "saves.html":
         return debug_saves(request)
 
-    set_captcha_seed(request)
-
     f = File.objects.get(pk=int(request.GET.get("id", 420)))
     s = Series.objects.get(pk=10)
 
@@ -56,8 +54,6 @@ def debug(request, filename=None):
 
     if request.GET.get("serve"):
         return serve_file(request.GET.get("serve"), request.GET.get("as", ""))
-
-    record(request.session["captcha-seed"])
 
     if filename:
         return render(

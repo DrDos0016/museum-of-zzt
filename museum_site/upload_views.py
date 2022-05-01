@@ -6,6 +6,7 @@ from django.core.cache import cache
 from django.shortcuts import render
 from museum_site.common import *
 from museum_site.constants import *
+from museum_site.core import *
 from museum_site.models import *
 from museum_site.forms import *
 from museum_site.constants import BANNED_IPS
