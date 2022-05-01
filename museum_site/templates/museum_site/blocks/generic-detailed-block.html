@@ -1,6 +1,6 @@
 <div class="model-block detailed{% for r in roles %} {{r}}{% endfor %}" data-model="{{model}}" data-pk="{{pk}}" id="{{hash_id}}">
     {% if prefix %}<div class="prefix">{{prefix}}</div>{% endif %}
-    <img class="preview-image thumbnail {% if not nozoom %}zoomable{% endif %}" src="{{preview.url}}" alt="{{preview.url}}">
+    <img class="preview-image thumbnail{% if not nozoom %} zoomable{% endif %}{% if zoomed %} zoomed{% endif %}" src="{{preview.url}}" alt="{{preview.url}}">
     {% include "museum_site/datum/title-datum.html" with f=title %}
     <div class="data">
         {% for col in columns %}
