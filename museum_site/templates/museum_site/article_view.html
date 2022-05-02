@@ -89,6 +89,48 @@ body
 }
 </style>
 {% endif %}
+{% if request.GET.tweet %}
+<style>
+#tweet-controls
+{
+    display:grid;
+    grid-template-areas:
+    "text screens"
+    "files nil";
+    grid-template-columns:409px auto;
+    grid-gap:7px 4px;
+}
+
+#tweet-files
+{
+    grid-area: files;
+}
+
+#tweet-text {
+    height:350px;
+    grid-area: text;
+}
+
+#tweet-screens
+{
+    grid-area: screens;
+    display:flex;
+    flex-wrap:wrap;
+    grid-gap:8px;
+}
+
+.tweet-image
+{
+    width:240px;
+    height:175px;
+}
+
+#tweet-copy-text
+{
+    flex:1 0 250px;
+}
+</style>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
@@ -115,6 +157,9 @@ $(document).ready(function (){
 <script src="/static/js/debug-crop.js"></script>
 <script src="/static/js/debug-finalize.js"></script>
 {% endif %}
+{% if request.GET.tweet %}
+<script src="/static/js/debug-pub-pack-tweet-mode.js"></script>
+{% endif %}
 {% endblock %}
 
 {% block world_content %}
@@ -130,6 +175,7 @@ $(document).ready(function (){
         <div><a href="/admin/museum_site/article/{{article.id}}/change/" class="debug">Edit Article {{article.id}}</a></div>
         <div><a href="?spellcheck=1&page=all" class="debug">Spellcheck</a></div>
         <div><a href="?finalize=1#finalization" class="debug">Finalize</a></div>
+        {% if article.category == "Publication Pack" %}<div><a href="?tweet=1" class="debug">Tweet Mode</a></div>{% endif %}
         {% endif %}
         <p class="summary">{{article.description}}</p>
     </div>

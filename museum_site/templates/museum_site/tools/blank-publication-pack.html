@@ -15,7 +15,7 @@ Anything prior to the START line is discarded.
 <!--{{f.title}}-->
 {% templatetag openblock %} with files.{{f.id}} as file {% templatetag closeblock %}
 <span class="pub-pack-entry">
-<h2>"{% templatetag openvariable %}file.title{% templatetag closevariable %}" {% templatetag openblock %} if file.author != "Unknown" {% templatetag closeblock %} by {% templatetag openvariable %}file.author{% templatetag closevariable %}{% templatetag openblock %} endif {% templatetag closeblock %}{% templatetag openblock %} if file.release_date {% templatetag closeblock %} ({% templatetag openvariable %}file.release_date.year{% templatetag closevariable %}){% templatetag openblock %} endif {% templatetag closeblock %}</h2>
+<h2>"{% templatetag openvariable %}file.title{% templatetag closevariable %}" {% templatetag openblock %} if file.author != "Unknown" {% templatetag closeblock %}by {% templatetag openvariable %}file.author{% templatetag closevariable %}{% templatetag openblock %} endif {% templatetag closeblock %}{% templatetag openblock %} if file.release_date {% templatetag closeblock %} ({% templatetag openvariable %}file.release_date.year{% templatetag closevariable %}){% templatetag openblock %} endif {% templatetag closeblock %}</h2>
 {% templatetag openvariable %}file.as_detailed_block{% templatetag closevariable %}
 <p></p>
 <div class="image-set">
