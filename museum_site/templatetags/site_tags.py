@@ -51,6 +51,13 @@ def get_files_by_id(raw):
     files = {}
     for f in qs:
         files[str(f.id)] = f
+    for _id in ids:
+        if not files.get(str(_id)):
+            files[str(_id)] = File(
+                id=-1, title="ERROR: File #{} not found".format(_id),
+                screenshot="red-x-error.png",
+                author="?"
+            )
     return files
 
 
@@ -495,7 +502,10 @@ def gblock(
 ):
     template = "museum_site/blocks/generic-{}-block.html".format(view)
     if not item:
-        return mark_safe("SITE ERROR: File not found!")
+        item = File(
+            id=-1, title="ERROR: Object not found",
+            screenshot="red-x-error.png"
+        )
     if view == "detailed":
         context = item.detailed_block_context(debug=debug, request=request)
     elif view == "list":
