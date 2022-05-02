@@ -81,6 +81,7 @@ def file_directory(
             d = Detail.objects.get(pk=details[0])
             data["title"] = "Browse - " + d.detail
             data["header"] = data["title"]
+            data["prefix_text"] = d.description
     if letter:
         qs = qs.filter(letter=letter)
         data["title"] = "Browse - " + letter.upper()

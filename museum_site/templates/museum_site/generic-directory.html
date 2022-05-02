@@ -9,7 +9,7 @@
 <h1>{{title}}</h1>
 <button id="expand-contract" class="fr">→ ←</button>
 
-{% if prefix_template %}{% include prefix_template %}{% endif %}
+{% if prefix_template %}{% include prefix_template %}{% elif prefix_text %}{{prefix_text|safe|linebreaks}}{% endif %}
 
 {% include "museum_site/blocks/paginator_block.html" %}
 
