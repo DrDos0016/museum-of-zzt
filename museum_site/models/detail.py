@@ -52,11 +52,19 @@ class DetailManager(models.Manager):
         return output
 
 class Detail(BaseModel):
+    CATEGORY_CHOICES = [
+        ("ZZT", "ZZT"),
+        ("SZZT", "Super ZZT"),
+        ("Media", "Media"),
+        ("Other", "Other"),
+    ]
+
     model_name = "Detail"
     detail = models.CharField(max_length=20)
     description = models.TextField(default="")
     visible = models.BooleanField(default=True)
     slug = models.SlugField(max_length=20, editable=False)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default="Other")
 
     objects = DetailManager()
 
