@@ -1,0 +1,50 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+article .detail
+{
+    padding-bottom:0.5em;
+    margin-bottom:0.5em;
+    border-bottom:1px dashed;
+}
+
+article .detail a
+{
+    font-weight:bold;
+}
+</style>
+{% endblock style %}
+
+{% block content %}
+<section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
+<h1>File Details</h1>
+
+<article>
+<p>Files uploaded to the Museum of ZZT are categorized by certain details about the content contained within them. This page provides an overview of each detail.</p>
+
+<h2>ZZT Details</h2>
+{% for d in details.ZZT %}
+<p class="detail"><a href="{{d.url}}">{{d.detail}}</a> - {{d.description|safe}}</a></p>
+{% endfor %}
+
+<h2>Super ZZT Details</h2>
+{% for d in details.SZZT %}
+<p class="detail"><a href="{{d.url}}">{{d.detail}}</a> - {{d.description|safe}}</a></p>
+{% endfor %}
+
+<h2>Media Details</h2>
+{% for d in details.Media %}
+<p class="detail"><a href="{{d.url}}">{{d.detail}}</a> - {{d.description|safe}}</a></p>
+{% endfor %}
+
+<h2>Other Details</h2>
+{% for d in details.Other %}
+<p class="detail"><a href="{{d.url}}">{{d.detail}}</a> - {{d.description|safe}}</a></p>
+{% endfor %}
+
+</article>
+</section>
+{% endblock %}

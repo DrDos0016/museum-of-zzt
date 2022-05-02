@@ -80,7 +80,7 @@ urlpatterns = [
         "clones/", museum_site.article_views.article_view, {"article_id": 6},
         name="clones"),
     path(
-        "detail/", museum_site.article_views.article_view, {"article_id": 163},
+        "detail/", museum_site.views.Detail_Overview_View.as_view(template_name="museum_site/detail-overview.html"),
         name="file_details"),
     path(
         "getting-started/", museum_site.article_views.article_view,
