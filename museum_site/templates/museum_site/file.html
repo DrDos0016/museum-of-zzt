@@ -8,7 +8,7 @@
 {% block scripts %}
 <script>
 var letter = "{{letter}}";
-var zip = "{{file.filename}}";
+var zip = "{{file.filename|safe}}"; // TODO: This will break if a filename has quotes
 var key = "{{file.key}}";
 var load_file = "{{load_file|safe}}";
 var load_board = "{{load_board}}";
@@ -32,6 +32,7 @@ var details = [{% for d in file.details.all %}{{d.id}}, {% endfor %}];
 </div>
 {% endif %}
 <div id="fv-main">
+    HELLO {{file.filename}}
     <div class="output preview active" id="preview-envelope">
         <img src="{% static file.screenshot_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview">
         {% if file.description %}<p>{{file.description}}</p>{% endif %}
