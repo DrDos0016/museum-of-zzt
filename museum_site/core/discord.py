@@ -1,4 +1,6 @@
+import json
 import urllib.parse
+import requests
 
 from museum_site.constants import *
 from museum_site.common import record
