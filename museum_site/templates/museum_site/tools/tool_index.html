@@ -238,7 +238,7 @@ $(document).ready(function (){
             </tr>
             <tr>
                 <td>Details</td>
-                <td>{% for detail in file.details.all %}[{{detail.id}}] {{detail.detail}}<br>{% endfor %}</td>
+                <td>{% for detail in file.details.all %}[{{detail.id}}] {{detail.title}}<br>{% endfor %}</td>
                 <td class="c">-</td>
             </tr>
         </table>

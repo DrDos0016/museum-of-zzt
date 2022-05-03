@@ -10,7 +10,7 @@ Note that JS needs to be included for these buttons to function
         <div class="scrolling-checklist">
             {% for cat in detail_cats %}
             {% ifchanged %}<div class="checklist-header">{{cat.header}}</div>{% endifchanged %}
-            <label{% if cat.d.id in details_list %} class="selected"{% endif %}><input name="details" type="checkbox" value="{{cat.d.id}}"{% if cat.d.id in details_list %} checked{% endif %}> {{cat.d.detail}}{% if cat.d.detail.description %} - {{cat.d.detail.description}}{% endif %}</label>
+            <label{% if cat.d.id in details_list %} class="selected"{% endif %}><input name="details" type="checkbox" value="{{cat.d.id}}"{% if cat.d.id in details_list %} checked{% endif %}> {{cat.d.title}}{% if cat.d.detail.description %} - {{cat.d.detail.description}}{% endif %}</label>
             {% endfor %}
         </div>
         <br>

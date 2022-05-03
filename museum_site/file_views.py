@@ -79,7 +79,7 @@ def file_directory(
         qs = qs.filter(details__in=details)
         if len(details) == 1:
             d = Detail.objects.get(pk=details[0])
-            data["title"] = "Browse - " + d.detail
+            data["title"] = "Browse - " + d.title
             data["header"] = data["title"]
             data["prefix_text"] = d.description
     if letter:

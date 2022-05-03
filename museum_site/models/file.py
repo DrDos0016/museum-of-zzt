@@ -475,7 +475,7 @@ class File(BaseModel):
         }
 
         for d in self.details.all():
-            data["details"].append({"id": d.id, "detail": d.detail})
+            data["details"].append({"id": d.id, "detail": d.title})
 
         for a in self.articles.all().only("id", "title"):
             data["articles"].append({"id": a.id, "title": a.title})
@@ -964,14 +964,14 @@ class File(BaseModel):
     def details_str(self):
         output = ""
         for i in self.details.all():
-            output += i.detail + ", "
+            output += i.title + ", "
         return output[:-2]
 
     @mark_safe
     def details_links(self):
         output = ""
         for i in self.details.all():
-            output += '<a href="{}">{}</a>, '.format(i.url(), i.detail)
+            output += '<a href="{}">{}</a>, '.format(i.url(), i.title)
         return output[:-2]
 
     def language_pairs(self):

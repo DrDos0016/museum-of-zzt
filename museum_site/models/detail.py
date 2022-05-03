@@ -18,12 +18,12 @@ class DetailManager(models.Manager):
         cats = []
 
         for d in qs:
-            if d.detail.startswith("ZZT "):
+            if d.title.startswith("ZZT "):
                 cats.append({"priority": 10, "header": "ZZT", "d": d})
-            elif d.detail.startswith("Super ZZT "):
+            elif d.title.startswith("Super ZZT "):
                 cats.append({"priority": 20, "header": "Super ZZT", "d": d})
             elif (
-                d.detail in [
+                d.title in [
                     "Image", "Video", "Audio", "Text", "ZZM Audio",
                     "HTML Document"
                 ]
@@ -47,7 +47,7 @@ class DetailManager(models.Manager):
 
         output = []
         for d in qs:
-            output.append((str(d.id), d.detail))
+            output.append((str(d.id), d.title))
 
         return output
 
@@ -60,7 +60,7 @@ class Detail(BaseModel):
     ]
 
     model_name = "Detail"
-    detail = models.CharField(max_length=20)
+    title = models.CharField(max_length=20)
     description = models.TextField(default="")
     visible = models.BooleanField(default=True)
     slug = models.SlugField(max_length=20, editable=False)
@@ -69,10 +69,10 @@ class Detail(BaseModel):
     objects = DetailManager()
 
     class Meta:
-        ordering = ["detail"]
+        ordering = ["title"]
 
     def __str__(self):
-        return "[" + str(self.id) + "] " + self.detail
+        return "[" + str(self.id) + "] " + self.title
 
 
     def url(self):
@@ -80,5 +80,5 @@ class Detail(BaseModel):
 
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.detail)
+        self.slug = slugify(self.title)
         super(Detail, self).save(*args, **kwargs)
