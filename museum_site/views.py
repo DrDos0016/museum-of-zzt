@@ -315,7 +315,7 @@ class Detail_Overview_View(View):
             "details": {"ZZT": [], "SZZT": [], "Media": [], "Other": []},
         }
 
-        details = list(Detail.objects.filter(visible=True).order_by("detail"))
+        details = list(Detail.objects.filter(visible=True).order_by("title"))
         for d in details:
             context["details"][d.category].append(d)
 
