@@ -680,27 +680,30 @@ def review_approvals(request):
     data = {
         "title": "Reviews Pending Approval",
         "reviews": Review.objects.filter(approved=False),
+        "output": "",
     }
 
     if request.method == "POST":
-        approved = True if request.POST.get("action") == "APPROVE" else False
-        pk = int(request.POST.get("id"))
+        for key in request.POST.keys():
+            if key.startswith("action"):
+                pk = int(key.split("-")[1])
+                verdict = request.POST[key]
 
-        if approved:
-            r = Review.objects.get(pk=pk)
-            r.approved = True
-            r.save()
-            zfile = File.objects.get(pk=r.zfile.id)
-            zfile.calculate_reviews()
-            zfile.save()
-            title = zfile.title
-            data["output"] = "Approved Review for `{}`".format(title)
-            discord_announce_review(r)
-        else:
-            r = Review.objects.get(pk=pk)
-            title = r.zfile.title
-            r.delete()
-            data["output"] = "Rejected Review for `{}`".format(title)
+                if verdict == "APPROVE":
+                    r = Review.objects.get(pk=pk)
+                    r.approved = True
+                    r.save()
+                    zfile = File.objects.get(pk=r.zfile.id)
+                    zfile.calculate_reviews()
+                    zfile.save()
+                    title = zfile.title
+                    data["output"] += "Approved Review for `{}`<br>".format(title)
+                    discord_announce_review(r)
+                else:
+                    r = Review.objects.get(pk=pk)
+                    title = r.zfile.title
+                    r.delete()
+                    data["output"] += "Rejected Review for `{}`<br>".format(title)
 
     return render(request, "museum_site/tools/review-approvals.html", data)
 

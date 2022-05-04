@@ -7,8 +7,10 @@
 <section id="content" class="col block">
 <h1>Review Approvals</h1>
 
-<p>{{output|default:"&mdash;"}}</p>
+<p>{{output|default:"&mdash;"|safe}}</p>
 
+<form method="POST">
+{% csrf_token %}
 <table>
     <tr>
         <th>ID</th>
@@ -30,17 +32,17 @@
         <td>{{r.rating}}</td>
         <td><textarea style="width:400px;height:150px">{{r.content}}</textarea></td>
         <td>
-            <form method="POST">
-            {% csrf_token %}
-            <input name="id" type="hidden" value="{{r.id}}">
-            <label><input name="action" type="radio" value="APPROVE"> Approve</label><br>
-            <label><input name="action" type="radio" value="REJECT"> Reject</label><br><br>
-            <input type="submit" value="Submit">
+            <label><input name="action-{{r.id}}" type="radio" value="APPROVE"> Approve</label><br>
+            <label><input name="action-{{r.id}}" type="radio" value="REJECT"> Reject</label><br><br>
             </form>
         </td>
     </tr>
+    {% empty %}
+    <tr><td class="c b" colspan="8">There are no reviews pending approval at this time.</td></tr>
     {% endfor %}
 </table>
+<input type="submit" value="Apply Approvals/Rejections">
+</form>
 
 </section>
 {% endblock %}
