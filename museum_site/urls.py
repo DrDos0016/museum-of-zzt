@@ -80,7 +80,7 @@ urlpatterns = [
         "clones/", museum_site.article_views.article_view, {"article_id": 6},
         name="clones"),
     path(
-        "detail/", museum_site.views.Detail_Overview_View.as_view(template_name="museum_site/detail-overview.html"),
+        "detail/", museum_site.help_views.Detail_Overview_View.as_view(),
         name="file_details"),
     path(
         "getting-started/", museum_site.article_views.article_view,
@@ -199,8 +199,8 @@ urlpatterns = [
 
     # Help
     path("help/", RedirectView.as_view(url="/article/help/")),
-    path("help/genres/", museum_site.help_views.genres, name="help_genre"),
-    path("help/zfiles/", museum_site.help_views.zfiles, name="help_zfiles"),
+    path("help/genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="help_genre"),
+    path("help/zfile/", museum_site.help_views.zfiles, name="help_zfiles"),
 
     # Special Pages
     path("explicit-warning/", museum_site.views.explicit_warning, name="explicit_warning"),

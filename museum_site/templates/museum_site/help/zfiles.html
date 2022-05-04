@@ -1,0 +1,98 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>ZFiles Help</h1>
+
+<h2>What Is A ZFile?</h2>
+
+<p>A ZFile is the name given to an individual database record that represents a zip file that has been uploaded to the Museum of ZZT. Each ZFile represents an archived file hosted on the Museum (when possible). The "Z" in ZFile has no definitive meaning. "ZFile" is used to describe uploads which do not contain any ZZT related files (such as old MS-DOS utilities for working with text in general) as well as for database entries representing files known to have existed with no zip file available for them making "ZipFile" as misnomer as well.</p>
+
+<p>The term "zfile" itself originates from earlier ZZT archives whose uploaded files were stored in a directory called zfiles. As the Musuem was originally designed with the possibility of replacing prior archive z2 rather than being a separate entity, the directory remains to this day.</p>
+
+<h2>Anatomy</h2>
+
+<p>ZFiles are displayed throughout the site in three different forms: A detailed view that contains the most information, a list view designed to prioritize essential links in a small amount of space, and a gallery view to provide a visual focus with a minimum of information.</p>
+
+<h3>ZFile - Detailed View</h3>
+
+{% gblock example "detailed" %}
+
+<h4>Preview Image</h4>
+
+<p>ZFiles, whenever possible contain a preview image to provide a first impression. Whenever applicable, this image is a rendering of the first file to be played within the zip file. When clicked, the image should expand to full size. Clicking the preview image a second time will restore it to its default thumbnail state.</p>
+
+<h4>ZFile Icons and Title</h4>
+
+<p>The main heading consists of a link made from the ZFile's title as stored in the database. Some ZFiles also have icons as a prefix to provide additional information about its contents. Clicking this link will open the ZFile in the Musuem File Viewer which allows the contents of the zipfile to be viewed in your browser, as well as support for exploring the contents of any supported ZZT and Super ZZT worlds contained within.</p>
+
+<h4>ZFile Icons And Their Meanings</h4>
+<ul>
+    <li>🔞 - This ZFile is known to contain explicit content.</li>
+    <li>🚧 - This ZFile has not been properly published to the Museum's archives. Its contents have not been looked at by staff and may contain inappropriate/harmful material, as well as lack proper configuration for playing the file in your browser. ZFiles with this icon are also given a dark cyan background color to stand out. These files may not yet be reviewed as the uploader may update the zipfile for the upload prior to publication.</li>
+    <li>🗝️ - This ZFile is a "Featured World". ZFiles with this mark have won recognition from the ZZT community via various awards over the years. This may indicate a ZFile is of high quality, was at one time considered such, or is significant in some other way.</li>
+</ul>
+
+<h4>General Information</h4>
+
+<p>Below the ZFile's title are two columns of information. Links here will lead to search results for individual data fields.</p>
+
+<ul>
+    <li>Author - The names of any major contributor's to the ZFile's creation. A few informal author values may also be seen including:
+        <ul>
+            <li>"Various" - For worlds with too many authors to list individually. Usually found on compilations of contest entries with the organizer of the event listed separately</li>
+            <li>"Unknown" - For worlds whose creator is unknown.</li>
+            <li>"Superfriends" - Historically used to represent the contributors of channels in ZZTV compilations</li>
+            <li>"The Black Keys" - Used to represent the contributors to various ZZT remix projects.</li>
+            <li>"Anonymous" - Used by authors who do not want their names attached to a ZFile for whatever reason. It is possible for an author to use this name in the database, but reveal a name within the zipfile's contents. This is deliberate to obfuscate the information being easily crawled by search engines.</li>
+        </ul>
+    </li>
+    <li>Company - The names of any ZZT companies the ZFile is considered published under. ZZT companies are not actual businesses, but a name given to groups of ZZTers who have decided to form a label to release their worlds under as well as to offer support to one another during a world's development cycle.</li>
+    <li>Released - When the zip file's contents are considered released. This is assumed to be the latest date of a <span class="cp437">.ZZT</span> or other file contained within the zip file. They are notorious for being inaccurate, but are also often the most reliable (or only) source available. For files where this date is known to be anachronistic, this field will display "Unknown". The search performed when these links are clicked uses only the year (or unknown) to prevent results from being nearly/completely empty aside from the ZFile whose link was clicked to begin with.</li>
+    <li>Genres - (Mostly) Subjective descriptions of the kind of content found inside the ZFile's zip file. These are often provided by the author of the file, but may be adjusted by staff to include additional genres that feel applicable.</li>
+    <li>Details - Objective descriptions of the kind of content found inside the ZFile's zip file. This includes identifying ZFiles that contain worlds for ZZT, saves, source code for utilities, multimedia, and so on.</li>
+    <li>Rating - The average score of all of the reviews of a ZFile which assign a numeric value. The Museum supports reviewing of nearly all ZFiles, however the vast majority of reviews have been imported from prior ZZT archive z2 which often mean this is a number to be skeptical of. Individual review scores range from 0.0 through 5.0 with 0.5 step intervals. Hovering over this value will provide a count of how many reviews this average is based on.</li>
+    <li>Boards - Counts of both the playable ZZT boards as well as total number of ZZT boards contained across all ZZT files within the ZFile's zip file when available. These should be treated as estimates. Upon upload, a script iterates over each ZZT world contained within the zip, starts on the files' starting boards, and recursively counts any boards that can be theoretically reached from this board.</li>
+    <li>Language - The primary language(s) used by the files contained within the ZFile's zip file. When using the Museum's Advanced Search functionality, it is possible to search for "Non-English" titles as well as by individual language.</li>
+</ul>
+
+<h4>Additional Information</h4>
+
+<p>Below the preview image and columns of general information, some files may provide additional information here including:</p>
+
+<ul>
+    <li>Utility Description - Describing the purpose and functionality of utilities and other programs</li>
+    <li>Featured Reviews - Links to articles that review a ZFile which has been marked as a Featured World. Currently this information is only displayed when browsing the master list of Featured Worlds.</li>
+</ul>
+
+<h4>ZFile Links</h4>
+
+<p>At the bottom of every ZFile is a series of links to specific site functions related to each specific ZFile. The ZFile's icons are repeated for some of these links, with some only listing major icons (explicit, unpublished) to help conserve space. In some cases, links may be grayed out if the file does not support that function.</p>
+
+<ul>
+    <li>Download - A direct link to download the file to your device.</li>
+    <li>Downloads… - For newer releases, it is common to also release your game on other platforms such as itch.io. ZFiles known to be available elsewhere will instead have a link to a page that links to the ZFile's presence elsewhere to help support the author as well as providing a direct download link of the copy hosted on the Museum to ensure its available on multiple websites.</li>
+    <li>Play Online - A link to play the uploaded file in your browser. Most ZZT and Super ZZT worlds are supported, played using the emulator Zeta with the relevant program ran via the emulator. Many files may alternatively be played using a copy hosted on The Internet Archive using an online version of DOSBox. In nearly every case, Zeta is the preferred method over DOSBox. A file that is hosted on The Internet Archive and not compatible with Zeta will automatically default for The Internet Archive's version.</li>
+    <li>View Files - Opens the ZFile's zip file in the Museum File Viewer which allows files such as documentation and images to be viewed directly in the browser. The File Viewer also supports ZZT (and to a lesser extent Super ZZT) worlds to be explored in a non-gameplay state, listing boards and allowing a mouse-driven interface to explore the code and structure of a world.</li>
+    <li>Reviews (#) - A link to any reviews kept that are associated with the selected ZFile. This page may also be used to submit a new review for the ZFile as well. The number in parenthesis is a count of how many reviews the ZFile currently has.</li>
+    <li>Articles (#) - A link to any articles kept that are associated with the selected ZFile. The number in parenthesis is a count of how many articles the ZFile currently has.</li>
+    <li>Attributes - A link to a page providing all properties and associations the ZFile has in the Museum's database. Most of this information may be found elsewhere or is only relevant to the Museum's backend, but this page compiles everything in one spot.</li>
+</ul>
+
+<h3>ZFile - List View</h3>
+
+<table>
+{{list_table_header}}
+{% gblock example "list" %}
+</table>
+
+<h3>ZFile - Gallery View</h3>
+
+<div class="gallery-frame">
+{% gblock example "gallery" %}
+</div>
+
+</section>
+{% endblock %}

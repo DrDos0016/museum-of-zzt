@@ -1,12 +1,42 @@
 from django.shortcuts import render
+from django.views import View
+
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.models import *
 
-def genres(request):
-    data = {}
 
-    return render(request, "museum_site/help/genres.html", data)
+class Detail_Overview_View(View):
+    title = "File Details"
+    template_name = "museum_site/help/detail-overview.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {
+            "title": self.title,
+            "details": {"ZZT": [], "SZZT": [], "Media": [], "Other": []},
+        }
+
+        details = list(Detail.objects.filter(visible=True).order_by("title"))
+        for d in details:
+            context["details"][d.category].append(d)
+
+        print("UHH", self.template_name)
+
+        return render(request, self.template_name, context)
+
+
+class Genre_Overview_View(View):
+    title = "Genre Information"
+    template_name = "museum_site/help/genre-overview.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {
+            "title": self.title,
+            "genres": Genre.objects.filter(visible=True).order_by("title"),
+        }
+
+        return render(request, self.template_name, context)
+
 
 def zfiles(request):
     data = {

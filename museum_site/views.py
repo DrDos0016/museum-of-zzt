@@ -1,6 +1,5 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
-from django.views import View
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.models import *
@@ -305,18 +304,3 @@ def worlds_of_zzt_queue(request):
     )
     data["queue_size"] = len(data["queue"])
     return render(request, "museum_site/wozzt-queue.html", data)
-
-class Detail_Overview_View(View):
-    template_name = "museum_site/index.html"
-    title = "File Details"
-    def get(self, request, *args, **kwargs):
-        context = {
-            "title": self.title,
-            "details": {"ZZT": [], "SZZT": [], "Media": [], "Other": []},
-        }
-
-        details = list(Detail.objects.filter(visible=True).order_by("title"))
-        for d in details:
-            context["details"][d.category].append(d)
-
-        return render(request, self.template_name, context)
