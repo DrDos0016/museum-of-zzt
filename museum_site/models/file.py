@@ -322,7 +322,7 @@ class File(BaseModel):
     company = models.CharField(
         max_length=255, default="", blank=True,
     )
-    genre = models.CharField(max_length=255)
+    genre = models.CharField(max_length=255)  # TODO: This will become defunct
     release_date = models.DateField(default=None, null=True, blank=True)
     release_source = models.CharField(
         max_length=20, null=True, default=None, blank=True
@@ -389,6 +389,7 @@ class File(BaseModel):
     )
     details = models.ManyToManyField("Detail", default=None, blank=True)
     downloads = models.ManyToManyField("Download", default=None, blank=True)
+    genres = models.ManyToManyField("Genre", default=None, blank=True)
     zeta_config = models.ForeignKey(
         "Zeta_Config", null=True, blank=True, default=1,
         on_delete=models.SET_NULL
