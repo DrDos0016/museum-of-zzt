@@ -7,6 +7,7 @@ from .article import Article
 from .file import File
 from .detail import Detail
 from .download import Download
+from .genre import Genre
 from .profile import Profile
 from .review import Review
 from .scroll import Scroll
