@@ -199,6 +199,7 @@ urlpatterns = [
 
     # Help
     path("help/", RedirectView.as_view(url="/article/help/")),
+    path("help/detail/", museum_site.help_views.Detail_Overview_View.as_view(), name="help_detail"),
     path("help/genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="help_genre"),
     path("help/zfile/", museum_site.help_views.zfiles, name="help_zfiles"),
 
