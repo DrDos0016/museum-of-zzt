@@ -1,3 +1,4 @@
+{% load site_tags %}
 <div class="model-block detailed{% for r in roles %} {{r}}{% endfor %}" data-model="{{model}}" data-pk="{{pk}}" id="{{hash_id}}">
     {% if prefix %}<div class="prefix">{{prefix}}</div>{% endif %}
     <img class="preview-image thumbnail{% if not nozoom %} zoomable{% endif %}{% if zoomed %} zoomed{% endif %}" src="{{preview.url}}" alt="{{preview.url}}">
@@ -13,4 +14,4 @@
     </div>
     {% if extras %}<div class="extras">{% for extra in extras %}{% include extra %}{% endfor %}</div>{% endif %}
 </div>
-{% if links %}{% include "museum_site/blocks/file-links.html" with links=links %}{% endif %}
+{% if links %}{% zfile_links zfile=file debug=request.session.DEBUG %}{% endif %}

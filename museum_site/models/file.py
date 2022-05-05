@@ -548,7 +548,7 @@ class File(BaseModel):
         return "/attributes/{}/{}/".format(self.letter, self.key)
 
     def tool_url(self):
-        return "/tools/{}/{}".format(self.letter, self.filename)
+        return "/tools/{}/{}/".format(self.letter, self.filename)
 
     def phys_path(self):
         return os.path.join(SITE_ROOT + self.download_url())
@@ -1054,6 +1054,7 @@ class File(BaseModel):
     def initial_context(self, *args, **kwargs):
         context = super(File, self).initial_context(*args, **kwargs)
         context["hash_id"] = self.filename
+        context["file"] = self
 
         if hasattr(self, "extra_context"):
             context.update(self.extra_context)
@@ -1112,7 +1113,7 @@ class File(BaseModel):
             context["columns"][1].append({"datum": "text", "label":"Publish Date", "value":self.publish_date_str()})
 
         # Prepare Links
-        context["links"] = self.links(context["debug"])
+        context["links"] = self.links()
 
         if context["debug"]:
             context["columns"][1].append(
@@ -1121,8 +1122,8 @@ class File(BaseModel):
                     "roles":["debug-link"], "kind":"debug",
                     "label": "Debug",
                     "values":[
-                        {"url": self.admin_url(), "text": "Edit"},
-                        {"url": self.tool_url(), "text": "Tools"},
+                        {"url": self.admin_url(), "text": "Edit {}".format(self.pk)},
+                        {"url": self.tool_url(), "text": "Tools {}".format(self.pk)},
                     ]
                 }
             )

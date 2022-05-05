@@ -512,9 +512,24 @@ def gblock(
         context = item.list_block_context(debug=debug, request=request)
     elif view == "gallery":
         context = item.gallery_block_context(debug=debug, request=request)
+
+    if item.model_name == "File":
+        context["file"] = item
+
     output = render_to_string(template, context)
     return mark_safe(output + "\n")
 
+@register.simple_tag()
+def zfile_links(zfile=None, debug=False):
+    template = "museum_site/blocks/file-links.html"
+    context = {}
+
+    if zfile:
+        print("ZFILE -{}-".format(zfile))
+        context["links"] = zfile.links(debug)
+
+    output = render_to_string(template, context)
+    return mark_safe(output + "\n")
 
 @register.simple_tag()
 def generic_block_loop(

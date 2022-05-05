@@ -1,4 +1,5 @@
 {% extends "museum_site/main.html" %}
+{% load site_tags %}
 
 {% block content %}
 <section id="content" class="block {{custom_layout}}" data-pk="{{file.id}}">
@@ -16,7 +17,7 @@
     </select>{% endif %}
 </div>
 <div class="file-links">
-    {% include "museum_site/blocks/file-links.html" with links=file.links debug=request.session.DEBUG file=file %}
+    {% zfile_links zfile=file debug=request.session.DEBUG %}
 </div>
 <div class="file-data">
     <div class="author-data">Author<br>{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a|urlencode}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
