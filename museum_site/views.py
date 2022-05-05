@@ -36,7 +36,7 @@ def directory(request, category):
                     data_list.append(credited)
     elif category == "genre":
         data["title"] = "Genres"
-        data_list = GENRE_LIST
+        data_list = Genre.objects.filter(visible=True).values_list("title", flat=True)
 
     # Break the list of results into 4 columns
     data_list = sorted(

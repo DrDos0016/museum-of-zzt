@@ -50,7 +50,6 @@ def zfiles(request):
         author="Dr. Dos",
         company="Worlds of ZZT",
         release_date=date.today(),
-        genre="Adventure/Action/Demo",
         letter="z",
         filename="zzt.zip",
         key="zzt",

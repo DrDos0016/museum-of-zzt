@@ -5,7 +5,7 @@ $(document).ready(function (){
     // Populate SSV data if there is any on load
     repopulate_ssv("author");
     repopulate_ssv("company");
-    repopulate_checkboxes("genre");
+    repopulate_checkboxes("genres");
     repopulate_checkboxes("language");
 
     // Chars remaining

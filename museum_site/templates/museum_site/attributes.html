@@ -56,7 +56,7 @@
 <tr><th>File Exists</th><td>{{file.file_exists}}</td></tr>
 <tr><th>Filename</th><td>{{file.filename}}</td></tr>
 <tr><th>Key</th><td>{{file.key|default:"<i>No key set</i>"}}</td></tr>
-<tr><th>Genre</th><td>{{file.genre}}</td></tr>
+<tr><th>Genre</th><td>{% for g in file.genre_list %}{{g}}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
 <tr><th>ID</th><td>{{file.id}}</td></tr>
 <tr><th>Internet Archive Identifier</th><td>{% if file.archive_name %}<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">{{file.archive_name}}{% else %}<i>None</i>{% endif %}</td></tr>
 <tr><th>Language</th><td>{{file.language_list}}</td></tr>

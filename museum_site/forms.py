@@ -24,6 +24,19 @@ class ZGameForm(forms.ModelForm):
                    "All uploads <i>must</i> be zipped."),
         label="File", widget=UploadFileWidget()
     )
+    genres = forms.CharField(
+        help_text=(
+            "Check any applicable genres that describe the content of the "
+            "uploaded file. Use 'Other' if a genre isn't represented and "
+            "mention it in the upload notes field in the Upload Settings "
+            "section. For a description of genres, see the "
+            "<a href='/help/genre/' target='_blank'>Genre Overview</a> "
+            "page."
+        ),
+        widget=SlashSeparatedValueCheckboxWidget(choices=list(zip(Genre.objects.filter(visible=True), Genre.objects.filter(visible=True))))
+    )
+
+    field_order = ["zfile", "title", "author", "company", "genres"]
 
     use_required_attribute = False
     # Properties handled in view
@@ -35,7 +48,7 @@ class ZGameForm(forms.ModelForm):
         model = File
 
         fields = [
-            "zfile", "title", "author", "company", "genre", "explicit",
+            "zfile", "title", "author", "company", "explicit",
             "release_date", "language",
             "description",
         ]
@@ -55,12 +68,6 @@ class ZGameForm(forms.ModelForm):
                 "Any companies this file is published under. If there are "
                 "none, leave this field blank. If there are multiple, "
                 "separate them with a comma."
-            ),
-            "genre": (
-                "Check any applicable genres that describe the content of the "
-                "uploaded file. Use 'Other' if a genre isn't represented and "
-                "mention it in the upload notes field in the Upload Settings "
-                "section."
             ),
             "release_date": (
                 "Enter the date this file was first made public. If this is a "
@@ -113,9 +120,6 @@ class ZGameForm(forms.ModelForm):
                     "autocomplete": "off",
                     }
             ),
-            "genre": SlashSeparatedValueCheckboxWidget(
-                choices=list(zip(GENRE_LIST, GENRE_LIST))
-            ),
             "explicit": forms.RadioSelect(
                 choices=(
                     (0, "This upload does not contain explicit content"),
@@ -154,6 +158,19 @@ class ZGameForm(forms.ModelForm):
                 "File exceeds your maximum upload size! "
                 "Contact Dr. Dos for a manual upload."
             )
+
+    def clean_genres(self):
+        # Make sure all requested genres exist
+        valid_genres = list(Genre.objects.filter(visible=True).values_list("title", flat=True))
+
+        requested_genres = self.cleaned_data["genres"].split("/")
+
+        for genre in requested_genres:
+            if genre not in valid_genres:
+                raise forms.ValidationError(
+                    "An invalid genre was specified."
+                )
+
 
 
 class PlayForm(forms.Form):

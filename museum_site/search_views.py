@@ -17,7 +17,7 @@ def advanced_search(request):
     data = {
         "title": "Advanced Search",
         "mode": "search",
-        "genres": GENRE_LIST,
+        "genres": Genre.objects.filter(visible=True),
         "years": [str(x) for x in range(1991, YEAR + 1)]
     }
 

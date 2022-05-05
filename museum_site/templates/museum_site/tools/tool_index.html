@@ -168,7 +168,7 @@ $(document).ready(function (){
             </tr>
             <tr>
                 <td>Genre</td>
-                <td>{{file.genre}}</td>
+                <td>{% for g in file.genres.all %}{{g}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
                 <td class="c">-</td>
             </tr>
             <tr>

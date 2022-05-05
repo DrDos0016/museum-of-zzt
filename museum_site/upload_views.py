@@ -152,6 +152,8 @@ def upload(request):
             zfile.calculate_sort_title()
             zfile.basic_save()
             zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
+            for genre in request.POST.get("genres").split("/"):
+                zfile.genres.add(Genre.objects.get(title=genre))
 
             # Create and prepare new Upload object
             upload = upload_form.save(commit=False)

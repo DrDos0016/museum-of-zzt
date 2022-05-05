@@ -29,6 +29,7 @@ from museum_site.common import (
 from museum_site.constants import SITE_ROOT, ZETA_RESTRICTED, LANGUAGES
 from museum_site.models.review import Review
 from museum_site.models.article import Article
+from museum_site.models.genre import Genre
 
 from museum_site.models.base import BaseModel
 
@@ -60,11 +61,17 @@ class FileManager(models.Manager):
         qs = self.all()
 
         # Filter by simple fields
-        for f in ["title", "author", "filename", "company", "genre"]:
+        for f in ["title", "author", "filename", "company"]:
             if p.get(f):
                 field = "{}__icontains".format(f)
                 value = p[f]
                 qs = qs.filter(**{field: value})
+
+        # Filter by genre
+        if p.get("genre"):
+            g = Genre.objects.filter(title=p["genre"]).first()
+            if g:
+                qs = qs.filter(genres=g)
 
         # Filter by language
         if p.get("lang"):
@@ -286,7 +293,6 @@ class File(BaseModel):
     sort_title      -- Title used for natural sorting
     author          -- / sep. ABC list of authors (ex: Hercules/Nadir)
     size            -- Filesize in bytes (ex: 420690)
-    genre           -- / sep. ABC list of genres (ex: Action/RPG)
     release_date    -- Best guess release date (ex: 2001-04-16)
     release_source  -- Source of release date (ex: ZZT file, News post, Text)
     screenshot      -- Filename of screenshot to display (ex: 3dtalk.png)
@@ -411,9 +417,6 @@ class File(BaseModel):
             self.letter = self.letter_from_title()
         else:
             self.letter = self.letter.lower()
-
-        # Sort genres
-        self.genre = slash_separated_sort(self.genre)
 
         # Create sorted title
         self.calculate_sort_title()
@@ -591,7 +594,10 @@ class File(BaseModel):
         return self.company.split("/")
 
     def genre_list(self):
-        return self.genre.split("/")
+        output = []
+        for g in self.genres.all():
+            output.append(g.title)
+        return output
 
     def language_list(self):
         short = self.language.split("/")
@@ -1087,7 +1093,7 @@ class File(BaseModel):
             {"datum": "ssv-links", "label": "Author"+("s" if len(self.ssv_list("author")) > 1 else ""), "values":self.ssv_list("author"), "url":"/search/?author="},
             {"datum": "ssv-links", "label":"Compan"+("ies" if len(self.ssv_list("company")) > 1 else "y"), "values":self.ssv_list("company"), "url":"/search/?company="},
             {"datum": "link", "label":"Released", "value":(self.release_date or "Unknown"), "url":"/search/?year={}".format(self.release_year(default="unk"))},
-            {"datum": "ssv-links", "label": "Genre"+("s" if len(self.ssv_list("genre")) > 1 else ""), "values":self.ssv_list("genre"), "url":"/search/?genre="},
+            {"datum": "ssv-links", "label": "Genre"+("s" if len(self.genres.all()) > 1 else ""), "values":self.genres.all(), "url":"/search/?genre="},
             {"datum": "text", "label": "Filename", "value":self.filename},
             {"datum": "text", "label": "Size", "value":filesizeformat(self.size)},
         ])
@@ -1148,7 +1154,7 @@ class File(BaseModel):
 
         cells.append({"datum": "ssv-links", "values":self.ssv_list("author"), "url":"/search/?author=", "tag":"td"})
         cells.append({"datum": "ssv-links", "values":self.ssv_list("company"), "url":"/search/?company=", "tag":"td"})
-        cells.append({"datum": "ssv-links", "values":self.ssv_list("genre"), "url":"/search/?genre=", "tag":"td"})
+        cells.append({"datum": "ssv-links", "values":self.genres.all(), "url":"/search/?genre=", "tag":"td"})
         cells.append({"datum": "link", "value":(self.release_date or "Unknown"), "url":"/search/?year={}".format(self.release_year(default="unk")), "tag":"td"})
         cells.append({"datum": "text", "value":self.rating_str(show_maximum=False) if self.rating else "—", "tag":"td"})
 
