@@ -525,7 +525,6 @@ def zfile_links(zfile=None, debug=False):
     context = {}
 
     if zfile:
-        print("ZFILE -{}-".format(zfile))
         context["links"] = zfile.links(debug)
 
     output = render_to_string(template, context)
