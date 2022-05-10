@@ -40,6 +40,11 @@ def add_livestream(request, pk):
         "series_choices": Series.objects.all()
     }
 
+    # File choices
+    data["file_choices"] = File.objects.all().values(
+        "id", "title"
+    ).order_by("sort_title")
+
     if request.POST.get("action"):
         if request.POST.get("pk"):
             a = Article.objects.get(pk=int(request.POST["pk"]))
@@ -111,9 +116,11 @@ def add_livestream(request, pk):
             image = image.crop((0, 0, 480, 350))
             image.save(file_path)
 
-        # Associate the article with the relevant file
-        data["file"].articles.add(a)
-        data["file"].save()
+        # Associate the article with the relevant file(s)
+        for file_association in request.POST.getlist("file_associations"):
+            fa = File.objects.get(pk=int(file_association))
+            fa.articles.add(a)
+            fa.save()
 
         # Associate the article with the selected series (if any)
         if request.POST.get("series") != "None":

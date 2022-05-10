@@ -137,6 +137,17 @@ input[name=today]
 </div>
 
 <div class="field">
+    <label for="series">File Associations<br>
+        <span class="sub">The specified file is pre-checked. Add additional file associations here if needed.</span>
+    </label>
+    <div class="scrolling-checklist">
+        {% for fc in file_choices %}
+            <label><input type="checkbox" name="file_associations" value="{{fc.id}}"{% if fc.id == file.pk %} checked{% endif %}> {{fc.title}}</label>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="field">
     <button type="submit" id="submit-button">Create VOD Article</button>
 </div>
 
