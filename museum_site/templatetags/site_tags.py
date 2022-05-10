@@ -262,6 +262,10 @@ def meta_tags(*args, **kwargs):
         tags["og:image"][1] = base_url + STATIC_URL + (
             kwargs["file"].screenshot_url()
         )
+    elif kwargs.get("series"):
+        tags["description"][1] = kwargs["series"].description
+        tags["og:title"][1] = kwargs["series"].title + " - Museum of ZZT"
+        tags["og:image"][1] = kwargs["series"].preview_url()
 
     # Overrides
     if kwargs.get("author"):
