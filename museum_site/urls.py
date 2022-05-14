@@ -438,7 +438,7 @@ urlpatterns = [
     ),
     path(
         "discord/", RedirectView.as_view(
-            url="https://discordapp.com/invite/Nar4Upf"),
+            url="https://discord.gg/SVMeJU32xn"),
         name="discord_invite"),
     path(
         "patreon/", RedirectView.as_view(url="https://patreon.com/worldsofzzt"),
