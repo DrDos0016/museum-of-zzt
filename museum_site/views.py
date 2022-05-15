@@ -2,6 +2,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from museum_site.common import *
 from museum_site.constants import *
+from museum_site.core.discord import DISCORD_INVITE_URL
 from museum_site.models import *
 from museum_site.private import (
     UNREGISTERED_SUPPORTERS, UNREGISTERED_BIGGER_SUPPORTERS,
@@ -127,6 +128,17 @@ def exhibit(request, letter, filename, section=None, local=False):
     data["custom_charsets"] = CUSTOM_CHARSET_LIST
 
     return render(request, "museum_site/exhibit.html", data)
+
+
+def discord_overview(request):
+    data = {"title": "Joinining The Worlds of ZZT Discord"}
+
+    if request.method == "POST":
+        if request.POST.get("agreed") != "agreed":
+            data["error"] = True
+        return redirect(DISCORD_INVITE_URL)
+
+    return render(request, "museum_site/discord.html", data)
 
 
 def generic(request, title="", template=""):

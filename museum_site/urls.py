@@ -205,6 +205,8 @@ urlpatterns = [
 
     # Special Pages
     path("explicit-warning/", museum_site.views.explicit_warning, name="explicit_warning"),
+    path(
+        "discord/", museum_site.views.discord_overview, name="discord"),
     path("credits/", museum_site.views.site_credits, name="credits"),
     path(
         "mass-downloads/", museum_site.views.mass_downloads,
@@ -436,10 +438,6 @@ urlpatterns = [
     path(
         "tumblr/", RedirectView.as_view(url="http://worldsofzzt.tumblr.com"),
     ),
-    path(
-        "discord/", RedirectView.as_view(
-            url="https://discord.gg/SVMeJU32xn"),
-        name="discord_invite"),
     path(
         "patreon/", RedirectView.as_view(url="https://patreon.com/worldsofzzt"),
         name="patreon"),

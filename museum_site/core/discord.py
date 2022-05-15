@@ -13,6 +13,8 @@ ANNOUNCE_NONE = 0
 DISCORD_ANNOUNCE_UPLOADS = ANNOUNCE_ALL
 DISCORD_ANNOUNCE_REVIEWS = ANNOUNCE_ALL
 
+DISCORD_INVITE_URL = "https://discord.com/invite/SVMeJU32xn"
+
 
 def discord_announce_review(review, env=None):
     if env is None:

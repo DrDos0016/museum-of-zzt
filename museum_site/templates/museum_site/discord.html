@@ -1,0 +1,161 @@
+{% extends "museum_site/main.html" %}
+
+{% block style %}
+<style>
+.role
+{
+    background-color:#444;
+    border-radius:24px;
+    color:#FFF;
+    font-size:20px;
+    height:24px;
+    width:24px;
+    display:inline-block;
+    text-align:center;
+    line-height:20px;
+    margin-top:2px;
+}
+
+#join-box
+{
+    background:#DEF;
+    max-width:350px;
+    margin:auto;
+    border:4px double #000;
+    padding:20px;
+}
+
+#join-box label
+{
+    margin:auto;
+    display:block;
+    text-align:center;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="block">
+<h1>Joining The Worlds of ZZT Discord</h1>
+<p><i>Last updated: May 15, 2022</i></p>
+<h2>Server Rules</h2>
+
+<ul>
+    <li><b> Be respectful of others</b> - This server's goal is to be first and foremost a welcoming place. Avoid bringing in hostility, or inciting other members.
+    <li><b>Keep it PG-13</b> - Do not post anything NSFW. The Worlds of ZZT bot is set to not post anything from files marked as explicit, but the list of explicit files is not flawless, and so the bot may sometimes post something inappropriate. Such files will then be marked and the message removed.</li>
+    <li><b>Slurs, racism, sexism, ableism, transphobia, etc. are not welcome</b> - If you are here to instigate you will be promptly removed.</li>
+    <li><b>ZZTers today are not the same people they were in the past</b> - Some returning ZZTers have histories of hostility from their earlier years in the ZZT community. Do not try to bring up decades old behavior to discredit people today. Assume that the person has grown until shown otherwise.</li>
+    <li><b>Avoid Discussion In #announcements</b> - Please try to keep this room free of clutter and discuss announcements in the channel most relevant to the announcement.</li>
+    <li><b>Membership may require approval</b> - Depending on current server settings, new members may or may not be unable to speak outside of the #welcome channel prior to approval by a staff member or vouched for by another member.</b></li>
+    <li><b>Staff may remove people from the server at their discretion</b> - Staff have the final say when determining if a member should be kicked or banned and for how long.</li>
+</ul>
+
+<h2>Join The Discord</h2>
+
+<form method="POST" id="join-box">
+    {% csrf_token %}
+    <label><input type="checkbox" value="agreed" name="agreed"> I have read the above rules and agree to abide by them.<br><br></label>
+    <label><input type="submit" value="Join The Worlds of ZZT Discord"></label>
+    {% if error %}<p><b>You must read and agree to abide by the rules before joining!</b></p>{% endif %}
+</form>
+
+<h2>Channel Overview</h2>
+
+<ul>
+    <li><b>Information</b></li>
+    <ul>
+        <li><span class="mono i">#rules</span> - A list of server rules for reference.</li>
+        <li><span class="mono i">#announcements</span> - For announcing new releases, reviews, and upcoming events.</li>
+        <li><span class="mono i">#welcome</span> - A landing channel where new members arrive. You may or may not have to introduce yourself here before being able to talk in other channels depending on current server settings.</li>
+    </ul>
+    <li><b>Text</b></li>
+    <ul>
+        <li><span class="mono i">#zzt</span> - For discussion of ZZT and ZZT related things.</li>
+        <li><span class="mono i">#etc</span> - For discussion of that which is not ZZT or ZZT related.</li>
+        <li><span class="mono i">#patrons</span> - A private channel for <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT patrons</a>.</li>
+        <li><span class="mono i">#museum-bug-fixes</span> - For reporting issues with the Museum of ZZT website. Not for feature requests, and not intended for discussions.</li>
+    </ul>
+    <li><b>Development</b></li>
+    <ul>
+        <li><span class="mono i">#zzt-worlds</span> - For discussion of ZZT worlds that are currently being developed.</li>
+        <li><span class="mono i">#zzt-programs</span> - For discussion covering programs related to ZZT such as editors and source ports that are currently being developed.</li>
+        <li><span class="mono i">#zzt-bugs</span> - Bug reports for ZZT worlds.</li>
+    </ul>
+    <li><b>Events</b> - Channels in this category are (generally) for limited time events. Upon reaching the end of discussion they are archived in the LOCKED FILE category.</li>
+    <ul>
+        <li><span class="mono i">#fest-of-zzt</span> - At the time of writing, a project channel for a remix of Caves of ZZT.</li>
+        <li><span class="mono i">#jams-and-competitions</span> - Used for discussion of any ongoing gamejams and other competitions where ZZT worlds are being created.</li>
+    </ul>
+    <li><b>Robots</b></li>
+    <ul>
+        <li><span class="mono i">#worlds-of-zzt-feed</span> - A live feed of the bot posts to <a href="https://twitter.com/worldsofzzt" target="_blank">@WorldsOfZZT</a> on Twitter.</li>
+        <li><span class="mono i">#bots</span> - Dedicated room for interacting with the Worlds of ZZT Discord bot. All bot commands work in this channel.</li>
+    </ul>
+    <li><b>► LOCKED FILE</b> - Channels in this category are for archived events that are kept for a historical record.</li>
+</ul>
+
+<h2>Roles</h2>
+
+<p>Most roles may be added either via staff of the Worlds of ZZT bot.</p>
+
+<p>Current roles include:</p>
+
+<ul>
+    <li><div class="role" style="color:#ffff55">⬤</div> <b>Staff</b> - For staff members.</li>
+    <li><div class="role" style="color:#ff5555">⬤</div> <b>Robot</b> - For the Worlds of ZZT Discord bot.</li>
+    <li><div class="role" style="color:#ff55ff">⬤</div> <b>Patron</b> - For <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT patrons</a>. Requires your Patreon and Discord accounts to be linked (or to just ask Dr. Dos for the role. The bot that assigns this role is notoriously flakey.)</li>
+    <li><div class="role" style="color:#5555ff">⬤</div> <b>ZZTer</b> - For those who consider themselves ZZTers.</li>
+    <li><div class="role" style="color:#55ffff">⬤</div> <b>MZXer</b> - For those who consider themselves MegaZeuxers.</li>
+    <li><b>+Veryspecial</b> - The role provided to all members that officially join the server. Required to speak outside of #welcome in some circumstances.</li>
+    <li><b>Pronoun Roles</b> - Pronoun roles are available so members can know how to properly refer to one another. Other pronoun roles will be added if needed.</li>
+    <ul>
+        <li><b>He/Him</b></li>
+        <li><b>She/Her</b></li>
+        <li><b>They/Them</b></li>
+        <li><b>It/Its</b></li>
+    </ul>
+    <li><b>Alert Roles</b> - Roles that members may opt into to receive alerts for specific events</li>
+    <ul>
+        <li><b>Stream-Alerts-All</b> - For those who want to be notified when anyone is streaming ZZT related content.</li>
+        <li><b>Stream-Alerts-&lt;User&gt;</b> - For those who want to be notified when a specific individual is streaming ZZT related content.</li>
+    </ul>
+</ul>
+
+<h2>The Worlds of ZZT Discord Bot</h2>
+
+<p>The Worlds of ZZT Discord bot contains a few housekeeping functions as well as some integration with the Museum of ZZT website.</p>
+
+<h3>List of Bot Commands</h3>
+
+<ul>
+    <li><b>!addrole</b> - Adds one or more roles. You may provide multiple roles to add them all at once.</li>
+    <li><b>!help</b> - Displays a list of commands and bot managed roles.</li>
+    <li><b>!removerole</b> - Removes one or more roles. You may provide multiple roles to remove them all at once.</li>
+    <li><b>!scroll</b> - Some reading material. (10 second cooldown)</li>
+    <li><b>!vouch &lt;username&gt;</b> - Assign the +Veryspecial role to a user if no staff are available. You are responsible for who you let in. Requires being in the server for at least 90 days. Username should be the actual username and not a nickname, without the extra numbers.</li>
+    <li><b>!zzt</b> - Shows a random ZZT board. (15 second cooldown)</li>
+</ul>
+
+<h3>List of Bot Managed Roles</h3>
+
+<ul>
+    <li>ZZTer</li>
+    <li>MZXer</li>
+    <li>He/Him</li>
+    <li>She/Her</li>
+    <li>It/Its</li>
+    <li>They/Them</li>
+    <li>Stream-Alerts-All</li>
+    <li>Stream-Alerts-Asie</li>
+    <li>Stream-Alerts-Dos</li>
+    <li>Stream-Alerts-Meap</li>
+</ul>
+
+<p>All bot commands function in the #bots channel. !zzt additionally functions in the #worlds-of-zzt-feed channel. Role setting commands additionally function in the #welcome channel.</p>
+
+<h2>Webhooks</h2>
+
+<p>Some announcements are automatic when certain events on the Museum of ZZT website occur. New uploads and new reviews of files will automatically be shared
+here.</p>
+</section>
+{% endblock %}
