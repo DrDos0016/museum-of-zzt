@@ -6,10 +6,24 @@ from museum_site.constants import *
 from museum_site.common import record
 from museum_site.private import NEW_REVIEW_WEBHOOK_URL, NEW_UPLOAD_WEBHOOK_URL
 
+# Announcement Settings
+ANNOUNCE_ALL = 2
+ANNOUNCE_LOGGED_IN = 1
+ANNOUNCE_NONE = 0
+DISCORD_ANNOUNCE_UPLOADS = ANNOUNCE_ALL
+DISCORD_ANNOUNCE_REVIEWS = ANNOUNCE_ALL
+
 
 def discord_announce_review(review, env=None):
     if env is None:
         env = ENV
+
+    if DISCORD_ANNOUNCE_REVIEWS == ANNOUNCE_NONE:
+        record("# DISCORD ANNOUNCEMENTS ARE CURRENTLY DISABLED")
+        return False
+    if DISCORD_ANNOUNCE_REVIEWS == ANNOUNCE_LOGGED_IN and not review.user:
+        record("# DISCORD ANNOUNCEMENTS ARE CURRENTLY DISABLED FOR GUESTS")
+        return False
 
     if env != "PROD":
         record("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
@@ -46,6 +60,13 @@ def discord_announce_upload(upload, env=None):
 
     if env is None:
         env = ENV
+
+    if DISCORD_ANNOUNCE_UPLOADS == ANNOUNCE_NONE:
+        record("# DISCORD ANNOUNCEMENTS ARE CURRENTLY DISABLED")
+        return False
+    if DISCORD_ANNOUNCE_UPLOADS == ANNOUNCE_LOGGED_IN and not upload.user:
+        record("# DISCORD ANNOUNCEMENTS ARE CURRENTLY DISABLED FOR GUESTS")
+        return False
 
     if env != "PROD":
         record("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO NON-PROD ENVIRONMENT")
