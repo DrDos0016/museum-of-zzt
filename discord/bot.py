@@ -10,6 +10,8 @@ import discord
 import django
 import requests
 
+from datetime import datetime, timedelta
+
 from discord.ext import commands
 from discord.utils import get
 
@@ -29,9 +31,9 @@ except ImportError:
     sys.exit()
 
 SERVER = None
-PUBLIC_ROLES = ["ZZTer", "MZXer", "He/Him", "She/Her", "They/Them",
+PUBLIC_ROLES = ["ZZTer", "MZXer", "He/Him", "She/Her", "It/Its", "They/Them",
 "Stream-Alerts-Asie", "Stream-Alerts-Dos", "Stream-Alerts-Meap", "Stream-Alerts-All"]
-COMMANDS = ["addrole", "help", "removerole", "scroll", "zzt"]
+COMMANDS = ["addrole", "help", "removerole", "scroll", "zzt", "vouch"]
 CHANNELS = []
 LAST_TIME = {
     "addrole": 0,
@@ -39,11 +41,15 @@ LAST_TIME = {
     "scroll": 0,
     "zzt": 0,
     "help": 0,
+    "vouch": 0,
 }
 
 SCROLLS = list(Scroll.objects.filter(published=True).order_by("id"))
 
-bot = commands.Bot(command_prefix="!")
+
+intents = discord.Intents.default()
+intents.members = True
+bot = commands.Bot(command_prefix="!", intents=intents)
 bot.remove_command("help")  # Roll our own
 
 
@@ -73,7 +79,7 @@ def check_permissions(ctx, VALID_ROOMS, VALID_USERS, COOLDOWN):
                 ", ".join(PUBLIC_ROLES)
             ))
 async def addrole(ctx, *args):
-    VALID_ROOMS = ("bots", "bot-dev", "title-screen")
+    VALID_ROOMS = ("bots", "bot-dev", "welcome")
     VALID_USERS = ()
     COOLDOWN = 0
 
@@ -106,10 +112,57 @@ async def addrole(ctx, *args):
         if status.get("RESPONSE"):
             await ctx.send(status["RESPONSE"])
 
+@bot.command(help="Vouch for another user. (Syntax: !vouch USERNAME)")
+async def vouch(ctx, *args):
+    VALID_ROOMS = ("bot-dev", "welcome")
+    VALID_USERS = ()
+    COOLDOWN = 0
+
+    status = check_permissions(ctx, VALID_ROOMS, VALID_USERS, COOLDOWN)
+
+    # Also check the user is allowed to do this
+    joined = ctx.author.joined_at
+    now = datetime.now()
+    delta = timedelta(days=90)
+    diff = now - delta
+
+    if str(diff) < str(joined):
+        await ctx.send(
+            "Your account does not have permission to vouch for others yet."
+        )
+        return False
+
+    vouched_username = " ".join(args)
+    vouched_user = None
+
+    if ctx.author.name.lower() == vouched_username.lower():
+        await ctx.send(
+            "You cannot vouch for yourself!"
+        )
+        return False
+
+
+    matched = False
+    for u in bot.get_all_members():
+        if u.name.lower() == vouched_username.lower():
+            matched = True
+            vouched_user = u
+            break
+
+    if not matched:
+        await ctx.send(
+            "Sorry, no such user was found."
+        )
+    else:
+        await vouched_user.add_roles(get(ctx.guild.roles, name="Veryspecial"))
+        await ctx.send(
+            "`{}` has been vouched for!".format(vouched_user.name)
+        )
+
 
 @bot.command()
 async def help(ctx):
-    VALID_ROOMS = ("bots", "bot-dev", "title-screen")
+    VALID_ROOMS = ("bots", "bot-dev", "welcome")
     VALID_USERS = ()
     COOLDOWN = 0
 
@@ -122,7 +175,7 @@ async def help(ctx):
                 ", ".join(PUBLIC_ROLES)
             ))
 async def removerole(ctx, *args):
-    VALID_ROOMS = ("bots", "bot-dev", "title-screen")
+    VALID_ROOMS = ("bots", "bot-dev", "welcome")
     VALID_USERS = ()
     COOLDOWN = 0
 
@@ -158,7 +211,7 @@ async def removerole(ctx, *args):
 
 @bot.command(help="Some reading material. (10 sec cooldown)")
 async def scroll(ctx, idx="?"):
-    VALID_ROOMS = ("bots", "bot-dev", "title-screen")
+    VALID_ROOMS = ("bots", "bot-dev")
     VALID_USERS = ()
     COOLDOWN = 10
 
