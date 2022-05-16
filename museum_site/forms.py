@@ -33,7 +33,33 @@ class ZGameForm(forms.ModelForm):
             "<a href='/help/genre/' target='_blank'>Genre Overview</a> "
             "page."
         ),
-        widget=SlashSeparatedValueCheckboxWidget(choices=list(zip(Genre.objects.filter(visible=True), Genre.objects.filter(visible=True))))
+        widget=SlashSeparatedValueCheckboxWidget(
+            choices=list(
+                zip(
+                    Genre.objects.filter(visible=True), Genre.objects.filter(
+                        visible=True
+                    )
+                )
+            )
+        )
+    )
+    author = forms.CharField(
+        required=False,
+        help_text=(
+            "Separate multiple authors with a comma. Do not abbreviate "
+            "names.<br>"
+            "For files with many authors, consider using the compiler as "
+            "the author with \"Various\" to represent the rest. Try to "
+            "sort multiple authors from most to least important on this "
+            "particular upload. If the author's name is not known, leave this "
+            "field blank."
+        ),
+        widget=SlashSeparatedValueWidget(
+            attrs={
+                "list": "author-suggestions",
+                "autocomplete": "off",
+            }
+        )
     )
 
     field_order = ["zfile", "title", "author", "company", "genres"]
@@ -55,15 +81,6 @@ class ZGameForm(forms.ModelForm):
 
         help_texts = {
             "title": "Leave A/An/The as the first word if applicable.",
-            "author": (
-                "Separate multiple authors with a comma. Do not abbreviate "
-                "names.<br>"
-                "For files with many authors, consider using the compiler as "
-                "the author with \"Various\" to represent the rest. Try to "
-                "sort multiple authors from most to least important on this "
-                "particular upload. If the author's name is not known, use "
-                "\"Unknown\"."
-            ),
             "company": (
                 "Any companies this file is published under. If there are "
                 "none, leave this field blank. If there are multiple, "
@@ -108,12 +125,6 @@ class ZGameForm(forms.ModelForm):
         }
 
         widgets = {
-            "author": SlashSeparatedValueWidget(
-                attrs={
-                    "list": "author-suggestions",
-                    "autocomplete": "off",
-                    }
-            ),
             "company": SlashSeparatedValueWidget(
                 attrs={
                     "list": "company-suggestions",
@@ -159,6 +170,14 @@ class ZGameForm(forms.ModelForm):
                 "Contact Dr. Dos for a manual upload."
             )
 
+    def clean_author(self):
+        # Replace blank authors with "Unknown"
+        author = self.cleaned_data["author"]
+
+        if author == "":
+            author = "Unknown"
+        return author
+
     def clean_genres(self):
         # Make sure all requested genres exist
         valid_genres = list(Genre.objects.filter(visible=True).values_list("title", flat=True))
@@ -170,7 +189,6 @@ class ZGameForm(forms.ModelForm):
                 raise forms.ValidationError(
                     "An invalid genre was specified."
                 )
-
 
 
 class PlayForm(forms.Form):
