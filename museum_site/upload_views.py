@@ -54,10 +54,13 @@ def upload(request):
             "release_date":str(datetime.now())[:10]
         }
         if zgame_obj:
+            print("WORKING WITH INITIAL")
             zgame_initial = {
                 "explicit": int(zgame_obj.explicit),
                 "language": zgame_obj.language,
-                "release_date": str(zgame_obj.release_date)}
+                "release_date": str(zgame_obj.release_date),
+                "genres": zgame_obj.ssv("genres"),
+            }
             play_form = PlayForm(
                 initial={"zeta_config": zgame_obj.zeta_config_id}
             )

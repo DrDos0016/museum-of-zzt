@@ -69,5 +69,17 @@ class BaseModel(models.Model):
         return context
 
 
+    def ssv(self, field_name, field_attr="title"):
+        # Get a string of slash separated values for a many-to-many field
+        ssv = ""
+        if hasattr(self, field_name):
+            entries = list(
+                getattr(self, field_name).all().values_list(
+                    field_attr, flat=True
+                )
+            )
+            ssv= "/".join(entries)
+        return ssv
+
     class Meta:
         abstract = True
