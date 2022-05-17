@@ -378,7 +378,7 @@ def review(request, letter, key):
             # Create and prepare new Review object
             review = review_form.save(commit=False)
             if request.user.is_authenticated:
-                review.author = ""
+                review.author = request.user.username
                 review.user_id = request.user.id
             review.ip = request.META.get("REMOTE_ADDR")
             review.date = today
