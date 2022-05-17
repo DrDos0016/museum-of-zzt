@@ -328,7 +328,7 @@ def review(request, letter, key):
     if request.GET.get("pf"):
         request.session["REVIEW_PROFANITY_FILTER"] = request.GET.get("pf")
 
-    today = datetime.now()
+    today = datetime.now().date()
     zfile = File.objects.filter(key=key).first()
     if key.lower().endswith(".zip"):  # Try old URLs with zip in them
         return redirect_with_querystring("reviews", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])

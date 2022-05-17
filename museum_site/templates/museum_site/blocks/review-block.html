@@ -3,7 +3,7 @@
 <h2><a href="{{request.path}}#rev-{{review.id}}">{{review.title|default:"Untitled Review"}}</a></h2>
 <div class="info mono">
     By: {{review.author_link|safe}}<br>
-    Reviewed: {{review.date|timesince}} ago ({{review.date}})<br>
+    Reviewed: {% if review.date != today %}{{review.date|timesince:today}} ago{% else %}Today{% endif %} ({{review.date}})<br>
     {% if debug %}<div class="debug"><a href="/admin/museum_site/review/{{review.id}}/change/">Edit Review {{review.id}}</a></div>{% endif %}
 </div>
 <hr>
