@@ -685,7 +685,9 @@ class File(BaseModel):
             ratings = Review.objects.filter(
                 zfile_id=self.id, rating__gte=0
             ).aggregate(Avg("rating"))
-            if ratings["rating__avg"] is not None:
+            if ratings["rating__avg"] is None:
+                self.rating = None
+            else:
                 self.rating = round(ratings["rating__avg"], 2)
 
     def calculate_checksum(self, path=None):
