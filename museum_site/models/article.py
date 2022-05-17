@@ -137,6 +137,22 @@ class Article(BaseModel):
         "unlocked": {"glyph": "🔑", "title": "This early article may be read at your current patronage!", "role":"unlocked-icon"},
     }
 
+    CATEGORY_CHOICES = (
+        ("Bugs And Glitches", "Bugs And Glitches"),
+        ("Closer Look", "Closer Look"),
+        ("Contest", "Contest"),
+        ("Featured Game", "Featured Game"),
+        ("Help", "Help"),
+        ("Historical", "Historical"),
+        ("Interview", "Interview"),
+        ("Let's Play", "Let's Play"),
+        ("Livestream", "Livestream"),
+        ("Misc", "Misc"),
+        ("Postmortem", "Postmortem"),
+        ("Publication Pack", "Publication Pack"),
+        ("Walkthrough", "Walkthrough"),
+    )
+
 
     LOCKED_ARTICLE_TEXT = """
     <h2>Locked Article!</h2>
@@ -177,6 +193,7 @@ class Article(BaseModel):
     )
     category = models.CharField(
         help_text="Categorization of the article.",
+        choices=CATEGORY_CHOICES,
         max_length=50
     )
     content = models.TextField(
