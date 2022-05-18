@@ -128,17 +128,21 @@
         <a href="{% url 'article_category' 'livestream' %}">Livestreams</a>
         <a href="{% url 'article_category' 'publication-pack' %}">Publication Packs</a>
 
-        <h3>Directories</h3>
+        <h3>Articles</h3>
+        <a href="{% url 'article_categories' %}">Articles By Category</a>
         <a href="{% url 'article_directory' %}">Article Directory</a>
+        <a href="{% url 'series_directory' %}">Articles By Series</a>
+        <a href="{% url 'article_search' %}">Search Articles</a>
+
+        <h3>Reviews</h3>
+        <a href="{% url 'review_directory' %}">Review Directory</a>
+        <a href="{% url 'reviewer_directory' %}">Reviewer Directory</a>
+        <a href="{% url 'review_search' %}">Search Reviews</a>
+
+        <h3>Directories</h3>
         <a href="{% url 'directory' 'author' %}">Author Directory</a>
         <a href="{% url 'directory' 'company' %}">Company Directory</a>
         <a href="{% url 'directory' 'genre' %}">Genre Directory</a>
-        <a href="{% url 'review_directory' %}">Review Directory</a>
-
-        <h3>Articles</h3>
-        <a href="{% url 'article_categories' %}">Articles By Category</a>
-        <a href="{% url 'series_directory' %}">Articles By Series</a>
-        <a href="{% url 'article_search' %}">Search Articles</a>
 
         <h3>Playing ZZT Worlds</h3>
         <a href="{% url 'zeta' %}">Using ZZT with Zeta</a>
