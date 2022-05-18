@@ -91,6 +91,7 @@ $(document).ready(function (){
         window.open(popout_url, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
     });
 
+
     $(".zoom").click(function (){
         if ($(this).val() == "+")
         {
@@ -174,7 +175,7 @@ $(document).ready(function (){
             {% for file in included_files %}
             {
                 "type": "zip",
-                "url": "{{file}}",
+                "url": "{{file|safe}}",
             },
             {% endfor %}
             {% if zeta_url %}
