@@ -43,7 +43,7 @@ class Review(BaseModel):
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
     title = models.CharField(max_length=50)
-    author = models.CharField(max_length=50, blank=True, null=True)
+    author = models.CharField(max_length=50)
     content = models.TextField()
     rating = models.FloatField(default=5.0)
     date = models.DateField()
