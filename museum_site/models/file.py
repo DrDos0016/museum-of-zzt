@@ -983,6 +983,13 @@ class File(BaseModel):
             output += '<a href="{}">{}</a>, '.format(i.url(), i.title)
         return output[:-2]
 
+    @mark_safe
+    def genre_links(self):
+        output = ""
+        for i in self.genres.all():
+            output += '<a href="{}">{}</a>, '.format(i.url(), i.title)
+        return output[:-2]
+
     def language_pairs(self):
         language_list = self.language.split("/")
         output = []
@@ -1096,7 +1103,7 @@ class File(BaseModel):
             {"datum": "ssv-links", "label": "Author"+("s" if len(self.ssv_list("author")) > 1 else ""), "values":self.ssv_list("author"), "url":"/search/?author="},
             {"datum": "ssv-links", "label":"Compan"+("ies" if len(self.ssv_list("company")) > 1 else "y"), "values":self.ssv_list("company"), "url":"/search/?company="},
             {"datum": "link", "label":"Released", "value":(self.release_date or "Unknown"), "url":"/search/?year={}".format(self.release_year(default="unk"))},
-            {"datum": "ssv-links", "label": "Genre"+("s" if len(self.genres.all()) > 1 else ""), "values":self.genres.all(), "url":"/search/?genre="},
+            {"datum": "text", "label": "Genre"+("s" if len(self.genres.all()) > 1 else ""), "value":self.genre_links()},
             {"datum": "text", "label": "Filename", "value":self.filename},
             {"datum": "text", "label": "Size", "value":filesizeformat(self.size)},
         ])
@@ -1157,7 +1164,7 @@ class File(BaseModel):
 
         cells.append({"datum": "ssv-links", "values":self.ssv_list("author"), "url":"/search/?author=", "tag":"td"})
         cells.append({"datum": "ssv-links", "values":self.ssv_list("company"), "url":"/search/?company=", "tag":"td"})
-        cells.append({"datum": "ssv-links", "values":self.genres.all(), "url":"/search/?genre=", "tag":"td"})
+        cells.append({"datum": "text", "value":self.genre_links(), "tag": "td"}),
         cells.append({"datum": "link", "value":(self.release_date or "Unknown"), "url":"/search/?year={}".format(self.release_year(default="unk")), "tag":"td"})
         cells.append({"datum": "text", "value":self.rating_str(show_maximum=False) if self.rating else "—", "tag":"td"})
 

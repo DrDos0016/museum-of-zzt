@@ -150,6 +150,8 @@ urlpatterns = [
         "browse/<str:letter>/", museum_site.file_views.file_directory,
         name="browse_letter"
     ),
+    path("genre/<str:genre>/", museum_site.file_views.file_directory,
+        name="browse_genre"),
     path(
         "directory/<slug:category>/", museum_site.views.directory,
         name="directory"),

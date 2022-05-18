@@ -36,7 +36,8 @@ def file_directory(
     details=[],
     page_num=1,
     show_description=False,
-    show_featured=False
+    show_featured=False,
+    genre=None,
 ):
     """ Returns page listing all articles sorted either by date or name """
     data = {
@@ -85,6 +86,10 @@ def file_directory(
     if letter:
         qs = qs.filter(letter=letter)
         data["title"] = "Browse - " + letter.upper()
+        data["header"] = data["title"]
+    if genre:
+        qs = qs.filter(genres__title=genre)
+        data["title"] = "Browse Genre - " + genre.title()
         data["header"] = data["title"]
     if request.path == "/new/":
         data["title"] = "New Additions"
