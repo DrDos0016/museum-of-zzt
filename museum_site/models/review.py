@@ -164,3 +164,8 @@ class Review(BaseModel):
                 {"datum": "text", "value":"{} / 5.0".format(self.rating)}
             )
         return context
+
+    def save(self, *args, **kwargs):
+        if self.author == "":
+            self.author = "Anonymous"
+        super(Review, self).save(*args, **kwargs)
