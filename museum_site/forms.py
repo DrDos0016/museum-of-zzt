@@ -604,6 +604,14 @@ class ReviewForm(forms.ModelForm):
             ),
         }
 
+    def clean_author(self):
+        # Replace blank authors with "Unknown"
+        author = self.cleaned_data["author"]
+
+        if author == "":
+            author = "Anonymous"
+        return author
+
 
 class SeriesForm(forms.ModelForm):
     user_required_attribute = False

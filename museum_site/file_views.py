@@ -365,6 +365,8 @@ def review(request, letter, key):
     data["title"] = zfile.title + " - Reviews"
 
     review_form = ReviewForm()
+    if request.user.is_authenticated:
+        del review_form.fields["author"]
 
     # Prevent doubling up on reviews
     recent = reviews.filter(
@@ -378,6 +380,9 @@ def review(request, letter, key):
             return HttpResponse("Banned account.")
 
         review_form = ReviewForm(request.POST)
+
+        if request.user.is_authenticated:
+            del review_form.fields["author"]
 
         if review_form.is_valid():
             # Create and prepare new Review object
@@ -399,9 +404,6 @@ def review(request, letter, key):
                 # Make Announcement
                 discord_announce_review(review)
                 zfile.save()
-
-    if request.user.is_authenticated:
-        del review_form.fields["author"]
 
     data["reviews"] = reviews
     data["today"] = today
