@@ -98,19 +98,25 @@ urlpatterns = [
          name="files_by_detail"),
     # /detail/ -- Legacy Redirects
     path("detail/<slug:slug>/", legacy_redirect, {"name": "files_by_detail"}),
+    path("zzt-worlds/", legacy_redirect, {"name": "files_by_detail", "slug": "zzt-world"}, name="zzt_worlds"),
+    path("super-zzt/", legacy_redirect, {"name": "files_by_detail", "slug": "super-zzt-world"}, name="szzt_worlds"),
+    path("utilities/", legacy_redirect, {"name": "files_by_detail", "slug": "utility"}, name="utilities"),
+    path("zzm-audio/", legacy_redirect, {"name": "files_by_detail", "slug": "zzm-audio"}, name="zzm_audio"),
+    path("zig-worlds/", legacy_redirect, {"name": "files_by_detail", "slug": "zig-world"}, name="zig_worlds"),
+    path("modified-gfx/", legacy_redirect, {"name": "files_by_detail", "slug": "modified-graphics"}, name="modified_gfx"),
+    path("modified-exe/", legacy_redirect, {"name": "files_by_detail", "slug": "modified-executable"}, name="modified_exe"),
+    path("ms-dos/", legacy_redirect, {"name": "files_by_detail", "slug": "ms-dos"}, name="ms_dos"),
+    path("lost-worlds/", legacy_redirect, {"name": "files_by_detail", "slug": "lost-world"}, name="lost_worlds"),
+    path("uploaded/", legacy_redirect, {"name": "files_by_detail", "slug": "uploaded"}, name="uploaded_worlds"),
+    path("featured/", legacy_redirect, {"name": "files_by_detail", "slug": "featured-world"}, name="featured_games"),
 
 
-    path("zzt-worlds/", legacy_redirect, {"name": "files_by_detail", "slug":"zzt-world"}, name="zzt_worlds"),
-    path("super-zzt/", legacy_redirect, {"name": "files_by_detail", "slug":"super-zzt-world"}, name="szzt_worlds"),
-    path("utilities/", legacy_redirect, {"name": "files_by_detail", "slug":"utility"}, name="utilities"),
-    path("zzm-audio/", legacy_redirect, {"name": "files_by_detail", "slug":"zzm-audio"}, name="zzm_audio"),
-    path("zig-worlds/", legacy_redirect, {"name": "files_by_detail", "slug":"zig-world"}, name="zig_worlds"),
-    path("modified-gfx/", legacy_redirect, {"name": "files_by_detail", "slug":"modified-graphics"}, name="modified_gfx"),
-    path("modified-exe/", legacy_redirect, {"name": "files_by_detail", "slug":"modified-executable"}, name="modified_exe"),
-    path("ms-dos/", legacy_redirect, {"name": "files_by_detail", "slug":"ms-dos"}, name="ms_dos"),
-    path("lost-worlds/", legacy_redirect, {"name": "files_by_detail", "slug":"lost-world"}, name="lost_worlds"),
-    path("uploaded/", legacy_redirect, {"name": "files_by_detail", "slug":"uploaded"}, name="uploaded_worlds"),
-    path("featured/", legacy_redirect, {"name": "files_by_detail", "slug":"featured-world"}, name="featured_games"),
+    # /genre/ -- Proper URLs
+    path("genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_overview"),
+    path("genre/<str:genre>/",
+         museum_site.file_views.file_directory,
+         name="browse_genre"),
+
 
     # Directories
     path("browse/", museum_site.file_views.file_directory, name="browse"),
@@ -119,31 +125,32 @@ urlpatterns = [
         name="browse_letter"
     ),
     path(
-        "genre/<str:genre>/", museum_site.file_views.file_directory,
-        name="browse_genre"
-    ),
-    path(
         "directory/<slug:category>/", museum_site.views.directory,
         name="directory"),
     path("new/", museum_site.file_views.file_directory, name="new_files"),
     path(
         "new-releases/", museum_site.file_views.file_directory,
         name="new_releases"),
-    path(
-        "review/", museum_site.review_views.Review_Directory_View.as_view(),
-        name="review_directory"),
-    path(
-        "review/author/", museum_site.review_views.Reviewer_Directory_View.as_view(),
-        name="reviewer_directory"),
-    path(
-        "review/author/<str:author>/", museum_site.review_views.Review_Directory_View.as_view(),
-        name="reviews_by_author"),
-    path(
-        "review/search/", museum_site.review_views.Review_Directory_View.as_view(),
-        name="review_search"),
-    path(
-        "series/", museum_site.series_views.Series_Directory_View.as_view(),
-        name="series_directory"),
+
+
+    # /review/ -- Proper URLS
+    path("review/",
+         museum_site.review_views.Review_Directory_View.as_view(),
+         name="review_directory"),
+    path("review/author/",
+         museum_site.review_views.Reviewer_Directory_View.as_view(),
+         name="reviewer_directory"),
+    path("review/author/<str:author>/",
+         museum_site.review_views.Review_Directory_View.as_view(),
+         name="reviews_by_author"),
+    path("review/search/",
+         museum_site.review_views.Review_Directory_View.as_view(),
+         name="review_search"),
+
+    # /series/ -- Proper URLS
+    path("series/",
+         museum_site.series_views.Series_Directory_View.as_view(),
+         name="series_directory"),
 
     # ZFiles
     path(
@@ -193,27 +200,22 @@ urlpatterns = [
         "patron-articles/", museum_site.article_views.patron_articles,
         name="patron_articles"),
 
-    # Policies
-    path(
-        "policy/data-integrity/", museum_site.views.generic,
-        {"template": "policy-data", "title": "Data Integrity"},
-        name="data_integrity"),
-    path(
-        "policy/correction/", museum_site.views.generic,
-        {"template": "policy-correction", "title": "Correction Policy"},
-        name="correction_policy"),
-    path(
-        "policy/removal/", museum_site.views.generic,
-        {"template": "policy-removal", "title": "Removal Policy"},
-        name="removal_policy"),
-    path(
-        "policy/review/", museum_site.views.generic,
-        {"template": "policy-review", "title": "Review Policy"},
-        name="review_policy"),
-    path(
-        "policy/upload/", museum_site.views.generic,
-        {"template": "policy-upload", "title": "Upload Policy"},
-        name="upload_policy"),
+    # /policy/ -- Proper URLs
+    path("policy/data-integrity/", museum_site.views.generic,
+         {"template": "policy-data", "title": "Data Integrity"},
+         name="data_integrity"),
+    path("policy/correction/", museum_site.views.generic,
+         {"template": "policy-correction", "title": "Correction Policy"},
+         name="correction_policy"),
+    path("policy/removal/", museum_site.views.generic,
+         {"template": "policy-removal", "title": "Removal Policy"},
+         name="removal_policy"),
+    path("policy/review/", museum_site.views.generic,
+         {"template": "policy-review", "title": "Review Policy"},
+         name="review_policy"),
+    path("policy/upload/", museum_site.views.generic,
+         {"template": "policy-upload", "title": "Upload Policy"},
+         name="upload_policy"),
 
     # Random ZZT Worlds
     path("random/", museum_site.views.random, name="random"),
