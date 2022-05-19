@@ -12,6 +12,36 @@
     height:350px;
     overflow:none;
 }
+
+.round-boy
+{
+    background:#00AAAA;
+    width:350px;
+    display:flex;
+    align-items:center;
+    padding:7px 4px 7px 4px;
+    border:5px double #5FF;
+}
+
+.round-boy .logo
+{
+    font-size:36pt;
+    background-color:#FFF;
+    border-radius:100%;
+    padding:8px;
+    text-align:center;
+    width:1.5ch;
+    height:1.5ch;
+    line-height:1.75ch;
+    margin-right:8px;
+}
+
+.round-boy .text
+{
+    font-family:cp437;
+    font-size:24px;
+    color:#FFF;
+}
 </style>
 {% endblock %}
 
@@ -44,6 +74,14 @@ RG Test: {% if request.GET.test %}{{request.GET.test}}{% endif %}
 </p>
 <hr>
 <hr>
+
+<div class="round-boy">
+    <div class="logo">🔰</div>
+    <div class="text">New to ZZT? Check out: The Beginner's Handbook</div>
+</div>
+
+<hr><hr>
+
 <b>Spoiler Test:</b><br><br>
 The combination to the bank of ZZT is: {% spoiler %}42069{% endspoiler %}
 
