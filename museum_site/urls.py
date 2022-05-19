@@ -47,7 +47,6 @@ from museum_site.constants import (  # noqa: E402
 urlpatterns = [
     path("", museum_site.views.index, name="index"),
 
-    # /article/
     # /article/ -- Proper URLs
     path("article/",
          museum_site.article_views.article_directory,
@@ -76,39 +75,49 @@ urlpatterns = [
     path("article/<int:article_id>/<slug:slug>/", legacy_redirect, {"name": "article_view"}),
 
     # Special Article Pages (those with urls besides /article/#/title)
-    path(
-        "about-zzt/", museum_site.article_views.article_view,
-        {"article_id": 534}, name="about_zzt"),
-    path(
-        "ascii/", museum_site.article_views.article_view, {"article_id": 3},
-        name="ascii"),
-    path(
-        "clones/", museum_site.article_views.article_view, {"article_id": 6},
-        name="clones"),
-    path(
-        "detail/", museum_site.help_views.Detail_Overview_View.as_view(),
-        name="file_details"),
-    path(
-        "getting-started/", museum_site.article_views.article_view,
-        {"article_id": 5}, name="zzt_dosbox"),
-    path(
-        "support/", museum_site.article_views.article_view,
-        {"article_id": 576},
-        name="support"),
-    path(
-        "zeta/", museum_site.article_views.article_view, {"article_id": 399},
-        name="zeta"),
-    path(
-        "zzt/", museum_site.article_views.article_view, {"article_id": 2},
-        name="zzt_dl"),
-    path(
-        "zzt-cheats/", museum_site.article_views.article_view,
-        {"article_id": 22}, name="zzt_cheats"),
+    path("about-zzt/", museum_site.article_views.article_view,
+         {"article_id": 534},
+         name="about_zzt"),
+    path("ascii/",
+         museum_site.article_views.article_view,
+         {"article_id": 3},
+         name="ascii"),
+    path("clones/",
+         museum_site.article_views.article_view,
+         {"article_id": 6},
+         name="clones"),
+    path("getting-started/",
+         museum_site.article_views.article_view,
+         {"article_id": 5},
+         name="zzt_dosbox"),
+    path("support/",
+         museum_site.article_views.article_view,
+         {"article_id": 576},
+         name="support"),
+    path("zeta/",
+         museum_site.article_views.article_view,
+         {"article_id": 399},
+         name="zeta"),
+    path("zzt/",
+         museum_site.article_views.article_view,
+         {"article_id": 2},
+         name="zzt_dl"),
+    path("zzt-cheats/",
+         museum_site.article_views.article_view,
+         {"article_id": 22},
+         name="zzt_cheats"),
 
-    # Details
-    path(
-        "detail/<slug:slug>/", museum_site.file_views.files_by_detail,
-        name="files_by_detail"),
+    # /detail/ -- Proper URLs
+    path("detail/",
+         museum_site.help_views.Detail_Overview_View.as_view(),
+         name="file_details"),
+    path("detail/view/<slug:slug>/",
+         museum_site.file_views.files_by_detail,
+         name="files_by_detail"),
+    # /detail/ -- Legacy Redirects
+    path("detail/<slug:slug>/", legacy_redirect, {"name": "files_by_detail"}),
+
+    # /file/ -- Proper URLs
 
     # Files (alternate categories)
     path(
