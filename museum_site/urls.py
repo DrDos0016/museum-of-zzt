@@ -25,24 +25,6 @@ import museum_site.views  # noqa: E402
 import museum_site.zeta_views  # noqa: E402
 
 from museum_site.core.misc import legacy_redirect  # noqa: E402
-from museum_site.constants import (  # noqa: E402
-    DETAIL_DOS,
-    DETAIL_WIN16,
-    DETAIL_WIN32,
-    DETAIL_WIN64,
-    DETAIL_LINUX,
-    DETAIL_OSX,
-    DETAIL_FEATURED,
-    DETAIL_ZZM,
-    DETAIL_GFX,
-    DETAIL_MOD,
-    DETAIL_SZZT,
-    DETAIL_UTILITY,
-    DETAIL_ZZT,
-    DETAIL_ZIG,
-    DETAIL_LOST,
-    DETAIL_UPLOADED,
-)
 
 urlpatterns = [
     path("", museum_site.views.index, name="index"),
@@ -117,47 +99,18 @@ urlpatterns = [
     # /detail/ -- Legacy Redirects
     path("detail/<slug:slug>/", legacy_redirect, {"name": "files_by_detail"}),
 
-    # /file/ -- Proper URLs
 
-    # Files (alternate categories)
-    path(
-        "zzt-worlds/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_ZZT]}, name="zzt_worlds"),
-    path(
-        "super-zzt/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_SZZT]}, name="szzt_worlds"),
-    path(
-        "utilities/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_UTILITY], "show_description": True},
-        name="utilities"),
-    path(
-        "zzm-audio/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_ZZM]}, name="zzm_audio"),
-    path(
-        "zig-worlds/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_ZIG]}, name="zig_worlds"),
-    path(
-        "modified-gfx/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_GFX]}, name="modified_gfx"),
-    path(
-        "modified-exe/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_MOD]}, name="modified_exe"),
-    path(
-        "ms-dos/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_DOS]}, name="ms_dos"),
-    path(
-        "lost-worlds/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_LOST]}, name="lost_worlds"),
-    path(
-        "uploaded/", museum_site.file_views.file_directory,
-        {"details": [DETAIL_UPLOADED]}, name="uploaded_worlds"),
-    path(
-        "featured/", museum_site.file_views.file_directory,
-        {
-            "details": [DETAIL_FEATURED], "show_description": True,
-            "show_featured": True
-        },
-        name="featured_games"),
+    path("zzt-worlds/", legacy_redirect, {"name": "files_by_detail", "slug":"zzt-world"}, name="zzt_worlds"),
+    path("super-zzt/", legacy_redirect, {"name": "files_by_detail", "slug":"super-zzt-world"}, name="szzt_worlds"),
+    path("utilities/", legacy_redirect, {"name": "files_by_detail", "slug":"utility"}, name="utilities"),
+    path("zzm-audio/", legacy_redirect, {"name": "files_by_detail", "slug":"zzm-audio"}, name="zzm_audio"),
+    path("zig-worlds/", legacy_redirect, {"name": "files_by_detail", "slug":"zig-world"}, name="zig_worlds"),
+    path("modified-gfx/", legacy_redirect, {"name": "files_by_detail", "slug":"modified-graphics"}, name="modified_gfx"),
+    path("modified-exe/", legacy_redirect, {"name": "files_by_detail", "slug":"modified-executable"}, name="modified_exe"),
+    path("ms-dos/", legacy_redirect, {"name": "files_by_detail", "slug":"ms-dos"}, name="ms_dos"),
+    path("lost-worlds/", legacy_redirect, {"name": "files_by_detail", "slug":"lost-world"}, name="lost_worlds"),
+    path("uploaded/", legacy_redirect, {"name": "files_by_detail", "slug":"uploaded"}, name="uploaded_worlds"),
+    path("featured/", legacy_redirect, {"name": "files_by_detail", "slug":"featured-world"}, name="featured_games"),
 
     # Directories
     path("browse/", museum_site.file_views.file_directory, name="browse"),
@@ -194,7 +147,7 @@ urlpatterns = [
 
     # ZFiles
     path(
-        "Xarticle/<str:letter>/<str:key>/",
+        "article/<str:letter>/<str:key>/",
         museum_site.file_views.file_articles,
         name="article"
     ),
