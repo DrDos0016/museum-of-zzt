@@ -47,3 +47,57 @@ class URLTest(unittest.TestCase):
             results.append((r.status_code, r.url))
 
         self.assertEqual(results, answers)
+
+    def test_legacy_redirects(self):
+        """ Ensure old URLs properly redirect """
+        urls = [
+            "/article/categories/",
+            "/article/help/",
+            "/article/194/page/2/closer-look-turmoil/",
+            "/article/194/closer-look-turmoil/",
+            "/detail/zzt-save/",
+            "/zzt-worlds/",
+            "/super-zzt/",
+            "/utilities/",
+            "/zzm-audio/",
+            "/zig-worlds/",
+            "/modified-gfx/",
+            "/modified-exe/",
+            "/ms-dos/",
+            "/lost-worlds/",
+            "/uploaded/",
+            "/featured/",
+            # Article URLs
+            "/closer-looks/",
+            "/livestreams/",
+            # Policy URLs
+            "/data-integrity/",
+        ]
+
+        results = []
+        answers = [
+            (301, "/article/category/"),
+            (301, "/article/category/help/"),
+            (301, "/article/view/194/page/2/closer-look-turmoil/"),
+            (301, "/article/view/194/closer-look-turmoil/"),
+            (301, "/detail/view/zzt-save/"),
+            (301, "/detail/view/zzt-world/"),
+            (301, "/detail/view/super-zzt-world/"),
+            (301, "/detail/view/utility/"),
+            (301, "/detail/view/zzm-audio/"),
+            (301, "/detail/view/zig-world/"),
+            (301, "/detail/view/modified-graphics/"),
+            (301, "/detail/view/modified-executable/"),
+            (301, "/detail/view/ms-dos/"),
+            (301, "/detail/view/lost-world/"),
+            (301, "/detail/view/uploaded/"),
+            (301, "/detail/view/featured-world/"),
+            (301, "/article/category/closer-look/"),
+            (301, "/article/category/livestream/"),
+            (301, "/policy/data-integrity/"),
+        ]
+
+        for url in urls:
+            r = c.get(url)
+            results.append((r.status_code, r.url))
+        self.assertEqual(results,answers)

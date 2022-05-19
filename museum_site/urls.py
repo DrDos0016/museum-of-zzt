@@ -110,13 +110,11 @@ urlpatterns = [
     path("uploaded/", legacy_redirect, {"name": "files_by_detail", "slug": "uploaded"}, name="uploaded_worlds"),
     path("featured/", legacy_redirect, {"name": "files_by_detail", "slug": "featured-world"}, name="featured_games"),
 
-
     # /genre/ -- Proper URLs
     path("genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_overview"),
     path("genre/<str:genre>/",
          museum_site.file_views.file_directory,
          name="browse_genre"),
-
 
     # Directories
     path("browse/", museum_site.file_views.file_directory, name="browse"),
@@ -412,35 +410,17 @@ urlpatterns = [
         name="rss_uploads"),
 
     # Non-Museum Websites
-    path(
-        "twitter/", RedirectView.as_view(url="https://twitter.com/worldsofzzt"),
-    ),
-    path(
-        "tumblr/", RedirectView.as_view(url="http://worldsofzzt.tumblr.com"),
-    ),
-    path(
-        "patreon/", RedirectView.as_view(url="https://patreon.com/worldsofzzt"),
-        name="patreon"),
-    path(
-        "youtube/", RedirectView.as_view(
-            url="https://www.youtube.com/c/WorldsofZZT"),
-        ),
-    path(
-        "twitch/", RedirectView.as_view(url="https://twitch.tv/worldsofzzt"),
-        ),
-    path(
-        "github/", RedirectView.as_view(
-            url="https://github.com/DrDos0016/museum-of-zzt"
-            ),
-        ),
+    path("twitter/", RedirectView.as_view(url="https://twitter.com/worldsofzzt")),
+    path("tumblr/", RedirectView.as_view(url="http://worldsofzzt.tumblr.com"),),
+    path("patreon/", RedirectView.as_view(url="https://patreon.com/worldsofzzt"), name="patreon"),
+    path("youtube/", RedirectView.as_view(url="https://www.youtube.com/c/WorldsofZZT")),
+    path("twitch/", RedirectView.as_view(url="https://twitch.tv/worldsofzzt")),
+    path("github/", RedirectView.as_view(url="https://github.com/DrDos0016/museum-of-zzt")),
 
     # Legacy Redirects
-    path(
-        "closer-looks/", RedirectView.as_view(url="/article/closer-look/")),
-    path(
-        "livestreams/", RedirectView.as_view(url="/article/livestream/")),
-    path(
-        "data-integrity/", RedirectView.as_view(url="/policy/data-integrity/")),
+    path("closer-looks/", legacy_redirect, {"name": "article_category", "category": "closer-look"}),
+    path("livestreams/", legacy_redirect, {"name": "article_category", "category": "livestream"}),
+    path("data-integrity/", legacy_redirect, {"name": "data_integrity"}),
 
     # Tools
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
