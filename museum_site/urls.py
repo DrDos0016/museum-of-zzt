@@ -24,7 +24,7 @@ import museum_site.upload_views  # noqa: E402
 import museum_site.views  # noqa: E402
 import museum_site.zeta_views  # noqa: E402
 
-
+from museum_site.core.misc import legacy_redirect  # noqa: E402
 from museum_site.constants import (  # noqa: E402
     DETAIL_DOS,
     DETAIL_WIN16,
@@ -47,27 +47,33 @@ from museum_site.constants import (  # noqa: E402
 urlpatterns = [
     path("", museum_site.views.index, name="index"),
 
+    # /article/
+    # /article/ -- Proper URLs
+    path("article/",
+         museum_site.article_views.article_directory,
+         name="article_directory"),
+    path("article/category/",
+         museum_site.article_views.article_categories,
+         name="article_categories"),
+    path("article/category/<slug:category>/",
+         museum_site.article_views.article_directory,
+         name="article_category"),
+    path("article/search/",
+         museum_site.search_views.article_search,
+         name="article_search"),
+    path("article/view/<int:article_id>/page/<int:page>/<slug:slug>/",
+         museum_site.article_views.article_view,
+         name="article_view_page"),
+    path("article/view/<int:article_id>/<slug:slug>/",
+         museum_site.article_views.article_view,
+         {"page": 1},
+         name="article_view"),
 
-    # Articles
-    path(
-        "article/",
-        museum_site.article_views.article_directory, name="article_directory"),
-    path(
-        "article/categories/", museum_site.article_views.article_categories,
-        name="article_categories"),
-    path(
-        "article/search/", museum_site.search_views.article_search,
-        name="article_search"),
-    path(
-        "article/<slug:category>/",
-        museum_site.article_views.article_directory, name="article_category"),
-    path(
-        "article/<int:article_id>/page/<int:page>/<slug:slug>/",
-        museum_site.article_views.article_view, name="article_view_page"),
-    path(
-        "article/<int:article_id>/<slug:slug>/",
-        museum_site.article_views.article_view, {"page": 1},
-        name="article_view"),
+    # /article/ -- Legacy Redirects
+    path("article/categories/", legacy_redirect, {"name": "article_categories"}),
+    path("article/<slug:category>/", legacy_redirect, {"name": "article_category"}),
+    path("article/<int:article_id>/page/<int:page>/<slug:slug>/", legacy_redirect, {"name": "article_view_page"}),
+    path("article/<int:article_id>/<slug:slug>/", legacy_redirect, {"name": "article_view"}),
 
     # Special Article Pages (those with urls besides /article/#/title)
     path(
@@ -150,8 +156,10 @@ urlpatterns = [
         "browse/<str:letter>/", museum_site.file_views.file_directory,
         name="browse_letter"
     ),
-    path("genre/<str:genre>/", museum_site.file_views.file_directory,
-        name="browse_genre"),
+    path(
+        "genre/<str:genre>/", museum_site.file_views.file_directory,
+        name="browse_genre"
+    ),
     path(
         "directory/<slug:category>/", museum_site.views.directory,
         name="directory"),
@@ -177,7 +185,7 @@ urlpatterns = [
 
     # ZFiles
     path(
-        "article/<str:letter>/<str:key>/",
+        "Xarticle/<str:letter>/<str:key>/",
         museum_site.file_views.file_articles,
         name="article"
     ),
