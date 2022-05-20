@@ -194,6 +194,15 @@ var details = [{% for d in file.details.all %}{{d.id}}, {% endfor %}];
             </div>
 
             <div class="field">
+                <label for="pref-statlessobj">Statless Objects</label>
+                <select name="statlessobj" id="pref-statlessobj">
+                    <option value="hidden" selected>Hidden - ZZT Style</option>
+                    <option value="s">☻ - KevEdit Style</option>
+                </select>
+            </div>
+
+
+            <div class="field">
                 <label for="pref-edges">2x Zoom</label>
                 <input name="pref-board-scale" id="board-scale" type="checkbox"{% if request.COOKIES.file_viewer_scale == "2" %} checked{% endif %}>
             </div>

@@ -6,10 +6,12 @@ class Renderer {
         this.invisible_chars = {"revealed":178, "editor":176, "invisible":32};
         this.monitor_chars = {"hidden":32, "m":77};
         this.edge_chars = {"hidden":32, "e":69}; // Nice
+        this.statlessobj_chars = {"hidden":32, "s":2};
         this.render = this.zzt_standard;
         this.invisible_style = $("select[name=invisibles]").val();
         this.monitor_style = $("select[name=monitors]").val();
         this.edge_style = $("select[name=edges]").val();
+        this.statlessobj_style = $("select[name=statlessobj]").val();
         this.bg_intensity = $("select[name=intensity]").val();
     }
 
@@ -41,15 +43,16 @@ class Renderer {
             {
                 print(ctx, ENGINE.characters[element.id], 0, x, y);
             }
-            /*
-            else if (board_number == 0 && element.id == 4) // Replace Player w/ black on black (monitor) for title screen
-            {
-                print(ctx, ENGINE.characters[element.id], 0, x, y);
-            }
-            */
-            else if (element.id == 36 || element.id == 40 || element.id == 30 || element.id == 13 || element.id == 12 ) // Objects, pushers, transporters, bombs, dupes
+            else if (element.id == 36 || element.id == 40 || element.id == 30 || element.id == 13 || element.id == 12 ) // Pushers, transporters, bombs, dupes
             {
                 print(ctx, ENGINE.characters[element.id], element.color_id, x, y); // Statless
+
+                if (element.id == 36) // Objects
+                {
+                    print(ctx, this.statlessobj_chars[this.statlessobj_style], element.color_id, x, y);
+                }
+
+
                 for (var stat_idx = 0; stat_idx < board.stats.length; stat_idx++)
                 {
 

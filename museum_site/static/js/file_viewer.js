@@ -1325,7 +1325,7 @@ $(window).bind("load", function() {
         tab_select("preferences");
     });
 
-    // Invisibles, Monitors, and Board Edges
+    // Invisibles, Monitors, Board Edges, and Statless Objects
     $("select[name=invisibles]").change(function (){
         renderer.invisible_style = $(this).val();
         renderer.render(world.boards[board_number]);
@@ -1336,6 +1336,10 @@ $(window).bind("load", function() {
     });
     $("select[name=edges]").change(function (){
         renderer.edge_style = $(this).val();
+        renderer.render(world.boards[board_number]);
+    });
+    $("select[name=statlessobj]").change(function (){
+        renderer.statlessobj_style = $(this).val();
         renderer.render(world.boards[board_number]);
     });
 
