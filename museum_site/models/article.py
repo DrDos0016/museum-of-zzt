@@ -1,12 +1,16 @@
 import os
+import re
 
 from datetime import datetime
+
+from bs4 import BeautifulSoup
 
 from django.db import models
 from django.db.models import Q
 from django.template import Template, Context
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
@@ -506,3 +510,29 @@ class Article(BaseModel):
                 context["cells"][0]["roles"].append("unlocked")
 
         return context
+
+    def export_urls(self, domain=""):
+        output = []
+
+        raw = []
+        if self.schema == "html" or self.schema == "django":
+            soup = BeautifulSoup(self.content, "html.parser")
+
+            for tag in soup.find_all("a"):
+                raw.append(tag.get("href"))
+
+        for r in raw:
+            if r.startswith("{%"):
+                tag = r.split(" ")
+                if len(tag) > 4:
+                    #print("HEY WEIRD TAG ALERT", self.id, self.title, tag)
+                    output.append("!!SKIPME!! " + r)
+            else:
+                output.append(r)
+
+        if domain:
+            output = list(map(lambda o: domain + o if (not o.startswith("http") and not o.startswith("mailto")) else o, output))
+        output.sort()
+
+
+        return output

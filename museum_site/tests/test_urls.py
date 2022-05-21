@@ -101,3 +101,14 @@ class URLTest(unittest.TestCase):
             r = c.get(url)
             results.append((r.status_code, r.url))
         self.assertEqual(results,answers)
+
+    """
+    def test_article_urls(self):
+        # Find broken links in articles
+        qs = Article.objects.all().order_by("id")
+        for a in qs:
+            urls = a.export_urls(domain="http://django.pi:8000")
+            for url in urls:
+                r = c.get(url)
+                self.assertEqual((a, url, r.status_code), (a, url, 200), msg="IDK MSG")
+    """
