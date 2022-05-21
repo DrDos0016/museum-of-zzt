@@ -13,8 +13,7 @@ from django.contrib.sessions.models import Session  # noqa: E402
 from django.contrib.auth.models import User  # noqa: E402
 
 from museum_site.models import *  # noqa: E402
-from museum_site.constants import (
-    REMOVED_ARTICLE, DETAIL_REMOVED, UPLOAD_CONTACT_NONE)  # noqa: E402
+from museum_site.constants import *  # noqa: E402
 from poll.models import *  # noqa: E402
 
 def main():
