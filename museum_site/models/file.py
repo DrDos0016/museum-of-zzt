@@ -27,34 +27,11 @@ from museum_site.common import (
     redirect_with_querystring
 )
 from museum_site.constants import SITE_ROOT, ZETA_RESTRICTED, LANGUAGES
+from museum_site.core.detail_identifiers import *
 from museum_site.models.review import Review
 from museum_site.models.article import Article
 from museum_site.models.genre import Genre
-
 from museum_site.models.base import BaseModel
-
-DETAIL_DOS = 1
-DETAIL_WIN16 = 2
-DETAIL_WIN32 = 3
-DETAIL_WIN64 = 4
-DETAIL_LINUX = 5
-DETAIL_OSX = 6
-DETAIL_FEATURED = 7
-DETAIL_CONTEST = 8
-DETAIL_ZZM = 9
-DETAIL_GFX = 10
-DETAIL_MOD = 11
-DETAIL_ETC = 12
-DETAIL_SZZT = 13
-DETAIL_UTILITY = 14
-DETAIL_ZZT = 15
-DETAIL_ZIG = 16
-DETAIL_LOST = 17
-DETAIL_UPLOADED = 18
-DETAIL_REMOVED = 19
-DETAIL_CORRUPT = 20
-DETAIL_WEAVE = 37
-DETAIL_PROGRAM = 33
 
 
 class FileManager(models.Manager):
@@ -269,11 +246,11 @@ class File(BaseModel):
     PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not \
     been fully checked by staff."
     ICONS = {
-        "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role":"explicit-icon"},
-        "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its contents have not been fully checked by staff.", "role":"unpub-icon"},
-        "featured": {"glyph": "🗝️", "title": "This file is a featured world.", "role":"fg-icon"},
-        "lost": {"glyph": "❌", "title": "This file is a known to be lost. No download is available.", "role":"lost-icon"},
-        "weave": {"glyph": "🧵", "title": "This file contains content designed for Weave ZZT.", "role":"weave-icon"},
+        "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role": "explicit-icon"},
+        "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its contents have not been fully checked by staff.", "role": "unpub-icon"},
+        "featured": {"glyph": "🗝️", "title": "This file is a featured world.", "role": "fg-icon"},
+        "lost": {"glyph": "❌", "title": "This file is a known to be lost. No download is available.", "role": "lost-icon"},
+        "weave": {"glyph": "🧵", "title": "This file contains content designed for Weave ZZT.", "role": "weave-icon"},
     }
 
     REVIEW_NO = 0
@@ -657,7 +634,6 @@ class File(BaseModel):
         program = self.details.all().values_list("id", flat=True)
         return True if DETAIL_PROGRAM in program else False
 
-
     def supports_zeta_player(self):
         output = False
 
@@ -1017,51 +993,50 @@ class File(BaseModel):
                 url = "/download/{}/{}".format(self.letter, self.key)
             else:
                 value = "Download"
-                url=self.download_url()
+                url = self.download_url()
 
-            link = {"datum": "link", "value":value, "url":url, "roles":["download-link"], "icons":self.get_all_icons()}
+            link = {"datum": "link", "value": value, "url": url, "roles": ["download-link"], "icons": self.get_all_icons()}
         else:
-            link = {"datum": "text", "value":"Download", "kind":"faded"}
+            link = {"datum": "text", "value": "Download", "kind": "faded"}
 
         links.append(link)
 
-
         # Play Online
         if self.actions["play"]:
-            link = {"datum": "link", "value":"Play Online", "url":self.play_url(), "roles":["play-link"], "icons":self.get_major_icons()}
+            link = {"datum": "link", "value": "Play Online", "url": self.play_url(), "roles": ["play-link"], "icons": self.get_major_icons()}
         else:
-            link = {"datum": "text", "value":"Play Online", "kind":"faded"}
+            link = {"datum": "text", "value": "Play Online", "kind": "faded"}
         links.append(link)
 
         # View Files
         if self.actions["view"]:
-            link = {"datum": "link", "value":"View Files", "url": self.file_url(), "roles":["view-link"], "icons":self.get_major_icons()}
+            link = {"datum": "link", "value": "View Files", "url": self.file_url(), "roles": ["view-link"], "icons": self.get_major_icons()}
         else:
-            link = {"datum": "text", "value":"View Files", "kind":"faded"}
+            link = {"datum": "text", "value": "View Files", "kind": "faded"}
         links.append(link)
 
         # Reviews
         if self.actions["review"]:
-            link = {"datum": "link", "value":"Reviews ({})".format(self.review_count), "url":self.review_url(), "roles":["review-link"]}
+            link = {"datum": "link", "value": "Reviews ({})".format(self.review_count), "url": self.review_url(), "roles": ["review-link"]}
         else:
-            link = {"datum": "text", "value":"Reviews (0)", "kind":"faded"}
+            link = {"datum": "text", "value": "Reviews (0)", "kind": "faded"}
         links.append(link)
 
         # Articles
         if self.actions["article"]:
-            link = {"datum": "link", "value":"Articles ({})".format(self.article_count), "url":self.article_url(), "roles":["article-link"]}
+            link = {"datum": "link", "value": "Articles ({})".format(self.article_count), "url": self.article_url(), "roles": ["article-link"]}
         else:
-            link = {"datum": "text", "value":"Articles (0)", "kind":"faded"}
+            link = {"datum": "text", "value": "Articles (0)", "kind": "faded"}
         links.append(link)
 
         # Attributes
-        link = {"datum": "link", "value":"Attributes", "url":self.attributes_url(), "roles":["attribute-link"]}
+        link = {"datum": "link", "value": "Attributes", "url": self.attributes_url(), "roles": ["attribute-link"]}
         links.append(link)
 
         if debug:
-            link = {"datum": "link", "value":"Edit ZF#{}".format(self.id), "url":self.admin_url(), "roles":["debug-link"], "kind":"debug"}
+            link = {"datum": "link", "value": "Edit ZF#{}".format(self.id), "url": self.admin_url(), "roles": ["debug-link"], "kind": "debug"}
             links.append(link)
-            link = {"datum": "link", "value":"Tools ZF#{}".format(self.id), "url":self.tool_url(), "roles":["debug-link"], "kind":"debug"}
+            link = {"datum": "link", "value": "Tools ZF#{}".format(self.id), "url": self.tool_url(), "roles": ["debug-link"], "kind": "debug"}
             links.append(link)
 
         return links
@@ -1097,7 +1072,6 @@ class File(BaseModel):
             context["utility_description"] = self.description
             context["detail_name"] = "Utility"
 
-
         return context
 
     def detailed_block_context(self, extras=None, *args, **kwargs):
@@ -1106,31 +1080,49 @@ class File(BaseModel):
         context.update(
             tag={"opening": "div", "closing": "/div"},
             columns=[],
-            title={"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons()},
+            title={"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons()},
         )
 
         # Prepare Columns
         context["columns"].append([
-            {"datum": "ssv-links", "label": "Author"+("s" if len(self.ssv_list("author")) > 1 else ""), "values":self.ssv_list("author"), "url":"/search/?author="},
-            {"datum": "ssv-links", "label":"Compan"+("ies" if len(self.ssv_list("company")) > 1 else "y"), "values":self.ssv_list("company"), "url":"/search/?company="},
-            {"datum": "link", "label":"Released", "value":(self.release_date or "Unknown"), "url":"/search/?year={}".format(self.release_year(default="unk"))},
-            {"datum": "text", "label": "Genre"+("s" if len(self.genres.all()) > 1 else ""), "value":self.genre_links()},
-            {"datum": "text", "label": "Filename", "value":self.filename},
-            {"datum": "text", "label": "Size", "value":filesizeformat(self.size)},
+            {
+                "datum": "ssv-links", "label": "Author"+("s" if len(self.ssv_list("author")) > 1 else ""),
+                "values": self.ssv_list("author"), "url": "/search/?author="
+            },
+            {
+                "datum": "ssv-links", "label": "Compan"+("ies" if len(self.ssv_list("company")) > 1 else "y"),
+                "values": self.ssv_list("company"), "url": "/search/?company="
+            },
+            {
+                "datum": "link", "label": "Released", "value": (self.release_date or "Unknown"),
+                "url": "/search/?year={}".format(self.release_year(default="unk"))
+            },
+            {"datum": "text", "label": "Genre"+("s" if len(self.genres.all()) > 1 else ""), "value": self.genre_links()},
+            {"datum": "text", "label": "Filename", "value": self.filename},
+            {"datum": "text", "label": "Size", "value": filesizeformat(self.size)},
         ])
 
         context["columns"].append([
-            {"datum": "text", "label": "Details", "value":self.details_links()},
-            {"datum": "text", "label":"Rating", "value":self.rating_str(), "title":"Based on {} review{}".format(self.review_count, "s" if self.review_count != 1 else "")},
-            {"datum": "text", "label":"Boards", "value":self.boards_str(), "title":"Playable/Total Boards. Values are not 100% accurate." if self.total_boards else ""},
-            {"datum": "language-links", "label":"Language"+("s" if len(self.ssv_list("language")) > 1 else ""), "values":self.language_pairs(), "url":"/search/?lang="},
+            {"datum": "text", "label": "Details", "value": self.details_links()},
+            {
+                "datum": "text", "label": "Rating", "value": self.rating_str(),
+                "title": "Based on {} review{}".format(self.review_count, "s" if self.review_count != 1 else "")
+            },
+            {
+                "datum": "text", "label": "Boards", "value": self.boards_str(),
+                "title": "Playable/Total Boards. Values are not 100% accurate." if self.total_boards else ""
+            },
+            {
+                "datum": "language-links", "label": "Language"+("s" if len(self.ssv_list("language")) > 1 else ""),
+                "values": self.language_pairs(), "url": "/search/?lang="
+            },
 
         ])
 
         if self.is_uploaded() and self.upload_set.first():
-            context["columns"][1].append({"datum": "text", "label":"Upload Date", "value":self.upload_set.first().date})
+            context["columns"][1].append({"datum": "text", "label": "Upload Date", "value": self.upload_set.first().date})
         if not self.is_uploaded() and self.publish_date:
-            context["columns"][1].append({"datum": "text", "label":"Publish Date", "value":self.publish_date_str()})
+            context["columns"][1].append({"datum": "text", "label": "Publish Date", "value": self.publish_date_str()})
 
         # Prepare Links
         context["links"] = self.links()
@@ -1139,9 +1131,10 @@ class File(BaseModel):
             context["columns"][1].append(
                 {
                     "datum": "multi-link",
-                    "roles":["debug-link"], "kind":"debug",
+                    "roles": ["debug-link"],
+                    "kind": "debug",
                     "label": "Debug",
-                    "values":[
+                    "values": [
                         {"url": self.admin_url(), "text": "Edit {}".format(self.pk)},
                         {"url": self.tool_url(), "text": "Tools {}".format(self.pk)},
                     ]
@@ -1159,25 +1152,26 @@ class File(BaseModel):
             self.init_actions()
 
         if self.actions["download"]:
-            link = {"datum": "link", "value":"DL", "url":self.download_url(), "tag":"td",
-                    "icons":self.get_all_icons()}
+            link = {"datum": "link", "value": "DL", "url": self.download_url(), "tag": "td",
+                    "icons": self.get_all_icons()}
         else:
-            link = {"datum": "text", "value":"DL", "kind":"faded", "tag":"td"}
+            link = {"datum": "text", "value": "DL", "kind": "faded", "tag": "td"}
         cells.append(link)
 
         if self.actions["view"]:
-            link = {"datum": "link", "value":self.title, "url":self.url(), "tag":"td",
-                "icons":self.get_all_icons()}
+            link = {"datum": "link", "value": self.title, "url": self.url(), "tag": "td",
+                    "icons": self.get_all_icons()}
         else:
-            link = {"datum": "text", "value":self.title, "tag":"td", "kind":"faded"}
+            link = {"datum": "text", "value": self.title, "tag": "td", "kind": "faded"}
         cells.append(link)
 
-
-        cells.append({"datum": "ssv-links", "values":self.ssv_list("author"), "url":"/search/?author=", "tag":"td"})
-        cells.append({"datum": "ssv-links", "values":self.ssv_list("company"), "url":"/search/?company=", "tag":"td"})
-        cells.append({"datum": "text", "value":self.genre_links(), "tag": "td"}),
-        cells.append({"datum": "link", "value":(self.release_date or "Unknown"), "url":"/search/?year={}".format(self.release_year(default="unk")), "tag":"td"})
-        cells.append({"datum": "text", "value":self.rating_str(show_maximum=False) if self.rating else "—", "tag":"td"})
+        cells.append({"datum": "ssv-links", "values": self.ssv_list("author"), "url": "/search/?author=", "tag": "td"})
+        cells.append({"datum": "ssv-links", "values": self.ssv_list("company"), "url": "/search/?company=", "tag": "td"})
+        cells.append({"datum": "text", "value": self.genre_links(), "tag": "td"}),
+        cells.append(
+            {"datum": "link", "value": (self.release_date or "Unknown"), "url": "/search/?year={}".format(self.release_year(default="unk")), "tag": "td"}
+        )
+        cells.append({"datum": "text", "value": self.rating_str(show_maximum=False) if self.rating else "—", "tag": "td"})
 
         # Modify download text if needed
         if self.downloads.count():
@@ -1198,9 +1192,9 @@ class File(BaseModel):
             self.init_actions()
 
         if self.actions["view"]:
-            title_datum = {"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons()}
+            title_datum = {"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons()}
         else:
-            title_datum = {"datum": "text", "value":self.title, "kind":"faded"}
+            title_datum = {"datum": "text", "value": self.title, "kind": "faded"}
 
         context.update(
             preview=dict(url=self.preview_url, alt=self.preview_url),
@@ -1209,14 +1203,14 @@ class File(BaseModel):
         )
 
         context["columns"].append([
-            {"datum": "ssv-links", "values":self.ssv_list("author"), "url":"/search/?author="}
+            {"datum": "ssv-links", "values": self.ssv_list("author"), "url": "/search/?author="}
         ])
 
         return context
 
     def title_datum_context(self):
         # Returns a context for displaying the ZFile's title datum
-        context = {"datum": "title", "tag":"h1", "value":self.title, "icons":self.get_all_icons()}
+        context = {"datum": "title", "tag": "h1", "value": self.title, "icons": self.get_all_icons()}
         return context
 
     def _init_icons(self):
