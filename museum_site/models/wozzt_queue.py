@@ -17,8 +17,8 @@ from museum.settings import STATIC_URL
 from museum_site.models.base import BaseModel
 
 from museum_site.common import TEMP_PATH, record
-from museum_site.constants import (SITE_ROOT, DETAIL_ZZT, DETAIL_UPLOADED, DETAIL_GFX,
-                        DETAIL_LOST)
+from museum_site.constants import SITE_ROOT
+from museum_site.core.detail_identifiers import *
 from museum_site.models import File
 try:
     from museum_site.private import (

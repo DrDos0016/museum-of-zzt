@@ -4,9 +4,7 @@ from django.urls import reverse
 from django.template.defaultfilters import slugify
 
 from museum_site.models import Article, File, Review
-from museum_site.constants import (
-    DETAIL_UPLOADED, DETAIL_LOST
-)
+from museum_site.core.detail_identifiers import *
 
 
 class LatestArticlesFeed(Feed):

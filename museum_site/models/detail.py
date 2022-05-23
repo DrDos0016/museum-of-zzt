@@ -2,10 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 from museum_site.models.base import BaseModel
-from museum_site.constants import (
-    DETAIL_REMOVED, DETAIL_DOS, DETAIL_WIN16, DETAIL_WIN32, DETAIL_WIN64,
-    DETAIL_OSX, DETAIL_LINUX
-)
+from museum_site.core.detail_identifiers import *
 
 
 class DetailManager(models.Manager):

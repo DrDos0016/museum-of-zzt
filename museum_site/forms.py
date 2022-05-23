@@ -10,8 +10,9 @@ from museum_site.fields import *
 from museum_site.widgets import *
 from museum_site.common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT
 from museum_site.constants import (
-    LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, DETAIL_REMOVED
+    LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES
 )
+from museum_site.core.detail_identifiers import *
 from museum_site.private import IA_ACCESS, IA_SECRET
 
 
