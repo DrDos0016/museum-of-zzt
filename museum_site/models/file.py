@@ -54,6 +54,7 @@ DETAIL_UPLOADED = 18
 DETAIL_REMOVED = 19
 DETAIL_CORRUPT = 20
 DETAIL_WEAVE = 37
+DETAIL_PROGRAM = 33
 
 
 class FileManager(models.Manager):
@@ -652,6 +653,11 @@ class File(BaseModel):
         featured = self.details.all().values_list("id", flat=True)
         return True if DETAIL_FEATURED in featured else False
 
+    def is_program(self):
+        program = self.details.all().values_list("id", flat=True)
+        return True if DETAIL_PROGRAM in program else False
+
+
     def supports_zeta_player(self):
         output = False
 
@@ -1082,9 +1088,14 @@ class File(BaseModel):
             if self.description:
                 context["extras"].append("museum_site/blocks/extra-lost.html")
                 context["lost_description"] = self.description
-        if self.is_utility() and self.description:
+        if self.is_program() and self.description:
             context["extras"].append("museum_site/blocks/extra-utility.html")
             context["utility_description"] = self.description
+            context["detail_name"] = "Program"
+        elif self.is_utility() and self.description:
+            context["extras"].append("museum_site/blocks/extra-utility.html")
+            context["utility_description"] = self.description
+            context["detail_name"] = "Utility"
 
 
         return context
