@@ -70,7 +70,7 @@ def file_directory(
         query_string = simplify_query_string(
             request.GET.copy(), list_items=["details"], ignore=ignore
         )
-        return redirect("/search?" + query_string)
+        return redirect("/file/search/?" + query_string)
 
     default_sort = None
 
@@ -104,19 +104,19 @@ def file_directory(
         data["prefix_template"] = "museum_site/prefixes/new-releases.html"
         qs = qs.exclude(details=DETAIL_UPLOADED)
         default_sort = "-release"
-    elif request.path == "/uploaded/":
+    elif request.path == "/detail/view/uploaded/":
         data["title"] = "Upload Queue"
-        data["prefix_template"] = "museum_site/prefixes/upload-queue.html"
+        #data["prefix_template"] = "museum_site/prefixes/upload-queue.html"
 
         # Add sort by upload date
         data["sort_options"] = (
             [{"text": "Upload Date", "val": "uploaded"}] + data["sort_options"]
         )
         default_sort = "uploaded"
-    elif request.path == "/featured/":
+    elif request.path == "/detail/view/featured-world/":
         data["title"] = "Featured Worlds"
-        data["prefix_template"] = ["museum_site/prefixes/featured-world.html"]
-    elif request.path == "/roulette/":
+        #data["prefix_template"] = ["museum_site/prefixes/featured-world.html"]
+    elif request.path == "/file/roulette/":
         if not request.GET.get("seed"):
             return redirect(
                 "/roulette?seed={}".format(int(request.GET.get("seed", time())))
@@ -133,7 +133,7 @@ def file_directory(
         default_sort = None
 
         qs = File.objects.roulette(data["rng_seed"], PAGE_SIZE)
-    elif request.path == "/search/":
+    elif request.path == "/file/search/":
         data["title"] = "Search Results"
         search_type = "basic" if request.GET.get("q") else "advanced"
         if search_type == "basic":

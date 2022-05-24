@@ -526,7 +526,7 @@ class File(BaseModel):
         return "/attributes/{}/{}/".format(self.letter, self.key)
 
     def tool_url(self):
-        return "/tools/{}/{}/".format(self.letter, self.filename)
+        return "/tools/{}/".format(self.key)
 
     def phys_path(self):
         return os.path.join(SITE_ROOT + self.download_url())

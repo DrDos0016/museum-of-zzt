@@ -31,11 +31,11 @@ except ImportError:
 
 
 @staff_member_required
-def add_livestream(request, pk):
+def add_livestream(request, key):
     """ Returns page to add a livestream VOD article """
     data = {
         "title": "Tools",
-        "file": File.objects.get(pk=pk),
+        "file": File.objects.get(key=key),
         "today": str(datetime.now())[:10],
         "series_choices": Series.objects.all()
     }
@@ -199,9 +199,9 @@ def crediting_preferences(request):
 
 
 @staff_member_required
-def extract_font(request, pk):
+def extract_font(request, key):
     data = {"title": "Extract Font"}
-    f = File.objects.get(pk=pk)
+    f = File.objects.get(key=key)
     data["file"] = f
 
     zip_file = zipfile.ZipFile(f.phys_path())
@@ -265,10 +265,10 @@ def log_viewer(request):
 
 
 @staff_member_required
-def manage_details(request, letter, filename):
+def manage_details(request, key):
     """ Returns page with latest Museum scan results"""
     data = {"title": "Replace Zip"}
-    data["file"] = File.objects.get(letter=letter, filename=filename)
+    data["file"] = File.objects.get(key=key)
 
     with ZipFile(data["file"].phys_path(), "r") as zf:
         data["file_list"] = zf.namelist()
@@ -300,10 +300,10 @@ def manage_details(request, letter, filename):
 
 
 @staff_member_required
-def mirror(request, letter, filename):
+def mirror(request, key):
     data = {"title": "Internet Archive Mirroring"}
 
-    zfile = File.objects.get(letter=letter, filename=filename)
+    zfile = File.objects.get(key=key)
     engine = None
     description = ""
     if zfile.is_zzt():
@@ -511,17 +511,20 @@ def publication_pack_file_associations(request):
 
 
 @staff_member_required
-def publish(request, pk):
+def publish(request, key):
     """ Returns page to publish a file marked as uploaded """
     data = {
         "title": "Publish",
-        "file": File.objects.get(pk=pk),
+        "file": File.objects.get(key=key),
         "file_list": [],
         "suggested_button": True,  # Show "Suggested" button after detail list
         "hints": [],
         "hint_ids": [],
     }
     data["detail_cats"] = Detail.objects.advanced_search_categories()
+
+    if not data["file"].is_uploaded():
+        data["published"] = True
 
     if request.POST.get("publish"):
         # Move the file
@@ -568,9 +571,9 @@ def publish(request, pk):
 
 
 @staff_member_required
-def reletter(request, pk):
+def reletter(request, key):
     data = {"title": "Re-Letter Zip"}
-    data["file"] = File.objects.get(pk=pk)
+    data["file"] = File.objects.get(key=key)
 
     if request.POST.get("new_letter"):
         letter = request.POST["new_letter"].lower()
@@ -798,13 +801,13 @@ def stream_card(request):
 
 
 @staff_member_required
-def tool_index(request, letter=None, filename=None):
+def tool_index(request, key=None):
     data = {
         "title": "Tool Index",
         "pending_review_count": Review.objects.filter(approved=False).count()
     }
-    if letter and filename:
-        data["file"] = File.objects.get(letter=letter, filename=filename)
+    if key:
+        data["file"] = File.objects.get(key=key)
     letters = "1abcdefghijklmnopqrstuvwxyz"
 
     """ Atrocious variable names """
@@ -839,6 +842,8 @@ def tool_index(request, letter=None, filename=None):
                     "<str:letter>", data["file"].letter
                 ).replace(
                     "<str:filename>", data["file"].filename
+                ).replace(
+                    "<str:key>", data["file"].key
                 )
                 file_tool_list.append({
                     "url": formatted_pattern,
@@ -920,12 +925,12 @@ def user_list(request):
 
 
 @staff_member_required
-def set_screenshot(request, pk):
+def set_screenshot(request, key):
     """ Returns page to generate and set a file's screenshot """
     data = {
         "title": "Set Screenshot",
     }
-    zfile = File.objects.get(pk=pk)
+    zfile = File.objects.get(key=key)
     data["file"] = zfile
     data["file_list"] = []
 

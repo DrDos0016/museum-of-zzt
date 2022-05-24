@@ -72,6 +72,11 @@ class URLTest(unittest.TestCase):
             "/livestreams/",
             # Policy URLs
             "/data-integrity/",
+            # File URLs
+            "/roulette/?seed=1653414763",
+            "/search/",
+            "/advanced-search/",
+            "/mass-downloads/",
         ]
 
         results = []
@@ -95,10 +100,15 @@ class URLTest(unittest.TestCase):
             (301, "/article/category/closer-look/"),
             (301, "/article/category/livestream/"),
             (301, "/policy/data-integrity/"),
+            (301, "/file/roulette/?seed=1653414763"),
+            (301, "/file/search/"),
+            (301, "/file/advanced-search/"),
+            (301, "/file/mass-downloads/"),
         ]
 
         for url in urls:
             r = c.get(url)
+            print(r)
             results.append((r.status_code, r.url))
         self.assertEqual(results,answers)
 
