@@ -131,7 +131,7 @@ urlpatterns = [
         name="new_releases"),
 
 
-    # /review/ -- Proper URLS
+    # /review/ -- Proper URLs
     path("review/",
          museum_site.review_views.Review_Directory_View.as_view(),
          name="review_directory"),
@@ -144,11 +144,22 @@ urlpatterns = [
     path("review/search/",
          museum_site.review_views.Review_Directory_View.as_view(),
          name="review_search"),
+    path("review/<str:letter>/<str:key>/",
+         museum_site.file_views.review,
+         name="reviews"),
 
-    # /series/ -- Proper URLS
+    # /series/ -- Proper URLs
     path("series/",
          museum_site.series_views.Series_Directory_View.as_view(),
          name="series_directory"),
+    path("series/<int:series_id>/<slug:slug>/",
+         museum_site.series_views.Series_Overview_View.as_view(),
+         name="series_overview"),
+
+
+    # /file/ -- Proper URLs
+    path("file/random/", museum_site.views.random, name="random"),
+    path("file/roulette/", museum_site.file_views.file_directory, name="roulette"),
 
     # ZFiles
     path(
@@ -176,9 +187,6 @@ urlpatterns = [
         museum_site.zeta_views.zeta_launcher,
         {"components": ["credits", "controls", "instructions", "players"]},
         name="play"),
-    path(
-        "review/<str:letter>/<str:key>/",
-        museum_site.file_views.review, name="reviews"),
 
     # Help
     path("help/", RedirectView.as_view(url="/article/help/")),
@@ -186,7 +194,7 @@ urlpatterns = [
     path("help/genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="help_genre"),
     path("help/zfile/", museum_site.help_views.zfiles, name="help_zfiles"),
 
-    # Special Pages
+    # /*/ -- Special Pages
     path("explicit-warning/", museum_site.views.explicit_warning, name="explicit_warning"),
     path(
         "discord/", museum_site.views.discord_overview, name="discord"),
@@ -216,18 +224,10 @@ urlpatterns = [
          name="upload_policy"),
 
     # Random ZZT Worlds
-    path("random/", museum_site.views.random, name="random"),
-    path(
-        "roulette/", museum_site.file_views.file_directory, name="roulette"
-    ),
+    path("random/", legacy_redirect, {"name": "random"}),
+    path("roulette/", legacy_redirect, {"name": "roulette"}),
 
-    # Series
-    path(
-        "series/<int:series_id>/<slug:slug>/",
-        museum_site.series_views.Series_Overview_View.as_view(),
-        name="series_overview"),
-
-    # Search
+    # Search -- Adjust these URLs TODO
     path(
         "advanced-search/", museum_site.search_views.advanced_search,
         name="advanced_search"),
