@@ -168,7 +168,8 @@ function convert_suggested_to_string()
             <input type="checkbox" value="1" name="spotlight" checked>
         </div>
 
-        <input type="submit" name="publish" id="publish" value="Publish File">
+        {% if published %}<b>THIS FILE HAS ALREADY BEEN PUBLISHED</b>
+        {% else %}<input type="submit" name="publish" id="publish" value="Publish File">{% endif %}
     </div>
     {% include "museum_site/blocks/content_field.html" %}
 </div>
