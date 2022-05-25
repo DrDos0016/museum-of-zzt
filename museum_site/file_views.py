@@ -8,11 +8,11 @@ from museum_site.forms import ReviewForm
 from museum_site.models import *
 
 
-def file_attributes(request, letter, key):
+def file_attributes(request, key):
     data = {}
 
-    if key.lower().endswith(".zip"):  # Try old URLs with zip in them
-        return redirect_with_querystring("file_attributes", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+    if key.lower().endswith(".zip"):  # Try old URLs with zip in them -- TODO MAY 24 confirm this is still the best solution
+        return redirect_with_querystring("file_attributes", request.META.get("QUERY_STRING"), key=key[:-4])
 
     data["file"] = get_object_or_404(File, key=key)
     data["file"].init_actions()
@@ -174,7 +174,7 @@ def file_directory(
     return render(request, "museum_site/generic-directory.html", data)
 
 
-def file_download(request, letter, key):
+def file_download(request, key):
     """ Returns page listing all download locations with a provided file """
     data = {}
 
@@ -184,27 +184,27 @@ def file_download(request, letter, key):
     data["file"] = get_object_or_404(File, key=key)
     data["title"] = data["file"].title + " - Downloads"
     data["downloads"] = data["file"].downloads.all()
-    data["letter"] = letter
+    data["letter"] = data["file"].letter
 
     return render(request, "museum_site/download.html", data)
 
 
-def file_articles(request, letter, key):
+def file_articles(request, key):
     """ Returns page listing all articles associated with a provided file. """
     data = {}
 
     if key.lower().endswith(".zip"):  # Try old URLs with zip in them
-        return redirect_with_querystring("article", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+        return redirect_with_querystring("article", request.META.get("QUERY_STRING"), key=key[:-4])
 
     data["file"] = get_object_or_404(File, key=key)
     data["title"] = data["file"].title + " - Articles"
     data["articles"] = data["file"].articles.not_removed()
-    data["letter"] = letter
+    data["letter"] = data["file"].letter
 
     return render(request, "museum_site/article.html", data)
 
 
-def file_viewer(request, letter, key, local=False):
+def file_viewer(request, key, local=False):
     """ Returns page exploring a file's zip contents """
     data = {
         "custom_layout": "fv-grid",
@@ -219,7 +219,7 @@ def file_viewer(request, letter, key, local=False):
             data["file"] = qs[0]
         else:
             if key.lower().endswith(".zip"):  # Try old URLs with zip in them
-                return redirect_with_querystring("file", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+                return redirect_with_querystring("file", request.META.get("QUERY_STRING"), key=key[:-4])
             else:
                 return redirect("/search?filename={}&err=404".format(key))
 
@@ -230,7 +230,7 @@ def file_viewer(request, letter, key, local=False):
                 return check
 
         data["title"] = data["file"].title
-        data["letter"] = letter
+        data["letter"] = data["file"].letter
 
         # Check for recommended custom charset
         for charset in CUSTOM_CHARSETS:
