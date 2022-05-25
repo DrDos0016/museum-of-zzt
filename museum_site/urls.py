@@ -101,12 +101,30 @@ urlpatterns = [
     path("file/advanced-search/", museum_site.search_views.advanced_search, name="advanced_search"),
     path("file/search/", museum_site.file_views.file_directory, name="search"),
     path("file/mass-downloads/", museum_site.views.mass_downloads, name="mass_downloads"),
+
+    path("file/article/<str:key>/", museum_site.file_views.file_articles, name="article"),
+    path("file/attribute/<str:key>/", museum_site.file_views.file_attributes, name="file_attributes"),
+    path("file/download/<str:key>/", museum_site.file_views.file_download, name="file_download"),
+    path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "letter": "!", "key": ""}, name="local_file"),
+    path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),
+    path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),
+    path(
+        "file/play/<str:key>/", museum_site.zeta_views.zeta_launcher,
+        {"components": ["credits", "controls", "instructions", "players"]}, name="play"
+    ),
     # /file/ -- Legacy Redirects
     path("random/", museum_site.views.random),  # No need to double redirect here.
     path("roulette/", legacy_redirect, {"name": "roulette"}),
     path("search/", legacy_redirect, {"name": "search"}),
     path("advanced-search/", legacy_redirect, {"name": "advanced_search"}),
     path("mass-downloads/", legacy_redirect, {"name": "mass_downloads"}),
+    path("article/<str:letter>/<str:key>/", legacy_redirect, {"name": "article", "strip": ["letter"]}),
+    path("attributes/<str:letter>/<str:key>/", legacy_redirect, {"name": "file_attributes", "strip": ["letter"]}),
+    path("download/<str:letter>/<str:key>/", legacy_redirect, {"name": "file_download", "strip": ["letter"]}),
+    path("file/local/", legacy_redirect, {"name": "local_file"}),
+    path("file/<str:letter>/<str:key>/", legacy_redirect, {"name": "file", "strip": ["letter"]}),
+    path("pk/<int:pk>/", legacy_redirect, {"name": "get_file_by_pk"}),
+    path("play/<str:letter>/<str:key>/", legacy_redirect, {"name": "play", "strip": ["letter"]}),
 
     # /genre/
     path("genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_overview"),
@@ -236,18 +254,6 @@ urlpatterns = [
     path("directory/<slug:category>/", museum_site.views.directory, name="directory"),
     path("new/", museum_site.file_views.file_directory, name="new_files"),
     path("new-releases/", museum_site.file_views.file_directory, name="new_releases"),
-
-    # ZFiles
-    path("article/<str:letter>/<str:key>/", museum_site.file_views.file_articles, name="article"),
-    path("attributes/<str:letter>/<str:key>/", museum_site.file_views.file_attributes, name="file_attributes"),
-    path("download/<str:letter>/<str:key>/", museum_site.file_views.file_download, name="file_download"),
-    path("file/local/", museum_site.file_views.file_viewer, {"local": True, "letter": "!", "key": ""}, name="local_file"),
-    path("file/<str:letter>/<str:key>/", museum_site.file_views.file_viewer, name="file"),
-    path("pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),
-    path(
-        "play/<str:letter>/<str:key>/", museum_site.zeta_views.zeta_launcher,
-        {"components": ["credits", "controls", "instructions", "players"]}, name="play"
-    ),
 
     # Legacy Redirects -- URLs which have changed but should still work to prevent link-rot
 ]

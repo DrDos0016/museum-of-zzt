@@ -6,7 +6,7 @@ from museum_site.models import *
 
 
 def zeta_launcher(
-    request, letter=None, key=None,
+    request, key=None,
     components=[
         "controls", "instructions", "credits", "advanced", "players"
     ]
@@ -14,7 +14,7 @@ def zeta_launcher(
     data = {"title": "Zeta Launcher"}
 
     if key.lower().endswith(".zip"):  # Try old URLs with zip in them
-        return redirect_with_querystring("play", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+        return redirect_with_querystring("play", request.META.get("QUERY_STRING"), key=key[:-4])
 
     # Template rendering mode
     # full - Extends "world.html", has a file header
@@ -59,7 +59,7 @@ def zeta_launcher(
     data["ZETA_EXECUTABLES"] = ZETA_EXECUTABLES
 
     # Get files requested
-    if letter and filename:
+    if filename:
         data["file"] = File.objects.filter(key=key).first()
     else:
         data["file"] = None  # This will be the "prime" file

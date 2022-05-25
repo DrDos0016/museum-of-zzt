@@ -13,33 +13,41 @@ class URLTest(unittest.TestCase):
         urls = [
             "/file/a/oaktown1.zip",
             "/file/a/oaktown1.zip/",
+            "/file/view/oaktown1.zip/",
             "/play/a/oaktown1.zip/",
+            "/file/play/oaktown1.zip/",
             "/review/a/oaktown1.zip/",
             "/file/a/aura%202004-11-13.zip",
             "/file/a/aura%202004-11-13.zip/",
             "/file/a/aura%202004-11-13.zip/?file=oldAURA.ZZT&board=25",
+            "/file/view/aura%202004-11-13.zip/?file=oldAURA.ZZT&board=25",
             "/file/t/tweird.zip/?file=TWEIRD.ZZT&board=24",
             "/play/t/tweird.zip/",
             "/attributes/a/aura 2004-11-13.zip/",
             "/play/a/aura 2004-11-13.zip/?player=zeta&mode=popout&scale=1",
             "/play/a/aura 2004-11-13.zip/?player=zeta&mode=popout&scale=1&live=1&world=oldAURA.ZZT&start=36",
+            "/file/play/aura%202004-11-13.zip/?player=zeta&mode=popout&scale=1&live=1&world=oldAURA.ZZT&start=36",
             "/article/m/merbotia.zip/",
         ]
         results = []
         answers = [
-            (301, "/file/a/oaktown1.zip/"),
-            (302, "/file/a/oaktown1/"),
-            (302, "/play/a/oaktown1/"),
+            (301, "/file/a/oaktown1.zip/"),  # Which then continues redirecting...
+            (301, "/file/view/oaktown1.zip/"),
+            (302, "/file/view/oaktown1/"),
+            (301, "/file/play/oaktown1.zip/"),
+            (302, "/file/play/oaktown1/"),
             (302, "/review/a/oaktown1/"),
             (301, "/file/a/aura%202004-11-13.zip/"),
-            (302, "/file/a/aura%202004-11-13/"),
-            (302, "/file/a/aura%202004-11-13/?file=oldAURA.ZZT&board=25"),
-            (302, "/file/t/tweird/?file=TWEIRD.ZZT&board=24"),
-            (302, "/play/t/tweird/"),
-            (302, "/attributes/a/aura%202004-11-13/"),
-            (302, "/play/a/aura%202004-11-13/?player=zeta&mode=popout&scale=1"),
-            (302, "/play/a/aura%202004-11-13/?player=zeta&mode=popout&scale=1&live=1&world=oldAURA.ZZT&start=36"),
-            (302, "/article/m/merbotia/"),
+            (301, "/file/view/aura%202004-11-13.zip/"),
+            (301, "/file/view/aura%202004-11-13.zip/?file=oldAURA.ZZT&board=25"),
+            (302, "/file/view/aura%202004-11-13/?file=oldAURA.ZZT&board=25"),
+            (301, "/file/view/tweird.zip/?file=TWEIRD.ZZT&board=24"),
+            (301, "/file/play/tweird.zip/"),
+            (301, "/file/attribute/aura%202004-11-13.zip/"),
+            (301, "/file/play/aura%202004-11-13.zip/?player=zeta&mode=popout&scale=1"),
+            (301, "/file/play/aura%202004-11-13.zip/?player=zeta&mode=popout&scale=1&live=1&world=oldAURA.ZZT&start=36"),
+            (302, "/file/play/aura%202004-11-13/?player=zeta&mode=popout&scale=1&live=1&world=oldAURA.ZZT&start=36"),
+            (301, "/file/article/merbotia.zip/"),
         ]
 
         for url in urls:
@@ -77,6 +85,13 @@ class URLTest(unittest.TestCase):
             "/search/",
             "/advanced-search/",
             "/mass-downloads/",
+            "/article/f/frost1/",
+            "/attributes/m/merbotia/",
+            "/download/o/on_a_distant_moon/",
+            "/file/local/",
+            "/file/m/merc/",
+            "/pk/420/",
+            "/play/e/endofwor/",
         ]
 
         results = []
@@ -104,11 +119,17 @@ class URLTest(unittest.TestCase):
             (301, "/file/search/"),
             (301, "/file/advanced-search/"),
             (301, "/file/mass-downloads/"),
+            (301, "/file/article/frost1/"),
+            (301, "/file/attribute/merbotia/"),
+            (301, "/file/download/on_a_distant_moon/"),
+            (301, "/file/view-local/"),
+            (301, "/file/view/merc/"),
+            (301, "/file/pk/420/"),
+            (301, "/file/play/endofwor/"),
         ]
 
         for url in urls:
             r = c.get(url)
-            print(r)
             results.append((r.status_code, r.url))
         self.assertEqual(results,answers)
 
