@@ -263,97 +263,64 @@ class File(BaseModel):
         (REVIEW_YES, "Can Review"),
     )
 
-    """
-    Fields:
-    letter          -- Letter the file can be found under via browse pages
-    filename        -- Name of the (Zip) file (ex: Respite.zip)
-    title           -- Name of the World (ex: Frost 1: Power)
-    sort_title      -- Title used for natural sorting
-    author          -- / sep. ABC list of authors (ex: Hercules/Nadir)
-    size            -- Filesize in bytes (ex: 420690)
-    release_date    -- Best guess release date (ex: 2001-04-16)
-    release_source  -- Source of release date (ex: ZZT file, News post, Text)
-    screenshot      -- Filename of screenshot to display (ex: 3dtalk.png)
-    company         -- / sep. ABC list of companies published (ex: ERI/IF)
-    description     -- Description of file for utilities or featured games
-    review_count    -- Number of reviews on this file
-    rating          -- Average rating if any, from file's reviews
-    details         -- Link to Detail objects
-    articles        -- Link to Article objects
-    article_count   -- Number of articles associated with this file
-    checksum        -- md5 checksum of the zip file
-    superceded      -- FK with File for the "definitive" version of a file
-    playable_boards -- Number of boards in file that can be accessed in play
-    total_boards    -- Number of boards in file that exist period
-    archive_name    -- name on archive.org (ex: zzt_burgerj)
-    aliases         -- Link to Alias objects
-    spotlight       -- Allow appearance on front page
-    can_review      -- Allow reviews on the file
-    license         -- File license if available
-    license_source  -- Source of license information
-                       (ex: LICENSE file, documentation, game.zzt)
-    downloads       -- Reference to Download sources
-    language        -- / sep. ABC list of language codes (ISO 639-1)
-    explicit        -- If the file contains explicit content
-    """
-
-    letter = models.CharField(max_length=1, db_index=True, editable=False)
-    filename = models.CharField(max_length=50)
-    key = models.CharField(max_length=50, db_index=True, default="")
-    size = models.IntegerField(default=0, editable=False)
-    title = models.CharField(max_length=80)
-    author = models.CharField(max_length=255)
-    company = models.CharField(
-        max_length=255, default="", blank=True,
-    )
+    # Fields
+    letter = models.CharField(max_length=1, db_index=True, editable=False, help_text="Letter used for filtering browse pages")
+    filename = models.CharField(max_length=50, help_text="Filename of the zip file containing this zfile's contents")
+    key = models.CharField(max_length=50, db_index=True, default="", help_text="Unique identifier used for URLs and filtering. Filename w/out extension")
+    size = models.IntegerField(default=0, editable=False, help_text="Size in bytes of the zip file")
+    title = models.CharField(max_length=80, help_text="Canonical name of the release")
+    author = models.CharField(max_length=255, help_text="Slash-separated list of (major) developers")
+    company = models.CharField(max_length=255, default="", blank=True, help_text="Slash-separated list of companies the zfile is published under")
     genre = models.CharField(max_length=255)  # TODO: This will become defunct
-    release_date = models.DateField(default=None, null=True, blank=True)
-    release_source = models.CharField(
-        max_length=20, null=True, default=None, blank=True
+    release_date = models.DateField(default=None, null=True, blank=True, help_text="Release date of zip file's contents.")
+    release_source = models.CharField(max_length=20, default="", blank=True, help_text="Source of release date when applicable.")
+    language = models.CharField(
+        max_length=50, default="en",
+        help_text="Slash-separated list of languages required to comprehend the zip file's contents. ISO 639-1 code. List defined in constants.py"
     )
-    language = models.CharField(max_length=50, default="en")
-    description = models.TextField(null=True, blank=True, default="")
+    description = models.TextField(
+        blank=True, default="", help_text="Description of contents. Wrap in quotes if written by author, leave unquoted for unofficial descriptions."
+    )
     playable_boards = models.IntegerField(
         null=True, blank=True, default=None,
-        help_text="Set automatically. Do not adjust."
+        help_text="(Estimated) count of boards visitable during gameplay. Set automatically. Do not adjust."
     )
     total_boards = models.IntegerField(
         null=True, blank=True, default=None,
-        help_text="Set automatically. Do not adjust."
+        help_text="Total number of boards contained in zip file. Set automatically. Do not adjust."
     )
     archive_name = models.CharField(
         max_length=80,
         default="",
         blank=True,
-        help_text="ex: zzt_burgerj"
+        help_text="Identifier used on archive.org mirrors. Typically the 'zzt_' + zip name w/out extension. (ex: zzt_burgerj)"
     )
-
     screenshot = models.CharField(
-        max_length=80, blank=True, null=True, default=None
+        max_length=80, blank=True, default="",
+        help_text="Filename for preview image. /static/images/screenshots/&lt;letter&gt;/&lt;screenshot&gt;"
     )
-
-    license = models.CharField(max_length=150, default="Unknown")
-    license_source = models.CharField(max_length=150, default="", blank=True)
+    license = models.CharField(max_length=150, default="Unknown", help_text="License the file is released under.")
+    license_source = models.CharField(max_length=150, default="", blank=True, help_text="Source of licensing information.")
 
     # Derived Data
-    checksum = models.CharField(
-        max_length=32, null=True, blank=True, default=""
-    )
+    checksum = models.CharField(max_length=32, blank=True, default="", help_text="md5 checksum of zip file")
     sort_title = models.CharField(
         max_length=100, db_index=True, default="", blank=True,
-        help_text="Leave blank to set automatically"
+        help_text="Autogenerated value for actual title sorting. Strips articles and pads numbers to use leading digits."
     )
 
     # Reviews
     review_count = models.IntegerField(
-        default=0, help_text="Set automatically. Do not adjust."
+        default=0, editable=False, help_text="Cached number of review associated with this zip file. Set automatically. Do not adjust."
     )
-    rating = models.FloatField(null=True, default=None, blank=True)
+    rating = models.FloatField(null=True, default=None, blank=True, help_text="Mean score based on all reviews with scores attached.")
 
     # Museum Properties
-    explicit = models.BooleanField(default=False)
-    spotlight = models.BooleanField(default=True)
-    can_review = models.IntegerField(default=REVIEW_YES, choices=REVIEW_LEVELS)
+    explicit = models.BooleanField(default=False, help_text="Boolean to mark zfile as containing explicit content.")
+    spotlight = models.BooleanField(default=True, help_text="Boolean to mark zfile as being suitable for display on the front page.")
+    can_review = models.IntegerField(
+        default=REVIEW_YES, choices=REVIEW_LEVELS, help_text="Choice of whether the file can be reviewed freely, pending approval, or not at all."
+    )
     publish_date = models.DateTimeField(
         null=True, default=None, db_index=True, blank=True,
         help_text="Date File was published on the Museum"
@@ -369,7 +336,7 @@ class File(BaseModel):
         "Article", default=None, blank=True
     )
     article_count = models.IntegerField(
-        default=0, editable=False
+        default=0, editable=False, help_text="Cached number of articles associated with this zip file. Set automatically. Do not adjust."
     )
     details = models.ManyToManyField("Detail", default=None, blank=True)
     downloads = models.ManyToManyField("Download", default=None, blank=True)
@@ -489,8 +456,7 @@ class File(BaseModel):
         return True
 
     def letter_from_title(self):
-        """ Returns the letter a file should be listed under after removing
-        articles """
+        """ Returns the letter a file should be listed under after removing (a/an/the) """
         title = self.title.lower()
         if title.startswith("the "):
             title = title.replace("the ", "", 1)
@@ -514,16 +480,19 @@ class File(BaseModel):
         return True if os.path.isfile(self.phys_path()) else False
 
     def play_url(self):
-        return "/play/{}/{}/".format(self.letter, self.key)
+        return "/file/play/{}/".format(self.key)
 
     def review_url(self):
-        return "/review/{}/{}/".format(self.letter, self.key)
+        return "/file/review/{}/".format(self.key)
 
     def file_url(self):
-        return "/file/{}/{}/".format(self.letter, self.key)
+        return "/file/view/{}/".format(self.key)
+
+    def article_url(self):
+        return "/file/article/{}/".format(self.key)
 
     def attributes_url(self):
-        return "/attributes/{}/{}/".format(self.letter, self.key)
+        return "/file/attribute/{}/".format(self.key)
 
     def tool_url(self):
         return "/tools/{}/".format(self.key)
@@ -554,9 +523,6 @@ class File(BaseModel):
             return "images/screenshots/{}".format(self.screenshot)
         else:
             return "images/screenshots/no_screenshot.png"
-
-    def article_url(self):
-        return "/article/{}/{}/".format(self.letter, self.key)
 
     def get_detail_ids(self):
         details = self.details.all()
