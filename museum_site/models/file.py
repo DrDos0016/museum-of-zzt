@@ -123,10 +123,6 @@ class FileManager(models.Manager):
         elif category == "author":
             return self.values("author").distinct().order_by("author")
 
-    def identifier(self, identifier=None, letter=None, filename=None):
-        if identifier is None:
-            return self.filter(letter=letter, filename__startswith=filename)
-
     def latest_additions(self):
         return self.filter(
             spotlight=True
@@ -476,29 +472,17 @@ class File(BaseModel):
         else:
             return "/zgames/" + self.letter + "/" + self.filename
 
-    def file_exists(self):
-        return True if os.path.isfile(self.phys_path()) else False
+    def file_exists(self): return True if os.path.isfile(self.phys_path()) else False
 
-    def play_url(self):
-        return "/file/play/{}/".format(self.key)
+    def play_url(self): return "/file/play/{}/".format(self.key)
+    def review_url(self): return "/file/review/{}/".format(self.key)
+    def file_url(self): return "/file/view/{}/".format(self.key)  # TODO: Replace all calls to this with view_url()
+    def view_url(self): return "/file/view/{}/".format(self.key)
+    def article_url(self): return "/file/article/{}/".format(self.key)
+    def attributes_url(self): return "/file/attribute/{}/".format(self.key)
+    def tool_url(self): return "/tools/{}/".format(self.key)
 
-    def review_url(self):
-        return "/file/review/{}/".format(self.key)
-
-    def file_url(self):
-        return "/file/view/{}/".format(self.key)
-
-    def article_url(self):
-        return "/file/article/{}/".format(self.key)
-
-    def attributes_url(self):
-        return "/file/attribute/{}/".format(self.key)
-
-    def tool_url(self):
-        return "/tools/{}/".format(self.key)
-
-    def phys_path(self):
-        return os.path.join(SITE_ROOT + self.download_url())
+    def phys_path(self): return os.path.join(SITE_ROOT + self.download_url())
 
     def screenshot_phys_path(self):
         """ Returns the physical path to the preview image. If the file has no
@@ -863,10 +847,6 @@ class File(BaseModel):
             return []
         return zfh.infolist()
 
-    @property
-    def identifier(self):
-        return self.letter + "/" + self.filename
-
     def release_year(self, default=""):
         if self.release_date is None:
             return default
@@ -1143,7 +1123,7 @@ class File(BaseModel):
         if self.downloads.count():
             cells[0]["value"] = "DLs…"
             cells[0]["url"] = "/download/{}".format(
-                self.identifier
+                self.key
             )
 
         context.update(cells=cells)
