@@ -36,7 +36,7 @@ class URLTest(unittest.TestCase):
             (302, "/file/view/oaktown1/"),
             (301, "/file/play/oaktown1.zip/"),
             (302, "/file/play/oaktown1/"),
-            (302, "/review/a/oaktown1/"),
+            (301, "/file/review/oaktown1.zip/"),
             (301, "/file/a/aura%202004-11-13.zip/"),
             (301, "/file/view/aura%202004-11-13.zip/"),
             (301, "/file/view/aura%202004-11-13.zip/?file=oldAURA.ZZT&board=25"),
@@ -92,6 +92,7 @@ class URLTest(unittest.TestCase):
             "/file/m/merc/",
             "/pk/420/",
             "/play/e/endofwor/",
+            "/review/l/lostmonk/"
         ]
 
         results = []
@@ -126,6 +127,7 @@ class URLTest(unittest.TestCase):
             (301, "/file/view/merc/"),
             (301, "/file/pk/420/"),
             (301, "/file/play/endofwor/"),
+            (301, "/file/review/lostmonk/"),
         ]
 
         for url in urls:

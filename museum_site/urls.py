@@ -105,6 +105,7 @@ urlpatterns = [
     path("file/article/<str:key>/", museum_site.file_views.file_articles, name="article"),
     path("file/attribute/<str:key>/", museum_site.file_views.file_attributes, name="file_attributes"),
     path("file/download/<str:key>/", museum_site.file_views.file_download, name="file_download"),
+    path("file/review/<str:key>/", museum_site.file_views.review, name="reviews"),
     path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "letter": "!", "key": ""}, name="local_file"),
     path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),
     path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),
@@ -125,6 +126,7 @@ urlpatterns = [
     path("file/<str:letter>/<str:key>/", legacy_redirect, {"name": "file", "strip": ["letter"]}),
     path("pk/<int:pk>/", legacy_redirect, {"name": "get_file_by_pk"}),
     path("play/<str:letter>/<str:key>/", legacy_redirect, {"name": "play", "strip": ["letter"]}),
+    path("review/<str:letter>/<str:key>/", legacy_redirect, {"name": "reviews", "strip": ["letter"]}),
 
     # /genre/
     path("genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_overview"),
@@ -150,7 +152,7 @@ urlpatterns = [
     path("review/author/", museum_site.review_views.Reviewer_Directory_View.as_view(), name="reviewer_directory"),
     path("review/author/<str:author>/", museum_site.review_views.Review_Directory_View.as_view(), name="reviews_by_author"),
     path("review/search/", museum_site.review_views.Review_Directory_View.as_view(), name="review_search"),
-    path("review/<str:letter>/<str:key>/", museum_site.file_views.review, name="reviews"),
+    #path("review/<str:letter>/<str:key>/", museum_site.file_views.review, name="reviews"),
 
     # /rss/
     path("rss/", museum_site.views.generic, {"template": "rss-info", "title": "RSS Feeds"}, name="rss_feeds"),
