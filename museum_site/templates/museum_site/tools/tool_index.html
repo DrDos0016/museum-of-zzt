@@ -73,7 +73,7 @@ $(document).ready(function (){
 <div>
     <select id="file-identifier">
         {% for f in all_files %}
-        <option value="{{f.letter}}/{{f.filename}}">{{f.title}}</option>
+        <option value="{{f.key}}">{{f.title}}</option>
         {% endfor %}
     </select>
     <input id="file-select" type="button" value="Select File">

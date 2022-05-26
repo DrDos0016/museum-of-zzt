@@ -905,8 +905,8 @@ def tool_index(request, key=None):
 
     if not data.get("file"):
         data["all_files"] = File.objects.all().values(
-            "letter", "filename", "title"
-        ).order_by("sort_title")
+            "key", "title"
+        ).order_by("title")
 
     data["tool_list"] = tool_list
     data["file_tool_list"] = file_tool_list
