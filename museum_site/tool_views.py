@@ -306,10 +306,10 @@ def mirror(request, key):
     zfile = File.objects.get(key=key)
     engine = None
     description = ""
-    if zfile.is_zzt():
+    if zfile.is_detail(DETAIL_ZZT):
         url_prefix = "zzt_"
         engine = "ZZT"
-    elif zfile.is_super_zzt():
+    elif zfile.is_detail(DETAIL_SZZT):
         url_prefix = "szzt_"
         engine = "Super ZZT"
 
@@ -523,7 +523,7 @@ def publish(request, key):
     }
     data["detail_cats"] = Detail.objects.advanced_search_categories()
 
-    if not data["file"].is_uploaded():
+    if not data["file"].is_detail(DETAIL_UPLOADED):
         data["published"] = True
 
     if request.POST.get("publish"):

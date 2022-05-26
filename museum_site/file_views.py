@@ -238,7 +238,7 @@ def file_viewer(request, key, local=False):
                 data["custom_charset"] = charset["filename"]
                 break
 
-        if data["file"].is_uploaded():
+        if data["file"].is_detail(DETAIL_UPLOADED):
             letter = "uploaded"
             data["uploaded"] = True
 
@@ -287,14 +287,14 @@ def file_viewer(request, key, local=False):
     data["custom_charsets"] = []
 
     if not data["local"]:
-        if data["file"].is_zzt():
+        if data["file"].is_detail(DETAIL_ZZT):
             for charset in CHARSETS:
                 if charset["engine"] == "ZZT":
                     data["charsets"].append(charset)
             for charset in CUSTOM_CHARSETS:
                 if charset["engine"] == "ZZT":
                     data["custom_charsets"].append(charset)
-        elif data["file"].is_super_zzt():
+        elif data["file"].is_detail(DETAIL_SZZT):
             for charset in CHARSETS:
                 if charset["engine"] == "SZZT":
                     data["charsets"].append(charset)

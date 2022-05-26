@@ -2,6 +2,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from museum_site.common import *
 from museum_site.constants import *
+from museum_site.core.detail_identifiers import *
 from museum_site.models import *
 
 
@@ -97,10 +98,10 @@ def zeta_launcher(
         if "zeta" in all_play_methods:
             if data["file"].supports_zeta_player():
                 compatible_players.append("zeta")
-            elif data["file"].is_uploaded():
+
                 # For unpublished worlds, assume yes but add a disclaimer
-                compatible_players.append("zeta")
-                data["unpublished"] = True
+                if data["file"].is_detail(DETAIL_UPLOADED):
+                    data["unpublished"] = True
 
         if "archive" in all_play_methods:
             if data["file"].archive_name:
@@ -201,7 +202,7 @@ def zeta_launcher(
     data["zeta_config"].base_width = 640
     data["zeta_config"].base_height = 350
 
-    if data["file"].is_super_zzt():
+    if data["file"].is_detail(DETAIL_SZZT):
         data["zeta_config"].base_height = 400
 
     return render(request, "museum_site/play_{}.html".format(player), data)

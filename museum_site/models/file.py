@@ -237,6 +237,7 @@ class File(BaseModel):
         "-publish_date": "-publish_date"
     }
     actions = None  # Populated by self.get_actions()
+    detail_ids = None  # Populated by self._get_detail_ids()
 
     SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
     PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not \
@@ -348,6 +349,12 @@ class File(BaseModel):
     def __str__(self):
         return "[" + str(self.id) + "] " + self.title
 
+    # Populating functions
+    def init_detail_ids(self):
+        if self.detail_ids is None:
+            self.detail_ids = self.details.all().values_list("id", flat=True)
+
+    # Database functions
     def basic_save(self, *args, **kwargs):
         super(File, self).save(*args, **kwargs)
 
@@ -390,6 +397,49 @@ class File(BaseModel):
             del kwargs["new_upload"]
         super(File, self).save(*args, **kwargs)
 
+    # URLs
+    def download_url(self):
+        if (not self.id) or self.is_detail(DETAIL_UPLOADED):
+            return "/zgames/uploaded/" + self.filename
+        else:
+            return "/zgames/" + self.letter + "/" + self.filename
+
+    def play_url(self): return "/file/play/{}/".format(self.key)
+    def review_url(self): return "/file/review/{}/".format(self.key)
+    def file_url(self): return "/file/view/{}/".format(self.key)  # TODO: Replace all calls to this with view_url()
+    def view_url(self): return "/file/view/{}/".format(self.key)
+    def article_url(self): return "/file/article/{}/".format(self.key)
+    def attributes_url(self): return "/file/attribute/{}/".format(self.key)
+    def tool_url(self): return "/tools/{}/".format(self.key)
+
+    def screenshot_url(self):
+        SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
+        if self.screenshot and self.screenshot not in SPECIAL_SCREENSHOTS:
+            return "images/screenshots/{}/{}".format(
+                self.letter, self.screenshot
+            )
+        elif self.screenshot:  # Special case
+            return "images/screenshots/{}".format(self.screenshot)
+        else:
+            return "images/screenshots/no_screenshot.png"
+
+    # Filepaths
+    def phys_path(self): return os.path.join(SITE_ROOT + self.download_url())
+
+    def screenshot_phys_path(self):
+        """ Returns the physical path to the preview image. If the file has no
+        preview image set or is using a shared screenshot, return an empty
+        string.
+        """
+        SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
+        if self.screenshot and self.screenshot not in SPECIAL_SCREENSHOTS:
+            return os.path.join(STATIC_PATH, "images/screenshots/{}/{}".format(
+                self.letter, self.screenshot
+            ))
+        else:
+            return ""
+
+    # Other Functions
     def jsoned(self):
         data = {
             "letter": self.letter,
@@ -458,7 +508,7 @@ class File(BaseModel):
             title = title.replace("the ", "", 1)
         elif title.startswith("a "):
             title = title.replace("a ", "", 1)
-        if title.startswith("an "):
+        elif title.startswith("an "):
             title = title.replace("an ", "", 1)
 
         letter = title[0]
@@ -466,47 +516,7 @@ class File(BaseModel):
             letter = "1"
         return letter
 
-    def download_url(self):
-        if (not self.id) or self.is_uploaded():
-            return "/zgames/uploaded/" + self.filename
-        else:
-            return "/zgames/" + self.letter + "/" + self.filename
-
     def file_exists(self): return True if os.path.isfile(self.phys_path()) else False
-
-    def play_url(self): return "/file/play/{}/".format(self.key)
-    def review_url(self): return "/file/review/{}/".format(self.key)
-    def file_url(self): return "/file/view/{}/".format(self.key)  # TODO: Replace all calls to this with view_url()
-    def view_url(self): return "/file/view/{}/".format(self.key)
-    def article_url(self): return "/file/article/{}/".format(self.key)
-    def attributes_url(self): return "/file/attribute/{}/".format(self.key)
-    def tool_url(self): return "/tools/{}/".format(self.key)
-
-    def phys_path(self): return os.path.join(SITE_ROOT + self.download_url())
-
-    def screenshot_phys_path(self):
-        """ Returns the physical path to the preview image. If the file has no
-        preview image set or is using a shared screenshot, return an empty
-        string.
-        """
-        SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
-        if self.screenshot and self.screenshot not in SPECIAL_SCREENSHOTS:
-            return os.path.join(STATIC_PATH, "images/screenshots/{}/{}".format(
-                self.letter, self.screenshot
-            ))
-        else:
-            return ""
-
-    def screenshot_url(self):
-        SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
-        if self.screenshot and self.screenshot not in SPECIAL_SCREENSHOTS:
-            return "images/screenshots/{}/{}".format(
-                self.letter, self.screenshot
-            )
-        elif self.screenshot:  # Special case
-            return "images/screenshots/{}".format(self.screenshot)
-        else:
-            return "images/screenshots/no_screenshot.png"
 
     def get_detail_ids(self):
         details = self.details.all()
@@ -515,11 +525,8 @@ class File(BaseModel):
             output.append(int(detail.id))
         return output
 
-    def author_list(self):
-        return self.author.split("/")
-
-    def company_list(self):
-        return self.company.split("/")
+    def author_list(self): return self.author.split("/")
+    def company_list(self): return self.company.split("/")
 
     def genre_list(self):
         output = []
@@ -544,55 +551,31 @@ class File(BaseModel):
             output += '<a href="{}">{}</a>, '.format(url, i)
         return output
 
-    def is_lost(self):
-        lost = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_LOST in lost else False
+    def is_lost(self):  # Used in file-review.html
+        self.init_detail_ids()
+        return True if DETAIL_LOST in self.detail_ids else False
 
-    def is_uploaded(self):
-        uploaded = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_UPLOADED in uploaded else False
+    def is_uploaded(self):  # Used in file-review.html
+        self.init_detail_ids()
+        return True if DETAIL_UPLOADED in self.detail_ids else False
 
-    def is_utility(self):
-        utility = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_UTILITY in utility else False
+    def is_weave(self):  # Used in file.html
+        self.init_detail_ids()
+        return True if DETAIL_WEAVE in self.detail_ids else False
 
-    def is_weave(self):
-        weave = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_WEAVE in weave else False
-
-    def is_zig(self):
-        zig = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_ZIG in zig else False
-
-    def is_zzt(self):
-        zzt = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_ZZT in zzt else False
-
-    def is_super_zzt(self):
-        szzt = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_SZZT in szzt else False
-
-    def is_zzm(self):
-        zzm = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_ZZM in zzm else False
-
-    def is_featured_world(self):
-        featured = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_FEATURED in featured else False
-
-    def is_program(self):
-        program = self.details.all().values_list("id", flat=True)
-        return True if DETAIL_PROGRAM in program else False
+    def is_detail(self, detail_id):
+        self.init_detail_ids()
+        return True if detail_id in self.detail_ids else False
 
     def supports_zeta_player(self):
         output = False
 
         # Normally only ZZT/SZZT files should work
-        if self.is_zzt() or self.is_super_zzt() or self.is_weave():
+        if self.is_detail(DETAIL_ZZT) or self.is_detail(DETAIL_SZZT) or self.is_detail(DETAIL_WEAVE):
             output = True
 
         # Incorrectly assume uploaded files will work
-        if self.is_uploaded():
+        if self.is_detail(DETAIL_UPLOADED):
             output = True
 
         # Forcibly Restrict Zeta via a specific config (applies to uploads as well)
@@ -784,7 +767,7 @@ class File(BaseModel):
         # Review
         if (self.actions["download"] and self.can_review) or self.review_count:
             self.actions["review"] = True
-        if self.actions["review"] and self.is_uploaded():
+        if self.actions["review"] and self.is_detail(DETAIL_UPLOADED):
             self.actions["review"] = False
 
         # Article
@@ -998,22 +981,22 @@ class File(BaseModel):
         # Append roles/extras based on details
         if self.explicit:
             context["roles"].append("explicit")
-        if self.is_uploaded():
+        if self.is_detail(DETAIL_UPLOADED):
             context["roles"].append("unpublished")
-        if self.is_featured_world():
+        if self.is_detail(DETAIL_FEATURED):
             context["roles"].append("featured")
             context["extras"].append("museum_site/blocks/extra-featured-world.html")
             context["featured_articles"] = self.articles.filter(category="Featured Game").defer("content").order_by("-publish_date")
-        if self.is_lost():
+        if self.is_detail(DETAIL_LOST):
             context["roles"].append("lost")
             if self.description:
                 context["extras"].append("museum_site/blocks/extra-lost.html")
                 context["lost_description"] = self.description
-        if self.is_program() and self.description:
+        if self.is_detail(DETAIL_PROGRAM) and self.description:
             context["extras"].append("museum_site/blocks/extra-utility.html")
             context["utility_description"] = self.description
             context["detail_name"] = "Program"
-        elif self.is_utility() and self.description:
+        elif self.is_detail(DETAIL_UTILITY) and self.description:
             context["extras"].append("museum_site/blocks/extra-utility.html")
             context["utility_description"] = self.description
             context["detail_name"] = "Utility"
@@ -1065,9 +1048,9 @@ class File(BaseModel):
 
         ])
 
-        if self.is_uploaded() and self.upload_set.first():
+        if self.is_detail(DETAIL_UPLOADED) and self.upload_set.first():
             context["columns"][1].append({"datum": "text", "label": "Upload Date", "value": self.upload_set.first().date})
-        if not self.is_uploaded() and self.publish_date:
+        if not self.is_detail(DETAIL_UPLOADED) and self.publish_date:
             context["columns"][1].append({"datum": "text", "label": "Publish Date", "value": self.publish_date_str()})
 
         # Prepare Links
@@ -1166,11 +1149,11 @@ class File(BaseModel):
 
         if self.explicit:
             self._major_icons.append(self.ICONS["explicit"])
-        if self.is_uploaded():
+        if self.is_detail(DETAIL_UPLOADED):
             self._major_icons.append(self.ICONS["unpublished"])
-        if self.is_lost():
+        if self.is_detail(DETAIL_LOST):
             self._major_icons.append(self.ICONS["lost"])
-        if self.is_weave():
+        if self.is_detail(DETAIL_WEAVE):
             self._major_icons.append(self.ICONS["weave"])
-        if self.is_featured_world():
+        if self.is_detail(DETAIL_FEATURED):
             self._minor_icons.append(self.ICONS["featured"])
