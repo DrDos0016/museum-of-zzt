@@ -318,7 +318,7 @@ def get_file_by_pk(request, pk):
     return redirect(f.attributes_url())
 
 
-def review(request, letter, key):
+def review(request, key):
     data = {
         "sort_options": [
             {"text": "Review Date (Newest)", "val": "-date"},
@@ -336,7 +336,7 @@ def review(request, letter, key):
     today = datetime.now().date()
     zfile = File.objects.filter(key=key).first()
     if key.lower().endswith(".zip"):  # Try old URLs with zip in them
-        return redirect_with_querystring("reviews", request.META.get("QUERY_STRING"), letter=letter, key=key[:-4])
+        return redirect_with_querystring("reviews", request.META.get("QUERY_STRING"), key=key[:-4])
 
     sort_keys = {
         "date": "date",
@@ -361,7 +361,7 @@ def review(request, letter, key):
     # Sort queryset
     reviews = sort_qs(reviews, data["sort"], sort_keys, default_sort="rating")
 
-    data["letter"] = letter
+    data["letter"] = zfile.letter
     data["title"] = zfile.title + " - Reviews"
 
     review_form = ReviewForm()
