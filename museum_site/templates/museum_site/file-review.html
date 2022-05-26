@@ -64,6 +64,7 @@ $(document).ready(function (){
 {% endblock %}
 
 {% block world_content %}
+{% if reviews %}
 <div class="view-links">
     <div><a href="#new-review">New Review</a></div>
     {% comment %}<div>Profanity Filter: <input type="radio" name="review-profanity-filter" value="on" {% if request.session.REVIEW_PROFANITY_FILTER == "on" %} checked{% endif %}> On  <input type="radio" name="review-profanity-filter" value="off"{% if request.session.REVIEW_PROFANITY_FILTER == "off" %} checked{% endif %}> Off</div>{% endcomment %}
@@ -76,10 +77,10 @@ Sort: <select name="sort">
     </select>
 </div>
 
-
 {% for review in reviews %}
 {% include "museum_site/blocks/review-block.html" with profanity_filter=request.session.REVIEW_PROFANITY_FILTER %}
 {% endfor %}
+{% endif %}
 
 <span id="new-review"></span>
 {% if recent %}
