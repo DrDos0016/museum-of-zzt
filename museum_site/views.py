@@ -58,6 +58,7 @@ def directory(request, category):
     data["split"] = math.ceil(len(data_list) / 4.0)
     return render(request, "museum_site/directory.html", data)
 
+
 def explicit_warning(request):
     data = {}
     data["title"] = "Explicit Content Ahead!"
@@ -78,56 +79,6 @@ def explicit_warning(request):
         return redirect("index")
 
     return render(request, "museum_site/explicit-warning.html", data)
-
-
-def exhibit(request, letter, filename, section=None, local=False):
-    """ Returns page exploring a file's zip contents """
-    data = {}
-    data["custom_layout"] = "fv-grid"
-    data["year"] = YEAR
-    data["details"] = []  # Required to show all download links
-    data["file"] = File.objects.identifier(
-        letter=letter, filename=filename
-    ).first()
-    data["local"] = local
-    if not local:
-        data["title"] = data["file"].title
-        data["letter"] = letter
-
-        # Check for recommended custom charset
-        if data["file"].id in list(CUSTOM_CHARSET_MAP.keys()):
-            data["custom_charset"] = CUSTOM_CHARSET_MAP[data["file"].id]
-
-        if data["file"].is_uploaded():
-            letter = "uploaded"
-            data["uploaded"] = True
-
-        data["files"] = []
-
-        if ".zip" in filename.lower():
-            zip_file = zipfile.ZipFile(
-                os.path.join(SITE_ROOT, "zgames", letter, filename)
-            )
-            files = zip_file.namelist()
-            files.sort(key=str.lower)
-            data["zip_info"] = zip_file.infolist()
-
-            # Filter out directories (but not their contents)
-            for f in files:
-                if f and f[-1] != os.sep:
-                    data["files"].append(f)
-            data["load_file"] = (
-                urllib.parse.unquote(request.GET.get("file", ""))
-            )
-            data["load_board"] = request.GET.get("board", "")
-    else:  # Local files
-        data["file"] = "Local File Viewer"
-        data["letter"] = letter
-
-    data["charsets"] = CHARSET_LIST
-    data["custom_charsets"] = CUSTOM_CHARSET_LIST
-
-    return render(request, "museum_site/exhibit.html", data)
 
 
 def discord_overview(request):
