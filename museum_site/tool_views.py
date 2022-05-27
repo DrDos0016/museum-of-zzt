@@ -557,8 +557,7 @@ def publish(request, key):
         # Redirect
         return redirect(
             "tool_index_with_file",
-            letter=data["file"].letter,
-            filename=data["file"].filename
+            key=data["file"].key
         )
 
     with ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
