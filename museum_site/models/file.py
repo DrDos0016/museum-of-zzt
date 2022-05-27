@@ -64,10 +64,7 @@ class FileManager(models.Manager):
             if year == "Unk":  # Unknown release year
                 qs = qs.filter(release_date=None)
             else:  # Numeric years
-                qs = qs.filter(
-                    release_date__gte="{}-01-01".format(year),
-                    release_date__lte="{}-12-31".format(year),
-                )
+                qs = qs.filter(release_date__gte="{}-01-01".format(year), release_date__lte="{}-12-31".format(year))
 
         # Filter by rating
         if p.get("min") and float(p["min"]) > 0:
@@ -104,11 +101,7 @@ class FileManager(models.Manager):
 
     def basic_search(self, q):
         return self.filter(
-            Q(title__icontains=q) |
-            Q(aliases__alias__icontains=q) |
-            Q(author__icontains=q) |
-            Q(filename__icontains=q) |
-            Q(company__icontains=q)
+            Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(company__icontains=q)
         ).distinct()
 
     def directory(self, category):
@@ -172,9 +165,7 @@ class FileManager(models.Manager):
         details = [DETAIL_ZZT, DETAIL_SZZT]
 
         # Get all valid file IDs
-        ids = list(
-            self.filter(details__id__in=details).values_list("id", flat=True)
-        )
+        ids = list(self.filter(details__id__in=details).values_list("id", flat=True))
 
         # Shuffle them
         seed(rng_seed)
@@ -187,9 +178,7 @@ class FileManager(models.Manager):
         return self.filter(details__id__in=[DETAIL_UPLOADED])
 
     def wozzt(self):
-        excluded_details = [
-            DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST, DETAIL_CORRUPT
-        ]
+        excluded_details = [DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST, DETAIL_CORRUPT]
         return self.filter(
             details__in=[DETAIL_ZZT]
         ).exclude(
@@ -236,8 +225,8 @@ class File(BaseModel):
         "-id": "-id",
         "-publish_date": "-publish_date"
     }
-    actions = None  # Populated by self.get_actions()
-    detail_ids = None  # Populated by self._get_detail_ids()
+    actions = None  # Populated by self.init_actions()
+    detail_ids = None  # Populated by self.init_detail_ids()
 
     SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
     PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not \
@@ -586,9 +575,7 @@ class File(BaseModel):
 
     def calculate_article_count(self):
         if self.id is not None:
-            self.article_count = self.articles.all().exclude(
-                published=Article.REMOVED
-            ).count()
+            self.article_count = self.articles.all().exclude(published=Article.REMOVED).count()
 
     def calculate_reviews(self):
         # Calculate Review Count
@@ -755,9 +742,7 @@ class File(BaseModel):
             self.actions["download"] = True
 
         # Play
-        if self.archive_name or (
-            self.actions["download"] and self.supports_zeta_player()
-        ):
+        if self.archive_name or (self.actions["download"] and self.supports_zeta_player()):
             self.actions["play"] = True
 
         # View
@@ -830,31 +815,17 @@ class File(BaseModel):
             return []
         return zfh.infolist()
 
-    def release_year(self, default=""):
-        if self.release_date is None:
-            return default
-        else:
-            return str(self.release_date)[:4]
+    def release_year(self, default=""): return default if self.release_date is None else str(self.release_date)[:4]
 
-    def url(self):
-        # For files, the file viewer is considered the file's URL
-        return "/file/{}/{}/".format(self.letter, self.key)
+    def url(self): return "/file/{}/{}/".format(self.letter, self.key)  # Use file viewer as file's default URL
 
     def preview_url(self):
         if self.screenshot:
             if self.screenshot not in self.SPECIAL_SCREENSHOTS:
-                return os.path.join(
-                    STATIC_URL, "images/screenshots/{}/{}".format(
-                        self.letter, self.screenshot)
-                )
+                return os.path.join(STATIC_URL, "images/screenshots/{}/{}".format(self.letter, self.screenshot))
             else:
-                return os.path.join(
-                    STATIC_URL, "images/screenshots/{}".format(self.screenshot)
-                )
-        else:
-            return os.path.join(
-                    STATIC_URL, "images/screenshots/no_screenshot.png"
-                )
+                return os.path.join(STATIC_URL, "images/screenshots/{}".format(self.screenshot))
+        return os.path.join(STATIC_URL, "images/screenshots/no_screenshot.png")
 
     @mark_safe
     def rating_str(self, show_maximum=True):
@@ -862,10 +833,8 @@ class File(BaseModel):
             long_rating = (str(self.rating) + "0")[:4]
             if show_maximum:
                 return "{} / 5.00".format(long_rating)
-            else:
-                return long_rating
-        else:
-            return "<i>No rating</i>"
+            return long_rating
+        return "<i>No rating</i>"
 
     @mark_safe
     def publish_date_str(self):
