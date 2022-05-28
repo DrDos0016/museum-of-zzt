@@ -764,7 +764,7 @@ input[name=q]
     display:flex;
     align-items:center;
     padding:0.25em 1em 0.25em 1em;
-    max-width:75%;
+    max-width:500px;
     margin:auto;
     border:1px dashed #000;
     margin-bottom:1em;
@@ -785,7 +785,7 @@ input[name=q]
 .content-warning .text b.heading, .sticky-note .text b.heading
 {
     font-size:larger;
-    letter-spacing:0.5em;
+    letter-spacing:0.25em;
     text-align:center;
     display:block;
     width:100%;

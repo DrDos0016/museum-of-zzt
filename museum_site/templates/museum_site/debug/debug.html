@@ -63,6 +63,7 @@ RG Test: {% if request.GET.test %}{{request.GET.test}}{% endif %}
 
 <p>Site Tags:
 <ul>
+    <li><a href="#notice">notice</a></li>
     <li><a href="#as-template">as_template</a></li>
     <li><a href="#content-warning">content_warning</a></li>
     <li><a href="#patreon-plug">patreon_plug</a></li>
@@ -74,6 +75,8 @@ RG Test: {% if request.GET.test %}{{request.GET.test}}{% endif %}
 </p>
 <hr>
 <hr>
+
+{{f}}
 
 <div class="round-boy">
     <div class="logo">🔰</div>
@@ -692,6 +695,17 @@ Cheat<br>
 {% zzt_img "images/articles/cl/ezanya/zzt_001.png" shorthand="cheat" %}
 
 <h2 id="as-template">As Template</h2>
+<h2 id="as-template">Notice</h2>
+<b>Defaults</b>
+{% notice "DEFUNCT ARTICLE" %}
+<p>This article has been replaced by the <a href="/detail/">File Details page</a> which pulls information from the database directly.</p>
+
+<p>This page you are currently viewing was manually compiled and may likely contain outdated information and links.</p>
+{% endnotice %}
+
+<b>Custom heading</b>
+<hr>
+
 <h2 id="content-warning">Content Warning</h2>
 <b>No custom key</b><br>
 {% content_warning "bad stuff" "worse stuff" "the worst stuff" %}

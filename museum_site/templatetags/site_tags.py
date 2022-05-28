@@ -120,6 +120,7 @@ def content_warning(*args, **kwargs):
     return mark_safe(output + "\n")
 
 
+
 @register.simple_tag()
 def guide_words(*args, **kwargs):
     sort = kwargs.get("sort", "")
@@ -459,6 +460,33 @@ class IL(template.Node):
         output = "<a class='il' target='_blank' href='{url}'>{text}</a>".format(
             url=url, text=text
         )
+        return output
+
+
+@register.tag(name="notice")
+def notice(parser, token):
+    nodelist = parser.parse(('endnotice',))
+    parser.delete_first_token()
+    args = token.split_contents()
+    heading = " ".join(args[1:])
+    if heading[0] != '"' or heading[-1] != '"':
+        heading = '"{}"'.format(heading)
+    return Notice(nodelist, heading)
+
+
+class Notice(template.Node):
+    def __init__(self, nodelist, heading):
+        self.nodelist = nodelist
+        self.heading = heading
+
+    def render(self, context):
+        text = self.nodelist[0].render(context)
+        output = """<div class="sticky-note">
+        <div class="text">
+            <b class="heading">{}</b>
+            {}
+        </div>
+    </div>""".format(self.heading[1:-1], text)
         return output
 
 
