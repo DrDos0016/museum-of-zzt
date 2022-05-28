@@ -408,6 +408,11 @@ def change_username(request):
             success = False
             data["errors"]["username"] = "A valid username was not provided."
 
+        # Check for slash
+        if uname.find("/") != -1:
+            success = False
+            data["errors"]["username"] = "Usernames may not contain slashes."
+
         # Check username availability
         if User.objects.filter(username__iexact=uname).exists():
             success = False

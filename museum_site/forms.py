@@ -4,6 +4,8 @@ import shutil
 import time
 import zipfile
 
+from datetime import datetime
+
 from django import forms
 from museum_site.models import *
 from museum_site.fields import *
@@ -307,7 +309,7 @@ class AdvancedSearchForm(forms.Form):
         required=False
     )
     year = forms.ChoiceField(
-        choices=any_plus(((str(x), str(x)) for x in range(1991, YEAR + 1))),
+        choices=any_plus(((str(x), str(x)) for x in range(YEAR, 1990, -1))),  # Earliest release year is 1991
         required=False
     )
     board_min = forms.IntegerField(
@@ -609,9 +611,63 @@ class ReviewForm(forms.ModelForm):
         # Replace blank authors with "Unknown"
         author = self.cleaned_data["author"]
 
-        if author == "":
+        if author == "" or author.lower() == "n/a":
             author = "Anonymous"
+
+        if author.find("/") != -1:
+            raise forms.ValidationError(
+                "Author may not contain slashes."
+            )
+
         return author
+
+class Review_Search_Form(forms.ModelForm):
+    RATINGS = (
+        (0, "0.0"),
+        (0.5, "0.5"),
+        (1.0, "1.0"),
+        (1.5, "1.5"),
+        (2.0, "2.0"),
+        (2.5, "2.5"),
+        (3.0, "3.0"),
+        (3.5, "3.5"),
+        (4.0, "4.0"),
+        (4.5, "4.5"),
+        (5.0, "5.0"),
+    )
+
+
+    use_required_attribute = False
+
+    review_date = forms.ChoiceField(
+        label="Year Reviewed",
+        choices=any_plus(((str(x), str(x)) for x in range(YEAR, 2001, -1))) # Earliest review is from 2002
+    )
+
+    rating_range = forms.MultiValueField(
+        label="Minimum/Maximum Rating",
+        help_text="Only applies to reviews with ratings.",
+        fields = (
+            forms.ChoiceField(choices=RATINGS, widget=Min_Max_Select_Widget),
+            forms.ChoiceField(choices=RATINGS, widget=Min_Max_Select_Widget),
+        ),
+    )
+
+    ratingless = forms.BooleanField(label="Show Reviews Without Ratings")
+
+    class Meta:
+        model = Review
+        fields = ["title", "author", "content"]
+
+        labels = {
+            "title": "Title Contains",
+            "author": "Author Contains",
+            "content": "Text Contains",
+        }
+
+        widgets = {
+            "content": forms.TextInput()
+        }
 
 
 class SeriesForm(forms.ModelForm):
