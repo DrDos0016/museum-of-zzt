@@ -10,7 +10,7 @@ from django import forms
 from museum_site.models import *
 from museum_site.fields import *
 from museum_site.widgets import *
-from museum_site.common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT
+from museum_site.common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices
 from museum_site.constants import (
     LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES
 )
@@ -636,24 +636,17 @@ class Review_Search_Form(forms.ModelForm):
         (5.0, "5.0"),
     )
 
-
+    # Fields
     use_required_attribute = False
-
     review_date = forms.ChoiceField(
         label="Year Reviewed",
         choices=any_plus(((str(x), str(x)) for x in range(YEAR, 2001, -1))) # Earliest review is from 2002
     )
+    min_rating = forms.ChoiceField(label="Minimum Rating", choices=RATINGS)
+    max_rating = forms.ChoiceField(label="Maximum Rating", choices=RATINGS, initial=5.0)
+    ratingless = forms.BooleanField(label="Include Reviews Without Ratings", initial=True)
+    sort = forms.ChoiceField(label="Sort Results By", choices=get_sort_option_form_choices(Review.sort_options))
 
-    rating_range = forms.MultiValueField(
-        label="Minimum/Maximum Rating",
-        help_text="Only applies to reviews with ratings.",
-        fields = (
-            forms.ChoiceField(choices=RATINGS, widget=Min_Max_Select_Widget),
-            forms.ChoiceField(choices=RATINGS, widget=Min_Max_Select_Widget),
-        ),
-    )
-
-    ratingless = forms.BooleanField(label="Show Reviews Without Ratings")
 
     class Meta:
         model = Review

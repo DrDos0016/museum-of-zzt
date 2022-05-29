@@ -1,20 +1,6 @@
 from django import forms
 
 
-class Min_Max_Select_Widget(forms.MultiWidget):
-    template_name = "museum_site/widgets/min-max-select-widget.html"
-
-    def __init__(self, attrs=None):
-        widgets = (forms.TextInput(), forms.TextInput())
-        super(Min_Max_Select_Widget, self).__init__(widgets, attrs)
-
-    def get_context(self, name, value, attrs):
-        context = super().get_context(name, value, attrs)
-        context["choices"] = self.choices
-        return context
-
-
-
 class SelectPlusAnyWidget(forms.Select):
     template_name = "museum_site/widgets/select-plus-any-widget.html"
 
@@ -68,7 +54,6 @@ class UploadFileWidget(forms.FileInput):
         context["size"] = self.size
         return context
 
-
     def set_info(self, filename, file_list, size):
         self.filename = filename
         self.zfi = file_list
@@ -94,7 +79,6 @@ class GroupedCheckboxWidget(forms.MultiWidget):
         context["name"] = name
         context["value"] = value
         return context
-
 
     def add_headers(self, choices):
         output = []

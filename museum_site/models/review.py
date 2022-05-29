@@ -27,6 +27,15 @@ class Review(BaseModel):
         {"text": "Reviewer", "val": "reviewer"},
         {"text": "Rating", "val": "rating"},
     ]
+    sort_keys = {
+        "-date": "-date",
+        "date": "date",
+        "file": "zfile__sort_title",
+        "reviewer": "author",
+        "rating": "-rating",
+        "id": "id",
+        "-id": "-id",
+    }
 
     """
     Fields:
