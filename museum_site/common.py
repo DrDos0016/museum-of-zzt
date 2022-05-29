@@ -315,8 +315,14 @@ def get_sort_options(options, debug=False):
         ]
     return output
 
+def get_sort_option_form_choices(options):
+    output = []
+    for i in options:
+        output.append((i["val"], i["text"]))
+    return output
 
 def sort_qs(qs, key, available_sorts, default_sort):
+    """ Sort Queryset """
     sort_by = available_sorts.get(key)
     if sort_by is None:
         sort_by = available_sorts.get(default_sort)
