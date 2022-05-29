@@ -126,7 +126,7 @@ urlpatterns = [
     path("file/<str:letter>/<str:key>/", legacy_redirect, {"name": "file", "strip": ["letter"]}),
     path("pk/<int:pk>/", legacy_redirect, {"name": "get_file_by_pk"}),
     path("play/<str:letter>/<str:key>/", legacy_redirect, {"name": "play", "strip": ["letter"]}),
-    path("review/<str:letter>/<str:key>/", legacy_redirect, {"name": "reviews", "strip": ["letter"]}),
+    # More at the end of the list...
 
     # /genre/
     path("genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_overview"),
@@ -151,8 +151,7 @@ urlpatterns = [
     path("review/", museum_site.review_views.Review_Directory_View.as_view(), name="review_directory"),
     path("review/author/", museum_site.review_views.Reviewer_Directory_View.as_view(), name="reviewer_directory"),
     path("review/author/<str:author>/", museum_site.review_views.Review_Directory_View.as_view(), name="reviews_by_author"),
-    path("review/search/", museum_site.review_views.Review_Directory_View.as_view(), name="review_search"),
-    #path("review/<str:letter>/<str:key>/", museum_site.file_views.review, name="reviews"),
+    path("review/search/", museum_site.review_views.Review_Search_Form_View.as_view(), name="review_search"),
 
     # /rss/
     path("rss/", museum_site.views.generic, {"template": "rss-info", "title": "RSS Feeds"}, name="rss_feeds"),
@@ -258,6 +257,7 @@ urlpatterns = [
     path("new-releases/", museum_site.file_views.file_directory, name="new_releases"),
 
     # Legacy Redirects -- URLs which have changed but should still work to prevent link-rot
+    path("review/<str:letter>/<str:key>/", legacy_redirect, {"name": "reviews", "strip": ["letter"]}),
 ]
 
 # Serve static files on DEV
