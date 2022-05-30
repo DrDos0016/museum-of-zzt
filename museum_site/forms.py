@@ -10,7 +10,7 @@ from django import forms
 from museum_site.models import *
 from museum_site.fields import *
 from museum_site.widgets import *
-from museum_site.common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices
+from museum_site.common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices, delete_this
 from museum_site.constants import (
     LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES
 )
@@ -535,7 +535,6 @@ class MirrorForm(forms.Form):
         for f in package_files:
             if os.path.basename(f) != wip_zf_name:
                 zf.write(f, arcname=os.path.basename(f))
-                os.remove(f)
         if comment:
             zf.comment = comment
         zf.close()
@@ -564,6 +563,9 @@ class MirrorForm(forms.Form):
             access_key=IA_ACCESS,
             secret_key=IA_SECRET,
         )
+
+        # Remove the working files/folders
+        delete_this(wip_dir)
         return r
 
 
