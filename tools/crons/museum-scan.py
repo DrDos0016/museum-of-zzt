@@ -10,6 +10,7 @@ django.setup()
 
 from museum_site.models import *
 from museum_site.common import *
+from museum_site.core.detail_identifiers import *
 
 
 TEST_ARCHIVE_LINKS = True if "iatest" in sys.argv else False
