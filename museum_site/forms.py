@@ -108,7 +108,7 @@ class ZGameForm(forms.ModelForm):
                 'listed, use "Other" and specify the correct language in the '
                 'upload notes section.'
             ),
-            "license": "The license under which this world is published.",
+            "file_license": "The license under which this world is published.",
             "license_source": (
                 "Where the license can be found. Use a source contained "
                 "within the uploaded file when possible."
@@ -147,7 +147,7 @@ class ZGameForm(forms.ModelForm):
             "language": SlashSeparatedValueCheckboxWidget(
                 choices=LANGUAGE_CHOICES,
             ),
-            "license": SelectPlusCustomWidget(
+            "file_license": SelectPlusCustomWidget(
                 choices=LICENSE_CHOICES
             ),
             "license_source": SelectPlusCustomWidget(

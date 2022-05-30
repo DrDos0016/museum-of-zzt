@@ -76,7 +76,7 @@
 {% if request.user.is_staff %}
 <tr><th colspan="2" style="background:red">Staff Only Information</th></tr>
 <tr><th>Sort Title</th><td>{{file.sort_title}}</td></tr>
-<tr><th>License</th><td>{{file.license}}</td></tr>
+<tr><th>License</th><td>{{file.file_license}}</td></tr>
 <tr><th>License Source</th><td>{{file.license_source}}</td></tr>
 <tr><th>Can Spotlight</th><td>{{file.spotlight}}</td></tr>
 {% endif %}

@@ -285,7 +285,7 @@ class File(BaseModel):
         max_length=80, blank=True, default="",
         help_text="Filename for preview image. /static/images/screenshots/&lt;letter&gt;/&lt;screenshot&gt;"
     )
-    license = models.CharField(max_length=150, default="Unknown", help_text="License the file is released under.")
+    file_license = models.CharField(max_length=150, default="Unknown", help_text="License the file is released under.")
     license_source = models.CharField(max_length=150, default="", blank=True, help_text="Source of licensing information.")
 
     # Derived Data
