@@ -76,6 +76,20 @@ RG Test: {% if request.GET.test %}{{request.GET.test}}{% endif %}
 <hr>
 <hr>
 
+<p><b>Link Tests:</b>
+
+<ul>
+    <li>{% zfl "Code Red v1.1" %}: Incomplete</li>
+    <li>{% zfl "codered" "Code Red v.1.1 Unregisted" %}: Key + Text</li>
+    <li>{% zfl "codered" "Code Red v.1.1 Unregisted" target="_self" %}: Key + Text + "_self" target</li>
+    <li>{% zfl "codered" "Code Red's Carousel" "https://museumofzzt.com/file/view/codered/?file=CODERED3.ZZT&board=6" %}: Key + Text + "Oversized" QS</li>
+    <li>{% zfl "codered" "Los Angeles Zoo from <i>Code Red</i>" "?file=CODERED2.ZZT&board=29" i=False %}: Key + Text + Standard QS + Not-auto italic</li>
+    <li>{% zfl "codered" "Code Red v.1.1 Unregisted" "?file=CODERED2.ZZT&board=29" %}: Key + Text + Standard QS</li>
+    <li>{% zfl "https://museumofzzt.com/file/view/cnblisle/" "Big fan of <i>Cannibal Island</i>" i=False %}: Basic URL + Text + Not-auto italic</li>
+    <li>{% zfl "https://museumofzzt.com/file/view/cnblisle/?file=CNBLISLE.ZZT&board=7" "Cannibal Island" %} : Full URL + Text</li>
+</ul>
+</p>
+
 {{f}}
 
 <div class="round-boy">

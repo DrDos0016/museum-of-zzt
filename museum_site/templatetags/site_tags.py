@@ -120,7 +120,6 @@ def content_warning(*args, **kwargs):
     return mark_safe(output + "\n")
 
 
-
 @register.simple_tag()
 def guide_words(*args, **kwargs):
     sort = kwargs.get("sort", "")
@@ -320,6 +319,41 @@ def patreon_plug(*args, **kwargs):
     </div>
     """
 
+    return mark_safe(output + "\n")
+
+
+@register.simple_tag()
+def zfl(key, text="", qs="", target="_blank", i=True, *args, **kwargs):
+    """ ZFile Link """
+    """ {% zfl codered Code Red %}"""
+
+    key_str = key
+    attrs_str = ""
+    qs_str = ""
+    target_str = ' target="{}"'.format(target) if target else ""
+
+    if key.startswith("http"):
+        key_str = key.split("/")[-2]
+    if "?" in key:
+        qs_str = "?" + key.split("?")[1]
+
+    if text == "":
+        text = "<span class='debug'>TODO: Incomplete ZFL - {}</span>".format(key_str)
+
+    if qs:
+        # Convert copied/pasted URLs to just the querystring
+        if qs.startswith("http"):
+            qs = qs.split("?")[1]
+        qs_str = "?{}".format(qs)
+
+        # Prevent double questionmarks
+        if qs_str.startswith("??"):
+            qs_str = qs_str[1:]
+
+    output = '<a href="/file/view/{}/{}"{}{}>{}</a>'.format(key_str, qs_str, target_str, attrs_str, text)
+
+    # Italicize text if needed
+    output = "<i>" + output + "</i>" if i else output
     return mark_safe(output + "\n")
 
 
@@ -551,6 +585,7 @@ def gblock(
     output = render_to_string(template, context)
     return mark_safe(output + "\n")
 
+
 @register.simple_tag()
 def zfile_links(zfile=None, debug=False):
     template = "museum_site/blocks/file-links.html"
@@ -561,6 +596,7 @@ def zfile_links(zfile=None, debug=False):
 
     output = render_to_string(template, context)
     return mark_safe(output + "\n")
+
 
 @register.simple_tag()
 def generic_block_loop(
