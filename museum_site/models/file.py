@@ -203,7 +203,7 @@ class File(BaseModel):
     objects = FileManager()
     model_name = "File"
     table_fields = [
-        "DL", "Title", "Author", "Company", "Genre", "Date", "Rating"
+        "DL", "Title", "Author", "Company", "Genre", "Date", "Review"
     ]
     sort_options = [
         {"text": "Title", "val": "title"},
@@ -1003,8 +1003,8 @@ class File(BaseModel):
         context["columns"].append([
             {"datum": "text", "label": "Details", "value": self.details_links()},
             {
-                "datum": "text", "label": "Rating", "value": self.rating_str(),
-                "title": "Based on {} review{}".format(self.review_count, "s" if self.review_count != 1 else "")
+                "datum": "text", "label": "Rating",
+                "value": self.rating_for_detailed_view(),
             },
             {
                 "datum": "text", "label": "Boards", "value": self.boards_str(),
@@ -1069,7 +1069,8 @@ class File(BaseModel):
         cells.append(
             {"datum": "link", "value": (self.release_date or "Unknown"), "url": "/search/?year={}".format(self.release_year(default="unk")), "tag": "td"}
         )
-        cells.append({"datum": "text", "value": self.rating_str(show_maximum=False) if self.rating else "—", "tag": "td"})
+        #cells.append({"datum": "text", "value": self.rating_str(show_maximum=False) if self.rating else "—", "tag": "td"})
+        cells.append({"datum": "text", "value": self.rating_for_list_view(), "tag": "td"})
 
         # Modify download text if needed
         if self.downloads.count():
@@ -1126,3 +1127,17 @@ class File(BaseModel):
             self._major_icons.append(self.ICONS["weave"])
         if self.is_detail(DETAIL_FEATURED):
             self._minor_icons.append(self.ICONS["featured"])
+
+    @mark_safe
+    def rating_for_detailed_view(self):
+        return self.rating_str() + " ({} Review{})".format(self.review_count, "s" if self.review_count != 1 else "")
+
+    @mark_safe
+    def rating_for_list_view(self):
+        if self.review_count:
+            output = "<span title='Review count'>R: {}</span><br><span title='Average Score'>S: {}</span>".format(
+                self.review_count, self.rating_str(show_maximum=False)
+            )
+        else:
+            output = "—"
+        return output
