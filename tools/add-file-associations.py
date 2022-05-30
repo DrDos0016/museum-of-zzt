@@ -95,7 +95,7 @@ def main():
                     f = File.objects.get(key=key)
                     f.articles.add(a)
                     f.article_count += 1
-                    #f.save()
+                    f.save()
                     print("Added association for", f.title)
 
 
