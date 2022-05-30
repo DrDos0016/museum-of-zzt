@@ -60,6 +60,17 @@ function calc_launch_command()
     var world = $("#id_default_world").val().split(".")[0];
     var launch_command = (engine + " " + world).trim()
     $("#id_launch_command").val(launch_command);
+
+    // Set ZZT.CFG config
+    cfg = $("#id_zzt_config").val();
+    if (cfg.indexOf("REGISTERED") != -1)
+    {
+        if (world)
+            cfg = world + "\nREGISTERED";
+        else
+            cfg = "REGISTERED";
+    }
+    $("#id_zzt_config").val(cfg);
 }
 
 function parse_zip_file(file)

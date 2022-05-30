@@ -478,6 +478,13 @@ class MirrorForm(forms.Form):
     )
     default_world = forms.ChoiceField(required=False, choices=[])
     launch_command = forms.CharField(required=False)
+    zzt_config = forms.CharField(
+        required=False,
+        label="ZZT.CFG Contents",
+        help_text="Leave blank to not include this file",
+        widget=forms.Textarea(),
+        initial="REGISTERED"
+    )
 
     def mirror(self, zfile, files=None):
         archive_title = self.cleaned_data["title"]
@@ -498,6 +505,11 @@ class MirrorForm(forms.Form):
             os.mkdir(wip_dir)
         except FileExistsError:
             pass
+
+        # Create a ZZT.CFG if parameters were specified
+        if self.cleaned_data["zzt_config"]:
+            with open(os.path.join(wip_dir, "ZZT.CFG"), "w") as fh:
+                fh.write(self.cleaned_data["zzt_config"])
 
         # Extract zfile if not using an alternate zip
         if self.cleaned_data["zfile"]:
