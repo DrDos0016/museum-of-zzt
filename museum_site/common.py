@@ -27,6 +27,7 @@ import math
 import os
 import re
 import subprocess
+import shutil
 import sys
 import urllib.parse
 import zipfile
@@ -429,3 +430,10 @@ def valid_page_number(requested_page, last_page):
         return last_page
     else:
         return requested_page
+
+def delete_this(path):
+    try:
+        os.remove(path)
+    except IsADirectoryError:
+        shutil.rmtree(path)
+    return True
