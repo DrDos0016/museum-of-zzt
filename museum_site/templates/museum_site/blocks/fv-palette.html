@@ -1,0 +1,33 @@
+<style>
+#fv-palette-table
+{
+    width:auto;
+    margin:auto;
+}
+#fv-palette-table .swatch
+{
+    width:64px;
+    max-height:32px;
+    padding:0;
+}
+#fv-palette-table .rgb-tuple > div
+{
+    display:inline-block;
+    width:3ch;
+    text-align:right;
+}
+</style>
+
+<table id="fv-palette-table">
+    <tr><th>Idx.</th><th>Def.</th><th>Color</th><th>Name</th><th>RGB</th><th>Hex</th>
+    {% for r in table_rows %}
+    <tr>
+        <td class="r">{{forloop.counter}}</td>
+        <td class="swatch {{r.css_bg}}"></td>
+        <td class="swatch" style="background-color:rgb({{r.custom.0}}, {{r.custom.1}}, {{r.custom.2}})"></td>
+        <td>{{r.color}}</td>
+        <td class="rgb-tuple"><div>{{r.custom.0}}</div>, <div>{{r.custom.1}}</div>, <div>{{r.custom.2}}</div></td>
+        <td>{{r.hex}}</div></td>
+    </tr>
+    {% endfor %}
+</table>

@@ -89,6 +89,8 @@ def get_zip_file(request):
             response["Content-Type"] = "application/octet-stream"
 
         return response
+    elif ext == ".pld":
+        return HttpResponse(parse_pld(file.read()))
     else:
         return HttpResponse(
             "This file type is not currently supported for embedded content."

@@ -255,11 +255,7 @@ def file_viewer(request, key, local=False):
 
         # Filter out directories (but not their contents)
         for f in files:
-            if (
-                f and f[-1] != os.sep
-                and not f.startswith("__MACOSX" + os.sep)
-                and not f.upper().endswith(".DS_STORE")
-            ):
+            if (f and f[-1] != os.sep and not f.startswith("__MACOSX" + os.sep) and not f.upper().endswith(".DS_STORE")):
                 data["files"].append(f)
         data["load_file"] = urllib.parse.unquote(
             request.GET.get("file", "")
