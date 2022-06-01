@@ -263,7 +263,7 @@ def file_viewer(request, key, local=False):
         data["load_board"] = request.GET.get("board", "")
     else:  # Local files
         data["file"] = "Local File Viewer"
-        data["letter"] = letter
+        data["letter"] = ""
 
     # Sort files into ZZT, Super ZZT, SAV, BRD, and non-ZZT extensions
     all_files = {"zzt": [], "szzt": [], "sav": [], "brd": [], "misc": []}

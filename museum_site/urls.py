@@ -106,7 +106,7 @@ urlpatterns = [
     path("file/attribute/<str:key>/", museum_site.file_views.file_attributes, name="file_attributes"),
     path("file/download/<str:key>/", museum_site.file_views.file_download, name="file_download"),
     path("file/review/<str:key>/", museum_site.file_views.review, name="reviews"),
-    path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "letter": "!", "key": ""}, name="local_file"),
+    path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "key": ""}, name="local_file"),
     path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),
     path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),
     path(
