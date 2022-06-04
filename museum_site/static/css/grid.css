@@ -1697,6 +1697,16 @@ article[data-schema="80col"]
     border-top:1px solid #000;
 }
 
+.zzt-img + .img-caption
+{
+    background:#AAA;
+    margin:auto;
+    max-width:640px;
+    border-top:2px solid #000;
+    font-family:cp437;
+    text-align:center;
+}
+
 .material
 {
     margin-right:0.5em;

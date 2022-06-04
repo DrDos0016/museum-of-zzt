@@ -215,6 +215,7 @@ def zzt_img(*args, **kwargs):
     br = kwargs.get("br", "")
     css = kwargs.get("css", "")
     message_crop = kwargs.get("mcrop", kwargs.get("mc", ""))
+    caption = kwargs.get("cap", "")
 
     has_coords = True if tl and br else False
 
@@ -262,7 +263,7 @@ def zzt_img(*args, **kwargs):
     if "CROP" in args:
         crop = "<div class='debug-crop'>CROP</div>"
 
-    output = mark_safe("<{}><{}></div>{}\n".format(div, img, crop))
+    output = "<{}><{}></div>{}\n".format(div, img, crop)
 
     # Attach a 2nd crop with the message text if requested
     if message_crop:
@@ -272,4 +273,7 @@ def zzt_img(*args, **kwargs):
         if kwargs.get("mc"):
             del kwargs["mc"]
         output+= zzt_img(source, sh="message")
-    return output
+
+    if caption:
+        output += '<div class="img-caption">{}</div>'.format(caption)
+    return mark_safe(output)
