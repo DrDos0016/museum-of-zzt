@@ -130,6 +130,16 @@
 {% endfor %}
 </ul>
 
+<h2 id="heading-contents">File Contents</h2>
+<table class="dataTable" id="contents-info">
+    <tr><th>Filename</th><th>Path</th><th>Ext.</th><th>Mod. Date</th><th>Dir</th><th>CRC-32</th><th>Size</th></tr>
+    {% for f in file.content.all %}
+    <tr><td><a href="{{file.url}}?file={{f.title|urlencode}}" target="_blank">{{f.title}}</a></td><td>{{f.path}}</td><td>{{f.ext}}</td><td>{{f.mod_date}}</td><td class="c">{{f.directory|yesno:"Y,N"}}</td><td class="r">{{f.crc32}}</td><td class="r" title="{{f.size}} bytes">{{f.size|filesizeformat}}</td></tr>
+    {% empty %}
+        <tr><td colspan="7" class="c"><i>No Contents Found</i></td></tr>
+    {% endfor %}
+</table>
+
 <h2 id="heading-details">File Details</h2>
 <ul class="dataTable">
 {% for d in file.details.all %}

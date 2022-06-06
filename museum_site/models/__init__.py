@@ -4,6 +4,7 @@ from .base import BaseModel
 # Distinct Models
 from .alias import Alias
 from .article import Article
+from .content import Content
 from .file import File
 from .detail import Detail
 from .download import Download

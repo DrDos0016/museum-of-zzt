@@ -88,6 +88,13 @@ function update_selected_details()
     <input id="filename" name="filename" value="{{request.GET.filename}}" maxlength="80">
 </div>
 <div class="field">
+    <label for="contents">Zipfile Contents contains:<br>
+    <span class="sub">Enter a filename to search for in the file's zipfile.</span>
+    </label>
+
+    <input id="contents" name="contents" value="{{request.GET.contents}}" maxlength="80">
+</div>
+<div class="field">
     <label for="company">Company contains:<br>
         <span class="sub"></span>
     </label>

@@ -92,6 +92,9 @@ class FileManager(models.Manager):
         elif p.get("articles") == "no":
             qs = qs.filter(article_count=0)
 
+        if p.get("contents"):
+            qs = qs.filter(content__title__icontains=p["contents"])
+
         # Filter by details
         if p.get("details"):
             qs = qs.filter(details__id__in=p.getlist("details"))
@@ -324,6 +327,7 @@ class File(BaseModel):
     article_count = models.IntegerField(
         default=0, editable=False, help_text="Cached number of articles associated with this zip file. Set automatically. Do not adjust."
     )
+    content = models.ManyToManyField("Content", default=None, blank=True)
     details = models.ManyToManyField("Detail", default=None, blank=True)
     downloads = models.ManyToManyField("Download", default=None, blank=True)
     genres = models.ManyToManyField("Genre", default=None, blank=True)
