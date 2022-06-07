@@ -785,7 +785,7 @@ class File(BaseModel):
             return False
 
         # Name the screenshot
-        if filename is None:
+        if filename is None or filename == "":
             self.screenshot = self.filename[:-4] + ".png"
         else:
             self.screenshot = filename

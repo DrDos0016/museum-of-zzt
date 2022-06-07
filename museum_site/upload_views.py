@@ -211,7 +211,7 @@ def upload(request):
                 # Delete current screenshot if one exists
                 if os.path.isfile(zfile.screenshot_phys_path()):
                     os.remove(zfile.screenshot_phys_path())
-                zfile.screenshot = None
+                zfile.screenshot = ""
 
             # Make Announcement (if needed)
             discord_announce_upload(upload)
@@ -239,6 +239,9 @@ def upload_complete(request, token):
 
     data["upload"] = Upload.objects.get(edit_token=token)
     data["file"] = File.objects.get(pk=data["upload"].file.id)
+
+    # Generate Content object
+    Content.generate_content_object(data["file"])
 
     # Calculate queue size
     cache.set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count())

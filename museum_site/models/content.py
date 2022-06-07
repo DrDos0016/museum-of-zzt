@@ -1,3 +1,4 @@
+import os
 import zipfile
 
 from django.db import models
@@ -25,3 +26,44 @@ class Content(models.Model):
 
     def __str__(self):
         return self.title
+
+    def generate_content_object(zfile):
+        if not zfile.file_exists():
+            return False
+
+        try:
+            zf = zipfile.ZipFile(zfile.phys_path())
+        except zipfile.BadZipFile:
+            return False
+
+        # Remove old content
+        content = zfile.content.all()
+        for c in content:
+            c.delete()
+
+        # Add current content
+        for zi in zf.infolist():
+            zfile_id = zfile.id
+
+            title = os.path.basename(zi.filename)
+            path = zi.filename
+            ext = os.path.splitext(zi.filename)[1]
+            mod_date = zipinfo_datetime_tuple_to_str(zi)
+            directory = zi.is_dir()
+            crc32 = zi.CRC
+            size = zi.file_size
+
+            content = Content(
+                title=title,
+                path=path,
+                ext=ext,
+                mod_date=mod_date,
+                directory=directory,
+                crc32=crc32,
+                size=size,
+            )
+            content.save()
+
+            zfile.content.add(content)
+
+        return True
