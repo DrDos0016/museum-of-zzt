@@ -27,7 +27,7 @@ class Content(models.Model):
     def __str__(self):
         return self.title
 
-    def generate_content_object(zfile):
+    def generate_content_object(zfile, save=True):
         if not zfile.file_exists():
             return False
 
@@ -62,8 +62,9 @@ class Content(models.Model):
                 crc32=crc32,
                 size=size,
             )
-            content.save()
 
-            zfile.content.add(content)
+            if save:
+                content.save()
+                zfile.content.add(content)
 
         return True
