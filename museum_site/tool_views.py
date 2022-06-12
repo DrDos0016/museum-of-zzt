@@ -521,7 +521,7 @@ def publish(request, key):
         "hints": [],
         "hint_ids": [],
     }
-    data["detail_cats"] = Detail.objects.advanced_search_categories()
+    data["detail_cats"] = Detail.objects.advanced_search_categories(include_hidden=True)
 
     if not data["file"].is_detail(DETAIL_UPLOADED):
         data["published"] = True

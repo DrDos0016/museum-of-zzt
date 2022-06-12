@@ -6,15 +6,22 @@ from museum_site.core.detail_identifiers import *
 
 
 class DetailManager(models.Manager):
-    def advanced_search_categories(self):
+    def advanced_search_categories(self, include_hidden=False):
         os_details = [
             DETAIL_DOS, DETAIL_WIN16, DETAIL_WIN32, DETAIL_WIN64, DETAIL_OSX,
             DETAIL_LINUX
         ]
-        qs = self.exclude(pk=DETAIL_REMOVED)
+
+        qs = self.all()
+        if not include_hidden:
+            qs = self.exclude(pk=DETAIL_REMOVED)
+            qs = self.exclude(pk=DETAIL_NEW_FIND)
         cats = []
 
         for d in qs:
+            if not d.visible:
+                cats.append({"priority": 99, "header": "Hidden", "d": d})
+                continue
             if d.title.startswith("ZZT "):
                 cats.append({"priority": 10, "header": "ZZT", "d": d})
             elif d.title.startswith("Super ZZT "):
@@ -54,6 +61,7 @@ class Detail(BaseModel):
         ("SZZT", "Super ZZT"),
         ("Media", "Media"),
         ("Other", "Other"),
+        ("Hidden", "Hidden"),
     ]
 
     model_name = "Detail"
