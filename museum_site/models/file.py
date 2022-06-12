@@ -4,7 +4,7 @@ import os
 import subprocess
 import zipfile
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from random import randint, seed, shuffle
 
 from django.db import models
@@ -127,12 +127,20 @@ class FileManager(models.Manager):
             Q(release_date__gte="2021-01-01")
         ).order_by("-publish_date", "-id")
 
-    def new_releases(self):
-        return self.filter(
-            spotlight=True, release_date__gte="2021-01-01"
-        ).exclude(
-            details__id__in=[DETAIL_UPLOADED]
-        ).order_by("-publish_date", "-id")
+    def new_releases(self, spotlight_filter=False):
+        # Published worlds ordered by release date
+        if spotlight_filter:
+            return self.filter(spotlight=True).exclude(details__id__in=[DETAIL_UPLOADED]).order_by("-release_date", "-id")
+        else:
+            return self.exclude(details__id__in=[DETAIL_UPLOADED]).order_by("-release_date", "-id")
+
+    def new_finds(self, spotlight_filter=False):
+        if spotlight_filter:
+            qs = self.filter(spotlight=True, details__id=DETAIL_NEW_FIND)
+        else:
+            qs = self.filter(details__id=DETAIL_NEW_FIND)
+        qs = qs.order_by("-publish_date", "-id")
+        return qs
 
     def published(self):
         return self.exclude(details__id__in=[DETAIL_UPLOADED, DETAIL_LOST])
@@ -214,9 +222,11 @@ class File(BaseModel):
         {"text": "Company", "val": "company"},
         {"text": "Rating", "val": "rating"},
         {"text": "Release Date (Newest)", "val": "-release"},
-        {"text": "Release Date (Oldest)", "val": "release"}
+        {"text": "Release Date (Oldest)", "val": "release"},
     ]
     sort_keys = {
+        # Key - Value from <select> used in GET params
+        # Value - Django order_by param
         "title": "sort_title",
         "author": "author",
         "company": "company",

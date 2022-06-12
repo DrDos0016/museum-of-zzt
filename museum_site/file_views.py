@@ -41,7 +41,7 @@ def file_directory(
 ):
     """ Returns page listing all articles sorted either by date or name """
     data = {
-        "title": "Browse",
+        "title": "Browse - All Files",
         "show_description": show_description,
         "show_featured": show_featured,
         "model": "File",
@@ -91,13 +91,23 @@ def file_directory(
         qs = qs.filter(genres__title=genre)
         data["title"] = "Browse Genre - " + genre.title()
         data["header"] = data["title"]
-    if request.path == "/new/":
-        data["title"] = "New Additions"
+
+    if request.path == "/file/browse/":  # All Files
+        default_sort = "-publish_date"
+        data["sort"] = default_sort
+
+        # Add sort by publish date
+        data["sort_options"] = (
+            [{"text": "Publish Date", "val": default_sort}] + data["sort_options"]
+        )
+    elif request.path == "/file/browse/new-finds/":
+        data["title"] = "New Finds"
         data["header"] = data["title"]
         data["sort_options"] = None
         data["sort"] = "-publish_date"
-        data["prefix_template"] = "museum_site/prefixes/new-additions.html"
-    elif request.path == "/new-releases/":
+        data["prefix_template"] = "museum_site/prefixes/new-finds.html"
+        qs = File.objects.new_finds()
+    elif request.path == "/file/browse/new-releases/":
         data["title"] = "New Releases"
         data["header"] = data["title"]
         data["sort_options"] = None

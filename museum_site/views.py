@@ -103,8 +103,8 @@ def index(request):
 
     # Obtain latest content
     data["articles"] = Article.objects.spotlight()[:FP.ARTICLES_SHOWN]
-    data["new_releases"] = File.objects.new_releases()[:FP.NEW_RELEASES_SHOWN]
-    data["files"] = File.objects.latest_additions()[:FP.FILES_SHOWN]
+    data["new_releases"] = File.objects.new_releases(spotlight_filter=True)[:FP.NEW_RELEASES_SHOWN]
+    data["files"] = File.objects.new_finds(spotlight_filter=True)[:FP.FILES_SHOWN]
 
     data["article_table_header"] = table_header(Article.table_fields)
     data["review_table_header"] = table_header(Review.table_fields)

@@ -64,13 +64,13 @@ urlpatterns = [
     path("zzt-cheats/", museum_site.article_views.article_view, {"article_id": 22}, name="zzt_cheats"),
 
     # /debug/
+    path("ajax/debug_file/", museum_site.ajax.debug_file),
     path("debug/", museum_site.debug_views.debug),
     path("debug/<str:filename>.html", museum_site.debug_views.debug),
     path("debug/article/<str:fname>/", museum_site.debug_views.debug_article),
     path("debug/article/", museum_site.debug_views.debug_article),
     path("debug/colors/", museum_site.debug_views.debug_colors),
     path("debug/forms/", museum_site.views.generic, {"template": "debug-forms", "title": "Form Debug"}),
-    path("ajax/debug_file/", museum_site.ajax.debug_file),
     path("debug/advanced-search/", museum_site.debug_views.debug_advanced_search),
 
     # /detail/
@@ -96,6 +96,10 @@ urlpatterns = [
     path("error/password-reset/", museum_site.user_views.error_password_reset, name="error_password_reset"),
 
     # /file/
+    path("file/browse/", museum_site.file_views.file_directory, name="browse"),
+    path("file/browse/new-finds/", museum_site.file_views.file_directory, name="new_finds"),
+    path("file/browse/new-releases/", museum_site.file_views.file_directory, name="new_releases"),
+    path("file/browse/<str:letter>/", museum_site.file_views.file_directory, name="browse_letter"),
     path("file/random/", museum_site.views.random, name="random"),
     path("file/roulette/", museum_site.file_views.file_directory, name="roulette"),
     path("file/advanced-search/", museum_site.search_views.advanced_search, name="advanced_search"),
@@ -250,14 +254,14 @@ urlpatterns = [
     path("github/", RedirectView.as_view(url="https://github.com/DrDos0016/museum-of-zzt")),
 
     # Directories
-    path("browse/", museum_site.file_views.file_directory, name="browse"),
-    path("browse/<str:letter>/", museum_site.file_views.file_directory, name="browse_letter"),
     path("directory/<slug:category>/", museum_site.views.directory, name="directory"),
     path("new/", museum_site.file_views.file_directory, name="new_files"),
-    path("new-releases/", museum_site.file_views.file_directory, name="new_releases"),
 
     # Legacy Redirects -- URLs which have changed but should still work to prevent link-rot
     path("review/<str:letter>/<str:key>/", legacy_redirect, {"name": "reviews", "strip": ["letter"]}),
+    path("browse/", legacy_redirect, {"name": "browse"}),
+    path("browse/<str:letter>/", legacy_redirect, {"name":"browse_letter"}),
+    path("new-releases/", legacy_redirect, {"name":"new_releases"}),
 ]
 
 # Serve static files on DEV

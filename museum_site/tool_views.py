@@ -566,6 +566,12 @@ def publish(request, key):
 
     # Get suggested details based on the file list
     data["suggestions"] = get_detail_suggestions(data["file_list"])
+
+    # Get suggest details based on file metadata
+    # If the file isn't from the current year, assume it's a New Find
+    if data["file"].release_date and data["file"].release_date.year != YEAR:
+        data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
+
     return render(request, "museum_site/tools/publish.html", data)
 
 

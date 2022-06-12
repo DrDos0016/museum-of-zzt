@@ -63,15 +63,17 @@
             <input id="letter-button" type="button" value="Go">
         </div>
         <div class="world-special">
+            <a href="{% url 'browse' %}">All Files</a>
             <a href="{% url 'mass_downloads' %}">Mass Downloads</a>
-            <a href="{% url 'new_files' %}">New Additions</a>
+            <a href="{% url 'new_finds' %}">New Finds</a>
+            <a href="{% url 'new_releases' %}">New Releases</a>
             <a href="{% url 'random' %}">Random ZZT World</a>
             <a href="{% url 'roulette' %}">Roulette</a>
             <a href="{% url 'uploaded_worlds' %}">Upload Queue ({{UPLOAD_QUEUE_SIZE}})</a>
         </div>
         <form method="GET" action="{% url 'search' %}">
         <div id="search-form">
-            <input name="q" value="{{q}}" list="search-suggestions" autocomplete="off"><div class="low-res-break"></div>
+            <input name="q" value="{{q}}" list="search-suggestions" autocomplete="off" placeholder="Title/Author/Genre/Filename"><div class="low-res-break"></div>
             <input id="search-button" type="submit" value="Search">
         </div>
         </form>
