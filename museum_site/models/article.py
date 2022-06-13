@@ -296,7 +296,7 @@ class Article(BaseModel):
     def render(self):
         """ Render article content as a django template """
         context_data = {
-            "TODO": "TODO", "CROP": "CROP",
+            "TODO": "TODO", "CROP": "CROP",  # Expected TODO usage.
             "path": self.path,
         }
         head = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}"

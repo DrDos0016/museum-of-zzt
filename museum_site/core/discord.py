@@ -93,7 +93,7 @@ def discord_announce_upload(upload, env=None):
     ).format(
         zfile.title, zfile.author,
         year,
-        urllib.parse.quote(zfile.file_url())
+        urllib.parse.quote(zfile.view_url())
     )
 
     discord_data = {

@@ -283,7 +283,7 @@ class WoZZT_Queue(BaseModel):
             discord_post += "`[{}] - \"{}\"` {}\n"
             discord_post += (
                 "Explore: https://museumofzzt.com" +
-                quote(self.file.file_url()) + "?file=" + quote(self.zzt_file) +
+                quote(self.file.view_url()) + "?file=" + quote(self.zzt_file) +
                 "&board=" + str(self.board) + "\n"
             )
             if self.file.archive_name:

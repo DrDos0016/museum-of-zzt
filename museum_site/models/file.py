@@ -410,7 +410,6 @@ class File(BaseModel):
 
     def play_url(self): return "/file/play/{}/".format(self.key)
     def review_url(self): return "/file/review/{}/".format(self.key)
-    def file_url(self): return "/file/view/{}/".format(self.key)  # TODO: Replace all calls to this with view_url()
     def view_url(self): return "/file/view/{}/".format(self.key)
     def article_url(self): return "/file/article/{}/".format(self.key)
     def attributes_url(self): return "/file/attribute/{}/".format(self.key)
@@ -923,7 +922,7 @@ class File(BaseModel):
 
         # View Files
         if self.actions["view"]:
-            link = {"datum": "link", "value": "View Files", "url": self.file_url(), "roles": ["view-link"], "icons": self.get_major_icons()}
+            link = {"datum": "link", "value": "View Files", "url": self.view_url(), "roles": ["view-link"], "icons": self.get_major_icons()}
         else:
             link = {"datum": "text", "value": "View Files", "kind": "faded"}
         links.append(link)

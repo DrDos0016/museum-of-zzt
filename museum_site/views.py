@@ -138,7 +138,7 @@ def mass_downloads(request):
 def random(request):
     """ Returns a random ZZT file page """
     selection = File.objects.random_zzt_world()
-    return redirect(selection.file_url())
+    return redirect(selection.view_url())
 
 
 def site_credits(request):

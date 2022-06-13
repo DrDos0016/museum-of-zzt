@@ -8,7 +8,7 @@ from museum_site.forms import *
 def debug(request, filename=None):
     data = {"title": "DEBUG PAGE"}
     data["ARTICLE_DEBUG"] = True
-    data["TODO"] = "TODO"
+    data["TODO"] = "TODO"  # Expected TODO usage.
     data["CROP"] = "CROP"
 
     if filename == "saves.html":
@@ -82,7 +82,7 @@ def debug_advanced_search(request):
 
 def debug_article(request, fname=""):
     data = {"id": 0}
-    data["TODO"] = "TODO"
+    data["TODO"] = "TODO"  # Expected TODO usage.
     data["CROP"] = "CROP"
 
     fname = request.GET.get("file", fname)

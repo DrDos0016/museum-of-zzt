@@ -25,7 +25,7 @@ LOOKUPS = {
 
 @register.filter
 def as_template(raw):
-    context_data = {"TODO": "TODO", "CROP": "CROP"}
+    context_data = {"TODO": "TODO", "CROP": "CROP"}  # Expected TODO usage.
     raw = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
     return Template(raw).render(Context(context_data))
 
@@ -338,7 +338,7 @@ def zfl(key, text="", qs="", target="_blank", i=True, *args, **kwargs):
         qs_str = "?" + key.split("?")[1]
 
     if text == "":
-        text = "<span class='debug'>TODO: Incomplete ZFL - {}</span>".format(key_str)
+        text = "<span class='debug'>TODO: Incomplete ZFL - {}</span>".format(key_str)  # Expected TODO usage.
 
     if qs:
         # Convert copied/pasted URLs to just the querystring
@@ -397,7 +397,7 @@ def cl_info(pk=None, engine=None, emulator=None):
     ).format(
         download=zfile.download_url(),
         play=zfile.play_url(),
-        view=zfile.file_url()
+        view=zfile.view_url()
     )
 
     output += "<br>\t</div>"
@@ -448,8 +448,8 @@ class Commentary(template.Node):
             )
 
         debug_classes = ""
-        if "TODO" in commentary:
-            debug_classes += " TODO"
+        if "TODO" in commentary:  # Expected TODO usage.
+            debug_classes += " TODO"  # Expected TODO usage.
         if "CROP" in commentary:
             debug_classes += "CROP"
 

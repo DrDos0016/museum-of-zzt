@@ -158,7 +158,7 @@ class ZztScroll(template.Node):
         output = "<div class='zzt-scroll'>\n"
 
         if not str(raw).strip():
-            raw = ["", "TODO: SCROLL HAS NO TEXT"]
+            raw = ["", "TODO: SCROLL HAS NO TEXT"]  # Expected TODO usage.
         else:
             raw = raw.split("\n")
 
