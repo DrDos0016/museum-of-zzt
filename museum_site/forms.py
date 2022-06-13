@@ -377,21 +377,7 @@ class ArticleSearchForm(forms.Form):
     )
 
     # TODO this may need to be moved/replaced if DB model changes
-    CATEGORIES = (
-        ("Bugs And Glitches", "Bugs And Glitches"),
-        ("Closer Look", "Closer Look"),
-        ("Contest", "Contest"),
-        ("Featured Game", "Featured Game"),
-        ("Help", "Help"),
-        ("Historical", "Historical"),
-        ("Interview", "Interview"),
-        ("Let's Play", "Let's Play"),
-        ("Livestream", "Livestream"),
-        ("Postmortem", "Postmortem"),
-        ("Publication Pack", "Publication Pack"),
-        ("Walkthrough", "Walkthrough"),
-        ("Misc", "Misc.")
-    )
+    CATEGORIES = Article.CATEGORY_CHOICES
 
     SERIES_CHOICES = [("Any", "- ANY -")] + list(
         Series.objects.filter(visible=True).order_by("title").values_list(

@@ -151,12 +151,11 @@ class Article(BaseModel):
         ("Interview", "Interview"),
         ("Let's Play", "Let's Play"),
         ("Livestream", "Livestream"),
-        ("Misc", "Misc"),
         ("Postmortem", "Postmortem"),
         ("Publication Pack", "Publication Pack"),
         ("Walkthrough", "Walkthrough"),
+        ("Misc", "Misc."),
     )
-
 
     LOCKED_ARTICLE_TEXT = """
     <h2>Locked Article!</h2>
