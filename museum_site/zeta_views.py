@@ -3,6 +3,7 @@ from django.shortcuts import render
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core.detail_identifiers import *
+from museum_site.core.zeta_identifiers import *
 from museum_site.models import *
 
 
@@ -152,8 +153,7 @@ def zeta_launcher(
     if data["zeta_config"]:
         data["zeta_config"].user_configure(request.GET)
     else:
-        # TODO make this a constant
-        data["zeta_config"] = Zeta_Config.objects.get(pk=1)
+        data["zeta_config"] = Zeta_Config.objects.get(pk=ZETA_ZZT32R)
 
     # Extra work for custom fonts
     if data["zeta_config"].name.startswith("Custom Font - Generic"):

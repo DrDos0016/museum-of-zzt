@@ -26,8 +26,9 @@ from museum_site.common import (
     STATIC_PATH, optimize_image, epoch_to_unknown, record,
     redirect_with_querystring
 )
-from museum_site.constants import SITE_ROOT, ZETA_RESTRICTED, LANGUAGES
+from museum_site.constants import SITE_ROOT, LANGUAGES
 from museum_site.core.detail_identifiers import *
+from museum_site.core.zeta_identifiers import *
 from museum_site.models.review import Review
 from museum_site.models.article import Article
 from museum_site.models.genre import Genre

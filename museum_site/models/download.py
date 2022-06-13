@@ -4,7 +4,6 @@ from django.db import models
 
 from museum_site.models.base import BaseModel
 from museum_site.common import slash_separated_sort, UPLOAD_CAP, STATIC_PATH
-from museum_site.constants import SITE_ROOT, ZETA_RESTRICTED
 
 
 class Download(BaseModel):

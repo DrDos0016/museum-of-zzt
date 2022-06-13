@@ -20,9 +20,12 @@ class Zeta_Config_Manager(models.Manager):
 
 
 class Zeta_Config(models.Model):
-    model_name = "Zeta-Config"
     objects = Zeta_Config_Manager()
 
+    # Constants
+    model_name = "Zeta-Config"
+
+    # Fields
     name = models.CharField(max_length=64)
     executable = models.CharField(max_length=128, default="zzt.zip", blank=True)
     arguments = models.CharField(max_length=128, default="", blank=True)

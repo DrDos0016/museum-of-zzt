@@ -222,7 +222,6 @@ for exe in exes:
     })
 
 ZETA_EXECUTABLES.sort(key=lambda executable: executable["name"].lower())
-ZETA_RESTRICTED = 20  # Zeta Config ID used to restrict the use of Zeta
 
 ASCII_UNICODE_CHARS = (
     " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼"

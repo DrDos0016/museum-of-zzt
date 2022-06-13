@@ -8,7 +8,7 @@ from museum_site.common import (
     STATIC_PATH, optimize_image, epoch_to_unknown, record,
     redirect_with_querystring
 )
-from museum_site.constants import SITE_ROOT, ZETA_RESTRICTED, LANGUAGES
+
 from museum_site.core.detail_identifiers import *
 
 
