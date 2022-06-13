@@ -92,7 +92,9 @@ class URLTest(unittest.TestCase):
             "/file/m/merc/",
             "/pk/420/",
             "/play/e/endofwor/",
-            "/review/l/lostmonk/"
+            "/review/l/lostmonk/",
+            "/browse/",
+            "/browse/o/",
         ]
 
         results = []
@@ -128,6 +130,8 @@ class URLTest(unittest.TestCase):
             (301, "/file/pk/420/"),
             (301, "/file/play/endofwor/"),
             (301, "/file/review/lostmonk/"),
+            (301, "/file/browse/"),
+            (301, "/file/browse/o/"),
         ]
 
         for url in urls:
