@@ -120,14 +120,6 @@ class FileManager(models.Manager):
         elif category == "author":
             return self.values("author").distinct().order_by("author")
 
-    def latest_additions(self):
-        return self.filter(
-            spotlight=True
-        ).exclude(
-            Q(details__id__in=[DETAIL_UPLOADED]) |
-            Q(release_date__gte="2021-01-01")
-        ).order_by("-publish_date", "-id")
-
     def new_releases(self, spotlight_filter=False):
         # Published worlds ordered by release date
         if spotlight_filter:
@@ -153,12 +145,18 @@ class FileManager(models.Manager):
             qs = File.objects.all()
         return qs
 
-    def standard_worlds(self):
+    def zeta_compatible(self):
         return self.filter(
-            details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED]
-        )
+            details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE]
+        ).exclude(zeta_config__id=ZETA_RESTRICTED)
 
     def random_zzt_world(self):
+        """ Returns a random zfile
+        - Not Lost / Removed / Uploaded / Corrupt
+        - Not explicit
+        - Is ZZT
+        """
+
         excluded_details = [
             DETAIL_LOST, DETAIL_REMOVED, DETAIL_UPLOADED, DETAIL_CORRUPT
         ]
@@ -174,7 +172,8 @@ class FileManager(models.Manager):
         return zgame
 
     def roulette(self, rng_seed, limit):
-        details = [DETAIL_ZZT, DETAIL_SZZT]
+        """ Retruns a random sample of zfiles """
+        details = [DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]
 
         # Get all valid file IDs
         ids = list(self.filter(details__id__in=details).values_list("id", flat=True))
@@ -573,7 +572,7 @@ class File(BaseModel):
     def supports_zeta_player(self):
         output = False
 
-        # Normally only ZZT/SZZT files should work
+        # Normally only ZZT/SZZT/Weave files should work
         if self.is_detail(DETAIL_ZZT) or self.is_detail(DETAIL_SZZT) or self.is_detail(DETAIL_WEAVE):
             output = True
 
