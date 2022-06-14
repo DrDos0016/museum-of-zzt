@@ -873,7 +873,7 @@ class File(BaseModel):
     @mark_safe
     def details_links(self):
         output = ""
-        for i in self.details.all():
+        for i in self.details.filter(visible=True):
             output += '<a href="{}">{}</a>, '.format(i.url(), i.title)
         return output[:-2]
 
