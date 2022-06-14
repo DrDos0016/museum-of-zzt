@@ -34,13 +34,13 @@ def get_zip_file(request):
         file = zip.open(filename)
     except NotImplementedError as error:
         record(filename)
-        return HttpResponse("Unimplemented Compression Method:" + str(error))
+        return HttpResponse("Unimplemented Compression Method:" + str(error), status=501)
     except Exception as error:
         record(filename)
         record(type(error))
         record(error)
         return HttpResponse(
-            "An error occurred, and the file could not be retreived."
+            "An error occurred, and the file could not be retreived.", status=404
         )
 
     if ext in (FILE_VIEWER_TEXT_EXTENSIONS):
@@ -93,7 +93,7 @@ def get_zip_file(request):
         return HttpResponse(parse_pld(file.read()))
     else:
         return HttpResponse(
-            "This file type is not currently supported for embedded content."
+            "This file type is not currently supported for embedded content.", status=501
         )
 
 
