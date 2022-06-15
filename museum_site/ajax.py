@@ -112,9 +112,7 @@ def get_author_suggestions(request, max_suggestions=20):
     output = {"suggestions": []}
 
     if query:
-        qs = File.objects.filter(
-            author__istartswith=query
-        ).only("author").distinct().order_by("author")
+        qs = File.objects.filter(author__istartswith=query).only("author").distinct().order_by("author")
         for f in qs:
             all_authors = f.author.split("/")
             for a in all_authors:
@@ -124,9 +122,7 @@ def get_author_suggestions(request, max_suggestions=20):
                 break
 
         if len(output["suggestions"]) < max_suggestions:
-            qs = File.objects.filter(
-                author__icontains=query
-            ).only("author").distinct().order_by("author")
+            qs = File.objects.filter(author__icontains=query).only("author").distinct().order_by("author")
             for f in qs:
                 all_authors = f.author.split("/")
                 for a in all_authors:
@@ -143,9 +139,7 @@ def get_company_suggestions(request, max_suggestions=20):
     output = {"suggestions": []}
 
     if query:
-        qs = File.objects.filter(
-            company__istartswith=query
-        ).only("company").distinct().order_by("company")
+        qs = File.objects.filter(company__istartswith=query).only("company").distinct().order_by("company")
         for f in qs:
             all_companies = f.company.split("/")
             for c in all_companies:
@@ -155,9 +149,7 @@ def get_company_suggestions(request, max_suggestions=20):
                 break
 
         if len(output["suggestions"]) < max_suggestions:
-            qs = File.objects.filter(
-                company__icontains=query
-            ).only("company").distinct().order_by("company")
+            qs = File.objects.filter(company__icontains=query).only("company").distinct().order_by("company")
             for f in qs:
                 all_companies = f.company.split("/")
                 for c in all_companies:
@@ -174,9 +166,7 @@ def get_search_suggestions(request, max_suggestions=25):
     output = {"suggestions": []}
 
     if query:
-        qs = File.objects.filter(
-            title__istartswith=query
-        ).only("title").distinct().order_by("sort_title")
+        qs = File.objects.filter(title__istartswith=query).only("title").distinct().order_by("sort_title")
         for f in qs:
             if f.title not in output["suggestions"]:
                 output["suggestions"].append(f.title)
@@ -184,9 +174,7 @@ def get_search_suggestions(request, max_suggestions=25):
                 break
 
         if len(output["suggestions"]) < max_suggestions:
-            qs = File.objects.filter(
-                title__icontains=query
-            ).only("title").distinct().order_by("sort_title")
+            qs = File.objects.filter(title__icontains=query).only("title").distinct().order_by("sort_title")
 
             for f in qs:
                 if f.title not in output["suggestions"]:
@@ -197,7 +185,7 @@ def get_search_suggestions(request, max_suggestions=25):
 
 
 def render_review_text(request):
-    #output = profanity_filter(request.POST.get("text", ""))
+    # output = profanity_filter(request.POST.get("text", ""))
     output = request.POST.get("text", "")
     if output:
         output = markdown_deux_tags.markdown_filter(output)
