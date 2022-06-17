@@ -12,6 +12,7 @@ class Directory_View(ListView):
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
+        self.url_name = self.request.resolver_match.url_name
 
         # Get view format
         self.view = get_selected_view_format(

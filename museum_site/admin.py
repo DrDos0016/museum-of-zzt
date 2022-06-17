@@ -5,6 +5,8 @@ from museum_site.models import *
 
 admin.site.register(File)
 admin.site.register(Article)
+admin.site.register(Collection)
+admin.site.register(Collection_Entry)
 admin.site.register(Detail)
 admin.site.register(Download)
 admin.site.register(Review)

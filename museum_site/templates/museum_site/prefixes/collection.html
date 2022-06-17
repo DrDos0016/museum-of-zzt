@@ -1,0 +1,8 @@
+<p>Collections are user creatable sets of files hosted on the Museum of ZZT.</p>
+
+<p>{% if request.user.is_authenticated %}
+<ul>
+<li><a href="{% url 'new_collection' %}">Create A New Collection</a></li>
+<li><a href="{% url 'my_collections' %}">Manage My Collections</a></li>
+</ul>
+{% else %}Creating collections requires being signed into a <a href="{% url 'login_user' %}">Museum of ZZT account</a>.{% endif %}</p>

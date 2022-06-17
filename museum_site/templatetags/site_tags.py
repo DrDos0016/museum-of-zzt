@@ -564,9 +564,9 @@ def ssv_links(raw, param, lookup=""):
 
 @register.simple_tag()
 def gblock(
-    item, view="detailed", header=None, debug=False, request=None
+    item, view="detailed", header=None, debug=False, request=None, *args, **kwargs
 ):
-    template = "museum_site/blocks/generic-{}-block.html".format(view)
+    template = "museum_site/blocks/generic-{}-block.html".format(view.split("-")[0])
     if not item:
         item = File(
             id=-1, title="ERROR: Object not found",
@@ -578,6 +578,10 @@ def gblock(
         context = item.list_block_context(debug=debug, request=request)
     elif view == "gallery":
         context = item.gallery_block_context(debug=debug, request=request)
+    elif view == "detailed-collection":
+        context = item.detailed_collection_block_context(debug=debug, request=request, collection_description=kwargs.get("collection_description", ""))
+    else:
+        context = {}
 
     if item.model_name == "File":
         context["file"] = item

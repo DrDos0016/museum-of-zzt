@@ -11,6 +11,7 @@ if DEBUG:
 import museum_site.admin  # noqa: E402
 import museum_site.ajax  # noqa: E402
 import museum_site.article_views  # noqa: E402
+import museum_site.collection_views  # noqa: E402
 import museum_site.debug_views  # noqa: E402
 import museum_site.file_views  # noqa: E402
 # import museum_site.errors  # noqa: E402
@@ -62,6 +63,12 @@ urlpatterns = [
     path("zeta/", museum_site.article_views.article_view, {"article_id": 399}, name="zeta"),
     path("zzt/", museum_site.article_views.article_view, {"article_id": 2}, name="zzt_dl"),
     path("zzt-cheats/", museum_site.article_views.article_view, {"article_id": 22}, name="zzt_cheats"),
+
+    # /collection/
+    path("collection/", museum_site.collection_views.Collection_Directory_View.as_view(), name="browse_collections"),
+    path("collection/new/", museum_site.collection_views.Collection_Create_View.as_view(), name="new_collection"),
+    path("collection/user/", museum_site.collection_views.Collection_Directory_View.as_view(), name="my_collections"),
+    path("collection/view/<slug:slug>/", museum_site.collection_views.Collection_Detail_View.as_view(), name="view_collection"),
 
     # /debug/
     path("ajax/debug_file/", museum_site.ajax.debug_file),
