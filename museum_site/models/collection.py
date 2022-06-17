@@ -37,11 +37,20 @@ class Collection(BaseModel):
     title = models.CharField(max_length=120, db_index=True, help_text="The name of your collection. Used to generate URL for collection.")
     slug = models.SlugField(max_length=80, db_index=True, unique=True, editable=False, help_text="Unique idenifier for collection")
     description = models.TextField(help_text="Description of collection. Markdown supported.", blank=True, default="")
-    visibility = models.IntegerField(default=PRIVATE, choices=VISIBILITY_CHOICES, help_text="Permissions to access your collection. Collections with no items contained will not be displayed even if they are marked public.")
+    visibility = models.IntegerField(
+        default=PRIVATE,
+        choices=VISIBILITY_CHOICES,
+        help_text="Permissions to access your collection. Collections with no items contained will not be displayed even if they are marked public."
+    )
     created = models.DateField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     item_count = models.IntegerField(default=0, editable=False)
-    short_description = models.CharField(max_length=250, help_text="A short description of the collection displayed when browsing collections and not their contents. Plain text only.", blank=True, default="")
+    short_description = models.CharField(
+        max_length=250,
+        help_text="A short description of the collection displayed when browsing collections and not their contents. Plain text only.",
+        blank=True,
+        default=""
+    )
 
     # Associations
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -54,9 +63,8 @@ class Collection(BaseModel):
         return self.title
 
     def save(self, *args, **kwargs):
-        # Set the key slug if it hasn't been defined yet
-        if self.slug == "":
-            self.slug = slugify(self.title)
+        # Set the slug
+        self.slug = slugify(self.title)
         super(Collection, self).save(*args, **kwargs)
 
     def url(self):
@@ -85,7 +93,11 @@ class Collection(BaseModel):
         context = self.initial_context(*args, **kwargs)
 
         context["title"] = {"datum": "title", "value": self.title, "url": self.url()}
+        context["slug"] = self.slug
         context["columns"] = []
+
+        if self.user and context["request"] and context["request"].user.id == self.user.id:
+            context["links"] = True
 
         context["columns"].append([
             {"datum": "text", "label": "Author", "value": self.author_link},
@@ -100,7 +112,7 @@ class Collection(BaseModel):
 class Collection_Entry(models.Model):
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE, blank=True, null=True)
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True)
-    collection_description = models.TextField(help_text="Description of file in collection. Markdown supported.", blank=True, default="")
+    collection_description = models.TextField(help_text="Optional description for the file as part of the collection. Markdown supported.", blank=True, default="")
 
     def __str__(self):
         return "Collection Entry"

@@ -14,4 +14,7 @@
     </div>
     {% if extras %}<div class="extras">{% for extra in extras %}{% include extra %}{% endfor %}</div>{% endif %}
 </div>
-{% if links %}{% zfile_links zfile=file debug=request.session.DEBUG %}{% endif %}
+{% if links %}
+{% if model == "File" %}{% zfile_links zfile=file debug=request.session.DEBUG %}{% endif %}
+{% if model != "File" %}{% include "museum_site/blocks/"|add:model|add:"-links.html"|lower %}{% endif %}
+{% endif %}

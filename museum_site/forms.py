@@ -621,6 +621,7 @@ class ReviewForm(forms.ModelForm):
 
         return author
 
+
 class Review_Search_Form(forms.ModelForm):
     RATINGS = (
         (0, "0.0"),
@@ -640,13 +641,12 @@ class Review_Search_Form(forms.ModelForm):
     use_required_attribute = False
     review_date = forms.ChoiceField(
         label="Year Reviewed",
-        choices=any_plus(((str(x), str(x)) for x in range(YEAR, 2001, -1))) # Earliest review is from 2002
+        choices=any_plus(((str(x), str(x)) for x in range(YEAR, 2001, -1)))  # Earliest review is from 2002
     )
     min_rating = forms.ChoiceField(label="Minimum Rating", choices=RATINGS)
     max_rating = forms.ChoiceField(label="Maximum Rating", choices=RATINGS, initial=5.0)
     ratingless = forms.BooleanField(label="Include Reviews Without Ratings", initial=True)
     sort = forms.ChoiceField(label="Sort Results By", choices=get_sort_option_form_choices(Review.sort_options))
-
 
     class Meta:
         model = Review
@@ -679,3 +679,18 @@ class SeriesForm(forms.ModelForm):
     class Meta:
         model = Series
         fields = ["title", "description", "visible"]
+
+
+class Collection_Content_Form(forms.ModelForm):
+    use_required_attribute = False
+    associated_file = forms.ChoiceField(
+        widget=forms.RadioSelect(attrs={"class": "ul-scrolling-checklist"}),
+        choices=list(File.objects.published().values_list("id", "title")),
+        label="File To Add",
+    )
+
+    collection_id = forms.IntegerField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = Collection_Entry
+        fields = ["associated_file", "collection_description"]

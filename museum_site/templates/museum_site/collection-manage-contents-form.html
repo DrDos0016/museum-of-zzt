@@ -3,37 +3,15 @@
 {% load markdown_deux_tags %}
 
 {% block scripts %}
-<script>
-$(document).ready(function (){
-    $("#id_title").change(update_url);
-    update_url();
-});
-
-function update_url()
-{
-    var raw = $("#id_title").val();
-
-    var formatted = raw.trim().replace(/ /g, "-").replace(/[^0-9a-zA-Z_-]/gi, "").toLowerCase();
-    $("#collection-url-preview").text(formatted);
-}
-</script>
+<script src="{% static 'js/collection-manager.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 <h1>{{title}}</h1>
 
-{% if action == "Create" %}
-<p>Collections are created in two steps. This page is used to create an empty collection. After creating the collection, you will be taken to a page where files can be added to it.</p>
-{% elif action == "Edit" %}
-<p>This page is used to edit information about your collection.</p>
-
-<p>Note that changing a collection's title will change the URL used to access it! This can lead to broken links if the collection has been shared.</p>
-{% endif %}
-
+<h2>Add To Collection</h2>
 <form method="POST">
-{% csrf_token %}
-
 {% csrf_token %}
 {% for field in form.visible_fields %}
 <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
@@ -52,8 +30,10 @@ function update_url()
 {{field}}
 {% endfor %}
 
-<input type="submit" value="{{action}} Collection">
-
+<input type="button" value="{{action}} Collection" id="collection-add-button">
 </form>
+<hr>
+<h2>Collection Contents</h2>
+<div id="collection-contents"></div>
 </section>
 {% endblock %}

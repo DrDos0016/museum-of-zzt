@@ -226,3 +226,22 @@ def wozzt_queue_add(request):
     e.save()
 
     return HttpResponse(resp)
+
+
+def add_to_collection(request):
+    #TODO: Confirm this is your collection to add to
+
+    entry = Collection_Entry(
+        collection_id=int(request.POST["collection_id"]),
+        zfile_id=int(request.POST["zfile_id"]),
+        collection_description=request.POST["collection_description"]
+    )
+    entry.save()
+
+    # Update count
+    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
+    c.item_count += 1
+    c.save()
+
+    resp = "SUCCESS"
+    return HttpResponse(resp)
