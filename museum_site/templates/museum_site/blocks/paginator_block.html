@@ -21,6 +21,7 @@
     {% endif %}
 </nav>
 <div class="view-links">
+    {% if available_views|length > 1 %}
     {% for v in available_views %}
     {% if view == "list" %}
         {% if v == view %}<span class="view selected">{{v|title}} View</span></a>
@@ -33,6 +34,7 @@
     {% endif %}
     {% if not forloop.last %} ♦ {% endif %}
     {% endfor %}
+    {% endif %}
 </div>
 {% if sort_options %}<div class="sort-methods">
     Sort: <select name="sort">
