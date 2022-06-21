@@ -31,7 +31,7 @@ class Collection_Directory_View(Directory_View):
         if self.url_name == "my_collections":
             qs = Collection.objects.filter(user_id=self.request.user.id)
         else:  # Default listing
-            qs = Collection.objects.filter(visibility=Collection.PUBLIC)
+            qs = Collection.objects.filter(visibility=Collection.PUBLIC, item_count__gte=1)
         return qs
 
     def get_context_data(self, **kwargs):
@@ -74,6 +74,7 @@ class Collection_Create_View(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = self.title
+        context["action"] = "Create"
 
         # Remove "Removed" from the visbility options
         context["form"].fields["visibility"].choices = context["form"].fields["visibility"].choices[1:]
@@ -103,7 +104,7 @@ class Collection_Update_View(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse("browse_collections")
+        return reverse("my_collections")
 
 class Collection_Delete_View(DeleteView):
     model = Collection
@@ -113,10 +114,12 @@ class Collection_Delete_View(DeleteView):
         context = super().get_context_data(**kwargs)
         context["action"] = "Delete"
         context["title"] = "Delete Collection"
+        context["collection"] = Collection.objects.get(slug=self.request.resolver_match.kwargs["slug"])
         return context
 
+
     def get_success_url(self):
-        return reverse("browse_collections")
+        return reverse("my_collections")
 
 class Collection_Manage_Contents_View(FormView):
     form_class = Collection_Content_Form
@@ -133,6 +136,8 @@ class Collection_Manage_Contents_View(FormView):
         context["title"] = "Manage Collection Contents"
 
         context["form"].fields["collection_id"].initial = self.collection.id
+        context["collection"] = self.collection
+        context["contents"] = Collection_Entry.objects.filter(collection=context["collection"])
         return context
 
     def form_valid(self, form):

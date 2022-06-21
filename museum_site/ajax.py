@@ -14,6 +14,7 @@ from markdown_deux.templatetags import markdown_deux_tags
 
 from museum_site.models import *
 from museum_site.common import *
+from museum_site.templatetags.site_tags import gblock
 
 
 def get_zip_file(request):
@@ -243,5 +244,18 @@ def add_to_collection(request):
     c.item_count += 1
     c.save()
 
+    resp = "SUCCESS"
+    return HttpResponse(resp)
+
+def get_collection_addition(request):
+    """ Get the latest added file to a collection """
+    pk = int(request.GET.get("collection_id"))
+
+    entry = Collection_Entry.objects.filter(collection_id=pk).order_by("-id").first()
+    html = gblock(entry.zfile, view="detailed-collection", collection_description=entry.collection_description)
+    return HttpResponse(html)
+
+def get_collection_contents(request):
+    # TODO: Stub. Is this needed?
     resp = "SUCCESS"
     return HttpResponse(resp)

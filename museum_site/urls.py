@@ -40,6 +40,8 @@ urlpatterns = [
     path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add),
 
     path("ajax/collection/add-to-collection/", museum_site.ajax.add_to_collection),
+    path("ajax/collection/get-collection-addition/", museum_site.ajax.get_collection_addition),
+    path("ajax/collection/get-collection-contents/", museum_site.ajax.get_collection_contents),
 
     # /article/
     path("article/", museum_site.article_views.article_directory, name="article_directory"),

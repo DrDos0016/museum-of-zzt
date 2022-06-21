@@ -681,11 +681,19 @@ class SeriesForm(forms.ModelForm):
         fields = ["title", "description", "visible"]
 
 
+def associated_file_choices():
+    raw = list(File.objects.published().values_list("id", "title", "key"))
+    choices = []
+    for i in raw:
+        choice = (i[0], "{} [{}]".format(i[1], i[2]))
+        choices.append(choice)
+    return choices
+
 class Collection_Content_Form(forms.ModelForm):
     use_required_attribute = False
     associated_file = forms.ChoiceField(
         widget=forms.RadioSelect(attrs={"class": "ul-scrolling-checklist"}),
-        choices=list(File.objects.published().values_list("id", "title")),
+        choices=associated_file_choices(),
         label="File To Add",
     )
 
@@ -694,3 +702,5 @@ class Collection_Content_Form(forms.ModelForm):
     class Meta:
         model = Collection_Entry
         fields = ["associated_file", "collection_description"]
+
+

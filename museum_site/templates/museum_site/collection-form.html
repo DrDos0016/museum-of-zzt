@@ -1,6 +1,7 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
 {% load markdown_deux_tags %}
+{% load site_tags %}
 
 {% block scripts %}
 <script>
@@ -29,7 +30,13 @@ function update_url()
 <p>This page is used to edit information about your collection.</p>
 
 <p>Note that changing a collection's title will change the URL used to access it! This can lead to broken links if the collection has been shared.</p>
+{% elif action == "Delete" %}
+<p>This page is used to delete a collection and its contents.</p>
+
+<p>This will completely remove the collection and its contents, breaking all existing links to the collection if it has been shared.</p>
 {% endif %}
+
+{% if collection %}{% gblock collection %}{% endif %}
 
 <form method="POST">
 {% csrf_token %}

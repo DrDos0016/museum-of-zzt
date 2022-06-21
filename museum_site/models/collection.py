@@ -20,6 +20,7 @@ class Collection(BaseModel):
         {"text": "Title", "val": "title"},
         {"text": "Author", "val": "author"},
     ]
+    supported_views = ["detailed"]
 
     # Visibilities
     REMOVED = 0
@@ -73,6 +74,15 @@ class Collection(BaseModel):
     def preview_url(self):
         return "/static/images/screenshots/no_screenshot.png"
 
+    def belongs_to(self, user_id):
+        if self.user.id == user_id:
+            return True
+        return False
+
+    @property
+    def visibility_str(self):
+        return self.VISIBILITY_CHOICES[self.visibility][1]
+
     @mark_safe
     def author_link(self):
         if self.user:
@@ -96,8 +106,9 @@ class Collection(BaseModel):
         context["slug"] = self.slug
         context["columns"] = []
 
-        if self.user and context["request"] and context["request"].user.id == self.user.id:
-            context["links"] = True
+        yours = False
+        if self.user and context["request"]:
+            yours = self.belongs_to(context["request"].user.id)
 
         context["columns"].append([
             {"datum": "text", "label": "Author", "value": self.author_link},
@@ -106,6 +117,10 @@ class Collection(BaseModel):
             {"datum": "text", "label": "Items In Collection", "value": str(self.item_count)},
             {"datum": "text", "label": "Short Description", "value": self.short_description or mark_safe("<i>None</i>")},
         ])
+
+        if yours:
+            context["links"] = True
+            context["columns"][0].insert(0, {"datum": "text", "label": "Visibility", "value": self.visibility_str})
         return context
 
 

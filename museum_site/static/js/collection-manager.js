@@ -31,6 +31,34 @@ function add_item()
     ).always(
         function (){
             console.log("All done!");
+            get_collection_contents();
+        }
+    );
+}
+
+function get_collection_contents()
+{
+    console.log("CID", collection_id);
+    $.ajax(
+        {
+            type: "GET",
+            url: "/ajax/collection/get-collection-addition/",
+            data: {
+                "collection_id": collection_id
+            },
+        }
+    ).done(
+        function (resp){
+            console.log("It worked!");
+            $("#collection-contents").append(resp);
+        }
+    ).fail(
+        function (){
+            console.log("It failed!");
+        }
+    ).always(
+        function (){
+            console.log("All done!");
         }
     );
 }

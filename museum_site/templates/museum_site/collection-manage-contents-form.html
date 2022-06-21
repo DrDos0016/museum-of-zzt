@@ -1,8 +1,12 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
 {% load markdown_deux_tags %}
+{% load site_tags %}
 
 {% block scripts %}
+<script>
+var collection_id = {{collection.id|default:0}};
+</script>
 <script src="{% static 'js/collection-manager.js' %}"></script>
 {% endblock %}
 
@@ -11,6 +15,7 @@
 <h1>{{title}}</h1>
 
 <h2>Add To Collection</h2>
+{% gblock collection %}
 <form method="POST">
 {% csrf_token %}
 {% for field in form.visible_fields %}
@@ -34,6 +39,10 @@
 </form>
 <hr>
 <h2>Collection Contents</h2>
-<div id="collection-contents"></div>
+<div id="collection-contents">
+{% for entry in contents %}
+{% gblock entry.zfile view="detailed-collection" collection_description=entry.collection_description %}
+{% endfor %}
+</div>
 </section>
 {% endblock %}
