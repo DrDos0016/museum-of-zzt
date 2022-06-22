@@ -53,6 +53,7 @@ function prep_tweet()
 
     var desc = obj.next().next().text();
     text += desc + "\n";
+    text = text.trim();
 
     $("#tweet-text").val(text);
 
