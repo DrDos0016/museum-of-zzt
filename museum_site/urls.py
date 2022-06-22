@@ -39,9 +39,9 @@ urlpatterns = [
     path("ajax/render-review-text/", museum_site.ajax.render_review_text),
     path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add),
 
-    path("ajax/collection/add-to-collection/", museum_site.ajax.add_to_collection),
-    path("ajax/collection/get-collection-addition/", museum_site.ajax.get_collection_addition),
-    path("ajax/collection/get-collection-contents/", museum_site.ajax.get_collection_contents),
+    #path("ajax/collection/add-to-collection/", museum_site.ajax.add_to_collection),
+    #path("ajax/collection/get-collection-addition/", museum_site.ajax.get_collection_addition),
+    #path("ajax/collection/get-collection-contents/", museum_site.ajax.get_collection_contents),
 
     # /article/
     path("article/", museum_site.article_views.article_directory, name="article_directory"),
@@ -69,13 +69,13 @@ urlpatterns = [
     path("zzt-cheats/", museum_site.article_views.article_view, {"article_id": 22}, name="zzt_cheats"),
 
     # /collection/
-    path("collection/", museum_site.collection_views.Collection_Directory_View.as_view(), name="browse_collections"),
-    path("collection/manage-contents/<slug:slug>/", museum_site.collection_views.Collection_Manage_Contents_View.as_view(), name="manage_collection_contents"),
-    path("collection/new/", museum_site.collection_views.Collection_Create_View.as_view(), name="new_collection"),
-    path("collection/delete/<slug:slug>/", museum_site.collection_views.Collection_Delete_View.as_view(), name="delete_collection"),
-    path("collection/edit/<slug:slug>/", museum_site.collection_views.Collection_Update_View.as_view(), name="edit_collection"),
-    path("collection/user/", museum_site.collection_views.Collection_Directory_View.as_view(), name="my_collections"),
-    path("collection/view/<slug:slug>/", museum_site.collection_views.Collection_Detail_View.as_view(), name="view_collection"),
+    #path("collection/", museum_site.collection_views.Collection_Directory_View.as_view(), name="browse_collections"),
+    #path("collection/manage-contents/<slug:slug>/", museum_site.collection_views.Collection_Manage_Contents_View.as_view(), name="manage_collection_contents"),
+    #path("collection/new/", museum_site.collection_views.Collection_Create_View.as_view(), name="new_collection"),
+    #path("collection/delete/<slug:slug>/", museum_site.collection_views.Collection_Delete_View.as_view(), name="delete_collection"),
+    #path("collection/edit/<slug:slug>/", museum_site.collection_views.Collection_Update_View.as_view(), name="edit_collection"),
+    #path("collection/user/", museum_site.collection_views.Collection_Directory_View.as_view(), name="my_collections"),
+    #path("collection/view/<slug:slug>/", museum_site.collection_views.Collection_Detail_View.as_view(), name="view_collection"),
 
     # /debug/
     path("ajax/debug_file/", museum_site.ajax.debug_file),
