@@ -10,6 +10,12 @@ var collection_id = {{collection.id|default:0}};
 <script src="{% static 'js/collection-manager.js' %}"></script>
 {% endblock %}
 
+{% block style %}
+<style>
+#collection-add-button { min-width:165px; }
+</style>
+{% endblock %}
+
 {% block content %}
 <section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 <h1>{{title}}</h1>
@@ -35,7 +41,7 @@ var collection_id = {{collection.id|default:0}};
 {{field}}
 {% endfor %}
 
-<input type="button" value="{{action}} Collection" id="collection-add-button">
+<div><input type="button" value="{{action}} Collection" id="collection-add-button"> <span class="mono b">Added butts</span></div>
 </form>
 <hr>
 <h2>Collection Contents</h2>

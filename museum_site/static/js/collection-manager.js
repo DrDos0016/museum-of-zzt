@@ -14,6 +14,14 @@ function add_item()
     }
     console.log("ADDING...", form_data);
 
+    // Blank the fields
+    var original_text = $("#collection-add-button").val();
+    $("#collection-add-button").prop("disabled", true);
+    $("#collection-add-button").val("Wait...");
+    $("input[name=associated_file]:checked").prop("checked", false);
+    $("textarea[name=collection_description]").val();
+
+
     $.ajax(
         {
             type: "POST",
@@ -32,6 +40,8 @@ function add_item()
         function (){
             console.log("All done!");
             get_collection_contents();
+            $("#collection-add-button").prop("disabled", false);
+            $("#collection-add-button").val(original_text);
         }
     );
 }
