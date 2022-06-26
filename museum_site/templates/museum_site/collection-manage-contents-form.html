@@ -28,8 +28,12 @@ var collection_id = {{collection.id|default:0}};
 <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
     {{field.label_tag}}
     <div class="field-value">
+        {% if field.name == "associated_file" %}
+        <div id="associated_file_filter" class="field_filter">
+            <label>Filter: <input name="field_filter"> <button id="field_filter_clear" type="button">Clear</button></label>
+        </div>
+        {% endif %}
         {{field|safe}}
-        {% if field.id_for_label == "id_title" %}<div>Collection URL: <span id="collection-url-preview"></span></div>{% endif %}
     </div>
     {% if field.help_text %}
     <p class="field-help">{{field.help_text|safe}}</p>
@@ -41,7 +45,7 @@ var collection_id = {{collection.id|default:0}};
 {{field}}
 {% endfor %}
 
-<div><input type="button" value="{{action}} Collection" id="collection-add-button"> <span class="mono b">Added butts</span></div>
+<div><input type="button" value="{{action}} Collection" id="collection-add-button"> <span class="mono b" id="added-item-text"></span></div>
 </form>
 <hr>
 <h2>Collection Contents</h2>

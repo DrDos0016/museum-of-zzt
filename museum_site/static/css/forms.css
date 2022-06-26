@@ -216,7 +216,7 @@ label
     display:none;
 }
 
-.hr-checklist-values
+.hr-checklist-values, .field_filter
 {
     font-family:monospace;
     font-size:larger;
@@ -227,6 +227,9 @@ label
     background-color:#619F9F;
     font-weight:bold;
 }
+
+.field_filter input { font-size:smaller; }
+.field_filter label { font-weight:bold; }
 
 #id_zfile { display:none; }
 
@@ -289,9 +292,13 @@ label
     max-height:250px;
     overflow-x:auto;
     border:1px solid #000;
+    background: #AAA;
+    font-family:monospace;
+    font-size:larger;
 }
 
 .ul-scrolling-checklist li { display:block; }
 .ul-scrolling-checklist li + li {  border-top: 1px dotted #000; }
 .ul-scrolling-checklist li.selected { background:#619F9F;}
 .ul-scrolling-checklist li:hover { background:#98C9C9; }
+
