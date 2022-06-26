@@ -782,25 +782,30 @@ def stream_card(request):
         "id", "title"
     ).order_by("sort_title")
 
-    if request.GET.get("pk"):
-        data["file"] = File.objects.get(pk=request.GET["pk"])
+    data["raw"] = request.GET.get("card_md", "")
+    data["pks"] = list(map(int, request.GET.getlist("pk")))
+    checked_files = File.objects.filter(pk__in=data["pks"])
 
-        data["card"] = {
-            "title": request.GET.get("title", data["file"].title),
-            "author": request.GET.get(
-                "author", data["file"].author.replace("/", ", ")
-            ),
-            "company": request.GET.get(
-                "company", data["file"].company.replace("/", ", ")
-            ),
-            "year": request.GET.get("year", data["file"].release_year),
-            "multiple_authors": (
-                True if request.GET.get("multiple_authors") else False
-            ),
-            "multiple_companies": (
-                True if request.GET.get("multiple_companies") else False
-            ),
-        }
+    if not data["raw"] and data["pks"]:
+        default = "# World{}:\n".format("s" if len(data["pks"]) > 1 else "")
+        for f in checked_files:
+            default += f.title + "\n\n"
+
+        default += "# Author{}:\n".format("s" if len(data["pks"]) > 1 else "")
+        for f in checked_files:
+            default += f.author + "\n\n"
+
+        default += "# Compan{}:\n".format("ies" if len(data["pks"]) > 1 else "y")
+        for f in checked_files:
+            if f.company:
+                default += f.company + "\n\n"
+
+        default += "# Year{}:\n".format("s" if len(data["pks"]) > 1 else "")
+        for f in checked_files:
+            default += (f.release_year() or "?") + "/"
+        default = default[:-1]
+
+        data["raw"] = default
 
     return render(request, "museum_site/tools/stream-card.html", data)
 
