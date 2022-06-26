@@ -1,19 +1,25 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
+{% load markdown_deux_tags %}
 
 {% block style %}
 <style>
-.stream-card-wrapper
-{
-}
-
+{% if request.GET.embed %}
 #stream-card
 {
-    width: 464px;
-    height: 322px;
-    font-size:28px;
-    display:flex;
-    flex-wrap:wrap;
+    position:absolute;
+    top:0;
+    left:0;
+}
+
+body
+{
+    margin-top:350px;
+}
+{% endif %}
+
+.stream-card-wrapper
+{
 }
 
 .entry
@@ -53,99 +59,105 @@
 form textarea
 {
     height:80px;
-    width:400px;
+    width:32ch;
 }
 
-{% if request.GET.embed %}
+#card-md
+{
+    height:316px;
+}
+
 #stream-card
 {
-    position:absolute;
-    top:0;
-    left:0;
+    width: 464px;
+    height: 322px;
+    font-size:28px;
+    color:#FFF;
 }
 
-body
+#stream-card p
 {
-    margin-top:350px;
+    margin:0;
+    margin-left:16px;
 }
-{% endif %}
+
+#stream-card ul
+{
+    list-style: none;
+    margin:0;
+}
+
+#stream-card h1
+{
+    font-size:28px;
+    color:#FF5;
+    display:block;
+    margin:0;
+    font-weight:normal;
+    margin-top:28px;
+}
+
+#stream-card > h1:first-child { margin-top:0px; }
+
+.heading-letter
+{
+    color:#000;
+    padding-left:1ch;
+    padding-right:1ch;
+    margin-right:1ch;
+}
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var idx = 0;
+$(document).ready(function (){
+    // Populate letters
+    $("#stream-card h1").each(function (){
+        var letter = $(this).text().slice(0, 1);
+        console.log(letter);
+
+        var bg_color = "ega-gray-bg";
+        if (idx % 2 != 0)
+            var bg_color = "ega-darkcyan-bg";
+
+        var prefix = "<span class='heading-letter " + bg_color + "'>" + letter + "</span>"
+
+        $(this).html(prefix + $(this).html());
+        idx++;
+    });
+});
+</script>
 {% endblock %}
 
 {% block content %}
 <section id="content" class="col block">
 <h1>Stream Card</h1>
-<hr>
-{% if not request.GET.pk %}
 <form>
-<select name="pk">
-{% for f in files %}<option value="{{f.id}}">{{f.title}}</option>{% endfor %}
-</select>
-<input type="submit" value="Set Base File">
+<div class="scrolling-checklist">
+{% for f in files %}<label><input type="checkbox" name="pk" value="{{f.id}}"{% if f.id in pks %} checked{% endif %}>{{f.title}}</label>{% endfor %}
+</div>
+<input type="submit" value="Set Base File(s)">
 </form>
-{% else %}
+<hr>
 <p><a href="?">Reselect Base File</a></p>
 
 <div class="flex-container" style="column-gap:14px">
     <div class="stream-card-wrapper">
 
-    <div id="stream-card" class="cp437 ega-darkblue-bg">
-        {% if card.title %}
-        <div class="entry">
-            <div class="key"> W </div>
-            <div class="label">World:</div>
-            <br>
-            <div class="val">{{card.title|linebreaksbr}}</div>
-        </div>
-        {% endif %}
-        {% if card.author %}
-        <div class="entry">
-            <div class="key"> A </div>
-            <div class="label">Author{% if card.multiple_authors %}s{% endif %}:</div>
-            <br>
-            <div class="val">{{card.author|linebreaksbr}}</div>
-        </div>
-        {% endif %}
-        {% if card.company %}
-        <div class="entry">
-            <div class="key"> C </div>
-            <div class="label">Compan{% if card.multiple_companies %}ies{% else %}y{% endif %}:</div>
-            <br>
-            <div class="val">{{card.company|linebreaksbr}}</div>
-        </div>
-        {% endif %}
-        {% if card.year %}
-        <div class="entry">
-            <div class="key"> Y </div>
-            <div class="label">Year:</div>
-            <br>
-            <div class="val">{{card.year}}</div>
-        </div>
-        {% endif %}
-    </div>
+    <div id="stream-card" class="cp437 ega-darkblue-bg">{{raw|markdown}}</div>
 
     <a href="?{{request.META.QUERY_STRING}}&embed=1" target="_blank">Ship it!</a>
     </div>
     <div>
         <form>
-            <input type="hidden" name="pk" value="{{request.GET.pk}}">
-            <label>World:<br>
-            <textarea name="title">{{card.title}}</textarea><br>
-            </label>
-            <label>Author: <input type="checkbox" value="1" name="multiple_authors"{% if request.GET.multiple_authors %} checked{%endif %}> Multiple<br>
-            <textarea name="author">{{card.author}}</textarea><br>
-            </label>
-            <label>Company: <input type="checkbox" value="1" name="multiple_companies"{% if request.GET.multiple_companies %} checked{%endif %}> Multiple<br>
-            <textarea name="company">{{card.company}}</textarea><br>
-            </label>
-            <label>Year:<br>
-            <input name="year" value="{{card.year}}"><br>
-            </label>
-            <br>
+            <textarea id="card-md" name="card_md">{{raw}}</textarea>
+            <br><br>
             <input type="submit" value="Apply">
         </form>
     </div>
 </div>
-{% endif %}
+
 </section>
 {% endblock %}
