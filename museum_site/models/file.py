@@ -975,9 +975,11 @@ class File(BaseModel):
                 context["extras"].append("museum_site/blocks/extra-lost.html")
                 context["lost_description"] = self.description
         if self.is_detail(DETAIL_PROGRAM) and self.description:
-            context["extras"].append("museum_site/blocks/extra-utility.html")
-            context["utility_description"] = self.description
-            context["detail_name"] = "Program"
+            # TODO: This PK check is a hotfix for "description" being used for many types of descriptions
+            if self.pk not in [85]:
+                context["extras"].append("museum_site/blocks/extra-utility.html")
+                context["utility_description"] = self.description
+                context["detail_name"] = "Program"
         elif self.is_detail(DETAIL_UTILITY) and self.description:
             context["extras"].append("museum_site/blocks/extra-utility.html")
             context["utility_description"] = self.description
