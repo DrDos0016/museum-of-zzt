@@ -302,3 +302,4 @@ label
 .ul-scrolling-checklist li.selected { background:#619F9F;}
 .ul-scrolling-checklist li:hover { background:#98C9C9; }
 
+.arrangeable li, .arrangeable li label { cursor:grab; }

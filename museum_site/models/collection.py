@@ -128,6 +128,10 @@ class Collection_Entry(models.Model):
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE, blank=True, null=True)
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True)
     collection_description = models.TextField(help_text="Optional description for the file as part of the collection. Markdown supported.", blank=True, default="")
+    order = models.IntegerField(default=1, db_index=True)
+
+    class Meta:
+        ordering = ["-order", "id"]
 
     def __str__(self):
         return "Collection Entry"

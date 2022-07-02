@@ -247,6 +247,27 @@ def add_to_collection(request):
     resp = "SUCCESS"
     return HttpResponse(resp)
 
+def remove_from_collection(request):
+    #TODO: Confirm this is your collection to remove from
+
+    qs = Collection_Entry.objects.filter(
+        collection_id=int(request.POST["collection_id"]),
+        zfile_id=int(request.POST["zfile_id"]),
+    )
+
+    deleted = 0
+    for entry in qs:
+        entry.delete()
+        deleted += 1
+
+    # Update count
+    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
+    c.item_count -= deleted
+    c.save()
+
+    resp = "SUCCESS"
+    return HttpResponse(resp)
+
 def get_collection_addition(request):
     """ Get the latest added file to a collection """
     pk = int(request.GET.get("collection_id"))
@@ -257,5 +278,22 @@ def get_collection_addition(request):
 
 def get_collection_contents(request):
     # TODO: Stub. Is this needed?
+    resp = "SUCCESS"
+    return HttpResponse(resp)
+
+
+def arrange_collection(request):
+    """ Get the latest added file to a collection """
+    #TODO: Confirm this is your collection to add to
+
+    pk = int(request.POST.get("collection_id"))
+    order = request.POST.get("order").split("/")
+
+    entries = Collection_Entry.objects.filter(collection_id=pk)
+
+    for entry in entries:
+        entry.order = order.index(str(entry.zfile.pk)) + 1
+        entry.save()
+
     resp = "SUCCESS"
     return HttpResponse(resp)

@@ -12,7 +12,11 @@ var collection_id = {{collection.id|default:0}};
 
 {% block style %}
 <style>
+#content h2 { margin-bottom:0px; }
 #collection-add-button { min-width:165px; }
+#id_arrange_file label { margin-left: 20px; }
+.arrangeable-ghost { background:#FFF; }
+#id_arrange_file { min-height:250px; }
 </style>
 {% endblock %}
 
@@ -20,9 +24,11 @@ var collection_id = {{collection.id|default:0}};
 <section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 <h1>{{title}}</h1>
 
-<h2>Add To Collection</h2>
+<div><h2 id="current-action-heading">{{action.text}}</h2>{% for action in collection_actions %}<a href="{{action.url}}">{{action.text}}</a>{% if not forloop.last %} | {% endif %}{% endfor %}</div>
 {% gblock collection %}
-<form method="POST">
+
+{% if operation == "add" %}
+<form method="POST" id="form-add">
 {% csrf_token %}
 {% for field in form.visible_fields %}
 <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
@@ -30,7 +36,9 @@ var collection_id = {{collection.id|default:0}};
     <div class="field-value">
         {% if field.name == "associated_file" %}
         <div id="associated_file_filter" class="field_filter">
-            <label>Filter: <input name="field_filter"> <button id="field_filter_clear" type="button">Clear</button></label>
+            <label>Filter: <input name="field_filter" id="add_field_filter" data-target="input[name=associated_file]">
+            <button name="field_filter_clear_button" type="button" data-target="input[name=associated_file]" data-field="#add_field_filter">Clear</button>
+            </label>
         </div>
         {% endif %}
         {{field|safe}}
@@ -45,9 +53,53 @@ var collection_id = {{collection.id|default:0}};
 {{field}}
 {% endfor %}
 
-<div><input type="button" value="{{action}} Collection" id="collection-add-button"> <span class="mono b" id="added-item-text"></span></div>
+<div><input type="button" value="{{action.text}}" id="collection-add-button"> <span class="mono b" id="added-item-text"></span></div>
 </form>
+{% elif operation == "remove" %}
+<form method="POST" id="form-remove">
+{% csrf_token %}
+<input name="collection_id" value="{{collection.id}}" type="hidden">
+<div class="field-wrapper">
+    <label>File To Remove:</label>
+    <div class="field-value">
+        <div id="associated_file_filter" class="field_filter">
+            <label>Filter: <input name="field_filter" id="remove_field_filter" data-target="input[name=removed_file]">
+            <button name="field_filter_clear_button" type="button" data-target="input[name=removed_file]" data-field="#remove_field_filter">Clear</button>
+            </label>
+        </div>
+        <ul id="id_removed_file" class="ul-scrolling-checklist">
+        {% for entry in contents %}
+        <li><label for="id_removed_file_{{forloop.counter0}}">
+            <input id="id_removed_file_{{forloop.counter0}}" class="ul-scrolling-checklist" type="radio" name="removed_file" value="{{entry.zfile.pk}}">{{entry.zfile.title}} [{{entry.zfile.key}}]
+        </label></li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+<div><input type="button" value="Remove From Collection" id="collection-remove-button"> <span class="mono b" id="removed-item-text"></span></div>
+</form>
+{% elif operation == "arrange" %}
+<form method="POST" id="form-arrange">
+{% csrf_token %}
+<input name="collection_id" value="{{collection.id}}" type="hidden">
+<div class="field-wrapper">
+    <label>Collection Order:</label>
+    <div class="field-value">
+        <ul id="id_arrange_file" class="ul-scrolling-checklist arrangeable-list">
+        {% for entry in contents %}
+        <li draggable="true" class="arrangeable order-item"><label for="id_arrange_file_{{forloop.counter0}}">
+            <input id="id_arrange_file_{{forloop.counter0}}" class="ul-scrolling-checklist" type="hidden" name="arrange_file" value="{{entry.zfile.pk}}">{{entry.zfile.title}} [{{entry.zfile.key}}]
+        </label></li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+<div><input type="button" value="Arrange Collection" id="collection-arrange-button"> <span class="mono b" id="arranged-item-text"></span></div>
+</form>
+{% endif %}
+
 <hr>
+
 <h2>Collection Contents</h2>
 <div id="collection-contents">
 {% for entry in contents %}

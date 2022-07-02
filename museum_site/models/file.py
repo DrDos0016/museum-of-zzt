@@ -417,9 +417,7 @@ class File(BaseModel):
     def screenshot_url(self):
         SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
         if self.screenshot and self.screenshot not in SPECIAL_SCREENSHOTS:
-            return "images/screenshots/{}/{}".format(
-                self.letter, self.screenshot
-            )
+            return "images/screenshots/{}/{}".format(self.letter, self.screenshot)
         elif self.screenshot:  # Special case
             return "images/screenshots/{}".format(self.screenshot)
         else:

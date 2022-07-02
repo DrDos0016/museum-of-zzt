@@ -702,5 +702,3 @@ class Collection_Content_Form(forms.ModelForm):
     class Meta:
         model = Collection_Entry
         fields = ["associated_file", "collection_description"]
-
-

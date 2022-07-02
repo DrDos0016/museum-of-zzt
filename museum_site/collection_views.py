@@ -132,8 +132,27 @@ class Collection_Manage_Contents_View(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["action"] = "Add To"
         context["title"] = "Manage Collection Contents"
+        context["operation"] = self.request.GET.get("operation", "add")
+
+        context["collection_actions"] = [
+            {
+                "text": "Add To Collection",
+                "url": "?operation=add",
+                "template": "",
+            },
+            {
+                "text": "Remove From Collection",
+                "url": "?operation=remove",
+                "template": "museum_site/collection-remove-contents-form.html",
+            },
+            {
+                "text": "Arrange Collection",
+                "url": "?operation=arrange",
+                "template": "museum_site/collection-arrange-contents-form.html",
+            },
+        ]
+        context["action"] = context["collection_actions"][0]
 
         context["form"].fields["collection_id"].initial = self.collection.id
         context["collection"] = self.collection

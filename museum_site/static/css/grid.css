@@ -488,6 +488,8 @@ a.inline[target=_blank]::after
 .flex-wrap { flex-wrap: wrap; }
 .flex-container.justify-space-between { justify-content: space-between; }
 .flex-container.justify-center { justify-content: center; }
+
+.basic-border { border:1px solid #000; }
 /* End Utility Classes */
 
 /* Generic Structures */
