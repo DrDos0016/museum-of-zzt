@@ -571,6 +571,8 @@ def publish(request, key):
     # If the file isn't from the current year, assume it's a New Find
     if data["file"].release_date and data["file"].release_date.year != YEAR:
         data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
+    elif data["file"].release_date is None:
+        data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
 
     return render(request, "museum_site/tools/publish.html", data)
 
