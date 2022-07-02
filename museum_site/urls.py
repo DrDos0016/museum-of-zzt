@@ -32,12 +32,12 @@ urlpatterns = [
     path("", museum_site.views.index, name="index"),
 
     # /ajax/
-    #path("ajax/get-author-suggestions/", museum_site.ajax.get_author_suggestions),
-    #path("ajax/get-company-suggestions/", museum_site.ajax.get_company_suggestions),
-    #path("ajax/get_zip_file/", museum_site.ajax.get_zip_file),
-    #path("ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions),
-    #path("ajax/render-review-text/", museum_site.ajax.render_review_text),
-    #path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add),
+    path("ajax/get-author-suggestions/", museum_site.ajax.get_author_suggestions),
+    path("ajax/get-company-suggestions/", museum_site.ajax.get_company_suggestions),
+    path("ajax/get_zip_file/", museum_site.ajax.get_zip_file),
+    path("ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions),
+    path("ajax/render-review-text/", museum_site.ajax.render_review_text),
+    path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add),
 
     #path("ajax/collection/add-to-collection/", museum_site.ajax.add_to_collection),
     #path("ajax/collection/arrange-collection/", museum_site.ajax.arrange_collection),
