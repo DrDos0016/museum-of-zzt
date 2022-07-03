@@ -14,8 +14,8 @@ class DetailManager(models.Manager):
 
         qs = self.all()
         if not include_hidden:
-            qs = self.exclude(pk=DETAIL_REMOVED)
-            qs = self.exclude(pk=DETAIL_NEW_FIND)
+            qs = qs.exclude(pk=DETAIL_REMOVED)
+            qs = qs.exclude(pk=DETAIL_NEW_FIND)
         cats = []
 
         for d in qs:
