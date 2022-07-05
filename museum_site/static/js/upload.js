@@ -322,7 +322,7 @@ function parse_zip_file(file)
         var hr_size = filesize_format(file.size);
 
         $(".upload-info").html(
-        `<div class="file-header">
+        `<div class="file-list-header">
             <span class="file-name">${file.name}</span>
             <span class="file-size">${hr_size}</span>
         </div>
