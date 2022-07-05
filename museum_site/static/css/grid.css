@@ -1199,11 +1199,16 @@ form .field .scrolling-checklist
 
 }
 
-.file-header { grid-area: header;}
+.file-header {
+    grid-area: header;
+    display:flex;
+    margin-bottom:3px;
+}
 
 #alt-file-listing
 {
     max-width:25%;
+    margin-left:16px;
 }
 
 #expand-contract { grid-area: expand;}

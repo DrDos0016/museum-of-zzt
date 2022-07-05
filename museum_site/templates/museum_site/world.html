@@ -8,9 +8,8 @@
 <div class="file-header">
     {% include "museum_site/datum/title-datum.html" with f=file.title_datum_context %}
     {% if multifile %}
-    <br>
     <select id="alt-file-listing" name="associated_file">
-        <option value="{{file.filename}}">Other associated files...</option>
+        <option value="{{file.filename}}">+{{zgames|length|add:"-1"}} Other associated file{% if zgames|length > 2 %}s{% endif %}</option>
         {% for zgame in zgames %}
             {% if zgame.id != file.id %}<option value="{{zgame.filename}}">{{zgame.title}}</option>{% endif %}
         {% endfor %}
