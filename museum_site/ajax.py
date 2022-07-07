@@ -232,6 +232,16 @@ def wozzt_queue_add(request):
 def add_to_collection(request):
     #TODO: Confirm this is your collection to add to
 
+    # Check for duplicates
+    duplicate = Collection_Entry.objects.filter(
+        collection_id=int(request.POST["collection_id"]),
+        zfile_id=int(request.POST["zfile_id"]),
+    ).exists()
+
+    if duplicate:
+        error = "ERROR: ZFile already exists in collection!"
+        return HttpResponse(error)
+
     entry = Collection_Entry(
         collection_id=int(request.POST["collection_id"]),
         zfile_id=int(request.POST["zfile_id"]),
@@ -294,6 +304,23 @@ def arrange_collection(request):
     for entry in entries:
         entry.order = order.index(str(entry.zfile.pk)) + 1
         entry.save()
+
+    resp = "SUCCESS"
+    return HttpResponse(resp)
+
+
+def update_collection_entry(request):
+    #TODO: Confirm this is your collection to modify
+    pk = int(request.POST.get("entry_id"))
+
+    entry = Collection_Entry.objects.get(pk=pk)
+    entry.collection_description = request.POST.get("desc", "")
+    entry.save()
+
+    # Check if this is the new preview image
+    if request.POST.get("set_preview"):
+        entry.collection.preview_image = entry.zfile
+        entry.collection.save()
 
     resp = "SUCCESS"
     return HttpResponse(resp)

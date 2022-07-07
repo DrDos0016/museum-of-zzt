@@ -103,10 +103,16 @@ class FileManager(models.Manager):
         qs = qs.distinct()
         return qs
 
-    def basic_search(self, q):
-        return self.filter(
-            Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(company__icontains=q)
-        ).distinct()
+    def basic_search(self, q, include_explicit=True):
+        if include_explicit:
+            return self.filter(
+                Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(company__icontains=q)
+            ).distinct()
+        else:
+            qs = self.filter(
+                Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(company__icontains=q)
+            ).filter(explicit=False)
+            return qs
 
     def directory(self, category):
         if category == "company":
@@ -149,6 +155,20 @@ class FileManager(models.Manager):
         return self.filter(
             details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE]
         ).exclude(zeta_config__id=ZETA_RESTRICTED)
+
+    def random_zfile(self, include_explicit=False, detail_filter=None):
+        """ Returns a random zfile - Intended for API calls
+        """
+        excluded_details = [DETAIL_REMOVED]
+        qs = self.exclude(details__id__in=excluded_details)
+        if not include_explicit:
+            qs = qs.exclude(explicit=True)
+        if detail_filter is not None:
+            qs = qs.filter(details__id=detail_filter)
+
+        zgame = qs.order_by("?").first()
+        return zgame
+
 
     def random_zzt_world(self):
         """ Returns a random zfile
@@ -1058,7 +1078,7 @@ class File(BaseModel):
         context = self.detailed_block_context(*args, **kwargs)
         context["collection_description"] = kwargs.get("collection_description")
         if context["collection_description"]:
-            context["extras"].insert(0, "museum_site/blocks/extra-markdown.html")
+            context["extras"].insert(0, "museum_site/blocks/extra-collection.html")
         return context
 
 

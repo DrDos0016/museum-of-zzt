@@ -44,6 +44,7 @@ urlpatterns = [
     #path("ajax/collection/get-collection-addition/", museum_site.ajax.get_collection_addition),
     #path("ajax/collection/get-collection-contents/", museum_site.ajax.get_collection_contents),
     #path("ajax/collection/remove-from-collection/", museum_site.ajax.remove_from_collection),
+    #path("ajax/collection/update-collection-entry/", museum_site.ajax.update_collection_entry),
 
     # /article/
     path("article/", museum_site.article_views.article_directory, name="article_directory"),

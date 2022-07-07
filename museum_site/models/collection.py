@@ -20,6 +20,16 @@ class Collection(BaseModel):
         {"text": "Title", "val": "title"},
         {"text": "Author", "val": "author"},
     ]
+    sort_keys = {
+        # Key - Value from <select> used in GET params
+        # Value - Django order_by param
+        "title": "title",
+        "author": "user__username",
+        "modified": "modified",
+        "-modified": "-modified",
+        "id": "id",
+        "-id": "-id",
+    }
     supported_views = ["detailed"]
 
     # Visibilities
@@ -52,6 +62,7 @@ class Collection(BaseModel):
         blank=True,
         default=""
     )
+    preview_image = models.ForeignKey("File", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
 
     # Associations
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -72,6 +83,8 @@ class Collection(BaseModel):
         return reverse("view_collection", kwargs={"slug": self.slug})
 
     def preview_url(self):
+        if self.preview_image:
+            return self.preview_image.preview_url()
         return "/static/images/screenshots/no_screenshot.png"
 
     def belongs_to(self, user_id):
@@ -125,13 +138,36 @@ class Collection(BaseModel):
 
 
 class Collection_Entry(models.Model):
+    sort_options = [
+        {"text": "Collection Order", "val": "canonical"},
+        {"text": "Title", "val": "title"},
+        {"text": "Author", "val": "author"},
+        {"text": "Company", "val": "company"},
+        {"text": "Rating", "val": "rating"},
+        {"text": "Release Date (Newest)", "val": "-release"},
+        {"text": "Release Date (Oldest)", "val": "release"},
+    ]
+    sort_keys = {
+        # Key - Value from <select> used in GET params
+        # Value - Django order_by param
+        "canonical": "order",
+        "title": "zfile__sort_title",
+        "author": "zfile__author",
+        "company": "zfile__company",
+        "rating": "-zfile__rating",
+        "release": "zfile__release_date",
+        "-release": "-zfile__release_date",
+        "id": "id",
+        "-id": "-id",
+    }
+
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE, blank=True, null=True)
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True)
     collection_description = models.TextField(help_text="Optional description for the file as part of the collection. Markdown supported.", blank=True, default="")
     order = models.IntegerField(default=1, db_index=True)
 
     class Meta:
-        ordering = ["-order", "id"]
+        ordering = ["order", "id"]
 
     def __str__(self):
-        return "Collection Entry"
+        return "Collection Entry #{} - [{}]".format(self.pk, self.zfile.title)

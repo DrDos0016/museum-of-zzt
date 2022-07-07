@@ -8,6 +8,8 @@ $(document).ready(function (){
     $("input[name=field_filter]").keyup(function (){
         filter_file_list($(this).val(), $(this).data("target"));
     });
+    $("select[name=entry_id]").change(load_entry);
+    $("#edit-entry-button").click(update_collection_entry);
 
     $("button[name=field_filter_clear_button]").click(function (){
         var target = $(this).data("target");
@@ -53,18 +55,27 @@ function add_item()
     ).done(
         function (){
             console.log("It worked!");
-            $("#added-item-text").html("Added " + item_name);
+
         }
     ).fail(
         function (){
             console.log("It failed!");
         }
     ).always(
-        function (){
-            console.log("All done!");
-            get_collection_contents();
-            $("#collection-add-button").prop("disabled", false);
+        function (e){
+            console.log("E", e);
+            if (e == "SUCCESS")
+            {
+                $("#added-item-text").html("Added " + item_name);
+                get_collection_contents();
+
+            }
+            else
+            {
+                $("#added-item-text").html(e);
+            }
             $("#collection-add-button").val(original_text);
+            $("#collection-add-button").prop("disabled", false);
         }
     );
 }
@@ -240,6 +251,70 @@ function arrange_collection()
     ).always(
         function (){
             console.log("All done!");
+        }
+    );
+}
+
+function load_entry()
+{
+
+    var pk = $("select[name=entry_id]").val()
+    console.log("Loaded", pk);
+    if (pk != "N/A")
+    {
+        var desc = $("#entry-" + pk).val();
+        $("#edit-entry-button").prop("disabled", false);
+        $("textarea[name=collection_description]").val(desc);
+    }
+    else
+    {
+        //$("textarea[name=collection_description]").val("");
+        $("#edit-entry-button").prop("disabled", true);
+        if ($("input[name=preview-image]").val() == pk)
+            $("input[name=set-preview-image]").prop("checked", true);
+        else
+            $("input[name=set-preview-image]").prop("checked", false);
+        return false;
+    }
+
+}
+
+function update_collection_entry()
+{
+    var form_data = {
+        "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
+        "entry_id": $("select[name=entry_id]").val(),
+        "desc": $("textarea[name=collection_description]").val(),
+        "set_preview": $("input[name=set-preview-image]").prop("checked"),
+    }
+
+    $.ajax(
+        {
+            type: "POST",
+            url: "/ajax/collection/update-collection-entry/",
+            data: form_data,
+        }
+    ).done(
+        function (){
+            console.log("It worked!");
+
+        }
+    ).fail(
+        function (){
+            console.log("It failed!");
+        }
+    ).always(
+        function (e){
+            console.log("E", e);
+            if (e == "SUCCESS")
+            {
+                window.location.reload();
+            }
+            else
+            {
+                console.log("FAILURE ");
+                $("#edited-entry-text").html("Failed to update " + $("select[name=entry_id] option:selected").html() + "!");
+            }
         }
     );
 }

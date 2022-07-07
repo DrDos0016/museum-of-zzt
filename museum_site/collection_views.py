@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
+from django.template.defaultfilters import slugify
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 
@@ -32,12 +33,18 @@ class Collection_Directory_View(Directory_View):
             qs = Collection.objects.filter(user_id=self.request.user.id)
         else:  # Default listing
             qs = Collection.objects.filter(visibility=Collection.PUBLIC, item_count__gte=1)
+
+        # Sorting
+        #context = get_pagination_data(self.request, context, context["object_list"])
+        qs = sort_qs(qs, self.request.GET.get("sort"), self.model.sort_keys, "-modified")
         return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["prefix_template"] = "museum_site/prefixes/collection.html"
         context["action"] = "Create"
+
+
         return context
 
 
@@ -50,11 +57,11 @@ class Collection_Detail_View(DetailView):
         context = super().get_context_data(**kwargs)
         context["view"] = "detailed"
 
-        items = context["collection"].contents.all()
-
-        # Get the descriptions used for each item in the collection
+        # Get the contents of this collection
         entries = Collection_Entry.objects.filter(collection=context["collection"])
+        entries = sort_qs(entries, self.request.GET.get("sort"), Collection_Entry.sort_keys, "canonical")
 
+        context["sort_options"] = Collection_Entry.sort_options
         context["page"] = entries
         return context
 
@@ -82,8 +89,17 @@ class Collection_Create_View(CreateView):
         return context
 
     def form_valid(self, form):
+        # Set user information
         form.instance.user = self.request.user
+
+        # Check for a duplicate slug
+        slug = slugify(self.request.POST.get("title"))
+        if Collection.objects.filter(slug=slug).exists():
+            form.add_error("title", "The requested collection title is already in use.")
+            return self.form_invalid(form)
+
         return super().form_valid(form)
+
 
     def get_success_url(self):
         return reverse("manage_collection_contents", kwargs={"slug": self.object.slug})
@@ -91,7 +107,7 @@ class Collection_Create_View(CreateView):
 class Collection_Update_View(UpdateView):
     model = Collection
     template_name_suffix = "-form"
-    fields = ["title", "short_description", "description", "visibility"]
+    fields = ["title", "short_description", "description", "visibility",]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -102,6 +118,15 @@ class Collection_Update_View(UpdateView):
         context["form"].fields["visibility"].choices = context["form"].fields["visibility"].choices[1:]
 
         return context
+
+    def form_valid(self, form):
+        # Check for a duplicate slug
+        slug = slugify(self.request.POST.get("title"))
+        if Collection.objects.filter(slug=slug).exists():
+            form.add_error("title", "The requested collection title is already in use.")
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse("my_collections")
@@ -139,18 +164,22 @@ class Collection_Manage_Contents_View(FormView):
             {
                 "text": "Add To Collection",
                 "url": "?operation=add",
-                "template": "",
+
             },
             {
                 "text": "Remove From Collection",
                 "url": "?operation=remove",
-                "template": "museum_site/collection-remove-contents-form.html",
+
             },
             {
                 "text": "Arrange Collection",
                 "url": "?operation=arrange",
-                "template": "museum_site/collection-arrange-contents-form.html",
+
             },
+            {
+                "text": "Edit Collection Entry",
+                "url": "?operation=edit-entry",
+            }
         ]
         context["action"] = context["collection_actions"][0]
 

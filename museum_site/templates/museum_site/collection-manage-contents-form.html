@@ -96,6 +96,42 @@ var collection_id = {{collection.id|default:0}};
 </div>
 <div><input type="button" value="Arrange Collection" id="collection-arrange-button"> <span class="mono b" id="arranged-item-text"></span></div>
 </form>
+{% elif operation == "edit-entry" %}
+<form id="form-edit-entry" method="POST">
+{% csrf_token %}
+<div class="field-wrapper">
+    <label>Entry To Edit:</label>
+    <div class="field-value">
+        <select name="entry_id">
+            <option value="N/A">- Choose - </option>
+            {% for entry in contents %}
+            <option value="{{entry.pk}}">{{entry.zfile.title}} [{{entry.zfile.key}}]</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+<div class="field-wrapper">
+    <label>Collection description:</label>
+    <div class="field-value">
+        <textarea name="collection_description"></textarea>
+    </div>
+    <p class="field-help">Optional description for the file as part of the collection. Markdown supported.</p>
+</div>
+<div class="field-wrapper">
+    <label>Set Collection Preview Image:</label>
+    <div class="field-value">
+        <input type="checkbox" name="set-preview-image" value="1">
+    </div>
+    <p class="field-help">Check this box to change the collection's current preview image to this file's preview image.</p>
+</div>
+<div><input type="button" id="edit-entry-button" value="Update Collection Entry" disabled> <span class="mono b" id="edited-entry-text"></span></div>
+</form>
+<input name="preview_image" value="{{collection.preview_image.id|default:''}}" type="hidden">
+<div id="original-descriptions" class="none">
+    {% for entry in contents %}
+    <textarea id="entry-{{entry.pk}}">{{entry.collection_description}}</textarea>
+    {% endfor %}
+</div>
 {% endif %}
 
 <hr>
