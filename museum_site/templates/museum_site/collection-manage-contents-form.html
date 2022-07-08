@@ -18,6 +18,7 @@ var collection_id = {{collection.id|default:0}};
 .arrangeable-ghost { background:#FFF; }
 #id_arrange_file { min-height:250px; }
 .ul-scrolling-checklist li > label { display:block; }
+#content form { margin-top: 14px; }
 </style>
 {% endblock %}
 
@@ -26,7 +27,7 @@ var collection_id = {{collection.id|default:0}};
 <h1>{{title}}</h1>
 
 <div><h2 id="current-action-heading">{{action.text}}</h2>{% for action in collection_actions %}<a href="{{action.url}}">{{action.text}}</a>{% if not forloop.last %} | {% endif %}{% endfor %}</div>
-{% gblock collection %}
+{% gblock collection request=request %}
 
 {% if operation == "add" %}
 <form method="POST" id="form-add">
