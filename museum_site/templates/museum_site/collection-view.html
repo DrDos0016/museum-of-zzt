@@ -12,7 +12,7 @@
 {% if prefix_template %}{% include prefix_template %}{% elif prefix_text %}{{prefix_text|safe|linebreaks}}{% endif %}
 
 <h1>{{collection.title}}</h1>
-{% gblock collection %}
+{% gblock collection request=request %}
 {{collection.description|markdown}}
 
 <h2>Collection Contents ({{collection.item_count}} file{{collection.item_count|pluralize}})</h2>

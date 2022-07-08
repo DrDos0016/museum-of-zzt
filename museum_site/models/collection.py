@@ -38,7 +38,7 @@ class Collection(BaseModel):
     UNLISTED = 2
     PUBLIC = 3
     VISIBILITY_CHOICES = [
-        (REMOVED, "Removed"),
+        (REMOVED, "Removed"),  # TODO: Not implemented
         (PRIVATE, "Private"),
         (UNLISTED, "Unlisted"),
         (PUBLIC, "Public"),

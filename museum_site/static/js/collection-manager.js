@@ -14,7 +14,6 @@ $(document).ready(function (){
     $("button[name=field_filter_clear_button]").click(function (){
         var target = $(this).data("target");
         var field = $(this).data("field");
-        console.log("CLEAR!", target, field);
         $(field).val("");
         filter_file_list("", target);
     });
@@ -51,15 +50,6 @@ function add_item()
             type: "POST",
             url: "/ajax/collection/add-to-collection/",
             data: form_data,
-        }
-    ).done(
-        function (){
-            console.log("It worked!");
-
-        }
-    ).fail(
-        function (){
-            console.log("It failed!");
         }
     ).always(
         function (e){
@@ -101,30 +91,27 @@ function remove_item()
             url: "/ajax/collection/remove-from-collection/",
             data: form_data,
         }
-    ).done(
-        function (){
-            console.log("It worked!");
-            $("#removed-item-text").html("Removed " + item_name);
-        }
-    ).fail(
-        function (){
-            console.log("It failed!");
-        }
     ).always(
-        function (){
-            console.log("All done Removing!");
-            $("input[name=removed_file]:checked").parent().parent().remove();
-            $("#collection-remove-button").prop("disabled", false);
-            $("#collection-remove-button").val(original_text);
-            $(".model-block[data-pk="+form_data["zfile_id"]+"]").next().remove();
-            $(".model-block[data-pk="+form_data["zfile_id"]+"]").remove();
+        function (e){
+            if (e == "SUCCESS")
+            {
+                $("#removed-item-text").html("Removed " + item_name);
+                $("input[name=removed_file]:checked").parent().parent().remove();
+                $("#collection-remove-button").prop("disabled", false);
+                $("#collection-remove-button").val(original_text);
+                $(".model-block[data-pk="+form_data["zfile_id"]+"]").next().remove();
+                $(".model-block[data-pk="+form_data["zfile_id"]+"]").remove();
+            }
+            else
+            {
+                $("#removed-item-text").html(e);
+            }
         }
     );
 }
 
 function get_collection_contents()
 {
-    console.log("CID", collection_id);
     $.ajax(
         {
             type: "GET",
@@ -133,18 +120,9 @@ function get_collection_contents()
                 "collection_id": collection_id
             },
         }
-    ).done(
-        function (resp){
-            console.log("It worked!");
-            $("#collection-contents").append(resp);
-        }
-    ).fail(
-        function (){
-            console.log("It failed!");
-        }
     ).always(
         function (){
-            console.log("All done!");
+            $("#collection-contents").append(resp);
         }
     );
 }
@@ -222,8 +200,6 @@ function arrange_collection()
         order += $(this).val() + "/";
     });
 
-    console.log(order);
-
     var form_data = {
         "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
         "order": order.slice(0, -1),
@@ -239,27 +215,17 @@ function arrange_collection()
             url: "/ajax/collection/arrange-collection/",
             data: form_data,
         }
-    ).done(
-        function (){
-            console.log("It worked!");
-            window.location.reload();
-        }
-    ).fail(
-        function (){
-            console.log("It failed!");
-        }
     ).always(
-        function (){
-            console.log("All done!");
+        function (e){
+            if (e == "SUCCESS")
+                window.location.reload();
         }
     );
 }
 
 function load_entry()
 {
-
     var pk = $("select[name=entry_id]").val()
-    console.log("Loaded", pk);
     if (pk != "N/A")
     {
         var desc = $("#entry-" + pk).val();
@@ -268,7 +234,6 @@ function load_entry()
     }
     else
     {
-        //$("textarea[name=collection_description]").val("");
         $("#edit-entry-button").prop("disabled", true);
         if ($("input[name=preview-image]").val() == pk)
             $("input[name=set-preview-image]").prop("checked", true);
@@ -283,6 +248,7 @@ function update_collection_entry()
 {
     var form_data = {
         "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
+        "collection_id": $("input[name=collection_id]").val(),
         "entry_id": $("select[name=entry_id]").val(),
         "desc": $("textarea[name=collection_description]").val(),
         "set_preview": $("input[name=set-preview-image]").prop("checked"),
@@ -294,25 +260,14 @@ function update_collection_entry()
             url: "/ajax/collection/update-collection-entry/",
             data: form_data,
         }
-    ).done(
-        function (){
-            console.log("It worked!");
-
-        }
-    ).fail(
-        function (){
-            console.log("It failed!");
-        }
     ).always(
         function (e){
-            console.log("E", e);
             if (e == "SUCCESS")
             {
                 window.location.reload();
             }
             else
             {
-                console.log("FAILURE ");
                 $("#edited-entry-text").html("Failed to update " + $("select[name=entry_id] option:selected").html() + "!");
             }
         }

@@ -230,7 +230,12 @@ def wozzt_queue_add(request):
 
 
 def add_to_collection(request):
-    #TODO: Confirm this is your collection to add to
+    # Confirm this is your collection
+    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
+    if not request.user:
+        return HttpResponse("ERROR: Unauthorized user!")
+    if request.user and request.user.id != c.user.id:
+        return HttpResponse("ERROR: Unauthorized user!")
 
     # Check for duplicates
     duplicate = Collection_Entry.objects.filter(
@@ -239,26 +244,32 @@ def add_to_collection(request):
     ).exists()
 
     if duplicate:
-        error = "ERROR: ZFile already exists in collection!"
-        return HttpResponse(error)
+        return HttpResponse("ERROR: ZFile already exists in collection!")
+
+    # Update collection item count
+    c.item_count += 1
 
     entry = Collection_Entry(
         collection_id=int(request.POST["collection_id"]),
         zfile_id=int(request.POST["zfile_id"]),
-        collection_description=request.POST["collection_description"]
+        collection_description=request.POST["collection_description"],
+        order=c.item_count
     )
-    entry.save()
 
-    # Update count
-    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
-    c.item_count += 1
+    # Finalize
+    entry.save()
     c.save()
 
     resp = "SUCCESS"
     return HttpResponse(resp)
 
 def remove_from_collection(request):
-    #TODO: Confirm this is your collection to remove from
+    # Confirm this is your collection
+    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
+    if not request.user:
+        return HttpResponse("ERROR: Unauthorized user!")
+    if request.user and request.user.id != c.user.id:
+        return HttpResponse("ERROR: Unauthorized user!")
 
     qs = Collection_Entry.objects.filter(
         collection_id=int(request.POST["collection_id"]),
@@ -271,7 +282,6 @@ def remove_from_collection(request):
         deleted += 1
 
     # Update count
-    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
     c.item_count -= deleted
     c.save()
 
@@ -281,20 +291,19 @@ def remove_from_collection(request):
 def get_collection_addition(request):
     """ Get the latest added file to a collection """
     pk = int(request.GET.get("collection_id"))
-
     entry = Collection_Entry.objects.filter(collection_id=pk).order_by("-id").first()
     html = gblock(entry.zfile, view="detailed-collection", collection_description=entry.collection_description)
     return HttpResponse(html)
 
-def get_collection_contents(request):
-    # TODO: Stub. Is this needed?
-    resp = "SUCCESS"
-    return HttpResponse(resp)
-
 
 def arrange_collection(request):
     """ Get the latest added file to a collection """
-    #TODO: Confirm this is your collection to add to
+    # Confirm this is your collection
+    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
+    if not request.user:
+        return HttpResponse("ERROR: Unauthorized user!")
+    if request.user and request.user.id != c.user.id:
+        return HttpResponse("ERROR: Unauthorized user!")
 
     pk = int(request.POST.get("collection_id"))
     order = request.POST.get("order").split("/")
@@ -310,7 +319,14 @@ def arrange_collection(request):
 
 
 def update_collection_entry(request):
-    #TODO: Confirm this is your collection to modify
+    # Confirm this is your collection
+    print("HMMM", request.POST.get("collection_id"))
+    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
+    if not request.user:
+        return HttpResponse("ERROR: Unauthorized user!")
+    if request.user and request.user.id != c.user.id:
+        return HttpResponse("ERROR: Unauthorized user!")
+
     pk = int(request.POST.get("entry_id"))
 
     entry = Collection_Entry.objects.get(pk=pk)

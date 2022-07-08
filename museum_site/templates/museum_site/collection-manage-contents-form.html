@@ -99,6 +99,7 @@ var collection_id = {{collection.id|default:0}};
 {% elif operation == "edit-entry" %}
 <form id="form-edit-entry" method="POST">
 {% csrf_token %}
+<input name="collection_id" value="{{collection.id}}" type="hidden">
 <div class="field-wrapper">
     <label>Entry To Edit:</label>
     <div class="field-value">

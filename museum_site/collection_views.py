@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.template.defaultfilters import slugify
@@ -15,10 +16,6 @@ from museum_site.base_views import *
 
 class Collection_Directory_View(Directory_View):
     model = Collection
-    #category = "Collection"
-    #template_name = "museum_site/generic-directory.html"
-    #url_name = "browse_collections"
-    #query_string = ""
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, **kwargs)
@@ -35,7 +32,6 @@ class Collection_Directory_View(Directory_View):
             qs = Collection.objects.filter(visibility=Collection.PUBLIC, item_count__gte=1)
 
         # Sorting
-        #context = get_pagination_data(self.request, context, context["object_list"])
         qs = sort_qs(qs, self.request.GET.get("sort"), self.model.sort_keys, "-modified")
         return qs
 
@@ -44,14 +40,12 @@ class Collection_Directory_View(Directory_View):
         context["prefix_template"] = "museum_site/prefixes/collection.html"
         context["action"] = "Create"
 
-
         return context
 
 
 class Collection_Detail_View(DetailView):
     model = Collection
     template_name = "museum_site/collection-view.html"
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -64,6 +58,7 @@ class Collection_Detail_View(DetailView):
         context["sort_options"] = Collection_Entry.sort_options
         context["page"] = entries
         return context
+
 
 class Collection_Create_View(CreateView):
     model = Collection
@@ -100,14 +95,14 @@ class Collection_Create_View(CreateView):
 
         return super().form_valid(form)
 
-
     def get_success_url(self):
         return reverse("manage_collection_contents", kwargs={"slug": self.object.slug})
+
 
 class Collection_Update_View(UpdateView):
     model = Collection
     template_name_suffix = "-form"
-    fields = ["title", "short_description", "description", "visibility",]
+    fields = ["title", "short_description", "description", "visibility"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -120,9 +115,9 @@ class Collection_Update_View(UpdateView):
         return context
 
     def form_valid(self, form):
-        # Check for a duplicate slug
+        # Check for a duplicate slug in a collection that isn't this one
         slug = slugify(self.request.POST.get("title"))
-        if Collection.objects.filter(slug=slug).exists():
+        if Collection.objects.exclude(pk=self.object.pk).filter(slug=slug).exists():
             form.add_error("title", "The requested collection title is already in use.")
             return self.form_invalid(form)
 
@@ -131,20 +126,21 @@ class Collection_Update_View(UpdateView):
     def get_success_url(self):
         return reverse("my_collections")
 
+
 class Collection_Delete_View(DeleteView):
     model = Collection
     template_name_suffix = "-form"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context["action"] = "Delete"
         context["title"] = "Delete Collection"
-        context["collection"] = Collection.objects.get(slug=self.request.resolver_match.kwargs["slug"])
         return context
-
 
     def get_success_url(self):
         return reverse("my_collections")
+
 
 class Collection_Manage_Contents_View(FormView):
     form_class = Collection_Content_Form
