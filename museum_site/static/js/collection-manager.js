@@ -129,8 +129,7 @@ function get_collection_contents()
 
 function filter_file_list(filter, target)
 {
-    console.log("Hewwo?", filter, target);
-    if (filter || ! target)
+    if (!target)
         return false;
     //var filter = $("input[name=field_filter]").val();
     $(target).each(function (){
