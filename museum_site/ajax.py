@@ -256,8 +256,14 @@ def add_to_collection(request):
         order=c.item_count
     )
 
-    # Finalize
+    # Save the collection entry
     entry.save()
+
+    # Set the preview image if one isn't set yet
+    if c.preview_image is None:
+        c.preview_image = entry.zfile
+
+    # Save the collection
     c.save()
 
     resp = "SUCCESS"
@@ -320,7 +326,6 @@ def arrange_collection(request):
 
 def update_collection_entry(request):
     # Confirm this is your collection
-    print("HMMM", request.POST.get("collection_id"))
     c = Collection.objects.get(pk=int(request.POST["collection_id"]))
     if not request.user:
         return HttpResponse("ERROR: Unauthorized user!")
