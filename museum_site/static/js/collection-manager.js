@@ -129,12 +129,13 @@ function get_collection_contents()
 
 function filter_file_list(filter, target)
 {
+    filter = filter.toLowerCase();
     if (!target)
         return false;
     //var filter = $("input[name=field_filter]").val();
     $(target).each(function (){
         var radio = $(this);
-        var entry = $(this).parent().text().trim();
+        var entry = $(this).parent().text().trim().toLowerCase();
 
         // Uncheck and hide non-matches
         if (entry.indexOf(filter) == -1)
