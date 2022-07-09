@@ -51,14 +51,14 @@ class Collection(BaseModel):
     visibility = models.IntegerField(
         default=PRIVATE,
         choices=VISIBILITY_CHOICES,
-        help_text="Permissions to access your collection. Collections with no items contained will not be displayed even if they are marked public."
+        help_text="Permissions to access your collection. Collections with any associated files will not be displayed even if they are marked public."
     )
     created = models.DateField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     item_count = models.IntegerField(default=0, editable=False)
     short_description = models.CharField(
         max_length=250,
-        help_text="A short description of the collection displayed when browsing collections and not their contents. Plain text only.",
+        help_text="A short description of the collection displayed when browsing collections. Plain text only.",
         blank=True,
         default=""
     )

@@ -121,7 +121,7 @@ function get_collection_contents()
             },
         }
     ).always(
-        function (){
+        function (resp){
             $("#collection-contents").append(resp);
         }
     );

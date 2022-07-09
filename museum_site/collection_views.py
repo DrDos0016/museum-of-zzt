@@ -46,10 +46,15 @@ class Collection_Directory_View(Directory_View):
 class Collection_Detail_View(DetailView):
     model = Collection
     template_name = "museum_site/collection-view.html"
+    error_template_name = "museum_site/collection-invalid-permissions.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["view"] = "detailed"
+
+        if context["collection"].visibility == Collection.PRIVATE:
+            if self.request.user.id != context["collection"].user_id:
+                return {"forbidden": True}
 
         # Get the contents of this collection
         entries = Collection_Entry.objects.filter(collection=context["collection"])
@@ -58,6 +63,11 @@ class Collection_Detail_View(DetailView):
         context["sort_options"] = Collection_Entry.sort_options
         context["page"] = entries
         return context
+
+    def render_to_response(self, context, **kwargs):
+        if context.get("forbidden"):
+            self.template_name = self.error_template_name
+        return super().render_to_response(context, **kwargs)
 
 
 class Collection_Create_View(CreateView):
