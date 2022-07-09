@@ -39,7 +39,7 @@
 {% if sort_options %}<div class="sort-methods">
     Sort: <select name="sort">
             {% for option in sort_options %}
-                <option value="{{option.val}}"{% if request.GET.sort == option.val %} selected {%endif %}>{{option.text}}</option>
+                <option value="{{option.val}}"{% if request.GET.sort == option.val or selected_sort == option.val %} selected {%endif %}>{{option.text}}</option>
             {% endfor %}
         </select>
 </div>{% endif %}

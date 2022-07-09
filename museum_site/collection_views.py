@@ -58,9 +58,16 @@ class Collection_Detail_View(DetailView):
 
         # Get the contents of this collection
         entries = Collection_Entry.objects.filter(collection=context["collection"])
-        entries = sort_qs(entries, self.request.GET.get("sort"), Collection_Entry.sort_keys, "canonical")
+        entries = sort_qs(entries, self.request.GET.get("sort"), Collection_Entry.sort_keys, context["collection"].default_sort)
+
 
         context["sort_options"] = Collection_Entry.sort_options
+        if context["collection"].default_sort != "manual":  # If there's no manual order available, don't show the option
+            context["sort_options"] = Collection_Entry.sort_options[1:]
+
+        if not self.request.GET.get("sort"):
+            context["selected_sort"] = context["collection"].default_sort
+
         context["page"] = entries
         return context
 
@@ -73,7 +80,7 @@ class Collection_Detail_View(DetailView):
 class Collection_Create_View(CreateView):
     model = Collection
     template_name_suffix = "-form"
-    fields = ["title", "short_description", "description", "visibility"]
+    fields = ["title", "short_description", "description", "visibility", "default_sort"]
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, **kwargs)

@@ -44,6 +44,16 @@ class Collection(BaseModel):
         (PUBLIC, "Public"),
     ]
 
+    SORT_CHOICES = [
+        ("manual", "Manual Order"),
+        ("title", "Title"),
+        ("author", "Author"),
+        ("company", "Company"),
+        ("rating", "Rating"),
+        ("release", "Release Date (Newest)"),
+        ("-release", "Release Date (Oldest)"),
+    ]
+
     # Fields
     title = models.CharField(max_length=120, db_index=True, help_text="The name of your collection. Used to generate URL for collection.")
     slug = models.SlugField(max_length=80, db_index=True, unique=True, editable=False, help_text="Unique idenifier for collection")
@@ -63,6 +73,10 @@ class Collection(BaseModel):
         default=""
     )
     preview_image = models.ForeignKey("File", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
+    default_sort = models.CharField(
+        max_length=20, choices=SORT_CHOICES, default="manual",
+        help_text='The default sorting method when viewing this collection\'s contents. Set to "Manual Order" to display contents in an arbitrary order of your choosing.',
+    )
 
     # Associations
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
