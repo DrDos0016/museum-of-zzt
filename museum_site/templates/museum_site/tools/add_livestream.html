@@ -39,11 +39,91 @@ input[name=today]
 <script>
     $(document).ready(function (){
         $("input[name=today]").click(function (){
-        var today = new Date();
-        $("#date").val(today.toISOString().slice(0,10));
-        reload_preview();
+            var today = new Date();
+            $("#date").val(today.toISOString().slice(0,10));
+            reload_preview();
+        });
+
+        $(".widget input[type=checkbox]").click(function (){
+        if ($(this).prop("checked"))
+        {
+            $(this).parent().addClass("selected");
+        }
+        else
+        {
+            $(this).parent().removeClass("selected");
+        }
+        });
+        $(".widget input[type=radio]").click(function (){
+            $(this).parent().parent().children().removeClass("selected");
+            $(this).parent().addClass("selected");
+        });
+        init_filters();
+
+        $(".char-limited-widget").each(function (){
+            $(this).keyup(function (){
+                var len = $(this).val().length;
+                var max_chars = $(this).attr("maxlength");
+                var remaining = max_chars - len;
+                $(this).prev(".chars-remaining").find("span").html(remaining);
+            });
+        });
+
+        $(".clear-date-widget").click(function (){
+            console.log("X");
+            $(this).prevAll("input[type=date]").val("");
+        });
+
+        $(".todays-date-widget").click(function (){
+            var today = new Date();
+            $(this).prev("input[type=date]").val(today.toISOString().slice(0,10));
+        })
+
+        init_filters();
     });
+
+function init_filters()
+{
+    $(".filterable").each(function (){
+        var filter_input = $(this).find(".widget-filter");
+        var filter_clear = $(this).find(".widget-clear");
+        var targets = $(this).find("label");
+
+        // Bind clear button
+        filter_clear.click(function (){
+            $(filter_input).val("");
+            filter_input.keyup();
+        });
+
+        // Bind filtering
+        filter_input.keyup(
+            {
+                "filter": function (){return $(filter_input).val()},
+                "targets": targets
+            },
+            apply_filter
+        );
     });
+}
+
+function apply_filter(e)
+{
+    var filter = e.data.filter();
+    var targets = e.data.targets;
+
+    $(targets).each(function (){
+        var text = $(this).text().trim().toLowerCase();
+        if (text.indexOf(filter) == - 1)
+        {
+            $(this).hide();
+        }
+        else
+        {
+            $(this).show();
+        }
+    });
+}
+
 </script>
 {% endblock %}
 
@@ -136,6 +216,7 @@ input[name=today]
     </select>
 </div>
 
+{% comment %}
 <div class="field">
     <label for="series">File Associations<br>
         <span class="sub">The specified file is pre-checked. Add additional file associations here if needed.</span>
@@ -146,6 +227,20 @@ input[name=today]
         {% endfor %}
     </div>
 </div>
+{% endcomment %}
+
+{% with file_associations as field %}
+<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
+    {{field.errors}}
+    {{field.label_tag}}
+    <div class="field-value">
+        {{field}}
+    </div>
+    {% if field.help_text %}
+    <p class="field-help">{{field.help_text|safe}}</p>
+    {% endif %}
+</div>
+{% endwith %}
 
 <div class="field">
     <button type="submit" id="submit-button">Create VOD Article</button>
