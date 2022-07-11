@@ -52,6 +52,9 @@ def debug(request, filename=None):
     data["articles"] = test_articles
     data["series"] = test_series
 
+    # Widget Debug
+    data["checklist_items"] = File.objects.published()
+
     if request.GET.get("serve"):
         return serve_file(request.GET.get("serve"), request.GET.get("as", ""))
 
@@ -137,3 +140,10 @@ def debug_colors(request):
             data["stylesheets"][stylesheet].sort()
 
     return render(request, "museum_site/debug/debug_colors.html", data)
+
+
+def debug_widgets(request):
+    context = {
+        "form": Debug_Form()
+    }
+    return render(request, "museum_site/debug/debug-widget.html", context)

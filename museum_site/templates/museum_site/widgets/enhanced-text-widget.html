@@ -1,0 +1,4 @@
+{% if char_limit %}
+<div class="chars-remaining"><span>{{char_limit}}</span> characters remaining</div>
+{% endif %}
+<input type="text" name="{{widget.name}}" class="char-limited-widget" maxlength="{{char_limit}}" value="">

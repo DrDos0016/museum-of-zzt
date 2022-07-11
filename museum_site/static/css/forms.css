@@ -91,7 +91,7 @@ label
 
 .scrolling-checklist label { display:block; }
 .scrolling-checklist label + label {  border-top: 1px dotted #000; }
-.scrolling-checklist label.selected { background:#619F9F;}
+.scrolling-checklist label.selected { background: #619F9F;}
 .scrolling-checklist label:hover { background:#98C9C9; }
 
 .scrolling-checklist-controls

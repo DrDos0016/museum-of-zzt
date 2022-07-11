@@ -689,6 +689,7 @@ def associated_file_choices():
         choices.append(choice)
     return choices
 
+
 class Collection_Content_Form(forms.ModelForm):
     use_required_attribute = False
     associated_file = forms.ChoiceField(
@@ -702,3 +703,30 @@ class Collection_Content_Form(forms.ModelForm):
     class Meta:
         model = Collection_Entry
         fields = ["associated_file", "collection_description"]
+
+
+class Debug_Form(forms.Form):
+    use_required_attribute = False
+
+    file_radio = forms.ChoiceField(
+        widget=Scrolling_Checklist_Widget(choices=associated_file_choices()),
+        choices=associated_file_choices(),
+        label="File Select Radio Widget",
+        help_text="Selecting one file as radio buttons",
+    )
+    file_check = forms.ChoiceField(
+        widget=Scrolling_Checklist_Widget(choices=associated_file_choices(), input_method="checkbox"),
+        choices=associated_file_choices(),
+        label="File Select Checkbox Widget",
+        help_text="Selecting many files via checkboxes",
+    )
+    limited_text = forms.CharField(
+        widget=Enhanced_Text_Widget(char_limit=69),
+        label="Limited Text Field",
+        help_text="You get 69 characters. Nice.",
+    )
+    date_with_buttons = forms.DateField(
+        widget=Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Unknown"),
+        label="Date Field With Buttons",
+        help_text="Today and Unknown",
+    )

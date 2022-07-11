@@ -91,6 +91,7 @@ urlpatterns = [
     path("debug/article/", museum_site.debug_views.debug_article),
     path("debug/colors/", museum_site.debug_views.debug_colors),
     path("debug/forms/", museum_site.views.generic, {"template": "debug-forms", "title": "Form Debug"}),
+    path("debug/widgets/", museum_site.debug_views.debug_widgets),
     path("debug/advanced-search/", museum_site.debug_views.debug_advanced_search),
 
     # /detail/

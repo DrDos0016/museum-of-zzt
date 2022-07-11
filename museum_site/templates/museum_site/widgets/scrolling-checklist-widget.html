@@ -1,0 +1,8 @@
+<div class="scrolling-checklist widget filterable">
+    <div class="scrolling-checklist-filter">
+        Filter: <input class="widget-filter" value=""> <input class="widget-clear" type="button" value="Clear">
+    </div>
+    {% for item in choices %}
+    <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0}}">{{item.1}}</label>
+    {% endfor %}
+</div>

@@ -94,3 +94,49 @@ class GroupedCheckboxWidget(forms.MultiWidget):
                 header = "Media"
             output.append((c[0], c[1], header))
         return output
+
+
+class Scrolling_Checklist_Widget(forms.Select):
+    template_name = "museum_site/widgets/scrolling-checklist-widget.html"
+
+    def __init__(self, attrs=None, choices=(), input_method="radio"):
+        super().__init__(attrs)
+        self.input_method = input_method
+        self.choices = choices
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["name"] = name
+        context["choices"] = self.choices
+        context["input_method"] = self.input_method
+        return context
+
+
+class Enhanced_Text_Widget(forms.TextInput):
+    template_name = "museum_site/widgets/enhanced-text-widget.html"
+
+    def __init__(self, attrs=None, char_limit=None):
+        super().__init__(attrs)
+        if char_limit is not None:
+            self.char_limit = char_limit
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["char_limit"] = self.char_limit
+        return context
+
+
+class Enhanced_Date_Widget(forms.TextInput):
+    template_name = "museum_site/widgets/enhanced-date-widget.html"
+
+    def __init__(self, attrs=None, buttons=[], clear_label="Clear"):
+        super().__init__(attrs)
+        self.clear_label = clear_label
+        if buttons is not None:
+            self.buttons = buttons
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["buttons"] = self.buttons
+        context["clear_label"] = self.clear_label
+        return context
