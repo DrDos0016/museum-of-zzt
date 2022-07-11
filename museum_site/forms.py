@@ -682,7 +682,7 @@ class SeriesForm(forms.ModelForm):
 
 
 def associated_file_choices():
-    raw = list(File.objects.published().values_list("id", "title", "key"))
+    raw = list(File.objects.all().values_list("id", "title", "key"))
     choices = []
     for i in raw:
         choice = (i[0], "{} [{}]".format(i[1], i[2]))
