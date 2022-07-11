@@ -52,14 +52,9 @@ class Collection_Detail_View(DetailView):
         context = super().get_context_data(**kwargs)
         context["view"] = "detailed"
 
-        if context["collection"].visibility == Collection.PRIVATE:
-            if self.request.user.id != context["collection"].user_id:
-                return {"forbidden": True}
-
         # Get the contents of this collection
         entries = Collection_Entry.objects.filter(collection=context["collection"])
         entries = sort_qs(entries, self.request.GET.get("sort"), Collection_Entry.sort_keys, context["collection"].default_sort)
-
 
         context["sort_options"] = Collection_Entry.sort_options
         if context["collection"].default_sort != "manual":  # If there's no manual order available, don't show the option
@@ -72,8 +67,10 @@ class Collection_Detail_View(DetailView):
         return context
 
     def render_to_response(self, context, **kwargs):
-        if context.get("forbidden"):
-            self.template_name = self.error_template_name
+        # Prevent non-creators from viewing private collections
+        if context["collection"].visibility == Collection.PRIVATE:
+            if self.request.user.id != context["collection"].user_id:
+                self.template_name = self.error_template_name
         return super().render_to_response(context, **kwargs)
 
 
