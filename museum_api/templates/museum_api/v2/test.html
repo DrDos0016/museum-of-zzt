@@ -1,0 +1,267 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+#api-response
+{
+    width:50ch;
+    height:300px;
+}
+
+input[name=api-request] {
+    font-family:monospace;
+    width:50ch;
+}
+
+#endpoint-table { align-self: flex-start; }
+#endpoint-table label
+{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:4px;
+    grid-gap:8px;
+}
+
+#endpoint-table label input, #endpoint-table label select
+{
+    margin:2px;
+    max-width:200px;
+}
+
+#endpoint-table label + label
+{
+    border-top:1px dashed #000;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("#clear").click(clear_all);
+
+    $("#api-mapping-get").click(function (){
+        var url = "/api/v2/mapping/get/";
+        var model = $("select[name=api-mapping-get-model]").val();
+        var params = {"model": model};
+        api_call(url, params);
+    });
+
+    $("#api-zfile-get-pk").click(function (){
+        var url = "/api/v2/zfile/get/";
+        var params = {"pk": $("input[name=api-zfile-get-pk]").val()};
+
+        if ($("input[name=api-zfile-get-pk-flatten]").prop("checked"))
+            params["flatten"] = 1;
+        api_call(url, params);
+    });
+
+    $("#api-zfile-get-key").click(function (){
+        var url = "/api/v2/zfile/get/";
+        var params = {"key": $("input[name=api-zfile-get-key]").val()};
+
+        if ($("input[name=api-zfile-get-key-flatten]").prop("checked"))
+            params["flatten"] = 1;
+        api_call(url, params);
+    });
+
+    $("#api-zfile-get-random").click(function (){
+        var url = "/api/v2/zfile/get/random/";
+        var params = {};
+        if ($("select[name=api-zfile-get-random-detail-filter]").val())
+            params["detail_filter"] = $("select[name=api-zfile-get-random-detail-filter]").val();
+
+        if ($("input[name=api-zfile-get-random-include-explicit]").prop("checked"))
+            params["include_explicit"] = 1;
+
+        console.log("PARAMS", params);
+
+        api_call(url, params);
+    });
+
+    $("#api-zfile-search").click(function (){
+        var url = "/api/v2/zfile/search/";
+        var params = {"q": $("input[name=api-zfile-search-q]").val()};
+
+        if ($("input[name=api-zfile-search-include-explicit]").prop("checked"))
+            params["include_explicit"] = 1;
+
+        console.log("PARAMS", params);
+
+        api_call(url, params);
+    });
+});
+
+function clear_all()
+{
+    $("#api-request").val("");
+    $("#api-response").val("");
+}
+
+function api_call(url, params)
+{
+    var qs = "https://museumofzzt.com" + url + "?";
+    for (item in params)
+    {
+        console.log(item, params[item]);
+        qs += item + "=" + params[item] + "&";
+    }
+    $("input[name=api-request]").val(qs.slice(0,-1));
+    $.ajax(
+        {
+            type: "GET",
+            url: url,
+            data: params,
+        }
+    ).done(
+        function (){
+            console.log("It worked!");
+        }
+    ).fail(
+        function (){
+            console.log("It failed!");
+        }
+    ).always(
+        function (resp){
+            console.log("All done!");
+            $("#api-response").val(JSON.stringify(resp, null, "  "));
+        }
+    );
+
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Museum API v2 Test Page</h1>
+
+<div class="flex-container" style="grid-gap:8px">
+    <table id="endpoint-table">
+        <tr>
+            <th>Endpoint</th>
+            <th>Params</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            <td class="b">/api/v2/mapping/get/</td>
+            <td>
+                <label>model
+                <select name="api-mapping-get-model">
+                    <option value="detail">Detail</option>
+                    <option value="genre">Genre</option>
+                </select>
+                </label>
+            </td>
+            <td class="c"><input type="button" id="api-mapping-get" class="api-call-button" value="Call"></td>
+        </tr>
+        <tr>
+            <td class="b">/api/v2/zfile/get/</td>
+            <td>
+                <label>pk
+                <input name="api-zfile-get-pk">
+                </label>
+
+                <label>flatten
+                <input name="api-zfile-get-pk-flatten" value="1" type="checkbox">
+                </label>
+            </td>
+            <td class="c"><input type="button" id="api-zfile-get-pk" class="api-call-button" value="Call"></td>
+        </tr>
+        <tr>
+            <td class="b">/api/v2/zfile/get/</td>
+            <td>
+                <label>key
+                <input name="api-zfile-get-key">
+                </label>
+
+                <label>flatten
+                <input name="api-zfile-get-key-flatten" value="1" type="checkbox">
+                </label>
+            </td>
+            <td class="c"><input type="button" id="api-zfile-get-key" class="api-call-button" value="Call"></td>
+        </tr>
+        <tr>
+            <td class="b">/api/v2/zfile/get/random/</td>
+            <td>
+                <label>detail_filter
+                <select name="api-zfile-get-random-detail-filter">
+                    <option value="">-No Filter-</option>
+                    {% for d in detail_filter %}
+                    <option value="{{d.pk}}">{{d.title}}</option>
+                    {% endfor %}
+                </select>
+                </label>
+
+                <label>include_explicit
+                <input name="api-zfile-get-random-include-explicit" type="checkbox" value="1">
+                </label>
+            </td>
+            <td class="c"><input type="button" id="api-zfile-get-random" class="api-call-button" value="Call"></td>
+        </tr>
+        <tr>
+            <td class="b">/api/v2/zfile/search/</td>
+            <td>
+                <label>q
+                <input name="api-zfile-search-q" value="">
+                </label>
+                <label>include_explicit
+                <input name="api-zfile-search-include-explicit" type="checkbox" value="1">
+                </label>
+            </td>
+            <td class="c"><input type="button" id="api-zfile-search" class="api-call-button" value="Call"></td>
+        </tr>
+        <tr>
+            <td class="b">/api/v2/zfile/advanced-search/</td>
+            <td>
+                <label>title <input name="api-zfile-advanced-search-title" value=""></label>
+                <label>author <input name="api-zfile-advanced-search-author" value=""></label>
+                <label>filename <input name="api-zfile-advanced-search-filename" value=""></label>
+                <label>company <input name="api-zfile-advanced-search-company" value=""></label>
+                <label>genre <input name="api-zfile-advanced-search-genre" value=""></label>
+                <label>min_boards <input name="api-zfile-advanced-search-min-boards" value=""></label>
+                <label>max_boards <input name="api-zfile-advanced-search-max-boards" value=""></label>
+                <label>board_type
+                    <select name="api-zfile-advanced-search-board_type">
+                        <option>total</option>
+                        <option>playable</option>
+                    </select>
+                </label>
+                <label>year
+                    <select name="api-zfile-advanced-search-year">
+                        <option value="any">- Any -</option>
+                        <option value="unk">- Unknown -</option>
+                        {% for y in years %}
+                        <option value="{{y}}">{{y}}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>details
+                    <select name="api-zfile-advanced-search-details" multiple>
+                        {% for d in detail_filter %}
+                        <option value="{{d.pk}}">{{d.title}}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>include_explicit
+                <input name="" type="checkbox" value="1">TODO
+                </label>
+                <label>page <input name="api-zfile-advanced-search-page" value=""></label>
+            </td>
+            <td class="c"><input type="button" id="api-zfile-get-key" class="api-call-button" value="Call"></td>
+        </tr>
+    </table>
+    <div style="margin-top:14px;margin-bottom:14px">
+        <b>Request:</b><br>
+        <input id="api-request" name="api-request">
+        <b>Response:</b><br>
+        <textarea id="api-response"></textarea>
+        <input type="button" id="clear" value="Clear All">
+    </div>
+</div>
+</section>
+{% endblock %}
+
+

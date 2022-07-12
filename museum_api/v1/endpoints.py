@@ -140,7 +140,7 @@ def get_random_file(request):
 
 def help(request):
     data = {}
-    return render(request, "museum_api/help.html", data)
+    return render(request, "museum_api/v1/help.html", data)
 
 def search_files(request):
     output = {

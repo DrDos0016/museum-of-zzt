@@ -1,0 +1,112 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<section id="content" class="col block">
+<h1>Museum API Help</h1>
+
+<h2>Requests</h2>
+
+<p>All API request should be sent to: <span class="mono">https://museumofzzt.com/api/v2/&lt;endpoint&gt;/</span>.</p>
+
+<p>v1 of the API should no longer be used, with future database changes likely causing older calls to break.</p>
+
+<p>v2 is a bit more formalized and better situated to be added to and handle database changes.</p>
+
+<hr>
+
+<h2>Parameters</h2>
+
+<p>All parameters are specified using basic GET parameters in urls. There are no tokens, keys, headers, or authentication required to access these URLs currently.</p>
+
+<hr>
+
+<h2>Endpoints</h2>
+
+<h3>mapping/get/</h3>
+
+<h4>Parameters</h4>
+
+<ul>
+    <li><span class="b mono">model</span> (str) - The django model you wish to see mapped out. Value can be "detail" or "genre".</li>
+</ul>
+
+<h4>Description</h4>
+
+<p>Used to get a mapping of various types of constants that are likely necessary to make various fields human readable. Currently these models include "detail" and "genre" and can be used to turn IDs into human readable values such as Detail #15 being "ZZT World", or Genre #41 being "Puzzle".</p>
+
+<hr>
+
+<h3>zfile/get/</h3>
+
+<h4>Parameters</h4>
+
+<ul>
+    <li><span class="b mono">pk</span> (int) - The primary key for the zfile object.</li>
+    <li><span class="b mono">key</span> (str) - The key for the zfile object.</li>
+    <li><i>[optional]</i> <span class="b mono">flatten</span> (bool) - When set, the returned results will not be wrapped into an array as per Django's default serialization behavior.</li>
+</ul>
+
+<h4>Description</h4>
+
+<p>Used to get a single zfile object. This can be done with the zfile's primary key (PK) in the database, or its unique key seen in urls. In the url <span class="mono">https://museumofzzt.com/file/view/ezanya/</span>, the key would be "ezanya".</p>
+
+<p>There is no need to include both a pk and key value as both are unique. The PK and key of any given zfile can be found on the zfile's Attributes page.</p>
+
+<hr>
+
+<h3>zfile/get/random/</h3>
+
+<h4>Parameters</h4>
+
+<ul>
+    <li><i>[optional]</i> <span class="b mono">detail_filter</span> (int) - A detail ID that zfiles must have in order to be potentially chosen by this endpoint.</li>
+    <li><i>[optional]</i> <span class="b mono">include_explicit</span> (bool) - When set, the returned results will potentially include zfiles which have been marked as containing explicit content.</li>
+</ul>
+
+<h4>Description</h4>
+
+<p>Used to get a single zfile object. This can be done with the zfile's primary key (PK) in the database, or its unique key seen in urls. In the url <span class="mono">https://museumofzzt.com/file/view/ezanya/</span>, the key would be "ezanya".</p>
+
+<p>There is no need to include both a pk and key value as both are unique. The PK and key of any given zfile can be found on the zfile's Attributes page.</p>
+
+<hr>
+
+<h3>zfile/get/search/</h3>
+
+<h4>Parameters</h4>
+
+<ul>
+    <li><i>[optional]</i> <span class="b mono">q</span> (str) - A single shared string used to search for matches across various zfile fields.</li>
+    <li><i>[optional]</i> <span class="b mono">include_explicit</span> (bool) - When set, the returned results will potentially include zfiles which have been marked as containing explicit content.</li>
+    <li><i>[optional]</i> <span class="b mono">page</span> (int) - Returns the specified page of results. Pages are capped at 250 results per query. Defaults to page 1.</li>
+</ul>
+
+<h4>Description</h4>
+
+<p>Used to get perform a basic search like the one on the Museum's left sidebar. This will take a query and look for potential matches among a zfile's title, author, genre, and filename fields.</p>
+
+<hr>
+
+<h3>zfile/get/advanced-search/</h3>
+
+<h4>Parameters</h4>
+
+<ul>
+    <li>TODO TODO TODO</li>
+    <li><i>[optional]</i> <span class="b mono">include_explicit</span> (bool) - When set, the returned results will potentially include zfiles which have been marked as containing explicit content.</li>
+    <li><i>[optional]</i> <span class="b mono">page</span> (int) - Returns the specified page of results. Pages are capped at 250 results per query. Defaults to page 1.</li>
+</ul>
+
+<h4>Description</h4>
+
+<p>Used to get perform an advanced similar to the one Museum's <a href="{% url 'advanced_search' %}">advanced search</a> page. This will filter zfiles that contain a match with all supplied arguments.</p>
+
+<hr>
+
+
+
+</section>
+{% endblock %}
+
+
