@@ -39,10 +39,12 @@ $(document).ready(function (){
         {
             $(this).parent().removeClass("selected");
         }
+        write_selected($(this).attr("name"));
     });
     $(".widget input[type=radio]").click(function (){
         $(this).parent().parent().children().removeClass("selected");
         $(this).parent().addClass("selected");
+        write_selected($(this).attr("name"));
     });
     init_filters();
 
@@ -64,6 +66,32 @@ $(document).ready(function (){
         var today = new Date();
         $(this).prev("input[type=date]").val(today.toISOString().slice(0,10));
     })
+
+    $(".widget-control-button").click(function (){
+        var name = $(this).data("input-name");
+        if ($(this).val() == "Clear")
+            $("input[name="+name+"]:checked").click();
+        else if ($(this).val() == "All")
+            $("input[name="+name+"]").not(":checked").click();
+        else if ($(this).val() == "Default")
+        {
+            var default_values = $(this).data("default").split("/");
+            $("input[name="+name+"]").each(function (){
+                if (default_values.indexOf($(this).val()) != -1)
+                {
+                    if ($(this).prop("checked") == false)
+                        $(this).click();
+                }
+                else
+                {
+                    if ($(this).prop("checked") == true)
+                        $(this).click();
+                }
+            });
+        }
+
+        write_selected(name);
+    });
 });
 
 function init_filters()
@@ -106,6 +134,24 @@ function apply_filter(e)
             $(this).show();
         }
     });
+}
+
+function write_selected(name)
+{
+    // Write out a list of all ticked inputs with a given name
+    var output = "";
+
+    $("input[name="+name+"]:checked").each(function (){
+        output += $(this).parent().text() + ", ";
+    });
+
+    output = output.slice(0, -2);
+
+    // Change blank values into None
+    if (output == "")
+        output = "<i>None</i>";
+
+    $(".widget-selected[data-input-name="+name+"]").html(output);
 }
 
 </script>

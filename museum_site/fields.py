@@ -18,3 +18,4 @@ class IntegerRangeField(forms.MultiValueField):
 class GetField(forms.Field):
     def __init__(self, test=None, **kwargs):
         super().__init__(**kwargs)
+

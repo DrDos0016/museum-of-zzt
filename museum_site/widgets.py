@@ -99,16 +99,26 @@ class GroupedCheckboxWidget(forms.MultiWidget):
 class Scrolling_Checklist_Widget(forms.Select):
     template_name = "museum_site/widgets/scrolling-checklist-widget.html"
 
-    def __init__(self, attrs=None, choices=(), input_method="radio"):
+    def __init__(self, attrs=None, choices=(), filterable=True, categories=False, input_method="radio", buttons=[], show_selected=False, default=[]):
         super().__init__(attrs)
         self.input_method = input_method
         self.choices = choices
+        self.categories = categories
+        self.filterable = filterable
+        self.buttons = buttons
+        self.show_selected = show_selected
+        self.default=default
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         context["name"] = name
         context["choices"] = self.choices
         context["input_method"] = self.input_method
+        context["categories"] = self.categories
+        context["filterable"] = self.filterable
+        context["buttons"] = self.buttons
+        context["show_selected"] = self.show_selected
+        context["default"] = self.default
         return context
 
 
@@ -140,3 +150,10 @@ class Enhanced_Date_Widget(forms.TextInput):
         context["buttons"] = self.buttons
         context["clear_label"] = self.clear_label
         return context
+
+
+class Board_Range_Widget(forms.Widget):
+    template_name = "museum_site/widgets/board-range-widget.html"
+
+class Associated_Content_Widget(forms.Widget):
+    template_name = "museum_site/widgets/associated-content-widget.html"

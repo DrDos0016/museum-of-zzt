@@ -1,8 +1,21 @@
-<div class="scrolling-checklist widget filterable">
-    <div class="scrolling-checklist-filter">
+<div class="scrolling-checklist widget{% if filterable %} filterable{% endif %}">
+    {% if filterable %}<div class="scrolling-checklist-filter">
         Filter: <input class="widget-filter" value=""> <input class="widget-clear" type="button" value="Clear">
-    </div>
-    {% for item in choices %}
-    <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0}}">{{item.1}}</label>
-    {% endfor %}
+    </div>{% endif %}
+    {% if categories %}
+        {% for category in choices %}
+        <div class="checklist-header">{{category.0}}</div>
+            {% for item in category.1 %}
+            <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0}}">{{item.1}}</label>
+            {% endfor %}
+        {% endfor %}
+    {% else %}
+        {% for item in choices %}
+        <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0}}">{{item.1}}</label>
+        {% endfor %}
+    {% endif %}
 </div>
+{% for button in buttons %}
+<input type="button" value="{{button}}" class="widget-control-button" data-input-name="{{widget.name}}"{% if button == "Default" %}data-default="{{default|join:'/'}}"{% endif %}>
+{% endfor %}
+{% if show_selected %}<div>Selected Criteria: <span class="widget-selected" data-input-name="{{widget.name}}"><i>None</i></span></div>{% endif %}

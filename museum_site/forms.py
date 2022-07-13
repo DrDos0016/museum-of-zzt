@@ -7,6 +7,7 @@ import zipfile
 from datetime import datetime
 
 from django import forms
+from museum_site.core import *
 from museum_site.models import *
 from museum_site.fields import *
 from museum_site.widgets import *
@@ -729,4 +730,39 @@ class Debug_Form(forms.Form):
         widget=Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Unknown"),
         label="Date Field With Buttons",
         help_text="Today and Unknown",
+    )
+    genre = forms.ChoiceField(
+        choices=qs_to_select_choices(Genre.objects.filter(visible=True).only("pk", "title", "slug"), allow_any=True)
+    )
+    board = forms.NullBooleanField(
+        widget=Board_Range_Widget(),
+    )
+    associated = forms.NullBooleanField(
+        label="Related Content",
+        widget=Associated_Content_Widget(),
+    )
+    detail = forms.ChoiceField(
+        widget=Scrolling_Checklist_Widget(
+            choices=qs_to_categorized_select_choices(
+                Detail.objects.filter(visible=True),
+                category_order=["ZZT", "SZZT", "Media", "Other"]
+            ),
+            categories=True,
+            input_method="checkbox",
+            buttons=["Clear", "Default"],
+            show_selected=True,
+            default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]
+        ),
+        choices=qs_to_categorized_select_choices(Detail.objects.filter(visible=True), category_order=["ZZT", "SZZT", "Media", "Other"])
+    )
+    nonfilterable = forms.ChoiceField(
+        widget=Scrolling_Checklist_Widget(
+            choices=(("A", "A"), ("B", "B"), ("C", "C")),
+            filterable=False,
+            input_method="checkbox",
+            buttons=["All", "Clear", "Default"],
+            show_selected=True,
+            default=["A", "C"]
+        ),
+        choices=(("A", "A"), ("B", "B"), ("C", "C")),
     )
