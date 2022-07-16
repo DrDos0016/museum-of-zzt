@@ -1054,6 +1054,8 @@ class File(BaseModel):
             context["columns"][1].append({"datum": "text", "label": "Upload Date", "value": self.upload_set.first().date})
         if not self.is_detail(DETAIL_UPLOADED) and self.publish_date:
             context["columns"][1].append({"datum": "text", "label": "Publish Date", "value": self.publish_date_str()})
+        if self.is_detail(DETAIL_LOST):
+            del context["title"]["url"]
 
         # Prepare Links
         context["links"] = self.links()
