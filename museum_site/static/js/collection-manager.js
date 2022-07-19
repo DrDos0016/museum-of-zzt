@@ -40,10 +40,7 @@ function add_item()
     var original_text = $("#collection-add-button").val();
     var item_name = $("input[name=associated_file]:checked").parent().text().trim();
     $("#collection-add-button").prop("disabled", true);
-    $("#id_associated_file li.selected").removeClass("selected");
     $("#collection-add-button").val("Wait...");
-    $("input[name=associated_file]:checked").prop("checked", false);
-    $("textarea[name=collection_description]").val("");
 
     $.ajax(
         {
@@ -57,6 +54,9 @@ function add_item()
             if (e == "SUCCESS")
             {
                 $("#added-item-text").html("Added " + item_name);
+                $("textarea[name=collection_description]").val("");
+                $("#id_associated_file li.selected").removeClass("selected");
+                $("input[name=associated_file]:checked").prop("checked", false);
                 get_collection_contents();
 
             }
