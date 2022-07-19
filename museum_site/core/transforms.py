@@ -7,11 +7,11 @@ def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False):
 
     for i in qs:
         output.append(
-            (val.format(i), text.format(i))
+            (str(val.format(i)), text.format(i))
         )
     return output
 
-def qs_to_categorized_select_choices(qs, text="TEXT", val="VAL", category_order=None):
+def qs_to_categorized_select_choices(qs, text="{0}", val="{0.pk}", category_order=None):
     output = []
 
     categories = {}
@@ -19,7 +19,7 @@ def qs_to_categorized_select_choices(qs, text="TEXT", val="VAL", category_order=
         if not categories.get(i.category):
             categories[i.category] = []
         categories[i.category].append(
-            (i.pk, i.title)
+            (str(i.pk), i.title)
         )
 
     if category_order is None:

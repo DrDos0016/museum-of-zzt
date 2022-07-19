@@ -303,3 +303,23 @@ label
 .ul-scrolling-checklist li:hover { background:#98C9C9; }
 
 .arrangeable li, .arrangeable li label { cursor:grab; }
+
+.related-content-header
+{
+    text-align:center;
+    font-weight:bold;
+    border-bottom:1px solid #000;
+}
+
+.related-content-wrapper
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+
+}
+
+.related-content-wrapper label
+{
+    flex:1 0 95%;
+}

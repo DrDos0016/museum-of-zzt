@@ -1,3 +1,3 @@
-<input type="date" name="{{widget.name}}" class="abcd" value="">
+<input type="date" name="{{widget.name}}" class="abcd" {% if widget.value %}value="{{widget.value|stringformat:'s'}}"{% endif %}>
 {% if "today" in buttons %}<input type="button" class="todays-date-widget" value="Today">{% endif %}
 {% if "clear" in buttons %}<input type="button" class="clear-date-widget" value="{{clear_label}}">{% endif %}

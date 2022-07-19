@@ -710,13 +710,13 @@ class Debug_Form(forms.Form):
     use_required_attribute = False
 
     file_radio = forms.ChoiceField(
-        widget=Scrolling_Checklist_Widget(choices=associated_file_choices()),
+        widget=Scrolling_Radio_Widget(choices=associated_file_choices()),
         choices=associated_file_choices(),
         label="File Select Radio Widget",
         help_text="Selecting one file as radio buttons",
     )
-    file_check = forms.ChoiceField(
-        widget=Scrolling_Checklist_Widget(choices=associated_file_choices(), input_method="checkbox"),
+    file_check = forms.MultipleChoiceField(
+        widget=Scrolling_Checklist_Widget(choices=associated_file_choices()),
         choices=associated_file_choices(),
         label="File Select Checkbox Widget",
         help_text="Selecting many files via checkboxes",
@@ -734,35 +734,48 @@ class Debug_Form(forms.Form):
     genre = forms.ChoiceField(
         choices=qs_to_select_choices(Genre.objects.filter(visible=True).only("pk", "title", "slug"), allow_any=True)
     )
-    board = forms.NullBooleanField(
+    board = Manual_Field(
         widget=Board_Range_Widget(),
     )
-    associated = forms.NullBooleanField(
+    associated = Manual_Field(
         label="Related Content",
         widget=Associated_Content_Widget(),
     )
-    detail = forms.ChoiceField(
+    detail = forms.MultipleChoiceField(
         widget=Scrolling_Checklist_Widget(
             choices=qs_to_categorized_select_choices(
                 Detail.objects.filter(visible=True),
                 category_order=["ZZT", "SZZT", "Media", "Other"]
             ),
             categories=True,
-            input_method="checkbox",
             buttons=["Clear", "Default"],
             show_selected=True,
             default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]
         ),
         choices=qs_to_categorized_select_choices(Detail.objects.filter(visible=True), category_order=["ZZT", "SZZT", "Media", "Other"])
     )
-    nonfilterable = forms.ChoiceField(
+    nonfilterable = forms.MultipleChoiceField(
         widget=Scrolling_Checklist_Widget(
             choices=(("A", "A"), ("B", "B"), ("C", "C")),
             filterable=False,
-            input_method="checkbox",
             buttons=["All", "Clear", "Default"],
             show_selected=True,
             default=["A", "C"]
         ),
         choices=(("A", "A"), ("B", "B"), ("C", "C")),
     )
+    ssv_author = Manual_Field(
+        label="Author(s)",
+        widget=Tagged_Text_Widget()
+    )
+    ssv_company = Manual_Field(
+        label="Company",
+        widget=Tagged_Text_Widget(suggestions=Genre.objects.all().values_list("title", flat=True))
+    )
+
+    def __init__(self, data=None):
+        super().__init__(data)
+        # Handle Manual Fields
+        self.fields["board"].widget.manual_data = self.data
+        self.fields["associated"].widget.manual_data = self.data
+        print(self.data)

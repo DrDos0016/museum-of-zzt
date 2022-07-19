@@ -24,6 +24,61 @@ input[type=button]:hover
     text-decoration-style:dashed;
     cursor:pointer;
 }
+
+.tag
+{
+    display:none; /* Template is hidden */
+    margin:4px;
+    font-weight:bold;
+}
+
+.tag-list
+{
+    min-height:45px;
+}
+
+.tag-list > div { display:inline-block; }
+.tag > div { display:inline-block; }
+.tag > div:hover { background:#98C9C9; }
+
+.tag-text
+{
+    display:inline-block;
+    background:#AAA;
+    border:1px solid #000;
+    border-right:0;
+    border-radius:8px 0 0 8px;
+    padding:7px 8px 7px 8px;
+}
+
+.tag-text:hover
+{
+    cursor:grab;
+}
+
+.tag-remove
+{
+    display:inline-block;
+    border:1px solid #000;
+    border-left:1px dashed #000;
+    border-radius:0 8px 8px 0;
+    background:#619F9F;
+    padding:7px 8px 7px 8px;
+}
+
+.tag-remove:hover { cursor:pointer; }
+
+.tag.dragging { opacity:0.25; }
+
+.tag-ghost
+{
+    border:1px dashed #000;
+    border-radius:8px;
+    padding:7px 8px 7px 8px;
+    width:4ch;
+    text-align:center;
+    font-weight:normal;
+}
 </style>
 {% endblock %}
 
@@ -46,10 +101,9 @@ $(document).ready(function (){
         $(this).parent().addClass("selected");
         write_selected($(this).attr("name"));
     });
-    init_filters();
 
     $(".char-limited-widget").each(function (){
-        $(this).keyup(function (){
+        $(this).on("input", function (){
             var len = $(this).val().length;
             var max_chars = $(this).attr("maxlength");
             var remaining = max_chars - len;
@@ -58,7 +112,6 @@ $(document).ready(function (){
     });
 
     $(".clear-date-widget").click(function (){
-        console.log("X");
         $(this).prevAll("input[type=date]").val("");
     });
 
@@ -92,6 +145,49 @@ $(document).ready(function (){
 
         write_selected(name);
     });
+
+    $(".tag-input").on("input", function (){
+        var val = $(this).val();
+
+        if (val.indexOf(",") == -1)
+            return false;
+
+        // Begin adding the tag
+        $(this).val("");
+        var input_name = $(this).data("input");
+
+        var entries = val.split(",");
+        for (var idx=0; idx < entries.length; idx++)
+        {
+            var entry = entries[idx];
+
+            if (! entry.trim())
+                continue;
+
+            console.log("Adding tag:", entry);
+            var tag = create_tag(input_name, entry);
+
+            $("#"+ input_name + "-tag-list").append(tag);
+            $("#"+ input_name + "-tag-list").find("." + input_name + "-tag-template").last().removeClass(input_name + "-tag-template");
+
+            // Set up tag binds
+            $("#"+ input_name + "-tag-list").find(".tag-remove").last().click(remove_tag);
+            $("#"+ input_name + "-tag-list").find(".tag").last().on("dragstart", drag_tag_start);
+            $("#"+ input_name + "-tag-list").find(".tag").last().on("dragend", drag_tag_end);
+            $("#"+ input_name + "-tag-list").find(".tag").last().on("dragover", drag_tag_over);
+            $("#"+ input_name + "-tag-list").find(".tag").last().on("dragleave", drag_tag_leave);
+            $("#"+ input_name + "-tag-list").find(".tag").last().on("drop", drag_tag_drop);
+        }
+    });
+
+    // Test
+    $(".tag-input").on("input", function (e){
+
+    });
+
+    // Setup
+    init_filters();
+    $("input:checked").parent().addClass("selected");
 });
 
 function init_filters()
@@ -152,6 +248,85 @@ function write_selected(name)
         output = "<i>None</i>";
 
     $(".widget-selected[data-input-name="+name+"]").html(output);
+}
+
+// Tag functions
+function create_tag(name, text)
+{
+    // Create a tag element
+    var tag = $("." + name + "-tag-template").prop("outerHTML");
+    tag = tag.replace(/\[text\]/g, text);
+    return tag;
+}
+
+function remove_tag(e)
+{
+    console.log($(e.target));
+    $(e.target).parent().remove();
+}
+
+function drag_tag_start(e)
+{
+    const dt = e.originalEvent.dataTransfer;
+    dt.effectAllowed = "move";
+    dt.setData("text/html", $(this).prop("outerHTML"));
+    $(this).addClass("dragging");
+    console.log(e);
+}
+
+function drag_tag_end(e)
+{
+    $(this).removeClass("dragging");
+}
+
+function drag_tag_over(e)
+{
+    // Don't activate if there's already a ghost
+    if ($(".tag-ghost").length)
+        return false;
+
+    var target = $(e.target).parent();
+
+    // Don't activate for the dragged element
+    if ($(target).hasClass("dragging"))
+        return false;
+
+    // Don't activate if the target isn't a tag for the same field
+    if ($(target).data("field") != $(".dragging").data("field"))
+        return false;
+
+    var ghost = "<div class='tag-ghost'>...</div>";
+
+    $(target).after(ghost);
+}
+
+function drag_tag_leave(e)
+{
+    var target = $(e.target).parent();
+    $(".tag-ghost").remove();
+}
+
+function drag_tag_drop(e)
+{
+    e.preventDefault();
+    e.stopPropagation();
+    var target = $(e.target).parent();
+
+    // Don't activate if the target isn't a tag for the same field
+    if ($(target).data("field") != $(".dragging").data("field"))
+        return false;
+
+    var replacement = $(".dragging").prop("outerHTML");
+    $(".tag-ghost").remove();
+    $(".dragging").remove();
+    $(target).after(replacement);
+    $(".dragging").click(remove_tag);
+    $(".dragging").on("dragstart", drag_tag_start);
+    $(".dragging").on("dragend", drag_tag_end);
+    $(".dragging").on("dragover", drag_tag_over);
+    $(".dragging").on("dragleave", drag_tag_leave);
+    $(".dragging").on("drop", drag_tag_drop);
+    $(".dragging").removeClass("dragging");
 }
 
 </script>

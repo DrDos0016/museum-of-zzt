@@ -488,6 +488,7 @@ a.inline[target=_blank]::after
 .flex-wrap { flex-wrap: wrap; }
 .flex-container.justify-space-between { justify-content: space-between; }
 .flex-container.justify-center { justify-content: center; }
+.flex-container.align-center { align-items:center; }
 
 .basic-border { border:1px solid #000; }
 /* End Utility Classes */
@@ -1243,6 +1244,7 @@ form .field .scrolling-checklist
     border-bottom:1px solid #000;
     padding-top:3px;
     padding-bottom:3px;
+    gap:4px;
 }
 
 .file-data > div

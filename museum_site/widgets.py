@@ -70,8 +70,6 @@ class GroupedCheckboxWidget(forms.MultiWidget):
         self.attrs = attrs
         self.widgets = widgets
 
-        pass
-
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         #context["choices"] = self.choices
@@ -96,12 +94,38 @@ class GroupedCheckboxWidget(forms.MultiWidget):
         return output
 
 
-class Scrolling_Checklist_Widget(forms.Select):
+class Scrolling_Radio_Widget(forms.Select):
     template_name = "museum_site/widgets/scrolling-checklist-widget.html"
 
-    def __init__(self, attrs=None, choices=(), filterable=True, categories=False, input_method="radio", buttons=[], show_selected=False, default=[]):
+    def __init__(self, attrs=None, choices=(), filterable=True, categories=False, buttons=[], show_selected=False, default=[]):
         super().__init__(attrs)
-        self.input_method = input_method
+        self.input_method = "radio"
+        self.choices = choices
+        self.categories = categories
+        self.filterable = filterable
+        self.buttons = buttons
+        self.show_selected = show_selected
+        self.default=default
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["name"] = name
+        context["choices"] = self.choices
+        context["input_method"] = self.input_method
+        context["categories"] = self.categories
+        context["filterable"] = self.filterable
+        context["buttons"] = self.buttons
+        context["show_selected"] = self.show_selected
+        context["default"] = self.default
+        return context
+
+
+class Scrolling_Checklist_Widget(forms.SelectMultiple):
+    template_name = "museum_site/widgets/scrolling-checklist-widget.html"
+
+    def __init__(self, attrs=None, choices=(), filterable=True, categories=False, buttons=[], show_selected=False, default=[]):
+        super().__init__(attrs)
+        self.input_method = "checkbox"
         self.choices = choices
         self.categories = categories
         self.filterable = filterable
@@ -155,5 +179,38 @@ class Enhanced_Date_Widget(forms.TextInput):
 class Board_Range_Widget(forms.Widget):
     template_name = "museum_site/widgets/board-range-widget.html"
 
+    def __init__(self, attrs=None, min_val=None, max_val=None, kind=None):
+        super().__init__(attrs)
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        if hasattr(self, "manual_data"):
+            context["manual_data"] = self.manual_data
+        return context
+
+
 class Associated_Content_Widget(forms.Widget):
     template_name = "museum_site/widgets/associated-content-widget.html"
+
+    def __init__(self, attrs=None, min_val=None, max_val=None, kind=None):
+        super().__init__(attrs)
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        if hasattr(self, "manual_data"):
+            context["manual_data"] = self.manual_data
+        return context
+
+
+class Tagged_Text_Widget(forms.Widget):
+    template_name = "museum_site/widgets/tagged-text-widget.html"
+
+    def __init__(self, attrs=None, suggestions=None):
+        super().__init__(attrs)
+        self.suggestions = suggestions
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        if self.suggestions:
+            context["suggestions"] = self.suggestions
+        return context

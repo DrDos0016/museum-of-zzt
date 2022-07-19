@@ -1,8 +1,13 @@
-<b>Show</b><br>
-<input name="reviews" type="radio" value="any"> Only files with reviews
-<input name="reviews" type="radio" value="any"> Only files without reviews
-<input name="reviews" type="radio" value="any"> Both
-<br>
-<input name="articles" type="radio" value="any"> Only files with articles
-<input name="articles" type="radio" value="any"> Only files without articles
-<input name="articles" type="radio" value="any"> Both
+<div class="related-content-header">Only Show files</div>
+<div class="flex-container">
+    <div class="related-content-wrapper">
+    <label><input name="reviews" type="radio" value="yes"{% if manual_data.reviews == "yes" %} checked{% endif %}> With reviews</label>
+    <label><input name="reviews" type="radio" value="no"{% if manual_data.reviews == "no" %} checked{% endif %}> Without reviews</label>
+    <label><input name="reviews" type="radio" value="any"{% if manual_data.reviews == "any" %} checked{% endif %}> Either</label>
+    </div>
+    <div class="related-content-wrapper">
+    <label><input name="articles" type="radio" value="yes"{% if manual_data.articles == "yes" %} checked{% endif %}> With articles</label>
+    <label><input name="articles" type="radio" value="no"{% if manual_data.articles == "no" %} checked{% endif %}> Without articles</label>
+    <label><input name="articles" type="radio" value="any"{% if manual_data.articles == "any" %} checked{% endif %}> Either</label>
+    </div>
+</div>

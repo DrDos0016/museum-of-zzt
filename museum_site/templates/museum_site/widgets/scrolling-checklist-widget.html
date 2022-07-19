@@ -6,12 +6,12 @@
         {% for category in choices %}
         <div class="checklist-header">{{category.0}}</div>
             {% for item in category.1 %}
-            <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0}}">{{item.1}}</label>
+            <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0}}"{% if item.0|stringformat:'s' in widget.value %} checked {% endif %}>{{item.1}}</label>
             {% endfor %}
         {% endfor %}
     {% else %}
         {% for item in choices %}
-        <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0}}">{{item.1}}</label>
+        <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0}}"{% if item.0|stringformat:'s' in widget.value %} checked {% endif %}>{{item.1}}</label>
         {% endfor %}
     {% endif %}
 </div>

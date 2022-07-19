@@ -1,6 +1,11 @@
-<input name="{{widget.name}}_min" id="{{widget.attrs.id}}" class="integer-range-widget" value="{{min}}">
-to
-<input name="{{widget.name}}_max" id="{{widget.attrs.id}}" class="integer-range-widget" value="{{max}}">
-<br>
-<label><input type="radio" name="{{widget.name}}_type" value="playable"> Playable Boards</label>
-<label><input type="radio" name="{{widget.name}}_type" value="total"> Total Boards</label>
+<div class="flex-container flex-wrap align-center">
+<div>
+    <input name="{{widget.name}}_min" id="{{widget.attrs.id}}" class="integer-range-widget"{% if manual_data.board_min %} value="{{manual_data.board_min}}"{% endif %}>
+    to
+    <input name="{{widget.name}}_max" id="{{widget.attrs.id}}" class="integer-range-widget"{% if manual_data.board_max %} value="{{manual_data.board_max}}"{% endif %}>
+</div>
+<div>
+    <label><input type="radio" name="{{widget.name}}_type" value="playable"{% if manual_data.board_type == "playable" %} checked{% endif %}> Playable Boards</label>
+    <label><input type="radio" name="{{widget.name}}_type" value="total"{% if manual_data.board_type == "total" %} checked{% endif %}> Total Boards</label>
+</div>
+</div>

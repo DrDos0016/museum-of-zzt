@@ -1,0 +1,10 @@
+<input type="text" class="tag-input" data-input="{{widget.name}}" list="{{widget.name}}-suggestions" value="">
+<div class="{{widget.name}}-tag-template tag" draggable=true data-field="{{widget.name}}">
+    <input name="{{widget.name}}" type="hidden" value="[text]">
+    <div class="tag-text">[text]</div><div class="tag-remove" title="Click to remove">✖</div>
+</div>
+<div class="tag-list" id="{{widget.name}}-tag-list">
+</div>
+<datalist id="{{widget.name}}-suggestions" class="suggestion-datalist">
+    {% for suggestion in suggestions %}<option value="{{suggestion}},">{% endfor %}
+</datalist>

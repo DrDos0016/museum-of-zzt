@@ -143,7 +143,11 @@ def debug_colors(request):
 
 
 def debug_widgets(request):
-    context = {
-        "form": Debug_Form()
-    }
+    context = {}
+
+    if request.method == "POST":
+        context["form"] = Debug_Form(request.POST)
+    else:
+        context["form"] = Debug_Form()
+
     return render(request, "museum_site/debug/debug-widget.html", context)
