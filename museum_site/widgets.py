@@ -176,23 +176,10 @@ class Enhanced_Date_Widget(forms.TextInput):
         return context
 
 
-class Board_Range_Widget(forms.Widget):
-    template_name = "museum_site/widgets/board-range-widget.html"
-
-    def __init__(self, attrs=None, min_val=None, max_val=None, kind=None):
-        super().__init__(attrs)
-
-    def get_context(self, name, value, attrs):
-        context = super().get_context(name, value, attrs)
-        if hasattr(self, "manual_data"):
-            context["manual_data"] = self.manual_data
-        return context
-
-
 class Associated_Content_Widget(forms.Widget):
     template_name = "museum_site/widgets/associated-content-widget.html"
 
-    def __init__(self, attrs=None, min_val=None, max_val=None, kind=None):
+    def __init__(self, attrs=None, kind=None):
         super().__init__(attrs)
 
     def get_context(self, name, value, attrs):
@@ -213,4 +200,31 @@ class Tagged_Text_Widget(forms.Widget):
         context = super().get_context(name, value, attrs)
         if self.suggestions:
             context["suggestions"] = self.suggestions
+        if hasattr(self, "manual_data"):
+            context["manual_data"] = self.manual_data
         return context
+
+
+class Range_Widget(forms.Widget):
+    template_name = "museum_site/widgets/range-widget.html"
+
+    def __init__(self, attrs=None, min_val=None, max_val=None, max_length=None, step=1):
+        super().__init__(attrs)
+        self.min_val = min_val
+        self.max_val = max_val
+        self.max_length = max_length
+        self.step = step
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["min_val"] = self.min_val
+        context["max_val"] = self.max_val
+        context["max_length"] = self.max_length
+        context["step"] = self.step
+        if hasattr(self, "manual_data"):
+            context["manual_data"] = self.manual_data
+        return context
+
+
+class Board_Range_Widget(Range_Widget):
+    template_name = "museum_site/widgets/board-range-widget.html"

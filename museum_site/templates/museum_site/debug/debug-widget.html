@@ -180,14 +180,14 @@ $(document).ready(function (){
         }
     });
 
-    // Test
-    $(".tag-input").on("input", function (e){
-
-    });
-
     // Setup
     init_filters();
     $("input:checked").parent().addClass("selected");
+    // Convert text to tags if needed
+    $(".tag-input").trigger("input");
+    // Update list of checked boxes
+    write_selected("detail");
+    write_selected("nonfilterable");
 });
 
 function init_filters()
@@ -352,6 +352,8 @@ function drag_tag_drop(e)
 {% endfor %}
 <input type="submit" value="Submit">
 </form>
+
+HEY: {{request.POST.ssv_author}}
 
 </section>
 {% endblock %}
