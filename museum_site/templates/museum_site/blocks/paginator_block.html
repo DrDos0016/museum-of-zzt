@@ -44,6 +44,6 @@
         </select>
 </div>{% endif %}
 {% if advanced_search %}<div class="modify-query">
-    <a href="{% url 'advanced_search' %}?{{request.META.QUERY_STRING}}">Modify Search Query</a>
+    <a href="{% url 'advanced_search' %}?{{request.META.QUERY_STRING}}&action=edit">Edit Search Query</a>
 </div>{% endif %}
 {% guide_words sort=sort model=model first_item=first_item last_item=last_item %}

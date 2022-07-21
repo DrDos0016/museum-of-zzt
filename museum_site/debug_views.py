@@ -69,8 +69,12 @@ def debug(request, filename=None):
 def debug_advanced_search(request):
     data = {"title": "Advanced Search"}
 
-    if request.method == "POST":
-        form = Advanced_Search_Form(request.POST)
+    if request.GET:
+        form = Advanced_Search_Form(request.GET)
+
+        valid = form.is_valid()
+        print("VALIDITY:", valid)
+
     else:
         form = Advanced_Search_Form()
 

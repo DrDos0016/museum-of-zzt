@@ -1,9 +1,10 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
+from django.views.generic.edit import FormView
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core.detail_identifiers import *
-from museum_site.forms import ArticleSearchForm
+from museum_site.forms import *
 from museum_site.models import *
 
 ADV_SEARCH_DEFAULTS = [
@@ -15,20 +16,18 @@ ADV_SEARCH_DEFAULTS = [
 
 def advanced_search(request):
     """ Returns page containing multiple filters to use when searching """
-    data = {
-        "title": "Advanced Search",
-        "mode": "search",
-        "genres": Genre.objects.filter(visible=True),
-        "years": [str(x) for x in range(1991, YEAR + 1)]
-    }
+    data = {"title": "Advanced Search"}
 
-    data["details_list"] = request.GET.getlist("details", ADV_SEARCH_DEFAULTS)
-    data["details_list"] = list(map(int, data["details_list"]))
-    data["detail_cats"] = Detail.objects.advanced_search_categories()
-    data["languages"] = LANGUAGE_CHOICES
+    if request.GET:
+        form = Advanced_Search_Form(request.GET)
 
-    return render(request, "museum_site/advanced_search.html", data)
+        if request.GET.get("action") != "edit" and form.is_valid():
+            return redirect_with_querystring("search", request.GET.urlencode())
+    else:
+        form = Advanced_Search_Form(initial={"detail":[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE, DETAIL_UPLOADED]})
 
+    data["form"] = form
+    return render(request, "museum_site/advanced-search.html", data)
 
 def article_search(request):
     """ Returns page containing multiple filters to use when searching """

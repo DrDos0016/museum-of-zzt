@@ -7,7 +7,7 @@ def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False):
 
     for i in qs:
         output.append(
-            (str(val.format(i)), text.format(i))
+            (str(val.format(i)).lower(), text.format(i))
         )
     return output
 

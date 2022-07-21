@@ -1,0 +1,25 @@
+<input
+        type="number"
+        name="{{widget.name}}_min"
+        id="{{widget.attrs.id}}_min"
+        class="range-widget"
+        autocomplete="off"
+        {% if step %}step="{{step}}"{% endif %}
+        {% if max_length %}maxlength="{{max_length}}"{% endif %}
+        {% if manual_data.min %} value="{{manual_data.min}}"{% endif %}
+        {% if min_val is not None%}min="{{min_val}}"{% endif %}
+        {% if max_val is not None%}max="{{max_val}}"{% endif %}
+    >
+to
+<input
+        type="number"
+        name="{{widget.name}}_max"
+        id="{{widget.attrs.id}}_max"
+        class="range-widget"
+        autocomplete="off"
+        {% if step %}step="{{step}}"{% endif %}
+        {% if max_length %}maxlength="{{max_length}}"{% endif %}
+        {% if manual_data.max %} value="{{manual_data.max}}"{% endif %}
+        {% if min_val is not None%}min="{{min_val}}"{% endif %}
+        {% if max_val is not None%}max="{{max_val}}"{% endif %}
+    >

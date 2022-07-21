@@ -80,8 +80,8 @@ label
 .scrolling-checklist
 {
     font-family:mono;
-    min-height: 150px;
-    height: 150px;
+    min-height: 200px;
+    height: 200px;
     overflow: auto;
     min-width: 300px;
     border: 1px solid #000;
@@ -322,4 +322,89 @@ label
 .related-content-wrapper label
 {
     flex:1 0 95%;
+}
+
+
+/* Jul 2022 Form modifications */
+.scrolling-checklist-filter
+{
+    background-color:#619F9F;
+    border-bottom:1px solid #000;
+    position:sticky;
+    top:0px;
+    font-size:16px;
+    padding:2px 8px 2px 8px;
+}
+
+.scrolling-checklist-filter input[type=button].widget-clear
+{
+    margin-top:-1px;
+}
+
+.scrolling-checklist label input
+{
+    margin-right:8px;
+    margin-left:8px;
+}
+
+input[type=button]:hover
+{
+    text-decoration:underline;
+    text-decoration-style:dashed;
+    cursor:pointer;
+}
+
+.tag
+{
+    display:none; /* Template is hidden */
+    margin:4px;
+    font-weight:bold;
+}
+
+.tag-list
+{
+    min-height:45px;
+}
+
+.tag-list > div { display:inline-block; }
+.tag > div { display:inline-block; }
+.tag > div:hover { background:#98C9C9; }
+
+.tag-text
+{
+    display:inline-block;
+    background:#AAA;
+    border:1px solid #000;
+    border-right:0;
+    border-radius:8px 0 0 8px;
+    padding:7px 8px 7px 8px;
+}
+
+.tag-text:hover
+{
+    cursor:grab;
+}
+
+.tag-remove
+{
+    display:inline-block;
+    border:1px solid #000;
+    border-left:1px dashed #000;
+    border-radius:0 8px 8px 0;
+    background:#619F9F;
+    padding:7px 8px 7px 8px;
+}
+
+.tag-remove:hover { cursor:pointer; }
+
+.tag.dragging { opacity:0.25; }
+
+.tag-ghost
+{
+    border:1px dashed #000;
+    border-radius:8px;
+    padding:7px 8px 7px 8px;
+    width:4ch;
+    text-align:center;
+    font-weight:normal;
 }
