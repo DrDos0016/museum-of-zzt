@@ -29,3 +29,30 @@ def qs_to_categorized_select_choices(qs, text="{0}", val="{0.pk}", category_orde
         output.append((key, categories[key]))
 
     return output
+
+def range_select_choices(first, last, order="asc", allow_any=False, allow_unknown=False):
+    years = range(first, last + 1)
+
+    if order == "desc":
+        years = years[::-1]
+
+    output = list(zip(years, years))
+
+    if allow_any:
+        output.insert(0, ("any", "- ANY -"))
+
+    if allow_unknown:
+        output.append(("unk", "Unknown"))
+
+    return output
+
+def language_select_choices(languages, allow_any=False, allow_non_english=False):
+    output = list(languages.items())
+
+    if allow_non_english:
+        output.append(("non-english", "Non-English"))
+
+    if allow_any:
+        output.insert(0, ("any", "- ANY -"))
+
+    return output
