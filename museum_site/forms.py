@@ -297,65 +297,57 @@ class DownloadForm(forms.ModelForm):
         }
 
 
-class AdvancedSearchForm(forms.Form):
+class Advanced_Search_Form(forms.Form):
     use_required_attribute = False
-    required = False
-
-    title = forms.CharField(label="Title contains", required=False)
-    author = forms.CharField(label="Author contains", required=False)
-    filename = forms.CharField(label="Filename contains", required=False)
-    company = forms.CharField(label="Company contains", required=False)
+    title = forms.CharField(label="Title contains")
+    author = forms.CharField(label="Author contains")
+    filanme = forms.CharField(label="Filename contains")
+    contents = forms.CharField(label="Zip file contents contains", help_text="Enter a filename to search for in the file's zip file")
+    company = forms.CharField(label="Company contains")
     genre = forms.ChoiceField(
-        choices=any_plus(zip(GENRE_LIST, GENRE_LIST)),
-        required=False
+        choices=qs_to_select_choices(Genre.objects.filter(visible=True).only("pk", "title", "slug"), allow_any=True),
+        required=False,
+    )
+    board = Manual_Field(
+        label="Minimum/Maximum board count",
+        widget=Board_Range_Widget(min_val=0, max_val=999, max_length=3),
+        required=False,
     )
     year = forms.ChoiceField(
-        choices=any_plus(((str(x), str(x)) for x in range(YEAR, 1990, -1))),  # Earliest release year is 1991
-        required=False
+        label="Release year",
+        choices=range_select_choices(1991, YEAR, allow_any=True, allow_unknown=True, order="desc"),
     )
-    board_min = forms.IntegerField(
-        required=False, label="Minimum/Maximum board count"
-    )
-    board_max = forms.IntegerField(required=False)
-    board_type = forms.ChoiceField(
-        widget=forms.RadioSelect,
-        choices=[
-            ("playable", "Playable Boards"),
-            ("total", "Total Boards"),
-        ],
-        required=False,
-        )
-
-    language = forms.ChoiceField(
-        choices=any_plus(LANGUAGE_CHOICES),
+    rating = Manual_Field(
+        label="Minimum/Maximum rating",
+        widget=Range_Widget(min_val=0, max_val=5, max_length=4, step=0.1),
         required=False,
     )
-    reviews = forms.ChoiceField(
-        widget=forms.RadioSelect(),
-        choices=(
-            ("yes", "Show files with reviews"),
-            ("no", "Show files without reviews"),
-            ("any", "Show both")
+    lang = forms.ChoiceField(
+        label="Language",
+        choices=language_select_choices(LANGUAGES, allow_any=True, allow_non_english=True),
+        required=False,
+    )
+    associated = Manual_Field(
+        label="Related content",
+        widget=Associated_Content_Widget(),
+        required=False,
+    )
+    detail = forms.MultipleChoiceField(
+        widget=Scrolling_Checklist_Widget(
+            choices=qs_to_categorized_select_choices(
+                Detail.objects.filter(visible=True),
+                category_order=["ZZT", "SZZT", "Media", "Other"]
+            ),
+            categories=True,
+            buttons=["Clear", "Default"],
+            show_selected=True,
+            default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]
         ),
-        required=False,
-    )
-    articles = forms.ChoiceField(
-        widget=forms.RadioSelect(),
-        choices=(
-            ("yes", "Show files with articles"),
-            ("no", "Show files without articles"),
-            ("any", "Show both")
-        ),
-        required=False
-    )
-    details = forms.MultipleChoiceField(
-        # widget=forms.SelectMultiple,
-        widget=GroupedCheckboxWidget,
-        choices=Detail.objects.form_list,
+        choices=qs_to_categorized_select_choices(Detail.objects.filter(visible=True), category_order=["ZZT", "SZZT", "Media", "Other"]),
         required=False,
     )
     sort = forms.ChoiceField(
-        label="Sort by",
+        label="Sort results by",
         choices=(
             ("title", "Title"),
             ("author", "Author"),
@@ -363,8 +355,9 @@ class AdvancedSearchForm(forms.Form):
             ("rating", "Rating"),
             ("release", "Release Date"),
         ),
-        required=False
+        required=False,
     )
+
 
 
 class ArticleSearchForm(forms.Form):

@@ -1,6 +1,6 @@
 <div class="scrolling-checklist widget{% if filterable %} filterable{% endif %}">
     {% if filterable %}<div class="scrolling-checklist-filter">
-        Filter: <input class="widget-filter" value=""> <input class="widget-clear" type="button" value="Clear">
+        Filter: <input class="widget-filter" value="" id="{{widget.attrs.id}}"> <input class="widget-clear" type="button" value="Clear">
     </div>{% endif %}
     {% if categories %}
         {% for category in choices %}

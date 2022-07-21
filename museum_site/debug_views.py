@@ -68,14 +68,11 @@ def debug(request, filename=None):
 
 def debug_advanced_search(request):
     data = {"title": "Advanced Search"}
-    record("TODO: Make sure to support non-english!!")
 
-    if len(request.GET):
-        form = AdvancedSearchForm(request.GET)
-        record("HACKY TIME")
-        form.is_valid()
+    if request.method == "POST":
+        form = Advanced_Search_Form(request.POST)
     else:
-        form = AdvancedSearchForm(initial={"reviews": "any", "articles": "any", "details":[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UTILITY]})
+        form = Advanced_Search_Form()
 
     data["form"] = form
     data["grouped_fields"] = ["board_min", "board_max", "board_type"]

@@ -183,6 +183,8 @@ $(document).ready(function (){
     // Setup
     init_filters();
     $("input:checked").parent().addClass("selected");
+    // Update remaining characters
+    $(".char-limited-widget").trigger("input");
     // Convert text to tags if needed
     $(".tag-input").trigger("input");
     // Update list of checked boxes
