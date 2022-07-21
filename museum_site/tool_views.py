@@ -47,7 +47,7 @@ def add_livestream(request, key):
     ).order_by("sort_title")
     """
     file_associations = forms.ChoiceField(
-        widget=Scrolling_Checklist_Widget(choices=associated_file_choices(), input_method="checkbox"),
+        widget=Scrolling_Checklist_Widget(choices=associated_file_choices()),
         choices=associated_file_choices(),
         label="File Select Checkbox Widget",
         help_text="Selecting many files via checkboxes",
