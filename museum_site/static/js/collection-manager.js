@@ -34,11 +34,16 @@ function add_item()
         "zfile_id": $("input[name=associated_file]:checked").val(),
         "collection_description": $("textarea[name=collection_description]").val(),
         "collection_id": $("input[name=collection_id]").val(),
+        "url": $("input[name=url]").val(),
     }
 
     // Blank the fields
     var original_text = $("#collection-add-button").val();
-    var item_name = $("input[name=associated_file]:checked").parent().text().trim();
+    if ($("input[name=url]").val())
+        var item_name = $("input[name=url]").val();
+    else
+        var item_name = $("input[name=associated_file]:checked").parent().text().trim();
+
     $("#collection-add-button").prop("disabled", true);
     $("#collection-add-button").val("Wait...");
 
@@ -57,6 +62,7 @@ function add_item()
                 $("textarea[name=collection_description]").val("");
                 $("#id_associated_file li.selected").removeClass("selected");
                 $("input[name=associated_file]:checked").prop("checked", false);
+                $("input[name=url]").val("");
                 get_collection_contents();
 
             }
