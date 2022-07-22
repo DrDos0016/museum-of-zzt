@@ -211,7 +211,18 @@ class WoZZT_Queue(BaseModel):
 
         return output
 
+    def tweet_text_short(self):
+        escaped_file_url = quote("file/" + self.file.letter + "/" + self.file.key + "/")
+        escaped_zzt_url = quote(self.zzt_file)
+
+        output = (f"https://museumofzzt.com/{escaped_file_url}?file="
+                  f"{escaped_zzt_url}&board={self.board}\n")
+        output += f"{self.file.title} [...]"
+
+        return output
+
     def send_tweet(self, tweet_related=True, discord_hook=True):
+        try_shorter = False  # Try a shorter variant if this one is too long
         # Tweet the image
         with open(self.image_path(), "rb") as imagefile:
             imagedata = imagefile.read()
@@ -228,9 +239,29 @@ class WoZZT_Queue(BaseModel):
                 TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET,
                 TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET
             ))
-            resp = t.statuses.update(
-                status=self.tweet_text(), media_ids=img1, tweet_mode="extended"
-            )
+
+            try:
+                resp = t.statuses.update(
+                    status=self.tweet_text(), media_ids=img1, tweet_mode="extended"
+                )
+            except TwitterHTTPError as error:
+                for err in error.response_data.get("errors", []):
+                    if err.get("code") == 186:  # "Tweets needs to be a bit shorter.":
+                        try_shorter = True
+
+                if not try_shorter:
+                    return False
+
+            if try_shorter:
+                try:
+                    resp = t.statuses.update(
+                        status=self.tweet_text_short(), media_ids=img1, tweet_mode="extended"
+                    )
+                except TwitterHTTPError as error:
+                    self.category = "failed"
+                    self.save()
+                    return False
+
             #record(resp)
             twitter_id = resp.get("id")
             twitter_img = resp["entities"]["media"][0]["media_url"]
