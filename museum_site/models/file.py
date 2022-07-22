@@ -848,7 +848,7 @@ class File(BaseModel):
 
     def release_year(self, default=""): return default if self.release_date is None else str(self.release_date)[:4]
 
-    def url(self): return "/file/{}/{}/".format(self.letter, self.key)  # Use file viewer as file's default URL
+    def url(self): return "/file/view/{}/".format(self.key)  # Use file viewer as file's default URL
 
     def preview_url(self):
         if self.screenshot:
