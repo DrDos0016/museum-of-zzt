@@ -78,7 +78,15 @@ $(document).ready(function (){
             if (! entry.trim())
                 continue;
 
-            console.log("Adding tag:", entry);
+            if ($(this).hasClass("editing"))
+            {
+                var tag = $("#"+ input_name + "-tag-list").find(".tag.selected");
+                $(tag).find(".tag-text").text(entry);
+                $(tag).find("input").val(entry);
+                $(tag).removeClass("selected");
+                $(this).removeClass("editing");
+                break;
+            }
             var tag = create_tag(input_name, entry);
 
             $("#"+ input_name + "-tag-list").append(tag);
@@ -91,6 +99,7 @@ $(document).ready(function (){
             $("#"+ input_name + "-tag-list").find(".tag").last().on("dragover", drag_tag_over);
             $("#"+ input_name + "-tag-list").find(".tag").last().on("dragleave", drag_tag_leave);
             $("#"+ input_name + "-tag-list").find(".tag").last().on("drop", drag_tag_drop);
+            $("#"+ input_name + "-tag-list").find(".tag").last().on("click", drag_tag_click);
         }
     });
 
@@ -177,7 +186,6 @@ function create_tag(name, text)
 
 function remove_tag(e)
 {
-    console.log($(e.target));
     $(e.target).parent().remove();
 }
 
@@ -187,7 +195,6 @@ function drag_tag_start(e)
     dt.effectAllowed = "move";
     dt.setData("text/html", $(this).prop("outerHTML"));
     $(this).addClass("dragging");
-    console.log(e);
 }
 
 function drag_tag_end(e)
@@ -243,4 +250,21 @@ function drag_tag_drop(e)
     $(".dragging").on("dragleave", drag_tag_leave);
     $(".dragging").on("drop", drag_tag_drop);
     $(".dragging").removeClass("dragging");
+}
+
+function drag_tag_click(e)
+{
+    var input_element = $(this).parent().parent().find(".tag-input");
+    if ($(this).hasClass("selected"))
+    {
+        input_element.val("");
+        input_element.removeClass("editing");
+        $(this).removeClass("selected");
+        return true;
+    }
+    $(".tag.selected").removeClass("selected");
+    $(this).toggleClass("selected");
+    input_element.addClass("editing");
+    input_element.val($(this).find(".tag-text").text());
+    input_element.select();
 }

@@ -370,6 +370,11 @@ input[type=button]:hover
 .tag > div { display:inline-block; }
 .tag > div:hover { background:#98C9C9; }
 
+.tag.selected .tag-text
+{
+    background-color:#98C9C9;
+}
+
 .tag-text
 {
     display:inline-block;
