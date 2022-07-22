@@ -116,7 +116,7 @@ function set_csrf()
 {% csrf_token %}
 <h1>Worlds of ZZT Queue{% if request.user.is_staff %} [STAFF MODE]{% endif %}</h1>
 <p>Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
-<a href="?category=wozzt">Worlds of ZZT</a> | <a href="?category=tuesday">Title Screen Tuesday</a> | <a href="?category=discord">Discord Queue</a></p>
+<a href="?category=wozzt">Worlds of ZZT</a> | <a href="?category=tuesday">Title Screen Tuesday</a> | <a href="?category=discord">Discord Queue</a> | <a href="?category=failed">Failed Tweets</a></p>
 <p>Times are displayed in your local time zone.</p>
 <p>There are currently <b>{{queue_size}}</b> entries in the queue. The queue will be exhausted on <span id="queue-end">-</span>.</p>
 
