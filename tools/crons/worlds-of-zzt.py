@@ -19,9 +19,11 @@ def main():
         entry = WoZZT_Queue.objects.filter(category="wozzt")
 
     entry = entry.order_by("-priority", "id")[0]
-    entry.send_tweet()
-    entry.delete_image()
-    entry.delete()
+    success = entry.send_tweet()
+
+    if success:
+        entry.delete_image()
+        entry.delete()
     print("Done.")
 
 
