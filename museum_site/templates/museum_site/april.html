@@ -38,15 +38,22 @@
     height:14px;
     left:8px;
 }
+
+body.april
+{
+    margin:14px 8px 14px 8px;
+    background:#000;
+}
 </style>
 <div id="yb-top" class="yb"></div>
 <div id="yb-left" class="yb"></div>
 <div id="yb-right" class="yb"></div>
 <div id="yb-bottom" class="yb"></div>
 <script>
-    $(document).ready(function (){
-        $(".yb").click(function (){
-            $(".yb").hide();
-            });
-    });
+$(document).ready(function (){
+    $(".yb").click(function (){
+        $(".yb").hide();
+        $(".april").removeClass("april");
+        });
+});
 </script>
