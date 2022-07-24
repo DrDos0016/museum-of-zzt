@@ -3,13 +3,17 @@
 
 {% block scripts %}
 <script src="{% static 'js/museum-forms.js' %}"></script>
+{% for script in scripts %}<script src="{% static script %}"></script>{% endfor %}
 {% endblock %}
 
 {% block content %}
 <section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 <h1>{{form.heading}}</h1>
 
+{{form.text_prefix|default:""|safe}}
+
 <form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
 {% include "museum_site/blocks/generic-form.html" %}
 <input type="submit" value="{{form.submit_value}}">
 </form>

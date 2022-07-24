@@ -40,8 +40,8 @@ class Review_Directory_View(Directory_View):
                 if self.request.GET.get("max_rating"):
                     qs = qs.filter(rating__lte=self.request.GET["max_rating"])
 
-            if self.request.GET.get("text"):
-                qs = qs.filter(content__itcointains=request.GET["text"])
+            if self.request.GET.get("content"):
+                qs = qs.filter(content__icontains=self.request.GET["content"])
             else:
                 qs = qs.defer("content")
         else: # Reviews by author
