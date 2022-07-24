@@ -27,7 +27,7 @@ def advanced_search(request):
         form = Advanced_Search_Form(initial={"details":[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE, DETAIL_UPLOADED]})
 
     data["form"] = form
-    return render(request, "museum_site/advanced-search.html", data)
+    return render(request, "museum_site/generic-form-display.html", data)
 
 def article_search(request):
     """ Returns page containing multiple filters to use when searching """
@@ -36,9 +36,9 @@ def article_search(request):
     }
 
     if request.GET:
-        form = ArticleSearchForm(request.GET)
+        form = Article_Search_Form(request.GET)
     else:
-        form = ArticleSearchForm()
+        form = Article_Search_Form()
 
     if request.session.get("DEBUG"):
         form.fields["sort"].choices += [
@@ -48,4 +48,4 @@ def article_search(request):
 
     data["form"] = form
 
-    return render(request, "museum_site/article_search.html", data)
+    return render(request, "museum_site/generic-form-display.html", data)

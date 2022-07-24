@@ -7,6 +7,7 @@ import zipfile
 from datetime import datetime
 
 from django import forms
+from django.urls import reverse_lazy
 from museum_site.core import *
 from museum_site.models import *
 from museum_site.fields import *
@@ -20,6 +21,8 @@ from museum_site.private import IA_ACCESS, IA_SECRET
 
 
 from internetarchive import upload
+
+STUB_CHOICES = (("A", "First"), ("B", "Second"), ("C", "Third"))  # For debugging
 
 
 class ZGameForm(forms.ModelForm):
@@ -299,6 +302,9 @@ class DownloadForm(forms.ModelForm):
 
 class Advanced_Search_Form(forms.Form):
     use_required_attribute = False
+    heading = "Advanced Search"
+    attrs = {"method": "GET"}
+    submit_value = "Search Files"
     manual_fields = ["board", "rating", "associated"]
 
     title = forms.CharField(label="Title contains", required=False)
@@ -394,9 +400,15 @@ class Advanced_Search_Form(forms.Form):
         return []
 
 
-class ArticleSearchForm(forms.Form):
+class Article_Search_Form(forms.Form):
     use_required_attribute = False
     required = False
+    heading = "Article Search"
+    attrs = {
+        "method": "GET",
+        "action": reverse_lazy("article_directory"),
+    }
+    submit_value = "Search Articles"
 
     YEARS = (
         [("Any", "- ANY - ")] +
@@ -421,9 +433,9 @@ class ArticleSearchForm(forms.Form):
         ("date", "Oldest"),
     )
 
-    title = forms.CharField(label="Title contains")
-    author = forms.CharField(label="Author contains")
-    text = forms.CharField(label="Text contains")
+    title = forms.CharField(label="Title contains", required=False)
+    author = forms.CharField(label="Author contains", required=False)
+    text = forms.CharField(label="Text contains", required=False)
     year = forms.ChoiceField(label="Publication year", choices=YEARS)
     category = forms.MultipleChoiceField(
         required=False, widget=forms.CheckboxSelectMultiple, choices=CATEGORIES
@@ -665,6 +677,13 @@ class Review_Search_Form(forms.ModelForm):
         (5.0, "5.0"),
     )
 
+    heading = "Review Search"
+    attrs = {
+        "method": "GET",
+        "action": reverse_lazy("review_directory")
+    }
+    submit_value = "Search Reviews"
+
     # Fields
     use_required_attribute = False
     review_date = forms.ChoiceField(
@@ -837,3 +856,27 @@ class Debug_Form(forms.Form):
                 joined = ",".join(raw) + ","
                 if len(joined) > 1:
                     self.fields[field].widget.manual_data["tags_as_string"] = joined
+
+
+class Zeta_Advanced_Form(forms.Form):
+    use_required_attribute = False
+    zeta_config = forms.ChoiceField(choices=(("A", "A"), ("B", "B"), ("C", "C")))
+    zeta_disable_params = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        choices=STUB_CHOICES
+    )
+    executable = forms.ChoiceField(choices=(("A", "A"), ("B", "B"), ("C", "C")))
+    blink_duration = forms.IntegerField()
+    charset_override = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        choices=STUB_CHOICES
+    )
+    buffer_size = forms.IntegerField()
+    sample_rate = forms.IntegerField()
+    note_delay = forms.IntegerField()
+    volume = forms.IntegerField()
+    included_zfiles = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        choices=STUB_CHOICES
+    )
+    show_again = forms.BooleanField()

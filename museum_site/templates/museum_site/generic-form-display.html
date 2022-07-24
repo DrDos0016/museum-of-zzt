@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<section id="content" class="block">
+<section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 <h1>{{form.heading}}</h1>
 
 <form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>

@@ -53,7 +53,7 @@ class Review_Directory_View(Directory_View):
 class Review_Search_Form_View(FormView):
     model = Review
     form_class = Review_Search_Form
-    template_name = "museum_site/review-search.html"
+    template_name = "museum_site/generic-form-display.html"
     title = "Review Search"
 
     def get_context_data(self, **kwargs):
