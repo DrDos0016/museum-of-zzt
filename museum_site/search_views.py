@@ -24,7 +24,7 @@ def advanced_search(request):
         if request.GET.get("action") != "edit" and form.is_valid():
             return redirect_with_querystring("search", request.GET.urlencode())
     else:
-        form = Advanced_Search_Form(initial={"detail":[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE, DETAIL_UPLOADED]})
+        form = Advanced_Search_Form(initial={"details":[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE, DETAIL_UPLOADED]})
 
     data["form"] = form
     return render(request, "museum_site/advanced-search.html", data)

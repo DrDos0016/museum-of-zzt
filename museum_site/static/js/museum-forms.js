@@ -111,7 +111,7 @@ $(document).ready(function (){
     // Convert text to tags if needed
     $(".tag-input").trigger("input");
     // Update list of checked boxes
-    write_selected("detail");
+    write_selected("details");
     write_selected("nonfilterable");
 });
 
@@ -159,6 +159,7 @@ function apply_filter(e)
 
 function write_selected(name)
 {
+    console.log("Writing selected", name);
     // Write out a list of all ticked inputs with a given name
     var output = "";
 
