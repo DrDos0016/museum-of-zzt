@@ -4,22 +4,10 @@
 {% block content %}
 <section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 
-<form action="{% url 'review_directory' %}">
 <h2>{{title}}</h2>
-{% for field in form %}
-<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
-    {{field.label_tag}}
-    <div class="field-value">
-        {{field|safe}}
-    </div>
-    {% if field.help_text %}
-    <p class="field-help">{{field.help_text|safe}}</p>
-    {% endif %}
-    {{field.errors}}
-</div>
-{% endfor %}
-
+<form action="{% url 'review_directory' %}">
+{% include "museum_site/blocks/generic-form.html" %}
 <input type="submit" value="Search Reviews">
-
+</form>
 </section>
 {% endblock %}
