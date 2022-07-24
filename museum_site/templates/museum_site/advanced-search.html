@@ -11,18 +11,7 @@
 <h1>Advanced Search</h1>
 
 <form>
-{% for field in form.visible_fields %}
-<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
-    {{field.label_tag}}
-    <div class="field-value">
-        {{field|safe}}
-    </div>
-    {% if field.help_text %}
-    <p class="field-help">{{field.help_text|safe}}</p>
-    {% endif %}
-    {{field.errors}}
-</div>
-{% endfor %}
+{% include "museum_site/blocks/generic-form.html" %}
 <input type="submit" value="Search">
 </form>
 

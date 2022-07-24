@@ -49,25 +49,8 @@ function update_url()
 
 <form method="POST" id="collection-form">
 {% csrf_token %}
-{% for field in form.visible_fields %}
-<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
-    {{field.label_tag}}
-    <div class="field-value">
-        {{field|safe}}
-        {% if field.id_for_label == "id_title" %}<div>Collection URL: <span id="collection-url-preview"></span></div>{% endif %}
-    </div>
-    {% if field.help_text %}
-    <p class="field-help">{{field.help_text|safe}}</p>
-    {% endif %}
-    {{field.errors}}
-</div>
-{% endfor %}
-{% for field in form.hidden_fields %}
-{{field}}
-{% endfor %}
-
+{% include "museum_site/blocks/generic-form.html" %}
 <input type="submit" value="{{action}} Collection">
-
 </form>
 </section>
 {% endblock %}
