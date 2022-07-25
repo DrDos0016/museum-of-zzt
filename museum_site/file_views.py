@@ -211,6 +211,23 @@ def file_articles(request, key):
     data["articles"] = data["file"].articles.not_removed()
     data["letter"] = data["file"].letter
 
+
+    """
+    data["base_template"] = "museum_site/world.html"
+    data["sort"] = request.GET.get("sort")
+    data["view"] = "detailed"
+    default_sort = "title"
+    qs = data["file"].articles.not_removed()
+    qs = sort_qs(qs, data["sort"], Article.sort_keys, default_sort)
+    data = get_pagination_data(request, data, qs)
+
+    if data["page"].object_list:
+        data["first_item"] = data["page"].object_list[0]
+        data["last_item"] = (
+            data["page"].object_list[len(data["page"].object_list) - 1]
+        )
+    """
+
     return render(request, "museum_site/article.html", data)
 
 

@@ -109,6 +109,13 @@ class Article(BaseModel):
         {"text": "Author", "val": "author"},
         {"text": "Category", "val": "category"},
     ]
+    sort_keys = {
+        "-date": "-publish_date",
+        "date": "publish_date",
+        "title": "title",
+        "author": "author",
+        "category": "category",
+    }
 
     SCHEMAS = (
         ("text", "Plaintext"),
