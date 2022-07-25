@@ -12,8 +12,6 @@
 {% endblock %}
 
 {% block content %}
-<section id="content" class="col block">
-
 <h1><a href="{% url 'comic_index' %}">ZZTer Comics</a> - {{comic.get_comic_account_display}} - Transcript Search</h1>
 
 <form>
@@ -55,5 +53,4 @@
 No results found!
 {% endif %}
 {% endif %}
-</section>
 {% endblock %}
