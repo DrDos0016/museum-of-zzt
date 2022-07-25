@@ -185,3 +185,11 @@ class Collection_Entry(models.Model):
 
     def __str__(self):
         return "Collection Entry #{} - [{}]".format(self.pk, self.zfile.title)
+
+    def detailed_block_context(self, request=None):
+        if self.zfile is not None:
+            context = self.zfile.detailed_collection_block_context(collection_description=self.collection_description)
+        else:
+            context = {}
+
+        return context

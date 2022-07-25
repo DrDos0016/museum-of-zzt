@@ -8,7 +8,7 @@
 <!--generic-directory.html-->
 <h{{header_idx|default:"1"}}>{{title}}</h{{header_idx|default:"1"}}>
 {% if not hide_expand_button %}<button id="expand-contract" class="fr">→ ←</button>{% endif %}
-{% if heading_model %}{% gblock heading_model "detailed" %}{% endif %}
+{% if heading_model %}{% gblock heading_model "detailed" request=request %}{% endif %}
 
 {% if prefix_template %}{% include prefix_template %}{% elif prefix_text %}{{prefix_text|safe|linebreaks}}{% endif %}
 

@@ -7,6 +7,8 @@ from django.template.defaultfilters import slugify
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 
+from markdown_deux.templatetags import markdown_deux_tags
+
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.forms import Collection_Content_Form
@@ -45,7 +47,7 @@ class Collection_Directory_View(Directory_View):
 
 class Collection_Detail_View(DetailView):
     model = Collection
-    template_name = "museum_site/collection-view.html"
+    template_name = "museum_site/generic-directory.html"
     error_template_name = "museum_site/collection-invalid-permissions.html"
 
     def get_context_data(self, **kwargs):
@@ -64,6 +66,9 @@ class Collection_Detail_View(DetailView):
             context["selected_sort"] = context["collection"].default_sort
 
         context["page"] = entries
+        context["title"] = context["collection"].title
+        context["heading_model"] = context["collection"]
+        context["prefix_text"] = markdown_deux_tags.markdown_filter(context["collection"].description) + "\n<h2>{}</h2>".format("Collection Contents ({} files)".format(len(entries)))
         return context
 
     def render_to_response(self, context, **kwargs):
