@@ -91,26 +91,35 @@ def debug_article(request, fname=""):
 
     fname = request.GET.get("file", fname)
 
-    if not fname or fname == "<str:fname>":  # Blank/test values
-        return redirect("index")
+    try:
+        pk = int(fname)
+    except ValueError:
+        pk = 0
 
-    filepath = os.path.join(SITE_ROOT, "wip", fname)
-    if not os.path.isfile(filepath):
-        filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")
+    if pk:  # Debug existing article
+        article = Article.objects.get(pk=pk)
+    else:  # Debug WIP article
+        if not fname or fname == "<str:fname>":  # Blank/test values
+            return redirect("index")
 
-    with open(filepath) as fh:
-        article = Article.objects.get(pk=2)
-        article.title = filepath
-        article.category = "TEST"
-        article.static_directory = "wip-" + fname[:-5]
-        article.content = fh.read().replace(
-            "<!--Page-->", "<hr><b>PAGE BREAK</b><hr>"
-        )
-        article.schema = request.GET.get("format", "django")
+        filepath = os.path.join(SITE_ROOT, "wip", fname)
+        if not os.path.isfile(filepath):
+            filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")
+
+        with open(filepath) as fh:
+            article = Article.objects.get(pk=2)
+            article.title = filepath
+            article.category = "TEST"
+            article.static_directory = "wip-" + fname[:-5]
+            article.content = fh.read().replace(
+                "<!--Page-->", "<hr><b>PAGE BREAK</b><hr>"
+            )
+            article.schema = request.GET.get("format", "django")
+        data["file_path"] = filepath
+
     data["article"] = article
     data["veryspecial"] = True
-    data["file_path"] = filepath
-    return render(request, "museum_site/article_view.html", data)
+    return render(request, "museum_site/tools/article-wip.html", data)
 
 
 def debug_colors(request):

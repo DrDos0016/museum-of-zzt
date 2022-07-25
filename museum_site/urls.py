@@ -87,7 +87,7 @@ urlpatterns = [
     path("ajax/debug_file/", museum_site.ajax.debug_file),
     path("debug/", museum_site.debug_views.debug),
     path("debug/<str:filename>.html", museum_site.debug_views.debug),
-    path("debug/article/<str:fname>/", museum_site.debug_views.debug_article),
+    path("debug/article/<str:fname>/", museum_site.debug_views.debug_article, name="debug_article"),
     path("debug/article/", museum_site.debug_views.debug_article),
     path("debug/colors/", museum_site.debug_views.debug_colors),
     path("debug/play/", museum_site.debug_views.debug_play),

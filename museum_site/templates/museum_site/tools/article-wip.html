@@ -1,0 +1,134 @@
+{% extends "museum_site/article_view.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block staff_style %}
+{% if request.GET.spellcheck %}
+<style>
+.zzt-img, .zzt-scroll, .patreon-plug, .zzt-txt-message, audio, video, .overview-block,
+.overview-links, .image-set, article img, code { display:none; }
+
+</style>
+{% endif %}
+<style>
+body
+{
+    margin-top:45px;
+}
+#crop-controls
+{
+    position:fixed;
+    top:0;
+    background:#0AA;
+    width:100%;
+    height:32px;
+    font-size:21px;
+    margin-left:-8px;
+    padding-top:4px;
+    padding-bottom:4px;
+    border-bottom:2px solid #000;
+}
+
+#crop-controls input
+{
+    width:4em;
+    font-family:monospace;
+    text-align:center;
+}
+
+#active
+{
+    width:10em;
+    display:inline-block;
+}
+
+#crop-controls #crop-output
+{
+    width:16em;
+    text-align:left;
+}
+
+.zzt-img.zzt-CROP
+{
+    border:8px solid red;
+}
+
+.side-commentary.TODO .commentary {% comment %}Expected TODO usage.{% endcomment %}
+{
+    background:#FF8888;
+}
+
+.editing
+{
+    cursor:crosshair;
+}
+
+.red
+{
+    background:red;
+}
+
+#tweet-controls
+{
+    display:grid;
+    grid-template-areas:
+    "text screens"
+    "files nil";
+    grid-template-columns:409px auto;
+    grid-gap:7px 4px;
+}
+
+#tweet-files
+{
+    grid-area: files;
+}
+
+#tweet-text {
+    height:350px;
+    grid-area: text;
+}
+
+#tweet-screens
+{
+    grid-area: screens;
+    display:flex;
+    flex-wrap:wrap;
+    grid-gap:8px;
+}
+
+.tweet-image
+{
+    width:240px;
+    height:175px;
+}
+
+#tweet-copy-text
+{
+    flex:1 0 250px;
+}
+</style>
+{% endblock %}
+
+{% block staff_scripts %}
+<script src="/static/js/debug-crop.js"></script>
+{% if request.GET.finalize %}<script src="/static/js/debug-finalize.js"></script>{% endif %}
+{% if request.GET.tweet %}<script src="/static/js/debug-pub-pack-tweet-mode.js"></script>{% endif %}
+{% endblock staff_scripts %}
+
+{% block wip_links %}
+<div><a href="/admin/museum_site/article/{{article.id}}/change/">Edit Article {{article.id}}</a></div>
+<div><a href="?spellcheck=1&page=all">Spellcheck Article</a></div>
+<div><a href="?finalize=1#finalization">Finalize Article</a></div>
+<div><a href="?tweet=1">Tweet Mode (for Publication Packs)</a></div>
+{% endblock wip_links %}
+
+{% block wip_finalize %}
+{% if request.GET.finalize %}
+<h2 id="finalization">Finalization</h2>
+
+<h3>Link Audit</h3>
+<table id="link-table">
+    <tr><th>Text</th><th>Target</th><th>Path</th></tr>
+</table>
+{% endif %}
+{% endblock wip_finalize %}
