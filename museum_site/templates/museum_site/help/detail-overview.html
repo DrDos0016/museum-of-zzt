@@ -19,7 +19,6 @@ article .detail a
 {% endblock style %}
 
 {% block content %}
-<section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 <h1>File Details</h1>
 
 <article>
@@ -46,5 +45,4 @@ article .detail a
 {% endfor %}
 
 </article>
-</section>
 {% endblock %}

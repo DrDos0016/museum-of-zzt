@@ -19,7 +19,6 @@ article .genre a
 {% endblock style %}
 
 {% block content %}
-<section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 <h1>Genre Overview</h1>
 
 <article>
@@ -38,5 +37,4 @@ article .genre a
 {% endfor %}
 
 </article>
-</section>
 {% endblock %}

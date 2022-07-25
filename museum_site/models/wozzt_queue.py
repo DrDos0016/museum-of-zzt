@@ -362,7 +362,7 @@ class WoZZT_Queue(BaseModel):
         )
 
         context["columns"].append([
-            {"datum": "text-area", "label":"Tweet", "value":self.tweet_text(), "readonly":True},
+            {"datum": "text-area", "label":"Tweet", "name": "wozzt-tweet", "value":self.tweet_text(), "readonly":True},
             {"datum": "link", "label":"Source", "value":"View", "url":self.file.url() + "?file={}&board={}".format(
                     self.zzt_file, self.board
                 ), "target": "_blank" }

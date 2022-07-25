@@ -1,7 +1,6 @@
 {% extends "museum_site/main.html" %}
 
 {% block content %}
-<section id="content" class="block">
 <h1>Forgot Username</h1>
 
 <p>Your request has been received. If the provided email has an associated account, an email will be sent to <b>{{request.POST.email}}</b> containing your username.</p>
@@ -9,5 +8,4 @@
 <p>If no message is received, check your spam folder and wait a few minutes before trying again. If the issue persists, <a href="mailto:{{EMAIL_ADDRESS}}">contact Dr. Dos</a>.
 
 <p><a href="{% url 'login_user' %}">Return to Login page</a></p>
-</section>
 {% endblock %}

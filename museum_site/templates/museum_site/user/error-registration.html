@@ -1,7 +1,6 @@
 {% extends "museum_site/main.html" %}
 
 {% block content %}
-<section id="content" class="block">
 <h1>Login Error</h1>
 
 <p>Too many failed registration attempts!</p>
@@ -10,5 +9,4 @@
 
 <p><b>Server Time:</b> {{now|date:"Y-m-d H:i:s"}}</p>
 <p><b>Unlock Time:</b> {{request.session.reg_expiration|slice:":19"}}</p>
-</section>
 {% endblock %}

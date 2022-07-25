@@ -16,7 +16,6 @@
 {% endblock %}
 
 {% block content %}
-<section id="content" class="block">
 <a href="?show=all">ALL</a> - <a href="?show=wozzt">WoZZT</a> - <a href="?show=reviews">Reviews</a> - <a href="?show=zfiles">ZFiles</a> - <a href="?show=articles">Articles</a> - <a href="?show=series">Series</a> - <a href="?show=test">TEST</a>
 {% include "museum_site/blocks/paginator_block.html" %}
 
@@ -57,6 +56,4 @@
 
 {% if request.GET.show == "test" or request.GET.show == "all" %}
 {% endif %}
-
-</section>
 {% endblock %}

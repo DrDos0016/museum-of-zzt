@@ -1,7 +1,6 @@
 {% extends "museum_site/main.html" %}
 
 {% block content %}
-<section id="content" class="block">
 {% if request.POST.action != "register" %}
     <h1>Account Login</h1>
     {% if errors.etc %}<p style="font-weight:bold">{{errors.etc}}</p>{% endif %}
@@ -128,6 +127,4 @@
 {% else %}
 <p>Account registration is temporarily closed.</p>
 {% endif %}
-
-</section>
 {% endblock %}

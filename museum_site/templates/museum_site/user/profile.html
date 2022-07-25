@@ -50,7 +50,6 @@ function iso8601_to_user_tz(selector)
 {% endblock %}
 
 {% block content %}
-<section id="content" class="block">
 {% if user_obj and not guest %}
 <h1>Profile for {{user_obj.username}}</h1>
 {% if request.session.DEBUG %}<a href="/admin/auth/user/{{user_obj.id}}/change/" class="debug">Edit User</a>
@@ -259,5 +258,4 @@ function iso8601_to_user_tz(selector)
     <li><a href="{% url 'logout_user' %}">Log out</a></li>
 </ul>
 {% endif %}
-</section>
 {% endblock %}

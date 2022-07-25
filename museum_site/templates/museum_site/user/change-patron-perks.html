@@ -10,7 +10,6 @@
 {% endblock %}
 
 {% block content %}
-<section id="content" class="block">
 <h1>{{title}}</h1>
 
 <p>{% if changed %}<b>Your {{label}} have been updated successfully!</b>{% else %}<br>{% endif %}</p>
@@ -36,5 +35,4 @@
     <button type="submit" id="submit-change-perk-button" class="full-width-submit">Change {{label}}</button>
 </div>
 </form>
-</section>
 {% endblock %}

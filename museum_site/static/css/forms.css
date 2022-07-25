@@ -431,3 +431,10 @@ textarea[name=wozzt-tweet]
 {
     height:150px;
 }
+
+input[name=rss-url]
+{
+    margin:auto;
+    display:block;
+    width:90%;
+}

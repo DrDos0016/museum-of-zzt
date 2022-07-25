@@ -152,3 +152,14 @@ def debug_widgets(request):
         context["form"] = Debug_Form()
 
     return render(request, "museum_site/debug/debug-widget.html", context)
+
+
+def debug_play(request):
+    context = {}
+
+    if request.GET:
+        context["form"] = Zeta_Advanced_Form(request.GET)
+    else:
+        context["form"] = Zeta_Advanced_Form()
+
+    return render(request, "museum_site/debug/debug-play.html", context)
