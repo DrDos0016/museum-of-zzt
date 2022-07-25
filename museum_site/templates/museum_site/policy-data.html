@@ -1,16 +1,7 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
 
-{% block style %}
-<style>
-    #lanky-kong
-    {
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<section id="content" class="block">
 <h1>Data Integrity</h1>
 
 <p>The Museum of ZZT catalogs a large amount of data on its files. In some cases it may be useful to know how that data is obtained and where potential inaccuracies may be found.</p>
@@ -102,5 +93,4 @@
         <td>The total number of boards in all .ZZT files within a Zip file. This number will include blank boards, toolkits, and other boards which are functionless to gameplay.</td>
     </tr>
 </table>
-</section>
 {% endblock %}

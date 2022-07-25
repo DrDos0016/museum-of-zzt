@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-<section id="content" class="col block">
 <h1>Add New Series</h1>
 
 {% if not success %}
@@ -14,5 +13,4 @@
 {% else %}
 <p>Successfully created series <a href="{{series.url}}" target="_blank">{{series.title}}</a>.</p>
 {% endif %}
-</section>
 {% endblock %}

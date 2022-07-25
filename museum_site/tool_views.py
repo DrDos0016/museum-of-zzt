@@ -275,8 +275,8 @@ def log_viewer(request):
 
 @staff_member_required
 def manage_details(request, key):
-    """ Returns page with latest Museum scan results"""
-    data = {"title": "Replace Zip"}
+    """ Returns page with list of all possible Details for manual adjustment"""
+    data = {"title": "Manage Details"}
     data["file"] = File.objects.get(key=key)
 
     with ZipFile(data["file"].phys_path(), "r") as zf:

@@ -29,8 +29,6 @@ $(document).ready(function (){
 {% endblock %}
 
 {% block content %}
-<section id="content" class="block">
-
 <h1>RSS Feeds</h1>
 
 <table id="rss-table">
@@ -60,5 +58,4 @@ $(document).ready(function (){
     <td class="c"><a href="{% url 'rss_uploads' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Icon"></a></td>
 </tr>
 </table>
-</section>
 {% endblock %}

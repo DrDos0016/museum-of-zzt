@@ -30,7 +30,6 @@ function update_url()
 {% endblock %}
 
 {% block content %}
-<section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 <h1>{{title}}</h1>
 
 {% if action == "Create" %}
@@ -69,5 +68,4 @@ function update_url()
 <input type="submit" value="{{action}} Collection">
 
 </form>
-</section>
 {% endblock %}

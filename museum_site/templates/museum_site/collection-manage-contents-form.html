@@ -23,7 +23,6 @@ var collection_id = {{collection.id|default:0}};
 {% endblock %}
 
 {% block content %}
-<section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 <h1>{{title}}</h1>
 
 <div><h2 id="current-action-heading">{{action.text}}</h2>{% for action in collection_actions %}<a href="{{action.url}}">{{action.text}}</a>{% if not forloop.last %} | {% endif %}{% endfor %}</div>
@@ -145,5 +144,4 @@ var collection_id = {{collection.id|default:0}};
 {% gblock entry.zfile view="detailed-collection" collection_description=entry.collection_description %}
 {% endfor %}
 </div>
-</section>
 {% endblock %}

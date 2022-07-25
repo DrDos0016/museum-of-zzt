@@ -1,4 +1,4 @@
-{% extends "museum_site/world.html" %}
+{% extends "museum_site/main.html" %}
 {% load static %}
 
 {% block style %}
@@ -26,7 +26,7 @@
 </style>
 {% endblock %}
 
-{% block world_content %}
+{% block content %}
 <form method="POST" enctype="multipart/form-data" id="replace-zip-form">
     {% csrf_token %}
     <input type="hidden" name="action" value="replace-zip">

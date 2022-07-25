@@ -30,7 +30,7 @@
 {% block style %}{% endblock %}
 </head>
 
-<body class="grid-root" id="top">
+<body class="grid-root{% if april %} april {% endif %}" id="top">
 <nav id="low-res-shortcuts" class="cp437">
     <a href="#top-links" class="nohover">▼ Navigation ▼</a>
 </nav>
@@ -64,6 +64,7 @@
         </div>
         <div class="world-special">
             <a href="{% url 'browse' %}">All Files</a>
+            <a href="{% url 'browse_collections' %}">Collections</a>
             <a href="{% url 'mass_downloads' %}">Mass Downloads</a>
             <a href="{% url 'new_finds' %}">New Finds</a>
             <a href="{% url 'new_releases' %}">New Releases</a>
@@ -102,10 +103,42 @@
     </div>
 </section>
 
+<main id="content" class="block{% for class in content_classes %} {{class}}{% endfor %}" data-url-name="{{request.resolver_match.url_name|default:'null_url_name'}}">
+{% block zfile_header %}
+{% if file %}
+    <button class="fr contracted" id="expand-contract" title="Toggle sidebars">&larr; &rarr;</button>
+    {% if file and not local%}
+    <div class="file-header">
+        {% include "museum_site/datum/title-datum.html" with f=file.title_datum_context %}
+        {% if multifile %}
+        <select id="alt-file-listing" name="associated_file">
+            <option value="{{file.filename}}">+{{zgames|length|add:"-1"}} Other associated file{% if zgames|length > 2 %}s{% endif %}</option>
+            {% for zgame in zgames %}
+                {% if zgame.id != file.id %}<option value="{{zgame.filename}}">{{zgame.title}}</option>{% endif %}
+            {% endfor %}
+        </select>{% endif %}
+    </div>
+    <div class="file-links">
+        {% zfile_links zfile=file debug=request.session.DEBUG %}
+    </div>
+    <div class="file-data">
+        <div class="author-data">Author<br>{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a|urlencode}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+        <div class="release-data">Released<br><a href="{% url 'search' %}?year={{file.release_date.year|default:'Unk'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
+        <div class="genre-data">Genre<br> {% for g in file.genres.all %}<a href="{% url 'search' %}?genre={{g}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+        <div class="company-data">Company<br>{% for c in file.company_list %}<a href="{% url 'search'%}?company={{c|urlencode}}">{{c}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+        <div class="size-data">Size<br>{{file.size|filesizeformat}}</div>
+        {% if file.total_boards %}<div class="board-data">Boards<br> <span title="Playable/Total - Values are not 100% accurate">{{file.playable_boards}} / {{file.total_boards}}</span></div>{% endif %}
+        <div class="Dating-data">Rating<br> {%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}</div>
+    </div>
+    {% endif %}
+    {% if local %}
+    <h1>Local File Viewer - <input type="file" id="local-file-path"> <button id="local-load">Load File</button></h1>
+    {% endif %}
+{% endif %}
+{% endblock zfile_header %}
 {% block content %}
-<main id="content">
-</main>
 {% endblock %}
+</main>
 
 <section id="sidebar-right" class="sidebar">
     <nav id="top-links" class="cp437">
@@ -233,7 +266,11 @@ $("meta").each(function (){
         key = $(this).attr("property");
 
     var val = $(this).attr("content");
-    var row = `<tr><th>${key}</th><td class="l">${val}</td></tr>`;
+
+    if (key == "og:image")
+        var row = `<tr><th>${key}</th><td class="l">${val}</td><td rowspan="9"><img src="${val}"></td></tr>`;
+    else
+        var row = `<tr><th>${key}</th><td class="l">${val}</td></tr>`;
     $("#meta-tags").html($("#meta-tags").html() + row);
 });
 </script>
@@ -243,5 +280,6 @@ $("meta").each(function (){
 <datalist id="search-suggestions">
 </datalist>
 
+{% if april %}{% include "museum_site/april.html" %}{% endif %}
 </body>
 </html>

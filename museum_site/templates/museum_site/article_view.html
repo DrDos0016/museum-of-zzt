@@ -1,4 +1,4 @@
-{% extends "museum_site/world.html" %}
+{% extends "museum_site/main.html" %}
 {% load static %}
 {% load site_tags %}
 
@@ -162,7 +162,7 @@ $(document).ready(function (){
 {% endif %}
 {% endblock %}
 
-{% block world_content %}
+{% block content %}
 <div id="article-meta">
     <h1>{{article.title}}</h1>
     <div class="info">

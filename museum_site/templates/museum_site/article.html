@@ -1,13 +1,10 @@
-{% extends "museum_site/world.html" %}
+{% extends "museum_site/main.html" %}
 {% load static %}
 {% load site_tags %}
 
 {% block meta %}{% meta_tags path=request.get_full_path file=file %}{% endblock %}
 
-{% block scripts %}
-{% endblock %}
-
-{% block world_content %}
+{% block content %}
 <h2>Articles</h2>
 
 {% generic_block_loop items=articles view="detailed" request=request %}

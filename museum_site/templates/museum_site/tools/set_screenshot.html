@@ -1,4 +1,4 @@
-{% extends "museum_site/world.html" %}
+{% extends "museum_site/main.html" %}
 {% load static %}
 
 {% block style %}
@@ -54,7 +54,7 @@
 </style>
 {% endblock %}
 
-{% block world_content %}
+{% block content %}
 <br>
 <form method="POST" enctype="multipart/form-data">
 {% csrf_token %}

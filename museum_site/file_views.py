@@ -234,7 +234,7 @@ def file_articles(request, key):
 def file_viewer(request, key, local=False):
     """ Returns page exploring a file's zip contents """
     data = {
-        "custom_layout": "fv-grid",
+        "content_classes": ["fv-grid"],
         "details": [],
         "local": local,
         "files": [],

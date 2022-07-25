@@ -1,4 +1,4 @@
-{% extends "museum_site/world.html" %}
+{% extends "museum_site/main.html" %}
 {% load static %}
 {% load markdown_deux_tags %}
 
@@ -63,7 +63,7 @@ $(document).ready(function (){
 </script>
 {% endblock %}
 
-{% block world_content %}
+{% block content %}
 {% if reviews %}
 <div class="view-links">
     <div><a href="#new-review">New Review</a></div>

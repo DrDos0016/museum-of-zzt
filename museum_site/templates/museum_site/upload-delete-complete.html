@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-<section id="content" class="block">
 <h1>Upload Deleted</h1>
 
 <div class="c"><img src="{% static 'chrome/blank-board.png' %}" alt="A blank ZZT board"><br>
@@ -13,6 +12,4 @@
     <li><a href="{% url 'upload_delete' %}">Delete Another Upload</a></li>
     <li><a href="{% url 'upload_edit' %}">Edit Another Upload</a></li>
 </ul>
-
-</section>
 {% endblock %}

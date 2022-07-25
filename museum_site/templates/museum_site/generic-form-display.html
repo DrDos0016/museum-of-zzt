@@ -7,7 +7,6 @@
 {% endblock %}
 
 {% block content %}
-<section id="content" class="block {{request.resolver_match.url_name|default:'null_url_name'}}">
 <h1>{{form.heading}}</h1>
 
 {{form.text_prefix|default:""|safe}}
@@ -17,5 +16,4 @@
 {% include "museum_site/blocks/generic-form.html" %}
 <input type="submit" value="{{form.submit_value}}">
 </form>
-</section>
 {% endblock %}

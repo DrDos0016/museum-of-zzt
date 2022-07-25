@@ -1,7 +1,7 @@
-{% extends "museum_site/world.html" %}
+{% extends "museum_site/main.html" %}
 {% load static %}
 
-{% block world_content %}
+{% block content %}
 <form method="POST">
     {% csrf_token %}
     Current letter: <b>{{file.letter|title}}</b><br>

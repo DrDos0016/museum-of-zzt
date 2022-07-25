@@ -112,7 +112,6 @@ function set_csrf()
 {% endblock %}
 
 {% block content %}
-<section id="content" class="block">
 {% csrf_token %}
 <h1>Worlds of ZZT Queue{% if request.user.is_staff %} [STAFF MODE]{% endif %}</h1>
 <p>Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
@@ -135,6 +134,4 @@ function set_csrf()
 {% endif %}
 
 {% generic_block_loop items=queue %}
-
-</section>
 {% endblock %}

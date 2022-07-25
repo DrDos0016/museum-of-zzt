@@ -22,7 +22,7 @@ def zeta_launcher(
     # full - Extends "world.html", has a file header
     # popout - Extends "play-popout.html", removes all site components
     data["mode"] = request.GET.get("mode", "full")
-    data["base"] = "museum_site/world.html"
+    data["base"] = "museum_site/main.html"
 
     # Determine visible components
     data["components"] = {

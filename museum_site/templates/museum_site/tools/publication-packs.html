@@ -1,16 +1,10 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
 
-{% block style %}
-<style>
-</style>
-{% endblock %}
-
 {% block content %}
-<section id="content" class="col block">
 <h1>Publication Packs</h1>
 
-<p><b>Added associations for {{count}} files.</b></p>
+<p>{% if count %}<b>Added associations for {{count}} files.</b>{% else %}<br>{% endif %}</p>
 
 <table style="max-width:800px;margin:auto;">
 <tr>
@@ -26,5 +20,4 @@
 </tr>
 {% endfor %}
 </table>
-</section>
 {% endblock %}

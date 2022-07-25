@@ -4,8 +4,6 @@
 {% load site_tags %}
 
 {% block content %}
-<section id="content" class="block">
-
 <h1>{{title}}</h1>
 <button id="expand-contract" class="fr">→ ←</button>
 
@@ -24,5 +22,4 @@
 {% endfor %}
 
 {% include "museum_site/blocks/paginator_block.html" %}
-</section>
 {% endblock %}

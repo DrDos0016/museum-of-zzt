@@ -1,4 +1,4 @@
-{% extends "museum_site/world.html" %}
+{% extends "museum_site/main.html" %}
 {% load static %}
 
 {% block scripts %}
@@ -107,7 +107,6 @@ function parse_zip_file(file)
 {% endblock %}
 
 {% block content %}
-<section id="content" class="block">
 {% if request.method == "POST" %}
 <div class="field-wrapper">
     <label>Response</label>
