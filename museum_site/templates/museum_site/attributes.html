@@ -48,7 +48,7 @@
 
 <h2 id="heading-permissions">File Permissions</h2>
 {% with file.supported_actions as supported_actions %}
-<table>
+<table class="data-table">
 <tr><th>Can Review File</th><td>{{file.can_review|yesno|title}}</td></tr>
 <tr><th>Can Download File</th><td>{{file.actions.download|yesno|title}}</td></tr>
 <tr><th>Can Play File</th><td>{{file.actions.play|yesno|title}}</td></tr>
