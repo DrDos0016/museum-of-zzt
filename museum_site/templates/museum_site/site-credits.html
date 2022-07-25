@@ -4,26 +4,12 @@
 
 {% block style %}
 <style>
-#content ul
-{
-    list-style:none;
-}
-
-#content h2
-{
-    margin-top:14px;
-}
-
 .listing
 {
     display:flex;
     width:100%;
     flex-wrap:wrap;
     justify-content:space-around;
-}
-
-.listing
-{
     text-align:center;
 }
 
@@ -37,20 +23,7 @@
     font-size:14pt;
 }
 
-.credit .ascii-char
-{
-    font-size:28pt;
-}
-
-.credit.xl
-{
-    flex:0 0 35%;
-}
-
-.flex-break
-{
-    flex:0 0 100%;
-}
+.credit.xl { flex:0 0 35%; }
 
 .credit .icon-frame
 {
@@ -62,30 +35,7 @@
 
 }
 
-.credit .icon
-{
-    max-height:114px;
-}
-
-.smiley img
-{
-    position:relative;
-    max-width:none;
-}
-
-.smiley
-{
-    display:inline-block;
-    width:8px;
-    height:14px;
-    overflow:hidden;
-    background:#CCC;
-}
-
-.credit .stub
-{
-    visibility:hidden;
-}
+.credit .icon { max-height:114px; }
 </style>
 {% endblock %}
 
@@ -93,7 +43,7 @@
 <h1>Credits</h1>
 
 <h2>Site Development</h2>
-<ul>
+<ul class="bulletless">
     <li>Code: <a href="https://twitter.com/worldsofzzt" target="_blank">Dr. Dos</a></li>
     <li>Logo: <a href="https://twitter.com/dopterra" target="_blank">Lazymoth</a></li>
     <li>Fonts:
@@ -106,6 +56,8 @@
     <li>jszip: <a href="https://github.com/Stuk/jszip" target="_blank">Stuk</a></li>
 </ul>
 
+<hr>
+
 <h2>Articles</h2>
 <div class="directory">
 {% for row in list %}
@@ -114,12 +66,14 @@
     {% endif %}
         <div class="row">
             <a href="/article?&author={{row}}&sort=title&action=search">{{row}}</a>
-            </div>
+        </div>
     {% if forloop.counter|divisibleby:split or forloop.last %}
     </div>
     {% endif %}
 {% endfor %}
 </div>
+
+<hr>
 
 <h2>Patreon Supporters</h2>
 <div class="listing">
@@ -129,7 +83,7 @@
     {% else %}
     <div class="credit xl">
         <div class="icon-frame"><img src="{% static 'credits/'|add:s.img %}" class="icon"></div>
-        {% char s.char s.fg s.bg %} {{s.name}}
+        {% char s.char s.fg s.bg scale=3 %} {{s.name}}
     </div>
     {% endif %}
     {% endfor %}
@@ -142,50 +96,10 @@
     {% else %}
     <div class="credit">
         <div class="icon-frame"><img src="{% static 'credits/'|add:s.img %}" class="icon"></div>
-        {% char s.char s.fg s.bg %} {{s.name}}
+        {% char s.char s.fg s.bg scale=3 %} {{s.name}}
     </div>
     {% endif %}
     {% endfor %}
-
-    {% comment %}
-    <div class="credit">
-        <div class="icon-frame"><img src="{% static 'credits/AnnaCommission_icon.png' %}" class="icon"></div>
-        {% char 12 'purple' 'black' %} Anna Anthropy
-    </div>
-
-    <div class="credit large">
-        <div class="icon-frame"><img src="{% static 'credits/zzthink.png' %}" class="icon"></div>
-        {% char 3 'purple' 'transparent' %} Archenoth
-    </div>
-
-    <div class="credit">
-        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
-        {% char 165 'blue' 'black' %} Arun R.
-    </div>
-
-    <div class="credit large">
-        <div class="icon"><img src="{% static 'credits/celine_kalante.png' %}" class="icon"></div>
-        {% char 15 'purple' 'darkpurple' %} Celine Kalante
-    </div>
-
-    <div class="credit large">
-        <div class="icon-frame"><img src="{% static 'credits/geight.png' %}" class="icon"></div>
-        {% char 132 'purple' 'black' %} Geight
-    </div>
-
-    <div class="credit large">
-        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
-        {% char 237 'white' 'darkpurple' %} Josh Matthews
-    </div>
-
-    <div class="credit">
-        <div class="icon-frame"><img class="icon" style="height:100px;width:100px;visibility:hidden;"></div>
-        {% char 2 'white' 'darkyellow' %} Zinfandel Z.T.
-    </div>
-
-    <div class="credit stub"></div>
-    <div class="credit stub"></div>
-    {% endcomment %}
 
     <div class="flex-break"></div>
 
@@ -193,11 +107,11 @@
     {%if s.email == "STUB" %}
     <div class="credit stub"></div>
     {% else %}
-    <div class="credit"><div class="ascii-icon">{% char s.char s.fg s.bg %}</div> <div class="credited-name">{{s.name}}</div></div>
+    <div class="credit"><div class="ascii-icon">{% char s.char s.fg s.bg scale=3 %}</div> <div class="credited-name">{{s.name}}</div></div>
     {% endif %}
     {% endfor %}
 
     <div class="flex-break"></div>
-    <div class="credit">{% char 63 'white' 'black' %} And Many Anonymous Patrons!</div>
+    <div class="credit">{% char 63 'yellow' 'black' scale=3 %} And Many Anonymous Patrons!</div>
 </div>
 {% endblock %}

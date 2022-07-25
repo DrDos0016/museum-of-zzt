@@ -5,22 +5,6 @@
 {% block meta %}{% meta_tags path=request.get_full_path article=article %}{% endblock %}
 
 {% block style %}
-<style>
-.series-range .gallery
-{
-    max-width:15%;
-    text-align:center;
-}
-
-.series-range .gallery-frame .screenshot-thumb
-{
-    max-width:100%;
-    max-height:100px;
-}
-</style>
-{% if article.parent_id %}
-{{article.parent.css|safe}}
-{% endif %}
 {{article.css|safe}}
 {% if request.GET.spellcheck %}
 <style>

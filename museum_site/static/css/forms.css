@@ -413,3 +413,21 @@ input[type=button]:hover
     text-align:center;
     font-weight:normal;
 }
+
+.controls
+{
+    border:1px solid #000;
+    padding:0.5em;
+}
+
+/* Specific Fields */
+input[name=count], input[name=priority]
+{
+    width:4ch;
+    text-align:center;
+}
+
+textarea[name=wozzt-tweet]
+{
+    height:150px;
+}

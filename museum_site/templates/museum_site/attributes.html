@@ -2,47 +2,11 @@
 {% load static %}
 {% load site_tags %}
 
-{% block style %}
-<style>
-.dataTable
-{
-    font-family:monospace;
-    font-size:12pt;
-}
-
-#tool-info td
-{
-    padding:0.25em;
-}
-
-#tool-info td.True { background-color:#0F0; text-align:center; }
-#tool-info td.False { background-color:#F00; text-align:center; }
-
-#upload-notes
-{
-    height:16ch;
-    width:60ch;
-    font-size:smaller;
-}
-
-#content h2
-{
-    margin-top:7px;
-}
-
-.dataTable textarea
-{
-    min-width:90%;
-    min-height:5em;
-}
-</style>
-{% endblock %}
-
 {% block content %}
 {% gblock file %}
 
 <h2 id="heading-attr">File Attributes</h2>
-<table class="dataTable">
+<table class="data-table">
 <tr><th>Aliases</th><td><a href="#heading-aliases">{{file.aliases.count}}</a></td></tr>
 <tr><th>Articles</th><td><a href="#heading-articles">{{file.article_count}}</a></td></tr>
 <tr><th>Author</th><td>{{file.author}}</td></tr>
@@ -96,7 +60,7 @@
 
 {% if upload_info %}
 <h2 id="heading-upload">File Upload Info</h2>
-<table class="dataTable" id="tool-info">
+<table class="data-table" id="tool-info">
     <tr>
         <th>Upload ID</th>
         <td>{{upload_info.id}}</a></td>
@@ -109,11 +73,18 @@
         <th>Date</th>
         <td>{{upload_info.date}}</td>
     </tr>
+    {% if request.user.is_staff %}
+    <tr><th colspan="2" style="background:red">Staff Only Information</th></tr>
+    <tr><th>Edit Token</th><td>{{upload_info.edit_token}}</td></tr>
+    <tr><th>IP</th><td>{{upload_info.ip}}</td></tr>
+    <tr><th>Notes</th><td><textarea class="upload-notes">{{upload_info.notes}}</textarea></td></tr>
+    <tr><th>Announced on Discord</th><td>{{upload_info.announced|yesno|title}}</td></tr>
+    {% endif %}
 </table>
 {% endif %}
 
 <h2 id="heading-aliases">File Aliases</h2>
-<ul class="dataTable">
+<ul class="data-table">
 {% for a in file.aliases.all %}
     <li>{{a.alias}}</li>
 {% empty %}
@@ -122,7 +93,7 @@
 </ul>
 
 <h2 id="heading-articles">File Articles</h2>
-<ul class="dataTable">
+<ul class="data-table">
 {% for a in file.articles.not_removed %}
     <li><a href="{{a.url}}">{{a.title}}</a></li>
 {% empty %}
@@ -131,7 +102,7 @@
 </ul>
 
 <h2 id="heading-contents">File Contents</h2>
-<table class="dataTable" id="contents-info">
+<table class="data-table" id="contents-info">
     <tr><th>Filename</th><th>Path</th><th>Ext.</th><th>Mod. Date</th><th>Dir</th><th>CRC-32</th><th>Size</th></tr>
     {% for f in file.content.all %}
     <tr><td><a href="{{file.url}}?file={{f.title|urlencode}}" target="_blank">{{f.title}}</a></td><td>{{f.path}}</td><td>{{f.ext}}</td><td>{{f.mod_date}}</td><td class="c">{{f.directory|yesno:"Y,N"}}</td><td class="r">{{f.crc32}}</td><td class="r" title="{{f.size}} bytes">{{f.size|filesizeformat}}</td></tr>
@@ -141,14 +112,14 @@
 </table>
 
 <h2 id="heading-details">File Details</h2>
-<ul class="dataTable">
+<ul class="data-table">
 {% for d in file.details.all %}
 <li>{{d.title}}</li>
 {% endfor %}
 </ul>
 
 <h2 id="heading-downloads">File Downloads</h2>
-<ul class="dataTable">
+<ul class="data-table">
 {% for d in file.downloads.all %}
     <li><a href="{{d.url}}" target="_blank">{{d.kind}}</a></li>
 {% empty %}
@@ -157,7 +128,7 @@
 </ul>
 
 <h2 id="heading-reviews">File Reviews</h2>
-<ul class="dataTable">
+<ul class="data-table">
 {% for r in reviews %}
     <li><a href="{{file.review_url}}/#rev-{{r.pk}}">{{r.title}}</a></li>
 {% empty %}

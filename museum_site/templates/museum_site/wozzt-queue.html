@@ -4,18 +4,6 @@
 
 {% block style %}
 <style>
-input[name=count], input[name=priority]
-{
-    width:4ch;
-    text-align:center;
-}
-
-.controls
-{
-    border:1px solid #000;
-    padding:0.5em;
-}
-
 .tuesday-skip
 {
     font-size:xx-large;
@@ -24,16 +12,6 @@ input[name=count], input[name=priority]
     background:#619F9F;
     margin:0.5em;
     border:4px dashed #000;
-}
-
-#queue-end
-{
-    font-weight:bold;
-}
-
-.model-block .data .datum .value textarea
-{
-    height:150px;
 }
 </style>
 {% endblock %}
@@ -117,7 +95,7 @@ function set_csrf()
 <p>Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
 <a href="?category=wozzt">Worlds of ZZT</a> | <a href="?category=tuesday">Title Screen Tuesday</a> | <a href="?category=discord">Discord Queue</a> | <a href="?category=failed">Failed Tweets</a></p>
 <p>Times are displayed in your local time zone.</p>
-<p>There are currently <b>{{queue_size}}</b> entries in the queue. The queue will be exhausted on <span id="queue-end">-</span>.</p>
+<p>There are currently <b>{{queue_size}}</b> entries in the queue. The queue will be exhausted on <span id="queue-end" class="b">-</span>.</p>
 
 {% if request.user.is_staff %}
 <form method="POST" class="controls">
