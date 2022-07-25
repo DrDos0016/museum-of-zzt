@@ -212,10 +212,10 @@ def file_articles(request, key):
     data["letter"] = data["file"].letter
 
 
-    """
-    data["base_template"] = "museum_site/world.html"
+    data["header_idx"] = 2
     data["sort"] = request.GET.get("sort")
     data["view"] = "detailed"
+    data["hide_expand_button"] = True
     default_sort = "title"
     qs = data["file"].articles.not_removed()
     qs = sort_qs(qs, data["sort"], Article.sort_keys, default_sort)
@@ -226,9 +226,8 @@ def file_articles(request, key):
         data["last_item"] = (
             data["page"].object_list[len(data["page"].object_list) - 1]
         )
-    """
 
-    return render(request, "museum_site/article.html", data)
+    return render(request, "museum_site/generic-directory.html", data)
 
 
 def file_viewer(request, key, local=False):

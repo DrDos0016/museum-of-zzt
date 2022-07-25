@@ -2,11 +2,13 @@
 {% load static %}
 {% load site_tags %}
 
+{% if file %}{% block meta %}{% meta_tags path=request.get_full_path file=file %}{% endblock %}{% endif %}
+
 {% block content %}
 <!--generic-directory.html-->
 
-<h1>{{title}}</h1>
-<button id="expand-contract" class="fr">→ ←</button>
+<h{{header_idx|default:"1"}}>{{title}}</h{{header_idx|default:"1"}}>
+{% if not hide_expand_button %}<button id="expand-contract" class="fr">→ ←</button>{% endif %}
 
 {% if prefix_template %}{% include prefix_template %}{% elif prefix_text %}{{prefix_text|safe|linebreaks}}{% endif %}
 
