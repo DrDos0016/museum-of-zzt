@@ -25,7 +25,7 @@ class Series_Directory_View(Directory_View):
 
 class Series_Overview_View(Directory_View):
     model = Series
-    template_name = "museum_site/series-view.html"
+    template_name = "museum_site/generic-directory.html"
     paginate_by = NO_PAGINATION
 
     def get_queryset(self):
@@ -37,4 +37,9 @@ class Series_Overview_View(Directory_View):
         context = super().get_context_data(**kwargs)
         context["title"] = "Series Overview - {}".format(self.series.title)
         context["series"] = self.series
+        context["heading_model"] = self.series
+        context["header_idx"] = 1
+        context["prefix_text"] = "<h2>Articles in Series</h2>"
+        context["available_views"] = ["detailed"]
+        context["sort_options"] = None
         return context
