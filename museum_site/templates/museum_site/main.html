@@ -76,7 +76,7 @@
         </div>
         <form method="GET" action="{% url 'search' %}">
         <div id="search-form">
-            <input name="q" value="{{q}}" list="search-suggestions" autocomplete="off" placeholder="Title/Author/Genre/Filename"><div class="low-res-break"></div>
+            <input name="q" value="{{request.GET.q|default:''}}" list="search-suggestions" autocomplete="off" placeholder="Title/Author/Genre/Filename" data-click-select><div class="low-res-break"></div>
             <input id="search-button" type="submit" value="Search">
         </div>
         </form>
