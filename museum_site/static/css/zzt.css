@@ -211,6 +211,16 @@ img.zzt-szzt-message
     display:inline;
 }
 
+/* Individual Characters (intended for {% char %}) */
+.ascii-char-image
+{
+    display:inline-block;
+    min-width:8px;
+    min-height:14px;
+    background-image:url("/static/images/cp437-transparent.png");
+}
+/* End Individual Characters */
+
 .ega-blue { color:#55F; }
 .ega-green { color:#5F5; }
 .ega-cyan { color:#5FF; }

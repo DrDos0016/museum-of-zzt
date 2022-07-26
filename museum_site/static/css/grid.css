@@ -297,6 +297,8 @@ pre.cp437 { line-height:14px;}
     font-size:28px;
     display:flex;
     justify-content:flex-start;
+    height:28px;
+    line-height:28px;
 }
 
 @media (max-width:1024px)
@@ -317,14 +319,16 @@ pre.cp437 { line-height:14px;}
     text-align:center;
     margin:auto;
     color:#000;
-    flex:0 0 42px;
-    margin-left:14px;
+    flex:0 0 48px;
+    margin-left:16px;
+    height:28px;
 }
 
 .nav-link .text
 {
     flex:1;
-    margin-left:14px;
+    margin-left:16px;
+    height:28px;
 }
 
 #top-link-div { display:none }

@@ -9,7 +9,11 @@ register = Library()
 
 
 @register.simple_tag()
-def char(num=2, fg="white", bg="black", scale=1):
+def char(num=2, fg="white", bg="black", scale=2, mode="image"):
+    colors = [
+        "black", "darkblue", "darkgreen", "darkcyan", "darkred", "darkpurple", "darkyellow", "gray",
+        "darkgray", "blue", "green", "cyan", "red", "purple", "yellow", "white"
+    ]
     CP437_TO_UNICODE = (
     0, 9786,  9787, 9829, 9830, 9827, 9824, 8226,
     9688, 9675, 9689, 9794, 9792, 9834, 9835, 9788,
@@ -44,20 +48,41 @@ def char(num=2, fg="white", bg="black", scale=1):
     8801, 177, 8805, 8804, 8992, 8993, 247, 8776,
     176, 8729, 183, 8730, 8319, 178, 9632, 160
     )
+    CHARSET_WIDTH = 1024
+    CHARSET_HEIGHT = 448
 
-    output = "<span class='cp437 ascii-char ega-{} ega-{}-bg'{}>&#{};</span>"
+    if mode == "text":
+        output = "<span class='cp437 ega-{} ega-{}-bg'{}>&#{};</span>"
+        if scale != 1:
+            scale = " style='font-size:{}px'".format(scale * 14)
 
-    if scale == 1:
-        scale = ""
-    else:
-        scale = " style='font-size:{}px'".format(scale * 14)
+        return mark_safe(output.format(fg, bg, scale, CP437_TO_UNICODE[num]))
+    else:  # image
+        output = "<div class='ascii-char-image ega-{}-bg' title='&#{};' style='width:{}px;height:{}px;background-position:{}px {}px;background-size:{}px {}px;image-rendering: pixelated;'></div>"
 
-    if not num:
-        num = 2
+        # Adjust position by character
+        row = num // 16
+        col = num % 16
+        pos_x = -8 * col
+        pos_y = -14 * row
 
-    output = output.format(fg, bg, scale, CP437_TO_UNICODE[num])
+        # Adjust position by foreground color
+        color = colors.index(fg)
+        if color < 8:
+            pos_x -= color * 128
+        else:
+            pos_x -= (color - 8) * 128
+            pos_y -= 224
 
-    return mark_safe(output)
+
+        # Adjust position by scale
+        pos_x = pos_x * scale
+        pos_y = pos_y * scale
+        size_x = CHARSET_WIDTH * scale
+        size_y = CHARSET_HEIGHT * scale
+
+        output = output.format(bg, CP437_TO_UNICODE[num], 8 * scale, 14 * scale, pos_x, pos_y, size_x, size_y)
+        return mark_safe(output)
 
 
 @register.simple_tag()
