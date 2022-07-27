@@ -1,0 +1,43 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block scripts %}
+<script src="{% static 'js/museum-forms.js' %}"></script>
+{% for script in scripts %}<script src="{% static script %}"></script>{% endfor %}
+{% endblock %}
+
+{% block content %}
+<h1>{{form.heading}}</h1>
+
+{{form.text_prefix|default:""|safe}}
+
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+
+<hr>
+
+{% if request.GET %}
+<h2>Output</h2>
+
+<textarea style="width:120ch;height:40ch;">
+{% if zfiles|length == 1 %}Livestream of the ZZT world "{{zfiles.0.title}}" by {{zfiles.0.author}}{% if zfiles.0.release_year %} ({{zfiles.0.release_year}}){% endif %}
+{% else %}♦ Livestream of the following {{zfiles|length}} ZZT worlds ♦
+{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) "{{zfile.title}}" by {{zfile.author}}{% if zfile.release_year %} ({{zfile.release_year}}){% endif %} [{{DOMAIN}}{{zfile.url}}]
+{% endfor %}{% endif %}(Originally streamed {{stream_date|date:"F jS, Y"}})
+
+♦ Join us for future livestreams at https://twitch.tv/worldsofzzt ♦
+
+♦ Play {% if zfiles|length == 1 %}this world{% else %}these worlds{% endif %} directly in your browser ♦
+{% for zfile in zfiles %}&bull; {{DOMAIN}}{{zfile.play_url}}
+{% endfor %}
+============================================================
+Support Worlds of ZZT on Patreon: https://patreon.com/worldsofzzt
+Follow Worlds of ZZT on Twitter: https://twitter.com/worldsofzzt
+Check out the Museum of ZZT! Download, explore, and play more than 3000 worlds: https://museumofzzt.com/
+Join the ZZT community on the Worlds of ZZT Discord: https://museumofzzt.com/discord/
+</textarea>
+{% endif %}
+{% endblock %}
