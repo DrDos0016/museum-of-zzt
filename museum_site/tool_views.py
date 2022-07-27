@@ -246,6 +246,33 @@ def extract_font(request, key):
 
 
 @staff_member_required
+def livestream_description_generator(request):
+    data = {
+        "title": "Livestream Description Generator",
+    }
+
+    if request.GET:
+        data["form"] = Livestream_Description_Form(request.GET)
+        data["zfiles"] = list(File.objects.filter(pk__in=request.GET.getlist("associated")))
+        if request.GET.get("stream_date"):
+            data["stream_date"] = datetime.strptime(request.GET.get("stream_date", "1970-01-01"), "%Y-%m-%d")
+        else:
+            data["stream_date"] = datetime.now()
+        if request.GET.getlist("timestamp"):
+            for idx in range(0, len(request.GET.getlist("timestamp")) - 1):
+                if ":" not in request.GET.getlist("timestamp")[idx + 1]:
+                    timestamp = "0:00"
+                else:
+                    timestamp = request.GET.getlist("timestamp")[idx + 1]
+                data["zfiles"][idx].timestamp = timestamp
+
+    else:
+        data["form"] = Livestream_Description_Form()
+
+    return render(request, "museum_site/tools/livestream-description-generator.html", data)
+
+
+@staff_member_required
 def log_viewer(request):
     data = {
         "title": "Log Viewer",

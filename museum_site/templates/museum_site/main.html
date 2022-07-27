@@ -66,7 +66,7 @@
         </div>
         <div class="world-special">
             <a href="{% url 'browse' %}">All Files</a>
-            <a href="{% url 'browse_collections' %}">Collections</a>
+            {% comment %}<a href="{% url 'browse_collections' %}">Collections</a>{% endcomment %}
             <a href="{% url 'mass_downloads' %}">Mass Downloads</a>
             <a href="{% url 'new_finds' %}">New Finds</a>
             <a href="{% url 'new_releases' %}">New Releases</a>

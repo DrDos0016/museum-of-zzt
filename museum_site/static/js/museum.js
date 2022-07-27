@@ -201,6 +201,7 @@ $(document).ready(function (){
 
     // Simple input attributes
     $("input[data-click-select]").click(function (){$(this).select();});
+    $("textarea[data-click-select]").click(function (){$(this).select();});
 });
 
 function pre_search()
