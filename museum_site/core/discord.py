@@ -78,6 +78,15 @@ def discord_announce_upload(upload, env=None):
 
     zfile = upload.file
 
+    # Check that this isn't an immediate reupload
+    if zfile.title == cache.get("DISCORD_LAST_ANNOUNCED_FILE_NAME", ""):
+        record("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO BEING A REPEATED UPLOAD")
+        upload.announced = True
+        upload.save()
+        return False
+    else:
+        cache.set("DISCORD_LAST_ANNOUNCED_FILE_NAME", zfile.title)
+
     preview_url = HOST + "static/" + urllib.parse.quote(
          zfile.screenshot_url()
     )
