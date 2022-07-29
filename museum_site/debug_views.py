@@ -110,10 +110,11 @@ def debug_article(request, fname=""):
             article = Article.objects.get(pk=2)
             article.title = filepath
             article.category = "TEST"
-            article.static_directory = "wip-" + fname[:-5]
+            article.static_directory = fname[:-5]
             article.content = fh.read().replace(
                 "<!--Page-->", "<hr><b>PAGE BREAK</b><hr>"
             )
+            article.publish_date = datetime.now()
             article.schema = request.GET.get("format", "django")
         data["file_path"] = filepath
 
