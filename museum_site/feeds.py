@@ -47,7 +47,7 @@ class LatestFilesFeed(Feed):
         return output
 
     def item_link(self, item):
-        return reverse("file", args=[item.letter, item.key])
+        return reverse("file", args=[item.key])
 
 
 class LatestReviewsFeed(Feed):
@@ -56,22 +56,18 @@ class LatestReviewsFeed(Feed):
     description = "Museum of ZZT review feed"
 
     def items(self):
-        return Review.objects.order_by("-id")[:25]
+        return Review.objects.exclude(zfile_id=None).order_by("-id")[:25]
 
     def item_title(self, item):
         return item.title
 
     def item_description(self, item):
-        output = 'Review by {} covering "{}".'.format(
-            item.get_author(), item.file.title
-        )
+        output = 'Review by {} covering "{}".'.format(item.get_author(), item.zfile.title)
         if item.rating >= 0:
             output += " ({}/5.0)".format(item.rating)
 
     def item_link(self, item):
-        return reverse("reviews", args=[
-            item.file.letter, item.file.filename]
-        ) + "#rev-" + str(item.pk)
+        return reverse("reviews", args=[item.zfile.filename]) + "#rev-" + str(item.pk)
 
 
 class LatestUploadsFeed(Feed):
@@ -98,4 +94,4 @@ class LatestUploadsFeed(Feed):
         return output
 
     def item_link(self, item):
-        return reverse("file", args=[item.letter, item.filename])
+        return reverse("file", args=[item.filename])
