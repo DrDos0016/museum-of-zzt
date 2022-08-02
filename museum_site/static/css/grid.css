@@ -1251,8 +1251,8 @@ form .field .scrolling-checklist
 
 .fv-grid #expand-contract
 {
-    position:static;
     justify-self:end;
+    top:0;
 }
 
 #expand-contract:hover
