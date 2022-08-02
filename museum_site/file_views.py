@@ -215,7 +215,6 @@ def file_articles(request, key):
     data["header_idx"] = 2
     data["sort"] = request.GET.get("sort")
     data["view"] = "detailed"
-    data["hide_expand_button"] = True
     default_sort = "title"
     qs = data["file"].articles.not_removed()
     qs = sort_qs(qs, data["sort"], Article.sort_keys, default_sort)

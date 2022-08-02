@@ -117,19 +117,10 @@ $(document).ready(function (){
 
     // Expand/Contract Middle Column
     $("#expand-contract").click(function (){
-        $(this).toggleClass("expanded", "contracted");
-        if ($(this).hasClass("expanded")) // Expand
-        {
-            $(this).html("→ ←");
-            $(".sidebar, #top-links, #logo-area").hide();
-            $("body").removeClass("grid-root");
-        }
-        else // Contract
-        {
-            $(this).html("← →");
-            $(".sidebar, #top-links, #logo-area").show();
-            $("body").addClass("grid-root");
-        }
+        var arrows = $(this).html();
+        $(".sidebar, #top-links, #logo-area").toggle();
+        $("body").toggleClass("expanded");
+        $(this).html(arrows[2] + arrows[1] + arrows[0]);
     });
 
     // File association selection

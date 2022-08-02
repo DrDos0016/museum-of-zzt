@@ -254,6 +254,23 @@ pre.cp437 { line-height:14px;}
     justify-items:center;
 }
 
+.grid-root.expanded
+{
+    grid-template-areas:
+    "content"
+    "footer";
+    grid-template-columns:auto;
+    max-width:100vw;
+}
+
+.grid-root.expanded #content
+{
+    box-sizing:border-box;
+    width:98vw;
+    margin-left: 1vw;
+    margin-right: 1vw;
+}
+
 #low-res-shortcuts { display:none; background-color:#00A; }
 
 #logo-area
@@ -1190,7 +1207,8 @@ form .field .scrolling-checklist
 {
     display:grid;
     grid-template-areas:
-    "header header expand"
+    "expand expand expand"
+    "header header header"
     "links links links"
     "data data data"
     "prefix prefix prefix"
@@ -1199,11 +1217,11 @@ form .field .scrolling-checklist
     "file-list analysis analysis";
 
     grid-template-columns:1.5fr 2fr auto;
-    /*grid-template-rows:auto auto auto minmax(378px, auto) auto 1fr;*/
-    grid-template-rows:auto auto auto auto auto auto 1fr;
+    grid-template-rows:repeat(7, auto) 1fr;
     min-height:858px; /* With padding this is 900px of space */
     height:calc(100vh - 42px);
-
+    /* Padding is a hacky temp fix for column hiding button */
+    padding-top:0px;
 }
 
 .file-header {
@@ -1218,7 +1236,30 @@ form .field .scrolling-checklist
     margin-left:16px;
 }
 
-#expand-contract { grid-area: expand;}
+#expand-contract {
+    grid-area: expand;
+    padding:0px;
+    border:0;
+    width:24px;
+    height:16px;
+    background:#F0F0F0;
+    color:#666;
+    position:relative;
+    top:-14px;
+    left:4px;
+}
+
+.fv-grid #expand-contract
+{
+    position:static;
+    justify-self:end;
+}
+
+#expand-contract:hover
+{
+    cursor:pointer;
+    color:#000;
+}
 
 #content h1
 {
@@ -1962,3 +2003,45 @@ img.zoomable.zoomed:hover
     width:100%;
     font-size:smaller;
 }
+
+/* Page breadcrumbs and controls UNIMPLEMENTED AS OF AUG 1 2022 */
+#crumbs
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    margin-left:-8px;
+    margin-right:-8px;
+    margin-top:-14px;
+    border-bottom:1px dashed #AAA;
+    min-height:20px;
+    grid-area:crumbs;
+}
+
+
+#page-breadcrumbs
+{
+    flex:9;
+    padding-left:8px;
+    font-family:cp437;
+
+}
+
+#page-breadcrumbs a:first-child
+{
+    color:#F0F;
+}
+
+#page-breadcrumbs a
+{
+
+}
+
+#page-errata
+{
+    flex:1;
+    padding-right:1px;
+    margin-top:1px;
+    text-align:right;
+}
+/* End page breadcrumbs and controls */

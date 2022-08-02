@@ -106,9 +106,9 @@
 </section>
 
 <main id="content" class="block{% for class in content_classes %} {{class}}{% endfor %}" data-url-name="{{request.resolver_match.url_name|default:'null_url_name'}}">
+<button id="expand-contract" title="Toggle sidebars" class="fr">⮜ ⮞</button>
 {% block zfile_header %}
 {% if file %}
-    <button class="fr contracted" id="expand-contract" title="Toggle sidebars">&larr; &rarr;</button>
     {% if file and not local%}
     <div class="file-header">
         {% include "museum_site/datum/title-datum.html" with f=file.title_datum_context %}
