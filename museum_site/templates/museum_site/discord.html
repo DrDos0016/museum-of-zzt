@@ -1,4 +1,5 @@
 {% extends "museum_site/main.html" %}
+{% load static %}
 
 {% block style %}
 <style>
@@ -36,6 +37,22 @@
     margin:auto;
     display:block;
     text-align:center;
+}
+
+#emoji-table
+{
+    max-width:50%;
+    margin:auto;
+}
+
+#emoji-table tr td:first-child
+{
+    background-color:#36393F;
+}
+
+#emoji-table img
+{
+    max-width:32px;
 }
 </style>
 {% endblock %}
@@ -162,4 +179,281 @@
 
 <p>Some announcements are automatic when certain events on the Museum of ZZT website occur. New uploads and new reviews of files will automatically be shared
 here.</p>
+
+<h2 id="emoji">Emoji</h2>
+
+<i>Last updated Aug. 3rd, 2022</i>
+
+<table id="emoji-table">
+    <th>Emoji</th><th>Name</th><th>Description</th>
+    {% comment %}
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/.png' %}" alt=""></td>
+        <td class="mono b c">::</td>
+        <td></td>
+    </tr>
+    {% endcomment %}
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/ammo.png' %}" alt="ammo"></td>
+        <td class="mono b c">:ammo:</td>
+        <td><div class="cp437">Ammunition - 5 shots per container.</div><br>Ammo from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/ampersand.png' %}" alt="ampersand"></td>
+        <td class="mono b c">:ampersand:</td>
+        <td><div class="cp437">You have found an ampersand.</div><br>Ampersand/Necklace bonus item from Town of ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/bear.png' %}" alt="bear"></td>
+        <td class="mono b c">:bear:</td>
+        <td><div class="cp437">REMEMBER THIS SPECIAL BEAR??<br>
+        THE GOOD BEAR???"</div><br>
+        Bear from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/blackkey.png' %}" alt="black key"></td>
+        <td class="mono b c">:blackkey:</td>
+        <td><div class="cp437">You now have the .-♣....\♦Blue    ♣Green   ♦Cyan    ♥Red</div><br>A black key from Super Tool Kit.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/bomb.png' %}" alt="bomb"></td>
+        <td class="mono b c">:bomb:</td>
+        <td><div class="cp437">Bomb activated!</div><br>Bomb from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/breakable.png' %}" alt="breakable"></td>
+        <td class="mono b c">:breakable:</td>
+        <td>Breakable wall from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/bullet.png' %}" alt="bullet"></td>
+        <td class="mono b c">:bullet:</td>
+        <td><div class="cp437">Ouch!</div><br>Bullet from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/centipede.png' %}" alt="centipede"></td>
+        <td class="mono b c">:centipede:</td>
+        <td>Green centipede head from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/cheat.png' %}" alt="cheat"></td>
+        <td class="mono b c">:cheat:</td>
+        <td>Representation of the cheat prompt from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/cooler-water.png' %}" alt="cooler water"></td>
+        <td class="mono b c">:coolerwater:</td>
+        <td>Water from Demo.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/crcandle.png' %}" alt="code red candle"></td>
+        <td class="mono b c">:crcandle:</td>
+        <td>Candle from Code Red.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/darkness.png' %}" alt="darkness"></td>
+        <td class="mono b c">:darkness:</td>
+        <td><div class="cp437">Room is dark - you need to light a torch!</div><br>Darkness from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/dragon.png' %}" alt="dragon"></td>
+        <td class="mono b c">:dragon-1:</td>
+        <td><div class="cp437">The dragon is vaporized!</div><br>Dragon enemy from Town of ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/pup.png' %}" alt="dragonpup"></td>
+        <td class="mono b c">:dragonpup:</td>
+        <td>Dragon pup from Super ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/empty.png' %}" alt="empty"></td>
+        <td class="mono b c">:empty:</td>
+        <td>Empty tile from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/energizer.png' %}" alt="energizer"></td>
+        <td class="mono b c">:energizer:</td>
+        <td><div class="cp437">Energizer - You are invincible</div><br>Energizer from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/fake.png' %}" alt="fake"></td>
+        <td class="mono b c">:fake:</td>
+        <td><div class="cp437">A fake wall - secret passage!</div><br>Red fake wall from ZZT. Or is it blood?</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/forest.png' %}" alt="forest"></td>
+        <td class="mono b c">:forest:</td>
+        <td><div class="cp437">A path is cleared through the forest.</div><br>Forest from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/gambit.png' %}" alt="Sweeney's gambit"></td>
+        <td class="mono b c">:gambit:</td>
+        <td>Representation of "Sweeney's Gambit", where collecting an item means a 50/50 chance of immediately being attacked.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/gem.png' %}" alt="gem"></td>
+        <td class="mono b c">:gem:</td>
+        <td><div class="cp437">Gems give you health!</div><br>A green gem from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/h.png' %}" alt="help"></td>
+        <td class="mono b c">:help:</td>
+        <td>Help object from the ZZT Encyclopedia.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/hl.png' %}" alt="hyperlink"></td>
+        <td class="mono b c">:hl:</td>
+        <td><div class="cp437">«Press ENTER to select this»</div><br>Hyperlink icon from ZZT's message windows. Alternatively, a purple pusher.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/key.png' %}" alt="key"></td>
+        <td class="mono b c">:key:</td>
+        <td><div class="cp437">You now have the purple key!</div><br>A purple key from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/lava.png' %}" alt="lava"></td>
+        <td class="mono b c">:lava:</td>
+        <td><div class="cp437">Your way is blocked by lava!</div><br>Lava from Super ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/lion.png' %}" alt="lion"></td>
+        <td class="mono b c">:lion:</td>
+        <td>Lion from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/mzx.png' %}" alt="mzx"></td>
+        <td class="mono b c">:mzx:</td>
+        <td>Representation of the MegaZeux player character (with ZZT's default font).</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/normal.png' %}" alt="normal"></td>
+        <td class="mono b c">:normal:</td>
+        <td>A normal wall from ZZT. Yellow, of course.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/pairer.png' %}" alt="pairer"></td>
+        <td class="mono b c">:pairer:</td>
+        <td>A pairer from Super ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/passage.png' %}" alt="passage"></td>
+        <td class="mono b c">:passage:</td>
+        <td>A yellow passage from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/pingpongpath.png' %}" alt="ping pong path"></td>
+        <td class="mono b c">:pingpongpath:</td>
+        <td>A ping pong path from ZZT Syndromes.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/player.png' %}" alt="player"></td>
+        <td class="mono b c">:player:</td>
+        <td>The player from ZZT. Or perhaps one of their many clones.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/ricochet.png' %}" alt="ricochet"></td>
+        <td class="mono b c">:ricochet:</td>
+        <td>A ricochet from ZZT. Alternatively, a green slime.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/roton.png' %}" alt="roton"></td>
+        <td class="mono b c">:roton:</td>
+        <td>A roton from Super ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/ruffian.png' %}" alt="ruffian"></td>
+        <td class="mono b c">:ruffian:</td>
+        <td>A ruffian from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/scroll.png' %}" alt="scroll"></td>
+        <td class="mono b c">:scroll:</td>
+        <td>A scroll from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/segment-blue.png' %}" alt="blue segment"></td>
+        <td class="mono b c">:segmentblue:</td>
+        <td>A blue centipede segment from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/segment-cyan.png' %}" alt="cyan segment"></td>
+        <td class="mono b c">:segmentcyan:</td>
+        <td>A cyan centipede segment from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/segment-purple.png' %}" alt="purple segment"></td>
+        <td class="mono b c">:segmentpurple:</td>
+        <td>A purple centipede segment from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/segment-red.png' %}" alt="red segment"></td>
+        <td class="mono b c">:segmentred:</td>
+        <td>A red centipede segment from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/segment-white.png' %}" alt="white segment"></td>
+        <td class="mono b c">:segmentwhite:</td>
+        <td>A white centipede segment from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/segment-yellow.png' %}" alt="yellow segment"></td>
+        <td class="mono b c">:segmentyellow:</td>
+        <td>A yellow centipede segment from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/shark.png' %}" alt="shark"></td>
+        <td class="mono b c">:shark:</td>
+        <td>A shark from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/solid.png' %}" alt="solid"></td>
+        <td class="mono b c">:solid:</td>
+        <td>A green solid wall from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/spider.png' %}" alt="spider"></td>
+        <td class="mono b c">:spider-1:</td>
+        <td>A cyan spider from Super ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/stk.png' %}" alt="Super Tool Kit title screen"></td>
+        <td class="mono b c">:stk:</td>
+        <td>Transparent version of the Super Tool Kit logo.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/tiger.png' %}" alt="tiger"></td>
+        <td class="mono b c">:tiger:</td>
+        <td>A tiger from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/torch.png' %}" alt="torch"></td>
+        <td class="mono b c">:torch:</td>
+        <td><div class="cp437">Torch - used for lighting in the underground.</div><br>A torch from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/tree.png' %}" alt="tree"></td>
+        <td class="mono b c">:tree:</td>
+        <td><div class="cp437">Just an old, boring talking tree.</div><br>Tree object from Town of ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/water.png' %}" alt="water"></td>
+        <td class="mono b c">:water:</td>
+        <td><div class="cp437">Your way is blocked by water!</div><br>Water from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/yellow.png' %}" alt="yellow border"></td>
+        <td class="mono b c">:yellow:</td>
+        <td><div class="cp437">"I have this recurring nightmare...<br><br>I'm in this huge empty room with yellow walls...<br>No matter where I go... those same horrible<br>yellow walls..."</div><br>An empty yellow bordered room.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/zzthink-by-archenoth-2x.png' %}" alt="zzthink"></td>
+        <td class="mono b c">:zzthink:</td>
+        <td><i>Created by Archenoth. Used with permission.</i></td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/zztwakka_by_zin.png' %}" alt="zztwakka"></td>
+        <td class="mono b c">:zztwakka:</td>
+        <td><i>Created by Zinfandel. Used with permission.</i></td>
+    </tr>
+</table>
 {% endblock %}
