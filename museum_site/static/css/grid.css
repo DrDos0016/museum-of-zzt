@@ -2045,3 +2045,9 @@ img.zoomable.zoomed:hover
     text-align:right;
 }
 /* End page breadcrumbs and controls */
+
+.keyword
+{
+    font-family:"cp437", monospace;
+    font-size:16pt;
+}
