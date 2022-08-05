@@ -208,6 +208,25 @@ def crediting_preferences(request):
 
 
 @staff_member_required
+def empty_upload_queue(request):
+    data = {
+        "title": "Empty Upload Queue",
+        "message": "",
+    }
+
+    if request.GET.get("empty"):
+        queue = File.objects.filter(details=DETAIL_UPLOADED)
+        message = ""
+        for zfile in queue:
+            upload = Upload.objects.filter(file_id=zfile.pk).first()
+            status = zfile.remove_uploaded_zfile(upload)
+            message += status + "\n----------------------------------------\n"
+        data["message"] = message
+
+    return render(request, "museum_site/tools/empty-upload-queue.html", data)
+
+
+@staff_member_required
 def extract_font(request, key):
     data = {"title": "Extract Font"}
     f = File.objects.get(key=key)

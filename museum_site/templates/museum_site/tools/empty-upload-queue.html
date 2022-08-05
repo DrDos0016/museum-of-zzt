@@ -1,0 +1,22 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<h1>{{title}}</h1>
+<hr>
+<form>
+    <label>Empty Upload Queue: <input type="checkbox" name="empty" value="yes"></label>
+    <br>
+    {% if ENV == "DEV" %}<input type="submit" value="Empty The Queue!">
+    {% else %}
+    <b>This action can only be performed on the DEV server!</b>
+    {% endif %}
+</form>
+<hr>
+{% if request.GET.empty %}
+<h2>Event Log:</h2>
+<textarea style="width:90%;height:500px;">
+{{message}}
+</textarea>
+{% endif %}
+{% endblock %}

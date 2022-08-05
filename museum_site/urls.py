@@ -196,6 +196,7 @@ urlpatterns = [
     path("tools/audit/zeta-config/", museum_site.tool_views.audit_zeta_config, name="audit_zeta_config"),
     path("tools/crediting-preferences/", museum_site.tool_views.crediting_preferences, name="crediting_preferences"),
     path("tools/extract-font/<str:key>/", museum_site.tool_views.extract_font, name="extract_font"),
+    path("tools/empty-upload-queue/", museum_site.tool_views.empty_upload_queue, name="empty_upload_queue"),
     path("tools/livestream-description-generator/", museum_site.tool_views.livestream_description_generator, name="log_viewer"),
     path("tools/log-viewer/", museum_site.tool_views.log_viewer, name="log_viewer"),
     path("tools/manage-details/<str:key>/", museum_site.tool_views.manage_details, name="manage_details"),
