@@ -830,10 +830,10 @@ def series_add(request):
 
             series.save()  # Resave to update dates
             data["success"] = True
-            data["series"] = series
+            data["output_html"] = "Successfully added series: <a href='{}'>{}</a>".format(series.url(), series.title)
 
     data["form"] = form
-    return render(request, "museum_site/tools/series-add.html", data)
+    return render(request, "museum_site/generic-form-display-output.html", data)
 
 
 def stream_card(request):

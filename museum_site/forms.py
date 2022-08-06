@@ -745,11 +745,21 @@ class Review_Search_Form(forms.ModelForm):
 
 class SeriesForm(forms.ModelForm):
     user_required_attribute = False
+    attrs = {
+        "method": "POST",
+        "enctype": "multipart/form-data",
+    }
+    submit_value = "Add Series"
+
     associations = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple(attrs={"class": "ul-scrolling-checklist"}),
+        widget=Scrolling_Checklist_Widget(
+            choices=qs_to_categorized_select_choices(
+                Article.objects.not_removed(),
+            ),
+        ),
         choices=list(Article.objects.not_removed().values_list("id", "title")),
         required=False,
-        label="Associated Files"
+        label="Associated Articles"
     )
     preview = forms.FileField(
         label="Preview Image",
