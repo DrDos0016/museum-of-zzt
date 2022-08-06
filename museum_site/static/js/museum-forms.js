@@ -261,6 +261,10 @@ function drag_tag_drop(e)
     e.stopPropagation();
     var target = $(e.target).parent();
 
+    // Don't do anything if this is the dragged tag being dropped on itself
+    if (target.hasClass("dragging"))
+        return false;
+
     // Don't activate if the target isn't a tag for the same field
     if ($(target).data("field") != $(".dragging").data("field"))
         return false;
