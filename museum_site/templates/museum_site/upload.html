@@ -4,12 +4,13 @@
 {% block scripts %}
 <script src="{% static 'js/upload.js' %}?{{BOOT_TS}}"></script>
 <script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
+<script src="{% static 'js/museum-forms.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <h1>{{title}}</h1>
 
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data" id="upload_form">
 <h2 class="cut-heading">File Information<div class="fr cut-state">➖</div></h2>
 <div class="cut-wrapper cut-open">
 {% csrf_token %}
@@ -17,17 +18,10 @@
 <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
     {{field.label_tag}}
     <div class="field-value">
-        {% if field.id_for_label == "id_title" %}
-        <div class="chars-remaining" data-field="{{field.id_for_label}}"><span id="{{field.id_for_label}}-remaining" data-max="{{field.field.max_length}}">{{field.field.max_length}}</span> characters remaining</div>
-        {% endif %}
         {% if field.id_for_label == "id_zfile" %}
         <div class="size-limit">Your maximum upload size: <b title="{{user.profile.max_upload_size}} bytes">{{user.profile.max_upload_size|filesizeformat}}</b></div>
         {% endif %}
         {{field|safe}}
-        {% if field.id_for_label == "id_release_date" %}
-        <input name="today" value="Today" type="button">
-        <input name="unknown" value="Unknown" type="button">
-        {% endif %}
     </div>
     {% if field.help_text %}
     <p class="field-help">{{field.help_text|safe}}</p>
@@ -105,7 +99,7 @@
 </div>
 <hr>
 
-<input type="submit" name="action" value="{{submit_text|default:'Upload File'}}">
+<input id="submit_upload" type="submit" name="action" value="{{submit_text|default:'Upload File'}}">
 
 <p><a href="{% url 'upload_edit' %}">Edit an existing upload</a> (Requires an Edit Token for guest users)</p>
 <p><a href="{% url 'upload_delete' %}">Delete an existing upload</a> (Requires an Edit Token for guest users)</p>

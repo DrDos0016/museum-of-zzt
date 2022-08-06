@@ -12,7 +12,7 @@ from museum_site.core import *
 from museum_site.models import *
 from museum_site.fields import *
 from museum_site.widgets import *
-from museum_site.common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices, delete_this
+from museum_site.common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices, delete_this, UPLOAD_TEST_MODE, record
 from museum_site.constants import (
     LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES
 )
@@ -26,28 +26,25 @@ STUB_CHOICES = (("A", "First"), ("B", "Second"), ("C", "Third"))  # For debuggin
 
 
 class ZGameForm(forms.ModelForm):
+    field_order = ["zfile", "title", "author", "company", "genre", "explicit", "release_date", "language", "description"]
     zfile = forms.FileField(
         help_text=("Select the file you wish to upload. "
                    "All uploads <i>must</i> be zipped."),
         label="File", widget=UploadFileWidget()
     )
-    genres = forms.CharField(
-        help_text=(
-            "Check any applicable genres that describe the content of the "
-            "uploaded file. Use 'Other' if a genre isn't represented and "
-            "mention it in the upload notes field in the Upload Settings "
-            "section. For a description of genres, see the "
-            "<a href='/help/genre/' target='_blank'>Genre Overview</a> "
-            "page."
+    genre = forms.MultipleChoiceField(
+        widget=Scrolling_Checklist_Widget(
+            choices=qs_to_categorized_select_choices(
+                Detail.objects.filter(visible=True),
+            ),
+            buttons=["Clear"],
+            show_selected=True,
         ),
-        widget=SlashSeparatedValueCheckboxWidget(
-            choices=list(
-                zip(
-                    Genre.objects.filter(visible=True), Genre.objects.filter(
-                        visible=True
-                    )
-                )
-            )
+        choices=qs_to_select_choices(Genre.objects.filter(visible=True)),
+        required=False,
+        help_text=(
+            "Check any applicable genres that describe the content of the uploaded file. Use 'Other' if a genre isn't represented and mention it in the upload"
+            "notes field in the Upload Settings section. For a description of genres, see the <a href='/help/genre/' target='_blank'>Genre Overview</a> page."
         )
     )
     author = forms.CharField(
@@ -61,15 +58,21 @@ class ZGameForm(forms.ModelForm):
             "particular upload. If the author's name is not known, leave this "
             "field blank."
         ),
-        widget=SlashSeparatedValueWidget(
-            attrs={
-                "list": "author-suggestions",
-                "autocomplete": "off",
-            }
+        widget=Tagged_Text_Widget(),
+    )
+    language = forms.MultipleChoiceField(
+        widget=Scrolling_Checklist_Widget(
+            choices=LANGUAGE_CHOICES,
+            buttons=["Clear"],
+            show_selected=True,
+        ),
+        choices=LANGUAGE_CHOICES,
+        required=False,
+        help_text=(
+            'Check any languages the player is expected to understand to comprehend the files in the upload. For worlds exclusively using created languages,'
+            'use "Other". If a language is not listed, use "Other" and specify the correct language in the upload notes section.'
         )
     )
-
-    field_order = ["zfile", "title", "author", "company", "genres"]
 
     use_required_attribute = False
     # Properties handled in view
@@ -82,7 +85,7 @@ class ZGameForm(forms.ModelForm):
 
         fields = [
             "zfile", "title", "author", "company", "explicit",
-            "release_date", "language",
+            "release_date",
             "description",
         ]
 
@@ -105,13 +108,6 @@ class ZGameForm(forms.ModelForm):
             "release_source": (
                 "Where the data for the release date is coming from"
             ),
-            "language": (
-                'Check any languages the player is expected to understand to '
-                'comprehend the files in the upload. For worlds exclusively '
-                'using created languages, use "Other". If a language is not '
-                'listed, use "Other" and specify the correct language in the '
-                'upload notes section.'
-            ),
             "file_license": "The license under which this world is published.",
             "license_source": (
                 "Where the license can be found. Use a source contained "
@@ -132,25 +128,15 @@ class ZGameForm(forms.ModelForm):
         }
 
         widgets = {
-            "company": SlashSeparatedValueWidget(
-                attrs={
-                    "list": "company-suggestions",
-                    "autocomplete": "off",
-                    }
-            ),
+            "title": Enhanced_Text_Widget(char_limit=80),
+            "company": Tagged_Text_Widget(),
             "explicit": forms.RadioSelect(
                 choices=(
                     (0, "This upload does not contain explicit content"),
                     (1, "This upload contains explicit content")
                 ),
             ),
-            "release_date": forms.DateInput(
-                format=("%y-%m-%d"),
-                attrs={"type": "date"}
-            ),
-            "language": SlashSeparatedValueCheckboxWidget(
-                choices=LANGUAGE_CHOICES,
-            ),
+            "release_date": Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Unknown"),
             "file_license": SelectPlusCustomWidget(
                 choices=LICENSE_CHOICES
             ),
@@ -163,39 +149,86 @@ class ZGameForm(forms.ModelForm):
     def clean_zfile(self):
         zfile = self.cleaned_data["zfile"]
 
+        if zfile is None:
+            return zfile
+
+        # Coerce successful upload when testing on DEV
+        if UPLOAD_TEST_MODE:
+            record("UPLOAD_TEST_MODE: Bypassing clean_zfile()")
+            zfile.name = str(int(time.time())) + "-" + zfile.name
+
+        # Check for a duplicate filename, but make sure its ID isn't the same as this upload's
         if zfile and zfile.name:
             dupe = File.objects.filter(filename=zfile.name).first()
             if dupe and dupe.id != self.expected_file_id:
                 raise forms.ValidationError(
-                    "The selected filename is already in use. "
-                    "Please rename your zipfile."
+                    "The selected filename is already in use. Please rename your zipfile."
                 )
 
+        # Check maximum upload size
         if zfile and zfile.size > self.max_upload_size:
             raise forms.ValidationError(
-                "File exceeds your maximum upload size! "
-                "Contact Dr. Dos for a manual upload."
+                "File exceeds your maximum upload size! Contact Dr. Dos for a manual upload."
             )
 
-    def clean_author(self):
-        # Replace blank authors with "Unknown"
-        author = self.cleaned_data["author"]
+        return zfile
 
+    def clean_author(self):
+        author = self.cleaned_data["author"].replace("[text]", "")
+        author = author.replace(",", "/")
+
+        if author.endswith("/"):
+            author = author[:-1]
+
+        # Replace blank authors with "Unknown"
         if author == "":
             author = "Unknown"
         return author
 
-    def clean_genres(self):
+    def clean_company(self):
+        company = self.cleaned_data["company"].replace("[text]", "")
+        company = company.replace(",", "/")
+
+        if company.endswith("/"):
+            company = company[:-1]
+        return company
+
+    def clean_genre(self):
+        if UPLOAD_TEST_MODE:
+            record("UPLOAD_TEST_MODE: Bypassing clean_genre()")
+            if len(self.cleaned_data["genre"]) == 0:
+                record("UPLOAD_TEST_MODE: Setting genre to 'Adventure'")
+                self.cleaned_data["genre"].append("3")  # Adventure TODO: Constant?
+                return self.cleaned_data["genre"]
+
         # Make sure all requested genres exist
-        valid_genres = list(Genre.objects.filter(visible=True).values_list("title", flat=True))
+        valid_genres = list(Genre.objects.filter(visible=True).values_list("id", flat=True))
 
-        requested_genres = self.cleaned_data["genres"].split("/")
+        if len(self.cleaned_data["genre"]):
+            for genre in self.cleaned_data["genre"]:
+                if int(genre) not in valid_genres:
+                    raise forms.ValidationError("An invalid genre was specified.")
+        else:
+            raise forms.ValidationError("At least one genre must be specified.")
+        return self.cleaned_data["genre"]
 
-        for genre in requested_genres:
-            if genre not in valid_genres:
-                raise forms.ValidationError(
-                    "An invalid genre was specified."
-                )
+    def clean_language(self):
+        if UPLOAD_TEST_MODE:
+            record("UPLOAD_TEST_MODE: Bypassing clean_language()")
+            if len(self.cleaned_data["language"]) == 0:
+                self.cleaned_data["language"].append("en")  # English TODO: Constant?
+                return self.cleaned_data["language"]
+
+        # Make sure all requested languages exist
+        valid_languages = list(LANGUAGES.keys())
+
+        if len(self.cleaned_data["language"]):
+            for language in self.cleaned_data["language"]:
+                if language not in valid_languages:
+                    raise forms.ValidationError("An invalid language was specified.")
+        else:
+            raise forms.ValidationError("At least one language must be specified.")
+        return self.cleaned_data["language"]
 
 
 class PlayForm(forms.Form):
@@ -729,11 +762,11 @@ class SeriesForm(forms.ModelForm):
 
 
 def associated_file_choices():
-    raw = list(File.objects.all().values_list("id", "title", "key"))
+    raw = File.objects.only("id", "title", "key")
     choices = []
     for i in raw:
-        choice = (i[0], "{} [{}]".format(i[1], i[2]))
-        choices.append(choice)
+        choices.append((i.id, "{} [{}]".format(i.title, i.key)))
+
     return choices
 
 
@@ -741,7 +774,7 @@ class Collection_Content_Form(forms.ModelForm):
     use_required_attribute = False
     associated_file = forms.ChoiceField(
         widget=forms.RadioSelect(attrs={"class": "ul-scrolling-checklist"}),
-        choices=associated_file_choices(),
+        choices=associated_file_choices,
         label="File To Add",
     )
     url = forms.CharField(
@@ -893,7 +926,7 @@ class Livestream_Description_Form(forms.Form):
         required=False,
     )
     stream_date = forms.CharField(
-        widget = forms.DateInput(
+        widget=forms.DateInput(
             format=("%y-%m-%d"),
             attrs={"type": "date"}
         ),

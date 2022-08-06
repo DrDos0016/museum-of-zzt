@@ -110,30 +110,24 @@ def debug_file(request):
         return HttpResponse("No file provided.")
 
 
-def get_author_suggestions(request, max_suggestions=20):
+def get_author_suggestions(request):
     query = request.GET.get("q", "")
     output = {"suggestions": []}
 
     if query:
         qs = File.objects.filter(author__istartswith=query).only("author").distinct().order_by("author")
-        for f in qs:
-            all_authors = f.author.split("/")
-            for a in all_authors:
-                if a not in output["suggestions"]:
-                    output["suggestions"].append(a)
-            if len(output["suggestions"]) >= max_suggestions:
-                break
+    else:
+        qs = File.objects.all().only("author").distinct().order_by("author")
 
-        if len(output["suggestions"]) < max_suggestions:
-            qs = File.objects.filter(author__icontains=query).only("author").distinct().order_by("author")
-            for f in qs:
-                all_authors = f.author.split("/")
-                for a in all_authors:
-                    if a not in output["suggestions"]:
-                        output["suggestions"].append(a)
-                if len(output["suggestions"]) >= max_suggestions:
-                    break
+    seen = []  # Case insensitive author names
+    for f in qs:
+        all_authors = f.author.split("/")
+        for a in all_authors:
+            if a.lower() not in seen:
+                output["suggestions"].append(a)
+                seen.append(a.lower())
 
+    output["suggestions"] = sorted(output["suggestions"], key= lambda s: s.casefold())
     return JsonResponse(output)
 
 
@@ -143,24 +137,18 @@ def get_company_suggestions(request, max_suggestions=20):
 
     if query:
         qs = File.objects.filter(company__istartswith=query).only("company").distinct().order_by("company")
-        for f in qs:
-            all_companies = f.company.split("/")
-            for c in all_companies:
-                if c not in output["suggestions"]:
-                    output["suggestions"].append(c)
-            if len(output["suggestions"]) >= max_suggestions:
-                break
+    else:
+        qs = File.objects.all().only("company").distinct().order_by("company")
 
-        if len(output["suggestions"]) < max_suggestions:
-            qs = File.objects.filter(company__icontains=query).only("company").distinct().order_by("company")
-            for f in qs:
-                all_companies = f.company.split("/")
-                for c in all_companies:
-                    if c not in output["suggestions"]:
-                        output["suggestions"].append(c)
-                if len(output["suggestions"]) >= max_suggestions:
-                    break
+    seen = []  # Case insensitive company names
+    for f in qs:
+        all_companies = f.company.split("/")
+        for a in all_companies:
+            if a.lower() not in seen:
+                output["suggestions"].append(a)
+                seen.append(a.lower())
 
+    output["suggestions"] = sorted(output["suggestions"], key= lambda s: s.casefold())
     return JsonResponse(output)
 
 

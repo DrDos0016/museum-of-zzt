@@ -18,6 +18,13 @@ def upload(request):
         "title": "Upload File"
     }
 
+    print("POST:")
+    keys = list(request.POST.keys())
+    keys = sorted(keys)
+    for k in keys:
+        label = (k + (" " * 20))[:20]
+        print(label, request.POST.getlist(k))
+
     # Adjust title if you're editing
     if request.GET.get("token") or request.POST.get("edit_token"):
         data["title"] = "Edit Unpublished Upload"
@@ -51,7 +58,7 @@ def upload(request):
     else:  # Unbound Form
         zgame_initial = {
             "author": "", "explicit": 0, "language": "en",
-            "release_date":str(datetime.now())[:10]
+            "release_date": str(datetime.now())[:10]
         }
         if zgame_obj:
             print("WORKING WITH INITIAL")
@@ -59,7 +66,9 @@ def upload(request):
                 "explicit": int(zgame_obj.explicit),
                 "language": zgame_obj.language,
                 "release_date": str(zgame_obj.release_date),
-                "genres": zgame_obj.ssv("genres"),
+                "author": zgame_obj.author.replace("/", ","),
+                "company": zgame_obj.company.replace("/", ","),
+                "genre": zgame_obj.genre_ids(),
             }
             play_form = PlayForm(
                 initial={"zeta_config": zgame_obj.zeta_config_id}
@@ -68,7 +77,7 @@ def upload(request):
             play_form = PlayForm()
 
         zgame_form = ZGameForm(initial=zgame_initial, instance=zgame_obj)
-        upload_form = UploadForm(initial={"announced": 0}, instance=upload_obj)
+        upload_form = UploadForm(initial={"announced": 0, "generate_preview_image": ("AUTO" if ENV != "DEV" else "NONE")}, instance=upload_obj)
         download_form = DownloadForm(instance=download_obj)
 
     if edit_token:
@@ -155,9 +164,15 @@ def upload(request):
             zfile.calculate_sort_title()
             zfile.basic_save()
             zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
-            zfile.genre = request.POST.get("genres")  # Legacy, for v1 API
-            for genre in request.POST.get("genres").split("/"):
-                zfile.genres.add(Genre.objects.get(title=genre))
+            zfile.genre = ""  # Legacy SSV field for v1 API support
+            for genre in zgame_form.cleaned_data["genre"]:
+                genre_object = Genre.objects.get(pk=genre)
+                zfile.genres.add(genre_object)
+                zfile.genre += genre_object.title + "/"
+            if zfile.genre.endswith("/"):
+                zfile.genre = zfile.genre[:-1]
+
+            zfile.language = "/".join(zgame_form.cleaned_data["language"])
 
             # Create and prepare new Upload object
             upload = upload_form.save(commit=False)
@@ -255,10 +270,7 @@ def upload_delete(request):
     }
 
     if request.user.is_authenticated:
-        data["my_uploads"] = Upload.objects.filter(
-            user_id=request.user.id,
-            file__details__in=[DETAIL_UPLOADED],
-        ).order_by("-id")
+        data["my_uploads"] = Upload.objects.filter(user_id=request.user.id, file__details__in=[DETAIL_UPLOADED]).order_by("-id")
 
     if request.GET.get("token"):
         data["selected"] = True
@@ -272,31 +284,10 @@ def upload_delete(request):
 
     if request.method == "POST" and data.get("upload"):
         if request.POST.get("confirmation").upper() == "DELETE":
-            # Remove the physical file
-            path = zfile.phys_path()
-            if os.path.isfile(path):
-                os.remove(path)
-
-            # Remove the Upload object
-            upload.delete()
-
-            # Remove the preview image
-            screenshot_path = zfile.screenshot_phys_path()
-            if screenshot_path:
-                if os.path.isfile(screenshot_path):
-                    os.remove(screenshot_path)
-
-            # Remove the file object
-            zfile.delete()
-
-            # Calculate queue size
-            cache.set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count())
-
+            zfile.remove_uploaded_zfile(upload)
             return redirect("upload_delete_complete")
-
         else:
             data["wrong"] = True
-
 
     return render(request, "museum_site/upload-delete.html", data)
 

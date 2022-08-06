@@ -103,6 +103,30 @@ $(document).ready(function (){
         }
     });
 
+    // Automatically add a tag when focus is lost
+    $(".tag-input").on("blur", function (){
+        $(this).val($(this).val() + ",");
+        $(this).trigger("input");
+    });
+
+    // Suggestions via AJAX
+    $(".suggestion-datalist").each(function (){
+        var element = $(this);
+        var url = $(this).data("url");
+
+        $.ajax({
+            url:url,
+            data:{}
+        }).done(function (data){
+            var output = "";
+            for (var idx in data["suggestions"])
+            {
+                output += '<option value="'+data["suggestions"][idx]+',">\n';
+            }
+            $(element).html(output);
+        });
+    });
+
     // Setup
     init_filters();
     $("input:checked").parent().addClass("selected");
@@ -111,8 +135,10 @@ $(document).ready(function (){
     // Convert text to tags if needed
     $(".tag-input").trigger("input");
     // Update list of checked boxes
-    write_selected("details");
-    write_selected("nonfilterable");
+    $(".widget-selected").each(function (){
+        var input_name = $(this).data("input-name");
+        write_selected(input_name);
+    });
 });
 
 function init_filters()
@@ -159,7 +185,6 @@ function apply_filter(e)
 
 function write_selected(name)
 {
-    console.log("Writing selected", name);
     // Write out a list of all ticked inputs with a given name
     var output = "";
 

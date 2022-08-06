@@ -415,7 +415,7 @@ def review(request, key):
             review.date = today
             review.zfile_id = zfile.id
 
-            if review.zfile.can_review == File.REVIEW_APPROVAL:
+            if review.zfile.can_review == File.REVIEW_APPROVAL or (review.content.find("href") != -1):
                 review.approved = False
             review.save()
 

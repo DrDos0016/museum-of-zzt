@@ -18,4 +18,4 @@
 {% for button in buttons %}
 <input type="button" value="{{button}}" class="widget-control-button" data-input-name="{{widget.name}}"{% if button == "Default" %}data-default="{{default|join:'/'}}"{% endif %}>
 {% endfor %}
-{% if show_selected %}<div>Selected Criteria: <span class="widget-selected" data-input-name="{{widget.name}}"><i>None</i></span></div>{% endif %}
+{% if show_selected %}<div>Selected: <span class="widget-selected" data-input-name="{{widget.name}}"><i>None</i></span></div>{% endif %}

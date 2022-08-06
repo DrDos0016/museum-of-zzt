@@ -127,12 +127,17 @@ label
 {
     font-family:monospace;
     font-size:larger;
+    max-height:150px;
+    overflow:auto;
 }
 
 .upload-info .file-list-header
 {
     border-bottom:1px solid #000;
     font-weight:bold;
+    position:sticky;
+    top:0px;
+    background:#F0F0F0;
 }
 
 .upload-info .file-size
@@ -367,6 +372,7 @@ input[type=button]:hover
 }
 
 .tag-list > div { display:inline-block; }
+.tag-list > div:first-child { margin-left:0px; }
 .tag > div { display:inline-block; }
 .tag > div:hover { background:#98C9C9; }
 

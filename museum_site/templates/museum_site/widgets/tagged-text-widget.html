@@ -1,10 +1,10 @@
-<input type="text" class="tag-input" data-input="{{widget.name}}" list="{{widget.name}}-suggestions" value="{{manual_data.tags_as_string}}" id="{{widget.attrs.id}}">
+<input type="text" class="tag-input" data-input="{{widget.name}}" list="{{widget.name}}-suggestions" value="{% if manual_data %}{{manual_data.tags_as_string}}{% else %}{{widget.value|default:""}}{% endif %}" id="{{widget.attrs.id}}">
 <div class="{{widget.name}}-tag-template tag" draggable=true data-field="{{widget.name}}">
     <input name="{{widget.name}}" type="hidden" value="[text]">
     <div class="tag-text">[text]</div><div class="tag-remove" title="Click to remove">✖</div>
 </div>
 <div class="tag-list" id="{{widget.name}}-tag-list">
 </div>
-<datalist id="{{widget.name}}-suggestions" class="suggestion-datalist">
+<datalist id="{{widget.name}}-suggestions" class="suggestion-datalist" data-url="/ajax/get-{{widget.name}}-suggestions/">
     {% for suggestion in suggestions %}<option value="{{suggestion}},">{% endfor %}
 </datalist>

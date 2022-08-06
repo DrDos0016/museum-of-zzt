@@ -50,6 +50,7 @@ PAGE_LINKS_DISPLAYED = 30
 LIST_PAGE_SIZE = 250
 UPLOADS_ENABLED = True
 UPLOAD_CAP = 1048576  # 1 Megabyte
+UPLOAD_TEST_MODE = True # Coerce successful uploads in DEV to expedite testing of the upload process
 YEAR = datetime.now().year
 PYTHON_VERSION = sys.version
 DJANGO_VERSION = VERSION

@@ -7,6 +7,7 @@ import zipfile
 from datetime import datetime, timedelta
 from random import randint, seed, shuffle
 
+from django.core.cache import cache
 from django.db import models
 from django.db.models import Avg, Q
 from django.template.defaultfilters import date, filesizeformat
@@ -552,6 +553,13 @@ class File(BaseModel):
         output = []
         for g in self.genres.all():
             output.append(g.title)
+        return output
+
+    def genre_ids(self):
+        output = []
+        # Returns a list of Genre object IDs
+        for g in self.genres.all():
+            output.append(g.id)
         return output
 
     def language_list(self):
@@ -1185,3 +1193,37 @@ class File(BaseModel):
         else:
             output = "—"
         return output
+
+
+    def remove_uploaded_zfile(self, upload):
+        message = "Removing ZFile: "
+        message += str(self) + "\n"
+
+        # Remove the physical file
+        path = self.phys_path()
+        if os.path.isfile(path):
+            os.remove(path)
+            message += "Removed physical file\n"
+
+        # Remove the Upload object
+        if upload is not None:
+            upload.delete()
+            message += "Removed Upload object\n"
+        else:
+            message += "No Upload object detected.\n"
+
+        # Remove the preview image
+        screenshot_path = self.screenshot_phys_path()
+        if screenshot_path:
+            if os.path.isfile(screenshot_path):
+                os.remove(screenshot_path)
+                message += "Removed preview image\n"
+
+        # Remove the file object
+        self.delete()
+        message += "Removed ZFile object\n"
+
+        # Calculate queue size
+        cache.set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count())
+        message += "Updated cached queue size value. (Now: {})\n".format(cache.get("UPLOAD_QUEUE_SIZE"))
+        return message
