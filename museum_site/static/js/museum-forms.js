@@ -88,18 +88,7 @@ $(document).ready(function (){
                 break;
             }
             var tag = create_tag(input_name, entry);
-
-            $("#"+ input_name + "-tag-list").append(tag);
-            $("#"+ input_name + "-tag-list").find("." + input_name + "-tag-template").last().removeClass(input_name + "-tag-template");
-
-            // Set up tag binds
-            $("#"+ input_name + "-tag-list").find(".tag-remove").last().click(remove_tag);
-            $("#"+ input_name + "-tag-list").find(".tag").last().on("dragstart", drag_tag_start);
-            $("#"+ input_name + "-tag-list").find(".tag").last().on("dragend", drag_tag_end);
-            $("#"+ input_name + "-tag-list").find(".tag").last().on("dragover", drag_tag_over);
-            $("#"+ input_name + "-tag-list").find(".tag").last().on("dragleave", drag_tag_leave);
-            $("#"+ input_name + "-tag-list").find(".tag").last().on("drop", drag_tag_drop);
-            $("#"+ input_name + "-tag-list").find(".tag").last().on("click", drag_tag_click);
+            add_tag(input_name, tag);
         }
     });
 
@@ -125,6 +114,15 @@ $(document).ready(function (){
             }
             $(element).html(output);
         });
+    });
+
+    // Label Buttons for ordered tagging
+    $(".label-button").click(function (){
+        var input_name = $(this).data("input");
+        var value = $(this).data("value");
+        console.log(value);
+        var tag = create_tag_full(input_name, $(this).text(), value);
+        add_tag(input_name, tag); // Can't drag/edit
     });
 
     // Setup
@@ -204,9 +202,18 @@ function write_selected(name)
 // Tag functions
 function create_tag(name, text)
 {
-    // Create a tag element
+    // Create a tag element with matching label/value
     var tag = $("." + name + "-tag-template").prop("outerHTML");
     tag = tag.replace(/\[text\]/g, text);
+    return tag;
+}
+
+function create_tag_full(name, label, value)
+{
+    // Create a tag element with unique label and value
+    var tag = $("." + name + "-tag-template").prop("outerHTML");
+    tag = tag.replace(/\[text\]/, value);
+    tag = tag.replace(/\[text\]/, label);
     return tag;
 }
 
@@ -297,4 +304,39 @@ function drag_tag_click(e)
     input_element.addClass("editing");
     input_element.val($(this).find(".tag-text").text());
     input_element.select();
+}
+
+function add_tag(input_name, tag)
+{
+    $("#"+ input_name + "-tag-list").append(tag);
+    $("#"+ input_name + "-tag-list").find("." + input_name + "-tag-template").last().removeClass(input_name + "-tag-template");
+
+    var can_drag = $("#"+ input_name + "-tag-list").data("draggable");
+    var can_edit = $("#"+ input_name + "-tag-list").data("editable");
+
+    console.log("THIS TAG DRAG:", can_drag, "THIS TAG EDIT:", can_edit);
+
+    // Set up tag binds
+    $("#"+ input_name + "-tag-list").find(".tag-remove").last().click(remove_tag);
+    if (can_drag)
+    {
+        $("#"+ input_name + "-tag-list").find(".tag").last().on("dragstart", drag_tag_start);
+        $("#"+ input_name + "-tag-list").find(".tag").last().on("dragend", drag_tag_end);
+        $("#"+ input_name + "-tag-list").find(".tag").last().on("dragover", drag_tag_over);
+        $("#"+ input_name + "-tag-list").find(".tag").last().on("dragleave", drag_tag_leave);
+        $("#"+ input_name + "-tag-list").find(".tag").last().on("drop", drag_tag_drop);
+    }
+    else
+    {
+        $("#"+ input_name + "-tag-list").find(".tag").last().find(".tag-text").addClass("no-hover");
+        $("#"+ input_name + "-tag-list").find(".tag").last().removeAttr("draggable");
+    }
+    if (can_edit)
+    {
+        $("#"+ input_name + "-tag-list").find(".tag").last().on("click", drag_tag_click);
+    }
+    else
+    {
+        $("#"+ input_name + "-tag-list").find(".tag").last().find(".tag-text").addClass("no-highlight");
+    }
 }

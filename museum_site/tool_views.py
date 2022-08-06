@@ -272,7 +272,18 @@ def livestream_description_generator(request):
 
     if request.GET:
         data["form"] = Livestream_Description_Form(request.GET)
-        data["zfiles"] = list(File.objects.filter(pk__in=request.GET.getlist("associated")))
+        # Prevent "[text]" error
+        if data["form"].errors.get("associated"):
+            del data["form"].errors["associated"]
+        associated = request.GET.getlist("associated")[1:]  # Erase "[text]"
+        unordered = list(File.objects.filter(pk__in=associated))
+        data["zfiles"] = []
+        for pk in associated:
+            for zf in unordered:
+                if zf.pk == int(pk):
+                    data["zfiles"].append(zf)
+                    break
+
         if request.GET.get("stream_date"):
             data["stream_date"] = datetime.strptime(request.GET.get("stream_date", "1970-01-01"), "%Y-%m-%d")
         else:
@@ -500,43 +511,37 @@ def prep_publication_pack(request):
         "title": "Prep Publication Pack",
     }
 
-    data["year"] = YEAR
+    if not request.GET.get("associated"):
+        data["form"] = Prep_Publication_Pack_Form()
+    else:
+        data["form"] = Prep_Publication_Pack_Form(request.GET)
 
-    if request.method == "POST":
-        with open(os.path.join(
-            SITE_ROOT, "museum_site", "templates", "museum_site",
-            "tools", "blank-publication-pack.html"
-        )) as fh:
+        # Prevent "[text]" error
+        if data["form"].errors.get("associated"):
+            del data["form"].errors["associated"]
+
+        with open(os.path.join(SITE_ROOT, "museum_site", "templates", "museum_site", "tools", "blank-publication-pack.html")) as fh:
             raw = fh.read().split("=START=")[1]
-        keys = request.POST.keys()
-        publish_date = request.POST.get("publish_date", "XXXX-XX-XX")
-        data["publish_path"] = "publish-" + publish_date[5:]
-
-        file_ids = []
-        for k in keys:
-            if request.POST.get(k) and k.startswith("prefix-"):
-                pk = k.split("-")[1]
-                file_ids.append(pk)
-
-        files = File.objects.filter(pk__in=file_ids)
-        data["file_ids_string"] = ",".join(file_ids)
-
-        data["files"] = []
-        for f in files:
-            f.prefix = request.POST.get("prefix-" + str(f.pk), "XX")
-            data["files"].append(f)
+        sub_context = {
+            "year": request.GET.get("publish_date", "")[:4],
+            "publish_path": "publish-" + request.GET.get("publish_date", "")[5:],
+            "file_ids_string": ",".join(request.GET.getlist("associated", [])[1:]),
+            "files": File.objects.filter(pk__in=request.GET.getlist("associated", [])[1:]),
+        }
+        # Add prefix to File objects for easier template rendering
+        idx = 1
+        for f in sub_context["files"]:
+            f.prefix = request.GET.getlist("prefix")[idx]
+            idx += 1
 
         # Render subtemplate
         template = Template(raw)
-        context = Context(data)
-        data["rendered"] = template.render(context)
+        context = Context(sub_context)
+        rendered = template.render(context)
 
-    unpublished = File.objects.unpublished()
-    data["unpublished_files"] = unpublished
+        data["output_html"] = '<textarea style="width:99%;height:600px" id="rendered">{}</textarea>'.format(rendered)
 
-    return render(
-        request, "museum_site/tools/prep-publication-pack.html", data
-    )
+    return render(request, "museum_site/generic-form-display-output.html", data)
 
 
 @staff_member_required

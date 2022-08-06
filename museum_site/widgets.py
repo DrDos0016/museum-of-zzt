@@ -120,6 +120,32 @@ class Scrolling_Radio_Widget(forms.Select):
         return context
 
 
+class Ordered_Scrolling_Radio_Widget(forms.SelectMultiple):
+    template_name = "museum_site/widgets/ordered-scrolling-list-widget.html"
+
+    def __init__(self, attrs=None, choices=(), filterable=True, categories=False, buttons=[], show_selected=False, default=[]):
+        super().__init__(attrs)
+        self.input_method = "radio"
+        self.choices = choices
+        self.categories = categories
+        self.filterable = filterable
+        self.buttons = buttons
+        self.show_selected = show_selected
+        self.default=default
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["name"] = name
+        context["choices"] = self.choices
+        context["input_method"] = self.input_method
+        context["categories"] = self.categories
+        context["filterable"] = self.filterable
+        context["buttons"] = self.buttons
+        context["show_selected"] = self.show_selected
+        context["default"] = self.default
+        return context
+
+
 class Scrolling_Checklist_Widget(forms.SelectMultiple):
     template_name = "museum_site/widgets/scrolling-checklist-widget.html"
 

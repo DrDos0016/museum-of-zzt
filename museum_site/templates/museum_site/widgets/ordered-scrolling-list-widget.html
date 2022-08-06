@@ -1,0 +1,23 @@
+<div class="scrolling-checklist widget{% if filterable %} filterable{% endif %}">
+    {% if filterable %}<div class="scrolling-checklist-filter">
+        Filter: <input class="widget-filter" value="" id="{{widget.attrs.id}}"> <input class="widget-clear" type="button" value="Clear">
+    </div>{% endif %}
+    {% if categories %}
+        {% for category in choices %}
+        <div class="checklist-header">{{category.0}}</div>
+            {% for item in category.1 %}
+            <label class="label-button" data-value="{{item.0}}" data-input="{{widget.name}}">{{item.1}}</label>
+            {% endfor %}
+        {% endfor %}
+    {% else %}
+        {% for item in choices %}
+        <label class="label-button" data-value="{{item.0}}" data-input="{{widget.name}}">{{item.1}}</label>
+        {% endfor %}
+    {% endif %}
+</div>
+<div class="{{widget.name}}-tag-template tag" draggable=true data-field="{{widget.name}}">
+    <input name="{{widget.name}}" type="hidden" value="[text]">
+    <div class="tag-text">[text]</div><div class="tag-remove" title="Click to remove">✖</div>
+</div>
+<div class="tag-list" id="{{widget.name}}-tag-list" data-editable=false data-draggable=true>
+</div>

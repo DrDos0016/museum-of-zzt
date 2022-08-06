@@ -919,7 +919,7 @@ class Livestream_Description_Form(forms.Form):
     use_required_attribute = False
     submit_value = "Select"
     associated = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(choices=associated_file_choices()),
+        widget=Ordered_Scrolling_Radio_Widget(choices=associated_file_choices()),
         choices=associated_file_choices(),
         label="Associated ZFiles",
         help_text="Select one or more ZFiles",
@@ -935,6 +935,27 @@ class Livestream_Description_Form(forms.Form):
     )
     timestamp = Manual_Field(
         label="Timestamp(s)",
+        widget=Tagged_Text_Widget(),
+        required=False,
+        help_text="Separate with commas. Match order in associated ZFiles.",
+    )
+
+
+class Prep_Publication_Pack_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Generate Publication Pack"
+    publish_date = forms.CharField(
+        widget=Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Clear")
+    )
+    associated = forms.MultipleChoiceField(
+        widget=Ordered_Scrolling_Radio_Widget(choices=associated_file_choices()),
+        choices=associated_file_choices(),
+        label="Associated ZFiles",
+        help_text="Select one or more ZFiles",
+        required=False,
+    )
+    prefix = Manual_Field(
+        label="Prefix(es)",
         widget=Tagged_Text_Widget(),
         required=False,
         help_text="Separate with commas. Match order in associated ZFiles.",

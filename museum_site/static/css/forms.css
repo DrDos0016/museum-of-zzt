@@ -352,6 +352,16 @@ label
     margin-left:8px;
 }
 
+.label-button
+{
+    padding-left:16px;
+}
+
+.label-button:hover
+{
+    cursor:pointer;
+}
+
 input[type=button]:hover
 {
     text-decoration:underline;
@@ -395,6 +405,9 @@ input[type=button]:hover
 {
     cursor:grab;
 }
+
+.tag-text.no-hover:hover { cursor:auto; }
+.tag-text.no-highlight:hover { background:#AAA; }
 
 .tag-remove
 {
@@ -444,3 +457,4 @@ input[name=rss-url]
     display:block;
     width:90%;
 }
+/* End specific fields */
