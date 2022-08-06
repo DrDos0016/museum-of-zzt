@@ -419,8 +419,8 @@ def review(request, key):
                 review.approved = False
             review.save()
 
-            # Update file's review count/scores is the review is approved
-            if review.zfile.can_review == File.REVIEW_YES:
+            # Update file's review count/scores if the review is approved
+            if review.zfile.can_review == File.REVIEW_YES and review.approved == True:
                 zfile.calculate_reviews()
                 # Make Announcement
                 discord_announce_review(review)
