@@ -46,16 +46,10 @@ label
     padding:0;
     list-style: none;
 }
-.field-value label
-{
-    font-weight:normal;
-}
+.field-value label { font-weight:normal; }
 
-.field-value input[type=checkbox]
-{
-    width:auto;
-}
-
+.field-value input[type=checkbox] { width:auto; }
+.field-value textarea { height:100px; }
 .field-value input[type=button]
 {
     margin:7px 0px 7px 8px;
@@ -63,11 +57,6 @@ label
     background:#DEF;
     font-family:cp437;
     padding:7px 4px 7px 4px;
-}
-
-.field-value textarea
-{
-    height:100px;
 }
 
 .chars-remaining, .size-limit
@@ -108,10 +97,7 @@ label
     background:#619F9F;
 }
 
-.upload-area.dragging
-{
-    background:#98C9C9;
-}
+.upload-area.dragging { background:#98C9C9; }
 
 .upload-info
 {
@@ -130,15 +116,8 @@ label
     background:#F0F0F0;
 }
 
-.upload-info .file-size
-{
-    float:right;
-}
-
-.upload-info .file-list li
-{
-    border-bottom:1px dotted #000;
-}
+.upload-info .file-size { float:right; }
+.upload-info .file-list li { border-bottom:1px dotted #000; }
 
 .hr-checklist-values, .field_filter
 {
@@ -157,57 +136,23 @@ label
 
 #id_zfile { display:none; }
 
-.field-with-error
-{
-    background-color:#FCC;
-}
+.field-with-error { background-color:#FCC; }
 
-.errorlist
-{
-    font-weight: bold;
-}
+.errorlist { font-weight: bold; }
 
 /* Older non-django form CSS below */
+#terms { height:20ch; }
 
-#terms
-{
-    height:20ch;
-}
-
-.field.error input
-{
-    background: #FCC;
-}
-
-.field-group textarea
-{
-    flex:1;
-}
-
-.field-group p
-{ flex:1 1 100%; margin:0; }
-
+.field.error input { background: #FCC; }
+.field-group textarea { flex:1; }
+.field-group p { flex:1 1 100%; margin:0; }
 .form-error { font-weight:bold; }
-
-.prepop-data
-{
-    font-weight:bold;
-}
-
-.field.error .prepop-data
-{
-    background: #FCC;
-}
+.prepop-data { font-weight:bold; }
+.field.error .prepop-data { background: #FCC; }
 
 .range-widget
 {
     width:6ch;
-    text-align:right;
-}
-
-#id_board_min, #id_board_max
-{
-    width:8ch;
     text-align:right;
 }
 
@@ -240,14 +185,9 @@ label
     display:flex;
     flex-wrap:wrap;
     justify-content:space-between;
-
 }
 
-.related-content-wrapper label
-{
-    flex:1 0 95%;
-}
-
+.related-content-wrapper label { flex:1 0 95%; }
 
 /* Jul 2022 Form modifications */
 .scrolling-checklist-filter
@@ -260,26 +200,11 @@ label
     padding:2px 8px 2px 8px;
 }
 
-.scrolling-checklist-filter input[type=button].widget-clear
-{
-    margin-top:-1px;
-}
+.scrolling-checklist-filter input[type=button].widget-clear { margin-top:-1px; }
+.scrolling-checklist label input { margin-right:8px; margin-left:8px; }
 
-.scrolling-checklist label input
-{
-    margin-right:8px;
-    margin-left:8px;
-}
-
-.label-button
-{
-    padding-left:16px;
-}
-
-.label-button:hover
-{
-    cursor:pointer;
-}
+.label-button { padding-left:16px; }
+.label-button:hover { cursor:pointer; }
 
 input[type=button]:hover, input[type=submit]:hover
 {
@@ -295,20 +220,12 @@ input[type=button]:hover, input[type=submit]:hover
     font-weight:bold;
 }
 
-.tag-list
-{
-    min-height:45px;
-}
-
+.tag-list { min-height:45px; }
 .tag-list > div { display:inline-block; }
 .tag-list > div:first-child { margin-left:0px; }
 .tag > div { display:inline-block; }
 .tag > div:hover { background:#98C9C9; }
-
-.tag.selected .tag-text
-{
-    background-color:#98C9C9;
-}
+.tag.selected .tag-text { background-color:#98C9C9; }
 
 .tag-text
 {
@@ -320,11 +237,7 @@ input[type=button]:hover, input[type=submit]:hover
     padding:7px 8px 7px 8px;
 }
 
-.tag-text:hover
-{
-    cursor:grab;
-}
-
+.tag-text:hover { cursor:grab; }
 .tag-text.no-hover:hover { cursor:auto; }
 .tag-text.no-highlight:hover { background:#AAA; }
 
