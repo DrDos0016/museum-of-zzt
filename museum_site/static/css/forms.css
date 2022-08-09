@@ -140,17 +140,6 @@ label
     border-bottom:1px dotted #000;
 }
 
-.spc-wrapper
-{
-    min-height:80px;
-}
-
-.spc-custom
-{
-    margin-top:4px;
-    display:none;
-}
-
 .hr-checklist-values, .field_filter
 {
     font-family:monospace;
