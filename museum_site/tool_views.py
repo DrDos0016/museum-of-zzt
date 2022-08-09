@@ -331,6 +331,30 @@ def log_viewer(request):
 
 
 @staff_member_required
+def manage_cache(request):
+    data = {"title": "Manage Cache", "cache_items": []}
+
+    keys = (
+        "UPLOAD_QUEUE_SIZE",
+        "DISCORD_LAST_ANNOUNCED_FILE_NAME",
+    )
+
+    # Refresh
+    if request.GET.get("refresh"):
+        # TODO: This will need to live elsewhere should the cache keys grow
+        refresh = request.GET["refresh"]
+        if refresh == "UPLOAD_QUEUE_SIZE":
+            cache.set(refresh, File.objects.unpublished().count())
+        elif refresh == "DISCORD_LAST_ANNOUNCED_FILE_NAME":
+            cache.set(refresh, File.objects.unpublished().order_by("-id").last().title)
+
+    for k in keys:
+        data["cache_items"].append({"key": k, "value": cache.get(k, "NOT SET")})
+
+    return render(request, "museum_site/tools/manage-cache.html", data)
+
+
+@staff_member_required
 def manage_details(request, key):
     """ Returns page with list of all possible Details for manual adjustment"""
     data = {"title": "Manage Details"}
