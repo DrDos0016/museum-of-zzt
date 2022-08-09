@@ -1,9 +1,0 @@
-<div class="spc-wrapper">
-    <select name="{{widget.name}}" id="{{widget.attrs.id}}" class="spc-select">
-        {% for k,v  in choices %}
-        <option value="{{k}}">{{v}}</option>
-        {% endfor %}
-        <option value="CUSTOM">Custom - Enter below</option>
-    </select>
-    <input type="text" name="custom-{{widget.name}}" maxlength="{{widget.attrs.maxlength}}" class="spc-custom">
-</div>

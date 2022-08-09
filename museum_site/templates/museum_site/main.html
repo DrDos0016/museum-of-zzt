@@ -7,8 +7,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}{{title}}{% endblock %}{% if title %} - {% endif %}Museum of ZZT</title>
-{% for file in CSS_INCLUDES %}<link rel="stylesheet" type="text/css" href="{% static 'css/'|add:file %}?{{BOOT_TS}}">{% endfor %}
-<link rel="shortcut icon" href="{% static 'chrome/favicon.png' %}">
+{% for file in CSS_INCLUDES %}<link rel="stylesheet" type="text/css" href="{% static 'css/'|add:file %}?{{BOOT_TS}}">
+{% endfor %}<link rel="shortcut icon" href="{% static 'chrome/favicon.png' %}">
 {% block meta %}{% meta_tags path=request.get_full_path %}{% endblock %}
 {% block analytics %}
 {% if request.get_host == "museumofzzt.com" %}

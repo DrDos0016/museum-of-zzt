@@ -108,11 +108,6 @@ class ZGameForm(forms.ModelForm):
             "release_source": (
                 "Where the data for the release date is coming from"
             ),
-            "file_license": "The license under which this world is published.",
-            "license_source": (
-                "Where the license can be found. Use a source contained "
-                "within the uploaded file when possible."
-            ),
             "description": (
                 "A description for the uploaded file. For utilities, please "
                 "be sure to fill this out. If the description is written by "
@@ -137,12 +132,6 @@ class ZGameForm(forms.ModelForm):
                 ),
             ),
             "release_date": Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Unknown"),
-            "file_license": SelectPlusCustomWidget(
-                choices=LICENSE_CHOICES
-            ),
-            "license_source": SelectPlusCustomWidget(
-                choices=LICENSE_SOURCE_CHOICES
-            ),
             "zfile": UploadFileWidget(),
         }
 
