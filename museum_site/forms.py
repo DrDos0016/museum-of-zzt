@@ -8,6 +8,9 @@ from datetime import datetime
 
 from django import forms
 from django.urls import reverse_lazy
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.models import User
+
 from museum_site.core import *
 from museum_site.models import *
 from museum_site.fields import *
@@ -958,4 +961,48 @@ class Prep_Publication_Pack_Form(forms.Form):
         widget=Tagged_Text_Widget(),
         required=False,
         help_text="Separate with commas. Match order in associated ZFiles.",
+    )
+
+
+class Change_Username_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Change Username"
+    heading = "Change Username"
+    attrs = {"method": "POST"}
+    text_prefix = "<p>You may use this form to change your username. Afterwards, you will be required to login again with your new username and password.</p>"
+
+    current_password = forms.CharField(
+        widget=forms.PasswordInput()
+    )
+    new_username = forms.CharField()
+    confirm_username = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_username = cleaned_data.get("new_username", "")
+
+        # Check requested username and confirmation match
+        if new_username != cleaned_data.get("confirm_username", ""):
+            self.add_error("confirm_username", "Confirmation username must match newly requested username")
+
+        # Check prohibited characters
+        if "/" in new_username:
+            self.add_error("new_username", "Usernames may not contain slashes")
+
+        # Check availability
+        if User.objects.filter(username__iexact=new_username).exists():
+            self.add_error("new_username", "Requested username is unavailable")
+
+        # Check password
+        if not check_password(cleaned_data.get("current_password"), self.db_password):
+            self.add_error("current_password", "Invalid password")
+
+
+class Change_Ascii_Char_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Change ASCII Character"
+    heading = "Change ASCII Character"
+    attrs = {"method": "POST"}
+    text_prefix = (
+        "<p>Choose an ASCII representation for yourself. This character will be displayed alongside your username whenever it is used throughout the site.</p>"
     )

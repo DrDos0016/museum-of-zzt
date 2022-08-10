@@ -29,13 +29,9 @@ label
     margin:7px 4px 7px 4px;
 }
 
-.field-value
-{
-    grid-area: value;
-}
-
+.field-value { grid-area: value; }
 .field-value input[type=text], .field-value textarea, .field-value input[type=file], .field-value input[type=date],
-.field-value input[type=url], .field-value select
+.field-value input[type=url], .field-value select, .field-value input[type=password]
 {
     box-sizing:border-box;
     width:100%;
@@ -46,8 +42,8 @@ label
     padding:0;
     list-style: none;
 }
-.field-value label { font-weight:normal; }
 
+.field-value label { font-weight:normal; }
 .field-value input[type=checkbox] { width:auto; }
 .field-value textarea { height:100px; }
 .field-value input[type=button]
@@ -170,8 +166,7 @@ label
 .ul-scrolling-checklist li + li {  border-top: 1px dotted #000; }
 .ul-scrolling-checklist li.selected { background:#619F9F;}
 .ul-scrolling-checklist li:hover { background:#98C9C9; }
-
-.arrangeable li, .arrangeable li label { cursor:grab; }
+li.arrangeable, li.arrangeable label { cursor:grab; }
 
 .related-content-header
 {
@@ -278,10 +273,7 @@ input[name=count], input[name=priority]
     text-align:center;
 }
 
-textarea[name=wozzt-tweet]
-{
-    height:150px;
-}
+textarea[name=wozzt-tweet] { height:150px; }
 
 input[name=rss-url]
 {

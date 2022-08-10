@@ -18,7 +18,6 @@ def upload(request):
         "title": "Upload File"
     }
 
-    print("POST:")
     keys = list(request.POST.keys())
     keys = sorted(keys)
     for k in keys:
