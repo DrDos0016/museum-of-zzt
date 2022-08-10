@@ -61,6 +61,8 @@ label
     text-align:right;
 }
 
+input:disabled { background:#AAA; }
+
 /* Specialty Forms */
 .scrolling-checklist
 {

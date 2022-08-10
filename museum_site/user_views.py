@@ -265,29 +265,33 @@ def change_patronage_visibility(request):
 def change_pronouns(request):
     data = {
         "title": "Change Pronouns",
-        "errors": {
-        },
-        "changed": False,
-        "common_pronouns": ["", "He/Him", "It/Its", "She/Her", "They/Them"],
+        "scripts": ["js/change-pronouns.js"]
     }
 
-    success = True
-    if request.POST.get("action") == "change-pronouns":
-
-        pronouns = request.POST.get("pronouns", "")
-        if pronouns == "CUSTOM":
-            pronouns = request.POST.get("custom", "")
-
-        request.user.profile.pronouns = pronouns
-
-        try:
+    if request.method == "POST":
+        form = Change_Pronouns_Form(request.POST)
+        if form.is_valid():
+            pronouns = form.cleaned_data["pronouns"]
+            if pronouns == "N/A":
+                pronouns = ""
+            elif pronouns == "CUSTOM":
+                pronouns = form.cleaned_data["custom"]
+            request.user.profile.pronouns = pronouns
             request.user.profile.save()
             return redirect("my_profile")
-        except Exception:
-            data["error"] = ("Something went wrong. Your pronouns were not "
-                             "updated.")
+    else:
+        current_pronoun_choice = request.user.profile.pronouns
+        if current_pronoun_choice == "":
+            current_pronoun_choice = "N/A"
+        if current_pronoun_choice not in [i[0] for i in Change_Pronouns_Form.PRONOUN_CHOICES]:
+            current_custom_choice = current_pronoun_choice
+            current_pronoun_choice = "CUSTOM"
+        else:
+            current_custom_choice = ""
+        form = Change_Pronouns_Form(initial={"pronouns": current_pronoun_choice, "custom": current_custom_choice})
 
-    return render(request, "museum_site/user/change-pronouns.html", data)
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)
 
 
 @login_required()
@@ -625,6 +629,7 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect("index")
+
 
 def manage_saved_data(request):
     data = {

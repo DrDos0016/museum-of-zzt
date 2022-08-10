@@ -1044,3 +1044,26 @@ class Change_Ascii_Char_Form(forms.Form):
         widget=Faux_Widget("museum_site/widgets/ascii-preview-widget.html"),
         required=False,
     )
+
+
+class Change_Pronouns_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Change Pronouns"
+    heading = "Change Pronouns"
+    attrs = {"method": "POST"}
+    text_prefix = "<p>Select your pronouns so that other can know how to refer to you.</p>"
+
+    PRONOUN_CHOICES = (
+        ("N/A", "Prefer not to say"),
+        ("He/Him", "He/Him"),
+        ("It/Its", "It/Its"),
+        ("She/Her", "She/Her"),
+        ("They/Them", "They/Them"),
+        ("CUSTOM", "Custom (specify below)")
+    )
+
+    pronouns = forms.ChoiceField(
+        choices=PRONOUN_CHOICES,
+        widget=forms.RadioSelect(choices=PRONOUN_CHOICES)
+    )
+    custom = forms.CharField(required=False)
