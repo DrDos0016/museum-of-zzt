@@ -1,0 +1,15 @@
+{% load zzt_tags %}
+<div>
+    <div class="ascii-table scale-{{scale}} {{orientation}}">{% for i in range %}{% char i "white" "black" scale=scale %}{% endfor %}</div>
+    <br>
+    <div class="ascii-selected-highlight b mono">
+        Selected Character:
+        <div class="ascii-selected-char">{% char widget.value scale=2 %}</div>
+        <div class="ascii-selected-number">#{{widget.value}}</div>
+    </div>
+
+    <select name="{{widget.name}}" class="none">
+        {% for choice in range %}<option{% if choice|stringformat:'d' == widget.value %} selected{% endif %}>{{choice}}</option>{% endfor %}
+    </select>
+</div>
+

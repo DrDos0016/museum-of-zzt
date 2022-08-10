@@ -1006,3 +1006,41 @@ class Change_Ascii_Char_Form(forms.Form):
     text_prefix = (
         "<p>Choose an ASCII representation for yourself. This character will be displayed alongside your username whenever it is used throughout the site.</p>"
     )
+    COLOR_CHOICES = (
+        ("black", "Black"),
+        ("blue", "Blue"),
+        ("green", "Green"),
+        ("cyan", "Cyan"),
+        ("red", "Red"),
+        ("purple", "Purple"),
+        ("yellow", "Yellow"),
+        ("white", "White"),
+        ("darkgray", "Dark Gray"),
+        ("darkblue", "Dark Blue"),
+        ("darkgreen", "Dark Green"),
+        ("darkcyan", "Dark Cyan"),
+        ("darkred", "Dark Red"),
+        ("darkpurple", "Dark Purple"),
+        ("darkyellow", "Dark Yellow"),
+        ("gray", "Gray")
+    )
+
+    character = forms.IntegerField(
+        min_value=0,
+        max_value=255,
+        widget=Ascii_Character_Widget(),
+        help_text="Click on an ASCII character in the table to select it",
+    )
+    foreground = forms.ChoiceField(
+        choices=COLOR_CHOICES,
+        widget=Ascii_Color_Widget(choices=COLOR_CHOICES),
+    )
+    background = forms.ChoiceField(
+        choices=COLOR_CHOICES,
+        widget=Ascii_Color_Widget(choices=COLOR_CHOICES, allow_transparent=True),
+    )
+    preview = Faux_Field(
+        label="Preview",
+        widget=Faux_Widget("museum_site/widgets/ascii-preview-widget.html"),
+        required=False,
+    )

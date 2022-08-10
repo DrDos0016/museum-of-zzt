@@ -24,3 +24,9 @@ class GetField(forms.Field):
 class Manual_Field(forms.NullBooleanField):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+
+class Faux_Field(forms.NullBooleanField):
+    """ Used for fake fields that don't contain user specified information but should still be worked into the form """
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)

@@ -225,3 +225,42 @@ class Range_Widget(forms.Widget):
 
 class Board_Range_Widget(Range_Widget):
     template_name = "museum_site/widgets/board-range-widget.html"
+
+
+class Ascii_Character_Widget(forms.TextInput):
+    template_name = "museum_site/widgets/ascii-character-widget.html"
+
+    def __init__(self, attrs=None, scale=2, orientation="horiz"):
+        super().__init__(attrs)
+        self.scale = scale
+        self.orientation = orientation
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["range"] = range(0, 256)
+        context["scale"] = self.scale
+        context["orientation"] = self.orientation
+        return context
+
+
+class Ascii_Color_Widget(forms.Select):
+    template_name = "museum_site/widgets/ascii-color-widget.html"
+
+    def __init__(self, choices, attrs=None, allow_transparent=False):
+        super().__init__(attrs, choices)
+        self.allow_transparent = allow_transparent
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["choices"] = self.choices
+        if self.allow_transparent:
+            context["choices"].append(("transparent", "Transparent"))
+        return context
+
+
+class Faux_Widget(forms.Widget):
+    template_name = ""
+
+    def __init__(self, template_name, attrs=None):
+        super().__init__(attrs)
+        self.template_name = template_name

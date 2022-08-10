@@ -10,6 +10,7 @@ from django.urls import reverse
 
 from museum_site.common import *
 from museum_site.constants import *
+from museum_site.forms import *
 from museum_site.models import *
 from museum_site.mail import (
     send_forgotten_username_email,
@@ -103,53 +104,25 @@ def change_password(request):
 def change_char(request):
     data = {
         "title": "Change ASCII Char",
-        "errors": {
-        },
-        "changed": False
+        "scripts": ["js/change-ascii-char.js"]
     }
 
-    data["char_list"] = list(range(0, 256))
-    data["characters"] = ASCII_UNICODE_CHARS
-    data["colors"] = [
-        "black", "blue", "green", "cyan", "red", "purple", "yellow", "white",
-        "darkgray", "darkblue", "darkgreen", "darkcyan", "darkred",
-        "darkpurple", "darkyellow", "gray"
-    ]
+    if request.method == "POST":
+        form = Change_Ascii_Char_Form(request.POST)
+    else:
+        form = Change_Ascii_Char_Form(
+            initial={"character": int(request.user.profile.char), "foreground": request.user.profile.fg, "background": request.user.profile.bg}
+        )
 
-    success = True
-    if request.POST.get("action") == "change-ascii-char":
-        character = request.POST.get("character")
-        fg = request.POST.get("foreground")
-        bg = request.POST.get("background")
+    if form.is_valid():
+        request.user.profile.char = form.cleaned_data["character"]
+        request.user.profile.fg = form.cleaned_data["foreground"]
+        request.user.profile.bg = form.cleaned_data["background"]
+        request.user.profile.save()
+        return redirect("my_profile")
 
-        try:
-            character = int(character)
-        except ValueError:
-            data["error"] = ("Something went wrong. Your ASCII character was "
-                             "not updated.")
-            success = False
-
-        # Override invalid values
-        if character < 0 or character > 255:
-            character = 2
-        if fg not in data["colors"]:
-            fg = "white"
-        if bg not in data["colors"] and bg != "transparent":
-            bg = "darkblue"
-
-        if success:
-            request.user.profile.char = character
-            request.user.profile.fg = fg
-            request.user.profile.bg = bg
-
-            try:
-                request.user.profile.save()
-                return redirect("my_profile")
-            except Exception:
-                data["error"] = ("Something went wrong. Your ASCII character "
-                                 "was not updated.")
-
-    return render(request, "museum_site/user/change-ascii-char.html", data)
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)
 
 
 @login_required()
@@ -376,63 +349,30 @@ def change_patron_perks(request):
 def change_username(request):
     data = {
         "title": "Change Username",
-        "errors": {
-        },
+        "errors": {},
         "changed": False
     }
 
-    success = True
-    if request.POST.get("action") == "change-username":
-        # Check current password
-        cur = request.POST.get("moz-pwd-cur")
-        if not cur:
-            success = False
-            data["errors"]["cur_pwd"] = ("You must authenticate this action "
-                                         "by providing your current password.")
+    if request.method == "POST":
+        form = Change_Username_Form(request.POST)
+        form.db_password = request.user.password
+    else:
+        form = Change_Username_Form()
 
-        # Check current password matches
-        if not check_password(cur, request.user.password):
-            success = False
-            data["errors"]["cur_pwd"] = "Invalid credentials provided!"
+    if form.is_valid():
+        # Change a user's username and update author for their reviews
+        request.user.username = form.cleaned_data["new_username"]
+        request.user.save()
 
-        # Check for matching usernames
-        uname = request.POST.get("username")
-        uname_conf = request.POST.get("conf-username")
-        if uname != uname_conf:
-            success = False
-            data["errors"]["username"] = ("Your username and username "
-                                          "confirmation did not match.")
+        # Update author field on this user's reviews
+        updated = Review.objects.filter(user_id=request.user.id).update(author=form.cleaned_data["new_username"])
 
-        # Check for blank
-        if uname == "":
-            success = False
-            data["errors"]["username"] = "A valid username was not provided."
+        # Log out and redirect to login page
+        logout(request)
+        return redirect("login_user")
 
-        # Check for slash
-        if uname.find("/") != -1:
-            success = False
-            data["errors"]["username"] = "Usernames may not contain slashes."
-
-        # Check username availability
-        if User.objects.filter(username__iexact=uname).exists():
-            success = False
-            data["errors"]["username"] = "Requested username is unavailable."
-
-        # Change the username
-        if success:
-            request.user.username = uname
-            request.user.save()
-
-            # Update any reviews with author name for sorting
-            qs = Review.objects.filter(user_id=request.user.id)
-            for r in qs:
-                r.author = uname
-                r.save()
-
-            logout(request)
-            return redirect("login_user")
-
-    return render(request, "museum_site/user/change-username.html", data)
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)
 
 
 def error_login(request):

@@ -12,7 +12,7 @@ register = Library()
 def char(num=2, fg="white", bg="black", scale=2, mode="image"):
     colors = [
         "black", "darkblue", "darkgreen", "darkcyan", "darkred", "darkpurple", "darkyellow", "gray",
-        "darkgray", "blue", "green", "cyan", "red", "purple", "yellow", "white"
+        "darkgray", "blue", "green", "cyan", "red", "purple", "yellow", "white", "transparent"
     ]
     CP437_TO_UNICODE = (
     0, 9786,  9787, 9829, 9830, 9827, 9824, 8226,
@@ -50,6 +50,15 @@ def char(num=2, fg="white", bg="black", scale=2, mode="image"):
     )
     CHARSET_WIDTH = 1024
     CHARSET_HEIGHT = 448
+
+    num = int(num)
+
+    if num < 0 or num > 255:
+        num = 2
+    if fg not in colors:
+        fg = "white"
+    if bg not in colors:
+        bg = "darkblue"
 
     if mode == "text":
         output = "<span class='cp437 ega-{} ega-{}-bg'{}>&#{};</span>"
