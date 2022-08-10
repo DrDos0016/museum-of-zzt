@@ -31,7 +31,7 @@ label
 
 .field-value { grid-area: value; }
 .field-value input[type=text], .field-value textarea, .field-value input[type=file], .field-value input[type=date],
-.field-value input[type=url], .field-value select, .field-value input[type=password]
+.field-value input[type=url], .field-value select, .field-value input[type=password], .field-value input[type=email]
 {
     box-sizing:border-box;
     width:100%;

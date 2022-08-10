@@ -54,50 +54,22 @@ def activate_account(request, token=None):
 
 @login_required()
 def change_password(request):
-    data = {
-        "title": "Change Password",
-        "errors": {
-        },
-        "changed": False
-    }
+    data = {"title": "Change Password"}
 
-    success = True
-    if request.POST.get("action") == "change-password":
-        # Check current password
-        cur = request.POST.get("moz-pwd-cur")
-        if not cur:
-            success = False
-            data["errors"]["cur_pwd"] = ("You must authenticate this action "
-                                         "by providing your current password.")
+    if request.method == "POST":
+        form = Change_Password_Form(request.POST)
+        form.db_password = request.user.password
 
-        # Check current password matches
-        if not check_password(cur, request.user.password):
-            success = False
-            data["errors"]["cur_pwd"] = "Invalid credentials provided!"
-
-        # Check for matching passwords
-        pwd = request.POST.get("moz-pw")
-        pwd_conf = request.POST.get("moz-pw-conf")
-        if pwd != pwd_conf:
-            success = False
-            data["errors"]["pwd"] = ("Your password and password "
-                                     "confirmation did not match.")
-        elif not pwd or not pwd_conf:
-            success = False
-            data["errors"]["pwd"] = "A valid password was not provided."
-        elif len(pwd) < MIN_PASSWORD_LENGTH:
-            success = False
-            data["errors"]["pwd"] = ("Your password must be at least eight "
-                                     "characters in length.")
-
-        # Change the password
-        if success:
-            request.user.set_password(pwd)
+        if form.is_valid():
+            request.user.set_password(form.cleaned_data["new_password"])
             request.user.save()
             logout(request)
-            data["changed"] = True
+            return redirect("login_user")
+    else:
+        form = Change_Password_Form()
 
-    return render(request, "museum_site/user/change-password.html", data)
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)
 
 
 @login_required()
@@ -157,52 +129,21 @@ def change_credit_preferences(request):
 
 @login_required()
 def change_email(request):
-    data = {
-        "title": "Change Email",
-        "errors": {
-        },
-        "changed": False
-    }
+    data = {"title": "Change Email"}
 
-    success = True
-    if request.POST.get("action") == "change-email":
-        # Check current password
-        cur = request.POST.get("moz-pwd-cur")
-        if not cur:
-            success = False
-            data["errors"]["cur_pwd"] = ("You must authenticate this action "
-                                         "by providing your current password.")
+    if request.method == "POST":
+        form = Change_Email_Form(request.POST)
+        form.db_password = request.user.password
 
-        # Check current password matches
-        if not check_password(cur, request.user.password):
-            success = False
-            data["errors"]["cur_pwd"] = "Invalid credentials provided!"
-
-        # Check for matching emails
-        email = request.POST.get("email")
-        email_conf = request.POST.get("conf-email")
-        if email != email_conf:
-            success = False
-            data["errors"]["email"] = ("Your email address and email address "
-                                       "confirmation did not match.")
-
-        # Check for blank
-        if email == "":
-            success = False
-            data["errors"]["email"] = "A valid email address was not provided."
-
-        # Check email availability
-        if User.objects.filter(username__iexact=email).exists():
-            success = False
-            data["errors"]["email"] = "Requested email address is unavailable."
-
-        # Change the email address
-        if success:
-            request.user.email = email
+        if form.is_valid():
+            request.user.email = form.cleaned_data["new_email"]
             request.user.save()
             return redirect("my_profile")
+    else:
+        form = Change_Email_Form()
 
-    return render(request, "museum_site/user/change-email.html", data)
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)
 
 
 @login_required()

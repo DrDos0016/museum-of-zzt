@@ -983,7 +983,7 @@ class Change_Username_Form(forms.Form):
 
         # Check requested username and confirmation match
         if new_username != cleaned_data.get("confirm_username", ""):
-            self.add_error("confirm_username", "Confirmation username must match newly requested username")
+            self.add_error("confirm_username", "Username confirmation must match newly requested username")
 
         # Check prohibited characters
         if "/" in new_username:
@@ -1067,3 +1067,66 @@ class Change_Pronouns_Form(forms.Form):
         widget=forms.RadioSelect(choices=PRONOUN_CHOICES)
     )
     custom = forms.CharField(required=False)
+
+
+class Change_Password_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Change Password"
+    heading = "Change Password"
+    attrs = {"method": "POST"}
+    text_prefix = "<p>You may change your password here. Upon successfully changing your password, you will be required to login again.</p>"
+
+    current_password = forms.CharField(
+        widget=forms.PasswordInput()
+    )
+    new_password = forms.CharField(
+        min_length=8,
+        widget=forms.PasswordInput(),
+        help_text="Use a unique password for your account with a minimum length of <b>8</b> characters. Passwords are hashed and cannot be viewed by staff."
+    )
+    confirm_password = forms.CharField(
+        min_length=8,
+        widget=forms.PasswordInput()
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get("new_password", "")
+
+        # Check requested password and confirmation match
+        if new_password != cleaned_data.get("confirm_password", ""):
+            self.add_error("confirm_password", "Password confirmation must match newly requested password")
+
+        # Check current password
+        if not check_password(cleaned_data.get("current_password"), self.db_password):
+            self.add_error("current_password", "Invalid password")
+
+
+class Change_Email_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Change Email Address"
+    heading = "Change Email Address"
+    attrs = {"method": "POST"}
+    text_prefix = "<p>You may change your account's email address here. This address will be used to help you recover your account in the event your forget your username or password, so keep it up to date!</p>"
+
+    current_password = forms.CharField(
+        widget=forms.PasswordInput()
+    )
+    new_email = forms.EmailField()
+    confirm_email = forms.EmailField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_email = cleaned_data.get("new_email", "")
+
+        # Check requested email and confirmation match
+        if new_email != cleaned_data.get("confirm_email", ""):
+            self.add_error("confirm_email", "Email confirmation must match newly provided email address")
+
+        # Check availability
+        if User.objects.filter(email=new_email).exists():
+            self.add_error("new_email", "Requested email address is unavailable.")
+
+        # Check current password
+        if not check_password(cleaned_data.get("current_password"), self.db_password):
+            self.add_error("current_password", "Invalid password")
