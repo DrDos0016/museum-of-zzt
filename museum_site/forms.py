@@ -1146,3 +1146,25 @@ class Change_Patron_Email_Form(forms.Form):
     )
 
     patron_email = forms.EmailField()
+
+
+class Change_Patronage_Visibility_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Change Patronage Visibility"
+    heading = "Change Patronage Visibility"
+    attrs = {"method": "POST"}
+    text_prefix = (
+        "<p>Choose whether or not to disclose your status as a Worlds of ZZT patron on your public profile.</p>"
+        "<p>This option has no effect for non-patrons.</p>"
+    )
+
+    visibility = forms.ChoiceField(
+        widget=forms.RadioSelect(
+            choices=(("show", "Show patron status"), ("hide", "Hide patron status"))
+        ),
+        choices=(("show", "Show patron status"), ("hide", "Hide patron status")),
+        label="Patronage Visibility"
+    )
+
+
+

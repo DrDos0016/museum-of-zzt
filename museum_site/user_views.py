@@ -165,30 +165,19 @@ def change_patron_email(request):
 
 @login_required()
 def change_patronage_visibility(request):
-    data = {
-        "title": "Change Patronage Visibliity",
-        "errors": {
-        },
-        "changed": False
-    }
+    data = {"title": "Change Patronage Visibliity"}
 
-    success = True
-    if request.POST.get("action") == "change-patronage-visibility":
-
-        visibility = True if request.POST.get("visibility") == "on" else False
-
-        request.user.profile.patron_visibility = visibility
-
-        try:
+    if request.method == "POST":
+        form = Change_Patronage_Visibility_Form(request.POST)
+        if form.is_valid():
+            request.user.profile.patron_visibility = True if form.cleaned_data["visibility"] == "show" else False
             request.user.profile.save()
             return redirect("my_profile")
-        except Exception:
-            data["error"] = ("Something went wrong. Your patronage visibility "
-                             "was not updated.")
+    else:
+        form = Change_Patronage_Visibility_Form(initial={"visibility": ("show" if request.user.profile.patron_visibility else "hide")})
 
-    return render(
-        request, "museum_site/user/change-patronage-visibility.html", data
-    )
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)
 
 
 @login_required()
