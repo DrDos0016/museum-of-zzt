@@ -253,7 +253,7 @@ urlpatterns = [
     path("user/update-tos/", museum_site.user_views.update_tos, name="update_tos"),
     path("user/manage-saved-data/", museum_site.user_views.manage_saved_data, name="manage_saved_data"),
     # User Patron Pages
-    path("user/change-credit-preferences/", museum_site.user_views.change_credit_preferences, name="change_credit_preferences"),
+    path("user/change-crediting-preferences/", museum_site.user_views.change_crediting_preferences, name="change_credit_preferences"),
     path("user/change-patronage-visibility/", museum_site.user_views.change_patronage_visibility, name="change_patronage_visibility"),
     path("user/change-stream-poll-nominations/", museum_site.user_views.change_patron_perks, name="change_stream_poll_nominations"),
     path("user/change-stream-selections/", museum_site.user_views.change_patron_perks, name="change_stream_selections"),

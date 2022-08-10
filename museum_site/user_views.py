@@ -98,33 +98,23 @@ def change_char(request):
 
 
 @login_required()
-def change_credit_preferences(request):
-    data = {
-        "title": "Change Credit Preferences",
-        "errors": {
-        },
-        "changed": False,
-    }
+def change_crediting_preferences(request):
+    data = {"title": "Change Credit Preferences"}
 
-    success = True
-    if request.POST.get("action") == "change-credit-preferences":
-
-        site_credits = request.POST.get("site-credits", "")
-        stream_credits = request.POST.get("stream-credits", "")
-
-        request.user.profile.site_credits_name = site_credits
-        request.user.profile.stream_credits_name = stream_credits
-
-        try:
+    if request.method == "POST":
+        form = Change_Crediting_Preferences_Form(request.POST)
+        if form.is_valid():
+            request.user.profile.site_credits_name = form.cleaned_data["site_credits_name"]
+            request.user.profile.stream_credits_name = form.cleaned_data["stream_credits_name"]
             request.user.profile.save()
             return redirect("my_profile")
-        except Exception:
-            data["error"] = ("Something went wrong. Your crediting "
-                             "preferences were not updated.")
+    else:
+        form = Change_Crediting_Preferences_Form(
+            initial={"site_credits_name": request.user.profile.site_credits_name, "stream_credits_name": request.user.profile.stream_credits_name}
+        )
 
-    return render(
-        request, "museum_site/user/change-credit-preferences.html", data
-    )
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)
 
 
 @login_required()

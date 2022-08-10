@@ -1167,4 +1167,16 @@ class Change_Patronage_Visibility_Form(forms.Form):
     )
 
 
+class Change_Crediting_Preferences_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Change Crediting Preferences"
+    heading = "Change Crediting Preferences"
+    attrs = {"method": "POST"}
+    text_prefix = (
+        "<p>Choose how you wish to be credited on the Museum of ZZT's <a href='/credits' target='_blank'>Site Credits</a> page as well as on "
+        "Worlds of ZZT <a href='/article/category/livestream/' target='_blank'>Livestreams</a>.</p>"
+        "<p>If you would prefer to remain anonymous, leave these fields blank.</p>"
+    )
 
+    site_credits_name = forms.CharField(required=False)
+    stream_credits_name = forms.CharField(required=False)
