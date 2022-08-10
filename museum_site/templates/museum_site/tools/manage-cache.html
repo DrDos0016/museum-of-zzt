@@ -1,0 +1,32 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<h1>{{title}}</h1>
+
+<p>Cache keys are a manually compiled list. This page will need to be updated as new keys are used throughout the site.</p>
+
+{% if request.GET.refresh %}
+<p><b>Refreshed key {{request.GET.refresh}}</b></p>{% endif %}
+
+<table class="mono">
+<tr>
+    <th>Key</th>
+    <th>Value</th>
+    <th>Refresh</th>
+</tr>
+{% for i in cache_items %}
+<tr>
+    <th>{{i.key}}</th>
+    <td class="r">{{i.value}}</td>
+    <td class="c">
+        <form>
+        <input type="hidden" name="refresh" value="{{i.key}}">
+        <input type="submit" value="Refresh">
+        </form>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
