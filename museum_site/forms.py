@@ -1107,7 +1107,9 @@ class Change_Email_Form(forms.Form):
     submit_value = "Change Email Address"
     heading = "Change Email Address"
     attrs = {"method": "POST"}
-    text_prefix = "<p>You may change your account's email address here. This address will be used to help you recover your account in the event your forget your username or password, so keep it up to date!</p>"
+    text_prefix = (
+        "<p>You may change your account's email address here. This address will be used to help you recover your account in the event your forget your "
+        "username or password, so keep it up to date!</p>")
 
     current_password = forms.CharField(
         widget=forms.PasswordInput()
@@ -1130,3 +1132,17 @@ class Change_Email_Form(forms.Form):
         # Check current password
         if not check_password(cleaned_data.get("current_password"), self.db_password):
             self.add_error("current_password", "Invalid password")
+
+
+class Change_Patron_Email_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Change Patron Email Address"
+    heading = "Change Patron Email Address"
+    attrs = {"method": "POST"}
+    text_prefix = (
+        "<p>In order for your Museum account to be recognized as a Worlds of ZZT patron, your email address must match with an active patron account. "
+        "By default, the email address you signed up for your Museum of ZZT account with is used. If this is not the same email address as your Patreon "
+        "email address, you may specify the correct email address here.</p>"
+    )
+
+    patron_email = forms.EmailField()

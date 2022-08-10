@@ -148,30 +148,19 @@ def change_email(request):
 
 @login_required()
 def change_patron_email(request):
-    data = {
-        "title": "Change Patron Email",
-        "errors": {
-        },
-        "changed": False,
-    }
+    data = {"title": "Change Patron Email"}
 
-    success = True
-    if request.POST.get("action") == "change-patron-email":
-
-        email = request.POST.get("email", "")
-
-        request.user.profile.patron_email = email
-
-        try:
+    if request.method == "POST":
+        form = Change_Patron_Email_Form(request.POST)
+        if form.is_valid():
+            request.user.profile.patron_email = form.cleaned_data["patron_email"]
             request.user.profile.save()
             return redirect("my_profile")
-        except Exception:
-            data["error"] = ("Something went wrong. Your Patreon "
-                             "email address were not updated.")
+    else:
+        form = Change_Patron_Email_Form()
 
-    return render(
-        request, "museum_site/user/change-patron-email.html", data
-    )
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)
 
 
 @login_required()
