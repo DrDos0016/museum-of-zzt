@@ -206,56 +206,30 @@ def change_pronouns(request):
 @login_required()
 def change_patron_perks(request):
     """ Generic function to handle poll nominations, stream selections, etc """
-    data = {
-        "errors": {},
-        "changed": False
-    }
-    labels = {
-        "change-stream-poll-nominations": "Stream Poll Nominations",
-        "change-stream-selections": "Stream Selections",
-        "change-closer-look-poll-nominations": "Closer Look Poll Nominations",
-        "change-guest-stream-selections": "Guest Stream Selections",
-        "change-closer-look-selections": "Closer Look Selections",
-        "change-bkzzt-topics": "BKZZT Topics",
+    data = {}
+    reqs = {
+        "/user/change-stream-poll-nominations/": {"form": Change_Patron_Stream_Poll_Nominations_Form, "field": "stream_poll_nominations"},
+        "/user/change-stream-selections/": {"form": Change_Patron_Stream_Selections_Form, "field": "stream_selections"},
+        "/user/change-closer-look-poll-nominations/": {"form": Change_Closer_Look_Poll_Nominations_Form, "field": "closer_look_nominations"},
+        "/user/change-guest-stream-selections/": {"form": Change_Guest_Stream_Selections_Form, "field": "guest_stream_selections"},
+        "/user/change-closer-look-selections/": {"form": Change_Closer_Look_Selections_Form, "field": "closer_look_selections"},
+        "/user/change-bkzzt-topics/": {"form": Change_Bkzzt_Topics_Form, "field": "bkzzt_topics"},
     }
 
-    data["function"] = request.path.replace("/user/", "")[:-1]
-    data["title"] = data["function"].title().replace("-", " ")
-    data["label"] = labels[data["function"]]
+    if request.method == "POST":
+        form = reqs[request.path]["form"](request.POST)
+        field = reqs[request.path]["field"]
+        if form.is_valid():
+            setattr(request.user.profile, field, form.cleaned_data[field])
+            request.user.profile.save()
+            return redirect("my_profile")
+    else:
+        initial_value = getattr(request.user.profile, reqs[request.path]["field"])
+        form = reqs[request.path]["form"](initial={reqs[request.path]["field"]: initial_value})
 
-    if data["function"] == "change-stream-poll-nominations":
-        data["current"] = request.user.profile.stream_poll_nominations
-    elif data["function"] == "change-stream-selections":
-        data["current"] = request.user.profile.stream_selections
-    elif data["function"] == "change-closer-look-poll-nominations":
-        data["current"] = request.user.profile.closer_look_nominations
-    elif data["function"] == "change-guest-stream-selections":
-        data["current"] = request.user.profile.guest_stream_selections
-    elif data["function"] == "change-closer-look-selections":
-        data["current"] = request.user.profile.closer_look_selections
-    elif data["function"] == "change-bkzzt-topics":
-        data["current"] = request.user.profile.bkzzt_topics
-
-    if request.POST.get("action") and request.POST.get("value"):
-        action = request.POST["action"]
-        value = request.POST.get("value")
-        if action == "change-stream-poll-nominations":
-            request.user.profile.stream_poll_nominations = value
-        elif action == "change-stream-selections":
-            request.user.profile.stream_selections = value
-        elif action == "change-closer-look-poll-nominations":
-            request.user.profile.closer_look_nominations = value
-        elif action == "change-guest-stream-selections":
-            request.user.profile.guest_stream_selections = value
-        elif action == "change-closer-look-selections":
-            request.user.profile.closer_look_selections = value
-        elif action == "change-bkzzt-topics":
-            request.user.profile.bkzzt_topics = value
-
-        request.user.profile.save()
-        return redirect("my_profile")
-
-    return render(request, "museum_site/user/change-patron-perks.html", data)
+    data["title"] = form.heading
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)
 
 
 @login_required()

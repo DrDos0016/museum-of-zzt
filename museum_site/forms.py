@@ -15,7 +15,9 @@ from museum_site.core import *
 from museum_site.models import *
 from museum_site.fields import *
 from museum_site.widgets import *
-from museum_site.common import GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices, delete_this, UPLOAD_TEST_MODE, record
+from museum_site.common import (
+    EMAIL_ADDRESS, GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices, delete_this, UPLOAD_TEST_MODE, record
+)
 from museum_site.constants import (
     LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES
 )
@@ -1180,3 +1182,104 @@ class Change_Crediting_Preferences_Form(forms.Form):
 
     site_credits_name = forms.CharField(required=False)
     stream_credits_name = forms.CharField(required=False)
+
+
+class Change_Patron_Stream_Poll_Nominations_Form(forms.Form):
+    use_required_attribute = False
+    submit_value ="Change Stream Poll Nominations"
+    heading = "Change Stream Poll Nominations"
+    attrs = {"method": "POST"}
+
+    stream_poll_nominations = forms.CharField(
+        widget=forms.Textarea(),
+        label="Nominations",
+        help_text=(
+            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
+            "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted."
+        ).format(EMAIL_ADDRESS)
+    )
+
+
+class Change_Patron_Stream_Selections_Form(forms.Form):
+    use_required_attribute = False
+    submit_value ="Change Stream Selections"
+    heading = "Change Stream Selections"
+    attrs = {"method": "POST"}
+
+    stream_selections = forms.CharField(
+        widget=forms.Textarea(),
+        label="Stream Selections",
+        help_text=(
+            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
+            "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted.<br><br>"
+            "Selections will be streamed in the order they appear here."
+        ).format(EMAIL_ADDRESS)
+    )
+
+
+class Change_Closer_Look_Poll_Nominations_Form(forms.Form):
+    use_required_attribute = False
+    submit_value ="Change Closer Look Poll Nominations"
+    heading = "Change Closer Look Poll Nominations"
+    attrs = {"method": "POST"}
+
+    closer_look_nominations = forms.CharField(
+        widget=forms.Textarea(),
+        label="Closer Look Poll Nominations",
+        help_text=(
+            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
+            "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted.<br><br>"
+            "Selections will be appear on polls in the order they appear here."
+        ).format(EMAIL_ADDRESS)
+    )
+
+
+class Change_Guest_Stream_Selections_Form(forms.Form):
+    use_required_attribute = False
+    submit_value ="Change Guest Stream Selections"
+    heading = "Change Guest Stream Selections"
+    attrs = {"method": "POST"}
+
+    guest_stream_selections = forms.CharField(
+        widget=forms.Textarea(),
+        label="Guest Stream Selections",
+        help_text=(
+            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
+            "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted.<br><br>"
+            "Selections will be streamed in the order they appear here."
+        ).format(EMAIL_ADDRESS)
+    )
+
+
+class Change_Closer_Look_Selections_Form(forms.Form):
+    use_required_attribute = False
+    submit_value ="Change Closer Look Selections"
+    heading = "Change Closer Look Selections"
+    attrs = {"method": "POST"}
+
+    closer_look_selections = forms.CharField(
+        widget=forms.Textarea(),
+        label="Closer Look Selections",
+        help_text=(
+            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
+            "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted.<br><br>"
+            "Selections will be written in the order they appear here."
+        ).format(EMAIL_ADDRESS)
+    )
+
+
+class Change_Bkzzt_Topics_Form(forms.Form):
+    use_required_attribute = False
+    submit_value ="Change BKZZT Topics"
+    heading = "Change BKZZT Topics"
+    attrs = {"method": "POST"}
+
+    bkzzt_topics = forms.CharField(
+        widget=forms.Textarea(),
+        label="BKZZT Topic Selections",
+        help_text=(
+            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
+            "If your suggestion cannot be used for whatever reason you will be contacted.<br><br>"
+            "Selections will be used as topics in the order they appear here."
+        ).format(EMAIL_ADDRESS)
+    )
