@@ -94,9 +94,8 @@ function iso8601_to_user_tz(selector)
 </table>
 <hr>
 {% if private %}
-<h1>Private Data</h1>
-<br><br>
-<h2>User Data</h2>
+<h2>Private Data</h2>
+<h3>User Data</h3>
 {% if request.GET.check_patronage %}
 <p>Your Patron status has been refreshed. If you are still not being marked as a Patron, confirm that your Patron Email Address matches the one being used for your Patreon account. If you are still not being properly marked as a Patron, <a href="mailto:{{EMAIL_ADDRESS}}">contact Dr. Dos</a>.</p>
 {% endif %}
@@ -136,7 +135,7 @@ function iso8601_to_user_tz(selector)
 </table>
 
 {% if user_obj.profile.patron %}
-<h2>Worlds of ZZT Patronage</h2>
+<h3>Worlds of ZZT Patronage</h3>
 <table>
     <tr>
         <th>Patronage</th>
@@ -144,7 +143,7 @@ function iso8601_to_user_tz(selector)
     </tr>
     <tr>
         <th>Patronage Visibility</th>
-        <td>{{user_obj.profile.patron_visibility|yesno:"On,Off"}}</td>
+        <td>{{user_obj.profile.patron_visibility|yesno:"Show Patron Status,Hide Patron Status"}}</td>
         <td><a href="{% url 'change_patronage_visibility' %}">Change Patronage Visibility</a></td>
     </tr>
     <tr>
@@ -191,7 +190,7 @@ function iso8601_to_user_tz(selector)
         </td>
     </tr>
     <tr>
-        <th>Closer Look Selection<br>[$50+, "?HEALTH" Tier]</th>
+        <th>Closer Look Selections<br>[$50+, "?HEALTH" Tier]</th>
         <td colspan="2">{% if user_obj.profile.patronage >= 5000  and user_obj.profile.patron_tier == TIERS.HEALTH %}<textarea readonly class="table-textarea">{{user_obj.profile.closer_look_selections}}</textarea>
         <p class="r"><a href="{% url 'change_closer_look_selections' %}">Change Closer Look Selections</a></p>
         {% else %}
@@ -237,7 +236,7 @@ function iso8601_to_user_tz(selector)
 {% endif %}
 
 {% if show_session %}
-<h1>Session Data</h1>
+<h2>Session Data</h2>
 
 <table>
     {% for k,v,hr in user_data %}
@@ -253,7 +252,7 @@ function iso8601_to_user_tz(selector)
 {% endif %}
 
 {% if user.is_authenticated and private %}
-<h1>Account Actions</h1>
+<h2>Account Actions</h2>
 <ul>
     <li><a href="{% url 'logout_user' %}">Log out</a></li>
 </ul>
