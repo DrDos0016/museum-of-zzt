@@ -19,7 +19,7 @@ from museum_site.common import (
     EMAIL_ADDRESS, GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices, delete_this, UPLOAD_TEST_MODE, record
 )
 from museum_site.constants import (
-    LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES
+    LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, TERMS
 )
 from museum_site.core.detail_identifiers import *
 from museum_site.private import IA_ACCESS, IA_SECRET
@@ -28,6 +28,9 @@ from museum_site.private import IA_ACCESS, IA_SECRET
 from internetarchive import upload
 
 STUB_CHOICES = (("A", "First"), ("B", "Second"), ("C", "Third"))  # For debugging
+
+# Common strings
+PASSWORD_HELP_TEXT = "Use a unique password for your account with a minimum length of <b>8</b> characters. Passwords are hashed and cannot be viewed by staff."
 
 
 class ZGameForm(forms.ModelForm):
@@ -1084,7 +1087,7 @@ class Change_Password_Form(forms.Form):
     new_password = forms.CharField(
         min_length=8,
         widget=forms.PasswordInput(),
-        help_text="Use a unique password for your account with a minimum length of <b>8</b> characters. Passwords are hashed and cannot be viewed by staff."
+        help_text=PASSWORD_HELP_TEXT
     )
     confirm_password = forms.CharField(
         min_length=8,
@@ -1186,7 +1189,7 @@ class Change_Crediting_Preferences_Form(forms.Form):
 
 class Change_Patron_Stream_Poll_Nominations_Form(forms.Form):
     use_required_attribute = False
-    submit_value ="Change Stream Poll Nominations"
+    submit_value = "Change Stream Poll Nominations"
     heading = "Change Stream Poll Nominations"
     attrs = {"method": "POST"}
 
@@ -1202,7 +1205,7 @@ class Change_Patron_Stream_Poll_Nominations_Form(forms.Form):
 
 class Change_Patron_Stream_Selections_Form(forms.Form):
     use_required_attribute = False
-    submit_value ="Change Stream Selections"
+    submit_value = "Change Stream Selections"
     heading = "Change Stream Selections"
     attrs = {"method": "POST"}
 
@@ -1219,7 +1222,7 @@ class Change_Patron_Stream_Selections_Form(forms.Form):
 
 class Change_Closer_Look_Poll_Nominations_Form(forms.Form):
     use_required_attribute = False
-    submit_value ="Change Closer Look Poll Nominations"
+    submit_value = "Change Closer Look Poll Nominations"
     heading = "Change Closer Look Poll Nominations"
     attrs = {"method": "POST"}
 
@@ -1236,7 +1239,7 @@ class Change_Closer_Look_Poll_Nominations_Form(forms.Form):
 
 class Change_Guest_Stream_Selections_Form(forms.Form):
     use_required_attribute = False
-    submit_value ="Change Guest Stream Selections"
+    submit_value = "Change Guest Stream Selections"
     heading = "Change Guest Stream Selections"
     attrs = {"method": "POST"}
 
@@ -1253,7 +1256,7 @@ class Change_Guest_Stream_Selections_Form(forms.Form):
 
 class Change_Closer_Look_Selections_Form(forms.Form):
     use_required_attribute = False
-    submit_value ="Change Closer Look Selections"
+    submit_value = "Change Closer Look Selections"
     heading = "Change Closer Look Selections"
     attrs = {"method": "POST"}
 
@@ -1270,7 +1273,7 @@ class Change_Closer_Look_Selections_Form(forms.Form):
 
 class Change_Bkzzt_Topics_Form(forms.Form):
     use_required_attribute = False
-    submit_value ="Change BKZZT Topics"
+    submit_value = "Change BKZZT Topics"
     heading = "Change BKZZT Topics"
     attrs = {"method": "POST"}
 
@@ -1282,4 +1285,193 @@ class Change_Bkzzt_Topics_Form(forms.Form):
             "If your suggestion cannot be used for whatever reason you will be contacted.<br><br>"
             "Selections will be used as topics in the order they appear here."
         ).format(EMAIL_ADDRESS)
+    )
+
+
+class User_Registration_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Register Account"
+    heading = "Register Account"
+    attrs = {"method": "POST"}
+
+    requested_username = forms.CharField(label="Username")
+    requested_email = forms.EmailField(label="Email address", help_text="A valid email address is required to verify your account.")
+    action = forms.CharField(widget=forms.HiddenInput(), initial="register")
+    first_name = forms.CharField(required=False)  # Spam trap
+    password = forms.CharField(
+        min_length=8,
+        widget=forms.PasswordInput(),
+        help_text=PASSWORD_HELP_TEXT
+    )
+    confirm_password = forms.CharField(
+        min_length=8,
+        widget=forms.PasswordInput(),
+    )
+    terms = forms.BooleanField(
+        widget=Terms_Of_Service_Widget(terms=TERMS)
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Check if username is taken
+        if User.objects.filter(username__iexact=cleaned_data.get("requested_username")).exists():
+            self.add_error("requested_username", "Requested username is unavailable")
+
+        # Check if email is taken
+        if User.objects.filter(email=cleaned_data.get("requested_email")).exists():
+            self.add_error("requested_email", "Requested email address is unavailable.")
+
+        # Check passwords match
+        if cleaned_data.get("password", "") != cleaned_data.get("confirm_password", ""):
+            self.add_error("confirm_password", "Password confirmation must match password")
+
+        # Adjust TOS error message
+        if not cleaned_data.get("terms"):
+            self.add_error("terms", "You must agree to the terms of service in order to register an account.")
+
+        return cleaned_data
+
+
+class Activate_Account_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Activate Account"
+    heading = "Activate Account"
+    attrs = {"method": "POST"}
+    text_prefix = (
+        "<p>Your account has been created, but is currently <b>INACTIVE</b>.</p>"
+        "<p>Please wait a moment and then check your inbox for an email containing a link to verify your account. If you haven't received one, check your spam folder as well. "
+        "If you still haven't received a verification message <a href='mailto:{}'> contact Dr. Dos</a> for manual activation.</p>"
+        "<p><a href='/user/resend-activation'>Resend activation email</a>.</p>".format(EMAIL_ADDRESS)
+    )
+
+    activation_token = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        qs = User.objects.filter(profile__activation_token=cleaned_data.get("activation_token"))
+
+        if len(qs) != 1:
+            self.add_error("activation_token", "A user account with the provided token was not found")
+        else:
+            cleaned_data["user"] = qs.first()
+        return cleaned_data
+
+
+class Forgot_Username_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Forgot Username"
+    submit_value = "Find Username"
+    attrs = {"method": "POST"}
+    text_prefix = (
+        "<p>Please provide the email address for your account. If an account with that email address exists, "
+        "a message will be sent to that address providing your username.</p>"
+    )
+
+    email = forms.EmailField(label="Account email address")
+
+
+class Forgot_Password_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Forgot Password"
+    submit_value = "Request Password Reset"
+    attrs = {"method": "POST"}
+    text_prefix = (
+        "<p>Please provide the email address for your account. If an account with that email address exists, "
+        "a message will be sent to that address containing a link to reset your password.</p>"
+    )
+
+    email = forms.EmailField(label="Account email address")
+
+
+class Reset_Password_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Reset Password"
+    submit_value = "Change Password"
+    attrs = {"method": "POST"}
+    text_prefix = (
+        "<p>Your request has been received. If the provided email has an associated account, an email will be sent to containing a token to reset "
+        "your password. A link is also provided to automatically enter the token's value.</p>"
+        "<p>If no message is received, check your spam folder and wait a few minutes before trying again. If the issue persists, contact "
+        "<a href='mailto:{}'>Dr. Dos</a>.</p>".format(EMAIL_ADDRESS)
+    )
+
+    reset_token = forms.CharField()
+    new_password = forms.CharField(
+        min_length=8,
+        widget=forms.PasswordInput(),
+        help_text=PASSWORD_HELP_TEXT
+    )
+    confirm_password = forms.CharField(
+        min_length=8,
+        widget=forms.PasswordInput()
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get("new_password", "")
+
+        # Check requested password and confirmation match
+        if new_password != cleaned_data.get("confirm_password", ""):
+            self.add_error("confirm_password", "Password confirmation must match newly requested password")
+
+        # Check the token is valid
+        qs = User.objects.filter(profile__reset_token=cleaned_data.get("reset_token"))
+        if len(qs) != 1:
+            self.add_error("reset_token", "The provided reset token is not valid.")
+        else:
+            self.user = qs[0]
+        return cleaned_data
+
+class Resent_Account_Activation_Email_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Resend Account Activation Email"
+    submit_value = "Resend Activation Email"
+    attrs = {"method": "POST"}
+    text_prefix = (
+        "<p>If you haven't received your account activation email or your activation token has expired you can provide your email address here "
+        "to have another one sent to your account.</p>"
+        "<p>If you continue to not receive an activation email, contact "
+        "<a href='mailto:{}'>Dr. Dos</a> for manual account activation..</p>".format(EMAIL_ADDRESS)
+    )
+
+    email = forms.EmailField()
+
+
+class Updated_Terms_Of_Service_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Updated Terms of Service"
+    submit_value = "Accept Terms of Service"
+    attrs = {"method": "POST"}
+    text_prefix = (
+        "<p>The Museum of ZZT's terms of service have been updated since you last agreed to the terms. In order to continue using your account you "
+        "must accept the current version of the terms.</p>"
+    )
+
+    terms = forms.BooleanField(
+        widget=Terms_Of_Service_Widget(terms=TERMS)
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Adjust TOS error message
+        if not cleaned_data.get("terms"):
+            self.add_error("terms", "You must agree to the terms of service in order to register an account.")
+        return cleaned_data
+
+class Login_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Account Login"
+    submit_value = "Login"
+    attrs = {"method": "POST"}
+
+    action = forms.CharField(widget=forms.HiddenInput(), initial="login")
+    username = forms.CharField(
+        help_text="<a href='/user/forgot-username/' tabindex='-1'>Forgot Username</a>"
+    )
+    password = forms.CharField(
+        help_text="<a href='/user/forgot-password/' tabindex='-1'>Forgot Password</a>",
+        widget=forms.PasswordInput()
     )

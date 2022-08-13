@@ -1,130 +1,35 @@
 {% extends "museum_site/main.html" %}
 
 {% block content %}
-{% if request.POST.action != "register" %}
-    <h1>Account Login</h1>
-    {% if errors.etc %}<p style="font-weight:bold">{{errors.etc}}</p>{% endif %}
+{% with login_form as form %}
+<h1>{{form.heading}}</h1>
 
-    <form method="POST" id="user-login-form">
-    {% csrf_token %}
-    <input type="hidden" name="action" value="login">
+{{form.text_prefix|default:""|safe}}
 
-    <div class="field{% if errors.username or errors.etc %} error{% endif %}">
-        <label for="username">Username:<br>
-            <span class="sub"></span>
-        </label>
-        <div class="field-group">
-            <input id="username" name="username" maxlength="150" value="{{request.POST.username}}">
-            <p class="form-error">{{errors.username|safe}}</p>
-            <p><a href="{% url 'forgot_username' %}" tabindex="-1">Forgot Username</a></p>
-        </div>
-    </div>
-
-    <div class="field{% if errors.pwd %} error{% endif %}">
-        <label for="moz-pw">Password:<br>
-            <span class="sub"></span>
-        </label>
-        <div class="field-group">
-            <input id="moz-pw" name="moz-pw" maxlength="150" type="password" value="">
-            <p class="form-error">{{errors.pwd}}</p>
-            <p><a href="{% url 'forgot_password' %}" tabindex="-1">Forgot Password</a></p>
-        </div>
-    </div>
-
-    <div class="field">
-        <button type="submit" id="submit-login-button" class="full-width-submit">Login</button>
-    </div>
-    </form>
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+{% endwith %}
 
 <hr>
-{% endif %}
-
-<h1>Register an Account</h1>
 
 {% if registration_open %}
-<form method="POST" id="user-registration-form">
-{% csrf_token %}
-<input type="hidden" name="action" value="register">
+{% with reg_form as form %}
+<h1>{{form.heading}}</h1>
 
-<!--- Shh! -->
-<div style="width:0px;height:0px;overflow:hidden;">
-    <label for="first-name">First Name:<br>
-        <span class="sub"></span>
-    </label>
-    <div class="field-group">
-        <input id="first-name" name="first-name" maxlength="20" value="">
-    </div>
-</div>
+{{form.text_prefix|default:""|safe}}
 
-<div class="field{% if reg_errors.username %} error{% endif %}">
-    <label for="reg_username">Username:<br>
-        <span class="sub"></span>
-    </label>
-    <div class="field-group">
-        <input id="reg_username" name="reg_username" maxlength="150" value="{{request.POST.reg_username}}">
-        <p class="form-error">{{reg_errors.username}}</p>
-    </div>
-</div>
-
-<div class="field{% if reg_errors.email %} error{% endif %}">
-    <label for="reg_email">Email Address:<br>
-        <span class="sub">A valid email address is required to verify your account.</span>
-    </label>
-    <div class="field-group">
-        <input id="reg_email" name="reg_email" maxlength="150" value="{{request.POST.reg_email}}">
-        {% if reg_errors.email %}<p class="form-error">{{reg_errors.email}}</p>{% endif %}
-    </div>
-</div>
-
-<div class="field{% if reg_errors.pwd %} error{% endif %}">
-    <label for="reg_moz-pw">Password:<br>
-        <span class="sub">Use a unique password for your account with a minimum length of eight characters. Passwords are hashed and cannot be viewed by anyone.</span>
-    </label>
-    <div class="field-group">
-        <input id="reg_moz-pw" name="reg_moz-pw" maxlength="150" type="password" value="">
-        {% if reg_errors.pwd %}<p class="form-error">{{reg_errors.pwd}}</p>{% endif %}
-    </div>
-</div>
-
-<div class="field">
-    <label for="reg_moz-pw-conf">Confirm Password:<br>
-        <span class="sub"></span>
-    </label>
-    <div class="field-group">
-        <input id="reg_moz-pw-conf" name="reg_moz-pw-conf" maxlength="150" type="password" value="">
-    </div>
-</div>
-
-<div class="field{% if reg_errors.tos %} error{% endif %}">
-    <label for="terms">Terms:<br>
-        <span class="sub"></span>
-    </label>
-    <div class="field-group">
-        <textarea id="terms" readonly>{{terms}}</textarea><br>
-        <p{% if reg_errors.tos %} style="background-color:#FCC;"{% endif %}><label><input type="checkbox" name="tos-agreement" value="agree"> I agree to the above terms of service.</label></p>
-        {% if reg_errors.tos %}<p class="form-error">{{reg_errors.tos}}</p>{% endif %}
-    </div>
-</div>
-
-{% comment %}
-<div class="field">
-    <label for="reg_moz-z-cap">Captcha:<br>
-        <span class="sub"></span>
-    </label>
-    <div class="field-group">
-        <input id="reg_moz-z-cap" name="reg_moz-z-cap" maxlength="6" value="">
-    </div>
-</div>
-{% endcomment %}
-
-<div class="field">
-    <button type="submit" id="submit-registration-button" class="full-width-submit">Register Account</button>
-</div>
-<div class="field-group">
-    <p class="form-error" style="background-color:#FCC;">{{reg_errors.etc|safe}}</p>
-</div>
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
 </form>
+{% endwith %}
 {% else %}
-<p>Account registration is temporarily closed.</p>
+<h1>Registration Closed</h1>
+
+<p>Registration is currently closed at this time. Please contact <a href="mailto:{{EMAIL_ADDRESS}}">Dr. Dos</a> for more information.</p>
 {% endif %}
 {% endblock %}

@@ -233,7 +233,6 @@ urlpatterns = [
     path("user/profile/<int:user_id>/<str:unused_slug>/", museum_site.user_views.user_profile, name="user_profile"),
     path("user/profile/", museum_site.user_views.user_profile, name="my_profile"),
     path("user/forgot-username/", museum_site.user_views.forgot_username, name="forgot_username"),
-    path("user/forgot-username/complete/", museum_site.user_views.user_profile, name="forgot_username_complete"),
     path("user/forgot-password/", museum_site.user_views.forgot_password, name="forgot_password"),
     path(
         "user/reset-password/complete/", museum_site.views.generic,

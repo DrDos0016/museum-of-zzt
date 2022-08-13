@@ -62,15 +62,10 @@ def museum_global(request):
 
     # User TOS Date checks
     if request.user.is_authenticated:
-        if (
-            TERMS_DATE > request.user.profile.accepted_tos and
-            request.method == "GET" and
-            request.path != "/user/update-tos/"
-        ):
+        if (TERMS_DATE > request.user.profile.accepted_tos and request.method == "GET" and request.path != "/user/update-tos/"):
             # Force a new login
-            for key in [
-                "_auth_user_id", "_auth_user_backend", "_auth_user_hash"
-            ]:
+            for key in ["_auth_user_id", "_auth_user_backend", "_auth_user_hash"]:
                 if request.session.get(key):
                     del request.session[key]
+            data["forced_logout"] = True
     return data

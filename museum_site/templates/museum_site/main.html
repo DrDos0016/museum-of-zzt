@@ -150,7 +150,7 @@
         <a href="{% url 'support' %}" class="nav-link nohover"><div class="key">S</div><div class="text">Support</div></a>
         <a href="{% url 'discord' %}" class="nav-link nohover"><div class="key">D</div><div class="text">Discord</div></a>
         <a href="http://zzt.org/fora" class="nav-link nohover"><div class="key">Z</div><div class="text"><span class="optional"> z2 </span>Forums</div></a>
-        {% if user.is_authenticated %}<a href="{% url 'my_profile' %}" class="nav-link nohover" title="Logged in as: {{user.username}}"><div class="key">{% char user.profile.char user.profile.fg user.profile.bg scale=2 %}</div><div class="text">Profile</div></a>{% else %}
+        {% if user.is_authenticated and not forced_logout %}<a href="{% url 'my_profile' %}" class="nav-link nohover" title="Logged in as: {{user.username}}"><div class="key">{% char user.profile.char user.profile.fg user.profile.bg scale=2 %}</div><div class="text">Profile</div></a>{% else %}
         <a href="{% url 'login_user' %}" class="nav-link nohover"><div class="key">{% char 1 "black" "transparent" %}</div><div class="text">Account</div></a>{% endif %}
         {% if user.is_staff %}
         <a href="{% url 'tool_index' %}" class="nav-link nohover"><div class="key">T</div><div class="text">Tools</div></a>
