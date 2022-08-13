@@ -6,6 +6,9 @@
 
 {{form.text_prefix|default:""|safe}}
 
+{% if request.GET.password_reset %}<p><b>Your password has been updated successfully.</b></p>{% endif %}
+{% if request.GET.activation %}<p><b>Your account has been activated successfully.</b></p>{% endif %}
+
 <form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
 {% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
 {% include "museum_site/blocks/generic-form.html" %}

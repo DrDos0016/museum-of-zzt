@@ -259,27 +259,6 @@ def change_username(request):
     return render(request, "museum_site/generic-form-display.html", data)
 
 
-def error_login(request):
-    data = {"title": "Access Restricted"}
-    data["now"] = datetime.now()
-    return render(request, "museum_site/user/error-login.html", data)
-
-
-def error_registration(request):
-    data = {"title": "Access Restricted"}
-    key = "FAILED-REGISTRATION-{}".format(request.META["REMOTE_ADDR"])
-    data["now"] = datetime.now()
-    data["cached_value"] = cache.get(key)
-    data["expires"] = cache.get(key + "-EXPIRES")
-    return render(request, "museum_site/user/error-registration.html", data)
-
-
-def error_password_reset(request):
-    data = {"title": "Access Restricted"}
-    data["now"] = datetime.now()
-    return render(request, "museum_site/user/error-password-reset.html", data)
-
-
 def forgot_password(request):
     data = {"title": "Forgot Password"}
 

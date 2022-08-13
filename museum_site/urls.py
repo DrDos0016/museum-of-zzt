@@ -111,11 +111,6 @@ urlpatterns = [
     path("uploaded/", legacy_redirect, {"name": "files_by_detail", "slug": "uploaded"}, name="uploaded_worlds"),
     path("featured/", legacy_redirect, {"name": "files_by_detail", "slug": "featured-world"}, name="featured_games"),
 
-    # /error/
-    path("error/login/", museum_site.user_views.error_login, name="error_login"),
-    path("error/registrations/", museum_site.user_views.error_registration, name="error_registration"),
-    path("error/password-reset/", museum_site.user_views.error_password_reset, name="error_password_reset"),
-
     # /file/
     path("file/browse/", museum_site.file_views.file_directory, name="browse"),
     path("file/browse/new-finds/", museum_site.file_views.file_directory, name="new_finds"),
