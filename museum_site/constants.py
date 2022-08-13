@@ -33,81 +33,40 @@ TERMS = """
 # Museum of ZZT - Terms of Service (v.2021.08.01)
 
 ## Your Data
-User passwords are stored in a hashed and salted format preventing anyone from
-easily acquiring them. Nevertheless using a unique password is strongly
-encouraged as the Museum of ZZT and its security are essentially a one person
-operation.
+User passwords are stored in a hashed and salted format preventing anyone from easily acquiring them. Nevertheless using a unique password is strongly encouraged as the Museum of ZZT and its security are essentially a one person operation.
 
-On occasion to better facilitate site development the Museum of ZZT's database
-is exported, scrubbed, and published to be used as a starting point for
-development. The scrubbing process includes data being blanked out or replaced
-with dummy data. This includes IP addresses, email addresses, all session data,
-password hashes, and profile information.
+On occasion to better facilitate site development the Museum of ZZT's database is exported, scrubbed, and published to be used as a starting point for development. The scrubbing process includes data being blanked out or replaced with dummy data. This includes IP addresses, email addresses, all session data, password hashes, and profile information.
 
-Because some data is captured in these database dumps it is possible for
-deleted information to still be available. When submitting data to the Museum
-of ZZT, please consider that there is a possibility that it is never truly
-gone forever when erased from the live site.
+Because some data is captured in these database dumps it is possible for deleted information to still be available. When submitting data to the Museum of ZZT, please consider that there is a possibility that it is never truly gone forever when erased from the live site.
 
-By accepting these terms of service you are acknowledging the potential for
-your data to persist in potentially unforeseen ways, and providing permission
-for that data to be stored, shared, and reproduced in Worlds of ZZT projects.
+By accepting these terms of service you are acknowledging the potential for your data to persist in potentially unforeseen ways, and providing permission for that data to be stored, shared, and reproduced in Worlds of ZZT projects.
 
 ## Email
-Your email address (and patron email address) will not be shared with third
-parties. A valid email address is required to verify your account and provide
-password reset functionality.
+Your email address (and patron email address) will not be shared with third parties. A valid email address is required to verify your account and provide password reset functionality.
 
-By accepting these terms of service you are providing permission to store
-this information within the Museum of ZZT's database.
+By accepting these terms of service you are providing permission to store this information within the Museum of ZZT's database.
 
 ## Patronage
-Users will have their account's email address or a specifically chosen Patreon
-email address cross-referenced against a nightly generated list of active
-Worlds of ZZT patrons. If a match is found your account will be marked as a
-patron with the current pledge and selected tier recorded. This information is
-used to allow users to access patron exclusive perks based on these values.
+Users will have their account's email address or a specifically chosen Patreon email address cross-referenced against a nightly generated list of active Worlds of ZZT patrons. If a match is found your account will be marked as a patron with the current pledge and selected tier recorded. This information is used to allow users to access patron exclusive perks based on these values.
 
-At the time of writing, accounts which no longer remain patrons either due to
-denied payments or canceled pledges will not automatically lose their patron
-status.
+At the time of writing, accounts which no longer remain patrons either due to denied payments or canceled pledges will not automatically lose their patron status.
 
-By accepting these terms of service you are providing permission to link your
-Museum of ZZT account to Worlds of ZZT Patreon information and storing relevant
-data about your patronage to provide access to patron exclusive content and
-site functionality.
+By accepting these terms of service you are providing permission to link your Museum of ZZT account to Worlds of ZZT Patreon information and storing relevant data about your patronage to provide access to patron exclusive content and site functionality.
 
 ## User Conduct
+It is a goal of the Worlds of ZZT project to help create and foster a ZZT community which is welcoming and inclusive to all regardless of age, race, gender, ZZT experience, religion, orientation, etc. Users and guests contributing to this community are expected to do so in a way which aligns with this goal.
 
-It is a goal of the Worlds of ZZT project to help create and foster a ZZT
-community which is welcoming and inclusive to all regardless of age, race,
-gender, ZZT experience, religion, orientation, etc. Users and guests
-contributing to this community are expected to do so in a way which aligns with
-this goal.
+Do not abuse functionality to alter your username. Impersonating other users or using characters to adversely affect (successfully or otherwise) page rendering are strictly forbidden.
 
-Do not abuse functionality to alter your username. Impersonating other users or
-using characters to adversely affect (successfully or otherwise) page rendering
-are strictly forbidden.
+Users are expected to abide by all Museum rules and policies when uploading files, posting reviews, and leaving comments.
 
-Users are expected to abide by all Museum rules and policies when uploading
-files, posting reviews, and leaving comments.
+Users are expected to be respectful of other community members and privately contact staff when there is an issue either through direct messages on Discord or via email.
 
-Users are expected to be respectful of other community members and privately
-contact staff when there is an issue either through direct messages on Discord
-or via email.
+By accepting these terms of service you are agreeing to conduct yourself in a manner that aligns with these ideals.
 
-By accepting these terms of service you are agreeing to conduct yourself in a
-manner that aligns with these ideals.
+## Violations Violations of these terms may result in you and/or your account having permissions to participate in certain site functions (including but not limited to uploading files, posting reviews, participating on the Worlds of ZZT Discord) being revoked for any amount of time felt necessary.
 
-## Violations
-
-Violations of these terms may result in you and/or your account having
-permissions to participate in certain site functions (including but not limited
-to uploading files, posting reviews, participating on the Worlds of ZZT
-Discord) being revoked for any amount of time felt necessary.
-
-By accepting these terms of service you are acknowledging and agreeing to the
-consequences of violating these terms.
+By accepting these terms of service you are acknowledging and agreeing to the consequences of violating these terms.
 """
 TOKEN_EXPIRATION_SECS = 600
 
