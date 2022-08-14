@@ -32,7 +32,7 @@ def upload(request):
     if not UPLOADS_ENABLED:
         return redirect("/")
 
-    if request.META["REMOTE_ADDR"] in BANNED_IPS:
+    if banned_ip(request.META["REMOTE_ADDR"]):
         return HttpResponse("Banned account.")
 
     # Prepare the proper form

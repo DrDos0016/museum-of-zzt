@@ -397,7 +397,7 @@ def review(request, key):
     if recent:
         data["recent"] = recent[0].pk
     elif request.method == "POST" and zfile.can_review != File.REVIEW_NO:
-        if request.META["REMOTE_ADDR"] in BANNED_IPS:
+        if banned_ip(request.META["REMOTE_ADDR"]):
             return HttpResponse("Banned account.")
 
         review_form = ReviewForm(request.POST)

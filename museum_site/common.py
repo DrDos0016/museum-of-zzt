@@ -15,7 +15,7 @@ from django.urls import reverse
 
 from museum_site.models import *
 from museum_site.constants import *
-from museum_site.private import NEW_UPLOAD_WEBHOOK_URL, NEW_REVIEW_WEBHOOK_URL
+from museum_site.private import NEW_UPLOAD_WEBHOOK_URL, NEW_REVIEW_WEBHOOK_URL, BANNED_IPS
 
 from datetime import datetime, date, timezone, timedelta
 from io import BytesIO
@@ -520,3 +520,13 @@ def upal_to_rgb(v):
     b = int(b_intensity * 255)
 
     return (r, g, b)
+
+
+def banned_ip(ip):
+    if ip in BANNED_IPS:
+        return True
+    elif "." in ip:
+        ip = ".".join(ip.split(".")[:-1]) + ".*"
+        if ip in BANNED_IPS:
+            return True
+        return False
