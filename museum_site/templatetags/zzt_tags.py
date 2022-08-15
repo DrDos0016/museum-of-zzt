@@ -67,7 +67,7 @@ def char(num=2, fg="white", bg="black", scale=2, mode="image"):
 
         return mark_safe(output.format(fg, bg, scale, CP437_TO_UNICODE[num]))
     else:  # image
-        output = "<div class='ascii-char-image ega-{}-bg' title='&#{};' style='width:{}px;height:{}px;background-position:{}px {}px;background-size:{}px {}px;image-rendering: pixelated;'></div>"
+        output = "<span class='ascii-char-image ega-{}-bg' title='&#{};' style='width:{}px;height:{}px;background-position:{}px {}px;background-size:{}px {}px;image-rendering: pixelated;'></span>"
 
         # Adjust position by character
         row = num // 16
