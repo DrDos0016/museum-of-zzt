@@ -65,6 +65,7 @@ class LatestReviewsFeed(Feed):
         output = 'Review by {} covering "{}".'.format(item.get_author(), item.zfile.title)
         if item.rating >= 0:
             output += " ({}/5.0)".format(item.rating)
+        return output
 
     def item_link(self, item):
         return reverse("reviews", args=[item.zfile.filename]) + "#rev-" + str(item.pk)
