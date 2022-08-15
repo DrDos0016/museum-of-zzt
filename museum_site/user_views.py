@@ -18,7 +18,7 @@ from museum_site.mail import (
     send_account_verification_email,
 )
 from museum_site.private import BETA_USERNAME, BETA_PASSWORD
-from museum_site.views import generic
+from museum_site.views import generic_template_page
 
 
 def activate_account(request, token=None):
@@ -291,7 +291,7 @@ def forgot_username(request):
             if len(qs) == 1:  # Match found
                 send_forgotten_username_email(qs[0])
 
-            return generic(request, data["title"], "user/forgot-username-complete")
+            return generic_template_page(request, data["title"], "museum_site/user/forgot-username-complete.html")
     else:
         form = Forgot_Username_Form()
 

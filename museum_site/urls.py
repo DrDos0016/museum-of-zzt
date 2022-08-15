@@ -159,11 +159,26 @@ urlpatterns = [
     path("help/zfile/", museum_site.help_views.zfiles, name="help_zfiles"),
 
     # /policy/
-    path("policy/data-integrity/", museum_site.views.generic, {"template": "policy-data", "title": "Data Integrity"}, name="data_integrity"),
-    path("policy/correction/", museum_site.views.generic, {"template": "policy-correction", "title": "Correction Policy"}, name="correction_policy"),
-    path("policy/removal/", museum_site.views.generic, {"template": "policy-removal", "title": "Removal Policy"}, name="removal_policy"),
-    path("policy/review/", museum_site.views.generic, {"template": "policy-review", "title": "Review Policy"}, name="review_policy"),
-    path("policy/upload/", museum_site.views.generic, {"template": "policy-upload", "title": "Upload Policy"}, name="upload_policy"),
+    path(
+        "policy/data-integrity/", museum_site.views.generic_template_page, {"template": "museum_site/policy-data.html", "title": "Data Integrity"},
+        name="data_integrity"
+    ),
+    path(
+        "policy/correction/", museum_site.views.generic_template_page, {"template": "museum_site/policy-correction.html", "title": "Correction Policy"},
+        name="correction_policy"
+    ),
+    path(
+        "policy/removal/", museum_site.views.generic_template_page, {"template": "museum_site/policy-removal.html", "title": "Removal Policy"},
+        name="removal_policy"
+    ),
+    path(
+        "policy/review/", museum_site.views.generic_template_page, {"template": "museum_site/policy-review.html", "title": "Review Policy"},
+        name="review_policy"
+    ),
+    path(
+        "policy/upload/", museum_site.views.generic_template_page, {"template": "museum_site/policy-upload.html", "title": "Upload Policy"},
+        name="upload_policy"
+    ),
     # /policy/ -- Legacy Redirects
     path("data-integrity/", legacy_redirect, {"name": "data_integrity"}),
 
@@ -174,7 +189,7 @@ urlpatterns = [
     path("review/search/", museum_site.review_views.Review_Search_Form_View.as_view(), name="review_search"),
 
     # /rss/
-    path("rss/", museum_site.views.generic, {"template": "rss-info", "title": "RSS Feeds"}, name="rss_feeds"),
+    path("rss/", museum_site.views.generic_template_page, {"template": "rss-info", "title": "RSS Feeds"}, name="rss_feeds"),
     path("rss/articles/", museum_site.feeds.LatestArticlesFeed(), name="rss_articles"),
     path("rss/files/", museum_site.feeds.LatestFilesFeed(), name="rss_files"),
     path("rss/reviews/", museum_site.feeds.LatestReviewsFeed(), name="rss_reviews"),
@@ -217,7 +232,7 @@ urlpatterns = [
     path("upload/complete/<str:token>/", museum_site.upload_views.upload_complete, name="upload_complete"),
     path("upload/delete/", museum_site.upload_views.upload_delete, name="upload_delete"),
     path(
-        "upload/delete/complete/", museum_site.views.generic, {"template": "upload-delete-complete", "title": "Upload Deleted"},
+        "upload/delete/complete/", museum_site.views.generic_template_page, {"template": "upload-delete-complete", "title": "Upload Deleted"},
         name="upload_delete_complete"
     ),
     path("upload/edit/", museum_site.upload_views.upload_edit, name="upload_edit"),
@@ -230,7 +245,7 @@ urlpatterns = [
     path("user/forgot-username/", museum_site.user_views.forgot_username, name="forgot_username"),
     path("user/forgot-password/", museum_site.user_views.forgot_password, name="forgot_password"),
     path(
-        "user/reset-password/complete/", museum_site.views.generic,
+        "user/reset-password/complete/", museum_site.views.generic_template_page,
         {"template": "user/reset-password-complete", "title": "Reset Password Complete"}, name="reset_password_complete"
     ),
     path("user/reset-password/<str:token>/", museum_site.user_views.reset_password, name="reset_password_with_token"),

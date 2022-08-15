@@ -92,9 +92,9 @@ def discord_overview(request):
     return render(request, "museum_site/discord.html", data)
 
 
-def generic(request, title="", template=""):
-    data = {"title": title}
-    return render(request, "museum_site/" + template + ".html")
+def generic_template_page(request, title="", template="", context={}):
+    context["title"] = context.get("title", title)
+    return render(request, template, context)
 
 
 def index(request):
