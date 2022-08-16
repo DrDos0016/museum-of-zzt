@@ -191,6 +191,8 @@ urlpatterns = [
     # /rss/
     path("rss/", museum_site.views.generic_template_page, {"template": "museum_site/rss-info.html", "title": "RSS Feeds"}, name="rss_feeds"),
     path("rss/articles/", museum_site.feeds.LatestArticlesFeed(), name="rss_articles"),
+    path("rss/articles/upcoming/", museum_site.feeds.Upcoming_Articles_Feed(), name="rss_upcoming_articles"),
+    path("rss/articles/unpublished/", museum_site.feeds.Unpublished_Articles_Feed(), name="rss_unpublished_articles"),
     path("rss/files/", museum_site.feeds.LatestFilesFeed(), name="rss_files"),
     path("rss/reviews/", museum_site.feeds.LatestReviewsFeed(), name="rss_reviews"),
     path("rss/uploads/", museum_site.feeds.LatestUploadsFeed(), name="rss_uploads"),

@@ -4,7 +4,7 @@
 {% block content %}
 <h1>RSS Feeds</h1>
 
-<table id="rss-table">
+<table>
 <tr>
     <th>Feed</th>
     <th>URL</th>
@@ -13,22 +13,45 @@
 <tr>
     <th>Latest Articles</th>
     <td><input name="rss-url" value="{{DOMAIN}}{% url 'rss_articles' %}" data-click-select></td>
-    <td class="c"><a href="{% url 'rss_articles' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Icon"></a></td>
+    <td class="c"><a href="{% url 'rss_articles' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a></td>
 </tr>
 <tr>
     <th>Latest Published Files</th>
     <td><input name="rss-url" value="{{DOMAIN}}{% url 'rss_files' %}" data-click-select></td>
-    <td class="c"><a href="{% url 'rss_files' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Icon"></a></td>
+    <td class="c"><a href="{% url 'rss_files' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a></td>
 </tr>
 <tr>
     <th>Latest Reviews</th>
     <td><input name="rss-url" value="{{DOMAIN}}{% url 'rss_reviews' %}" data-click-select></td>
-    <td class="c"><a href="{% url 'rss_reviews' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Icon"></a></td>
+    <td class="c"><a href="{% url 'rss_reviews' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a></td>
 </tr>
 <tr>
     <th>Latest Uploaded Files</th>
     <td><input name="rss-url" value="{{DOMAIN}}{% url 'rss_uploads' %}" data-click-select></td>
-    <td class="c"><a href="{% url 'rss_uploads' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Icon"></a></td>
+    <td class="c"><a href="{% url 'rss_uploads' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a></td>
 </tr>
+</table>
+
+<h2>Patron Exclusive</h2>
+
+<p>These additional feeds are only of use to <a href="{% url 'patreon' %}">Worlds of ZZT patrons</a>. They provide alternative feeds for articles that additionally include articles which are not yet available to the public. Subscribing to one of these feeds when not a patron will result in your feed including links to articles that cannot be read.</p>
+
+<table>
+<tr>
+    <th>Feed</th>
+    <th>URL</th>
+    <th>Link</th>
+</tr>
+<tr>
+    <th>[$2+] Upcoming + Published Articles</th>
+    <td><input name="rss-url" value="{{DOMAIN}}{% url 'rss_upcoming_articles' %}" data-click-select></td>
+    <td class="c"><a href="{% url 'rss_upcoming_articles' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a></td>
+</tr>
+<tr>
+    <th>[$5+] Unpublished + Upcoming +<br> Published Articles</th>
+    <td><input name="rss-url" value="{{DOMAIN}}{% url 'rss_unpublished_articles' %}" data-click-select></td>
+    <td class="c"><a href="{% url 'rss_unpublished_articles' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a></td>
+</tr>
+
 </table>
 {% endblock %}
