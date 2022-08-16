@@ -113,3 +113,45 @@ form .field .genre-checklist { min-width:0px; }
 #upload-form .field { display:block; }
 #upload-form .field label { display:block; }
 }
+
+/* Aug 2022 */
+@media (max-width:480px) {
+    table
+    {
+        display:block;
+        margin-left:auto;
+        margin-right:auto;
+    }
+
+    #debug-embed-image-preview
+    {
+        display:none;
+    }
+
+    #fp-file-frame { display:none; }
+    #mobile-fp-file-frame
+    {
+        display:block;
+        border:1px dashed #000;
+        border-bottom:1px dashed #000;
+    }
+
+    #mobile-fp-file-frame h2
+    {
+        display:inline-block;
+    }
+
+    #mobile-fp-file-frame .gallery-frame
+    {
+        flex-wrap:nowrap;
+        justify-content:flex-start;
+        align-items:flex-start;
+        overflow-x:scroll;
+    }
+
+    #mobile-fp-file-frame .gallery-frame .model-block.gallery
+    {
+        flex:0 0 auto;
+    }
+}
+/* End Aug 2022

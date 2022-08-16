@@ -39,23 +39,28 @@ community can be easily discovered and that their importance can be recognized.
     </div>
 </div>
 
+<div id="mobile-fp-file-frame">
+    <h2><a href="{% url 'new_releases' %}">New Releases</a></h2>
+    {% generic_block_loop items=new_releases view="gallery" header=table_header %}
+    <hr>
+    <h2><a href="{% url 'new_finds' %}">New Finds</a></h2>
+    {% generic_block_loop items=files view="gallery" header=table_header %}
+</div>
+
 <h2>Latest Articles</h2>
 {% with articles|slice:":3" as spotlight_articles %}
 {% generic_block_loop items=spotlight_articles view="detailed" request=request %}
 {% endwith %}
-<table>
-    {% with articles|slice:"3:" as spotlight_articles %}
-    {% generic_block_loop items=spotlight_articles view="list" header=article_table_header %}
-    {% endwith %}
-</table>
+
+{% with articles|slice:"3:" as spotlight_articles %}
+{% generic_block_loop items=spotlight_articles view="list" header=article_table_header %}
+{% endwith %}
 <div class="view-more">
         <a href="{% url 'article_directory' %}">View More</a>
 </div>
 
 <h2>Latest Reviews</h2>
-<table>
-    {% generic_block_loop items=reviews view="list" header=review_table_header %}
-</table>
+{% generic_block_loop items=reviews view="list" header=review_table_header %}
 <div class="view-more">
         <a href="{% url 'review_directory' %}">View More</a>
 </div>

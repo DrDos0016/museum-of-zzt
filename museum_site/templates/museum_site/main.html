@@ -266,11 +266,13 @@ $("meta").each(function (){
     var key = $(this).attr("name");
     if (! key)
         key = $(this).attr("property");
+    else if (key.indexOf("twitter") == 0)
+        key = "t:" + key.split(":")[1];
 
     var val = $(this).attr("content");
 
     if (key == "og:image")
-        var row = `<tr><th>${key}</th><td class="l">${val}</td><td rowspan="9"><img src="${val}"></td></tr>`;
+        var row = `<tr><th>${key}</th><td class="l">${val}</td><td rowspan="9" id="debug-embed-image-preview"><img src="${val}"></td></tr>`;
     else
         var row = `<tr><th>${key}</th><td class="l">${val}</td></tr>`;
     $("#meta-tags").html($("#meta-tags").html() + row);
