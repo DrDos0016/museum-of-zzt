@@ -189,7 +189,7 @@ urlpatterns = [
     path("review/search/", museum_site.review_views.Review_Search_Form_View.as_view(), name="review_search"),
 
     # /rss/
-    path("rss/", museum_site.views.generic_template_page, {"template": "rss-info", "title": "RSS Feeds"}, name="rss_feeds"),
+    path("rss/", museum_site.views.generic_template_page, {"template": "museum_site/rss-info.html", "title": "RSS Feeds"}, name="rss_feeds"),
     path("rss/articles/", museum_site.feeds.LatestArticlesFeed(), name="rss_articles"),
     path("rss/files/", museum_site.feeds.LatestFilesFeed(), name="rss_files"),
     path("rss/reviews/", museum_site.feeds.LatestReviewsFeed(), name="rss_reviews"),
@@ -232,7 +232,7 @@ urlpatterns = [
     path("upload/complete/<str:token>/", museum_site.upload_views.upload_complete, name="upload_complete"),
     path("upload/delete/", museum_site.upload_views.upload_delete, name="upload_delete"),
     path(
-        "upload/delete/complete/", museum_site.views.generic_template_page, {"template": "upload-delete-complete", "title": "Upload Deleted"},
+        "upload/delete/complete/", museum_site.views.generic_template_page, {"template": "museum_site/upload-delete-complete.html", "title": "Upload Deleted"},
         name="upload_delete_complete"
     ),
     path("upload/edit/", museum_site.upload_views.upload_edit, name="upload_edit"),
@@ -246,7 +246,7 @@ urlpatterns = [
     path("user/forgot-password/", museum_site.user_views.forgot_password, name="forgot_password"),
     path(
         "user/reset-password/complete/", museum_site.views.generic_template_page,
-        {"template": "user/reset-password-complete", "title": "Reset Password Complete"}, name="reset_password_complete"
+        {"template": "museum_site/user/reset-password-complete.html", "title": "Reset Password Complete"}, name="reset_password_complete"
     ),
     path("user/reset-password/<str:token>/", museum_site.user_views.reset_password, name="reset_password_with_token"),
     path("user/reset-password/", museum_site.user_views.reset_password, name="reset_password"),
