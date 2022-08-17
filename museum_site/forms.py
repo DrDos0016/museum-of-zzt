@@ -1487,3 +1487,14 @@ class Tool_ZFile_Select_Form(forms.Form):
         label="ZFile",
         choices=qs_to_select_choices(File.objects.all().only("id", "title", "key"), val="{0.key}"),
     )
+
+class Stream_Card_Form(forms.Form):
+    use_required_attribute = False
+
+    pk = forms.MultipleChoiceField(
+        widget=Ordered_Scrolling_Radio_Widget(choices=associated_file_choices()),
+        choices=associated_file_choices(),
+        label="Associated ZFiles",
+        help_text="Select one or more ZFiles",
+        required=False,
+    )

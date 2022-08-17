@@ -110,6 +110,7 @@ form textarea
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/museum-forms.js"></script>
 <script>
 var idx = 0;
 $(document).ready(function (){
@@ -133,12 +134,7 @@ $(document).ready(function (){
 
 {% block content %}
 <h1>Stream Card</h1>
-<form>
-<div class="scrolling-checklist">
-{% for f in files %}<label><input type="checkbox" name="pk" value="{{f.id}}"{% if f.id in pks %} checked{% endif %}>{{f.title}}</label>{% endfor %}
-</div>
-<input type="submit" value="Set Base File(s)">
-</form>
+{% include "museum_site/blocks/generic-form.html" %}
 <hr>
 <p><a href="?">Reselect Base File</a></p>
 

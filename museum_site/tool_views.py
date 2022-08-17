@@ -868,6 +868,11 @@ def stream_card(request):
         "id", "title"
     ).order_by("sort_title")
 
+    if request.GET.getlist("pk"):
+        form = Stream_Card_Form(request.GET)
+    else:
+        form = Stream_Card_Form()
+
     data["raw"] = request.GET.get("card_md", "")
     data["pks"] = list(map(int, request.GET.getlist("pk")))
     checked_files = File.objects.filter(pk__in=data["pks"])
@@ -893,6 +898,7 @@ def stream_card(request):
 
         data["raw"] = default
 
+    data["form"] = form
     return render(request, "museum_site/tools/stream-card.html", data)
 
 
