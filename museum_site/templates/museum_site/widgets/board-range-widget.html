@@ -2,7 +2,7 @@
 <div>
     {% include "museum_site/widgets/range-widget.html" %}
 </div>
-<div>
+<div class="radio-list">
     <label><input type="radio" name="{{widget.name}}_type" value="playable"{% if manual_data.board_type == "playable" %} checked{% endif %}> Playable Boards</label>
     <label><input type="radio" name="{{widget.name}}_type" value="total"{% if manual_data.board_type == "total" %} checked{% endif %}> Total Boards</label>
 </div>

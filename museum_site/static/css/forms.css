@@ -83,6 +83,32 @@ input:disabled { background:#AAA; }
 .scrolling-checklist label.selected { background: #619F9F;}
 .scrolling-checklist label:hover { background:#98C9C9; }
 
+@media (max-width:480px) {
+    .field-wrapper
+    {
+        grid-template-columns:35% auto;
+    }
+}
+
+/* Advanced Search Tweaks For Mobile */
+@media (max-width:480px) {
+    .radio-list label
+    {
+        display:block;
+    }
+
+    .scrolling-checklist
+    {
+        min-width:auto;
+        width:auto;
+    }
+
+    .scrolling-checklist-filter .widget-filter
+    {
+        max-width:60px;
+    }
+}
+
 .upload-area
 {
     display:flex;

@@ -116,6 +116,7 @@ form .field .genre-checklist { min-width:0px; }
 
 /* Aug 2022 */
 @media (max-width:480px) {
+    /* Front Page */
     table
     {
         display:block;
@@ -152,6 +153,12 @@ form .field .genre-checklist { min-width:0px; }
     #mobile-fp-file-frame .gallery-frame .model-block.gallery
     {
         flex:0 0 auto;
+    }
+
+    /* Mass Downloads */
+    .mass-dl-table + .mass-dl-table
+    {
+        margin-top:14px;
     }
 }
 /* End Aug 2022
