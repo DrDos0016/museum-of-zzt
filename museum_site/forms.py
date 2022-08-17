@@ -1479,3 +1479,11 @@ class Login_Form(forms.Form):
         help_text="<a href='/user/forgot-password/' tabindex='-1'>Forgot Password</a>",
         widget=forms.PasswordInput()
     )
+
+class Tool_ZFile_Select_Form(forms.Form):
+    use_required_attribute = False
+
+    key = forms.ChoiceField(
+        label="ZFile",
+        choices=qs_to_select_choices(File.objects.all().only("id", "title", "key"), val="{0.key}"),
+    )

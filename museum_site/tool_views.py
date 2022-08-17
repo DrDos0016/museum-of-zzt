@@ -902,8 +902,14 @@ def tool_index(request, key=None):
         "title": "Tool Index",
         "pending_review_count": Review.objects.filter(approved=False).count()
     }
+
+    if request.GET.get("key"):
+        return redirect("/tools/{}/".format(request.GET.get("key")))
+
     if key:
         data["file"] = File.objects.get(key=key)
+
+    data["form"] = Tool_ZFile_Select_Form()
     letters = "1abcdefghijklmnopqrstuvwxyz"
 
     """ Atrocious variable names """

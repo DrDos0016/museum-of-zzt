@@ -30,6 +30,10 @@ table
     font-size:smaller;
 }
 
+#tool-container table
+{
+    margin-top:0px;
+}
 </style>
 {% endblock %}
 
@@ -48,37 +52,35 @@ $(document).ready(function (){
 {% if file %}{% gblock file %}{% endif %}
 
 <h2>Tool Index</h2>
-
-<div class="flex-container justify-space-between">
-<table>
-    <tr>
-        <th>General Tools</th>
-        <th>Etc</th>
-    </tr>
-    {% for t in tool_list %}
-    <tr><td><a href="{% url t.url_name %}">{{t.text}}</a></td><td id="etc-{{t.url_name}}">{% if t.url_name == "review_approvals" %}<b>{{pending_review_count}}</b>{% endif %}</td></tr>
-    {% endfor %}
-
-</table>
-{% if file %}
-<table>
-    <tr>
-        <th>File Specific Tools</th>
-    </tr>
-    {% for t in file_tool_list %}
-    <tr><td><a href="{{t.url}}">{{t.text}}</a></td></tr>
-    {% endfor %}
-</table>
-{% else %}
-<div>
-    <select id="file-identifier">
-        {% for f in all_files %}
-        <option value="{{f.key}}">{{f.title}}</option>
+<div id="tool-container" class="flex-container justify-space-between">
+    <table>
+        <tr>
+            <th>General Tools</th>
+            <th>Etc</th>
+        </tr>
+        {% for t in tool_list %}
+        <tr><td><a href="{% url t.url_name %}">{{t.text}}</a></td><td id="etc-{{t.url_name}}">{% if t.url_name == "review_approvals" %}<b>{{pending_review_count}}</b>{% endif %}</td></tr>
         {% endfor %}
-    </select>
-    <input id="file-select" type="button" value="Select File">
-</div>
-{% endif %}
+    </table>
+
+    <div>
+        {% if file %}
+        <table>
+            <tr>
+                <th>File Specific Tools</th>
+            </tr>
+            {% for t in file_tool_list %}
+            <tr><td><a href="{{t.url}}">{{t.text}}</a></td></tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+        <div id="tool-form">
+            <form>
+            {% include "museum_site/blocks/generic-form.html" %}
+            <input type="submit" value="Select ZFile">
+            </form>
+        </div>
+    </div>
 </div>
 <hr>
 
