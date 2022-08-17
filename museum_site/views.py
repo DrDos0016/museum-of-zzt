@@ -47,7 +47,9 @@ def directory(request, category):
     first_letters = []
 
     for entry in data_list:
-        if entry[0] in "1234567890":
+        if entry == "":
+            continue
+        elif entry[0] in "1234567890":
             first_letters.append("#")
         elif entry[0].upper() not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
             first_letters.append("*")
