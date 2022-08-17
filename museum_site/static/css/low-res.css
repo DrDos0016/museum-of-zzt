@@ -154,5 +154,12 @@ form .field .genre-checklist { min-width:0px; }
     {
         margin-top:14px;
     }
+
+    /* Support */
+    figure.zzt-figure
+    {
+        box-sizing:border-box;
+        max-width:100%;
+    }
 }
 /* End Aug 2022
