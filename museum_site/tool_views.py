@@ -883,8 +883,8 @@ def stream_card(request):
 
         default += "# Compan{}:\n".format("ies" if len(data["pks"]) > 1 else "y")
         for f in checked_files:
-            if f.company:
-                default += f.company + "\n\n"
+            if f.ssv_company:
+                default += f.ssv_company + "\n\n"
 
         default += "# Year{}:\n".format("s" if len(data["pks"]) > 1 else "")
         for f in checked_files:

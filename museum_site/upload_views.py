@@ -66,7 +66,7 @@ def upload(request):
                 "language": zgame_obj.language,
                 "release_date": str(zgame_obj.release_date),
                 "author": zgame_obj.author.replace("/", ","),
-                "company": zgame_obj.company.replace("/", ","),
+                "company": zgame_obj.ssv_company.replace("/", ","),
                 "genre": zgame_obj.genre_ids(),
             }
             play_form = PlayForm(

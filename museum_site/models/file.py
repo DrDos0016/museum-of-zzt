@@ -44,6 +44,8 @@ class FileManager(models.Manager):
         for f in ["title", "author", "filename", "company"]:
             if p.get(f):
                 field = "{}__icontains".format(f)
+                if f == "company": # TODO temporary hotfix
+                    field = "ssv_company__icontains"
                 value = p[f]
                 qs = qs.filter(**{field: value})
 
@@ -107,23 +109,17 @@ class FileManager(models.Manager):
     def basic_search(self, q, include_explicit=True):
         if include_explicit:
             return self.filter(
-                Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(company__icontains=q)
+                Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(ssv_company__icontains=q)
             ).distinct()
         else:
             qs = self.filter(
-                Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(company__icontains=q)
-            ).filter(explicit=False)
+                Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(ssv_company__icontains=q)
+            ).filter(explicit=False).distinct()
             return qs
 
     def directory(self, category):
         if category == "company":
-            return self.values(
-                "company"
-            ).exclude(
-                company=None
-            ).exclude(
-                company=""
-            ).distinct().order_by("company")
+            return self.values("ssv_company").exclude(ssv_company=None).exclude(ssv_company="").distinct().order_by("ssv_company")
         elif category == "author":
             return self.values("author").distinct().order_by("author")
 
@@ -250,7 +246,7 @@ class File(BaseModel):
         # Value - Django order_by param
         "title": "sort_title",
         "author": "author",
-        "company": "company",
+        "company": "ssv_company",
         "rating": "-rating",
         "release": "release_date",
         "-release": "-release_date",
@@ -290,7 +286,7 @@ class File(BaseModel):
     size = models.IntegerField(default=0, editable=False, help_text="Size in bytes of the zip file")
     title = models.CharField(max_length=80, help_text="Canonical name of the release")
     author = models.CharField(max_length=255, help_text="Slash-separated list of (major) developers")
-    company = models.CharField(max_length=255, default="", blank=True, help_text="Slash-separated list of companies the zfile is published under")
+    ssv_company = models.CharField(max_length=255, default="", blank=True, help_text="Slash-separated list of companies the zfile is published under")
     genre = models.CharField(max_length=255)  # TODO: This will become defunct
     release_date = models.DateField(default=None, null=True, blank=True, help_text="Release date of zip file's contents.")
     release_source = models.CharField(max_length=20, default="", blank=True, help_text="Source of release date when applicable.")
@@ -473,7 +469,7 @@ class File(BaseModel):
             "release_date": self.release_date,
             "release_source": self.release_source,
             "screenshot": self.screenshot,
-            "company": self.company,
+            "company": self.ssv_company,
             "description": self.description,
             "review_count": self.review_count,
             "rating": self.rating,
@@ -547,7 +543,7 @@ class File(BaseModel):
         return output
 
     def author_list(self): return self.author.split("/")
-    def company_list(self): return self.company.split("/")
+    def company_list(self): return self.ssv_company.split("/")
 
     def genre_list(self):
         output = []
@@ -1029,8 +1025,8 @@ class File(BaseModel):
                 "values": self.ssv_list("author"), "url": "/search/?author="
             },
             {
-                "datum": "ssv-links", "label": "Compan"+("ies" if len(self.ssv_list("company")) > 1 else "y"),
-                "values": self.ssv_list("company"), "url": "/search/?company="
+                "datum": "ssv-links", "label": "Compan"+("ies" if len(self.ssv_list("ssv_company")) > 1 else "y"),
+                "values": self.ssv_list("ssv_company"), "url": "/search/?company="
             },
             {
                 "datum": "link", "label": "Released", "value": (self.release_date or "Unknown"),
@@ -1116,7 +1112,7 @@ class File(BaseModel):
         cells.append(link)
 
         cells.append({"datum": "ssv-links", "values": self.ssv_list("author"), "url": "/search/?author=", "tag": "td"})
-        cells.append({"datum": "ssv-links", "values": self.ssv_list("company"), "url": "/search/?company=", "tag": "td"})
+        cells.append({"datum": "ssv-links", "values": self.ssv_list("ssv_company"), "url": "/search/?company=", "tag": "td"})
         cells.append({"datum": "text", "value": self.genre_links(), "tag": "td"}),
         cells.append(
             {"datum": "link", "value": (self.release_date or "Unknown"), "url": "/search/?year={}".format(self.release_year(default="unk")), "tag": "td"}

@@ -34,7 +34,7 @@ PASSWORD_HELP_TEXT = "Use a unique password for your account with a minimum leng
 
 
 class ZGameForm(forms.ModelForm):
-    field_order = ["zfile", "title", "author", "company", "genre", "explicit", "release_date", "language", "description"]
+    field_order = ["zfile", "title", "author", "ssv_company", "genre", "explicit", "release_date", "language", "description"]
     zfile = forms.FileField(
         help_text=("Select the file you wish to upload. "
                    "All uploads <i>must</i> be zipped."),
@@ -92,14 +92,18 @@ class ZGameForm(forms.ModelForm):
         model = File
 
         fields = [
-            "zfile", "title", "author", "company", "explicit",
+            "zfile", "title", "author", "ssv_company", "explicit",
             "release_date",
             "description",
         ]
 
+        labels = {
+            "ssv_company": "Company",
+        }
+
         help_texts = {
             "title": "Leave A/An/The as the first word if applicable.",
-            "company": (
+            "ssv_company": (
                 "Any companies this file is published under. If there are "
                 "none, leave this field blank. If there are multiple, "
                 "separate them with a comma."
@@ -132,7 +136,7 @@ class ZGameForm(forms.ModelForm):
 
         widgets = {
             "title": Enhanced_Text_Widget(char_limit=80),
-            "company": Tagged_Text_Widget(),
+            "ssv_company": Tagged_Text_Widget(suggestion_key="company"),
             "explicit": forms.RadioSelect(
                 choices=(
                     (0, "This upload does not contain explicit content"),
@@ -182,8 +186,8 @@ class ZGameForm(forms.ModelForm):
             author = "Unknown"
         return author
 
-    def clean_company(self):
-        company = self.cleaned_data["company"].replace("[text]", "")
+    def clean_ssv_company(self):
+        company = self.cleaned_data["ssv_company"].replace("[text]", "")
         company = company.replace(",", "/")
 
         if company.endswith("/"):

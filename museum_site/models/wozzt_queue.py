@@ -178,8 +178,8 @@ class WoZZT_Queue(BaseModel):
             output += " (" + str(self.file.release_date)[:4] + ")\n"
         else:
             output += "\n"
-        if self.file.company:
-            output += "Published by: " + str(self.file.company) + "\n"
+        if self.file.ssv_company:
+            output += "Published by: " + str(self.file.ssv_company) + "\n"
 
         board_properties = []
 
@@ -309,8 +309,8 @@ class WoZZT_Queue(BaseModel):
                 "https://twitter.com/worldsofzzt/status/{}\n**{}** by {} ({})"
                 "\n"
             )
-            if self.file.company:
-                discord_post += "Published by: {}\n".format(self.file.company)
+            if self.file.ssv_company:
+                discord_post += "Published by: {}\n".format(self.file.ssv_company)
             discord_post += "`[{}] - \"{}\"` {}\n"
             discord_post += (
                 "Explore: https://museumofzzt.com" +

@@ -5,6 +5,6 @@
 </div>
 <div class="tag-list" id="{{widget.name}}-tag-list" data-editable=true data-draggable=true>
 </div>
-<datalist id="{{widget.name}}-suggestions" class="suggestion-datalist" data-url="/ajax/get-{{widget.name}}-suggestions/">
+<datalist id="{{widget.name}}-suggestions" class="suggestion-datalist" data-url="/ajax/get-{{suggestion_key|default:widget.name}}-suggestions/">
     {% for suggestion in suggestions %}<option value="{{suggestion}},">{% endfor %}
 </datalist>

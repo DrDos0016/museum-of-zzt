@@ -136,13 +136,13 @@ def get_company_suggestions(request, max_suggestions=20):
     output = {"suggestions": []}
 
     if query:
-        qs = File.objects.filter(company__istartswith=query).only("company").distinct().order_by("company")
+        qs = File.objects.filter(ssv_company__istartswith=query).only("ssv_company").distinct().order_by("ssv_company")
     else:
-        qs = File.objects.all().only("company").distinct().order_by("company")
+        qs = File.objects.all().only("ssv_company").distinct().order_by("ssv_company")
 
     seen = []  # Case insensitive company names
     for f in qs:
-        all_companies = f.company.split("/")
+        all_companies = f.ssv_company.split("/")
         for a in all_companies:
             if a.lower() not in seen:
                 output["suggestions"].append(a)

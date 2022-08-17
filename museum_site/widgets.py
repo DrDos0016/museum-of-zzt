@@ -178,9 +178,10 @@ class Associated_Content_Widget(forms.Widget):
 class Tagged_Text_Widget(forms.Widget):
     template_name = "museum_site/widgets/tagged-text-widget.html"
 
-    def __init__(self, attrs=None, suggestions=None):
+    def __init__(self, attrs=None, suggestions=None, suggestion_key=None):
         super().__init__(attrs)
         self.suggestions = suggestions
+        self.suggestion_key = suggestion_key
 
     def value_from_datadict(self, data, files, name):
         data_list = data.getlist(name)
@@ -199,6 +200,8 @@ class Tagged_Text_Widget(forms.Widget):
             context["suggestions"] = self.suggestions
         if hasattr(self, "manual_data"):
             context["manual_data"] = self.manual_data
+        if self.suggestion_key:
+            context["suggestion_key"] = self.suggestion_key
         return context
 
 

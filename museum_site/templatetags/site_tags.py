@@ -140,8 +140,8 @@ def guide_words(*args, **kwargs):
                 else:
                     link_text[x] = "-Unknown Author-"  # This shouldn't appear
             elif sort == "company":
-                if items[x].company:
-                    link_text[x] = items[x].company
+                if items[x].ssv_company:
+                    link_text[x] = items[x].ssv_company
                 else:
                     link_text[x] = "-No company-"
             elif sort == "rating":
@@ -252,8 +252,8 @@ def meta_tags(*args, **kwargs):
         tags["description"][1] = '{} by {}'.format(
             kwargs["file"].title, kwargs["file"].author
         )
-        if kwargs["file"].company and kwargs["file"].company != "None":
-            tags["description"][1] += " of {}".format(kwargs["file"].company)
+        if kwargs["file"].ssv_company and kwargs["file"].ssv_company != "None":
+            tags["description"][1] += " of {}".format(kwargs["file"].ssv_company)
         if kwargs["file"].release_date:
             tags["description"][1] += " ({})".format(
                 kwargs["file"].release_date.year
@@ -365,8 +365,8 @@ def cl_info(pk=None, engine=None, emulator=None):
     else:
         zfile = File.objects.get(pk=pk)
 
-    if zfile.company:
-        company = "Published Under: {}<br>".format(zfile.company)
+    if zfile.ssv_company:
+        company = "Published Under: {}<br>".format(zfile.ssv_company)
     else:
         company = ""
 
@@ -641,5 +641,28 @@ def generic_block_loop(
         output += "</table>"
     elif view == "gallery":
         output += "</div>"
+
+    return mark_safe(output + "\n")
+
+
+@register.simple_tag()
+def breadcrumbs(request):
+    # NOT IMPLEMENTED: 8/17
+    output = "<a href='/' title='Museum of ZZT'>♀</a>"
+    #output += "<a href=''>File</a> &gt; <a href=''>View</a> → <a href=''>Evil Sorcerers PArty</a> ► <a href=''>IDK</a>"
+    url = request.path[1:-1]  # Trim slashes
+
+    parsing = True
+    while parsing:
+        idx = url.find("/")
+        if idx == -1:
+            break
+        component = url[:idx]
+        print(component)
+        # Do stuff
+        url = url[idx:]
+
+    #output += " ► <a href='{}'>{}</a>".format(url, text)
+
 
     return mark_safe(output + "\n")

@@ -99,7 +99,7 @@ GENRE_LIST = (
 SORT_CODES = {
     "title": ["sort_title"],
     "author": ["author", "sort_title"],
-    "company": ["company", "sort_title"],
+    "company": ["ssv_company", "sort_title"],
     "id": ["id"],
     "-id": ["-id"],
     "rating": ["-rating", "sort_title"],

@@ -23,7 +23,7 @@ def directory(request, category):
         data["title"] = "Companies"
         companies = File.objects.directory("company")
         for c in companies:
-            split = c["company"].split("/")
+            split = c["ssv_company"].split("/")
             for credited in split:
                 if credited not in data_list:
                     data_list.append(credited)

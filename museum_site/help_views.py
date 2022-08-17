@@ -48,7 +48,7 @@ def zfiles(request):
         id=999999,
         title="Example ZFile",
         author="Dr. Dos",
-        company="Worlds of ZZT",
+        ssv_company="Worlds of ZZT",
         release_date=date.today(),
         letter="z",
         filename="zzt.zip",
