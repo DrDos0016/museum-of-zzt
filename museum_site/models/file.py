@@ -367,7 +367,7 @@ class File(BaseModel):
         ordering = ["sort_title", "letter"]
 
     def __str__(self):
-        return "[" + str(self.id) + "] " + self.title
+        return "{} [{}][#{}]".format(self.title, self.key, self.id)
 
     # Populating functions
     def init_detail_ids(self):
