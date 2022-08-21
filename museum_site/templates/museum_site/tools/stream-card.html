@@ -134,6 +134,7 @@ $(document).ready(function (){
 
 {% block content %}
 <h1>Stream Card</h1>
+<form>
 {% include "museum_site/blocks/generic-form.html" %}
 <hr>
 <p><a href="?">Reselect Base File</a></p>
@@ -146,11 +147,10 @@ $(document).ready(function (){
     <a href="?{{request.META.QUERY_STRING}}&embed=1" target="_blank">Ship it!</a>
     </div>
     <div>
-        <form>
-            <textarea id="card-md" name="card_md">{{raw}}</textarea>
-            <br><br>
-            <input type="submit" value="Apply">
-        </form>
+        <textarea id="card-md" name="card_md">{{raw}}</textarea>
+        <br><br>
+        <input type="submit" value="Apply">
     </div>
 </div>
+</form>
 {% endblock %}

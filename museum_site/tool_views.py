@@ -873,8 +873,10 @@ def stream_card(request):
     else:
         form = Stream_Card_Form()
 
+    requested_pks = request.GET.getlist("pk")[1:]
+
     data["raw"] = request.GET.get("card_md", "")
-    data["pks"] = list(map(int, request.GET.getlist("pk")))
+    data["pks"] = list(map(int, requested_pks))
     checked_files = File.objects.filter(pk__in=data["pks"])
 
     if not data["raw"] and data["pks"]:
