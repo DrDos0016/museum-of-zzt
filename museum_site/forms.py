@@ -1427,8 +1427,6 @@ class Reset_Password_Form(forms.Form):
             self.add_error("reset_token", "The provided reset token is either invalid or expired.")
         else:
             delta = qs[0].profile.reset_time + timedelta(minutes=10)
-            print("DELTA", delta)
-            print("NOW", datetime.now(timezone.utc))
             if datetime.now(timezone.utc) > delta:
                 self.add_error("reset_token", "The provided reset token is either invalid or expired.")
             else:
