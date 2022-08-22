@@ -6,6 +6,7 @@ from .alias import Alias
 from .article import Article
 from .collection import Collection
 from .collection import Collection_Entry
+from .company import Company
 from .content import Content
 from .file import File
 from .detail import Detail
