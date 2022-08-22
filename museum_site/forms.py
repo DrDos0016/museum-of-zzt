@@ -4,7 +4,7 @@ import shutil
 import time
 import zipfile
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from django import forms
 from django.urls import reverse_lazy
@@ -1396,7 +1396,7 @@ class Reset_Password_Form(forms.Form):
     attrs = {"method": "POST"}
     text_prefix = (
         "<p>Your request has been received. If the provided email has an associated account, an email will be sent to containing a token to reset "
-        "your password. A link is also provided to automatically enter the token's value.</p>"
+        "your password. A link is also provided to automatically enter the token's value. This token will expire in 10 minutes.</p>"
         "<p>If no message is received, check your spam folder and wait a few minutes before trying again. If the issue persists, contact "
         "<a href='mailto:{}'>Dr. Dos</a>.</p>".format(EMAIL_ADDRESS)
     )
@@ -1422,10 +1422,17 @@ class Reset_Password_Form(forms.Form):
 
         # Check the token is valid
         qs = User.objects.filter(profile__reset_token=cleaned_data.get("reset_token"))
+
         if len(qs) != 1:
-            self.add_error("reset_token", "The provided reset token is not valid.")
+            self.add_error("reset_token", "The provided reset token is either invalid or expired.")
         else:
-            self.user = qs[0]
+            delta = qs[0].profile.reset_time + timedelta(minutes=10)
+            print("DELTA", delta)
+            print("NOW", datetime.now(timezone.utc))
+            if datetime.now(timezone.utc) > delta:
+                self.add_error("reset_token", "The provided reset token is either invalid or expired.")
+            else:
+                self.user = qs[0]
         return cleaned_data
 
 class Resent_Account_Activation_Email_Form(forms.Form):
