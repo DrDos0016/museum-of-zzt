@@ -56,3 +56,23 @@ def language_select_choices(languages, allow_any=False, allow_non_english=False)
         output.insert(0, ("any", "- ANY -"))
 
     return output
+
+
+def qs_manual_order(qs, ordering, field="pk", kind="int"):
+    """ Return a queryset arranged by a given ordering """
+    qs = list(qs)
+    ordered = []
+    temp_dict = {}
+
+    if "[text]" in ordering:
+        ordering = ordering[1:]
+
+    for row in qs:
+        temp_dict[getattr(row, field)] = row
+    for i in ordering:
+        if kind == "int":
+            key = int(i)
+        else:
+            key = i
+        ordered.append(temp_dict[key])
+    return ordered

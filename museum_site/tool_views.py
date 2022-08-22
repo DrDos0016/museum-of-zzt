@@ -546,11 +546,13 @@ def prep_publication_pack(request):
 
         with open(os.path.join(SITE_ROOT, "museum_site", "templates", "museum_site", "tools", "blank-publication-pack.html")) as fh:
             raw = fh.read().split("=START=")[1]
+
+        associated_list = request.GET.getlist("associated", [])
         sub_context = {
             "year": request.GET.get("publish_date", "")[:4],
             "publish_path": "publish-" + request.GET.get("publish_date", "")[5:],
             "file_ids_string": ",".join(request.GET.getlist("associated", [])[1:]),
-            "files": File.objects.filter(pk__in=request.GET.getlist("associated", [])[1:]),
+            "files": qs_manual_order(File.objects.filter(pk__in=associated_list[1:]), associated_list),
         }
         # Add prefix to File objects for easier template rendering
         idx = 1
