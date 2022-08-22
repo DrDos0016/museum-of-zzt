@@ -354,6 +354,7 @@ class File(BaseModel):
     article_count = models.IntegerField(
         default=0, editable=False, help_text="Cached number of articles associated with this zip file. Set automatically. Do not adjust."
     )
+    companies = models.ManyToManyField("Company", default=None, blank=True)
     content = models.ManyToManyField("Content", default=None, blank=True)
     details = models.ManyToManyField("Detail", default=None, blank=True)
     downloads = models.ManyToManyField("Download", default=None, blank=True)
