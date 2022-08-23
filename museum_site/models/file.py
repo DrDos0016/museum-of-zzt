@@ -65,7 +65,7 @@ class FileManager(models.Manager):
         # Filter by release year
         if p.get("year"):
             year = p["year"]
-            if year == "Unk":  # Unknown release year
+            if year.lower() == "unk":  # Unknown release year
                 qs = qs.filter(release_date=None)
             else:  # Numeric years
                 qs = qs.filter(release_date__gte="{}-01-01".format(year), release_date__lte="{}-12-31".format(year))
@@ -1215,6 +1215,12 @@ class File(BaseModel):
             if os.path.isfile(screenshot_path):
                 os.remove(screenshot_path)
                 message += "Removed preview image\n"
+
+        # Remove the contents objects
+        content = self.content.all()
+        for c in content:
+            c.delete()
+        message += "Remove Content object(s)\n"
 
         # Remove the file object
         self.delete()
