@@ -124,8 +124,15 @@ def content_warning(*args, **kwargs):
 def guide_words(*args, **kwargs):
     sort = kwargs.get("sort", "")
     model = kwargs.get("model")
-    items = (kwargs.get("first_item"), kwargs.get("last_item"))
+    items = (kwargs.get("first_item", ""), kwargs.get("last_item", ""))
     link_text = ["???", "???"]
+
+    if items == ("", ""):
+        # Try a manually passed object list
+        if kwargs.get("object_list"):
+            first = kwargs["object_list"][0]
+            last = kwargs["object_list"][len(kwargs["object_list"]) - 1]
+            items = (first, last)
 
     if sort is None:
         sort = ""

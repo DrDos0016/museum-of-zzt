@@ -169,10 +169,7 @@ def env_from_host(host):
         return "DEV"
 
 
-def get_selected_view_format(
-    request,
-    available_views=["detailed", "list", "gallery"]
-):
+def get_selected_view_format(request, available_views=["detailed", "list", "gallery"]):
     # GET > Session > Default
     view = None
     if request.GET.get("view"):
