@@ -30,15 +30,7 @@ def files_by_detail(request, slug):
     return file_directory(request, details=[d.pk])
 
 
-def file_directory(
-    request,
-    letter=None,
-    details=[],
-    page_num=1,
-    show_description=False,
-    show_featured=False,
-    genre=None,
-):
+def file_directory(request, letter=None, details=[], page_num=1, show_description=False, show_featured=False, genre=None):
     """ Returns page listing all articles sorted either by date or name """
     data = {
         "title": "Browse - All Files",
@@ -49,9 +41,7 @@ def file_directory(
         "table_header": table_header(File.table_fields),
         "available_views": File.supported_views,
         "view": get_selected_view_format(request, File.supported_views),
-        "sort_options": get_sort_options(
-            File.sort_options, debug=request.session.get("DEBUG")
-        ),
+        "sort_options": get_sort_options(File.sort_options, debug=request.session.get("DEBUG")),
         "guide_words": True
     }
 
