@@ -81,7 +81,7 @@ class Detail(BaseModel):
 
 
     def url(self):
-        return "/detail/{}/".format(self.slug)
+        return "/detail/view/{}/".format(self.slug)
 
 
     def save(self, *args, **kwargs):
