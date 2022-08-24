@@ -5,15 +5,20 @@ from django.shortcuts import redirect
 
 from museum_site.models import *
 from museum_site.common import PAGE_SIZE, LIST_PAGE_SIZE, PAGE_LINKS_DISPLAYED, get_selected_view_format, get_sort_options, table_header, clean_params
+from museum_site.constants import NO_PAGINATION
 
 
 class Model_List_View(ListView):
     template_name = "museum_site/new-generic-directory.html"
+    allow_pagination = True
+    paginate_by = NO_PAGINATION
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         self.view = get_selected_view_format(self.request, self.model.supported_views)
-        self.paginate_by = PAGE_SIZE if self.view != "list" else LIST_PAGE_SIZE
+        if self.allow_pagination:
+            self.paginate_by = PAGE_SIZE if self.view != "list" else LIST_PAGE_SIZE
+        self.sorted_by = request.GET.get("sort")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -26,7 +31,27 @@ class Model_List_View(ListView):
 
         # Set block based on view
         context["block_template"] = "museum_site/blocks/new-generic-{}-block.html".format(context["view"])
+
+        # Set title
+        context["title"] = self.get_title()
+
+        # Set head object if one is used
+        context["head_object"] = self.head_object if hasattr(self, "head_object") else None
+
+        # Initialize objects' local contexts
+        for i in context["object_list"]:
+            if self.view == "detailed":
+                i.context = i.detailed_block_context()
+            elif self.view == "list":
+                i.context = i.list_block_context()
+                context["table_header"] = table_header(self.model.table_fields)
+            elif self.view == "gallery":
+                i.context = i.gallery_block_context()
+
         return context
+
+    def get_title(self):
+        return "{} Directory".format(self.model.model_name)
 
     def sort_queryset(self, qs):
         fields = self.model.sort_keys.get(self.sorted_by)
@@ -56,7 +81,6 @@ class ZFile_List_View(Model_List_View):
         self.letter = self.kwargs.get("letter")
         self.genre_slug = self.kwargs.get("genre_slug")
         self.detail_slug = self.kwargs.get("detail_slug")
-        self.sorted_by = request.GET.get("sort")
 
         self.search_type = None
         self.detail = None
@@ -103,19 +127,6 @@ class ZFile_List_View(Model_List_View):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        # Set title
-        context["title"] = self.get_title()
-
-        # Initialize objects' local contexts
-        for i in context["object_list"]:
-            if self.view == "detailed":
-                i.context = i.detailed_block_context()
-            elif self.view == "list":
-                i.context = i.list_block_context()
-                context["table_header"] = table_header(self.model.table_fields)
-            elif self.view == "gallery":
-                i.context = i.gallery_block_context()
 
         # Modify sort options based on path
         if self.request.path == "/file/browse/":
@@ -192,3 +203,36 @@ def prepare_roulette(request):
         return ZFile_List_View.as_view()(request)
     else:
         return redirect("/file/roulette/?seed={}".format(int(time())))
+
+
+class Series_List_View(Model_List_View):
+    model = Series
+    queryset = Series.objects.directory()
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = self.sort_queryset(qs)
+        return qs
+
+
+class Series_Contents_View(Model_List_View):
+    model = Article
+    allow_pagination = False
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        if self.sorted_by is None:
+            self.sorted_by = "-date"
+
+    def get_queryset(self):
+        pk = self.kwargs.get("series_id")
+        self.head_object = Series.objects.get(pk=pk)
+        qs = self.head_object.article_set.all()
+        qs = self.sort_queryset(qs)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Series Overview - {}".format(self.head_object.title)
+        context["prefix_text"] = "<h2>Articles in Series</h2>"
+        return context
