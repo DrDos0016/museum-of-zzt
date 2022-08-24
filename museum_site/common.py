@@ -356,9 +356,7 @@ def simplify_query_string(p, list_items=[], ignore=[]):
 
 
 def clean_params(p, list_items=[]):
-    """ Returns a dictionary (request.GET/POST) with blank/"Any" values removed
-    List items are ignored
-    """
+    """ Returns a dictionary (request.GET/POST) with blank/"Any" values removed. List items are ignored """
     to_delete = []
     for (k, v) in p.items():
         if k in list_items:

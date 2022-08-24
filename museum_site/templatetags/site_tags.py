@@ -623,7 +623,7 @@ def generic_block_loop(
     if len(items) == 0:
         output = (
             "<div id='no-results'>"
-            "<img src='/static/chrome/blank-board.png' %}'>"
+            "<img src='/static/chrome/blank-board.png'>"
             "<p>Your query returned zero results!</p>"
             "</div>"
         )
