@@ -1,0 +1,20 @@
+{% load site_tags %}
+<div class="model-block detailed{% for r in obj.context.roles %} {{r}}{% endfor %}" data-model="{{obj.context.model}}" data-pk="{{obj.context.pk}}" id="{{obj.context.hash_id}}">
+    {% if obj.context.prefix %}<div class="prefix">{{obj.context.prefix}}</div>{% endif %}
+    <img class="preview-image thumbnail{% if not obj.context.nozoom %} zoomable{% endif %}{% if obj.context.zoomed %} zoomed{% endif %}" src="{{obj.context.preview.url}}" alt="{{obj.context.preview.url}}">
+    {% include "museum_site/datum/title-datum.html" with f=obj.context.title %}
+    <div class="data">
+        {% for col in obj.context.columns %}
+        <div class="col">
+        {% for field in col %}
+        {% include "museum_site/datum/"|add:field.datum|add:"-datum.html" with f=field %}
+        {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+    {% if obj.context.extras %}<div class="extras">{% for extra in obj.context.extras %}{% include extra with featured_articles=obj.context.featured_articles lost_description=obj.context.lost_description detail_name=obj.context.detail_name utility_description=obj.context.utility_description %}{% endfor %}</div>{% endif %}
+</div>
+{% if obj.context.links %}
+{% if obj.context.model == "File" %}{% zfile_links zfile=obj.context.file debug=request.session.DEBUG %}{% endif %}
+{% comment %}TODO!!! {% if obj.context.model != "File" %}{% include "museum_site/blocks/"|add:obj.context.model|add:"-links.html"|lower %}{% endif %}{% endcomment %}
+{% endif %}

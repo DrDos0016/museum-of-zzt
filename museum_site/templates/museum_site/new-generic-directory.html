@@ -1,0 +1,29 @@
+{% extends base_template|default:"museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block content %}
+<!--NEW-generic-directory.html-->
+<h{{header_idx|default:"1"}}>NEW! {{title}}</h{{header_idx|default:"1"}}>
+
+{% if prefix_template %}{% include prefix_template %}{% elif prefix_text %}{{prefix_text|safe|linebreaks}}{% endif %}
+
+{% include "museum_site/blocks/paginator-block.html" with location="first" %}
+
+{% for obj in object_list %}
+{% if forloop.first and view == "list" %}<table>
+{{table_header}}
+{% elif forloop.first and view == "gallery" %}<div class="gallery-frame">
+{% endif %}
+{% include block_template %}
+{% if forloop.last and view == "list" %}</table>
+{% elif forloop.last and view == "gallery" %}</div>{% endif %}
+{% empty %}
+<div id="no-results">
+    <img src={% static "chrome/blank-board.png" alt="An empty yellow bordered ZZT board" %}>
+    <p>Your query returned zero results!</p>
+</div>
+{% endfor %}
+
+{% include "museum_site/blocks/paginator-block.html" with location="bottom" %}
+{% endblock %}
