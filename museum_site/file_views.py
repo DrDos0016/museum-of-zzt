@@ -106,7 +106,6 @@ def file_directory(request, letter=None, details=[], page_num=1, show_descriptio
         default_sort = "-release"
     elif request.path == "/detail/view/uploaded/":
         data["title"] = "Upload Queue"
-        #data["prefix_template"] = "museum_site/prefixes/upload-queue.html"
 
         # Add sort by upload date
         data["sort_options"] = (
@@ -115,12 +114,9 @@ def file_directory(request, letter=None, details=[], page_num=1, show_descriptio
         default_sort = "uploaded"
     elif request.path == "/detail/view/featured-world/":
         data["title"] = "Featured Worlds"
-        #data["prefix_template"] = ["museum_site/prefixes/featured-world.html"]
     elif request.path == "/file/roulette/":
         if not request.GET.get("seed"):
-            return redirect(
-                "/roulette?seed={}".format(int(request.GET.get("seed", time())))
-            )
+            return redirect("/roulette?seed={}".format(int(request.GET.get("seed", time()))))
 
         data["title"] = "Roulette"
         data["rng_seed"] = request.GET.get("seed")
