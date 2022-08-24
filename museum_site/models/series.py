@@ -25,6 +25,14 @@ class Series(BaseModel):
         {"text": "Newest Entry", "val": "latest"},
         {"text": "Title", "val": "title"}
     ]
+    sort_keys = {
+        # Key - Value from <select> used in GET params
+        # Value - Django order_by param
+        "title": "title",
+        "latest": "-last_entry_date",
+        "id": "id",
+        "-id": "-id",
+    }
 
     # Constants
     PREVIEW_DIRECTORY = os.path.join(STATIC_URL, "pages/series-directory/")

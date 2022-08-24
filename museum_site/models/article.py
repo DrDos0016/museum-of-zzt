@@ -115,6 +115,8 @@ class Article(BaseModel):
         "title": "title",
         "author": "author",
         "category": "category",
+        "id": "id",
+        "-id": "-id",
     }
 
     SCHEMAS = (
