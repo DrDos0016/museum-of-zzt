@@ -45,9 +45,9 @@
         </select>
 </div>
 {% endif %}
-{% if advanced_search %}
+{% if query_edit_url_name %}
 <div class="modify-query">
-    <a href="{% url 'advanced_search' %}?{{request.META.QUERY_STRING}}&action=edit">Edit Search Query</a>
+    <a href="{% url query_edit_url_name %}?{{request.META.QUERY_STRING}}&action=edit">Edit Search Query</a>
 </div>
 {% endif %}
 

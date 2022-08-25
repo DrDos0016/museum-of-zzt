@@ -15,6 +15,7 @@ import museum_site.article_views  # noqa: E402
 import museum_site.collection_views  # noqa: E402
 import museum_site.debug_views  # noqa: E402
 import museum_site.file_views  # noqa: E402
+import museum_site.generic_model_views  # noqa: E402
 # import museum_site.errors  # noqa: E402
 import museum_site.feeds  # noqa: E402
 import museum_site.help_views  # noqa: E402
@@ -47,15 +48,15 @@ urlpatterns = [
     path("ajax/collection/update-collection-entry/", museum_site.ajax.update_collection_entry),
 
     # /article/
-    path("article/", museum_site.article_views.article_directory, name="article_directory"),
+    path("article/", museum_site.generic_model_views.Article_List_View.as_view(), name="article_directory"),
     path("article/category/", museum_site.article_views.article_categories, name="article_categories"),
-    path("article/category/<slug:category>/", museum_site.article_views.article_directory, name="article_category"),
+    path("article/category/<slug:category_slug>/", museum_site.generic_model_views.Article_List_View.as_view(), name="article_category"),
     path("article/search/", museum_site.search_views.article_search, name="article_search"),
     path("article/view/<int:article_id>/page/<int:page>/<slug:slug>/", museum_site.article_views.article_view, name="article_view_page"),
     path("article/view/<int:article_id>/<slug:slug>/", museum_site.article_views.article_view, {"page": 1}, name="article_view"),
     # /article/ -- Legacy Redirects
     path("article/categories/", legacy_redirect, {"name": "article_categories"}),
-    path("article/<slug:category>/", legacy_redirect, {"name": "article_category"}),
+    path("article/<slug:category_slug>/", legacy_redirect, {"name": "article_category"}),
     path("article/<int:article_id>/page/<int:page>/<slug:slug>/", legacy_redirect, {"name": "article_view_page"}),
     path("article/<int:article_id>/<slug:slug>/", legacy_redirect, {"name": "article_view"}),
     path("closer-looks/", legacy_redirect, {"name": "article_category", "category": "closer-look"}),
@@ -72,7 +73,7 @@ urlpatterns = [
     path("zzt-cheats/", museum_site.article_views.article_view, {"article_id": 22}, name="zzt_cheats"),
 
     # /collection/
-    path("collection/", museum_site.collection_views.Collection_Directory_View.as_view(), name="browse_collections"),
+    path("collection/", museum_site.generic_model_views.Collection_List_View.as_view(), name="browse_collections"),
     path(
         "collection/manage-contents/<slug:slug>/",
         login_required(museum_site.collection_views.Collection_Manage_Contents_View.as_view()), name="manage_collection_contents"
@@ -80,8 +81,8 @@ urlpatterns = [
     path("collection/new/", login_required(museum_site.collection_views.Collection_Create_View.as_view()), name="new_collection"),
     path("collection/delete/<slug:slug>/", login_required(museum_site.collection_views.Collection_Delete_View.as_view()), name="delete_collection"),
     path("collection/edit/<slug:slug>/", login_required(museum_site.collection_views.Collection_Update_View.as_view()), name="edit_collection"),
-    path("collection/user/", login_required(museum_site.collection_views.Collection_Directory_View.as_view()), name="my_collections"),
-    path("collection/view/<slug:slug>/", museum_site.collection_views.Collection_Detail_View.as_view(), name="view_collection"),
+    path("collection/user/", login_required(museum_site.generic_model_views.Collection_List_View.as_view()), name="my_collections"),
+    path("collection/view/<slug:collection_slug>/", museum_site.generic_model_views.Collection_Contents_View.as_view(), name="view_collection"),
 
     # /debug/
     path("ajax/debug_file/", museum_site.ajax.debug_file),
@@ -96,30 +97,30 @@ urlpatterns = [
 
     # /detail/
     path("detail/", museum_site.help_views.Detail_Overview_View.as_view(), name="file_details"),
-    path("detail/view/<slug:slug>/", museum_site.file_views.files_by_detail, name="files_by_detail"),
+    path("detail/view/<slug:detail_slug>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="files_by_detail"),
     # /detail/ -- Legacy Redirects
     path("detail/<slug:slug>/", legacy_redirect, {"name": "files_by_detail"}),
-    path("zzt-worlds/", legacy_redirect, {"name": "files_by_detail", "slug": "zzt-world"}, name="zzt_worlds"),
-    path("super-zzt/", legacy_redirect, {"name": "files_by_detail", "slug": "super-zzt-world"}, name="szzt_worlds"),
-    path("utilities/", legacy_redirect, {"name": "files_by_detail", "slug": "utility"}, name="utilities"),
-    path("zzm-audio/", legacy_redirect, {"name": "files_by_detail", "slug": "zzm-audio"}, name="zzm_audio"),
-    path("zig-worlds/", legacy_redirect, {"name": "files_by_detail", "slug": "zig-world"}, name="zig_worlds"),
-    path("modified-gfx/", legacy_redirect, {"name": "files_by_detail", "slug": "modified-graphics"}, name="modified_gfx"),
-    path("modified-exe/", legacy_redirect, {"name": "files_by_detail", "slug": "modified-executable"}, name="modified_exe"),
-    path("ms-dos/", legacy_redirect, {"name": "files_by_detail", "slug": "ms-dos"}, name="ms_dos"),
+    path("zzt-worlds/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "zzt-world"}, name="zzt_worlds"),
+    path("super-zzt/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "super-zzt-world"}, name="szzt_worlds"),
+    path("utilities/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "utility"}, name="utilities"),
+    path("zzm-audio/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "zzm-audio"}, name="zzm_audio"),
+    path("zig-worlds/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "zig-world"}, name="zig_worlds"),
+    path("modified-gfx/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "modified-graphics"}, name="modified_gfx"),
+    path("modified-exe/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "modified-executable"}, name="modified_exe"),
+    path("ms-dos/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "ms-dos"}, name="ms_dos"),
     path("lost-worlds/", legacy_redirect, {"name": "files_by_detail", "slug": "lost-world"}, name="lost_worlds"),
-    path("uploaded/", legacy_redirect, {"name": "files_by_detail", "slug": "uploaded"}, name="uploaded_worlds"),
-    path("featured/", legacy_redirect, {"name": "files_by_detail", "slug": "featured-world"}, name="featured_games"),
+    path("uploaded/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "uploaded"}, name="uploaded_worlds"),
+    path("featured/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "featured-world"}, name="featured_games"),
 
     # /file/
-    path("file/browse/", museum_site.file_views.file_directory, name="browse"),
-    path("file/browse/new-finds/", museum_site.file_views.file_directory, name="new_finds"),
-    path("file/browse/new-releases/", museum_site.file_views.file_directory, name="new_releases"),
-    path("file/browse/<str:letter>/", museum_site.file_views.file_directory, name="browse_letter"),
+    path("file/browse/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse"),
+    path("file/browse/new-finds/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="new_finds"),
+    path("file/browse/new-releases/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="new_releases"),
+    path("file/browse/<str:letter>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse_letter"),
     path("file/random/", museum_site.views.random, name="random"),
-    path("file/roulette/", museum_site.file_views.file_directory, name="roulette"),
+    path("file/roulette/", museum_site.generic_model_views.prepare_roulette, name="roulette"),
     path("file/advanced-search/", museum_site.search_views.advanced_search, name="advanced_search"),
-    path("file/search/", museum_site.file_views.file_directory, name="search"),
+    path("file/search/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="search"),
     path("file/mass-downloads/", museum_site.views.mass_downloads, name="mass_downloads"),
 
     path("file/article/<str:key>/", museum_site.file_views.file_articles, name="article"),
@@ -150,7 +151,7 @@ urlpatterns = [
 
     # /genre/
     path("genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_overview"),
-    path("genre/<str:genre>/", museum_site.file_views.file_directory, name="browse_genre"),
+    path("genre/<slug:genre_slug>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse_genre"),
 
     # /help/
     path("help/", RedirectView.as_view(url="/article/help/")),
@@ -183,9 +184,9 @@ urlpatterns = [
     path("data-integrity/", legacy_redirect, {"name": "data_integrity"}),
 
     # /review/
-    path("review/", museum_site.review_views.Review_Directory_View.as_view(), name="review_directory"),
+    path("review/", museum_site.generic_model_views.Review_List_View.as_view(), name="review_directory"),
     path("review/author/", museum_site.review_views.Reviewer_Directory_View.as_view(), name="reviewer_directory"),
-    path("review/author/<str:author>/", museum_site.review_views.Review_Directory_View.as_view(), name="reviews_by_author"),
+    path("review/author/<str:author>/", museum_site.generic_model_views.Review_List_View.as_view(), name="reviews_by_author"),
     path("review/search/", museum_site.review_views.Review_Search_Form_View.as_view(), name="review_search"),
 
     # /rss/
@@ -198,8 +199,8 @@ urlpatterns = [
     path("rss/uploads/", museum_site.feeds.LatestUploadsFeed(), name="rss_uploads"),
 
     # /series/
-    path("series/", museum_site.series_views.Series_Directory_View.as_view(), name="series_directory"),
-    path("series/<int:series_id>/<slug:slug>/", museum_site.series_views.Series_Overview_View.as_view(), name="series_overview"),
+    path("series/", museum_site.generic_model_views.Series_List_View.as_view(), name="series_directory"),
+    path("series/<int:series_id>/<slug:slug>/", museum_site.generic_model_views.Series_Contents_View.as_view(), name="series_overview"),
 
     # /tools/
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
@@ -290,12 +291,12 @@ urlpatterns = [
 
     # Directories
     path("directory/<slug:category>/", museum_site.views.directory, name="directory"),
-    path("new/", museum_site.file_views.file_directory, name="new_files"),
 
     # Legacy Redirects -- URLs which have changed but should still work to prevent link-rot
     path("review/<str:letter>/<str:key>/", legacy_redirect, {"name": "reviews", "strip": ["letter"]}),
     path("browse/", legacy_redirect, {"name": "browse"}),
     path("browse/<str:letter>/", legacy_redirect, {"name": "browse_letter"}),
+    path("new/", legacy_redirect, {"name": "new_releases"}),
     path("new-releases/", legacy_redirect, {"name": "new_releases"}),
 ]
 

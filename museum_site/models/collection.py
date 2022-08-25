@@ -94,7 +94,7 @@ class Collection(BaseModel):
         super(Collection, self).save(*args, **kwargs)
 
     def url(self):
-        return reverse("view_collection", kwargs={"slug": self.slug})
+        return reverse("view_collection", kwargs={"collection_slug": self.slug})
 
     def preview_url(self):
         if self.preview_image:
@@ -174,6 +174,9 @@ class Collection_Entry(models.Model):
         "id": "id",
         "-id": "-id",
     }
+
+    supported_views = ["detailed"]
+    model_name = "Collection Entry"
 
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE, blank=True, null=True)
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True)

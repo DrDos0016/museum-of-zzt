@@ -1,6 +1,8 @@
 from datetime import datetime
 
+
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
@@ -12,7 +14,40 @@ from museum_site.templatetags.zzt_tags import char
 
 class ReviewManager(models.Manager):
     def directory(self, **kwargs):
+        # TODO Can this be removed? Aug. 24, 2022
         return self.filter(approved=True).defer("content")
+
+    def search(self, p):
+        qs = self.filter(approved=True)
+
+        # Filter by simple fields
+        for f in ["title", "author", "content"]:
+            if p.get(f):
+                field = "{}__icontains".format(f)
+                value = p[f]
+                qs = qs.filter(**{field: value})
+
+        if p.get("review_date") and p["review_date"] != "any":
+            qs = qs.filter(date__year=p["review_date"])
+
+        if p.get("ratingless"):
+            if p.get("min_rating"):
+                qs = qs.filter(Q(rating__gte=p["min_rating"]) | Q(rating=-1))
+            if p.get("max_rating"):
+                qs = qs.filter(Q(rating__lte=p["max_rating"]) | Q(rating=-1))
+        else:
+            if p.get("min_rating"):
+                qs = qs.filter(rating__gte=p["min_rating"])
+            if p.get("max_rating"):
+                qs = qs.filter(rating__lte=p["max_rating"])
+
+        # Include zfile and user information
+        qs = qs.select_related("zfile", "user")
+        # Don't pull review text unless searching by it
+        if not p.get("content"):
+            qs = qs.defer("content")
+        return qs
+
 
 class Review(BaseModel):
     """ Review object repesenting an review to a file """
