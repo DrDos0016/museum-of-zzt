@@ -20,8 +20,6 @@ class Detail_Overview_View(View):
         for d in details:
             context["details"][d.category].append(d)
 
-        print("UHH", self.template_name)
-
         return render(request, self.template_name, context)
 
 

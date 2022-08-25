@@ -39,7 +39,7 @@ def article_categories(request, category="all", page_num=1):
             preview=dict(url="/static/pages/article-categories/{}.png".format(
                 key
             ), alt=entry["category"]),
-            title={"datum": "link", "url": "/article/"+key, "value": entry["category"]},
+            title={"datum": "link", "url": "/article/category/"+key, "value": entry["category"]},
             columns=[[
                     {"datum": "text", "label": "Number of Articles", "value":entry["total"]},
                     {"datum": "link", "label": "Latest", "url": latest.url(), "value": latest.title},
