@@ -3,6 +3,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.views.generic.edit import FormView
+from django.views.generic import ListView
+
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.models import *
@@ -21,7 +23,7 @@ class Review_Search_Form_View(FormView):
         context["title"] = self.title
         return context
 
-class Reviewer_Directory_View(Directory_View):
+class Reviewer_Directory_View(ListView):
     model = Review
     title = "Reviewer Directory"
     category = "Reviewer"
