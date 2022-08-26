@@ -13,7 +13,6 @@ from museum_site.common import *
 from museum_site.constants import *
 from museum_site.forms import Collection_Content_Form
 from museum_site.models import *
-from museum_site.base_views import *
 
 
 class Collection_Create_View(CreateView):
@@ -113,25 +112,10 @@ class Collection_Manage_Contents_View(FormView):
         context["operation"] = self.request.GET.get("operation", "add")
 
         context["collection_actions"] = [
-            {
-                "text": "Add To Collection",
-                "url": "?operation=add",
-
-            },
-            {
-                "text": "Remove From Collection",
-                "url": "?operation=remove",
-
-            },
-            {
-                "text": "Arrange Collection",
-                "url": "?operation=arrange",
-
-            },
-            {
-                "text": "Edit Collection Entry",
-                "url": "?operation=edit-entry",
-            }
+            {"text": "Add To Collection", "url": "?operation=add", },
+            {"text": "Remove From Collection", "url": "?operation=remove", },
+            {"text": "Arrange Collection", "url": "?operation=arrange", },
+            {"text": "Edit Collection Entry", "url": "?operation=edit-entry", }
         ]
         context["action"] = context["collection_actions"][0]
 

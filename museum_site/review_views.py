@@ -8,7 +8,6 @@ from django.views.generic import ListView
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.models import *
-from museum_site.base_views import *
 from museum_site.forms import Review_Search_Form
 
 
