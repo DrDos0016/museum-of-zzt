@@ -20,6 +20,8 @@ from museum_site.templatetags.site_tags import gblock
 
 
 def get_zip_file(request):
+    if not request.GET:  # Ask for nothing, receive nothing
+        return HttpResponse("")
     letter = request.GET.get("letter")
     zip = request.GET.get("zip")
     filename = request.GET.get("filename", "")
@@ -94,10 +96,8 @@ def get_zip_file(request):
         return response
     elif ext == ".pld":
         return HttpResponse(parse_pld(file.read()))
-    else:
-        return HttpResponse(
-            "This file type is not currently supported for embedded content.", status=501
-        )
+
+    return HttpResponse("This file type is not currently supported for embedded content.", status=501)
 
 
 def debug_file(request):
@@ -183,11 +183,14 @@ def render_review_text(request):
     return HttpResponse(output)
 
 
-@staff_member_required
 def wozzt_queue_add(request):
     resp = "SUCCESS"
     d = request.POST
     e = WoZZT_Queue()
+
+    if not request.POST or not request.user.is_staff:
+        return HttpResponse("")
+
 
     # Create queue object
     try:
@@ -220,6 +223,8 @@ def wozzt_queue_add(request):
 
 
 def add_to_collection(request):
+    if not request.POST.get("collection_id"):
+        return HttpResponse("")
     # Confirm this is your collection
     c = Collection.objects.get(pk=int(request.POST["collection_id"]))
     if not request.user:
@@ -274,6 +279,8 @@ def add_to_collection(request):
     return HttpResponse(resp)
 
 def remove_from_collection(request):
+    if not request.POST.get("collection_id"):
+        return HttpResponse("")
     # Confirm this is your collection
     c = Collection.objects.get(pk=int(request.POST["collection_id"]))
     if not request.user:
@@ -300,7 +307,9 @@ def remove_from_collection(request):
 
 def get_collection_addition(request):
     """ Get the latest added file to a collection """
-    pk = int(request.GET.get("collection_id"))
+    pk = int(request.GET.get("collection_id", 0))
+    if not pk:
+        return HttpResponse("")
     entry = Collection_Entry.objects.filter(collection_id=pk).order_by("-id").first()
     html = gblock(entry.zfile, view="detailed-collection", collection_description=entry.collection_description)
     return HttpResponse(html)
@@ -308,6 +317,8 @@ def get_collection_addition(request):
 
 def arrange_collection(request):
     """ Get the latest added file to a collection """
+    if not request.POST.get("collection_id"):
+        return HttpResponse("")
     # Confirm this is your collection
     c = Collection.objects.get(pk=int(request.POST["collection_id"]))
     if not request.user:
@@ -329,6 +340,8 @@ def arrange_collection(request):
 
 
 def update_collection_entry(request):
+    if not request.POST.get("collection_id"):
+        return HttpResponse("")
     # Confirm this is your collection
     c = Collection.objects.get(pk=int(request.POST["collection_id"]))
     if not request.user:

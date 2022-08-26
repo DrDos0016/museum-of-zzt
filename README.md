@@ -12,21 +12,21 @@ apologies.
 * MariaDB (or MySQL)
 
 1. Clone Repo: `git clone https://github.com/DrDos0016/museum-of-zzt.git`
-. In the repository's root directory, create Python3 virtural environment: `python3 -m venv venv`
-. Activate the virtual envrionment: `source venv/bin/activate`
-. Update pip: `pip install --upgrade pip`
-. Download libraries from requirements.txt: `pip install -r requirements.txt`
-. (You may need to install the package "libmariadb-dev-compat")
-. If you get an error about conflicting requirements, install idna and requests via `pip install idna`, `pip install requests`, and then comment out the line in requirements.txt for `idna`.
-. Copy the `museum/example-private.py` settings file to `museum/private.py` and configure your database settings and secret key  (see Non-Repository Content section)
-. Copy the `museum_site/example-private.py` settings file to `museum_site/private.py` and configure any site settings to your environment if needed (see Non-Repository Content section)
-. Install the Zookeeper ZZT Python library version 1. Clone the repository `git clone https://github.com/DrDos0016/zookeeper.git` and copy the `zookeeper` directory into the project root or symlink it as appropriate.
-. Mark your development environment as such by creating a file in the project root named `DEV`
-. Create the database in MariaDB/MySQL: `CREATE DATABASE museum_of_zzt`
-. Import the repo's provided database dump: `python3 tools/import_database.py museum_repo_db.sql`
-. Run any database migrations `python3 manage.py migrate`
-. Run the Django development server: `python3 manage.py runserver`
-. The site should be running at [127.0.0.1:8000](http://127.0.0.1:8000)
+2. In the repository's root directory, create Python3 virtural environment: `python3 -m venv venv`
+3. Activate the virtual envrionment: `source venv/bin/activate`
+4. Update pip: `pip install --upgrade pip`
+5. Download libraries from requirements.txt: `pip install -r requirements.txt`
+6. (You may need to install the package "libmariadb-dev-compat")
+7. If you get an error about conflicting requirements, install idna and requests via `pip install idna`, `pip install requests`, and then comment out the line in requirements.txt for `idna`.
+8. Copy the `museum/example-private.py` settings file to `museum/private.py` and configure your database settings and secret key  (see Non-Repository Content section)
+9. Copy the `museum_site/example-private.py` settings file to `museum_site/private.py` and configure any site settings to your environment if needed (see Non-Repository Content section)
+10. Install the Zookeeper ZZT Python library version 1. Clone the repository `git clone https://github.com/DrDos0016/zookeeper.git` and copy the `zookeeper` directory into the project root or symlink it as appropriate.
+11. Mark your development environment as such by creating a file in the project root named `DEV`
+12. Create the database in MariaDB/MySQL: `CREATE DATABASE museum_of_zzt`
+13. Import the repo's provided database dump: `python3 tools/import_database.py museum_repo_db.sql`
+14. Run any database migrations `python3 manage.py migrate`
+15. Run the Django development server: `python3 manage.py runserver`
+16. The site should be running at [127.0.0.1:8000](http://127.0.0.1:8000)
 
 ## Using Tools
 

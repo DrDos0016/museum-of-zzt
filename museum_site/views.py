@@ -269,3 +269,32 @@ def worlds_of_zzt_queue(request):
     )
     data["queue_size"] = len(data["queue"])
     return render(request, "museum_site/wozzt-queue.html", data)
+
+
+def error_500(request):
+    # Attempt to redirect old URLs with .zip
+    components = request.path.split("/")
+    new_components = []
+    attempt_redirect = False
+
+    for c in components:
+        if c.lower().endswith(".zip"):
+            attempt_redirect = True
+            c = c[:-4]
+        new_components.append(c)
+
+    if attempt_redirect:
+        new_path = "/".join(new_components)
+        return redirect(new_path)
+
+    return HttpResponse("500 Error")
+
+
+def error_403(request, exception=None):
+    context = {}
+    return render(request, "museum_site/403.html", context)
+
+
+def error_404(request, exception=None):
+    context = {}
+    return render(request, "museum_site/404.html", context)

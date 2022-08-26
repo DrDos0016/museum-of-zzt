@@ -16,69 +16,6 @@ from museum_site.models import *
 from museum_site.base_views import *
 
 
-class Collection_Directory_View(Directory_View):
-    model = Collection
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, **kwargs)
-        self.get_page_title()
-
-    def get_page_title(self):
-        if self.url_name == "my_collections":
-            self.title = "My Collections"
-
-    def get_queryset(self):
-        if self.url_name == "my_collections":
-            qs = Collection.objects.filter(user_id=self.request.user.id)
-        else:  # Default listing
-            qs = Collection.objects.filter(visibility=Collection.PUBLIC, item_count__gte=1)
-
-        # Sorting
-        qs = sort_qs(qs, self.request.GET.get("sort"), self.model.sort_keys, "-modified")
-        return qs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["prefix_template"] = "museum_site/prefixes/collection.html"
-        context["action"] = "Create"
-
-        return context
-
-
-class Collection_Detail_View(DetailView):
-    model = Collection
-    template_name = "museum_site/generic-directory.html"
-    error_template_name = "museum_site/collection-invalid-permissions.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["view"] = "detailed"
-
-        # Get the contents of this collection
-        entries = Collection_Entry.objects.filter(collection=context["collection"])
-        entries = sort_qs(entries, self.request.GET.get("sort"), Collection_Entry.sort_keys, context["collection"].default_sort)
-
-        context["sort_options"] = Collection_Entry.sort_options
-        if context["collection"].default_sort != "manual":  # If there's no manual order available, don't show the option
-            context["sort_options"] = Collection_Entry.sort_options[1:]
-
-        if not self.request.GET.get("sort"):
-            context["selected_sort"] = context["collection"].default_sort
-
-        context["page"] = entries
-        context["title"] = context["collection"].title
-        context["heading_model"] = context["collection"]
-        context["prefix_text"] = markdown_deux_tags.markdown_filter(context["collection"].description) + "\n<h2>{}</h2>".format("Collection Contents ({} files)".format(len(entries)))
-        return context
-
-    def render_to_response(self, context, **kwargs):
-        # Prevent non-creators from viewing private collections
-        if context["collection"].visibility == Collection.PRIVATE:
-            if self.request.user.id != context["collection"].user_id:
-                self.template_name = self.error_template_name
-        return super().render_to_response(context, **kwargs)
-
-
 class Collection_Create_View(CreateView):
     model = Collection
     template_name_suffix = "-form"

@@ -7,8 +7,6 @@ from museum_site.constants import *
 from museum_site.models import *
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
-from museum_site.file_views import file_articles  # Kludge
-
 
 def article_categories(request, category="all", page_num=1):
     """ Returns page listing all articles sorted either by date or name """
@@ -41,11 +39,11 @@ def article_categories(request, category="all", page_num=1):
             ), alt=entry["category"]),
             title={"datum": "link", "url": "/article/category/"+key, "value": entry["category"]},
             columns=[[
-                    {"datum": "text", "label": "Number of Articles", "value":entry["total"]},
+                    {"datum": "text", "label": "Number of Articles", "value": entry["total"]},
                     {"datum": "link", "label": "Latest", "url": latest.url(), "value": latest.title},
                     {
                         "datum": "text",
-                        "value":mark_safe(CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>"))
+                        "value": mark_safe(CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>"))
                     }
             ]],
         )
@@ -55,78 +53,8 @@ def article_categories(request, category="all", page_num=1):
     return render(request, "museum_site/generic-directory.html", data)
 
 
-def article_directory(request, category="all", page_num=1):
-    """ Returns page listing all/a category of articles """
-    data = {
-        "title": "Article Directory",
-        "table_header": table_header(Article.table_fields),
-        "available_views": Article.supported_views,
-        "view": get_selected_view_format(request, Article.supported_views),
-        "sort_options": get_sort_options(
-            Article.sort_options, debug=request.session.get("DEBUG")
-        ),
-        "model": "Article",
-        "sort": request.GET.get("sort"),
-    }
-
-    prefix_templates = {
-        "closer-look": "museum_site/prefixes/closer-look.html",
-        "livestream": "museum_site/prefixes/livestream.html",
-        "publication-pack": "museum_site/prefixes/publication-pack.html",
-    }
-    if prefix_templates.get(category):
-        data["prefix_template"] = prefix_templates[category]
-
-    # Pull articles for page
-    qs = Article.objects.search(request.GET)
-
-    if category != "all":
-        if category == "lets-play":  # Special case for apostrophe
-            category = "Let's Play"
-        else:
-            category = category.replace("-", " ")
-            category = category.title()
-
-        qs = qs.filter(category=category)
-        data["title"] = category + " Directory"
-        data["category"] = category
-
-    if request.GET.get("sort") == "date":
-        qs = qs.order_by("publish_date")
-    elif request.GET.get("sort") == "title":
-        qs = qs.order_by("title")
-    elif request.GET.get("sort") == "author":
-        qs = qs.order_by("author")
-    elif request.GET.get("sort") == "category":
-        qs = qs.order_by("category")
-    elif request.GET.get("sort") == "id":
-        qs = qs.order_by("id")
-    elif request.GET.get("sort") == "-id":
-        qs = qs.order_by("-id")
-    else:  # Default (newest)
-        qs = qs.order_by("-publish_date")
-
-    data = get_pagination_data(request, data, qs)
-
-    if data["page"].object_list:
-        data["first_item"] = data["page"].object_list[0]
-        data["last_item"] = (
-            data["page"].object_list[len(data["page"].object_list) - 1]
-        )
-
-    return render(request, "museum_site/generic-directory.html", data)
-
-
 def article_view(request, article_id, page=0, slug=""):
     """ Returns an article pulled from the database """
-    # Awful kludge to deal with a url conflict
-    if article_id == 1:
-        uri = request.build_absolute_uri()
-        if uri.endswith("/"):
-            uri = uri[:-1]
-        filename = uri.split("/")[-1]
-        return file_articles(request, article_id, filename)
-
     page = int(page)
     data = {"id": article_id}
     data["custom_layout"] = "article"

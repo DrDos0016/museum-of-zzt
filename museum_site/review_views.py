@@ -9,46 +9,6 @@ from museum_site.models import *
 from museum_site.base_views import *
 from museum_site.forms import Review_Search_Form
 
-class Review_Directory_View(Directory_View):
-    """ https://docs.djangoproject.com/en/3.2/ref/class-based-views/base/#django.views.generic.base.View.setup """
-    model = Review
-    title = "{} Directory".format(model.model_name)
-
-    def get_queryset(self):
-        author = self.kwargs.get("author")
-        sort_by = self.request.GET.get("sort")
-
-        if author is None:
-            qs = Review.objects.filter(approved=True).select_related("zfile", "user")
-
-            # Search filters
-            if self.request.GET.get("title"):
-                qs = qs.filter(title__icontains=self.request.GET["title"])
-            if self.request.GET.get("author"):
-                qs = qs.filter(author__icontains=self.request.GET["author"])
-            if self.request.GET.get("review_date") and self.request.GET["review_date"] != "any":
-                qs = qs.filter(date__year=self.request.GET["review_date"])
-
-            if self.request.GET.get("ratingless"):
-                if self.request.GET.get("min_rating"):
-                    qs = qs.filter(Q(rating__gte=self.request.GET["min_rating"]) | Q(rating=-1))
-                if self.request.GET.get("max_rating"):
-                    qs = qs.filter(Q(rating__lte=self.request.GET["max_rating"]) | Q(rating=-1))
-            else:
-                if self.request.GET.get("min_rating"):
-                    qs = qs.filter(rating__gte=self.request.GET["min_rating"])
-                if self.request.GET.get("max_rating"):
-                    qs = qs.filter(rating__lte=self.request.GET["max_rating"])
-
-            if self.request.GET.get("content"):
-                qs = qs.filter(content__icontains=self.request.GET["content"])
-            else:
-                qs = qs.defer("content")
-        else: # Reviews by author
-            qs = Review.objects.filter(approved=True, author=author).select_related("zfile", "user").defer("content")
-
-        qs = sort_qs(qs, sort_by, Review.sort_keys, "-date")
-        return qs
 
 class Review_Search_Form_View(FormView):
     model = Review

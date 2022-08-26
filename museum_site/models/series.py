@@ -76,7 +76,7 @@ class Series(BaseModel):
         super(Series, self).save(*args, **kwargs)
 
     def url(self):
-        return "/series/" + str(self.id) + "/" + self.slug
+        return "/series/{}/{}/".format(self.id, self.slug)
 
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)

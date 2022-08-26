@@ -1,0 +1,11 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block content %}
+<h1>403 Error</h1>
+
+<div class="cp437 c">
+    <img src={% static "chrome/error-403.png" alt="A yellow bordered ZZT board with the player blocked by an invisible wall" %}>
+    <p>You do not have permission to access this content!</p>
+</div>
+{% endblock %}

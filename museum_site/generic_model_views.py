@@ -199,7 +199,7 @@ class ZFile_List_View(Model_List_View):
             if self.request.GET.get("err") == "404":
                 return "Automatic Search Results"
             elif self.search_type == "advanced":
-                return "Advanced Search Results"
+                return "Search Results"
             return title
         # Default
         return "Browse - All Files"
@@ -212,6 +212,28 @@ def prepare_roulette(request):
     else:
         return redirect("/file/roulette/?seed={}".format(int(time())))
 
+class ZFile_Article_List_View(Model_List_View):
+    model = Article
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        if self.sorted_by is None:
+            self.sorted_by = "title"
+
+    def get_queryset(self):
+        key = self.kwargs.get("key")
+        self.head_object = File.objects.get(key=key)
+        qs = Article.objects.not_removed().filter(file=self.head_object)
+        qs = self.sort_queryset(qs)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["file"] = self.head_object
+        context["head_object"] = None
+        context["title"] = "{} - Articles".format(self.head_object.title)
+        context["header_idx"] = 2
+        return context
 
 class Series_List_View(Model_List_View):
     model = Series
@@ -297,6 +319,18 @@ class Article_List_View(Model_List_View):
         qs = self.sort_queryset(qs)
         return qs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        prefix_templates = {
+            "closer-look": "museum_site/prefixes/closer-look.html",
+            "livestream": "museum_site/prefixes/livestream.html",
+            "publication-pack": "museum_site/prefixes/publication-pack.html",
+        }
+
+        if prefix_templates.get(self.category_slug):
+            context["prefix_template"] = prefix_templates[self.category_slug]
+        return context
+
     def get_title(self):
         if self.category:
             return "{} Directory".format(self.category)
@@ -338,7 +372,7 @@ class Collection_Contents_View(Model_List_View):
         qs = Collection_Entry.objects.filter(collection=self.head_object)
 
         if self.sorted_by is None:
-            self.sorted_by = "canonical"
+            self.sorted_by = self.head_object.default_sort
 
         qs = self.sort_queryset(qs)
         return qs
@@ -351,4 +385,16 @@ class Collection_Contents_View(Model_List_View):
             self.head_object.item_count,
             ("" if self.head_object.item_count == 1 else "s")
         )
+
+        # If there's no manual order available, don't show the option
+        if context["head_object"].default_sort != "manual":
+            context["sort_options"] = Collection_Entry.sort_options[1:]
+
         return context
+
+    def render_to_response(self, context, **kwargs):
+        # Prevent non-creators from viewing private collections
+        if context["head_object"].visibility == Collection.PRIVATE:
+            if self.request.user.id != context["head_object"].user_id:
+                self.template_name = "museum_site/collection-invalid-permissions.html"
+        return super().render_to_response(context, **kwargs)

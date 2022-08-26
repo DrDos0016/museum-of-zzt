@@ -21,7 +21,6 @@ import museum_site.feeds  # noqa: E402
 import museum_site.help_views  # noqa: E402
 import museum_site.review_views  # noqa: E402
 import museum_site.search_views  # noqa: E402
-import museum_site.series_views  # noqa: E402
 import museum_site.tool_views  # noqa: E402
 import museum_site.user_views  # noqa: E402
 import museum_site.upload_views  # noqa: E402
@@ -34,18 +33,18 @@ urlpatterns = [
     path("", museum_site.views.index, name="index"),
 
     # /ajax/
-    path("ajax/get-author-suggestions/", museum_site.ajax.get_author_suggestions),
-    path("ajax/get-company-suggestions/", museum_site.ajax.get_company_suggestions),
-    path("ajax/get_zip_file/", museum_site.ajax.get_zip_file),
-    path("ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions),
-    path("ajax/render-review-text/", museum_site.ajax.render_review_text),
-    path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add),
+    path("ajax/get-author-suggestions/", museum_site.ajax.get_author_suggestions, name="ajax_get_author_suggestions"),
+    path("ajax/get-company-suggestions/", museum_site.ajax.get_company_suggestions, name="ajax_get_company_suggestions"),
+    path("ajax/get_zip_file/", museum_site.ajax.get_zip_file, name="ajax_get_zip_file"),
+    path("ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions, name="ajax_get_search_suggestions"),
+    path("ajax/render-review-text/", museum_site.ajax.render_review_text, name="ajax_render_review_text"),
+    path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add, name="ajax_wozzt_queue_add"),
 
-    path("ajax/collection/add-to-collection/", museum_site.ajax.add_to_collection),
-    path("ajax/collection/arrange-collection/", museum_site.ajax.arrange_collection),
-    path("ajax/collection/get-collection-addition/", museum_site.ajax.get_collection_addition),
-    path("ajax/collection/remove-from-collection/", museum_site.ajax.remove_from_collection),
-    path("ajax/collection/update-collection-entry/", museum_site.ajax.update_collection_entry),
+    path("ajax/collection/add-to-collection/", museum_site.ajax.add_to_collection, name="ajax_collection_add"),
+    path("ajax/collection/arrange-collection/", museum_site.ajax.arrange_collection, name="ajax_collection_arrange"),
+    path("ajax/collection/get-collection-addition/", museum_site.ajax.get_collection_addition, name="ajax_collection_get_addition"),
+    path("ajax/collection/remove-from-collection/", museum_site.ajax.remove_from_collection, name="ajax_collection_remove"),
+    path("ajax/collection/update-collection-entry/", museum_site.ajax.update_collection_entry, name="ajax_collection_update"),
 
     # /article/
     path("article/", museum_site.generic_model_views.Article_List_View.as_view(), name="article_directory"),
@@ -59,8 +58,8 @@ urlpatterns = [
     path("article/<slug:category_slug>/", legacy_redirect, {"name": "article_category"}),
     path("article/<int:article_id>/page/<int:page>/<slug:slug>/", legacy_redirect, {"name": "article_view_page"}),
     path("article/<int:article_id>/<slug:slug>/", legacy_redirect, {"name": "article_view"}),
-    path("closer-looks/", legacy_redirect, {"name": "article_category", "category": "closer-look"}),
-    path("livestreams/", legacy_redirect, {"name": "article_category", "category": "livestream"}),
+    path("closer-looks/", legacy_redirect, {"name": "article_category", "category_slug": "closer-look"}),
+    path("livestreams/", legacy_redirect, {"name": "article_category", "category_slug": "livestream"}),
 
     # Special Article Pages (those with urls besides /article/#/title)
     path("about-zzt/", museum_site.article_views.article_view, {"article_id": 534}, name="about_zzt"),
@@ -87,6 +86,9 @@ urlpatterns = [
     # /debug/
     path("ajax/debug_file/", museum_site.ajax.debug_file),
     path("debug/", museum_site.debug_views.debug),
+    path("debug/403/", museum_site.views.error_403),
+    path("debug/404/", museum_site.views.error_404),
+    path("debug/500/", museum_site.views.error_500),
     path("debug/<str:filename>.html", museum_site.debug_views.debug),
     path("debug/article/<str:fname>/", museum_site.debug_views.debug_article, name="debug_article"),
     path("debug/article/", museum_site.debug_views.debug_article),
@@ -99,7 +101,7 @@ urlpatterns = [
     path("detail/", museum_site.help_views.Detail_Overview_View.as_view(), name="file_details"),
     path("detail/view/<slug:detail_slug>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="files_by_detail"),
     # /detail/ -- Legacy Redirects
-    path("detail/<slug:slug>/", legacy_redirect, {"name": "files_by_detail"}),
+    path("detail/<slug:detail_slug>/", legacy_redirect, {"name": "files_by_detail"}),
     path("zzt-worlds/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "zzt-world"}, name="zzt_worlds"),
     path("super-zzt/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "super-zzt-world"}, name="szzt_worlds"),
     path("utilities/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "utility"}, name="utilities"),
@@ -108,7 +110,7 @@ urlpatterns = [
     path("modified-gfx/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "modified-graphics"}, name="modified_gfx"),
     path("modified-exe/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "modified-executable"}, name="modified_exe"),
     path("ms-dos/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "ms-dos"}, name="ms_dos"),
-    path("lost-worlds/", legacy_redirect, {"name": "files_by_detail", "slug": "lost-world"}, name="lost_worlds"),
+    path("lost-worlds/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "lost-world"}, name="lost_worlds"),
     path("uploaded/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "uploaded"}, name="uploaded_worlds"),
     path("featured/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "featured-world"}, name="featured_games"),
 
@@ -122,8 +124,7 @@ urlpatterns = [
     path("file/advanced-search/", museum_site.search_views.advanced_search, name="advanced_search"),
     path("file/search/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="search"),
     path("file/mass-downloads/", museum_site.views.mass_downloads, name="mass_downloads"),
-
-    path("file/article/<str:key>/", museum_site.file_views.file_articles, name="article"),
+    path("file/article/<str:key>/", museum_site.generic_model_views.ZFile_Article_List_View.as_view(), name="article"),
     path("file/attribute/<str:key>/", museum_site.file_views.file_attributes, name="file_attributes"),
     path("file/download/<str:key>/", museum_site.file_views.file_download, name="file_download"),
     path("file/review/<str:key>/", museum_site.file_views.review, name="reviews"),
@@ -135,7 +136,7 @@ urlpatterns = [
         {"components": ["credits", "controls", "instructions", "players"]}, name="play"
     ),
     # /file/ -- Legacy Redirects
-    path("random/", museum_site.views.random),  # No need to double redirect here.
+    path("random/", legacy_redirect, {"name": "random"}),
     path("roulette/", legacy_redirect, {"name": "roulette"}),
     path("search/", legacy_redirect, {"name": "search"}),
     path("advanced-search/", legacy_redirect, {"name": "advanced_search"}),
@@ -247,10 +248,6 @@ urlpatterns = [
     path("user/profile/", museum_site.user_views.user_profile, name="my_profile"),
     path("user/forgot-username/", museum_site.user_views.forgot_username, name="forgot_username"),
     path("user/forgot-password/", museum_site.user_views.forgot_password, name="forgot_password"),
-    path(
-        "user/reset-password/complete/", museum_site.views.generic_template_page,
-        {"template": "museum_site/user/reset-password-complete.html", "title": "Reset Password Complete"}, name="reset_password_complete"
-    ),
     path("user/reset-password/<str:token>/", museum_site.user_views.reset_password, name="reset_password_with_token"),
     path("user/reset-password/", museum_site.user_views.reset_password, name="reset_password"),
     path("user/activate-account/<str:token>/", museum_site.user_views.activate_account, name="activate_account_with_token"),
