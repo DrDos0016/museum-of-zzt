@@ -546,6 +546,10 @@ function pull_file()
             $("#filename").text(filename);
             set_active_envelope("text");
         }
+    }).fail(function (data){
+        $("#text-body").html(data.responseText);
+        $("#filename").text(filename);
+        set_active_envelope("text");
     });
 }
 
