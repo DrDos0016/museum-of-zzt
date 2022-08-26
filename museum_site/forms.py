@@ -385,7 +385,7 @@ class Advanced_Search_Form(forms.Form):
             categories=True,
             buttons=["Clear", "Default"],
             show_selected=True,
-            default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]
+            default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE]
         ),
         choices=qs_to_categorized_select_choices(Detail.objects.filter(visible=True), category_order=["ZZT", "SZZT", "Media", "Other"]),
         required=False,
