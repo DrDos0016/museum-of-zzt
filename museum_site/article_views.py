@@ -8,51 +8,6 @@ from museum_site.models import *
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
-def article_categories(request, category="all", page_num=1):
-    """ Returns page listing all articles sorted either by date or name """
-    data = {"title": "Article Categories"}
-
-    qs = Article.objects.not_removed().values(
-        "category"
-    ).annotate(total=Count("category")).order_by("category")
-
-    # TODO: Sloppy way to get this information
-    seen_categories = []
-    cats = {}
-    cats_qs = Article.objects.published().defer("content").order_by("-id")
-    for a in cats_qs:
-        if a.category not in seen_categories:
-            seen_categories.append(a.category)
-            cats[a.category.lower()] = a
-
-    # Block
-    data["page"] = []
-
-    for entry in qs:
-        key = entry["category"].lower().replace("'", "").replace(" ", "-")
-        latest = cats[entry["category"].lower()]
-        block_context = dict(
-            pk=None,
-            model=None,
-            preview=dict(url="/static/pages/article-categories/{}.png".format(
-                key
-            ), alt=entry["category"]),
-            title={"datum": "link", "url": "/article/category/"+key, "value": entry["category"]},
-            columns=[[
-                    {"datum": "text", "label": "Number of Articles", "value": entry["total"]},
-                    {"datum": "link", "label": "Latest", "url": latest.url(), "value": latest.title},
-                    {
-                        "datum": "text",
-                        "value": mark_safe(CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>"))
-                    }
-            ]],
-        )
-
-        data["page"].append(block_context)
-
-    return render(request, "museum_site/generic-directory.html", data)
-
-
 def article_view(request, article_id, page=0, slug=""):
     """ Returns an article pulled from the database """
     page = int(page)

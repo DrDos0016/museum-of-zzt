@@ -544,3 +544,6 @@ class Article(BaseModel):
 
 
         return output
+
+    def category_slug(self):
+        return slugify(self.category)

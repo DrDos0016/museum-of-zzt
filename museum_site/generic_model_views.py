@@ -1,19 +1,24 @@
 from time import time
 
-from django.views.generic import ListView
+from django.db.models import Count
 from django.shortcuts import redirect
+from django.template.defaultfilters import slugify
+from django.utils.safestring import mark_safe
+from django.views.generic import ListView
 
 from markdown_deux.templatetags import markdown_deux_tags
 
 from museum_site.models import *
 from museum_site.common import PAGE_SIZE, LIST_PAGE_SIZE, PAGE_LINKS_DISPLAYED, get_selected_view_format, get_sort_options, table_header, clean_params
 from museum_site.constants import NO_PAGINATION
+from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
 class Model_List_View(ListView):
     template_name = "museum_site/new-generic-directory.html"
     allow_pagination = True
     paginate_by = NO_PAGINATION
+    has_local_context = True
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -47,14 +52,15 @@ class Model_List_View(ListView):
         context["head_object"] = self.head_object if hasattr(self, "head_object") else None
 
         # Initialize objects' local contexts
-        for i in context["object_list"]:
-            if self.view == "detailed":
-                i.context = i.detailed_block_context(request=self.request)
-            elif self.view == "list":
-                i.context = i.list_block_context(request=self.request)
-                context["table_header"] = table_header(self.model.table_fields)
-            elif self.view == "gallery":
-                i.context = i.gallery_block_context(request=self.request)
+        if self.has_local_context:
+            for i in context["object_list"]:
+                if self.view == "detailed":
+                    i.context = i.detailed_block_context(request=self.request)
+                elif self.view == "list":
+                    i.context = i.list_block_context(request=self.request)
+                    context["table_header"] = table_header(self.model.table_fields)
+                elif self.view == "gallery":
+                    i.context = i.gallery_block_context(request=self.request)
 
         return context
 
@@ -398,3 +404,54 @@ class Collection_Contents_View(Model_List_View):
             if self.request.user.id != context["head_object"].user_id:
                 self.template_name = "museum_site/collection-invalid-permissions.html"
         return super().render_to_response(context, **kwargs)
+
+
+class Article_Categories_List_View(Model_List_View):
+    model = Article
+    allow_pagination = False
+    has_local_context = False
+
+    def get_queryset(self):
+        # Find the counts of each category
+        counts = {}
+        count_qs = Article.objects.not_removed().values("category").annotate(total=Count("category")).order_by("category")
+        for c in count_qs:
+            counts[slugify(c["category"])] = c["total"]
+
+        # Find the latest article of each category
+        seen_categories = []
+        cats = {}
+        cats_qs = Article.objects.published().defer("content").order_by("-id")
+        for a in cats_qs:
+            if a.category not in seen_categories:
+                seen_categories.append(a.category)
+                cats[a.category_slug().lower()] = a
+            if len(seen_categories) == len(Article.CATEGORY_CHOICES):
+                break
+
+        qs = []
+        for key in CATEGORY_DESCRIPTIONS:
+            print("KEY:", key)
+            block_context = dict(
+                pk=None,
+                model=None,
+                preview=dict(url="/static/pages/article-categories/{}.png".format(key), alt=cats[key].title),
+                title={"datum": "link", "url": "/article/category/"+key+"/", "value": cats[key].category},
+                columns=[
+                    [
+                        {"datum": "text", "label": "Number of Articles", "value": counts[key]},
+                        {"datum": "link", "label": "Latest", "url": cats[key].url(), "value": cats[key].title},
+                        {"datum": "text", "value": mark_safe(CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>"))}
+                    ]
+                ],
+            )
+            qs.append({"context": block_context})
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Article Categories"
+        context["available_views"] = ["detailed"]
+        context["sort_options"] = None
+        context["disable_guide_words"] = True
+        return context

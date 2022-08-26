@@ -51,4 +51,4 @@
 </div>
 {% endif %}
 
-{% guide_words sort=sort model=model_name object_list=object_list %}
+{% if not disable_guide_words %}{% guide_words sort=sort model=model_name object_list=object_list %}{% endif %}
