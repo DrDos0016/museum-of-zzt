@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.shortcuts import render
 from django.template import Context, Template
+from django.template.defaultfilters import linebreaks, urlize
 from django.urls import get_resolver
 from museum_site.common import *
 from museum_site.constants import *
@@ -92,11 +93,8 @@ def add_livestream(request, key):
             template = fh.read()
 
         # Process the description
-        final_desc = request.POST.get("desc")
-        final_desc = final_desc[:final_desc.find("Download:")]
-        final_desc = "<p>" + final_desc.replace("\r\n", "</p>\n<p>")
-        final_desc = final_desc[:-3]
-        final_desc = final_desc.replace("<p></p>", "")
+        final_desc = urlize(request.POST.get("desc"))
+        final_desc = linebreaks(final_desc)
 
         a.content = template.format(video_id=data["video_id"], desc=final_desc)
 
