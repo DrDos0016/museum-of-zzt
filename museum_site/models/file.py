@@ -126,9 +126,11 @@ class FileManager(models.Manager):
     def new_releases(self, spotlight_filter=False):
         # Published worlds ordered by release date
         if spotlight_filter:
-            return self.filter(spotlight=True).exclude(details__id__in=[DETAIL_UPLOADED]).order_by("-release_date", "-id")
+            qs = self.filter(spotlight=True).exclude(details__id__in=[DETAIL_UPLOADED])
         else:
-            return self.exclude(details__id__in=[DETAIL_UPLOADED]).order_by("-release_date", "-id")
+            qs = self.exclude(details__id__in=[DETAIL_UPLOADED])
+        qs = qs.order_by("-publish_date", "-id")
+        return qs
 
     def new_finds(self, spotlight_filter=False):
         if spotlight_filter:
