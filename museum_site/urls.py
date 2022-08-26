@@ -48,7 +48,7 @@ urlpatterns = [
 
     # /article/
     path("article/", museum_site.generic_model_views.Article_List_View.as_view(), name="article_directory"),
-    path("article/category/", museum_site.article_views.article_categories, name="article_categories"),
+    path("article/category/", museum_site.generic_model_views.Article_Categories_List_View.as_view(), name="article_categories"),
     path("article/category/<slug:category_slug>/", museum_site.generic_model_views.Article_List_View.as_view(), name="article_category"),
     path("article/search/", museum_site.search_views.article_search, name="article_search"),
     path("article/view/<int:article_id>/page/<int:page>/<slug:slug>/", museum_site.article_views.article_view, name="article_view_page"),
