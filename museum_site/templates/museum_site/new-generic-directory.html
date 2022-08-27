@@ -8,7 +8,7 @@
 {% if head_object %}{% gblock head_object "detailed" request=request %}{% endif %}
 {% if prefix_template %}{% include prefix_template %}{% elif prefix_text %}{{prefix_text|safe|linebreaks}}{% endif %}
 
-{% include "museum_site/blocks/paginator-block.html" with location="first" %}
+{% include "museum_site/blocks/paginator-block.html" with location="top" %}
 
 {% for obj in object_list %}
 {% if forloop.first and view == "list" %}<table>
