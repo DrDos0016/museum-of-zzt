@@ -684,15 +684,8 @@ input[name=q] { width:100%; font-size:medium; }
     border:2px solid #00A;
 }
 
-.patreon-plug .heading
-{
-    color:#FFF;
-}
-
-.patreon-plug .heading span
-{
-    color:#00A;
-}
+.patreon-plug .heading { color:#FFF; }
+.patreon-plug .heading span { color:#00A; }
 
 .patreon-plug a
 {
@@ -742,10 +735,7 @@ form .field input, form .field textarea, form .field select, form .field div
     font-weight:normal;
 }
 
-.field-group label
-{
-    flex:1 1 25%;
-}
+.field-group label { flex:1 1 25%; }
 
 .field div.field-row
 {
@@ -753,31 +743,6 @@ form .field input, form .field textarea, form .field select, form .field div
     display:flex;
     justify-content:space-between;
     margin-bottom:4px;
-}
-
-#review-content
-{
-    min-height:140px;
-}
-
-@media (max-width: 1280px)
-{
-    #detail-list
-    {
-        font-size:smaller;
-    }
-
-    input[name=board_min], input[name=board_max], input[name=min], input[name=max]
-    {
-        flex:1;
-        max-width:40%;
-    }
-}
-
-
-form .field .board-type-select
-{
-    flex:1 0 100%;
 }
 
 #detail-list label { font-weight:normal; }
@@ -791,10 +756,7 @@ form .field .board-type-select
 
 @media (max-width: 1024px)
 {
-    .sub
-    {
-        font-size:smaller;
-    }
+    .sub { font-size:smaller; }
 }
 
 form .full-width-submit
