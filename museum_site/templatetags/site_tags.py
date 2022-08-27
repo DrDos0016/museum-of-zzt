@@ -125,6 +125,7 @@ def guide_words(*args, **kwargs):
     sort = kwargs.get("sort", "")
     model = kwargs.get("model")
     items = (kwargs.get("first_item", ""), kwargs.get("last_item", ""))
+    location = kwargs.get("location", "top")
     link_text = ["???", "???"]
 
     if items == ("", ""):
@@ -180,11 +181,12 @@ def guide_words(*args, **kwargs):
 
         if items[0] != "" and items[1] != "":
             output = """
-            <div class="guide-words">
+            <div class="guide-words {}">
                 <span><a class="left" href="#{}">{}</a></span>
                 <span><a class="right" href="#{}">{}</a></span>
             </div>
             """.format(
+                location,
                 items[0].filename, link_text[0],
                 items[1].filename, link_text[1]
             )

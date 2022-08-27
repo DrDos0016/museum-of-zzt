@@ -603,6 +603,7 @@ input[name=q] { width:100%; font-size:medium; }
     max-width:100%;
     margin:auto;
     border-bottom:1px solid #000;
+    font-style:oblique;
 }
 
 .guide-words.bottom
@@ -612,65 +613,31 @@ input[name=q] { width:100%; font-size:medium; }
     margin-top:4px;
 }
 
-.guide-words a { font-style:oblique; }
-
-#years
-{
-    margin:auto;
-    text-align:center;
-    width:100%;
-}
-
-#years a
-{
-    padding-left:8px;
-    padding-right:8px;
-    text-align:center;
-}
-
 .directory
 {
     display:flex;
     justify-content:space-between;
     margin-top:14px;
+    gap:8px;
 }
 
-.column
-{
-    display:inline-block;
-    width:24%;
-    vertical-align:top;
-}
-
-.column > .header
-{
-    border-top:1px solid #000;
-}
+.directory .column { flex:1; }
+.directory .row { padding-left:1em; }
+.column > .header { border-top:1px solid #000; }
 
 .column .header
 {
     background:#619F9F;
     text-align:center;
     font-weight:bold;
-    border-left:1px solid #000;
-    border-right:1px solid #000;
+    border-top:2px solid #000;
+    border-bottom:2px solid #000;
 }
 
-.column .row
-{
-    padding-left:0.5em;
-    border:1px solid #000;
-}
-
-.column .row + .header, .column .row + .row
-{
-    border-top:0px;
-}
-
-.column .row:hover
-{
-    background:#98C9C9;
-}
+.column .row + .row { border-top:1px dotted #000; }
+.column .header + .row { border-top:0px; }
+.column .row:last-child { border-bottom:1px dotted #000; }
+.column .row:hover { background:#98C9C9; }
 
 .content-warning, .sticky-note
 {
