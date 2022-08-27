@@ -1,5 +1,5 @@
 {% if page_count > 1 %}
-<div class="pages cp437">
+<div class="article-pages cp437">
     Page #{{page}}/{{page_count}}<br>
     {% if page > 1 %}<a href="{% url 'article_view_page' id  prev slug %}{% if private_disclaimer%}?secret={{request.GET.secret}}{% endif %}">&lt;</a>{% endif %}
     {% for p in page_range %}

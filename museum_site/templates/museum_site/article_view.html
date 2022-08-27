@@ -5,6 +5,7 @@
 {% block meta %}{% meta_tags path=request.get_full_path article=article %}{% endblock %}
 
 {% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/article.css' %}?{{BOOT_TS}}">
 {{article.css|safe}}
 {% endblock %}
 

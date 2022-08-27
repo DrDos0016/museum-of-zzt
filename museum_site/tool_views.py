@@ -33,109 +33,21 @@ except ImportError:
 
 @staff_member_required
 def add_livestream(request, key):
-    """ Returns page to add a livestream VOD article """
     data = {
-        "title": "Tools",
+        "title": "Add Livestream VOD",
         "file": File.objects.get(key=key),
-        "today": str(datetime.now())[:10],
-        "series_choices": Series.objects.all()
     }
 
-    # File choices
-    """
-    data["file_choices"] = File.objects.all().values(
-        "id", "title"
-    ).order_by("sort_title")
-    """
-    file_associations = forms.ChoiceField(
-        widget=Scrolling_Checklist_Widget(choices=associated_file_choices()),
-        choices=associated_file_choices(),
-        label="File Select Checkbox Widget",
-        help_text="Selecting many files via checkboxes",
-    )
-    data["file_associations"] = file_associations.widget.render("file_associations", "value?")
+    if request.method == "POST":
+        form = Livestream_Vod_Form(request.POST, request.FILES)
+        if form.is_valid():
+            a = form.create_article()
+            return redirect(a.url())
+    else:
+        form = Livestream_Vod_Form(initial={"associated_zfile": data["file"].pk})
 
-    if request.POST.get("action"):
-        if request.POST.get("pk"):
-            a = Article.objects.get(pk=int(request.POST["pk"]))
-        else:
-            a = Article()
-
-        # Convert video URL
-        url = request.POST.get("url")
-        if request.POST.get("url").startswith("http"):
-            url = url.replace("https://youtu.be/", "")
-            url = url.replace("https://www.youtube.com/watch?v=", "")
-            url = url.replace("https://studio.youtube.com/video/", "")
-            url = url.replace("/edit", "")
-            if "&" in url:
-                url = url[:url.find("&")]
-        data["video_id"] = url
-
-        a.title = request.POST.get("title")
-        a.author = request.POST.get("author")
-        a.category = "Livestream"
-        a.schema = "django"
-        a.publish_date = request.POST.get("date")
-        a.published = int(request.POST.get("published", 1))
-        a.description = request.POST.get("summary")
-        a.static_directory = "ls-{}-{}".format(
-            data["file"].filename[:-4],
-            data["video_id"]
-        )
-        a.allow_comments = True
-
-        # Open the template
-        file_path = os.path.join(
-            SITE_ROOT, "tools", "data", "youtube_template.html"
-        )
-        with open(file_path) as fh:
-            template = fh.read()
-
-        # Process the description
-        final_desc = urlize(request.POST.get("desc"))
-        final_desc = linebreaks(final_desc)
-
-        a.content = template.format(video_id=data["video_id"], desc=final_desc)
-
-        a.save()
-        data["article_pk"] = str(a.id)
-
-        # Upload the preview
-        if request.FILES.get("preview"):
-            folder = os.path.join(
-                SITE_ROOT, "museum_site", "static",
-                "articles", request.POST.get("date")[:4], a.static_directory
-            )
-            os.mkdir(folder)
-
-            # Save the file to the uploaded folder
-            file_path = os.path.join(folder, "preview.png")
-            with open(file_path, 'wb+') as fh:
-                for chunk in request.FILES["preview"].chunks():
-                    fh.write(chunk)
-
-            a.save()
-
-        # Chop off the sidebar if needed
-        if request.POST.get("480crop"):
-            image = Image.open(file_path)
-            image = image.crop((0, 0, 480, 350))
-            image.save(file_path)
-
-        # Associate the article with the relevant file(s)
-        for file_association in request.POST.getlist("file_associations"):
-            fa = File.objects.get(pk=int(file_association))
-            fa.articles.add(a)
-            fa.save()
-
-        # Associate the article with the selected series (if any)
-        if request.POST.get("series") != "None":
-            series = Series.objects.get(pk=int(request.POST.get("series")))
-            a.series.add(series)
-            a.save()
-
-    return render(request, "museum_site/tools/add_livestream.html", data)
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)
 
 
 @staff_member_required

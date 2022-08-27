@@ -41,7 +41,7 @@ TEMP_PATH = os.path.join(SITE_ROOT, "temp")
 BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
 STATIC_PATH = os.path.join(SITE_ROOT, "museum_site", "static")
 CSS_INCLUDES = [
-    "grid.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"
+    "main.css", "grid.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"
 ]
 TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False

@@ -1,6 +1,9 @@
-def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False):
+def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False, allow_none=False):
     """ Transform a queryset into a list suitable for Django's forms. """
     output = []
+
+    if allow_none:
+        output.append(("none", "- NONE -"))
 
     if allow_any:
         output.append(("any", "- ANY -"))

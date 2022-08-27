@@ -76,7 +76,7 @@
         </div>
         <form method="GET" action="{% url 'search' %}">
         <div id="search-form">
-            <input name="q" value="{{request.GET.q|default:''}}" list="search-suggestions" autocomplete="off" placeholder="Title/Author/Genre/Filename" data-click-select><div class="low-res-break"></div>
+            <input name="q" value="{{request.GET.q|default:''}}" list="search-suggestions" autocomplete="off" placeholder="Title/Author/Genre/Filename" title="Search by Title/Author/Genre/Filename" data-click-select>
             <input id="search-button" type="submit" value="Search">
         </div>
         </form>
@@ -144,16 +144,16 @@
 
 <section id="sidebar-right" class="sidebar">
     <nav id="top-links" class="cp437">
-        <a id="top-link-div" class="nav-link nohover" href="#top"><div class="text">Top of page</div></a>
-        <a href="{% url 'about_zzt' %}" class="nav-link nohover"><div class="key">A</div><div class="text">About<span class="optional"> ZZT</span></div></a>
-        <a href="{% url 'upload' %}" class="nav-link nohover"><div class="key">U</div><div class="text">Upload</div></a>
-        <a href="{% url 'support' %}" class="nav-link nohover"><div class="key">S</div><div class="text">Support</div></a>
-        <a href="{% url 'discord' %}" class="nav-link nohover"><div class="key">D</div><div class="text">Discord</div></a>
-        <a href="http://zzt.org/fora" class="nav-link nohover"><div class="key">Z</div><div class="text"><span class="optional"> z2 </span>Forums</div></a>
-        {% if user.is_authenticated and not forced_logout %}<a href="{% url 'my_profile' %}" class="nav-link nohover" title="Logged in as: {{user.username}}"><div class="key">{% char user.profile.char user.profile.fg user.profile.bg scale=2 %}</div><div class="text">Profile</div></a>{% else %}
-        <a href="{% url 'login_user' %}" class="nav-link nohover"><div class="key">{% char 1 "black" "transparent" %}</div><div class="text">Account</div></a>{% endif %}
+        <a id="top-link" class="nohover" href="#top"><div class="key">▲</div><div class="text">Top of page</div></a>
+        <a href="{% url 'about_zzt' %}" class="nohover"><div class="key">A</div><div class="text">About ZZT</div></a>
+        <a href="{% url 'upload' %}" class="nohover"><div class="key">U</div><div class="text">Upload</div></a>
+        <a href="{% url 'support' %}" class="nohover"><div class="key">S</div><div class="text">Support</div></a>
+        <a href="{% url 'discord' %}" class="nohover"><div class="key">D</div><div class="text">Discord</div></a>
+        <a href="http://zzt.org/fora" class="nohover"><div class="key">Z</div><div class="text">z2 Forums</div></a>
+        {% if user.is_authenticated and not forced_logout %}<a href="{% url 'my_profile' %}" class="nohover" title="Logged in as: {{user.username}}"><div class="key">{% char user.profile.char user.profile.fg user.profile.bg scale=2 %}</div><div class="text">Profile</div></a>{% else %}
+        <a href="{% url 'login_user' %}" class="nohover"><div class="key">{% char 1 "black" "transparent" %}</div><div class="text">Account</div></a>{% endif %}
         {% if user.is_staff %}
-        <a href="{% url 'tool_index' %}" class="nav-link nohover"><div class="key">T</div><div class="text">Tools</div></a>
+        <a href="{% url 'tool_index' %}" class="nohover"><div class="key">T</div><div class="text">Tools</div></a>
         {% endif %}
     </nav>
 
@@ -199,13 +199,13 @@
     <div id="wozzt-block" class="block">
         <h2>Worlds of ZZT</h2>
         <div id="social">
-            <a class="inline nohover" href="https://twitter.com/worldsofzzt" target="_blank"><img src="{% static 'icons/Twitter_Social_Icon_Rounded_Square_Color.png' %}" alt="Twitter" title="Twitter"></a>
-            <a class="inline nohover" href="{% url 'discord' %}"><img src="{% static 'icons/Discord-Logo-Color.png' %}" alt="Discord" title="Worlds of ZZT Discord"></a>
-            <a class="inline nohover" href="https://patreon.com/worldsofzzt" target="_blank"><img src="{% static 'icons/patreon_logo.png' %}" alt="Patreon" title="Patreon"></a>
-            <a class="inline nohover" href="https://www.youtube.com/c/WorldsofZZT" target="_blank"><img src="{% static 'icons/YouTube-social-squircle_red_24px.png' %}" alt="YouTube" title="YouTube"></a>
-            <a class="inline nohover" href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'icons/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>
-            <a class="inline nohover" href="https://github.com/DrDos0016/museum-of-zzt" target="_blank"><img src="{% static 'icons/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
-            <a class="inline nohover" href="{% url 'rss_feeds' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Feeds" title="RSS Feeds"></a>
+            <a class="inline" href="https://twitter.com/worldsofzzt" target="_blank"><img src="{% static 'icons/Twitter_Social_Icon_Rounded_Square_Color.png' %}" alt="Twitter" title="Twitter"></a>
+            <a class="inline" href="{% url 'discord' %}"><img src="{% static 'icons/Discord-Logo-Color.png' %}" alt="Discord" title="Worlds of ZZT Discord"></a>
+            <a class="inline" href="https://patreon.com/worldsofzzt" target="_blank"><img src="{% static 'icons/patreon_logo.png' %}" alt="Patreon" title="Patreon"></a>
+            <a class="inline" href="https://www.youtube.com/c/WorldsofZZT" target="_blank"><img src="{% static 'icons/YouTube-social-squircle_red_24px.png' %}" alt="YouTube" title="YouTube"></a>
+            <a class="inline" href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'icons/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>
+            <a class="inline" href="https://github.com/DrDos0016/museum-of-zzt" target="_blank"><img src="{% static 'icons/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
+            <a class="inline" href="{% url 'rss_feeds' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Feeds" title="RSS Feeds"></a>
         </div>
 
         <div id="policies">

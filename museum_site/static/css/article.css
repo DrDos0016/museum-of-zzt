@@ -1,0 +1,33 @@
+/* Listing of pages in article */
+.article-pages
+{
+    text-align:center;
+    font-size: 14pt;
+}
+
+/* Used in Publication Packs */
+.image-set
+{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-start;
+    justify-content:space-evenly;
+}
+
+.image-set img
+{
+    width:240px;
+    max-width:30%;
+    margin:7px 4px 7px 4px;
+    border:1px solid #000;
+}
+
+/* LEGACY CSS -- DO NOT ADD MORE USES OF THESe RULES */
+/* Used in old Featured Game reviews */
+.img-set
+{
+    display:block;
+    text-align:center;
+    margin:auto;
+}
+.img-set img { border:1px solid #AAA; }

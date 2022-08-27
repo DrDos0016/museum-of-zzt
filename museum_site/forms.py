@@ -10,6 +10,10 @@ from django import forms
 from django.urls import reverse_lazy
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
+from django.template.defaultfilters import linebreaks, urlize
+
+from PIL import Image
+from internetarchive import upload
 
 from museum_site.core import *
 from museum_site.models import *
@@ -24,8 +28,6 @@ from museum_site.constants import (
 from museum_site.core.detail_identifiers import *
 from museum_site.private import IA_ACCESS, IA_SECRET
 
-
-from internetarchive import upload
 
 STUB_CHOICES = (("A", "First"), ("B", "Second"), ("C", "Third"))  # For debugging
 
@@ -1344,7 +1346,8 @@ class Activate_Account_Form(forms.Form):
     attrs = {"method": "POST"}
     text_prefix = (
         "<p>Your account has been created, but is currently <b>INACTIVE</b>.</p>"
-        "<p>Please wait a moment and then check your inbox for an email containing a link to verify your account. If you haven't received one, check your spam folder as well. "
+        "<p>Please wait a moment and then check your inbox for an email containing a link to verify your account. "
+        "If you haven't received one, check your spam folder as well. "
         "If you still haven't received a verification message <a href='mailto:{}'> contact Dr. Dos</a> for manual activation.</p>"
         "<p><a href='/user/resend-activation'>Resend activation email</a>.</p>".format(EMAIL_ADDRESS)
     )
@@ -1433,6 +1436,7 @@ class Reset_Password_Form(forms.Form):
                 self.user = qs[0]
         return cleaned_data
 
+
 class Resent_Account_Activation_Email_Form(forms.Form):
     use_required_attribute = False
     heading = "Resend Account Activation Email"
@@ -1470,6 +1474,7 @@ class Updated_Terms_Of_Service_Form(forms.Form):
             self.add_error("terms", "You must agree to the terms of service in order to register an account.")
         return cleaned_data
 
+
 class Login_Form(forms.Form):
     use_required_attribute = False
     heading = "Account Login"
@@ -1485,6 +1490,7 @@ class Login_Form(forms.Form):
         widget=forms.PasswordInput()
     )
 
+
 class Tool_ZFile_Select_Form(forms.Form):
     use_required_attribute = False
 
@@ -1492,6 +1498,7 @@ class Tool_ZFile_Select_Form(forms.Form):
         label="ZFile",
         choices=qs_to_select_choices(File.objects.all().only("id", "title", "key"), val="{0.key}"),
     )
+
 
 class Stream_Card_Form(forms.Form):
     use_required_attribute = False
@@ -1503,3 +1510,120 @@ class Stream_Card_Form(forms.Form):
         help_text="Select one or more ZFiles",
         required=False,
     )
+
+
+class Livestream_Vod_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Add Livestream VOD"
+    submit_value = "Add Livestream VOD"
+    attrs = {"method": "POST", "enctype": "multipart/form-data",}
+
+    author = forms.CharField(initial="Dr. Dos")
+    title = forms.CharField(widget=Enhanced_Text_Widget(char_limit=80), help_text="Used exactly as entered. Don't forget the 'Livestream - ' prefix!")
+    date = forms.DateField(widget=Enhanced_Date_Widget(buttons=["today"]))
+    video_url = forms.URLField(help_text=(
+            "https://youtu.be/<b>{id}</b>, <br>https://www.youtube.com/watch?v=<b>{id}</b>&feature=youtu.be, <br>"
+            "or https://studio.youtube.com/video/<b>{id}</b>/edit format."
+        ),
+        label="Video URL"
+    )
+    video_description = forms.CharField(
+        widget=forms.Textarea(),
+        help_text=(
+            "Copy/Paste from YouTube video details editor. Manually erase everything from "
+            "'<i>Join us for future livestreams...</i>' to the end of the description."
+        )
+    )
+    description = forms.CharField(widget=Enhanced_Text_Widget(char_limit=250), label="Article Summary")
+    preview_image = forms.FileField()
+    crop = forms.BooleanField(label="Crop Preview Image", initial=True, help_text="Crop image to 480x350")
+    publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
+    series = forms.ChoiceField(choices=qs_to_select_choices(Series.objects.filter(visible=True), allow_none=True))
+    associated_zfile = forms.MultipleChoiceField(
+        widget=Scrolling_Checklist_Widget(
+            choices=associated_file_choices,
+            filterable=True,
+            show_selected=True,
+        ),
+        choices=associated_file_choices,
+        required=False,
+    )
+
+    def clean_video_url(self):
+        video_url = self.cleaned_data["video_url"]
+
+        # Strip the URL part and get the ID
+        video_url = video_url.replace("https://youtu.be/", "")
+        video_url = video_url.replace("https://www.youtube.com/watch?v=", "")
+        video_url = video_url.replace("https://studio.youtube.com/video/", "")
+        video_url = video_url.replace("/edit", "")
+        if "&" in video_url:
+            video_url = video_url[:video_url.find("&")]
+
+        return video_url
+
+    def create_article(self):
+        print("Creating Article...")
+        preview_image = self.files["preview_image"]
+
+        # Prepare the Article
+        a = Article()
+        a.title = self.cleaned_data["title"]
+        a.author = self.cleaned_data["author"]
+        a.category = "Livestream"
+        a.schema = "django"
+        a.publish_date = self.cleaned_data["date"]
+        a.published = self.cleaned_data["publication_status"]
+        a.description = self.cleaned_data["description"]
+        a.static_directory = "ls-{}-{}".format(
+            preview_image.name[:-4],
+            self.cleaned_data["video_url"]
+        )
+        a.allow_comments = True
+
+        # Open the template
+        file_path = os.path.join(SITE_ROOT, "tools", "data", "youtube_template.html")
+        with open(file_path) as fh:
+            template = fh.read()
+
+        # Process the description
+        final_desc = urlize(self.cleaned_data["video_description"])
+        final_desc = linebreaks(final_desc)
+
+        a.content = template.format(video_id=self.cleaned_data["video_url"], desc=final_desc)
+
+        # Process the uploaded image
+        folder = os.path.join( SITE_ROOT, "museum_site", "static", "articles", str(self.cleaned_data["date"])[:4], a.static_directory)
+        try:
+            os.mkdir(folder)
+        except FileExistsError:
+            pass
+
+        # Save the file to the uploaded folder
+        file_path = os.path.join(folder, "preview.png")
+        with open(file_path, 'wb+') as fh:
+            for chunk in preview_image.chunks():
+                fh.write(chunk)
+
+        # Crop image if needed
+        if self.cleaned_data["crop"]:
+            image = Image.open(file_path)
+            image = image.crop((0, 0, 480, 350))
+            image.save(file_path)
+
+        # Save the article so it has an ID
+        a.save()
+
+        # Associate the article with the relevant file(s)
+        for file_association in self.cleaned_data["associated_zfile"]:
+            fa = File.objects.get(pk=int(file_association))
+            fa.articles.add(a)
+            fa.save()
+
+        # Associate the article with the selected series (if any)
+        if self.cleaned_data["series"] != "none":
+            series = Series.objects.get(pk=int(self.cleaned_data["series"]))
+            a.series.add(series)
+            a.save()
+
+        return a
