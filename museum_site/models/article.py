@@ -22,12 +22,12 @@ from museum_site.private import PASSWORD2DOLLARS, PASSWORD5DOLLARS
 
 class ArticleManager(models.Manager):
     def credited_authors(self):
-        return self.exclude(Q(author="Unknown") | Q(author="N/A"))
+        return self.exclude(Q(author="Unknown") | Q(author="N/A")).defer("content")
 
     def in_early_access(self):
         return self.exclude(
             Q(published=Article.PUBLISHED) | Q(published=Article.REMOVED)
-        ).order_by("publish_date", "id")
+        ).defer("content").order_by("publish_date", "id")
 
     def published(self):
         return self.filter(published=Article.PUBLISHED)
@@ -51,12 +51,12 @@ class ArticleManager(models.Manager):
     def publication_packs(self):
         return self.filter(
             category="Publication Pack", published=Article.PUBLISHED
-        ).order_by("-publish_date", "-id")
+        ).defer("content").order_by("-publish_date", "-id")
 
     def spotlight(self):
         return self.filter(
             published=Article.PUBLISHED, spotlight=True
-        ).order_by("-publish_date", "-id")
+        ).defer("content").order_by("-publish_date", "-id")
 
     def search(self, p):
         qs = self.exclude(published=Article.REMOVED)
@@ -94,6 +94,9 @@ class ArticleManager(models.Manager):
 
         # Get related files
         qs = qs.prefetch_related("file_set")
+
+        if not p.get("text"):
+            qs = qs.defer("content")
 
         return qs
 
