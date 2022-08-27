@@ -191,11 +191,11 @@ class FileManager(models.Manager):
         return zgame
 
     def roulette(self, rng_seed, limit):
-        """ Retruns a random sample of zfiles """
+        """ Retruns a random sample of zfiles (non-explicit) """
         details = [DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]
 
         # Get all valid file IDs
-        ids = list(self.filter(details__id__in=details).values_list("id", flat=True))
+        ids = list(self.filter(details__id__in=details, explicit=False).values_list("id", flat=True))
 
         # Shuffle them
         seed(rng_seed)
