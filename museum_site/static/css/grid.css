@@ -263,7 +263,7 @@ pre.cp437 { line-height:14px;}
 /* End Utility Classes */
 
 /* Generic Structures */
-.screenshot-thumb { width:240px; }
+.screenshot-thumb { width:240px; display:block; }
 .screenshot-thumb.zoomed { width:auto; height:auto; max-width:100%; }
 .screenshot-thumb:hover { cursor:zoom-in; }
 
@@ -446,37 +446,6 @@ pre.cp437 { line-height:14px;}
 {
     max-width:25%;
     margin-left:16px;
-}
-
-#expand-contract {
-    grid-area: expand;
-    padding:0px;
-    border:0;
-    width:24px;
-    height:16px;
-    background:#F0F0F0;
-    color:#666;
-    position:relative;
-    top:-14px;
-    left:4px;
-}
-
-.fv-grid #expand-contract
-{
-    justify-self:end;
-    top:0;
-}
-
-#expand-contract:hover
-{
-    cursor:pointer;
-    color:#000;
-}
-
-#content h1
-{
-    margin-bottom:0px;
-    display:inline-block;
 }
 
 .file-links
@@ -887,112 +856,6 @@ code.cheat {
 
 #oop-wrapper.zzt-scroll code::before, #oop-wrapper.zzt-scroll code::after { content:"  •    •    •    •    •    •    •    •    •\A"; }
 /* End ZZT-OOP Syntax */
-/* Article Globals -- Copied directly from old CSS */
-#article-meta
-{
-    display:grid;
-    grid-template-areas:
-    "title preview"
-    "info preview";
-    align-items:start;
-    grid-template-rows:auto 1fr;
-    grid-template-columns:auto auto;
-}
-
-#article-meta h1 { grid-area:title; }
-#article-meta .info { grid-area:info; }
-#article-meta .preview { grid-area:preview; margin: 7px 0px 7px 7px; border:1px solid; height:175px; justify-self:end;}
-#article-meta .preview.zoomed { height:auto; }
-#article-meta .summary,#article-meta .revised-date { font-style:italic; }
-#revision-text { width:50%;}
-
-article p, article li, article code, article h1, article h2, article h3, article h4, article blockquote {
-    max-width:750px;
-    margin-left:auto;
-    margin-right:auto;
-}
-
-#plain-text-article
-{
-    padding:0;
-    margin:0;
-    border:0;
-    font-family:sans-serif;
-    background:#F0F0F0;
-    width:100%;
-    min-height:50vh;
-    resize:none;
-    color:#000;
-}
-
-article[data-schema="80col"]
-{
-    font-size:14pt;
-}
-
-.side-commentary
-{
-    margin-bottom:0.25em;
-    overflow:auto;
-    border-bottom:1px solid #000;
-    padding-bottom:0.25em;
-    display:flex;
-    flex-wrap:wrap;
-}
-
-.zzt-img + .side-commentary, .zzt-scroll + .side-commentary, p + .side-commentary
-{
-    margin-top:0.25em;
-    padding-top:0.25em;
-    border-top:1px solid #000;
-}
-
-.zzt-img + .img-caption
-{
-    background:#AAA;
-    margin:auto;
-    max-width:640px;
-    border-top:2px solid #000;
-    font-family:cp437;
-    text-align:center;
-}
-
-.material
-{
-    margin-right:0.5em;
-    flex:1;
-}
-
-@media (max-width:1280px)
-{
-    .material
-    {
-        width:100%;
-    }
-}
-
-.commentary
-{
-    min-width:70%;
-    flex:1;
-}
-
-.commentary p
-{
-    margin-top:0.25em;
-}
-
-article aside
-{
-    background:#AAA;
-    width:480px;
-    max-width:40%;
-    margin-left:0.5em;
-    padding:0.25em;
-    font-size:smaller;
-    float:right;
-}
-/* End Article Globals */
 
 /* Hotfixes */
 /* Screenshots in MTP reviews */
@@ -1128,9 +991,8 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
 {
     margin:14px auto 14px auto;
     font-family:cp437;
-    font-size:larger;
+    font-size:20pt;
     text-align:center;
-
 }
 
 .series-range .gallery
@@ -1144,7 +1006,6 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     max-width:100%;
     max-height:100px;
 }
-
 
 .data-table
 {

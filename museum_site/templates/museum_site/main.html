@@ -106,9 +106,10 @@
 </section>
 
 <main id="content" class="block{% for class in content_classes %} {{class}}{% endfor %}" data-url-name="{{request.resolver_match.url_name|default:'null_url_name'}}">
-<button id="expand-contract" title="Toggle sidebars" class="fr">⮜ ⮞</button>
+<button id="expand-contract" title="Toggle sidebars">⮜ ⮞</button>
 {% block zfile_header %}
 {% if file %}
+    <div class="file-meta">
     {% if file and not local%}
     <div class="file-header">
         {% include "museum_site/datum/title-datum.html" with f=file.title_datum_context %}
@@ -136,6 +137,7 @@
     {% if local %}
     <h1>Local File Viewer - <input type="file" id="local-file-path"> <button id="local-load">Load File</button></h1>
     {% endif %}
+    </div>
 {% endif %}
 {% endblock zfile_header %}
 {% block content %}

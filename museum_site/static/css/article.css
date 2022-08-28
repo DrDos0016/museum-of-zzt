@@ -22,6 +22,123 @@
     border:1px solid #000;
 }
 
+/* Article Formatting */
+#article-meta
+{
+    display:grid;
+    grid-template-areas: "preview info";
+    grid-template-columns:minmax(240px, auto) 1fr;
+    border-bottom:1px solid #000;
+    column-gap:32px;
+    width:100%;
+    position:relative;
+    top:-16px;
+}
+
+#article-meta .preview-container
+{
+    grid-area:preview;
+    align-self:center;
+    padding-top:4px;
+    padding-bottom:4px;
+}
+
+#article-meta .info { grid-area:info; }
+#article-meta .info > div { font-size:10pt; font-family:monospace;}
+#article-meta .info p { font-size:12pt; }
+#article-meta .preview { border:1px solid; }
+#article-meta .preview.zoomed { height:auto; }
+#article-meta .summary { font-style:italic; font-weight:bold; }
+#article-meta .info .revision-details { margin-left:2em;}
+
+article p, article li, article code, article h1, article h2, article h3, article h4, article blockquote {
+    max-width:750px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#plain-text-article
+{
+    padding:0;
+    margin:0;
+    border:0;
+    font-family:sans-serif;
+    background:#F0F0F0;
+    width:100%;
+    min-height:50vh;
+    resize:none;
+    color:#000;
+}
+
+article[data-schema="80col"]
+{
+    font-size:14pt;
+}
+
+.side-commentary
+{
+    margin-bottom:0.25em;
+    overflow:auto;
+    border-bottom:1px solid #000;
+    padding-bottom:0.25em;
+    display:flex;
+    flex-wrap:wrap;
+}
+
+.zzt-img + .side-commentary, .zzt-scroll + .side-commentary, p + .side-commentary
+{
+    margin-top:0.25em;
+    padding-top:0.25em;
+    border-top:1px solid #000;
+}
+
+.zzt-img + .img-caption
+{
+    background:#AAA;
+    margin:auto;
+    max-width:640px;
+    border-top:2px solid #000;
+    font-family:cp437;
+    text-align:center;
+}
+
+.material
+{
+    margin-right:0.5em;
+    flex:1;
+}
+
+@media (max-width:1280px)
+{
+    .material
+    {
+        width:100%;
+    }
+}
+
+.commentary
+{
+    min-width:70%;
+    flex:1;
+}
+
+.commentary p
+{
+    margin-top:0.25em;
+}
+
+article aside
+{
+    background:#AAA;
+    width:480px;
+    max-width:40%;
+    margin-left:0.5em;
+    padding:0.25em;
+    font-size:smaller;
+    float:right;
+}
+/* End article formatting */
+
 /* LEGACY CSS -- DO NOT ADD MORE USES OF THESe RULES */
 /* Used in old Featured Game reviews */
 .img-set
