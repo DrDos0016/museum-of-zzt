@@ -171,10 +171,11 @@ def zeta_launcher(
         zip_file = zipfile.ZipFile(os.path.join(data["file"].phys_path()))
         files = zip_file.namelist()
         for f in files:
-            if f.lower().endswith(".exe"):
+            basename = os.path.basename(f)
+            if f.lower().endswith(".exe") and basename == f:
                 generic_exe = f
             # Prioritize these two
-            if f.lower() in ["zzt.exe", "superz.exe"]:
+            if f.lower() in ["zzt.exe", "superz.exe"] or f.lower().startswith("weave"):
                 break
         data["zeta_config"].commands = (
             data["zeta_config"].commands.replace("{executable_file}", generic_exe)
