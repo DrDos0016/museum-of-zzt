@@ -63,6 +63,7 @@ body
 
 .fv-grid #expand-contract
 {
+    grid-area: expand;
     justify-self:end;
     left:0px;
 }
