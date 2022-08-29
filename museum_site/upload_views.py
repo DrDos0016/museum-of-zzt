@@ -60,7 +60,6 @@ def upload(request):
             "release_date": str(datetime.now())[:10]
         }
         if zgame_obj:
-            print("WORKING WITH INITIAL")
             zgame_initial = {
                 "explicit": int(zgame_obj.explicit),
                 "language": zgame_obj.language,
@@ -164,6 +163,12 @@ def upload(request):
             zfile.basic_save()
             zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
             zfile.genre = ""  # Legacy SSV field for v1 API support
+            # Remove old genre assocs. when editing
+            if zfile.id:
+                old_genres = zfile.genres.all()
+                for old_genre in old_genres:
+                    zfile.genres.remove(old_genre)
+
             for genre in zgame_form.cleaned_data["genre"]:
                 genre_object = Genre.objects.get(pk=genre)
                 zfile.genres.add(genre_object)
