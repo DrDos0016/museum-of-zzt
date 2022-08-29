@@ -51,29 +51,6 @@ def add_livestream(request, key):
 
 
 @staff_member_required
-def audit_genres(request):
-    data = {
-        "title": "Genre Audit",
-    }
-
-    data["canon_genres"] = GENRE_LIST
-    all_genres = File.objects.all().only("genre")
-    observed = {}
-
-    for raw in all_genres:
-        gs = raw.genre.split("/")
-        for g in gs:
-            observed[g] = True
-
-    data["observed"] = list(observed.keys())
-    data["observed"].sort()
-
-    return render(
-        request, "museum_site/tools/audit_genres.html", data
-    )
-
-
-@staff_member_required
 def audit_scrolls(request):
     data = {
         "title": "Scroll Audit",
@@ -91,20 +68,11 @@ def audit_zeta_config(request):
     data["special"] = File.objects.filter(
         details__in=[DETAIL_ZZT, DETAIL_SZZT]).exclude(
             Q(zeta_config_id=None) |
-            Q(zeta_config_id=1) |
-            Q(zeta_config_id=4)
+            Q(zeta_config_id=ZETA_ZZT32R) |
+            Q(zeta_config_id=ZETA_SZZT20)
         ).order_by("zeta_config")
 
     return render(request, "museum_site/tools/audit_zeta_config.html", data)
-
-
-@staff_member_required
-def calculate(request, field, pk):
-    f = File.objects.get(pk=pk)
-    data = {
-        "title": "Calculate " + field.title(),
-    }
-    return render(request, "museum_site/tools/calculate.html", data)
 
 
 @staff_member_required
@@ -432,9 +400,7 @@ def patron_input(request):
             value = p.closer_look_selections
         else:
             value = p.bkzzt_topics
-        data["patrons"].append(
-            {"username": p.user.username, "value": value}
-        )
+        data["patrons"].append({"username": p.user.username, "value": value})
 
     return render(request, "museum_site/tools/patron-input.html", data)
 
