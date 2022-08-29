@@ -24,16 +24,15 @@ def advanced_search(request):
         if request.GET.get("action") != "edit" and form.is_valid():
             return redirect_with_querystring("search", request.GET.urlencode())
     else:
-        form = Advanced_Search_Form(initial={"details":[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE, DETAIL_UPLOADED]})
+        form = Advanced_Search_Form(initial={"details": [DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE, DETAIL_UPLOADED]})
 
     data["form"] = form
     return render(request, "museum_site/generic-form-display.html", data)
 
+
 def article_search(request):
     """ Returns page containing multiple filters to use when searching """
-    data = {
-        "title": "Article Search",
-    }
+    data = {"title": "Article Search",}
 
     if request.GET:
         form = Article_Search_Form(request.GET)
