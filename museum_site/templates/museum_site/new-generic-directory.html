@@ -4,7 +4,7 @@
 
 {% block content %}
 <!--NEW-generic-directory.html-->
-<h{{header_idx|default:"1"}}>NEW! {{title}}</h{{header_idx|default:"1"}}>
+<h{{header_idx|default:"1"}}>{{title}}</h{{header_idx|default:"1"}}>
 {% if head_object %}{% gblock head_object "detailed" request=request %}{% endif %}
 {% if prefix_template %}{% include prefix_template %}{% elif prefix_text %}{{prefix_text|safe|linebreaks}}{% endif %}
 
