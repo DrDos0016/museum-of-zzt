@@ -1627,3 +1627,30 @@ class Livestream_Vod_Form(forms.Form):
             a.save()
 
         return a
+
+
+class Upload_Action_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Select Upload"
+
+    token = forms.CharField(max_length=16)
+    action = forms.CharField(max_length=8, widget=forms.HiddenInput())
+
+
+class Upload_Delete_Confirmation_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Delete This Upload"
+    attrs = {"method": "POST"}
+
+    confirmation = forms.CharField(
+        max_length=6,
+        help_text="To confirm you have the correct upload and wish to delete it please type \"DELETE\" in the following text input.",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["confirmation"].widget.attrs["placeholder"] = "DELETE"
+
+    def clean_confirmation(self):
+        if self.cleaned_data["confirmation"].upper() != "DELETE":
+            self.add_error("confirmation", "You must provide confirmation before an upload can be deleted!")

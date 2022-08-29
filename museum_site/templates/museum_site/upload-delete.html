@@ -1,68 +1,40 @@
 {% extends "museum_site/main.html" %}
+{% load static %}
 {% load site_tags %}
 
+{% block style %}
+<style>
+#id_confirmation { text-transform:uppercase; }
+</style>
+{% endblock %}
+
 {% block content %}
-{% if selected %}
-<h1>Confirm Deletion</h1>
+<h1>{{heading}}</h1>
 
-{% gblock upload.file %}
-
-<div class="sticky-note" style="margin-top:14px">
+{% if selected_file %}
+{% gblock selected_file %}
+<br>
+<div class="sticky-note">
     <div class="text">
-    <b class="heading">WARNING</b>
-    <p>Deleting an upload is permanent. The zipfile and all associated data will be permanently removed. Please be certain this is the action you wish to take before continuing.</p>
+        <b class="heading">WARNING</b>
+        <p>Deleting an upload cannot be undone. The zipfile and all associated data will be permanently removed. Please be certain this is the action you wish to take and the correct upload has been selected before continuing.</p>
     </div>
 </div>
 
-<form method="POST">
-{% csrf_token %}
-<input type="hidden" name="action" value="delete-upload">
-<div class="field-wrapper{% if wrong %} field-with-error{% endif %}">
-    <label for="confirmation">Confirmation:</label>
-    <div class="field-value">
-        <input name="confirmation" value="" placeholder="DELETE" autocomplete="false" style="text-transform:uppercase;">
-    </div>
-    <p class="field-help">To confirm you have the correct upload and wish to delete it please type "<i>DELETE</i>" in the following text input.</p>
-</div>
-<input type="submit" class="full-width-submit" value="Delete This Upload">
-
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
 </form>
-<hr>
-<p><a href="{% url 'upload_delete' %}">Select another upload</a></p>
+{% elif request.GET.success %}
+<div class="c"><img src="{% static 'chrome/blank-board.png' %}" alt="A blank ZZT board"><br>
+<p class="cp437 larger">Your upload has been deleted successfully.</p></div>
 {% else %}
-<h1>Select An Upload To Delete</h1>
-
-<p>Deleting an upload requires entering the <i>Edit Token</i> that was generated when the file was first uploaded.</p>
-
-<p>Files which have been published and are now longer in the upload queue cannot be deleted without <a href="mailto:{{EMAIL_ADDRESS}}">contacting staff</a> to do so on your behalf.</p>
-
-<form id="delete-upload-form">
-<div class="field">
-    <label for="token">Edit Token:<br>
-        <span class="sub">The token that identifies which upload should be deleted</span>
-    </label>
-    <input id="token" name="token" value="{{request.GET.edit_token}}" maxlength="16">
-</div>
-<div class="field">
-    <button type="submit" class="full-width-submit">Select Upload</button>
-</div>
-</form>
-<hr>
-<h2>User Uploads</h2>
-<p>If you uploaded a file while <a href="{% url 'login_user' %}">logged in</a> to an account, then you may delete any still unpublished worlds without having to enter an edit token. Below is a list of all uploads associated with your account that remain unpublished.
-
-<table>
-<tr>
-    <th>Title</th>
-    <th>Upload Time</th>
-    <th>Edit Token</th>
-{% for u in my_uploads %}
-<tr>
-<td>{{u.file.title}}</td>
-<td>{{u.date}}</td>
-<td><a href="?token={{u.edit_token}}">{{u.edit_token}}</a></td>
-</tr>
-{% endfor %}
-</table>
+<p>No upload with the provided token was found.</p>
 {% endif %}
+
+<hr>
+
+<a href="{% url 'upload_action' 'delete' %}">Select Another Upload</a>
+
 {% endblock %}

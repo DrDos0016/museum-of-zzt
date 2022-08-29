@@ -1,0 +1,37 @@
+{% extends "museum_site/main.html" %}
+
+{% block content %}
+<h1>Select An Upload To {{action|title}}</h1>
+
+<p>{{action_verb}} an unpublished upload requires entering the <i>Edit Token</i> that was generated when the file was first uploaded.</p>
+
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+
+<hr>
+<h2>User Uploads</h2>
+<p>If you uploaded a file while <a href="{% url 'login_user' %}">logged in</a> to an account, then you may {{action|lower}} any of your unpublished uploads without having to manually enter an edit token.<p>
+
+<p>Below is a list of all uploads associated with your account that remain unpublished.</p>
+
+<table>
+<tr>
+    <th>Title</th>
+    <th>Upload Time</th>
+    <th>Edit Token</th>
+{% for u in my_uploads %}
+<tr>
+<td><a href="{{u.file.url}}">{{u.file.title}}</a></td>
+<td>{{u.date}}</td>
+{% if action == "Edit" %}
+<td><a href="{% url 'upload' %}?token={{u.edit_token}}">{{u.edit_token}}</a></td>
+{% elif action == "Delete" %}
+<td><a href="{% url 'upload_delete_confirmation' %}?token={{u.edit_token}}">{{u.edit_token}}</a></td>
+{% endif %}
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

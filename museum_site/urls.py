@@ -234,12 +234,8 @@ urlpatterns = [
     # /upload/
     path("upload/", museum_site.upload_views.upload, name="upload"),
     path("upload/complete/<str:token>/", museum_site.upload_views.upload_complete, name="upload_complete"),
-    path("upload/delete/", museum_site.upload_views.upload_delete, name="upload_delete"),
-    path(
-        "upload/delete/complete/", museum_site.views.generic_template_page, {"template": "museum_site/upload-delete-complete.html", "title": "Upload Deleted"},
-        name="upload_delete_complete"
-    ),
-    path("upload/edit/", museum_site.upload_views.upload_edit, name="upload_edit"),
+    path("upload/delete/confirm/", museum_site.upload_views.Upload_Delete_Confirmation_View.as_view(), name="upload_delete_confirmation"),
+    path("upload/<str:action>/", museum_site.upload_views.Upload_Action_View.as_view(), name="upload_action"),
 
     # /user/
     path("user/login/", museum_site.user_views.login_user, name="login_user"),

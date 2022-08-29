@@ -4,6 +4,7 @@ import requests
 
 from django.core.cache import cache
 from django.shortcuts import render
+from django.views.generic import ListView, FormView
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core import *
@@ -14,9 +15,7 @@ from museum_site.private import NEW_UPLOAD_WEBHOOK_URL
 
 
 def upload(request):
-    data = {
-        "title": "Upload File"
-    }
+    data = {"title": "Upload File"}
 
     keys = list(request.POST.keys())
     keys = sorted(keys)
@@ -252,9 +251,7 @@ def upload(request):
 
 
 def upload_complete(request, token):
-    data = {
-        "title": "Upload Complete"
-    }
+    data = {"title": "Upload Complete"}
 
     data["upload"] = Upload.objects.get(edit_token=token)
     data["file"] = File.objects.get(pk=data["upload"].file.id)
@@ -268,43 +265,60 @@ def upload_complete(request, token):
     return render(request, "museum_site/upload-complete.html", data)
 
 
-def upload_delete(request):
-    data = {
-        "title": "Upload Delete"
-    }
+class Upload_Action_View(ListView):
+    model = Upload
+    template_name = "museum_site/upload-action.html"
 
-    if request.user.is_authenticated:
-        data["my_uploads"] = Upload.objects.filter(user_id=request.user.id, file__details__in=[DETAIL_UPLOADED]).order_by("-id")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        action = self.kwargs.get("action", "").lower()
+        if action == "edit":
+            context["action"] = "Edit"
+            context["action_verb"] = "Editing"
+        elif action == "delete":
+            context["action"] = "Delete"
+            context["action_verb"] = "Deleting"
 
-    if request.GET.get("token"):
-        data["selected"] = True
-        token = request.GET.get("token")
-        upload = Upload.objects.filter(edit_token=token).first()
-        zfile = upload.file
-        if not upload:
-            data["no_match"] = True
+        context["form"] = Upload_Action_Form(initial={"action": action})
+
+        if self.request.user.is_authenticated:
+            context["my_uploads"] = Upload.objects.filter(user_id=self.request.user.id, file__details=DETAIL_UPLOADED).order_by("-id")
+
+        return context
+
+    def render_to_response(self, context):
+        if self.request.GET.get("token"):
+            if self.request.GET.get("action") == "edit":
+                return redirect_with_querystring("upload", "token={}".format(self.request.GET["token"]))
+            if self.request.GET.get("action") == "delete":
+                return redirect_with_querystring("upload_delete_confirmation", "token={}".format(self.request.GET["token"]))
+        return super().render_to_response(context)
+
+
+class Upload_Delete_Confirmation_View(FormView):
+    form_class = Upload_Delete_Confirmation_Form
+    template_name = "museum_site/upload-delete.html"
+    success_url = "/upload/delete/confirm/?success=1"
+    upload = None
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        upload = Upload.objects.filter(edit_token=request.GET.get("token"))
+        if upload:
+            self.upload = upload.first()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.upload:
+            context["selected_file"] = self.upload.file
+
+        if self.request.GET.get("success"):
+            context["heading"] = "Upload Deleted Successfully"
         else:
-            data["upload"] = upload
+            context["heading"] = "Confirm Deletion"
+        return context
 
-    if request.method == "POST" and data.get("upload"):
-        if request.POST.get("confirmation").upper() == "DELETE":
-            zfile.remove_uploaded_zfile(upload)
-            return redirect("upload_delete_complete")
-        else:
-            data["wrong"] = True
-
-    return render(request, "museum_site/upload-delete.html", data)
-
-
-def upload_edit(request):
-    data = {
-        "title": "Select Unpublished Upload"
-    }
-
-    if request.user.is_authenticated:
-        data["my_uploads"] = Upload.objects.filter(
-            user_id=request.user.id,
-            file__details__in=[DETAIL_UPLOADED],
-        ).order_by("-id")
-
-    return render(request, "museum_site/upload-edit.html", data)
+    def form_valid(self, form):
+        self.upload.file.remove_uploaded_zfile(self.upload)
+        return super().form_valid(form)
