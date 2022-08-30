@@ -20,6 +20,14 @@ def index(request, poll_id=None):
         data["display_poll"] = Poll.objects.get(pk=int(poll_id))
         data["results_mode"] = True
 
+    data["poll_zfiles"] = (
+        data["display_poll"].option1.file,
+        data["display_poll"].option2.file,
+        data["display_poll"].option3.file,
+        data["display_poll"].option4.file,
+        data["display_poll"].option5.file
+    )
+
     # Add vote if necessary
     if request.POST.get("action") == "Vote" and data["display_poll"].active and request.POST.get("vote") and request.POST.get("email"):
         vote = Vote(ip=request.META["REMOTE_ADDR"], timestamp=datetime.now(), email=request.POST["email"], option_id=int(request.POST["vote"]), poll_id=data["display_poll"].id)
