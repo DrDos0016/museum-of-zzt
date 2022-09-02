@@ -6,30 +6,22 @@
 
 {% block style %}
 <style>
-.gallery-break
+main .gallery-frame
 {
-    width:100%;
-}
-
-.patron
-{
-    font-weight:bold;
+    align-items:stretch;
 }
 
 #poll-form
 {
-    border:0px;
-}
-
-#poll-form h2
-{
-    font-family:sans-serif;
+    width:504px;
+    border:1px solid #000;
+    margin:inherit;
+    margin-top:0px;
+    margin-bottom:0px;
 }
 
 #poll-form label
 {
-    width:50%;
-    max-width:500px;
     color:#FFF;
     margin:auto;
     display:flex;
@@ -50,9 +42,12 @@
 <h1>{{display_poll.title}}</h1>
 <p>Poll open from <b>{{display_poll.start_date}}</b> through <b>{{display_poll.end_date}}</b></p>
 
-{% for zfile in poll_zfiles %}
-{% gblock zfile %}
-{% endfor %}
+<div class="gallery-frame">
+{% gblock display_poll.option1.file view="poll" option=display_poll.option1 bg="ega-darkblue-bg" %}
+{% gblock display_poll.option2.file view="poll" option=display_poll.option2 bg="ega-darkgreen-bg" %}
+{% gblock display_poll.option3.file view="poll" option=display_poll.option3 bg="ega-darkcyan-bg" %}
+{% gblock display_poll.option4.file view="poll" option=display_poll.option4 bg="ega-darkred-bg" %}
+{% gblock display_poll.option5.file view="poll" option=display_poll.option5 bg="ega-darkpurple-bg" %}
 
 {% if display_poll.active and not results_mode %}
 <form method="POST" id="poll-form" class="cp437" action="/poll/results/{{display_poll.id}}/">
@@ -77,9 +72,12 @@
     <label style="background-color:#00AAAA">{{display_poll.option3.file.title}} <div {% if winner == results.2 %}class="winner" {% endif %}name="vote">{{results.2|default:"0"}}</div></label>
     <label style="background-color:#AA0000">{{display_poll.option4.file.title}} <div {% if winner == results.3 %}class="winner" {% endif %}name="vote">{{results.3|default:"0"}}</div></label>
     <label style="background-color:#AA00AA">{{display_poll.option5.file.title}} <div {% if winner == results.4 %}class="winner" {% endif %}name="vote">{{results.4|default:"0"}}</div></label>
-    {% comment %}<input type="hidden" name="key" value="{{key}}">{% endcomment %}
+    <label style="background-color:#AAAAAA"></label>
 </form>
+{% endif %}
+</div>
 
+{% if results_mode %}
 {% if user.is_staff %}
 <h2>Vote Log -- ONLY VISIBLE TO STAFF</h2>
 <a href="https://www.patreon.com/manageRewardsList" target="_blank">Patrons</a><br>

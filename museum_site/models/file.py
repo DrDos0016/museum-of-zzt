@@ -1163,6 +1163,15 @@ class File(BaseModel):
         context = {"datum": "title", "tag": "h1", "value": self.title, "icons": self.get_all_icons()}
         return context
 
+    def poll_block_context(self, extras=None, *args, **kwargs):
+        context = self.gallery_block_context(*args, **kwargs)
+        context["roles"].append(kwargs.get("bg"))
+        context["extras"].insert(0, "museum_site/blocks/extra-poll-desc.html")
+        if kwargs.get("option"):
+            context["option"] = kwargs["option"]
+        return context
+
+
     def _init_icons(self):
         # Populates major and minor icons for file
         self._minor_icons = []

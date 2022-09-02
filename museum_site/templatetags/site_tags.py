@@ -589,6 +589,8 @@ def gblock(
         context = item.gallery_block_context(debug=debug, request=request)
     elif view == "detailed-collection":
         context = item.detailed_collection_block_context(debug=debug, request=request, collection_description=kwargs.get("collection_description", ""))
+    elif view == "poll":
+        context = item.poll_block_context(debug=debug, request=request, option=kwargs.get("option"), bg=kwargs.get("bg"))
     else:
         context = {}
 

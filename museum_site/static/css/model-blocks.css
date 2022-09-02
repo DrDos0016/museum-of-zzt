@@ -75,6 +75,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
 {
     grid-area:data;
     display:flex;
+    flex-wrap:wrap;
     column-gap:8px;
 }
 
@@ -227,3 +228,36 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
 }
 
 .fg-icon { filter:sepia(1) hue-rotate(220deg) saturate(6); }
+
+.model-block.gallery.poll
+{
+    grid-template-areas:
+    "screenshot title"
+    "screenshot data"
+    "screenshot poll";
+    color:#FFF;
+    font-family:"cp437";
+    font-size:16pt;
+    column-gap:8px;
+}
+
+.model-block.gallery.poll .title { font-size:16pt; max-width:240px; }
+
+.model-block.gallery.poll a { color:#FF5; }
+
+.gallery .poll-info
+{
+    grid-area:poll;
+    max-width:240px;
+    text-align:left;
+    border-top:1px solid #AAA;
+    padding-top:4px;
+}
+
+.gallery .poll-patron-label
+{
+    grid-area:patron;
+    text-align:center;
+    border-top:1px solid #AAA;
+    padding-top:4px;
+}
