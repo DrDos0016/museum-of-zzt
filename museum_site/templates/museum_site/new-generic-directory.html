@@ -2,6 +2,8 @@
 {% load static %}
 {% load site_tags %}
 
+{% if file %}{% block meta %}{% meta_tags path=request.get_full_path file=file %}{% endblock %}{% endif %}
+
 {% block content %}
 <!--NEW-generic-directory.html-->
 <h{{header_idx|default:"1"}}>{{title}}</h{{header_idx|default:"1"}}>
