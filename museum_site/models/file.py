@@ -513,7 +513,10 @@ class File(BaseModel):
         for word in words:
             try:
                 int(word)
-                expanded.append(("0000" + word)[-4:])
+                if len(word) >= 4:
+                    expanded.append(word)
+                else:
+                    expanded.append(("0000" + word)[-4:])
             except ValueError:
                 expanded.append(word)
         sort_title = " ".join(expanded)
