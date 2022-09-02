@@ -1,0 +1,34 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+.review-level-1 { background-color:yellow; }
+.review-level-0 { background-color:red; }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<h1>{{title}}</h1>
+<hr>
+
+<p>There are <b>{{qs|length}}</b> files with special restrictions on reviews.</p>
+
+<table>
+<tr>
+    <th>ZFile</th>
+    <th>Reviews</th>
+    <th>Review Policy</th>
+    <th>Admin</th>
+<tr>
+{% for zf in qs %}
+<tr>
+    <td><a href="{{zf.url}}">{{zf.title}}</a></td>
+    <td class="c"><a href="{{zf.review_url}}">Reviews</a></td>
+    <td class="review-level-{{zf.can_review}}">{{zf.get_can_review_string}}</td>
+    <td class="c"><a href="{{zf.admin_url}}">Admin</a></td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

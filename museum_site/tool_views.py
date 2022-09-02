@@ -49,6 +49,12 @@ def add_livestream(request, key):
     data["form"] = form
     return render(request, "museum_site/generic-form-display.html", data)
 
+@staff_member_required
+def audit_review_restrictions(request):
+    data = {"title": "Audit Review Restrictions"}
+    data["qs"] = list(File.objects.exclude(can_review=File.REVIEW_YES))
+    return render(request, "museum_site/tools/audit-review-restrictions.html", data)
+
 
 @staff_member_required
 def audit_scrolls(request):

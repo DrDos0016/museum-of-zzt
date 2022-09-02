@@ -1241,3 +1241,6 @@ class File(BaseModel):
         cache.set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count())
         message += "Updated cached queue size value. (Now: {})\n".format(cache.get("UPLOAD_QUEUE_SIZE"))
         return message
+
+    def get_can_review_string(self):
+        return File.REVIEW_LEVELS[self.can_review][1]
