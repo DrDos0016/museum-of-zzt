@@ -501,6 +501,7 @@ class File(BaseModel):
         return data
 
     def calculate_sort_title(self):
+        output = ""
         # Handle titles that start with A/An/The
         sort_title = self.title.lower()
 
@@ -508,20 +509,28 @@ class File(BaseModel):
             sort_title = sort_title[sort_title.find(" ") + 1:]
 
         # Expand numbers
-        words = sort_title.split(" ")
-        expanded = []
-        for word in words:
-            try:
-                int(word)
-                if len(word) >= 4:
-                    expanded.append(word)
+        digits = 0  # Digits in number
+        number = ""  # The actual number
+        for idx in range(0, len(sort_title)):
+            ch = sort_title[idx]
+            if ch in "0123456789":
+                digits += 1
+                number += ch
+                continue
+            else:
+                if digits == 0:
+                    output += sort_title[idx]
                 else:
-                    expanded.append(("0000" + word)[-4:])
-            except ValueError:
-                expanded.append(word)
-        sort_title = " ".join(expanded)
+                    padded_digits = "00000{}".format(number)[-5:]
+                    output += padded_digits + sort_title[idx]
+                    digits = 0
+                    number = ""
+        # Finale
+        if digits != 0:
+            padded_digits = "00000{}".format(number)[-5:]
+            output += padded_digits
 
-        self.sort_title = sort_title
+        self.sort_title = output
         return True
 
     def letter_from_title(self):
