@@ -19,10 +19,13 @@ class Model_List_View(ListView):
     allow_pagination = True
     paginate_by = NO_PAGINATION
     has_local_context = True
+    force_view = None
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         self.view = get_selected_view_format(self.request, self.model.supported_views)
+        if self.force_view:
+            self.view = self.force_view
         if self.allow_pagination:
             self.paginate_by = PAGE_SIZE if self.view != "list" else LIST_PAGE_SIZE
         self.sorted_by = request.GET.get("sort")
@@ -410,6 +413,7 @@ class Article_Categories_List_View(Model_List_View):
     model = Article
     allow_pagination = False
     has_local_context = False
+    force_view = "detailed"
 
     def get_queryset(self):
         # Find the counts of each category
@@ -431,7 +435,6 @@ class Article_Categories_List_View(Model_List_View):
 
         qs = []
         for key in CATEGORY_DESCRIPTIONS:
-            print("KEY:", key)
             block_context = dict(
                 pk=None,
                 model=None,
