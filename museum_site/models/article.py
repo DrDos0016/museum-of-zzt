@@ -86,66 +86,25 @@ class Article(BaseModel):
     objects = ArticleManager()
 
     # Fields
-    title = models.CharField(
-        help_text="Title of the the article.",
-        max_length=100
-    )
-    author = models.CharField(
-        help_text="Author(s) of the article. Slash separated.",
-        max_length=50
-    )
-    category = models.CharField(
-        help_text="Categorization of the article.",
-        choices=CATEGORY_CHOICES,
-        max_length=50
-    )
-    content = models.TextField(
-        help_text="Body of the article.",
-        default=""
-    )
-    css = models.TextField(
-        help_text="Custom CSS. Must include <style></style> if set.",
-        default="", blank=True
-    )
+    title = models.CharField( help_text="Title of the the article.", max_length=100)
+    author = models.CharField(help_text="Author(s) of the article. Slash separated.", max_length=50)
+    category = models.CharField(help_text="Categorization of the article.", choices=CATEGORY_CHOICES, max_length=50)
+    content = models.TextField(help_text="Body of the article.", default="")
+    css = models.TextField(help_text="Custom CSS. Must include <style></style> if set.", default="", blank=True)
     schema = models.CharField(
         help_text="Schema for the article. Used to determine parsing method.",
         max_length=6,
         choices=SCHEMAS,
         default="django"
     )
-    publish_date = models.DateField(
-        help_text="Date the article was made public on the Museum",
-        default="1970-01-01"
-    )
-    published = models.IntegerField(
-        help_text="Publication Status",
-        default=UNPUBLISHED,
-        choices=PUBLICATION_STATES
-    )
-    last_modified = models.DateTimeField(
-        help_text="Date DB entry was last modified",
-        auto_now=True,
-    )
-    last_revised = models.DateTimeField(
-        help_text="Date article content was last revised",
-        default=None, null=True, blank=True
-    )
-    revision_details = models.TextField(
-        help_text="Reference for revisions made to the article",
-        default="", blank=True
-    )
-    description = models.CharField(
-        help_text="Blurb to summarize/pique interest in the article",
-        max_length=250, default="", blank=True
-    )
-    allow_comments = models.BooleanField(
-        help_text="Add a section for Disqus comments.",
-        default=False
-    )
-    spotlight = models.BooleanField(
-        help_text="Allow this article to be visible on the front page",
-        default=True
-    )
+    publish_date = models.DateField(help_text="Date the article was made public on the Museum", default="1970-01-01")
+    published = models.IntegerField(help_text="Publication Status", default=UNPUBLISHED, choices=PUBLICATION_STATES)
+    last_modified = models.DateTimeField(help_text="Date DB entry was last modified", auto_now=True)
+    last_revised = models.DateTimeField(help_text="Date article content was last revised", default=None, null=True, blank=True)
+    revision_details = models.TextField(help_text="Reference for revisions made to the article", default="", blank=True)
+    description = models.CharField(help_text="Blurb to summarize/pique interest in the article", max_length=250, default="", blank=True)
+    allow_comments = models.BooleanField(help_text="Add a section for Disqus comments.", default=False)
+    spotlight = models.BooleanField(help_text="Allow this article to be visible on the front page", default=True)
     static_directory = models.CharField(
         max_length=120,
         default="", blank=True,
@@ -153,11 +112,7 @@ class Article(BaseModel):
                    "stored:<br>"
                    "/museum_site/static/articles/[year|unk]/[static_directory]")
     )
-    secret = models.CharField(
-        help_text=("Per-article key to allow non-patrons to read "
-                   "unpublished articles"),
-        max_length=12, default="", blank=True
-    )
+    secret = models.CharField(help_text=("Per-article key to allow non-patrons to read unpublished articles"), max_length=12, default="", blank=True)
 
     # Associations
     series = models.ManyToManyField("Series", default=None, blank=True)
@@ -180,17 +135,13 @@ class Article(BaseModel):
         super(Article, self).save(*args, **kwargs)
 
     def url(self):
-        output = "/article/{}/{}/".format(self.id, slugify(self.title))
-        return output
+        return "/article/{}/{}/".format(self.id, slugify(self.title))
 
     def preview_url(self):
         return os.path.join(STATIC_URL, self.path(), "preview.png")
 
     def path(self):
-        year = self.publish_date.year
-        if self.publish_date.year == 1970:
-            year = "unk"
-
+        year = self.publish_date.year if self.publish_date.year != 1970 else "unk"
         return ("articles/{}/{}/".format(year, self.static_directory))
 
     def render(self):
@@ -210,8 +161,7 @@ class Article(BaseModel):
 
     @property
     def published_string(self):
-        """ Returns a human readable string for the article's publication
-        state. """
+        """ Returns a human readable string for the article's publication state. """
         return Article.PUBLICATION_STATES[self.published - 1][1].lower()
 
     def series_links(self):
@@ -377,8 +327,7 @@ class Article(BaseModel):
         return self._major_icons
 
     def unlock_check(self, context, view="detailed"):
-        """ Checks if a locked article should unlock based on user profile or
-        a POSTed password """
+        """ Checks if a normally locked article should display as unlocked based on user profile or a POSTed password """
         patronage = 0
         if context["request"] and context["request"].user.is_authenticated:
             patronage = context["request"].user.profile.patronage

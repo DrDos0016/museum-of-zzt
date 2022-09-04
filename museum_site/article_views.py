@@ -116,6 +116,6 @@ def article_lock(request, article_id, slug=""):
     article = Article.objects.get(pk=article_id)
     article.allow_comments = False
     data["article"] = article
-    data["cost"] = Article.EARLY_ACCESS_PRICING.get(article.published, "ERROR! NO VALUE SET")
+    data["cost"] = article.early_access_price
     data["release"] = article.publish_date
     return render(request, "museum_site/article_lock.html", data)
