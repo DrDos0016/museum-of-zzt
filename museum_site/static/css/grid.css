@@ -361,7 +361,8 @@ pre.cp437 { line-height:14px;}
 {
     padding:14px 8px 14px 8px;
     overflow:auto;
-    border:1px solid #000;
+    border-top:1px dashed #000;
+    border-bottom:1px dashed #000;
     max-height:546px;
 }
 
