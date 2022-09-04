@@ -179,7 +179,11 @@ class FileManager(models.Manager):
         excluded_details = [
             DETAIL_LOST, DETAIL_REMOVED, DETAIL_UPLOADED, DETAIL_CORRUPT
         ]
-        max_pk = self.all().order_by("-id")[0].id
+        max_pk = self.all().order_by("-id")
+        if len(self.all()) > 0:
+            max_pk = max_pk[0].id
+        else:
+            return File()
 
         zgame = None
         while not zgame:
@@ -618,7 +622,7 @@ class File(BaseModel):
             output = True
 
         # Forcibly Restrict Zeta via a specific config (applies to uploads as well)
-        if self.zeta_config and self.zeta_config.id == ZETA_RESTRICTED:
+        if self.zeta_config_id and self.zeta_config_id == ZETA_RESTRICTED:
             output = False
 
         return output
