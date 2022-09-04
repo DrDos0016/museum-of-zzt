@@ -17,88 +17,8 @@ from museum.settings import STATIC_URL
 from museum_site.models.base import BaseModel
 from museum_site.common import STATIC_PATH, epoch_to_unknown
 from museum_site.constants import *
+from museum_site.managers.article_managers import *
 from museum_site.private import PASSWORD2DOLLARS, PASSWORD5DOLLARS
-
-
-class ArticleManager(models.Manager):
-    def credited_authors(self):
-        return self.exclude(Q(author="Unknown") | Q(author="N/A")).defer("content")
-
-    def in_early_access(self):
-        return self.exclude(
-            Q(published=Article.PUBLISHED) | Q(published=Article.REMOVED)
-        ).defer("content").order_by("publish_date", "id")
-
-    def published(self):
-        return self.filter(published=Article.PUBLISHED)
-
-    def upcoming(self):
-        return self.filter(published=Article.UPCOMING).order_by(
-            "publish_date", "id"
-        )
-
-    def unpublished(self):
-        return self.filter(published=Article.UNPUBLISHED).order_by(
-            "publish_date", "id"
-        )
-
-    def removed(self):
-        return self.filter(published=Article.REMOVED)
-
-    def not_removed(self):
-        return self.exclude(published=Article.REMOVED)
-
-    def publication_packs(self):
-        return self.filter(
-            category="Publication Pack", published=Article.PUBLISHED
-        ).defer("content").order_by("-publish_date", "-id")
-
-    def spotlight(self):
-        return self.filter(
-            published=Article.PUBLISHED, spotlight=True
-        ).defer("content").order_by("-publish_date", "-id")
-
-    def search(self, p):
-        qs = self.exclude(published=Article.REMOVED)
-
-        # Filter by series first as it excludes almost all articles
-        if p.get("series") and p["series"] != "Any":
-            qs = qs.filter(series=p["series"])
-
-        if p.get("title"):
-            qs = qs.filter(
-                title__icontains=p["title"].strip()
-            )
-        if p.get("author"):
-            qs = qs.filter(
-                author__icontains=p["author"].strip()
-            )
-        if p.get("text"):
-            qs = qs.filter(
-                content__icontains=p["text"].strip()
-            )
-        if p.get("year"):
-            if p["year"] == "Any":
-                None
-            elif p["year"] == "Unk":
-                None
-            else:
-                year = p["year"].strip()
-                qs = qs.filter(
-                    publish_date__gte=year + "-01-01",
-                    publish_date__lte=year + "-12-31",
-                )
-
-        if p.getlist("category"):
-            qs = qs.filter(category__in=p.getlist("category"))
-
-        # Get related files
-        qs = qs.prefetch_related("file_set")
-
-        if not p.get("text"):
-            qs = qs.defer("content")
-
-        return qs
 
 
 class Article(BaseModel):
@@ -130,10 +50,7 @@ class Article(BaseModel):
         ("80col", "80 Column Text"),
     )
 
-    REMOVED = 0
-    PUBLISHED = 1
-    UPCOMING = 2
-    UNPUBLISHED = 3
+    (REMOVED, PUBLISHED, UPCOMING, UNPUBLISHED) = (0, 1, 2, 3)
 
     PUBLICATION_STATES = (
         (PUBLISHED, "Published"),
@@ -142,10 +59,7 @@ class Article(BaseModel):
         (REMOVED, "Removed"),
     )
 
-    EARLY_ACCESS_PRICING = {
-        UPCOMING: "$2.00 USD",
-        UNPUBLISHED: "$5.00 USD",
-    }
+    EARLY_ACCESS_PRICING = {UPCOMING: "$2.00 USD", UNPUBLISHED: "$5.00 USD"}
 
     ICONS = {
         "upcoming": {"glyph": "🔒", "title": "This article is currently exclusive to $2+ Patrons.", "role":"upcoming-icon"},
@@ -168,32 +82,6 @@ class Article(BaseModel):
         ("Walkthrough", "Walkthrough"),
         ("Misc", "Misc."),
     )
-
-    LOCKED_ARTICLE_TEXT = """
-    <h2>Locked Article!</h2>
-
-    <p>The article you have requested is currently only available to patrons
-    making a monthly pledge to the Worlds of ZZT Patreon of at least <b>$[COST]
-    USD</b> per month.</p>
-
-    <p>If you are a patron that meets these requirements you can enter your
-    password to access this article in the field below:</p>
-
-    <form class="c">
-    <input name="secret" type="password" value="">
-    <input type="submit" value="Unlock">
-    </form>
-
-    <p>If you need your password please see the
-    <a href="{% url 'patron_articles' %}" target="_blank">early articles</a> page for instructions.</p>
-
-    <p>Patrons may also read articles they have early access to by <a href="{% url 'login_user' %}" target="_blank">registering for a
-    Museum of ZZT account</a> and linking their patron e-mail to avoid needing a password
-    in the future.</p>
-
-    <p>All articles published on the Museum of ZZT are eventually made public. The
-    estimated release date for this article is <b>[RELEASE]</b>, however the exact
-    release date may change.</p>"""
 
     objects = ArticleManager()
 

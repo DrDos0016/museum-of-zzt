@@ -1,0 +1,82 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/article.css' %}?{{BOOT_TS}}">
+{% endblock %}
+
+{% block content %}
+<div id="article-meta">
+    <div class="preview-container"><img src="{{article.preview_url}}" class="screenshot-thumb preview"></div>
+    <div class="info">
+        <h{% if file %}2{% else %}1{% endif %}>{{article.title}}</h{% if file %}2{% else %}1{% endif %}>
+        <div>
+            <p class="summary">{{article.description}}</p>
+            <div class="author">Authored By: {{article.author}}</div>
+            <div class="publish-date">Published: {% if article.publish_date.year == 1970 %}<i>Unknown</i>{% else %}{{article.publish_date}}{% endif %}</div>
+            {% if article.series.all %}<div class="series">Part of Series: {{article.series_links|safe}}</div>{% endif %}
+            {% if article.revision_details %}<div class="revision-label">Revisions (as of {{article.last_revised|default:"Unknown"}}):</div>
+            <div class="revision-details">{{article.revision_details|linebreaksbr}}</div>{% endif %}
+        </div>
+    </div>
+</div>
+
+<h2>Locked Article!</h2>
+
+<p>The article you have requested is currently only available to patrons making a monthly pledge to the Worlds of ZZT Patreon of at least <b>{{cost}}</b> per month.</p>
+
+<p>If you are a patron that meets these requirements you can enter your password to access this article in the field below:</p>
+
+<form class="c" action="{{article.url}}"{% if request.GET.secret %} style="background-color:#FCC"{% endif %}>
+{% if request.GET.secret %}<p class="c b">Incorrect Password!</p>{% endif %}
+<input name="secret" type="password" value="">
+<input type="submit" value="Unlock">
+</form>
+
+<p>If you need your password please see the <a href="{% url 'patron_articles' %}" target="_blank">early articles</a> page for instructions.</p>
+
+<p>Patrons may also read articles they have early access to by <a href="{% url 'login_user' %}" target="_blank">registering for a Museum of ZZT account</a> and linking their patron e-mail to avoid needing a password in the future.</p>
+
+<p>All articles published on the Museum of ZZT are eventually made public. The estimated release date for this article is <b>{{release}}</b>, however the exact release date may change.</p>
+
+<hr>
+<a href="{% url 'article_directory' %}">Article directory</a><br>
+<a href="{% url 'index' %}">Main page</a>
+{% if article.series.all %}
+<h3>More In This Series</h3>
+<div class="series-range gallery-frame">
+    {% for article in article.series_range %}
+    {% gblock article "gallery" %}
+    {% endfor %}
+</div>
+<div class="c">
+<a href="{{article.series.all.first.url}}">View All</a>
+</div>
+{% endif %}
+
+{% block wip_finalize %}{% endblock %}
+
+{% if article.allow_comments %}
+<hr>
+<div>
+<div id="disqus_thread"></div>
+
+<script>
+var disqus_config = function () {
+this.page.url = "{{request.build_absolute_uri}}";
+this.page.identifier = "{{article.title|slugify}}";
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://museumofzzt.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+{% endif %}
+
+{% endblock %}

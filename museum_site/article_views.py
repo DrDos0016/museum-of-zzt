@@ -13,7 +13,6 @@ def article_view(request, article_id, page=0, slug=""):
     page = int(page)
     data = {"id": article_id}
     data["custom_layout"] = "article"
-    restricted = False
 
     a = get_object_or_404(Article, pk=article_id)
 
@@ -39,18 +38,10 @@ def article_view(request, article_id, page=0, slug=""):
     elif request.GET.get("secret") and request.GET["secret"] == a.secret:
         access = Article.UNPUBLISHED
     elif request.GET.get("secret"):  # Invalid password
-        return redirect("patron_articles")
+        return redirect_with_querystring("article_lock", request.META["QUERY_STRING"], article_id=article_id, slug=slug)
 
     if a.published > access:  # Access level too low for article
-        restricted = True
-        if a.published == Article.UPCOMING:
-            cost = "2"
-        elif a.published == Article.UNPUBLISHED:
-            cost = "5"
-        release = a.publish_date.strftime("%A %B %d")
-        a.content = Article.LOCKED_ARTICLE_TEXT.replace("[COST]", cost)
-        a.content = a.content.replace("[RELEASE]", release)
-        a.schema = "django"
+        return redirect("article_lock", article_id=article_id, slug=slug)
 
     elif a.published != Article.PUBLISHED:
         data["private_disclaimer"] = True
@@ -114,3 +105,17 @@ def patron_articles(request):
             a.extra_context = {"password_qs": password_qs}
 
     return render(request, "museum_site/patreon_articles.html", data)
+
+
+def article_lock(request, article_id, slug=""):
+    """ Page shown when a non-public article is attempted to be viewed """
+    data = {
+        "title": "Restricted Article",
+    }
+
+    article = Article.objects.get(pk=article_id)
+    article.allow_comments = False
+    data["article"] = article
+    data["cost"] = Article.EARLY_ACCESS_PRICING.get(article.published, "ERROR! NO VALUE SET")
+    data["release"] = article.publish_date
+    return render(request, "museum_site/article_lock.html", data)
