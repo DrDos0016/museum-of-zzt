@@ -98,7 +98,7 @@ class ZFileManager(models.Manager):
             qs = self.filter(spotlight=True).exclude(details__id__in=[DETAIL_UPLOADED])
         else:
             qs = self.exclude(details__id__in=[DETAIL_UPLOADED])
-        qs = qs.order_by("-publish_date", "-id")
+        qs = qs.order_by("-release_date", "-id")
         return qs
 
     def new_finds(self, spotlight_filter=False):
