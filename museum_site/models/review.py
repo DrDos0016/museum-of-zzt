@@ -93,7 +93,6 @@ class Review(BaseModel):
     date = models.DateField()
     ip = models.GenericIPAddressField(blank=True, null=True)
     approved = models.BooleanField(default=True)
-    test_field = models.CharField(max_length=10, default="Testing")
 
     class Meta:
         ordering = ["-date", "-id"]
