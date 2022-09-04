@@ -142,6 +142,8 @@ def guide_words(*args, **kwargs):
     if model == "File":
         # Figure out link text
         for x in range(0, len(link_text)):
+            if items[x] == "":
+                continue
             if sort == "author":
                 if items[x].author:
                     link_text[x] = items[x].author
@@ -195,6 +197,8 @@ def guide_words(*args, **kwargs):
     elif model == "Article":
         # Figure out link text
         for x in range(0, len(link_text)):
+            if items[x] == "":
+                continue
             if sort == "author":
                 if items[x].author:
                     link_text[x] = items[x].author
