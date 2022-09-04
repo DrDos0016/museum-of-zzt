@@ -17,12 +17,14 @@ from museum.settings import STATIC_URL
 from museum_site.models.base import BaseModel
 from museum_site.common import STATIC_PATH, epoch_to_unknown
 from museum_site.constants import *
-from museum_site.managers.article_managers import *
+from museum_site.querysets.article_querysets import *
 from museum_site.private import PASSWORD2DOLLARS, PASSWORD5DOLLARS
 
 
 class Article(BaseModel):
     """ Article object repesenting an article """
+    objects = Article_Queryset.as_manager()
+
     model_name = "Article"
     table_fields = ["Title", "Author", "Date", "Category", "Description"]
     sort_options = [
@@ -82,8 +84,6 @@ class Article(BaseModel):
         ("Walkthrough", "Walkthrough"),
         ("Misc", "Misc."),
     )
-
-    objects = ArticleManager()
 
     # Fields
     title = models.CharField( help_text="Title of the the article.", max_length=100)

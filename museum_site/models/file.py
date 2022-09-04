@@ -33,12 +33,13 @@ from museum_site.models.review import Review
 from museum_site.models.article import Article
 from museum_site.models.genre import Genre
 from museum_site.models.base import BaseModel
-from museum_site.managers.zfile_managers import *
+from museum_site.querysets.zfile_querysets import *
 
 
 class File(BaseModel):
     """ File object repesenting an upload to the site """
-    objects = ZFileManager()
+    objects = ZFile_Queryset.as_manager()
+
     model_name = "File"
     table_fields = [
         "DL", "Title", "Author", "Company", "Genre", "Date", "Review"

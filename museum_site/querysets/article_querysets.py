@@ -1,7 +1,8 @@
 from django.db import models
 from django.db.models import Q
 
-class ArticleManager(models.Manager):
+
+class Article_Queryset(models.QuerySet):
     def credited_authors(self):
         """ Return qs of all named authors associated with at least one article """
         return self.exclude(Q(author="Unknown") | Q(author="N/A")).only("author")
@@ -34,7 +35,7 @@ class ArticleManager(models.Manager):
 
     def publication_packs(self):
         """ Return qs of all articles that are PUBLISHED and categorized as Publication Packs """
-        return self.filter(category="Publication Pack", published=self.model.PUBLISHED).defer("content").order_by("-publish_date", "-id")
+        return self.filter(category="Publication Pack").published().defer("content").order_by("-publish_date", "-id")
 
     def spotlight(self):
         """ Return qs of all articles that are PUBLISHED and marked as being spotlight permitted """

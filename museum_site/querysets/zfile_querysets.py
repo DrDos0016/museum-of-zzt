@@ -3,9 +3,10 @@ from random import randint, seed, shuffle
 from django.db import models
 from django.db.models import Q
 
+from museum_site.querysets.base import Base_Queryset
 from museum_site.core.detail_identifiers import *
 
-class ZFileManager(models.Manager):
+class ZFile_Queryset(Base_Queryset):
     def advanced_search(self, p):
         qs = self.all()
 
@@ -95,17 +96,20 @@ class ZFileManager(models.Manager):
     def new_releases(self, spotlight_filter=False):
         # Published worlds ordered by release date
         if spotlight_filter:
-            qs = self.filter(spotlight=True).exclude(details__id__in=[DETAIL_UPLOADED])
+            qs = self.spotlight().exclude(details__id__in=[DETAIL_UPLOADED])
         else:
             qs = self.exclude(details__id__in=[DETAIL_UPLOADED])
         qs = qs.order_by("-release_date", "-id")
         return qs
 
     def new_finds(self, spotlight_filter=False):
+        #qs = self.filter(details__id=DETAIL_NEW_FIND)
         if spotlight_filter:
-            qs = self.filter(spotlight=True, details__id=DETAIL_NEW_FIND)
+            qs = self.spotlight().filter(details__id=DETAIL_NEW_FIND)
         else:
             qs = self.filter(details__id=DETAIL_NEW_FIND)
+
+        #qs = self.filter(details__id=DETAIL_NEW_FIND).spotlight()
         qs = qs.order_by("-publish_date", "-id")
         return qs
 
@@ -174,7 +178,7 @@ class ZFileManager(models.Manager):
         return self.filter(id__in=ids[:limit]).order_by("?")
 
     def unpublished(self):
-        return self.filter(details__id__in=[DETAIL_UPLOADED])
+        return self.filter(details=DETAIL_UPLOADED)
 
     def wozzt(self):
         excluded_details = [DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST, DETAIL_CORRUPT]
@@ -188,10 +192,3 @@ class ZFileManager(models.Manager):
 
     def featured_worlds(self):
         return self.filter(details=DETAIL_FEATURED)
-
-    """ TODO: Move this to something more generic than ZFile manager """
-    def reach(self, *args, **kwargs):
-        try:
-            return self.get(*args, **kwargs)
-        except self.model.DoesNotExist:
-            return None
