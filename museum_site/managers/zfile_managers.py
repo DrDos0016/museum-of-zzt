@@ -1,0 +1,197 @@
+from random import randint, seed, shuffle
+
+from django.db import models
+from django.db.models import Q
+
+from museum_site.core.detail_identifiers import *
+
+class ZFileManager(models.Manager):
+    def advanced_search(self, p):
+        qs = self.all()
+
+        # Filter by simple fields
+        for f in ["title", "author", "filename", "company"]:
+            if p.get(f):
+                field = "{}__icontains".format(f)
+                if f == "company": # TODO temporary hotfix
+                    field = "ssv_company__icontains"
+                value = p[f]
+                qs = qs.filter(**{field: value})
+
+        # Filter by genre
+        if p.get("genre"):
+            g = Genre.objects.filter(title=p["genre"]).first()
+            if g:
+                qs = qs.filter(genres=g)
+
+        # Filter by language
+        if p.get("lang"):
+            if p["lang"] == "non-english":
+                qs = qs.exclude(language="en")
+            else:
+                qs = qs.filter(language__icontains=p["lang"])
+
+        # Filter by release year
+        if p.get("year"):
+            year = p["year"]
+            if year.lower() == "unk":  # Unknown release year
+                qs = qs.filter(release_date=None)
+            else:  # Numeric years
+                qs = qs.filter(release_date__gte="{}-01-01".format(year), release_date__lte="{}-12-31".format(year))
+
+        # Filter by rating
+        if p.get("min") and float(p["min"]) > 0:
+            qs = qs.filter(rating__gte=float(p["min"]))
+        if p.get("max") and float(p["max"]) < 5:
+            qs = qs.filter(rating__lte=float(p["max"]))
+
+        # Filter by playable/total board counts
+        if p.get("board_min") and int(p["board_min"]) > 0:
+            field = p.get("board_type", "total") + "_boards__gte"
+            qs = qs.filter(**{field: int(p["board_min"])})
+        if p.get("board_max") and int(p["board_max"]) <= 32767:
+            field = p.get("board_type", "total") + "_boards__lte"
+            qs = qs.filter(**{field: int(p["board_max"])})
+
+        # Filter by items with/without reviews
+        if p.get("reviews") == "yes":
+            qs = qs.filter(review_count__gt=0)
+        elif p.get("reviews") == "no":
+            qs = qs.filter(review_count=0)
+
+        # Filter by items with/without articles
+        if p.get("articles") == "yes":
+            qs = qs.filter(article_count__gt=0)
+        elif p.get("articles") == "no":
+            qs = qs.filter(article_count=0)
+
+        if p.get("contents"):
+            qs = qs.filter(content__title__icontains=p["contents"])
+
+        # Filter by details
+        if p.get("details"):
+            qs = qs.filter(details__id__in=p.getlist("details"))
+
+        qs = qs.distinct()
+        return qs
+
+    def basic_search(self, q, include_explicit=True):
+        if include_explicit:
+            return self.filter(
+                Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(ssv_company__icontains=q)
+            ).distinct()
+        else:
+            qs = self.filter(
+                Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(ssv_company__icontains=q)
+            ).filter(explicit=False).distinct()
+            return qs
+
+    def directory(self, category):
+        if category == "company":
+            return self.values("ssv_company").exclude(ssv_company=None).exclude(ssv_company="").distinct().order_by("ssv_company")
+        elif category == "author":
+            return self.values("author").distinct().order_by("author")
+
+    def new_releases(self, spotlight_filter=False):
+        # Published worlds ordered by release date
+        if spotlight_filter:
+            qs = self.filter(spotlight=True).exclude(details__id__in=[DETAIL_UPLOADED])
+        else:
+            qs = self.exclude(details__id__in=[DETAIL_UPLOADED])
+        qs = qs.order_by("-publish_date", "-id")
+        return qs
+
+    def new_finds(self, spotlight_filter=False):
+        if spotlight_filter:
+            qs = self.filter(spotlight=True, details__id=DETAIL_NEW_FIND)
+        else:
+            qs = self.filter(details__id=DETAIL_NEW_FIND)
+        qs = qs.order_by("-publish_date", "-id")
+        return qs
+
+    def published(self):
+        return self.exclude(details__id__in=[DETAIL_UPLOADED, DETAIL_LOST])
+
+    def search(self, p):
+        if p.get("q"):
+            return self.basic_search(p["q"])
+        else:
+            qs = self.all()
+        return qs
+
+    def zeta_compatible(self):
+        return self.filter(
+            details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE]
+        ).exclude(zeta_config__id=ZETA_RESTRICTED)
+
+    def random_zfile(self, include_explicit=False, detail_filter=None):
+        """ Returns a random zfile - Intended for API calls
+        """
+        excluded_details = [DETAIL_REMOVED]
+        qs = self.exclude(details__id__in=excluded_details)
+        if not include_explicit:
+            qs = qs.exclude(explicit=True)
+        if detail_filter is not None:
+            qs = qs.filter(details__id=detail_filter)
+
+        zgame = qs.order_by("?").first()
+        return zgame
+
+
+    def random_zzt_world(self):
+        """ Returns a random zfile
+        - Not Lost / Removed / Uploaded / Corrupt
+        - Not explicit
+        - Is ZZT
+        """
+
+        excluded_details = [
+            DETAIL_LOST, DETAIL_REMOVED, DETAIL_UPLOADED, DETAIL_CORRUPT
+        ]
+        max_pk = self.all().order_by("-id")
+        if len(self.all()) > 0:
+            max_pk = max_pk[0].id
+        else:
+            return None
+
+        zgame = None
+        while not zgame:
+            pk = randint(1, max_pk)
+            zgame = self.filter(pk=pk, details__id=DETAIL_ZZT).exclude(
+                details__id__in=excluded_details
+            ).exclude(explicit=True).first()
+
+        return zgame
+
+    def roulette(self, rng_seed, limit):
+        """ Retruns a random sample of zfiles (non-explicit) """
+        details = [DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]
+
+        # Get all valid file IDs. Shuffle. Return in random order.
+        ids = list(self.filter(details__id__in=details, explicit=False).values_list("id", flat=True))
+        seed(rng_seed)
+        shuffle(ids)
+        return self.filter(id__in=ids[:limit]).order_by("?")
+
+    def unpublished(self):
+        return self.filter(details__id__in=[DETAIL_UPLOADED])
+
+    def wozzt(self):
+        excluded_details = [DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST, DETAIL_CORRUPT]
+        return self.filter(
+            details__in=[DETAIL_ZZT]
+        ).exclude(
+            Q(details__in=excluded_details) |
+            Q(author__icontains="_ry0suke_") |
+            Q(explicit=True)
+        )
+
+    def featured_worlds(self):
+        return self.filter(details=DETAIL_FEATURED)
+
+    """ TODO: Move this to something more generic than ZFile manager """
+    def reach(self, *args, **kwargs):
+        try:
+            return self.get(*args, **kwargs)
+        except self.model.DoesNotExist:
+            return None
