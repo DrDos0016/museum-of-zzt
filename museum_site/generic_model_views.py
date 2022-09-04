@@ -435,6 +435,8 @@ class Article_Categories_List_View(Model_List_View):
 
         qs = []
         for key in CATEGORY_DESCRIPTIONS:
+            if not cats.get(key):
+                continue
             block_context = dict(
                 pk=None,
                 model=None,
