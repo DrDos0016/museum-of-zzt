@@ -111,6 +111,7 @@ class ZFile_Queryset(Base_Queryset):
         return qs
 
     def published(self):
+        """ Return zfiles lacking UPLOADED/LOST details """
         return self.exclude(details__id__in=[DETAIL_UPLOADED, DETAIL_LOST])
 
     def search(self, p):
@@ -121,13 +122,12 @@ class ZFile_Queryset(Base_Queryset):
         return qs
 
     def zeta_compatible(self):
-        return self.filter(
-            details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE]
-        ).exclude(zeta_config__id=ZETA_RESTRICTED)
+        """ Return zfiles with supported Zeta details (ZZT/SZZT/UPLOADED/WEAVE) and excluded those with a RESTRICTED Zeta config """
+        return self.filter(details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE]).exclude(zeta_config__id=ZETA_RESTRICTED)
 
     def random_zfile(self, include_explicit=False, detail_filter=None):
-        """ Returns a random zfile - Intended for API calls
-        """
+        """ Returns a random zfile - Intended for API calls """
+        # TODO: Return to this (note left 9/4/22)
         excluded_details = [DETAIL_REMOVED]
         qs = self.exclude(details__id__in=excluded_details)
         if not include_explicit:
@@ -140,32 +140,23 @@ class ZFile_Queryset(Base_Queryset):
 
 
     def random_zzt_world(self):
-        """ Returns a random zfile
-        - Not Lost / Removed / Uploaded / Corrupt
-        - Not explicit
-        - Is ZZT
-        """
-
-        excluded_details = [
-            DETAIL_LOST, DETAIL_REMOVED, DETAIL_UPLOADED, DETAIL_CORRUPT
-        ]
+        """ Returns a random zfile with ZZT detail, excluding LOST/REMOVED/UPLOADED/CORRUPT details, and excluding EXPLICIT status """
+        excluded_details = [DETAIL_LOST, DETAIL_REMOVED, DETAIL_UPLOADED, DETAIL_CORRUPT]
         max_pk = self.all().order_by("-id")
-        if len(self.all()) > 0:
-            max_pk = max_pk[0].id
-        else:
+        if len(self.all()) == 0:
             return None
+        max_pk = max_pk[0].id
 
         zgame = None
         while not zgame:
             pk = randint(1, max_pk)
-            zgame = self.filter(pk=pk, details__id=DETAIL_ZZT).exclude(
-                details__id__in=excluded_details
-            ).exclude(explicit=True).first()
-
+            zgame = self.filter(pk=pk, details__id=DETAIL_ZZT).exclude(details__id__in=excluded_details).exclude(explicit=True)
+            if zgame:
+                return zgame.first()
         return zgame
 
     def roulette(self, rng_seed, limit):
-        """ Retruns a random sample of zfiles (non-explicit) """
+        """ Returns a random sample of zfiles with ZZT/SZZT/WEAVE details, and excluding EXPLICIT status """
         details = [DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]
 
         # Get all valid file IDs. Shuffle. Return in random order.
@@ -175,17 +166,19 @@ class ZFile_Queryset(Base_Queryset):
         return self.filter(id__in=ids[:limit]).order_by("?")
 
     def unpublished(self):
+        """ Returns zfiles with UPLOADED detail. Used for cache calculation. Not actually used for Upload Queue page """
         return self.filter(details=DETAIL_UPLOADED)
 
     def wozzt(self):
+        """ Returns zfiles with ZZT detail, lacking UPLOADED/GFX/LOST/CORRUPT details, and excluding EXPLICIT status """
+        # Also excludes ry0. For reasons that become obvious when not excluded.
         excluded_details = [DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST, DETAIL_CORRUPT]
-        return self.filter(
-            details__in=[DETAIL_ZZT]
-        ).exclude(
+        return self.filter(details__in=[DETAIL_ZZT]).exclude(
             Q(details__in=excluded_details) |
             Q(author__icontains="_ry0suke_") |
             Q(explicit=True)
         )
 
     def featured_worlds(self):
+        """ Returns zfiles with FEATURED detail. """
         return self.filter(details=DETAIL_FEATURED)
