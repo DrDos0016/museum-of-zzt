@@ -49,6 +49,14 @@ def add_livestream(request, key):
     data["form"] = form
     return render(request, "museum_site/generic-form-display.html", data)
 
+
+@staff_member_required
+def audit_zfile_restrictions(request):
+    data = {"title": "Audit ZFile Restrictions"}
+    data["qs"] = list(File.objects.filter(details=DETAIL_REMOVED))
+    return render(request, "museum_site/tools/audit-zfile-restrictions.html", data)
+
+
 @staff_member_required
 def audit_review_restrictions(request):
     data = {"title": "Audit Review Restrictions"}

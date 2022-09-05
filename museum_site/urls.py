@@ -208,6 +208,7 @@ urlpatterns = [
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
     path("tools/add-livestream/<str:key>/", museum_site.tool_views.add_livestream, name="add_livestream"),
     path("tools/audit/scrolls/", museum_site.tool_views.audit_scrolls, name="audit_scrolls"),
+    path("tools/audit/zfile-restrictions/", museum_site.tool_views.audit_zfile_restrictions, name="audit_zfile_restrictions"),
     path("tools/audit/review-restrictions/", museum_site.tool_views.audit_review_restrictions, name="audit_review_restrictions"),
     path("tools/audit/zeta-config/", museum_site.tool_views.audit_zeta_config, name="audit_zeta_config"),
     path("tools/crediting-preferences/", museum_site.tool_views.crediting_preferences, name="crediting_preferences"),
