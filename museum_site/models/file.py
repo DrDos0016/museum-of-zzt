@@ -341,7 +341,7 @@ class File(BaseModel):
             if title.startswith(eng_article):
                 title = title.replace(eng_article, "", 1)
 
-        return title[0] if letter in "abcdefghijklmnopqrstuvwxyz" else "1"
+        return title[0] if title[0] in "abcdefghijklmnopqrstuvwxyz" else "1"
 
     def file_exists(self): return True if os.path.isfile(self.phys_path()) else False
 
