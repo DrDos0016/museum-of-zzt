@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from museum_site.querysets.base import Base_Queryset
 from museum_site.core.detail_identifiers import *
+from museum_site.core.zeta_identifiers import *
 
 class ZFile_Queryset(Base_Queryset):
     def advanced_search(self, p):
@@ -94,22 +95,18 @@ class ZFile_Queryset(Base_Queryset):
             return self.values("author").distinct().order_by("author")
 
     def new_releases(self, spotlight_filter=False):
-        # Published worlds ordered by release date
+        """ Return zfiles without UPLOADED detail optionally spotlight-only ordered by newest release date """
+        qs = self.exclude(details__id=DETAIL_UPLOADED)
         if spotlight_filter:
-            qs = self.spotlight().exclude(details__id__in=[DETAIL_UPLOADED])
-        else:
-            qs = self.exclude(details__id__in=[DETAIL_UPLOADED])
+            qs = qs.spotlight()
         qs = qs.order_by("-release_date", "-id")
         return qs
 
     def new_finds(self, spotlight_filter=False):
-        #qs = self.filter(details__id=DETAIL_NEW_FIND)
+        """ Return zfiles with NEW_FIND detail optionally spotlight-only ordered by newest publication date """
+        qs = self.filter(details__id=DETAIL_NEW_FIND)
         if spotlight_filter:
-            qs = self.spotlight().filter(details__id=DETAIL_NEW_FIND)
-        else:
-            qs = self.filter(details__id=DETAIL_NEW_FIND)
-
-        #qs = self.filter(details__id=DETAIL_NEW_FIND).spotlight()
+            qs = qs.spotlight()
         qs = qs.order_by("-publish_date", "-id")
         return qs
 
