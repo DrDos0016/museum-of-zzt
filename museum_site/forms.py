@@ -40,7 +40,7 @@ class ZGameForm(forms.ModelForm):
     zfile = forms.FileField(
         help_text=("Select the file you wish to upload. "
                    "All uploads <i>must</i> be zipped."),
-        label="File", widget=UploadFileWidget()
+        label="File", widget=UploadFileWidget(target_text="Drag & Drop A Zip File Here or Click to Choose", allowed_filetypes=".zip,application/zip")
     )
     genre = forms.MultipleChoiceField(
         widget=Scrolling_Checklist_Widget(
@@ -1654,3 +1654,22 @@ class Upload_Delete_Confirmation_Form(forms.Form):
     def clean_confirmation(self):
         if self.cleaned_data["confirmation"].upper() != "DELETE":
             self.add_error("confirmation", "You must provide confirmation before an upload can be deleted!")
+
+""" ON HITATUS
+class Tinyzoo_Converter_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Convert ZZT File"
+    attrs = {"method": "POST"}
+
+    zfile = forms.FileField(
+        help_text=("Select the file you wish to convert. File must be in .ZZT format."),
+        label="Input file", widget=UploadFileWidget(target_text="Drag & Drop a ZZT File Here or Click to Choose", allowed_filetypes=".zzt")
+    )
+    output_filename = forms.CharField(label="Custom output filename:", help_text="Manually specified filename for the converted file. Leave blank for &lt;world&gt;.gbc")
+    engine = forms.ChoiceField(
+        choices=(
+            ("gbx", "Game Boy (Color)"),
+            ("ap", "Analogue Pocket"),
+        )
+    )
+"""

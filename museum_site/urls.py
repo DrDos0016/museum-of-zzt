@@ -204,7 +204,10 @@ urlpatterns = [
     path("series/", museum_site.generic_model_views.Series_List_View.as_view(), name="series_directory"),
     path("series/<int:series_id>/<slug:slug>/", museum_site.generic_model_views.Series_Contents_View.as_view(), name="series_overview"),
 
-    # /tools/
+    # /tool/
+    #path("tool/tinyzoo-converter/", museum_site.tool_views.tinyzoo_converter, name="tinyzoo_converter"),
+
+    # /tools/ -- THESE WILL BE RENAMED FOR STAFF
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
     path("tools/add-livestream/<str:key>/", museum_site.tool_views.add_livestream, name="add_livestream"),
     path("tools/audit/scrolls/", museum_site.tool_views.audit_scrolls, name="audit_scrolls"),

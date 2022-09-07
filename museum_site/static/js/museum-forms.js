@@ -1,4 +1,47 @@
 $(document).ready(function (){
+    // Drag and Drop Uploading
+    $(".upload-area").click(function (){
+        $("#id_zfile").click();
+    });
+
+    $(".upload-area").on("dragover", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).addClass("dragging");
+    });
+
+    $(".upload-area").on("dragleave", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass("dragging");
+    });
+
+    $(".upload-area").on("drop", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass("dragging");
+
+        const dt = e.originalEvent.dataTransfer;
+        const file = dt.files[0];
+        var ext = file.name.toLowerCase().slice(-4);
+        $("#id_zfile")[0].files = dt.files;
+
+        if (ext == ".zip")
+            parse_zip_file(file);
+        else if (ext == ".zzt")
+            set_uploaded_zzt_file(file);
+    });
+
+    $("#id_zfile").change(function (e){
+        console.log("ZFILE CHANGED");
+        const file = $(this)[0].files[0];
+        var ext = file.name.toLowerCase().slice(-4);
+        if (ext == ".zip")
+            parse_zip_file(file);
+        else if (ext == ".zzt")
+            set_uploaded_zzt_file(file);
+    });
+
     $(".widget input[type=checkbox]").click(function (){
         if ($(this).prop("checked"))
         {
@@ -339,4 +382,11 @@ function add_tag(input_name, tag)
     {
         $("#"+ input_name + "-tag-list").find(".tag").last().find(".tag-text").addClass("no-highlight");
     }
+}
+
+function set_uploaded_zzt_file(file)
+{
+    console.log(file);
+    $(".file-list-header .file-name").html(file.name);
+    $(".file-list-header .file-size").html(filesize_format(file.size));
 }

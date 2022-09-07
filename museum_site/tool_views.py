@@ -1026,3 +1026,17 @@ def set_screenshot(request, key):
     optimize_image(image_path)
 
     return render(request, "museum_site/tools/set_screenshot.html", data)
+
+"""
+        PUBLIC TOOLS BELOW
+"""
+
+"""
+def tinyzoo_converter(request):
+    data = {"title": "TinyZoo Converter"}
+    if request.POST:
+        data["form"] = Tinyzoo_Converter_Form(request.POST)
+    else:
+        data["form"] = Tinyzoo_Converter_Form()
+    return render(request, "museum_site/generic-form-display-output.html", data)
+"""

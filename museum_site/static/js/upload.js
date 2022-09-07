@@ -14,42 +14,6 @@ $(document).ready(function (){
         document.getElementById("upload_form").submit();
     });
 
-    // Drag and Drop Uploading
-    $(".upload-area").click(function (){
-        $("#id_zfile").click();
-    });
-
-    $(".upload-area").on("dragover", function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        $(this).addClass("dragging");
-    });
-
-    $(".upload-area").on("dragleave", function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        $(this).removeClass("dragging");
-    });
-
-    $(".upload-area").on("drop", function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        $(this).removeClass("dragging");
-
-        const dt = e.originalEvent.dataTransfer;
-        const file = dt.files[0];
-        $("#id_zfile")[0].files = dt.files;
-
-        parse_zip_file(file);
-    });
-
-    $("#id_zfile").change(function (e){
-        console.log("ZFILE CHANGED");
-        const file = $(this)[0].files[0];
-        console.log(file);
-        parse_zip_file(file);
-    });
-
     // Toggle "Hosted text" visibility based on Category
     $("#id_kind").change(function (){
         if ($("#id_kind").val() != "itch")

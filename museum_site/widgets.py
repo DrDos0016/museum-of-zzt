@@ -7,11 +7,19 @@ class UploadFileWidget(forms.FileInput):
     filename = ""
     size = 0
 
+    def __init__(self, attrs=None, target_text="TARGET TEXT", allowed_filetypes=""):
+        super().__init__(attrs)
+        self.target_text = target_text
+        self.allowed_filetypes = allowed_filetypes
+
+
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         context["zfi"] = self.zfi
         context["filename"] = self.filename
         context["size"] = self.size
+        context["target_text"] = self.target_text
+        context["allowed_filetypes"] = self.allowed_filetypes
         return context
 
     def set_info(self, filename, file_list, size):
