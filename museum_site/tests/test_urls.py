@@ -1,15 +1,23 @@
 import unittest
 
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test import Client
+from django.urls import reverse
 
 from museum_site.models import *
+from museum_site.urls import urlpatterns
 
 c = Client()
+c.login(username="teststaff", password="testpassword")
+
 
 class URLTest(unittest.TestCase):
+    #def setUp(self):
+    #    user = User.objects.create_user("teststaff", "teststaff@localhost", "testpassword")
+
     def test_old_zfile_urls(self):
-        """ Ensure old URLs properly redirect """
+        """ Ensure old ZFile URLs properly redirect """
         urls = [
             "/file/a/oaktown1.zip",
             "/file/a/oaktown1.zip/",
@@ -95,6 +103,8 @@ class URLTest(unittest.TestCase):
             "/review/l/lostmonk/",
             "/browse/",
             "/browse/o/",
+            "/new/",
+            "/new-releases/",
         ]
 
         results = []
@@ -132,20 +142,51 @@ class URLTest(unittest.TestCase):
             (301, "/file/review/lostmonk/"),
             (301, "/file/browse/"),
             (301, "/file/browse/o/"),
+            (301, "/file/browse/new-releases/"),
+            (301, "/file/browse/new-releases/"),
         ]
 
         for url in urls:
             r = c.get(url)
             results.append((r.status_code, r.url))
-        self.assertEqual(results,answers)
+        self.assertEqual(results, answers)
+
+    def test_current_urls_without_args(self):
+        """ Test all non-legacy redirect urls and url patterns with arguments return 200 status """
+        for url in urlpatterns:
+            fh.write(str(url.pattern) + "\n")
+            # Ignore legacy redirects
+            if "legacy_redirect" in str(url.callback):
+                continue
+            if "<" in str(url.pattern):
+                continue
+            if url.name is None or url.name in ["patreon"]:
+                continue
+
+            r = c.get(reverse(url.name), follow=True)
+
+            if r.status_code != 200:
+                print("{}: {}".format(r.status_code, url.pattern))
+            self.assertEqual(r.status_code, 200)
 
     """
-    def test_article_urls(self):
-        # Find broken links in articles
-        qs = Article.objects.all().order_by("id")
-        for a in qs:
-            urls = a.export_urls(domain="http://django.pi:8000")
-            for url in urls:
-                r = c.get(url)
-                self.assertEqual((a, url, r.status_code), (a, url, 200), msg="IDK MSG")
+    def test_current_urls_with_args(self):
+        #"" Test all non-legacy redirect url patterns with arguments return 200 status ""
+        test_urls = {
+            "article/category/<slug:category_slug>/": "article/category/closer-look/",
+            "article/view/<int:article_id>/page/<int:page>/<slug:slug>/": "article/view/166/page/2/closer-look-dungeons-of-zzt/",
+            "article/view/<int:article_id>/<slug:slug>/": "article/view/166/closer-look-dungeons-of-zzt/",
+            #"collection/manage-contents/": "article/view/166/closer-look-dungeons-of-zzt/",
+        }
+        for url in urlpatterns:
+            # Ignore legacy redirects
+            if "legacy_redirect" in str(url.callback):
+                continue
+            if "<" not in str(url.pattern):
+                continue
+
+            r = c.get("/" + test_urls.get(str(url.pattern), "XYZZY"), follow=True)
+            if r.status_code != 200:
+                print("{}: {}".format(r.status_code, url.pattern))
+            self.assertEqual(r.status_code, 200)
     """
