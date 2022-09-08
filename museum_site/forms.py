@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import linebreaks, urlize
 
 from PIL import Image
-from internetarchive import upload
+from internetarchive import upload as ia_upload
 
 from museum_site.core import *
 from museum_site.models import *
@@ -630,7 +630,7 @@ class MirrorForm(forms.Form):
             meta["year"] = str(self.cleaned_data["year"])
 
         # Mirror the file
-        r = upload(
+        r = ia_upload(
             url,
             files=[wip_zf_path],
             metadata=meta,
