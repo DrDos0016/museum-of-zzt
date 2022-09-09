@@ -18,5 +18,19 @@
 {% block content %}
 <h1>Museum Scan</h1>
 
-{{scan|safe}}
+{% for cat in issues %}
+<table>
+    <tr>
+        <th colspan="4">{{cat.0|title}}</th>
+    </tr>
+    {% for i in cat|slice:"1:" %}
+        <tr>
+            <td><a href="{{i.zf.url}}" target="_blank">{{i.zf.title}}</a></td>
+            <td><a href="{{i.zf.tool_url}}" target="_blank">Tools</a></td>
+            <td><a href="{{i.zf.admin_url}}" target="_blank">Admin</a></td>
+            <td>{{i.issue}}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endfor %}
 {% endblock %}

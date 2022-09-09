@@ -1,4 +1,5 @@
 import glob
+import json
 import os
 import sys
 import urllib.request
@@ -20,7 +21,19 @@ IGNORE_LIST = (
 
 
 def main():
-    files = File.objects.all().order_by("-id")
+    qs = File.objects.all().order_by("-id")
+    all_issues = []
+    for zf in qs:
+        issues = zf.scan()
+
+        if issues:
+            issues["pk"] = zf.pk
+
+        all_issues.append(issues)
+
+    with open(os.path.join(SITE_ROOT, "museum_site", "static", "data", "scan.json"), "w") as fh:
+        fh.write(json.dumps(all_issues))
+    """
     for f in files:
         if f.id in IGNORE_LIST:
             continue
@@ -52,6 +65,7 @@ def main():
         if not match:
             print("<li>ORPHANED ZIP", f, "</li>")
     print("</ul>")
+    """
 
     return True
 

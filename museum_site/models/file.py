@@ -1051,3 +1051,84 @@ class File(BaseModel):
 
     def get_can_review_string(self):
         return File.REVIEW_LEVELS[self.can_review][1]
+
+
+    def scan(self):
+        issues = {}
+        exists = True
+        checksummed = True
+        """ Used for Musuem Scan to identify basic issues """
+        # Validate letter
+        if self.letter not in "1abcdefghijklmnopqrstuvwxyz":
+            issues["letter"] = "Invalid letter: '{}'".format(self.letter)
+        if not os.path.isfile(self.phys_path()):
+            issues["missing_file"] = "File not found: '{}'".format(self.phys_path())
+            exists = False
+        if not self.sort_title:
+            issues["sort_title"] = "Sort title not set."
+        if exists and self.size != os.path.getsize(self.phys_path()):
+            issues["size_mismatch"] = "DB size doesn't match physical file size: {}/{}".format(self.size, os.path.getsize(self.phys_path()))
+        if "," in self.author:
+            issues["author"] = "Comma in author. Should be slash?"
+        if "," in self.genre:
+            issues["ssv_genre"] = "Comma in genre. Should be slash."
+        if "," in self.ssv_company:
+            issues["ssv_company"] = "Comma in company. Should be slash."
+        if self.ssv_company == None:
+            issues["blank_company"] = "Company is null. Use empty string for files not published under a company."
+        if self.release_date and self.release_date.year < 1991:
+            issues["release_date"] = "Release date is prior to 1991."
+        if self.release_date and self.release_source == "":
+            issues["release_date_source"] = "Release source is blank, but release date is set."
+        if self.screenshot == "":
+            issues["preview_image"] = "No preview image."
+        if self.screenshot and (not os.path.isfile(os.path.join(STATIC_PATH, self.screenshot_url()))):
+            issues["preview_image_missing"] = "Screenshot does not exist at {}".format(self.screenshot_url())
+
+        # Review related
+        reviews = Review.objects.filter(zfile_id=self.id)
+        rev_len = len(reviews)
+        if rev_len != self.review_count:
+            issues["review_count"] = "Reviews in DB do not match 'review_count': {}/{}".format(rev_len, self.review_count)
+
+        # Detail related
+        details = self.details.all()
+        detail_list = []
+        for detail in details:
+            detail_list.append(detail.id)
+
+        # Confirm LOST does not exist
+        if DETAIL_LOST in detail_list and exists:
+            issues["not_lost"] = "File is marked as 'Lost', but a Zip exists."
+
+        articles = self.articles.all()
+        article_len = len(articles)
+        if article_len != self.article_count:
+            issues["article_count"] = "Articles in DB do not match 'article_count': {}/{}".format(article_len, self.article_count)
+
+        if not self.checksum:
+            issues["blank_checksum"] = "Checksum not set."
+            checksummed = False
+
+        # Calculate file's checksum
+        md5 = None
+        try:
+            resp = subprocess.run(["md5sum", self.phys_path()], stdout=subprocess.PIPE)
+            md5 = resp.stdout[:32].decode("utf-8")
+        except:
+            pass
+
+        if checksummed and md5 and (self.checksum != md5):
+            issues["checksum_mismatch"] = "Checksum in DB does not match calculated checksum: {} / {}".format(self.checksum, md5)
+
+        # Board counts
+        if (DETAIL_ZZT in detail_list) and self.playable_boards is None:
+            issues["playable_boards"] = "File has no playable boards value but is marked as ZZT"
+
+        if (DETAIL_ZZT in detail_list) and self.total_boards is None:
+            issues["total_boards"] = "File has no total boards value but is marked as ZZT"
+
+        if self.archive_name == "" and (DETAIL_LOST not in detail_list and DETAIL_UPLOADED not in detail_list):
+            issues["archive_mirror"] = "File has no archive.org mirror"
+
+        return issues

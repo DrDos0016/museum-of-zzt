@@ -1,6 +1,7 @@
 import codecs
 import grp
 import gzip
+import json
 import os
 import pwd
 import shutil
@@ -705,13 +706,25 @@ def review_approvals(request):
 def scan(request):
     """ Returns page with latest Museum scan results"""
     data = {"title": "Museum Scan"}
-    try:
-        with codecs.open(
-            os.path.join(STATIC_PATH, "data", "scan.log"), "r", "utf-8"
-        ) as fh:
-            data["scan"] = fh.read()
-    except FileNotFoundError:
-        data["scan"] = ""
+    issues = {}
+
+    with open(os.path.join(SITE_ROOT, "museum_site", "static", "data", "scan.json")) as fh:
+        raw = fh.read()
+        j = json.loads(raw)
+        for i in j:
+            for key in i.keys():
+                if not issues.get(key.replace("_", " ")):
+                    issues[key.replace("_", " ")] = []
+                issues[key.replace("_", " ")].append({"zf": File.objects.get(pk=i["pk"]), "issue": i[key]})
+
+    keys = issues.keys()
+    data["issues"] = []
+    for key in keys:
+        if key == "pk":
+            continue
+        issues[key].insert(0, key)
+        data["issues"].append(issues[key])
+
     return render(request, "museum_site/tools/scan.html", data)
 
 
@@ -1026,6 +1039,7 @@ def set_screenshot(request, key):
     optimize_image(image_path)
 
     return render(request, "museum_site/tools/set_screenshot.html", data)
+
 
 """
         PUBLIC TOOLS BELOW
