@@ -2,6 +2,7 @@ from django.core.cache import cache
 import os
 
 from django.apps import AppConfig
+from django.db.utils import ProgrammingError
 from django import VERSION as DJANGO_VERSION
 from sys import version
 from datetime import datetime
@@ -46,9 +47,12 @@ class Museum_Site_Config(AppConfig):
 
         # Initialize cache
         print("-------------------- Initializing Cache --------------------")
-        INITIAL_CACHE = {
-            "UPLOAD_QUEUE_SIZE": File.objects.unpublished().count(),
-        }
+        INITIAL_CACHE = {}
+
+        try:
+            INITIAL_CACHE["UPLOAD_QUEUE_SIZE"] = File.objects.unpublished().count()
+        except ProgrammingError:
+            pass
 
         for (k, v) in INITIAL_CACHE.items():
             cache.set(k, v)
