@@ -29,7 +29,7 @@ def qs_to_categorized_select_choices(qs, text="{0}", val="{0.pk}", category_orde
         category_order = list(categories.keys())
 
     for key in category_order:
-        output.append((key, categories[key]))
+        output.append((key, categories.get(key)))
 
     return output
 
