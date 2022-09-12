@@ -40,12 +40,18 @@ def add_livestream(request, key):
     }
 
     if request.method == "POST":
-        form = Livestream_Vod_Form(request.POST, request.FILES)
-        if form.is_valid():
-            a = form.create_article()
-            return redirect(a.url())
+        if not request.POST.get("transferred"):
+            form = Livestream_Vod_Form(request.POST, request.FILES)
+            if form.is_valid():
+                a = form.create_article()
+                return redirect(a.url())
+        else:  # Transferred from description generator tool
+            form = Livestream_Vod_Form(initial={
+                "associated_zfile": request.POST.getlist("associated"), "video_description": request.POST.get("video_description")
+            })
     else:
         form = Livestream_Vod_Form(initial={"associated_zfile": data["file"].pk})
+        print(form.initial)
 
     data["form"] = form
     return render(request, "museum_site/generic-form-display.html", data)
@@ -165,6 +171,7 @@ def livestream_description_generator(request):
 
     if request.GET:
         data["form"] = Livestream_Description_Form(request.GET)
+        data["form"].refresh_choices()
         # Prevent "[text]" error
         if data["form"].errors.get("associated"):
             del data["form"].errors["associated"]
@@ -191,6 +198,7 @@ def livestream_description_generator(request):
 
     else:
         data["form"] = Livestream_Description_Form()
+        data["form"].refresh_choices()
 
     return render(request, "museum_site/tools/livestream-description-generator.html", data)
 

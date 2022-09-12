@@ -953,6 +953,12 @@ class Livestream_Description_Form(forms.Form):
         help_text="Separate with commas. Match order in associated ZFiles.",
     )
 
+    def refresh_choices(self):
+        valid_choices = associated_file_choices()
+        self.fields["associated"].choices = valid_choices
+        self.fields["associated"].widget.choices = valid_choices
+
+
 
 class Prep_Publication_Pack_Form(forms.Form):
     use_required_attribute = False
