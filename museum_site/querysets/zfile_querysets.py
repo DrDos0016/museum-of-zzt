@@ -6,25 +6,27 @@ from django.db.models import Q
 from museum_site.querysets.base import Base_Queryset
 from museum_site.core.detail_identifiers import *
 from museum_site.core.zeta_identifiers import *
+from museum_site.models import *
 
 class ZFile_Queryset(Base_Queryset):
     def advanced_search(self, p):
         qs = self.all()
+        print(self.model)
 
         # Filter by simple fields
-        for f in ["title", "author", "filename", "company"]:
+        for f in ["title", "author", "filename"]:
             if p.get(f):
                 field = "{}__icontains".format(f)
-                if f == "company": # TODO temporary hotfix
-                    field = "ssv_company__icontains"
                 value = p[f]
                 qs = qs.filter(**{field: value})
 
+        # Filter by company
+        if p.get("company"):
+            qs = qs.filter(companies__title__icontains=p["company"])
+
         # Filter by genre
         if p.get("genre"):
-            g = Genre.objects.filter(title=p["genre"]).first()
-            if g:
-                qs = qs.filter(genres=g)
+            qs = qs.filter(genres__title__icontains=p["genre"])
 
         # Filter by language
         if p.get("lang"):
@@ -78,20 +80,15 @@ class ZFile_Queryset(Base_Queryset):
         return qs
 
     def basic_search(self, q, include_explicit=True):
-        if include_explicit:
-            return self.filter(
-                Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(ssv_company__icontains=q)
-            ).distinct()
-        else:
-            qs = self.filter(
-                Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(ssv_company__icontains=q)
-            ).filter(explicit=False).distinct()
-            return qs
+        qs = self.filter(
+            Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(companies__title__icontains=q)
+        )
+        if not include_explicit:
+            qs = qs.filter(explicit=False)
+        return qs.distinct()
 
     def directory(self, category):
-        if category == "company":
-            return self.values("ssv_company").exclude(ssv_company=None).exclude(ssv_company="").distinct().order_by("ssv_company")
-        elif category == "author":
+        if category == "author":
             return self.values("author").distinct().order_by("author")
 
     def new_releases(self, spotlight_filter=False):

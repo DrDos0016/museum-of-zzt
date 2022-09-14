@@ -57,7 +57,7 @@ class File(BaseModel):
         # Value - Django order_by param
         "title": "sort_title",
         "author": "author",
-        "company": "ssv_company",
+        "company": "companies__title",
         "rating": "-rating",
         "release": "release_date",
         "-release": "-release_date",
@@ -353,7 +353,6 @@ class File(BaseModel):
         return output
 
     def author_list(self): return self.author.split("/")
-    def company_list(self): return self.ssv_company.split("/")
 
     def genre_list(self):
         output = []
@@ -715,6 +714,13 @@ class File(BaseModel):
             output += '<a href="{}">{}</a>, '.format(i.url(), i.title)
         return output[:-2]
 
+    @mark_safe
+    def company_links(self):
+        output = ""
+        for i in self.companies.all():
+            output += '<a href="/file/search?company={}">{}</a>, '.format(i.title, i.title)
+        return output[:-2]
+
     def language_pairs(self):
         language_list = self.language.split("/")
         output = []
@@ -835,14 +841,14 @@ class File(BaseModel):
                 "values": self.ssv_list("author"), "url": "/search/?author="
             },
             {
-                "datum": "ssv-links", "label": "Compan"+("ies" if len(self.ssv_list("ssv_company")) > 1 else "y"),
-                "values": self.ssv_list("ssv_company"), "url": "/search/?company="
+                "datum": "text", "label": "Compan"+("ies" if self.companies.count() > 1 else "y"),
+                "value": self.company_links()
             },
             {
                 "datum": "link", "label": "Released", "value": (self.release_date or "Unknown"),
                 "url": "/search/?year={}".format(self.release_year(default="unk"))
             },
-            {"datum": "text", "label": "Genre"+("s" if len(self.genres.all()) > 1 else ""), "value": self.genre_links()},
+            {"datum": "text", "label": "Genre"+("s" if self.genres.count() > 1 else ""), "value": self.genre_links()},
             {"datum": "text", "label": "Filename", "value": self.filename},
             {"datum": "text", "label": "Size", "value": filesizeformat(self.size)},
         ])
@@ -922,7 +928,7 @@ class File(BaseModel):
         cells.append(link)
 
         cells.append({"datum": "ssv-links", "values": self.ssv_list("author"), "url": "/search/?author=", "tag": "td"})
-        cells.append({"datum": "ssv-links", "values": self.ssv_list("ssv_company"), "url": "/search/?company=", "tag": "td"})
+        cells.append({"datum": "text", "value": self.company_links(), "tag": "td"}),
         cells.append({"datum": "text", "value": self.genre_links(), "tag": "td"}),
         cells.append(
             {"datum": "link", "value": (self.release_date or "Unknown"), "url": "/search/?year={}".format(self.release_year(default="unk")), "tag": "td"}
@@ -1072,10 +1078,6 @@ class File(BaseModel):
             issues["author"] = "Comma in author. Should be slash?"
         if "," in self.genre:
             issues["ssv_genre"] = "Comma in genre. Should be slash."
-        if "," in self.ssv_company:
-            issues["ssv_company"] = "Comma in company. Should be slash."
-        if self.ssv_company == None:
-            issues["blank_company"] = "Company is null. Use empty string for files not published under a company."
         if self.release_date and self.release_date.year < 1991:
             issues["release_date"] = "Release date is prior to 1991."
         if self.release_date and self.release_source == "":
@@ -1132,3 +1134,10 @@ class File(BaseModel):
             issues["archive_mirror"] = "File has no archive.org mirror"
 
         return issues
+
+    def get_all_company_names(self):
+        output = ""
+        for company in self.companies.all():
+            output += company.title + ", "
+        output = output[:-2]
+        return output

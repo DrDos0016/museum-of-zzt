@@ -20,7 +20,7 @@ from museum_site.models import *
 from museum_site.fields import *
 from museum_site.widgets import *
 from museum_site.common import (
-    EMAIL_ADDRESS, GENRE_LIST, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices, delete_this, UPLOAD_TEST_MODE, record
+    EMAIL_ADDRESS, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices, delete_this, UPLOAD_TEST_MODE, record
 )
 from museum_site.constants import (
     LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, TERMS
@@ -427,8 +427,8 @@ class Advanced_Search_Form(forms.Form):
                 requested_min = allowed_min
             if requested_max == "":
                 requested_max = allowed_max
-            requested_min = int(requested_min)
-            requested_max = int(requested_max)
+            requested_min = float(requested_min)
+            requested_max = float(requested_max)
 
             if requested_max < requested_min:
                 self.add_error(field_name, error_message)

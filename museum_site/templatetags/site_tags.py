@@ -150,8 +150,8 @@ def guide_words(*args, **kwargs):
                 else:
                     link_text[x] = "-Unknown Author-"  # This shouldn't appear
             elif sort == "company":
-                if items[x].ssv_company:
-                    link_text[x] = items[x].ssv_company
+                if items[x].companies.count():
+                    link_text[x] = items[x].get_all_company_names()
                 else:
                     link_text[x] = "-No company-"
             elif sort == "rating":
@@ -265,8 +265,8 @@ def meta_tags(*args, **kwargs):
         tags["description"][1] = '{} by {}'.format(
             kwargs["file"].title, kwargs["file"].author
         )
-        if kwargs["file"].ssv_company and kwargs["file"].ssv_company != "None":
-            tags["description"][1] += " of {}".format(kwargs["file"].ssv_company)
+        if kwargs["file"].companies.count():
+            tags["description"][1] += " of {}".format(kwargs["file"].get_all_company_names())
         if kwargs["file"].release_date:
             tags["description"][1] += " ({})".format(
                 kwargs["file"].release_date.year
@@ -378,8 +378,8 @@ def cl_info(pk=None, engine=None, emulator=None):
     else:
         zfile = File.objects.get(pk=pk)
 
-    if zfile.ssv_company:
-        company = "Published Under: {}<br>".format(zfile.ssv_company)
+    if zfile.companies.count():
+        company = "Published Under: {}<br>".format(zfile.get_all_company_names())
     else:
         company = ""
 

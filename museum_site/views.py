@@ -21,12 +21,7 @@ def directory(request, category):
     data_list = []
     if category == "company":
         data["title"] = "Companies"
-        companies = File.objects.directory("company")
-        for c in companies:
-            split = c["ssv_company"].split("/")
-            for credited in split:
-                if credited not in data_list:
-                    data_list.append(credited)
+        data_list = Company.objects.all().values_list("title", flat=True)
     elif category == "author":
         data["title"] = "Authors"
         authors = File.objects.directory("author")

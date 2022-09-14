@@ -167,7 +167,7 @@ class Collection_Entry(models.Model):
         "canonical": "order",
         "title": "zfile__sort_title",
         "author": "zfile__author",
-        "company": "zfile__ssv_company",
+        "company": "zfile__companies__title",
         "rating": "-zfile__rating",
         "release": "zfile__release_date",
         "-release": "-zfile__release_date",

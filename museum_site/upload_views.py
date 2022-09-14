@@ -64,12 +64,10 @@ def upload(request):
                 "language": zgame_obj.language,
                 "release_date": str(zgame_obj.release_date),
                 "author": zgame_obj.author.replace("/", ","),
-                "company": zgame_obj.ssv_company.replace("/", ","),
+                "ssv_company": zgame_obj.ssv_company.replace("/", ","),
                 "genre": zgame_obj.genre_ids(),
             }
-            play_form = PlayForm(
-                initial={"zeta_config": zgame_obj.zeta_config_id}
-            )
+            play_form = PlayForm(initial={"zeta_config": zgame_obj.zeta_config_id})
         else:
             play_form = PlayForm()
 
@@ -164,16 +162,27 @@ def upload(request):
             zfile.genre = ""  # Legacy SSV field for v1 API support
             # Remove old genre assocs. when editing
             if zfile.id:
-                old_genres = zfile.genres.all()
-                for old_genre in old_genres:
-                    zfile.genres.remove(old_genre)
+                zfile.genres.clear()
 
+            # Add new genre assocs.
             for genre in zgame_form.cleaned_data["genre"]:
                 genre_object = Genre.objects.get(pk=genre)
                 zfile.genres.add(genre_object)
                 zfile.genre += genre_object.title + "/"
             if zfile.genre.endswith("/"):
                 zfile.genre = zfile.genre[:-1]
+
+            # Remove old company assocs. when editing
+            if zfile.id:
+                zfile.companies.clear()
+            # Convert ssv_company to Company objects
+            ssv_company = zgame_form.cleaned_data["ssv_company"].split("/")
+            for company in ssv_company:
+                (c_obj, created) = Company.objects.get_or_create(title=company)
+                zfile.companies.add(c_obj)
+                # If it's newly created, set the slug
+                if created:
+                    c_obj.generate_automatic_slug(save=True)
 
             zfile.language = "/".join(zgame_form.cleaned_data["language"])
 

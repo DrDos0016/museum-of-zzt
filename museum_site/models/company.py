@@ -13,8 +13,10 @@ class Company(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        # Update slug
-        self.slug = slugify(self.title)
-
         # Save
         super(Company, self).save(*args, **kwargs)
+
+    def generate_automatic_slug(self, save=True):
+        self.slug = slugify(self.title)
+        if save:
+            self.save()

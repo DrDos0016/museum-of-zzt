@@ -14,7 +14,7 @@
 <tr><th>Author</th><td>{{file.author}}</td></tr>
 <tr><th>Boards Playable/Total</th><td>{{file.playable_boards}} / {{file.total_boards}}</td></tr>
 <tr><th>MD5 Checksum</td><td class="caps">{{file.checksum}}</td></tr>
-<tr><th>Company</th><td>{{file.ssv_company|default:"<i>No company</i>"}}</td></tr>
+<tr><th>Company</th><td>{{file.get_all_company_names|default:"<i>No company</i>"}}</td></tr>
 <tr><th>Explicit</th><td>{{file.explicit}}</td></tr>
 <tr><th>Description</th><td>{% if file.description %}<textarea>{{file.description}}</textarea>{% else %}<i>No description</i>{% endif %}</td></tr>
 <tr><th>Alternate Downloads</th><td><a href="#heading-downloads">{{file.downloads.count}}</a></td></tr>

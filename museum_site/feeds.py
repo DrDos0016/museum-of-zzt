@@ -50,8 +50,8 @@ class LatestFilesFeed(Feed):
             output += " (" + str(item.release_date)[:4] + ")\n"
         else:
             output += "\n"
-        if item.ssv_company:
-            output += "Published by: " + str(item.ssv_company) + "\n"
+        if item.get_all_company_names():
+            output += "Published by: " + str(item.get_all_company_names()) + "\n"
         return output
 
     def item_link(self, item):
@@ -98,8 +98,8 @@ class LatestUploadsFeed(Feed):
             output += " (" + str(item.release_date)[:4] + ")\n"
         else:
             output += "\n"
-        if item.ssv_company:
-            output += "Published by: " + str(item.ssv_company) + "\n"
+        if item.get_all_company_names():
+            output += "Published by: " + str(item.get_all_company_names()) + "\n"
         return output
 
     def item_link(self, item):

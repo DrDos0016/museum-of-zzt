@@ -83,33 +83,6 @@ FILE_VIEWER_AUDIO_EXTENSIONS = (
 EMAIL_ADDRESS = "doctordos@gmail.com"
 
 
-GENRE_LIST = (
-    "24HoZZT", "Action", "Adventure", "Advertisement", "Arcade", "Art",
-    "Beta", "BKZZT", "Bugfix", "Cameo", "Catalog", "Cinema", "Comedy", "Comic",
-    "Collaboration", "Compilation", "Contest", "Demo", "Dungeon", "Edutainment",
-    "Engine", "Experimental", "Fangame", "Fantasy", "Fighting", "Font",
-    "Help", "Horror", "Incomplete", "Ludum Dare", "Magazine", "Maze",
-    "Minigame", "Mod", "Multiplayer", "Music", "Mystery",
-    "Official", "Other", "Parody", "Platformer", "Puzzle", "Racing", "Random",
-    "Remake", "Registered", "Retro", "RPG", "Sci-Fi", "Shareware",
-    "Shooter", "Simulation", "Space", "Sports", "Story", "Strategy", "Toolkit",
-    "Trippy", "Trivia", "Update", "Utility", "WoZZT"
-)
-
-SORT_CODES = {
-    "title": ["sort_title"],
-    "author": ["author", "sort_title"],
-    "company": ["ssv_company", "sort_title"],
-    "id": ["id"],
-    "-id": ["-id"],
-    "rating": ["-rating", "sort_title"],
-    "release": ["release_date", "sort_title"],
-    "-release": ["-release_date", "sort_title"],
-    "published": ["-publish_date", "-id"],
-    "roulette": ["?"],
-    "uploaded": ["-id"],
-}
-
 PLAY_METHODS = {
     "archive": {"name": "Archive.org - DosBox Embed"},
     "zeta": {"name": "Zeta"},

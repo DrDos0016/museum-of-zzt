@@ -111,6 +111,7 @@ def debug_file(request):
 
 
 def get_author_suggestions(request):
+    """ Used on file upload page """
     query = request.GET.get("q", "")
     output = {"suggestions": []}
 
@@ -132,21 +133,18 @@ def get_author_suggestions(request):
 
 
 def get_company_suggestions(request, max_suggestions=20):
+    """ Used on file upload page """
     query = request.GET.get("q", "")
     output = {"suggestions": []}
 
     if query:
-        qs = File.objects.filter(ssv_company__istartswith=query).only("ssv_company").distinct().order_by("ssv_company")
+        qs = Company.objects.filter(title__istartswith=query).only("title").distinct().order_by("title")
     else:
-        qs = File.objects.all().only("ssv_company").distinct().order_by("ssv_company")
+        qs = Company.objects.all().only("title").distinct().order_by("title")
 
     seen = []  # Case insensitive company names
-    for f in qs:
-        all_companies = f.ssv_company.split("/")
-        for a in all_companies:
-            if a.lower() not in seen:
-                output["suggestions"].append(a)
-                seen.append(a.lower())
+    for c in qs:
+        output["suggestions"].append(c.title)
 
     output["suggestions"] = sorted(output["suggestions"], key= lambda s: s.casefold())
     return JsonResponse(output)
