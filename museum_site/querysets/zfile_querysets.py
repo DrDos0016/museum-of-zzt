@@ -44,10 +44,10 @@ class ZFile_Queryset(Base_Queryset):
                 qs = qs.filter(release_date__gte="{}-01-01".format(year), release_date__lte="{}-12-31".format(year))
 
         # Filter by rating
-        if p.get("min") and float(p["min"]) > 0:
-            qs = qs.filter(rating__gte=float(p["min"]))
-        if p.get("max") and float(p["max"]) < 5:
-            qs = qs.filter(rating__lte=float(p["max"]))
+        if p.get("rating_min") and float(p["rating_min"]) > 0:
+            qs = qs.filter(rating__gte=float(p["rating_min"]))
+        if p.get("rating_max") and float(p["rating_max"]) < 5:
+            qs = qs.filter(rating__lte=float(p["rating_max"]))
 
         # Filter by playable/total board counts
         if p.get("board_min") and int(p["board_min"]) > 0:
