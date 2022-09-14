@@ -49,7 +49,7 @@ Use wget to obtain these files (from the project root): `wget -m -np -nH -R "ind
 
 These are the images used for the ZZTer comics section of the site.
 
-Using wget to obtain these images (from project_root/comic): `wget -m -np -nH -R "index.html*" "https://museumofzzt.com/static/comic/"`
+Using wget to obtain these images (from the project root): `wget -m -np -nH -R "index.html*" "https://museumofzzt.com/static/comic/"`
 
 ### Zeta
 
