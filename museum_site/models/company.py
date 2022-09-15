@@ -1,9 +1,12 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 
+from museum_site.querysets.company_querysets import *
+
 
 class Company(models.Model):
     """ Representation of a company associated with a ZFile """
+    objects = Company_Queryset.as_manager()
     model_name = "Company"
 
     title = models.CharField(max_length=120, db_index=True, editable=True, help_text="Company Name")

@@ -179,3 +179,14 @@ class ZFile_Queryset(Base_Queryset):
     def featured_worlds(self):
         """ Returns zfiles with FEATURED detail. """
         return self.filter(details=DETAIL_FEATURED)
+
+    def author_suggestions(self):
+        return self.all().only("author").distinct().order_by("author")
+
+    def basic_search_suggestions(self, query="", match_anywhere=False):
+        if not match_anywhere:
+            query_filter = "title__istartswith"
+        else:
+            query_filter = "title__icontains"
+        qs = self.filter(**{query_filter: query}).only("title").distinct().order_by("sort_title")
+        return qs

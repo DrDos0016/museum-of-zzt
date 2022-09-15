@@ -112,13 +112,8 @@ def debug_file(request):
 
 def get_author_suggestions(request):
     """ Used on file upload page """
-    query = request.GET.get("q", "")
     output = {"suggestions": []}
-
-    if query:
-        qs = File.objects.filter(author__istartswith=query).only("author").distinct().order_by("author")
-    else:
-        qs = File.objects.all().only("author").distinct().order_by("author")
+    qs = File.objects.author_suggestions()
 
     seen = []  # Case insensitive author names
     for f in qs:
@@ -134,13 +129,8 @@ def get_author_suggestions(request):
 
 def get_company_suggestions(request, max_suggestions=20):
     """ Used on file upload page """
-    query = request.GET.get("q", "")
     output = {"suggestions": []}
-
-    if query:
-        qs = Company.objects.filter(title__istartswith=query).only("title").distinct().order_by("title")
-    else:
-        qs = Company.objects.all().only("title").distinct().order_by("title")
+    qs = Company.objects.all().only("title").distinct().order_by("title")
 
     seen = []  # Case insensitive company names
     for c in qs:
@@ -153,9 +143,10 @@ def get_company_suggestions(request, max_suggestions=20):
 def get_search_suggestions(request, max_suggestions=25):
     query = request.GET.get("q", "")
     output = {"suggestions": []}
+    print("GETTING SEARCH SUGG")
 
     if query:
-        qs = File.objects.filter(title__istartswith=query).only("title").distinct().order_by("sort_title")
+        qs = File.objects.basic_search_suggestions(query=query)
         for f in qs:
             if f.title not in output["suggestions"]:
                 output["suggestions"].append(f.title)
@@ -163,7 +154,7 @@ def get_search_suggestions(request, max_suggestions=25):
                 break
 
         if len(output["suggestions"]) < max_suggestions:
-            qs = File.objects.filter(title__icontains=query).only("title").distinct().order_by("sort_title")
+            qs = File.objects.basic_search_suggestions(query=query, match_anywhere=True)
 
             for f in qs:
                 if f.title not in output["suggestions"]:
@@ -245,10 +236,7 @@ def add_to_collection(request):
         zfile_id = request.POST["zfile_id"]
 
     # Check for duplicates
-    duplicate = Collection_Entry.objects.filter(
-        collection_id=int(request.POST["collection_id"]),
-        zfile_id=int(zfile_id),
-    ).exists()
+    duplicate = Collection_Entry.objects.duplicate_check(request.POST["collection_id"], zfile_id)
 
     if duplicate:
         return HttpResponse("ERROR: ZFile already exists in collection!")
@@ -286,18 +274,14 @@ def remove_from_collection(request):
     if request.user and request.user.id != c.user.id:
         return HttpResponse("ERROR: Unauthorized user!")
 
-    qs = Collection_Entry.objects.filter(
+    entry = Collection_Entry.objects.get(
         collection_id=int(request.POST["collection_id"]),
         zfile_id=int(request.POST["zfile_id"]),
     )
 
-    deleted = 0
-    for entry in qs:
-        entry.delete()
-        deleted += 1
-
+    entry.delete()
     # Update count
-    c.item_count -= deleted
+    c.item_count -= 1
     c.save()
 
     resp = "SUCCESS"
@@ -308,7 +292,7 @@ def get_collection_addition(request):
     pk = int(request.GET.get("collection_id", 0))
     if not pk:
         return HttpResponse("")
-    entry = Collection_Entry.objects.filter(collection_id=pk).order_by("-id").first()
+    entry = Collection_Entry.objects.get(collection_id=pk).order_by("-id")
     html = gblock(entry.zfile, view="detailed-collection", collection_description=entry.collection_description)
     return HttpResponse(html)
 
@@ -324,10 +308,10 @@ def arrange_collection(request):
     if request.user and request.user.id != c.user.id:
         return HttpResponse("ERROR: Unauthorized user!")
 
-    pk = int(request.POST.get("collection_id"))
+    collection_id = int(request.POST.get("collection_id"))
     order = request.POST.get("order").split("/")
 
-    entries = Collection_Entry.objects.filter(collection_id=pk)
+    entries = Collection_Entry.objects.get_items_in_collection(collection_id)
 
     for entry in entries:
         entry.order = order.index(str(entry.zfile.pk)) + 1

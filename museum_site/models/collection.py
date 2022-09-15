@@ -7,11 +7,13 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from museum_site.models.base import BaseModel
+from museum_site.querysets.collection_querysets import *
 from museum_site.templatetags.zzt_tags import char
 
 
 class Collection(BaseModel):
     """ Representation of a group of files with custom descriptions """
+    objects = Collection_Queryset.as_manager()
     model_name = "Collection"
     table_fields = ["Title"]
     sort_options = [
@@ -177,6 +179,7 @@ class Collection_Entry(models.Model):
 
     supported_views = ["detailed"]
     model_name = "Collection Entry"
+    objects = Collection_Entry_Queryset.as_manager()
 
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE, blank=True, null=True)
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True)
