@@ -5,12 +5,10 @@ $(document).ready(function (){
     // Submit button
     $("#submit_upload").click(function (e){
         e.preventDefault();
-        console.log("SUBMITTING");
         $(".tag-input").each(function (){
             $(this).val($(this).val() + ",");
             $(this).trigger("input");
         });
-        console.log("DID THE INPUT");
         document.getElementById("upload_form").submit();
     });
 
@@ -26,29 +24,6 @@ $(document).ready(function (){
     });
     $("#id_kind").change() // Call event on page load
 });
-
-
-function get_suggestions(selector, kind)
-{
-    var query = $(selector).val();
-    if (! query)
-        return false;
-
-    $.ajax({
-        url:"/ajax/get-"+kind+"-suggestions/",
-        data:{
-            "q":query,
-        }
-    }).done(function (data){
-        var output = "";
-        for (var idx in data["suggestions"])
-        {
-            output += '<option value="'+data["suggestions"][idx]+'">';
-        }
-        $("#"+kind+"-suggestions").html(output);
-        $(selector).focus();
-    });
-};
 
 
 function parse_zip_file(file)
