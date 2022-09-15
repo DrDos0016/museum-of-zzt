@@ -34,8 +34,10 @@ $(document).ready(function (){
 {% block content %}
 {% block wip_links %}
 {% if request.session.DEBUG %}
-    <div><a href="/admin/museum_site/article/{{article.id}}/change/" class="debug">Edit Article {{article.id}}</a></div>
-    <div><a href="{% url 'debug_article' article.id %}" class="debug">WIP Tools</a></div>
+<div class="article-staff-controls">
+    <a href="/admin/museum_site/article/{{article.id}}/change/" class="debug">Edit Article {{article.id}}</a>
+    <a href="{% url 'debug_article' article.id %}" class="debug">WIP Tools</a>
+</div>
 {% endif %}
 {% endblock wip_links %}
 <div id="article-meta">

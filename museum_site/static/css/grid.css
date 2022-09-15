@@ -1068,3 +1068,12 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
 }
 /* End page breadcrumbs and controls */
 
+.article-staff-controls
+{
+    display:flex;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+    column-gap:8px;
+    justify-content:space-between;
+    font-weight:bold;
+}
