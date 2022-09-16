@@ -428,13 +428,8 @@ class File(BaseModel):
 
         # Calculate Rating
         if self.id is not None:
-            ratings = Review.objects.filter(
-                zfile_id=self.id, rating__gte=0
-            ).aggregate(Avg("rating"))
-            if ratings["rating__avg"] is None:
-                self.rating = None
-            else:
-                self.rating = round(ratings["rating__avg"], 2)
+            ratings = Review.objects.average_rating_for_zfile(self.id)
+            self.rating = None if ratings["rating__avg"] is None else round(ratings["rating__avg"], 2)
 
     def calculate_checksum(self, path=None):
         # Calculate an md5 checksum of the zip file

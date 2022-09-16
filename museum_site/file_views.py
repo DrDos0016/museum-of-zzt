@@ -16,10 +16,8 @@ def file_attributes(request, key):
 
     data["file"] = get_object_or_404(File, key=key)
     data["file"].init_actions()
-    data["upload_info"] = Upload.objects.filter(file_id=data["file"]).first()
-    data["reviews"] = Review.objects.filter(
-        zfile__id=data["file"].pk
-    ).defer("content")
+    data["upload_info"] = Upload.objects.get(file_id=data["file"])
+    data["reviews"] = Review.objects.filter(zfile__id=data["file"].pk).defer("content")
     data["title"] = data["file"].title + " - Attributes"
 
     return render(request, "museum_site/attributes.html", data)

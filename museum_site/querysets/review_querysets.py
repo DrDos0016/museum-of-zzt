@@ -1,10 +1,13 @@
 from django.db import models
-from django.db.models import Q
+from django.db.models import Avg, Q
 
 from museum_site.querysets.base import Base_Queryset
 from museum_site.models import *
 
 class Review_Queryset(Base_Queryset):
+    def average_rating_for_zfile(self, zfile_id):
+        return self.filter(zfile_id=zfile_id, rating__gte=0).aggregate(Avg("rating"))
+
     def latest_approved_reviews(self):
         return self.filter(approved=True).order_by("-date", "-id")
 
