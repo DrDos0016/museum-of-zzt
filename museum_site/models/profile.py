@@ -5,6 +5,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 from museum_site.common import UPLOAD_CAP
+from museum_site.querysets.profile_querysets import *
 
 
 class Profile(models.Model):
@@ -12,6 +13,7 @@ class Profile(models.Model):
     Do not query directly. This is pulled automatically in
     context_processors.py for any logged in user. """
     model_name = "Profile"
+    objects = Profile_Queryset.as_manager()
 
     """
     Fields:

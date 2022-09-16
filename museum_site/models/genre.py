@@ -2,10 +2,13 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 from museum_site.models.base import BaseModel
+from museum_site.querysets.genre_querysets import *
 
 
 class Genre(BaseModel):
+    objects = Genre_Queryset.as_manager()
     model_name = "Genre"
+
     title = models.CharField(max_length=80)
     description = models.TextField(default="")
     visible = models.BooleanField(default=True)
@@ -17,10 +20,8 @@ class Genre(BaseModel):
     def __str__(self):
         return self.title
 
-
     def url(self):
         return "/genre/{}/".format(self.slug)
-
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)

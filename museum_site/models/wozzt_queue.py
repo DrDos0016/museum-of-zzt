@@ -15,6 +15,7 @@ from PIL import Image
 
 from museum.settings import STATIC_URL
 from museum_site.models.base import BaseModel
+from museum_site.querysets.wozzt_queue_querysets import *
 
 from museum_site.common import TEMP_PATH, record
 from museum_site.constants import SITE_ROOT
@@ -32,6 +33,7 @@ import zookeeper
 
 class WoZZT_Queue(BaseModel):
     """ Object representing an upcoming Worlds of ZZT Twitter bot post """
+    objects = WoZZT_Queue_Queryset.as_manager()
     model_name = "WoZZT-Queue"
     table_fields = ["Date", "Time", "Tweet", "Link"]
 

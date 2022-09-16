@@ -10,48 +10,12 @@ from django.utils.safestring import mark_safe
 from museum_site.models.base import BaseModel
 from museum_site.common import STATIC_PATH, epoch_to_unknown, profanity_filter
 from museum_site.templatetags.zzt_tags import char
-
-
-class ReviewManager(models.Manager):
-    def directory(self, **kwargs):
-        # TODO Can this be removed? Aug. 24, 2022
-        return self.filter(approved=True).defer("content")
-
-    def search(self, p):
-        qs = self.filter(approved=True)
-
-        # Filter by simple fields
-        for f in ["title", "author", "content"]:
-            if p.get(f):
-                field = "{}__icontains".format(f)
-                value = p[f]
-                qs = qs.filter(**{field: value})
-
-        if p.get("review_date") and p["review_date"] != "any":
-            qs = qs.filter(date__year=p["review_date"])
-
-        if p.get("ratingless"):
-            if p.get("min_rating"):
-                qs = qs.filter(Q(rating__gte=p["min_rating"]) | Q(rating=-1))
-            if p.get("max_rating"):
-                qs = qs.filter(Q(rating__lte=p["max_rating"]) | Q(rating=-1))
-        else:
-            if p.get("min_rating"):
-                qs = qs.filter(rating__gte=p["min_rating"])
-            if p.get("max_rating"):
-                qs = qs.filter(rating__lte=p["max_rating"])
-
-        # Include zfile and user information
-        qs = qs.select_related("zfile", "user")
-        # Don't pull review text unless searching by it
-        if not p.get("content"):
-            qs = qs.defer("content")
-        return qs
+from museum_site.querysets.review_querysets import *
 
 
 class Review(BaseModel):
     """ Review object repesenting an review to a file """
-    objects = ReviewManager()
+    objects = Review_Queryset.as_manager()
 
     model_name = "Review"
     table_fields = ["Title", "File", "Reviewer", "Date", "Rating"]
@@ -140,7 +104,6 @@ class Review(BaseModel):
         return self.content
         return profanity_filter(self.content)
 
-
     def scrub(self):
         self.user_id = None
         self.ip = ""
@@ -157,7 +120,7 @@ class Review(BaseModel):
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
-            title={"datum": "title", "value":mark_safe(self.title if self.title else "<i>Untitled Review</i>"), "url":self.url()},
+            title={"datum": "title", "value": mark_safe(self.title if self.title else "<i>Untitled Review</i>"), "url": self.url()},
             columns=[],
         )
 
@@ -180,11 +143,11 @@ class Review(BaseModel):
             model=self.model_name,
             url=self.url,
             cells=[
-                {"datum": "link", "url":self.url(), "value":self.title if self.title else "Untitled", "tag":"td"},
-                {"datum": "link", "url":self.zfile.url(), "value":self.zfile.title, "tag":"td"},
-                {"datum": "text", "value":self.author_link(), "tag":"td"},
-                {"datum": "text", "value":epoch_to_unknown(self.date), "tag":"td"},
-                {"datum": "text", "value":("—" if self.rating < 0 else self.rating), "tag":"td"}
+                {"datum": "link", "url": self.url(), "value": self.title if self.title else "Untitled", "tag": "td"},
+                {"datum": "link", "url": self.zfile.url(), "value": self.zfile.title, "tag": "td"},
+                {"datum": "text", "value": self.author_link(), "tag": "td"},
+                {"datum": "text", "value": epoch_to_unknown(self.date), "tag": "td"},
+                {"datum": "text", "value": ("—" if self.rating < 0 else self.rating), "tag": "td"}
             ],
         )
         return context
@@ -195,17 +158,17 @@ class Review(BaseModel):
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
-            title={"datum": "link", "url":self.url(), "value":self.title if self.title else "Untitled"},
+            title={"datum": "link", "url": self.url(), "value": self.title if self.title else "Untitled"},
             columns=[],
         )
 
         context["columns"].append([
-            {"datum": "text", "value":self.author_link()},
+            {"datum": "text", "value": self.author_link()},
         ])
 
         if self.rating >= 0:
             context["columns"][0].append(
-                {"datum": "text", "value":"{} / 5.0".format(self.rating)}
+                {"datum": "text", "value": "{} / 5.0".format(self.rating)}
             )
         return context
 

@@ -32,7 +32,7 @@ def directory(request, category):
                     data_list.append(credited)
     elif category == "genre":
         data["title"] = "Genres"
-        data_list = Genre.objects.filter(visible=True).values_list("title", flat=True)
+        data_list = Genre.objects.visible_genre_list()
 
     # Break the list of results into 4 columns
     data_list = sorted(
@@ -106,9 +106,7 @@ def index(request):
     data["article_table_header"] = table_header(Article.table_fields)
     data["review_table_header"] = table_header(Review.table_fields)
 
-    data["reviews"] = Review.objects.filter(approved=True).order_by(
-        "-date", "-id"
-    )[:FP.REVIEWS_SHOWN]
+    data["reviews"] = Review.objects.latest_approved_reviews()[:FP.REVIEWS_SHOWN]
 
     return render(request, "museum_site/index.html", data)
 
@@ -176,7 +174,7 @@ def site_credits(request):
 
     # Get users known to be patrons
     no_longer_hardcoded = []
-    patrons = Profile.objects.filter(patron=True).order_by("patronage")
+    patrons = Profile.objects.patrons()
     for p in patrons:
         if p.site_credits_name:
             info = {
@@ -262,9 +260,7 @@ def worlds_of_zzt_queue(request):
                 entry.delete_image()
                 entry.delete()
 
-    data["queue"] = WoZZT_Queue.objects.filter(category=category).order_by(
-        "-priority", "id"
-    )
+    data["queue"] = WoZZT_Queue.objects.queue_for_category(category)
     data["queue_size"] = len(data["queue"])
     return render(request, "museum_site/wozzt-queue.html", data)
 
