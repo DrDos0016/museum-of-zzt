@@ -289,10 +289,10 @@ def remove_from_collection(request):
 
 def get_collection_addition(request):
     """ Get the latest added file to a collection """
-    pk = int(request.GET.get("collection_id", 0))
-    if not pk:
+    collection_id = int(request.GET.get("collection_id", 0))
+    if not collection_id:
         return HttpResponse("")
-    entry = Collection_Entry.objects.get(collection_id=pk).order_by("-id")
+    entry = Collection_Entry.objects.get_latest_addition_to_collection(collection_id)
     html = gblock(entry.zfile, view="detailed-collection", collection_description=entry.collection_description)
     return HttpResponse(html)
 

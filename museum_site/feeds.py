@@ -85,9 +85,7 @@ class LatestUploadsFeed(Feed):
     description = "Museum of ZZT file upload feed"
 
     def items(self):
-        return File.objects.filter(
-            details__id__in=[DETAIL_UPLOADED]
-        ).order_by("-id")[:25]
+        return File.objects.unpublished().order_by("-id")[:25]
 
     def item_title(self, item):
         return item.title

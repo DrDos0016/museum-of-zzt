@@ -44,7 +44,7 @@ class Collection_Create_View(CreateView):
 
         # Check for a duplicate slug
         slug = slugify(self.request.POST.get("title"))
-        if Collection.objects.filter(slug=slug).exists():
+        if Collection.objects.duplicate_check(slug):
             form.add_error("title", "The requested collection title is already in use.")
             return self.form_invalid(form)
 
@@ -72,7 +72,7 @@ class Collection_Update_View(UpdateView):
     def form_valid(self, form):
         # Check for a duplicate slug in a collection that isn't this one
         slug = slugify(self.request.POST.get("title"))
-        if Collection.objects.exclude(pk=self.object.pk).filter(slug=slug).exists():
+        if Collection.objects.check_slug_overlap(self.object.pk, slug):
             form.add_error("title", "The requested collection title is already in use.")
             return self.form_invalid(form)
 
@@ -121,7 +121,7 @@ class Collection_Manage_Contents_View(FormView):
 
         context["form"].fields["collection_id"].initial = self.collection.id
         context["collection"] = self.collection
-        context["contents"] = Collection_Entry.objects.filter(collection=context["collection"])
+        context["contents"] = Collection_Entry.objects.get_items_in_collection(context["collection"])
         return context
 
     def form_valid(self, form):
