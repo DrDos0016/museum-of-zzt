@@ -152,6 +152,9 @@ class ZFile_Queryset(Base_Queryset):
                 return zgame.first()
         return zgame
 
+    def removed(self):
+        return self.filter(details=DETAIL_REMOVED)
+
     def roulette(self, rng_seed, limit):
         """ Returns a random sample of zfiles with ZZT/SZZT/WEAVE details, and excluding EXPLICIT status """
         details = [DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]

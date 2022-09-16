@@ -60,7 +60,7 @@ def add_livestream(request, key):
 @staff_member_required
 def audit_zfile_restrictions(request):
     data = {"title": "Audit ZFile Restrictions"}
-    data["qs"] = list(File.objects.filter(details=DETAIL_REMOVED))
+    data["qs"] = list(File.objects.removed())
     return render(request, "museum_site/tools/audit-zfile-restrictions.html", data)
 
 
@@ -98,7 +98,7 @@ def audit_zeta_config(request):
 
 @staff_member_required
 def crediting_preferences(request):
-    p = Profile.objects.filter(patron=True)
+    p = Profile.objects.patrons()
     data = {
         "title": "Crediting Preferences",
         "patrons": p,
@@ -114,7 +114,7 @@ def empty_upload_queue(request):
     }
 
     if request.GET.get("empty"):
-        queue = File.objects.filter(details=DETAIL_UPLOADED)
+        queue = File.objects.unpublished()
         message = ""
         for zfile in queue:
             upload = Upload.objects.filter(file_id=zfile.pk).first()
@@ -404,10 +404,7 @@ def patron_input(request):
 
     category = request.GET.get("category", "stream-poll-nominations")
     data["category"] = category.replace("-", " ").title()
-
-    patrons = Profile.objects.filter(
-        patron=True
-    ).order_by("user__username")
+    patrons = Profile.objects.patrons()
 
     data["patrons"] = []
     for p in patrons:
@@ -681,7 +678,7 @@ def review_approvals(request):
     """ Returns page listing users and info for reference """
     data = {
         "title": "Reviews Pending Approval",
-        "reviews": Review.objects.filter(approved=False),
+        "reviews": Review.objects.pending_approval(),
         "output": "",
     }
 
@@ -821,7 +818,7 @@ def stream_card(request):
 def tool_index(request, key=None):
     data = {
         "title": "Tool Index",
-        "pending_review_count": Review.objects.filter(approved=False).count()
+        "pending_review_count": Review.objects.pending_approval().count()
     }
 
     if request.GET.get("key"):
@@ -891,9 +888,7 @@ def tool_index(request, key=None):
                 }
         )
 
-        data["upload_info"] = Upload.objects.filter(
-            file_id=data["file"]
-        ).first()
+        data["upload_info"] = Upload.objects.get(file_id=data["file"])
 
         # Simple validation tools
         data["valid_letter"] = True if data["file"].letter in letters else False

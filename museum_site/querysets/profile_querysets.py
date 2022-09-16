@@ -6,4 +6,4 @@ from museum_site.models import *
 
 class Profile_Queryset(Base_Queryset):
     def patrons(self):
-        return self.filter(patron=True).order_by("patronage")
+        return self.filter(patron=True).order_by("user__username")
