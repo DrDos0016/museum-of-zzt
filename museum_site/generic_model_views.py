@@ -351,9 +351,9 @@ class Collection_List_View(Model_List_View):
 
     def get_queryset(self):
         if self.request.path == "/collection/user/":
-            qs = Collection.objects.filter(user_id=self.request.user.id)
+            qs = Collection.objects.collections_for_user(self.request.user.id)
         else:  # Default listing
-            qs = Collection.objects.filter(visibility=Collection.PUBLIC, item_count__gte=1)
+            qs = Collection.objects.populated_public_collections()
 
         if self.sorted_by is None:
             self.sorted_by = "-modified"
@@ -378,7 +378,7 @@ class Collection_Contents_View(Model_List_View):
     def get_queryset(self):
         slug = self.kwargs.get("collection_slug")
         self.head_object = Collection.objects.get(slug=slug)
-        qs = Collection_Entry.objects.filter(collection=self.head_object)
+        qs = Collection_Entry.objects.get_items_in_collection(self.head_object.pk)
 
         if self.sorted_by is None:
             self.sorted_by = self.head_object.default_sort

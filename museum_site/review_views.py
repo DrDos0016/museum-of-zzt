@@ -31,7 +31,7 @@ class Reviewer_Directory_View(ListView):
     query_string = ""
 
     def get_queryset(self):
-        qs = Review.objects.filter(approved=True).values_list("author", flat=True).distinct().order_by("author")
+        qs = Review.objects.reviewer_directory()
         return qs
 
     def get_context_data(self, **kwargs):

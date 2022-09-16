@@ -291,7 +291,7 @@ class Upload_Action_View(ListView):
         context["form"] = Upload_Action_Form(initial={"action": action})
 
         if self.request.user.is_authenticated:
-            context["my_uploads"] = Upload.objects.filter(user_id=self.request.user.id, file__details=DETAIL_UPLOADED).order_by("-id")
+            context["my_uploads"] = Upload.objects.unpublished_user_uploads(self.request.user.id)
 
         return context
 
@@ -312,9 +312,7 @@ class Upload_Delete_Confirmation_View(FormView):
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        upload = Upload.objects.filter(edit_token=request.GET.get("token"))
-        if upload:
-            self.upload = upload.first()
+        self.upload = Upload.objects.from_token(request.GET.get("token"))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

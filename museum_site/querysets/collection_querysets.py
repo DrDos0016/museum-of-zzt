@@ -2,20 +2,21 @@ from django.db import models
 from django.db.models import Q
 
 from museum_site.querysets.base import Base_Queryset
-from museum_site.models import *
 
 
 class Collection_Queryset(Base_Queryset):
     def duplicate_check(self, slug):
-        print("DUPE CHECK!", slug)
         return self.filter(slug=slug).exists()
 
     def check_slug_overlap(self, pk, slug):
         """ When editing a collection, make sure the requested slug isn't in use by anything other than the current collection """
         return self.exclude(pk=pk).filter(slug=slug).exists()
 
-    def stub(self):
-        return self.all()
+    def collections_for_user(self, user_id):
+        return self.filter(user_id=user_id)
+
+    def populated_public_collections(self):
+        return self.filter(visibility=self.model.PUBLIC, item_count__gte=1)
 
 
 class Collection_Entry_Queryset(Base_Queryset):

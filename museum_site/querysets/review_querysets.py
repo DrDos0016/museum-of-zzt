@@ -8,6 +8,9 @@ class Review_Queryset(Base_Queryset):
     def latest_approved_reviews(self):
         return self.filter(approved=True).order_by("-date", "-id")
 
+    def reviewer_directory(self):
+        return self.filter(approved=True).values_list("author", flat=True).distinct().order_by("author")
+
     def search(self, p):
         qs = self.filter(approved=True)
 

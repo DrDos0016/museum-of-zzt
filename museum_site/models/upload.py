@@ -10,12 +10,14 @@ from django.utils import timezone
 
 from museum_site.models.base import BaseModel
 from museum_site.constants import HOST
+from museum_site.querysets.upload_querysets import *
 
 from museum_site.private import NEW_UPLOAD_WEBHOOK_URL
 
 
 class Upload(BaseModel):
     """ Review object repesenting an review to a file """
+    objects = Upload_Queryset.as_manager()
     model_name = "Upload"
 
     """
