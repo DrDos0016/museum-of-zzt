@@ -25,6 +25,20 @@ except ImportError:
 
 from django.http import JsonResponse
 
+SORT_CODES = {
+    "title": ["sort_title"],
+    "author": ["author", "sort_title"],
+    "company": ["ssv_company", "sort_title"],
+    "id": ["id"],
+    "-id": ["-id"],
+    "rating": ["-rating", "sort_title"],
+    "release": ["release_date", "sort_title"],
+    "-release": ["-release_date", "sort_title"],
+    "published": ["-publish_date", "-id"],
+    "roulette": ["?"],
+    "uploaded": ["-id"],
+}
+
 # Create your views here.
 def worlds_of_zzt(request):
     if not HAS_ZOOKEEPER:
