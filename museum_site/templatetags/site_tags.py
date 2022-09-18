@@ -95,7 +95,7 @@ def content_warning(*args, **kwargs):
             <p>Specifically, this page contains depictions of or references to:
             <br><b>{}</b></p>
 
-            <div class="controls r">
+            <div class="r">
                 <span class="jsLink" name="cw-hide-all">Hide all future content
                 warnings</span> |
                 <span class="jsLink" name="cw-hide-this"
