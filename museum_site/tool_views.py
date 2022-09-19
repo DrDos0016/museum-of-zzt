@@ -397,7 +397,7 @@ def orphaned_objects(request):
         if i.file_set.count() == 0:
             data["aliases"].append(i)
 
-    qs = Article.objects.all().order_by("-id")
+    qs = Article.objects.all().defer("content").order_by("-id")
     for i in qs:
         if i.file_set.count() == 0:
             data["articles"].append(i)
@@ -427,7 +427,7 @@ def orphaned_objects(request):
         if i.file_set.count() == 0:
             data["genres"].append(i)
 
-    qs = Review.objects.all().order_by("-id")
+    qs = Review.objects.all().defer("content").order_by("-id")
     for i in qs:
         if i.zfile is None:
             data["reviews"].append(i)
