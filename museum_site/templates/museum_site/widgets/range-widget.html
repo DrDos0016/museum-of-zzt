@@ -23,3 +23,4 @@ to
         {% if min_val is not None%}min="{{min_val}}"{% endif %}
         {% if max_val is not None%}max="{{max_val}}"{% endif %}
     >
+{% if include_clear %}<input class="range-clear" type="button" value="Clear" data-clear="{{widget.name}}">{% endif %}

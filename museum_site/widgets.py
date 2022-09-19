@@ -216,12 +216,13 @@ class Tagged_Text_Widget(forms.Widget):
 class Range_Widget(forms.Widget):
     template_name = "museum_site/widgets/range-widget.html"
 
-    def __init__(self, attrs=None, min_val=None, max_val=None, max_length=None, step=1):
+    def __init__(self, attrs=None, min_val=None, max_val=None, max_length=None, step=1, include_clear=False):
         super().__init__(attrs)
         self.min_val = min_val
         self.max_val = max_val
         self.max_length = max_length
         self.step = step
+        self.include_clear = include_clear
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
@@ -229,6 +230,7 @@ class Range_Widget(forms.Widget):
         context["max_val"] = self.max_val
         context["max_length"] = self.max_length
         context["step"] = self.step
+        context["include_clear"] = self.include_clear
         if hasattr(self, "manual_data"):
             context["manual_data"] = self.manual_data
         return context

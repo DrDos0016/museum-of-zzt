@@ -1,4 +1,4 @@
-<div class="flex-container flex-wrap align-center">
+<div class="flex-container flex-wrap align-center justify-space-between">
 <div>
     {% include "museum_site/widgets/range-widget.html" %}
 </div>
@@ -6,4 +6,5 @@
     <label><input type="radio" name="{{widget.name}}_type" value="playable"{% if manual_data.board_type == "playable" %} checked{% endif %}> Playable Boards</label>
     <label><input type="radio" name="{{widget.name}}_type" value="total"{% if manual_data.board_type == "total" %} checked{% endif %}> Total Boards</label>
 </div>
+<input class="range-clear" type="button" value="Clear" data-clear="{{widget.name}}">
 </div>

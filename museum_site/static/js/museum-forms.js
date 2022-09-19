@@ -204,6 +204,13 @@ function init_filters()
             apply_filter
         );
     });
+
+    $(".range-clear").click(function (){
+        var widget_name = $(this).data("clear");
+        $("input[name=" + widget_name + "_min]").val("");
+        $("input[name=" + widget_name + "_max]").val("");
+        $("input[name=" + widget_name + "_type]").prop("checked", false);
+    });
 }
 
 function apply_filter(e)
