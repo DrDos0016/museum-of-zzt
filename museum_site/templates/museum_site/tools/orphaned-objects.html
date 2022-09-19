@@ -1,0 +1,102 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+#tool-info
+{
+    font-family:monospace;font-size:12pt;
+}
+
+#tool-info td
+{
+    padding:0.25em;
+}
+
+#tool-info td.True { background-color:#0F0; text-align:center; }
+#tool-info td.False { background-color:#F00; text-align:center; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Orphaned Objects</h1>
+
+<table>
+    <tr><th>Orphaned Aliases (no ZFile assocs.)</th></tr>
+    {% for i in aliases %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+<table>
+    <tr><th>Orphaned Articles (no Zfile assocs.)</th></tr>
+    {% for i in articles %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+<table>
+    <tr><th>Orphaned Collection Entries (no Collection assocs.)</th></tr>
+    {% for i in collection_entries %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+
+<table>
+    <tr><th>Orphaned Companies (no Zfile assocs.)</th></tr>
+    {% for i in companies %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+<table>
+    <tr><th>Orphaned Details (no Zfile assocs.)</th></tr>
+    {% for i in details %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+<table>
+    <tr><th>Orphaned Downloads (no Zfile assocs.)</th></tr>
+    {% for i in downloads %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+<table>
+    <tr><th>Orphaned Genres (no Zfile assocs.)</th></tr>
+    {% for i in genres %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+<table>
+    <tr><th>Orphaned Profiles (no User assocs.)</th></tr>
+    {% for i in profiles %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+<table>
+    <tr><th>Orphaned Reviews (no Zfile assocs.)</th></tr>
+    {% for i in reviews %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+<table>
+    <tr><th>Orphaned Uploads (no Zfile assocs.)</th></tr>
+    {% for i in uploads %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+<table>
+    <tr><th>Orphaned Zeta Configs (no Zfile assocs.)</th></tr>
+    {% for i in zeta_configs %}
+    <tr><td>{{i}}</td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+{% endblock %}

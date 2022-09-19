@@ -222,6 +222,7 @@ urlpatterns = [
     path("tools/manage-cache/", museum_site.tool_views.manage_cache, name="manage_cache"),
     path("tools/manage-details/<str:key>/", museum_site.tool_views.manage_details, name="manage_details"),
     path("tools/mirror/<str:key>/", museum_site.tool_views.mirror, name="mirror"),
+    path("tools/orphaned-objects/", museum_site.tool_views.orphaned_objects, name="orphaned_objects"),
     path("tools/patron-article-rotation/", museum_site.tool_views.patron_article_rotation, name="patron_article_rotation"),
     path("tools/patron-input/", museum_site.tool_views.patron_input, name="patron_input"),
     path("tools/prep-publication-pack/", museum_site.tool_views.prep_publication_pack, name="prep_publication_pack"),

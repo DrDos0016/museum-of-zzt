@@ -156,21 +156,14 @@ class File(BaseModel):
 
     # Associations
     aliases = models.ManyToManyField("Alias", default=None, blank=True)
-    articles = models.ManyToManyField(
-        "Article", default=None, blank=True
-    )
-    article_count = models.IntegerField(
-        default=0, editable=False, help_text="Cached number of articles associated with this zip file. Set automatically. Do not adjust."
-    )
+    articles = models.ManyToManyField("Article", default=None, blank=True)
+    article_count = models.IntegerField(default=0, editable=False, help_text="Cached number of articles associated with this zip file.")
     companies = models.ManyToManyField("Company", default=None, blank=True)
     content = models.ManyToManyField("Content", default=None, blank=True)
     details = models.ManyToManyField("Detail", default=None, blank=True)
     downloads = models.ManyToManyField("Download", default=None, blank=True)
     genres = models.ManyToManyField("Genre", default=None, blank=True)
-    zeta_config = models.ForeignKey(
-        "Zeta_Config", null=True, blank=True, default=1,
-        on_delete=models.SET_NULL
-    )
+    zeta_config = models.ForeignKey("Zeta_Config", null=True, blank=True, default=1, on_delete=models.SET_NULL)
 
     class Meta:
         ordering = ["sort_title", "letter"]

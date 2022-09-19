@@ -375,6 +375,84 @@ def mirror(request, key):
     data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
 
+@staff_member_required
+def orphaned_objects(request):
+    """ Returns page listing objects that aren't properly associated with any others """
+    data = {
+        "title": "Orphaned Objects",
+        "aliases": [],
+        "articles": [],
+        "collection_entries": [],
+        "companies": [],
+        "details": [],
+        "downloads": [],
+        "genres": [],
+        "reviews": [],
+        "uploads": [],
+        "zeta_configs": [],
+    }
+
+    qs = Alias.objects.all().order_by("-id")
+    for i in qs:
+        if i.file_set.count() == 0:
+            data["aliases"].append(i)
+
+    qs = Article.objects.all().order_by("-id")
+    for i in qs:
+        if i.file_set.count() == 0:
+            data["articles"].append(i)
+
+    qs = Collection_Entry.objects.all().order_by("-id")
+    for i in qs:
+        if i.collection is None:
+            data["collection_entries"].append(i)
+
+    qs = Company.objects.all().order_by("-id")
+    for i in qs:
+        if i.file_set.count() == 0:
+            data["companies"].append(i)
+
+    qs = Detail.objects.all().order_by("-id")
+    for i in qs:
+        if i.file_set.count() == 0:
+            data["details"].append(i)
+
+    qs = Download.objects.all().order_by("-id")
+    for i in qs:
+        if i.file_set.count() == 0:
+            data["downloads"].append(i)
+
+    qs = Genre.objects.all().order_by("-id")
+    for i in qs:
+        if i.file_set.count() == 0:
+            data["genres"].append(i)
+
+    qs = Review.objects.all().order_by("-id")
+    for i in qs:
+        if i.zfile is None:
+            data["reviews"].append(i)
+
+    qs = Upload.objects.all().order_by("-id")
+    for i in qs:
+        if i.file is None:
+            data["uploads"].append(i)
+
+    qs = Zeta_Config.objects.all().order_by("-id")
+    for i in qs:
+        if i.file_set.count() == 0:
+            data["zeta_configs"].append(i)
+
+
+    """
+    <h2>Orphaned Details</h2>
+    <h2>Orphaned Downloads</h2>
+    <h2>Orphaned Genres</h2>
+    <h2>Orphaned Profiles</h2>
+    <h2>Orphaned Reviews</h2>
+    <h2>Orphaned Uploads</h2>
+    <h2>Orphaned Zeta Configs</h2>
+    """
+    return render(request, "museum_site/tools/orphaned-objects.html", data)
 
 @staff_member_required
 def patron_article_rotation(request):
