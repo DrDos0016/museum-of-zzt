@@ -135,7 +135,7 @@ class Article(BaseModel):
         super(Article, self).save(*args, **kwargs)
 
     def url(self):
-        return "/article/{}/{}/".format(self.id, slugify(self.title))
+        return "/article/view/{}/{}/".format(self.id, slugify(self.title))
 
     def preview_url(self):
         return os.path.join(STATIC_URL, self.path(), "preview.png")
