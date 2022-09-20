@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from django.contrib.auth.models import User
@@ -154,7 +155,6 @@ class URLTest(unittest.TestCase):
     def test_current_urls_without_args(self):
         """ Test all non-legacy redirect urls and url patterns with arguments return 200 status """
         for url in urlpatterns:
-            fh.write(str(url.pattern) + "\n")
             # Ignore legacy redirects
             if "legacy_redirect" in str(url.callback):
                 continue
