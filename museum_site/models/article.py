@@ -64,9 +64,9 @@ class Article(BaseModel):
     EARLY_ACCESS_PRICING = {UPCOMING: "$2.00 USD", UNPUBLISHED: "$5.00 USD"}
 
     ICONS = {
-        "upcoming": {"glyph": "🔒", "title": "This article is currently exclusive to $2+ Patrons.", "role":"upcoming-icon"},
-        "unpublished": {"glyph": "🔒", "title": "This article is currently exclusive to $5+ Patrons", "role":"unpublished-icon"},
-        "unlocked": {"glyph": "🔑", "title": "This early article may be read at your current patronage!", "role":"unlocked-icon"},
+        "upcoming": {"glyph": "🔒", "title": "This article is currently exclusive to $2+ Patrons.", "role": "upcoming-icon"},
+        "unpublished": {"glyph": "🔒", "title": "This article is currently exclusive to $5+ Patrons", "role": "unpublished-icon"},
+        "unlocked": {"glyph": "🔑", "title": "This early article may be read at your current patronage!", "role": "unlocked-icon"},
     }
 
     CATEGORY_CHOICES = (
@@ -86,17 +86,12 @@ class Article(BaseModel):
     )
 
     # Fields
-    title = models.CharField( help_text="Title of the the article.", max_length=100)
+    title = models.CharField(help_text="Title of the the article.", max_length=100)
     author = models.CharField(help_text="Author(s) of the article. Slash separated.", max_length=50)
     category = models.CharField(help_text="Categorization of the article.", choices=CATEGORY_CHOICES, max_length=50)
     content = models.TextField(help_text="Body of the article.", default="")
     css = models.TextField(help_text="Custom CSS. Must include <style></style> if set.", default="", blank=True)
-    schema = models.CharField(
-        help_text="Schema for the article. Used to determine parsing method.",
-        max_length=6,
-        choices=SCHEMAS,
-        default="django"
-    )
+    schema = models.CharField(help_text="Schema for the article. Used to determine parsing method.", max_length=6, choices=SCHEMAS, default="django")
     publish_date = models.DateField(help_text="Date the article was made public on the Museum", default="1970-01-01")
     published = models.IntegerField(help_text="Publication Status", default=UNPUBLISHED, choices=PUBLICATION_STATES)
     last_modified = models.DateTimeField(help_text="Date DB entry was last modified", auto_now=True)
@@ -225,39 +220,31 @@ class Article(BaseModel):
     def detailed_block_context(self, extras=None, *args, **kwargs):
         """ Return info to populate a detail block """
         context = self.initial_context(*args, **kwargs)
-        context["title"] = {"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons()}
+        context["title"] = {"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons()}
         context["columns"] = []
 
         # Adjust CSS for unpublished articles
         if self.published == self.UPCOMING:
-            context["title"]["roles"] = [
-                "restricted", "article-upcoming"
-            ]
+            context["title"]["roles"] = ["restricted", "article-upcoming"]
         elif self.published == self.UNPUBLISHED:
-            context["title"]["roles"] = [
-                "restricted", "article-unpublished"
-            ]
+            context["title"]["roles"] = ["restricted", "article-unpublished"]
 
         # Unlock articles for patrons
         context = self.unlock_check(context)
 
         context["columns"].append([
-            {"datum": "text", "label": "Author", "value":self.author},
-            {"datum": "text", "label": "Date", "value":epoch_to_unknown(self.publish_date)},
-            {"datum": "text", "label": "Category", "value":self.category},
+            {"datum": "text", "label": "Author", "value": self.author},
+            {"datum": "text", "label": "Date", "value": epoch_to_unknown(self.publish_date)},
+            {"datum": "text", "label": "Category", "value": self.category},
         ])
 
         if self.file_set.exists():
-            context["columns"][0].append(
-            {"datum": "multi-link", "label": "Associated Files", "values":self.get_zfile_links()}
-        )
+            context["columns"][0].append({"datum": "multi-link", "label": "Associated Files", "values": self.get_zfile_links()})
 
-        context["columns"][0].append({"datum": "text", "label": "Description", "value":self.description})
+        context["columns"][0].append({"datum": "text", "label": "Description", "value": self.description})
 
         if self.series.count():
-            context["columns"][0].append(
-                {"datum": "multi-link", "label":"Series", "values":self.get_series_links()}
-            )
+            context["columns"][0].append({"datum": "multi-link", "label": "Series", "values": self.get_series_links()})
 
         return context
 
@@ -269,11 +256,11 @@ class Article(BaseModel):
             hash_id="article-{}".format(self.pk),
             url=self.url,
             cells=[
-                {"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons(), "tag": "td"},
-                {"datum": "text", "value": self.author, "tag":"td"},
-                {"datum": "text", "value": epoch_to_unknown(self.publish_date), "tag":"td"},
-                {"datum": "text", "value": self.category, "tag":"td"},
-                {"datum": "text", "value": self.description, "tag":"td"},
+                {"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons(), "tag": "td"},
+                {"datum": "text", "value": self.author, "tag": "td"},
+                {"datum": "text", "value": epoch_to_unknown(self.publish_date), "tag": "td"},
+                {"datum": "text", "value": self.category, "tag": "td"},
+                {"datum": "text", "value": self.description, "tag": "td"},
             ],
         )
 
@@ -288,12 +275,12 @@ class Article(BaseModel):
     def gallery_block_context(self, extras=None, *args, **kwargs):
         context = self.initial_context(*args, **kwargs)
         context.update(
-            title={"datum": "title", "value":self.title, "url":self.url(), "icons":self.get_all_icons()},
+            title={"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons()},
             columns=[],
         )
 
         context["columns"].append([
-            {"datum": "text", "value":self.author}
+            {"datum": "text", "value": self.author}
         ])
 
         if self.is_restricted:
@@ -329,6 +316,7 @@ class Article(BaseModel):
     def unlock_check(self, context, view="detailed"):
         """ Checks if a normally locked article should display as unlocked based on user profile or a POSTed password """
         patronage = 0
+        secret = None
         if context["request"] and context["request"].user.is_authenticated:
             patronage = context["request"].user.profile.patronage
         elif context["request"] and context["request"].POST.get("secret"):
@@ -338,17 +326,20 @@ class Article(BaseModel):
             elif secret == PASSWORD5DOLLARS:
                 patronage = UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE
 
+
         if view == "detailed" or view == "gallery":
             if self.published == self.UPCOMING and patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
                 context["title"]["icons"] = [self.ICONS["unlocked"]]
                 context["title"]["roles"].remove("restricted")
                 context["title"]["roles"].append("unlocked")
-                context["title"]["url"] += "?secret={}".format(secret)
+                if secret:
+                    context["title"]["url"] += "?secret={}".format(secret)
             if self.published == self.UNPUBLISHED and patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
                 context["title"]["icons"] = [self.ICONS["unlocked"]]
                 context["title"]["roles"].remove("restricted")
                 context["title"]["roles"].append("unlocked")
-                context["title"]["url"] += "?secret={}".format(secret)
+                if secret:
+                    context["title"]["url"] += "?secret={}".format(secret)
         elif view == "list":
             if self.published == self.UPCOMING and patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
                 context["cells"][0]["icons"] = [self.ICONS["unlocked"]]
@@ -375,7 +366,7 @@ class Article(BaseModel):
             if r.startswith("{%"):
                 tag = r.split(" ")
                 if len(tag) > 4:
-                    #print("HEY WEIRD TAG ALERT", self.id, self.title, tag)
+                    # print("HEY WEIRD TAG ALERT", self.id, self.title, tag)
                     output.append("!!SKIPME!! " + r)
             else:
                 output.append(r)
@@ -383,7 +374,6 @@ class Article(BaseModel):
         if domain:
             output = list(map(lambda o: domain + o if (not o.startswith("http") and not o.startswith("mailto")) else o, output))
         output.sort()
-
 
         return output
 

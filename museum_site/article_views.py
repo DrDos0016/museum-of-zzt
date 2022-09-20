@@ -68,33 +68,8 @@ class Article_Detail_View(DetailView):
 
 def patron_articles(request):
     data = {"title": "Early Article Access"}
-    upcoming = Article.objects.upcoming()
-    unpublished = Article.objects.unpublished()
-
-    data["upcoming"] = upcoming
-    data["unpublished"] = unpublished
-    data["access"] = None
-
-    # Parse the password
-    if request.POST.get("secret") == PASSWORD2DOLLARS:
-        data["access"] = "upcoming"
-        password_qs = "?secret=" + PASSWORD2DOLLARS
-    elif request.POST.get("secret") == PASSWORD5DOLLARS:
-        data["access"] = "unpublished"
-        password_qs = "?secret=" + PASSWORD5DOLLARS
-    elif request.POST.get("secret") is not None:
-        data["wrong_password"] = True
-        password_qs = ""
-
-    # Tweak titles and URLs for this page
-    for a in upcoming:
-        if data["access"] in ["upcoming", "unpublished"]:
-            a.extra_context = {"password_qs": password_qs}
-
-    for a in unpublished:
-        if data["access"] == "unpublished":
-            a.extra_context = {"password_qs": password_qs}
-
+    data["upcoming"] = Article.objects.upcoming()
+    data["unpublished"] = Article.objects.unpublished()
     return render(request, "museum_site/patreon_articles.html", data)
 
 
