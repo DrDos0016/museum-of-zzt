@@ -1,6 +1,8 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.shortcuts import render
+from django.views.generic import DetailView
 from django.utils.safestring import mark_safe
 from museum_site.common import *
 from museum_site.constants import *
@@ -8,71 +10,60 @@ from museum_site.models import *
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
-def article_view(request, article_id, page=0, slug=""):
-    """ Returns an article pulled from the database """
-    page = int(page)
-    data = {"id": article_id}
-    data["custom_layout"] = "article"
+class Article_Detail_View(DetailView):
+    model = Article
+    template_name = "museum_site/article_view.html"
 
-    a = get_object_or_404(Article, pk=article_id)
+    def setup(self, request, *args, **kwargs):
+        self.slug = kwargs.get("slug")
+        self.article_id = kwargs.get("pk")
+        if "slug" in kwargs.keys():
+            del kwargs["slug"]
+        super().setup(request, *args, **kwargs)
 
-    # Verify the article is readable with the permissions supplied
-    if a.published == Article.REMOVED:
-        return redirect("index")
+    def get_user_access_level(self):
+        access = Article.PUBLISHED  # Default access level
+        if self.request.user.is_authenticated:  # Check for patronage based access level
+            if self.request.user.profile.patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
+                access = Article.UNPUBLISHED
+            elif self.request.user.profile.patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
+                access = Article.UPCOMING
 
-    # Figure out the user's access
-    access = Article.PUBLISHED  # Default
-
-    # Check user's Patronage
-    if request.user.is_authenticated:
-        if request.user.profile.patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
+        # Check for generic or article specific passwords
+        if self.request.GET.get("secret") in [PASSWORD5DOLLARS, self.object.secret]:
             access = Article.UNPUBLISHED
-        elif request.user.profile.patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
+        elif self.request.GET.get("secret") == PASSWORD2DOLLARS:
             access = Article.UPCOMING
+        return access
 
-    # Check for generic or article specific passwords
-    if request.GET.get("secret") == PASSWORD5DOLLARS:
-        access = Article.UNPUBLISHED
-    elif request.GET.get("secret") == PASSWORD2DOLLARS:
-        access = Article.UPCOMING
-    elif request.GET.get("secret") and request.GET["secret"] == a.secret:
-        access = Article.UNPUBLISHED
-    elif request.GET.get("secret"):  # Invalid password
-        return redirect_with_querystring("article_lock", request.META["QUERY_STRING"], article_id=article_id, slug=slug)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.object.title
+        context["slug"] = self.slug
+        context["private_disclaimer"] = (self.object.published != Article.PUBLISHED)
 
-    if a.published > access:  # Access level too low for article
-        return redirect("article_lock", article_id=article_id, slug=slug)
+        # Set up related files
+        zgames = self.object.file_set.all()
+        if zgames:
+            context["file"] = zgames[0] if not self.request.GET.get("alt_file") else get_object_or_404(zgames, filename=self.request.GET["alt_file"])
+            context["zgames"] = zgames
 
-    elif a.published != Article.PUBLISHED:
-        data["private_disclaimer"] = True
+        # Set up pagination
+        context["page"] = self.kwargs.get("page", 1)
+        context["page_count"] = self.object.content.count("<!--Page-->") + 1
+        context["page_range"] = list(range(1, context["page_count"] + 1))
+        context["next"] = None if context["page"] + 1 > context["page_count"] else context["page"] + 1
+        context["prev"] = context["page"] - 1
+        context["article"].content = self.object.content.split("<!--Page-->")[context["page"]-1]
 
-    # Set up pages
-    data["page"] = page
-    data["page_count"] = a.content.count("<!--Page-->") + 1
-    data["page_range"] = list(range(1, data["page_count"] + 1))
-    data["next"] = None if page + 1 > data["page_count"] else page + 1
-    data["prev"] = page - 1
-    data["slug"] = str(slug)
+        return context
 
-    # Set up related files
-    zgames = a.file_set.all()
-    if zgames:
-        data["file"] = zgames[0]
-        if len(zgames) > 1:
-            data["multifile"] = True
-            data["zgames"] = zgames
-
-            if request.GET.get("alt_file"):
-                data["file"] = get_object_or_404(
-                    zgames, filename=request.GET["alt_file"]
-                )
-
-    # Split article to current page
-    a.content = a.content.split("<!--Page-->")[data["page"]-1]
-
-    data["article"] = a
-    data["title"] = a.title
-    return render(request, "museum_site/article_view.html", data)
+    def render_to_response(self, context, **response_kwargs):
+        if self.object.published > self.get_user_access_level():  # Access level too low for article
+            return redirect_with_querystring("article_lock", self.request.META["QUERY_STRING"], article_id=self.object.pk, slug=self.slug)
+        if self.object.published == Article.REMOVED:  # Block requests for REMOVED articles
+            raise PermissionDenied()
+        return super().render_to_response(context, **response_kwargs)
 
 
 def patron_articles(request):
@@ -109,10 +100,7 @@ def patron_articles(request):
 
 def article_lock(request, article_id, slug=""):
     """ Page shown when a non-public article is attempted to be viewed """
-    data = {
-        "title": "Restricted Article",
-    }
-
+    data = {"title": "Restricted Article"}
     article = Article.objects.get(pk=article_id)
     article.allow_comments = False
     data["article"] = article
