@@ -1,0 +1,19 @@
+{% load markdown_deux_tags %}
+<div class="review-block" id="rev-{{pk}}" data-pk="{{pk}}" data-model="{{model}}">
+<h2><a href="{{request.path}}#rev-{{pk}}">{{title|default:"Untitled Review"}}</a></h2>
+<div class="info mono">
+    By: {{author_link|safe}}<br>
+    Reviewed: {% if date != today %}{{date|timesince:today}} ago{% else %}Today{% endif %} ({{date}})<br>
+    {% if debug %}<div class="debug"><a href="/admin/museum_site/review/{{pk}}/change/">Edit Review {{pk}}</a></div>{% endif %}
+</div>
+<hr>
+<article>
+{{review_content|markdown}}
+</article>
+<hr>
+{% if rating >= 0 %}<b>Rating:</b> {{rating}} out of 5.0
+{% else %}
+<i>This user has opted out of providing a numeric rating</i>
+{% endif %}
+<div><a href="{% url 'reviews_by_author' author|default:'Anonymous'|lower %}">Other reviews written by {{author|default:'Anonymous'}}</a></div>
+</div>

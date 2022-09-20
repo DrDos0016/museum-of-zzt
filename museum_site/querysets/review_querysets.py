@@ -47,3 +47,10 @@ class Review_Queryset(Base_Queryset):
         if not p.get("content"):
             qs = qs.defer("content")
         return qs
+
+    def for_zfile(self, pk):
+        return self.filter(approved=True, zfile_id=pk).order_by("-date", "-id")
+
+    def for_zfile_and_user(self, pk, ip, user_id):
+        user_id = -32767 if user_id is None else user_id
+        return self.filter((Q(approved=True) | Q(ip=ip) | Q(user_id=user_id)), zfile_id=pk).order_by("-date", "-id")

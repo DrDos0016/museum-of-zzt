@@ -644,12 +644,8 @@ def generic_block_loop(
 
     for i in items:
         context = i  # Default
-        if view == "detailed":
-            context = i.detailed_block_context(request=request)
-        elif view == "list":
-            context = i.list_block_context(request=request)
-        elif view == "gallery":
-            context = i.gallery_block_context(request=request)
+        if view in ["detailed", "list", "gallery", "review-content"]:
+            context = getattr(i, "{}_block_context".format(view.replace("-", "_")))(request=request)
         output += render_to_string(template, context)
 
     if view == "list":

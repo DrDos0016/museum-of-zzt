@@ -2,11 +2,12 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from museum_site.common import *
 from museum_site.constants import *
+from museum_site.core.decorators import rusty_key_check
 from museum_site.core.detail_identifiers import *
 from museum_site.core.zeta_identifiers import *
 from museum_site.models import *
 
-
+@rusty_key_check
 def zeta_launcher(
     request, key=None,
     components=[
@@ -14,9 +15,6 @@ def zeta_launcher(
     ]
 ):
     data = {"title": "Zeta Launcher"}
-
-    if key.lower().endswith(".zip"):  # Try old URLs with zip in them
-        return redirect_with_querystring("play", request.META.get("QUERY_STRING"), key=key[:-4])
 
     # Template rendering mode
     # full - Extends "world.html", has a file header

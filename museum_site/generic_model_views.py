@@ -1,3 +1,4 @@
+from datetime import datetime
 from time import time
 
 from django.db.models import Count
@@ -9,8 +10,12 @@ from django.views.generic import ListView
 from markdown_deux.templatetags import markdown_deux_tags
 
 from museum_site.models import *
-from museum_site.common import PAGE_SIZE, LIST_PAGE_SIZE, PAGE_LINKS_DISPLAYED, get_selected_view_format, get_sort_options, table_header, clean_params
+from museum_site.common import (
+    PAGE_SIZE, LIST_PAGE_SIZE, PAGE_LINKS_DISPLAYED, get_selected_view_format, get_sort_options, table_header, clean_params, banned_ip
+)
 from museum_site.constants import NO_PAGINATION
+from museum_site.core.discord import discord_announce_review
+from museum_site.forms import ReviewForm
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
@@ -243,6 +248,85 @@ class ZFile_Article_List_View(Model_List_View):
         context["title"] = "{} - Articles".format(self.head_object.title)
         context["header_idx"] = 2
         return context
+
+
+class ZFile_Review_List_View(Model_List_View):
+    model = Review
+    template_name = "museum_site/file-review.html"
+    allow_pagination = False
+
+    def get_queryset(self):
+        key = self.kwargs.get("key")
+        if key.lower().endswith(".zip"):
+            key = key[:-4]
+        self.head_object = File.objects.get(key=key)
+        qs = Review.objects.for_zfile_and_user(pk=self.head_object.pk, ip=self.request.META["REMOTE_ADDR"], user_id=self.request.user.id)
+        self.qs = qs  # Needed to easily check for recent reviews later
+        qs = self.sort_queryset(qs)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["file"] = self.head_object
+        context["title"] = "{} - Reviews".format(self.head_object.title)
+        context["today"] = datetime.now().date()
+        context["sort_options"] = [
+            {"text": "Newest", "val": "-date"},
+            {"text": "Oldest", "val": "date"},
+            {"text": "Rating", "val": "rating"}
+        ]
+
+        # Check for banned users
+        if banned_ip(self.request.META["REMOTE_ADDR"]):
+            context["banned"] = True
+            return context
+
+        # Prevent doubling up on reviews
+        recent = self.qs.filter(ip=self.request.META.get("REMOTE_ADDR"), date=context["today"])
+        if recent:
+            context["recent"] = recent.first().pk
+            return context
+
+        # Initialize form
+        review_form = ReviewForm(self.request.POST) if self.request.POST else ReviewForm()
+
+        # Remove anonymous option for logged in users
+        if self.request.user.is_authenticated:
+            del review_form.fields["author"]
+
+        # Post a review if one was submitted
+        if self.request.POST and review_form.is_valid():
+            review = review_form.save(commit=False)
+            if self.request.user.is_authenticated:
+                review.author = self.request.user.username
+                review.user_id = self.request.user.id
+            review.ip = self.request.META.get("REMOTE_ADDR")
+            review.date = context["today"]
+            review.zfile_id = self.head_object.id
+
+            if self.head_object.can_review == File.REVIEW_APPROVAL or (review.content.find("href") != -1):
+                review.approved = False
+            review.save()
+
+            # Update file's review count/scores if the review is approved
+            if self.head_object.can_review == File.REVIEW_YES and review.approved:
+                self.head_object.calculate_reviews()
+                # Make Announcement
+                discord_announce_review(review)
+                self.head_object.save()
+
+            # Re-get the queryset with the new review included and without including the form again
+            context["object_list"] = self.get_queryset()
+            context["recent"] = review.pk
+            return context
+
+
+        context["form"] = review_form
+        return context
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
+
 
 class Series_List_View(Model_List_View):
     model = Series

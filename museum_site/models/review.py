@@ -172,6 +172,22 @@ class Review(BaseModel):
             )
         return context
 
+    def review_content_block_context(self, extras=None, *args, **kwargs):
+        context = dict(
+            pk=self.pk,
+            model=self.model_name,
+            title=self.title,
+            author=self.author,
+            author_link=self.author_link(),
+            date=self.date,
+            today=datetime.now(),
+            review_content=self.content,
+            rating=self.rating,
+            debug = kwargs["request"].session.get("DEBUG") if kwargs.get("request") else False
+        )
+
+        return context
+
     def save(self, *args, **kwargs):
         if self.author == "":
             self.author = "Anonymous"
