@@ -64,6 +64,7 @@ class Article_Detail_View(DetailView):
 
 def patron_articles(request):
     data = {"title": "Early Article Access", "upcoming": Article.objects.upcoming(), "unpublished": Article.objects.unpublished()}
+    data["wrong_password"] = True if request.POST.get("secret") and request.POST["secret"] not in [PASSWORD2DOLLARS, PASSWORD5DOLLARS] else False
     return render(request, "museum_site/patreon_articles.html", data)
 
 
