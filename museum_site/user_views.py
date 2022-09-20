@@ -379,8 +379,11 @@ def manage_saved_data(request):
     data = {
         "title": "Manage Saved Data",
         "pk": request.GET.get("pk"),
-        "file": File.objects.get(pk=request.GET.get("pk"))
+        "file": get_object_or_404(File, pk=request.GET.get("pk"))
     }
+
+    if not request.GET.get("pk"):
+        return redirect("index")
     return render(request, "museum_site/user/manage-saved-data.html", data)
 
 
