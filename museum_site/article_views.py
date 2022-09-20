@@ -1,13 +1,9 @@
-from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
-from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.views.generic import DetailView
-from django.utils.safestring import mark_safe
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.models import *
-from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
 class Article_Detail_View(DetailView):
@@ -67,18 +63,13 @@ class Article_Detail_View(DetailView):
 
 
 def patron_articles(request):
-    data = {"title": "Early Article Access"}
-    data["upcoming"] = Article.objects.upcoming()
-    data["unpublished"] = Article.objects.unpublished()
+    data = {"title": "Early Article Access", "upcoming": Article.objects.upcoming(), "unpublished": Article.objects.unpublished()}
     return render(request, "museum_site/patreon_articles.html", data)
 
 
 def article_lock(request, article_id, slug=""):
     """ Page shown when a non-public article is attempted to be viewed """
-    data = {"title": "Restricted Article"}
     article = Article.objects.get(pk=article_id)
     article.allow_comments = False
-    data["article"] = article
-    data["cost"] = article.early_access_price
-    data["release"] = article.publish_date
+    data = {"title": "Restricted Article", "article": article, "cost": article.early_access_price, "release": article.publish_date}
     return render(request, "museum_site/article_lock.html", data)
