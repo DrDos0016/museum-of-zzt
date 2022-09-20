@@ -343,10 +343,12 @@ class Article(BaseModel):
                 context["title"]["icons"] = [self.ICONS["unlocked"]]
                 context["title"]["roles"].remove("restricted")
                 context["title"]["roles"].append("unlocked")
+                context["title"]["url"] += "?secret={}".format(secret)
             if self.published == self.UNPUBLISHED and patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
                 context["title"]["icons"] = [self.ICONS["unlocked"]]
                 context["title"]["roles"].remove("restricted")
                 context["title"]["roles"].append("unlocked")
+                context["title"]["url"] += "?secret={}".format(secret)
         elif view == "list":
             if self.published == self.UPCOMING and patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
                 context["cells"][0]["icons"] = [self.ICONS["unlocked"]]
