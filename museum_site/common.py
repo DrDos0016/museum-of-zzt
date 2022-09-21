@@ -109,30 +109,6 @@ def qs_sans(params, key):
     return qs_nokey.urlencode()
 
 
-def serve_file(file_path="", named=""):
-    """ Returns an HTTPResponse containing the given file with an optional
-        name
-    """
-    if not named:
-        named = os.path.basename(file_path)
-
-    if not os.path.isfile(file_path):
-        raise Http404("Source file not found")
-
-    response = HttpResponse(content_type="application/octet-stream")
-    response["Content-Disposition"] = "attachment; filename={}".format(named)
-    with open(file_path, "rb") as fh:
-        response.write(fh.read())
-    return response
-
-
-def slash_separated_sort(orig):
-    temp_list = orig.split("/")
-    temp_list.sort()
-    output = "/".join(temp_list)
-    return output
-
-
 def env_from_host(host):
     if host in ["beta.museumofzzt.com"]:
         return "BETA"
@@ -140,48 +116,6 @@ def env_from_host(host):
         return "PROD"
     else:
         return "DEV"
-
-
-def get_selected_view_format(request, available_views=["detailed", "list", "gallery"]):
-    # GET > Session > Default
-    view = None
-    if request.GET.get("view"):
-        view = request.GET["view"]
-    elif request.session.get("view"):
-        view = request.session["view"]
-    if view not in available_views:  # Default
-        view = "detailed"
-    request.session["view"] = view
-    return view
-
-
-def get_pagination_data(request, data, qs):
-    page_sizes = {
-        "detailed": PAGE_SIZE,
-        "list": LIST_PAGE_SIZE,
-        "gallery": PAGE_SIZE,
-    }
-
-    data["page_number"] = int(request.GET.get("page", 1))
-    data["paginator"] = Paginator(qs, page_sizes.get(data["view"]))
-    data["page"] = data["paginator"].get_page(data["page_number"])
-
-    # Bounds checking
-    if data["page_number"] < 1:
-        data["page_number"] = 1
-    elif data["page_number"] > data["paginator"].num_pages:
-        data["page_number"] = data["paginator"].num_pages
-
-    # Determine lowest and highest visible page
-    lower = max(1, data["page_number"] - (PAGE_LINKS_DISPLAYED // 2))
-    upper = lower + PAGE_LINKS_DISPLAYED
-
-    # Don't display too many pages
-    if upper > data["paginator"].num_pages + 1:
-        upper = data["paginator"].num_pages + 1
-
-    data["page_range"] = range(lower, upper)
-    return data
 
 
 def throttle_check(
@@ -232,21 +166,6 @@ def zipinfo_datetime_tuple_to_str(raw):
     return out
 
 
-def any_plus(choices):
-    """ Appends Any as an option to the choices for a form"""
-    choices = list(choices)
-    choices.insert(0, ("any", "- Any -"))
-    return choices
-
-
-def optimize_image(image):
-    if os.path.isfile(image):
-        status = os.system("optipng -o7 -strip=all -fix -nc -quiet " + image)
-        if status == 0:
-            return True
-    return False
-
-
 def move_uploaded_file(upload_directory, uploaded_file, custom_name=""):
     upload_filename = (
         custom_name if custom_name else uploaded_file.name
@@ -257,14 +176,6 @@ def move_uploaded_file(upload_directory, uploaded_file, custom_name=""):
             fh.write(chunk)
 
     return file_path
-
-
-def crop_file(file_path, size=(480, 350)):
-    image = Image.open(file_path)
-    image = image.crop((0, 0, size[0], size[1]))
-    image.save(file_path)
-    optimize_image(file_path)
-    return True
 
 
 def epoch_to_unknown(calendar_date):
@@ -291,13 +202,6 @@ def get_sort_options(options, debug=False):
     return output
 
 
-def get_sort_option_form_choices(options):
-    output = []
-    for i in options:
-        output.append((i["val"], i["text"]))
-    return output
-
-
 def sort_qs(qs, key, available_sorts, default_sort):
     """ Sort Queryset """
     sort_by = available_sorts.get(key)
@@ -307,43 +211,6 @@ def sort_qs(qs, key, available_sorts, default_sort):
             return qs  # No sorting
     qs = qs.order_by(sort_by)
     return qs
-
-
-def simplify_query_string(p, list_items=[], ignore=[]):
-    """ Remove unecessary values from a query string """
-    new_qs = ""
-    for (k, v) in p.items():
-        if k in ignore:
-            continue
-        elif k in list_items:  # Multiple values on a key
-            items = p.getlist(k)
-            for i in items:
-                new_qs += "{}={}&".format(k, i)
-        elif v.lower() == "any":
-            continue
-        elif v.strip() == "":
-            continue
-        else:  # Normal key/value
-            new_qs += "{}={}&".format(k, v)
-    return new_qs[:-1]
-
-
-def clean_params(p, list_items=[]):
-    """ Returns a dictionary (request.GET/POST) with blank/"Any" values removed. List items are ignored """
-    to_delete = []
-    for (k, v) in p.items():
-        if k in list_items:
-            continue
-        if k in ["genre", "year", "lang", "reviews", "articles"]:
-            if v.lower() == "any":
-                to_delete.append(k)
-        elif v.strip() == "":
-            to_delete.append(k)
-        else:
-            p[k] = v.strip()
-    for k in to_delete:
-        del p[k]
-    return p
 
 
 def record(*args, **kwargs):
@@ -381,33 +248,6 @@ def explicit_redirect_check(request, pk):
         if not request.session.get("bypass_explicit_content_warnings"):
             return redirect_with_querystring("explicit_warning", "next={}&pk={}".format(next_param, pk))
     return "NO-REDIRECT"
-
-
-def get_page_range(current_page, num_pages):
-    # Determine lowest and highest visible page
-    lower = max(1, current_page - (PAGE_LINKS_DISPLAYED // 2))
-    upper = lower + PAGE_LINKS_DISPLAYED
-
-    # Don't display too many pages
-    if upper > num_pages + 1:
-        upper = num_pages + 1
-
-    return range(lower, upper)
-
-
-def valid_page_number(requested_page, last_page):
-    """
-    Check the requested page is an integer >= 1 and <= the number of pages.
-    Invalid pages are changed to page 1.
-    """
-    if not isinstance(requested_page, int):
-        return 1
-    if requested_page < 1:
-        return 1
-    if requested_page > last_page:
-        return last_page
-    else:
-        return requested_page
 
 
 def delete_this(path):

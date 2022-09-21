@@ -19,6 +19,7 @@ from django.urls import get_resolver
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core import *
+from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.models import *
 from museum_site.forms import *
 

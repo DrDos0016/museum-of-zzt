@@ -20,12 +20,13 @@ from museum_site.models import *
 from museum_site.fields import *
 from museum_site.widgets import *
 from museum_site.common import (
-    EMAIL_ADDRESS, YEAR, any_plus, TEMP_PATH, SITE_ROOT, get_sort_option_form_choices, delete_this, UPLOAD_TEST_MODE, record
+    EMAIL_ADDRESS, YEAR, TEMP_PATH, SITE_ROOT, delete_this, UPLOAD_TEST_MODE, record
 )
 from museum_site.constants import (
     LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, TERMS
 )
 from museum_site.core.detail_identifiers import *
+from museum_site.core.form_utils import any_plus, get_sort_option_form_choices
 from museum_site.private import IA_ACCESS, IA_SECRET
 
 

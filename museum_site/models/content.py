@@ -3,12 +3,7 @@ import zipfile
 
 from django.db import models
 
-from museum_site.common import (
-    slash_separated_sort, zipinfo_datetime_tuple_to_str, UPLOAD_CAP,
-    STATIC_PATH, optimize_image, epoch_to_unknown, record,
-    redirect_with_querystring
-)
-
+from museum_site.common import zipinfo_datetime_tuple_to_str
 from museum_site.core.detail_identifiers import *
 
 

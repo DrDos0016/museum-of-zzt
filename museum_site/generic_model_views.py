@@ -11,10 +11,11 @@ from markdown_deux.templatetags import markdown_deux_tags
 
 from museum_site.models import *
 from museum_site.common import (
-    PAGE_SIZE, LIST_PAGE_SIZE, PAGE_LINKS_DISPLAYED, get_selected_view_format, get_sort_options, table_header, clean_params, banned_ip
+    PAGE_SIZE, LIST_PAGE_SIZE, PAGE_LINKS_DISPLAYED, get_sort_options, table_header, banned_ip
 )
 from museum_site.constants import NO_PAGINATION
 from museum_site.core.discord import discord_announce_review
+from museum_site.core.form_utils import clean_params
 from museum_site.forms import ReviewForm
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
@@ -28,12 +29,25 @@ class Model_List_View(ListView):
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        self.view = get_selected_view_format(self.request, self.model.supported_views)
+        self.view = self.get_selected_view_format(self.request, self.model.supported_views)
         if self.force_view:
             self.view = self.force_view
         if self.allow_pagination:
             self.paginate_by = PAGE_SIZE if self.view != "list" else LIST_PAGE_SIZE
         self.sorted_by = request.GET.get("sort")
+
+    def get_selected_view_format(self, request, available_views=["detailed", "list", "gallery"]):
+        """ Determine which view should be used for model blocks. """
+        # GET > Session > Default
+        view = None
+        if request.GET.get("view"):
+            view = request.GET["view"]
+        elif request.session.get("view"):
+            view = request.session["view"]
+        if view not in available_views:  # Default
+            view = "detailed"
+        request.session["view"] = view
+        return view
 
     def get_queryset(self):
         qs = super().get_queryset()

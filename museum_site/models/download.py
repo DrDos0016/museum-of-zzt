@@ -3,7 +3,6 @@ from datetime import datetime
 from django.db import models
 
 from museum_site.models.base import BaseModel
-from museum_site.common import slash_separated_sort, UPLOAD_CAP, STATIC_PATH
 
 
 class Download(BaseModel):

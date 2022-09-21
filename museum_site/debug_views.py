@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from museum_site.common import *
 from museum_site.constants import *
+from museum_site.core.file_utils import serve_file_as
 from museum_site.models import *
 from museum_site.forms import *
 
@@ -38,7 +39,7 @@ def debug(request, filename=None):
     ).order_by("-id")
 
     data["available_views"] = ["detailed", "list", "gallery"]
-    data["view"] = get_selected_view_format(request, data["available_views"])
+    data["view"] = "detailed"
 
     #data["wozzt_table_header"] = table_header(test_wozzt[0].table_fields)
     #data["review_table_header"] = table_header(test_reviews[0].table_fields)
@@ -56,7 +57,7 @@ def debug(request, filename=None):
     data["checklist_items"] = File.objects.published()
 
     if request.GET.get("serve"):
-        return serve_file(request.GET.get("serve"), request.GET.get("as", ""))
+        return serve_file_as(request.GET.get("serve"), request.GET.get("as", ""))
 
     if filename:
         return render(
