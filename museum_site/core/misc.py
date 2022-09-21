@@ -36,3 +36,9 @@ def extract_file_key_from_url(url):
         return path[2]
     else:
         return None
+
+
+def epoch_to_unknown(calendar_date):
+    if calendar_date.year <= 1970:
+        return "Unknown"
+    return calendar_date

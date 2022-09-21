@@ -178,12 +178,6 @@ def move_uploaded_file(upload_directory, uploaded_file, custom_name=""):
     return file_path
 
 
-def epoch_to_unknown(calendar_date):
-    if calendar_date.year <= 1970:
-        return "Unknown"
-    return calendar_date
-
-
 @mark_safe
 def table_header(items):
     row = ""

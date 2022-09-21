@@ -6,7 +6,7 @@ from museum_site.models.detail import Detail
 from museum_site.models.file import File
 from museum_site.constants import TERMS_DATE
 from museum_site.common import (
-    DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, UPLOAD_CAP, env_from_host,
+    DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, env_from_host,
     qs_sans
 )
 from museum_site.core.detail_identifiers import *
@@ -53,9 +53,6 @@ def museum_global(request):
         data["fg"].extra_context = {"nozoom": True}
 
     data["fg"] = data["fg"]
-
-    # Upload Cap
-    data["UPLOAD_CAP"] = UPLOAD_CAP
 
     # Queue size
     data["UPLOAD_QUEUE_SIZE"] = cache.get("UPLOAD_QUEUE_SIZE", "-")

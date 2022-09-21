@@ -7,7 +7,8 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
-from museum_site.common import STATIC_PATH, epoch_to_unknown
+from museum_site.common import STATIC_PATH
+from museum_site.core.misc import epoch_to_unknown
 from museum_site.models.base import BaseModel
 
 

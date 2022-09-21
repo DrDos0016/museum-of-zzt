@@ -8,7 +8,8 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 from museum_site.models.base import BaseModel
-from museum_site.common import STATIC_PATH, epoch_to_unknown, profanity_filter
+from museum_site.common import STATIC_PATH, profanity_filter
+from museum_site.core.misc import epoch_to_unknown
 from museum_site.templatetags.zzt_tags import char
 from museum_site.querysets.review_querysets import *
 

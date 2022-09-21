@@ -22,14 +22,15 @@ except ImportError:
 from museum.settings import STATIC_URL
 
 from museum_site.common import (
-    zipinfo_datetime_tuple_to_str, UPLOAD_CAP,
-    STATIC_PATH, epoch_to_unknown, record,
+    zipinfo_datetime_tuple_to_str,
+    STATIC_PATH, record,
     redirect_with_querystring
 )
 from museum_site.constants import SITE_ROOT, LANGUAGES
 from museum_site.core.detail_identifiers import *
 from museum_site.core.zeta_identifiers import *
 from museum_site.core.image_utils import optimize_image
+from museum_site.core.misc import epoch_to_unknown
 from museum_site.models.review import Review
 from museum_site.models.article import Article
 from museum_site.models.genre import Genre

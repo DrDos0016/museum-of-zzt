@@ -522,4 +522,5 @@ def user_profile(request, user_id=None, **kwargs):
         status = os.system(cmd)
 
     data["title"] = "Profile for " + data["user_obj"].username
+    data["default_upload_cap"] = UPLOAD_CAP  # For guest users
     return render(request, "museum_site/user/profile.html", data)
