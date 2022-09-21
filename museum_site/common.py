@@ -35,50 +35,6 @@ import zipfile
 import requests
 from PIL import Image
 
-SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TEMP_PATH = os.path.join(SITE_ROOT, "temp")
-BASE_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data", "base")
-STATIC_PATH = os.path.join(SITE_ROOT, "museum_site", "static")
-CSS_INCLUDES = [
-    "main.css", "grid.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"
-]
-DEBUG = True if os.path.isfile("/var/projects/DEV") else False
-YEAR = datetime.now().year
-START_TIME = datetime.utcnow()
-BOOT_TS = START_TIME.strftime("%m%d%H%M%S")
-
-FILE_VIEWER_TEXT_EXTENSIONS = (
-    "", ".135", ".135.asc", ".1st", ".ans", ".asm", ".bas", ".bat", ".bb",
-    ".bi", ".bin", ".c", ".cc", ".cfg", ".chr", ".cpp", ".crd", ".dat", ".def",
-    ".deu", ".diz", ".doc", ".ds_store", ".e", ".eed", ".eng", ".err", ".ex",
-    ".faq", ".frm", ".fyi", ".gitignore", ".gud", ".h", ".hlp", ".inc", ".inf",
-    ".ini", ".java", ".json", ".log", ".lst", ".lua", ".mac", ".map", ".md",
-    ".me", ".msg", ".muz", ".new", ".nfo", ".now", ".obj", ".olf", ".pas", ".py",
-    ".reg", ".rtf", ".sdi", ".sh", ".slv", ".sol", ".st", ".theme", ".txt",
-    ".wps", ".wri", ".zln", ".zml", ".zzl", ".zzm",
-)
-
-FILE_VIEWER_HEX_EXTENSIONS = (
-    ".hi", ".zzt", ".brd", ".mh", ".sav", ".szt", ".mwz", ".z_t", ".hgs",
-)
-
-FILE_VIEWER_B64_EXTENSIONS = (
-    ".jpg", ".jpeg", ".bmp", ".gif", ".png", ".ico", ".avi"
-)
-
-FILE_VIEWER_AUDIO_EXTENSIONS = (
-    ".wav", ".mp3", ".ogg", ".mid", ".midi"
-)
-
-EMAIL_ADDRESS = "doctordos@gmail.com"
-
-
-PLAY_METHODS = {
-    "archive": {"name": "Archive.org - DosBox Embed"},
-    "zeta": {"name": "Zeta"},
-}
-
-
 def qs_sans(params, key):
     """ Returns a query string with a key removed """
     qs = params.copy()

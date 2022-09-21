@@ -4,11 +4,8 @@ from datetime import datetime
 
 from museum_site.models.detail import Detail
 from museum_site.models.file import File
-from museum_site.constants import TERMS_DATE
-from museum_site.common import (
-    DEBUG, EMAIL_ADDRESS, BOOT_TS, CSS_INCLUDES, env_from_host,
-    qs_sans
-)
+from museum_site.constants import TERMS_DATE, DEBUG, CSS_INCLUDES, BOOT_TS, EMAIL_ADDRESS
+from museum_site.common import env_from_host, qs_sans
 from museum_site.core.detail_identifiers import *
 
 def museum_global(request):

@@ -19,11 +19,9 @@ from museum_site.core import *
 from museum_site.models import *
 from museum_site.fields import *
 from museum_site.widgets import *
-from museum_site.common import (
-    EMAIL_ADDRESS, YEAR, TEMP_PATH, SITE_ROOT, record
-)
+from museum_site.common import record
 from museum_site.constants import (
-    LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, TERMS, UPLOAD_TEST_MODE
+    LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, TERMS, UPLOAD_TEST_MODE, SITE_ROOT, TEMP_PATH, YEAR, EMAIL_ADDRESS
 )
 from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import delete_this

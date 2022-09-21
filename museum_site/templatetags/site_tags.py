@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 from museum.settings import STATIC_URL
 from museum_site.models import File, Article
 from museum_site.constants import (
-    ADMIN_NAME, SITE_ROOT, TIER_NAMES, PROTOCOL, DOMAIN, LANGUAGES
+    ADMIN_NAME, TIER_NAMES, PROTOCOL, DOMAIN, LANGUAGES
 )
 
 register = Library()

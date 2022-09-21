@@ -2,7 +2,7 @@ import os
 
 from django.http import Http404, HttpResponse
 
-from museum_site.common import STATIC_PATH
+from museum_site.constants import STATIC_PATH
 
 
 def delete_this(path):
