@@ -19,6 +19,7 @@ from django.urls import get_resolver
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core import *
+from museum_site.core.file_utils import place_uploaded_file
 from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.models import *
 from museum_site.forms import *
@@ -826,7 +827,7 @@ def series_add(request):
         if form.is_valid():
             series = form.save(commit=False)
             series.slug = slugify(series.title)
-            file_path = move_uploaded_file(
+            file_path = place_uploaded_file(
                 Series.PREVIEW_DIRECTORY_FULL_PATH,
                 request.FILES.get("preview"),
                 custom_name=series.slug + ".png"
@@ -1045,7 +1046,7 @@ def set_screenshot(request, key):
         upload_path = os.path.join(
             STATIC_PATH, "images/screenshots/{}/".format(zfile.letter)
         )
-        file_path = move_uploaded_file(
+        file_path = place_uploaded_file(
             upload_path,
             request.FILES.get("uploaded_file"),
             custom_name=zfile.filename[:-4] + ".png"

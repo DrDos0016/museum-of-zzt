@@ -166,18 +166,6 @@ def zipinfo_datetime_tuple_to_str(raw):
     return out
 
 
-def move_uploaded_file(upload_directory, uploaded_file, custom_name=""):
-    upload_filename = (
-        custom_name if custom_name else uploaded_file.name
-    )
-    file_path = os.path.join(STATIC_PATH, upload_directory, upload_filename)
-    with open(file_path, 'wb+') as fh:
-        for chunk in uploaded_file.chunks():
-            fh.write(chunk)
-
-    return file_path
-
-
 def record(*args, **kwargs):
     if not os.path.isfile("/var/projects/museum-of-zzt/PROD"):
         print(*args, **kwargs)

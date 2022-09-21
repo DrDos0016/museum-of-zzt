@@ -2,6 +2,8 @@ import os
 
 from django.http import Http404, HttpResponse
 
+from museum_site.common import STATIC_PATH
+
 
 def delete_this(path):
     """ Removes a provided file or directory. """
@@ -25,3 +27,14 @@ def serve_file_as(file_path="", named=""):
     with open(file_path, "rb") as fh:
         response.write(fh.read())
     return response
+
+
+def place_uploaded_file(upload_directory, uploaded_file, custom_name=""):
+    """ Places a POSTed file in the specified directory, using a custom name if provided """
+    upload_filename = (custom_name if custom_name else uploaded_file.name)
+    file_path = os.path.join(STATIC_PATH, upload_directory, upload_filename)
+    with open(file_path, 'wb+') as fh:
+        for chunk in uploaded_file.chunks():
+            fh.write(chunk)
+
+    return file_path
