@@ -50,7 +50,7 @@ PAGE_LINKS_DISPLAYED = 30
 LIST_PAGE_SIZE = 250
 UPLOADS_ENABLED = True
 UPLOAD_CAP = 1048576  # 1 Megabyte
-UPLOAD_TEST_MODE = False # Coerce successful uploads in DEV to expedite testing of the upload process
+UPLOAD_TEST_MODE = False  # Coerce successful uploads in DEV to expedite testing of the upload process
 YEAR = datetime.now().year
 PYTHON_VERSION = sys.version
 DJANGO_VERSION = VERSION
@@ -176,27 +176,6 @@ def move_uploaded_file(upload_directory, uploaded_file, custom_name=""):
             fh.write(chunk)
 
     return file_path
-
-
-def get_sort_options(options, debug=False):
-    output = options.copy()
-    if debug:
-        output += [
-            {"text": "!ID New", "val": "-id"},
-            {"text": "!ID Old", "val": "id"}
-        ]
-    return output
-
-
-def sort_qs(qs, key, available_sorts, default_sort):
-    """ Sort Queryset """
-    sort_by = available_sorts.get(key)
-    if sort_by is None:
-        sort_by = available_sorts.get(default_sort)
-        if sort_by is None:
-            return qs  # No sorting
-    qs = qs.order_by(sort_by)
-    return qs
 
 
 def record(*args, **kwargs):

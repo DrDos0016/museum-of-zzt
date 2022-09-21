@@ -11,7 +11,7 @@ from markdown_deux.templatetags import markdown_deux_tags
 
 from museum_site.models import *
 from museum_site.common import (
-    PAGE_SIZE, LIST_PAGE_SIZE, PAGE_LINKS_DISPLAYED, get_sort_options, banned_ip
+    PAGE_SIZE, LIST_PAGE_SIZE, PAGE_LINKS_DISPLAYED, banned_ip
 )
 from museum_site.constants import NO_PAGINATION
 from museum_site.core.discord import discord_announce_review
@@ -49,6 +49,12 @@ class Model_List_View(ListView):
         request.session["view"] = view
         return view
 
+    def get_sort_options(self, options, debug=False):
+        output = options.copy()
+        if debug:
+            output += [{"text": "!ID New", "val": "-id"}, {"text": "!ID Old", "val": "id"}]
+        return output
+
     def get_queryset(self):
         qs = super().get_queryset()
         qs = self.sort_queryset(qs)
@@ -58,7 +64,7 @@ class Model_List_View(ListView):
         context = super().get_context_data(**kwargs)
         context["available_views"] = self.model.supported_views
         context["view"] = self.view
-        context["sort_options"] = get_sort_options(self.model.sort_options, debug=self.request.session.get("DEBUG"))
+        context["sort_options"] = self.get_sort_options(self.model.sort_options, debug=self.request.session.get("DEBUG"))
         context["sort"] = self.sorted_by
         context["model_name"] = self.model.model_name
         context["page_range"] = self.get_nearby_page_range(context["page_obj"].number, context["paginator"].num_pages)
