@@ -102,11 +102,9 @@ def index(request):
     data["articles"] = Article.objects.spotlight()[:FP.ARTICLES_SHOWN]
     data["new_releases"] = File.objects.new_releases(spotlight_filter=True)[:FP.NEW_RELEASES_SHOWN]
     data["files"] = File.objects.new_finds(spotlight_filter=True)[:FP.FILES_SHOWN]
-
-    data["article_table_header"] = table_header(Article.table_fields)
-    data["review_table_header"] = table_header(Review.table_fields)
-
     data["reviews"] = Review.objects.latest_approved_reviews()[:FP.REVIEWS_SHOWN]
+    data["article_table_header"] = data["articles"][0].table_header() if data["articles"] else None
+    data["review_table_header"] = data["reviews"][0].table_header() if data["reviews"] else None
 
     return render(request, "museum_site/index.html", data)
 

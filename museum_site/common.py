@@ -178,14 +178,6 @@ def move_uploaded_file(upload_directory, uploaded_file, custom_name=""):
     return file_path
 
 
-@mark_safe
-def table_header(items):
-    row = ""
-    for i in items:
-        row += "<th>{}</th>".format(i)
-    return "<tr>" + row + "</tr>"
-
-
 def get_sort_options(options, debug=False):
     output = options.copy()
     if debug:

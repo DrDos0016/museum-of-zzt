@@ -41,12 +41,6 @@ def debug(request, filename=None):
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = "detailed"
 
-    #data["wozzt_table_header"] = table_header(test_wozzt[0].table_fields)
-    #data["review_table_header"] = table_header(test_reviews[0].table_fields)
-    #data["zfile_table_header"] = table_header(test_zfiles[0].table_fields)
-    #data["article_table_header"] = table_header(test_articles[0].table_fields)
-    #data["series_table_header"] = table_header(test_series[0].table_fields)
-
     data["wozzt"] = test_wozzt
     data["reviews"] = test_reviews
     data["zfiles"] = test_zfiles

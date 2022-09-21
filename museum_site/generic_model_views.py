@@ -11,7 +11,7 @@ from markdown_deux.templatetags import markdown_deux_tags
 
 from museum_site.models import *
 from museum_site.common import (
-    PAGE_SIZE, LIST_PAGE_SIZE, PAGE_LINKS_DISPLAYED, get_sort_options, table_header, banned_ip
+    PAGE_SIZE, LIST_PAGE_SIZE, PAGE_LINKS_DISPLAYED, get_sort_options, banned_ip
 )
 from museum_site.constants import NO_PAGINATION
 from museum_site.core.discord import discord_announce_review
@@ -80,7 +80,8 @@ class Model_List_View(ListView):
                     i.context = i.detailed_block_context(request=self.request)
                 elif self.view == "list":
                     i.context = i.list_block_context(request=self.request)
-                    context["table_header"] = table_header(self.model.table_fields)
+                    if not context.get("table_header"):
+                        context["table_header"] = i.table_header()
                 elif self.view == "gallery":
                     i.context = i.gallery_block_context(request=self.request)
 

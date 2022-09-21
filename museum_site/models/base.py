@@ -80,5 +80,12 @@ class BaseModel(models.Model):
             ssv = "/".join(entries)
         return ssv
 
+    @mark_safe
+    def table_header(self):
+        row = ""
+        for i in getattr(self, "table_fields", ["TABLE FIELDS ARE UNDEFINED"]):
+            row += "<th>{}</th>".format(i)
+        return "<tr>" + row + "</tr>"
+
     class Meta:
         abstract = True
