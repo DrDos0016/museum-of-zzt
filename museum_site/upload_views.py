@@ -15,7 +15,7 @@ from museum_site.private import NEW_UPLOAD_WEBHOOK_URL
 
 
 def upload(request):
-    data = {"title": "Upload File"}
+    data = {"title": "Upload File", "your_max_upload_size": get_max_upload_size(request)}
 
     keys = list(request.POST.keys())
     keys = sorted(keys)
