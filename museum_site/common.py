@@ -1,4 +1,3 @@
-from django import VERSION
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import QueryDict
@@ -43,17 +42,8 @@ STATIC_PATH = os.path.join(SITE_ROOT, "museum_site", "static")
 CSS_INCLUDES = [
     "main.css", "grid.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"
 ]
-TRACKING = True  # Analytics
 DEBUG = True if os.path.isfile("/var/projects/DEV") else False
-PAGE_SIZE = 25
-PAGE_LINKS_DISPLAYED = 30
-LIST_PAGE_SIZE = 250
-UPLOADS_ENABLED = True
-UPLOAD_CAP = 1048576  # 1 Megabyte
-UPLOAD_TEST_MODE = False  # Coerce successful uploads in DEV to expedite testing of the upload process
 YEAR = datetime.now().year
-PYTHON_VERSION = sys.version
-DJANGO_VERSION = VERSION
 START_TIME = datetime.utcnow()
 BOOT_TS = START_TIME.strftime("%m%d%H%M%S")
 

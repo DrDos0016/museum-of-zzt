@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
 
-from museum_site.common import UPLOAD_CAP
+from museum_site.constants import UPLOAD_CAP
 from museum_site.querysets.profile_querysets import *
 
 

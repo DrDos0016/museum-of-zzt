@@ -20,6 +20,17 @@ except ModuleNotFoundError:
     IA_SUPPORT = False
     BANNED_IPS = [""]
 
+# Pagination
+PAGE_SIZE = 25  # Default items per page
+LIST_PAGE_SIZE = 250  # Default items per page in LIST view
+NO_PAGINATION = 9999  # Actual limit with "Unlimited" items per page
+PAGE_LINKS_DISPLAYED = 30  # Number of links to other pages displayed
+
+# Site Functions
+UPLOADS_ENABLED = True
+UPLOAD_CAP = 1048576  # 1 Megabyte (unless manually increased per user)
+UPLOAD_TEST_MODE = False  # Coerce successful uploads in DEV to expedite testing of the upload process
+
 # Accounts
 ALLOW_REGISTRATION = True
 REQUIRE_CAPTCHA = False
@@ -93,7 +104,6 @@ elif os.path.isfile(os.path.join(SITE_ROOT, "BETA")):
 # Magic Numbers
 UPCOMING_ARTICLE_MINIMUM_PATRONAGE = 200
 UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE = 500
-NO_PAGINATION = 9999
 
 # Front Page
 FP = namedtuple(
