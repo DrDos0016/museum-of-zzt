@@ -215,14 +215,6 @@ def explicit_redirect_check(request, pk):
     return "NO-REDIRECT"
 
 
-def delete_this(path):
-    try:
-        os.remove(path)
-    except IsADirectoryError:
-        shutil.rmtree(path)
-    return True
-
-
 def parse_pld(pld):
     context = {}
     colors = []
