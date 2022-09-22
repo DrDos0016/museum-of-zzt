@@ -3,6 +3,7 @@ from django.urls import resolve
 
 from museum_site.common import redirect_with_querystring
 
+
 def dev_only(func, *args, **kwargs):
     def inner(*args, **kwargs):
         request = kwargs.get("request", args[0])

@@ -14,6 +14,7 @@ def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False, allow_no
         )
     return output
 
+
 def qs_to_categorized_select_choices(qs, text="{0}", val="{0.pk}", category_order=None):
     output = []
 
@@ -33,6 +34,7 @@ def qs_to_categorized_select_choices(qs, text="{0}", val="{0.pk}", category_orde
 
     return output
 
+
 def range_select_choices(first, last, order="asc", allow_any=False, allow_unknown=False):
     years = range(first, last + 1)
 
@@ -48,6 +50,7 @@ def range_select_choices(first, last, order="asc", allow_any=False, allow_unknow
         output.append(("unk", "Unknown"))
 
     return output
+
 
 def language_select_choices(languages, allow_any=False, allow_non_english=False):
     output = list(languages.items())

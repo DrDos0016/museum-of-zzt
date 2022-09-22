@@ -3,6 +3,7 @@ import os
 from museum_site.core.detail_identifiers import *
 from museum_site.models.detail import Detail
 
+
 class File_Extension_Info(object):
     def __init__(self, extension, name="", associated_details=[], file_viewer_type="", file_viewer_func="", ambiguous=False):
         self.extension = extension
@@ -151,7 +152,7 @@ EXTENSIONS = {
     ".MP3": File_Extension_Info(".MP3", "Audio File", [DETAIL_AUDIO]),
     ".WAV": File_Extension_Info(".WAV", "Audio File", [DETAIL_AUDIO]),
     ".XM": File_Extension_Info(".XM", "Audio File", [DETAIL_AUDIO]),
-    ".PTF":File_Extension_Info(".PTF", "Audio File", [DETAIL_AUDIO]),
+    ".PTF": File_Extension_Info(".PTF", "Audio File", [DETAIL_AUDIO]),
 
     # Image
     ".BMP": File_Extension_Info(".BMP", "Image File", [DETAIL_IMAGE]),
@@ -225,7 +226,7 @@ def get_detail_suggestions(file_list):
             suggestions["hint_ids"] += suggest
         else:
             suggestions["hints"].append(
-                {"name": name, "type": "Unknown Extension", "role":"unknown-ext"}
+                {"name": name, "type": "Unknown Extension", "role": "unknown-ext"}
             )
             suggestions["unknown_extensions"].append(ext)
 

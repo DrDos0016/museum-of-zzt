@@ -1,13 +1,9 @@
-import os
 import urllib.parse
-
-from datetime import datetime
 
 from django import template
 from django.template import Template, Context, Library
 from django.template.loader import render_to_string
 from django.template.defaultfilters import stringfilter
-from django.template import defaultfilters as filters
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
@@ -660,7 +656,7 @@ def generic_block_loop(
 def breadcrumbs(request):
     # NOT IMPLEMENTED: 8/17
     output = "<a href='/' title='Museum of ZZT'>♀</a>"
-    #output += "<a href=''>File</a> &gt; <a href=''>View</a> → <a href=''>Evil Sorcerers PArty</a> ► <a href=''>IDK</a>"
+    # output += "<a href=''>File</a> &gt; <a href=''>View</a> → <a href=''>Evil Sorcerers PArty</a> ► <a href=''>IDK</a>"
     url = request.path[1:-1]  # Trim slashes
 
     parsing = True
@@ -673,7 +669,5 @@ def breadcrumbs(request):
         # Do stuff
         url = url[idx:]
 
-    #output += " ► <a href='{}'>{}</a>".format(url, text)
-
-
+    # output += " ► <a href='{}'>{}</a>".format(url, text)
     return mark_safe(output + "\n")
