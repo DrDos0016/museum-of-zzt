@@ -1,16 +1,14 @@
 from datetime import datetime
 
-
-from django.db import models
-from django.db.models import Q
 from django.contrib.auth.models import User
+from django.db import models
 from django.utils.safestring import mark_safe
 
-from museum_site.models.base import BaseModel
 from museum_site.common import profanity_filter
 from museum_site.core.misc import epoch_to_unknown
-from museum_site.templatetags.zzt_tags import char
+from museum_site.models.base import BaseModel
 from museum_site.querysets.review_querysets import *
+from museum_site.templatetags.zzt_tags import char
 
 
 class Review(BaseModel):
@@ -183,7 +181,7 @@ class Review(BaseModel):
             today=datetime.now(),
             review_content=self.content,
             rating=self.rating,
-            debug = kwargs["request"].session.get("DEBUG") if kwargs.get("request") else False
+            debug=kwargs["request"].session.get("DEBUG") if kwargs.get("request") else False
         )
 
         return context

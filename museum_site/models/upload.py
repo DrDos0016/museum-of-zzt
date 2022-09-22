@@ -1,17 +1,12 @@
 import json
 import random
 
-from datetime import datetime
-
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.utils import timezone
 
 from museum_site.models.base import BaseModel
-from museum_site.constants import HOST
 from museum_site.querysets.upload_querysets import *
-
-from museum_site.private import NEW_UPLOAD_WEBHOOK_URL
 
 
 class Upload(BaseModel):
@@ -30,15 +25,10 @@ class Upload(BaseModel):
     announced       -- Announced on Discord via webhook: Y/N
     """
     file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
-    date = models.DateTimeField(
-        default=timezone.now,
-        help_text="Date upload occurred"
-    )
+    date = models.DateTimeField(default=timezone.now, help_text="Date upload occurred")
     edit_token = models.CharField(max_length=16)
     ip = models.GenericIPAddressField(blank=True, null=True)
-    user = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     notes = models.TextField(blank=True)
     announced = models.BooleanField(default=False)
 

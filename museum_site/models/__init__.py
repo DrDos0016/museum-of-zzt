@@ -8,9 +8,9 @@ from .collection import Collection
 from .collection import Collection_Entry
 from .company import Company
 from .content import Content
-from .file import File
 from .detail import Detail
 from .download import Download
+from .file import File
 from .genre import Genre
 from .profile import Profile
 from .review import Review

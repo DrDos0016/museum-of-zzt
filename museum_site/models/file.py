@@ -1,13 +1,10 @@
 import hashlib
-import io
 import os
-import subprocess
 import zipfile
 
 from django.core.cache import cache
 from django.db import models
-from django.db.models import Avg, Q
-from django.template.defaultfilters import date, filesizeformat
+from django.template.defaultfilters import filesizeformat
 from django.utils.safestring import mark_safe
 
 try:
@@ -18,19 +15,13 @@ except ImportError:
 
 from museum.settings import STATIC_URL
 
-from museum_site.common import (
-    zipinfo_datetime_tuple_to_str,
-    record,
-    redirect_with_querystring
-)
+from museum_site.common import zipinfo_datetime_tuple_to_str, record
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH
 from museum_site.core.detail_identifiers import *
 from museum_site.core.zeta_identifiers import *
 from museum_site.core.image_utils import optimize_image
-from museum_site.core.misc import epoch_to_unknown
 from museum_site.models.review import Review
 from museum_site.models.article import Article
-from museum_site.models.genre import Genre
 from museum_site.models.base import BaseModel
 from museum_site.querysets.zfile_querysets import *
 
@@ -423,7 +414,7 @@ class File(BaseModel):
             ratings = Review.objects.average_rating_for_zfile(self.id)
             self.rating = None if ratings["rating__avg"] is None else round(ratings["rating__avg"], 2)
 
-    def calculate_checksum(self, path=None):
+    def calculate_checksum(self, path=None, set_to_results=True):
         # Calculate an md5 checksum of the zip file
         if path is None:
             path = self.phys_path()
@@ -438,8 +429,10 @@ class File(BaseModel):
         except FileNotFoundError:
             return False
 
-        self.checksum = m.hexdigest()
-        return True
+        checksum = m.hexdigest()
+        if set_to_results:
+            self.checksum = checksum
+        return checksum
 
     def calculate_boards(self):
         self.playable_boards = None
@@ -890,7 +883,6 @@ class File(BaseModel):
             context["extras"].insert(0, "museum_site/blocks/extra-collection.html")
         return context
 
-
     def list_block_context(self, extras=None, *args, **kwargs):
         context = super(File, self).initial_context()
         context.update(self.initial_context(view="list"))
@@ -920,7 +912,6 @@ class File(BaseModel):
         cells.append(
             {"datum": "link", "value": (self.release_date or "Unknown"), "url": "/search/?year={}".format(self.release_year(default="unk")), "tag": "td"}
         )
-        #cells.append({"datum": "text", "value": self.rating_str(show_maximum=False) if self.rating else "—", "tag": "td"})
         cells.append({"datum": "text", "value": self.rating_for_list_view(), "tag": "td"})
 
         # Modify download text if needed
@@ -971,7 +962,6 @@ class File(BaseModel):
             context["option"] = kwargs["option"]
         return context
 
-
     def _init_icons(self):
         # Populates major and minor icons for file
         self._minor_icons = []
@@ -1001,7 +991,6 @@ class File(BaseModel):
         else:
             output = "—"
         return output
-
 
     def remove_uploaded_zfile(self, upload):
         message = "Removing ZFile: "
@@ -1044,7 +1033,6 @@ class File(BaseModel):
 
     def get_can_review_string(self):
         return File.REVIEW_LEVELS[self.can_review][1]
-
 
     def scan(self):
         issues = {}
@@ -1100,14 +1088,8 @@ class File(BaseModel):
             checksummed = False
 
         # Calculate file's checksum
-        md5 = None
-        try:
-            resp = subprocess.run(["md5sum", self.phys_path()], stdout=subprocess.PIPE)
-            md5 = resp.stdout[:32].decode("utf-8")
-        except:
-            pass
-
-        if checksummed and md5 and (self.checksum != md5):
+        md5 = self.calculate_checksum(set_to_results=False)
+        if checksummed and (self.checksum != md5):
             issues["checksum_mismatch"] = "Checksum in DB does not match calculated checksum: {} / {}".format(self.checksum, md5)
 
         # Board counts

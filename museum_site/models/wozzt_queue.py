@@ -4,22 +4,19 @@ import random
 import uuid
 import zipfile
 
-from datetime import datetime
 from urllib.parse import quote
 
 import requests
+import zookeeper
+
 from django.db import models
-from django.db.models import Q
 from twitter import *
 
 from museum.settings import STATIC_URL
-from museum_site.models.base import BaseModel
-from museum_site.querysets.wozzt_queue_querysets import *
-
 from museum_site.common import record
 from museum_site.constants import SITE_ROOT, TEMP_PATH
-from museum_site.core.detail_identifiers import *
-from museum_site.models import File
+from museum_site.models import BaseModel, File
+from museum_site.querysets.wozzt_queue_querysets import *
 try:
     from museum_site.private import (
         TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_SECRET,
@@ -27,7 +24,6 @@ try:
     )
 except ModuleNotFoundError:
     print("PRIVATE.PY NOT FOUND. WOZZT QUEUE CANNOT TWEET OR HOOK TO DISCORD")
-import zookeeper
 
 
 class WoZZT_Queue(BaseModel):
@@ -263,7 +259,7 @@ class WoZZT_Queue(BaseModel):
                     self.save()
                     return False
 
-            #record(resp)
+            # record(resp)
             twitter_id = resp.get("id")
             twitter_img = resp["entities"]["media"][0]["media_url"]
 
@@ -356,23 +352,23 @@ class WoZZT_Queue(BaseModel):
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
             columns=[],
-            title={"datum": "title", "value":"-----"},
+            title={"datum": "title", "value": "-----"},
         )
 
         context["columns"].append([
-            {"datum": "text-area", "label":"Tweet", "name": "wozzt-tweet", "value":self.tweet_text(), "readonly":True},
-            {"datum": "link", "label":"Source", "value":"View", "url":self.file.url() + "?file={}&board={}".format(
+            {"datum": "text-area", "label": "Tweet", "name": "wozzt-tweet", "value": self.tweet_text(), "readonly": True},
+            {"datum": "link", "label": "Source", "value": "View", "url": self.file.url() + "?file={}&board={}".format(
                     self.zzt_file, self.board
-                ), "target": "_blank" }
+                ), "target": "_blank"}
         ])
 
         if debug:
-            context["columns"][0].append({"datum": "link", "label":"ID", "value":self.id, "target":"_blank", "kind":"debug", "url":self.admin_url()})
-            context["columns"][0].append({"datum": "custom-wozzt-priority", "pk":self.id, "priority":self.priority, "kind":"debug"})
-            context["columns"][0].append({"datum": "custom-wozzt-delete", "pk":self.id, "kind":"debug"})
+            context["columns"][0].append({"datum": "link", "label": "ID", "value": self.id, "target": "_blank", "kind": "debug", "url": self.admin_url()})
+            context["columns"][0].append({"datum": "custom-wozzt-priority", "pk": self.id, "priority": self.priority, "kind": "debug"})
+            context["columns"][0].append({"datum": "custom-wozzt-delete", "pk": self.id, "kind": "debug"})
         else:
             context["columns"][0].append(
-                {"datum": "text", "label":"Priority", "value":self.priority}
+                {"datum": "text", "label": "Priority", "value": self.priority}
             )
         return context
 

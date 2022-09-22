@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
@@ -14,12 +12,6 @@ class Profile(models.Model):
     context_processors.py for any logged in user. """
     model_name = "Profile"
     objects = Profile_Queryset.as_manager()
-
-    """
-    Fields:
-    user            -- ID of User object
-    patron
-    """
 
     FG_CHOICES = [
         ("gray", "Dark Gray"),
@@ -42,11 +34,7 @@ class Profile(models.Model):
 
     BG_CHOICES = list(FG_CHOICES).append(("transparent", "Transparent"))
 
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     patron = models.BooleanField(default=False)
     patronage = models.IntegerField(default=0)
     patron_email = models.EmailField(blank=True, unique=True)
