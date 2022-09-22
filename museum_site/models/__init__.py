@@ -19,3 +19,6 @@ from .series import Series
 from .upload import Upload
 from .wozzt_queue import WoZZT_Queue
 from .zeta_config import Zeta_Config
+
+# URLs
+from .zfile_urls import ZFile_Urls

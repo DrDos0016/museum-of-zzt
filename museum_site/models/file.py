@@ -20,20 +20,18 @@ from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH
 from museum_site.core.detail_identifiers import *
 from museum_site.core.zeta_identifiers import *
 from museum_site.core.image_utils import optimize_image
+from museum_site.models.zfile_urls import ZFile_Urls
 from museum_site.models.review import Review
 from museum_site.models.article import Article
 from museum_site.models.base import BaseModel
 from museum_site.querysets.zfile_querysets import *
 
-
-class File(BaseModel):
+class File(BaseModel, ZFile_Urls):
     """ File object repesenting an upload to the site """
     objects = ZFile_Queryset.as_manager()
 
     model_name = "File"
-    table_fields = [
-        "DL", "Title", "Author", "Company", "Genre", "Date", "Review"
-    ]
+    table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
     sort_options = [
         {"text": "Title", "val": "title"},
         {"text": "Author", "val": "author"},
@@ -60,8 +58,7 @@ class File(BaseModel):
     detail_ids = None  # Populated by self.init_detail_ids()
 
     SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
-    PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not \
-    been fully checked by staff."
+    PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not been fully checked by staff."
     ICONS = {
         "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role": "explicit-icon"},
         "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its contents have not been fully checked by staff.", "role": "unpub-icon"},
@@ -208,28 +205,6 @@ class File(BaseModel):
         if kwargs.get("new_upload"):
             del kwargs["new_upload"]
         super(File, self).save(*args, **kwargs)
-
-    # URLs
-    def download_url(self):
-        if (not self.id) or self.is_detail(DETAIL_UPLOADED):
-            return "/zgames/uploaded/{}".format(self.filename)
-        else:
-            return "/zgames/{}/{}".format(self.letter, self.filename)
-
-    def play_url(self): return "/file/play/{}/".format(self.key)
-    def review_url(self): return "/file/review/{}/".format(self.key)
-    def view_url(self): return "/file/view/{}/".format(self.key)
-    def article_url(self): return "/file/article/{}/".format(self.key)
-    def attributes_url(self): return "/file/attribute/{}/".format(self.key)
-    def tool_url(self): return "/tools/{}/".format(self.key)
-
-    def screenshot_url(self):
-        if self.screenshot and self.screenshot not in self.SPECIAL_SCREENSHOTS:
-            return "images/screenshots/{}/{}".format(self.letter, self.screenshot)
-        elif self.screenshot:  # Special case
-            return "images/screenshots/{}".format(self.screenshot)
-        else:
-            return "images/screenshots/no_screenshot.png"
 
     # Filepaths
     def phys_path(self): return os.path.join(SITE_ROOT + self.download_url())
@@ -1110,3 +1085,6 @@ class File(BaseModel):
             output += company.title + ", "
         output = output[:-2]
         return output
+
+
+
