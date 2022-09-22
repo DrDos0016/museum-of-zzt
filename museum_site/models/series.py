@@ -3,7 +3,6 @@ import os
 from django.db import models
 from django.db.models import Subquery
 from django.template.defaultfilters import slugify
-from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL

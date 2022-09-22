@@ -1,11 +1,5 @@
 from django.template.loader import render_to_string
-from django.shortcuts import redirect, get_object_or_404
-from django.db import connection
-from django.db.models import Count, Avg, Sum, Q
-from django.core.paginator import Paginator
-from django.core.exceptions import ValidationError
-from django.utils.safestring import mark_safe
-from django.urls import reverse
+from django.shortcuts import redirect
 
 from museum_site.models import *  # TODO
 from museum_site.constants import *

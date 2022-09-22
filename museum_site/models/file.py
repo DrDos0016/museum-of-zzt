@@ -8,7 +8,6 @@ from django.core.cache import cache
 from django.db import models
 from django.db.models import Avg, Q
 from django.template.defaultfilters import date, filesizeformat
-from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 try:

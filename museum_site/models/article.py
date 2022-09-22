@@ -9,8 +9,6 @@ from django.db import models
 from django.db.models import Q
 from django.template import Template, Context
 from django.template.defaultfilters import slugify
-from django.template.loader import render_to_string
-from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL

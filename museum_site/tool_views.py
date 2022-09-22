@@ -12,6 +12,7 @@ from io import StringIO
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.db.models import Q
 from django.shortcuts import render
 from django.template import Context, Template
 from django.template.defaultfilters import linebreaks, urlize, slugify

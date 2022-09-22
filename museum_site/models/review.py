@@ -4,7 +4,6 @@ from datetime import datetime
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
-from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 from museum_site.models.base import BaseModel

@@ -2,13 +2,11 @@ import base64
 import uuid
 import zipfile
 import binascii
-import base64
 import os
 
 from io import BytesIO
 
 from django.http import HttpResponse, JsonResponse
-from django.contrib.admin.views.decorators import staff_member_required
 from PIL import Image
 from markdown_deux.templatetags import markdown_deux_tags
 
@@ -23,9 +21,9 @@ def get_zip_file(request):
     if not request.GET:  # Ask for nothing, receive nothing
         return HttpResponse("")
     letter = request.GET.get("letter")
-    zip = request.GET.get("zip")
+    zip_file = request.GET.get("zip")
     filename = request.GET.get("filename", "")
-    format = request.GET.get("format", "auto")
+    file_format = request.GET.get("format", "auto")
     ext = os.path.splitext(filename.lower())[1]
     uploaded = request.GET.get("uploaded", "false")
     if filename.find(".") == -1:
@@ -35,8 +33,8 @@ def get_zip_file(request):
         letter = "uploaded"
 
     try:
-        zip = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, zip))
-        file = zip.open(filename)
+        zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, zip_file))
+        fh = zip_file.open(filename)
     except NotImplementedError as error:
         record(filename)
         return HttpResponse("Unimplemented Compression Method:" + str(error), status=501)
@@ -49,19 +47,19 @@ def get_zip_file(request):
         )
 
     if ext in (FILE_VIEWER_TEXT_EXTENSIONS):
-        output = file.read()
+        output = fh.read()
 
-        if format == "auto" or format == "utf-8":
+        if file_format == "auto" or file_format == "utf-8":
             try:
                 output = output.decode("utf-8")
                 encoding = "utf-8"
             except UnicodeDecodeError as e:
                 output = output.decode("cp437")
                 encoding = "cp437"
-        elif format == "cp437":
+        elif file_format == "cp437":
             output = output.decode("cp437")
             encoding = "cp437"
-        elif format == "hex":
+        elif file_format == "hex":
             output = "HEXADECIMAL"
             encding = "hex"
 
@@ -77,12 +75,12 @@ def get_zip_file(request):
                   "<pre class='cp437'>{}</pre></div>").format(encoding, output)
         return HttpResponse(output)
     elif ext in (FILE_VIEWER_HEX_EXTENSIONS):
-        return HttpResponse(binascii.hexlify(file.read()))
+        return HttpResponse(binascii.hexlify(fh.read()))
     elif ext in (FILE_VIEWER_B64_EXTENSIONS):
-        b64 = base64.b64encode(file.read())
+        b64 = base64.b64encode(fh.read())
         return HttpResponse(b64)
     elif ext in (FILE_VIEWER_AUDIO_EXTENSIONS):
-        response = HttpResponse(file.read())
+        response = HttpResponse(fh.read())
 
         if ext == ".wav":
             response["Content-Type"] = "audio/wav wav"
@@ -95,7 +93,7 @@ def get_zip_file(request):
 
         return response
     elif ext == ".pld":
-        return HttpResponse(parse_pld(file.read()))
+        return HttpResponse(parse_pld(fh.read()))
 
     return HttpResponse("This file type is not currently supported for embedded content.", status=501)
 
@@ -104,8 +102,8 @@ def debug_file(request):
     if not os.path.isfile("/var/projects/DEV"):
         return HttpResponse("Not on production.")
     if request.GET.get("file"):
-        file = open(request.GET["file"], "rb")
-        return HttpResponse(binascii.hexlify(file.read()))
+        fh = open(request.GET["file"], "rb")
+        return HttpResponse(binascii.hexlify(fh.read()))
     else:
         return HttpResponse("No file provided.")
 
@@ -123,7 +121,7 @@ def get_author_suggestions(request):
                 output["suggestions"].append(a)
                 seen.append(a.lower())
 
-    output["suggestions"] = sorted(output["suggestions"], key= lambda s: s.casefold())
+    output["suggestions"] = sorted(output["suggestions"], key=lambda s: s.casefold())
     return JsonResponse(output)
 
 
@@ -136,7 +134,7 @@ def get_company_suggestions(request, max_suggestions=20):
     for c in qs:
         output["suggestions"].append(c.title)
 
-    output["suggestions"] = sorted(output["suggestions"], key= lambda s: s.casefold())
+    output["suggestions"] = sorted(output["suggestions"], key=lambda s: s.casefold())
     return JsonResponse(output)
 
 
@@ -179,7 +177,6 @@ def wozzt_queue_add(request):
 
     if not request.POST or not request.user.is_staff:
         return HttpResponse("")
-
 
     # Create queue object
     try:
@@ -264,6 +261,7 @@ def add_to_collection(request):
     resp = "SUCCESS"
     return HttpResponse(resp)
 
+
 def remove_from_collection(request):
     if not request.POST.get("collection_id"):
         return HttpResponse("")
@@ -286,6 +284,7 @@ def remove_from_collection(request):
 
     resp = "SUCCESS"
     return HttpResponse(resp)
+
 
 def get_collection_addition(request):
     """ Get the latest added file to a collection """

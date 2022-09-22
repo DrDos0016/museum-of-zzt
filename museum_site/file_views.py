@@ -3,7 +3,6 @@ import urllib.parse
 import zipfile
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from museum_site.common import *
 from museum_site.constants import *
