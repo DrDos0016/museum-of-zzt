@@ -12,19 +12,6 @@ class BaseModel(models.Model):
         name = self.model_name.replace("-", "_").lower()
         return "/admin/museum_site/{}/{}/change/".format(name, self.id)
 
-    def url(self):
-        raise NotImplementedError('Subclasses must implement "url" method.')
-
-    def preview_url(self):
-        raise NotImplementedError(
-            'Subclasses must implement "preview_url" method.'
-        )
-
-    def scrub(self):
-        raise NotImplementedError(
-            'Subclasses must implement "scrub" method.'
-        )
-
     def _init_icons(self):
         # Stub
         self._minor_icons = []

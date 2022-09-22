@@ -616,16 +616,6 @@ class File(BaseModel, ZFile_Urls):
 
     def release_year(self, default=""): return default if self.release_date is None else str(self.release_date)[:4]
 
-    def url(self): return "/file/view/{}/".format(self.key)  # Use file viewer as file's default URL
-
-    def preview_url(self):
-        if self.screenshot:
-            if self.screenshot not in self.SPECIAL_SCREENSHOTS:
-                return os.path.join(STATIC_URL, "images/screenshots/{}/{}".format(self.letter, self.screenshot))
-            else:
-                return os.path.join(STATIC_URL, "images/screenshots/{}".format(self.screenshot))
-        return os.path.join(STATIC_URL, "images/screenshots/no_screenshot.png")
-
     @mark_safe
     def rating_str(self, show_maximum=True):
         if self.rating is not None:
