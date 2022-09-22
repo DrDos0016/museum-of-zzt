@@ -1,9 +1,4 @@
-from django.http import Http404
-from django.http import HttpResponse
-from django.http import QueryDict
-from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.template.defaultfilters import slugify
 from django.shortcuts import redirect, get_object_or_404
 from django.db import connection
 from django.db.models import Count, Avg, Sum, Q
@@ -12,27 +7,14 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.urls import reverse
 
-from museum_site.models import *
+from museum_site.models import *  # TODO
 from museum_site.constants import *
-from museum_site.private import NEW_UPLOAD_WEBHOOK_URL, NEW_REVIEW_WEBHOOK_URL, BANNED_IPS
+from museum_site.private import BANNED_IPS
 
-from datetime import datetime, date, timezone, timedelta
-from io import BytesIO
-from random import randint, shuffle, seed
-from time import time
+from datetime import datetime
 import codecs
-import glob
-import json
-import math
-import os
-import re
-import subprocess
-import shutil
-import sys
 import urllib.parse
-import zipfile
 
-import requests
 from PIL import Image
 
 def qs_sans(params, key):

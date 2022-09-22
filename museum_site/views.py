@@ -1,4 +1,8 @@
+import math
+import re
+
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponse
 from django.shortcuts import render
 from museum_site.common import *
 from museum_site.constants import *

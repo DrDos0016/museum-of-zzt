@@ -11,7 +11,6 @@ import requests
 from django.db import models
 from django.db.models import Q
 from twitter import *
-from PIL import Image
 
 from museum.settings import STATIC_URL
 from museum_site.models.base import BaseModel

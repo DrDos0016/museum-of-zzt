@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from django.http import Http404, HttpResponse
 

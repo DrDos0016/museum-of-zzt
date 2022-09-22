@@ -1,4 +1,6 @@
+from django.http import Http404
 from django.urls import resolve
+
 from museum_site.common import redirect_with_querystring
 
 def dev_only(func, *args, **kwargs):
