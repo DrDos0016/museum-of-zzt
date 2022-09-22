@@ -1,7 +1,5 @@
 from django.shortcuts import render
 
-from museum_site.common import *
-from museum_site.constants import *
 from museum_site.core.detail_identifiers import *
 from museum_site.forms import *
 

@@ -7,7 +7,6 @@ import shutil
 import zipfile
 
 from datetime import datetime
-from io import StringIO
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
@@ -15,18 +14,16 @@ from django.core.cache import cache
 from django.db.models import Q
 from django.shortcuts import render
 from django.template import Context, Template
-from django.template.defaultfilters import linebreaks, urlize, slugify
+from django.template.defaultfilters import slugify
 from django.urls import get_resolver
+
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core import *
 from museum_site.core.file_utils import place_uploaded_file
 from museum_site.core.image_utils import crop_file, optimize_image
-from museum_site.models import *
 from museum_site.forms import *
-
-from internetarchive import upload
-from PIL import Image
+from museum_site.models import *
 
 try:
     import zookeeper
@@ -378,6 +375,7 @@ def mirror(request, key):
     data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
 
+
 @staff_member_required
 def orphaned_objects(request):
     """ Returns page listing objects that aren't properly associated with any others """
@@ -445,17 +443,8 @@ def orphaned_objects(request):
         if i.file_set.count() == 0:
             data["zeta_configs"].append(i)
 
-
-    """
-    <h2>Orphaned Details</h2>
-    <h2>Orphaned Downloads</h2>
-    <h2>Orphaned Genres</h2>
-    <h2>Orphaned Profiles</h2>
-    <h2>Orphaned Reviews</h2>
-    <h2>Orphaned Uploads</h2>
-    <h2>Orphaned Zeta Configs</h2>
-    """
     return render(request, "museum_site/tools/orphaned-objects.html", data)
+
 
 @staff_member_required
 def patron_article_rotation(request):
