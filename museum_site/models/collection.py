@@ -1,5 +1,3 @@
-import os
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
@@ -77,7 +75,10 @@ class Collection(BaseModel):
     preview_image = models.ForeignKey("File", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     default_sort = models.CharField(
         max_length=20, choices=SORT_CHOICES, default="manual",
-        help_text='The default sorting method when viewing this collection\'s contents. Set to "Manual Order" to display contents in an arbitrary order of your choosing.',
+        help_text=(
+            'The default sorting method when viewing this collection\'s contents. '
+            'Set to "Manual Order" to display contents in an arbitrary order of your choosing.'
+        ),
     )
 
     # Associations
@@ -183,7 +184,10 @@ class Collection_Entry(models.Model):
 
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE, blank=True, null=True)
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True)
-    collection_description = models.TextField(help_text="Optional description for the file as part of the collection. Markdown supported.", blank=True, default="")
+    collection_description = models.TextField(
+        help_text="Optional description for the file as part of the collection. Markdown supported.",
+        blank=True, default=""
+    )
     order = models.IntegerField(default=1, db_index=True)
 
     class Meta:

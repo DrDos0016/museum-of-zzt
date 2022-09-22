@@ -41,12 +41,7 @@ class DetailManager(models.Manager):
         cats.sort(key=lambda k: k["priority"])
         return cats
 
-
     def form_list(self):
-        os_details = [
-            DETAIL_DOS, DETAIL_WIN16, DETAIL_WIN32, DETAIL_WIN64, DETAIL_OSX,
-            DETAIL_LINUX
-        ]
         qs = self.all()
 
         output = []
@@ -54,6 +49,7 @@ class DetailManager(models.Manager):
             output.append((str(d.id), d.title))
 
         return output
+
 
 class Detail(BaseModel):
     CATEGORY_CHOICES = [
@@ -79,10 +75,8 @@ class Detail(BaseModel):
     def __str__(self):
         return "[" + str(self.id) + "] " + self.title
 
-
     def url(self):
         return "/detail/view/{}/".format(self.slug)
-
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)

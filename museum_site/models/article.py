@@ -1,22 +1,17 @@
 import os
-import re
-
-from datetime import datetime
 
 from bs4 import BeautifulSoup
 
 from django.db import models
-from django.db.models import Q
 from django.template import Template, Context
 from django.template.defaultfilters import slugify
-from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
-from museum_site.models.base import BaseModel
 from museum_site.constants import *
 from museum_site.core.misc import epoch_to_unknown
-from museum_site.querysets.article_querysets import *
+from museum_site.models.base import BaseModel
 from museum_site.private import PASSWORD2DOLLARS, PASSWORD5DOLLARS
+from museum_site.querysets.article_querysets import *
 
 
 class Article(BaseModel):
@@ -323,7 +318,6 @@ class Article(BaseModel):
                 patronage = UPCOMING_ARTICLE_MINIMUM_PATRONAGE
             elif secret == PASSWORD5DOLLARS:
                 patronage = UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE
-
 
         if view == "detailed" or view == "gallery":
             if self.published == self.UPCOMING and patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:

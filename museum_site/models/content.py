@@ -4,7 +4,6 @@ import zipfile
 from django.db import models
 
 from museum_site.common import zipinfo_datetime_tuple_to_str
-from museum_site.core.detail_identifiers import *
 
 
 class Content(models.Model):
