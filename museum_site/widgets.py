@@ -12,7 +12,6 @@ class UploadFileWidget(forms.FileInput):
         self.target_text = target_text
         self.allowed_filetypes = allowed_filetypes
 
-
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         context["zfi"] = self.zfi
@@ -32,7 +31,6 @@ class GroupedCheckboxWidget(forms.MultiWidget):
     template_name = "museum_site/widgets/grouped-checkbox-widget.html",
 
     def __init__(self, name="", value=[], attrs={}, widgets=[]):
-        #super().__init__(widgets=widgets)
         self.name = name
         self.value = value
         self.attrs = attrs
@@ -40,7 +38,6 @@ class GroupedCheckboxWidget(forms.MultiWidget):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        #context["choices"] = self.choices
         context["choices"] = self.add_headers(self.choices)
         context["name"] = name
         context["value"] = value
@@ -73,7 +70,7 @@ class Scrolling_Radio_Widget(forms.Select):
         self.filterable = filterable
         self.buttons = buttons
         self.show_selected = show_selected
-        self.default=default
+        self.default = default
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
@@ -99,7 +96,7 @@ class Ordered_Scrolling_Radio_Widget(forms.SelectMultiple):
         self.filterable = filterable
         self.buttons = buttons
         self.show_selected = show_selected
-        self.default=default
+        self.default = default
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
@@ -125,7 +122,7 @@ class Scrolling_Checklist_Widget(forms.SelectMultiple):
         self.filterable = filterable
         self.buttons = buttons
         self.show_selected = show_selected
-        self.default=default
+        self.default = default
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)

@@ -1,6 +1,5 @@
 import os
 
-from django.apps import apps
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import RedirectView
 from django.urls import include, path
@@ -9,14 +8,12 @@ from museum.settings import BASE_DIR, DEBUG
 if DEBUG:
     from django.conf.urls.static import static
 
-import museum_site.admin  # noqa: E402
 import museum_site.ajax  # noqa: E402
 import museum_site.article_views  # noqa: E402
 import museum_site.collection_views  # noqa: E402
 import museum_site.debug_views  # noqa: E402
 import museum_site.file_views  # noqa: E402
 import museum_site.generic_model_views  # noqa: E402
-# import museum_site.errors  # noqa: E402
 import museum_site.feeds  # noqa: E402
 import museum_site.help_views  # noqa: E402
 import museum_site.review_views  # noqa: E402
@@ -205,7 +202,7 @@ urlpatterns = [
     path("series/<int:series_id>/<slug:slug>/", museum_site.generic_model_views.Series_Contents_View.as_view(), name="series_overview"),
 
     # /tool/
-    #path("tool/tinyzoo-converter/", museum_site.tool_views.tinyzoo_converter, name="tinyzoo_converter"),
+    # path("tool/tinyzoo-converter/", museum_site.tool_views.tinyzoo_converter, name="tinyzoo_converter"),
 
     # /tools/ -- THESE WILL BE RENAMED FOR STAFF
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
