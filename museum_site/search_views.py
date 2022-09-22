@@ -1,17 +1,9 @@
-from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
-from django.views.generic.edit import FormView
+
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core.detail_identifiers import *
 from museum_site.forms import *
-from museum_site.models import *
-
-ADV_SEARCH_DEFAULTS = [
-    DETAIL_ZZT,
-    DETAIL_SZZT,
-    DETAIL_UTILITY,
-]
 
 
 def advanced_search(request):
@@ -32,7 +24,7 @@ def advanced_search(request):
 
 def article_search(request):
     """ Returns page containing multiple filters to use when searching """
-    data = {"title": "Article Search",}
+    data = {"title": "Article Search"}
 
     if request.GET:
         form = Article_Search_Form(request.GET)

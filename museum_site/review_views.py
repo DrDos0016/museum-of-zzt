@@ -1,16 +1,13 @@
 import math
 import re
 
-from django import forms
-from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render
 from django.views.generic.edit import FormView
 from django.views.generic import ListView
 
 from museum_site.common import *
 from museum_site.constants import *
-from museum_site.models import *
 from museum_site.forms import Review_Search_Form
+from museum_site.models import *
 
 
 class Review_Search_Form_View(FormView):
@@ -23,6 +20,7 @@ class Review_Search_Form_View(FormView):
         context = super().get_context_data(**kwargs)
         context["title"] = self.title
         return context
+
 
 class Reviewer_Directory_View(ListView):
     model = Review
@@ -43,17 +41,11 @@ class Reviewer_Directory_View(ListView):
         context["query_string"] = self.query_string
         context["items"] = []
 
-
         # Break the list of results into 4 columns
-        db_author_list = sorted(
-            self.object_list, key=lambda s: re.sub(r'(\W|_)', "é", s.lower())
-        )
+        db_author_list = sorted(self.object_list, key=lambda s: re.sub(r'(\W|_)', "é", s.lower()))
 
         for entry in db_author_list:
-            item = {
-                "name": entry,
-                "letter": "",
-            }
+            item = {"name": entry, "letter": ""}
             if entry[0] in "1234567890":
                 item["letter"] = "#"
             elif entry[0].upper() not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":

@@ -20,7 +20,6 @@ class GetField(forms.Field):
         super().__init__(**kwargs)
 
 
-
 class Manual_Field(forms.NullBooleanField):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

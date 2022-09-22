@@ -15,9 +15,6 @@ from PIL import Image
 from internetarchive import upload as ia_upload
 
 from museum_site.core import *
-from museum_site.models import *
-from museum_site.fields import *
-from museum_site.widgets import *
 from museum_site.common import record
 from museum_site.constants import (
     LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, TERMS, UPLOAD_TEST_MODE, SITE_ROOT, TEMP_PATH, YEAR, EMAIL_ADDRESS
@@ -25,7 +22,10 @@ from museum_site.constants import (
 from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import delete_this
 from museum_site.core.form_utils import any_plus, get_sort_option_form_choices
+from museum_site.fields import *
+from museum_site.models import *
 from museum_site.private import IA_ACCESS, IA_SECRET
+from museum_site.widgets import *
 
 
 STUB_CHOICES = (("A", "First"), ("B", "Second"), ("C", "Third"))  # For debugging
@@ -958,7 +958,6 @@ class Livestream_Description_Form(forms.Form):
         self.fields["associated"].widget.choices = valid_choices
 
 
-
 class Prep_Publication_Pack_Form(forms.Form):
     use_required_attribute = False
     submit_value = "Generate Publication Pack"
@@ -1521,7 +1520,7 @@ class Livestream_Vod_Form(forms.Form):
     use_required_attribute = False
     heading = "Add Livestream VOD"
     submit_value = "Add Livestream VOD"
-    attrs = {"method": "POST", "enctype": "multipart/form-data",}
+    attrs = {"method": "POST", "enctype": "multipart/form-data"}
 
     author = forms.CharField(initial="Dr. Dos")
     title = forms.CharField(widget=Enhanced_Text_Widget(char_limit=80), help_text="Used exactly as entered. Don't forget the 'Livestream - ' prefix!")
@@ -1598,7 +1597,7 @@ class Livestream_Vod_Form(forms.Form):
         a.content = template.format(video_id=self.cleaned_data["video_url"], desc=final_desc)
 
         # Process the uploaded image
-        folder = os.path.join( SITE_ROOT, "museum_site", "static", "articles", str(self.cleaned_data["date"])[:4], a.static_directory)
+        folder = os.path.join(SITE_ROOT, "museum_site", "static", "articles", str(self.cleaned_data["date"])[:4], a.static_directory)
         try:
             os.mkdir(folder)
         except FileExistsError:
@@ -1660,6 +1659,7 @@ class Upload_Delete_Confirmation_Form(forms.Form):
         if self.cleaned_data["confirmation"].upper() != "DELETE":
             self.add_error("confirmation", "You must provide confirmation before an upload can be deleted!")
 
+
 """ ON HITATUS
 class Tinyzoo_Converter_Form(forms.Form):
     use_required_attribute = False
@@ -1670,7 +1670,9 @@ class Tinyzoo_Converter_Form(forms.Form):
         help_text=("Select the file you wish to convert. File must be in .ZZT format."),
         label="Input file", widget=UploadFileWidget(target_text="Drag & Drop a ZZT File Here or Click to Choose", allowed_filetypes=".zzt")
     )
-    output_filename = forms.CharField(label="Custom output filename:", help_text="Manually specified filename for the converted file. Leave blank for &lt;world&gt;.gbc")
+    output_filename = forms.CharField(
+        label="Custom output filename:", help_text="Manually specified filename for the converted file. Leave blank for &lt;world&gt;.gbc"
+    )
     engine = forms.ChoiceField(
         choices=(
             ("gbx", "Game Boy (Color)"),

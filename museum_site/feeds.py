@@ -1,10 +1,8 @@
 from django.contrib.syndication.views import Feed
-from django.db.models import Q
 from django.urls import reverse
 from django.template.defaultfilters import slugify
 
 from museum_site.models import Article, File, Review
-from museum_site.core.detail_identifiers import *
 
 
 class LatestArticlesFeed(Feed):
@@ -24,9 +22,11 @@ class LatestArticlesFeed(Feed):
     def item_link(self, item):
         return reverse("article_view", args=[item.pk, slugify(item.title)])
 
+
 class Upcoming_Articles_Feed(LatestArticlesFeed):
     def items(self):
         return Article.objects.exclude(published=Article.REMOVED).exclude(published=Article.UNPUBLISHED).order_by("-id")[:25]
+
 
 class Unpublished_Articles_Feed(LatestArticlesFeed):
     def items(self):

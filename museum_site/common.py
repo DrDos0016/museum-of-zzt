@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
-from django.shortcuts import redirect
+from django.shortcuts import redirect, reverse
 
-from museum_site.models import *  # TODO
+from museum_site.models import *
 from museum_site.constants import *
 from museum_site.private import BANNED_IPS
 

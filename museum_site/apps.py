@@ -43,7 +43,8 @@ class Museum_Site_Config(AppConfig):
                 missing.append(name)
         if missing:
             print("------------ Missing Non-Repository Content -----------")
-            for m in missing: print(m)
+            for m in missing:
+                print(m)
 
         # Initialize cache
         print("-------------------- Initializing Cache --------------------")

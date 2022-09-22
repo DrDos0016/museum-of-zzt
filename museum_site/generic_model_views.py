@@ -9,12 +9,12 @@ from django.views.generic import ListView
 
 from markdown_deux.templatetags import markdown_deux_tags
 
-from museum_site.models import *
 from museum_site.common import banned_ip
 from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.form_utils import clean_params
 from museum_site.forms import ReviewForm
+from museum_site.models import *
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
@@ -245,6 +245,7 @@ def prepare_roulette(request):
     else:
         return redirect("/file/roulette/?seed={}".format(int(time())))
 
+
 class ZFile_Article_List_View(Model_List_View):
     model = Article
 
@@ -339,7 +340,6 @@ class ZFile_Review_List_View(Model_List_View):
             context["recent"] = review.pk
             return context
 
-
         context["form"] = review_form
         return context
 
@@ -399,7 +399,7 @@ class Review_List_View(Model_List_View):
             context["sort_options"].remove({"text": "Reviewer", "val": "reviewer"})
 
         # TODO: This properly adds the link, but the form isn't populated with the current search params
-        #if self.request.GET:
+        # if self.request.GET:
         #    context["query_edit_url_name"] = "review_search"
         return context
 
