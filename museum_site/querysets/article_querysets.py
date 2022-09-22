@@ -1,8 +1,9 @@
-from django.db import models
 from django.db.models import Q
 
+from museum_site.querysets.base import Base_Queryset
 
-class Article_Queryset(models.QuerySet):
+
+class Article_Queryset(Base_Queryset):
     def credited_authors(self):
         """ Return qs of all named authors associated with at least one article """
         return self.exclude(Q(author="Unknown") | Q(author="N/A")).only("author")

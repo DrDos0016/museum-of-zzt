@@ -1,8 +1,7 @@
-from django.db import models
 from django.db.models import Avg, Q
 
 from museum_site.querysets.base import Base_Queryset
-from museum_site.models import *
+
 
 class Review_Queryset(Base_Queryset):
     def average_rating_for_zfile(self, zfile_id):

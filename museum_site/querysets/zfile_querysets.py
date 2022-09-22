@@ -1,12 +1,11 @@
 from random import randint, seed, shuffle
 
-from django.db import models
 from django.db.models import Q
 
-from museum_site.querysets.base import Base_Queryset
 from museum_site.core.detail_identifiers import *
 from museum_site.core.zeta_identifiers import *
-from museum_site.models import *
+from museum_site.querysets.base import Base_Queryset
+
 
 class ZFile_Queryset(Base_Queryset):
     def advanced_search(self, p):
@@ -134,7 +133,6 @@ class ZFile_Queryset(Base_Queryset):
 
         zgame = qs.order_by("?").first()
         return zgame
-
 
     def random_zzt_world(self):
         """ Returns a random zfile with ZZT detail, excluding LOST/REMOVED/UPLOADED/CORRUPT details, and excluding EXPLICIT status """
