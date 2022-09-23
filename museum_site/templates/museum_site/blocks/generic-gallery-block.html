@@ -1,5 +1,6 @@
+{% load static %}
 <div class="model-block gallery{% for r in roles %} {{r}}{% endfor %}" data-model="{{model}}" data-pk="{{pk}}" id="{{hash_id}}" data-generic="GENERIC">
-    <img class="preview-image thumbnail {% if not nozoom %}zoomable{% endif %}" src="{{preview.url}}" alt="{{preview.url}}">
+    <img class="preview-image thumbnail {% if not nozoom %}zoomable{% endif %}" src="{% static preview.url %}" alt="{{preview.url}}">
     <h2 class="title">{% include "museum_site/datum/"|add:title.datum|add:"-datum.html" with f=title %}</h2>
     <div class="data">
         {% for col in columns %}

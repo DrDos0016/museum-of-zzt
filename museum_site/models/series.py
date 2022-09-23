@@ -34,7 +34,7 @@ class Series(BaseModel):
     }
 
     # Constants
-    PREVIEW_DIRECTORY = os.path.join(STATIC_URL, "pages/series-directory/")
+    PREVIEW_DIRECTORY = os.path.join("pages/series-directory/")
     PREVIEW_DIRECTORY_FULL_PATH = os.path.join(
         STATIC_PATH, "pages/series-directory/"
     )

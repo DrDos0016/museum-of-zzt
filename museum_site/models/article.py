@@ -126,7 +126,7 @@ class Article(BaseModel):
         return "/article/view/{}/{}/".format(self.id, slugify(self.title))
 
     def preview_url(self):
-        return os.path.join(STATIC_URL, self.path(), "preview.png")
+        return os.path.join(self.path(), "preview.png")
 
     def path(self):
         year = self.publish_date.year if self.publish_date.year != 1970 else "unk"

@@ -35,7 +35,7 @@ def discord_announce_review(review, env=None):
         return False
 
     preview_url = HOST + "static/" + urllib.parse.quote(
-         review.zfile.screenshot_url()
+         review.zfile.preview_url()
     )
 
     discord_post = (
@@ -91,7 +91,7 @@ def discord_announce_upload(upload, env=None):
         cache.set("DISCORD_LAST_ANNOUNCED_FILE_NAME", zfile.title)
 
     preview_url = HOST + "static/" + urllib.parse.quote(
-         zfile.screenshot_url()
+         zfile.preview_url()
     )
 
     if zfile.release_date:

@@ -106,8 +106,8 @@ def field_check(f):
     if f.screenshot == "":
         issues["warnings"].append("No screenshot.")
 
-    if f.screenshot and (not os.path.isfile(os.path.join(STATIC_PATH, f.screenshot_url()))):
-        issues["errors"].append("Screenshot does not exist at {}".format(f.screenshot_url()))
+    if f.screenshot and (not os.path.isfile(os.path.join(STATIC_PATH, f.preview_url()))):
+        issues["errors"].append("Screenshot does not exist at {}".format(f.preview_url()))
 
     if f.ssv_company == None:
         issues["warnings"].append("Company is null. Use empty string for files not published under a company.")

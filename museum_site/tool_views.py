@@ -261,7 +261,7 @@ def manage_details(request, key):
     data = {"title": "Manage Details"}
     data["file"] = File.objects.get(key=key)
 
-    with ZipFile(data["file"].phys_path(), "r") as zf:
+    with zipfile.ZipFile(data["file"].phys_path(), "r") as zf:
         data["file_list"] = zf.namelist()
     data["file_list"].sort()
 
@@ -612,7 +612,7 @@ def publish(request, key):
             key=data["file"].key
         )
 
-    with ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
+    with zipfile.ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
         data["file_list"] = zf.namelist()
     data["file_list"].sort()
 
@@ -1025,7 +1025,7 @@ def set_screenshot(request, key):
     if not HAS_ZOOKEEPER:
         return HttpResponse("Zookeeper library not found.")
 
-    with ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
+    with zipfile.ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
         all_files = zf.namelist()
         for f in all_files:
             if f.lower().endswith(".zzt"):
@@ -1046,7 +1046,7 @@ def set_screenshot(request, key):
         zfile.basic_save()
 
     if request.GET.get("file"):
-        with ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
+        with zipfile.ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
             zf.extract(
                 request.GET["file"],
                 path=SITE_ROOT + "/museum_site/static/data/"

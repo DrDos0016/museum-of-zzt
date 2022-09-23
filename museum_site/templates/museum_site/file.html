@@ -33,7 +33,7 @@ var details = [{% for d in file.details.all %}{{d.id}}, {% endfor %}];
 {% endif %}
 <div id="fv-main">
     <div class="output preview active" id="preview-envelope">
-        <img src="{% static file.screenshot_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview">
+        <img src="{% static file.preview_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview">
         {% if file.description %}<p>{{file.description}}</p>{% endif %}
     </div>
     <div class="output image" id="image-envelope">
@@ -70,7 +70,7 @@ var details = [{% for d in file.details.all %}{{d.id}}, {% endfor %}];
 
 <div id="file-list">
     <ul>
-    <li class="preview-image-link selected" data-img="{% static file.screenshot_url %}">Overview</li>
+    <li class="preview-image-link selected" data-img="{% static file.preview_url %}">Overview</li>
     {% for file in files %}
     <li class="zip-content">{{file}}</li>
     {% endfor %}

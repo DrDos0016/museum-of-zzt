@@ -1024,8 +1024,8 @@ class File(BaseModel, ZFile_Urls):
             issues["release_date_source"] = "Release source is blank, but release date is set."
         if self.screenshot == "":
             issues["preview_image"] = "No preview image."
-        if self.screenshot and (not os.path.isfile(os.path.join(STATIC_PATH, self.screenshot_url()))):
-            issues["preview_image_missing"] = "Screenshot does not exist at {}".format(self.screenshot_url())
+        if self.screenshot and (not os.path.isfile(os.path.join(STATIC_PATH, self.preview_url()))):
+            issues["preview_image_missing"] = "Screenshot does not exist at {}".format(self.preview_url())
 
         # Review related
         reviews = Review.objects.filter(zfile_id=self.id)

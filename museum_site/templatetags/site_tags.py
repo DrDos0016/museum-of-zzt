@@ -268,9 +268,7 @@ def meta_tags(*args, **kwargs):
                 kwargs["file"].release_date.year
             )
         tags["og:title"][1] = kwargs["file"].title + " - Museum of ZZT"
-        tags["og:image"][1] = base_url + STATIC_URL + (
-            kwargs["file"].screenshot_url()
-        )
+        tags["og:image"][1] = base_url + kwargs["file"].preview_url()
     elif kwargs.get("series"):
         tags["description"][1] = kwargs["series"].description
         tags["og:title"][1] = kwargs["series"].title + " - Museum of ZZT"
