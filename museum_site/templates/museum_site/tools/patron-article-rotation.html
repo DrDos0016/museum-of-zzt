@@ -11,7 +11,7 @@
 {% for a in articles %}
 {% if forloop.first %}<p><b>NEW!</b></p>{% endif %}
 {% if forloop.counter == 2 %}<p><b>Also Available:</b></p>{% endif %}
-<img src="{{a.preview_url}}" width="240px" height="175px"><br>
+<img src="{% static a.preview_url %}" width="240px" height="175px"><br>
 <p>[{{a.early_access_price}}] <b><a href="{{a.url}}" target="_blank">{{a.title}}</a></b> [Estimated public release: {{a.publish_date}}]</p>
 <p>{{a.description}}</p>
 <p>============================================================</p>

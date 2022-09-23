@@ -230,13 +230,11 @@ def guide_words(*args, **kwargs):
 
 @register.simple_tag()
 def meta_tags(*args, **kwargs):
-    # url = kwargs.get("url", "https://museumofzzt.com/").split("?")[0]
-
     # Default values
-    base_url = "{}://{}".format(PROTOCOL, DOMAIN)
+    base_url = "{}://{}{}".format(PROTOCOL, DOMAIN, STATIC_URL)
     path = kwargs.get("path", "").split("?")[0]  # Sans QS
     url = base_url + path
-    og_default = "{}{}images/og_default.jpg".format(base_url, STATIC_URL)
+    og_default = "{}images/og_default.jpg".format(base_url)
     tags = {
         "author": ["name", ADMIN_NAME],
         "description": [
@@ -258,15 +256,11 @@ def meta_tags(*args, **kwargs):
         tags["og:image"][1] = base_url + kwargs["article"].preview_url()
     elif kwargs.get("file") and kwargs.get("file") != "Local File Viewer":
         tags["author"][1] = kwargs["file"].author
-        tags["description"][1] = '{} by {}'.format(
-            kwargs["file"].title, kwargs["file"].author
-        )
+        tags["description"][1] = '{} by {}'.format(kwargs["file"].title, kwargs["file"].author)
         if kwargs["file"].companies.count():
             tags["description"][1] += " of {}".format(kwargs["file"].get_all_company_names())
         if kwargs["file"].release_date:
-            tags["description"][1] += " ({})".format(
-                kwargs["file"].release_date.year
-            )
+            tags["description"][1] += " ({})".format(kwargs["file"].release_date.year)
         tags["og:title"][1] = kwargs["file"].title + " - Museum of ZZT"
         tags["og:image"][1] = base_url + kwargs["file"].preview_url()
     elif kwargs.get("series"):

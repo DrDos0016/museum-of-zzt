@@ -8,7 +8,7 @@
 
 {% block content %}
 <div id="article-meta">
-    <div class="preview-container"><img src="{{article.preview_url}}" class="screenshot-thumb preview"></div>
+    <div class="preview-container"><img src="{% static article.preview_url %}" class="screenshot-thumb preview"></div>
     <div class="info">
         <h{% if file %}2{% else %}1{% endif %}>{{article.title}}</h{% if file %}2{% else %}1{% endif %}>
         <div>

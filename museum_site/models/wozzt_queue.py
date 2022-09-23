@@ -65,7 +65,7 @@ class WoZZT_Queue(BaseModel):
         return "X"
 
     def preview_url(self):
-        return os.path.join(STATIC_URL, "wozzt-queue", self.uuid + ".png")
+        return os.path.join("wozzt-queue", self.uuid + ".png")
 
     def roll(self, category="wozzt", title_screen=False):
         self.uuid = str(uuid.uuid4())
