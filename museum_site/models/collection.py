@@ -153,6 +153,17 @@ class Collection(BaseModel):
             context["columns"][0].insert(0, {"datum": "text", "label": "Visibility", "value": self.visibility_str})
         return context
 
+    def get_meta_tag_context(self):
+        """ Returns a dict of keys and values for <meta> tags  """
+        tags = {}
+        tags["author"] = ["name", self.user.username]
+        tags["description"] = ["name", '"{}" a collection by {}.'.format(self.title, self.user.username)]
+
+        tags["og:title"] = ["property", self.title + " - Museum of ZZT"]
+        tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
+        return tags
+
+
 
 class Collection_Entry(models.Model):
     sort_options = [

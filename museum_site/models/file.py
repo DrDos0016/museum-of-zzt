@@ -1077,4 +1077,16 @@ class File(BaseModel, ZFile_Urls):
         return output
 
 
+    def get_meta_tag_context(self):
+        """ Returns a dict of keys and values for <meta> tags  """
+        tags = {}
+        tags["author"] = ["name", self.author.replace("/", ", ")]
+        tags["description"] = ["name", '"{}" by {}.'.format(self.title, self.author.replace("/", ", "))]
+        if self.companies.count():
+            tags["description"][1] += " Published by {}.".format(self.get_all_company_names())
+        if self.release_date:
+            tags["description"][1] += " ({})".format(self.release_date.year)
 
+        tags["og:title"] = ["property", self.title + " - Museum of ZZT"]
+        tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
+        return tags

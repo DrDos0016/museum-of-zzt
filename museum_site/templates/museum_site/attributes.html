@@ -2,7 +2,7 @@
 {% load static %}
 {% load site_tags %}
 
-{% block meta %}{% meta_tags path=request.get_full_path file=file %}{% endblock %}
+{% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}{% endblock %}
 
 {% block content %}
 {% gblock file %}

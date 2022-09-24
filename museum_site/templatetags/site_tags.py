@@ -231,10 +231,10 @@ def guide_words(*args, **kwargs):
 @register.simple_tag()
 def meta_tags(*args, **kwargs):
     # Default values
-    base_url = "{}://{}{}".format(PROTOCOL, DOMAIN, STATIC_URL)
+    base_url = "{}://{}{}".format(PROTOCOL, DOMAIN, STATIC_URL[:-1])
     path = kwargs.get("path", "").split("?")[0]  # Sans QS
     url = base_url + path
-    og_default = "{}images/og_default.jpg".format(base_url)
+    og_default = "images/og_default.jpg"
     tags = {
         "author": ["name", ADMIN_NAME],
         "description": [
@@ -244,41 +244,16 @@ def meta_tags(*args, **kwargs):
             "indie-made ZZT worlds spanning its 30+ year history"
         ],
         "og:type": ["property", "website"],
-        "og:url": ["property", url],
+        "og:url": ["property", "https://museumofzzt.com" + path],
         "og:title": ["property", "Museum of ZZT"],
         "og:image": ["property", og_default],
     }
 
-    if kwargs.get("article"):
-        tags["author"][1] = kwargs["article"].author
-        tags["description"][1] = kwargs["article"].description
-        tags["og:title"][1] = kwargs["article"].title + " - Museum of ZZT"
-        tags["og:image"][1] = base_url + kwargs["article"].preview_url()
-    elif kwargs.get("file") and kwargs.get("file") != "Local File Viewer":
-        tags["author"][1] = kwargs["file"].author
-        tags["description"][1] = '{} by {}'.format(kwargs["file"].title, kwargs["file"].author)
-        if kwargs["file"].companies.count():
-            tags["description"][1] += " of {}".format(kwargs["file"].get_all_company_names())
-        if kwargs["file"].release_date:
-            tags["description"][1] += " ({})".format(kwargs["file"].release_date.year)
-        tags["og:title"][1] = kwargs["file"].title + " - Museum of ZZT"
-        tags["og:image"][1] = base_url + kwargs["file"].preview_url()
-    elif kwargs.get("series"):
-        tags["description"][1] = kwargs["series"].description
-        tags["og:title"][1] = kwargs["series"].title + " - Museum of ZZT"
-        tags["og:image"][1] = kwargs["series"].preview_url()
+    if kwargs.get("context"):
+        tags.update(kwargs["context"])
 
-    # Overrides
-    if kwargs.get("author"):
-        tags["author"][1] = kwargs["author"]
-    if kwargs.get("description"):
-        tags["description"][1] = kwargs["description"]
-    if kwargs.get("title"):
-        tags["og:title"][1] = kwargs["title"] + " - Museum of ZZT"
-    if kwargs.get("og_image"):
-        tags["og:image"][1] = "https://museumofzzt.com/" + STATIC_URL[1:] + (
-            kwargs["og_image"]
-        )
+    # Prepend static url to image
+    tags["og:image"][1] = "https://museumofzzt.com" + STATIC_URL + tags["og:image"][1]
 
     # Twitter tags
     tags["twitter:site"] = ["name", "@worldsofzzt"]

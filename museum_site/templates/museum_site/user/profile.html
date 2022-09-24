@@ -3,11 +3,7 @@
 {% load zzt_tags %}
 
 {% block meta %}
-{% if user_obj %}
-{% meta_tags path=user_obj.profile.link title=title description="User profile for "|add:user_obj.username %}
-{% else %}
-{% meta_tags path=request.get_full_path title=title description="User profile" %}
-{% endif %}
+{% meta_tags path=request.get_full_path context=meta_context %}
 {% endblock %}
 
 {% block style %}

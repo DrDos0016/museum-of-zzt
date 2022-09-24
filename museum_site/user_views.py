@@ -523,6 +523,19 @@ def user_profile(request, user_id=None, **kwargs):
         cmd = "{}/patreon-scan.sh >> {}/cron.log".format(cron_path, cron_log_path)
         status = os.system(cmd)
 
-    data["title"] = "Profile for " + data["user_obj"].username
+    if data["user_obj"].username:
+        data["title"] = "Profile for " + data["user_obj"].username
+        data["meta_context"] = {
+            "author": ["name", data["user_obj"].username],
+            "description": ["name", "User profile for {}".format(data["user_obj"].username)],
+            "og:url": ["property", "https://museumofzzt.com" + data["user_obj"].profile.link()],
+        }
+    else:
+        data["title"] = "Profile for Guest Visitor"
+        data["meta_context"] = {
+            "author": ["name", "Anonymous"],
+            "description": ["name", "An overview of your Musuem of ZZT data"]
+        }
     data["default_upload_cap"] = UPLOAD_CAP  # For guest users
+
     return render(request, "museum_site/user/profile.html", data)
