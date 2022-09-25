@@ -7,6 +7,8 @@ from django.shortcuts import render, get_object_or_404
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core import *
+from museum_site.core.detail_identifiers import *
+from museum_site.forms import Advanced_Search_Form
 from museum_site.models import *
 
 
@@ -137,3 +139,19 @@ def file_viewer(request, key, local=False):
 def get_file_by_pk(request, pk):
     f = get_object_or_404(File, pk=pk)
     return redirect(f.attributes_url())
+
+
+def advanced_search(request):
+    """ Returns page containing multiple filters to use when searching ZFiles """
+    data = {"title": "Advanced Search"}
+
+    if request.GET:
+        form = Advanced_Search_Form(request.GET)
+
+        if request.GET.get("action") != "edit" and form.is_valid():
+            return redirect_with_querystring("search", request.GET.urlencode())
+    else:
+        form = Advanced_Search_Form(initial={"details": [DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE, DETAIL_UPLOADED]})
+
+    data["form"] = form
+    return render(request, "museum_site/generic-form-display.html", data)

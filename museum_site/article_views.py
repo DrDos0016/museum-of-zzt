@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView
 from museum_site.common import *
 from museum_site.constants import *
+from museum_site.forms import Article_Search_Form
 from museum_site.models import *
 
 
@@ -82,3 +83,17 @@ def article_lock(request, article_id, slug=""):
     article.allow_comments = False
     data = {"title": "Restricted Article", "article": article, "cost": article.early_access_price, "release": article.publish_date}
     return render(request, "museum_site/article_lock.html", data)
+
+
+def article_search(request):
+    """ Returns page containing multiple filters to use when searching """
+    form = Article_Search_Form(request.GET if request.GET else None)
+
+    if request.session.get("DEBUG"):
+        form.fields["sort"].choices += [
+            ("-id", "!ID New"),
+            ("id", "!ID Old"),
+        ]
+
+    data = {"title": "Articl!e Search", "form": form}
+    return render(request, "museum_site/generic-form-display.html", data)

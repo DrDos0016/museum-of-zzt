@@ -17,7 +17,6 @@ import museum_site.generic_model_views  # noqa: E402
 import museum_site.feeds  # noqa: E402
 import museum_site.help_views  # noqa: E402
 import museum_site.review_views  # noqa: E402
-import museum_site.search_views  # noqa: E402
 import museum_site.tool_views  # noqa: E402
 import museum_site.user_views  # noqa: E402
 import museum_site.upload_views  # noqa: E402
@@ -47,7 +46,7 @@ urlpatterns = [
     path("article/", museum_site.generic_model_views.Article_List_View.as_view(), name="article_directory"),
     path("article/category/", museum_site.generic_model_views.Article_Categories_List_View.as_view(), name="article_categories"),
     path("article/category/<slug:category_slug>/", museum_site.generic_model_views.Article_List_View.as_view(), name="article_category"),
-    path("article/search/", museum_site.search_views.article_search, name="article_search"),
+    path("article/search/", museum_site.article_views.article_search, name="article_search"),
     path("article/view/<int:pk>/page/<int:page>/<slug:slug>/", museum_site.article_views.Article_Detail_View.as_view(), name="article_view_page"),
     path("article/view/<int:pk>/<slug:slug>/", museum_site.article_views.Article_Detail_View.as_view(), {"page": 1}, name="article_view"),
     path("article/lock/<int:article_id>/<slug:slug>/", museum_site.article_views.article_lock, name="article_lock"),
@@ -119,7 +118,7 @@ urlpatterns = [
     path("file/browse/<str:letter>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse_letter"),
     path("file/random/", museum_site.views.random, name="random"),
     path("file/roulette/", museum_site.generic_model_views.prepare_roulette, name="roulette"),
-    path("file/advanced-search/", museum_site.search_views.advanced_search, name="advanced_search"),
+    path("file/advanced-search/", museum_site.file_views.advanced_search, name="advanced_search"),
     path("file/search/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="search"),
     path("file/mass-downloads/", museum_site.views.mass_downloads, name="mass_downloads"),
     path("file/article/<str:key>/", museum_site.generic_model_views.ZFile_Article_List_View.as_view(), name="article"),
