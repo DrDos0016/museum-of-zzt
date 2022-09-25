@@ -170,9 +170,6 @@ def upload(request):
             for genre in zgame_form.cleaned_data["genre"]:
                 genre_object = Genre.objects.get(pk=genre)
                 zfile.genres.add(genre_object)
-                zfile.genre += genre_object.title + "/"
-            if zfile.genre.endswith("/"):
-                zfile.genre = zfile.genre[:-1]
 
             # Remove old company assocs. when editing
             if zfile.id:

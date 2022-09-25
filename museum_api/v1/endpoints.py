@@ -189,11 +189,8 @@ def search_files(request):
         qs = qs.filter(
             company__icontains=request.GET.get("company", "").strip()
         )
-    if (request.GET.get("genre", "").strip() and
-            request.GET.get("genre", "") != "Any"):
-        qs = qs.filter(
-            genre__icontains=request.GET.get("genre", "").strip()
-        )
+    if (request.GET.get("genre", "").strip() and request.GET.get("genre", "").lower() != "any"):
+        qs = qs.filter(genres__title__icontains=request.GET.get("genre", "").strip())
     if (request.GET.get("year", "").strip() and
             request.GET.get("year", "") != "Any" and
             request.GET.get("year", "") != "Unk"):

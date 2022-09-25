@@ -304,7 +304,7 @@ def mirror(request, key):
         url_prefix = "szzt_"
         engine = "Super ZZT"
 
-    subject = ";".join(zfile.genre.split("/"))
+    subject = ";".join(zfile.genre_list())
 
     if zfile.description:
         description += "<p>{}</p>\n\n<hr>\n".format(zfile.description)

@@ -13,7 +13,8 @@ django.setup()
 from django.contrib.auth.models import User
 
 from museum_site.models import *  # noqa: E402
-from museum_site.constants import SITE_ROOT, DETAIL_UPLOADED
+from museum_site.constants import SITE_ROOT
+from museum_site.core.detail_identifiers import DETAIL_UPLOADED
 
 
 def main():
@@ -51,7 +52,7 @@ def main():
             f.title,
             f.author.replace("/", ", "),
             round(f.size / 1024, 2),
-            f.genre.replace("/", ", ")
+            ", ".join(f.genre_list())
         )
 
         with open(os.path.join(component_path, "block-file-list.html")) as fh:
@@ -81,7 +82,7 @@ def main():
         f.title,
         f.author.replace("/", ", "),
         round(f.size / 1024, 2),
-        f.genre.replace("/", ", ")
+        ", ".join(f.genre_list())
     )
 
     with open(os.path.join(component_path, "block-file-list.html")) as fh:

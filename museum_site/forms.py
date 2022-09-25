@@ -42,13 +42,7 @@ class ZGameForm(forms.ModelForm):
         label="File", widget=UploadFileWidget(target_text="Drag & Drop A Zip File Here or Click to Choose", allowed_filetypes=".zip,application/zip")
     )
     genre = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(
-            choices=qs_to_categorized_select_choices(
-                Detail.objects.filter(visible=True),
-            ),
-            buttons=["Clear"],
-            show_selected=True,
-        ),
+        widget=Scrolling_Checklist_Widget(choices=qs_to_select_choices(Genre.objects.filter(visible=True)), buttons=["Clear"], show_selected=True),
         choices=qs_to_select_choices(Genre.objects.filter(visible=True)),
         required=False,
         help_text=(

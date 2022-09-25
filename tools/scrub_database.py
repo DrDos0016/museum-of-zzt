@@ -14,6 +14,7 @@ from django.contrib.auth.models import User  # noqa: E402
 
 from museum_site.models import *  # noqa: E402
 from museum_site.constants import *  # noqa: E402
+from museum_site.core.detail_identifiers import *
 from poll.models import *  # noqa: E402
 
 def main():

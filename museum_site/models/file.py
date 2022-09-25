@@ -82,7 +82,6 @@ class File(BaseModel, ZFile_Urls):
     title = models.CharField(max_length=80, help_text="Canonical name of the release")
     author = models.CharField(max_length=255, help_text="Slash-separated list of (major) developers")
     ssv_company = models.CharField(max_length=255, default="", blank=True, help_text="Slash-separated list of companies the zfile is published under")
-    genre = models.CharField(max_length=255)  # TODO: This will become defunct
     release_date = models.DateField(default=None, null=True, blank=True, help_text="Release date of zip file's contents.")
     release_source = models.CharField(max_length=20, default="", blank=True, help_text="Source of release date when applicable.")
     language = models.CharField(
@@ -1016,8 +1015,6 @@ class File(BaseModel, ZFile_Urls):
             issues["size_mismatch"] = "DB size doesn't match physical file size: {}/{}".format(self.size, os.path.getsize(self.phys_path()))
         if "," in self.author:
             issues["author"] = "Comma in author. Should be slash?"
-        if "," in self.genre:
-            issues["ssv_genre"] = "Comma in genre. Should be slash."
         if self.release_date and self.release_date.year < 1991:
             issues["release_date"] = "Release date is prior to 1991."
         if self.release_date and self.release_source == "":
