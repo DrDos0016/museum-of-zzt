@@ -7,10 +7,7 @@ class Detail_Queryset(Base_Queryset):
         return self.filter(visible=True)
 
     def advanced_search_categories(self, include_hidden=False):
-        os_details = [
-            DETAIL_DOS, DETAIL_WIN16, DETAIL_WIN32, DETAIL_WIN64, DETAIL_OSX,
-            DETAIL_LINUX
-        ]
+        os_details = [DETAIL_DOS, DETAIL_WIN16, DETAIL_WIN32, DETAIL_WIN64, DETAIL_OSX, DETAIL_LINUX]
 
         qs = self.all()
         if not include_hidden:
@@ -26,12 +23,7 @@ class Detail_Queryset(Base_Queryset):
                 cats.append({"priority": 10, "header": "ZZT", "d": d})
             elif d.title.startswith("Super ZZT "):
                 cats.append({"priority": 20, "header": "Super ZZT", "d": d})
-            elif (
-                d.title in [
-                    "Image", "Video", "Audio", "Text", "ZZM Audio",
-                    "HTML Document"
-                ]
-            ):  # Media
+            elif (d.title in ["Image", "Video", "Audio", "Text", "ZZM Audio", "HTML Document"]):  # Media
                 cats.append({"priority": 30, "header": "Media", "d": d})
             elif d.id in os_details:
                 cats.append({"priority": 90, "header": "OS", "d": d})
