@@ -42,6 +42,9 @@ class Article_Queryset(Base_Queryset):
         """ Return qs of all articles that are PUBLISHED and marked as being spotlight permitted """
         return self.filter(published=self.model.PUBLISHED, spotlight=True).defer("content").order_by("-publish_date", "-id")
 
+    def category(self, category):
+        return self.filter(category=category).published().defer("content").order_by("-publish_date")
+
     def search(self, p):
         qs = self.exclude(published=self.model.REMOVED)
 

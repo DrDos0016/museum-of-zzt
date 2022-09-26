@@ -104,11 +104,7 @@ class Model_List_View(ListView):
         # Determine lowest and highest visible page
         lower = max(1, current_page - (PAGE_LINKS_DISPLAYED // 2))
         upper = lower + PAGE_LINKS_DISPLAYED
-
-        # Don't display too many pages
-        if upper > total_pages + 1:
-            upper = total_pages + 1
-
+        upper = min(upper, total_pages + 1)
         page_range = range(lower, upper)
         return page_range
 

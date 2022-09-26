@@ -386,7 +386,7 @@ class File(BaseModel, ZFile_Urls):
     def calculate_reviews(self):
         # Calculate Review Count
         if self.id is not None:
-            self.review_count = Review.objects.filter(zfile_id=self.id).count()
+            self.review_count = Review.objects.for_zfile(self.id).count()
 
         # Calculate Rating
         if self.id is not None:
@@ -652,7 +652,7 @@ class File(BaseModel, ZFile_Urls):
     @mark_safe
     def details_links(self):
         output = ""
-        for i in self.details.filter(visible=True):
+        for i in self.details.visible():
             output += '<a href="{}">{}</a>, '.format(i.url(), i.title)
         return output[:-2]
 
@@ -755,7 +755,7 @@ class File(BaseModel, ZFile_Urls):
         if self.is_detail(DETAIL_FEATURED):
             context["roles"].append("featured")
             context["extras"].append("museum_site/blocks/extra-featured-world.html")
-            context["featured_articles"] = self.articles.filter(category="Featured Game").defer("content").order_by("-publish_date")
+            context["featured_articles"] = self.articles.category("Featured Game")
         if self.is_detail(DETAIL_LOST):
             context["roles"].append("lost")
             if self.description:
@@ -1030,7 +1030,7 @@ class File(BaseModel, ZFile_Urls):
             issues["preview_image_missing"] = "Screenshot does not exist at {}".format(self.preview_url())
 
         # Review related
-        reviews = Review.objects.filter(zfile_id=self.id)
+        reviews = Review.objects.for_zfile(self.id)
         rev_len = len(reviews)
         if rev_len != self.review_count:
             issues["review_count"] = "Reviews in DB do not match 'review_count': {}/{}".format(rev_len, self.review_count)
