@@ -35,11 +35,16 @@ PASSWORD_HELP_TEXT = "Use a unique password for your account with a minimum leng
 
 
 class ZGameForm(forms.ModelForm):
-    field_order = ["zfile", "title", "author", "ssv_company", "genre", "explicit", "release_date", "language", "description"]
+    field_order = ["zfile", "title", "author", "company", "genre", "explicit", "release_date", "language", "description"]
     zfile = forms.FileField(
         help_text=("Select the file you wish to upload. "
                    "All uploads <i>must</i> be zipped."),
         label="File", widget=UploadFileWidget(target_text="Drag & Drop A Zip File Here or Click to Choose", allowed_filetypes=".zip,application/zip")
+    )
+    company = Tag_List_Field(
+        widget=Tagged_Text_Widget(suggestion_key="company"),
+        required=False,
+        help_text=("Any companies this file is published under. If there are none, leave this field blank. If there are multiple, separate them with a comma."),
     )
     genre = forms.MultipleChoiceField(
         widget=Scrolling_Checklist_Widget(choices=qs_to_select_choices(Genre.objects.filter(visible=True)), buttons=["Clear"], show_selected=True),
@@ -86,23 +91,10 @@ class ZGameForm(forms.ModelForm):
     class Meta:
         model = File
 
-        fields = [
-            "zfile", "title", "author", "ssv_company", "explicit",
-            "release_date",
-            "description",
-        ]
-
-        labels = {
-            "ssv_company": "Company",
-        }
+        fields = ["zfile", "title", "author", "explicit", "release_date", "description"]
 
         help_texts = {
             "title": "Leave A/An/The as the first word if applicable.",
-            "ssv_company": (
-                "Any companies this file is published under. If there are "
-                "none, leave this field blank. If there are multiple, "
-                "separate them with a comma."
-            ),
             "release_date": (
                 "Enter the date this file was first made public. If this is a "
                 "newly created file, it should be today's date. If this is an "
@@ -131,7 +123,6 @@ class ZGameForm(forms.ModelForm):
 
         widgets = {
             "title": Enhanced_Text_Widget(char_limit=80),
-            "ssv_company": Tagged_Text_Widget(suggestion_key="company"),
             "explicit": forms.RadioSelect(
                 choices=(
                     (0, "This upload does not contain explicit content"),
@@ -180,14 +171,6 @@ class ZGameForm(forms.ModelForm):
         if author == "":
             author = "Unknown"
         return author
-
-    def clean_ssv_company(self):
-        company = self.cleaned_data["ssv_company"].replace("[text]", "")
-        company = company.replace(",", "/")
-
-        if company.endswith("/"):
-            company = company[:-1]
-        return company
 
     def clean_genre(self):
         if UPLOAD_TEST_MODE:
@@ -793,108 +776,6 @@ class Collection_Content_Form(forms.ModelForm):
     class Meta:
         model = Collection_Entry
         fields = ["associated_file", "url", "collection_description"]
-
-
-class Debug_Form(forms.Form):
-    use_required_attribute = False
-    manual_fields = ["board", "associated", "ssv_author", "ssv_company", "rating"]
-
-    file_radio = forms.ChoiceField(
-        widget=Scrolling_Radio_Widget(choices=associated_file_choices()),
-        choices=associated_file_choices(),
-        label="File Select Radio Widget",
-        help_text="Selecting one file as radio buttons",
-        required=False,
-    )
-    file_check = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(choices=associated_file_choices()),
-        choices=associated_file_choices(),
-        label="File Select Checkbox Widget",
-        help_text="Selecting many files via checkboxes",
-        required=False,
-    )
-    limited_text = forms.CharField(
-        widget=Enhanced_Text_Widget(char_limit=69),
-        label="Limited Text Field",
-        help_text="You get 69 characters. Nice.",
-        required=False,
-    )
-    date_with_buttons = forms.DateField(
-        widget=Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Unknown"),
-        label="Date Field With Buttons",
-        help_text="Today and Unknown",
-        required=False,
-    )
-    genre = forms.ChoiceField(
-        choices=qs_to_select_choices(Genre.objects.filter(visible=True).only("pk", "title", "slug"), allow_any=True, val="{0.title}"),
-        required=False,
-    )
-    board = Manual_Field(
-        widget=Board_Range_Widget(min_val=0, max_val=999, max_length=3),
-        required=False,
-    )
-    associated = Manual_Field(
-        label="Related Content",
-        widget=Associated_Content_Widget(),
-        required=False,
-    )
-    details = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(
-            choices=qs_to_categorized_select_choices(
-                Detail.objects.filter(visible=True),
-                category_order=["ZZT", "SZZT", "Media", "Other"]
-            ),
-            categories=True,
-            buttons=["Clear", "Default"],
-            show_selected=True,
-            default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]
-        ),
-        choices=qs_to_categorized_select_choices(Detail.objects.filter(visible=True), category_order=["ZZT", "SZZT", "Media", "Other"]),
-        required=False,
-    )
-    nonfilterable = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(
-            choices=(("A", "A"), ("B", "B"), ("C", "C")),
-            filterable=False,
-            buttons=["All", "Clear", "Default"],
-            show_selected=True,
-            default=["A", "C"]
-        ),
-        choices=(("A", "A"), ("B", "B"), ("C", "C")),
-        required=False,
-    )
-    ssv_author = Manual_Field(
-        label="Author(s)",
-        widget=Tagged_Text_Widget(),
-        required=False,
-    )
-    ssv_company = Manual_Field(
-        label="Company",
-        widget=Tagged_Text_Widget(suggestions=Genre.objects.all().values_list("title", flat=True)),
-        required=False,
-    )
-    rating = Manual_Field(
-        label="Rating range",
-        widget=Range_Widget(min_val=0, max_val=5, max_length=4, step=0.1),
-        required=False,
-    )
-
-    def __init__(self, data=None):
-        super().__init__(data)
-        # Handle Manual Fields
-        for field in self.manual_fields:
-            self.fields[field].widget.manual_data = self.data.copy()  # Copy to make mutable
-            # Coerce specific min/max inputs to generic min/max keys
-            self.fields[field].widget.manual_data["min"] = self.fields[field].widget.manual_data.get(field + "_min")
-            self.fields[field].widget.manual_data["max"] = self.fields[field].widget.manual_data.get(field + "_max")
-            # Tags need to be joined as a string
-            if data and isinstance(self.fields[field].widget, Tagged_Text_Widget):
-                raw = self.data.getlist(field)
-                if raw[0] == "[text]":  # Matched our template for JS
-                    raw = raw[1:]
-                joined = ",".join(raw) + ","
-                if len(joined) > 1:
-                    self.fields[field].widget.manual_data["tags_as_string"] = joined
 
 
 class Zeta_Advanced_Form(forms.Form):

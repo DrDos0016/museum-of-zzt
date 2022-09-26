@@ -81,7 +81,6 @@ class File(BaseModel, ZFile_Urls):
     size = models.IntegerField(default=0, editable=False, help_text="Size in bytes of the zip file")
     title = models.CharField(max_length=80, help_text="Canonical name of the release")
     author = models.CharField(max_length=255, help_text="Slash-separated list of (major) developers")
-    ssv_company = models.CharField(max_length=255, default="", blank=True, help_text="Slash-separated list of companies the zfile is published under")
     release_date = models.DateField(default=None, null=True, blank=True, help_text="Release date of zip file's contents.")
     release_source = models.CharField(max_length=20, default="", blank=True, help_text="Source of release date when applicable.")
     language = models.CharField(
@@ -230,7 +229,7 @@ class File(BaseModel, ZFile_Urls):
             "release_date": self.release_date,
             "release_source": self.release_source,
             "screenshot": self.screenshot,
-            "company": self.ssv_company,
+            "company": self.company_list(),
             "description": self.description,
             "review_count": self.review_count,
             "rating": self.rating,
@@ -310,6 +309,12 @@ class File(BaseModel, ZFile_Urls):
         return output
 
     def author_list(self): return self.author.split("/")
+
+    def company_list(self):
+        output = []
+        for c in self.companies.all():
+            output.append(c.title)
+        return output
 
     def genre_list(self):
         output = []

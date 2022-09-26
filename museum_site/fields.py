@@ -29,3 +29,20 @@ class Faux_Field(forms.NullBooleanField):
     """ Used for fake fields that don't contain user specified information but should still be worked into the form """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+
+class Tag_List_Field(forms.MultipleChoiceField):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def to_python(self, value):
+        output = []
+        if not value:
+            return output
+        value = value.split(",")
+        for item in value:
+            output.append(str(item))
+        return output
+
+    def validate(self, value):
+        pass  # All data entered is valid

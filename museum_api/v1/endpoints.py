@@ -28,7 +28,7 @@ from django.http import JsonResponse
 SORT_CODES = {
     "title": ["sort_title"],
     "author": ["author", "sort_title"],
-    "company": ["ssv_company", "sort_title"],
+    "company": ["companies__title", "sort_title"],
     "id": ["id"],
     "-id": ["-id"],
     "rating": ["-rating", "sort_title"],
@@ -187,7 +187,7 @@ def search_files(request):
         )
     if request.GET.get("company", "").strip():
         qs = qs.filter(
-            company__icontains=request.GET.get("company", "").strip()
+            companies__title__icontains=request.GET.get("company", "").strip()
         )
     if (request.GET.get("genre", "").strip() and request.GET.get("genre", "").lower() != "any"):
         qs = qs.filter(genres__title__icontains=request.GET.get("genre", "").strip())

@@ -66,7 +66,7 @@ def upload(request):
                 "language": zgame_obj.language,
                 "release_date": str(zgame_obj.release_date),
                 "author": zgame_obj.author.replace("/", ","),
-                "ssv_company": zgame_obj.ssv_company.replace("/", ","),
+                "company": ",".join(list(zgame_obj.companies.all().values_list("title", flat=True))),
                 "genre": zgame_obj.genre_ids(),
             }
             play_form = PlayForm(initial={"zeta_config": zgame_obj.zeta_config_id})
@@ -174,9 +174,10 @@ def upload(request):
             # Remove old company assocs. when editing
             if zfile.id:
                 zfile.companies.clear()
-            # Convert ssv_company to Company objects
-            ssv_company = zgame_form.cleaned_data["ssv_company"].split("/")
-            for company in ssv_company:
+            # Convert company to Company objects
+            for company in zgame_form.cleaned_data["company"]:
+                if company in ["", "[text]"]:
+                    continue
                 (c_obj, created) = Company.objects.get_or_create(title=company)
                 zfile.companies.add(c_obj)
                 # If it's newly created, set the slug
