@@ -8,16 +8,11 @@ from museum.settings import STATIC_URL
 from museum_site.constants import STATIC_PATH
 from museum_site.core.misc import epoch_to_unknown
 from museum_site.models.base import BaseModel
-
-
-class SeriesManager(models.Manager):
-    def directory(self):
-        qs = self.filter(visible=True)
-        return qs
+from museum_site.querysets.series_querysets import Series_Queryset
 
 
 class Series(BaseModel):
-    objects = SeriesManager()
+    objects = Series_Queryset.as_manager()
     model_name = "Series"
     table_fields = ["Series", "Newest Entry", "Oldest Entry", "Articles"]
     sort_options = [
