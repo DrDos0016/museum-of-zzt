@@ -278,12 +278,12 @@ urlpatterns = [
     path("worlds-of-zzt/", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
     path("zeta-live/", museum_site.zeta_views.zeta_live),
     # Non-Museum Websites
-    path("twitter/", RedirectView.as_view(url="https://twitter.com/worldsofzzt")),
+    path("twitter/", RedirectView.as_view(url="https://twitter.com/worldsofzzt"), name="twitter"),
     path("tumblr/", RedirectView.as_view(url="http://worldsofzzt.tumblr.com"),),
     path("patreon/", RedirectView.as_view(url="https://patreon.com/worldsofzzt"), name="patreon"),
-    path("youtube/", RedirectView.as_view(url="https://www.youtube.com/c/WorldsofZZT")),
-    path("twitch/", RedirectView.as_view(url="https://twitch.tv/worldsofzzt")),
-    path("github/", RedirectView.as_view(url="https://github.com/DrDos0016/museum-of-zzt")),
+    path("youtube/", RedirectView.as_view(url="https://www.youtube.com/c/WorldsofZZT"), name="youtube"),
+    path("twitch/", RedirectView.as_view(url="https://twitch.tv/worldsofzzt"), name="twitch"),
+    path("github/", RedirectView.as_view(url="https://github.com/DrDos0016/museum-of-zzt"), name="git"),
 
     # Directories
     path("directory/<slug:category>/", museum_site.views.directory, name="directory"),
