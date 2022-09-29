@@ -195,6 +195,12 @@ img.zzt-szzt-message
     top:-322px;
     left:-192px;
 }
+
+.engine-szzt.zzt-img
+{
+    max-width:640px;
+    max-height:400px;
+}
 /* End Super ZZT */
 
 .cl-hyperlink /* ZZT Hyperlink for Closer Looks */
