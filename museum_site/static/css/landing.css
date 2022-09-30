@@ -1,0 +1,67 @@
+/* Frontpage Galleries */
+.gallery-list
+{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:stretch;
+    justify-content:center;
+    margin:14px auto 14px auto;
+}
+
+.gallery-list.scrolling
+{
+    padding:14px 8px 14px 8px;
+    overflow:auto;
+    border-top:1px dashed #000;
+    border-bottom:1px dashed #000;
+    max-height:546px;
+}
+
+#fp-file-frame
+{
+    display:grid;
+    grid-template-areas:
+    "left-heading right-heading"
+    "content content"
+    "left-link right-link";
+}
+
+#fp-file-frame > h2 + h2 { grid-area:right-heading; text-align:right; }
+#fp-file-frame .gallery-list
+{
+    grid-area:content;
+    margin:0;
+    padding:0;
+}
+
+#fp-file-frame .gallery-list > .col
+{
+    flex:1;
+    display:flex;
+    flex-wrap:wrap;
+}
+
+#fp-file-frame .gallery-list > .col + .col
+{
+    justify-content:flex-end;
+    border-left:1px dashed #AAA;
+}
+
+#fp-file-frame .view-more { grid-area:left-link; }
+#fp-file-frame .view-more + .view-more { grid-area:right-link }
+
+@media (max-width: 1610px)
+{
+    #fp-file-frame .gallery-frame > .model-block .preview-image.thumbnail
+    {
+        width:160px;
+    }
+
+    #fp-file-frame .gallery-frame > .model-block
+    {
+        max-width:180px;
+    }
+}
+
+#mobile-fp-file-frame { display:none; }
+/* End Frontpage Galleries */

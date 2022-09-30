@@ -1,0 +1,379 @@
+/* File Viewer */
+.fv-grid /* Applied to center content element */
+{
+    display:grid;
+    grid-template-areas:
+    "expand expand expand"
+    "header header header"
+    "prefix prefix prefix"
+    "display display display"
+    "zip-name tabs tabs"
+    "file-list analysis analysis";
+
+    grid-template-columns:1.5fr 2fr auto;
+    grid-template-rows:repeat(5, auto) 1fr;
+    min-height:858px; /* With padding this is 900px of space */
+    height:calc(100vh - 42px);
+    /* Padding is a hacky temp fix for column hiding button */
+    padding-top:0px;
+}
+
+.fv-grid .file-meta
+{
+    grid-area: header;
+    margin-top:0px;
+}
+
+.file-header {
+    /*grid-area: header;*/
+    display:flex;
+    margin-bottom:3px;
+}
+
+#alt-file-listing
+{
+    max-width:25%;
+    margin-left:16px;
+}
+
+.file-links
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+    border-top:1px solid #000;
+    border-bottom:1px solid #000;
+    padding-top:3px;
+    padding-bottom:3px;
+    font-weight:bold;
+    grid-area: links;
+    width:100%;
+}
+
+.file-data
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+    text-align:center;
+    grid-area:data;
+    border-bottom:1px solid #000;
+    padding-top:3px;
+    padding-bottom:3px;
+    gap:4px;
+}
+
+.file-data > div
+{
+    flex:1;
+}
+
+/* TODO: This could be better genercized probably */
+.file-data + .review { border-top:0px; }
+.file-data + #fv-main { border-top:0px; }
+
+#fv-prefix
+{
+    grid-area:prefix;
+    max-width:750px;
+    margin:auto;
+    font-family:cp437;
+}
+
+#fv-main
+{
+    grid-area: display;
+    border:1px solid #000;
+    padding:7px 4px 7px 4px;
+    margin-bottom:14px;
+    max-height:728px;
+    overflow:auto;
+    resize:vertical;
+}
+
+#fv-main .output
+{
+    display:none
+}
+
+#fv-main .output.active
+{
+    display:block;
+}
+
+#fv-main #canvas-envelope.output.active
+{
+    display:grid;
+}
+
+#zip-name
+{
+    grid-area:zip-name;
+    text-align:center;
+    border:1px solid #000;
+    border-bottom:0px;
+    background:#AAA;
+}
+
+#file-tabs
+{
+    grid-area: tabs;
+    display:flex;
+    text-align:center;
+    justify-items:stretch;
+    border-top:1px solid #000;
+    border-right:1px solid #000;
+    overflow-x:auto;
+}
+#file-tabs div
+{
+    border-bottom:0px;
+    border-left:0px;
+    background:#AAA;
+    flex:3;
+}
+
+#file-tabs div:hover, #zip-name:hover
+{
+    cursor:pointer;
+    background:#98C9C9;
+    text-decoration:underline;
+}
+
+#file-tabs div + div
+{
+    border-left:1px solid #000;
+}
+
+#file-tabs div[name=help]
+{
+    flex:1;
+}
+
+#file-list
+{
+    grid-area: file-list;
+    border:1px solid #000;
+    font-family:mono;
+    overflow:auto;
+    max-height:100%;
+}
+
+#file-list .selected
+{
+    background-color:#619F9F;
+}
+
+#file-list li:hover
+{
+    /* (Preview, List of files) */
+    cursor:pointer;
+    background:#98C9C9;
+}
+
+#file-list ul /* (Preview, List of files) */
+{
+    margin:0px;
+    padding:0px;
+    overflow:auto;
+    height:100%;
+}
+
+#file-list ul li /* (Preview, List of files) */
+{
+    list-style:none;
+    border-bottom:1px dashed #000;
+    padding-left:8px;
+    padding-right:8px;
+
+}
+
+#file-list ul li.selected
+{
+    text-align:center;
+    font-weight:bold;
+}
+
+#file-list ol /* (List of boards in ZZT file) */
+{
+    text-align:left;
+    font-weight:normal;
+
+    list-style:none;
+    margin-left:8px;
+    margin-right:8px;
+    padding:0px;
+    background:#FFF;
+
+}
+
+#file-list ol li { border-bottom:1px dotted #000; } /* (List of boards in ZZT file) */
+
+li.board div  { display:inline-block; } /* Board numbers and names */
+
+#analysis
+{
+    grid-area: analysis;
+    border:1px solid #000;
+    border-left:0px;
+    padding:7px 4px 7px 4px;
+    font-family:mono;
+    overflow:auto;
+}
+
+#analysis table
+{
+    padding:0px;
+    margin:0;
+}
+
+#analysis table td
+{
+    background:#FFF;
+    padding:0px 0px 0px 1ch;
+}
+
+#analysis table th
+{
+    padding:0px 1ch 0px 1ch;
+}
+
+#analysis .zip-info-table td, #analysis .zip-info-table th
+{
+    padding-left:8px;
+    padding-right:8px;
+}
+
+#analysis #zip-comment
+{
+    width:81ch;
+}
+
+#analysis .fv
+{
+    margin-bottom:7px;
+}
+
+#analysis .fv-hidden, #analysis .fv-hidden-row
+{
+    display:none;
+}
+
+#file-tabs .selected, #zip-name.selected { background:#619F9F; }
+#analysis .toggle { display:none; }
+#file-list ul li.code-match { padding-left:3ch; }
+
+#analysis #search-table input
+{
+    margin-top:2px; /* TODO: This could be done better */
+}
+
+#preferences .field
+{
+    display:flex;
+    padding: 7px 0px 7px 0px;
+    font-size:medium;
+    font-weight:bold;
+    font-family:sans-serif;
+}
+
+#preferences .field + .field
+{
+    border-top: 1px dashed #000;
+}
+
+#preferences label
+{
+    flex:1 1 20%;
+}
+
+#preferences input, #preferences select
+{
+    flex:1 1;
+}
+
+/* File Viewer Extension Based Formatting */
+#fv-main #canvas-envelope
+{
+    justify-content:center;
+    grid-template-areas:
+    "left canvas right";
+    grid-template-columns:auto minmax(480px, auto) auto;
+}
+
+@media (max-width: 1024px)
+{
+    #fv-main #canvas-envelope
+    {
+        grid-template-areas:
+        "left right"
+        "canvas canvas";
+        grid-template-columns:auto auto;
+    }
+}
+
+#fv-left-sidebar
+{
+    font-family:cp437;
+    grid-area:left;
+    font-size:medium;
+    line-height:14px;
+    z-index:3;
+    visibility:hidden;
+}
+
+
+#fv-left-sidebar #overlay
+{
+    position: absolute;
+    background-color:rgba(204, 204, 204, 0.7);
+    padding:7px 4px 7px 4px;
+}
+
+
+.color-swatch
+{
+    height:2em;
+    background-image:url("/static/images/colors.png");
+    width:8px;
+    height:14px;
+    margin:auto;
+    display:inline-block;
+}
+
+#fv-right-sidebar
+{
+    grid-area:right;
+    z-index:1;
+}
+
+#world-canvas
+{
+    grid-area:canvas;
+    align-self:center;
+    z-index:2;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+#image-envelope, #preview-envelope {
+    height:100%;
+    text-align:center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#preview-envelope p
+{
+    max-width:640px;
+    text-align:justify;
+}
+
+#fv-image, #fv-preview { border:1px solid #AAA;}
+
+.preview-image-link { font-style:italic; } /* Overview link in File Viewer */
+#text-body { font-family:cp437; }
+#doc-header { color:#F00; text-align:center;}
+/* End File Viewer Extension Based Formatting */
+/* End File Viewer */
