@@ -312,7 +312,7 @@ class Article(BaseModel):
         secret = None
         if context["request"] and context["request"].user.is_authenticated:
             patronage = context["request"].user.profile.patronage
-        elif context["request"] and context["request"].POST.get("secret"):
+        if context["request"] and context["request"].POST.get("secret"):
             secret = context["request"].POST.get("secret")
             if secret == PASSWORD2DOLLARS:
                 patronage = UPCOMING_ARTICLE_MINIMUM_PATRONAGE
