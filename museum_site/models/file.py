@@ -26,6 +26,7 @@ from museum_site.models.article import Article
 from museum_site.models.base import BaseModel
 from museum_site.querysets.zfile_querysets import *
 
+
 class File(BaseModel, ZFile_Urls):
     """ File object repesenting an upload to the site """
     objects = ZFile_Queryset.as_manager()
@@ -301,26 +302,12 @@ class File(BaseModel, ZFile_Urls):
 
     def file_exists(self): return True if os.path.isfile(self.phys_path()) else False
 
-    def get_detail_ids(self):
-        details = self.details.all()
-        output = []
-        for detail in details:
-            output.append(int(detail.id))
-        return output
-
     def author_list(self): return self.author.split("/")
 
     def genre_list(self):
         output = []
         for g in self.genres.all():
             output.append(g.title)
-        return output
-
-    def genre_ids(self):
-        output = []
-        # Returns a list of Genre object IDs
-        for g in self.genres.all():
-            output.append(g.id)
         return output
 
     def language_list(self):
@@ -353,6 +340,7 @@ class File(BaseModel, ZFile_Urls):
         return True if DETAIL_WEAVE in self.detail_ids else False
 
     def is_detail(self, detail_id):
+        self.init_detail_ids()
         self.init_detail_ids()
         return True if detail_id in self.detail_ids else False
 
@@ -526,39 +514,18 @@ class File(BaseModel, ZFile_Urls):
 
     def init_actions(self):
         """ Determine which actions may be performed on this zfile """
-        self.actions = {
-            "download": False,
-            "play": False,
-            "view": False,
-            "review": False,
-            "article": False
-        }
-
-        # Download
-        if self.file_exists():
-            self.actions["download"] = True
-
-        # Play
-        if self.archive_name or (self.actions["download"] and self.supports_zeta_player()):
-            self.actions["play"] = True
-
-        # View
-        if self.actions["download"]:
-            self.actions["view"] = True
-
+        self.actions = {"review": False}
+        self.actions["download"] = True if self.file_exists() else False
+        self.actions["view"] = True if self.actions["download"] else False
+        self.actions["play"] = True if self.archive_name or (self.actions["download"] and self.supports_zeta_player()) else False
+        self.actions["article"] = True if self.article_count else False
         # Review
         if (self.actions["download"] and self.can_review) or self.review_count:
             self.actions["review"] = True
         if self.actions["review"] and self.is_detail(DETAIL_UPLOADED):
             self.actions["review"] = False
 
-        # Article
-        if self.article_count:
-            self.actions["article"] = True
-
-    def generate_screenshot(
-        self, world=None, board=0, font=None, filename=None
-    ):
+    def generate_screenshot(self, world=None, board=0, font=None, filename=None):
         # Get zip contents
         zf = zipfile.ZipFile(self.phys_path())
 
@@ -625,23 +592,13 @@ class File(BaseModel, ZFile_Urls):
 
     @mark_safe
     def publish_date_str(self):
-        if (
-            (self.publish_date is None) or
-            (self.publish_date.strftime("%Y-%m-%d") < "2018-11-07")
-        ):
+        if (self.publish_date is None) or (self.publish_date.strftime("%Y-%m-%d") < "2018-11-07"):
             return "<i>Unknown</i>"
         return self.publish_date.strftime("%b %d, %Y, %I:%M:%S %p")
 
     @mark_safe
     def boards_str(self):
         return "{} / {}".format(self.playable_boards, self.total_boards)
-
-    @mark_safe
-    def details_str(self):
-        output = ""
-        for i in self.details.all():
-            output += i.title + ", "
-        return output[:-2]
 
     @mark_safe
     def details_links(self):
@@ -1071,7 +1028,6 @@ class File(BaseModel, ZFile_Urls):
             output += company.title + ", "
         output = output[:-2]
         return output
-
 
     def get_meta_tag_context(self):
         """ Returns a dict of keys and values for <meta> tags  """
