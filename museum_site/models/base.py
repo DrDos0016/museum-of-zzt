@@ -67,6 +67,18 @@ class BaseModel(models.Model):
             ssv = "/".join(entries)
         return ssv
 
+    def get_related_list(self, obj, field=None):
+        """ Get all associated instances of related object OBJ and return them in a list. Optionally filter only to a specified FIELD """
+        output = []
+        if hasattr(self, obj):
+            qs = getattr(self, obj).all()
+            for i in qs:
+                if field is None:
+                    output.append(i)
+                else:
+                    output.append(getattr(i, field))
+        return output
+
     @mark_safe
     def table_header(self):
         row = ""

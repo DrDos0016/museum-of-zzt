@@ -229,7 +229,7 @@ class File(BaseModel, ZFile_Urls):
             "release_date": self.release_date,
             "release_source": self.release_source,
             "screenshot": self.screenshot,
-            "company": self.company_list(),
+            "company": self.get_related_list("companies", "title"),
             "description": self.description,
             "review_count": self.review_count,
             "rating": self.rating,
@@ -309,12 +309,6 @@ class File(BaseModel, ZFile_Urls):
         return output
 
     def author_list(self): return self.author.split("/")
-
-    def company_list(self):
-        output = []
-        for c in self.companies.all():
-            output.append(c.title)
-        return output
 
     def genre_list(self):
         output = []

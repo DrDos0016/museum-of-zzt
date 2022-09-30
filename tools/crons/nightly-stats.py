@@ -94,7 +94,7 @@ def calculate_companies():
     raw = File.objects.all()
     authors = []
     for ssv in raw:
-        for a in ssv.company_list():
+        for a in ssv.get_related_list("companies", "title"):
             if a not in authors:
                 authors.append(a)
     output = len(authors)
