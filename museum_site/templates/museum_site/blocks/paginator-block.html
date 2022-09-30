@@ -2,22 +2,28 @@
 <!--paginator-block.html-->
 {% if paginator.num_pages > 1 %}
 <nav class="paginator-block">
-    <div class="page-range">
-        <div class="page-first"><a href="?page=1{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" title="First Page">◄◄</a></div>
-        <div class="page-prev">{% if page_obj.has_previous %}<a class="prev-page-link" href="?page={{page_obj.previous_page_number}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" title="Previous Page">◄</a>{% else %}<span class="prev-page-link">◄</span>{% endif %}</div>
+    <div class="page-snap">
+        <a href="?page=1{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" class="page-first" title="First Page">◄◄</a>
+        {% if page_obj.has_previous %}
+            <a class="page-prev" href="?page={{page_obj.previous_page_number}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" title="Previous Page">◄</a>
+            {% else %}<div class="page-prev">◄</div>
+        {% endif %}
         <div class="page-info">
             Page #
             <select name="page-selector" data-params="{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">
-                {% for p in paginator.page_range %}<option{% if p == page_obj.number %} selected{% endif %}>{{p}}</option>{% endfor %}
+                {% for p in paginator.page_range %}<option{% if p == page_obj.number %} selected{% endif %}>{{p}}</option>
+                {% endfor %}
             </select>
             / {{paginator.num_pages}}
         </div>
-        <div class="page-next">{% if page_obj.has_next %}<a class="next-page-link" href="?page={{page_obj.next_page_number}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" title="Next Page">►</a>{% else %}<span class="next-page-link">►</span>{% endif %}</div>
-        <div class="page-last"><a href="?page={{paginator.num_pages}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" title="Last Page">►►</a></div>
+        {% if page_obj.has_next %}
+            <a class="page-next" href="?page={{page_obj.next_page_number}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" title="Next Page">►</a>
+            {% else %}<div class="page-next">►</div>
+        {% endif %}
+        <a href="?page={{paginator.num_pages}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" class="page-last" title="Last Page">►►</a>
     </div>
     <div class="page-links">
-        {% for p in page_range %}
-        <a class="page-number-link{% if p == page_obj.number %} selected{% endif %}" href="?page={{p}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">{{p}}</a>
+        {% for p in page_range %}<a class="page-number-link{% if p == page_obj.number %} selected{% endif %}" href="?page={{p}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">{{p}}</a>
         {% endfor %}
     </div>
 </nav>

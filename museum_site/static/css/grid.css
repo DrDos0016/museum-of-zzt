@@ -916,18 +916,12 @@ select[name=page-selector]
     font-size:14pt;
 }
 
-.paginator-block .page-range
-{
-    display:flex;
-    flex-wrap:wrap;
-    flex:1;
-}
-
-.paginator-block .page-range .page-first { flex: 0 0 20%; }
-.paginator-block .page-range .page-last { flex: 0 0 20%; }
-.paginator-block .page-range .page-prev { flex: 0 0 10%; }
-.paginator-block .page-range .page-next { flex: 0 0 10%; }
-.paginator-block .page-range > div.page-info { flex: 1; }
+.paginator-block .page-snap { display:flex; flex:1; }
+.paginator-block .page-snap .page-first { flex: 0 0 15%; }
+.paginator-block .page-snap .page-last { flex: 0 0 15%; }
+.paginator-block .page-snap .page-prev { flex: 0 0 20%; }
+.paginator-block .page-snap .page-next { flex: 0 0 20%; }
+.paginator-block .page-snap > div.page-info { flex: 1; }
 
 .page-links
 {
@@ -938,7 +932,7 @@ select[name=page-selector]
 
 .page-links .page-number-link { flex:0 0 10%; }
 .paginator-block .selected { background:#619F9F; }
-.paginator-block .page-links a:hover {background:#98C9C9;}
+.paginator-block a:hover {background:#98C9C9;}
 
 .view-links, .roulette-links
 {
