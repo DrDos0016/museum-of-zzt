@@ -1,3 +1,56 @@
+:root {
+    --ega-blue: #55F;
+    --ega-green: #5F5;
+    --ega-cyan: #5FF;
+    --ega-red: #F55;
+    --ega-purple: #F5F;
+    --ega-yellow: #FF5;
+    --ega-white: #FFF;
+    --ega-gray: #AAA;
+    --ega-black: #000;
+    --ega-darkblue: #00A;
+    --ega-darkgreen: #0A0;
+    --ega-darkcyan: #0AA;
+    --ega-darkred: #A00;
+    --ega-darkpurple: #A0A;
+    --ega-darkyellow: #A50;
+    --ega-darkgray: #555;
+}
+
+.ega-blue { color:var(--ega-blue); }
+.ega-green { color:var(--ega-green); }
+.ega-cyan { color:var(--ega-cyan); }
+.ega-red { color:var(--ega-red); }
+.ega-purple { color:var(--ega-purple); }
+.ega-yellow { color:var(--ega-yellow); }
+.ega-white { color:var(--ega-white); }
+.ega-gray { color:var(--ega-gray); }
+.ega-black { color:var(--ega-black); }
+.ega-darkblue { color:var(--ega-darkblue); }
+.ega-darkgreen { color:var(--ega-darkgreen); }
+.ega-darkcyan { color:var(--ega-darkcyan); }
+.ega-darkred { color:var(--ega-darkred); }
+.ega-darkpurple { color:var(--ega-darkpurple); }
+.ega-darkyellow { color:var(--ega-darkyellow); }
+.ega-darkgray { color:var(--ega-darkgray); }
+.ega-blue-bg { background-color:var(--ega-blue); }
+.ega-green-bg { background-color:var(--ega-green); }
+.ega-cyan-bg { background-color:var(--ega-cyan); }
+.ega-red-bg { background-color:var(--ega-red); }
+.ega-purple-bg { background-color:var(--ega-purple); }
+.ega-yellow-bg { background-color:var(--ega-yellow); }
+.ega-white-bg { background-color:var(--ega-white); }
+.ega-gray-bg { background-color:var(--ega-gray); }
+.ega-black-bg { background-color:var(--ega-black); }
+.ega-darkblue-bg { background-color:var(--ega-darkblue); }
+.ega-darkgreen-bg { background-color:var(--ega-darkgreen); }
+.ega-darkcyan-bg { background-color:var(--ega-darkcyan); }
+.ega-darkred-bg { background-color:var(--ega-darkred); }
+.ega-darkpurple-bg { background-color:var(--ega-darkpurple); }
+.ega-darkyellow-bg { background-color:var(--ega-darkyellow); }
+.ega-darkgray-bg { background-color:var(--ega-darkgray); }
+.ega-transparent-bg { background-color:transparent; }
+
 .zzt-scroll
 {
     background-image:url("/static/chrome/zzt-scroll.png");
@@ -10,7 +63,7 @@
     font-size:12pt;
     line-height:14px;
     text-align:left;
-    color:#FF5;
+    color:var(--ega-yellow);
     margin:0.25em auto 0.25em auto;
     padding:14px 8px 14px 8px;
     display:inline-block;
@@ -34,13 +87,13 @@
 
 .zzt-scroll .plaintext
 {
-    background-color:#00A;
+    background-color:var(--ega-darkblue);
 }
 
 .zzt-scroll .white
 {
-    color:#FFF;
-    background-color:#00A;
+    color:var(--ega-white);
+    background-color:var(--ega-darkblue);
     text-align:center;
     width:336px;
     height:14px;
@@ -51,9 +104,9 @@
 background-repeat: no-repeat;
 background-position:16px;
 background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAOCAYAAAASVl2WAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMTJDBGvsAAAAQ0lEQVQoU5WMQQoAIAzD9kn//5SqSNmEOPAQBk1YSGrBsRIa64AwJ2iiDB7RHUDIgfn/UITJAOTmBCAMjhUcKzgmigkcKlhhXdQ3uAAAAABJRU5ErkJggg==);
-color:white;
+color:var(--ega-white);
 padding-left:40px;
-background-color:#00A;
+background-color:var(--ega-darkblue);
 min-width:296px;
 display:inline-block;
 }
@@ -158,7 +211,7 @@ img.zzt-cheat
 
 .zzt-txt-message
 {
-    background:#000;
+    background:var(--ega-black);
     font-family:"cp437";
     line-height:14px;
     text-align:center;
@@ -174,13 +227,13 @@ img.zzt-cheat
     overflow:auto;
 }
 
-.zzt-txt-message .blue { color:#55F; }
-.zzt-txt-message .green { color:#5F5; }
-.zzt-txt-message .cyan { color:#5FF; }
-.zzt-txt-message .red { color:#F55; }
-.zzt-txt-message .purple { color:#F5F; }
-.zzt-txt-message .yellow { color:#FF5; }
-.zzt-txt-message .white { color:#FFF; }
+.zzt-txt-message .blue { color:var(--ega-blue); }
+.zzt-txt-message .green { color:var(--ega-green); }
+.zzt-txt-message .cyan { color:var(--ega-cyan); }
+.zzt-txt-message .red { color:var(--ega-red); }
+.zzt-txt-message .purple { color:var(--ega-purple); }
+.zzt-txt-message .yellow { color:var(--ega-yellow); }
+.zzt-txt-message .white { color:var(--ega-white); }
 
 /* Super ZZT */
 .zzt-img.zzt-szzt-message
@@ -207,9 +260,9 @@ img.zzt-szzt-message
 {
     font-family: 'cp437';
     background-image:url("/static/chrome/hyperlink.png");
-    background-color:#00A;
+    background-color:var(--ega-darkblue);
     background-repeat:no-repeat;
-    color:#FFF;
+    color:var(--ega-white);
     padding-left:40px;
     padding-right:16px;
     background-position:16px;
@@ -226,37 +279,3 @@ img.zzt-szzt-message
     background-image:url("/static/images/cp437-transparent.png");
 }
 /* End Individual Characters */
-
-.ega-blue { color:#55F; }
-.ega-green { color:#5F5; }
-.ega-cyan { color:#5FF; }
-.ega-red { color:#F55; }
-.ega-purple { color:#F5F; }
-.ega-yellow { color:#FF5; }
-.ega-white { color:#FFF; }
-.ega-gray { color:#AAA; }
-.ega-black { color:#000; }
-.ega-darkblue { color:#00A; }
-.ega-darkgreen { color:#0A0; }
-.ega-darkcyan { color:#0AA; }
-.ega-darkred { color:#A00; }
-.ega-darkpurple { color:#A0A; }
-.ega-darkyellow { color:#A50; }
-.ega-darkgray { color:#555; }
-.ega-blue-bg { background-color:#55F; }
-.ega-green-bg { background-color:#5F5; }
-.ega-cyan-bg { background-color:#5FF; }
-.ega-red-bg { background-color:#F55; }
-.ega-purple-bg { background-color:#F5F; }
-.ega-yellow-bg { background-color:#FF5; }
-.ega-white-bg { background-color:#FFF; }
-.ega-gray-bg { background-color:#AAA; }
-.ega-black-bg { background-color:#000; }
-.ega-darkblue-bg { background-color:#00A; }
-.ega-darkgreen-bg { background-color:#0A0; }
-.ega-darkcyan-bg { background-color:#0AA; }
-.ega-darkred-bg { background-color:#A00; }
-.ega-darkpurple-bg { background-color:#A0A; }
-.ega-darkyellow-bg { background-color:#A50; }
-.ega-darkgray-bg { background-color:#555; }
-.ega-transparent-bg { background-color:transparent; }
