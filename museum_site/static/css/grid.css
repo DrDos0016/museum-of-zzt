@@ -1,3 +1,10 @@
+:root {
+    --site-bg: #CCC;
+    --block-bg: #F0F0F0;
+    --header-bg: #619F9F;
+    --hover-bg: #98C9C9;
+}
+
 /* Basic Elements */
 a { text-decoration:none; }
 a:hover { text-decoration:underline; }
@@ -95,7 +102,7 @@ table
 th
 {
     box-sizing:border-box;
-    background-color:#619F9F;
+    background-color:var(--header-bg);
     border:1px solid #000;
     padding:7px 4px 7px 4px;
 }
@@ -314,7 +321,7 @@ pre.cp437 { line-height:14px;}
 
 .column .header
 {
-    background:#619F9F;
+    background:var(--header-bg);
     text-align:center;
     font-weight:bold;
     border-top:2px solid #000;
@@ -324,20 +331,20 @@ pre.cp437 { line-height:14px;}
 .column .row + .row { border-top:1px dotted #000; }
 .column .header + .row { border-top:0px; }
 .column .row:last-child { border-bottom:1px dotted #000; }
-.column .row:hover { background:#98C9C9; }
+.column .row:hover { background:var(--hover-bg); }
 /* End 4-Column Directories */
 /* End Specific Structures */
 
 /* Forms */
 .scrolling-checklist label { display:block; }
 .scrolling-checklist label + label {  border-top: 1px dotted #000; }
-.scrolling-checklist label.selected { background:#619F9F;}
-.scrolling-checklist label:hover { background:#98C9C9; }
+.scrolling-checklist label.selected { background:var(--header-bg);}
+.scrolling-checklist label:hover { background:var(--hover-bg); }
 
 .checklist-header
 {
     font-weight:bold;
-    background:#619F9F;
+    background:var(--header-bg);
     border-top:1px solid #000;
     border-bottom:1px solid #000;
     padding-left:3.5ch;
@@ -485,8 +492,8 @@ select[name=page-selector]
 }
 
 .page-links .page-number-link { flex:0 0 10%; }
-.paginator-block .selected { background:#619F9F; }
-.paginator-block a:hover {background:#98C9C9;}
+.paginator-block .selected { background:var(--header-bg); }
+.paginator-block a:hover {background:var(--hover-bg);}
 
 .view-links, .roulette-links
 {

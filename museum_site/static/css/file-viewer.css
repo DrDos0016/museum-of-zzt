@@ -136,7 +136,7 @@
 #file-tabs div:hover, #zip-name:hover
 {
     cursor:pointer;
-    background:#98C9C9;
+    background:var(--hover-bg);
     text-decoration:underline;
 }
 
@@ -161,14 +161,14 @@
 
 #file-list .selected
 {
-    background-color:#619F9F;
+    background-color:var(--header-bg);
 }
 
 #file-list li:hover
 {
     /* (Preview, List of files) */
     cursor:pointer;
-    background:#98C9C9;
+    background:var(--hover-bg);
 }
 
 #file-list ul /* (Preview, List of files) */
@@ -259,7 +259,7 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     display:none;
 }
 
-#file-tabs .selected, #zip-name.selected { background:#619F9F; }
+#file-tabs .selected, #zip-name.selected { background:var(--header-bg); }
 #analysis .toggle { display:none; }
 #file-list ul li.code-match { padding-left:3ch; }
 

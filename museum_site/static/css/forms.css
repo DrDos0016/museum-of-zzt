@@ -80,8 +80,8 @@ input:disabled { background:#AAA; }
 
 .scrolling-checklist label { display:block; }
 .scrolling-checklist label + label {  border-top: 1px dotted #000; }
-.scrolling-checklist label.selected { background: #619F9F;}
-.scrolling-checklist label:hover { background:#98C9C9; }
+.scrolling-checklist label.selected { background: var(--header-bg);}
+.scrolling-checklist label:hover { background:var(--hover-bg); }
 
 @media (max-width:480px) {
     .field-wrapper
@@ -120,10 +120,10 @@ input:disabled { background:#AAA; }
     border:3px dashed #000;
     flex:1;
     cursor:pointer;
-    background:#619F9F;
+    background:var(--header-bg);
 }
 
-.upload-area.dragging { background:#98C9C9; }
+.upload-area.dragging { background:var(--hover-bg); }
 
 .upload-info
 {
@@ -153,7 +153,7 @@ input:disabled { background:#AAA; }
     border-bottom:0px;
     padding:7px 4px 7px 4px;
     min-height:2.1ch;
-    background-color:#619F9F;
+    background-color:var(--header-bg);
     font-weight:bold;
 }
 
@@ -194,8 +194,8 @@ input:disabled { background:#AAA; }
 
 .ul-scrolling-checklist li { display:block; }
 .ul-scrolling-checklist li + li {  border-top: 1px dotted #000; }
-.ul-scrolling-checklist li.selected { background:#619F9F;}
-.ul-scrolling-checklist li:hover { background:#98C9C9; }
+.ul-scrolling-checklist li.selected { background:var(--header-bg);}
+.ul-scrolling-checklist li:hover { background:var(--hover-bg); }
 li.arrangeable, li.arrangeable label { cursor:grab; }
 
 .related-content-header
@@ -217,7 +217,7 @@ li.arrangeable, li.arrangeable label { cursor:grab; }
 /* Jul 2022 Form modifications */
 .scrolling-checklist-filter
 {
-    background-color:#619F9F;
+    background-color:var(--header-bg);
     border-bottom:1px solid #000;
     position:sticky;
     top:0px;
@@ -249,8 +249,8 @@ input[type=button]:hover, input[type=submit]:hover
 .tag-list > div { display:inline-block; }
 .tag-list > div:first-child { margin-left:0px; }
 .tag > div { display:inline-block; }
-.tag > div:hover { background:#98C9C9; }
-.tag.selected .tag-text { background-color:#98C9C9; }
+.tag > div:hover { background:var(--hover-bg); }
+.tag.selected .tag-text { background-color:var(--hover-bg); }
 
 .tag-text
 {
@@ -272,7 +272,7 @@ input[type=button]:hover, input[type=submit]:hover
     border:1px solid #000;
     border-left:1px dashed #000;
     border-radius:0 8px 8px 0;
-    background:#619F9F;
+    background:var(--header-bg);
     padding:7px 8px 7px 8px;
 }
 

@@ -6,7 +6,7 @@
     display:grid;
 }
 
-.unpublished { background-color:#98C9C9; }
+.unpublished { background-color:var(--hover-bg); }
 
 a.restricted { color:#F00; }
 a.explicit::before { content:"🔞 "; }
@@ -213,7 +213,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
 
 .model-block.detailed.unpublished + .model-block-links
 {
-    background-color: #98C9C9;
+    background-color: var(--hover-bg);
 }
 /* End Links for File blocks */
 
