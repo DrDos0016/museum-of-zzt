@@ -7,7 +7,7 @@ from django.core.cache import cache
 
 from museum_site.constants import *
 from museum_site.common import record
-from museum_site.private import NEW_REVIEW_WEBHOOK_URL, NEW_UPLOAD_WEBHOOK_URL
+from museum_site.private import NEW_REVIEW_WEBHOOK_URL, NEW_UPLOAD_WEBHOOK_URL, DISCORD_INVITE_URL
 
 # Announcement Settings
 ANNOUNCE_ALL = 2
@@ -15,9 +15,6 @@ ANNOUNCE_LOGGED_IN = 1
 ANNOUNCE_NONE = 0
 DISCORD_ANNOUNCE_UPLOADS = ANNOUNCE_ALL
 DISCORD_ANNOUNCE_REVIEWS = ANNOUNCE_ALL
-
-DISCORD_INVITE_URL = "https://discord.com/invite/SVMeJU32xn"
-
 
 def discord_announce_review(review, env=None):
     if env is None:

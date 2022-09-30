@@ -7,11 +7,10 @@ from django.shortcuts import render
 
 from museum_site.common import *
 from museum_site.constants import *
-from museum_site.core.discord import DISCORD_INVITE_URL
 from museum_site.models import *
 from museum_site.private import (
     UNREGISTERED_SUPPORTERS, UNREGISTERED_BIGGER_SUPPORTERS,
-    UNREGISTERED_BIGGEST_SUPPORTERS
+    UNREGISTERED_BIGGEST_SUPPORTERS, DISCORD_INVITE_URL
 )
 
 

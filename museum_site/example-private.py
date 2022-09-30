@@ -25,6 +25,7 @@ TWITTER_OAUTH_SECRET = ""
 # Server Settings -> Integrations -> Webhooks
 # Used for the Worlds of ZZT Discord to track Worlds of ZZT bot tweets.
 # Upload webhook used to annouce new file uploads (not yet implemented)
+DISCORD_INVITE_URL = ""
 WEBHOOK_URL = ""
 NEW_UPLOAD_WEBHOOK_URL = ""
 NEW_REVIEW_WEBHOOK_URL = ""
