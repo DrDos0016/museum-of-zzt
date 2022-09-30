@@ -303,7 +303,7 @@ input[type=button]:hover, input[type=submit]:hover
 .ascii-table.scale-1.vert { grid-template-columns: repeat(16, 8px); }
 .ascii-table.scale-2.vert { grid-template-columns: repeat(16, 16px); }
 .ascii-table .ascii-char-image:hover {
-    outline:4px solid #FF5;
+    outline:4px solid var(--ega-yellow);
     z-index:2;
     cursor:pointer;
 }

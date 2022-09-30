@@ -3,12 +3,16 @@
     --block-bg: #F0F0F0;
     --header-bg: #619F9F;
     --hover-bg: #98C9C9;
+    --link-color: #00F;
+    --notice-bg: #DEF;
+    --restricted: #F00;
+    --input-bg: #FFF;
 }
 
 /* Basic Elements */
 a { text-decoration:none; }
 a:hover { text-decoration:underline; }
-a:visited { color:#00F; }
+a:visited { color:var(--link-color); }
 
 a[target=_blank]
 {
@@ -34,9 +38,9 @@ a.noext[target=_blank]
 
 a.nohover:hover { background-color:transparent; }
 a.noul, a.noul:hover { text-decoration:none; }
-a.broken { text-decoration:line-through; color:#F00; }
-a.restricted { color:#F00; }
-a.unlocked { color:#080; }
+a.broken { text-decoration:line-through; color:var(--restricted); }
+a.restricted { color:var(--restricted); }
+a.unlocked { color:var(--ega-darkgreen); }
 a.il { font-style:italic; }
 
 blockquote
@@ -46,7 +50,7 @@ blockquote
     text-align:justify;
     padding:0.5em;
     border:3px double #000;
-    background:#DEF;
+    background:var(--notice-bg);
 }
 
 blockquote::first-letter
@@ -68,15 +72,15 @@ figure.zzt-figure
 {
     width:480px;
     padding:14px 8px 0px 8px;
-    background:#0AA;
+    background:var(--ega-darkcyan);
     margin:auto;
-    color:#FFF;
+    color:var(--ega-white);
     font-family:"cp437";
-    border:1px solid #000;
+    border:1px solid var(--ega-white);
 }
 
 figure.zzt-figure figcaption { padding-top:7px; padding-bottom:7px; }
-figure.zzt-figure figcaption a { color:#FF5; }
+figure.zzt-figure figcaption a { color:var(--ega-yellow); }
 
 h1 {margin-top:0;}
 
@@ -117,7 +121,7 @@ td
 input, select, textarea
 {
     border:1px solid #000;
-    background:#FFF;
+    background:var(--input-bg);
     font-size:larger;
 }
 
@@ -167,12 +171,12 @@ pre.cp437 { line-height:14px;}
 
 .spoiler img, .spoiler code, .spoiler p a { visibility:hidden; }
 .spoiler.revealed { color:#000; background-image:none; }
-.spoiler.revealed a { color:#00F; }
+.spoiler.revealed a { color:var(--link-color); }
 .spoiler.revealed img, .spoiler.revealed code, .spoiler.revealed p a { visibility:visible; }
 
 .content-warning, .sticky-note
 {
-    background:#DEF;
+    background:var(--notice-bg);
     display:flex;
     align-items:center;
     padding:0.25em 1em 0.25em 1em;
@@ -207,18 +211,18 @@ pre.cp437 { line-height:14px;}
 {
     font-family:cp437;
     font-size:16px;
-    color:#FF5;
-    background:#000;
+    color:var(--ega-yellow);
+    background:var(--ega-black);
     padding:14px 8px;
     width:320px;
     margin:7px auto 7px auto;
-    border:2px solid #00A;
+    border:2px solid var(--ega-darkblue);
 }
-.patreon-plug .heading { color:#FFF; }
-.patreon-plug .heading span { color:#00A; }
+.patreon-plug .heading { color:var(--ega-white); }
+.patreon-plug .heading span { color:var(--ega-darkblue); }
 .patreon-plug a
 {
-    color:#5F5;
+    color:var(--ega-green);
     text-align:center;
     width:100%;
     display:block;
@@ -253,10 +257,10 @@ pre.cp437 { line-height:14px;}
 /* Etc */
 .basic-border { border:1px solid #000; }
 .bulletless { list-style:none; }
-.debug { background:#F00; }
+.debug { background:var(--restricted); }
 .faded { opacity:0.6 }
 .fit-height { height: calc(100vh - 44px ); align-self:start; }
-.jsLink { cursor:pointer; color:#00F; }
+.jsLink { cursor:pointer; color:var(--link-color); }
 .no-margin { margin:0; }
 .zoomed { cursor:zoom-out; width:auto; }
 
@@ -399,8 +403,8 @@ code.super-zzt-oop
 
 code.cheat {
     font-family:cp437;
-    background:#000;
-    color:#FFF;
+    background:var(--ega-black);
+    color:var(--ega-white);
     font-size:medium;
     line-height:14px;
 }
@@ -409,7 +413,7 @@ code.cheat {
 #oop-wrapper.zzt-scroll code
 {
     background:transparent;
-    color:#FF5;
+    color:var(--ega-yellow);
     padding:0;
     font-size:16px;
     line-height:14px;
@@ -590,7 +594,7 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     margin-left:-8px;
     margin-right:-8px;
     margin-top:-14px;
-    border-bottom:1px dashed #AAA;
+    border-bottom:1px;
     min-height:20px;
     grid-area:crumbs;
 }
@@ -606,7 +610,7 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
 
 #page-breadcrumbs a:first-child
 {
-    color:#F0F;
+
 }
 
 #page-breadcrumbs a

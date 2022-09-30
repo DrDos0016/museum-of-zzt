@@ -8,7 +8,7 @@
 
 .unpublished { background-color:var(--hover-bg); }
 
-a.restricted { color:#F00; }
+a.restricted { color:var(--restricted); }
 a.explicit::before { content:"🔞 "; }
 a.unpublished::before { content:"🚧 "; }
 a.explicit.unpublished::before { content:"🔞🚧 "; }
@@ -243,7 +243,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
 
 .model-block.gallery.poll .title { font-size:16pt; max-width:240px; }
 
-.model-block.gallery.poll a { color:#FF5; }
+.model-block.gallery.poll a { color:var(--ega-yellow); }
 
 .gallery .poll-info
 {
