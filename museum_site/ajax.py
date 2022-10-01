@@ -42,9 +42,7 @@ def get_zip_file(request):
         record(filename)
         record(type(error))
         record(error)
-        return HttpResponse(
-            "An error occurred, and the file could not be retreived.", status=404
-        )
+        return HttpResponse("An error occurred, and the file could not be retreived.", status=404)
 
     if ext in (FILE_VIEWER_TEXT_EXTENSIONS):
         output = fh.read()
@@ -63,14 +61,7 @@ def get_zip_file(request):
             output = "HEXADECIMAL"
             encding = "hex"
 
-        output = output.replace(
-            "&", "&amp;"
-        ).replace(
-            "<", "&lt;"
-        ).replace(
-            ">", "&gt;"
-        )
-
+        output = output.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         output = ("<div class='text-file {}'>"
                   "<pre class='cp437'>{}</pre></div>").format(encoding, output)
         return HttpResponse(output)
@@ -198,9 +189,7 @@ def wozzt_queue_add(request):
     raw = d["b64img"].replace("data:image/png;base64,", "", 1)
 
     image = Image.open(BytesIO(base64.b64decode(raw)))
-    filepath = os.path.join(
-        SITE_ROOT, "museum_site", "static", "wozzt-queue", e.uuid + ".png"
-    )
+    filepath = os.path.join(SITE_ROOT, "museum_site", "static", "wozzt-queue", e.uuid + ".png")
 
     image.save(filepath)
     e.save()
