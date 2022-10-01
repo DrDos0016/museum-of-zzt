@@ -42,11 +42,56 @@
     font-size:24px;
     color:#FFF;
 }
+
+.plug
+{
+    background:#00AAAA;
+    width:210px;
+    display:flex;
+    align-items:center;
+    padding:7px 4px 7px 4px;
+    border:5px double #5FF;
+    column-gap:8px;
+    text-align:center;
+    margin:14px 8px 14px 8px;
+}
+
+.plug .logo
+{
+    font-size:36pt;
+    background-color:#FFF;
+    border-radius:100%;
+    padding:8px;
+    text-align:center;
+    display:flex;
+    max-height:32px;
+    max-width:32px;
+}
+
+.plug .text
+{
+    font-family:cp437;
+    font-size:20px;
+    color:#FFF;
+}
+
+.plug-youtube { background:#A00; border-color:#F33; }
+.plug-twitch { background:#6441A4; border-color:#CFB5FF; }
 </style>
 {% endblock %}
 
 {% block content %}
 <h1>Debug Page</h1>
+
+<a href="{% url 'youtube' %}" target="_blank" class="noext noul"><div class="plug plug-youtube">
+    <div class="logo"><img src="{% static '/icons/youtube-small.png' %}"></div>
+    <div class="text">Worlds of ZZT YouTube Channel</div>
+</div></a>
+
+<a href="{% url 'youtube' %}" target="_blank" class="noext noul"><div class="plug plug-twitch">
+    <div class="logo"><img src="{% static '/icons/Glitch_Purple_RGB.png' %}"></div>
+    <div class="text">Worlds of ZZT on Twitch</div>
+</div></a>
 
 <p>ZZT Tags:
 <ul>

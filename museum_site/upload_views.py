@@ -66,8 +66,8 @@ def upload(request):
                 "language": zgame_obj.language,
                 "release_date": str(zgame_obj.release_date),
                 "author": zgame_obj.author.replace("/", ","),
-                "company": ",".join(list(zgame_obj.companies.all().values_list("title", flat=True))),
-                "genre": zgame_obj.genre_ids(),
+                "company": ",".join(zgame_obj.get_related_list("companies", "title")),
+                "genre": zgame_obj.get_related_list("genres", "pk"),
             }
             play_form = PlayForm(initial={"zeta_config": zgame_obj.zeta_config_id})
         else:

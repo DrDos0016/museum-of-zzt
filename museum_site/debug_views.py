@@ -125,10 +125,11 @@ def debug_article(request, fname=""):
 
 
 def debug_colors(request):
-    data = {"title": "DEBUG COLORS", "stylesheets": {}}
+    data = {"title": "DEBUG COLORS", "stylesheets": {}, "variables": {}}
 
     for stylesheet in CSS_INCLUDES:
         data["stylesheets"][stylesheet] = []
+        data["variables"][stylesheet] = []
         data["solarized"] = [
             "#002B36", "#073642", "#586E75", "#657B83",
             "#839496", "#93A1A1", "#EEE8D5", "#FDF6E3",
@@ -143,13 +144,20 @@ def debug_colors(request):
         ]
         path = os.path.join(STATIC_PATH, "css", stylesheet)
         with open(path) as fh:
+
             for line in fh.readlines():
                 matches = re.findall("#(?:[0-9a-fA-F]{3}){1,2}", line)
-                for m in matches:
-                    if m not in data["stylesheets"][stylesheet]:
-                        data["stylesheets"][stylesheet].append(m)
+                if line.strip().startswith("--"):
+                    for m in matches:
+                        if m not in data["variables"][stylesheet]:
+                            data["variables"][stylesheet].append(m)
+                else:
+                    for m in matches:
+                        if m not in data["stylesheets"][stylesheet]:
+                            data["stylesheets"][stylesheet].append(m)
 
             data["stylesheets"][stylesheet].sort()
+            data["variables"][stylesheet].sort()
 
     return render(request, "museum_site/debug/debug_colors.html", data)
 

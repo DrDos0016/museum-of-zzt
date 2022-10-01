@@ -23,7 +23,7 @@ EMAIL_ADDRESS = "doctordos@gmail.com"
 PLAY_METHODS = {"archive": {"name": "Archive.org - DosBox Embed"}, "zeta": {"name": "Zeta"}}
 
 # Global CSS Files
-CSS_INCLUDES = ["main.css", "grid.css", "landing.css", "file-viewer.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"]
+CSS_INCLUDES = ["grid.css", "main.css", "landing.css", "file-viewer.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"]
 
 # Private settings - (Patron Locked Content, IA API)
 try:
