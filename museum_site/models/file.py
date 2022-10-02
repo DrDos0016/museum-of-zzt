@@ -855,7 +855,7 @@ class File(BaseModel, ZFile_Urls):
         if self.actions["view"]:
             title_datum = {"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons()}
         else:
-            title_datum = {"datum": "text", "value": self.title, "kind": "faded"}
+            title_datum = {"datum": "title", "value": self.title, "kind": "faded"}
 
         context.update(
             preview=dict(url=self.preview_url, alt=self.preview_url),

@@ -581,14 +581,11 @@ def zfile_links(zfile=None, debug=False):
 
 
 @register.simple_tag()
-def generic_block_loop(
-    items, view="detailed", header=None, request=None
-):
+def generic_block_loop(items, view="detailed", header=None, request=None, *args, **kwargs):
+    context = {}
     output = ""
-    if view == "":
-        template = "museum_site/blocks/generic-detailed-block.html"
-    else:
-        template = "museum_site/blocks/generic-{}-block.html".format(view)
+    template = "museum_site/blocks/new-generic-{}-block.html".format(view)
+
 
     # Empty sets
     if len(items) == 0:
@@ -606,9 +603,12 @@ def generic_block_loop(
         output += '<div class="gallery-frame">'
 
     for i in items:
-        context = i  # Default
+        context["obj"] = i
         if view in ["detailed", "list", "gallery", "review-content"]:
-            context = getattr(i, "{}_block_context".format(view.replace("-", "_")))(request=request)
+             context["obj"].context = getattr(i, "{}_block_context".format(view.replace("-", "_")))(request=request)
+             if kwargs.get("today"):
+                 context["today"] = kwargs["today"]
+
         output += render_to_string(template, context)
 
     if view == "list":

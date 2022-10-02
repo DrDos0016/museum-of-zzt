@@ -19,7 +19,7 @@ from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
 class Model_List_View(ListView):
-    template_name = "museum_site/new-generic-directory.html"
+    template_name = "museum_site/generic-directory.html"
     allow_pagination = True
     paginate_by = NO_PAGINATION
     has_local_context = True
