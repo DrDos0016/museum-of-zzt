@@ -268,9 +268,12 @@ def worlds_of_zzt_queue(request):
 
 def twitch_challenge(request):
     print("CHALLENGE!")
+    with open("/var/projects/museum-of-zzt/museum_site/static/data/challenge.txt", "w") as fh:
+        fh.write("Challenge:\n")
+        fh.write(request.POST)
     if request.POST:
         print(request.POST)
-    return HttpResponse(request.POST)
+    return HttpResponse("OK")
 
 
 def error_500(request):
