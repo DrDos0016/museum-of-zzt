@@ -266,7 +266,7 @@ def worlds_of_zzt_queue(request):
     data["queue_size"] = len(data["queue"])
     return render(request, "museum_site/wozzt-queue.html", data)
 
-def twitch_challenge(request):
+def twitch_challenge(request, anything=""):
     print("CHALLENGE!")
 
     with open("/var/projects/museum-of-zzt/museum_site/static/data/challenge.txt", "w") as fh:
