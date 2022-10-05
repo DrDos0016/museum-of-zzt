@@ -266,6 +266,11 @@ def worlds_of_zzt_queue(request):
     data["queue_size"] = len(data["queue"])
     return render(request, "museum_site/wozzt-queue.html", data)
 
+def twitch_challenge(request):
+    if request.POST:
+        print(request.POST)
+    return HttpResponse
+
 
 def error_500(request):
     # Attempt to redirect old URLs with .zip

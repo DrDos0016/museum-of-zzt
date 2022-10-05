@@ -277,6 +277,7 @@ urlpatterns = [
     path("patron-articles/", museum_site.article_views.patron_articles, name="patron_articles"),
     path("worlds-of-zzt/", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
     path("zeta-live/", museum_site.zeta_views.zeta_live),
+    path("twitch-challenge/", museum_site.views.twitch_challenge),
     # Non-Museum Websites
     path("twitter/", RedirectView.as_view(url="https://twitter.com/worldsofzzt"), name="twitter"),
     path("tumblr/", RedirectView.as_view(url="http://worldsofzzt.tumblr.com"),),
