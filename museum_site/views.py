@@ -2,6 +2,7 @@ import math
 import re
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -266,14 +267,14 @@ def worlds_of_zzt_queue(request):
     data["queue_size"] = len(data["queue"])
     return render(request, "museum_site/wozzt-queue.html", data)
 
+
+@csrf_exempt
 def twitch_challenge(request, anything=""):
-    print("CHALLENGE!")
+    print(request.body)
 
     with open("/var/projects/museum-of-zzt/museum_site/static/data/challenge.txt", "w") as fh:
         fh.write("Challenge:\n")
-        fh.write(str(request.POST))
-    if request.POST:
-        print(request.POST)
+        fh.write(str(request.body))
     return HttpResponse("OK")
 
 
