@@ -1,3 +1,4 @@
+import json
 import math
 import re
 
@@ -270,12 +271,8 @@ def worlds_of_zzt_queue(request):
 
 @csrf_exempt
 def twitch_challenge(request, anything=""):
-    print(request.body)
-
-    with open("/var/projects/museum-of-zzt/museum_site/static/data/challenge.txt", "w") as fh:
-        fh.write("Challenge:\n")
-        fh.write(str(request.body))
-    return HttpResponse("OK")
+    twitch_request = json.loads(request.body)
+    return HttpResponse(twitch_request["challenge"])
 
 
 def error_500(request):
