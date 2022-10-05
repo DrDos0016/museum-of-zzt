@@ -267,7 +267,7 @@ def worlds_of_zzt_queue(request):
     return render(request, "museum_site/wozzt-queue.html", data)
 
 def twitch_challenge(request):
-    print("CHALLENGE!"
+    print("CHALLENGE!")
     if request.POST:
         print(request.POST)
     return HttpResponse(request.POST)
