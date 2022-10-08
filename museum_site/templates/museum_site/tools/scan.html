@@ -18,6 +18,9 @@
 {% block content %}
 <h1>Museum Scan</h1>
 
+Started: {{scan_meta.started}}<br>
+Finished: {{scan_meta.finished}}<br>
+
 {% for cat in issues %}
 <table>
     <tr>

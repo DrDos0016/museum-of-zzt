@@ -786,7 +786,8 @@ def scan(request):
     with open(os.path.join(SITE_ROOT, "museum_site", "static", "data", "scan.json")) as fh:
         raw = fh.read()
         j = json.loads(raw)
-        for i in j:
+        data["scan_meta"] = j.get("meta", {})
+        for i in j.get("issues", {}):
             for key in i.keys():
                 if not issues.get(key.replace("_", " ")):
                     issues[key.replace("_", " ")] = []
