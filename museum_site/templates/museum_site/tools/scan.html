@@ -28,7 +28,7 @@ Finished: {{scan_meta.finished}}<br>
     </tr>
     {% for i in cat|slice:"1:" %}
         <tr>
-            <td><a href="{{i.zf.url}}" target="_blank">{{i.zf.title}} | {{cat.0}}</a></td>
+            <td><a href="{{i.zf.url}}" target="_blank">{{i.zf.title}}</a></td>
             <td>{% if cat.0 == "archive mirror" %}<a href="{% url 'mirror' i.zf.key %}">Mirror</a>{% endif %}</td>
             <td><a href="{{i.zf.tool_url}}" target="_blank">Tools</a></td>
             <td><a href="{{i.zf.admin_url}}" target="_blank">Admin</a></td>
