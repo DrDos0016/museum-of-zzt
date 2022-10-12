@@ -9,6 +9,11 @@
 
 {% block content %}
 <h1>{{title}}</h1>
+<p><ul>
+    <li>{% if not request.GET.token %}Upload a New File{% else %}<a href="{% url 'upload' %}">Upload a New File</a>{% endif %}</li>
+    <li><a href="{% url 'upload_action' 'edit' %}">Edit an existing upload</a></li>
+    <li><a href="{% url 'upload_action' 'delete' %}">Delete an existing upload</a></li>
+</ul></p>
 
 <form method="POST" enctype="multipart/form-data" id="upload_form">
 <h2 class="cut-heading">File Information<div class="fr cut-state">➖</div></h2>
@@ -101,8 +106,6 @@
 
 <input id="submit_upload" type="submit" name="action" value="{{submit_text|default:'Upload File'}}">
 
-<p><a href="{% url 'upload_action' 'edit' %}">Edit an existing upload</a> (Requires an Edit Token for guest users)</p>
-<p><a href="{% url 'upload_action' 'delete' %}">Delete an existing upload</a> (Requires an Edit Token for guest users)</p>
 <!--Suggestions-->
 <datalist id="author-suggestions"></datalist>
 <datalist id="company-suggestions"></datalist>

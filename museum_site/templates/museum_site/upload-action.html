@@ -2,6 +2,11 @@
 
 {% block content %}
 <h1>Select An Upload To {{action|title}}</h1>
+<p><ul>
+    <li><a href="{% url 'upload' %}">Upload a New File</a></li>
+    <li>{% if action == "Edit" %}Edit an existing upload{% else %}<a href="{% url 'upload_action' 'edit' %}">Edit an existing upload</a>{% endif %}</li>
+    <li>{% if action == "Delete" %}Delete an existing upload{% else %}<a href="{% url 'upload_action' 'delete' %}">Delete an existing upload</a>{% endif %}</li>
+</ul></p>
 
 <p>{{action_verb}} an unpublished upload requires entering the <i>Edit Token</i> that was generated when the file was first uploaded.</p>
 
