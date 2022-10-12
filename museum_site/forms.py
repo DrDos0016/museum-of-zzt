@@ -32,6 +32,11 @@ STUB_CHOICES = (("A", "First"), ("B", "Second"), ("C", "Third"))  # For debuggin
 
 # Common strings
 PASSWORD_HELP_TEXT = "Use a unique password for your account with a minimum length of <b>8</b> characters. Passwords are hashed and cannot be viewed by staff."
+PATRON_DISCLAIMER_TEXT = (
+    "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br> "
+    "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted. Selections will be "
+    "used in the order they appear here if applicable."
+)
 
 
 class ZGameForm(forms.ModelForm):
@@ -1081,10 +1086,7 @@ class Change_Patron_Stream_Poll_Nominations_Form(forms.Form):
     stream_poll_nominations = forms.CharField(
         widget=forms.Textarea(),
         label="Nominations",
-        help_text=(
-            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
-            "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted."
-        ).format(EMAIL_ADDRESS)
+        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
     )
 
 
@@ -1097,11 +1099,7 @@ class Change_Patron_Stream_Selections_Form(forms.Form):
     stream_selections = forms.CharField(
         widget=forms.Textarea(),
         label="Stream Selections",
-        help_text=(
-            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
-            "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted.<br><br>"
-            "Selections will be streamed in the order they appear here."
-        ).format(EMAIL_ADDRESS)
+        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
     )
 
 
@@ -1114,11 +1112,7 @@ class Change_Closer_Look_Poll_Nominations_Form(forms.Form):
     closer_look_nominations = forms.CharField(
         widget=forms.Textarea(),
         label="Closer Look Poll Nominations",
-        help_text=(
-            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
-            "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted.<br><br>"
-            "Selections will be appear on polls in the order they appear here."
-        ).format(EMAIL_ADDRESS)
+        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
     )
 
 
@@ -1131,11 +1125,7 @@ class Change_Guest_Stream_Selections_Form(forms.Form):
     guest_stream_selections = forms.CharField(
         widget=forms.Textarea(),
         label="Guest Stream Selections",
-        help_text=(
-            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
-            "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted.<br><br>"
-            "Selections will be streamed in the order they appear here."
-        ).format(EMAIL_ADDRESS)
+        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
     )
 
 
@@ -1148,11 +1138,7 @@ class Change_Closer_Look_Selections_Form(forms.Form):
     closer_look_selections = forms.CharField(
         widget=forms.Textarea(),
         label="Closer Look Selections",
-        help_text=(
-            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
-            "If your suggestion cannot be used for whatever reason (due to an author's request or some other conflict) you will be contacted.<br><br>"
-            "Selections will be written in the order they appear here."
-        ).format(EMAIL_ADDRESS)
+        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
     )
 
 
@@ -1165,11 +1151,7 @@ class Change_Bkzzt_Topics_Form(forms.Form):
     bkzzt_topics = forms.CharField(
         widget=forms.Textarea(),
         label="BKZZT Topic Selections",
-        help_text=(
-            "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br>"
-            "If your suggestion cannot be used for whatever reason you will be contacted.<br><br>"
-            "Selections will be used as topics in the order they appear here."
-        ).format(EMAIL_ADDRESS)
+        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
     )
 
 
