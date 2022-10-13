@@ -13,11 +13,15 @@ class ZFile_Queryset(Base_Queryset):
         print(self.model)
 
         # Filter by simple fields
-        for f in ["title", "author", "filename"]:
+        for f in ["title", "filename"]:
             if p.get(f):
                 field = "{}__icontains".format(f)
                 value = p[f]
                 qs = qs.filter(**{field: value})
+
+        # Filter by author
+        if p.get("author"):
+            qs = qs.filter(authors__title__icontains=p["author"])
 
         # Filter by company
         if p.get("company"):
@@ -80,15 +84,12 @@ class ZFile_Queryset(Base_Queryset):
 
     def basic_search(self, q, include_explicit=True):
         qs = self.filter(
-            Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(author__icontains=q) | Q(filename__icontains=q) | Q(companies__title__icontains=q)
+            Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(authors__title__icontains=q) | Q(filename__icontains=q)
+            | Q(companies__title__icontains=q)
         )
         if not include_explicit:
             qs = qs.filter(explicit=False)
         return qs.distinct()
-
-    def directory(self, category):
-        if category == "author":
-            return self.values("author").distinct().order_by("author")
 
     def new_releases(self, spotlight_filter=False):
         """ Return zfiles without UPLOADED detail optionally spotlight-only ordered by newest release date """
@@ -173,16 +174,13 @@ class ZFile_Queryset(Base_Queryset):
         excluded_details = [DETAIL_UPLOADED, DETAIL_GFX, DETAIL_LOST, DETAIL_CORRUPT]
         return self.filter(details__in=[DETAIL_ZZT]).exclude(
             Q(details__in=excluded_details) |
-            Q(author__icontains="_ry0suke_") |
+            Q(authors__title__icontains="_ry0suke_") |
             Q(explicit=True)
         )
 
     def featured_worlds(self):
         """ Returns zfiles with FEATURED detail. """
         return self.filter(details=DETAIL_FEATURED)
-
-    def author_suggestions(self):
-        return self.all().only("author").distinct().order_by("author")
 
     def basic_search_suggestions(self, query="", match_anywhere=False):
         if not match_anywhere:

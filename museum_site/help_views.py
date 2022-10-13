@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.shortcuts import render
 from django.views import View
 
@@ -45,8 +47,6 @@ def zfiles(request):
     example = File(
         id=999999,
         title="Example ZFile",
-        author="Dr. Dos",
-        ssv_company="Worlds of ZZT",
         release_date=date.today(),
         letter="z",
         filename="zzt.zip",
@@ -58,6 +58,5 @@ def zfiles(request):
         screenshot="zzt.png"
     )
 
-    data["list_table_header"] = table_header(File.table_fields)
     data["example"] = example
     return render(request, "museum_site/help/zfiles.html", data)

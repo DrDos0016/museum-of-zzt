@@ -100,7 +100,7 @@ def discord_announce_upload(upload, env=None):
         "**{}** by {}{}\n"
         "Explore: https://museumofzzt.com{}\n"
     ).format(
-        zfile.title, zfile.author,
+        zfile.title, ", ".join(zfile.author_list()),
         year,
         urllib.parse.quote(zfile.view_url())
     )

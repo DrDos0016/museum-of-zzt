@@ -271,7 +271,7 @@ async def zzt(ctx):
                 )
 
             discord_post = discord_post.format(
-                data["file"]["title"], data["file"]["author"],
+                data["file"]["title"], ", ".join(data["file"]["author"]),
                 str(data["file"]["release_date"])[:4], data["world"],
                 data["board"]["title"]
             )

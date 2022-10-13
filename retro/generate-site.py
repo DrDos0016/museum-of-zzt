@@ -50,7 +50,7 @@ def main():
         "</tr>\n").format(
             f.download_url(),
             f.title,
-            f.author.replace("/", ", "),
+            ", ".join(f.author_list()),
             round(f.size / 1024, 2),
             ", ".join(f.genre_list())
         )
@@ -80,7 +80,7 @@ def main():
     "</tr>\n").format(
         f.download_url(),
         f.title,
-        f.author.replace("/", ", "),
+        ", ".join(f.author_list()),
         round(f.size / 1024, 2),
         ", ".join(f.genre_list())
     )

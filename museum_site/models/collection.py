@@ -180,7 +180,7 @@ class Collection_Entry(models.Model):
         # Value - Django order_by param
         "canonical": "order",
         "title": "zfile__sort_title",
-        "author": "zfile__author",
+        "author": "zfile__authors__title",
         "company": "zfile__companies__title",
         "rating": "-zfile__rating",
         "release": "zfile__release_date",

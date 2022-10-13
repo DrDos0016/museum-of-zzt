@@ -27,9 +27,9 @@
 <form method="POST" action="{% url 'add_livestream' zfiles.0.key %}">
 {% csrf_token %}
 <textarea style="width:120ch;height:40ch;" name="video_description">
-{% if zfiles|length == 1 %}Livestream of the ZZT world "{{zfiles.0.title}}" by {{zfiles.0.author}}{% if zfiles.0.release_year %} ({{zfiles.0.release_year}}){% endif %}
+{% if zfiles|length == 1 %}Livestream of the ZZT world "{{zfiles.0.title}}" by {{zfiles.0.author_list|join:", "}}{% if zfiles.0.release_year %} ({{zfiles.0.release_year}}){% endif %}
 {% else %}♦ Livestream of the following {{zfiles|length}} ZZT worlds ♦
-{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) "{{zfile.title}}" by {{zfile.author}}{% if zfile.release_year %} ({{zfile.release_year}}){% endif %} [{{DOMAIN}}{{zfile.url}}]
+{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) "{{zfile.title}}" by {{zfile.author_list|join:", "}}{% if zfile.release_year %} ({{zfile.release_year}}){% endif %} [{{DOMAIN}}{{zfile.url}}]
 {% endfor %}{% endif %}(Originally streamed {{stream_date|date:"F jS, Y"}})
 
 ♦ Join us for future livestreams at https://twitch.tv/worldsofzzt ♦

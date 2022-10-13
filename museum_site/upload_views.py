@@ -65,7 +65,7 @@ def upload(request):
                 "explicit": int(zgame_obj.explicit),
                 "language": zgame_obj.language,
                 "release_date": str(zgame_obj.release_date),
-                "author": zgame_obj.author.replace("/", ","),
+                "author": ",".join(zgame_obj.author_list()),
                 "company": ",".join(zgame_obj.get_related_list("companies", "title")),
                 "genre": zgame_obj.get_related_list("genres", "pk"),
             }
@@ -161,7 +161,6 @@ def upload(request):
             zfile.calculate_sort_title()
             zfile.basic_save()
             zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
-            zfile.genre = ""  # Legacy SSV field for v1 API support
             # Remove old genre assocs. when editing
             if zfile.id:
                 zfile.genres.clear()
@@ -183,6 +182,19 @@ def upload(request):
                 # If it's newly created, set the slug
                 if created:
                     c_obj.generate_automatic_slug(save=True)
+
+            # Remove old author assocs. when editing
+            if zfile.id:
+                zfile.authors.clear()
+            # Convert author to Author objects
+            for author in zgame_form.cleaned_data["author"].split("/"):
+                if author in ["", "[text]"]:
+                    continue
+                (a_obj, created) = Author.objects.get_or_create(title=author)
+                zfile.authors.add(a_obj)
+                # If it's newly created, set the slug
+                if created:
+                    a_obj.generate_automatic_slug(save=True)
 
             zfile.language = "/".join(zgame_form.cleaned_data["language"])
 

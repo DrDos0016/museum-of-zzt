@@ -96,7 +96,7 @@ class ZGameForm(forms.ModelForm):
     class Meta:
         model = File
 
-        fields = ["zfile", "title", "author", "explicit", "release_date", "description"]
+        fields = ["zfile", "title", "explicit", "release_date", "description"]
 
         help_texts = {
             "title": "Leave A/An/The as the first word if applicable.",
@@ -175,6 +175,7 @@ class ZGameForm(forms.ModelForm):
         # Replace blank authors with "Unknown"
         if author == "":
             author = "Unknown"
+
         return author
 
     def clean_genre(self):
@@ -747,7 +748,8 @@ class SeriesForm(forms.ModelForm):
     )
     preview = forms.FileField(
         label="Preview Image",
-        help_text="Cropped to 480x350"
+        help_text="Cropped to 480x350",
+        required=False
     )
 
     class Meta:
@@ -1397,7 +1399,7 @@ class Livestream_Vod_Form(forms.Form):
     )
     description = forms.CharField(widget=Enhanced_Text_Widget(char_limit=250), label="Article Summary")
     preview_image = forms.FileField()
-    crop = forms.BooleanField(label="Crop Preview Image", initial=True, help_text="Crop image to 480x350")
+    crop = forms.BooleanField(label="Crop Preview Image", initial=True, help_text="Crop image to 480x350", required=False)
     publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
     series = forms.ChoiceField(choices=qs_to_select_choices(Series.objects.filter(visible=True), allow_none=True))
     associated_zfile = forms.MultipleChoiceField(
@@ -1467,7 +1469,7 @@ class Livestream_Vod_Form(forms.Form):
                 fh.write(chunk)
 
         # Crop image if needed
-        if self.cleaned_data["crop"]:
+        if self.cleaned_data.get("crop"):
             image = Image.open(file_path)
             image = image.crop((0, 0, 480, 350))
             image.save(file_path)

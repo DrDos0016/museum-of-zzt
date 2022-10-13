@@ -52,7 +52,6 @@ def get_files_by_id(raw):
             files[str(_id)] = File(
                 id=-1, title="ERROR: File #{} not found".format(_id),
                 screenshot="red-x-error.png",
-                author="?"
             )
     return files
 
@@ -141,8 +140,8 @@ def guide_words(*args, **kwargs):
             if items[x] == "":
                 continue
             if sort == "author":
-                if items[x].author:
-                    link_text[x] = items[x].author
+                if items[x].authors.count():
+                    link_text[x] = ", ".join(items[x].author_list())
                 else:
                     link_text[x] = "-Unknown Author-"  # This shouldn't appear
             elif sort == "company":
@@ -358,7 +357,7 @@ def cl_info(pk=None, engine=None, emulator=None):
             {company}
             Released: {release}
     """.format(
-        title=zfile.title, author=zfile.author, company=company, release=release
+        title=zfile.title, author=", ".join(zfile.author_list()), company=company, release=release
     )
 
     if engine:

@@ -167,10 +167,11 @@ class WoZZT_Queue(BaseModel):
     def tweet_text(self):
         escaped_file_url = quote("file/" + self.file.letter + "/" + self.file.key + "/")
         escaped_zzt_url = quote(self.zzt_file)
+        author_str = ", ".join(self.file.author_list())
 
         output = (f"https://museumofzzt.com/{escaped_file_url}?file="
                   f"{escaped_zzt_url}&board={self.board}\n")
-        output += f"{self.file.title} by {self.file.author}"
+        output += f"{self.file.title} by {author_str}"
         if self.file.release_date:
             output += " (" + str(self.file.release_date)[:4] + ")\n"
         else:
@@ -316,7 +317,7 @@ class WoZZT_Queue(BaseModel):
                 )
 
             discord_post = discord_post.format(
-                twitter_id, self.file.title, self.file.author,
+                twitter_id, self.file.title, ", ".join(self.file.author_list()),
                 str(self.file.release_date)[:4], quote(self.zzt_file),
                 self.board_name, bp
             )

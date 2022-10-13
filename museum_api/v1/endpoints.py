@@ -27,7 +27,7 @@ from django.http import JsonResponse
 
 SORT_CODES = {
     "title": ["sort_title"],
-    "author": ["author", "sort_title"],
+    "author": ["authors__title", "sort_title"],
     "company": ["companies__title", "sort_title"],
     "id": ["id"],
     "-id": ["-id"],
@@ -175,7 +175,7 @@ def search_files(request):
         )
     if request.GET.get("author", "").strip():
         qs = qs.filter(
-            author__icontains=request.GET.get("author", "").strip()
+            authors__title__icontains=request.GET.get("author", "").strip()
         )
     if request.GET.get("filename", "").strip():
         qs = qs.filter(

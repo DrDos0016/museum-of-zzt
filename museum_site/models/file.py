@@ -45,7 +45,7 @@ class File(BaseModel, ZFile_Urls):
         # Key - Value from <select> used in GET params
         # Value - Django order_by param
         "title": "sort_title",
-        "author": "author",
+        "author": "authors__title",
         "company": "companies__title",
         "rating": "-rating",
         "release": "release_date",
@@ -144,6 +144,7 @@ class File(BaseModel, ZFile_Urls):
     aliases = models.ManyToManyField("Alias", default=None, blank=True)
     articles = models.ManyToManyField("Article", default=None, blank=True)
     article_count = models.IntegerField(default=0, editable=False, help_text="Cached number of articles associated with this zip file.")
+    authors = models.ManyToManyField("Author", default=None, blank=True)
     companies = models.ManyToManyField("Company", default=None, blank=True)
     content = models.ManyToManyField("Content", default=None, blank=True)
     details = models.ManyToManyField("Detail", default=None, blank=True)
@@ -224,7 +225,7 @@ class File(BaseModel, ZFile_Urls):
             "filename": self.filename,
             "title": self.title,
             "sort_title": self.sort_title,
-            "author": self.author,
+            "author": self.author_list(),
             "size": self.size,
             "genres": self.genre_list(),
             "release_date": self.release_date,
@@ -302,7 +303,11 @@ class File(BaseModel, ZFile_Urls):
 
     def file_exists(self): return True if os.path.isfile(self.phys_path()) else False
 
-    def author_list(self): return self.author.split("/")
+    def author_list(self):
+        output = []
+        for a in self.authors.all():
+            output.append(a.title)
+        return output
 
     def genre_list(self):
         output = []
@@ -608,6 +613,13 @@ class File(BaseModel, ZFile_Urls):
         return output[:-2]
 
     @mark_safe
+    def author_links(self):
+        output = ""
+        for i in self.authors.all():
+            output += '<a href="/file/search?author={}">{}</a>, '.format(i.title, i.title)
+        return output[:-2]
+
+    @mark_safe
     def genre_links(self):
         output = ""
         for i in self.genres.all():
@@ -736,14 +748,8 @@ class File(BaseModel, ZFile_Urls):
 
         # Prepare Columns
         context["columns"].append([
-            {
-                "datum": "ssv-links", "label": "Author"+("s" if len(self.ssv_list("author")) > 1 else ""),
-                "values": self.ssv_list("author"), "url": "/search/?author="
-            },
-            {
-                "datum": "text", "label": "Compan"+("ies" if self.companies.count() > 1 else "y"),
-                "value": self.company_links()
-            },
+            {"datum": "text", "label": "Author"+("s" if self.authors.count() > 1 else ""), "value": self.author_links()},
+            {"datum": "text", "label": "Compan"+("ies" if self.companies.count() > 1 else "y"), "value": self.company_links()},
             {
                 "datum": "link", "label": "Released", "value": (self.release_date or "Unknown"),
                 "url": "/search/?year={}".format(self.release_year(default="unk"))
@@ -826,7 +832,7 @@ class File(BaseModel, ZFile_Urls):
             link = {"datum": "text", "value": self.title, "tag": "td", "kind": "faded"}
         cells.append(link)
 
-        cells.append({"datum": "ssv-links", "values": self.ssv_list("author"), "url": "/search/?author=", "tag": "td"})
+        cells.append({"datum": "text", "value": self.author_links(), "tag": "td"}),
         cells.append({"datum": "text", "value": self.company_links(), "tag": "td"}),
         cells.append({"datum": "text", "value": self.genre_links(), "tag": "td"}),
         cells.append(
@@ -862,11 +868,7 @@ class File(BaseModel, ZFile_Urls):
             title=title_datum,
             columns=[],
         )
-
-        context["columns"].append([
-            {"datum": "ssv-links", "values": self.ssv_list("author"), "url": "/search/?author="}
-        ])
-
+        context["columns"].append([{"datum": "text", "value": self.author_links()}])
         return context
 
     def title_datum_context(self):
@@ -969,8 +971,6 @@ class File(BaseModel, ZFile_Urls):
             issues["sort_title"] = "Sort title not set."
         if exists and self.size != os.path.getsize(self.phys_path()):
             issues["size_mismatch"] = "DB size doesn't match physical file size: {}/{}".format(self.size, os.path.getsize(self.phys_path()))
-        if "," in self.author:
-            issues["author"] = "Comma in author. Should be slash?"
         if self.release_date and self.release_date.year < 1991:
             issues["release_date"] = "Release date is prior to 1991."
         if self.release_date and self.release_source == "":
@@ -1032,8 +1032,8 @@ class File(BaseModel, ZFile_Urls):
     def get_meta_tag_context(self):
         """ Returns a dict of keys and values for <meta> tags  """
         tags = {}
-        tags["author"] = ["name", self.author.replace("/", ", ")]
-        tags["description"] = ["name", '"{}" by {}.'.format(self.title, self.author.replace("/", ", "))]
+        tags["author"] = ["name", ", ".join(self.author_list())]
+        tags["description"] = ["name", '"{}" by {}.'.format(self.title, ", ".join(self.author_list()))]
         if self.companies.count():
             tags["description"][1] += " Published by {}.".format(self.get_all_company_names())
         if self.release_date:
@@ -1042,3 +1042,7 @@ class File(BaseModel, ZFile_Urls):
         tags["og:title"] = ["property", self.title + " - Museum of ZZT"]
         tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
         return tags
+
+    def author_unknown(self):
+        """ Returns TRUE if the _only_ author is 'UNKNOWN' """
+        return True if self.author_list() == ["Unknown"] else False

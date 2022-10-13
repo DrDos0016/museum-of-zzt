@@ -4,6 +4,7 @@ from .base import BaseModel
 # Distinct Models
 from .alias import Alias
 from .article import Article
+from .author import Author
 from .collection import Collection
 from .collection import Collection_Entry
 from .company import Company

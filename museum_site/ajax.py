@@ -102,15 +102,9 @@ def debug_file(request):
 def get_author_suggestions(request):
     """ Used on file upload page """
     output = {"suggestions": []}
-    qs = File.objects.author_suggestions()
-
-    seen = []  # Case insensitive author names
-    for f in qs:
-        all_authors = f.author.split("/")
-        for a in all_authors:
-            if a.lower() not in seen:
-                output["suggestions"].append(a)
-                seen.append(a.lower())
+    qs = Author.objects.all().only("title").distinct().order_by("title")
+    for a in qs:
+        output["suggestions"].append(a.title)
 
     output["suggestions"] = sorted(output["suggestions"], key=lambda s: s.casefold())
     return JsonResponse(output)
@@ -120,8 +114,6 @@ def get_company_suggestions(request, max_suggestions=20):
     """ Used on file upload page """
     output = {"suggestions": []}
     qs = Company.objects.all().only("title").distinct().order_by("title")
-
-    seen = []  # Case insensitive company names
     for c in qs:
         output["suggestions"].append(c.title)
 

@@ -21,30 +21,18 @@ def directory(request, category):
     data = {}
     data["category"] = category
 
-    """ This can possibly be cached in some way, it's not going to change
-    often.
-    """
     data_list = []
     if category == "company":
-        data["title"] = "Companies"
         data_list = Company.objects.all().values_list("title", flat=True)
     elif category == "author":
-        data["title"] = "Authors"
-        authors = File.objects.directory("author")
-        for a in authors:
-            split = a["author"].split("/")
-            for credited in split:
-                if credited not in data_list:
-                    data_list.append(credited)
+        data_list = Author.objects.all().values_list("title", flat=True)
     elif category == "genre":
-        data["title"] = "Genres"
         data_list = Genre.objects.visible_genre_list()
 
+    data["title"] = "{} Directory".format(category.title())
+
     # Break the list of results into 4 columns
-    data_list = sorted(
-        data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.lower())
-    )
-    # data_list = sorted(data_list, key=lambda s: s.lower())
+    data_list = sorted(data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.lower()))
     first_letters = []
 
     for entry in data_list:

@@ -81,7 +81,7 @@ class Option(models.Model):
         checked = "X" if self.played else " "
         requested = "(Patron)" if self.requested_by else ""
         return '[{}] "{}" by {} {}'.format(
-            checked, self.file.title, self.file.author, requested
+            checked, self.file.title, ", ".join(self.file.author_list()), requested
         )
 
     def scrub(self):

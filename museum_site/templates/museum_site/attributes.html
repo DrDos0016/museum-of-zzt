@@ -11,7 +11,7 @@
 <table class="data-table">
 <tr><th>Aliases</th><td><a href="#heading-aliases">{{file.aliases.count}}</a></td></tr>
 <tr><th>Articles</th><td><a href="#heading-articles">{{file.article_count}}</a></td></tr>
-<tr><th>Author</th><td>{{file.author}}</td></tr>
+<tr><th>Author</th><td>{{file.author_list|join:", "}}</td></tr>
 <tr><th>Boards Playable/Total</th><td>{{file.playable_boards}} / {{file.total_boards}}</td></tr>
 <tr><th>MD5 Checksum</td><td class="caps">{{file.checksum}}</td></tr>
 <tr><th>Company</th><td>{{file.get_all_company_names|default:"<i>No company</i>"}}</td></tr>

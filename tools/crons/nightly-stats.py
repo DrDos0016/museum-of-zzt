@@ -83,7 +83,7 @@ def calculate_authors():
     raw = File.objects.all()
     authors = []
     for ssv in raw:
-        for a in ssv.ssv_list("author"):
+        for a in ssv.get_related_list("authors", "title"):
             if a not in authors:
                 authors.append(a)
     output = len(authors)

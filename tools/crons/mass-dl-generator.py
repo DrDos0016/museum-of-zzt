@@ -18,9 +18,7 @@ django.setup()
 
 from museum_site.models import File  # noqa: E402
 
-from museum_site.constants import (  # noqa: E402
-    DETAIL_ZZT, DETAIL_SZZT, DETAIL_ZIG, DETAIL_UTILITY
-)
+from museum_site.core.detail_identifiers import *
 from museum_site.common import SITE_ROOT  # noqa: E402
 
 CRON_ROOT = os.path.join(SITE_ROOT, "tools", "crons")
@@ -238,7 +236,7 @@ def main():
 
     print("Iterating over files...")
     for f in qs:
-        if f.is_zzt():
+        if f.is_detail(DETAIL_ZZT):
             if f.release_date is None:
                 year = "UNKNOWN"
             elif f.release_date.year >= 2020:
@@ -251,19 +249,19 @@ def main():
             # Add file to the ZZT year list
             file_list["zzt_worlds_" + year].append(f)
             id_list["zzt_worlds_" + year] += str(f.id)
-        if f.is_super_zzt():
+        if f.is_detail(DETAIL_SZZT):
             file_list["szzt_worlds"].append(f)
             id_list["szzt_worlds"] += str(f.id)
-        if f.is_utility():
+        if f.is_detail(DETAIL_UTILITY):
             file_list["utilities"].append(f)
             id_list["utilities"] += str(f.id)
-        if f.is_zig():
+        if f.is_detail(DETAIL_ZIG):
             file_list["zig_worlds"].append(f)
             id_list["zig_worlds"] += str(f.id)
-        if f.is_zzm():
+        if f.is_detail(DETAIL_ZZM):
             file_list["zzm_audio"].append(f)
             id_list["zzm_audio"] += str(f.id)
-        if f.is_featured_world():
+        if f.is_detail(DETAIL_FEATURED):
             file_list["featured_worlds"].append(f)
             id_list["featured_worlds"] += str(f.id)
 
@@ -286,7 +284,7 @@ def main():
                 zf.write(f.phys_path(), arcname=os.path.basename(f.phys_path()))
                 f_rd = str(f.release_date) if f.release_date is not None else ""
                 file_listing += '{} "{}" by {} [{}]'.format(
-                    f_rd, f.title, f.author, f.filename
+                    f_rd, f.title, ", ".join(f.author_list()), f.filename
                 ).strip() + "\n"
                 pass
             except FileNotFoundError:
