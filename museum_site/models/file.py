@@ -1,6 +1,9 @@
 import hashlib
+import html
 import os
 import zipfile
+
+from urllib.parse import quote
 
 from django.core.cache import cache
 from django.db import models
@@ -615,7 +618,7 @@ class File(BaseModel, ZFile_Urls):
     def author_links(self):
         output = ""
         for i in self.authors.all():
-            output += '<a href="/file/search?author={}">{}</a>, '.format(i.title, i.title)
+            output += '<a href="/file/search?author={}">{}</a>, '.format(quote(i.title, safe=""), html.escape(i.title))
         return output[:-2]
 
     @mark_safe
