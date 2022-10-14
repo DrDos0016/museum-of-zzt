@@ -12,6 +12,9 @@ class Author(models.Model):
     title = models.CharField(max_length=120, db_index=True, editable=True, help_text="Author Name")
     slug = models.SlugField(max_length=120, db_index=True, editable=False)
 
+    class Meta:
+        ordering = ["title"]
+
     def __str__(self):
         return self.title
 

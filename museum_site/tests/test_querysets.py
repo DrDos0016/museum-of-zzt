@@ -136,11 +136,11 @@ class ZFile_Queryset_Test(TestCase):
         detail_lost.save()
 
         # Create Test ZFiles
-        zf1 = File.objects.create(title="Adventure", author="T. S.", release_date=None, filename="ADV.ZIP")
-        zf2 = File.objects.create(title="ZZT Future", author="S. T.", release_date=date(year=2069, month=4, day=20), filename="zztfuture.zip")
-        zf3 = File.objects.create(title="Unpublished Future", author="S. T.", release_date=date(year=2069, month=12, day=25), filename="unpub-fut.zip")
-        zf4 = File.objects.create(title="The Next One", author="Double D", release_date=date(year=1997, month=3, day=14), filename="next1.zip")
-        zf5 = File.objects.create(title="MISSINGNO.", author="Masuda", filename="lost4evr.zip")
+        zf1 = File.objects.create(title="Adventure", release_date=None, filename="ADV.ZIP")
+        zf2 = File.objects.create(title="ZZT Future",release_date=date(year=2069, month=4, day=20), filename="zztfuture.zip")
+        zf3 = File.objects.create(title="Unpublished Future", release_date=date(year=2069, month=12, day=25), filename="unpub-fut.zip")
+        zf4 = File.objects.create(title="The Next One", release_date=date(year=1997, month=3, day=14), filename="next1.zip")
+        zf5 = File.objects.create(title="MISSINGNO.", filename="lost4evr.zip")
 
         # Add details
         zf3.details.add(detail_uploaded)

@@ -160,13 +160,13 @@ class URLTest(unittest.TestCase):
                 continue
             if "<" in str(url.pattern):
                 continue
-            if url.name is None or url.name in ["patreon"]:
+            if url.name is None or url.name in ["patreon", "twitter", "tumblr", "youtube", "twitch", "git"]:
                 continue
 
             r = c.get(reverse(url.name), follow=True)
 
             if r.status_code != 200:
-                print("{}: {}".format(r.status_code, url.pattern))
+                print("{}: {} | {}".format(r.status_code, url.pattern, reverse(url.name)))
             self.assertEqual(r.status_code, 200)
 
     """

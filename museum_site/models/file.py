@@ -81,7 +81,6 @@ class File(BaseModel, ZFile_Urls):
     key = models.CharField(max_length=50, db_index=True, default="", help_text="Unique identifier used for URLs and filtering. Filename w/out extension")
     size = models.IntegerField(default=0, editable=False, help_text="Size in bytes of the zip file")
     title = models.CharField(max_length=80, help_text="Canonical name of the release")
-    author = models.CharField(max_length=255, help_text="Slash-separated list of (major) developers")
     release_date = models.DateField(default=None, null=True, blank=True, help_text="Release date of zip file's contents.")
     release_source = models.CharField(max_length=20, default="", blank=True, help_text="Source of release date when applicable.")
     language = models.CharField(
