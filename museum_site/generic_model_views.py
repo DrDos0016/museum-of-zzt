@@ -539,7 +539,7 @@ class Article_Categories_List_View(Model_List_View):
             block_context = dict(
                 pk=None,
                 model=None,
-                preview=dict(url="/static/pages/article-categories/{}.png".format(key), alt=cats[key].title),
+                preview=dict(url="/pages/article-categories/{}.png".format(key), alt=cats[key].title),
                 title={"datum": "link", "url": "/article/category/"+key+"/", "value": cats[key].category},
                 columns=[
                     [
