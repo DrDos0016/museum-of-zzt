@@ -8,6 +8,7 @@ urlpatterns = [
     path("api/", include("museum_api.urls")),
     path("comic/", include("comic.urls")),
     path("poll/", include("poll.urls")),
+    path("ttvmoz/", include("ttvmoz.urls")),
     path("", include("museum_site.urls")),
 ]
 
