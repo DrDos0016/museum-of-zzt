@@ -140,7 +140,6 @@ class ZGameForm(forms.ModelForm):
 
     def clean_zfile(self):
         zfile = self.cleaned_data["zfile"]
-
         if zfile is None:
             return zfile
 
@@ -148,6 +147,12 @@ class ZGameForm(forms.ModelForm):
         if UPLOAD_TEST_MODE:
             record("UPLOAD_TEST_MODE: Bypassing clean_zfile()")
             zfile.name = str(int(time.time())) + "-" + zfile.name
+
+        # Check uploaded file is a zip
+        if zfile and (not zfile.name.lower().endswith(".zip")):  # Ensure proper extension
+            raise forms.ValidationError("Only zip files may be uploaded. Please zip your upload and try again.")
+        elif zfile and not zipfile.is_zipfile(zfile):  # Attempt to confirm the zip is legitimate
+            raise forms.ValidationError("Uploaded file is not a valid zip file.")
 
         # Check for a duplicate filename, but make sure its ID isn't the same as this upload's
         if zfile and zfile.name:
