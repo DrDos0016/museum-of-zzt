@@ -347,6 +347,11 @@ class Series_List_View(Model_List_View):
     model = Series
     queryset = Series.objects.directory()
 
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        if self.sorted_by is None:
+            self.sorted_by = "latest"
+
 
 class Series_Contents_View(Model_List_View):
     model = Article
