@@ -7,7 +7,7 @@ from museum_site.models import Article, File, Review
 
 class LatestArticlesFeed(Feed):
     title = "Museum of ZZT - Latest Articles RSS"
-    link = "/articles/"
+    link = "/article/"
     description = "Museum of ZZT article feed"
 
     def items(self):
@@ -35,7 +35,7 @@ class Unpublished_Articles_Feed(LatestArticlesFeed):
 
 class LatestFilesFeed(Feed):
     title = "Museum of ZZT - Latest Published Files RSS"
-    link = "/files/"
+    link = "/file/browse/"
     description = "Museum of ZZT published file feed"
 
     def items(self):
@@ -60,7 +60,7 @@ class LatestFilesFeed(Feed):
 
 class LatestReviewsFeed(Feed):
     title = "Museum of ZZT - Latest Reviews RSS"
-    link = "/reviews/"
+    link = "/review/"
     description = "Museum of ZZT review feed"
 
     def items(self):
@@ -81,7 +81,7 @@ class LatestReviewsFeed(Feed):
 
 class LatestUploadsFeed(Feed):
     title = "Museum of ZZT - Latest Uploaded Files RSS"
-    link = "/files/"
+    link = "/detail/view/uploaded/"
     description = "Museum of ZZT file upload feed"
 
     def items(self):
