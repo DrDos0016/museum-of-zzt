@@ -70,9 +70,6 @@ def qs_manual_order(qs, ordering, field="pk", kind="int"):
     ordered = []
     temp_dict = {}
 
-    if "[text]" in ordering:
-        ordering = ordering[1:]
-
     for row in qs:
         temp_dict[getattr(row, field)] = row
     for i in ordering:

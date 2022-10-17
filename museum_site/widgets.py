@@ -190,13 +190,11 @@ class Tagged_Text_Widget(forms.Widget):
 
     def value_from_datadict(self, data, files, name):
         data_list = data.getlist(name)
-        if "[text]" in data_list:
-            data_list = data_list[1:]
 
-        if len(data_list) > 1:
+        if len(data_list) >= 1:
             return ",".join(data_list) + ","
         else:
-            return super().value_from_datadict(data, files, name) + ","
+            return ""
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)

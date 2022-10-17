@@ -274,8 +274,6 @@ class Debug_Form(forms.Form):
             # Tags need to be joined as a string
             if data and isinstance(self.fields[field].widget, Tagged_Text_Widget):
                 raw = self.data.getlist(field)
-                if raw[0] == "[text]":  # Matched our template for JS
-                    raw = raw[1:]
                 joined = ",".join(raw) + ","
                 if len(joined) > 1:
                     self.fields[field].widget.manual_data["tags_as_string"] = joined

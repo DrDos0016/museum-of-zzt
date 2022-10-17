@@ -172,10 +172,7 @@ def livestream_description_generator(request):
     if request.GET:
         data["form"] = Livestream_Description_Form(request.GET)
         data["form"].refresh_choices()
-        # Prevent "[text]" error
-        if data["form"].errors.get("associated"):
-            del data["form"].errors["associated"]
-        associated = request.GET.getlist("associated")[1:]  # Erase "[text]"
+        associated = request.GET.getlist("associated")
         unordered = list(File.objects.filter(pk__in=associated))
         data["zfiles"] = []
         for pk in associated:
@@ -505,10 +502,6 @@ def prep_publication_pack(request):
         data["form"] = Prep_Publication_Pack_Form()
     else:
         data["form"] = Prep_Publication_Pack_Form(request.GET)
-
-        # Prevent "[text]" error
-        if data["form"].errors.get("associated"):
-            del data["form"].errors["associated"]
 
         with open(os.path.join(SITE_ROOT, "museum_site", "templates", "museum_site", "tools", "blank-publication-pack.html")) as fh:
             raw = fh.read().split("=START=")[1]

@@ -84,7 +84,7 @@ def discord_overview(request):
 
 
 def generic_template_page(request, title="", template="", context={}):
-    context["title"] = context.get("title", title)
+    context["title"] = title
     return render(request, template, context)
 
 

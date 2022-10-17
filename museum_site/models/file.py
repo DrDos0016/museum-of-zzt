@@ -31,7 +31,7 @@ from museum_site.querysets.zfile_querysets import *
 
 
 class File(BaseModel, ZFile_Urls):
-    """ File object repesenting an upload to the site """
+    """ ZFile object repesenting an a file hosted on the Museum site """
     objects = ZFile_Queryset.as_manager()
 
     model_name = "File"

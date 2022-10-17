@@ -15,9 +15,11 @@
         {% endfor %}
     {% endif %}
 </div>
-<div class="{{widget.name}}-tag-template tag" draggable=true data-field="{{widget.name}}">
+<div class="tag-list" id="{{widget.name}}-tag-list" data-editable=false data-draggable=true>
+</div>
+<template class="{{widget.name}}-tag-template">
+<div class="tag" draggable=true data-field="{{widget.name}}">
     <input name="{{widget.name}}" type="hidden" value="[text]">
     <div class="tag-text">[text]</div><div class="tag-remove" title="Click to remove">✖</div>
 </div>
-<div class="tag-list" id="{{widget.name}}-tag-list" data-editable=false data-draggable=true>
-</div>
+</template>

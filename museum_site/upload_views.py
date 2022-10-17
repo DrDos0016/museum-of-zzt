@@ -175,7 +175,7 @@ def upload(request):
                 zfile.companies.clear()
             # Convert company to Company objects
             for company in zgame_form.cleaned_data["company"]:
-                if company in ["", "[text]"]:
+                if company == "":
                     continue
                 (c_obj, created) = Company.objects.get_or_create(title=company)
                 zfile.companies.add(c_obj)
@@ -188,7 +188,7 @@ def upload(request):
                 zfile.authors.clear()
             # Convert author to Author objects
             for author in zgame_form.cleaned_data["author"].split("/"):
-                if author in ["", "[text]"]:
+                if author == "":
                     continue
                 (a_obj, created) = Author.objects.get_or_create(title=author)
                 zfile.authors.add(a_obj)

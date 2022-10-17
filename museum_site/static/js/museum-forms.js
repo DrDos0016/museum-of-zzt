@@ -33,7 +33,6 @@ $(document).ready(function (){
     });
 
     $("#id_zfile").change(function (e){
-        console.log("ZFILE CHANGED");
         const file = $(this)[0].files[0];
         var ext = file.name.toLowerCase().slice(-4);
         if (ext == ".zip")
@@ -163,7 +162,6 @@ $(document).ready(function (){
     $(".label-button").click(function (){
         var input_name = $(this).data("input");
         var value = $(this).data("value");
-        console.log(value);
         var tag = create_tag_full(input_name, $(this).text(), value);
         add_tag(input_name, tag); // Can't drag/edit
     });
@@ -253,7 +251,7 @@ function write_selected(name)
 function create_tag(name, text)
 {
     // Create a tag element with matching label/value
-    var tag = $("." + name + "-tag-template").prop("outerHTML");
+    var tag = $("." + name + "-tag-template").html();
     tag = tag.replace(/\[text\]/g, text);
     return tag;
 }
@@ -261,7 +259,7 @@ function create_tag(name, text)
 function create_tag_full(name, label, value)
 {
     // Create a tag element with unique label and value
-    var tag = $("." + name + "-tag-template").prop("outerHTML");
+    var tag = $("." + name + "-tag-template").html();
     tag = tag.replace(/\[text\]/, value);
     tag = tag.replace(/\[text\]/, label);
     return tag;
@@ -364,8 +362,6 @@ function add_tag(input_name, tag)
     var can_drag = $("#"+ input_name + "-tag-list").data("draggable");
     var can_edit = $("#"+ input_name + "-tag-list").data("editable");
 
-    console.log("THIS TAG DRAG:", can_drag, "THIS TAG EDIT:", can_edit);
-
     // Set up tag binds
     $("#"+ input_name + "-tag-list").find(".tag-remove").last().click(remove_tag);
     if (can_drag)
@@ -393,7 +389,6 @@ function add_tag(input_name, tag)
 
 function set_uploaded_zzt_file(file)
 {
-    console.log(file);
     $(".file-list-header .file-name").html(file.name);
     $(".file-list-header .file-size").html(filesize_format(file.size));
 }

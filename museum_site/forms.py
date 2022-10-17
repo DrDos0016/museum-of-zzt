@@ -171,7 +171,6 @@ class ZGameForm(forms.ModelForm):
         return zfile
 
     def clean_author(self):
-        author = self.cleaned_data["author"].replace("[text]", "")
         author = author.replace(",", "/")
 
         if author.endswith("/"):
