@@ -293,7 +293,7 @@ def forgot_username(request):
             if len(qs) == 1:  # Match found
                 send_forgotten_username_email(qs[0])
 
-            return generic_template_page(request, data["title"], "museum_site/user/forgot-username-complete.html")
+            return render(request, "museum_site/user/forgot-username-complete.html", data)
     else:
         form = Forgot_Username_Form()
 
