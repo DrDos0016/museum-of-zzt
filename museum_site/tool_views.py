@@ -510,8 +510,8 @@ def prep_publication_pack(request):
         sub_context = {
             "year": request.GET.get("publish_date", "")[:4],
             "publish_path": "publish-" + request.GET.get("publish_date", "")[5:],
-            "file_ids_string": ",".join(request.GET.getlist("associated", [])[1:]),
-            "files": qs_manual_order(File.objects.filter(pk__in=associated_list[1:]), associated_list),
+            "file_ids_string": ",".join(request.GET.getlist("associated", [])),
+            "files": qs_manual_order(File.objects.filter(pk__in=associated_list), associated_list),
         }
         # Add prefix to File objects for easier template rendering
         idx = 0
