@@ -514,7 +514,7 @@ def prep_publication_pack(request):
             "files": qs_manual_order(File.objects.filter(pk__in=associated_list[1:]), associated_list),
         }
         # Add prefix to File objects for easier template rendering
-        idx = 1
+        idx = 0
         for f in sub_context["files"]:
             f.prefix = request.GET.getlist("prefix")[idx]
             idx += 1
