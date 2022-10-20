@@ -761,12 +761,11 @@ class SeriesForm(forms.ModelForm):
         fields = ["title", "description", "visible"]
 
 
-def associated_file_choices():
-    raw = File.objects.only("id", "title", "key")
+def associated_file_choices(query="all"):
+    raw = getattr(File.objects, query)().only("id", "title", "key")
     choices = []
     for i in raw:
         choices.append((i.id, "{} [{}]".format(i.title, i.key)))
-
     return choices
 
 
@@ -851,8 +850,8 @@ class Prep_Publication_Pack_Form(forms.Form):
         widget=Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Clear")
     )
     associated = forms.MultipleChoiceField(
-        widget=Ordered_Scrolling_Radio_Widget(choices=associated_file_choices()),
-        choices=associated_file_choices(),
+        widget=Ordered_Scrolling_Radio_Widget(choices=associated_file_choices(query="unpublished")),
+        choices=associated_file_choices(query="unpublished"),
         label="Associated ZFiles",
         help_text="Select one or more ZFiles",
         required=False,
