@@ -48,3 +48,13 @@ class Scroll(models.Model):
         output += self.SCROLL_BOTTOM
 
         return output
+
+    def content_as_text(self):
+        raw = self.content
+        lines = raw.split("\n")
+        output = []
+        for line in lines:
+            if line.startswith("@"):
+                continue
+            output.append(line)
+        return "\n".join(output)

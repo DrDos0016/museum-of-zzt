@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.shortcuts import redirect
 from django.template.defaultfilters import slugify
 from django.utils.safestring import mark_safe
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
 
 from markdown_deux.templatetags import markdown_deux_tags
 
@@ -564,3 +564,15 @@ class Article_Categories_List_View(Model_List_View):
         context["sort_options"] = None
         context["disable_guide_words"] = True
         return context
+
+
+class Scroll_Detail_View(DetailView):
+    model = Scroll
+    template_name = "museum_site/scroll-detail.html"
+
+    def get_queryset(self):
+        qs = Scroll.objects.filter(identifier=self.kwargs["slug"], published=True)
+        return qs
+
+    def get_slug_field(self):
+        return "identifier"

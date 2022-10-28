@@ -196,36 +196,33 @@
         <a href="http://zzt.org" target="_blank">z2 ZZT Archive</a>
         <a href="{% url 'clones' %}">ZZT Clones</a>
         <a href="{% url 'comic_index' %}">ZZT Comics Archive</a>
+
+        <h3>Patron Exclusives</h3>
+        <a href="{% url 'poll_index' %}">$1+ Closer Look Poll</a>
+        <a href="{% url 'patron_articles' %}">$2+ Early Articles</a>
+        <a href="https://beta.museumofzzt.com">$5+ Private Beta</a>
+
+        <h3>Just For Fun</h3>
+        <a href="{% url 'scroll_random' %}">Scrolls of ZZT</a>
+        <a href="{% url 'worlds_of_zzt' %}">Worlds of ZZT Queue</a>
+
+        <h3>Policies</h3>
+        <a href="{% url 'correction_policy' %}">Correction Policy</a>
+        <a href="{% url 'data_integrity' %}">Data Integrity</a>
+        <a href="{% url 'removal_policy' %}">Removal Policy</a>
+        <a href="{% url 'review_policy' %}">Review Policy</a>
+        <a href="{% url 'credits' %}">Site Credits</a>
+        <a href="{% url 'upload_policy' %}">Upload Policy</a>
     </div>
 
-    <div id="wozzt-block" class="block">
-        <h2>Worlds of ZZT</h2>
-        <div id="social">
-            <a class="inline" href="https://twitter.com/worldsofzzt" target="_blank"><img src="{% static 'icons/Twitter_Social_Icon_Rounded_Square_Color.png' %}" alt="Twitter" title="Twitter"></a>
-            <a class="inline" href="{% url 'discord' %}"><img src="{% static 'icons/Discord-Logo-Color.png' %}" alt="Discord" title="Worlds of ZZT Discord"></a>
-            <a class="inline" href="https://patreon.com/worldsofzzt" target="_blank"><img src="{% static 'icons/patreon_logo.png' %}" alt="Patreon" title="Patreon"></a>
-            <a class="inline" href="https://www.youtube.com/c/WorldsofZZT" target="_blank"><img src="{% static 'icons/YouTube-social-squircle_red_24px.png' %}" alt="YouTube" title="YouTube"></a>
-            <a class="inline" href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'icons/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>
-            <a class="inline" href="https://github.com/DrDos0016/museum-of-zzt" target="_blank"><img src="{% static 'icons/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
-            <a class="inline" href="{% url 'rss_feeds' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Feeds" title="RSS Feeds"></a>
-        </div>
-
-        <div id="policies">
-            <h3>Policies</h3>
-            <a href="{% url 'correction_policy' %}">Correction Policy</a>
-            <a href="{% url 'data_integrity' %}">Data Integrity</a>
-            <a href="{% url 'removal_policy' %}">Removal Policy</a>
-            <a href="{% url 'review_policy' %}">Review Policy</a>
-            <a href="{% url 'credits' %}">Site Credits</a>
-            <a href="{% url 'upload_policy' %}">Upload Policy</a>
-        </div>
-
-        <div id="patreon-links">
-            <h3>Patron Exclusives</h3>
-            <a href="{% url 'poll_index' %}">$1+ Closer Look Poll</a>
-            <a href="{% url 'patron_articles' %}">$2+ Early Articles</a>
-            <a href="https://beta.museumofzzt.com">$5+ Private Beta</a>
-        </div>
+    <div id="social" class="block">
+        <a class="inline" href="https://twitter.com/worldsofzzt" target="_blank"><img src="{% static 'icons/Twitter_Social_Icon_Rounded_Square_Color.png' %}" alt="Twitter" title="Twitter"></a>
+        <a class="inline" href="{% url 'discord' %}"><img src="{% static 'icons/Discord-Logo-Color.png' %}" alt="Discord" title="Worlds of ZZT Discord"></a>
+        <a class="inline" href="https://patreon.com/worldsofzzt" target="_blank"><img src="{% static 'icons/patreon_logo.png' %}" alt="Patreon" title="Patreon"></a>
+        <a class="inline" href="https://www.youtube.com/c/WorldsofZZT" target="_blank"><img src="{% static 'icons/YouTube-social-squircle_red_24px.png' %}" alt="YouTube" title="YouTube"></a>
+        <a class="inline" href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'icons/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>
+        <a class="inline" href="https://github.com/DrDos0016/museum-of-zzt" target="_blank"><img src="{% static 'icons/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
+        <a class="inline" href="{% url 'rss_feeds' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Feeds" title="RSS Feeds"></a>
     </div>
 </section>
 

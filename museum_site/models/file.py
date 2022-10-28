@@ -6,6 +6,7 @@ import zipfile
 from urllib.parse import quote
 
 from django.core.cache import cache
+from django.contrib import admin
 from django.db import models
 from django.template.defaultfilters import filesizeformat
 from django.utils.safestring import mark_safe
@@ -1048,3 +1049,7 @@ class File(BaseModel, ZFile_Urls):
     def author_unknown(self):
         """ Returns TRUE if the _only_ author is 'UNKNOWN' """
         return True if self.author_list() == ["Unknown"] else False
+
+
+class ZFile_Admin(admin.ModelAdmin):
+    exclude = ("content", "downloads",)

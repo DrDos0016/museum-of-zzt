@@ -344,7 +344,8 @@ class WoZZT_Queue(BaseModel):
         return True
 
     def detailed_block_context(self, *args, **kwargs):
-        debug = True
+        if kwargs.get("request"):
+            debug = kwargs["request"].session.get("DEBUG")
         context = dict(
             pk=self.pk,
             model=self.model_name,
@@ -365,10 +366,6 @@ class WoZZT_Queue(BaseModel):
             context["columns"][0].append({"datum": "link", "label": "ID", "value": self.id, "target": "_blank", "kind": "debug", "url": self.admin_url()})
             context["columns"][0].append({"datum": "custom-wozzt-priority", "pk": self.id, "priority": self.priority, "kind": "debug"})
             context["columns"][0].append({"datum": "custom-wozzt-delete", "pk": self.id, "kind": "debug"})
-        else:
-            context["columns"][0].append(
-                {"datum": "text", "label": "Priority", "value": self.priority}
-            )
         return context
 
 

@@ -18,84 +18,86 @@
 
 {% block scripts %}
 <script>
-var tweet_date = new Date();
-var dow_str = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-$(document).ready(function (){
-    set_csrf();
-
-    var now = new Date();
-    var dow = now.getDay()
-
-    // Calculate the next time to tweet
-    var h = now.getHours();
-    var m = now.getMinutes();
-    if (m >= 45)
-        h = h + 1;
-    while (h % 3 != 2)
-    {
-        h++;
-    }
-    var next_hour = h;
-    tweet_date.setHours(next_hour);
-
-    {% if request.GET.category == "tuesday" %}
-    // Tuesday code
-    var distance = (2 - dow);
-    if (distance)
-    {
-        tweet_date.setDate(tweet_date.getDate() + distance);
-        tweet_date.setHours(2);
-    }
-    {% endif %}
-
-    tweet_date.setSeconds(0);
-    tweet_date.setMinutes(45);
-
-    $("h2.title .value").each(function (){
-        {% if request.GET.category != "tuesday" %}
-        // Skip Tuesdays
-        if (tweet_date.getDay() == 2)
-        {
-            tweet_date.setHours(26);
-            var element = $(this).parent().parent();
-            $("<div class='tuesday-skip'>Title Screen Tuesday</div>").insertBefore(element);
-        }
-        {% endif %}
-
-
-        $(this).text(dow_str[tweet_date.getDay()] + ". " + tweet_date.toLocaleString());
-        tweet_date.setHours(tweet_date.getHours() + 3);
-
-        {% if request.GET.category == "tuesday" %}
-        if (tweet_date.getDay() != 2)
-        {
-            tweet_date.setDate(tweet_date.getDate() + 6);
-            tweet_date.setHours(2);
-        }
-        {% endif %}
-
-        $("#queue-end").text(tweet_date.toLocaleString());
-    });
-
-    $(".preview-image.zoomable.thumbnail").click();
-});
-
 function set_csrf()
 {
     var val = $("input[name=csrfmiddlewaretoken]").first().val();
     $("input[name=csrfmiddlewaretoken]").val(val);
 }
+
+var dow_str = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+$(document).ready(function (){
+    set_csrf();
+    $("#content .preview-image.zoomable.thumbnail").click();
+    var now = new Date();
+    var next = now;
+    var append_tuesday = true;
+
+    next.setMinutes(45);
+    next.setSeconds(0);
+
+    /* Title Seen Tuesday Tweaks */
+    {% if request.GET.category == "tuesday" %}
+    append_tuesday = false;
+    while (next.getUTCDay() != 2)
+    {
+        next.setUTCHours(next.getUTCHours() + 1);
+    }
+    {% endif %}
+
+    while (next.getUTCHours() % 3 != 0)
+    {
+        next.setHours(next.getHours() + 1);
+    }
+
+    $("#content h2.title .value").each(function (){
+        $(this).text(dow_str[next.getDay()] + ". " + next.toLocaleString());
+        next.setHours(next.getHours() + 3);
+        console.log(next.getUTCDay());
+
+        if (next.getUTCDay() == 2 && append_tuesday)
+        {
+            var element = $(this).parent().parent();
+            $("<div class='tuesday-skip'>Title Screen Tuesday</div>").insertAfter(element);
+            next.setDate(next.getDate() + 1);
+        }
+        if (next.getUTCDay() != 2 && ! append_tuesday)
+        {
+            // Adjust date again
+            while (next.getUTCDay() != 2)
+            {
+                next.setUTCHours(next.getUTCHours() + 24);
+            }
+        }
+        $("#queue-end").text(next.toLocaleString());
+    });
+
+});
 </script>
 {% endblock %}
 
 {% block content %}
 {% csrf_token %}
 <h1>Worlds of ZZT Queue{% if request.user.is_staff %} [STAFF MODE]{% endif %}</h1>
-<p>Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
-<a href="?category=wozzt">Worlds of ZZT</a> | <a href="?category=tuesday">Title Screen Tuesday</a> | <a href="?category=discord">Discord Queue</a> | <a href="?category=failed">Failed Tweets</a></p>
+
+<a href="?category=wozzt">Worlds of ZZT</a>
+| <a href="?category=tuesday">Title Screen Tuesday</a>
+{% if request.user.is_staff %}
+| <a href="?category=discord">Discord Queue</a>
+| <a href="?category=failed">Failed Tweets</a></p>
+{% endif %}
+<p>Current Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
+
+{% if request.GET.category == "tuesday" %}
+<p>The Title Screen Tuesday queue is tweeted out every three hours starting at 00:45 UTC on Tuesdays. It consists of randomly selected title screen boards from (nearly) every non-explicit marked ZZT world hosted on the Museum of ZZT that can be displayed with the default character set and palette.</p>
+{% else %}
+<p>The main WoZZT queue is tweeted out every three hours starting at 00:45 UTC each day, except for on Tuesdays where the "Title Screen Tuesday" queue is used. It consists of randomly selected boards from (nearly) every non-explicit marked ZZT world hosted on the Museum of ZZT that can be displayed with the default character set and palette.</p>
+{% endif %}
+
+<p>There are currently <b>{{queue_size}}</b> entries in the queue. <a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patrons</a> may view the complete queue, while non-patrons are limited to the next sixteen entries.{% if request.user.is_staff %}The queue will be exhausted on <span id="queue-end" class="b">-</span>.{% endif %}</p>
+
 <p>Times are displayed in your local time zone.</p>
-<p>There are currently <b>{{queue_size}}</b> entries in the queue. The queue will be exhausted on <span id="queue-end" class="b">-</span>.</p>
+
+<p>Items in the queue are subject to repositioning or removal at any time. Additional entries are added to the queue typically on the 10th, 20th, and 30th of each month, give or take a day. After being generated, new additions are manually checked to minimize the chance of tweeting offensive material.</p>
 
 {% if request.user.is_staff %}
 <form method="POST" class="controls">
@@ -111,5 +113,5 @@ function set_csrf()
 </form>
 {% endif %}
 
-{% generic_block_loop items=queue %}
+{% generic_block_loop items=queue view="detailed" request=request %}
 {% endblock %}

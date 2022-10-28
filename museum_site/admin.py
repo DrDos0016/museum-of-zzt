@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from museum_site.models import *
 
-admin.site.register(File)
+admin.site.register(File, ZFile_Admin)
 admin.site.register(Article)
 admin.site.register(Author)
 admin.site.register(Collection)

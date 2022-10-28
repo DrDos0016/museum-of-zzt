@@ -1,0 +1,40 @@
+{% extends "museum_site/main.html" %}
+{% load zzt_tags %}
+
+{% block style %}
+<style>
+#scroll-nav
+{
+    justify-content:center;
+}
+
+#scroll-nav a
+{
+    display:block;
+    flex:1;
+    text-align:center;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Scroll {{scroll.identifier}}</h1>
+
+<div class="c">
+{% scroll %}@Scroll {{scroll.identifier}}
+{{scroll.content_as_text}}
+{% endscroll %}
+</div>
+
+<nav id="scroll-nav" class="flex-container">
+<a href="{% url 'scroll_first' %}">First Scroll</a>
+<a href="{% url 'scroll_previous' %}?id={{scroll.identifier}}">Previous Scroll</a>
+<a href="{{scroll.source}}">Scroll Source</a>
+<a href="{% url 'scroll_random' %}">Random Scroll</a>
+<a href="{% url 'scroll_next' %}?id={{scroll.identifier}}">Next Scroll</a>
+<a href="{% url 'scroll_latest' %}">Latest Scroll</a>
+</nav>
+
+<p>Scrolls of ZZT are hand-picked moments of some of the more iconic, interesting, or just plain weird bits of text to be found in various ZZT worlds. Enjoy the inanity!</p>
+
+{% endblock %}

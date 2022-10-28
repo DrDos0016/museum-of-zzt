@@ -130,6 +130,25 @@ def random(request):
     else:
         return redirect("index")
 
+def scroll_navigation(request):
+
+    if request.GET.get("id"):
+        ref = int(request.GET["id"])
+        scroll = None
+        if "next" in request.path:
+            scroll = Scroll.objects.filter(published=True, identifier__gt=ref).order_by("id").first()
+        elif "prev" in request.path:
+            scroll = Scroll.objects.filter(published=True, identifier__lt=ref).order_by("-id").first()
+        identifier = scroll.identifier if scroll else 1
+    else:
+        if "first" in request.path:
+            identifier = Scroll.objects.filter(published=True).order_by("id").first().identifier
+        elif "latest" in request.path:
+            identifier = Scroll.objects.filter(published=True).order_by("-id").first().identifier
+        else:  # Random
+            identifier = Scroll.objects.filter(published=True).order_by("?").first().identifier
+    return redirect("/scroll/view/{}/".format(identifier))
+
 
 def site_credits(request):
     """ Returns page for site credits """
@@ -225,7 +244,6 @@ def stub(request, *args, **kwargs):
     return render(request, "museum_site/index.html", data)
 
 
-@staff_member_required
 def worlds_of_zzt_queue(request):
     data = {"title": "Worlds of ZZT Queue"}
     category = request.GET.get("category", "wozzt")
@@ -254,13 +272,12 @@ def worlds_of_zzt_queue(request):
 
     data["queue"] = WoZZT_Queue.objects.queue_for_category(category)
     data["queue_size"] = len(data["queue"])
+
+    size = 16
+    if (request.user.is_authenticated and request.user.profile.patron) or request.user.is_staff:
+        size = 999
+    data["queue"] = data["queue"][:size]
     return render(request, "museum_site/wozzt-queue.html", data)
-
-
-@csrf_exempt
-def twitch_challenge(request, anything=""):
-    twitch_request = json.loads(request.body)
-    return HttpResponse(twitch_request["challenge"])
 
 
 def error_500(request):

@@ -11,7 +11,7 @@ from .company import Company
 from .content import Content
 from .detail import Detail
 from .download import Download
-from .file import File
+from .file import File, ZFile_Admin
 from .genre import Genre
 from .profile import Profile
 from .review import Review

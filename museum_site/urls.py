@@ -196,6 +196,15 @@ urlpatterns = [
     path("rss/reviews/", museum_site.feeds.LatestReviewsFeed(), name="rss_reviews"),
     path("rss/uploads/", museum_site.feeds.LatestUploadsFeed(), name="rss_uploads"),
 
+    # /scroll/
+    path("scroll/", RedirectView.as_view(pattern_name="scroll_random", permanent=True)),
+    path("scroll/first/", museum_site.views.scroll_navigation, name="scroll_first"),
+    path("scroll/latest/", museum_site.views.scroll_navigation, name="scroll_latest"),
+    path("scroll/next/", museum_site.views.scroll_navigation, name="scroll_next"),
+    path("scroll/previous/", museum_site.views.scroll_navigation, name="scroll_previous"),
+    path("scroll/random/", museum_site.views.scroll_navigation, name="scroll_random"),
+    path("scroll/view/<slug:slug>/", museum_site.generic_model_views.Scroll_Detail_View.as_view(), name="scroll_view"),
+
     # /series/
     path("series/", museum_site.generic_model_views.Series_List_View.as_view(), name="series_directory"),
     path("series/<int:series_id>/<slug:slug>/", museum_site.generic_model_views.Series_Contents_View.as_view(), name="series_overview"),
