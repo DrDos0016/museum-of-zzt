@@ -530,32 +530,6 @@ def prep_publication_pack(request):
 
 
 @staff_member_required
-def publication_pack_file_associations(request):
-    data = {
-        "title": "Publication Pack File Associations",
-        "packs": Article.objects.publication_packs(),
-        "count": 0,
-        "ids": []
-    }
-    if request.GET.get("pk"):
-        a = Article.objects.get(pk=request.GET["pk"])
-        for line in a.content.split("\n"):
-            if "|get_files_by_id" in line:
-                ids = line[line.find('"') + 1:]
-                ids = ids[:ids.find('"')]
-                data["ids"] = ids.split(",")
-                break
-        if data["ids"]:
-            for i in data["ids"]:
-                f = File.objects.filter(pk=int(i)).first()
-                if f:
-                    f.articles.add(int(request.GET["pk"]))
-                    f.save()
-                    data["count"] += 1
-    return render(request, "museum_site/tools/publication-packs.html", data)
-
-
-@staff_member_required
 def publish(request, key):
     """ Returns page to publish a file marked as uploaded """
     data = {

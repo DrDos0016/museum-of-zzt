@@ -20,6 +20,7 @@ class Museum_Site_Config(AppConfig):
 
     def ready(self):
         from museum_site.models import File
+        from museum_site.signals import article_post_save
 
         now = datetime.utcnow()
         site_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

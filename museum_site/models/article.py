@@ -112,16 +112,6 @@ class Article(BaseModel):
         output = "[{}] {} by {}".format(self.id, self.title, self.author)
         return output
 
-    def save(self, *args, **kwargs):
-        # Update dates for series
-        if self.id is not None:
-            if self.series is not None:
-                all_series = self.series.all()
-                if all_series:
-                    for s in all_series:
-                        s.save()
-        super(Article, self).save(*args, **kwargs)
-
     def url(self):
         return "/article/view/{}/{}/".format(self.id, slugify(self.title))
 
