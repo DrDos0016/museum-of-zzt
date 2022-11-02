@@ -16,6 +16,19 @@ from museum_site.private import (
 )
 
 
+def ascii_reference(request):
+    context = {"title": "Ascii Character Reference"}
+    context["range"] = list(range(0,256))
+    context["scale"] = 2
+    context["orientation"] = "horiz"
+    context["meta_context"] = {
+        "description": ["name", "A reference page for the ASCII characters used by ZZT"],
+        "og:title": ["property", context["title"] + " - Museum of ZZT"],
+        "og:image": ["property", "cards/ascii-reference.png"]
+    }
+    return render(request, "museum_site/ascii-reference.html", context)
+
+
 def directory(request, category):
     """ Returns a directory of all authors/companies/genres in the database """
     data = {}

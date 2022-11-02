@@ -60,7 +60,6 @@ urlpatterns = [
 
     # Special Article Pages (those with urls besides /article/#/title)
     path("about-zzt/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 534}, name="about_zzt"),
-    path("ascii/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 3}, name="ascii"),
     path("clones/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 6}, name="clones"),
     path("getting-started/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 5}, name="zzt_dosbox"),
     path("support/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 576}, name="support"),
@@ -279,6 +278,7 @@ urlpatterns = [
     path("user/change-bkzzt-topics/", museum_site.user_views.change_patron_perks, name="change_bkzzt_topics"),
 
     # /*/ -- Miscellaneous Pages
+    path("ascii/", museum_site.views.ascii_reference, name="ascii"),
     path("explicit-warning/", museum_site.views.explicit_warning, name="explicit_warning"),
     path("discord/", museum_site.views.discord_overview, name="discord"),
     path("credits/", museum_site.views.site_credits, name="credits"),
