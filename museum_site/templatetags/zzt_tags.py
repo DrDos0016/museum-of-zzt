@@ -189,7 +189,7 @@ class ZztScroll(template.Node):
 
     def render(self, context):
         raw = self.nodelist.render(context)
-        output = "<div class='zzt-scroll'>\n"
+        output = "<div class='c'>\n<div class='zzt-scroll'>\n"
 
         if not str(raw).strip():
             raw = ["", "TODO: SCROLL HAS NO TEXT"]  # Expected TODO usage.
@@ -224,7 +224,7 @@ class ZztScroll(template.Node):
 
         # Footer dots
         output += "  •    •    •    •    •    •    •    •    •<br>\n"
-        output += "</div>\n</div>\n"
+        output += "</div>\n</div>\n</div>\n"
 
         # Fix spacing
         output = output.replace("  ", "&nbsp;&nbsp;")
