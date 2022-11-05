@@ -179,8 +179,8 @@ def guide_words(*args, **kwargs):
         if items[0] != "" and items[1] != "":
             output = """
             <div class="guide-words {}">
-                <span><a class="left" href="#{}">{}</a></span>
-                <span><a class="right" href="#{}">{}</a></span>
+                <div class="l"><a class="left" href="#{}">{}</a></div>
+                <div class="r"><a class="right" href="#{}">{}</a></div>
             </div>
             """.format(
                 location,
