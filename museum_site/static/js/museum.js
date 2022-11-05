@@ -56,9 +56,9 @@ $(document).ready(function (){
 
     // Browse Letters Select-based Input
     $("#letter-button").click(function (){
-        var letter = $("#letter-select").val().toLowerCase();
-        if (letter)
-            window.location = "/browse/"+letter;
+        var url = $("#letter-select").val().toLowerCase();
+        if (url)
+            window.location = url;
     });
 
     // Reload on sort change

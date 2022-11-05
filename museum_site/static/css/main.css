@@ -40,7 +40,7 @@ body
     margin-right: 1vw;
 }
 
-#low-res-shortcuts { display:none; background-color:var(--ega-darkblue); }
+#low-res-shortcuts { display:none; }
 
 .sidebar { min-width:255px; max-width:255px; margin-left:8px; margin-right:8px; }
 #sidebar-left { grid-area: left; justify-self:end; }
@@ -227,7 +227,6 @@ body
 {
     text-align:center;
     border-bottom:1px solid #000;
-    height:24px;
     margin-bottom:7px;
     padding-top:3px;
     padding-bottom:5px;

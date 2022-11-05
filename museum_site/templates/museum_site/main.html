@@ -34,7 +34,10 @@
 
 <body class="grid-root{% if april %} april {% endif %}" id="top">
 <nav id="low-res-shortcuts" class="cp437">
-    <a href="#top-links" class="nohover">▼ Navigation ▼</a>
+    <a href="#top" id="top-shortcut">▲ Top</a>
+    <a href="/" id="home-shortcut">Home</a>
+    <a href="#sidebar-left" id="files-shortcut">Files</a>
+    <a href="#sidebar-right" id="exhibits-shortcut">Exhibits</a>
 </nav>
 
 <section id="sidebar-left" class="sidebar">
@@ -59,8 +62,8 @@
         <div id="letters-select">
             <select id="letter-select">
                 <option value="">By Letter</option>
-                <option value="1">#</option>{% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-                <option value="{{l}}">{{l}}</option>{% endfor %}
+                {% for l in "1ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+                <option value="{% url 'browse_letter' l %}">{{l}}</option>{% endfor %}
             </select>
             <input id="letter-button" type="button" value="Go">
         </div>
@@ -146,7 +149,7 @@
 
 <section id="sidebar-right" class="sidebar">
     <nav id="top-links" class="cp437">
-        <a id="top-link" class="nohover" href="#top"><div class="key">▲</div><div class="text">Top of page</div></a>
+        <a id="top-link" class="nohover" href="#top"><div class="key">▲</div><div class="text">Top</div></a>
         <a href="{% url 'about_zzt' %}" class="nohover"><div class="key">A</div><div class="text">About ZZT</div></a>
         <a href="{% url 'upload' %}" class="nohover"><div class="key">U</div><div class="text">Upload</div></a>
         <a href="{% url 'support' %}" class="nohover"><div class="key">S</div><div class="text">Support</div></a>
