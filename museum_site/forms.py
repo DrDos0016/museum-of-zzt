@@ -339,7 +339,7 @@ class Advanced_Search_Form(forms.Form):
         required=False,
     )
     board = Manual_Field(
-        label="Minimum/Maximum board count",
+        label="Minimum / Maximum board count",
         widget=Board_Range_Widget(min_val=0, max_val=999, max_length=3),
         required=False,
     )
@@ -349,7 +349,7 @@ class Advanced_Search_Form(forms.Form):
         required=False,
     )
     rating = Manual_Field(
-        label="Minimum/Maximum rating",
+        label="Minimum / Maximum rating",
         widget=Range_Widget(min_val=0, max_val=5, max_length=4, step=0.1, include_clear=True),
         required=False,
         help_text="User input must be a number ranging from 0.0 to 5.0"
