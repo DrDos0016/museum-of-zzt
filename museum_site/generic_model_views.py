@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from time import time
 
 from django.db.models import Count
@@ -285,7 +285,7 @@ class ZFile_Review_List_View(Model_List_View):
         context = super().get_context_data(**kwargs)
         context["file"] = self.head_object
         context["title"] = "{} - Reviews".format(self.head_object.title)
-        context["today"] = datetime.now().date()
+        context["today"] = datetime.now(tz=timezone.utc)
         context["sort_options"] = [
             {"text": "Newest", "val": "-date"},
             {"text": "Oldest", "val": "date"},
