@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -52,7 +52,7 @@ class Review(BaseModel):
     author = models.CharField(max_length=50)
     content = models.TextField()
     rating = models.FloatField(default=5.0)
-    date = models.DateField()
+    date = models.DateTimeField(auto_now_add=True)
     ip = models.GenericIPAddressField(blank=True, null=True)
     approved = models.BooleanField(default=True)
 
@@ -178,12 +178,10 @@ class Review(BaseModel):
             author=self.author,
             author_link=self.author_link(),
             date=self.date,
-            today=datetime.now(),
             review_content=self.content,
             rating=self.rating,
             debug=kwargs["request"].session.get("DEBUG") if kwargs.get("request") else False
         )
-
         return context
 
     def save(self, *args, **kwargs):
