@@ -17,6 +17,16 @@ form
     column-gap:4px;
 }
 
+@media (max-width:480px) {
+    .field-wrapper
+    {
+        grid-template-areas:
+         "label help"
+         "value value"
+         "error error";
+    }
+}
+
 .field-wrapper[data-field=first_name] { visibility:hidden; height:0px; width:0px; position:absolute; top:0; left:0; } /* Spam */
 
 label

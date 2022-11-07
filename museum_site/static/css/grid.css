@@ -302,6 +302,9 @@ pre.cp437 { line-height:14px;}
     font-style:oblique;
 }
 
+.guide-words .left { text-align:left; }
+.guide-words .right { text-align:right; }
+
 .guide-words.bottom
 {
     border-bottom:0px;
