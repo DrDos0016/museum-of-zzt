@@ -488,6 +488,16 @@ class Collection_Contents_View(Model_List_View):
             self.sorted_by = self.head_object.default_sort
 
         qs = self.sort_queryset(qs)
+        # Remove duplicate entries -- TODO This seems quite janky
+        if self.sorted_by in ["author", "company"]:
+            pruned = []
+            observed_ids = []
+            for i in qs:
+                if i.pk not in observed_ids:
+                    observed_ids.append(i.pk)
+                    pruned.append(i)
+            return pruned
+
         return qs
 
     def get_context_data(self, **kwargs):
