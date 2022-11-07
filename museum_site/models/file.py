@@ -49,16 +49,16 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     sort_keys = {
         # Key - Value from <select> used in GET params
         # Value - Django order_by param
-        "title": "sort_title",
-        "author": "authors__title",
-        "company": "companies__title",
-        "rating": "-rating",
-        "release": "release_date",
-        "-release": "-release_date",
-        "uploaded": "-id",
-        "id": "id",
-        "-id": "-id",
-        "-publish_date": "-publish_date"
+        "title": ["sort_title"],
+        "author": ["authors__title", "sort_title"],
+        "company": ["companies__title", "sort_title"],
+        "rating": ["-rating", "sort_title"],
+        "release": ["release_date", "sort_title"],
+        "-release": ["-release_date", "sort_title"],
+        "uploaded": ["-id"],
+        "id": ["id"],
+        "-id": ["-id"],
+        "-publish_date": ["-publish_date", "sort_title"]
     }
     actions = None  # Populated by self.init_actions()
     detail_ids = None  # Populated by self.init_detail_ids()

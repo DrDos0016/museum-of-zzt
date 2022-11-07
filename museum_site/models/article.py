@@ -28,13 +28,13 @@ class Article(BaseModel):
         {"text": "Category", "val": "category"},
     ]
     sort_keys = {
-        "-date": "-publish_date",
-        "date": "publish_date",
-        "title": "title",
-        "author": "author",
-        "category": "category",
-        "id": "id",
-        "-id": "-id",
+        "-date": ["-publish_date", "title"],
+        "date": ["publish_date", "title"],
+        "title": ["title"],
+        "author": ["author", "title"],
+        "category": ["category", "title"],
+        "id": ["id"],
+        "-id": ["-id"],
     }
 
     SCHEMAS = (

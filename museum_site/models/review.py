@@ -25,13 +25,13 @@ class Review(BaseModel):
         {"text": "Rating", "val": "rating"},
     ]
     sort_keys = {
-        "-date": "-date",
-        "date": "date",
-        "file": "zfile__sort_title",
-        "reviewer": "author",
-        "rating": "-rating",
-        "id": "id",
-        "-id": "-id",
+        "-date": ["-date", "zfile__sort_title"],
+        "date": ["date", "zfile__sort_title"],
+        "file": ["zfile__sort_title"],
+        "reviewer": ["author", "zfile__sort_title"],
+        "rating": ["-rating", "zfile__sort_title"],
+        "id": ["id"],
+        "-id": ["-id"],
     }
 
     """

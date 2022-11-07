@@ -97,7 +97,7 @@ class Model_List_View(ListView):
     def sort_queryset(self, qs):
         fields = self.model.sort_keys.get(self.sorted_by)
         if fields is not None:
-            qs = qs.order_by(fields)
+            qs = qs.order_by(*fields)
         return qs
 
     def get_nearby_page_range(self, current_page, total_pages):

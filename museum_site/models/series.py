@@ -22,10 +22,10 @@ class Series(BaseModel):
     sort_keys = {
         # Key - Value from <select> used in GET params
         # Value - Django order_by param
-        "title": "title",
-        "latest": "-last_entry_date",
-        "id": "id",
-        "-id": "-id",
+        "title": ["title"],
+        "latest": ["-last_entry_date", "title"],
+        "id": ["id"],
+        "-id": ["-id"],
     }
 
     # Constants

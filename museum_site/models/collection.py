@@ -23,12 +23,12 @@ class Collection(BaseModel):
     sort_keys = {
         # Key - Value from <select> used in GET params
         # Value - Django order_by param
-        "title": "title",
-        "author": "user__username",
-        "modified": "modified",
-        "-modified": "-modified",
-        "id": "id",
-        "-id": "-id",
+        "title": ["title"],
+        "author": ["user__username", "title"],
+        "modified": ["modified", "title"],
+        "-modified": ["-modified", "title"],
+        "id": ["id"],
+        "-id": ["-id"],
     }
     supported_views = ["detailed"]
 
@@ -178,15 +178,15 @@ class Collection_Entry(models.Model):
     sort_keys = {
         # Key - Value from <select> used in GET params
         # Value - Django order_by param
-        "canonical": "order",
-        "title": "zfile__sort_title",
-        "author": "zfile__authors__title",
-        "company": "zfile__companies__title",
-        "rating": "-zfile__rating",
-        "release": "zfile__release_date",
-        "-release": "-zfile__release_date",
-        "id": "id",
-        "-id": "-id",
+        "canonical": ["order"],
+        "title": ["zfile__sort_title"],
+        "author": ["zfile__authors__title", "zfile__sort_title"],
+        "company": ["zfile__companies__title", "zfile__sort_title"],
+        "rating": ["-zfile__rating"],
+        "release": ["zfile__release_date", "zfile__sort_title"],
+        "-release": ["-zfile__release_date", "zfile__sort_title"],
+        "id": ["id"],
+        "-id": ["-id"],
     }
 
     supported_views = ["detailed"]
