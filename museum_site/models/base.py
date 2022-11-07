@@ -32,6 +32,7 @@ class BaseModel(models.Model):
     def initial_context(self, *args, **kwargs):
         context = {
             "pk": self.pk,
+            "hash_id": "{}-{}".format(self.model_name.lower(), self.pk),
             "model": self.model_name,
             "preview": {"url": self.preview_url(), "alt": self.preview_url()},
             "url": self.url(),

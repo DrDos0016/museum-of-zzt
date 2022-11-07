@@ -140,7 +140,6 @@ def guide_words(*args, **kwargs):
         model = "File"
         items = (items[0].zfile, items[1].zfile)
 
-
     if model == "File":
         # Figure out link text
         for x in range(0, len(link_text)):
@@ -243,7 +242,6 @@ def guide_words(*args, **kwargs):
             elif sort == "rating":
                 link_text[x] = items[x].rating if items[x].rating >= 0 else "-No Rating-"
 
-
         if items[0] != "" and items[1] != "":
             output = """
             <div class="guide-words">
@@ -256,7 +254,31 @@ def guide_words(*args, **kwargs):
             )
         else:
             output = ""
+    elif model == "Collection":
+        for x in range(0, len(link_text)):
+            if items[x] == "":
+                continue
+            if sort == "modified" or sort == "-modified":
+                link_text[x] = items[x].modified.strftime("%b %d, %Y")
+            elif sort == "title":
+                link_text[x] = items[x].title
+            elif sort == "author":
+                link_text[x] = items[x].user.username
+            elif sort == "id" or sort == "-id":
+                link_text[x] = items[x].pk
 
+        if items[0] != "" and items[1] != "":
+            output = """
+            <div class="guide-words">
+                <span><a class="left" href="#collection-{}">{}</a></span>
+                <span><a class="right" href="#collection-{}">{}</a></span>
+            </div>
+            """.format(
+                items[0].id, link_text[0],
+                items[1].id, link_text[1]
+            )
+        else:
+            output = ""
 
     return mark_safe(output + "\n")
 
@@ -619,7 +641,6 @@ def generic_block_loop(items, view="detailed", header=None, request=None, *args,
     output = ""
     template = "museum_site/blocks/new-generic-{}-block.html".format(view)
 
-
     # Empty sets
     if len(items) == 0:
         output = (
@@ -638,9 +659,9 @@ def generic_block_loop(items, view="detailed", header=None, request=None, *args,
     for i in items:
         context["obj"] = i
         if view in ["detailed", "list", "gallery", "review-content"]:
-             context["obj"].context = getattr(i, "{}_block_context".format(view.replace("-", "_")))(request=request)
-             if kwargs.get("today"):
-                 context["today"] = kwargs["today"]
+            context["obj"].context = getattr(i, "{}_block_context".format(view.replace("-", "_")))(request=request)
+            if kwargs.get("today"):
+                context["today"] = kwargs["today"]
 
         output += render_to_string(template, context)
 
