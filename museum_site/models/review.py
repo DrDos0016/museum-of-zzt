@@ -115,6 +115,7 @@ class Review(BaseModel):
     def detailed_block_context(self, extras=None, *args, **kwargs):
         context = dict(
             pk=self.pk,
+            hash_id = "review-{}".format(self.pk),
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
@@ -138,6 +139,7 @@ class Review(BaseModel):
     def list_block_context(self, extras=None, *args, **kwargs):
         context = dict(
             pk=self.pk,
+            hash_id = "review-{}".format(self.pk),
             model=self.model_name,
             url=self.url,
             cells=[
@@ -153,6 +155,7 @@ class Review(BaseModel):
     def gallery_block_context(self, extras=None, *args, **kwargs):
         context = dict(
             pk=self.pk,
+            hash_id = "review-{}".format(self.pk),
             model=self.model_name,
             preview=dict(url=self.preview_url, alt=self.preview_url),
             url=self.url,
@@ -173,6 +176,7 @@ class Review(BaseModel):
     def review_content_block_context(self, extras=None, *args, **kwargs):
         context = dict(
             pk=self.pk,
+            hash_id = "review-{}".format(self.pk),
             model=self.model_name,
             title=self.title,
             author=self.author,

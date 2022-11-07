@@ -134,6 +134,13 @@ def guide_words(*args, **kwargs):
         sort = ""
 
     output = ""
+
+    # Treat Collection Entries as their associated Files
+    if model == "Collection Entry":
+        model = "File"
+        items = (items[0].zfile, items[1].zfile)
+
+
     if model == "File":
         # Figure out link text
         for x in range(0, len(link_text)):
@@ -223,6 +230,33 @@ def guide_words(*args, **kwargs):
             )
         else:
             output = ""
+    elif model == "Review":
+        for x in range(0, len(link_text)):
+            if items[x] == "":
+                continue
+            if sort == "file":
+                link_text[x] = items[x].zfile.title
+            elif sort == "reviewer":
+                link_text[x] = items[x].author
+            elif sort == "date" or sort == "-date":
+                link_text[x] = items[x].date.strftime("%b %d, %Y")
+            elif sort == "rating":
+                link_text[x] = items[x].rating if items[x].rating >= 0 else "-No Rating-"
+
+
+        if items[0] != "" and items[1] != "":
+            output = """
+            <div class="guide-words">
+                <span><a class="left" href="#review-{}">{}</a></span>
+                <span><a class="right" href="#review-{}">{}</a></span>
+            </div>
+            """.format(
+                items[0].id, link_text[0],
+                items[1].id, link_text[1]
+            )
+        else:
+            output = ""
+
 
     return mark_safe(output + "\n")
 
