@@ -500,6 +500,17 @@ class Commentary(template.Node):
             commentary=commentary
         )
 
+@register.simple_tag()
+def fn(num=1):
+    if num > 0:
+        output = "<sup><a href='#fn-{}' id='fnl-{}'>[{}]</a></sup>"
+    else:
+        num = -1 * num
+        output = "<sup><a href='#fnl-{}' id='fn-{}'>[{}]</a></sup>"
+    return mark_safe(output.format(num, num, num))
+
+
+
 
 @register.tag(name="il")
 def il(parser, token):
