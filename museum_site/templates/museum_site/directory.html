@@ -4,7 +4,7 @@
 <script>
 $(document).ready(function (){
     $("#directory-filter-input").keyup(function (){
-        var val = $(this).val();
+        var val = $(this).val().toLowerCase();
 
         $(".directory .row").each(function (){
             var entry = $(this).text().toLowerCase();
