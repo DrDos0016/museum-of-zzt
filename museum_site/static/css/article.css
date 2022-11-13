@@ -137,6 +137,19 @@ article aside
     font-size:smaller;
     float:right;
 }
+
+.footnotes
+{
+    font-size:smaller;
+    list-style:none;
+    border-top:1px dashed #000;
+    border-bottom:1px dashed#000;
+    width:750px;
+    margin:auto;
+    margin-top:14px;
+    padding-top:7px;
+    padding-bottom:7px;
+}
 /* End article formatting */
 
 /* LEGACY CSS -- DO NOT ADD MORE USES OF THESe RULES */
