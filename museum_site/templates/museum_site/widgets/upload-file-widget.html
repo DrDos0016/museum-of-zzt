@@ -1,7 +1,8 @@
 <div class="upload-wrapper">
-    <input type="file" name="zfile" id="id_zfile"{%if allowed_filetypes %} accept="{{allowed_filetypes}}"{% endif %}>
+    <input type="file" name="{{widget.name}}" id="id_{{widget.name}}" class="drag-and-drop-file-widget"{%if allowed_filetypes %} accept="{{allowed_filetypes}}"{% endif %}>
     <div class="upload-area c"><p>{{target_text|safe}}</p></div>
     <div class="upload-info">
+        {% if allowed_filetypes == ".zip,application/zip" %}
         <div class="file-list-header">
             <span class="file-name">{{filename|default:"..."}}</span>
             <span class="file-size">{{size|filesizeformat}}</span>
@@ -11,5 +12,10 @@
             <li>{{f.filename}}</li>
             {% endfor %}
         </ul>
+        {% elif allowed_filetypes == ".png,image/png" %}
+        <div>
+            <img id="uploaded-image-preview">
+        </div>
+        {% endif %}
     </div>
 </div>

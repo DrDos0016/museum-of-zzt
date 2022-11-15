@@ -1,7 +1,8 @@
 $(document).ready(function (){
     // Drag and Drop Uploading
     $(".upload-area").click(function (){
-        $("#id_zfile").click();
+        $(this).prev("input[type=file]").click();
+        //$("#id_zfile").click();
     });
 
     $(".upload-area").on("dragover", function(e) {
@@ -24,21 +25,31 @@ $(document).ready(function (){
         const dt = e.originalEvent.dataTransfer;
         const file = dt.files[0];
         var ext = file.name.toLowerCase().slice(-4);
-        $("#id_zfile")[0].files = dt.files;
+        $(this).prev("input[type=file]")[0].files = dt.files;
+
+        console.log("HELLO", ext, file);
 
         if (ext == ".zip")
             parse_zip_file(file);
         else if (ext == ".zzt")
             set_uploaded_zzt_file(file);
+        else if (ext == ".png")
+            set_uploaded_image(file);
+        else
+            console.log("Unhandled file extension: " + ext);
     });
 
-    $("#id_zfile").change(function (e){
+    $(".drag-and-drop-file-widget").change(function (e){
         const file = $(this)[0].files[0];
         var ext = file.name.toLowerCase().slice(-4);
         if (ext == ".zip")
             parse_zip_file(file);
         else if (ext == ".zzt")
             set_uploaded_zzt_file(file);
+        else if (ext == ".png")
+            set_uploaded_image(file);
+        else
+            console.log("Unhandled file extension: " + ext);
     });
 
     $(".widget input[type=checkbox]").click(function (){
@@ -391,4 +402,11 @@ function set_uploaded_zzt_file(file)
 {
     $(".file-list-header .file-name").html(file.name);
     $(".file-list-header .file-size").html(filesize_format(file.size));
+}
+
+function set_uploaded_image(file)
+{
+    $(".upload-area").css("height", "20px");
+    var preview = $("#uploaded-image-preview")[0];
+    preview.src = URL.createObjectURL(file);
 }

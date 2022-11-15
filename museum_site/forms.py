@@ -30,6 +30,12 @@ from museum_site.widgets import *
 
 STUB_CHOICES = (("A", "First"), ("B", "Second"), ("C", "Third"))  # For debugging
 
+PREVIEW_IMAGE_CROP_CHOICES = (
+    ("ZZT", "480x350 ZZT Board"),
+    ("SZZT", "448x400 Super ZZT Board"),
+    ("NONE", "Do Not Crop Image"),
+)
+
 # Common strings
 PASSWORD_HELP_TEXT = "Use a unique password for your account with a minimum length of <b>8</b> characters. Passwords are hashed and cannot be viewed by staff."
 PATRON_DISCLAIMER_TEXT = (
@@ -751,10 +757,10 @@ class SeriesForm(forms.ModelForm):
         label="Associated Articles"
     )
     preview = forms.FileField(
-        label="Preview Image",
-        help_text="Cropped to 480x350",
-        required=False
+        help_text="Select the image you wish to upload.",
+        label="Preview Image", widget=UploadFileWidget(target_text="Drag & Drop Image Here or Click to Choose", allowed_filetypes=".png,image/png")
     )
+    crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
 
     class Meta:
         model = Series
@@ -1402,7 +1408,7 @@ class Livestream_Vod_Form(forms.Form):
     )
     description = forms.CharField(widget=Enhanced_Text_Widget(char_limit=250), label="Article Summary")
     preview_image = forms.FileField()
-    crop = forms.BooleanField(label="Crop Preview Image", initial=True, help_text="Crop image to 480x350", required=False)
+    crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
     publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
     series = forms.ChoiceField(choices=qs_to_select_choices(Series.objects.filter(visible=True), allow_none=True))
     associated_zfile = forms.MultipleChoiceField(
@@ -1472,10 +1478,8 @@ class Livestream_Vod_Form(forms.Form):
                 fh.write(chunk)
 
         # Crop image if needed
-        if self.cleaned_data.get("crop"):
-            image = Image.open(file_path)
-            image = image.crop((0, 0, 480, 350))
-            image.save(file_path)
+        if self.cleaned_data.get("crop") != "NONE":
+            crop_file(file_path, preset=self.cleaned_data["crop"])
 
         # Save the article so it has an ID
         a.save()

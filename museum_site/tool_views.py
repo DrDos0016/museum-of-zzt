@@ -790,7 +790,9 @@ def series_add(request):
                 request.FILES.get("preview"),
                 custom_name=series.slug + ".png"
             )
-            crop_file(file_path)
+
+            if form.cleaned_data["crop"] != "NONE":
+                crop_file(file_path, preset=form.cleaned_data["crop"])
             series.preview = series.slug + ".png"
             series.save()
 

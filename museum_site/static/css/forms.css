@@ -170,7 +170,7 @@ input:disabled { background:#AAA; }
 .field_filter input { font-size:smaller; }
 .field_filter label { font-weight:bold; }
 
-#id_zfile { display:none; }
+#id_zfile, #id_preview { display:none; } /* Auto hide widgets for drag and drop alternatives */
 
 .field-with-error { background-color:#FCC; }
 
@@ -345,3 +345,8 @@ input[name=rss-url]
     width:90%;
 }
 /* End specific fields */
+
+#uploaded-image-preview
+{
+    max-height:175px;
+}
