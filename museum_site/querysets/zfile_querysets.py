@@ -100,7 +100,7 @@ class ZFile_Queryset(Base_Queryset):
         return qs
 
     def new_releases_frontpage(self, spotlight_filter=False):
-        qs = self.new_releases(spotlight_filter=spotlight_filter)
+        qs = self.new_releases(spotlight_filter=spotlight_filter).exclude(details__id=DETAIL_NEW_FIND)
         qs = qs.order_by("-publish_date")
         return qs
 
