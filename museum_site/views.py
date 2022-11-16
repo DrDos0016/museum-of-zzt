@@ -107,7 +107,7 @@ def index(request):
 
     # Obtain latest content
     data["articles"] = Article.objects.spotlight()[:FP.ARTICLES_SHOWN]
-    data["new_releases"] = File.objects.new_releases(spotlight_filter=True)[:FP.NEW_RELEASES_SHOWN]
+    data["new_releases"] = File.objects.new_releases_frontpage(spotlight_filter=True)[:FP.NEW_RELEASES_SHOWN]
     data["files"] = File.objects.new_finds(spotlight_filter=True)[:FP.FILES_SHOWN]
     data["reviews"] = Review.objects.latest_approved_reviews()[:FP.REVIEWS_SHOWN]
     data["article_table_header"] = data["articles"][0].table_header() if data["articles"] else None

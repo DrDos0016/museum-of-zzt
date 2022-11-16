@@ -99,6 +99,11 @@ class ZFile_Queryset(Base_Queryset):
         qs = qs.order_by("-release_date", "-id")
         return qs
 
+    def new_releases_frontpage(self, spotlight_filter=False):
+        qs = self.new_releases(spotlight_filter=spotlight_filter)
+        qs = qs.order_by("-publish_date")
+        return qs
+
     def new_finds(self, spotlight_filter=False):
         """ Return zfiles with NEW_FIND detail optionally spotlight-only ordered by newest publication date """
         qs = self.filter(details__id=DETAIL_NEW_FIND)
