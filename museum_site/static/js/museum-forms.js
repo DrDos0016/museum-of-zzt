@@ -224,7 +224,7 @@ function init_filters()
 
 function apply_filter(e)
 {
-    var filter = e.data.filter();
+    var filter = e.data.filter().toLowerCase();
     var targets = e.data.targets;
 
     $(targets).each(function (){
