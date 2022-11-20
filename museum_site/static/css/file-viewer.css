@@ -1,4 +1,3 @@
-/* File Viewer */
 .fv-grid /* Applied to center content element */
 {
     display:grid;
@@ -14,8 +13,19 @@
     grid-template-rows:repeat(5, auto) 1fr;
     min-height:858px; /* With padding this is 900px of space */
     height:calc(100vh - 42px);
-    /* Padding is a hacky temp fix for column hiding button */
+}
+
+#content.fv-grid
+{
     padding-top:0px;
+}
+
+.fv-grid #expand-contract
+{
+    grid-area: expand;
+    justify-self:end;
+    left:0px;
+    top:0px;
 }
 
 .fv-grid .file-meta
@@ -376,4 +386,3 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 #text-body { font-family:cp437; }
 #doc-header { color:#F00; text-align:center;}
 /* End File Viewer Extension Based Formatting */
-/* End File Viewer */

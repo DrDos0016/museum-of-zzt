@@ -61,13 +61,6 @@ body
     top:-14px;
 }
 
-.fv-grid #expand-contract
-{
-    grid-area: expand;
-    justify-self:end;
-    left:0px;
-}
-
 #expand-contract:hover
 {
     cursor:pointer;
@@ -256,7 +249,5 @@ body
 
 .file-meta
 {
-    position:relative;
-    top:-16px;
-    margin-top:16px;
+    margin-bottom:14px;
 }

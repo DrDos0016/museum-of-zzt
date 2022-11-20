@@ -112,8 +112,8 @@
 <button id="expand-contract" title="Toggle sidebars">⮜ ⮞</button>
 {% block zfile_header %}
 {% if file %}
-    <div class="file-meta">
-    {% if file and not local%}
+<div class="file-meta">
+    {% if file and not local %}
     <div class="file-header">
         {% include "museum_site/datum/title-datum.html" with f=file.title_datum_context %}
         {% if zgames|length > 1 %}
@@ -124,9 +124,7 @@
             {% endfor %}
         </select>{% endif %}
     </div>
-    <div class="file-links">
-        {% zfile_links zfile=file debug=request.session.DEBUG %}
-    </div>
+    <div class="file-links">{% zfile_links zfile=file debug=request.session.DEBUG %}</div>
     <div class="file-data">
         <div class="author-data">Author<br>{% for a in file.author_list %}<a href="{% url 'search' %}?author={{a|urlencode}}">{{a}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
         <div class="release-data">Released<br><a href="{% url 'search' %}?year={{file.release_date.year|default:'Unk'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
@@ -140,7 +138,7 @@
     {% if local %}
     <h1>Local File Viewer - <input type="file" id="local-file-path"> <button id="local-load">Load File</button></h1>
     {% endif %}
-    </div>
+</div>
 {% endif %}
 {% endblock zfile_header %}
 {% block content %}
