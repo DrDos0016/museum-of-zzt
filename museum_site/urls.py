@@ -115,6 +115,7 @@ urlpatterns = [
     path("file/browse/new-finds/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="new_finds"),
     path("file/browse/new-releases/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="new_releases"),
     path("file/browse/<str:letter>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse_letter"),
+    path("file/browse/<str:field>/<path:value>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse_field"),
     path("file/random/", museum_site.views.random, name="random"),
     path("file/roulette/", museum_site.generic_model_views.prepare_roulette, name="roulette"),
     path("file/advanced-search/", museum_site.file_views.advanced_search, name="advanced_search"),

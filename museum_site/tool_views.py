@@ -575,8 +575,7 @@ def reletter(request, key):
         # Validate that nothing will be clobbered
         dst = os.path.join(SITE_ROOT, "zgames", letter, data["file"].filename)
         if os.path.isfile(dst):
-            data["results"] = ("A zip with the same name already exists in "
-                               "that letter!")
+            data["results"] = "A zip with the same name already exists in that letter!"
             return render(request, "museum_site/tools/reletter.html", data)
 
         # Copy the file to the new letter directory
@@ -601,10 +600,7 @@ def reletter(request, key):
 
         # Copy the screenshot to the new letter directory
         src = data["file"].screenshot_phys_path()
-        dst = os.path.join(
-            STATIC_PATH, "images", "screenshots", letter,
-            data["file"].screenshot
-        )
+        dst = os.path.join(STATIC_PATH, "images", "screenshots", letter, data["file"].screenshot)
 
         try:
             shutil.copy(src, dst)
@@ -622,11 +618,7 @@ def reletter(request, key):
             data["error"] = str(e)
             return render(request, "museum_site/tools/reletter.html", data)
 
-        data["results"] = ("Successfully Re-Lettered from <b>{}</b> to "
-                           "<b>{}</b>").format(
-            old_letter.upper(),
-            letter.upper()
-        )
+        data["results"] = ("Successfully Re-Lettered from <b>{}</b> to <b>{}</b>").format(old_letter.upper(), letter.upper())
 
         # Update the database entry
         data["file"].letter = letter
@@ -735,9 +727,7 @@ def scan(request):
 
 @staff_member_required
 def series_add(request):
-    data = {
-        "title": "Series - Add",
-    }
+    data = {"title": "Series - Add"}
 
     if request.method != "POST":
         form = SeriesForm()
@@ -776,9 +766,7 @@ def stream_card(request):
     # Does not require staff for simplicity's sake. This page is harmless and
     # can only read data from the DB, not modify it.
     data = {"title": "Stream Card"}
-    data["files"] = File.objects.all().values(
-        "id", "title"
-    ).order_by("sort_title")
+    data["files"] = File.objects.all().values("id", "title").order_by("sort_title")
 
     if request.GET.getlist("pk"):
         form = Stream_Card_Form(request.GET)

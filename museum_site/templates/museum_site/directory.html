@@ -49,7 +49,9 @@ $(document).ready(function (){
         {% endif %}
     {% endifchanged %}
         <div class="row">
-            <a href="{% url 'search' %}?{{category}}={{row.0|urlencode}}{% if category != 'genre' %}&sort=release{% endif %}">{{row.0}}</a>
+            {% if row.0 %}
+            <a href="{% url 'browse_field' category row.0 %}{% if category != 'genre' %}?sort=release{% endif %}">{{row.0}}</a>
+            {% endif %}
         </div>
     {% if forloop.counter|divisibleby:split or forloop.last %}
     </div>

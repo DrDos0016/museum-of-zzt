@@ -620,21 +620,21 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def author_links(self):
         output = ""
         for i in self.authors.all():
-            output += '<a href="/file/search?author={}">{}</a>, '.format(quote(i.title, safe=""), html.escape(i.title))
+            output += '<a href="/file/browse/author/{}/">{}</a>, '.format(quote(i.title.lower(), safe=""), html.escape(i.title))
         return output[:-2]
 
     @mark_safe
     def genre_links(self):
         output = ""
         for i in self.genres.all():
-            output += '<a href="{}">{}</a>, '.format(i.url(), i.title)
+            output += '<a href="/file/browse/genre/{}/">{}</a>, '.format(quote(i.title.lower(), safe=""), html.escape(i.title))
         return output[:-2]
 
     @mark_safe
     def company_links(self):
         output = ""
         for i in self.companies.all():
-            output += '<a href="/file/search?company={}">{}</a>, '.format(i.title, i.title)
+            output += '<a href="/file/browse/company/{}/">{}</a>, '.format(quote(i.title.lower(), safe=""), html.escape(i.title))
         return output[:-2]
 
     def language_pairs(self):
@@ -756,7 +756,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             {"datum": "text", "label": "Compan"+("ies" if self.companies.count() > 1 else "y"), "value": self.company_links()},
             {
                 "datum": "link", "label": "Released", "value": (self.release_date or "Unknown"),
-                "url": "/search/?year={}".format(self.release_year(default="unk"))
+                "url": "/file/browse/year/{}/".format(self.release_year(default="unk"))
             },
             {"datum": "text", "label": "Genre"+("s" if self.genres.count() > 1 else ""), "value": self.genre_links()},
             {"datum": "text", "label": "Filename", "value": self.filename},
@@ -840,7 +840,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         cells.append({"datum": "text", "value": self.company_links(), "tag": "td"}),
         cells.append({"datum": "text", "value": self.genre_links(), "tag": "td"}),
         cells.append(
-            {"datum": "link", "value": (self.release_date or "Unknown"), "url": "/search/?year={}".format(self.release_year(default="unk")), "tag": "td"}
+            {"datum": "link", "value": (self.release_date or "Unknown"), "url": "/file/browse/year/{}/".format(self.release_year(default="unk")), "tag": "td"}
         )
         cells.append({"datum": "text", "value": self.rating_for_list_view(), "tag": "td"})
 

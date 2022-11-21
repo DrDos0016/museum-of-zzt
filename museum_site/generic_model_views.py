@@ -118,6 +118,8 @@ class ZFile_List_View(Model_List_View):
         self.letter = self.kwargs.get("letter")
         self.genre_slug = self.kwargs.get("genre_slug")
         self.detail_slug = self.kwargs.get("detail_slug")
+        self.field = self.kwargs.get("field")
+        self.value = self.kwargs.get("value")
 
         self.search_type = None
         self.detail = None
@@ -155,6 +157,15 @@ class ZFile_List_View(Model_List_View):
         elif self.search_type == "advanced":
             cleaned_params = clean_params(self.request.GET.copy(), list_items=["details"])
             qs = File.objects.advanced_search(cleaned_params)
+        elif self.value and self.field == "author":
+            qs = qs.filter(authors__title=self.value)
+        elif self.value and self.field == "company":
+            qs = qs.filter(companies__title=self.value)
+        elif self.value and self.field == "year":
+            if self.value == "unk":
+                qs = qs.filter(release_date=None)
+            else:
+                qs = qs.filter(release_date__gte="{}-01-01".format(self.value), release_date__lte="{}-12-31".format(self.value))
 
         # Pull in upload info
         qs = qs.prefetch_related("upload_set").distinct()
@@ -230,6 +241,14 @@ class ZFile_List_View(Model_List_View):
             elif self.search_type == "advanced":
                 return "Search Results"
             return title
+        elif self.request.path.startswith("/file/browse/author/"):
+            return "Browse Author - {}".format(self.value.title())
+        elif self.request.path.startswith("/file/browse/company/"):
+            return "Browse Company - {}".format(self.value.title())
+        elif self.request.path.startswith("/file/browse/genre/"):
+            return "Browse Genre - {}".format(self.value.title())
+        elif self.request.path.startswith("/file/browse/year/"):
+            return "Browse Year - {}".format(self.value)
         # Default
         return "Browse - All Files"
 
