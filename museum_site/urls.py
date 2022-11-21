@@ -127,6 +127,10 @@ urlpatterns = [
     path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "key": ""}, name="local_file"),
     path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),
     path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),
+    #path(
+    #    "file/play/local/", museum_site.zeta_views.zeta_launcher,
+    #    {"components": ["credits", "controls", "instructions", "players"], "key":"LOCAL"}, name="play_local"
+    #),
     path(
         "file/play/<str:key>/", museum_site.zeta_views.zeta_launcher,
         {"components": ["credits", "controls", "instructions", "players"]}, name="play"
@@ -215,8 +219,7 @@ urlpatterns = [
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
     path("tools/add-livestream/<str:key>/", museum_site.tool_views.add_livestream, name="add_livestream"),
     path("tools/audit/scrolls/", museum_site.tool_views.audit_scrolls, name="audit_scrolls"),
-    path("tools/audit/zfile-restrictions/", museum_site.tool_views.audit_zfile_restrictions, name="audit_zfile_restrictions"),
-    path("tools/audit/review-restrictions/", museum_site.tool_views.audit_review_restrictions, name="audit_review_restrictions"),
+    path("tools/audit/restrictions/", museum_site.tool_views.audit_restrictions, name="audit_restrictions"),
     path("tools/audit/zeta-config/", museum_site.tool_views.audit_zeta_config, name="audit_zeta_config"),
     path("tools/crediting-preferences/", museum_site.tool_views.crediting_preferences, name="crediting_preferences"),
     path("tools/extract-font/<str:key>/", museum_site.tool_views.extract_font, name="extract_font"),
@@ -224,7 +227,7 @@ urlpatterns = [
     path("tools/livestream-description-generator/", museum_site.tool_views.livestream_description_generator, name="livestream_description_generator"),
     path("tools/log-viewer/", museum_site.tool_views.log_viewer, name="log_viewer"),
     path("tools/manage-cache/", museum_site.tool_views.manage_cache, name="manage_cache"),
-    path("tools/manage-details/<str:key>/", museum_site.tool_views.manage_details, name="manage_details"),
+    path("tools/manage-details/<str:key>/", museum_site.tool_views.publish, {"mode": "MANAGE"}, name="manage_details"),
     path("tools/mirror/<str:key>/", museum_site.tool_views.mirror, name="mirror"),
     path("tools/orphaned-objects/", museum_site.tool_views.orphaned_objects, name="orphaned_objects"),
     path("tools/patron-article-rotation/", museum_site.tool_views.patron_article_rotation, name="patron_article_rotation"),

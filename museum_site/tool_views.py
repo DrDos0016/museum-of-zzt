@@ -58,17 +58,11 @@ def add_livestream(request, key):
 
 
 @staff_member_required
-def audit_zfile_restrictions(request):
-    data = {"title": "Audit ZFile Restrictions"}
-    data["qs"] = list(File.objects.removed())
-    return render(request, "museum_site/tools/audit-zfile-restrictions.html", data)
-
-
-@staff_member_required
-def audit_review_restrictions(request):
-    data = {"title": "Audit Review Restrictions"}
-    data["qs"] = list(File.objects.exclude(can_review=File.REVIEW_YES))
-    return render(request, "museum_site/tools/audit-review-restrictions.html", data)
+def audit_restrictions(request):
+    data = {"title": "Audit Restrictions"}
+    data["zfile_qs"] = list(File.objects.removed())
+    data["review_qs"] = list(File.objects.exclude(can_review=File.REVIEW_YES))
+    return render(request, "museum_site/tools/audit-restrictions.html", data)
 
 
 @staff_member_required
@@ -250,41 +244,6 @@ def manage_cache(request):
         data["cache_items"].append({"key": k, "value": cache.get(k, "NOT SET")})
 
     return render(request, "museum_site/tools/manage-cache.html", data)
-
-
-@staff_member_required
-def manage_details(request, key):
-    """ Returns page with list of all possible Details for manual adjustment"""
-    data = {"title": "Manage Details"}
-    data["file"] = File.objects.get(key=key)
-
-    with zipfile.ZipFile(data["file"].phys_path(), "r") as zf:
-        data["file_list"] = zf.namelist()
-    data["file_list"].sort()
-
-    # Get suggested details based on the file list
-    data["detail_cats"] = Detail.objects.advanced_search_categories()
-    data["suggestions"] = get_detail_suggestions(data["file_list"])
-
-    # Current details
-    data["detail_ids"] = list(
-        data["file"].details.values_list("id", flat=True)
-    )
-
-    if request.method == "POST":
-        data["orig_details"] = data["detail_ids"]
-        data["new_details"] = [int(i) for i in request.POST.getlist("details")]
-
-        for d in data["orig_details"]:
-            if d not in data["new_details"]:
-                data["file"].details.remove(Detail.objects.get(pk=d))
-        for d in data["new_details"]:
-            data["file"].details.add(Detail.objects.get(pk=d))
-
-        # Use the newly adjusted details as the new defaults
-        data["detail_ids"] = data["new_details"]
-
-    return render(request, "museum_site/tools/manage_details.html", data)
 
 
 @staff_member_required
@@ -530,27 +489,26 @@ def prep_publication_pack(request):
 
 
 @staff_member_required
-def publish(request, key):
-    """ Returns page to publish a file marked as uploaded """
-    data = {
-        "title": "Publish",
-        "file": File.objects.get(key=key),
-        "file_list": [],
-        "suggested_button": True,  # Show "Suggested" button after detail list
-        "hints": [],
-        "hint_ids": [],
-    }
+def publish(request, key, mode="PUBLISH"):
+    """ Returns page to publish a zfile marked as uploaded or manage the details of a published zfile """
+    data = {"file": File.objects.get(key=key)}
+
+    if mode == "PUBLISH":
+        data["title"] = "Publish ZFile"
+        data["suggested_button"] = True
+        data["action_text"] = "Publish ZFile"
+        data["published"] = True if not data["file"].is_detail(DETAIL_UPLOADED) else False  # Only used for potential publishing
+    else:
+        data["title"] = "Manage ZFile Details"
+        data["suggested_button"] = False
+        data["action_text"] = "Update Details"
+
     data["detail_cats"] = Detail.objects.advanced_search_categories(include_hidden=True)
 
-    if not data["file"].is_detail(DETAIL_UPLOADED):
-        data["published"] = True
-
-    if request.POST.get("publish"):
+    if request.POST.get("action") and mode == "PUBLISH":
         # Move the file
         src = SITE_ROOT + data["file"].download_url()
-        dst = "{}/zgames/{}/{}".format(
-            SITE_ROOT, data["file"].letter, data["file"].filename
-        )
+        dst = "{}/zgames/{}/{}".format(SITE_ROOT, data["file"].letter, data["file"].filename)
         shutil.move(src, dst)
 
         # Adjust the details
@@ -574,10 +532,11 @@ def publish(request, key):
         cache.set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count())
 
         # Redirect
-        return redirect(
-            "tool_index_with_file",
-            key=data["file"].key
-        )
+        return redirect("tool_index_with_file", key=data["file"].key)
+    elif request.POST.get("action") and mode == "MANAGE":
+        data["file"].details.clear()
+        for detail in request.POST.getlist("details"):
+            data["file"].details.add(Detail.objects.get(pk=detail))
 
     with zipfile.ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
         data["file_list"] = zf.namelist()
@@ -586,12 +545,15 @@ def publish(request, key):
     # Get suggested details based on the file list
     data["suggestions"] = get_detail_suggestions(data["file_list"])
 
-    # Get suggest details based on file metadata
-    # If the file isn't from the current year, assume it's a New Find
-    if data["file"].release_date and data["file"].release_date.year != YEAR:
-        data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
-    elif data["file"].release_date is None:
-        data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
+    if mode == "PUBLISH":
+        # Get suggest details based on file metadata
+        # If the file isn't from the current year, assume it's a New Find
+        if data["file"].release_date and data["file"].release_date.year != YEAR:
+            data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
+        elif data["file"].release_date is None:
+            data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
+    else:
+        data["details_list"] = data["file"].details.all().values_list("pk", flat=True)
 
     return render(request, "museum_site/tools/publish.html", data)
 
