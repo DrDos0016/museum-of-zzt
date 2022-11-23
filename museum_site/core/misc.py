@@ -10,7 +10,14 @@ def legacy_redirect(request, name=None, *args, **kwargs):
         for stripped_arg in kwargs["strip"]:
             kwargs.pop(stripped_arg)
         kwargs.pop("strip")
-    url = reverse(name, args=args, kwargs=kwargs)
+
+    if kwargs.get("detail_slug"):  # /detail/view/<slug>/ to /file/browse/detail/<slug>
+        url = reverse("browse_field", kwargs={"field":"detail", "value":kwargs["detail_slug"]})
+    elif kwargs.get("genre_slug"):  # /genre/<slug>/ to /file/browse/genre/<slug>
+        url = reverse("browse_field", kwargs={"field":"genre", "value":kwargs["genre_slug"]})
+    else:
+        url = reverse(name, args=args, kwargs=kwargs)
+
     if request.META["QUERY_STRING"]:
         url += "?" + request.META["QUERY_STRING"]
 
