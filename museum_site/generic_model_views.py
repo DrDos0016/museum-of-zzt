@@ -116,12 +116,12 @@ class ZFile_List_View(Model_List_View):
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         self.letter = self.kwargs.get("letter")
-        self.genre_slug = self.kwargs.get("genre_slug")
-        self.detail_slug = self.kwargs.get("detail_slug")
+        self.search_type = None
+        self.genre_slug = self.kwargs.get("genre_slug") # TODO IS THIS NEEDED
         self.field = self.kwargs.get("field")
         self.value = self.kwargs.get("value")
-
-        self.search_type = None
+        self.author = None
+        self.company = None
         self.detail = None
         self.genre = None
 
@@ -132,7 +132,7 @@ class ZFile_List_View(Model_List_View):
         if self.sorted_by is None:
             if request.path == "/file/browse/":
                 self.sorted_by = "-publish_date"
-            if request.path == "/detail/view/uploaded/":
+            if request.path == "/file/browse/detail/uploaded/":
                 self.sorted_by = "uploaded"
             if request.path == "/file/roulette/":
                 self.sorted_by = "random"
@@ -145,9 +145,6 @@ class ZFile_List_View(Model_List_View):
         elif self.genre_slug:
             self.genre = Genre.objects.get(slug=self.genre_slug)
             qs = qs.filter(genres=self.genre)
-        elif self.detail_slug:
-            self.detail = Detail.objects.get(slug=self.detail_slug)
-            qs = qs.filter(details=self.detail)
         elif self.request.path == "/file/browse/new-finds/":
             qs = File.objects.new_finds()
         elif self.request.path == "/file/browse/new-releases/":
@@ -158,14 +155,24 @@ class ZFile_List_View(Model_List_View):
             cleaned_params = clean_params(self.request.GET.copy(), list_items=["details"])
             qs = File.objects.advanced_search(cleaned_params)
         elif self.value and self.field == "author":
-            qs = qs.filter(authors__title=self.value)
+            qs = qs.filter(authors__slug=self.value)
+            self.author = Author.objects.get(slug=self.value)
         elif self.value and self.field == "company":
-            qs = qs.filter(companies__title=self.value)
+            qs = qs.filter(companies__slug=self.value)
+            self.company = Company.objects.get(slug=self.value)
+        elif self.value and self.field == "detail":
+            qs = qs.filter(details__slug=self.value)
+            self.detail = Detail.objects.get(slug=self.value)
+        elif self.value and self.field == "genre":
+            qs = qs.filter(genres__slug=self.value)
+            self.genre = Genre.objects.get(slug=self.value)
         elif self.value and self.field == "year":
             if self.value == "unk":
                 qs = qs.filter(release_date=None)
             else:
                 qs = qs.filter(release_date__gte="{}-01-01".format(self.value), release_date__lte="{}-12-31".format(self.value))
+        elif self.value and self.field == "language":
+            qs = qs.filter(language__icontains=self.value)
 
         # Pull in upload info
         qs = qs.prefetch_related("upload_set").distinct()
@@ -185,7 +192,7 @@ class ZFile_List_View(Model_List_View):
         elif self.request.path == "/file/browse/new-releases/":
             context["sort_options"] = None
             context["prefix_template"] = "museum_site/prefixes/new-releases.html"
-        elif self.request.path == "/detail/view/uploaded/":
+        elif self.request.path == "/file/browse/detail/uploaded/":
             context["sort_options"] = [{"text": "Upload Date", "val": "uploaded"}] + context["sort_options"]
         elif self.request.path == "/file/roulette/":
             context["sort_options"] = [{"text": "Random", "val": "random"}] + context["sort_options"]
@@ -193,6 +200,8 @@ class ZFile_List_View(Model_List_View):
         # Setup prefix text/template
         if self.detail:
             context["prefix_text"] = self.detail.description
+        if self.genre:
+            context["prefix_text"] = self.genre.description
         if self.request.path == "/file/browse/new-finds/":
             context["prefix_template"] = "museum_site/prefixes/new-finds.html"
         if self.request.path == "/file/roulette/":
@@ -242,13 +251,17 @@ class ZFile_List_View(Model_List_View):
                 return "Search Results"
             return title
         elif self.request.path.startswith("/file/browse/author/"):
-            return "Browse Author - {}".format(self.value.title())
+            return "Browse Author - {}".format(self.author.title)
         elif self.request.path.startswith("/file/browse/company/"):
-            return "Browse Company - {}".format(self.value.title())
+            return "Browse Company - {}".format(self.company.title)
         elif self.request.path.startswith("/file/browse/genre/"):
-            return "Browse Genre - {}".format(self.value.title())
+            return "Browse Genre - {}".format(self.genre.title)
+        elif self.request.path.startswith("/file/browse/detail/"):
+            return "Browse Detail - {}".format(self.detail.title)
         elif self.request.path.startswith("/file/browse/year/"):
             return "Browse Year - {}".format(self.value)
+        elif self.request.path.startswith("/file/browse/language/"):
+            return "Browse Language - {}".format(self.value.upper())
         # Default
         return "Browse - All Files"
 

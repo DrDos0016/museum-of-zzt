@@ -50,7 +50,7 @@ $(document).ready(function (){
     {% endifchanged %}
         <div class="row">
             {% if row.0 %}
-            <a href="{% url 'browse_field' category row.0 %}{% if category != 'genre' %}?sort=release{% endif %}">{{row.0}}</a>
+            <a href="{% url 'browse_field' category row.0.slug|default:'ERROR' %}{% if category != 'genre' %}?sort=release{% endif %}">{{row.0.title}}</a>
             {% endif %}
         </div>
     {% if forloop.counter|divisibleby:split or forloop.last %}

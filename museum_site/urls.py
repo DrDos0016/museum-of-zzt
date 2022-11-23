@@ -95,9 +95,9 @@ urlpatterns = [
 
     # /detail/
     path("detail/", museum_site.help_views.Detail_Overview_View.as_view(), name="file_details"),
-    path("detail/view/<slug:detail_slug>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="files_by_detail"),
+    path("detail/view/<slug:detail_slug>/", legacy_redirect, {"name": "browse_field"}),
     # /detail/ -- Legacy Redirects
-    path("detail/<slug:detail_slug>/", legacy_redirect, {"name": "files_by_detail"}),
+    path("detail/<slug:detail_slug>/", legacy_redirect, {"name": "browse_field"}),
     path("zzt-worlds/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "zzt-world"}, name="zzt_worlds"),
     path("super-zzt/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "super-zzt-world"}, name="szzt_worlds"),
     path("utilities/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "utility"}, name="utilities"),
@@ -107,8 +107,8 @@ urlpatterns = [
     path("modified-exe/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "modified-executable"}, name="modified_exe"),
     path("ms-dos/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "ms-dos"}, name="ms_dos"),
     path("lost-worlds/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "lost-world"}, name="lost_worlds"),
-    path("uploaded/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "uploaded"}, name="uploaded_worlds"),
-    path("featured/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "featured-world"}, name="featured_games"),
+    path("uploaded/", legacy_redirect, {"name": "browse_field", "field": "detail", "value": "uploaded"}, name="uploaded_worlds"),
+    path("featured/", legacy_redirect, {"name": "browse_field", "field": "detail", "value": "featured-world"}, name="featured_games"),
 
     # /file/
     path("file/browse/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse"),
@@ -153,7 +153,7 @@ urlpatterns = [
 
     # /genre/
     path("genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_overview"),
-    path("genre/<slug:genre_slug>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse_genre"),
+    path("genre/<slug:genre_slug>/", legacy_redirect, {"name": "browse_field"}, name="browse_genre"),
 
     # /help/
     path("help/", RedirectView.as_view(url="/article/help/")),

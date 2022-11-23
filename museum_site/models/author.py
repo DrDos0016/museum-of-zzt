@@ -24,5 +24,7 @@ class Author(models.Model):
 
     def generate_automatic_slug(self, save=True):
         self.slug = slugify(self.title)
+        if self.slug == "":
+            self.slug = self.title.lower()
         if save:
             self.save()

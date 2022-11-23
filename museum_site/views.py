@@ -34,32 +34,32 @@ def directory(request, category):
     data = {}
     data["category"] = category
 
-    data_list = []
     if category == "company":
-        data_list = Company.objects.all().values_list("title", flat=True)
+        data_list = Company.objects.all().order_by("title")
     elif category == "author":
-        data_list = Author.objects.all().values_list("title", flat=True)
+        data_list = Author.objects.all().order_by("title")
     elif category == "genre":
-        data_list = Genre.objects.visible_genre_list()
+        data_list = Genre.objects.visible().order_by("title")
 
     data["title"] = "{} Directory".format(category.title())
 
     # Break the list of results into 4 columns
-    data_list = sorted(data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.lower()))
+    data_list = sorted(data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.title.lower()))
     first_letters = []
 
     for entry in data_list:
-        if entry == "":
+        if entry.title == "":
             continue
-        elif entry[0] in "1234567890":
+        elif entry.title[0] in "1234567890":
             first_letters.append("#")
-        elif entry[0].upper() not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        elif entry.title[0].upper() not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
             first_letters.append("*")
         else:
-            first_letters.append(entry[0].upper())
+            first_letters.append(entry.title[0].upper())
 
     data["list"] = list(zip(data_list, first_letters))
     data["split"] = math.ceil(len(data_list) / 4.0)
+
     return render(request, "museum_site/directory.html", data)
 
 
@@ -155,11 +155,12 @@ def scroll_navigation(request):
         identifier = scroll.identifier if scroll else 1
     else:
         if "first" in request.path:
-            identifier = Scroll.objects.filter(published=True).order_by("id").first().identifier
+            scroll = Scroll.objects.filter(published=True).order_by("id").first()
         elif "latest" in request.path:
-            identifier = Scroll.objects.filter(published=True).order_by("-id").first().identifier
+            scroll = Scroll.objects.filter(published=True).order_by("-id").first()
         else:  # Random
-            identifier = Scroll.objects.filter(published=True).order_by("?").first().identifier
+            scroll = Scroll.objects.filter(published=True).order_by("?").first()
+        identifier = scroll.identifier if scroll else 1
     return redirect("/scroll/view/{}/".format(identifier))
 
 

@@ -50,7 +50,7 @@
     <div id="featured" class="block c">
         <h2 class="l">Featured World️</h2>
         {% gblock fg "gallery" %}
-        <a href="{% url 'featured_games' %}" id="fp-fw-link">View All Featured Worlds</a>
+        <a href="{% url 'browse_field' 'detail' 'featured-world' %}" id="fp-fw-link">View All Featured Worlds</a>
     </div>
 
     <div id="worlds-block" class="block l">
@@ -100,10 +100,10 @@
 
     <div class="block">
         <h2>Specialty Archives</h2>
-        <a href="{% url 'files_by_detail' 'super-zzt-world' %}">Super ZZT Worlds</a>
-        <a href="{% url 'files_by_detail' 'utility' %}">External Utilities</a>
-        <a href="{% url 'files_by_detail' 'zig-world' %}">ZIG Worlds</a>
-        <a href="{% url 'files_by_detail' 'zzm-audio' %}">ZZM Audio</a>
+        <a href="{% url 'browse_field' 'detail' 'super-zzt-world' %}">Super ZZT Worlds</a>
+        <a href="{% url 'browse_field' 'detail' 'utility' %}">External Utilities</a>
+        <a href="{% url 'browse_field' 'detail' 'zig-world' %}">ZIG Worlds</a>
+        <a href="{% url 'browse_field' 'detail' 'zzm-audio' %}">ZZM Audio</a>
         <a href="{% url 'file_details' %}">All Details</a>
     </div>
 </section>
@@ -126,13 +126,13 @@
     </div>
     <div class="file-links">{% zfile_links zfile=file debug=request.session.DEBUG %}</div>
     <div class="file-data">
-        <div class="author-data">Author<br>{{file.author_links}}</div>
-        <div class="release-data">Released<br><a href="{% url 'search' %}?year={{file.release_date.year|default:'Unk'}}" title="{% if file.release_date %}Source: {{file.release_source}}{% endif %}">{{file.release_date|default:"Unknown"}}</a></div>
-        <div class="genre-data">Genre<br> {% for g in file.genres.all %}<a href="{{g.url}}">{{g}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-        <div class="company-data">Company<br>{% for c in file.companies.all %}<a href="{% url 'search'%}?company={{c|urlencode}}">{{c}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-        <div class="size-data">Size<br>{{file.size|filesizeformat}}</div>
-        {% if file.total_boards %}<div class="board-data">Boards<br> <span title="Playable/Total - Values are not 100% accurate">{{file.playable_boards}} / {{file.total_boards}}</span></div>{% endif %}
-        <div class="Dating-data">Rating<br> {%if file.rating != None %}<span title="Based on {{file.review_count}} review{{file.review_count|pluralize}}">{{file.rating|floatformat:"2"}} / 5.00</span>{% else %}<em>No rating</em>{% endif %}</div>
+    {% with file.file_viewer_block_context as data %}
+        {% for col in data.columns %}
+            {% for field in col %}
+                {% include "museum_site/datum/"|add:field.datum|add:"-datum.html" with f=field %}
+            {% endfor %}
+        {% endfor %}
+    {% endwith %}
     </div>
     {% endif %}
     {% if local %}

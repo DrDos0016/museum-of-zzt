@@ -21,7 +21,7 @@ class Genre(BaseModel):
         return self.title
 
     def url(self):
-        return "/genre/{}/".format(self.slug)
+        return "/file/browse/genre/{}/".format(self.slug)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)

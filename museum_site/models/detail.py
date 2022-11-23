@@ -31,7 +31,7 @@ class Detail(BaseModel):
         return "[" + str(self.id) + "] " + self.title
 
     def url(self):
-        return "/detail/view/{}/".format(self.slug)
+        return "/file/browse/detail/{}/".format(self.slug)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)

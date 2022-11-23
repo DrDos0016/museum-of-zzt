@@ -613,28 +613,28 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def details_links(self):
         output = ""
         for i in self.details.visible():
-            output += '<a href="{}">{}</a>, '.format(i.url(), i.title)
+            output += '<a href="/file/browse/detail/{}/">{}</a>, '.format(i.slug, i.title)
         return output[:-2]
 
     @mark_safe
     def author_links(self):
         output = ""
         for i in self.authors.all():
-            output += '<a href="/file/browse/author/{}/">{}</a>, '.format(quote(i.title.lower(), safe=""), html.escape(i.title))
+            output += '<a href="/file/browse/author/{}/">{}</a>, '.format(quote(i.slug, safe=""), html.escape(i.title))
         return output[:-2]
 
     @mark_safe
     def genre_links(self):
         output = ""
         for i in self.genres.all():
-            output += '<a href="/file/browse/genre/{}/">{}</a>, '.format(quote(i.title.lower(), safe=""), html.escape(i.title))
+            output += '<a href="/file/browse/genre/{}/">{}</a>, '.format(quote(i.slug, safe=""), html.escape(i.title))
         return output[:-2]
 
     @mark_safe
     def company_links(self):
         output = ""
         for i in self.companies.all():
-            output += '<a href="/file/browse/company/{}/">{}</a>, '.format(quote(i.title.lower(), safe=""), html.escape(i.title))
+            output += '<a href="/file/browse/company/{}/">{}</a>, '.format(quote(i.slug, safe=""), html.escape(i.title))
         return output[:-2]
 
     def language_pairs(self):
@@ -644,6 +644,13 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         for i in language_list:
             output.append((LANGUAGES.get(i, i), i))
         return output
+
+    @mark_safe
+    def language_links(self):
+        output = ""
+        for i in self.language_pairs():
+            output += '<a href="/file/browse/language/{}/">{}</a>, '.format(quote(i[1], safe=""), html.escape(i[0]))
+        return output[:-2]
 
     def links(self, debug=False):
         links = []
@@ -774,8 +781,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
                 "title": "Playable/Total Boards. Values are not 100% accurate." if self.total_boards else ""
             },
             {
-                "datum": "language-links", "label": "Language"+("s" if len(self.ssv_list("language")) > 1 else ""),
-                "values": self.language_pairs(), "url": "/search/?lang="
+                "datum": "text", "label": "Language"+("s" if len(self.ssv_list("language")) > 1 else ""),
+                "value": self.language_links()
             },
 
         ])
@@ -803,6 +810,27 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
                     ]
                 }
             )
+        return context
+
+    def file_viewer_block_context(self, extras=None, *args, **kwargs):
+        context = self.detailed_block_context(*args, **kwargs)
+
+        # Remove certain fields
+        for c in context["columns"]:
+            to_pop = []
+            for x in range(0, len(c)):
+                label = c[x].get("label", "")
+                # Add a break to the rating
+                if label.startswith("Rating"):
+                    if self.review_count == 0:
+                        c[x]["value"] = mark_safe(c[x]["value"].split(" (")[0])
+                    else:
+                        c[x]["value"] = mark_safe(c[x]["value"].replace(" (", "<br>("))
+                if label.startswith("Filename") or label.startswith("Detail") or label.startswith("Publish Date") or label.startswith("Language"):
+                    to_pop.insert(0, x)
+            for i in to_pop:
+                c.pop(i)
+
         return context
 
     def detailed_collection_block_context(self, extras=None, *args, **kwargs):
