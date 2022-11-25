@@ -102,6 +102,24 @@
 {% endfor %}
 </ul>
 
+<h2 id="heading-authors">File Authors</h2>
+<ul class="data-table">
+{% for a in file.authors.all %}
+    <li><a href="{{a.url}}">{{a.title}}</a></li>
+{% empty %}
+    <li><i>None</i></li>
+{% endfor %}
+</ul>
+
+<h2 id="heading-companies">File Companies</h2>
+<ul class="data-table">
+{% for c in file.companies.all %}
+    <li><a href="{{c.url}}">{{c.title}}</a></li>
+{% empty %}
+    <li><i>None</i></li>
+{% endfor %}
+</ul>
+
 <h2 id="heading-contents">File Contents</h2>
 <table class="data-table" id="contents-info">
     <tr><th>Filename</th><th>Path</th><th>Ext.</th><th>Mod. Date</th><th>Dir</th><th>CRC-32</th><th>Size</th></tr>
@@ -131,7 +149,7 @@
 <h2 id="heading-reviews">File Reviews</h2>
 <ul class="data-table">
 {% for r in reviews %}
-    <li><a href="{{file.review_url}}/#rev-{{r.pk}}">{{r.title}}</a></li>
+    <li><a href="{{file.review_url}}/#rev-{{r.pk}}">{{r.title|default:"<i>Untitled Review</i>"}}</a></li>
 {% empty %}
     <li><i>None</i></li>
 {% endfor %}

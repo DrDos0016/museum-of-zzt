@@ -1,5 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 
 from museum_site.querysets.author_querysets import *
 
@@ -28,3 +29,6 @@ class Author(models.Model):
             self.slug = self.title.lower()
         if save:
             self.save()
+
+    def url(self):
+        return reverse("browse_field", kwargs={"field":"author", "value": self.slug})

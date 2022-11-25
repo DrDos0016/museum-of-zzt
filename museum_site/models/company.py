@@ -1,5 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 
 from museum_site.querysets.company_querysets import *
 
@@ -30,3 +31,6 @@ class Company(models.Model):
 
         if save:
             self.save()
+
+    def url(self):
+        return reverse("browse_field", kwargs={"field":"company", "value": self.slug})
