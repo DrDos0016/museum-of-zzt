@@ -654,6 +654,8 @@ def replace_zip(request, pk):
             data["new_file"].calculate_boards()
         if request.POST.get("update-size"):
             data["new_file"].calculate_size()
+        if request.POST.get("update-contents"):
+            Content.generate_content_object(data["new_file"])
         data["new_file"].save()
 
         data["new_stat"] = os.stat(data["file"].phys_path())
@@ -832,10 +834,7 @@ def tool_index(request, key=None):
     """ Normalcy """
     tool_list = []
     file_tool_list = []
-    restricted_urls = [
-        "tool_index",
-        "tool_index_with_file",
-    ]
+    restricted_urls = ["tool_index", "tool_index_with_file",]
     for u in url_list:
         url_str = str(u.pattern)
         if url_str.startswith("tools/") and u.name not in restricted_urls:
@@ -879,6 +878,7 @@ def tool_index(request, key=None):
         )
 
         data["upload_info"] = Upload.objects.get(file_id=data["file"])
+        data["content_info"] = data["file"].content.all()
 
         # Simple validation tools
         data["valid_letter"] = True if data["file"].letter in letters else False
@@ -894,9 +894,7 @@ def tool_index(request, key=None):
                 data["new"] = data["file"].size
             elif field == "reviews":
                 data["file"].calculate_reviews()
-                data["new"] = "{}/{}".format(
-                    data["file"].review_count, data["file"].rating
-                )
+                data["new"] = "{}/{}".format(data["file"].review_count, data["file"].rating)
             elif field == "articles":
                 data["file"].calculate_article_count()
                 data["new"] = data["file"].article_count
@@ -905,16 +903,14 @@ def tool_index(request, key=None):
                 data["new"] = data["file"].checksum
             elif field == "boards":
                 data["file"].calculate_boards()
-                data["new"] = "{}/{}".format(
-                    data["file"].playable_boards, data["file"].total_boards
-                )
+                data["new"] = "{}/{}".format(data["file"].playable_boards, data["file"].total_boards)
+            elif field == "contents":
+                Content.generate_content_object(data["file"])
 
         data["file"].basic_save()
 
     if not data.get("file"):
-        data["all_files"] = File.objects.all().values(
-            "key", "title"
-        ).order_by("title")
+        data["all_files"] = File.objects.all().values("key", "title").order_by("title")
 
     data["tool_list"] = tool_list
     data["file_tool_list"] = file_tool_list

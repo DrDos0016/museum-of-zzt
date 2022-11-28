@@ -128,6 +128,30 @@ $(document).ready(function (){
                 <td>{% if upload_info.notes %}<textarea id="upload-notes">{{upload_info.notes}}</textarea>{% else %}<i>None</i>{% endif %}</td>
             </tr>
         </table>
+
+        <div><h3 class="inline">File Contents</h3> <a href="?recalculate=contents">Recalculate</a></div>
+        <table>
+            <tr>
+                <th>Filename</th>
+                <th>Path</th>
+                <th>Ext.</th>
+                <th>Mod. Date</th>
+                <th>Dir</th>
+                <th>CRC-32</th>
+                <th>Size</th>
+            </tr>
+            {% for c in content_info %}
+            <tr>
+                <td>{{c.title}}</td>
+                <td>{{c.path}}</td>
+                <td>{{c.ext}}</td>
+                <td>{{c.mod_date|date:"Y-m-d"}}</td>
+                <td>{{c.directory|yesno:"Y,N"}}</td>
+                <td>{{c.crc32}}</td>
+                <td>{{c.size|filesizeformat}}</td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 
     <div>
