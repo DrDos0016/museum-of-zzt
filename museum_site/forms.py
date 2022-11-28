@@ -1425,11 +1425,11 @@ class Livestream_Vod_Form(forms.Form):
         return video_url
 
     def create_article(self):
-        print("Creating Article...")
         preview_image = self.files["preview_image"]
 
         # Prepare the Article
         a = Article()
+        key = ("pk-" + self.cleaned_data["associated_zfile"][0]) if self.cleaned_data["associated_zfile"] else "no-assoc"
         a.title = self.cleaned_data["title"]
         a.author = self.cleaned_data["author"]
         a.category = "Livestream"
@@ -1437,10 +1437,7 @@ class Livestream_Vod_Form(forms.Form):
         a.publish_date = self.cleaned_data["date"]
         a.published = self.cleaned_data["publication_status"]
         a.description = self.cleaned_data["description"]
-        a.static_directory = "ls-{}-{}".format(
-            preview_image.name[:-4],
-            self.cleaned_data["video_url"]
-        )
+        a.static_directory = "ls-{}-{}".format(key, self.cleaned_data["video_url"])
         a.allow_comments = True
 
         # Open the template
