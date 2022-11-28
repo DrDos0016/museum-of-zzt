@@ -1036,7 +1036,7 @@ function render_board(e)
             if (world.boards[board[props[idx]]])
                 var displayed_title = world.boards[board[props[idx]]].title;
             else
-                var displayed_title = `Undefined Board ${parseInt(idx)+1}`;
+                var displayed_title = `Undefined Board ${board[props[idx]]}`;
             output += `<td><a class="board-link" data-direction="${props[idx]}" data-board="${board[props[idx]]}" href="?file=${loaded_file}&board=${board[props[idx]]}">${board[props[idx]]}. ${displayed_title}</a></td>`;
         }
         else
