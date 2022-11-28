@@ -177,7 +177,7 @@ def upload(request):
             for company in zgame_form.cleaned_data["company"]:
                 if company == "":
                     continue
-                (c_obj, created) = Company.objects.get_or_create(title=company)
+                (c_obj, created) = Company.objects.get_or_create(title=company.strip())
                 zfile.companies.add(c_obj)
                 # If it's newly created, set the slug
                 if created:
@@ -190,7 +190,7 @@ def upload(request):
             for author in zgame_form.cleaned_data["author"].split("/"):
                 if author == "":
                     continue
-                (a_obj, created) = Author.objects.get_or_create(title=author)
+                (a_obj, created) = Author.objects.get_or_create(title=author.strip())
                 zfile.authors.add(a_obj)
                 # If it's newly created, set the slug
                 if created:
