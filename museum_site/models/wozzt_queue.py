@@ -6,6 +6,7 @@ import zipfile
 
 from urllib.parse import quote
 
+import pytumblr
 import requests
 import zookeeper
 
@@ -19,8 +20,9 @@ from museum_site.models import BaseModel, File
 from museum_site.querysets.wozzt_queue_querysets import *
 try:
     from museum_site.private import (
-        TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_SECRET,
-        TWITTER_OAUTH_TOKEN, WEBHOOK_URL
+        TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_SECRET, TWITTER_OAUTH_TOKEN,
+        WEBHOOK_URL,
+        TUMBLR_OAUTH_CONSUMER, TUMBLR_OAUTH_CONSUMER_SECRET, TUMBLR_OAUTH_TOKEN, TUMBLR_OAUTH_SECRET
     )
 except ModuleNotFoundError:
     print("PRIVATE.PY NOT FOUND. WOZZT QUEUE CANNOT TWEET OR HOOK TO DISCORD")
@@ -208,6 +210,71 @@ class WoZZT_Queue(BaseModel):
             output += f"https://museumofzzt.com{escaped_play_url}"
 
         return output
+
+    def tumblr_text(self):
+        escaped_file_url = quote("file/" + self.file.letter + "/" + self.file.key + "/")
+        escaped_zzt_url = quote(self.zzt_file)
+        author_str = ", ".join(self.file.author_list())
+
+        output = (f"https://museumofzzt.com/{escaped_file_url}?file="
+                  f"{escaped_zzt_url}&board={self.board}<br>\n")
+        output += f"<b>{self.file.title}</b> by <i>{author_str}</i>"
+
+        if self.file.release_date:
+            output += " (" + str(self.file.release_date)[:4] + ")<br>\n"
+        else:
+            output += "<br>\n"
+
+        if self.file.companies.count():
+            output += "Published by: " + self.file.get_all_company_names() + "<br>\n"
+
+        board_properties = []
+
+        # Dark
+        if self.dark:
+            board_properties.append("🔦")
+        # Zap
+        if self.zap:
+            board_properties.append("⚡")
+        # Can fire
+        if self.shot_limit != 255:
+            board_properties.append(str(self.shot_limit) + " 🔫")
+        # Time limit
+        if self.time_limit != 0:
+            board_properties.append(str(self.time_limit) + " ⏳")
+
+        bp = ""
+        if board_properties:
+            bp = " {"
+            for p in board_properties:
+                bp += p + ", "
+            bp = bp[:-2] + "}"
+
+        output += f"[{self.zzt_file}] - \"{self.board_name}\"{bp}<br>\n"
+
+        if self.file.supports_zeta_player:
+            escaped_play_url = quote(self.file.play_url())
+            output += f"https://museumofzzt.com{escaped_play_url}"
+
+        # Check for related articles
+        related_count = self.file.articles.published().exclude(category="Publication Pack").count()
+        if related_count:
+            output += (
+                f"<br><br>\n"
+                f"More information on \"{self.file.title}\" is available "
+                f"here: https://museumofzzt.com{self.file.article_url()}"
+            )
+
+        return output
+
+    def send_tumblr(self):
+        tags = self.file.author_list() + [self.file.title] + [self.file.key.lower()]
+        if self.category == "tuesday":
+            tags.append("title screen tuesday")
+        client = pytumblr.TumblrRestClient(TUMBLR_OAUTH_CONSUMER, TUMBLR_OAUTH_CONSUMER_SECRET, TUMBLR_OAUTH_TOKEN, TUMBLR_OAUTH_SECRET)
+
+        resp = client.create_photo("worldsofzzt", state="published", tags=tags, caption=self.tumblr_text(), data=self.image_path())
+        return resp
 
     def tweet_text_short(self):
         escaped_file_url = quote("file/" + self.file.letter + "/" + self.file.key + "/")
