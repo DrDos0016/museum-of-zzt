@@ -216,8 +216,8 @@ class WoZZT_Queue(BaseModel):
         escaped_zzt_url = quote(self.zzt_file)
         author_str = ", ".join(self.file.author_list())
 
-        output = (f"https://museumofzzt.com/{escaped_file_url}?file="
-                  f"{escaped_zzt_url}&board={self.board}<br>\n")
+        output = (f"<a href='https://museumofzzt.com/{escaped_file_url}?file="
+                  f"{escaped_zzt_url}&board={self.board}'><i>Source</i></a><br>\n")
         output += f"<b>{self.file.title}</b> by <i>{author_str}</i>"
 
         if self.file.release_date:
@@ -254,7 +254,7 @@ class WoZZT_Queue(BaseModel):
 
         if self.file.supports_zeta_player:
             escaped_play_url = quote(self.file.play_url())
-            output += f"https://museumofzzt.com{escaped_play_url}"
+            output += f"<a href='https://museumofzzt.com{escaped_play_url}'>Play this world in your browser</a>"
 
         # Check for related articles
         related_count = self.file.articles.published().exclude(category="Publication Pack").count()
@@ -262,7 +262,7 @@ class WoZZT_Queue(BaseModel):
             output += (
                 f"<br><br>\n"
                 f"More information on \"{self.file.title}\" is available "
-                f"here: https://museumofzzt.com{self.file.article_url()}"
+                f"here: <a href='https://museumofzzt.com{self.file.article_url()}'>Related Articles</a>"
             )
 
         return output
