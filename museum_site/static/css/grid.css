@@ -263,6 +263,8 @@ pre.cp437 { line-height:14px;}
 .jsLink { cursor:pointer; color:var(--link-color); }
 .no-margin { margin:0; }
 .zoomed { cursor:zoom-out; width:auto; }
+.true { background-color:var(--ega-green); }
+.false { background-color:var(--ega-red); }
 
 /* Flex Shortcuts */
 .flex-container { display:flex; }

@@ -8,14 +8,14 @@ Anything prior to the START line is discarded.
 
 <h2>Contents</h2>
 <div class="gallery-frame">
-{% for f in files %}{% templatetag openblock %} gblock files.{{f.id}} "gallery" {% templatetag closeblock %}
+{% for f in files %}{% templatetag openblock %} gblock files.{{f.id}} "gallery" {% templatetag closeblock %}{% templatetag openblock %} comment {% templatetag closeblock %}{{f.prefix}} -- {{f.title}}{% templatetag openblock %} endcomment {% templatetag closeblock %}
 {% endfor %}</div>
 
 {% for f in files %}
 <!--{{f.title}}-->
 {% templatetag openblock %} with files.{{f.id}} as file {% templatetag closeblock %}
 <span class="pub-pack-entry">
-<h2>"{% templatetag openvariable %}file.title{% templatetag closevariable %}" {% templatetag openblock %} if not file.author_unknown {% templatetag closeblock %}by {% templatetag openvariable %}file.author_list|join:", "{% templatetag closevariable %}{% templatetag openblock %} endif {% templatetag closeblock %}{% templatetag openblock %} if file.release_date {% templatetag closeblock %} ({% templatetag openvariable %}file.release_date.year{% templatetag closevariable %}){% templatetag openblock %} endif {% templatetag closeblock %}</h2>
+<h2>"{% templatetag openvariable %}file.citation_str{% templatetag closevariable %}</h2>
 {% templatetag openblock %} gblock file {% templatetag closeblock %}
 <p></p>
 <div class="image-set">

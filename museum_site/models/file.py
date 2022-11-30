@@ -1079,6 +1079,13 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         """ Returns TRUE if the _only_ author is 'UNKNOWN' """
         return True if self.author_list() == ["Unknown"] else False
 
+    def citation_str(self):
+        """ Returns a string of standard information used in publication packs """
+        title = '“{}”'.format(self.title)
+        author = "by {}".format(", ".join(self.author_list())) if not self.author_unknown() else ""
+        year = "({})".format(self.release_date.year) if self.release_date else ""
+        return " ".join([title, author, year])
+
 
 class ZFile_Admin(admin.ModelAdmin):
     exclude = ("content", "downloads",)

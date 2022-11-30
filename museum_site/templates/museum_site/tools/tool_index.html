@@ -4,35 +4,20 @@
 
 {% block style %}
 <style>
-table
+#tool-container
 {
-    max-width:45%;
-    margin-right:16px;
+    display:flex;
+    justify-content:space-between;
+    column-gap:8px;
+    font-family:monospace;
+    font-size:10pt;
 }
-
-#tool-info
-{
-    font-family:monospace;font-size:12pt;
-}
-
-#tool-info td
-{
-    padding:0.25em;
-}
-
-#tool-info td.True { background-color:#0F0; text-align:center; }
-#tool-info td.False { background-color:#F00; text-align:center; }
 
 #upload-notes
 {
     height:16ch;
     width:55ch;
     font-size:smaller;
-}
-
-#tool-container table
-{
-    margin-top:0px;
 }
 </style>
 {% endblock %}
@@ -52,7 +37,7 @@ $(document).ready(function (){
 {% if file %}{% gblock file %}{% endif %}
 
 <h2>Tool Index</h2>
-<div id="tool-container" class="flex-container justify-space-between">
+<div id="tool-container">
     <table>
         <tr>
             <th>General Tools</th>
@@ -82,7 +67,6 @@ $(document).ready(function (){
         </div>
     </div>
 </div>
-<hr>
 
 {% if file %}
 {% if request.GET.recalculate %}
@@ -95,7 +79,7 @@ $(document).ready(function (){
 <br>
 {% endif %}
 
-<div class="flex-container justify-space-between">
+<div id="tool-container" class="flex-container justify-space-between">
     <div>
         <h3>Upload Info</h3>
         <table class="dataTable" id="tool-info">
@@ -165,12 +149,12 @@ $(document).ready(function (){
             <tr>
                 <td>Letter</td>
                 <td>{{file.letter}}</td>
-                <td class="c {{valid_letter}}">{{valid_letter}}</td>
+                <td class="c {{valid_letter|lower}}">{{valid_letter}}</td>
             </tr>
             <tr>
                 <td>Filename</td>
                 <td>{{file.filename}}</td>
-                <td class="c {{valid_filename}}">{{valid_filename}}</td>
+                <td class="c {{valid_filename|lower}}">{{valid_filename}}</td>
             </tr>
             <tr>
                 <td>Title</td>

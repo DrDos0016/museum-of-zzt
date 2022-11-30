@@ -453,9 +453,7 @@ def patron_input(request):
 
 @staff_member_required
 def prep_publication_pack(request):
-    data = {
-        "title": "Prep Publication Pack",
-    }
+    data = {"title": "Prep Publication Pack",}
 
     if not request.GET.get("associated"):
         data["form"] = Prep_Publication_Pack_Form()
