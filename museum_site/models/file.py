@@ -1052,6 +1052,24 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.archive_name == "" and (DETAIL_LOST not in detail_list and DETAIL_UPLOADED not in detail_list):
             issues["archive_mirror"] = "File has no archive.org mirror"
 
+        # Contents in DB vs Contents in zip
+        db_contents = self.content.all()
+        crcs = []
+        for i in db_contents:
+            crcs.append(i.crc32)
+
+        zf = None
+        try:
+            zf = zipfile.ZipFile(self.phys_path())
+        except (zipfile.BadZipFile, FileNotFoundError):
+            zf = None
+
+        if zf is not None:
+            for zi in zf.infolist():
+                if str(zi.CRC) not in crcs:
+                    issues["content_error"] = "File's Contents object does not match ZipInfo"
+                    break
+
         return issues
 
     def get_all_company_names(self):
