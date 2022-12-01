@@ -93,6 +93,15 @@ input:disabled { background:#AAA; }
 .scrolling-checklist label.selected { background: var(--header-bg);}
 .scrolling-checklist label:hover { background:var(--hover-bg); }
 
+.checklist-header
+{
+    font-weight:bold;
+    background:var(--header-bg);
+    border-top:1px solid #000;
+    border-bottom:1px solid #000;
+    padding-left:3.5ch;
+}
+
 @media (max-width:480px) {
     .field-wrapper
     {

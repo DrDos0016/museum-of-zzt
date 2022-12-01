@@ -1,3 +1,13 @@
+.article-staff-controls
+{
+    display:flex;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+    column-gap:8px;
+    justify-content:space-between;
+    font-weight:bold;
+}
+
 /* Listing of pages in article */
 .article-pages
 {
