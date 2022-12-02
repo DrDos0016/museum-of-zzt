@@ -293,7 +293,7 @@ urlpatterns = [
     path("twitter/", RedirectView.as_view(url="https://twitter.com/worldsofzzt"), name="twitter"),
     path("tumblr/", RedirectView.as_view(url="http://worldsofzzt.tumblr.com"), name="tumblr"),
     path("patreon/", RedirectView.as_view(url="https://patreon.com/worldsofzzt"), name="patreon"),
-    path("youtube/", RedirectView.as_view(url="https://www.youtube.com/c/WorldsofZZT"), name="youtube"),
+    path("youtube/", RedirectView.as_view(url="https://www.youtube.com/@WorldsofZZT"), name="youtube"),
     path("twitch/", RedirectView.as_view(url="https://twitch.tv/worldsofzzt"), name="twitch"),
     path("github/", RedirectView.as_view(url="https://github.com/DrDos0016/museum-of-zzt"), name="git"),
 

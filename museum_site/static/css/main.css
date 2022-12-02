@@ -216,17 +216,15 @@ body
 }
 
 #wozzt-block h2 { margin-bottom:0; }
+
 #social
 {
-    text-align:center;
-    border-bottom:1px solid #000;
-    margin-bottom:7px;
-    padding-top:3px;
-    padding-bottom:5px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-around;
 }
 #social a
 {
-    display:inline-block;
     width:24px;
     height:24px;
     border-top:0px;
@@ -237,8 +235,6 @@ body
     padding:0;
     content:"";
 }
-#social img { max-width:24px; max-height:24px; }
-
 
 #footer
 {
