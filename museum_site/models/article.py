@@ -101,6 +101,7 @@ class Article(BaseModel):
                    "/museum_site/static/articles/[year|unk]/[static_directory]")
     )
     secret = models.CharField(help_text=("Per-article key to allow non-patrons to read unpublished articles"), max_length=12, default="", blank=True)
+    plug_patreon = models.BooleanField(help_text="Add a plug for the Patreon at the end of the article", default=True)
 
     # Associations
     series = models.ManyToManyField("Series", default=None, blank=True)

@@ -100,8 +100,13 @@ $(document).ready(function (){
 {% endif %}
 </article>
 
+{% if article.plug_patreon and page == page_range|last %}{% patreon_plug %}{% endif %}</p>
+
 {% if page_range %}
 {% include "museum_site/blocks/article_view_page_block.html" %}
+{% endif %}
+
+{% if article.category == "Livestream" %}
 {% endif %}
 
 <hr>
