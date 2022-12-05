@@ -2,6 +2,10 @@
 {% load static %}
 {% load site_tags %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}?{{BOOT_TS}}">
+{% endblock %}
+
 {% block content %}
 <h1>Museum of ZZT</h1>
 <p>Welcome to the Museum of ZZT, a site dedicated to the preservation and
