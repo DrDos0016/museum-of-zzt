@@ -299,7 +299,7 @@ def meta_tags(*args, **kwargs):
             "indie-made ZZT worlds spanning its 30+ year history"
         ],
         "og:type": ["property", "website"],
-        "og:url": ["property", "https://museumofzzt.com" + path],
+        "og:url": ["property", "{}://{}".format(PROTOCOL, DOMAIN) + path],
         "og:title": ["property", "Museum of ZZT"],
         "og:image": ["property", og_default],
     }
@@ -308,7 +308,7 @@ def meta_tags(*args, **kwargs):
         tags.update(kwargs["context"])
 
     # Prepend static url to image
-    tags["og:image"][1] = "https://museumofzzt.com" + STATIC_URL + tags["og:image"][1]
+    tags["og:image"][1] = "{}://{}".format(PROTOCOL, DOMAIN) + STATIC_URL + tags["og:image"][1]
 
     # Twitter tags
     tags["twitter:site"] = ["name", "@worldsofzzt"]
