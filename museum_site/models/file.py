@@ -992,7 +992,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         issues = {}
         exists = True
         checksummed = True
-        """ Used for Musuem Scan to identify basic issues """
+        """ Used for Museum Scan to identify basic issues """
         # Validate letter
         if self.letter not in "1abcdefghijklmnopqrstuvwxyz":
             issues["letter"] = "Invalid letter: '{}'".format(self.letter)

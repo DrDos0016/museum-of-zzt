@@ -535,7 +535,7 @@ def user_profile(request, user_id=None, **kwargs):
         data["title"] = "Profile for Guest Visitor"
         data["meta_context"] = {
             "author": ["name", "Anonymous"],
-            "description": ["name", "An overview of your Musuem of ZZT data"]
+            "description": ["name", "An overview of your Museum of ZZT data"]
         }
     data["default_upload_cap"] = UPLOAD_CAP  # For guest users
 
