@@ -124,7 +124,6 @@ def get_company_suggestions(request, max_suggestions=20):
 def get_search_suggestions(request, max_suggestions=25):
     query = request.GET.get("q", "")
     output = {"suggestions": []}
-    print("GETTING SEARCH SUGG")
 
     if query:
         qs = File.objects.basic_search_suggestions(query=query)
