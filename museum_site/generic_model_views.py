@@ -156,16 +156,16 @@ class ZFile_List_View(Model_List_View):
             qs = File.objects.advanced_search(cleaned_params)
         elif self.value and self.field == "author":
             qs = qs.filter(authors__slug=self.value)
-            self.author = Author.objects.get(slug=self.value)
+            self.author = Author.objects.reach(slug=self.value)
         elif self.value and self.field == "company":
             qs = qs.filter(companies__slug=self.value)
-            self.company = Company.objects.get(slug=self.value)
+            self.company = Company.objects.reach(slug=self.value)
         elif self.value and self.field == "detail":
             qs = qs.filter(details__slug=self.value)
-            self.detail = Detail.objects.get(slug=self.value)
+            self.detail = Detail.objects.reach(slug=self.value)
         elif self.value and self.field == "genre":
             qs = qs.filter(genres__slug=self.value)
-            self.genre = Genre.objects.get(slug=self.value)
+            self.genre = Genre.objects.reach(slug=self.value)
         elif self.value and self.field == "year":
             if self.value == "unk":
                 qs = qs.filter(release_date=None)
@@ -250,13 +250,13 @@ class ZFile_List_View(Model_List_View):
             elif self.search_type == "advanced":
                 return "Search Results"
             return title
-        elif self.request.path.startswith("/file/browse/author/"):
+        elif self.request.path.startswith("/file/browse/author/") and self.author:
             return "Browse Author - {}".format(self.author.title)
-        elif self.request.path.startswith("/file/browse/company/"):
+        elif self.request.path.startswith("/file/browse/company/") and self.company:
             return "Browse Company - {}".format(self.company.title)
-        elif self.request.path.startswith("/file/browse/genre/"):
+        elif self.request.path.startswith("/file/browse/genre/") and self.genre:
             return "Browse Genre - {}".format(self.genre.title)
-        elif self.request.path.startswith("/file/browse/detail/"):
+        elif self.request.path.startswith("/file/browse/detail/") and self.detail:
             return "Browse Detail - {}".format(self.detail.title)
         elif self.request.path.startswith("/file/browse/year/"):
             return "Browse Year - {}".format(self.value)
