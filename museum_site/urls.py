@@ -91,15 +91,13 @@ urlpatterns = [
     path("debug/<str:filename>.html", museum_site.debug_views.debug),
     path("debug/article/<str:fname>/", museum_site.debug_views.debug_article, name="debug_article"),
     path("debug/article/", museum_site.debug_views.debug_article),
-    path("debug/colors/", museum_site.debug_views.debug_colors),
     path("debug/play/", museum_site.debug_views.debug_play),
     path("debug/widgets/", museum_site.debug_views.debug_widgets),
-    path("debug/advanced-search/", museum_site.debug_views.debug_advanced_search),
 
     # /detail/
     path("detail/", museum_site.help_views.Detail_Overview_View.as_view(), name="file_details"),
-    path("detail/view/<slug:detail_slug>/", legacy_redirect, {"name": "browse_field"}),
     # /detail/ -- Legacy Redirects
+    path("detail/view/<slug:detail_slug>/", legacy_redirect, {"name": "browse_field"}),
     path("detail/<slug:detail_slug>/", legacy_redirect, {"name": "browse_field"}),
     path("zzt-worlds/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "zzt-world"}, name="zzt_worlds"),
     path("super-zzt/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "super-zzt-world"}, name="szzt_worlds"),
@@ -222,6 +220,7 @@ urlpatterns = [
     # /tools/ -- THESE WILL BE RENAMED FOR STAFF
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
     path("tools/add-livestream/<str:key>/", museum_site.tool_views.add_livestream, name="add_livestream"),
+    path("tools/audit/colors/", museum_site.tool_views.audit_colors, name="audit_colors"),
     path("tools/audit/scrolls/", museum_site.tool_views.audit_scrolls, name="audit_scrolls"),
     path("tools/audit/restrictions/", museum_site.tool_views.audit_restrictions, name="audit_restrictions"),
     path("tools/audit/zeta-config/", museum_site.tool_views.audit_zeta_config, name="audit_zeta_config"),
