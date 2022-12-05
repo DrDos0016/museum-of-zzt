@@ -706,6 +706,11 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     height:20px;
 }
 
+.fv-grid #top-margin
+{
+    grid-area:expand;
+}
+
 #top-margin button
 {
     padding:0px;
