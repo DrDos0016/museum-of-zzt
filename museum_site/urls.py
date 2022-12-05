@@ -61,14 +61,14 @@ urlpatterns = [
     path("closer-looks/", legacy_redirect, {"name": "article_category", "category_slug": "closer-look"}),
     path("livestreams/", legacy_redirect, {"name": "article_category", "category_slug": "livestream"}),
 
-    # Special Article Pages (those with urls besides /article/#/title)
-    path("about-zzt/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 534}, name="about_zzt"),
-    path("clones/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 6}, name="clones"),
-    path("getting-started/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 5}, name="zzt_dosbox"),
-    path("support/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 576}, name="support"),
-    path("zeta/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 399}, name="zeta"),
-    path("zzt/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 2}, name="zzt_dl"),
-    path("zzt-cheats/", museum_site.article_views.Article_Detail_View.as_view(), {"pk": 22}, name="zzt_cheats"),
+    # Article Shortcut URLs
+    path("about-zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 534, "slug": "about-zzt"}, name="about_zzt"),
+    path("clones/", RedirectView.as_view(pattern_name="article_view"), {"pk": 6, "slug": "zzt-clones"}, name="clones"),
+    path("getting-started/", RedirectView.as_view(pattern_name="article_view"), {"pk": 5, "slug": "getting-started-with-zzt"}, name="zzt_dosbox"),
+    path("support/", RedirectView.as_view(pattern_name="article_view"), {"pk": 576 , "slug": "supporting-the-worlds-of-zzt-project"}, name="support"),
+    path("zeta/", RedirectView.as_view(pattern_name="article_view"), {"pk": 399, "slug": "zzting-with-zeta"}, name="zeta"),
+    path("zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 2, "slug": "zzt-versions"}, name="zzt_dl"),
+    path("zzt-cheats/", RedirectView.as_view(pattern_name="article_view"), {"pk": 22, "slug": "zzt-cheats"}, name="zzt_cheats"),
 
     # /collection/
     path("collection/", museum_site.generic_model_views.Collection_List_View.as_view(), name="browse_collections"),
