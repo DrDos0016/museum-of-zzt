@@ -88,9 +88,9 @@ $(document).ready(function (){
 <p>Current Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
 
 {% if request.GET.category == "tuesday" %}
-<p>The Title Screen Tuesday queue is tweeted out every three hours starting at 00:45 UTC on Tuesdays. It consists of randomly selected title screen boards from (nearly) every non-explicit marked ZZT world hosted on the Museum of ZZT that can be displayed with the default character set and palette.</p>
+<p>The Title Screen Tuesday queue is posted from once every three hours starting at 00:45 UTC on Tuesdays. It consists of randomly selected title screen boards from (nearly) every non-explicit marked ZZT world hosted on the Museum of ZZT that can be displayed with the default character set and palette.</p>
 {% else %}
-<p>The main WoZZT queue is tweeted out every three hours starting at 00:45 UTC each day, except for on Tuesdays where the "Title Screen Tuesday" queue is used. It consists of randomly selected boards from (nearly) every non-explicit marked ZZT world hosted on the Museum of ZZT that can be displayed with the default character set and palette.</p>
+<p>The main WoZZT queue is posted from once every three hours starting at 00:45 UTC each day, except for on Tuesdays where the "Title Screen Tuesday" queue is used instead. It consists of randomly selected boards from (nearly) every non-explicit marked ZZT world hosted on the Museum of ZZT that can be displayed with the default character set and palette.</p>
 {% endif %}
 
 <p>There are currently <b>{{queue_size}}</b> entries in the queue. <a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patrons</a> may view the complete queue, while non-patrons are limited to the next sixteen entries.{% if request.user.is_staff %}The queue will be exhausted on <span id="queue-end" class="b">-</span>.{% endif %}</p>
@@ -98,6 +98,13 @@ $(document).ready(function (){
 <p>Times are displayed in your local time zone.</p>
 
 <p>Items in the queue are subject to repositioning or removal at any time. Additional entries are added to the queue typically on the 10th, 20th, and 30th of each month, give or take a day. After being generated, new additions are manually checked to minimize the chance of tweeting offensive material.</p>
+
+<p>You can follow these queue entries as they are posted on the Worlds of ZZT Twitter, Tumblr, and Discord server.</p>
+<div class="flex-container justify-center flex-wrap">
+{% plug 'twitter' %}
+{% plug 'tumblr' %}
+{% plug 'discord' %}
+</div>
 
 {% if request.user.is_staff %}
 <form method="POST" class="controls">

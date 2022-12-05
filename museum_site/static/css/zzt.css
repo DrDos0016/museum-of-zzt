@@ -56,7 +56,7 @@
     background-image:url("/static/chrome/zzt-scroll.png");
     background-repeat:no-repeat;
     background-position: top 14px left 8px;
-    background-color:#000;
+    background-color:var(--ega-black);
     min-width:392px;
     height:266px;
     font-family:"cp437", monospace;
@@ -115,7 +115,7 @@ display:inline-block;
 {
     display:block;
     margin:auto;
-    border:1px solid #AAA;
+    border:1px solid var(--border-color);
     overflow:hidden;
     max-width:640px;
     max-height:350px;

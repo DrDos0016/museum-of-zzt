@@ -100,7 +100,21 @@ $(document).ready(function (){
 {% endif %}
 </article>
 
-{% if article.plug_patreon and page == page_range|last %}{% patreon_plug %}{% endif %}</p>
+<div id="post-article">
+    {% if article.category == "Livestream" %}
+    <div class="flex-container justify-center">
+        {% plug 'youtube' %}
+        {% plug 'twitch' %}
+    </div>
+    {% elif article.category == "Let's Play" %}
+    <div class="flex-container justify-center">
+        {% plug 'youtube' %}
+    </div>
+    {% endif %}
+    {% if article.plug_patreon and page == page_range|last %}
+        {% patreon_plug %}
+    {% endif %}
+</div>
 
 {% if page_range %}
 {% include "museum_site/blocks/article_view_page_block.html" %}

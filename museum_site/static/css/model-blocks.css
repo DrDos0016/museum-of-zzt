@@ -2,7 +2,7 @@
 {
     padding:14px 8px 14px 8px;
     margin:14px auto 14px auto;
-    border:1px solid #000;
+    border:1px solid var(--border-color);
     display:grid;
 }
 
@@ -87,7 +87,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
 .model-block .data .datum
 {
     display:flex;
-    border-bottom:1px dotted #000;
+    border-bottom:1px dotted var(--border-color);
 }
 
 .model-block .data .datum .label
@@ -170,7 +170,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
 {
     font-size:medium;
     font-weight:normal;
-    border-bottom:1px dotted #000;
+    border-bottom:1px dotted var(--border-color);
     max-width:240px;
     margin:auto;
 }
@@ -183,7 +183,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
 /* Links for File blocks */
 .model-block-links
 {
-    border:1px solid #000;
+    border:1px solid var(--border-color);
     border-top:0;
     margin-top:-14px;
     display:grid;
@@ -235,7 +235,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
     "screenshot title"
     "screenshot data"
     "screenshot poll";
-    color:#FFF;
+    color:var(--ega-white);
     font-family:"cp437";
     font-size:16pt;
     column-gap:8px;
@@ -250,7 +250,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
     grid-area:poll;
     max-width:240px;
     text-align:left;
-    border-top:1px solid #AAA;
+    border-top:1px solid var(--border-color);
     padding-top:4px;
 }
 
@@ -258,6 +258,6 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
 {
     grid-area:patron;
     text-align:center;
-    border-top:1px solid #AAA;
+    border-top:1px solid var(--border-color);
     padding-top:4px;
 }

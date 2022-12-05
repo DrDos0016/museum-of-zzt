@@ -470,6 +470,7 @@ def user_profile(request, user_id=None, **kwargs):
         "lockout_expiration",
         "reg_attempts",
         "pw_reset_attempts",
+        "theme",
     ]
 
     data["TIERS"] = {

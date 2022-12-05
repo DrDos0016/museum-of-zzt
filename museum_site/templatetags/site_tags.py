@@ -357,10 +357,10 @@ def plug(service='UNKNOWN-SERVICE'):
     services = {"youtube": "YouTube"}  # Stylized spellings
     title = services.get(service, service.title())
     output = """
-    <a href="/{0}/" target="_blank" class="noext noul"><div class="plug plug-{0}">
+    <div class="plug plug-{0}"><a href="/{0}/" target="_blank" class="noext noul">
         <div class="logo"><img src="/static/icons/plug-{0}.png"></div>
         <div class="text">Worlds of ZZT on {title}</div>
-    </div></a>
+    </a></div>
     """.format(service, title=title)
     return mark_safe(output + "\n")
 

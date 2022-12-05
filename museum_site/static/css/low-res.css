@@ -48,7 +48,7 @@
     width:100vw;
     position:sticky;
     top:0px;
-    border-bottom:1px solid #000;
+    border-bottom:1px solid var(--border-color);
     text-align:center;
     column-gap:1px;
     background-color:var(--ega-black);
@@ -64,25 +64,11 @@
 #low-res-shortcuts a:nth-child(odd) { background-color:var(--ega-darkcyan); color: var(--ega-cyan);}
 #low-res-shortcuts a:nth-child(even) { background-color:var(--ega-gray); color: var(--ega-white);}
 
-#content
-{
-    max-width:95vw;
-}
+#content { max-width:95vw; }
+#sidebar-left, #sidebar-right { min-width:auto; }
+#sidebar-left { margin-top:0px; }
 
-#sidebar-left, #sidebar-right
-{
-    min-width:auto;
-}
-
-#sidebar-left
-{
-    margin-top:0px;
-}
-
-#letters
-{
-    display:none; /* High-res only */
-}
+#letters { display:none; /* High-res only */ }
 
 #letters-select
 {
@@ -92,36 +78,9 @@
 
 #top-link-div { display:block; }
 
-.overview-block
-{
-    border:1px solid #000;
-    padding:14px 8px 14px 8px;
-    margin:14px auto auto auto;
-    display:grid;
-    grid-template-areas:
-    "screenshot"
-    "title"
-    "basic"
-    "advanced"
-    "feat"
-    "desc"
-    "links";
+#expand-contract { display:none; }
 
-    grid-template-columns: 1fr;
-    grid-template-rows:repeat(7, auto);
-}
-
-.overview-block .screenshot-thumb
-{
-    margin:auto;
-}
-
-#expand-contract
-{
-    display:none;
-}
-
-#detail-list.field-group label { text-align:center; margin:2px; border:1px dotted #000}
+#detail-list.field-group label { text-align:center; margin:2px; border:1px dotted var(--border-color)}
 #detail-list.field-group label input[type=checkbox] { display:block; margin:auto; }
 
 form { border:0px; padding:0px; }
@@ -143,17 +102,13 @@ form .field .genre-checklist { min-width:0px; }
         margin-right:auto;
     }
 
-    #debug-embed-image-preview
-    {
-        display:none;
-    }
-
+    #debug-embed-image-preview{ display:none; }
     #fp-file-frame { display:none; }
     #mobile-fp-file-frame
     {
         display:block;
-        border:1px dashed #000;
-        border-bottom:1px dashed #000;
+        border:1px dashed var(--border-color);
+        border-bottom:1px dashed var(--border-color);
     }
 
     #mobile-fp-file-frame h2

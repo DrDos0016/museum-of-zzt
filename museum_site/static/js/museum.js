@@ -115,6 +115,23 @@ $(document).ready(function (){
         document.cookie = "hide_content_warnings=1;expires=" + now.toGMTString() + ";path=/";
     });
 
+    // Light/Dark Theme Toggle
+    $("#toggle-light-dark-theme").click(function (){
+        if ($("body").hasClass("theme-dark"))
+            var theme = "light";
+        else
+        var theme = "dark";
+
+        $.ajax({
+            url:"/action/set-theme/",
+            data:{
+                "theme":theme,
+            }
+        }).done(function (data){
+            $("body").toggleClass("theme-dark");
+        });
+    });
+
     // Expand/Contract Middle Column
     $("#expand-contract").click(function (){
         var arrows = $(this).html();

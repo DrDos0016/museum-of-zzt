@@ -51,8 +51,8 @@
     display:flex;
     flex-wrap:wrap;
     justify-content:space-evenly;
-    border-top:1px solid #000;
-    border-bottom:1px solid #000;
+    border-top:1px solid var(--border-color);
+    border-bottom:1px solid var(--border-color);
     padding-top:3px;
     padding-bottom:3px;
     font-weight:bold;
@@ -67,7 +67,7 @@
     justify-content:space-evenly;
     text-align:center;
     grid-area:data;
-    border-bottom:1px solid #000;
+    border-bottom:1px solid var(--border-color);
     padding-top:3px;
     padding-bottom:3px;
     gap:4px;
@@ -93,7 +93,7 @@
 #fv-main
 {
     grid-area: display;
-    border:1px solid #000;
+    border:1px solid var(--border-color);
     padding:7px 4px 7px 4px;
     margin-bottom:14px;
     max-height:728px;
@@ -120,9 +120,9 @@
 {
     grid-area:zip-name;
     text-align:center;
-    border:1px solid #000;
+    border:1px solid var(--border-color);
     border-bottom:0px;
-    background:#AAA;
+    background:var(--selected-tab);
 }
 
 #file-tabs
@@ -131,15 +131,15 @@
     display:flex;
     text-align:center;
     justify-items:stretch;
-    border-top:1px solid #000;
-    border-right:1px solid #000;
+    border-top:1px solid var(--border-color);
+    border-right:1px solid var(--border-color);
     overflow-x:auto;
 }
 #file-tabs div
 {
     border-bottom:0px;
     border-left:0px;
-    background:#AAA;
+    background:var(--unselected-tab);
     flex:3;
 }
 
@@ -152,7 +152,7 @@
 
 #file-tabs div + div
 {
-    border-left:1px solid #000;
+    border-left:1px solid var(--border-color);
 }
 
 #file-tabs div[name=help]
@@ -163,7 +163,7 @@
 #file-list
 {
     grid-area: file-list;
-    border:1px solid #000;
+    border:1px solid var(--border-color);
     font-family:mono;
     overflow:auto;
     max-height:100%;
@@ -171,7 +171,7 @@
 
 #file-list .selected
 {
-    background-color:var(--header-bg);
+    background-color:var(--selected-tab);
 }
 
 #file-list li:hover
@@ -192,7 +192,7 @@
 #file-list ul li /* (Preview, List of files) */
 {
     list-style:none;
-    border-bottom:1px dashed #000;
+    border-bottom:1px dashed var(--border-color);
     padding-left:8px;
     padding-right:8px;
 
@@ -213,18 +213,18 @@
     margin-left:8px;
     margin-right:8px;
     padding:0px;
-    background:#FFF;
+    background:var(--board-list-bg);
 
 }
 
-#file-list ol li { border-bottom:1px dotted #000; } /* (List of boards in ZZT file) */
+#file-list ol li { border-bottom:1px dotted var(--border-color); } /* (List of boards in ZZT file) */
 
 li.board div  { display:inline-block; } /* Board numbers and names */
 
 #analysis
 {
     grid-area: analysis;
-    border:1px solid #000;
+    border:1px solid var(--border-color);
     border-left:0px;
     padding:7px 4px 7px 4px;
     font-family:mono;
@@ -239,7 +239,7 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 
 #analysis table td
 {
-    background:#FFF;
+    background:var(--board-list-bg);
     padding:0px 0px 0px 1ch;
 }
 
@@ -289,7 +289,7 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 
 #preferences .field + .field
 {
-    border-top: 1px dashed #000;
+    border-top: 1px dashed var(--border-color);
 }
 
 #preferences label
@@ -380,9 +380,9 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     text-align:justify;
 }
 
-#fv-image, #fv-preview { border:1px solid #AAA;}
+#fv-image, #fv-preview { border:1px solid var(--th-background)}
 
 .preview-image-link { font-style:italic; } /* Overview link in File Viewer */
 #text-body { font-family:cp437; }
-#doc-header { color:#F00; text-align:center;}
+#doc-header { color:var(--ega-red); text-align:center;}
 /* End File Viewer Extension Based Formatting */

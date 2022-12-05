@@ -143,6 +143,13 @@ def random(request):
     else:
         return redirect("index")
 
+def set_theme(request):
+    request.session["theme"] = request.GET.get("theme", "light")
+    if request.GET.get("redirect"):
+        return redirect("my_profile")
+    else:
+        return HttpResponse(request.GET.get("theme", "light"))
+
 def scroll_navigation(request):
 
     if request.GET.get("id"):

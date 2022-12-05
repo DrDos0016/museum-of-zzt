@@ -1,12 +1,4 @@
 /* Components used on main.html */
-body
-{
-    font-family:sans-serif;
-    background-color:var(--site-bg);
-    margin-top:7px;
-    overflow-y:scroll;
-}
-
 .grid-root
 {
     display:grid;
@@ -45,39 +37,21 @@ body
 .sidebar { min-width:255px; max-width:255px; margin-left:8px; margin-right:8px; }
 #sidebar-left { grid-area: left; justify-self:end; }
 #sidebar-right { grid-area: right; justify-self:start; }
-#content { grid-area: content; margin-bottom: 0px; justify-self:center; width:100%; padding-top:14px;}
+#content { grid-area: content; margin-bottom: 0px; justify-self:center; width:100%; padding-top:0px; }
 
 #content h1 { margin-bottom:0px; }
-
-#expand-contract {
-    padding:0px;
-    border:0;
-    width:24px;
-    height:14px;
-    background:var(--block-bg);
-    color:#666;
-    float:right;
-    position:relative;
-    top:-14px;
-}
-
-#expand-contract:hover
-{
-    cursor:pointer;
-    color:#000;
-}
 
 .block
 {
     padding:14px 8px 14px 8px;
     margin-bottom:7px;
     background:var(--block-bg);
-    border:1px solid #000;
+    border:1px solid var(--border-color);
 }
 
 .sidebar h2, .sidebar h3 {
     margin:0; margin-bottom:7px;
-    border-bottom:1px solid #000;
+    border-bottom:1px solid var(--border-color);
 }
 .sidebar h2 { font-size:14pt; }
 .sidebar h3 { font-size:10pt; padding-top:7px; }
@@ -90,7 +64,7 @@ body
 
 .sidebar #featured { margin-bottom:7px; }
 .sidebar #featured.block a { display:inline; }
-.sidebar .block a + a { border-top:1px dashed #AAA; }
+.sidebar .block a + a { border-top:1px dashed var(--side-link-border); }
 .sidebar #featured.block a + a { border-top:0; }
 
 .sidebar a[target=_blank]
@@ -139,7 +113,7 @@ body
 #featured a.nohover:hover { background:none; }
 #featured > a
 {
-    border-top:1px dashed #AAA;
+    border-top:1px dashed var(--side-link-border);
     margin:0;
     text-align:left;
 }
@@ -150,7 +124,7 @@ body
     display:grid;
     grid-template-columns: repeat(9, 11%);
     font-size:21px;
-    border-bottom:1px dashed #AAA;
+    border-bottom:1px dashed var(--side-link-border);
     padding-bottom:7px;
 }
 #letters-select { display:none; /* Low-res only */ }
@@ -163,8 +137,8 @@ body
     column-gap:4px;
     margin-top:2px;
     margin-bottom:2px;
-    border-top:1px dashed #AAA;
-    border-bottom:1px dashed #AAA;
+    border-top:1px dashed var(--side-link-border);
+    border-bottom:1px dashed var(--side-link-border);
     padding-top:2px;
     padding-bottom:2px;
     font-size:10pt;
@@ -195,7 +169,7 @@ body
 {
     text-align:center;
     margin:auto;
-    color:#000;
+    color:var(--ega-black);
     flex:0 0 48px;
     margin-left:16px;
     height:28px;

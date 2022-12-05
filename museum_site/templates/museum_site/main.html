@@ -32,7 +32,7 @@
 {% block staff_style %}{% endblock %}
 </head>
 
-<body class="grid-root{% if april %} april {% endif %}" id="top">
+<body class="grid-root{% if april %} april {% endif %}{% if request.session.theme %} theme-{{request.session.theme}}{% endif %}" id="top">
 <nav id="low-res-shortcuts" class="cp437">
     <a href="#top" id="top-shortcut">▲ Top</a>
     <a href="/" id="home-shortcut">Home</a>
@@ -109,7 +109,10 @@
 </section>
 
 <main id="content" class="block{% for class in content_classes %} {{class}}{% endfor %}" data-url-name="{{request.resolver_match.url_name|default:'null_url_name'}}">
-<button id="expand-contract" title="Toggle sidebars">⮜ ⮞</button>
+<div id="top-margin">
+    <button id="toggle-light-dark-theme" title="Toggle Light/Dark Theme">¥</button>
+    <button id="expand-contract" title="Toggle sidebars">⮜ ⮞</button>
+</div>
 {% block zfile_header %}
 {% if file %}
 <div class="file-meta">

@@ -28,6 +28,9 @@ from museum_site.core.misc import legacy_redirect  # noqa: E402
 urlpatterns = [
     path("", museum_site.views.index, name="index"),
 
+    # /action/
+    path("action/set-theme/", museum_site.views.set_theme, name="set_theme"),
+
     # /ajax/
     path("ajax/get-author-suggestions/", museum_site.ajax.get_author_suggestions, name="ajax_get_author_suggestions"),
     path("ajax/get-company-suggestions/", museum_site.ajax.get_company_suggestions, name="ajax_get_company_suggestions"),
