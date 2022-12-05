@@ -1968,12 +1968,6 @@ function set_active_envelope(envelope)
 
     $(".output.active").removeClass("active");
     $("#fv-main").scrollTop(0);
-
-    if (envelope != "canvas")
-        $("#canvas-envelope").css("display", "none");
-    else
-        $("#canvas-envelope").css("display", "grid");
-
     $(".output." + envelope).addClass("active");
 }
 

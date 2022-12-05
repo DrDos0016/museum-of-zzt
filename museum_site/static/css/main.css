@@ -221,3 +221,39 @@
 {
     margin-bottom:14px;
 }
+
+/* ZFile Page Header */
+.file-links
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+    border-top:1px solid var(--border-color);
+    border-bottom:1px solid var(--border-color);
+    padding-top:3px;
+    padding-bottom:3px;
+    font-weight:bold;
+    width:100%;
+}
+
+.file-data
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+    text-align:center;
+    border-bottom:1px solid var(--border-color);
+    padding-top:3px;
+    padding-bottom:3px;
+    gap:4px;
+}
+
+.file-data > div { flex:1; }
+
+.file-heading { display:flex; }
+
+#alt-file-listing
+{
+    max-width:25%;
+    margin-left:16px;
+}

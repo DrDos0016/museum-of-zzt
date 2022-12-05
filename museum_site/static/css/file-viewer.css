@@ -4,91 +4,17 @@
     grid-template-areas:
     "expand expand expand"
     "header header header"
-    "prefix prefix prefix"
     "display display display"
     "zip-name tabs tabs"
     "file-list analysis analysis";
 
     grid-template-columns:1.5fr 2fr auto;
-    grid-template-rows:repeat(5, auto) 1fr;
+    grid-template-rows:repeat(4, auto) 1fr;
     min-height:858px; /* With padding this is 900px of space */
     height:calc(100vh - 42px);
 }
 
-#content.fv-grid
-{
-    padding-top:0px;
-}
-
-.fv-grid #expand-contract
-{
-    grid-area: expand;
-    justify-self:end;
-    left:0px;
-    top:0px;
-}
-
-.fv-grid .file-meta
-{
-    grid-area: header;
-    margin-top:0px;
-}
-
-.file-header {
-    /*grid-area: header;*/
-    display:flex;
-    margin-bottom:3px;
-}
-
-#alt-file-listing
-{
-    max-width:25%;
-    margin-left:16px;
-}
-
-.file-links
-{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-evenly;
-    border-top:1px solid var(--border-color);
-    border-bottom:1px solid var(--border-color);
-    padding-top:3px;
-    padding-bottom:3px;
-    font-weight:bold;
-    grid-area: links;
-    width:100%;
-}
-
-.file-data
-{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-evenly;
-    text-align:center;
-    grid-area:data;
-    border-bottom:1px solid var(--border-color);
-    padding-top:3px;
-    padding-bottom:3px;
-    gap:4px;
-}
-
-.file-data > div
-{
-    flex:1;
-}
-
-/* TODO: This could be better genercized probably */
-.file-data + .review { border-top:0px; }
-.file-data + #fv-main { border-top:0px; }
-
-#fv-prefix
-{
-    grid-area:prefix;
-    max-width:750px;
-    margin:auto;
-    font-family:cp437;
-}
+.fv-grid .file-meta { grid-area: header; }
 
 #fv-main
 {
@@ -101,20 +27,9 @@
     resize:vertical;
 }
 
-#fv-main .output
-{
-    display:none
-}
-
-#fv-main .output.active
-{
-    display:block;
-}
-
-#fv-main #canvas-envelope.output.active
-{
-    display:grid;
-}
+#fv-main .output { display:none }
+#fv-main .output.active { display:block; }
+#fv-main #canvas-envelope.output.active { display:grid; }
 
 #zip-name
 {
@@ -150,15 +65,9 @@
     text-decoration:underline;
 }
 
-#file-tabs div + div
-{
-    border-left:1px solid var(--border-color);
-}
+#file-tabs div + div { border-left:1px solid var(--border-color); }
 
-#file-tabs div[name=help]
-{
-    flex:1;
-}
+#file-tabs div[name=help] { flex:1; }
 
 #file-list
 {

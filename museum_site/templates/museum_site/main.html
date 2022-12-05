@@ -117,7 +117,7 @@
 {% if file %}
 <div class="file-meta">
     {% if file and not local %}
-    <div class="file-header">
+    <div class="file-heading">
         {% include "museum_site/datum/title-datum.html" with f=file.title_datum_context %}
         {% if zgames|length > 1 %}
         <select id="alt-file-listing" name="associated_file">

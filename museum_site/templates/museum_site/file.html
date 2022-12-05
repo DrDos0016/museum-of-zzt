@@ -5,6 +5,10 @@
 
 {% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}{% endblock %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/file-viewer.css' %}?{{BOOT_TS}}">
+{% endblock %}
+
 {% block scripts %}
 <script>
 var letter = "{{letter}}";
