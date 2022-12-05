@@ -24,7 +24,7 @@ def ascii_reference(request):
     context["meta_context"] = {
         "description": ["name", "A reference page for the ASCII characters used by ZZT"],
         "og:title": ["property", context["title"] + " - Museum of ZZT"],
-        "og:image": ["property", "cards/ascii-reference.png"]
+        "og:image": ["property", "pages/ascii-reference.png"]
     }
     return render(request, "museum_site/ascii-reference.html", context)
 
@@ -86,14 +86,19 @@ def explicit_warning(request):
 
 
 def discord_overview(request):
-    data = {"title": "Joinining The Worlds of ZZT Discord"}
+    context = {"title": "Joinining The Worlds of ZZT Discord"}
+    context["meta_context"] = {
+        "description": ["name", "Rules, information, and an invite link to the Worlds of ZZT Discord server"],
+        "og:title": ["property", context["title"] + " - Museum of ZZT"],
+        "og:image": ["property", "pages/discord.png"]
+    }
 
     if request.method == "POST":
         if request.POST.get("agreed") != "agreed":
-            data["error"] = True
+            context["error"] = True
         return redirect(DISCORD_INVITE_URL)
 
-    return render(request, "museum_site/discord.html", data)
+    return render(request, "museum_site/discord.html", context)
 
 
 def generic_template_page(request, title="", template="", context={}):

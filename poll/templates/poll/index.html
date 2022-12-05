@@ -2,7 +2,7 @@
 {% load static %}
 {% load site_tags %}
 
-{% block meta %}{% meta_tags url=request.build_absolute_uri title=display_poll.title description="A patron exclusive poll" og_image="pages/poll.png" %}{% endblock %}
+{% block meta %}{% meta_tags path=request.get_full_path context=meta_context %}{% endblock %}
 
 {% block style %}
 <style>

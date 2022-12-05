@@ -289,7 +289,7 @@ def meta_tags(*args, **kwargs):
     base_url = "{}://{}{}".format(PROTOCOL, DOMAIN, STATIC_URL[:-1])
     path = kwargs.get("path", "").split("?")[0]  # Sans QS
     url = base_url + path
-    og_default = "images/og_default.jpg"
+    og_default = "pages/og_default.jpg"
     tags = {
         "author": ["name", ADMIN_NAME],
         "description": [

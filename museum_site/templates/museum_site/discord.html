@@ -1,5 +1,8 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
+{% load site_tags %}
+
+{% block meta %}{% meta_tags path=request.get_full_path context=meta_context %}{% endblock %}
 
 {% block style %}
 <style>

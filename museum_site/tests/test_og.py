@@ -20,7 +20,7 @@ class MetaTagTest(TestCase):
 
         tags = meta_tags(path="/").split("\n")
         for tag in tags:
-            if tag == ('<meta property="og:image" content="{}static/images/og_default.jpg">'.format(HOST)):
+            if tag == ('<meta property="og:image" content="{}static/pages/og_default.jpg">'.format(HOST)):
                 valid["og:image"] = 1
             elif tag == '<meta property="og:url" content="{}">'.format(HOST):
                 valid["og:url"] = 1
@@ -34,7 +34,7 @@ class MetaTagTest(TestCase):
 
         tags = meta_tags(path="/credits/").split("\n")
         for tag in tags:
-            if tag == ('<meta property="og:image" content="{}static/images/og_default.jpg">'.format(HOST)):
+            if tag == ('<meta property="og:image" content="{}static/pages/og_default.jpg">'.format(HOST)):
                 valid["og:image"] = 1
             elif tag == '<meta property="og:url" content="{}credits/">'.format(HOST):
                 valid["og:url"] = 1

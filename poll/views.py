@@ -7,6 +7,7 @@ from .models import Poll, Option, Vote
 def index(request, poll_id=None):
     data = {}
 
+
     data["polls"] = Poll.objects.all().order_by("-id")
     if poll_id is None:
         data["display_poll"] = data["polls"][0]
@@ -19,6 +20,8 @@ def index(request, poll_id=None):
     else:
         data["display_poll"] = Poll.objects.get(pk=int(poll_id))
         data["results_mode"] = True
+
+    data["title"] = data["display_poll"].title
 
     data["poll_zfiles"] = (
         data["display_poll"].option1.file,
@@ -62,4 +65,10 @@ def index(request, poll_id=None):
 
         data["results"] = results
         data["winner"] = max(results)
+
+    data["meta_context"] = {
+        "description": ["name", "A patron exclusive poll for which ZZT world should receive a Closer Look article"],
+        "og:title": ["property", data["title"] + " - Museum of ZZT"],
+        "og:image": ["property", "pages/poll.png"]
+    }
     return render(request, "poll/index.html", data)

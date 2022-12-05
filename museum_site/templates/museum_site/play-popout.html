@@ -17,7 +17,7 @@
 <meta property="og:type" content="website">
 {% if article.preview %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/'|add:article.preview %}">
 {% elif file.screenshot %}<meta property="og:image" content="{{DOMAIN}}{% static 'images/screenshots/'|add:file.letter|add:'/'|add:file.screenshot' %}">
-{% else %}<meta property="og:image" content="{{DOMAIN}}{% static 'cards/og_default.jpg' %}">{% endif %}
+{% else %}<meta property="og:image" content="{{DOMAIN}}{% static 'pages/og_default.jpg' %}">{% endif %}
 <meta property="og:url" content="{{request.build_absolute_uri}}">
 
 <meta name="twitter:card" content="summary_large_image">
