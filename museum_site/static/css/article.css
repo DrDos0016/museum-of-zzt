@@ -29,7 +29,7 @@
     width:240px;
     max-width:30%;
     margin:7px 4px 7px 4px;
-    border:1px solid #000;
+    border:1px solid var(--border-color);
 }
 
 /* Article Formatting */
@@ -71,11 +71,11 @@ article p, article li, article code, article h1, article h2, article h3, article
     margin:0;
     border:0;
     font-family:sans-serif;
-    background:#F0F0F0;
+    background:var(--block-bg);
     width:100%;
     min-height:50vh;
     resize:none;
-    color:#000;
+    color:var(--text-color);
 }
 
 article[data-schema="80col"]
@@ -102,7 +102,7 @@ article[data-schema="80col"]
 
 .zzt-img + .img-caption
 {
-    background:#AAA;
+    background:var(--side-link-border);
     margin:auto;
     max-width:640px;
     border-top:2px solid var(--border-color);
@@ -137,7 +137,7 @@ article[data-schema="80col"]
 
 article aside
 {
-    background:#AAA;
+    background:var(--file-list-bg);
     width:480px;
     max-width:40%;
     margin-left:0.5em;
@@ -168,4 +168,4 @@ article aside
     text-align:center;
     margin:auto;
 }
-.img-set img { border:1px solid #AAA; }
+.img-set img { border:1px solid var(--border-color); }

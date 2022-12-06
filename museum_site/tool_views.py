@@ -1,3 +1,4 @@
+import glob
 import grp
 import gzip
 import json
@@ -62,7 +63,9 @@ def add_livestream(request, key):
 def audit_colors(request):
     data = {"title": "DEBUG COLORS", "stylesheets": {}, "variables": {}}
 
-    for stylesheet in CSS_INCLUDES:
+    for full_path in glob.glob(os.path.join(SITE_ROOT, "museum_site", "static", "css", "*.css")):
+        stylesheet = os.path.basename(full_path)
+        print(stylesheet)
         data["stylesheets"][stylesheet] = []
         data["variables"][stylesheet] = []
         data["solarized"] = [
@@ -77,9 +80,8 @@ def audit_colors(request):
             "#555", "#55F", "#5F5", "#5FF",
             "#F55", "#F5F", "#FF5", "#FFF",
         ]
-        path = os.path.join(STATIC_PATH, "css", stylesheet)
-        with open(path) as fh:
 
+        with open(full_path) as fh:
             for line in fh.readlines():
                 matches = re.findall("#(?:[0-9a-fA-F]{3}){1,2}", line)
                 if line.strip().startswith("--"):
@@ -95,6 +97,7 @@ def audit_colors(request):
             data["variables"][stylesheet].sort()
 
     return render(request, "museum_site/tools/audit-colors.html", data)
+
 
 @staff_member_required
 def audit_restrictions(request):
@@ -492,7 +495,7 @@ def patron_input(request):
 
 @staff_member_required
 def prep_publication_pack(request):
-    data = {"title": "Prep Publication Pack",}
+    data = {"title": "Prep Publication Pack"}
 
     if not request.GET.get("associated"):
         data["form"] = Prep_Publication_Pack_Form()
@@ -871,7 +874,7 @@ def tool_index(request, key=None):
     """ Normalcy """
     tool_list = []
     file_tool_list = []
-    restricted_urls = ["tool_index", "tool_index_with_file",]
+    restricted_urls = ["tool_index", "tool_index_with_file"]
     for u in url_list:
         url_str = str(u.pattern)
         if url_str.startswith("tools/") and u.name not in restricted_urls:
