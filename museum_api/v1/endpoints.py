@@ -114,7 +114,7 @@ def worlds_of_zzt(request):
         "IMGPATH": img_path + ".png",
         "request_time": ts,
         "data": {
-            "file": f.jsoned(),
+            "file": v1_api_json(f),
             "world": selected,
             "board": {"title": title, "number": board_num},
             "b64_image": b64,
@@ -135,7 +135,7 @@ def get_file(request):
 
     f = File.objects.get(pk=int(request.GET["id"]))
 
-    output["data"] = f.jsoned()
+    output["data"] = v1_api_json(f)
 
     return JsonResponse(output)
 
@@ -148,7 +148,7 @@ def get_random_file(request):
     }
 
     f = File.objects.random_zzt_world()
-    output["data"] = f.jsoned()
+    output["data"] = v1_api_json(f)
 
     return JsonResponse(output)
 
@@ -206,8 +206,49 @@ def search_files(request):
     qs = qs.order_by(*sort)[int(request.GET.get("offset", 0)):int(request.GET.get("offset", 0)) + PAGE_SIZE]
 
     for f in qs:
-        output["data"]["results"].append(f.jsoned())
+        output["data"]["results"].append(v1_api_json(f))
 
     output["count"] = len(output["data"]["results"])
 
     return JsonResponse(output)
+
+def v1_api_json(zf):
+    """ Former model function to return some information in JSON format """
+    data = {
+        "letter": zf.letter,
+        "filename": zf.filename,
+        "title": zf.title,
+        "sort_title": zf.sort_title,
+        "author": zf.author_list(),
+        "size": zf.size,
+        "genres": zf.genre_list(),
+        "release_date": zf.release_date,
+        "release_source": zf.release_source,
+        "screenshot": zf.screenshot,
+        "company": zf.get_related_list("companies", "title"),
+        "description": zf.description,
+        "review_count": zf.review_count,
+        "rating": zf.rating,
+        "details": [],
+        "articles": [],
+        "aliases": [],
+        "article_count": zf.article_count,
+        "checksum": zf.checksum,
+        "playable_boards": zf.playable_boards,
+        "total_boards": zf.total_boards,
+        "archive_name": zf.archive_name,
+        "publish_date": zf.publish_date,
+        "last_modified": zf.last_modified,
+        "explicit": int(zf.explicit),
+    }
+
+    for d in zf.details.all():
+        data["details"].append({"id": d.id, "detail": d.title})
+
+    for a in zf.articles.all().only("id", "title"):
+        data["articles"].append({"id": a.id, "title": a.title})
+
+    for a in zf.aliases.all():
+        data["aliases"].append({"id": a.id, "alias": a.alias})
+
+    return data

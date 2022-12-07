@@ -216,53 +216,11 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def screenshot_phys_path(self):
         """ Returns the physical path to the preview image. If the file has no preview image set or is using a shared screenshot, return an empty string. """
         if self.screenshot and self.screenshot not in self.SPECIAL_SCREENSHOTS:
-            return os.path.join(STATIC_PATH, "images/screenshots/{}/{}".format(
-                self.letter, self.screenshot
-            ))
+            return os.path.join(STATIC_PATH, "images/screenshots/{}/{}".format(self.letter, self.screenshot))
         else:
             return ""
 
     # Other Functions
-    def jsoned(self):
-        data = {
-            "letter": self.letter,
-            "filename": self.filename,
-            "title": self.title,
-            "sort_title": self.sort_title,
-            "author": self.author_list(),
-            "size": self.size,
-            "genres": self.genre_list(),
-            "release_date": self.release_date,
-            "release_source": self.release_source,
-            "screenshot": self.screenshot,
-            "company": self.get_related_list("companies", "title"),
-            "description": self.description,
-            "review_count": self.review_count,
-            "rating": self.rating,
-            "details": [],
-            "articles": [],
-            "aliases": [],
-            "article_count": self.article_count,
-            "checksum": self.checksum,
-            "playable_boards": self.playable_boards,
-            "total_boards": self.total_boards,
-            "archive_name": self.archive_name,
-            "publish_date": self.publish_date,
-            "last_modified": self.last_modified,
-            "explicit": int(self.explicit),
-        }
-
-        for d in self.details.all():
-            data["details"].append({"id": d.id, "detail": d.title})
-
-        for a in self.articles.all().only("id", "title"):
-            data["articles"].append({"id": a.id, "title": a.title})
-
-        for a in self.aliases.all():
-            data["aliases"].append({"id": a.id, "alias": a.alias})
-
-        return data
-
     def calculate_sort_title(self):
         output = ""
         # Handle titles that start with A/An/The
@@ -772,19 +730,12 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         context["columns"].append([
             {"datum": "text", "label": "Details", "value": self.details_links()},
-            {
-                "datum": "text", "label": "Rating",
-                "value": self.rating_for_detailed_view(),
-            },
+            {"datum": "text", "label": "Rating", "value": self.rating_html_for_view("detailed")},
             {
                 "datum": "text", "label": "Boards", "value": self.boards_str(),
                 "title": "Playable/Total Boards. Values are not 100% accurate." if self.total_boards else ""
             },
-            {
-                "datum": "text", "label": "Language"+("s" if len(self.ssv_list("language")) > 1 else ""),
-                "value": self.language_links()
-            },
-
+            {"datum": "text", "label": "Language"+("s" if len(self.ssv_list("language")) > 1 else ""), "value": self.language_links()},
         ])
 
         if self.is_detail(DETAIL_UPLOADED) and self.upload_set.first():
@@ -870,7 +821,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         cells.append(
             {"datum": "link", "value": (self.release_date or "Unknown"), "url": "/file/browse/year/{}/".format(self.release_year(default="unk")), "tag": "td"}
         )
-        cells.append({"datum": "text", "value": self.rating_for_list_view(), "tag": "td"})
+        cells.append({"datum": "text", "value": self.rating_html_for_view("list"), "tag": "td"})
 
         # Modify download text if needed
         if self.downloads.count():
@@ -933,18 +884,16 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self._minor_icons.append(self.ICONS["featured"])
 
     @mark_safe
-    def rating_for_detailed_view(self):
-        return self.rating_str() + " ({} Review{})".format(self.review_count, "s" if self.review_count != 1 else "")
-
-    @mark_safe
-    def rating_for_list_view(self):
-        if self.review_count:
-            output = "<span title='Review count'>R: {}</span><br><span title='Average Score'>S: {}</span>".format(
-                self.review_count, self.rating_str(show_maximum=False)
-            )
-        else:
+    def rating_html_for_view(self, view="detailed"):
+        if view == "detailed":
+            return self.rating_str() + " ({} Review{})".format(self.review_count, "s" if self.review_count != 1 else "")
+        elif view == "list":
             output = "—"
-        return output
+            if self.review_count:
+                output = "<span title='Review count'>R: {}</span><br><span title='Average Score'>S: {}</span>".format(
+                    self.review_count, self.rating_str(show_maximum=False)
+                )
+            return output
 
     def remove_uploaded_zfile(self, upload):
         message = "Removing ZFile: "
