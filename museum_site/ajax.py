@@ -99,25 +99,16 @@ def debug_file(request):
         return HttpResponse("No file provided.")
 
 
-def get_author_suggestions(request):
+
+def get_suggestions_for_field(request, field):
     """ Used on file upload page """
     output = {"suggestions": []}
-    qs = Author.objects.all().only("title").distinct().order_by("title")
-    for a in qs:
-        output["suggestions"].append(a.title)
-
-    output["suggestions"] = sorted(output["suggestions"], key=lambda s: s.casefold())
-    return JsonResponse(output)
-
-
-def get_company_suggestions(request, max_suggestions=20):
-    """ Used on file upload page """
-    output = {"suggestions": []}
-    qs = Company.objects.all().only("title").distinct().order_by("title")
-    for c in qs:
-        output["suggestions"].append(c.title)
-
-    output["suggestions"] = sorted(output["suggestions"], key=lambda s: s.casefold())
+    model = {"author": Author, "company": Company}.get(field)
+    if model is not None:
+        qs = model.objects.all().only("title").order_by("title")
+        for i in qs:
+            output["suggestions"].append(i.title)
+        output["suggestions"] = sorted(output["suggestions"], key=lambda s: s.casefold())
     return JsonResponse(output)
 
 

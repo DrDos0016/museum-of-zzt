@@ -32,10 +32,9 @@ urlpatterns = [
     path("action/set-theme/", museum_site.views.set_theme, name="set_theme"),
 
     # /ajax/
-    path("ajax/get-author-suggestions/", museum_site.ajax.get_author_suggestions, name="ajax_get_author_suggestions"),
-    path("ajax/get-company-suggestions/", museum_site.ajax.get_company_suggestions, name="ajax_get_company_suggestions"),
-    path("ajax/get_zip_file/", museum_site.ajax.get_zip_file, name="ajax_get_zip_file"),
     path("ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions, name="ajax_get_search_suggestions"),
+    path("ajax/get-<str:field>-suggestions/", museum_site.ajax.get_suggestions_for_field, name="ajax_get_suggestions_for_field"),
+    path("ajax/get_zip_file/", museum_site.ajax.get_zip_file, name="ajax_get_zip_file"),
     path("ajax/render-review-text/", museum_site.ajax.render_review_text, name="ajax_render_review_text"),
     path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add, name="ajax_wozzt_queue_add"),
 
