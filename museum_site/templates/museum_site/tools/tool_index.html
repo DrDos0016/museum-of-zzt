@@ -40,6 +40,13 @@ $(document).ready(function (){
 <div id="tool-container">
     <table>
         <tr>
+            <th>Auditing</th>
+            <th>Etc</th>
+        </tr>
+        {% for t in audit_targets.items %}
+        <tr><td><a href="{% url 'audit' t.0 %}">{{t.1.title}}</td><td></td></tr>
+        {% endfor %}
+        <tr>
             <th>General Tools</th>
             <th>Etc</th>
         </tr>

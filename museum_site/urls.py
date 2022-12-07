@@ -221,10 +221,7 @@ urlpatterns = [
     path("tools/", museum_site.tool_views.tool_index, name="tool_index"),
     path("tools/add-livestream/<str:key>/", museum_site.tool_views.add_livestream, name="add_livestream"),
     path("tools/audit/colors/", museum_site.tool_views.audit_colors, name="audit_colors"),
-    path("tools/audit/scrolls/", museum_site.tool_views.audit_scrolls, name="audit_scrolls"),
-    path("tools/audit/restrictions/", museum_site.tool_views.audit_restrictions, name="audit_restrictions"),
-    path("tools/audit/zeta-config/", museum_site.tool_views.audit_zeta_config, name="audit_zeta_config"),
-    path("tools/crediting-preferences/", museum_site.tool_views.crediting_preferences, name="crediting_preferences"),
+    path("tools/audit/<str:target>/", museum_site.tool_views.audit, name="audit"),
     path("tools/extract-font/<str:key>/", museum_site.tool_views.extract_font, name="extract_font"),
     path("tools/empty-upload-queue/", museum_site.tool_views.empty_upload_queue, name="empty_upload_queue"),
     path("tools/livestream-description-generator/", museum_site.tool_views.livestream_description_generator, name="livestream_description_generator"),
@@ -244,7 +241,6 @@ urlpatterns = [
     path("tools/series/add/", museum_site.tool_views.series_add, name="series_add"),
     path("tools/set_screenshot/<str:key>/", museum_site.tool_views.set_screenshot, name="set_screenshot"),
     path("tools/stream-card/", museum_site.tool_views.stream_card, name="stream_card"),
-    path("tools/user-list/", museum_site.tool_views.user_list, name="user_list"),
     path("tools/<str:key>/", museum_site.tool_views.tool_index, name="tool_index_with_file"),
 
     # /upload/

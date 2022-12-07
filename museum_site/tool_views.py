@@ -60,6 +60,28 @@ def add_livestream(request, key):
 
 
 @staff_member_required
+def audit(request, target, return_target_dict=False):
+    targets = {
+        "patron-credit-preferences": {
+            "title": "Audit Patron Credit Preferences", "template": "museum_site/tools/crediting-preferences.html", "patrons": Profile.objects.patrons()
+        },
+        "restrictions": {
+            "title": "Audit Restrictions", "template": "museum_site/tools/audit-restrictions.html",
+            "zfile_qs": File.objects.removed(), "review_qs": File.objects.exclude(can_review=File.REVIEW_YES)
+        },
+        "scrolls": {"title": "Audit Scrolls", "template": "museum_site/tools/audit-scrolls.html", "scrolls": Scroll.objects.all()},
+        "users": {"title": "Audit Users", "template": "museum_site/tools/user-list.html", "users": User.objects.order_by("-id")},
+        "zeta-config": {"title": "Audit Zeta Configs", "template": "museum_site/tools/audit_zeta_config.html", "special": File.objects.zeta_config_audit()},
+    }
+
+    if return_target_dict:
+        return targets
+
+    context = targets.get(target)
+    return render(request, context["template"], context)
+
+
+@staff_member_required
 def audit_colors(request):
     data = {"title": "DEBUG COLORS", "stylesheets": {}, "variables": {}}
 
@@ -97,49 +119,6 @@ def audit_colors(request):
             data["variables"][stylesheet].sort()
 
     return render(request, "museum_site/tools/audit-colors.html", data)
-
-
-@staff_member_required
-def audit_restrictions(request):
-    data = {"title": "Audit Restrictions"}
-    data["zfile_qs"] = list(File.objects.removed())
-    data["review_qs"] = list(File.objects.exclude(can_review=File.REVIEW_YES))
-    return render(request, "museum_site/tools/audit-restrictions.html", data)
-
-
-@staff_member_required
-def audit_scrolls(request):
-    data = {
-        "title": "Scroll Audit",
-    }
-    data["scrolls"] = Scroll.objects.all()
-
-    return render(request, "museum_site/tools/audit-scrolls.html", data)
-
-
-@staff_member_required
-def audit_zeta_config(request):
-    data = {
-        "title": "Zeta Config Audit",
-    }
-    data["special"] = File.objects.filter(
-        details__in=[DETAIL_ZZT, DETAIL_SZZT]).exclude(
-            Q(zeta_config_id=None) |
-            Q(zeta_config_id=ZETA_ZZT32R) |
-            Q(zeta_config_id=ZETA_SZZT20)
-        ).order_by("zeta_config")
-
-    return render(request, "museum_site/tools/audit_zeta_config.html", data)
-
-
-@staff_member_required
-def crediting_preferences(request):
-    p = Profile.objects.patrons()
-    data = {
-        "title": "Crediting Preferences",
-        "patrons": p,
-    }
-    return render(request, "museum_site/tools/crediting-preferences.html", data)
 
 
 @staff_member_required
@@ -859,8 +838,10 @@ def tool_index(request, key=None):
     if key:
         data["file"] = File.objects.get(key=key)
 
+    # Targets for auditing
+    data["audit_targets"] = audit(request, target=None, return_target_dict=True)
+
     data["form"] = Tool_ZFile_Select_Form()
-    letters = "1abcdefghijklmnopqrstuvwxyz"
 
     """ Atrocious variable names """
     url_patterns = get_resolver().url_patterns
@@ -874,7 +855,7 @@ def tool_index(request, key=None):
     """ Normalcy """
     tool_list = []
     file_tool_list = []
-    restricted_urls = ["tool_index", "tool_index_with_file"]
+    restricted_urls = ["tool_index", "tool_index_with_file", "audit"]
     for u in url_list:
         url_str = str(u.pattern)
         if url_str.startswith("tools/") and u.name not in restricted_urls:
@@ -899,29 +880,17 @@ def tool_index(request, key=None):
                     "text": u.name.replace("_", " ").title()
                 })
 
-    # Manual additions
-    tool_list.append(
-        {"url_name": "worlds_of_zzt", "text": "WoZZT Queue"},
-    )
-
     tool_list = sorted(tool_list, key=lambda s: s["text"])
 
     if data.get("file"):
         file_tool_list = sorted(file_tool_list, key=lambda s: s["text"])
-        file_tool_list.insert(
-            0, {
-                "url": "/admin/museum_site/file/{}/change/".format(
-                    data["file"].pk
-                ),
-                "text": "Django Admin Page"
-                }
-        )
+        file_tool_list.insert(0, {"url": data["file"].admin_url(), "text": "Django Admin Page"})
 
         data["upload_info"] = Upload.objects.get(file_id=data["file"])
         data["content_info"] = data["file"].content.all()
 
         # Simple validation tools
-        data["valid_letter"] = True if data["file"].letter in letters else False
+        data["valid_letter"] = True if data["file"].letter in "1abcdefghijklmnopqrstuvwxyz" else False
         data["valid_filename"] = True if data["file"].phys_path() else False
 
         if request.GET.get("recalculate"):
@@ -955,17 +924,6 @@ def tool_index(request, key=None):
     data["tool_list"] = tool_list
     data["file_tool_list"] = file_tool_list
     return render(request, "museum_site/tools/tool_index.html", data)
-
-
-@staff_member_required
-def user_list(request):
-    """ Returns page listing users and info for reference """
-    data = {
-        "title": "User List",
-        "users": User.objects.order_by("-id")
-    }
-
-    return render(request, "museum_site/tools/user-list.html", data)
 
 
 @staff_member_required

@@ -194,3 +194,11 @@ class ZFile_Queryset(Base_Queryset):
             query_filter = "title__icontains"
         qs = self.filter(**{query_filter: query}).only("title").distinct().order_by("sort_title")
         return qs
+
+    def zeta_config_audit(self):
+        """ Return zfiles using special zeta configurations """
+        return self.exclude(
+            Q(zeta_config_id=None) |
+            Q(zeta_config_id=ZETA_ZZT32R) |
+            Q(zeta_config_id=ZETA_SZZT20)
+        ).order_by("zeta_config")
