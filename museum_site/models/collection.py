@@ -151,6 +151,8 @@ class Collection(BaseModel):
         if yours:
             context["links"] = True
             context["columns"][0].insert(0, {"datum": "text", "label": "Visibility", "value": self.visibility_str})
+            if self.visibility_str != "Public":
+                context["roles"].append(self.visibility_str.lower())
         return context
 
     def get_meta_tag_context(self):

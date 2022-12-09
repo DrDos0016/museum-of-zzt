@@ -261,3 +261,13 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
     border-top:1px solid var(--border-color);
     padding-top:4px;
 }
+
+.model-block.unlisted[data-model="Collection"], .model-block.unlisted[data-model="Collection"] + .model-block-links
+{
+    background:var(--hover-bg);
+}
+
+.model-block.private[data-model="Collection"], .model-block.private[data-model="Collection"] + .model-block-links
+{
+    background:var(--file-list-bg);
+}
