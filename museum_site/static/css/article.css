@@ -85,12 +85,15 @@ article[data-schema="80col"]
 
 .side-commentary
 {
+    margin-left:auto;
+    margin-right:auto;
     margin-bottom:0.25em;
     overflow:auto;
     border-bottom:1px solid var(--border-color);
     padding-bottom:0.25em;
     display:flex;
     flex-wrap:wrap;
+    max-width:750px;
 }
 
 .zzt-img + .side-commentary, .zzt-scroll + .side-commentary, p + .side-commentary
