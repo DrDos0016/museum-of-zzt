@@ -809,6 +809,7 @@ class Zeta_Advanced_Form(forms.Form):
 
 
 class Livestream_Description_Form(forms.Form):
+    heading = "Livestream Description Generator"
     use_required_attribute = False
     submit_value = "Select"
     associated = forms.MultipleChoiceField(
@@ -978,18 +979,9 @@ class Change_Password_Form(forms.Form):
     attrs = {"method": "POST"}
     text_prefix = "<p>You may change your password here. Upon successfully changing your password, you will be required to login again.</p>"
 
-    current_password = forms.CharField(
-        widget=forms.PasswordInput()
-    )
-    new_password = forms.CharField(
-        min_length=8,
-        widget=forms.PasswordInput(),
-        help_text=PASSWORD_HELP_TEXT
-    )
-    confirm_password = forms.CharField(
-        min_length=8,
-        widget=forms.PasswordInput()
-    )
+    current_password = forms.CharField(widget=forms.PasswordInput())
+    new_password = forms.CharField(min_length=8, widget=forms.PasswordInput(), help_text=PASSWORD_HELP_TEXT)
+    confirm_password = forms.CharField(min_length=8, widget=forms.PasswordInput())
 
     def clean(self):
         cleaned_data = super().clean()
