@@ -64,10 +64,12 @@ def zeta_launcher(
     data["ZETA_EXECUTABLES"] = ZETA_EXECUTABLES
 
     # Get files requested
-    if filename:
+    if key and key != "LOCAL":
         data["file"] = File.objects.filter(key=key).first()
+        data["local"] = False
     else:
         data["file"] = None  # This will be the "prime" file
+        data["local"] = True
 
     data["file_ids"] = list(map(int, request.GET.getlist("file_id")))
 
@@ -82,7 +84,7 @@ def zeta_launcher(
             data["file"] = f
 
     # Check for explicit flag/permissions
-    if data["file"].explicit:
+    if data["file"] and data["file"].explicit:
         check = explicit_redirect_check(request, data["file"].pk)
         if check != "NO-REDIRECT":
             return check
@@ -100,7 +102,7 @@ def zeta_launcher(
         compatible_players = []
 
         if "zeta" in all_play_methods:
-            if data["file"].supports_zeta_player():
+            if data["file"] and data["file"].supports_zeta_player():
                 compatible_players.append("zeta")
 
                 # For unpublished worlds, assume yes but add a disclaimer
@@ -108,14 +110,11 @@ def zeta_launcher(
                     data["unpublished"] = True
 
         if "archive" in all_play_methods:
-            if data["file"].archive_name:
+            if data["file"] and data["file"].archive_name:
                 compatible_players.append("archive")
 
         # Is there a manually selected preferred player?
-        if (
-            request.GET.get("player") and
-            request.GET.get("player") in all_play_methods
-        ):
+        if (request.GET.get("player") and request.GET.get("player") in all_play_methods):
             preferred_player = request.GET.get("player")
         else:  # If not, use Zeta as the default player
             preferred_player = "zeta"
@@ -146,11 +145,9 @@ def zeta_launcher(
         ).only("id", "name")
 
     # Get Zeta Config for file
-    data["zeta_config"] = data["file"].zeta_config
+    data["zeta_config"] = data["file"].zeta_config if data["file"] else None
     if request.GET.get("zeta_config"):  # User override
-        data["zeta_config"] = Zeta_Config.objects.get(
-            pk=int(request.GET["zeta_config"])
-        )
+        data["zeta_config"] = Zeta_Config.objects.get(pk=int(request.GET["zeta_config"]))
 
     # Override config with user requested options
     if data["zeta_config"]:
@@ -194,6 +191,7 @@ def zeta_launcher(
             request.GET.get("world"),
             request.GET.get("start", 0)
         )
+        data["zeta_config"].arguments = request.GET.get("world", "")
     elif request.GET.get("discord"):
         data["zeta_url"] = "/zeta-live?discord=1&world={}".format(
             request.GET.get("world")
@@ -206,8 +204,11 @@ def zeta_launcher(
     data["zeta_config"].base_width = 640
     data["zeta_config"].base_height = 350
 
-    if data["file"].is_detail(DETAIL_SZZT):
+    if data["file"] and data["file"].is_detail(DETAIL_SZZT):
         data["zeta_config"].base_height = 400
+
+    if data["local"]:
+        player = "zeta_local"
 
     return render(request, "museum_site/play_{}.html".format(player), data)
 
