@@ -85,7 +85,7 @@ class ZFile_Queryset(Base_Queryset):
     def basic_search(self, q, include_explicit=True):
         qs = self.filter(
             Q(title__icontains=q) | Q(aliases__alias__icontains=q) | Q(authors__title__icontains=q) | Q(filename__icontains=q)
-            | Q(companies__title__icontains=q)
+            | Q(companies__title__icontains=q) | Q(genres__title__icontains=q)
         )
         if not include_explicit:
             qs = qs.filter(explicit=False)

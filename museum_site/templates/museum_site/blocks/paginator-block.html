@@ -53,9 +53,13 @@
         </select>
 </div>
 {% endif %}
-{% if query_edit_url_name %}
+{% if search_type is not None %}
 <div class="modify-query">
+    {% if search_type == "basic" %}
+    Limit Search To: {% for field in basic_search_fields %}<a href="{% url 'search' %}?{{field.lower}}={{request.GET.q}}">{{field}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+    {% else %}
     <a href="{% url query_edit_url_name %}?{{request.META.QUERY_STRING}}&action=edit">Edit Search Query</a>
+    {% endif %}
 </div>
 {% endif %}
 

@@ -182,6 +182,7 @@ class ZFile_List_View(Model_List_View):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["search_type"] = self.search_type
 
         # Modify sort options based on path
         if self.request.path == "/file/browse/":
@@ -214,6 +215,10 @@ class ZFile_List_View(Model_List_View):
             self.request.session["DEBUG"] = 1
         elif self.request.GET.get("q") == "-DEBUG":
             del self.request.session["DEBUG"]
+
+        # Add basic search filters
+        if self.search_type == "basic":
+            context["basic_search_fields"] = ["Title", "Author", "Company", "Genre", "Filename"]
 
         # Add advanced search modify button
         if self.search_type == "advanced":
