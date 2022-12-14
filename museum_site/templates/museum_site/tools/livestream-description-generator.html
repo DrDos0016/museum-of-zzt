@@ -27,11 +27,11 @@
 <form method="POST" action="{% url 'add_livestream' zfiles.0.key %}">
 {% csrf_token %}
 <textarea style="width:120ch;height:40ch;" name="video_description">
-{% if zfiles|length == 1 %}Livestream of the ZZT world "{{zfiles.0.title}}" by {{zfiles.0.author_list|join:", "}}{% if zfiles.0.release_year %} ({{zfiles.0.release_year}}){% endif %}
-{% else %}♦ Livestream of the following {{zfiles|length}} ZZT worlds ♦
+{% if zfiles|length == 1 %}Livestream of the ZZT world "{{zfiles.0.title}}" by {{zfiles.0.author_list|join:", "}}{% if zfiles.0.release_year %} ({{zfiles.0.release_year}}). Originally streamed on {{stream_date|date:"F jS, Y"}}{% endif %}
+{% else %}♦ Livestream of the following {{zfiles|length}} ZZT worlds. Originally streamed on {{stream_date|date:"F jS, Y"}} ♦
 {% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) "{{zfile.title}}" by {{zfile.author_list|join:", "}}{% if zfile.release_year %} ({{zfile.release_year}}){% endif %} [{{DOMAIN}}{{zfile.url}}]
-{% endfor %}{% endif %}(Originally streamed {{stream_date|date:"F jS, Y"}})
-
+{% endfor %}{% endif %}{% for break in ad_break_endings %}&bull; ({{break}}) End of Ad Break {{forloop.counter}}
+{% endfor %}
 ♦ Join us for future livestreams at https://twitch.tv/worldsofzzt ♦
 
 ♦ Play {% if zfiles|length == 1 %}this world{% else %}these worlds{% endif %} directly in your browser ♦

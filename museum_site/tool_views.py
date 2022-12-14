@@ -190,6 +190,7 @@ def livestream_description_generator(request):
         associated = request.GET.getlist("associated")
         unordered = list(File.objects.filter(pk__in=associated))
         data["zfiles"] = []
+        data["ad_break_endings"] = []
         for pk in associated:
             for zf in unordered:
                 if zf.pk == int(pk):
@@ -201,12 +202,19 @@ def livestream_description_generator(request):
         else:
             data["stream_date"] = datetime.now()
         if request.GET.getlist("timestamp"):
-            for idx in range(0, len(request.GET.getlist("timestamp")) - 1):
-                if ":" not in request.GET.getlist("timestamp")[idx + 1]:
-                    timestamp = "0:00"
+            for idx in range(0, len(request.GET.getlist("timestamp"))):
+                if ":" not in request.GET.getlist("timestamp")[idx]:
+                    timestamp = "{}:00".format(request.GET.getlist("timestamp")[idx])
                 else:
-                    timestamp = request.GET.getlist("timestamp")[idx + 1]
+                    timestamp = request.GET.getlist("timestamp")[idx]
                 data["zfiles"][idx].timestamp = timestamp
+        if request.GET.getlist("ad_break_endings"):
+            for idx in range(0, len(request.GET.getlist("ad_break_endings"))):
+                if ":" not in request.GET.getlist("ad_break_endings")[idx]:
+                    timestamp = "{}:00".format(request.GET.getlist("ad_break_endings")[idx])
+                else:
+                    timestamp = request.GET.getlist("ad_break_endings")[idx]
+                data["ad_break_endings"].append(timestamp)
 
     else:
         data["form"] = Livestream_Description_Form()

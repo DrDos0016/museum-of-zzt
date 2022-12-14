@@ -832,6 +832,12 @@ class Livestream_Description_Form(forms.Form):
         required=False,
         help_text="Separate with commas. Match order in associated ZFiles.",
     )
+    ad_break_endings = Manual_Field(
+        label="Ad Break End Timestamp(s)",
+        widget=Tagged_Text_Widget(),
+        required=False,
+        help_text="Timestamps for when ad breaks ended. Must be manually added to list of streamed worlds",
+    )
 
     def refresh_choices(self):
         valid_choices = associated_file_choices()
