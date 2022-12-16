@@ -397,7 +397,7 @@ def zfl(key, text="", qs="", target="_blank", i=True, *args, **kwargs):
 
     # Italicize text if needed
     output = "<i>" + output + "</i>" if i else output
-    return mark_safe(output + "\n")
+    return mark_safe(output)
 
 
 @register.simple_tag()

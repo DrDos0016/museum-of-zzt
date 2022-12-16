@@ -251,7 +251,9 @@ def zzt_img(*args, **kwargs):
     br = kwargs.get("br", "")
     css = kwargs.get("css", "")
     message_crop = kwargs.get("mcrop", kwargs.get("mc", ""))
+    name_crop = kwargs.get("ncrop", "")
     caption = kwargs.get("cap", "")
+    lit = kwargs.get("lit", "")
 
     has_coords = True if tl and br else False
 
@@ -310,8 +312,16 @@ def zzt_img(*args, **kwargs):
             del kwargs["mc"]
         output += zzt_img(source, sh="message")
 
+    if name_crop:
+        output = zzt_img(source, tl="8,5", br="52,5")
+        del kwargs["ncrop"]
+        output += mark_safe("<{}><{}></div>\n".format(div, img, crop))
+
     if caption:
         output += '<div class="img-caption">{}</div>'.format(caption)
+
+    if lit:
+        output += '<div class="img-caption">¥ This board is dark during normal gameplay. ¥</div>'
     return mark_safe(output)
 
 @register.simple_tag()
