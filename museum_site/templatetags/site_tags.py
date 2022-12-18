@@ -685,6 +685,9 @@ def generic_block_loop(items, view="detailed", header=None, request=None, *args,
             context["obj"].context = getattr(i, "{}_block_context".format(view.replace("-", "_")))(request=request)
             if kwargs.get("today"):
                 context["today"] = kwargs["today"]
+            if request and request.session.get("DEBUG"):
+                context["debug"] = True
+
 
         output += render_to_string(template, context)
 

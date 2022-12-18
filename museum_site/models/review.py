@@ -184,7 +184,7 @@ class Review(BaseModel):
             date=self.date,
             review_content=self.content,
             rating=self.rating,
-            debug=kwargs["request"].session.get("DEBUG") if kwargs.get("request") else False
+            debug = True if kwargs.get("request") and kwargs["request"].session.get("DEBUG") else False
         )
         return context
 

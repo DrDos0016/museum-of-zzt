@@ -2,9 +2,13 @@
 <div class="review-block" id="rev-{{obj.pk}}" data-pk="{{obj.pk}}" data-model="{{obj.model}}">
 <h2><a href="{{request.path}}#rev-{{obj.pk}}">{{obj.title|default:"Untitled Review"}}</a></h2>
 <div class="info mono">
+    {{debug|default:"whatsadebug"}}
     By: {{obj.author_link|safe}}<br>
     Reviewed: {% if obj.date != today %}{{obj.date|timesince:today}} ago{% else %}Today{% endif %} ({{obj.date}})<br>
-    {% if debug %}<div class="debug"><a href="/admin/museum_site/review/{{obj.pk}}/change/">Edit Review {{obj.pk}}</a></div>{% endif %}
+    {% if debug %}<div class="debug" style="display:inline-block;">
+        IP: {{obj.ip}}<br>
+        <a href="/admin/museum_site/review/{{obj.pk}}/change/">Edit Review {{obj.pk}}</a>
+    </div>{% endif %}
 </div>
 <hr>
 <article>
