@@ -83,6 +83,12 @@ article[data-schema="80col"]
     font-size:14pt;
 }
 
+#80col-content
+{
+    max-width:80ch;
+    margin:auto;
+}
+
 .side-commentary
 {
     margin-left:auto;

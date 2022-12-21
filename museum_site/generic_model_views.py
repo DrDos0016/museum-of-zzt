@@ -67,6 +67,7 @@ class Model_List_View(ListView):
         context["model_name"] = self.model.model_name
         context["page_range"] = self.get_nearby_page_range(context["page_obj"].number, context["paginator"].num_pages)
         context["request"] = self.request
+        context["debug"] = self.request.session.get("DEBUG")
 
         # Set block based on view
         context["block_template"] = "museum_site/blocks/new-generic-{}-block.html".format(context["view"])

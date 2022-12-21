@@ -89,15 +89,14 @@ $(document).ready(function (){
 <hr>
 {% endif %}
 <article class="{{article.category|slugify}}" data-article_id="{{article.id}}" data-schema="{{article.schema}}">
-{% if article.schema == "html" %}
-    {{article.content|safe}}
-{% elif article.schema == "text" %}
-    {{article.content|safe|linebreaks}}
+{% include article %}
+
+{% comment %}
 {% elif article.schema == "80col" %}
     <pre class="80col cp437" id="80col-content">{{article.content}}</pre>
 {% else %}
-    {{article.render}}
 {% endif %}
+{% endcomment %}
 </article>
 
 <div id="post-article">

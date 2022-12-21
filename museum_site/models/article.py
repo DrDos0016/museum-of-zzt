@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 
 from django.db import models
 from django.template import Template, Context
-from django.template.defaultfilters import slugify
+from django.template.defaultfilters import slugify, linebreaks
+from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
 from museum_site.constants import *
@@ -121,14 +122,22 @@ class Article(BaseModel):
         year = self.publish_date.year if self.publish_date.year != 1970 else "unk"
         return ("articles/{}/{}/".format(year, self.static_directory))
 
-    def render(self):
-        """ Render article content as a django template """
-        context_data = {
-            "TODO": "TODO", "CROP": "CROP",  # Expected TODO usage.
-            "path": self.path,
-        }
-        head = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}"
-        return Template(head + self.content).render(Context(context_data))
+    def render(self, context):
+        """ Render article content for use in a django template """
+        print("RENDERING", self.schema)
+        if self.schema == "django":
+            context_data = {
+                "TODO": "TODO", "CROP": "CROP",  # Expected TODO usage.
+                "path": self.path,
+            }
+            head = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}"
+            return Template(head + self.content).render(Context(context_data))
+        elif self.schema == "html":
+            return mark_safe(self.content)
+        elif self.schema == "text":
+            return linebreaks(mark_safe(self.content))
+        elif self.schema == "80col":
+            return '<pre class="80col cp437" id="80col-content">1{}</pre>'.format(self.content)
 
     @property
     def is_restricted(self):
