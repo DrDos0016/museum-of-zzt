@@ -38,4 +38,4 @@ class ZFile_Urls:
         return "/file/view/{}/".format(self.key)
 
     def view_url(self):
-        return "/file/view/{}/".format(self.key)
+        return self.url()

@@ -11,6 +11,7 @@ import requests
 import zookeeper
 
 from django.db import models
+from django.template.loader import render_to_string
 from twitter import *
 
 from museum.settings import STATIC_URL
@@ -166,105 +167,34 @@ class WoZZT_Queue(BaseModel):
         self.save()
         return True
 
-    def tweet_text(self):
-        escaped_file_url = quote("file/" + self.file.letter + "/" + self.file.key + "/")
-        escaped_zzt_url = quote(self.zzt_file)
-        author_str = ", ".join(self.file.author_list())
+    def render_text(self, medium):
+        context = {
+            "board_url": self.file.view_url() + "?file=" + quote(self.zzt_file) + "&board=" + str(self.board),
+            "zfile_title": self.file.title,
+            "zfile_author": self.file.author_list(),
+            "zfile_year": self.file.release_year(),
+            "zfile_company": self.file.company_list(),
+            "zfile_world": self.zzt_file,
+            "zfile_board": self.board_name,
+            "zfile_board_properties": self.get_zfile_board_properties(),
+            "play_url": self.file.play_url(),
+            "zfile": self.file,
+            "related_article_count": self.file.articles.published().exclude(category="Publication Pack").count(),
+            "article_url": self.file.article_url(),
+        }
 
-        output = (f"https://museumofzzt.com/{escaped_file_url}?file="
-                  f"{escaped_zzt_url}&board={self.board}\n")
-        output += f"{self.file.title} by {author_str}"
-        if self.file.release_date:
-            output += " (" + str(self.file.release_date)[:4] + ")\n"
-        else:
-            output += "\n"
-        if self.file.companies.count():
-            output += "Published by: " + self.file.get_all_company_names() + "\n"
+        return render_to_string("museum_site/special/wozzt-{}.html".format(medium), context).strip()
 
-        board_properties = []
-
-        # Dark
+    def get_zfile_board_properties(self):
+        output = []
         if self.dark:
-            board_properties.append("🔦")
-        # Zap
+            output.append("🔦")
         if self.zap:
-            board_properties.append("⚡")
-        # Can fire
+            output.append("⚡")
         if self.shot_limit != 255:
-            board_properties.append(str(self.shot_limit) + " 🔫")
-        # Time limit
-        if self.time_limit != 0:
-            board_properties.append(str(self.time_limit) + " ⏳")
-
-        bp = ""
-        if board_properties:
-            bp = " {"
-            for p in board_properties:
-                bp += p + ", "
-            bp = bp[:-2] + "}"
-
-        output += f"[{self.zzt_file}] - \"{self.board_name}\"{bp}\n"
-
-        if self.file.supports_zeta_player:
-            escaped_play_url = quote(self.file.play_url())
-            output += f"https://museumofzzt.com{escaped_play_url}"
-
-        return output
-
-    def tumblr_text(self):
-        escaped_file_url = quote("file/" + self.file.letter + "/" + self.file.key + "/")
-        escaped_zzt_url = quote(self.zzt_file)
-        author_str = ", ".join(self.file.author_list())
-
-        output = (f"<a href='https://museumofzzt.com/{escaped_file_url}?file="
-                  f"{escaped_zzt_url}&board={self.board}'><i>Source</i></a><br>\n")
-        output += f"<b>{self.file.title}</b> by <i>{author_str}</i>"
-
-        if self.file.release_date:
-            output += " (" + str(self.file.release_date)[:4] + ")<br>\n"
-        else:
-            output += "<br>\n"
-
-        if self.file.companies.count():
-            output += "Published by: " + self.file.get_all_company_names() + "<br>\n"
-
-        board_properties = []
-
-        # Dark
-        if self.dark:
-            board_properties.append("🔦")
-        # Zap
-        if self.zap:
-            board_properties.append("⚡")
-        # Can fire
-        if self.shot_limit != 255:
-            board_properties.append(str(self.shot_limit) + " 🔫")
-        # Time limit
-        if self.time_limit != 0:
-            board_properties.append(str(self.time_limit) + " ⏳")
-
-        bp = ""
-        if board_properties:
-            bp = " {"
-            for p in board_properties:
-                bp += p + ", "
-            bp = bp[:-2] + "}"
-
-        output += f"[{self.zzt_file}] - \"{self.board_name}\"{bp}<br>\n"
-
-        if self.file.supports_zeta_player:
-            escaped_play_url = quote(self.file.play_url())
-            output += f"<a href='https://museumofzzt.com{escaped_play_url}'>Play this world in your browser</a>"
-
-        # Check for related articles
-        related_count = self.file.articles.published().exclude(category="Publication Pack").count()
-        if related_count:
-            output += (
-                f"<br><br>\n"
-                f"More information on \"{self.file.title}\" is available "
-                f"here: <a href='https://museumofzzt.com{self.file.article_url()}'>Related Articles</a>"
-            )
-
+            output.append("🔫: " + str(self.shot_limit)),
+        if self.time_limit:
+            output.append("⏳: " + str(self.time_limit)),
         return output
 
     def send_tumblr(self):
@@ -272,19 +202,8 @@ class WoZZT_Queue(BaseModel):
         if self.category == "tuesday":
             tags.append("title screen tuesday")
         client = pytumblr.TumblrRestClient(TUMBLR_OAUTH_CONSUMER, TUMBLR_OAUTH_CONSUMER_SECRET, TUMBLR_OAUTH_TOKEN, TUMBLR_OAUTH_SECRET)
-
-        resp = client.create_photo("worldsofzzt", state="published", tags=tags, caption=self.tumblr_text(), data=self.image_path())
+        resp = client.create_photo("worldsofzzt", state="published", tags=tags, caption=self.render_text("tumblr"), data=self.image_path())
         return resp
-
-    def tweet_text_short(self):
-        escaped_file_url = quote("file/" + self.file.letter + "/" + self.file.key + "/")
-        escaped_zzt_url = quote(self.zzt_file)
-
-        output = (f"https://museumofzzt.com/{escaped_file_url}?file="
-                  f"{escaped_zzt_url}&board={self.board}\n")
-        output += f"{self.file.title} [...]"
-
-        return output
 
     def send_tweet(self, tweet_related=True, discord_hook=True):
         try_shorter = False  # Try a shorter variant if this one is too long
@@ -292,42 +211,27 @@ class WoZZT_Queue(BaseModel):
         with open(self.image_path(), "rb") as imagefile:
             imagedata = imagefile.read()
 
-            t_up = Twitter(
-                domain='upload.twitter.com',
-                auth=OAuth(
-                    TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET,
-                    TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET
-                )
-            )
+            t_up = Twitter(domain='upload.twitter.com', auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
             img1 = t_up.media.upload(media=imagedata)["media_id_string"]
-            t = Twitter(auth=OAuth(
-                TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET,
-                TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET
-            ))
+            t = Twitter(auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
 
             try:
-                resp = t.statuses.update(
-                    status=self.tweet_text(), media_ids=img1, tweet_mode="extended"
-                )
+                resp = t.statuses.update(status=self.render_text("twitter"), media_ids=img1, tweet_mode="extended")
             except TwitterHTTPError as error:
                 for err in error.response_data.get("errors", []):
                     if err.get("code") == 186:  # "Tweets needs to be a bit shorter.":
                         try_shorter = True
-
                 if not try_shorter:
                     return False
 
             if try_shorter:
                 try:
-                    resp = t.statuses.update(
-                        status=self.tweet_text_short(), media_ids=img1, tweet_mode="extended"
-                    )
+                    resp = t.statuses.update(status=self.tweet_text_short(), media_ids=img1, tweet_mode="extended")
                 except TwitterHTTPError as error:
                     self.category = "failed"
                     self.save()
                     return False
 
-            # record(resp)
             twitter_id = resp.get("id")
             twitter_img = resp["entities"]["media"][0]["media_url"]
 
@@ -336,71 +240,17 @@ class WoZZT_Queue(BaseModel):
             related_count = self.file.articles.published().exclude(category="Publication Pack").count()
 
             if related_count:
-                article_text = (
-                    f"More information on \"{self.file.title}\" is available "
-                    f"here: https://museumofzzt.com{self.file.article_url()}"
-                )
-                resp = t.statuses.update(
-                    status=article_text, in_reply_to_status_id=twitter_id
-                )
+                article_text = (f"More information on \"{self.file.title}\" is available here: https://museumofzzt.com{self.file.article_url()}")
+                resp = t.statuses.update(status=article_text, in_reply_to_status_id=twitter_id)
 
         if discord_hook and twitter_id:
-            """ This is duplicate code and should be a function """
-            board_properties = []
-
-            # Dark
-            if self.dark:
-                board_properties.append("🔦")
-            # Zap
-            if self.zap:
-                board_properties.append("⚡")
-            # Can fire
-            if self.shot_limit != 255:
-                board_properties.append(str(self.shot_limit) + " 🔫")
-            # Time limit
-            if self.time_limit != 0:
-                board_properties.append(str(self.time_limit) + " ⏳")
-
-            bp = ""
-            if board_properties:
-                bp = " {"
-                for p in board_properties:
-                    bp += p + ", "
-                bp = bp[:-2] + "}"
-
-            discord_post = ("https://twitter.com/worldsofzzt/status/{}\n**{}** by {} ({})\n")
-            if self.file.companies.count():
-                discord_post += "Published by: {}\n".format(self.file.get_all_company_names())
-            discord_post += "`[{}] - \"{}\"` {}\n"
-            discord_post += (
-                "Explore: https://museumofzzt.com" +
-                quote(self.file.view_url()) + "?file=" + quote(self.zzt_file) +
-                "&board=" + str(self.board) + "\n"
-            )
-            if self.file.archive_name:
-                discord_post += (
-                    "Play: https://museumofzzt.com" +
-                    quote(self.file.play_url())
-                )
-
-            discord_post = discord_post.format(
-                twitter_id, self.file.title, ", ".join(self.file.author_list()),
-                str(self.file.release_date)[:4], quote(self.zzt_file),
-                self.board_name, bp
-            )
-
-            discord_data = {
-                "content": discord_post,
-                "embeds": [
-                    {"image": {"url": twitter_img}}
-                ]
-            }
-            resp = requests.post(
-                WEBHOOK_URL, headers={"Content-Type": "application/json"},
-                data=json.dumps(discord_data)
-            )
+            discord_data = {"content": self.render_text("discord"), "embeds": [{"image": {"url": twitter_img}}]}
+            resp = requests.post(WEBHOOK_URL, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
             record(resp)
             record(resp.content)
+        return True
+
+    def send_mastodon(self):
         return True
 
     def delete_image(self):
