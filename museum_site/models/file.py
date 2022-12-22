@@ -271,6 +271,12 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             output.append(a.title)
         return output
 
+    def company_list(self):
+        output = []
+        for c in self.companies.all():
+            output.append(c.title)
+        return output
+
     def genre_list(self):
         output = []
         for g in self.genres.all():
