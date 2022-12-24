@@ -356,12 +356,13 @@ def patreon_plug(*args, **kwargs):
 def plug(service='UNKNOWN-SERVICE'):
     services = {"youtube": "YouTube"}  # Stylized spellings
     title = services.get(service, service.title())
+    ext = "png" if service != "mastodon" else "svg"
     output = """
     <div class="plug plug-{0}"><a href="/{0}/" target="_blank" class="noext noul">
-        <div class="logo"><img src="/static/icons/plug-{0}.png"></div>
+        <div class="logo"><img src="/static/icons/plug-{0}.{ext}"></div>
         <div class="text">Worlds of ZZT on {title}</div>
     </a></div>
-    """.format(service, title=title)
+    """.format(service, title=title, ext=ext)
     return mark_safe(output + "\n")
 
 

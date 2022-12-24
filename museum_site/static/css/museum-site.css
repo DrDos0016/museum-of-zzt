@@ -311,6 +311,7 @@ pre.cp437 { line-height:14px;}
     color:var(--ega-white);
 }
 
+.plug-mastodon { background:var(--ega-darkpurple); border-color:var(--ega-purple); }
 .plug-twitter { background:var(--ega-darkcyan); border-color:var(--ega-cyan); }
 .plug-tumblr { background:var(--ega-darkblue); border-color:var(--ega-blue); }
 .plug-youtube { background:var(--ega-darkred); border-color:var(--ega-red); }
