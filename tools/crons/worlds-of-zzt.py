@@ -20,6 +20,7 @@ def main():
 
     entry = entry.order_by("-priority", "id")[0]
     entry.send_tumblr()
+    entry.send_mastodon()
     success = entry.send_tweet()
 
     if success:

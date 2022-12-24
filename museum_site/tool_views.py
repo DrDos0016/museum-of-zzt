@@ -14,8 +14,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db.models import Q
+from django.template.loader import render_to_string
 from django.shortcuts import render
-from django.template import Context, Template
 from django.template.defaultfilters import slugify
 from django.urls import get_resolver
 
@@ -489,9 +489,6 @@ def prep_publication_pack(request):
     else:
         data["form"] = Prep_Publication_Pack_Form(request.GET)
 
-        with open(os.path.join(SITE_ROOT, "museum_site", "templates", "museum_site", "tools", "blank-publication-pack.html")) as fh:
-            raw = fh.read().split("=START=")[1]
-
         associated_list = request.GET.getlist("associated", [])
         sub_context = {
             "year": request.GET.get("publish_date", "")[:4],
@@ -505,11 +502,7 @@ def prep_publication_pack(request):
             f.prefix = request.GET.getlist("prefix")[idx]
             idx += 1
 
-        # Render subtemplate
-        template = Template(raw)
-        context = Context(sub_context)
-        rendered = template.render(context)
-
+        rendered = render_to_string("museum_site/subtemplate/blank-publication-pack.html", sub_context)
         data["output_html"] = '<textarea style="width:99%;height:600px" id="rendered">{}</textarea>'.format(rendered)
 
     return render(request, "museum_site/generic-form-display-output.html", data)

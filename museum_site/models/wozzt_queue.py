@@ -12,6 +12,7 @@ import zookeeper
 
 from django.db import models
 from django.template.loader import render_to_string
+from mastodon import Mastodon
 from twitter import *
 
 from museum.settings import STATIC_URL
@@ -23,10 +24,11 @@ try:
     from museum_site.private import (
         TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_SECRET, TWITTER_OAUTH_TOKEN,
         WEBHOOK_URL,
-        TUMBLR_OAUTH_CONSUMER, TUMBLR_OAUTH_CONSUMER_SECRET, TUMBLR_OAUTH_TOKEN, TUMBLR_OAUTH_SECRET
+        TUMBLR_OAUTH_CONSUMER, TUMBLR_OAUTH_CONSUMER_SECRET, TUMBLR_OAUTH_TOKEN, TUMBLR_OAUTH_SECRET,
+        MASTODON_ACCESS_TOKEN, MASTODON_CLIENT_KEY, MASTODON_CLIENT_SECRET, MASTODON_EMAIL, MASTODON_PASS
     )
 except ModuleNotFoundError:
-    print("PRIVATE.PY NOT FOUND. WOZZT QUEUE CANNOT TWEET OR HOOK TO DISCORD")
+    print("PRIVATE.PY NOT FOUND. WOZZT QUEUE CANNOT POST")
 
 
 class WoZZT_Queue(BaseModel):
@@ -183,7 +185,7 @@ class WoZZT_Queue(BaseModel):
             "article_url": self.file.article_url(),
         }
 
-        return render_to_string("museum_site/special/wozzt-{}.html".format(medium), context).strip()
+        return render_to_string("museum_site/subtemplate/wozzt-{}.html".format(medium), context).strip()
 
     def get_zfile_board_properties(self):
         output = []
@@ -226,7 +228,7 @@ class WoZZT_Queue(BaseModel):
 
             if try_shorter:
                 try:
-                    resp = t.statuses.update(status=self.tweet_text_short(), media_ids=img1, tweet_mode="extended")
+                    resp = t.statuses.update(status=self.render_text("twitter-short"), media_ids=img1, tweet_mode="extended")
                 except TwitterHTTPError as error:
                     self.category = "failed"
                     self.save()
@@ -251,7 +253,18 @@ class WoZZT_Queue(BaseModel):
         return True
 
     def send_mastodon(self):
-        return True
+        # Log in
+        mastodon = Mastodon(client_id=os.path.join(SITE_ROOT, "museum_site", "wozzt-mastodon.secret"))
+        mastodon.log_in(MASTODON_EMAIL, MASTODON_PASS)
+
+        # Upload the image
+        media_resp = mastodon.media_post(media_file=self.image_path())
+        if media_resp.get("id"):
+            toot_resp = mastodon.status_post(status=self.render_text("mastodon"), media_ids=[media_resp["id"]])
+        else:
+            return media_resp
+
+        return toot_resp
 
     def delete_image(self):
         try:
@@ -273,7 +286,7 @@ class WoZZT_Queue(BaseModel):
         )
 
         context["columns"].append([
-            {"datum": "text-area", "label": "Tweet", "name": "wozzt-tweet", "value": self.tweet_text(), "readonly": True},
+            {"datum": "text-area", "label": "Tweet", "name": "wozzt-tweet", "value": self.render_text("twitter"), "readonly": True},
             {"datum": "link", "label": "Source", "value": "View", "url": self.file.url() + "?file={}&board={}".format(
                     self.zzt_file, self.board
                 ), "target": "_blank"}
