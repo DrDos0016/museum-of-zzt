@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.template.defaultfilters import linebreaks, urlize
+from django.template.loader import render_to_string
 
 from PIL import Image
 from internetarchive import upload as ia_upload
@@ -1438,16 +1439,13 @@ class Livestream_Vod_Form(forms.Form):
         a.static_directory = "ls-{}-{}".format(key, self.cleaned_data["video_url"])
         a.allow_comments = True
 
-        # Open the template
-        file_path = os.path.join(SITE_ROOT, "tools", "data", "youtube_template.html")
-        with open(file_path) as fh:
-            template = fh.read()
-
-        # Process the description
+        # Context for subtemplate
         final_desc = urlize(self.cleaned_data["video_description"])
         final_desc = linebreaks(final_desc)
+        subcontext = {"video_id": self.cleaned_data["video_url"], "desc": final_desc}
 
-        a.content = template.format(video_id=self.cleaned_data["video_url"], desc=final_desc)
+        # Render the subtemplate
+        a.content = render_to_string("museum_site/subtemplate/stream-vod-article.html", subcontext)
 
         # Process the uploaded image
         folder = os.path.join(SITE_ROOT, "museum_site", "static", "articles", str(self.cleaned_data["date"])[:4], a.static_directory)

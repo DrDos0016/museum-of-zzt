@@ -1,9 +1,5 @@
-This template is used as a base for the Prep Publication Pack Web Tool.
-
-Anything prior to the START line is discarded.
-=START=
-<p></p>
 {% templatetag openblock %} with "{{file_ids_string}}"|get_files_by_id as files {% templatetag closeblock %}
+<p></p>
 
 <h2>Contents</h2>
 <div class="gallery-frame">
@@ -28,4 +24,3 @@ Anything prior to the START line is discarded.
 {% endfor %}
 
 {% templatetag openblock %} endwith {% templatetag closeblock %}
-{% templatetag openblock %} patreon_plug {% templatetag closeblock %}
