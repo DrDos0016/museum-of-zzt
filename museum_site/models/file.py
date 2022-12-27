@@ -625,7 +625,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         # Download
         if self.actions["download"]:
             if self.downloads.count():
-                value = "Downloads…"
+                value = "Downloads ({})".format(self.downloads.count() + 1)  # Assume Museum hosted download available
                 url = "/download/{}/{}".format(self.letter, self.key)
             else:
                 value = "Download"
@@ -832,9 +832,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         # Modify download text if needed
         if self.downloads.count():
             cells[0]["value"] = "DLs…"
-            cells[0]["url"] = "/download/{}".format(
-                self.key
-            )
+            cells[0]["url"] = "/download/{}".format(self.key)
 
         context.update(cells=cells)
         return context

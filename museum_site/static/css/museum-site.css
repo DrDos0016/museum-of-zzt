@@ -18,6 +18,8 @@
 
     --unselected-tab: #AAA;
     --selected-tab: #619F9F;
+
+    --block-margin-lowlight: #888;
 }
 
 body.theme-dark
@@ -41,6 +43,8 @@ body.theme-dark
 
     --unselected-tab: #232455;
     --selected-tab: #232455;
+
+    --block-margin-lowlight: #3B4355;
 }
 
 body

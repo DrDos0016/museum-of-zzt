@@ -1,6 +1,7 @@
 {% load static %}
 {% load site_tags %}
 <div class="model-block detailed{% for r in obj.context.roles %} {{r}}{% endfor %}" data-model="{{obj.context.model}}" data-pk="{{obj.context.pk}}" id="{{obj.context.hash_id}}">
+    <div class="model-block-top-margin" title="{{obj.context.model}} #{{obj.pk}}">{% if obj.key %}{{obj.key}}{% else %}#{{obj.pk}}{% endif %}</div>
     {% if obj.context.prefix %}<div class="prefix">{{obj.context.prefix}}</div>{% endif %}
     <img class="preview-image thumbnail{% if not obj.context.nozoom %} zoomable{% endif %}{% if obj.context.zoomed %} zoomed{% endif %}" src="{% static obj.context.preview.url %}" alt="{{obj.context.preview.url}}">
     {% include "museum_site/datum/title-datum.html" with f=obj.context.title %}
