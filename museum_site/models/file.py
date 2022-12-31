@@ -135,14 +135,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     can_review = models.IntegerField(
         default=REVIEW_YES, choices=REVIEW_LEVELS, help_text="Choice of whether the file can be reviewed freely, pending approval, or not at all."
     )
-    publish_date = models.DateTimeField(
-        null=True, default=None, db_index=True, blank=True,
-        help_text="Date File was published on the Museum"
-    )
-    last_modified = models.DateTimeField(
-        auto_now=True,
-        help_text="Date DB entry was last modified"
-    )
+    publish_date = models.DateTimeField(null=True, default=None, db_index=True, blank=True, help_text="Date File was published on the Museum")
+    last_modified = models.DateTimeField(auto_now=True, help_text="Date DB entry was last modified")
 
     # Associations
     aliases = models.ManyToManyField("Alias", default=None, blank=True)
@@ -488,9 +482,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def init_actions(self):
         """ Determine which actions may be performed on this zfile """
         self.actions = {"review": False}
-        self.actions["download"] = True if self.file_exists() else False
-        self.actions["view"] = True if self.actions["download"] else False
-        self.actions["play"] = True if self.archive_name or (self.actions["download"] and self.supports_zeta_player()) else False
+        self.actions["download"] = True if self.downloads.all().count() else False
+        self.actions["view"] = True if self.can_museum_download() else False
+        self.actions["play"] = True if self.archive_name or (self.actions["view"] and self.supports_zeta_player()) else False
         self.actions["article"] = True if self.article_count else False
         # Review
         if (self.actions["download"] and self.can_review) or self.review_count:
@@ -623,18 +617,22 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self.init_actions()
 
         # Download
-        if self.actions["download"]:
-            if self.downloads.count():
-                value = "Downloads ({})".format(self.downloads.count() + 1)  # Assume Museum hosted download available
-                url = "/download/{}/{}".format(self.letter, self.key)
-            else:
-                value = "Download"
-                url = self.download_url()
+        downloads = self.downloads.all()
+        dl_count = len(downloads)
 
+        if dl_count > 1:
+            value = "Downloads ({})".format(self.downloads.count())
+            url = "/download/{}/{}".format(self.letter, self.key)
             link = {"datum": "link", "value": value, "url": url, "roles": ["download-link"], "icons": self.get_all_icons()}
+        elif dl_count == 1:
+            dl = self.downloads.first()
+            value = "Download"
+            url = dl.url
+            link = {"datum": "link", "value": value, "url": url, "roles": ["download-link"], "icons": self.get_all_icons()}
+            if dl.kind != "zgames":
+                link["target"] = "_blank"
         else:
-            link = {"datum": "text", "value": "Download", "kind": "faded"}
-
+            link = {"datum": "text", "value": "Unavailable", "kind": "faded"}
         links.append(link)
 
         # Play Online
@@ -807,11 +805,21 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.actions is None:
             self.init_actions()
 
-        if self.actions["download"]:
-            link = {"datum": "link", "value": "DL", "url": self.download_url(), "tag": "td",
-                    "icons": self.get_all_icons()}
+        downloads = self.downloads.all()
+        dl_count = len(downloads)
+
+        if dl_count > 1:
+            url = "/download/{}/{}".format(self.letter, self.key)
+            link = {"datum": "link", "value": "DLs…", "url": url, "tag": "td", "icons": self.get_all_icons()}
+        elif dl_count == 1:
+            dl = self.downloads.first()
+            value = "DL"
+            url = dl.url
+            link = {"datum": "link", "value": value, "url": url, "roles": ["download-link"], "tag": "td", "icons": self.get_all_icons()}
+            if dl.kind != "zgames":
+                link["target"] = "_blank"
         else:
-            link = {"datum": "text", "value": "DL", "kind": "faded", "tag": "td"}
+            link = {"datum": "text", "value": "N/A", "kind": "faded", "tag": "td"}
         cells.append(link)
 
         if self.actions["view"]:
@@ -829,11 +837,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         )
         cells.append({"datum": "text", "value": self.rating_html_for_view("list"), "tag": "td"})
 
-        # Modify download text if needed
-        if self.downloads.count():
-            cells[0]["value"] = "DLs…"
-            cells[0]["url"] = "/download/{}".format(self.key)
-
         context.update(cells=cells)
         return context
 
@@ -848,7 +851,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.actions["view"]:
             title_datum = {"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons()}
         else:
-            title_datum = {"datum": "title", "value": self.title, "kind": "faded"}
+            title_datum = {"datum": "title", "value": mark_safe("<i>{}</i>".format(self.title)), "url": self.attributes_url(), "icons": self.get_all_icons()}
 
         context.update(
             preview=dict(url=self.preview_url, alt=self.preview_url),
@@ -1056,6 +1059,13 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         author = "by {}".format(", ".join(self.author_list())) if not self.author_unknown() else ""
         year = "({})".format(self.release_date.year) if self.release_date else ""
         return " ".join([title, author, year])
+
+    def can_museum_download(self):
+        """ Return TRUE if a zfiles Download object is associated with this file and the file exists """
+        dl = self.downloads.filter(kind="zgames").first()
+        if dl and dl.zgame_exists():
+            return True
+        return False
 
 
 class ZFile_Admin(admin.ModelAdmin):

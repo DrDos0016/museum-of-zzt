@@ -198,6 +198,7 @@ def upload(request):
 
             zfile.language = "/".join(zgame_form.cleaned_data["language"])
 
+
             # Create and prepare new Upload object
             upload = upload_form.save(commit=False)
             upload.file_id = zfile.id
@@ -257,6 +258,11 @@ def upload(request):
 
             # Final save
             zfile.basic_save()
+
+            # Create a Download for zgames
+            download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + upload_filename, kind="zgames")
+            if created:
+                zfile.downloads.add(download)
 
             # Redirect
             return redirect("upload_complete", token=upload.edit_token)

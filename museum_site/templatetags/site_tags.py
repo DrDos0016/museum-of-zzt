@@ -403,11 +403,11 @@ def zfl(key, text="", qs="", target="_blank", i=True, *args, **kwargs):
 
 @register.simple_tag()
 def cl_info(pk=None, engine=None, emulator=None):
-    if pk is None:
+    zfile = File.objects.filter(pk=pk).first()
+    if zfile is None:
         zfile = File()
         zfile.id = -1
-    else:
-        zfile = File.objects.get(pk=pk)
+        zfile.title = "UNKNOWN ZFILE TODO"
 
     if zfile.companies.count():
         company = "Published Under: {}<br>".format(zfile.get_all_company_names())

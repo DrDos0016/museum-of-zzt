@@ -131,6 +131,7 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
     "title"
     "data";
     margin:0;
+    padding-top:14px;
 }
 
 .model-block.gallery .data

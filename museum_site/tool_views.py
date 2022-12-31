@@ -541,6 +541,12 @@ def publish(request, key, mode="PUBLISH"):
         data["file"].publish_date = datetime.now()
         data["file"].save()
 
+        # Adjust the zgames download to point to the letter directory
+        for dl in data["file"].downloads.all():
+            if dl.kind == "zgames":
+                dl.url = dl.url.replace("uploaded", data["file"].letter)
+                dl.save()
+
         # Increment publish count for users
         upload = Upload.objects.get(file__id=data["file"].id)
         if upload.user_id:

@@ -1,6 +1,9 @@
+import os
+
 from django.db import models
 
 from museum_site.models.base import BaseModel
+from museum_site.constants import SITE_ROOT
 
 
 class Download(BaseModel):
@@ -15,6 +18,7 @@ class Download(BaseModel):
     """
 
     KIND_CHOICES = [
+        ("zgames", "Museum of ZZT Hosted"),
         ("itch", "Itch.io"),
         ("personal", "Personal Webpage"),
         ("other", "Other"),
@@ -24,6 +28,7 @@ class Download(BaseModel):
         "itch": 40,
         "personal": 30,
         "other": 20,
+        "zgames": 0,
     }
 
     url = models.CharField(max_length=200)
@@ -44,7 +49,9 @@ class Download(BaseModel):
         return "[{}] {} - {}".format(self.id, self.kind, self.url)
 
     def hosted_on(self):
-        if self.kind == "itch":
+        if self.kind == "zgames":
+            return "Hosted on the Museum of ZZT"
+        elif self.kind == "itch":
             return "Hosted on itch.io"
         elif self.hosted_text:
             return "Hosted on " + self.hosted_text
@@ -54,7 +61,10 @@ class Download(BaseModel):
             return "Hosted elsewhere"
 
     def logo(self):
-        if self.kind == "itch":
+        if self.kind == "zgames":
+            src = "moz-dl-icon.png"
+            alt = "Museum of ZZT"
+        elif self.kind == "itch":
             src = "itchio-textless-white.svg"
             alt = "itch"
         else:
@@ -64,3 +74,7 @@ class Download(BaseModel):
             src, alt
         )
         return output
+
+    def zgame_exists(self):
+        """ Return TRUE if the zipfile is physically available """
+        return True if os.path.isfile(os.path.join(SITE_ROOT, self.url[1:])) else False

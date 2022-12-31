@@ -328,6 +328,10 @@ class DownloadForm(forms.ModelForm):
             ),
         }
 
+    def __init__(self, data=None, initial={}, instance=None):
+        super().__init__(data, initial=initial, instance=instance)
+        self.fields["kind"].widget.choices = self.fields["kind"].widget.choices[1:]  # Remove "zgames" as a possible alterante download location
+
 
 class Advanced_Search_Form(forms.Form):
     use_required_attribute = False
