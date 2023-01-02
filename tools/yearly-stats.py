@@ -14,13 +14,14 @@ from django.contrib.auth.models import User  # noqa: E402
 from museum_site.models import *  # noqa: E402
 from museum_site.common import *  # noqa: E402
 from museum_site.constants import *  # noqa: E402
-
+from museum_site.core.detail_identifiers import *  #noqa: E402
 
 def main():
     if len(sys.argv) == 2:
         year = sys.argv[-1]
     else:
-        year = "2021"
+        year = "2022"
+    print("Year:", year)
     start_date = year + "-01-01 00:00:00Z"
     end_date = year + "-12-31 23:59:59Z"
     # Total uploads
@@ -155,8 +156,8 @@ def main():
         if r.rating == -1:
             continue
 
-        if r.file:
-            f = r.file
+        if r.zfile:
+            f = r.zfile
         else:
             continue
 
