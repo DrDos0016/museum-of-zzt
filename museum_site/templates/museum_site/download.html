@@ -49,7 +49,7 @@
 
 <div class="flex-container justify-space-between">
     {% for d in downloads %}
-    <a href="{{d.url}}" target="_blank" class="noext noul">
+    <a href="{{d.url}}"{% if d.kind != 'zgames' %} target="_blank"{% endif %} class="noext noul">
     <div class="download-source-button {{d.kind}}">
     <div class="logo">{{d.logo|safe}}</div>
     <div class="dl-info">
