@@ -3,6 +3,16 @@ form
     margin:auto;
 }
 
+input[type="button"], input[type="submit"]
+{
+    background:var(--notice-bg);
+    font-family:cp437;
+    cursor:pointer;
+    font-size:16px;
+    padding:1px 4px 1px 4px;
+    min-height:28px;
+}
+
 .field-wrapper
 {
     padding:7px 4px 7px 4px;
@@ -62,8 +72,6 @@ label
 {
     margin:7px 0px 7px 8px;
     float:right;
-    background:var(--notice-bg);
-    font-family:cp437;
     padding:7px 4px 7px 4px;
 }
 

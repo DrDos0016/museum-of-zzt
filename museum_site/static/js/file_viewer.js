@@ -765,7 +765,7 @@ function parse_world(type, data)
     output += `</table>`;
 
     output += `<table class='fv' name='search-table' id="search-table">
-        <tr><td>ZZT-OOP Search:</td><td><input name="code-search"><button id="code-search-submit" type="button">Search</button> <button id="code-search-reset" type="button">Reset</button></tr>
+        <tr><td>ZZT-OOP Search:</td><td><input name="code-search"></td><td><input id="code-search-submit" type="button" value="Search"></td><td><input id="code-search-reset" type="button" value="Reset"></td></tr>
     </table>`;
 
     output += `<a class="jsLink" id="show-unterminated">Show unterminated values</a>`;
@@ -1049,7 +1049,7 @@ function render_board(e)
 
     // Tools
     if (can_live_edit)
-        output += `<br><button id="play-board">Play This Board</button>`;
+        output += `<br><input type="button" id="play-board" value="Play This Board">`;
 
     $("#board-info").html(output);
     tab_select("board-info");
