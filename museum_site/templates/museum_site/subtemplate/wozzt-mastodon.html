@@ -1,6 +1,6 @@
-“{{zfile_title}}”{% if zfile_author %} by {{zfile_author|join:"/"}}{% endif %}{% if zfile_year %} ({{zfile_year}}){% endif %}{% if zfile_company %}
+{% autoescape off %}“{{zfile_title}}”{% if zfile_author %} by {{zfile_author|join:"/"}}{% endif %}{% if zfile_year %} ({{zfile_year}}){% endif %}{% if zfile_company %}
 Published by: {{zfile_company|join:"/"}}{% endif %}
 [{{zfile_world}}] - “{{zfile_board}}” {% if zfile_board_properties %}{% templatetag openbrace %}{{zfile_board_properties|join:", "}}{% templatetag closebrace %}{% endif %}
 View World: https://museumofzzt.com{{board_url|safe}}{% if zfile.supports_zeta_player %}
 Play Online: https://museumofzzt.com{{play_url}}{% endif %}{% if related_article_count %}
-Learn More: https://museumofzzt.com{{article_url}}{% endif %} #bot
+Learn More: https://museumofzzt.com{{article_url}}{% endif %} #bot{% endautoescape %}

@@ -1,5 +1,5 @@
-https://museumofzzt.com{{board_url|safe}}
+{% autoescape off %}https://museumofzzt.com{{board_url|safe}}
 “{{zfile_title}}”{% if zfile_author %} by {{zfile_author|join:"/"}}{% endif %}{% if zfile_year %} ({{zfile_year}}){% endif %}{% if zfile_company %}
 Published by: {{zfile_company|join:"/"}}{% endif %}
 [{{zfile_world}}] - “{{zfile_board}}” {% if zfile_board_properties %}{% templatetag openbrace %}{{zfile_board_properties|join:", "}}{% templatetag closebrace %}{% endif %}{% if zfile.supports_zeta_player %}
-https://museumofzzt.com{{play_url}}{% endif %}
+https://museumofzzt.com{{play_url}}{% endif %}{% endautoescape %}

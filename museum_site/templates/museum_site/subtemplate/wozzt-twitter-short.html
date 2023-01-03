@@ -1,3 +1,3 @@
-https://museumofzzt.com{{board_url|safe}}
+{% autoescape off %}https://museumofzzt.com{{board_url|safe}}
 “{{zfile_title}}”{% if zfile_author %} by {{zfile_author|join:"/"}}{% endif %}{% if zfile_year %} ({{zfile_year}}){% endif %}
-[...]
+[...]{% endautoescape %}
