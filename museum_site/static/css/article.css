@@ -41,6 +41,7 @@
     border-bottom:1px solid var(--border-color);
     column-gap:32px;
     width:100%;
+    margin-bottom:7px;
 }
 
 #article-meta .preview-container
