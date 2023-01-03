@@ -80,17 +80,19 @@ def main():
         13:"Super ZZT",
         16:"ZIG",
         27:"Clone",
-        33:"Program",
+        #33:"Program",
         35:"Rom",
+        37:"Weave ZZT",
     }
-    lookups = [DETAIL_ZZT, DETAIL_SZZT, DETAIL_ZIG, DETAIL_CLONE_WORLD, DETAIL_PROGRAM, DETAIL_ROM]
+    lookups = [DETAIL_ZZT, DETAIL_SZZT, DETAIL_ZIG, DETAIL_CLONE_WORLD, DETAIL_WEAVE, DETAIL_ROM]
     details = {
         DETAIL_ZZT: 0,
         DETAIL_SZZT: 0,
         DETAIL_ZIG: 0,
         DETAIL_CLONE_WORLD: 0,
-        DETAIL_PROGRAM: 0,
+        #DETAIL_PROGRAM: 0,
         DETAIL_ROM: 0,
+        DETAIL_WEAVE: 0,
     }
     for u in qs:
         f_details = u.file.details.all().values_list("id", flat=True)
@@ -119,7 +121,7 @@ def main():
             print(a + ";" + str(author_stats[a]))
     print(len(author_stats), "total authors")
 
-    print("2021 RELEASES ===============================")
+    print("<YEAR> RELEASES ===============================")
     for a in author_stats_this_year.keys():
         print(a + ";" + str(author_stats_this_year[a]))
 
