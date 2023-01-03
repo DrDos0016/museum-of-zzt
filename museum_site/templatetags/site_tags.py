@@ -698,24 +698,3 @@ def generic_block_loop(items, view="detailed", header=None, request=None, *args,
         output += "</div>"
 
     return mark_safe(output + "\n")
-
-
-@register.simple_tag()
-def breadcrumbs(request):
-    # NOT IMPLEMENTED: 8/17
-    output = "<a href='/' title='Museum of ZZT'>♀</a>"
-    # output += "<a href=''>File</a> &gt; <a href=''>View</a> → <a href=''>Evil Sorcerers PArty</a> ► <a href=''>IDK</a>"
-    url = request.path[1:-1]  # Trim slashes
-
-    parsing = True
-    while parsing:
-        idx = url.find("/")
-        if idx == -1:
-            break
-        component = url[:idx]
-        print(component)
-        # Do stuff
-        url = url[idx:]
-
-    # output += " ► <a href='{}'>{}</a>".format(url, text)
-    return mark_safe(output + "\n")

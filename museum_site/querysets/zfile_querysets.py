@@ -10,7 +10,6 @@ from museum_site.querysets.base import Base_Queryset
 class ZFile_Queryset(Base_Queryset):
     def advanced_search(self, p):
         qs = self.all()
-        print(self.model)
 
         # Filter by simple fields
         for f in ["title", "filename"]:

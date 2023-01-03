@@ -53,7 +53,6 @@ def add_livestream(request, key):
             })
     else:
         form = Livestream_Vod_Form(initial={"associated_zfile": data["file"].pk})
-        print(form.initial)
 
     data["form"] = form
     return render(request, "museum_site/generic-form-display.html", data)
@@ -87,7 +86,6 @@ def audit_colors(request):
 
     for full_path in glob.glob(os.path.join(SITE_ROOT, "museum_site", "static", "css", "*.css")):
         stylesheet = os.path.basename(full_path)
-        print(stylesheet)
         data["stylesheets"][stylesheet] = []
         data["variables"][stylesheet] = []
         data["solarized"] = [
