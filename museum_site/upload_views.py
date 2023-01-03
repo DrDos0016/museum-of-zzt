@@ -41,9 +41,7 @@ def upload(request):
     zgame_obj = None
     upload_obj = None
     download_obj = None
-    edit_token = (
-        request.GET.get("token", "") + request.POST.get("edit_token", "")
-    )[-16:]  # Galaxy brain
+    edit_token = (request.GET.get("token", "") + request.POST.get("edit_token", ""))[-16:]  # Galaxy brain
 
     if edit_token:
         upload_obj = Upload.objects.get(edit_token=edit_token)
