@@ -122,9 +122,8 @@ class Article(BaseModel):
         year = self.publish_date.year if self.publish_date.year != 1970 else "unk"
         return ("articles/{}/{}/".format(year, self.static_directory))
 
-    def render(self, context):
+    def render(self, context={}):
         """ Render article content for use in a django template """
-        print("RENDERING", self.schema)
         if self.schema == "django":
             context_data = {
                 "TODO": "TODO", "CROP": "CROP",  # Expected TODO usage.
@@ -366,6 +365,21 @@ class Article(BaseModel):
         output.sort()
 
         return output
+
+    def word_count(self):
+        rendered = self.render()
+
+        if self.schema == "html" or self.schema == "django":
+            soup = BeautifulSoup(rendered, "html.parser")
+            rendered = soup.get_text()
+
+        words = rendered.replace("\r\n", " ").replace("\r", " ").replace("\n", " ").split(" ")
+        count = 0
+        for word in words:
+            if word.strip() != "":
+                count += 1
+
+        return count
 
     def category_slug(self):
         return slugify(self.category)
