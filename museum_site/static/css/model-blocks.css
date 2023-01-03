@@ -155,12 +155,13 @@ a.explicit.unpublished::before { content:"🔞🚧 "; }
 {
     display:flex;
     flex-wrap:wrap;
-    align-items:start;
+    align-items:stretch;
     text-align:center;
     gap: 14px 8px;
     justify-content:space-evenly;
     margin:14px 0px 14px 0px;
     grid-template-columns: minmax(240px, auto) 1fr;
+
 }
 
 /* Try to fit more than 2 at lower resolutions  TODO: THIS ISN'T VERY GOOD IMO */
