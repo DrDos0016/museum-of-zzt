@@ -330,26 +330,7 @@ def meta_tags(*args, **kwargs):
 
 @register.simple_tag()
 def patreon_plug(*args, **kwargs):
-    output = """
-        <div class="patreon-plug">
-        <div class="text">
-            <div class="heading">
-            <span>======</span> A Worlds of ZZT Production <span>======</span>
-            </div>
-            <p>
-               The Worlds of ZZT project is
-               committed to the preservation
-               of ZZT and its history.</p>
-
-               <p> This article was produced
-               thanks to supporters on Patreon.</p>
-
-            <a href="https://patreon.com/worldsofzzt" target="_blank">
-            Support Worlds of ZZT on Patreon!</a>
-        </div>
-    </div>
-    """
-    return mark_safe(output + "\n")
+    return render_to_string("museum_site/subtemplate/patreon-plug.html", {})
 
 
 @register.simple_tag()
