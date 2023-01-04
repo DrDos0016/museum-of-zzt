@@ -408,45 +408,16 @@ def cl_info(pk=None, engine=None, emulator=None):
         zfile = File()
         zfile.id = -1
         zfile.title = "UNKNOWN ZFILE TODO"
-
-    if zfile.companies.count():
-        company = "Published Under: {}<br>".format(zfile.get_all_company_names())
+        links = []
     else:
-        company = ""
+        actions = ["download", "play", "view"]
+        links = []
+        for action in actions:
+            link = zfile.get_link_for_action(action, target="_blank")
+            links.append(link)
 
-    if zfile.release_date is not None:
-        release = zfile.release_date.strftime("%B %m, %Y")
-    else:
-        release = "Unknown"
-
-    output = """
-        <div class="c">
-            <h2>{title}</h2>
-            By: {author}<br>
-            {company}
-            Released: {release}
-    """.format(
-        title=zfile.title, author=", ".join(zfile.author_list()), company=company, release=release
-    )
-
-    if engine:
-        output += "<br>Played Using: " + engine
-    if emulator:
-        output += " via " + emulator
-
-    output += (
-        '<br><a href="{download}" target="_blank">Download</a> | '
-        '<a href="{play}" target="_blank">Play Online</a> | '
-        '<a href="{view}" target="_blank">View Files</a><br>'
-    ).format(
-        download=zfile.download_url(),
-        play=zfile.play_url(),
-        view=zfile.view_url()
-    )
-
-    output += "<br>\t</div>"
-
-    return mark_safe(output + "\n")
+    sub_context = {"zfile": zfile, "engine": engine, "emulator": emulator, "links": links}
+    return render_to_string("museum_site/subtemplate/cl-info.html", sub_context)
 
 
 @register.tag(name="commentary")

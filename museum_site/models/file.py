@@ -60,8 +60,12 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         "-id": ["-id"],
         "-publish_date": ["-publish_date", "sort_title"]
     }
+
+    # Uninitizalized shared attributes
     actions = None  # Populated by self.init_actions()
     detail_ids = None  # Populated by self.init_detail_ids()
+    all_downloads = None
+    all_downloads_count = None
 
     SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
     PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not been fully checked by staff."
@@ -491,6 +495,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self.actions["review"] = True
         if self.actions["review"] and self.is_detail(DETAIL_UPLOADED):
             self.actions["review"] = False
+        self.actions["attributes"] = True
 
     def generate_screenshot(self, world=None, board=0, font=None, filename=None):
         # Get zip contents
@@ -616,56 +621,10 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.actions is None:
             self.init_actions()
 
-        # Download
-        downloads = self.downloads.all()
-        dl_count = len(downloads)
+        potential_actions = ["download", "play", "view", "review", "article", "attributes"]
 
-        if dl_count > 1:
-            value = "Downloads ({})".format(self.downloads.count())
-            url = "/download/{}/{}".format(self.letter, self.key)
-            link = {"datum": "link", "value": value, "url": url, "roles": ["download-link"], "icons": self.get_all_icons()}
-        elif dl_count == 1:
-            dl = self.downloads.first()
-            value = "Download"
-            url = dl.url
-            link = {"datum": "link", "value": value, "url": url, "roles": ["download-link"], "icons": self.get_all_icons()}
-            if dl.kind != "zgames":
-                link["target"] = "_blank"
-        else:
-            link = {"datum": "text", "value": "Unavailable", "kind": "faded"}
-        links.append(link)
-
-        # Play Online
-        if self.actions["play"]:
-            link = {"datum": "link", "value": "Play Online", "url": self.play_url(), "roles": ["play-link"], "icons": self.get_major_icons()}
-        else:
-            link = {"datum": "text", "value": "Play Online", "kind": "faded"}
-        links.append(link)
-
-        # View Files
-        if self.actions["view"]:
-            link = {"datum": "link", "value": "View Files", "url": self.view_url(), "roles": ["view-link"], "icons": self.get_major_icons()}
-        else:
-            link = {"datum": "text", "value": "View Files", "kind": "faded"}
-        links.append(link)
-
-        # Reviews
-        if self.actions["review"]:
-            link = {"datum": "link", "value": "Reviews ({})".format(self.review_count), "url": self.review_url(), "roles": ["review-link"]}
-        else:
-            link = {"datum": "text", "value": "Reviews (0)", "kind": "faded"}
-        links.append(link)
-
-        # Articles
-        if self.actions["article"]:
-            link = {"datum": "link", "value": "Articles ({})".format(self.article_count), "url": self.article_url(), "roles": ["article-link"]}
-        else:
-            link = {"datum": "text", "value": "Articles (0)", "kind": "faded"}
-        links.append(link)
-
-        # Attributes
-        link = {"datum": "link", "value": "Attributes", "url": self.attributes_url(), "roles": ["attribute-link"]}
-        links.append(link)
+        for action in potential_actions:
+            links.append(self.get_link_for_action(action))
 
         if debug:
             link = {"datum": "link", "value": "Edit ZF#{}".format(self.id), "url": self.admin_url(), "roles": ["debug-link"], "kind": "debug"}
@@ -1066,6 +1025,97 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if dl and dl.zgame_exists():
             return True
         return False
+
+    # NEW FOR 2023
+    def init_all_downloads(self):
+        if self.all_downloads is None:
+            self.all_downloads = self.downloads.all()
+            self.all_downloads_count = len(self.all_downloads)
+
+    def get_download_url(self):
+        """ Returns a URL for downloading the zfile """
+        self.init_all_downloads()
+        if self.all_downloads_count == 0:
+            return ""
+        elif self.all_downloads_count == 1:
+            return self.all_downloads.first().url
+        else:
+            return "/file/download/{}/".format(self.key)
+
+    def get_download_text(self):
+        """ Returns text for links to download the zfile """
+        self.init_all_downloads()
+        if self.all_downloads_count < 2:
+            return "Download"
+        else:
+            return "Downloads ({})".format(self.all_downloads_count)
+
+    def get_play_url(self):
+        """ Returns text for links to play the zfile online """
+        # TODO: Always returns a valid link
+        return "/file/play/{}".format(self.key)
+        return ""
+
+    def get_play_text(self):
+        """ Returns a URL for playing online """
+        return "Play Online"
+
+    def get_view_url(self):
+        """ Returns a URL for viewing the zfile's contents """
+        if self.can_museum_download():
+            return "/file/view/{}/".format(self.key)
+        return ""
+
+    def get_view_text(self):
+        """ Returns text for links to view the zfile's contents """
+        return "View Contents"
+
+    def get_review_url(self):
+        """ Returns a URL for reading the zfile's reviews """
+        if self.can_review or self.review_count > 0:  # If a review exists, allow it to be read even if new reviews are prohibited
+            return "/file/review/{}/".format(self.key)
+        return ""
+
+    def get_review_text(self):
+        """ Returns text for links to read the zfile's reviews """
+        return "Reviews ({})".format(self.review_count)
+
+    def get_article_url(self):
+        """ Returns a URL for viewing the zfile's related articles """
+        if self.article_count:
+            return "/file/article/{}/".format(self.key)
+        return ""
+
+    def get_article_text(self):
+        """ Returns text for links to view the zfile's related articles """
+        return "Articles ({})".format(self.article_count)
+
+    def get_attributes_url(self):
+        """ Returns a URL for viewing the zfile's attributes """
+        return "/file/attributes/{}/".format(self.key)
+
+    def get_attributes_text(self):
+        """ Returns text for links to view the zfile's attributes """
+        return "Attributes"
+
+    def get_link_for_action(self, action, target=None):
+        if self.actions is None:
+            self.init_actions()
+
+        url = getattr(self, "get_{}_url".format(action))()
+        text = getattr(self, "get_{}_text".format(action))()
+        if self.actions[action]:
+            link = {"datum": "link", "value": text, "url": url, "roles": ["{}-link".format(action)]}
+            if action == "download":
+                link["icons"] = self.get_all_icons()
+            elif action in ["play", "view"]:
+                link["icons"] = self.get_major_icons()
+            if target:
+                link["target"] = target
+        else:
+            link = {"datum": "text", "value": text, "kind": "faded"}
+        return link
+    # END NEW FOR 2023
 
 
 class ZFile_Admin(admin.ModelAdmin):
