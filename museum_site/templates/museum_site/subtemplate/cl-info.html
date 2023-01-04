@@ -1,0 +1,11 @@
+<div class="cl-info">
+    <h2>{{zfile.title}}</h2>
+    Author{{zfile.author_list|pluralize}}: {{zfile.author_list|join:", "}}<br>
+    {% if zfile.companies.count %}Compan{{zfile.companies.count|pluralize:"y,ies"}}: {{zfile.company_list|join:", "}}<br>{% endif %}
+    {% if zfile.release_date %}Released: {{zfile.release_date}}<br>{% endif %}
+    {% if engine %}Played Using: {{engine}}{% if emulator %} via {{emulator}}{% endif %}<br>{% endif %}
+    <div class="cl-info-links">{% for field in links %}
+    {% include "museum_site/datum/"|add:field.datum|add:"-datum.html" with f=field %}{% if not forloop.last %} |{% endif %}
+    {% endfor %}
+    </div>
+</div>
