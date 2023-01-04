@@ -7,15 +7,8 @@ from museum_site.constants import SITE_ROOT
 
 
 class Download(BaseModel):
-    """ Download object representing a place to acquire a file"""
+    """ Download object representing a location to acquire a file"""
     model_name = "Download"
-
-    """
-    Fields:
-    url             -- URL for download
-    priority        -- Priority for listing download sources
-    kind            -- What is this download source
-    """
 
     KIND_CHOICES = [
         ("zgames", "Museum of ZZT Hosted"),
@@ -31,12 +24,10 @@ class Download(BaseModel):
         "zgames": 0,
     }
 
-    url = models.CharField(max_length=200)
-    priority = models.IntegerField(default=10, editable=False)
-    kind = models.CharField(
-        max_length=100, choices=KIND_CHOICES, default="zgames"
-    )
-    hosted_text = models.CharField(max_length=100, blank=True)
+    url = models.CharField(max_length=200)  # URL for download
+    priority = models.IntegerField(default=10, editable=False)  # Priority for listing download sources (greater = more important)
+    kind = models.CharField(max_length=100, choices=KIND_CHOICES, default="zgames")  # Location of download
+    hosted_text = models.CharField(max_length=100, blank=True)  # String used for users to tell where a download is hosted
 
     class Meta:
         ordering = ["-priority"]
@@ -70,9 +61,7 @@ class Download(BaseModel):
         else:
             src = "generic-download-logo.png"
             alt = "Generic"
-        output = '<img src="/static/icons/{}" alt="{} Download Icon">'.format(
-            src, alt
-        )
+        output = '<img src="/static/icons/{}" alt="{} Download Icon">'.format(src, alt)
         return output
 
     def zgame_exists(self):
