@@ -1092,7 +1092,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def get_attributes_url(self):
         """ Returns a URL for viewing the zfile's attributes """
-        return "/file/attributes/{}/".format(self.key)
+        return "/file/attribute/{}/".format(self.key)
 
     def get_attributes_text(self):
         """ Returns text for links to view the zfile's attributes """
