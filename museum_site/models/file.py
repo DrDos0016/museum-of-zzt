@@ -483,8 +483,11 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def calculate_size(self):
         self.size = os.path.getsize(self.phys_path())
 
-    def init_actions(self):
+    def init_actions(self, refresh=False):
         """ Determine which actions may be performed on this zfile """
+        if not refresh and self.actions is not None:
+            return False
+
         self.actions = {"review": False}
         self.actions["download"] = True if self.downloads.all().count() else False
         self.actions["view"] = True if self.can_museum_download() else False
@@ -618,8 +621,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def links(self, debug=False):
         links = []
 
-        if self.actions is None:
-            self.init_actions()
+        self.init_actions()
 
         potential_actions = ["download", "play", "view", "review", "article", "attributes"]
 
@@ -761,32 +763,21 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         # Prepare Links
         cells = []
-        if self.actions is None:
-            self.init_actions()
 
-        downloads = self.downloads.all()
-        dl_count = len(downloads)
+        self.init_actions()
 
-        if dl_count > 1:
-            url = "/download/{}/{}".format(self.letter, self.key)
-            link = {"datum": "link", "value": "DLs…", "url": url, "tag": "td", "icons": self.get_all_icons()}
-        elif dl_count == 1:
-            dl = self.downloads.first()
-            value = "DL"
-            url = dl.url
-            link = {"datum": "link", "value": value, "url": url, "roles": ["download-link"], "tag": "td", "icons": self.get_all_icons()}
-            if dl.kind != "zgames":
-                link["target"] = "_blank"
-        else:
-            link = {"datum": "text", "value": "N/A", "kind": "faded", "tag": "td"}
-        cells.append(link)
+        # Shorten Download string
+        dl = self.get_link_for_action("download")
+        if dl.get("value") == "Download":
+            dl["value"] = "DL"
+        elif dl.get("value", "").startswith("Downloads"):
+            dl["value"] = "DLs…"
+        dl["tag"] = "td"
+        cells.append(dl)
 
-        if self.actions["view"]:
-            link = {"datum": "link", "value": self.title, "url": self.url(), "tag": "td",
-                    "icons": self.get_all_icons()}
-        else:
-            link = {"datum": "text", "value": self.title, "tag": "td", "kind": "faded"}
-        cells.append(link)
+        title = self.get_link_for_action("view", text=self.title)
+        title["tag"] = "td"
+        cells.append(title)
 
         cells.append({"datum": "text", "value": self.author_links(), "tag": "td"}),
         cells.append({"datum": "text", "value": self.company_links(), "tag": "td"}),
@@ -804,18 +795,15 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         context.update(self.initial_context(view="gallery"))
 
         # Prepare Links
-        if self.actions is None:
-            self.init_actions()
+        self.init_actions()
 
-        if self.actions["view"]:
-            title_datum = {"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons()}
-        else:
-            title_datum = {"datum": "title", "value": mark_safe("<i>{}</i>".format(self.title)), "url": self.attributes_url(), "icons": self.get_all_icons()}
+        title_datum = self.get_link_for_action("view", text=self.title)
+        title_datum["icons"] = self.get_all_icons()
 
         context.update(
             preview=dict(url=self.preview_url, alt=self.preview_url),
             title=title_datum,
-            columns=[],
+            columns = []
         )
         context["columns"].append([{"datum": "text", "value": self.author_links()}])
         return context
@@ -1098,12 +1086,12 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         """ Returns text for links to view the zfile's attributes """
         return "Attributes"
 
-    def get_link_for_action(self, action, target=None):
-        if self.actions is None:
-            self.init_actions()
+    def get_link_for_action(self, action, text="", target=None):
+        self.init_actions()
 
         url = getattr(self, "get_{}_url".format(action))()
-        text = getattr(self, "get_{}_text".format(action))()
+        if not text:
+            text = getattr(self, "get_{}_text".format(action))()
         if self.actions[action]:
             link = {"datum": "link", "value": text, "url": url, "roles": ["{}-link".format(action)]}
             if action == "download":
