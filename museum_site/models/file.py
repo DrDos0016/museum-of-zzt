@@ -1087,6 +1087,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return "Attributes"
 
     def get_link_for_action(self, action, text="", target=None):
+        """ Method for datum """
         self.init_actions()
 
         url = getattr(self, "get_{}_url".format(action))()
@@ -1103,6 +1104,72 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         else:
             link = {"datum": "text", "value": text, "kind": "faded"}
         return link
+
+    def get_action_link(self, action, value="", target=None):
+        """ Method for revamp """
+        self.init_actions()
+        url = getattr(self, "get_{}_url".format(action))()
+        if not value:
+            value = getattr(self, "get_{}_text".format(action))()
+
+        link = {"value": value, "url": url}
+
+        link["tag"] = "a" if self.actions[action] else "span"
+
+        if target:
+            link["target"] = target
+        return link
+
+    def context_universal(self):
+        context = {
+            "model": self.model_name,
+            "pk": self.pk,
+            "model_key": self.key if hasattr(self, "key") else self.pk,
+            "url": self.url(),
+            "roles": ["model-block"],
+            "preview": {
+                "no_zoom": False,
+                "zoomed": False,
+                "url": self.preview_url,
+                "alt": self.preview_url,
+            },
+            "icons": self.get_all_icons(),
+            "title": {
+                "tag": "h2",
+                "text": self.title,
+                "roles": ["title"],
+            },
+
+        }
+        return context
+
+    def context_detailed(self):
+        context = self.context_universal()
+        context["roles"].append("detailed")
+        context["show_actions"] = True
+        context["columns"] = []
+
+        columns = [
+            ["authors", "companies", "zfile_date", "genres", "filename", "size"],
+            ["details", "rating", "boards", "language", "publish date"],
+        ]
+        fields = {}
+
+        for col in columns:
+            column_fields = []
+            for field_name in col:
+                field_context = {"label": field_name, "value": "Value!"}
+                column_fields.append(field_context)
+            context["columns"].append(column_fields)
+
+        action_list = ["download", "play", "view", "review", "article", "attributes"]
+        actions = []
+        for action in action_list:
+            actions.append(self.get_action_link(action))
+
+        context["actions"] = actions
+        return context
+
     # END NEW FOR 2023
 
 

@@ -465,6 +465,7 @@ class Commentary(template.Node):
             commentary=commentary
         )
 
+
 @register.simple_tag()
 def fn(num=1):
     if num > 0:
@@ -473,8 +474,6 @@ def fn(num=1):
         num = -1 * num
         output = "<sup><a href='#fnl-{}' id='fn-{}'>[{}]</a></sup>"
     return mark_safe(output.format(num, num, num))
-
-
 
 
 @register.tag(name="il")
@@ -498,9 +497,7 @@ class IL(template.Node):
         board = "&board=" + self.args[2] if self.args[2] != "" else ""
         coords = "#" + self.args[3] if self.args[3] != "" else ""
         url = "/search?q={}&auto=1".format(q) + filename + board + coords
-        output = "<a class='il' target='_blank' href='{url}'>{text}</a>".format(
-            url=url, text=text
-        )
+        output = "<a class='il' target='_blank' href='{url}'>{text}</a>".format(url=url, text=text)
         return output
 
 
@@ -549,9 +546,7 @@ class Spoiler(template.Node):
 
     def render(self, context):
         text = self.nodelist[0].render(context)
-        output = "<div class='spoiler' style='display:{}'>{}</div>".format(
-            self.display, text
-        )
+        output = "<div class='spoiler' style='display:{}'>{}</div>".format(self.display, text)
         return output
 
 
@@ -562,17 +557,13 @@ def ssv_links(raw, param, lookup=""):
     lookup = LOOKUPS.get(lookup, {})
 
     for i in items:
-        output += "<a href='/search?{}={}'>{}</a>, ".format(
-            param, i, lookup.get(i, i)
-        )
+        output += "<a href='/search?{}={}'>{}</a>, ".format(param, i, lookup.get(i, i))
 
     return mark_safe(output[:-2] + "\n")
 
 
 @register.simple_tag()
-def gblock(
-    item, view="detailed", header=None, debug=False, request=None, *args, **kwargs
-):
+def gblock(item, view="detailed", header=None, debug=False, request=None, *args, **kwargs):
     template = "museum_site/blocks/generic-{}-block.html".format(view.split("-")[0])
     if not item:
         item = File(
@@ -641,7 +632,6 @@ def generic_block_loop(items, view="detailed", header=None, request=None, *args,
             if request and request.session.get("DEBUG"):
                 context["debug"] = True
 
-
         output += render_to_string(template, context)
 
     if view == "list":
@@ -650,3 +640,21 @@ def generic_block_loop(items, view="detailed", header=None, request=None, *args,
         output += "</div>"
 
     return mark_safe(output + "\n")
+
+
+@register.simple_tag()
+def model_block(item, view="detailed", *args, **kwargs):
+    context = item.context_detailed()
+    return render_to_string("museum_site/subtemplate/model-block-{}.html".format(view), context)
+
+
+@register.simple_tag()
+def render_icon(icon):
+    context = Context({"icon": icon})
+    template = Template('<span class="icon {{icon.role}}" title="{{icon.title}}">{{icon.glyph}}</span>')
+    return template.render(context)
+
+
+@register.simple_tag()
+def render_action(action_dict):
+    return render_to_string("museum_site/subtemplate/zfile-actions.html", action_dict)

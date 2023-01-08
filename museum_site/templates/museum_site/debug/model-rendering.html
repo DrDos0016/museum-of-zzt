@@ -1,0 +1,18 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+
+{% block content %}
+PRotocol? {{PROTOCOL|default:'not set'}}
+<hr>
+{% for zf in zfiles %}
+<b>{{zf.title}}</b><br>
+{% model_block zf view="detailed" %}
+<table>
+<tr>{% model_block zf view="list" %}</tr>
+</table>
+{% model_block zf view="gallery" %}
+<hr>
+{% endfor %}
+{% endblock %}
