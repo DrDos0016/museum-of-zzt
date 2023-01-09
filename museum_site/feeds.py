@@ -45,7 +45,7 @@ class LatestFilesFeed(Feed):
         return item.title
 
     def item_description(self, item):
-        output = "{} by {}".format(item.title, ", ".join(item.author_list()))
+        output = "{} by {}".format(item.title, ", ".join(item.related_list("authors")))
         if item.release_date:
             output += " (" + str(item.release_date)[:4] + ")\n"
         else:
@@ -91,7 +91,7 @@ class LatestUploadsFeed(Feed):
         return item.title
 
     def item_description(self, item):
-        output = "{} by {}".format(item.title, ", ".join(item.author_list()))
+        output = "{} by {}".format(item.title, ", ".join(item.related_list("authors")))
         if item.release_date:
             output += " (" + str(item.release_date)[:4] + ")\n"
         else:

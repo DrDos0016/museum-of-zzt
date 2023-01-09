@@ -147,7 +147,7 @@ def guide_words(*args, **kwargs):
                 continue
             if sort == "author":
                 if items[x].authors.count():
-                    link_text[x] = ", ".join(items[x].author_list())
+                    link_text[x] = ", ".join(items[x].related_list("authors"))
                 else:
                     link_text[x] = "-Unknown Author-"  # This shouldn't appear
             elif sort == "company":
