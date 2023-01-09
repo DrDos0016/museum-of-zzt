@@ -47,7 +47,7 @@ def upload(request):
     if edit_token:
         upload_obj = Upload.objects.get(edit_token=edit_token)
         zgame_obj = upload_obj.file
-        download_obj = zgame_obj.downloads.first()
+        download_obj = zgame_obj.downloads.exclude(kind="zgames").first()
 
     if request.method == "POST":  # User Submitted
         zgame_form = ZGameForm(request.POST, request.FILES, instance=zgame_obj)
@@ -121,25 +121,22 @@ def upload(request):
 
         # Validate
         success = False
-        if (
-            zgame_form.is_valid() and play_form.is_valid() and
-            upload_form.is_valid() and download_form.is_valid()
-        ):
+        validity = {"zgame": zgame_form.is_valid(), "play": play_form.is_valid(), "upload": upload_form.is_valid(), "download": download_form.is_valid()}
+        if validity["zgame"] and validity["play"] and validity["upload"] and validity["download"]:
             success = True
 
         if success:
             if request.FILES.get("zfile"):
-                upload_directory = os.path.join(SITE_ROOT, "zgames", "uploaded")
-
-                # Move the uploaded file to its destination directory
                 uploaded_file = request.FILES["zfile"]
-                upload_filename = (
-                    zgame_obj.filename if zgame_obj else uploaded_file.name
-                )
+                upload_directory = os.path.join(SITE_ROOT, "zgames", "uploaded")
+                upload_filename = zgame_obj.filename if zgame_obj else uploaded_file.name
+                # Move the uploaded file to its destination directory
                 file_path = os.path.join(upload_directory, upload_filename)
                 with open(file_path, 'wb+') as fh:
                     for chunk in uploaded_file.chunks():
                         fh.write(chunk)
+            else:
+                upload_filename = zgame_obj.filename
 
             # Create and prepare new File object
             zfile = zgame_form.save(commit=False)
@@ -147,6 +144,7 @@ def upload(request):
             # Check if editing caused a letter change
             original_letter = zfile.letter
             set_letter = get_letter_from_title(zfile.title)
+            print("Letter?", original_letter, set_letter)
             letter_change = True if original_letter != set_letter else False
 
             if request.FILES.get("zfile"):  # Only set if there's a zip
@@ -220,9 +218,9 @@ def upload(request):
             # Generate Screenshot
             gpi = upload_form.cleaned_data["generate_preview_image"]
             if zgame_obj:
-                if not letter_change:  # Same letter, do nothing
+                if letter_change:  # Same letter, do nothing
                     screenshot_filename = zgame_obj.screenshot
-                else:  # Move existing screenshot to new letter
+                elif zgame_obj.screenshot:  # Move existing screenshot to new letter
                     old_path = os.path.join(
                         STATIC_PATH, "images/screenshots/{}/{}".format(
                             original_letter, zgame_obj.screenshot
@@ -237,6 +235,7 @@ def upload(request):
                         os.rename(old_path, new_path)
                     except FileNotFoundError:
                         pass
+                    screenshot_filename = zgame_obj.screenshot
             else:
                 screenshot_filename = upload_filename[:-4] + ".png"
             if gpi != "NONE":
@@ -268,6 +267,10 @@ def upload(request):
 
         else:
             record("An upload attempt failed.")
+            record("ZGAME FORM:", validity["zgame"])
+            record("PLAY FORM:", validity["play"])
+            record("UPLOAD FORM:", validity["upload"])
+            record("DOWNLOAD FORM:", validity["download"])
 
     data["zgame_form"] = zgame_form
     data["play_form"] = play_form
