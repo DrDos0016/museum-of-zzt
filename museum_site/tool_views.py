@@ -24,6 +24,7 @@ from museum_site.constants import *
 from museum_site.core import *
 from museum_site.core.file_utils import place_uploaded_file
 from museum_site.core.image_utils import crop_file, optimize_image
+from museum_site.core.misc import calculate_sort_title
 from museum_site.forms import *
 from museum_site.models import *
 
@@ -901,7 +902,7 @@ def tool_index(request, key=None):
         if request.GET.get("recalculate"):
             field = request.GET["recalculate"]
             if field == "sort-title":
-                data["file"].calculate_sort_title()
+                data["file"].sort_title = calculate_sort_title(data["file"].title)
                 data["new"] = data["file"].sort_title
             elif field == "size":
                 data["file"].calculate_size()

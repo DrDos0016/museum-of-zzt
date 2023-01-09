@@ -23,6 +23,7 @@ from museum_site.common import zipinfo_datetime_tuple_to_str, record
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH
 from museum_site.core.transforms import qs_to_links
 from museum_site.core.detail_identifiers import *
+from museum_site.core.misc import calculate_sort_title
 from museum_site.core.zeta_identifiers import *
 from museum_site.core.image_utils import optimize_image
 from museum_site.models.zfile_legacy import ZFile_Legacy
@@ -179,7 +180,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self.letter = self.letter.lower()
 
         # Create sorted title
-        self.calculate_sort_title()
+        self.sort_title = calculate_sort_title(self.title)
 
         # Recalculate Article Count
         self.calculate_article_count()
@@ -220,39 +221,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             return ""
 
     # Other Functions
-    def calculate_sort_title(self):
-        output = ""
-        # Handle titles that start with A/An/The
-        sort_title = self.title.lower()
-
-        if sort_title.startswith(("a ", "an ", "the ")):
-            sort_title = sort_title[sort_title.find(" ") + 1:]
-
-        # Expand numbers
-        digits = 0  # Digits in number
-        number = ""  # The actual number
-        for idx in range(0, len(sort_title)):
-            ch = sort_title[idx]
-            if ch in "0123456789":
-                digits += 1
-                number += ch
-                continue
-            else:
-                if digits == 0:
-                    output += sort_title[idx]
-                else:
-                    padded_digits = "00000{}".format(number)[-5:]
-                    output += padded_digits + sort_title[idx]
-                    digits = 0
-                    number = ""
-        # Finale
-        if digits != 0:
-            padded_digits = "00000{}".format(number)[-5:]
-            output += padded_digits
-
-        self.sort_title = output
-        return True
-
     def letter_from_title(self):
         """ Returns the letter a file should be listed under after removing (a/an/the) """
         title = self.title.lower()

@@ -11,6 +11,7 @@ from museum_site.common import *
 from museum_site.constants import *
 from museum_site.constants import BANNED_IPS
 from museum_site.core import *
+from museum_site.core.misc import calculate_sort_title
 from museum_site.forms import *
 from museum_site.models import *
 from museum_site.private import NEW_UPLOAD_WEBHOOK_URL
@@ -156,7 +157,7 @@ def upload(request):
             zfile.letter = set_letter
             zfile.key = zfile.filename.lower()[:-4]
             zfile.release_source = "User upload"
-            zfile.calculate_sort_title()
+            zfile.sort_title = calculate_sort_title(zfile.title)
             zfile.basic_save()
             zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
             # Remove old genre assocs. when editing
