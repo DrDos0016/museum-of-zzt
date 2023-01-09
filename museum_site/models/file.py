@@ -227,6 +227,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return output
 
     def author_list(self):
+        """ STILL USED IN TEMPLATES """
         output = []
         for a in self.authors.all():
             output.append(a.title)

@@ -175,7 +175,7 @@ class WoZZT_Queue(BaseModel):
             "zfile_title": self.file.title,
             "zfile_author": self.file.related_list("authors"),
             "zfile_year": self.file.release_year(),
-            "zfile_company": self.file.company_list(),
+            "zfile_company": self.file.related_list("companies"),
             "zfile_world": self.zzt_file,
             "zfile_board": self.board_name,
             "zfile_board_properties": self.get_zfile_board_properties(),
