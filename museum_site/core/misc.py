@@ -7,7 +7,7 @@ from django.urls import reverse
 def calculate_sort_title(string):
     output = ""
     # Handle titles that start with A/An/The
-    sort_title = self.title.lower()
+    sort_title = string.lower()
 
     if sort_title.startswith(("a ", "an ", "the ")):
         sort_title = sort_title[sort_title.find(" ") + 1:]
