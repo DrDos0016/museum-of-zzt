@@ -23,7 +23,7 @@ from museum_site.common import zipinfo_datetime_tuple_to_str, record
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH
 from museum_site.core.transforms import qs_to_links
 from museum_site.core.detail_identifiers import *
-from museum_site.core.misc import calculate_sort_title, get_letter_from_title
+from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile
 from museum_site.core.zeta_identifiers import *
 from museum_site.core.image_utils import optimize_image
 from museum_site.models.zfile_legacy import ZFile_Legacy
@@ -179,15 +179,11 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         else:
             self.letter = self.letter.lower()
 
-
         self.sort_title = calculate_sort_title(self.title)  # Get sort title
         self.calculate_article_count()  # Recalculate Article Count
 
         # If the screenshot is blank and a file exists for it, set it
-        file_exists = os.path.isfile(
-            os.path.join(SITE_ROOT, "museum_site/static/images/screenshots/") +
-            self.letter + "/" + self.filename[:-4] + ".png"
-        )
+        file_exists = os.path.isfile(os.path.join(SITE_ROOT, "museum_site/static/images/screenshots/") + self.letter + "/" + self.filename[:-4] + ".png")
         if self.screenshot == "" and file_exists:
             self.screenshot = self.filename[:-4] + ".png"
 
@@ -200,7 +196,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         # Set board counts for non-uploads
         if HAS_ZOOKEEPER and not kwargs.get("new_upload"):
             if not self.playable_boards or not self.total_boards:
-                self.calculate_boards()
+                (self.playable_boards, self.total_boards) = calculate_boards_in_zipfile(self.phys_path())
 
         # Actual save call
         if kwargs.get("new_upload"):
@@ -330,120 +326,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if set_to_results:
             self.checksum = checksum
         return checksum
-
-    def calculate_boards(self):
-        self.playable_boards = None
-        self.total_boards = None
-        temp_playable = 0
-        temp_total = 0
-        zip_path = self.phys_path()
-        temp_path = os.path.join(SITE_ROOT, "temp")
-
-        try:
-            zf = zipfile.ZipFile(zip_path)
-        except (FileNotFoundError, zipfile.BadZipFile):
-            record("Skipping Calculate Boards function due to bad zip")
-            return False
-
-        file_list = zf.namelist()
-
-        for file in file_list:
-            name, ext = os.path.splitext(file)
-            ext = ext.upper()
-
-            if file.startswith("__MACOSX"):  # Don't count OSX info files
-                continue
-
-            if ext == ".ZZT":  # ZZT File
-                # Extract the file
-                try:
-                    zf.extract(file, path=temp_path)
-                except Exception:
-                    record("Could not extract {}. Aborting.".format(file))
-                    return False
-            else:
-                continue
-
-            z = zookeeper.Zookeeper(
-                os.path.join(temp_path, file)
-            )
-
-            to_explore = []
-            accessible = []
-
-            # Start with the starting board
-            to_explore.append(z.world.current_board)
-
-            false_positives = 0
-            for idx in to_explore:
-                # Make sure the board idx exists in the file
-                # (in case of imported boards with passages)
-                if idx >= len(z.boards):
-                    false_positives += 1
-                    continue
-
-                # record(to_explore)
-                # This board is clearly accessible
-                accessible.append(idx)
-
-                # Get the connected boards via edges
-                if (
-                    z.boards[idx].board_north != 0 and
-                    z.boards[idx].board_north not in to_explore
-                ):
-                    to_explore.append(z.boards[idx].board_north)
-                if (
-                    z.boards[idx].board_south != 0 and
-                    z.boards[idx].board_south not in to_explore
-                ):
-                    to_explore.append(z.boards[idx].board_south)
-                if (
-                    z.boards[idx].board_east != 0
-                    and z.boards[idx].board_east not in to_explore
-                ):
-                    to_explore.append(z.boards[idx].board_east)
-                if (
-                    z.boards[idx].board_west != 0
-                    and z.boards[idx].board_west not in to_explore
-                ):
-                    to_explore.append(z.boards[idx].board_west)
-
-                # Get the connected boards via passages
-                for stat in z.boards[idx].stats:
-                    # record("ON BOARD IDX", idx)
-                    try:
-                        stat_name = z.boards[idx].get_element(
-                            (stat.x, stat.y)
-                        ).name
-                        if stat_name == "Passage":
-                            # record("Found a passage at", stat.x, stat.y)
-                            if stat.param3 not in to_explore:
-                                to_explore.append(stat.param3)
-                    except IndexError:
-                        # Zookeeper raises this on corrupt boards
-                        continue
-
-            # Title screen always counts (but don't count it twice)
-            if 0 not in to_explore:
-                to_explore.append(0)
-
-            temp_playable += len(to_explore) - false_positives
-            temp_total += len(z.boards)
-
-            # Delete the extracted file from the temp folder
-            os.remove(os.path.join(temp_path, file))
-
-        # Use null instead of 0 to avoid showing up in searches w/ board limits
-        if self.playable_boards == 0:
-            self.playable_boards = None
-        else:
-            self.playable_boards = temp_playable
-        if self.total_boards == 0:
-            self.total_boards = None
-        else:
-            self.total_boards = temp_total
-
-        return True
 
     def calculate_size(self):
         self.size = os.path.getsize(self.phys_path())
@@ -1106,7 +988,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if view == "list":
             text = "DLs…" if text.startswith("Downloads") else "DL"
 
-        return {"label": "Download", "value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), text),"safe": True}
+        return {"label": "Download", "value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), text), "safe": True}
 
     def get_field_play(self, view="detailed"):
         restricted = {"value": "<span class='faded'><i>Play Online</i></span>", "safe": True}

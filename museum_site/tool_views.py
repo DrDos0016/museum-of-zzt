@@ -24,7 +24,7 @@ from museum_site.constants import *
 from museum_site.core import *
 from museum_site.core.file_utils import place_uploaded_file
 from museum_site.core.image_utils import crop_file, optimize_image
-from museum_site.core.misc import calculate_sort_title
+from museum_site.core.misc import calculate_sort_title, calculate_boards_in_zipfile
 from museum_site.forms import *
 from museum_site.models import *
 
@@ -676,7 +676,7 @@ def replace_zip(request, pk):
         if request.POST.get("update-checksum"):
             data["new_file"].calculate_checksum()
         if request.POST.get("update-board-count"):
-            data["new_file"].calculate_boards()
+            (data["new_file"].playable_boards, data["new_file"].total_boards) = calculate_boards_in_zipfile(data["new_file"].phys_path())
         if request.POST.get("update-size"):
             data["new_file"].calculate_size()
         if request.POST.get("update-contents"):
@@ -917,7 +917,7 @@ def tool_index(request, key=None):
                 data["file"].calculate_checksum()
                 data["new"] = data["file"].checksum
             elif field == "boards":
-                data["file"].calculate_boards()
+                (data["file"].playable_boards, data["file"].total_boards) = calculate_boards_in_zipfile(data["file"].phys_path())
                 data["new"] = "{}/{}".format(data["file"].playable_boards, data["file"].total_boards)
             elif field == "contents":
                 Content.generate_content_object(data["file"])

@@ -1,8 +1,102 @@
+import os
+import zipfile
 import urllib.parse
 
 from django.shortcuts import redirect
 from django.urls import reverse
 
+from museum_site.constants import SITE_ROOT
+from museum_site.common import record
+
+try:
+    import zookeeper
+    HAS_ZOOKEEPER = True
+except ImportError:
+    HAS_ZOOKEEPER = False
+
+
+def calculate_boards_in_zipfile(zip_path):
+    playable_boards = None
+    total_boards = None
+    temp_playable = 0
+    temp_total = 0
+    temp_path = os.path.join(SITE_ROOT, "temp")
+
+    try:
+        zf = zipfile.ZipFile(zip_path)
+    except (FileNotFoundError, zipfile.BadZipFile):
+        record("Skipping Calculate Boards function due to bad zip")
+        return (None, None)
+
+    file_list = zf.namelist()
+
+    for f in file_list:
+        name, ext = os.path.splitext(f)
+        ext = ext.upper()
+
+        if f.startswith("__MACOSX") or ext != ".ZZT":  # Don't count OSX info directory or non-ZZT files
+            continue
+
+        # Extract the file
+        try:
+            zf.extract(f, path=temp_path)
+        except Exception:
+            record("Could not extract {}. Aborting.".format(f))
+            return (None, None)
+
+        z = zookeeper.Zookeeper(os.path.join(temp_path, f))
+
+        to_explore = []
+        accessible = []
+
+        # Start with the starting board
+        to_explore.append(z.world.current_board)
+
+        false_positives = 0
+        for idx in to_explore:
+            # Make sure the board idx exists in the file (in case of imported boards with passages)
+            if idx >= len(z.boards):
+                false_positives += 1
+                continue
+
+            # The starting board is clearly accessible
+            accessible.append(idx)
+
+            # Get the connected boards via edges
+            if (z.boards[idx].board_north != 0 and z.boards[idx].board_north not in to_explore):
+                to_explore.append(z.boards[idx].board_north)
+            if (z.boards[idx].board_south != 0 and z.boards[idx].board_south not in to_explore):
+                to_explore.append(z.boards[idx].board_south)
+            if (z.boards[idx].board_east != 0 and z.boards[idx].board_east not in to_explore):
+                to_explore.append(z.boards[idx].board_east)
+            if (z.boards[idx].board_west != 0 and z.boards[idx].board_west not in to_explore):
+                to_explore.append(z.boards[idx].board_west)
+
+            # Get the connected boards via passages
+            for stat in z.boards[idx].stats:
+                try:
+                    stat_name = z.boards[idx].get_element((stat.x, stat.y)).name
+                    if stat_name == "Passage":
+                        if stat.param3 not in to_explore:
+                            to_explore.append(stat.param3)
+                except IndexError:
+                    # Zookeeper raises this on corrupt boards
+                    continue
+
+        # Title screen always counts (but don't count it twice)
+        if 0 not in to_explore:
+            to_explore.append(0)
+
+        temp_playable += len(to_explore) - false_positives
+        temp_total += len(z.boards)
+
+        # Delete the extracted file from the temp folder
+        os.remove(os.path.join(temp_path, f))
+
+    # Use null instead of 0 to avoid showing up in searches w/ board limits
+    playable_boards = None if temp_playable == 0 else temp_playable
+    total_boards = None if temp_total == 0 else temp_total
+    return (playable_boards, total_boards)
 
 def calculate_sort_title(string):
     output = ""
