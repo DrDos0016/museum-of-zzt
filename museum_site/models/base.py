@@ -7,6 +7,7 @@ class BaseModel(models.Model):
     table_fields = []
     supported_views = ["detailed", "list", "gallery"]
     extra_context = {}
+    has_icons = False  # Updated from class specific obj._init_icons()
 
     def admin_url(self):
         name = self.model_name.replace("-", "_").lower()

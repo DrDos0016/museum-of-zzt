@@ -32,7 +32,7 @@ def debug(request, filename=None):
     )
 
     test_zfiles = File.objects.filter(
-        id__in=[327, 420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415, 3471, 2568]
+        id__in=[278, 327, 420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415, 3471, 2568]
     ).order_by("id")
 
     test_articles = Article.objects.filter(

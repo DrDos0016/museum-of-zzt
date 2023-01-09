@@ -644,17 +644,5 @@ def generic_block_loop(items, view="detailed", header=None, request=None, *args,
 
 @register.simple_tag()
 def model_block(item, view="detailed", *args, **kwargs):
-    context = item.context_detailed()
+    context = getattr(item, "context_{}".format(view))()
     return render_to_string("museum_site/subtemplate/model-block-{}.html".format(view), context)
-
-
-@register.simple_tag()
-def render_icon(icon):
-    context = Context({"icon": icon})
-    template = Template('<span class="icon {{icon.role}}" title="{{icon.title}}">{{icon.glyph}}</span>')
-    return template.render(context)
-
-
-@register.simple_tag()
-def render_action(action_dict):
-    return render_to_string("museum_site/subtemplate/zfile-actions.html", action_dict)

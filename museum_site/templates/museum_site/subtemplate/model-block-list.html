@@ -1,3 +1,4 @@
-<tr class="{% for r in obj.context.roles %} {{r}}{% endfor %}" data-model="{{obj.context.model}}" data-pk="{{obj.context.pk}}" id="{{obj.context.hash_id}}">
-    {% for cell in obj.context.cells %}{% include "museum_site/datum/"|add:cell.datum|add:"-datum.html" with f=cell %}{% endfor %}
+{% load site_tags %}
+<tr class="{{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
+    {% for field in cells %}<td><div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div></td>{% endfor %}
 </tr>

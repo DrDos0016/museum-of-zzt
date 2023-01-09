@@ -4,15 +4,22 @@
 
 
 {% block content %}
-PRotocol? {{PROTOCOL|default:'not set'}}
-<hr>
 {% for zf in zfiles %}
-<b>{{zf.title}}</b><br>
 {% model_block zf view="detailed" %}
-<table>
-<tr>{% model_block zf view="list" %}</tr>
-</table>
-{% model_block zf view="gallery" %}
-<hr>
 {% endfor %}
+
+
+<table>
+{% for zf in zfiles %}
+{% if forloop.first %}{{zf.table_header}}{% endif %}
+{% model_block zf view="list" %}
+{% endfor %}
+</table>
+
+<div class="gallery-frame">
+{% for zf in zfiles %}
+{% model_block zf view="gallery" %}
+{% endfor %}
+</div>
+<hr>
 {% endblock %}

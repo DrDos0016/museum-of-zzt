@@ -21,6 +21,7 @@ from museum.settings import STATIC_URL
 
 from museum_site.common import zipinfo_datetime_tuple_to_str, record
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH
+from museum_site.core.transforms import qs_to_links
 from museum_site.core.detail_identifiers import *
 from museum_site.core.zeta_identifiers import *
 from museum_site.core.image_utils import optimize_image
@@ -803,7 +804,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         context.update(
             preview=dict(url=self.preview_url, alt=self.preview_url),
             title=title_datum,
-            columns = []
+            columns=[]
         )
         context["columns"].append([{"datum": "text", "value": self.author_links()}])
         return context
@@ -836,6 +837,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self._major_icons.append(self.ICONS["weave"])
         if self.is_detail(DETAIL_FEATURED):
             self._minor_icons.append(self.ICONS["featured"])
+
+        self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
     @mark_safe
     def rating_html_for_view(self, view="detailed"):
@@ -1120,55 +1123,220 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             link["target"] = target
         return link
 
+    def get_field_download(self, view="detailed"):
+        restricted = {"value": "<span class='faded'><i>Download</i></span>", "safe": True}
+        if not self.actions["download"]:
+            if view == "list":
+                restricted["value"] = restricted["value"].replace("Download", "DL")
+            return restricted
+
+        self.init_all_downloads()
+        text = "Download" + ("s ({})".format(self.all_downloads_count) if self.all_downloads_count >= 2 else "")
+
+        if self.all_downloads_count == 0:
+            return restricted
+
+        url = self.all_downloads.first().url if self.all_downloads_count == 1 else "/file/download/{}/".format(self.key)
+
+        # Change text for list view
+        if view == "list":
+            text = "DLs…" if text.startswith("Downloads") else "DL"
+
+        return {"label": "Download", "value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), text),"safe": True}
+
+    def get_field_play(self, view="detailed"):
+        restricted = {"value": "<span class='faded'><i>Play Online</i></span>", "safe": True}
+        if not self.actions["play"]:
+            return restricted
+        url = "/file/view/{}/".format(self.key)
+        return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), "Play Online"), "safe": True}
+
+    def get_field_view(self, view="detailed"):
+        restricted = {"value": "<span class='faded'><i>View Contents</i></span>", "safe": True}
+        if not self.actions["view"]:
+            if view == "list" or view == "title":
+                return {"value": "<span class='faded'><i>{}</i></span>".format(self.title), "safe": True}
+            return restricted
+
+        url = "/file/view/{}/".format(self.key) if self.can_museum_download() else ""
+        texts = {"detailed": "View Contents", "list": self.title, "gallery": self.title, "title": self.title}
+        text = texts[view]
+        return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), text), "safe": True}
+
+    def get_field_review(self, view="detailed"):
+        restricted = {"value": "<span class='faded'><i>Reviews (0)</i></span>", "safe": True}  # If count is non-zero you can click the link
+        if not self.actions["review"]:
+            return restricted
+
+        url = "/file/review/{}/".format(self.key)
+        text = "Reviews ({})".format(self.review_count)
+        return {"value": "<a href='{}'>{}</a>".format(url, text), "safe": True}
+
+    def get_field_article(self, view="detailed"):
+        restricted = {"value": "<span class='faded'><i>Articles (0)</i></span>", "safe": True}  # If count is non-zero you can click the link
+        if not self.actions["article"]:
+            return restricted
+        url = "/file/article/{}/".format(self.key)
+        text = "Articles ({})".format(self.article_count)
+        return {"value": "<a href='{}'>{}</a>".format(url, text), "safe": True}
+
+    def get_field_attributes(self, view="detailed"):
+        restricted = {"value": "<span class='faded'><i>Articles (0)</i></span>", "safe": True}  # If count is non-zero you can click the link
+        if not self.actions["attributes"]:
+            return restricted
+        url = "/file/attribute/{}/".format(self.key)
+        return {"value": "<a href='{}'>Attributes</a>".format(url), "safe": True}
+
+    def get_field_authors(self, view="detailed"):
+        qs = self.authors.all()
+        plural = "s" if qs.count() > 1 else ""
+        return {"label": "Author{}".format(plural), "value": qs_to_links(qs), "safe": True}
+
+    def get_field_companies(self, view="detailed"):
+        qs = self.companies.all()
+        plural = "ies" if qs.count() > 1 else "y"
+        return {"label": "Compan{}".format(plural), "value": qs_to_links(qs), "safe": True}
+
+    def get_field_zfile_date(self, view="detailed"):
+        if self.release_date is None:
+            date_str = "<i>Unknown</i>"
+            url = "/file/browse/year/{}/".format(self.release_year(default="unk"))
+        else:
+            date_str = self.release_date.strftime("%b %d, %Y")
+            url = "/file/browse/year/{}/".format(self.release_year(default="unk"))
+
+        return {"label": "Released", "value": "<a href='{}'>{}</a>".format(url, date_str), "safe": True}
+
+    def get_field_genres(self, view="detailed"):
+        qs = self.genres.all()
+        plural = "s" if qs.count() > 1 else ""
+        return {"label": "Genre{}".format(plural), "value": qs_to_links(qs), "safe": True}
+
+    def get_field_filename(self, view="detailed"):
+        return {"label": "Filename", "value": self.filename}
+
+    def get_field_size(self, view="detailed"):
+        return {"label": "Size", "value": filesizeformat(self.size), "title": "{} bytes".format(self.size)}
+
+    def get_field_details(self, view="detailed"):
+        qs = self.details.all()
+        plural = "s" if qs.count() > 1 else ""
+        return {"label": "Detail{}".format(plural), "value": qs_to_links(qs), "safe": True}
+
+    def get_field_rating(self, view="detailed"):
+        if self.rating is not None:
+            long_rating = (str(self.rating) + "0")[:4]
+            rating = "{} / 5.00".format(long_rating)
+        else:
+            rating = "<i>No rating</i>"
+
+        plural = "s" if self.review_count != 1 else ""
+        output = {"label": "Rating", "value": "{} ({} Review{})".format(rating, self.review_count, plural), "safe": True}
+        if view == "list":
+            if self.review_count:
+                output = {"label": "Rating", "value": "{}<br>({})".format(rating.split(" ")[0], self.review_count), "safe": True}
+            else:
+                output = {"label": "Rating", "value": "{}".format(rating), "safe": True}
+        return output
+
+    def get_field_boards(self, view="detailed"):
+        return {
+            "label": "Board Count", "value": "{} / {}".format(self.playable_boards, self.total_boards),
+            "title": "Playable/Total boards. Values are automatic estimates and may be inaccurate."
+        }
+
+    def get_field_language(self, view="detailed"):
+        language_str = ""
+        for lang in self.language.split("/"):
+            language_str += "<a href='/file/browse/language/{}/'>{}</a>, ".format(lang, LANGUAGES.get(lang, "Other"))
+        return {"label": "Language", "value": language_str[:-2], "safe": True}
+
+    def get_field_publish_date(self, view="detailed"):
+        if (self.publish_date is None) or (self.publish_date.strftime("%Y-%m-%d") < "2018-11-07"):
+            publish_date_str = "<i>Unknown</i>"
+        else:
+            publish_date_str = self.publish_date.strftime("%b %d, %Y, %I:%M:%S %p")
+
+        return {"label": "Publish Date", "value": publish_date_str, "safe": True}
+
+    def get_field(self, field_name, view="detailed"):
+        if hasattr(self, "get_field_{}".format(field_name)):
+            field_context = getattr(self, "get_field_{}".format(field_name))(view)
+        else:
+            field_context = {"label": field_name, "value": "placeholder"}
+        return field_context
+
     def context_universal(self):
+        self.init_actions()
+        self.get_all_icons()
         context = {
             "model": self.model_name,
             "pk": self.pk,
             "model_key": self.key if hasattr(self, "key") else self.pk,
             "url": self.url(),
-            "roles": ["model-block"],
             "preview": {
                 "no_zoom": False,
                 "zoomed": False,
                 "url": self.preview_url,
                 "alt": self.preview_url,
             },
-            "icons": self.get_all_icons(),
-            "title": {
-                "tag": "h2",
-                "text": self.title,
-                "roles": ["title"],
-            },
-
+            "title": self.get_field("view", view="title"),
         }
         return context
 
     def context_detailed(self):
         context = self.context_universal()
-        context["roles"].append("detailed")
+        context["roles"] = ["model-block", "detailed"]
         context["show_actions"] = True
         context["columns"] = []
 
         columns = [
             ["authors", "companies", "zfile_date", "genres", "filename", "size"],
-            ["details", "rating", "boards", "language", "publish date"],
+            ["details", "rating", "boards", "language", "publish_date"],
         ]
         fields = {}
 
         for col in columns:
             column_fields = []
             for field_name in col:
-                field_context = {"label": field_name, "value": "Value!"}
+                field_context = self.get_field(field_name)
                 column_fields.append(field_context)
             context["columns"].append(column_fields)
 
         action_list = ["download", "play", "view", "review", "article", "attributes"]
         actions = []
         for action in action_list:
-            actions.append(self.get_action_link(action))
+            actions.append(self.get_field(action, view="detailed"))
 
         context["actions"] = actions
         return context
+
+    def context_list(self):
+        context = self.context_universal()
+        context["roles"] = ["list"]
+        context["cells"] = []
+
+        cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
+        for field_name in cell_list:
+            cell_fields = self.get_field(field_name, view="list")
+            context["cells"].append(cell_fields)
+        return context
+
+    def context_gallery(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "gallery"]
+        context["fields"] = [
+            self.get_field("authors", view="gallery")
+        ]
+        return context
+
+    def prepare_icons_for_field(self):
+        if self.has_icons:
+            icons = "<div class='model-block-icons'>"
+            for icon in self.get_all_icons():
+                icons += '<span class="icon {}" title="{}">{}</span>'.format(icon["role"], icon["title"], icon["glyph"])
+            return icons + "</div>"
+        return ""
 
     # END NEW FOR 2023
 

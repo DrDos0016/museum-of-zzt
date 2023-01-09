@@ -2,12 +2,10 @@
 {% load site_tags %}
 
 <div class="{{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
-    <div class="model-block-top-margin" title="{{model}} #{{pk}}">{{model_key}}</div>
-    {% if obj.context.prefix %}TODO: IDK WHAT THIS IS?<div class="prefix">{{obj.context.prefix}}</div>{% endif %}
+    <div class="model-block-top-margin"><span title="{{model}} #{{pk}}">{{model_key}}</span></div>
     <img class="preview-image thumbnail{% if not preview.no_zoom %} zoomable{% endif %}{% if preview.zoomed %} zoomed{% endif %}" src="{% static preview.url %}" alt="{{preview.url}}">
-    <div class="model-block-title title">
-        {% if icons %}<div class="model-block-icons">{% for icon in icons %}{% render_icon icon %}{% endfor %}</div>{% endif %}
-        <a href="{{url}}"><{{title.tag}} class="{{title.roles|join:' ' }}">{{title.text}}</{{title.tag}}></a>
+    <div class="model-block-title">
+        <h2>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h2>
     </div>
     <div class="model-block-data data">
         {% for col in columns %}
@@ -15,17 +13,19 @@
             {% for field in col %}
             <div class="datum">
                 <div class="label">{{field.label}}</div>
-                <div class="value">{{field.value}}</div>
+                <div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
             </div>
             {% endfor %}
         </div>
         {% endfor %}
     </div>
     {% if obj.context.extras %}<div class="extras">TODO: AWFUL{% for extra in obj.context.extras %}{% include extra with featured_articles=obj.context.featured_articles lost_description=obj.context.lost_description detail_name=obj.context.detail_name utility_description=obj.context.utility_description collection_description=obj.context.collection_description %}{% endfor %}</div>{% endif %}
-    {% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% render_action action %}{% endfor %}</div>{% endif %}
+    {% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
 </div>
+{% comment %}
+TODO: ANY OF THIS JUNK?
 {% if obj.context.links %}
 {% if obj.context.model == "File" %}{% zfile_links zfile=obj.context.file debug=request.session.DEBUG %}{% endif %}
 {% if obj.context.model == "Collection" %}{% include "museum_site/blocks/collection-links.html"|lower with slug=obj.context.slug %}{% endif %}
 {% endif %}
-
+{% endcomment %}

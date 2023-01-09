@@ -79,3 +79,11 @@ def qs_manual_order(qs, ordering, field="pk", kind="int"):
             key = i
         ordered.append(temp_dict[key])
     return ordered
+
+
+def qs_to_links(qs):
+    output = ""
+    html = "<a href='{}'>{}</a>, "
+    for i in qs:
+        output += html.format(i.url(), i.title)
+    return output[:-2]

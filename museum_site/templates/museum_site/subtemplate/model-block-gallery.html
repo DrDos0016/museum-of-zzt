@@ -1,14 +1,15 @@
 {% load static %}
-<div class="model-block gallery{% for r in obj.context.roles %} {{r}}{% endfor %}" data-model="{{obj.context.model}}" data-pk="{{obj.context.pk}}" id="{{obj.context.hash_id}}" data-generic="GENERIC">
-    <img class="preview-image thumbnail {% if not obj.context.nozoom %}zoomable{% endif %}" src="{% static obj.context.preview.url %}" alt="{{obj.context.preview.url}}">
-    {% comment %}{% include "museum_site/datum/"|add:obj.context.title.datum|add:"-datum.html" with f=obj.context.title %}{% endcomment %}
+{% load site_tags %}
+<div class="{{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
+    <img class="preview-image thumbnail{% if not preview.no_zoom %} zoomable{% endif %}{% if preview.zoomed %} zoomed{% endif %}" src="{% static preview.url %}" alt="{{preview.url}}">
+    <div class="model-block-title">
+        <h2>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h2>
+    </div>
     <div class="data">
-        {% for col in obj.context.columns %}
-        <div class="col">
-        {% for field in col %}
-        {% include "museum_site/datum/"|add:field.datum|add:"-datum.html" with f=field %}
+        <div class="datum">
+        {% for field in fields %}
+            <div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
         {% endfor %}
         </div>
-        {% endfor %}
     </div>
 </div>
