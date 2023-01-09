@@ -106,6 +106,7 @@ def main():
 
     print("-" * 60)
     # Uploads by Author
+    """
     author_stats = {}
     author_stats_this_year = {}
     for u in qs:
@@ -114,6 +115,21 @@ def main():
             author_stats[a] = author_stats.get(a, 0) + 1
             if u.file.release_date and str(u.file.release_date) >= start_date:
                 author_stats_this_year[a] = author_stats_this_year.get(a, 0) + 1
+    """
+    qs = File.objects.filter(publish_date__gte="2022-01-01", publish_date__lt="2023-01-01")
+    authors = {}
+    for zf in qs:
+        for author in zf.authors.all():
+            if authors.get(author.title):
+                authors[author.title] += 1
+            else:
+                authors[author.title] = 1
+    print("TODO TODO TODO Sorry future me I didn't finish rewriting this TODO TODO TODO")
+    print("TODO TODO TODO Sorry future me I didn't finish rewriting this TODO TODO TODO")
+    print("TODO TODO TODO Sorry future me I didn't finish rewriting this TODO TODO TODO")
+    print("TODO TODO TODO Sorry future me I didn't finish rewriting this TODO TODO TODO")
+    print("TODO TODO TODO Sorry future me I didn't finish rewriting this TODO TODO TODO")
+
 
     print("ALL UPLOADS ================================")
     for a in author_stats.keys():
