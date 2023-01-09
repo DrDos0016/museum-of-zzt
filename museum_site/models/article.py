@@ -392,3 +392,98 @@ class Article(BaseModel):
         tags["og:title"] = ["property", self.title + " - Museum of ZZT"]
         tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
         return tags
+
+    def get_field_view(self, view="detailed"):
+        url = "/article/view/{}/{}/".format(self.pk, slugify(self.title))
+        texts = {"detailed": "View Contents", "list": self.title, "gallery": self.title, "title": self.title}
+        text = texts[view]
+        return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), text), "safe": True}
+
+    def get_field_authors(self, view="detailed"):
+        authors = self.author.split("/")
+        plural = "s" if len(authors) > 1 else ""
+        return {"label": "Author{}".format(plural), "value": ", ".join(authors)}
+
+    def get_field_article_date(self, view="detailed"):
+        return {"label": "Publish Date", "value": self.publish_date}
+
+    def get_field_category(self, view="detailed"):
+        return {"label": "Category", "value": self.category}
+
+    def get_field_series(self, view="detailed"):
+        output = ""
+        for s in self.series.all():
+            output += '<a href="{}">{}</a>, '.format(s.url(), s.title)
+        return {"label": "Series", "value": output[:-2], "safe": True}
+
+    def get_field_description(self, view="detailed"):
+        return {"label": "Description", "value": self.description}
+
+    def get_field(self, field_name, view="detailed"):
+        if hasattr(self, "get_field_{}".format(field_name)):
+            field_context = getattr(self, "get_field_{}".format(field_name))(view)
+        else:
+            field_context = {"label": field_name, "value": "placeholder"}
+        return field_context
+
+    def context_universal(self):
+        self.get_all_icons()
+        context = {
+            "model": self.model_name,
+            "pk": self.pk,
+            "model_key": self.key if hasattr(self, "key") else self.pk,
+            "url": self.url(),
+            "preview": {
+                "no_zoom": False,
+                "zoomed": False,
+                "url": self.preview_url,
+                "alt": self.preview_url,
+            },
+            "title": self.get_field("view", view="title"),
+        }
+        return context
+
+    def context_detailed(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "detailed"]
+        context["columns"] = []
+
+        columns = [
+            ["authors", "article_date", "category", "series", "description"],
+        ]
+        fields = {}
+
+        for col in columns:
+            column_fields = []
+            for field_name in col:
+                field_context = self.get_field(field_name)
+                column_fields.append(field_context)
+            context["columns"].append(column_fields)
+        return context
+
+    def context_list(self):
+        context = self.context_universal()
+        context["roles"] = ["list"]
+        context["cells"] = []
+
+        cell_list = ["view", "authors", "article_date", "category", "description"]
+        for field_name in cell_list:
+            cell_fields = self.get_field(field_name, view="list")
+            context["cells"].append(cell_fields)
+        return context
+
+    def context_gallery(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "gallery"]
+        context["fields"] = [
+            self.get_field("authors", view="gallery")
+        ]
+        return context
+
+    def prepare_icons_for_field(self):
+        if self.has_icons:
+            icons = "<div class='model-block-icons'>"
+            for icon in self.get_all_icons():
+                icons += '<span class="icon {}" title="{}">{}</span>'.format(icon["role"], icon["title"], icon["glyph"])
+            return icons + "</div>"
+        return ""
