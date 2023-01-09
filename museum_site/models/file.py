@@ -179,11 +179,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         else:
             self.letter = self.letter.lower()
 
-        # Create sorted title
-        self.sort_title = calculate_sort_title(self.title)
 
-        # Recalculate Article Count
-        self.calculate_article_count()
+        self.sort_title = calculate_sort_title(self.title)  # Get sort title
+        self.calculate_article_count()  # Recalculate Article Count
 
         # If the screenshot is blank and a file exists for it, set it
         file_exists = os.path.isfile(
@@ -193,8 +191,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.screenshot == "" and file_exists:
             self.screenshot = self.filename[:-4] + ".png"
 
-        # Calculate Review Scores
-        self.calculate_reviews()
+        self.calculate_reviews()  # Calculate Review Scores
 
         # Update blank md5s
         if self.checksum == "" or self.checksum is None:
