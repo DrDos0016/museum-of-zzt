@@ -23,7 +23,7 @@ from museum_site.common import zipinfo_datetime_tuple_to_str, record
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH
 from museum_site.core.transforms import qs_to_links
 from museum_site.core.detail_identifiers import *
-from museum_site.core.misc import calculate_sort_title
+from museum_site.core.misc import calculate_sort_title, get_letter_from_title
 from museum_site.core.zeta_identifiers import *
 from museum_site.core.image_utils import optimize_image
 from museum_site.models.zfile_legacy import ZFile_Legacy
@@ -175,7 +175,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         # Pre save
         # Force lowercase letter
         if not self.letter:
-            self.letter = self.letter_from_title()
+            self.letter = get_letter_from_title(self.title)
         else:
             self.letter = self.letter.lower()
 
@@ -221,15 +221,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             return ""
 
     # Other Functions
-    def letter_from_title(self):
-        """ Returns the letter a file should be listed under after removing (a/an/the) """
-        title = self.title.lower()
-        for eng_article in ["a ", "an ", "the "]:
-            if title.startswith(eng_article):
-                title = title.replace(eng_article, "", 1)
-
-        return title[0] if title[0] in "abcdefghijklmnopqrstuvwxyz" else "1"
-
     def file_exists(self): return True if os.path.isfile(self.phys_path()) else False
 
     def author_list(self):

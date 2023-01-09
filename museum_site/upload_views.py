@@ -11,7 +11,7 @@ from museum_site.common import *
 from museum_site.constants import *
 from museum_site.constants import BANNED_IPS
 from museum_site.core import *
-from museum_site.core.misc import calculate_sort_title
+from museum_site.core.misc import calculate_sort_title, get_letter_from_title
 from museum_site.forms import *
 from museum_site.models import *
 from museum_site.private import NEW_UPLOAD_WEBHOOK_URL
@@ -146,7 +146,7 @@ def upload(request):
 
             # Check if editing caused a letter change
             original_letter = zfile.letter
-            set_letter = zfile.letter_from_title()
+            set_letter = get_letter_from_title(zfile.title)
             letter_change = True if original_letter != set_letter else False
 
             if request.FILES.get("zfile"):  # Only set if there's a zip

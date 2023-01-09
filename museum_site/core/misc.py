@@ -36,6 +36,15 @@ def calculate_sort_title(string):
 
     return output
 
+def get_letter_from_title(title):
+    """ Returns the letter a zfile should be listed under after removing (a/an/the) from the provided title """
+    title = title.lower()
+    for eng_article in ["a ", "an ", "the "]:
+        if title.startswith(eng_article):
+            title = title.replace(eng_article, "", 1)
+
+    return title[0] if title[0] in "abcdefghijklmnopqrstuvwxyz" else "1"
+
 def legacy_redirect(request, name=None, *args, **kwargs):
     # Strip arguments if they're no longer needed
     if "strip" in kwargs:
