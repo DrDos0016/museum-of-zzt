@@ -320,7 +320,7 @@ def mirror(request, key):
     else:
         form = MirrorForm()
     form.fields["title"].initial = zfile.title
-    form.fields["creator"].initial = ";".join(zfile.author_list())
+    form.fields["creator"].initial = ";".join(zfile.related_list("authors"))
     form.fields["year"].initial = zfile.release_year()
     form.fields["subject"].initial = subject
     form.fields["description"].initial = description
@@ -813,7 +813,7 @@ def stream_card(request):
 
         default += "# Author{}:\n".format("s" if len(data["pks"]) > 1 else "")
         for f in checked_files:
-            default += ", ".join(f.author_list()) + "\n\n"
+            default += ", ".join(f.related_list("authors")) + "\n\n"
 
         default += "# Compan{}:\n".format("ies" if len(data["pks"]) > 1 else "y")
         for f in checked_files:
