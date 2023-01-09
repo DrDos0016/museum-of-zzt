@@ -11,7 +11,7 @@ from museum_site.common import *
 from museum_site.constants import *
 from museum_site.constants import BANNED_IPS
 from museum_site.core import *
-from museum_site.core.misc import calculate_sort_title, get_letter_from_title
+from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile
 from museum_site.forms import *
 from museum_site.models import *
 from museum_site.private import NEW_UPLOAD_WEBHOOK_URL
@@ -151,7 +151,7 @@ def upload(request):
                 zfile.filename = upload_filename
                 zfile.size = uploaded_file.size
                 zfile.calculate_checksum(file_path)
-                zfile.calculate_boards()
+                (zfile.playable_boards, zfile.total_boards) = calculate_boards_in_zipfile(zfile.phys_path())
             zfile.letter = set_letter
             zfile.key = zfile.filename.lower()[:-4]
             zfile.release_source = "User upload"
