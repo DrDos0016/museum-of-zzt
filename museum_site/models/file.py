@@ -234,6 +234,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return output
 
     def company_list(self):
+        """ STILL USED IN CL-INFO.HTML """
         output = []
         for c in self.companies.all():
             output.append(c.title)
