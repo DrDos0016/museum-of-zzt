@@ -64,7 +64,7 @@ def upload(request):
                 "explicit": int(zgame_obj.explicit),
                 "language": zgame_obj.language,
                 "release_date": str(zgame_obj.release_date),
-                "author": ",".join(zgame_obj.author_list()),
+                "author": ",".join(zgame_obj.related_list("authors")),
                 "company": ",".join(zgame_obj.get_related_list("companies", "title")),
                 "genre": zgame_obj.get_related_list("genres", "pk"),
             }

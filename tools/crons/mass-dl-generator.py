@@ -284,7 +284,7 @@ def main():
                 zf.write(f.phys_path(), arcname=os.path.basename(f.phys_path()))
                 f_rd = str(f.release_date) if f.release_date is not None else ""
                 file_listing += '{} "{}" by {} [{}]'.format(
-                    f_rd, f.title, ", ".join(f.author_list()), f.filename
+                    f_rd, f.title, ", ".join(f.related_list("authors")), f.filename
                 ).strip() + "\n"
                 pass
             except FileNotFoundError:
