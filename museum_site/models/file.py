@@ -220,6 +220,12 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     # Other Functions
     def file_exists(self): return True if os.path.isfile(self.phys_path()) else False
 
+    def related_list(self, related):
+        output = []
+        for i in getattr(self, related).all():
+            output.append(i.title)
+        return output
+
     def author_list(self):
         output = []
         for a in self.authors.all():
@@ -944,8 +950,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def get_meta_tag_context(self):
         """ Returns a dict of keys and values for <meta> tags  """
         tags = {}
-        tags["author"] = ["name", ", ".join(self.author_list())]
-        tags["description"] = ["name", '"{}" by {}.'.format(self.title, ", ".join(self.author_list()))]
+        tags["author"] = ["name", ", ".join(self.related_list("authors"))]
+        tags["description"] = ["name", '"{}" by {}.'.format(self.title, ", ".join(self.related_list("authors")))]
         if self.companies.count():
             tags["description"][1] += " Published by {}.".format(self.get_all_company_names())
         if self.release_date:
@@ -957,12 +963,12 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def author_unknown(self):
         """ Returns TRUE if the _only_ author is 'UNKNOWN' """
-        return True if self.author_list() == ["Unknown"] else False
+        return True if self.related_list("authors") == ["Unknown"] else False
 
     def citation_str(self):
         """ Returns a string of standard information used in publication packs """
         title = '“{}”'.format(self.title)
-        author = "by {}".format(", ".join(self.author_list())) if not self.author_unknown() else ""
+        author = "by {}".format(", ".join(self.related_list("authors"))) if not self.author_unknown() else ""
         year = "({})".format(self.release_date.year) if self.release_date else ""
         return " ".join([title, author, year])
 

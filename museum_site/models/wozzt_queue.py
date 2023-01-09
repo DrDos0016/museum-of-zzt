@@ -173,7 +173,7 @@ class WoZZT_Queue(BaseModel):
         context = {
             "board_url": self.file.view_url() + "?file=" + quote(self.zzt_file) + "&board=" + str(self.board),
             "zfile_title": self.file.title,
-            "zfile_author": self.file.author_list(),
+            "zfile_author": self.file.related_list("authors"),
             "zfile_year": self.file.release_year(),
             "zfile_company": self.file.company_list(),
             "zfile_world": self.zzt_file,
@@ -200,7 +200,7 @@ class WoZZT_Queue(BaseModel):
         return output
 
     def send_tumblr(self):
-        tags = self.file.author_list() + [self.file.title] + [self.file.key.lower()]
+        tags = self.file.related_list("authors") + [self.file.title] + [self.file.key.lower()]
         if self.category == "tuesday":
             tags.append("title screen tuesday")
         client = pytumblr.TumblrRestClient(TUMBLR_OAUTH_CONSUMER, TUMBLR_OAUTH_CONSUMER_SECRET, TUMBLR_OAUTH_TOKEN, TUMBLR_OAUTH_SECRET)

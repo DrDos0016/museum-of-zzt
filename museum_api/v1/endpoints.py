@@ -219,7 +219,7 @@ def v1_api_json(zf):
         "filename": zf.filename,
         "title": zf.title,
         "sort_title": zf.sort_title,
-        "author": zf.author_list(),
+        "author": zf.related_list("authors"),
         "size": zf.size,
         "genres": zf.genre_list(),
         "release_date": zf.release_date,
