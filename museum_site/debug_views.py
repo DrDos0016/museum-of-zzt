@@ -24,15 +24,15 @@ def debug(request, filename=None):
     s = Series.objects.get(pk=10)
 
     test_wozzt = WoZZT_Queue.objects.filter(
-        id__in=[5155, 5156, 5157, 5158]
+        id__in=[8317, 8318]
     )
 
     test_reviews = Review.objects.filter(
-        id__in=[1700, 1701, 1702, 1703, 100, 200, 300, 1720]
+        id__in=[1700, 1701, 1702, 1703, 100, 200, 300, 1720, 926]
     )
 
     test_zfiles = File.objects.filter(
-        id__in=[278, 327, 420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415, 3471, 2568]
+        id__in=[278, 327, 420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415, 3471, 2568, 9999]
     ).order_by("id")
 
     test_articles = Article.objects.filter(
