@@ -165,8 +165,12 @@ article aside
     width:750px;
     margin:auto;
     margin-top:14px;
-    padding-top:7px;
-    padding-bottom:7px;
+    padding:7px 0px 7px 0px;
+}
+
+.footnotes li + li
+{
+    margin-top:7px;
 }
 /* End article formatting */
 
