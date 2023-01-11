@@ -192,3 +192,93 @@ class Review(BaseModel):
         if self.author == "":
             self.author = "Anonymous"
         super(Review, self).save(*args, **kwargs)
+
+    def get_field_view(self, view="detailed"):
+        return {"value": "<a href='{}'>{}</a>".format(self.url(), self.title), "safe": True}
+
+    def get_field_zfile(self, view="detailed"):
+        self.zfile.init_actions()
+        self.zfile._init_icons()
+        return {"label": "File", "value": self.zfile.get_field_view("title")["value"], "safe": True}
+
+    def get_field_author(self, view="detailed"):
+        return {"label": "Reviewer", "value": self.author_link(), "safe": True}
+
+    def get_field_review_date(self, view="detailed"):
+        return {"label": "Review Date", "value": self.date.strftime("%b %d, %Y"), "safe": True}
+
+    def get_field_rating(self, view="detailed"):
+        if self.rating is not None:
+            long_rating = (str(self.rating) + "0")[:4]
+            rating = "{} / 5.00".format(long_rating)
+        else:
+            rating = "<i>No rating</i>"
+
+        if view == "list":
+            if self.rating == -1:
+                rating = "&mdash;"
+
+        return {"label": "Rating", "value": rating, "safe": True}
+
+    def get_field(self, field_name, view="detailed"):
+        if hasattr(self, "get_field_{}".format(field_name)):
+            field_context = getattr(self, "get_field_{}".format(field_name))(view)
+        else:
+            field_context = {"label": field_name, "value": "placeholder"}
+        return field_context
+
+    def context_universal(self):
+        self.get_all_icons()
+        context = {
+            "model": self.model_name,
+            "pk": self.pk,
+            "model_key": self.key if hasattr(self, "key") else self.pk,
+            "url": self.url(),
+            "preview": {
+                "no_zoom": False,
+                "zoomed": False,
+                "url": self.preview_url,
+                "alt": self.preview_url,
+            },
+            "title": self.get_field("view", view="title"),
+        }
+        return context
+
+    def context_detailed(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "detailed"]
+        context["columns"] = []
+
+        columns = [
+            ["zfile", "author", "review_date"],
+        ]
+        if self.rating != -1:  # Show numeric rating if the review has one
+            columns[0].append("rating")
+
+        for col in columns:
+            column_fields = []
+            for field_name in col:
+                field_context = self.get_field(field_name)
+                column_fields.append(field_context)
+            context["columns"].append(column_fields)
+        return context
+
+    def context_list(self):
+        context = self.context_universal()
+        context["roles"] = ["list"]
+        context["cells"] = []
+
+        cell_list = ["view", "zfile", "author", "review_date", "rating"]
+        for field_name in cell_list:
+            cell_fields = self.get_field(field_name, view="list")
+            context["cells"].append(cell_fields)
+        return context
+
+    def context_gallery(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "gallery"]
+        context["fields"] = [
+            self.get_field("author", view="gallery"),
+            self.get_field("rating", view="gallery")
+        ]
+        return context

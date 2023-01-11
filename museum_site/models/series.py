@@ -14,7 +14,7 @@ from museum_site.querysets.series_querysets import Series_Queryset
 class Series(BaseModel):
     objects = Series_Queryset.as_manager()
     model_name = "Series"
-    table_fields = ["Series", "Newest Entry", "Oldest Entry", "Articles"]
+    table_fields = ["Series", "Updated", "Latest", "First", "Total"]
     sort_options = [
         {"text": "Newest Entry", "val": "latest"},
         {"text": "Title", "val": "title"}
@@ -103,6 +103,7 @@ class Series(BaseModel):
             cells=[
                 {"datum": "link", "url": self.url(), "value": self.title, "tag": "td"},
                 {"datum": "text", "value": self.last_entry_date, "tag": "td"},
+                {"datum": "text", "value": epoch_to_unknown(self.last_entry_date), "tag": "td"},
                 {"datum": "text", "value": epoch_to_unknown(self.first_entry_date), "tag": "td"},
                 {"datum": "text", "value": self.article_set.count(), "tag": "td"},
             ],
@@ -134,3 +135,94 @@ class Series(BaseModel):
         tags["og:title"] = ["property", self.title + " - Museum of ZZT"]
         tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
         return tags
+
+
+    def get_field_view(self, view="detailed"):
+        return {"value": "<a href='{}'>{}</a>".format(self.url(), self.title), "safe": True}
+
+    def get_field_last_updated(self, view="detailed"):
+        article = self.article_set.all().order_by("-publish_date").first()
+        return {"label": "Last Updated", "value": self.last_entry_date}
+
+    def get_field_latest_article(self, view="detailed"):
+        article = self.article_set.all().order_by("-publish_date").first()
+        if view == "list" or view == "gallery":
+            value = "<a href='{}'>{}</a>".format(self.url(), "Latest")
+        else:
+            value = "<a href='{}'>{}</a>".format(self.url(), article.title)
+        return {"label": "Latest Article", "value": value, "safe": True}
+
+    def get_field_first_article(self, view="detailed"):
+        article = self.article_set.all().order_by("publish_date").first()
+        if view == "list" or view == "gallery":
+            value = "<a href='{}'>{}</a>".format(self.url(), "First")
+        else:
+            value = "<a href='{}'>{}</a>".format(self.url(), article.title)
+        return {"label": "Latest Article", "value": value, "safe": True}
+
+    def get_field_total_articles(self, view="detailed"):
+        return {"label": "Total Articles", "value": self.article_set.count()}
+
+    def get_field_description(self, view="detailed"):
+        return {"label": "Description", "value": self.description}
+
+    def get_field(self, field_name, view="detailed"):
+        if hasattr(self, "get_field_{}".format(field_name)):
+            field_context = getattr(self, "get_field_{}".format(field_name))(view)
+        else:
+            field_context = {"label": field_name, "value": "placeholder"}
+        return field_context
+
+    def context_universal(self):
+        self.get_all_icons()
+        context = {
+            "model": self.model_name,
+            "pk": self.pk,
+            "model_key": self.key if hasattr(self, "key") else self.pk,
+            "url": self.url(),
+            "preview": {
+                "no_zoom": False,
+                "zoomed": False,
+                "url": self.preview_url,
+                "alt": self.preview_url,
+            },
+            "title": self.get_field("view", view="title"),
+        }
+        return context
+
+    def context_detailed(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "detailed"]
+        context["columns"] = []
+
+        columns = [
+            ["last_updated", "latest_article", "first_article", "total_articles", "description"],
+        ]
+
+        for col in columns:
+            column_fields = []
+            for field_name in col:
+                field_context = self.get_field(field_name)
+                column_fields.append(field_context)
+            context["columns"].append(column_fields)
+        return context
+
+    def context_list(self):
+        context = self.context_universal()
+        context["roles"] = ["list"]
+        context["cells"] = []
+
+        cell_list = ["view", "last_updated", "latest_article", "first_article", "total_articles"]
+        for field_name in cell_list:
+            cell_fields = self.get_field(field_name, view="list")
+            context["cells"].append(cell_fields)
+        return context
+
+    def context_gallery(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "gallery"]
+        context["fields"] = [
+            self.get_field("latest_article", view="gallery"),
+            self.get_field("first_article", view="gallery"),
+        ]
+        return context

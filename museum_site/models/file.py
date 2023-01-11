@@ -1140,7 +1140,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             ["authors", "companies", "zfile_date", "genres", "filename", "size"],
             ["details", "rating", "boards", "language", "publish_date"],
         ]
-        fields = {}
 
         for col in columns:
             column_fields = []

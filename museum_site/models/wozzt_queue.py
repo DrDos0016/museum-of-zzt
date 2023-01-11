@@ -298,6 +298,57 @@ class WoZZT_Queue(BaseModel):
             context["columns"][0].append({"datum": "custom-wozzt-delete", "pk": self.id, "kind": "debug"})
         return context
 
+    def get_field_view(self, view="detailed"):
+        return {"value": "--"}
+
+    def get_field_tweet(self, view="detailed"):
+        return {"label": "Tweet", "value": "<textarea name='wozzt-tweet' readonly>{}</textarea>".format(self.render_text("twitter")), "safe": True}
+
+    def get_field_source(self, view="detailed"):
+        url = self.file.url() + "?file={}&board={}".format(self.zzt_file, self.board)
+        return {"label": "Source", "value": "<a href='{}' target='_blank'>View</a>".format(url), "safe": True}
+
+
+    def get_field(self, field_name, view="detailed"):
+        if hasattr(self, "get_field_{}".format(field_name)):
+            field_context = getattr(self, "get_field_{}".format(field_name))(view)
+        else:
+            field_context = {"label": field_name, "value": "placeholder"}
+        return field_context
+
+    def context_universal(self):
+        self.get_all_icons()
+        context = {
+            "model": self.model_name,
+            "pk": self.pk,
+            "model_key": self.key if hasattr(self, "key") else self.pk,
+            "url": self.url(),
+            "preview": {
+                "no_zoom": False,
+                "zoomed": True,
+                "url": self.preview_url,
+                "alt": self.preview_url,
+            },
+            "title": self.get_field("view", view="title"),
+        }
+        return context
+
+    def context_detailed(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "detailed"]
+        context["columns"] = []
+
+        columns = [
+            ["tweet", "source"],
+        ]
+
+        for col in columns:
+            column_fields = []
+            for field_name in col:
+                field_context = self.get_field(field_name)
+                column_fields.append(field_context)
+            context["columns"].append(column_fields)
+        return context
 
 # Files banned from Worlds of ZZT Bot's feed
 BANNED_FILES = [

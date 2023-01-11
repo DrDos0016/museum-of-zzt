@@ -2,24 +2,115 @@
 {% load static %}
 {% load site_tags %}
 
-
 {% block content %}
-{% for zf in zfiles %}
-{% model_block zf view="detailed" %}
-{% endfor %}
+<ul>
+    <li><a href="?show=all">ALL</a></li>
+    <li><a href="?show=zfiles">ZFiles</a></li>
+    <li><a href="?show=articles">Articles</a></li>
+    <li><a href="?show=reviews">Reviews</a></li>
+    <li><a href="?show=series">Series</a></li>
+    <li><a href="?show=wozzt">WoZZT Queue</a></li>
+</ul>
 
-
-<table>
-{% for zf in zfiles %}
-{% if forloop.first %}{{zf.table_header}}{% endif %}
-{% model_block zf view="list" %}
-{% endfor %}
-</table>
-
-<div class="gallery-frame">
-{% for zf in zfiles %}
-{% model_block zf view="gallery" %}
-{% endfor %}
-</div>
 <hr>
+
+{% if show == "all" or show == "zfiles" %}
+    {% for zf in zfiles %}
+    {% model_block zf view="detailed" %}
+    {% endfor %}
+
+    <table>
+    {% for zf in zfiles %}
+    {% if forloop.first %}{{zf.table_header}}{% endif %}
+    {% model_block zf view="list" %}
+    {% endfor %}
+    </table>
+
+    <div class="gallery-frame">
+    {% for zf in zfiles %}
+    {% model_block zf view="gallery" %}
+    {% endfor %}
+    </div>
+    <hr>
+{% endif %}
+
+{% if show == "all" or show == "articles" %}
+    {% for a in articles %}
+    {% model_block a view="detailed" %}
+    {% endfor %}
+
+    <table>
+    {% for a in articles %}
+    {% if forloop.first %}{{a.table_header}}{% endif %}
+    {% model_block a view="list" %}
+    {% endfor %}
+    </table>
+
+    <div class="gallery-frame">
+    {% for a in articles %}
+    {% model_block a view="gallery" %}
+    {% endfor %}
+    </div>
+    <hr>
+{% endif %}
+
+{% if show == "all" or show == "reviews" %}
+    {% for r in reviews %}
+    {% model_block r view="detailed" %}
+    {% endfor %}
+
+    <table>
+    {% for r in reviews %}
+    {% if forloop.first %}{{r.table_header}}{% endif %}
+    {% model_block r view="list" %}
+    {% endfor %}
+    </table>
+
+    <div class="gallery-frame">
+    {% for r in reviews %}
+    {% model_block r view="gallery" %}
+    {% endfor %}
+    </div>
+    <hr>
+{% endif %}
+
+{% if show == "all" or show == "series" %}
+    {% for s in series %}
+    {% model_block s view="detailed" %}
+    {% endfor %}
+
+    <table>
+    {% for s in series %}
+    {% if forloop.first %}{{s.table_header}}{% endif %}
+    {% model_block s view="list" %}
+    {% endfor %}
+    </table>
+
+    <div class="gallery-frame">
+    {% for s in series %}
+    {% model_block s view="gallery" %}
+    {% endfor %}
+    </div>
+    <hr>
+{% endif %}
+
+{% if show == "all" or show == "wozzt" %}
+    {% for w in wozzt %}
+    {% model_block w view="detailed" %}
+    {% endfor %}
+
+    <table>
+    {% for w in wozzt %}
+    {% if forloop.first %}{{s.table_header}}{% endif %}
+    {% model_block w view="list" %}
+    {% endfor %}
+    </table>
+
+    <div class="gallery-frame">
+    {% for w in wozzt %}
+    {% model_block w view="gallery" %}
+    {% endfor %}
+    </div>
+    <hr>
+{% endif %}
 {% endblock %}
