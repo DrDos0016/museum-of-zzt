@@ -88,8 +88,7 @@ class BaseModel(models.Model):
             row += "<th>{}</th>".format(i)
         return "<tr>" + row + "</tr>"
 
-
-    def detailed_list(self): return {}
+    def context_detailed(self): return {}
     def context_list(self): return {}
     def context_gallery(self): return {}
 

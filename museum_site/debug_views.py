@@ -43,6 +43,12 @@ def debug(request, filename=None):
         id__in=[10, 11, 12, 1]
     ).order_by("-id")
 
+    test_collections = Collection.objects.filter(
+        id__in=[9, 10, 2, 4, 1, 6]
+    ).order_by("-id")
+
+    test_collection_contents = Collection_Entry.objects.filter(collection_id=2).order_by("-id")
+
     data["available_views"] = ["detailed", "list", "gallery"]
     data["view"] = "detailed"
 
@@ -51,6 +57,8 @@ def debug(request, filename=None):
     data["zfiles"] = test_zfiles
     data["articles"] = test_articles
     data["series"] = test_series
+    data["collections"] = test_collections
+    data["collection_contents"] = test_collection_contents
     data["show"] = request.GET.get("show", "all")
 
     # Widget Debug

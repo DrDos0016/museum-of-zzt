@@ -13,7 +13,7 @@ class Collection(BaseModel):
     """ Representation of a group of files with custom descriptions """
     objects = Collection_Queryset.as_manager()
     model_name = "Collection"
-    table_fields = ["Title"]
+    table_fields = ["Title", "Author", "Last Modified", "Items", "Short Desc."]
     sort_options = [
         {"text": "Newest", "val": "-modified"},
         {"text": "Oldest", "val": "modified"},
@@ -30,6 +30,7 @@ class Collection(BaseModel):
         "id": ["id"],
         "-id": ["-id"],
     }
+    #supported_views = ["detailed", "list", "gallery"]
     supported_views = ["detailed"]
 
     # Visibilities
@@ -165,6 +166,87 @@ class Collection(BaseModel):
         tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
         return tags
 
+    def get_field_view(self, view="detailed"):
+        return {"value": "<a href='{}'>{}</a>".format(self.url(), self.title), "safe": True}
+
+    def get_field_author(self, view="detailed"):
+        return {"label": "Author", "value": self.author_link()}
+
+    def get_field_created(self, view="detailed"):
+        return {"label": "Created", "value": self.created}
+
+    def get_field_modified(self, view="detailed"):
+        return {"label": "Last Modified", "value": self.modified}
+
+    def get_field_item_count(self, view="detailed"):
+        if view == "gallery":
+            return {"label": "Items In Collection", "value": str(self.item_count) + " items"}
+        return {"label": "Items In Collection", "value": self.item_count}
+
+    def get_field_short_description(self, view="detailed"):
+        return {"label": "Short Description", "value": self.short_description}
+
+    def get_field(self, field_name, view="detailed"):
+        if hasattr(self, "get_field_{}".format(field_name)):
+            field_context = getattr(self, "get_field_{}".format(field_name))(view)
+        else:
+            field_context = {"label": field_name, "value": "placeholder"}
+        return field_context
+
+    def context_universal(self):
+        context = {
+            "model": self.model_name,
+            "pk": self.pk,
+            "model_key": self.key if hasattr(self, "key") else self.pk,
+            "url": self.url(),
+            "preview": {
+                "no_zoom": False,
+                "zoomed": False,
+                "url": self.preview_url,
+                "alt": self.preview_url,
+            },
+            "title": self.get_field("view", view="title"),
+        }
+        return context
+
+    def context_detailed(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "detailed"]
+        context["show_actions"] = True
+        context["columns"] = []
+
+        columns = [
+            ["author", "created", "modified", "item_count", "short_description"]
+        ]
+
+        for col in columns:
+            column_fields = []
+            for field_name in col:
+                field_context = self.get_field(field_name)
+                column_fields.append(field_context)
+            context["columns"].append(column_fields)
+
+        return context
+
+    def context_list(self):
+        context = self.context_universal()
+        context["roles"] = ["list"]
+        context["cells"] = []
+
+        cell_list = ["view", "author", "modified", "item_count", "short_description"]
+        for field_name in cell_list:
+            cell_fields = self.get_field(field_name, view="list")
+            context["cells"].append(cell_fields)
+        return context
+
+    def context_gallery(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "gallery"]
+        context["fields"] = [
+            self.get_field("author", view="gallery"),
+            self.get_field("item_count", view="gallery")
+        ]
+        return context
 
 
 class Collection_Entry(models.Model):
@@ -209,10 +291,95 @@ class Collection_Entry(models.Model):
     def __str__(self):
         return "Collection Entry #{} - [{}]".format(self.pk, self.zfile.title)
 
+    def url(self):
+        return self.zfile.url() if self.zfile is not None else "images/screenshots/no_screenshot.png"
+
+    def preview_url(self):
+        return self.zfile.preview_url() if self.zfile is not None else "#"
+
     def detailed_block_context(self, request=None):
         if self.zfile is not None:
             context = self.zfile.detailed_collection_block_context(collection_description=self.collection_description)
         else:
             context = {}
+        return context
+
+    def get_field(self, field_name, view="detailed"):
+        if hasattr(self, "get_field_{}".format(field_name)):
+            field_context = getattr(self, "get_field_{}".format(field_name))(view)
+        elif self.zfile is not None and hasattr(self.zfile, "get_field_{}".format(field_name)):
+            field_context = getattr(self.zfile, "get_field_{}".format(field_name))(view)
+        else:
+            field_context = {"label": field_name, "value": "placeholder"}
+        return field_context
+
+    def context_universal(self):
+        if self.zfile is not None:
+            self.zfile.init_actions()
+
+        context = {
+            "model": self.model_name,
+            "pk": self.pk,
+            "model_key": self.key if hasattr(self, "key") else self.pk,
+            "url": self.url(),
+            "preview": {
+                "no_zoom": False,
+                "zoomed": False,
+                "url": self.preview_url,
+                "alt": self.preview_url,
+            },
+            "title": self.get_field("view", view="title"),
+        }
+        return context
+
+    def context_detailed(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "detailed"]
+        context["show_actions"] = True
+        context["columns"] = []
+
+        columns = [
+            ["authors", "companies", "zfile_date", "genres", "filename", "size"],
+            ["details", "rating", "boards", "language", "publish_date"],
+        ]
+
+        for col in columns:
+            column_fields = []
+            for field_name in col:
+                field_context = self.get_field(field_name)
+                column_fields.append(field_context)
+            context["columns"].append(column_fields)
+
+        action_list = ["download", "play", "view", "review", "article", "attributes"]
+        actions = []
+        for action in action_list:
+            actions.append(self.get_field(action, view="detailed"))
+
+        context["actions"] = actions
 
         return context
+
+    def context_list(self):
+        context = self.context_universal()
+        context["roles"] = ["list"]
+        context["cells"] = []
+
+        cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
+        for field_name in cell_list:
+            cell_fields = self.get_field(field_name, view="list")
+            context["cells"].append(cell_fields)
+        return context
+
+    def context_gallery(self):
+        context = self.context_universal()
+        context["roles"] = ["model-block", "gallery"]
+        context["fields"] = [
+            self.get_field("authors", view="gallery")
+        ]
+        return context
+
+    def table_header(self):
+        if self.zfile:
+            return self.zfile.table_header()
+        else:
+            return "<th>ERROR</th>"

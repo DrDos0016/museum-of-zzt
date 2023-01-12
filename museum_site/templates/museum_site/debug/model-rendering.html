@@ -10,6 +10,8 @@
     <li><a href="?show=reviews">Reviews</a></li>
     <li><a href="?show=series">Series</a></li>
     <li><a href="?show=wozzt">WoZZT Queue</a></li>
+    <li><a href="?show=collection">Collections</a></li>
+    <li><a href="?show=collection-contents">Collection Contents</a></li>
 </ul>
 
 <hr>
@@ -109,6 +111,26 @@
     <div class="gallery-frame">
     {% for w in wozzt %}
     {% model_block w view="gallery" %}
+    {% endfor %}
+    </div>
+    <hr>
+{% endif %}
+
+{% if show == "all" or show == "collection-contents" %}
+    {% for c in collection_contents %}
+    {% model_block c view="detailed" %}
+    {% endfor %}
+
+    <table>
+    {% for c in collection_contents %}
+    {% if forloop.first %}{{c.table_header}}{% endif %}
+    {% model_block c view="list" %}
+    {% endfor %}
+    </table>
+
+    <div class="gallery-frame">
+    {% for c in collection_contents %}
+    {% model_block c view="gallery" %}
     {% endfor %}
     </div>
     <hr>
