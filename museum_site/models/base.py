@@ -88,6 +88,17 @@ class BaseModel(models.Model):
             row += "<th>{}</th>".format(i)
         return "<tr>" + row + "</tr>"
 
+    # 2023 Model Blocks
+    def render_model_block(self, view="detailed", *args, **kwargs):
+        self.context = getattr(self, "context_{}".format(view))(*args, **kwargs)
+
+    def get_field(self, field_name, view="detailed"):
+        if hasattr(self, "get_field_{}".format(field_name)):
+            field_context = getattr(self, "get_field_{}".format(field_name))(view)
+        else:
+            field_context = {"label": field_name, "value": "placeholder"}
+        return field_context
+
     def context_detailed(self): return {}
     def context_list(self): return {}
     def context_gallery(self): return {}

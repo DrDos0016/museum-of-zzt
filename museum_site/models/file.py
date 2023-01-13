@@ -1105,13 +1105,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         return {"label": "Publish Date", "value": publish_date_str, "safe": True}
 
-    def get_field(self, field_name, view="detailed"):
-        if hasattr(self, "get_field_{}".format(field_name)):
-            field_context = getattr(self, "get_field_{}".format(field_name))(view)
-        else:
-            field_context = {"label": field_name, "value": "placeholder"}
-        return field_context
-
     def context_universal(self):
         self.init_actions()
         self.get_all_icons()

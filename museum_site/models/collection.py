@@ -249,7 +249,7 @@ class Collection(BaseModel):
         return context
 
 
-class Collection_Entry(models.Model):
+class Collection_Entry(BaseModel):
     sort_options = [
         {"text": "Collection Order", "val": "canonical"},
         {"text": "Title", "val": "title"},
@@ -305,6 +305,7 @@ class Collection_Entry(models.Model):
         return context
 
     def get_field(self, field_name, view="detailed"):
+        print("Collection content unique get_field()")
         if hasattr(self, "get_field_{}".format(field_name)):
             field_context = getattr(self, "get_field_{}".format(field_name))(view)
         elif self.zfile is not None and hasattr(self.zfile, "get_field_{}".format(field_name)):
@@ -383,3 +384,6 @@ class Collection_Entry(models.Model):
             return self.zfile.table_header()
         else:
             return "<th>ERROR</th>"
+
+    def render_model_block(self, view="detailed", *args, **kwargs):
+        self.context = getattr(self, "context_{}".format(view))(*args, **kwargs)

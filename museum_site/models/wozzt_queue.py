@@ -308,14 +308,6 @@ class WoZZT_Queue(BaseModel):
         url = self.file.url() + "?file={}&board={}".format(self.zzt_file, self.board)
         return {"label": "Source", "value": "<a href='{}' target='_blank'>View</a>".format(url), "safe": True}
 
-
-    def get_field(self, field_name, view="detailed"):
-        if hasattr(self, "get_field_{}".format(field_name)):
-            field_context = getattr(self, "get_field_{}".format(field_name))(view)
-        else:
-            field_context = {"label": field_name, "value": "placeholder"}
-        return field_context
-
     def context_universal(self):
         self.get_all_icons()
         context = {
