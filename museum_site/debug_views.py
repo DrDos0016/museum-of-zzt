@@ -36,7 +36,7 @@ def debug(request, filename=None):
     ).order_by("id")
 
     test_articles = Article.objects.filter(
-        id__in=[677, 827, 835, 425, 453, 659, 672, 683, 690]
+        id__in=[830, 677, 827, 835, 425, 453, 659, 672, 683, 690]
     ).order_by("-id")
 
     test_series = Series.objects.filter(
@@ -62,7 +62,7 @@ def debug(request, filename=None):
     data["show"] = request.GET.get("show", "zfiles")
 
     # Widget Debug
-    data["checklist_items"] = File.objects.published()
+    #data["checklist_items"] = File.objects.published()
 
     if request.GET.get("serve"):
         return serve_file_as(request.GET.get("serve"), request.GET.get("as", ""))

@@ -193,22 +193,6 @@ class Collection(BaseModel):
             field_context = {"label": field_name, "value": "placeholder"}
         return field_context
 
-    def context_universal(self):
-        context = {
-            "model": self.model_name,
-            "pk": self.pk,
-            "model_key": self.key if hasattr(self, "key") else self.pk,
-            "url": self.url(),
-            "preview": {
-                "no_zoom": False,
-                "zoomed": False,
-                "url": self.preview_url,
-                "alt": self.preview_url,
-            },
-            "title": self.get_field("view", view="title"),
-        }
-        return context
-
     def context_detailed(self):
         context = self.context_universal()
         context["roles"] = ["model-block", "detailed"]
@@ -305,7 +289,7 @@ class Collection_Entry(BaseModel):
         return context
 
     def get_field(self, field_name, view="detailed"):
-        print("Collection content unique get_field()")
+        #print("Collection content unique get_field()")
         if hasattr(self, "get_field_{}".format(field_name)):
             field_context = getattr(self, "get_field_{}".format(field_name))(view)
         elif self.zfile is not None and hasattr(self.zfile, "get_field_{}".format(field_name)):
@@ -385,5 +369,5 @@ class Collection_Entry(BaseModel):
         else:
             return "<th>ERROR</th>"
 
-    def render_model_block(self, view="detailed", *args, **kwargs):
-        self.context = getattr(self, "context_{}".format(view))(*args, **kwargs)
+    def render_model_block(self, view="detailed", request={}, show_staff=False):
+        self.context = getattr(self, "context_{}".format(view))()

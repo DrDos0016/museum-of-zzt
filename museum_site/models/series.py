@@ -166,23 +166,6 @@ class Series(BaseModel):
     def get_field_description(self, view="detailed"):
         return {"label": "Description", "value": self.description}
 
-    def context_universal(self):
-        self.get_all_icons()
-        context = {
-            "model": self.model_name,
-            "pk": self.pk,
-            "model_key": self.key if hasattr(self, "key") else self.pk,
-            "url": self.url(),
-            "preview": {
-                "no_zoom": False,
-                "zoomed": False,
-                "url": self.preview_url,
-                "alt": self.preview_url,
-            },
-            "title": self.get_field("view", view="title"),
-        }
-        return context
-
     def context_detailed(self):
         context = self.context_universal()
         context["roles"] = ["model-block", "detailed"]

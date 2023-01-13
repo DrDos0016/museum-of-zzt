@@ -19,6 +19,7 @@ class Article(BaseModel):
     """ Article object repesenting an article """
     objects = Article_Queryset.as_manager()
 
+    to_init = ["access_level", "icons"]
     model_name = "Article"
     table_fields = ["Title", "Author", "Date", "Category", "Description"]
     sort_options = [
@@ -57,10 +58,12 @@ class Article(BaseModel):
 
     EARLY_ACCESS_PRICING = {UPCOMING: "$2.00 USD", UNPUBLISHED: "$5.00 USD"}
 
+    user_access_level = PUBLISHED
+
     ICONS = {
         "upcoming": {"glyph": "🔒", "title": "This article is currently exclusive to $2+ Patrons.", "role": "upcoming-icon"},
         "unpublished": {"glyph": "🔒", "title": "This article is currently exclusive to $5+ Patrons", "role": "unpublished-icon"},
-        "unlocked": {"glyph": "🔑", "title": "This early article may be read at your current patronage!", "role": "unlocked-icon"},
+        "unlocked": {"glyph": "🔑", "title": "This non-public article may be read at your current patronage!", "role": "unlocked-icon"},
     }
 
     CATEGORY_CHOICES = (
@@ -281,15 +284,19 @@ class Article(BaseModel):
 
         return context
 
-    def _init_icons(self):
+    def _init_icons(self, request={}, show_staff=False):
         # Populates major and minor icons for file
         self._minor_icons = []
         self._major_icons = []
 
         if self.published == self.UPCOMING:
-            self._major_icons.append(self.ICONS["upcoming"])
+            icon = self.ICONS["unlocked"] if self.user_access_level >= self.UPCOMING else self.ICONS["upcoming"]
+            self._major_icons.append(icon)
         if self.published == self.UNPUBLISHED:
-            self._major_icons.append(self.ICONS["unpublished"])
+            icon = self.ICONS["unlocked"] if self.user_access_level >= self.UNPUBLISHED else self.ICONS["unpublished"]
+            self._major_icons.append(icon)
+
+        self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
     def get_all_icons(self):
         # Returns combined list of both major and minor icons, populating if needed
@@ -419,23 +426,6 @@ class Article(BaseModel):
     def get_field_description(self, view="detailed"):
         return {"label": "Description", "value": self.description}
 
-    def context_universal(self):
-        self.get_all_icons()
-        context = {
-            "model": self.model_name,
-            "pk": self.pk,
-            "model_key": self.key if hasattr(self, "key") else self.pk,
-            "url": self.url(),
-            "preview": {
-                "no_zoom": False,
-                "zoomed": False,
-                "url": self.preview_url,
-                "alt": self.preview_url,
-            },
-            "title": self.get_field("view", view="title"),
-        }
-        return context
-
     def context_detailed(self):
         context = self.context_universal()
         context["roles"] = ["model-block", "detailed"]
@@ -473,10 +463,18 @@ class Article(BaseModel):
         ]
         return context
 
-    def prepare_icons_for_field(self):
-        if self.has_icons:
-            icons = "<div class='model-block-icons'>"
-            for icon in self.get_all_icons():
-                icons += '<span class="icon {}" title="{}">{}</span>'.format(icon["role"], icon["title"], icon["glyph"])
-            return icons + "</div>"
-        return ""
+    def _init_access_level(self, request={}, show_staff=False):
+        if self.published == self.PUBLISHED:
+            return True
+
+        # Patronage based access level increases
+        patronage = request.user.profile.patronage if request.user.is_authenticated else 0
+        if patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
+            self.user_access_level = self.UNPUBLISHED
+        elif patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
+            self.user_access_level = self.UPCOMING
+
+        # Password based access level increases
+        self.user_access_level = self.UPCOMING if request.POST.get("secret", "") == PASSWORD2DOLLARS else self.user_access_level  # Universal Upcoming PW
+        self.user_access_level = self.UNPUBLISHED if request.POST.get("secret", "") == PASSWORD5DOLLARS else self.user_access_level  # Universal Upcoming PW
+        self.user_access_level = self.UNPUBLISHED if (self.secret and request.GET.get("secret", "") == self.secret) else self.user_access_level  # Local PW

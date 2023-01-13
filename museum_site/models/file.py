@@ -39,6 +39,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     objects = ZFile_Queryset.as_manager()
 
     model_name = "File"
+    to_init = ["icons", "actions", "detail_ids"]
     table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
     sort_options = [
         {"text": "Title", "val": "title"},
@@ -668,7 +669,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             context["option"] = kwargs["option"]
         return context
 
-    def _init_icons(self):
+    def _init_icons(self, request={}, show_staff=False):
         # Populates major and minor icons for file
         self._minor_icons = []
         self._major_icons = []
@@ -1105,24 +1106,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         return {"label": "Publish Date", "value": publish_date_str, "safe": True}
 
-    def context_universal(self):
-        self.init_actions()
-        self.get_all_icons()
-        context = {
-            "model": self.model_name,
-            "pk": self.pk,
-            "model_key": self.key if hasattr(self, "key") else self.pk,
-            "url": self.url(),
-            "preview": {
-                "no_zoom": False,
-                "zoomed": False,
-                "url": self.preview_url,
-                "alt": self.preview_url,
-            },
-            "title": self.get_field("view", view="title"),
-        }
-        return context
-
     def context_detailed(self):
         context = self.context_universal()
         context["roles"] = ["model-block", "detailed"]
@@ -1168,14 +1151,19 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         ]
         return context
 
-    def prepare_icons_for_field(self):
-        if self.has_icons:
-            icons = "<div class='model-block-icons'>"
-            for icon in self.get_all_icons():
-                icons += '<span class="icon {}" title="{}">{}</span>'.format(icon["role"], icon["title"], icon["glyph"])
-            return icons + "</div>"
-        return ""
-
+    def _init_actions(self, request={}, show_staff=False):
+        """ Determine which actions may be performed on this zfile """
+        self.actions = {"review": False}
+        self.actions["download"] = True if self.downloads.all().count() else False
+        self.actions["view"] = True if self.can_museum_download() else False
+        self.actions["play"] = True if self.archive_name or (self.actions["view"] and self.supports_zeta_player()) else False
+        self.actions["article"] = True if self.article_count else False
+        # Review
+        if (self.actions["download"] and self.can_review) or self.review_count:
+            self.actions["review"] = True
+        if self.actions["review"] and self.is_detail(DETAIL_UPLOADED):
+            self.actions["review"] = False
+        self.actions["attributes"] = True
     # END NEW FOR 2023
 
 
