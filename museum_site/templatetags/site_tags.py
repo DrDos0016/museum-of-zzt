@@ -1,3 +1,5 @@
+import pprint
+
 import urllib.parse
 
 from django import template
@@ -642,7 +644,8 @@ def generic_block_loop(items, view="detailed", header=None, request=None, *args,
     return mark_safe(output + "\n")
 
 
-@register.simple_tag()
-def model_block(item, view="detailed", *args, **kwargs):
-    context = getattr(item, "context_{}".format(view))()
+@register.simple_tag(takes_context=True)
+def model_block(context, item, view="detailed", *args, **kwargs):
+    item.render_model_block(view, request=context["request"], show_staff=context["request"].session.get("SHOW_STAFF", False))
+    context = item.context
     return render_to_string("museum_site/subtemplate/model-block-{}.html".format(view), context)
