@@ -14,9 +14,15 @@
     <li><a href="?show=collection-contents">Collection Contents</a></li>
 </ul>
 
+<form method="POST">
+{% csrf_token %}
+<input name="secret" placeholder="Article Password"> <input type="submit">
+</form>
+
 <hr>
 
 {% if show == "all" or show == "zfiles" %}
+<h2>ZFiles</h2>
     {% for zf in zfiles %}
     {% model_block zf view="detailed" %}
     {% endfor %}
@@ -37,6 +43,7 @@
 {% endif %}
 
 {% if show == "all" or show == "articles" %}
+<h2>Articles</h2>
     {% for a in articles %}
     {% model_block a view="detailed" %}
     {% endfor %}
@@ -57,6 +64,7 @@
 {% endif %}
 
 {% if show == "all" or show == "reviews" %}
+<h2>Reviews</h2>
     {% for r in reviews %}
     {% model_block r view="detailed" %}
     {% endfor %}
@@ -77,6 +85,7 @@
 {% endif %}
 
 {% if show == "all" or show == "series" %}
+<h2>Series</h2>
     {% for s in series %}
     {% model_block s view="detailed" %}
     {% endfor %}
@@ -97,6 +106,7 @@
 {% endif %}
 
 {% if show == "all" or show == "wozzt" %}
+<h2>WoZZT_Queue</h2>
     {% for w in wozzt %}
     {% model_block w view="detailed" %}
     {% endfor %}
@@ -116,7 +126,29 @@
     <hr>
 {% endif %}
 
+{% if show == "all" or show == "collection" %}
+<h2>Collections</h2>
+    {% for c in collections %}
+    {% model_block c view="detailed" %}
+    {% endfor %}
+
+    <table>
+    {% for c in collections %}
+    {% if forloop.first %}{{c.table_header}}{% endif %}
+    {% model_block c view="list" %}
+    {% endfor %}
+    </table>
+
+    <div class="gallery-frame">
+    {% for c in collections %}
+    {% model_block c view="gallery" %}
+    {% endfor %}
+    </div>
+    <hr>
+{% endif %}
+
 {% if show == "all" or show == "collection-contents" %}
+<h2>Collection Contents</h2>
     {% for c in collection_contents %}
     {% model_block c view="detailed" %}
     {% endfor %}
