@@ -147,18 +147,18 @@ class Series(BaseModel):
     def get_field_latest_article(self, view="detailed"):
         article = self.article_set.all().order_by("-publish_date").first()
         if view == "list" or view == "gallery":
-            value = "<a href='{}'>{}</a>".format(self.url(), "Latest")
+            value = "<a href='{}'>{}</a>".format(article.url(), "Latest")
         else:
-            value = "<a href='{}'>{}</a>".format(self.url(), article.title)
+            value = "<a href='{}'>{}</a>".format(article.url(), article.title)
         return {"label": "Latest Article", "value": value, "safe": True}
 
     def get_field_first_article(self, view="detailed"):
         article = self.article_set.all().order_by("publish_date").first()
         if view == "list" or view == "gallery":
-            value = "<a href='{}'>{}</a>".format(self.url(), "First")
+            value = "<a href='{}'>{}</a>".format(article.url(), "First")
         else:
-            value = "<a href='{}'>{}</a>".format(self.url(), article.title)
-        return {"label": "Latest Article", "value": value, "safe": True}
+            value = "<a href='{}'>{}</a>".format(article.url(), article.title)
+        return {"label": "First Article", "value": value, "safe": True}
 
     def get_field_total_articles(self, view="detailed"):
         return {"label": "Total Articles", "value": self.article_set.count()}

@@ -218,6 +218,10 @@ class Review(BaseModel):
             if self.rating == -1:
                 rating = "&mdash;"
 
+        if view == "gallery":
+            if self.rating == -1:
+                rating = ""
+
         return {"label": "Rating", "value": rating, "safe": True}
 
     def context_detailed(self):

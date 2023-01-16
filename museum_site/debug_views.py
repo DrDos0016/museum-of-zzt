@@ -32,7 +32,7 @@ def debug(request, filename=None):
     )
 
     test_zfiles = File.objects.filter(
-        id__in=[278, 327, 420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415, 3471, 2568, 9999]
+        id__in=[278, 327, 420, 1271, 1662, 435, 310, 2367, 2876, 1240, 2095, 3415, 3471, 2568, 9999, 3798, 3480, 874]
     ).order_by("id")
 
     test_articles = Article.objects.filter(
@@ -111,6 +111,7 @@ def debug_article(request, fname=""):
 
     data["article"] = article
     data["veryspecial"] = True
+    data["title"] = "WIP {} [{} words]".format(fname, article.word_count())
     return render(request, "museum_site/tools/article-wip.html", data)
 
 

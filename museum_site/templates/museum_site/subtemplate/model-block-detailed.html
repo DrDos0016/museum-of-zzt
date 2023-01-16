@@ -19,7 +19,7 @@
         </div>
         {% endfor %}
     </div>
-    {% if obj.context.extras %}<div class="extras">TODO: AWFUL{% for extra in obj.context.extras %}{% include extra with featured_articles=obj.context.featured_articles lost_description=obj.context.lost_description detail_name=obj.context.detail_name utility_description=obj.context.utility_description collection_description=obj.context.collection_description %}{% endfor %}</div>{% endif %}
+    {% if extras %}<div class="extras">{% for extra in extras %}{% include extra.template %}{% endfor %}</div>{% endif %}
     {% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
 </div>
 {% comment %}

@@ -11,25 +11,29 @@ class BaseModel(models.Model):
     actions = {}
     context = {"X": "BaseModel Context"}
     extra_context = {}
+    extras = []
     detail_ids = []
-
+    roles = []
 
     def admin_url(self):
         name = self.model_name.replace("-", "_").lower()
         return "/admin/museum_site/{}/{}/change/".format(name, self.id)
 
+    def _init_actions(self, request={}, show_staff=False): self.actions = {}
+
+    def _init_detail_ids(self, request={}, show_staff=False): self.detail_ids = []
+
+    def _init_extras(self, request={}, show_staff=False): self.extras = []
+
+    def _init_roles(self, view):
+        self.roles = []
+        if view != "list":  # List views just use table rows instead of a lot of alternate CSS rules
+            self.roles.append("model-block")
+        self.roles.append(view)
+
     def _init_icons(self, request={}, show_staff=False):
-        # Stub
         self._minor_icons = []
         self._major_icons = []
-
-    def _init_actions(self, request={}, show_staff=False):
-        # Stub
-        self.actions = {}
-
-    def _init_detail_ids(self, request={}, show_staff=False):
-        # Stub
-        self.detail_ids = []
 
     def get_all_icons(self):
         # Returns combined list of both major and minor icons, populating if needed
@@ -105,9 +109,14 @@ class BaseModel(models.Model):
     def render_model_block(self, view="detailed", request={}, show_staff=False):
         for init_func in self.to_init:  # Initialize the object
             getattr(self, "_init_{}".format(init_func))(request, show_staff)
+        # Every model has roles (CSS classes )
+        self._init_roles(view)
         self.context = self.context_universal()
         # Update with view-specific context
         self.context.update(getattr(self, "context_{}".format(view))())
+        # Update with extras
+        if self.extras:
+            self.context.update(self.context_extras(request))
 
     def get_field(self, field_name, view="detailed"):
         if hasattr(self, "get_field_{}".format(field_name)):
@@ -122,19 +131,22 @@ class BaseModel(models.Model):
             "pk": self.pk,
             "model_key": self.key if hasattr(self, "key") else self.pk,
             "url": self.url(),
+            "roles": self.roles,
             "preview": {
                 "no_zoom": False,
-                "zoomed": self.model_name == "WoZZT-Queue",  # WoZZT Queue is the only one
+                "zoomed": self.model_name == "WoZZT-Queue",  # WoZZT Queue is the only one pre-zoomed
                 "url": self.preview_url,
                 "alt": self.preview_url,
             },
             "title": self.get_field("view", view="title"),
+            "extras": self.extras,
         }
         return context
 
     def context_detailed(self): return {}
     def context_list(self): return {}
     def context_gallery(self): return {}
+    def context_extras(self, request=None): return {}
 
     def prepare_icons_for_field(self):
         if self.has_icons:

@@ -440,6 +440,8 @@ class Article(BaseModel):
             column_fields = []
             for field_name in col:
                 field_context = self.get_field(field_name)
+                if field_name == "series" and field_context.get("value", "") == "":
+                    continue
                 column_fields.append(field_context)
             context["columns"].append(column_fields)
         return context

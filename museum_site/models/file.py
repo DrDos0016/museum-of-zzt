@@ -39,7 +39,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     objects = ZFile_Queryset.as_manager()
 
     model_name = "File"
-    to_init = ["icons", "actions", "detail_ids"]
+    to_init = ["detail_ids", "icons", "actions", "extras"]
     table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
     sort_options = [
         {"text": "Title", "val": "title"},
@@ -273,7 +273,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return True if DETAIL_WEAVE in self.detail_ids else False
 
     def is_detail(self, detail_id):
-        self.init_detail_ids()
         self.init_detail_ids()
         return True if detail_id in self.detail_ids else False
 
@@ -1108,7 +1107,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def context_detailed(self):
         context = self.context_universal()
-        context["roles"] = ["model-block", "detailed"]
         context["show_actions"] = True
         context["columns"] = []
 
@@ -1134,7 +1132,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def context_list(self):
         context = self.context_universal()
-        context["roles"] = ["list"]
         context["cells"] = []
 
         cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
@@ -1145,7 +1142,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def context_gallery(self):
         context = self.context_universal()
-        context["roles"] = ["model-block", "gallery"]
         context["fields"] = [
             self.get_field("authors", view="gallery")
         ]
@@ -1164,6 +1160,69 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.actions["review"] and self.is_detail(DETAIL_UPLOADED):
             self.actions["review"] = False
         self.actions["attributes"] = True
+
+    def _init_detail_ids(self, request={}, show_staff=False):
+        self.detail_ids = self.details.all().values_list("id", flat=True)
+
+    def _init_roles(self, view):
+        super()._init_roles(view)
+        to_add = []
+
+        if self.explicit:
+            to_add.append("explicit")
+        if DETAIL_UPLOADED in self.detail_ids:
+            to_add.append("unpublished")
+        if DETAIL_FEATURED in self.detail_ids:
+            to_add.append("featured")
+        if DETAIL_LOST in self.detail_ids:
+            to_add.append("lost")
+
+        for i in to_add:
+            self.roles.append(i)
+
+    def _init_extras(self, request={}, show_staff=False):
+        self.extras = []
+
+        if DETAIL_FEATURED in self.detail_ids:
+            self.extras.append({"kind": "featured-world", "template": "museum_site/subtemplate/extra-featured-world.html"})
+        if DETAIL_LOST in self.detail_ids and self.description:
+            self.extras.append({"kind": "lost-world", "template": "museum_site/subtemplate/extra-lost.html"})
+        if DETAIL_PROGRAM in self.detail_ids and self.description:
+            # TODO: This PK check is a hotfix for "description" being used for many types of descriptions
+            if self.pk not in [85]:
+                self.extras.append({"kind": "program-description", "template": "museum_site/subtemplate/extra-utility.html"})
+        if DETAIL_UTILITY in self.detail_ids and self.description:
+            self.extras.append({"kind": "utility-description", "template": "museum_site/subtemplate/extra-utility.html"})
+
+    def context_extras(self, request):
+        # TODO This is probably the weakest part of this rewrite
+        context = {}
+
+        for extra in self.extras:
+            kind = extra["kind"]
+            if kind == "featured-world":
+                context["featured_reviews"] = []
+                # TODO: Eventually replace with articles.category() and show unpublished
+                # articles = self.articles.category("Featured Game")
+                articles = self.articles.filter(category="Featured Game").defer("content").order_by("-publish_date")
+                for a in articles:
+                    a._init_access_level(request)
+                    a._init_icons(request)
+                    context["featured_reviews"].append(a.get_field_view("title")["value"] + " by " + a.get_field_authors()["value"])
+            elif kind == "lost-world":
+                context["lost_description"] = self.description
+            elif kind == "program-description":
+                context["detail_name"] = "Program"
+                context["utility_description"] = self.description
+            elif kind == "utility-description":
+                context["detail_name"] = "Utility"
+                context["utility_description"] = self.description
+
+
+        print("RETURNING", context)
+        return context
+
+
     # END NEW FOR 2023
 
 
