@@ -4,17 +4,23 @@
     grid-template-areas:
     "expand expand expand"
     "header header header"
+    "prefix prefix prefix"
     "display display display"
     "zip-name tabs tabs"
     "file-list analysis analysis";
 
     grid-template-columns:1.5fr 2fr auto;
-    grid-template-rows:repeat(4, auto) 1fr;
+    grid-template-rows:repeat(5, auto) 1fr;
     min-height:858px; /* With padding this is 900px of space */
     height:calc(100vh - 42px);
 }
 
 .fv-grid .file-meta { grid-area: header; }
+
+#fv-prefix
+{
+    grid-area: prefix;
+}
 
 #fv-main
 {
