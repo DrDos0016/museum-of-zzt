@@ -9,6 +9,7 @@ from .collection import Collection
 from .collection import Collection_Entry
 from .company import Company
 from .content import Content
+from .custom_block import *
 from .detail import Detail
 from .download import Download
 from .file import File, ZFile_Admin

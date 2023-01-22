@@ -1033,6 +1033,11 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         url = "/file/attribute/{}/".format(self.key)
         return {"value": "<a href='{}'>Attributes</a>".format(url), "safe": True}
 
+    def get_field_tools(self, view="detailed"):
+        url = "/tools/{}/".format(self.key)
+        return {"label": "Tools", "value": "<a href='{}'>Tools {} #{}</a>".format(url, self.model_name, self.pk), "safe": True}
+
+
     def get_field_authors(self, view="detailed"):
         qs = self.authors.all()
         plural = "s" if qs.count() > 1 else ""
@@ -1115,6 +1120,10 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             ["details", "rating", "boards", "language", "publish_date"],
         ]
 
+        if self.show_staff:
+            columns[1].append("edit")
+            columns[1].append("tools")
+
         for col in columns:
             column_fields = []
             for field_name in col:
@@ -1123,6 +1132,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             context["columns"].append(column_fields)
 
         action_list = ["download", "play", "view", "review", "article", "attributes"]
+        if self.show_staff:
+            action_list.append("edit")
+            action_list.append("tools")
         actions = []
         for action in action_list:
             actions.append(self.get_field(action, view="detailed"))
@@ -1147,6 +1159,12 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         ]
         return context
 
+    def context_poll(self):
+        """ Poll context is based on Gallery context """
+        context = self.context_gallery()
+        context["roles"].append("gallery")
+        return context
+
     def _init_actions(self, request={}, show_staff=False):
         """ Determine which actions may be performed on this zfile """
         self.actions = {"review": False}
@@ -1161,7 +1179,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self.actions["review"] = False
         self.actions["attributes"] = True
 
-    def _init_detail_ids(self, request={}, show_staff=False):
+    def _init_detail_ids(self):
         self.detail_ids = self.details.all().values_list("id", flat=True)
 
     def _init_roles(self, view):
@@ -1180,9 +1198,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         for i in to_add:
             self.roles.append(i)
 
-    def _init_extras(self, request={}, show_staff=False):
+    def _init_extras(self):
         self.extras = []
-
         if DETAIL_FEATURED in self.detail_ids:
             self.extras.append({"kind": "featured-world", "template": "museum_site/subtemplate/extra-featured-world.html"})
         if DETAIL_LOST in self.detail_ids and self.description:
@@ -1191,10 +1208,10 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             # TODO: This PK check is a hotfix for "description" being used for many types of descriptions
             if self.pk not in [85]:
                 self.extras.append({"kind": "program-description", "template": "museum_site/subtemplate/extra-utility.html"})
-        if DETAIL_UTILITY in self.detail_ids and self.description:
+        elif DETAIL_UTILITY in self.detail_ids and self.description:
             self.extras.append({"kind": "utility-description", "template": "museum_site/subtemplate/extra-utility.html"})
 
-    def context_extras(self, request):
+    def context_extras(self):
         # TODO This is probably the weakest part of this rewrite
         context = {}
 
@@ -1206,8 +1223,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
                 # articles = self.articles.category("Featured Game")
                 articles = self.articles.filter(category="Featured Game").defer("content").order_by("-publish_date")
                 for a in articles:
-                    a._init_access_level(request)
-                    a._init_icons(request)
+                    a.request = self.request
+                    a._init_access_level()
+                    a._init_icons()
                     context["featured_reviews"].append(a.get_field_view("title")["value"] + " by " + a.get_field_authors()["value"])
             elif kind == "lost-world":
                 context["lost_description"] = self.description
@@ -1217,12 +1235,15 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             elif kind == "utility-description":
                 context["detail_name"] = "Utility"
                 context["utility_description"] = self.description
-
-
-        print("RETURNING", context)
         return context
 
-
+    def process_kwargs(self, kwargs):
+        if kwargs.get("poll_idx"):  # Add role for background color when displaying poll choices
+            self.context["roles"].append("poll-option-{}".format(kwargs["poll_idx"]))
+        if kwargs.get("poll_data"):  # Add poll data to display
+            self.context["poll_description"] = kwargs["poll_data"].summary
+            self.context["poll_patron_nominated"] = kwargs["poll_data"].backer
+        return True
     # END NEW FOR 2023
 
 

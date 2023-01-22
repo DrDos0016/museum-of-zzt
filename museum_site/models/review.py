@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.template.defaultfilters import timesince
 from django.utils.safestring import mark_safe
 
 from museum_site.common import profanity_filter
@@ -205,7 +206,10 @@ class Review(BaseModel):
         return {"label": "Reviewer", "value": self.author_link(), "safe": True}
 
     def get_field_review_date(self, view="detailed"):
-        return {"label": "Review Date", "value": self.date.strftime("%b %d, %Y"), "safe": True}
+        if view == "review_content":
+            return {"label": "Review Date", "value": "{} ago ({})".format(timesince(self.date), self.date.strftime("%b %d, %Y")), "safe": True}
+        else:
+            return {"label": "Review Date", "value": self.date.strftime("%b %d, %Y"), "safe": True}
 
     def get_field_rating(self, view="detailed"):
         if self.rating is not None:
@@ -214,15 +218,27 @@ class Review(BaseModel):
         else:
             rating = "<i>No rating</i>"
 
-        if view == "list":
-            if self.rating == -1:
+        if self.rating == -1:
+            if view == "list":
                 rating = "&mdash;"
 
-        if view == "gallery":
-            if self.rating == -1:
+            if view == "gallery":
                 rating = ""
 
-        return {"label": "Rating", "value": rating, "safe": True}
+            if view == "review_content":
+                rating = "<i>This user has opted out of providing a numeric rating</i>"
+        if view == "review_content":
+            rating = "<b>{}</b>".format(rating)
+
+        output = {"label": "Rating", "value": rating, "safe": True}
+        return output
+
+    def get_field_content(self, view="review-content"):
+        return {"label": "Review", "value": self.content, "markdown": True}
+
+    def get_field_reviewer_link(self, view="review-content"):
+        return {"value": "<a href='/review/author/{}/'>Other reviews written by {}</a>".format(self.author.lower(), self.author), "safe": True}
+
 
     def context_detailed(self):
         context = self.context_universal()
@@ -261,4 +277,16 @@ class Review(BaseModel):
             self.get_field("author", view="gallery"),
             self.get_field("rating", view="gallery")
         ]
+        return context
+
+    def context_review_content(self):
+        # Context used when displaying a full review
+        context = self.context_universal()
+        context["roles"] = ["model-block", "review-content"]
+        context["fields"] = []
+        field_list = ["author", "review_date", "content", "rating", "reviewer_link"]
+
+        for field_name in field_list:
+            field_context = self.get_field(field_name, view="review_content")
+            context["fields"].append(field_context)
         return context

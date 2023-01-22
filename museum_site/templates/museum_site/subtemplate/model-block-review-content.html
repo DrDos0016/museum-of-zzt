@@ -4,25 +4,19 @@
 
 <div class="{{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
     <div class="model-block-top-margin"><span title="{{model}} #{{pk}}">{{model_key}}</span></div>
-    <img class="preview-image {% if not preview.no_zoom %} zoomable{% endif %}{% if preview.zoomed %} zoomed{% else %} thumbnail{% endif %}" src="{% static preview.url %}" alt="{{preview.url}}">
     <div class="model-block-title">
         <h2>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h2>
     </div>
-    <div class="model-block-data">
-        {% for col in columns %}
-        <div class="col">
-            {% for field in col %}
-            <div class="datum">
-                <div class="label">{{field.label}}</div>
-                <div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
-            </div>
-            {% endfor %}
+    <div class="model-block-data data">
+        {% for field in fields %}
+        <div class="datum">
+            {% if field.label %}<div class="label">{{field.label}}</div>{% endif %}
+            <div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.markdown %}{{field.value|markdown}}{% elif field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
         </div>
         {% endfor %}
     </div>
     {% if extras %}<div class="extras">{% for extra in extras %}{% include extra.template %}{% endfor %}</div>{% endif %}
     {% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
-    {% block collection_data %}{% if collection_description and model == "Collection Entry" %}<div class="collection-info datum"><h3>Collection Description</h3>{{collection_description|markdown}}</div>{% endif %}{% endblock %}
 </div>
 {% comment %}
 TODO: ANY OF THIS JUNK?

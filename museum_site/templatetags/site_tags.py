@@ -192,8 +192,8 @@ def guide_words(*args, **kwargs):
             </div>
             """.format(
                 location,
-                items[0].filename, link_text[0],
-                items[1].filename, link_text[1]
+                items[0].key, link_text[0],
+                items[1].key, link_text[1]
             )
         else:
             output = ""
@@ -566,6 +566,7 @@ def ssv_links(raw, param, lookup=""):
 
 @register.simple_tag()
 def gblock(item, view="detailed", header=None, debug=False, request=None, *args, **kwargs):
+    """
     template = "museum_site/blocks/generic-{}-block.html".format(view.split("-")[0])
     if not item:
         item = File(
@@ -590,6 +591,8 @@ def gblock(item, view="detailed", header=None, debug=False, request=None, *args,
 
     output = render_to_string(template, context)
     return mark_safe(output + "\n")
+    """
+    return "DELETE THIS -- CALL TO GBLOCK"
 
 
 @register.simple_tag()
@@ -606,6 +609,8 @@ def zfile_links(zfile=None, debug=False):
 
 @register.simple_tag()
 def generic_block_loop(items, view="detailed", header=None, request=None, *args, **kwargs):
+    """
+    # TODO: DELETE 2023
     context = {}
     output = ""
     template = "museum_site/blocks/new-generic-{}-block.html".format(view)
@@ -642,10 +647,37 @@ def generic_block_loop(items, view="detailed", header=None, request=None, *args,
         output += "</div>"
 
     return mark_safe(output + "\n")
+    """
+    return "DELETE THIS -- CALL TO GENERIC_BLOCK_LOOP"
 
 
 @register.simple_tag(takes_context=True)
-def model_block(context, item, view="detailed", *args, **kwargs):
-    item.render_model_block(view, request=context["request"], show_staff=context["request"].session.get("SHOW_STAFF", False))
+def model_block(context, item, view="detailed", template_view=None, *args, **kwargs):
+    item.init_model_block_context(view, request=context["request"], show_staff=context["request"].session.get("SHOW_STAFF", False), *args, **kwargs)
     context = item.context
-    return render_to_string("museum_site/subtemplate/model-block-{}.html".format(view), context)
+    if template_view is None:
+        template_view = view
+    return render_to_string("museum_site/subtemplate/model-block-{}.html".format(template_view.replace("_", "-")), context)
+
+
+@register.simple_tag(takes_context=True)
+def queryset_to_model_blocks(context, items, view="detailed", auto_wrap=True, *args, **kwargs):
+    output = ""
+
+    if auto_wrap and items:
+        if view == "list":
+            output += "<table>\n"
+            output += items[0].table_header()
+        elif view == "gallery":
+            output += "<div class='gallery-frame'>\n"
+
+    for i in items:
+        output += model_block(context, i, view, *args, **kwargs) + "\n"
+
+    if auto_wrap and items:
+        if view == "list":
+            output += "</table>"
+        elif view == "gallery":
+            output += "</div>\n"
+
+    return mark_safe(output + "\n")

@@ -1,0 +1,34 @@
+{% extends base_template|default:"museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block meta %}
+{% if head_object %}{% meta_tags path=request.get_full_path context=head_object.get_meta_tag_context %}
+{% elif file %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}
+{% elif series %}{% meta_tags path=request.get_full_path context=series.get_meta_tag_context %}{% endif %}
+{% endblock %}
+
+{% block content %}
+<!--generic-directory.html-->
+<h{{header_idx|default:"1"}}>{{title}}!!!!</h{{header_idx|default:"1"}}>
+{% if head_object %}{% model_block head_object %}{% endif %}
+{% if prefix_template %}{% include prefix_template %}{% elif prefix_text %}{{prefix_text|safe|linebreaks}}{% endif %}
+
+{% include "museum_site/blocks/paginator-block.html" with location="top" %}
+
+{% for obj in object_list %}
+    {% if forloop.first and view == "list" %}<table>{{obj.table_header}}{% endif %}
+    {% if forloop.first and view == "gallery" %}<div class="gallery-frame">{% endif %}
+    {% model_block obj view %}
+    {% if forloop.last and view == "list" %}</table>{% endif %}
+    {% if forloop.last and view == "gallery" %}</div>{% endif %}
+{% empty %}
+<div id="no-results">
+    <img src={% static "chrome/blank-board.png" alt="An empty yellow bordered ZZT board" %}>
+    <p>Your query returned zero results!</p>
+</div>
+{% endfor %}
+
+
+{% include "museum_site/blocks/paginator-block.html" with location="bottom" %}
+{% endblock %}

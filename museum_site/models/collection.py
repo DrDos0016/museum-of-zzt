@@ -257,8 +257,10 @@ class Collection_Entry(BaseModel):
         "-id": ["-id"],
     }
 
+
     supported_views = ["detailed"]
     model_name = "Collection Entry"
+    to_init = ["zfile"]
     objects = Collection_Entry_Queryset.as_manager()
 
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE, blank=True, null=True)
@@ -289,7 +291,6 @@ class Collection_Entry(BaseModel):
         return context
 
     def get_field(self, field_name, view="detailed"):
-        #print("Collection content unique get_field()")
         if hasattr(self, "get_field_{}".format(field_name)):
             field_context = getattr(self, "get_field_{}".format(field_name))(view)
         elif self.zfile is not None and hasattr(self.zfile, "get_field_{}".format(field_name)):
@@ -298,76 +299,15 @@ class Collection_Entry(BaseModel):
             field_context = {"label": field_name, "value": "placeholder"}
         return field_context
 
-    def context_universal(self):
-        if self.zfile is not None:
-            self.zfile.init_actions()
-
-        context = {
-            "model": self.model_name,
-            "pk": self.pk,
-            "model_key": self.key if hasattr(self, "key") else self.pk,
-            "url": self.url(),
-            "preview": {
-                "no_zoom": False,
-                "zoomed": False,
-                "url": self.preview_url,
-                "alt": self.preview_url,
-            },
-            "title": self.get_field("view", view="title"),
-        }
-        return context
-
     def context_detailed(self):
-        context = self.context_universal()
-        context["roles"] = ["model-block", "detailed"]
-        context["show_actions"] = True
-        context["columns"] = []
+        if not self.zfile:
+            return {}
 
-        columns = [
-            ["authors", "companies", "zfile_date", "genres", "filename", "size"],
-            ["details", "rating", "boards", "language", "publish_date"],
-        ]
-
-        for col in columns:
-            column_fields = []
-            for field_name in col:
-                field_context = self.get_field(field_name)
-                column_fields.append(field_context)
-            context["columns"].append(column_fields)
-
-        action_list = ["download", "play", "view", "review", "article", "attributes"]
-        actions = []
-        for action in action_list:
-            actions.append(self.get_field(action, view="detailed"))
-
-        context["actions"] = actions
-
+        context = self.zfile.context
+        context["roles"] = ["model-block", "detailed", "collection-content"]
+        context["collection_description"] = self.collection_description
         return context
 
-    def context_list(self):
-        context = self.context_universal()
-        context["roles"] = ["list"]
-        context["cells"] = []
-
-        cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
-        for field_name in cell_list:
-            cell_fields = self.get_field(field_name, view="list")
-            context["cells"].append(cell_fields)
-        return context
-
-    def context_gallery(self):
-        context = self.context_universal()
-        context["roles"] = ["model-block", "gallery"]
-        context["fields"] = [
-            self.get_field("authors", view="gallery")
-        ]
-        return context
-
-    def table_header(self):
+    def _init_zfile(self):
         if self.zfile:
-            return self.zfile.table_header()
-        else:
-            return "<th>ERROR</th>"
-
-    def render_model_block(self, view="detailed", request={}, show_staff=False):
-        self.context = getattr(self, "context_{}".format(view))()
+            self.zfile.init_model_block_context("detailed", self.request, self.show_staff)

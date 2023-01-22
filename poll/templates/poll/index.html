@@ -18,6 +18,7 @@ main .gallery-frame
     margin:inherit;
     margin-top:0px;
     margin-bottom:0px;
+    background-color:var(--ega-gray);
 }
 
 #poll-form label
@@ -31,6 +32,11 @@ main .gallery-frame
     padding:0.5em;
 }
 
+/*#poll-form label + label
+{
+    border-top:1px solid #000;
+}*/
+
 .winner
 {
     font-size:32px;
@@ -42,39 +48,39 @@ main .gallery-frame
 <h1>{{display_poll.title}}</h1>
 <p>Poll open from <b>{{display_poll.start_date}}</b> through <b>{{display_poll.end_date}}</b></p>
 
-<div class="gallery-frame">
-{% gblock display_poll.option1.file view="poll" option=display_poll.option1 bg="ega-darkblue-bg" %}
-{% gblock display_poll.option2.file view="poll" option=display_poll.option2 bg="ega-darkgreen-bg" %}
-{% gblock display_poll.option3.file view="poll" option=display_poll.option3 bg="ega-darkcyan-bg" %}
-{% gblock display_poll.option4.file view="poll" option=display_poll.option4 bg="ega-darkred-bg" %}
-{% gblock display_poll.option5.file view="poll" option=display_poll.option5 bg="ega-darkpurple-bg" %}
+<div class="gallery-frame poll-gallery">
+    {% model_block display_poll.option1.file view="poll" poll_idx=1 poll_data=display_poll.option1 %}
+    {% model_block display_poll.option2.file view="poll" poll_idx=2 poll_data=display_poll.option2 %}
+    {% model_block display_poll.option3.file view="poll" poll_idx=3 poll_data=display_poll.option3 %}
+    {% model_block display_poll.option4.file view="poll" poll_idx=4 poll_data=display_poll.option4 %}
+    {% model_block display_poll.option5.file view="poll" poll_idx=5 poll_data=display_poll.option5 %}
 
-{% if display_poll.active and not results_mode %}
-<form method="POST" id="poll-form" class="cp437" action="/poll/results/{{display_poll.id}}/">
-    {% csrf_token %}
-    <label style="background-color:#0000AA">{{display_poll.option1.file.title}} <input name="vote" type="radio" value="{{display_poll.option1_id}}"></label>
-    <label style="background-color:#00AA00">{{display_poll.option2.file.title}} <input name="vote" type="radio" value="{{display_poll.option2_id}}"></label>
-    <label style="background-color:#00AAAA">{{display_poll.option3.file.title}} <input name="vote" type="radio" value="{{display_poll.option3_id}}"></label>
-    <label style="background-color:#AA0000">{{display_poll.option4.file.title}} <input name="vote" type="radio" value="{{display_poll.option4_id}}"></label>
-    <label style="background-color:#AA00AA">{{display_poll.option5.file.title}} <input name="vote" type="radio" value="{{display_poll.option5_id}}"></label>
-    {% if request.user.profile.patron %}
-    <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value="{{request.user.profile.patron_email}}" type="hidden" readonly><div>{{request.user.profile.patron_email}}</div></label>
-    {% else %}
-    <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value=""></label>
+    {% if display_poll.active and not results_mode %}
+    <form method="POST" id="poll-form" class="cp437" action="/poll/results/{{display_poll.id}}/">
+        {% csrf_token %}
+        <label style="background-color:#0000AA">{{display_poll.option1.file.title}} <input name="vote" type="radio" value="{{display_poll.option1_id}}"></label>
+        <label style="background-color:#00AA00">{{display_poll.option2.file.title}} <input name="vote" type="radio" value="{{display_poll.option2_id}}"></label>
+        <label style="background-color:#00AAAA">{{display_poll.option3.file.title}} <input name="vote" type="radio" value="{{display_poll.option3_id}}"></label>
+        <label style="background-color:#AA0000">{{display_poll.option4.file.title}} <input name="vote" type="radio" value="{{display_poll.option4_id}}"></label>
+        <label style="background-color:#AA00AA">{{display_poll.option5.file.title}} <input name="vote" type="radio" value="{{display_poll.option5_id}}"></label>
+        {% if request.user.profile.patron %}
+        <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value="{{request.user.profile.patron_email}}" type="hidden" readonly><div>{{request.user.profile.patron_email}}</div></label>
+        {% else %}
+        <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value=""></label>
+        {% endif %}
+        <label style="background-color:#AAAAAA"><a href="/poll/results/{{display_poll.id}}">View Results</a><input type="submit" name="action" value="Vote"></label>
+        {% comment %}<input type="hidden" name="key" value="{{key}}">{% endcomment %}
+    </form>
+    {% elif results_mode %}
+    <form method="POST" id="poll-form" class="cp437">
+        <label style="background-color:#0000AA">{{display_poll.option1.file.title}} <div {% if winner == results.0 %}class="winner" {% endif %}name="vote">{{results.0|default:"0"}}</div></label>
+        <label style="background-color:#00AA00">{{display_poll.option2.file.title}} <div {% if winner == results.1 %}class="winner" {% endif %}name="vote">{{results.1|default:"0"}}</div></label>
+        <label style="background-color:#00AAAA">{{display_poll.option3.file.title}} <div {% if winner == results.2 %}class="winner" {% endif %}name="vote">{{results.2|default:"0"}}</div></label>
+        <label style="background-color:#AA0000">{{display_poll.option4.file.title}} <div {% if winner == results.3 %}class="winner" {% endif %}name="vote">{{results.3|default:"0"}}</div></label>
+        <label style="background-color:#AA00AA">{{display_poll.option5.file.title}} <div {% if winner == results.4 %}class="winner" {% endif %}name="vote">{{results.4|default:"0"}}</div></label>
+        <label style="background-color:#AAAAAA"></label>
+    </form>
     {% endif %}
-    <label style="background-color:#AAAAAA"><a href="/poll/results/{{display_poll.id}}">View Results</a><input type="submit" name="action" value="Vote"></label>
-    {% comment %}<input type="hidden" name="key" value="{{key}}">{% endcomment %}
-</form>
-{% elif results_mode %}
-<form method="POST" id="poll-form" class="cp437">
-    <label style="background-color:#0000AA">{{display_poll.option1.file.title}} <div {% if winner == results.0 %}class="winner" {% endif %}name="vote">{{results.0|default:"0"}}</div></label>
-    <label style="background-color:#00AA00">{{display_poll.option2.file.title}} <div {% if winner == results.1 %}class="winner" {% endif %}name="vote">{{results.1|default:"0"}}</div></label>
-    <label style="background-color:#00AAAA">{{display_poll.option3.file.title}} <div {% if winner == results.2 %}class="winner" {% endif %}name="vote">{{results.2|default:"0"}}</div></label>
-    <label style="background-color:#AA0000">{{display_poll.option4.file.title}} <div {% if winner == results.3 %}class="winner" {% endif %}name="vote">{{results.3|default:"0"}}</div></label>
-    <label style="background-color:#AA00AA">{{display_poll.option5.file.title}} <div {% if winner == results.4 %}class="winner" {% endif %}name="vote">{{results.4|default:"0"}}</div></label>
-    <label style="background-color:#AAAAAA"></label>
-</form>
-{% endif %}
 </div>
 
 {% if results_mode %}

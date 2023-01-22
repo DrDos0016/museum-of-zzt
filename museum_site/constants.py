@@ -50,6 +50,7 @@ PAGE_LINKS_DISPLAYED = 30  # Number of links to other pages displayed
 UPLOADS_ENABLED = True
 UPLOAD_CAP = 1048576  # 1 Megabyte (unless manually increased per user)
 UPLOAD_TEST_MODE = False  # Coerce successful uploads in DEV to expedite testing of the upload process
+MODEL_BLOCK_VERSION = 2023
 
 # Accounts
 ALLOW_REGISTRATION = True

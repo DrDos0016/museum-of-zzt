@@ -24,19 +24,19 @@
 {% if show == "all" or show == "zfiles" %}
 <h2>ZFiles</h2>
     {% for zf in zfiles %}
-    {% model_block zf view="detailed" %}
+    {% model_block zf %}
     {% endfor %}
 
     <table>
     {% for zf in zfiles %}
     {% if forloop.first %}{{zf.table_header}}{% endif %}
-    {% model_block zf view="list" %}
+    {% model_block zf "list" %}
     {% endfor %}
     </table>
 
     <div class="gallery-frame">
     {% for zf in zfiles %}
-    {% model_block zf view="gallery" %}
+    {% model_block zf "gallery" %}
     {% endfor %}
     </div>
     <hr>
@@ -150,7 +150,7 @@
 {% if show == "all" or show == "collection-contents" %}
 <h2>Collection Contents</h2>
     {% for c in collection_contents %}
-    {% model_block c view="detailed" %}
+    {% model_block c view="collection_content" %}
     {% endfor %}
 
     <table>
@@ -167,4 +167,5 @@
     </div>
     <hr>
 {% endif %}
+
 {% endblock %}

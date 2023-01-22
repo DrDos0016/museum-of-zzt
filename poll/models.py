@@ -48,6 +48,21 @@ class Poll(models.Model):
         )
         return output
 
+    def get_all_choices(self):
+        choices = []
+        if option1 is not None:
+            choices.append(option1)
+        if option2 is not None:
+            choices.append(option2)
+        if option3 is not None:
+            choices.append(option3)
+        if option4 is not None:
+            choices.append(option4)
+        if option5 is not None:
+            choices.append(option5)
+
+        return choices
+
 
 class Vote(models.Model):
     poll = models.ForeignKey("Poll", on_delete=models.SET_NULL, null=True)

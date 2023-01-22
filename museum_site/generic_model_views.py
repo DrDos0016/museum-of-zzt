@@ -4,13 +4,12 @@ from time import time
 from django.db.models import Count
 from django.shortcuts import redirect
 from django.template.defaultfilters import slugify
-from django.utils.safestring import mark_safe
 from django.views.generic import DetailView, ListView
 
 from markdown_deux.templatetags import markdown_deux_tags
 
 from museum_site.common import banned_ip
-from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED
+from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED, MODEL_BLOCK_VERSION
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.form_utils import clean_params
 from museum_site.forms import ReviewForm
@@ -19,7 +18,7 @@ from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
 class Model_List_View(ListView):
-    template_name = "museum_site/generic-directory.html"
+    template_name = "museum_site/generic-directory-v{}.html".format(MODEL_BLOCK_VERSION)
     allow_pagination = True
     paginate_by = NO_PAGINATION
     has_local_context = True
@@ -79,6 +78,7 @@ class Model_List_View(ListView):
         context["head_object"] = self.head_object if hasattr(self, "head_object") else None
 
         # Initialize objects' local contexts
+        """
         if self.has_local_context:
             for i in context["object_list"]:
                 if self.view == "detailed":
@@ -89,6 +89,7 @@ class Model_List_View(ListView):
                         context["table_header"] = i.table_header()
                 elif self.view == "gallery":
                     i.context = i.gallery_block_context(request=self.request)
+        """
 
         return context
 
@@ -592,20 +593,19 @@ class Article_Categories_List_View(Model_List_View):
         for key in CATEGORY_DESCRIPTIONS:
             if not cats.get(key):
                 continue
-            block_context = dict(
-                pk=None,
-                model=None,
-                preview=dict(url="/pages/article-categories/{}.png".format(key), alt=cats[key].title),
-                title={"datum": "link", "url": "/article/category/"+key+"/", "value": cats[key].category},
-                columns=[
-                    [
-                        {"datum": "text", "label": "Number of Articles", "value": counts[key]},
-                        {"datum": "link", "label": "Latest", "url": cats[key].url(), "value": cats[key].title},
-                        {"datum": "text", "value": mark_safe(CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>"))}
-                    ]
-                ],
+
+            i = Article_Category_Block()
+            i.set_initial_attributes(
+                {
+                    "title": cats[key].category,
+                    "preview": {"url":"/pages/article-categories/{}.png".format(key), "alt":cats[key].title},
+                    "article_count": counts[key],
+                    "latest": {"url": cats[key].url(), "value": cats[key].title},
+                    "description": CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>")
+                }
             )
-            qs.append({"context": block_context})
+
+            qs.append(i)
         return qs
 
     def get_context_data(self, **kwargs):

@@ -33,4 +33,6 @@ class Company(models.Model):
             self.save()
 
     def url(self):
+        if not self.slug:
+            self.slug = "ERROR"
         return reverse("browse_field", kwargs={"field":"company", "value": self.slug})

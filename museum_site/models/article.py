@@ -131,6 +131,7 @@ class Article(BaseModel):
             context_data = {
                 "TODO": "TODO", "CROP": "CROP",  # Expected TODO usage.
                 "path": self.path,
+                "request": context.get("request")
             }
             head = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}"
             return Template(head + self.content).render(Context(context_data))
@@ -465,18 +466,27 @@ class Article(BaseModel):
         ]
         return context
 
-    def _init_access_level(self, request={}, show_staff=False):
+    def _init_access_level(self):
         if self.published == self.PUBLISHED:
             return True
 
+        # Pull data from the request
+        if self.request:
+            patronage = self.request.user.profile.patronage if self.request.user.is_authenticated else 0
+            secret = self.request.POST.get("secret", "")
+            secret_get = self.request.GET.get("secret")
+        else:
+            patronage = 0
+            secret = ""
+            secret_get = None
+
         # Patronage based access level increases
-        patronage = request.user.profile.patronage if request.user.is_authenticated else 0
         if patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
             self.user_access_level = self.UNPUBLISHED
         elif patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
             self.user_access_level = self.UPCOMING
 
         # Password based access level increases
-        self.user_access_level = self.UPCOMING if request.POST.get("secret", "") == PASSWORD2DOLLARS else self.user_access_level  # Universal Upcoming PW
-        self.user_access_level = self.UNPUBLISHED if request.POST.get("secret", "") == PASSWORD5DOLLARS else self.user_access_level  # Universal Upcoming PW
-        self.user_access_level = self.UNPUBLISHED if (self.secret and request.GET.get("secret", "") == self.secret) else self.user_access_level  # Local PW
+        self.user_access_level = self.UPCOMING if secret == PASSWORD2DOLLARS else self.user_access_level  # Universal Upcoming PW
+        self.user_access_level = self.UNPUBLISHED if secret == PASSWORD5DOLLARS else self.user_access_level  # Universal Upcoming PW
+        self.user_access_level = self.UNPUBLISHED if (secret_get == self.secret) else self.user_access_level  # Local PW

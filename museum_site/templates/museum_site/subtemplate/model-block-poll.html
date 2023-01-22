@@ -1,0 +1,6 @@
+{% extends "museum_site/subtemplate/model-block-gallery.html" %}
+
+{% block poll_data %}
+    <div class="poll-info datum">{{poll_description}}</div>
+    {% if poll_patron_nominated %}<div class="poll-patron-label ega-cyan datum">PATRON NOMINATED</div>{% endif %}
+{% endblock %}

@@ -27,7 +27,6 @@ function set_csrf()
 var dow_str = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 $(document).ready(function (){
     set_csrf();
-    $("#content .preview-image.zoomable.thumbnail").click();
     var now = new Date();
     var next = now;
     var append_tuesday = true;
@@ -49,7 +48,7 @@ $(document).ready(function (){
         next.setHours(next.getHours() + 1);
     }
 
-    $("#content h2.title .value").each(function (){
+    $(".model-block[data-model=WoZZT-Queue] h2").each(function (){
         $(this).text(dow_str[next.getDay()] + ". " + next.toLocaleString());
         next.setHours(next.getHours() + 3);
         console.log(next.getUTCDay());
@@ -121,5 +120,5 @@ $(document).ready(function (){
 </form>
 {% endif %}
 
-{% generic_block_loop items=queue view="detailed" request=request %}
+{% queryset_to_model_blocks queue view="detailed" %}
 {% endblock %}

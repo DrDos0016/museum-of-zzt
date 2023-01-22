@@ -29,10 +29,10 @@ community can be easily discovered and that their importance can be recognized.
     <h2 id="latest-additions-heading">New Finds</h2>
     <div class="gallery-list scrolling">
         <div class="col">
-        {% generic_block_loop items=new_releases view="gallery" header=table_header %}
+        {% queryset_to_model_blocks new_releases view="gallery" %}
         </div>
         <div class="col">
-        {% generic_block_loop items=files view="gallery" header=table_header %}
+        {% queryset_to_model_blocks files view="gallery" %}
         </div>
     </div>
     <div class="view-more l">
@@ -45,27 +45,27 @@ community can be easily discovered and that their importance can be recognized.
 
 <div id="mobile-fp-file-frame">
     <h2><a href="{% url 'new_releases' %}">New Releases</a></h2>
-    {% generic_block_loop items=new_releases view="gallery" header=table_header %}
+    {% queryset_to_model_blocks new_releases view="gallery" auto_wrap=False %}
     <hr>
     <h2><a href="{% url 'new_finds' %}">New Finds</a></h2>
-    {% generic_block_loop items=files view="gallery" header=table_header %}
+    {% queryset_to_model_blocks files view="gallery" auto_wrap=False %}
 </div>
 
 <h2>Latest Articles</h2>
 {% with articles|slice:":3" as spotlight_articles %}
-{% generic_block_loop items=spotlight_articles view="detailed" request=request %}
+    {% queryset_to_model_blocks spotlight_articles view="detailed" %}
 {% endwith %}
 
 {% with articles|slice:"3:" as spotlight_articles %}
-{% generic_block_loop items=spotlight_articles view="list" header=article_table_header %}
+    {% queryset_to_model_blocks spotlight_articles view="list" %}
 {% endwith %}
 <div class="view-more">
-        <a href="{% url 'article_directory' %}">View More</a>
+    <a href="{% url 'article_directory' %}">View More</a>
 </div>
 
 <h2>Latest Reviews</h2>
-{% generic_block_loop items=reviews view="list" header=review_table_header %}
+{% queryset_to_model_blocks reviews view="list" %}
 <div class="view-more">
-        <a href="{% url 'review_directory' %}">View More</a>
+    <a href="{% url 'review_directory' %}">View More</a>
 </div>
 {% endblock %}

@@ -9,11 +9,13 @@ class BaseModel(models.Model):
     supported_views = ["detailed", "list", "gallery"]
     has_icons = False  # Updated from class specific obj._init_icons()
     actions = {}
-    context = {"X": "BaseModel Context"}
+    context = {}
     extra_context = {}
     extras = []
     detail_ids = []
     roles = []
+    request = None
+    show_staff = False
 
     def admin_url(self):
         name = self.model_name.replace("-", "_").lower()
@@ -106,17 +108,24 @@ class BaseModel(models.Model):
         return "<tr>" + row + "</tr>"
 
     # 2023 Model Blocks
-    def render_model_block(self, view="detailed", request={}, show_staff=False):
+    def init_model_block_context(self, view="detailed", request=None, *args, **kwargs):
+        """ Entry point for 2023 Model Blocks """
+        self.request = request
+        if request:
+            self.show_staff = request.user.is_staff
         for init_func in self.to_init:  # Initialize the object
-            getattr(self, "_init_{}".format(init_func))(request, show_staff)
+            getattr(self, "_init_{}".format(init_func))()
         # Every model has roles (CSS classes )
         self._init_roles(view)
-        self.context = self.context_universal()
+        self.context.update(self.context_universal())
         # Update with view-specific context
         self.context.update(getattr(self, "context_{}".format(view))())
         # Update with extras
         if self.extras:
-            self.context.update(self.context_extras(request))
+            self.context.update(self.context_extras())
+        # Update with kwargs
+        if kwargs:
+            self.process_kwargs(kwargs)
 
     def get_field(self, field_name, view="detailed"):
         if hasattr(self, "get_field_{}".format(field_name)):
@@ -125,7 +134,10 @@ class BaseModel(models.Model):
             field_context = {"label": field_name, "value": "placeholder"}
         return field_context
 
-    def context_universal(self):
+    def get_field_edit(self, view="detailed"):
+        return {"label": "Edit", "value": "<a href='{}'>Edit {} #{}</a>".format(self.admin_url, self.model_name, self.pk), "safe": True}
+
+    def context_universal(self, request=None):
         context = {
             "model": self.model_name,
             "pk": self.pk,
@@ -140,13 +152,15 @@ class BaseModel(models.Model):
             },
             "title": self.get_field("view", view="title"),
             "extras": self.extras,
+            "request": self.request
         }
         return context
 
     def context_detailed(self): return {}
     def context_list(self): return {}
     def context_gallery(self): return {}
-    def context_extras(self, request=None): return {}
+    def context_extras(self): return {}
+    def process_kwargs(self, kwargs=None): return None
 
     def prepare_icons_for_field(self):
         if self.has_icons:

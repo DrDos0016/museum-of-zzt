@@ -74,7 +74,7 @@ Sort: <select name="sort">
     </select>
 </div>
 
-{% generic_block_loop items=object_list view="review-content" request=request today=today %}
+{% queryset_to_model_blocks object_list view="review_content" %}
 {% endif %}
 
 <span id="new-review"></span>

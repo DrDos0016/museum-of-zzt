@@ -31,4 +31,6 @@ class Author(models.Model):
             self.save()
 
     def url(self):
+        if not self.slug:
+            self.slug = "ERROR"
         return reverse("browse_field", kwargs={"field":"author", "value": self.slug})
