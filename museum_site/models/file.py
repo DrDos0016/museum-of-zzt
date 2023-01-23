@@ -76,7 +76,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role": "explicit-icon"},
         "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its contents have not been fully checked by staff.", "role": "unpub-icon"},
         "featured": {"glyph": "🗝️", "title": "This file is a featured world.", "role": "fg-icon"},
-        "lost": {"glyph": "❌", "title": "This file is a known to be lost. No download is available.", "role": "lost-icon"},
+        "lost": {"glyph": "❌", "title": "This file is a known to be lost. Little if any data is available.", "role": "lost-icon"},
         "weave": {"glyph": "🧵", "title": "This file contains content designed for Weave ZZT.", "role": "weave-icon"},
     }
 
@@ -970,7 +970,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return link
 
     def get_field_download(self, view="detailed"):
-        restricted = {"value": "<span class='faded'><i>Download</i></span>", "safe": True}
+        restricted = {"value": "<span class='faded'>{} <i>Download</i></span>".format(self.prepare_icons_for_field()), "safe": True}
         if not self.actions["download"]:
             if view == "list":
                 restricted["value"] = restricted["value"].replace("Download", "DL")
@@ -991,18 +991,16 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return {"label": "Download", "value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), text), "safe": True}
 
     def get_field_play(self, view="detailed"):
-        restricted = {"value": "<span class='faded'><i>Play Online</i></span>", "safe": True}
         if not self.actions["play"]:
-            return restricted
+            return {"value": "<span class='faded'>{} <i>Play Online</i></span>".format(self.prepare_icons_for_field()), "safe": True}
         url = "/file/view/{}/".format(self.key)
         return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), "Play Online"), "safe": True}
 
     def get_field_view(self, view="detailed"):
-        restricted = {"value": "<span class='faded'><i>View Contents</i></span>", "safe": True}
         if not self.actions["view"]:
             if view == "list" or view == "title":
-                return {"value": "<span class='faded'><i>{}</i></span>".format(self.title), "safe": True}
-            return restricted
+                return {"value": "<span class='faded'>{} <i>{}</i></span>".format(self.prepare_icons_for_field(), self.title), "safe": True}
+            return {"value": "<span class='faded'>{} <i>View Contents</i></span>".format(self.prepare_icons_for_field()), "safe": True}
 
         url = "/file/view/{}/".format(self.key) if self.can_museum_download() else ""
         texts = {"detailed": "View Contents", "list": self.title, "gallery": self.title, "title": self.title}
