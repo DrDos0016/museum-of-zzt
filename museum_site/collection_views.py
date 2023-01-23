@@ -60,7 +60,6 @@ class Collection_Update_View(UpdateView):
 
         # Remove "Removed" from the visbility options
         context["form"].fields["visibility"].choices = context["form"].fields["visibility"].choices[1:]
-
         return context
 
     def form_valid(self, form):
@@ -111,7 +110,10 @@ class Collection_Manage_Contents_View(FormView):
             {"text": "Arrange Collection", "url": "?operation=arrange", },
             {"text": "Edit Collection Entry", "url": "?operation=edit-entry", }
         ]
-        context["action"] = context["collection_actions"][0]
+
+        ops = {"add": 0, "remove": 1, "arrange": 2, "edit-entry": 3}
+        operation_idx = ops[self.request.GET.get("operation", "add")]
+        context["action"] = context["collection_actions"][operation_idx]
 
         context["form"].fields["collection_id"].initial = self.collection.id
         context["collection"] = self.collection
