@@ -140,7 +140,8 @@ def guide_words(*args, **kwargs):
     # Treat Collection Entries as their associated Files
     if model == "Collection Entry":
         model = "File"
-        items = (items[0].zfile, items[1].zfile)
+        if items[0] and items[1]:
+            items = (items[0].zfile, items[1].zfile)
 
     if model == "File":
         # Figure out link text
@@ -565,37 +566,6 @@ def ssv_links(raw, param, lookup=""):
 
 
 @register.simple_tag()
-def gblock(item, view="detailed", header=None, debug=False, request=None, *args, **kwargs):
-    """
-    template = "museum_site/blocks/generic-{}-block.html".format(view.split("-")[0])
-    if not item:
-        item = File(
-            id=-1, title="ERROR: Object not found",
-            screenshot="red-x-error.png"
-        )
-    if view == "detailed":
-        context = item.detailed_block_context(debug=debug, request=request)
-    elif view == "list":
-        context = item.list_block_context(debug=debug, request=request)
-    elif view == "gallery":
-        context = item.gallery_block_context(debug=debug, request=request)
-    elif view == "detailed-collection":
-        context = item.detailed_collection_block_context(debug=debug, request=request, collection_description=kwargs.get("collection_description", ""))
-    elif view == "poll":
-        context = item.poll_block_context(debug=debug, request=request, option=kwargs.get("option"), bg=kwargs.get("bg"))
-    else:
-        context = {}
-
-    if item.model_name == "File":
-        context["file"] = item
-
-    output = render_to_string(template, context)
-    return mark_safe(output + "\n")
-    """
-    return "DELETE THIS -- CALL TO GBLOCK"
-
-
-@register.simple_tag()
 def zfile_links(zfile=None, debug=False):
     template = "museum_site/blocks/file-links.html"
     context = {}
@@ -605,50 +575,6 @@ def zfile_links(zfile=None, debug=False):
 
     output = render_to_string(template, context)
     return mark_safe(output + "\n")
-
-
-@register.simple_tag()
-def generic_block_loop(items, view="detailed", header=None, request=None, *args, **kwargs):
-    """
-    # TODO: DELETE 2023
-    context = {}
-    output = ""
-    template = "museum_site/blocks/new-generic-{}-block.html".format(view)
-
-    # Empty sets
-    if len(items) == 0:
-        output = (
-            "<div id='no-results'>"
-            "<img src='/static/chrome/blank-board.png'>"
-            "<p>Your query returned zero results!</p>"
-            "</div>"
-        )
-        return mark_safe(output)
-
-    if view == "list":
-        output += "<table>{}".format(header)
-    elif view == "gallery":
-        output += '<div class="gallery-frame">'
-
-    for i in items:
-        context["obj"] = i
-        if view in ["detailed", "list", "gallery", "review-content"]:
-            context["obj"].context = getattr(i, "{}_block_context".format(view.replace("-", "_")))(request=request)
-            if kwargs.get("today"):
-                context["today"] = kwargs["today"]
-            if request and request.session.get("DEBUG"):
-                context["debug"] = True
-
-        output += render_to_string(template, context)
-
-    if view == "list":
-        output += "</table>"
-    elif view == "gallery":
-        output += "</div>"
-
-    return mark_safe(output + "\n")
-    """
-    return "DELETE THIS -- CALL TO GENERIC_BLOCK_LOOP"
 
 
 @register.simple_tag(takes_context=True)

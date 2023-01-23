@@ -13,6 +13,7 @@ class Collection(BaseModel):
     """ Representation of a group of files with custom descriptions """
     objects = Collection_Queryset.as_manager()
     model_name = "Collection"
+    to_init = ["yours"]
     table_fields = ["Title", "Author", "Last Modified", "Items", "Short Desc."]
     sort_options = [
         {"text": "Newest", "val": "-modified"},
@@ -30,7 +31,6 @@ class Collection(BaseModel):
         "id": ["id"],
         "-id": ["-id"],
     }
-    #supported_views = ["detailed", "list", "gallery"]
     supported_views = ["detailed"]
 
     # Visibilities
@@ -103,7 +103,7 @@ class Collection(BaseModel):
     def preview_url(self):
         if self.preview_image:
             return self.preview_image.preview_url()
-        return "/static/images/screenshots/no_screenshot.png"
+        return "images/screenshots/no_screenshot.png"
 
     def belongs_to(self, user_id):
         if self.user.id == user_id:
@@ -186,6 +186,9 @@ class Collection(BaseModel):
     def get_field_short_description(self, view="detailed"):
         return {"label": "Short Description", "value": self.short_description}
 
+    def get_field_visibility(self, view="detailed"):
+        return {"label": "Visibility", "value": self.visibility_str}
+
     def get_field(self, field_name, view="detailed"):
         if hasattr(self, "get_field_{}".format(field_name)):
             field_context = getattr(self, "get_field_{}".format(field_name))(view)
@@ -195,13 +198,16 @@ class Collection(BaseModel):
 
     def context_detailed(self):
         context = self.context_universal()
-        context["roles"] = ["model-block", "detailed"]
+        context["roles"] = self.roles
         context["show_actions"] = True
         context["columns"] = []
 
         columns = [
             ["author", "created", "modified", "item_count", "short_description"]
         ]
+
+        if self.is_yours:
+            columns[0].append("visibility")
 
         for col in columns:
             column_fields = []
@@ -232,6 +238,20 @@ class Collection(BaseModel):
         ]
         return context
 
+    def _init_yours(self):
+        """ Determine if the collection is "yours" """
+        self.is_yours = False
+        if self.request:
+            self.is_yours = True if self.request.user.pk == self.user.pk else False
+
+    def _init_roles(self, view):
+        super()._init_roles(view)
+
+        if self.visibility == self.PRIVATE:
+            self.roles.append("private")
+        elif self.visibility == self.UNLISTED:
+            self.roles.append("unlisted")
+
 
 class Collection_Entry(BaseModel):
     sort_options = [
@@ -256,7 +276,6 @@ class Collection_Entry(BaseModel):
         "id": ["id"],
         "-id": ["-id"],
     }
-
 
     supported_views = ["detailed"]
     model_name = "Collection Entry"

@@ -14,7 +14,7 @@ from museum_site.models import *
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core.misc import extract_file_key_from_url
-from museum_site.templatetags.site_tags import gblock
+from museum_site.templatetags.site_tags import model_block
 
 
 def get_zip_file(request):
@@ -263,7 +263,7 @@ def get_collection_addition(request):
     if not collection_id:
         return HttpResponse("")
     entry = Collection_Entry.objects.get_latest_addition_to_collection(collection_id)
-    html = gblock(entry.zfile, view="detailed-collection", collection_description=entry.collection_description)
+    html = model_block({"request": request}, entry.zfile)
     return HttpResponse(html)
 
 

@@ -35,7 +35,7 @@ function update_url()
 <p>This will completely remove the collection and its contents, breaking all existing links to the collection if it has been shared.</p>
 {% endif %}
 
-{% if collection %}{% gblock collection request=request %}{% endif %}
+{% if collection %}{% model_block collection %}{% endif %}
 
 <form method="POST" id="collection-form">
 {% csrf_token %}

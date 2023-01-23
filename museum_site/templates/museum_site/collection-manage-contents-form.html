@@ -26,7 +26,7 @@ var collection_id = {{collection.id|default:0}};
 <h1>{{title}}</h1>
 
 <div><h2 id="current-action-heading">{{action.text}}</h2>{% for action in collection_actions %}<a href="{{action.url}}">{{action.text}}</a>{% if not forloop.last %} | {% endif %}{% endfor %}</div>
-{% gblock collection request=request %}
+{% model_block collection %}
 
 {% if operation == "add" %}
 <form method="POST" id="form-add">
@@ -141,7 +141,7 @@ var collection_id = {{collection.id|default:0}};
 <h2>Collection Contents</h2>
 <div id="collection-contents">
 {% for entry in contents %}
-{% gblock entry.zfile view="detailed-collection" collection_description=entry.collection_description %}
+{% model_block entry.zfile %}
 {% endfor %}
 </div>
 {% endblock %}
