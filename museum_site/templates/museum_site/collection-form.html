@@ -37,6 +37,7 @@ function update_url()
 
 {% if collection %}{% model_block collection %}{% endif %}
 
+{% if collection.is_yours or action == "Create" %}
 <form method="POST" id="collection-form">
 {% csrf_token %}
 {% for field in form.visible_fields %}
@@ -57,6 +58,9 @@ function update_url()
 {% endfor %}
 
 <input type="submit" value="{{action}} Collection">
+{% else %}
+<p><b>You do not have permission to {{action|lower}} this collection.</b></p>
+{% endif %}
 
 </form>
 {% endblock %}

@@ -28,7 +28,7 @@ var collection_id = {{collection.id|default:0}};
 <div><h2 id="current-action-heading">{{action.text}}</h2>{% for action in collection_actions %}<a href="{{action.url}}">{{action.text}}</a>{% if not forloop.last %} | {% endif %}{% endfor %}</div>
 {% model_block collection %}
 
-{% if operation == "add" %}
+{% if operation == "add" and collection.is_yours %}
 <form method="POST" id="form-add">
 {% csrf_token %}
 {% for field in form.visible_fields %}
@@ -56,7 +56,7 @@ var collection_id = {{collection.id|default:0}};
 
 <div><input type="button" value="{{action.text}}" id="collection-add-button"> <span class="mono b" id="added-item-text"></span></div>
 </form>
-{% elif operation == "remove" %}
+{% elif operation == "remove" and collection.is_yours %}
 <form method="POST" id="form-remove">
 {% csrf_token %}
 <input name="collection_id" value="{{collection.id}}" type="hidden">
@@ -79,7 +79,7 @@ var collection_id = {{collection.id|default:0}};
 </div>
 <div><input type="button" value="Remove From Collection" id="collection-remove-button"> <span class="mono b" id="removed-item-text"></span></div>
 </form>
-{% elif operation == "arrange" %}
+{% elif operation == "arrange" and collection.is_yours %}
 <form method="POST" id="form-arrange">
 {% csrf_token %}
 <input name="collection_id" value="{{collection.id}}" type="hidden">
@@ -97,7 +97,7 @@ var collection_id = {{collection.id|default:0}};
 </div>
 <div><input type="button" value="Arrange Collection" id="collection-arrange-button"> <span class="mono b" id="arranged-item-text"></span></div>
 </form>
-{% elif operation == "edit-entry" %}
+{% elif operation == "edit-entry" and collection.is_yours %}
 <form id="form-edit-entry" method="POST">
 {% csrf_token %}
 <input name="collection_id" value="{{collection.id}}" type="hidden">
@@ -136,6 +136,7 @@ var collection_id = {{collection.id|default:0}};
 </div>
 {% endif %}
 
+{% if collection.is_yours %}
 <hr>
 
 <h2>Collection Contents</h2>
@@ -144,4 +145,7 @@ var collection_id = {{collection.id|default:0}};
 {% model_block entry.zfile %}
 {% endfor %}
 </div>
+{% else %}
+<p><b>You do not have permission to manage this collection.</b></p>
+{% endif %}
 {% endblock %}

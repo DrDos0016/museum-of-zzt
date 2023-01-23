@@ -14,6 +14,7 @@ class Collection(BaseModel):
     objects = Collection_Queryset.as_manager()
     model_name = "Collection"
     to_init = ["yours"]
+    is_yours = False
     table_fields = ["Title", "Author", "Last Modified", "Items", "Short Desc."]
     sort_options = [
         {"text": "Newest", "val": "-modified"},
@@ -189,6 +190,15 @@ class Collection(BaseModel):
     def get_field_visibility(self, view="detailed"):
         return {"label": "Visibility", "value": self.visibility_str}
 
+    def get_field_edit_collection(self, view="detailed"):
+        return {"value": "<a href='/collection/edit/{}/'>Edit Collection</a>".format(self.slug), "safe": True}
+
+    def get_field_manage_contents(self, view="detailed"):
+        return {"value": "<a href='/collection/manage-contents/{}/'>Manage Collection Contents</a>".format(self.slug), "safe": True}
+
+    def get_field_delete(self, view="detailed"):
+        return {"value": "<a href='/collection/delete/{}/'>Delete Collection</a>".format(self.slug), "safe": True}
+
     def get_field(self, field_name, view="detailed"):
         if hasattr(self, "get_field_{}".format(field_name)):
             field_context = getattr(self, "get_field_{}".format(field_name))(view)
@@ -199,7 +209,6 @@ class Collection(BaseModel):
     def context_detailed(self):
         context = self.context_universal()
         context["roles"] = self.roles
-        context["show_actions"] = True
         context["columns"] = []
 
         columns = [
@@ -215,6 +224,16 @@ class Collection(BaseModel):
                 field_context = self.get_field(field_name)
                 column_fields.append(field_context)
             context["columns"].append(column_fields)
+
+        if self.is_yours:
+            context["show_actions"] = True
+            action_list = ["edit_collection", "manage_contents", "delete"]
+            actions = []
+            for action in action_list:
+                actions.append(self.get_field(action, view="detailed"))
+            context["actions"] = actions
+        else:
+            context["show_actions"] = False
 
         return context
 
@@ -251,6 +270,7 @@ class Collection(BaseModel):
             self.roles.append("private")
         elif self.visibility == self.UNLISTED:
             self.roles.append("unlisted")
+
 
 
 class Collection_Entry(BaseModel):
