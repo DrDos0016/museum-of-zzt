@@ -5,7 +5,7 @@
 {% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}{% endblock %}
 
 {% block content %}
-{% gblock file %}
+{% model_block file %}
 
 <h2 id="heading-attr">File Attributes</h2>
 <table class="data-table">

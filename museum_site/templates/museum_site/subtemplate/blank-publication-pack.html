@@ -3,7 +3,7 @@
 
 <h2>Contents</h2>
 <div class="gallery-frame">
-{% for f in files %}{% templatetag openblock %} gblock files.{{f.id}} "gallery" {% templatetag closeblock %}{% templatetag openblock %} comment {% templatetag closeblock %}{{f.prefix}} -- {{f.title}}{% templatetag openblock %} endcomment {% templatetag closeblock %}
+{% for f in files %}{% templatetag openblock %} model_block files.{{f.id}} "gallery" {% templatetag closeblock %}{% templatetag openblock %} comment {% templatetag closeblock %}{{f.prefix}} -- {{f.title}}{% templatetag openblock %} endcomment {% templatetag closeblock %}
 {% endfor %}</div>
 
 {% for f in files %}
@@ -11,7 +11,7 @@
 {% templatetag openblock %} with files.{{f.id}} as file {% templatetag closeblock %}
 <span class="pub-pack-entry">
 <h2>{% templatetag openvariable %}file.citation_str{% templatetag closevariable %}</h2>
-{% templatetag openblock %} gblock file {% templatetag closeblock %}
+{% templatetag openblock %} model_block file {% templatetag closeblock %}
 <p></p>
 <div class="image-set">
     <img src='{% templatetag openblock %} static path|add:"{{f.prefix}}-1.png" {% templatetag closeblock %}' class="screenshot-thumb">

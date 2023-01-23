@@ -17,7 +17,7 @@
 
 <h3>ZFile - Detailed View</h3>
 
-{% gblock example "detailed" %}
+{% model_block example %}
 
 <h4>Preview Image</h4>
 
@@ -84,12 +84,12 @@
 
 <table>
 {{list_table_header}}
-{% gblock example "list" %}
+{% model_block example "list" %}
 </table>
 
 <h3>ZFile - Gallery View</h3>
 
 <div class="gallery-frame">
-{% gblock example "gallery" %}
+{% model_block example "gallery" %}
 </div>
 {% endblock %}

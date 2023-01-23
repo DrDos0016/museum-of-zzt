@@ -8,5 +8,5 @@
 <p>If you have discovered an error with your uploaded file, or its data, you may edit it prior to its publication/rejection using the following edit token:
 <b><a href="{% url 'upload' %}?token={{upload.edit_token}}">{{upload.edit_token}}</a></b></p>
 
-{% gblock file request=request %}
+{% model_block file %}
 {% endblock %}

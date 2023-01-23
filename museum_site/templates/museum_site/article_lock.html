@@ -49,7 +49,7 @@
 <h3>More In This Series</h3>
 <div class="series-range gallery-frame">
     {% for article in article.series_range %}
-    {% gblock article "gallery" %}
+    {% model_block article "gallery" %}
     {% endfor %}
 </div>
 <div class="c">
