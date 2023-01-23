@@ -16,6 +16,7 @@ class Custom_Block(BaseModel):
 
 
 class Article_Category_Block(Custom_Block):
+    """ Faux Detailed Block used for listing article categories on /article/category/ """
     model_name = "Article Category"
 
     def get_field_view(self, view="detailed"):
@@ -55,11 +56,8 @@ class Article_Category_Block(Custom_Block):
                 field_context = self.get_field(field_name)
                 column_fields.append(field_context)
             context["columns"].append(column_fields)
-
-        action_list = ["download", "play", "view", "review", "article", "attributes"]
-        actions = []
-        for action in action_list:
-            actions.append(self.get_field(action, view="detailed"))
-
-        context["actions"] = actions
         return context
+
+class Faux_Detailed_Block(Custom_Block):
+    """ Faux Detailed Block used for linking to other sites while emulating the look of a Musuem ZFile (see pub pack Vol. 9) """
+    model_name = "Faux Block"
