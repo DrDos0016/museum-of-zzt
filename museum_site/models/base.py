@@ -9,6 +9,7 @@ class BaseModel(models.Model):
     supported_views = ["detailed", "list", "gallery"]
     has_icons = False  # Updated from class specific obj._init_icons()
     actions = {}
+    show_actions = False
     context = {}
     extra_context = {}
     extras = []
