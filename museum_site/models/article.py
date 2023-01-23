@@ -427,13 +427,27 @@ class Article(BaseModel):
     def get_field_description(self, view="detailed"):
         return {"label": "Description", "value": self.description}
 
+    def get_field_associated_zfiles(self, view="detailed"):
+        links = []
+        for zf in self.file_set.all().order_by("sort_title"):
+            zf._init_detail_ids()
+            zf._init_icons()
+            zf._init_actions()
+            links.append(zf.get_field_view(view="title").get("value", ""))
+        if links == []:
+            link_str = "<i>None</i>"
+        else:
+            link_str = ", ".join(links)
+        return {"label": "Associated Files", "value": link_str, "safe": True}
+
+
     def context_detailed(self):
         context = self.context_universal()
         context["roles"] = ["model-block", "detailed"]
         context["columns"] = []
 
         columns = [
-            ["authors", "article_date", "category", "series", "description"],
+            ["authors", "article_date", "category", "series", "associated_zfiles", "description"],
         ]
         fields = {}
 
