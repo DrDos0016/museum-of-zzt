@@ -211,37 +211,6 @@ class Article(BaseModel):
 
         return context
 
-    def detailed_block_context(self, extras=None, *args, **kwargs):
-        """ Return info to populate a detail block """
-        context = self.initial_context(*args, **kwargs)
-        context["title"] = {"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons()}
-        context["columns"] = []
-
-        # Adjust CSS for unpublished articles
-        if self.published == self.UPCOMING:
-            context["title"]["roles"] = ["restricted", "article-upcoming"]
-        elif self.published == self.UNPUBLISHED:
-            context["title"]["roles"] = ["restricted", "article-unpublished"]
-
-        # Unlock articles for patrons
-        context = self.unlock_check(context)
-
-        context["columns"].append([
-            {"datum": "text", "label": "Author", "value": self.author},
-            {"datum": "text", "label": "Date", "value": epoch_to_unknown(self.publish_date)},
-            {"datum": "text", "label": "Category", "value": self.category},
-        ])
-
-        if self.file_set.exists():
-            context["columns"][0].append({"datum": "multi-link", "label": "Associated Files", "values": self.get_zfile_links()})
-
-        context["columns"][0].append({"datum": "text", "label": "Description", "value": self.description})
-
-        if self.series.count():
-            context["columns"][0].append({"datum": "multi-link", "label": "Series", "values": self.get_series_links()})
-
-        return context
-
     def list_block_context(self, extras=None, *args, **kwargs):
         context = self.initial_context(*args, **kwargs)
         context.update(

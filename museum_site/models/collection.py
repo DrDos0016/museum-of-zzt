@@ -131,32 +131,6 @@ class Collection(BaseModel):
 
         return link
 
-    def detailed_block_context(self, extras=None, *args, **kwargs):
-        context = self.initial_context(*args, **kwargs)
-
-        context["title"] = {"datum": "title", "value": self.title, "url": self.url()}
-        context["slug"] = self.slug
-        context["columns"] = []
-
-        yours = False
-        if self.user and context["request"]:
-            yours = self.belongs_to(context["request"].user.id)
-
-        context["columns"].append([
-            {"datum": "text", "label": "Author", "value": self.author_link},
-            {"datum": "text", "label": "Created", "value": self.created},
-            {"datum": "text", "label": "Last Modified", "value": self.modified},
-            {"datum": "text", "label": "Items In Collection", "value": str(self.item_count)},
-            {"datum": "text", "label": "Short Description", "value": self.short_description or mark_safe("<i>None</i>")},
-        ])
-
-        if yours:
-            context["links"] = True
-            context["columns"][0].insert(0, {"datum": "text", "label": "Visibility", "value": self.visibility_str})
-            if self.visibility_str != "Public":
-                context["roles"].append(self.visibility_str.lower())
-        return context
-
     def get_meta_tag_context(self):
         """ Returns a dict of keys and values for <meta> tags  """
         tags = {}
@@ -321,13 +295,6 @@ class Collection_Entry(BaseModel):
 
     def preview_url(self):
         return self.zfile.preview_url() if self.zfile is not None else "#"
-
-    def detailed_block_context(self, request=None):
-        if self.zfile is not None:
-            context = self.zfile.detailed_collection_block_context(collection_description=self.collection_description)
-        else:
-            context = {}
-        return context
 
     def get_field(self, field_name, view="detailed"):
         if hasattr(self, "get_field_{}".format(field_name)):

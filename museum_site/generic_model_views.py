@@ -77,20 +77,6 @@ class Model_List_View(ListView):
         # Set head object if one is used
         context["head_object"] = self.head_object if hasattr(self, "head_object") else None
 
-        # Initialize objects' local contexts
-        """
-        if self.has_local_context:
-            for i in context["object_list"]:
-                if self.view == "detailed":
-                    i.context = i.detailed_block_context(request=self.request)
-                elif self.view == "list":
-                    i.context = i.list_block_context(request=self.request)
-                    if not context.get("table_header"):
-                        context["table_header"] = i.table_header()
-                elif self.view == "gallery":
-                    i.context = i.gallery_block_context(request=self.request)
-        """
-
         return context
 
     def get_title(self):

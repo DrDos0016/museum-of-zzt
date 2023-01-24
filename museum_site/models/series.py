@@ -75,26 +75,6 @@ class Series(BaseModel):
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)
 
-    def detailed_block_context(self, *args, **kwargs):
-        """ Return info to populate a detail block """
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
-            title={"datum": "title", "value": self.title, "url": self.url},
-            columns=[],
-        )
-
-        context["columns"].append([
-            {"datum": "text", "label": "Newest Entry", "value": self.last_entry_date},
-            {"datum": "text", "label": "Oldest Entry", "value": epoch_to_unknown(self.first_entry_date)},
-            {"datum": "text", "label": "Articles", "value": self.article_set.count()},
-            {"datum": "text", "value": mark_safe("<p>{}</p>".format(self.description))},
-        ])
-
-        return context
-
     def list_block_context(self, *args, **kwargs):
         context = dict(
             pk=self.pk,

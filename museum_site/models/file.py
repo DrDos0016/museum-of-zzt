@@ -596,14 +596,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         return context
 
-    def detailed_collection_block_context(self, extras=None, *args, **kwargs):
-        # Additional modifications to display Files as part of a collection
-        context = self.detailed_block_context(*args, **kwargs)
-        context["collection_description"] = kwargs.get("collection_description")
-        if context["collection_description"]:
-            context["extras"].insert(0, "museum_site/blocks/extra-collection.html")
-        return context
-
     def list_block_context(self, extras=None, *args, **kwargs):
         context = super(File, self).initial_context()
         context.update(self.initial_context(view="list"))

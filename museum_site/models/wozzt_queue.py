@@ -273,31 +273,6 @@ class WoZZT_Queue(BaseModel):
             None
         return True
 
-    def detailed_block_context(self, *args, **kwargs):
-        if kwargs.get("request"):
-            debug = kwargs["request"].session.get("DEBUG")
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
-            columns=[],
-            title={"datum": "title", "value": "-----"},
-        )
-
-        context["columns"].append([
-            {"datum": "text-area", "label": "Tweet", "name": "wozzt-tweet", "value": self.render_text("twitter"), "readonly": True},
-            {"datum": "link", "label": "Source", "value": "View", "url": self.file.url() + "?file={}&board={}".format(
-                    self.zzt_file, self.board
-                ), "target": "_blank"}
-        ])
-
-        if debug:
-            context["columns"][0].append({"datum": "link", "label": "ID", "value": self.id, "target": "_blank", "kind": "debug", "url": self.admin_url()})
-            context["columns"][0].append({"datum": "custom-wozzt-priority", "pk": self.id, "priority": self.priority, "kind": "debug"})
-            context["columns"][0].append({"datum": "custom-wozzt-delete", "pk": self.id, "kind": "debug"})
-        return context
-
     def get_field_view(self, view="detailed"):
         return {"value": "--"}
 
