@@ -142,17 +142,6 @@ class Article(BaseModel):
         elif self.schema == "80col":
             return '<pre class="80col cp437" id="80col-content">1{}</pre>'.format(self.content)
 
-    @property
-    def is_restricted(self):
-        if self.published in [Article.UPCOMING, Article.UNPUBLISHED]:
-            return True
-        return False
-
-    @property
-    def published_string(self):
-        """ Returns a human readable string for the article's publication state. """
-        return Article.PUBLICATION_STATES[self.published - 1][1].lower()
-
     def series_links(self):
         """ Returns HTML links to related series """
         output = ""
@@ -186,18 +175,6 @@ class Article(BaseModel):
     @property
     def early_access_price(self):
         return self.EARLY_ACCESS_PRICING.get(self.published, "???")
-
-    def initial_context(self, *args, **kwargs):
-        context = super(Article, self).initial_context(*args, **kwargs)
-        context["hash_id"] = "article-{}".format(self.pk)
-
-        if hasattr(self, "extra_context"):
-            context.update(self.extra_context)
-
-            if self.extra_context.get("password_qs"):
-                context["url"] = context["url"] + self.extra_context["password_qs"]
-
-        return context
 
     def _init_icons(self, request={}, show_staff=False):
         # Populates major and minor icons for file
