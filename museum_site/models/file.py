@@ -596,35 +596,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         return context
 
-    def gallery_block_context(self, extras=None, *args, **kwargs):
-        context = super(File, self).initial_context()
-        context.update(self.initial_context(view="gallery"))
-
-        # Prepare Links
-        self.init_actions()
-
-        title_datum = self.get_link_for_action("view", text=self.title)
-        title_datum["icons"] = self.get_all_icons()
-
-        context.update(
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            title=title_datum,
-            columns=[]
-        )
-        context["columns"].append([{"datum": "text", "value": self.author_links()}])
-        return context
-
     def title_datum_context(self):
         # Returns a context for displaying the ZFile's title datum
         context = {"datum": "title", "tag": "h1", "value": self.title, "icons": self.get_all_icons()}
-        return context
-
-    def poll_block_context(self, extras=None, *args, **kwargs):
-        context = self.gallery_block_context(*args, **kwargs)
-        context["roles"].append(kwargs.get("bg"))
-        context["extras"].insert(0, "museum_site/blocks/extra-poll-desc.html")
-        if kwargs.get("option"):
-            context["option"] = kwargs["option"]
         return context
 
     def _init_icons(self, request={}, show_staff=False):

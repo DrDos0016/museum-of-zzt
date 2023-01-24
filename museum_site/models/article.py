@@ -211,25 +211,6 @@ class Article(BaseModel):
 
         return context
 
-    def gallery_block_context(self, extras=None, *args, **kwargs):
-        context = self.initial_context(*args, **kwargs)
-        context.update(
-            title={"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons()},
-            columns=[],
-        )
-
-        context["columns"].append([
-            {"datum": "text", "value": self.author}
-        ])
-
-        if self.is_restricted:
-            context["title"]["roles"] = ["restricted"]
-
-        # Unlock articles for patrons
-        context = self.unlock_check(context, view="gallery")
-
-        return context
-
     def _init_icons(self, request={}, show_staff=False):
         # Populates major and minor icons for file
         self._minor_icons = []

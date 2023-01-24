@@ -75,22 +75,6 @@ class Series(BaseModel):
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)
 
-    def gallery_block_context(self, *args, **kwargs):
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
-            title={"datum": "title", "url": self.url(), "value": self.title},
-            columns=[],
-        )
-
-        context["columns"].append([
-            {"datum": "text", "value": self.last_entry_date}
-        ])
-
-        return context
-
     def get_meta_tag_context(self):
         """ Returns a dict of keys and values for <meta> tags  """
         tags = {}

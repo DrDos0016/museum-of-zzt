@@ -113,27 +113,6 @@ class Review(BaseModel):
     def preview_url(self):
         return self.zfile.preview_url()
 
-    def gallery_block_context(self, extras=None, *args, **kwargs):
-        context = dict(
-            pk=self.pk,
-            hash_id = "review-{}".format(self.pk),
-            model=self.model_name,
-            preview=dict(url=self.preview_url, alt=self.preview_url),
-            url=self.url,
-            title={"datum": "link", "url": self.url(), "value": self.title if self.title else "Untitled"},
-            columns=[],
-        )
-
-        context["columns"].append([
-            {"datum": "text", "value": self.author_link()},
-        ])
-
-        if self.rating >= 0:
-            context["columns"][0].append(
-                {"datum": "text", "value": "{} / 5.0".format(self.rating)}
-            )
-        return context
-
     def review_content_block_context(self, extras=None, *args, **kwargs):
         context = dict(
             pk=self.pk,
