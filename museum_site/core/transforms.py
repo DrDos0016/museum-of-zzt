@@ -1,3 +1,5 @@
+from django.template.defaultfilters import escape
+
 def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False, allow_none=False):
     """ Transform a queryset into a list suitable for Django's forms. """
     output = []
@@ -85,5 +87,5 @@ def qs_to_links(qs):
     output = ""
     html = "<a href='{}'>{}</a>, "
     for i in qs:
-        output += html.format(i.url(), i.title)
+        output += html.format(i.url(), escape(i.title))
     return output[:-2]
