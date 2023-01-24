@@ -21,13 +21,6 @@
         {% endfor %}
     </div>
     {% if extras %}<div class="extras">{% for extra in extras %}{% include extra.template %}{% endfor %}</div>{% endif %}
-    {% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
+    {% if model == "File" or model == "Collection" or model == "Collection Entry" %}{% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}{% endif %}
     {% block collection_data %}{% if collection_description and model == "Collection Entry" %}<div class="collection-info datum"><h3>Collection Description</h3>{{collection_description|markdown}}</div>{% endif %}{% endblock %}
 </div>
-{% comment %}
-TODO: ANY OF THIS JUNK?
-{% if obj.context.links %}
-{% if obj.context.model == "File" %}{% zfile_links zfile=obj.context.file debug=request.session.DEBUG %}{% endif %}
-{% if obj.context.model == "Collection" %}{% include "museum_site/blocks/collection-links.html"|lower with slug=obj.context.slug %}{% endif %}
-{% endif %}
-{% endcomment %}
