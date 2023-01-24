@@ -60,7 +60,7 @@ def debug(request, filename=None):
     data["collections"] = test_collections
     data["collection_contents"] = test_collection_contents
     data["show"] = request.GET.get("show", "zfiles")
-    data["custom"] = test_custom_blocks
+    #data["custom"] = test_custom_blocks
 
     # Widget Debug
     #data["checklist_items"] = File.objects.published()
