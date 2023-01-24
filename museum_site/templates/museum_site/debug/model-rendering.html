@@ -150,7 +150,7 @@
 {% if show == "all" or show == "collection-contents" %}
 <h2>Collection Contents</h2>
     {% for c in collection_contents %}
-    {% model_block c view="collection_content" %}
+    {% model_block c %}
     {% endfor %}
 
     <table>
