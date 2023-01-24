@@ -106,11 +106,6 @@ class Collection(BaseModel):
             return self.preview_image.preview_url()
         return "images/screenshots/no_screenshot.png"
 
-    def belongs_to(self, user_id):
-        if self.user.id == user_id:
-            return True
-        return False
-
     @property
     def visibility_str(self):
         return self.VISIBILITY_CHOICES[self.visibility][1]
