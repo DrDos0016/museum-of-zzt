@@ -190,44 +190,6 @@ class Article(BaseModel):
 
         self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
-    def unlock_check(self, context, view="detailed"):
-        """ Checks if a normally locked article should display as unlocked based on user profile or a POSTed password """
-        patronage = 0
-        secret = None
-        if context["request"] and context["request"].user.is_authenticated:
-            patronage = context["request"].user.profile.patronage
-        if context["request"] and context["request"].POST.get("secret"):
-            secret = context["request"].POST.get("secret")
-            if secret == PASSWORD2DOLLARS:
-                patronage = UPCOMING_ARTICLE_MINIMUM_PATRONAGE
-            elif secret == PASSWORD5DOLLARS:
-                patronage = UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE
-
-        if view == "detailed" or view == "gallery":
-            if self.published == self.UPCOMING and patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
-                context["title"]["icons"] = [self.ICONS["unlocked"]]
-                context["title"]["roles"].remove("restricted")
-                context["title"]["roles"].append("unlocked")
-                if secret:
-                    context["title"]["url"] += "?secret={}".format(secret)
-            if self.published == self.UNPUBLISHED and patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
-                context["title"]["icons"] = [self.ICONS["unlocked"]]
-                context["title"]["roles"].remove("restricted")
-                context["title"]["roles"].append("unlocked")
-                if secret:
-                    context["title"]["url"] += "?secret={}".format(secret)
-        elif view == "list":
-            if self.published == self.UPCOMING and patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
-                context["cells"][0]["icons"] = [self.ICONS["unlocked"]]
-                context["cells"][0]["roles"].remove("restricted")
-                context["cells"][0]["roles"].append("unlocked")
-            if self.published == self.UNPUBLISHED and patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
-                context["cells"][0]["icons"] = [self.ICONS["unlocked"]]
-                context["cells"][0]["roles"].remove("restricted")
-                context["cells"][0]["roles"].append("unlocked")
-
-        return context
-
     def export_urls(self, domain=""):
         output = []
 
