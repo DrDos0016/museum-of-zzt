@@ -183,18 +183,6 @@ class Article(BaseModel):
 
         return output[-5:]
 
-    def get_series_links(self):
-        output = []
-        for s in self.series.only("id", "title"):
-            output.append({"url": s.url, "text": s.title})
-        return output
-
-    def get_zfile_links(self):
-        output = []
-        for zf in self.file_set.all().order_by("sort_title"):
-            output.append({"url": zf.url, "text": zf.title})
-        return output
-
     @property
     def early_access_price(self):
         return self.EARLY_ACCESS_PRICING.get(self.published, "???")
