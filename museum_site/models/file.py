@@ -8,7 +8,7 @@ from urllib.parse import quote
 from django.core.cache import cache
 from django.contrib import admin
 from django.db import models
-from django.template.defaultfilters import filesizeformat
+from django.template.defaultfilters import filesizeformat, escape
 from django.utils.safestring import mark_safe
 
 try:
@@ -992,20 +992,21 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def get_field_play(self, view="detailed"):
         if not self.actions["play"]:
-            return {"value": "<span class='faded'>{} <i>Play Online</i></span>".format(self.prepare_icons_for_field()), "safe": True}
+            return {"value": "<span class='faded'>{} <i>Play Online</i></span>".format(self.prepare_icons_for_field("major")), "safe": True}
         url = "/file/view/{}/".format(self.key)
-        return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), "Play Online"), "safe": True}
+        return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field("major"), "Play Online"), "safe": True}
 
     def get_field_view(self, view="detailed"):
         if not self.actions["view"]:
             if view == "list" or view == "title":
-                return {"value": "<span class='faded'>{} <i>{}</i></span>".format(self.prepare_icons_for_field(), self.title), "safe": True}
-            return {"value": "<span class='faded'>{} <i>View Contents</i></span>".format(self.prepare_icons_for_field()), "safe": True}
+                return {"value": "<span class='faded'>{} <i>{}</i></span>".format(self.prepare_icons_for_field(), escape(self.title)), "safe": True}
+            return {"value": "<span class='faded'>{} <i>View Contents</i></span>".format(self.prepare_icons_for_field("major")), "safe": True}
 
         url = "/file/view/{}/".format(self.key) if self.can_museum_download() else ""
         texts = {"detailed": "View Contents", "list": self.title, "gallery": self.title, "title": self.title}
-        text = texts[view]
-        return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), text), "safe": True}
+        text = escape(texts[view])
+        icon_kind = "major" if view == "detailed" else "all"
+        return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(icon_kind), text), "safe": True}
 
     def get_field_review(self, view="detailed"):
         restricted = {"value": "<span class='faded'><i>Reviews (0)</i></span>", "safe": True}  # If count is non-zero you can click the link
