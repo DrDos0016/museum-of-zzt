@@ -136,7 +136,7 @@ class BaseModel(models.Model):
         return field_context
 
     def get_field_edit(self, view="detailed"):
-        return {"label": "Edit", "value": "<a href='{}'>Edit {} #{}</a>".format(self.admin_url, self.model_name, self.pk), "safe": True}
+        return {"label": "Edit", "value": "<a href='{}'>Edit {} #{}</a>".format(self.admin_url(), self.model_name, self.pk), "safe": True}
 
     def context_universal(self, request=None):
         context = {
@@ -163,10 +163,10 @@ class BaseModel(models.Model):
     def context_extras(self): return {}
     def process_kwargs(self, kwargs=None): return None
 
-    def prepare_icons_for_field(self):
+    def prepare_icons_for_field(self, kind="all"):
         if self.has_icons:
             icons = "<div class='model-block-icons'>"
-            for icon in self.get_all_icons():
+            for icon in getattr(self, "get_{}_icons".format(kind))():
                 icons += '<span class="icon {}" title="{}">{}</span>'.format(icon["role"], icon["title"], icon["glyph"])
             return icons + "</div>"
         return ""
