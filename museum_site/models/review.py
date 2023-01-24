@@ -113,21 +113,6 @@ class Review(BaseModel):
     def preview_url(self):
         return self.zfile.preview_url()
 
-    def review_content_block_context(self, extras=None, *args, **kwargs):
-        context = dict(
-            pk=self.pk,
-            hash_id = "review-{}".format(self.pk),
-            model=self.model_name,
-            title=self.title,
-            author=self.author,
-            author_link=self.author_link(),
-            date=self.date,
-            review_content=self.content,
-            rating=self.rating,
-            debug = True if kwargs.get("request") and kwargs["request"].session.get("DEBUG") else False
-        )
-        return context
-
     def save(self, *args, **kwargs):
         if self.author == "":
             self.author = "Anonymous"
@@ -177,7 +162,6 @@ class Review(BaseModel):
 
     def get_field_reviewer_link(self, view="review-content"):
         return {"value": "<a href='/review/author/{}/'>Other reviews written by {}</a>".format(self.author.lower(), self.author), "safe": True}
-
 
     def context_detailed(self):
         context = self.context_universal()
