@@ -211,30 +211,6 @@ class Article(BaseModel):
 
         return context
 
-    def list_block_context(self, extras=None, *args, **kwargs):
-        context = self.initial_context(*args, **kwargs)
-        context.update(
-            pk=self.pk,
-            model=self.model_name,
-            hash_id="article-{}".format(self.pk),
-            url=self.url,
-            cells=[
-                {"datum": "title", "value": self.title, "url": self.url(), "icons": self.get_all_icons(), "tag": "td"},
-                {"datum": "text", "value": self.author, "tag": "td"},
-                {"datum": "text", "value": epoch_to_unknown(self.publish_date), "tag": "td"},
-                {"datum": "text", "value": self.category, "tag": "td"},
-                {"datum": "text", "value": self.description, "tag": "td"},
-            ],
-        )
-
-        if self.is_restricted:
-            context["cells"][0]["roles"] = ["restricted"]
-
-        # Unlock articles for patrons
-        context = self.unlock_check(context, view="list")
-
-        return context
-
     def gallery_block_context(self, extras=None, *args, **kwargs):
         context = self.initial_context(*args, **kwargs)
         context.update(

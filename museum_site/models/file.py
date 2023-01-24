@@ -596,39 +596,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         return context
 
-    def list_block_context(self, extras=None, *args, **kwargs):
-        context = super(File, self).initial_context()
-        context.update(self.initial_context(view="list"))
-
-        # Prepare Links
-        cells = []
-
-        self.init_actions()
-
-        # Shorten Download string
-        dl = self.get_link_for_action("download")
-        if dl.get("value") == "Download":
-            dl["value"] = "DL"
-        elif dl.get("value", "").startswith("Downloads"):
-            dl["value"] = "DLs…"
-        dl["tag"] = "td"
-        cells.append(dl)
-
-        title = self.get_link_for_action("view", text=self.title)
-        title["tag"] = "td"
-        cells.append(title)
-
-        cells.append({"datum": "text", "value": self.author_links(), "tag": "td"}),
-        cells.append({"datum": "text", "value": self.company_links(), "tag": "td"}),
-        cells.append({"datum": "text", "value": self.genre_links(), "tag": "td"}),
-        cells.append(
-            {"datum": "link", "value": (self.release_date or "Unknown"), "url": "/file/browse/year/{}/".format(self.release_year(default="unk")), "tag": "td"}
-        )
-        cells.append({"datum": "text", "value": self.rating_html_for_view("list"), "tag": "td"})
-
-        context.update(cells=cells)
-        return context
-
     def gallery_block_context(self, extras=None, *args, **kwargs):
         context = super(File, self).initial_context()
         context.update(self.initial_context(view="gallery"))

@@ -75,22 +75,6 @@ class Series(BaseModel):
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)
 
-    def list_block_context(self, *args, **kwargs):
-        context = dict(
-            pk=self.pk,
-            model=self.model_name,
-            url=self.url,
-            cells=[
-                {"datum": "link", "url": self.url(), "value": self.title, "tag": "td"},
-                {"datum": "text", "value": self.last_entry_date, "tag": "td"},
-                {"datum": "text", "value": epoch_to_unknown(self.last_entry_date), "tag": "td"},
-                {"datum": "text", "value": epoch_to_unknown(self.first_entry_date), "tag": "td"},
-                {"datum": "text", "value": self.article_set.count(), "tag": "td"},
-            ],
-        )
-
-        return context
-
     def gallery_block_context(self, *args, **kwargs):
         context = dict(
             pk=self.pk,
