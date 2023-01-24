@@ -345,6 +345,8 @@ class Collection_Entry(BaseModel):
         context = self.zfile.context
         context["roles"] = ["model-block", "detailed", "collection-content"]
         context["collection_description"] = self.collection_description
+        if self.zfile.extras:
+            context["extras"] = self.zfile.extras
         return context
 
     def _init_zfile(self):
