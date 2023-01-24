@@ -225,18 +225,6 @@ class Article(BaseModel):
 
         self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
-    def get_all_icons(self):
-        # Returns combined list of both major and minor icons, populating if needed
-        if not hasattr(self, "_major_icons"):
-            self._init_icons()
-        return self._major_icons + self._minor_icons
-
-    def get_major_icons(self):
-        # Returns list of major icons, populating if needed
-        if not hasattr(self, "_major_icons"):
-            self._init_icons()
-        return self._major_icons
-
     def unlock_check(self, context, view="detailed"):
         """ Checks if a normally locked article should display as unlocked based on user profile or a POSTed password """
         patronage = 0
@@ -365,7 +353,6 @@ class Article(BaseModel):
         else:
             link_str = ", ".join(links)
         return {"label": "Associated Files", "value": link_str, "safe": True}
-
 
     def context_detailed(self):
         context = self.context_universal()
