@@ -283,6 +283,7 @@ class Review(BaseModel):
         # Context used when displaying a full review
         context = self.context_universal()
         context["roles"] = ["model-block", "review-content"]
+        context["show_actions"] = False
         context["fields"] = []
         field_list = ["author", "review_date", "content", "rating", "reviewer_link"]
 
