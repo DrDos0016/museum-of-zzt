@@ -65,7 +65,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     }
 
     # Uninitizalized shared attributes
-    actions = None  # Populated by self.init_actions()
+    actions = None
     detail_ids = None  # Populated by self.init_detail_ids()
     all_downloads = None
     all_downloads_count = None
@@ -330,23 +330,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def calculate_size(self):
         self.size = os.path.getsize(self.phys_path())
 
-    def init_actions(self, refresh=False):
-        """ Determine which actions may be performed on this zfile """
-        if not refresh and self.actions is not None:
-            return False
-
-        self.actions = {"review": False}
-        self.actions["download"] = True if self.downloads.all().count() else False
-        self.actions["view"] = True if self.can_museum_download() else False
-        self.actions["play"] = True if self.archive_name or (self.actions["view"] and self.supports_zeta_player()) else False
-        self.actions["article"] = True if self.article_count else False
-        # Review
-        if (self.actions["download"] and self.can_review) or self.review_count:
-            self.actions["review"] = True
-        if self.actions["review"] and self.is_detail(DETAIL_UPLOADED):
-            self.actions["review"] = False
-        self.actions["attributes"] = True
-
     def generate_screenshot(self, world=None, board=0, font=None, filename=None):
         # Get zip contents
         zf = zipfile.ZipFile(self.phys_path())
@@ -465,24 +448,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             output += '<a href="/file/browse/language/{}/">{}</a>, '.format(quote(i[1], safe=""), html.escape(i[0]))
         return output[:-2]
 
-    def links(self, debug=False):
-        links = []
-
-        self.init_actions()
-
-        potential_actions = ["download", "play", "view", "review", "article", "attributes"]
-
-        for action in potential_actions:
-            links.append(self.get_link_for_action(action))
-
-        if debug:
-            link = {"datum": "link", "value": "Edit ZF#{}".format(self.id), "url": self.admin_url(), "roles": ["debug-link"], "kind": "debug"}
-            links.append(link)
-            link = {"datum": "link", "value": "Tools ZF#{}".format(self.id), "url": self.tool_url(), "roles": ["debug-link"], "kind": "debug"}
-            links.append(link)
-
-        return links
-
     def title_datum_context(self):
         # Returns a context for displaying the ZFile's title datum
         context = {"datum": "title", "tag": "h1", "value": self.title, "icons": self.get_all_icons()}
@@ -505,18 +470,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self._minor_icons.append(self.ICONS["featured"])
 
         self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
-
-    @mark_safe
-    def rating_html_for_view(self, view="detailed"):
-        if view == "detailed":
-            return self.rating_str() + " ({} Review{})".format(self.review_count, "s" if self.review_count != 1 else "")
-        elif view == "list":
-            output = "—"
-            if self.review_count:
-                output = "<span title='Review count'>R: {}</span><br><span title='Average Score'>S: {}</span>".format(
-                    self.review_count, self.rating_str(show_maximum=False)
-                )
-            return output
 
     def remove_uploaded_zfile(self, upload):
         message = "Removing ZFile: "
@@ -755,28 +708,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         """ Returns text for links to view the zfile's attributes """
         return "Attributes"
 
-    def get_link_for_action(self, action, text="", target=None):
-        """ Method for datum """
-        self.init_actions()
-
-        url = getattr(self, "get_{}_url".format(action))()
-        if not text:
-            text = getattr(self, "get_{}_text".format(action))()
-        if self.actions[action]:
-            link = {"datum": "link", "value": text, "url": url, "roles": ["{}-link".format(action)]}
-            if action == "download":
-                link["icons"] = self.get_all_icons()
-            elif action in ["play", "view"]:
-                link["icons"] = self.get_major_icons()
-            if target:
-                link["target"] = target
-        else:
-            link = {"datum": "text", "value": text, "kind": "faded"}
-        return link
-
     def get_action_link(self, action, value="", target=None):
         """ Method for revamp """
-        self.init_actions()
+        self._init_actions()
         url = getattr(self, "get_{}_url".format(action))()
         if not value:
             value = getattr(self, "get_{}_text".format(action))()

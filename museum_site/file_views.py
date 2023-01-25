@@ -16,7 +16,6 @@ from museum_site.models import *
 def file_attributes(request, key):
     data = {}
     data["file"] = get_object_or_404(File, key=key)
-    data["file"].init_actions()
     data["upload_info"] = Upload.objects.get(file_id=data["file"])
     data["reviews"] = Review.objects.for_zfile(data["file"].pk).defer("content")
     data["title"] = data["file"].title + " - Attributes"
