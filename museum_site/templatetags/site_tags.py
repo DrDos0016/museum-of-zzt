@@ -385,8 +385,8 @@ def zfl(key, text="", qs="", target="_blank", i=True, *args, **kwargs):
     return mark_safe(output)
 
 
-@register.simple_tag()
-def cl_info(pk=None, engine=None, emulator=None):
+@register.simple_tag(takes_context=True)
+def cl_info(context, pk=None, engine=None, emulator=None):
     zfile = File.objects.filter(pk=pk).first()
     if zfile is None:
         zfile = File()
@@ -394,14 +394,7 @@ def cl_info(pk=None, engine=None, emulator=None):
         zfile.title = "UNKNOWN ZFILE TODO"
         links = []
     else:
-        actions = ["download", "play", "view"]
-        links = []
-        for action in actions:
-            link = zfile.get_link_for_action(action, target="_blank")
-            links.append(link)
-
-    sub_context = {"zfile": zfile, "engine": engine, "emulator": emulator, "links": links}
-    return render_to_string("museum_site/subtemplate/cl-info.html", sub_context)
+        return model_block(context, zfile, "cl_info", engine=engine, emulator=emulator)
 
 
 @register.tag(name="commentary")
@@ -551,18 +544,6 @@ class Spoiler(template.Node):
         text = self.nodelist[0].render(context)
         output = "<div class='spoiler' style='display:{}'>{}</div>".format(self.display, text)
         return output
-
-
-@register.simple_tag()
-def ssv_links(raw, param, lookup=""):
-    output = ""
-    items = raw.split("/")
-    lookup = LOOKUPS.get(lookup, {})
-
-    for i in items:
-        output += "<a href='/search?{}={}'>{}</a>, ".format(param, i, lookup.get(i, i))
-
-    return mark_safe(output[:-2] + "\n")
 
 
 @register.simple_tag(takes_context=True)
