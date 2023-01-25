@@ -51,7 +51,6 @@ $(document).ready(function (){
     $(".model-block[data-model=WoZZT-Queue] h2").each(function (){
         $(this).text(dow_str[next.getDay()] + ". " + next.toLocaleString());
         next.setHours(next.getHours() + 3);
-        console.log(next.getUTCDay());
 
         if (next.getUTCDay() == 2 && append_tuesday)
         {
@@ -73,6 +72,9 @@ $(document).ready(function (){
 });
 </script>
 {% endblock %}
+{% block staff_scripts %}{% if request.user.is_staff %}
+<script src="{% static 'js/staff-wozzt.js'%}"></script>
+{% endif %}{% endblock %}
 
 {% block content %}
 {% csrf_token %}

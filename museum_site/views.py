@@ -289,12 +289,14 @@ def worlds_of_zzt_queue(request):
                 entry = WoZZT_Queue.objects.get(pk=pk)
                 entry.priority = int(request.POST.get("priority"))
                 entry.save()
+                return HttpResponse("OK")
 
             elif request.POST["action"] == "delete":
                 pk = int(request.POST.get("id"))
                 entry = WoZZT_Queue.objects.get(pk=pk)
                 entry.delete_image()
                 entry.delete()
+                return HttpResponse("OK")
 
     data["queue"] = WoZZT_Queue.objects.queue_for_category(category)
     data["queue_size"] = len(data["queue"])
