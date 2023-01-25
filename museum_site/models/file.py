@@ -930,6 +930,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field("major"), "Play Online"), "safe": True}
 
     def get_field_view(self, view="detailed"):
+        if view == "header":
+            return {"value": "{}{}".format(self.prepare_icons_for_field(), self.title), "safe": True}
         if not self.actions["view"]:
             if view == "list" or view == "title":
                 return {"value": "<span class='faded'>{} <i>{}</i></span>".format(self.prepare_icons_for_field(), escape(self.title)), "safe": True}
@@ -1020,6 +1022,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
                 output = {"label": "Rating", "value": "{}<br>({})".format(rating.split(" ")[0], self.review_count), "safe": True}
             else:
                 output = {"label": "Rating", "value": "{}".format(rating), "safe": True}
+        if view == "header":
+            output["value"] = output["value"].replace(" (", "<br>(")
         return output
 
     def get_field_boards(self, view="detailed"):
@@ -1169,12 +1173,39 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
                 context["utility_description"] = self.description
         return context
 
+    def context_header(self):
+        """ Context for use as a header (such as in the file viewer) """
+        context = self.context_universal()
+        context["show_actions"] = True
+        context["title"] = self.get_field_view(view="header")
+
+        action_list = ["download", "play", "view", "review", "article", "attributes"]
+        if self.show_staff:
+            action_list.append("edit")
+            action_list.append("tools")
+        actions = []
+        for action in action_list:
+            actions.append(self.get_field(action, view="detailed"))
+
+        context["actions"] = actions
+
+        fields = ["authors", "companies", "zfile_date", "genres", "size", "rating", "boards"]
+        context["fields"] = []
+        for field_name in fields:
+            field_context = self.get_field(field_name, "header")
+            context["fields"].append(field_context)
+
+        return context
+
     def process_kwargs(self, kwargs):
         if kwargs.get("poll_idx"):  # Add role for background color when displaying poll choices
             self.context["roles"].append("poll-option-{}".format(kwargs["poll_idx"]))
         if kwargs.get("poll_data"):  # Add poll data to display
             self.context["poll_description"] = kwargs["poll_data"].summary
             self.context["poll_patron_nominated"] = kwargs["poll_data"].backer
+        if kwargs.get("zgames"):  # Include other Zgames to toggle between displaying information on
+            self.context["zgames"] = kwargs["zgames"]
+            self.context["other_zgame_count"] = len(self.context["zgames"]) - 1
         return True
     # END NEW FOR 2023
 

@@ -42,7 +42,7 @@ class Article_Detail_View(DetailView):
         # Set up related files
         zgames = self.object.file_set.all()
         if zgames:
-            context["file"] = zgames[0] if not self.request.GET.get("alt_file") else get_object_or_404(zgames, filename=self.request.GET["alt_file"])
+            context["file"] = zgames[0] if not self.request.GET.get("alt_file") else get_object_or_404(zgames, key=self.request.GET["alt_file"])
             context["zgames"] = zgames
 
         # Set up pagination

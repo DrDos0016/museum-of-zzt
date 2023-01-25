@@ -251,9 +251,3 @@
 .file-data > div { flex:1; }
 
 .file-heading { display:flex; }
-
-#alt-file-listing
-{
-    max-width:25%;
-    margin-left:16px;
-}

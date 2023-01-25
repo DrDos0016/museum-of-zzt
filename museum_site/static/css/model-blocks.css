@@ -266,6 +266,55 @@
     grid-area:collection-info;
 }
 
+/* Header View -- File Viewer */
+.model-block.header
+{
+    grid-area:header;
+
+    grid-template-areas:
+    "title related"
+    "actions actions"
+    "data data";
+    grid-template-columns: 7fr 3fr;
+    width:100%;
+    border:0px;
+    padding:0px;
+    margin-top:0px;
+}
+
+.model-block.header .model-block-title h1
+{
+    font-size:24pt;
+}
+
+.model-block.header #alt-file-listing
+{
+    margin-bottom:2px;
+}
+
+.model-block.header .model-block-actions
+{
+    grid-area: actions;
+    border-top:1px solid var(--border-color);
+    font-weight:bold;
+}
+
+.model-block.header .model-block-meta
+{
+    grid-area: data;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+    text-align:center;
+    border-top:1px solid var(--border-color);
+    border-bottom:1px solid var(--border-color);
+    gap:4px;
+}
+
+.model-block.header .model-block-meta > .datum
+{
+    flex:1;
+}
 /* UNORGANIZED BELOW THIS POINT */
 
 .model-block .prefix
