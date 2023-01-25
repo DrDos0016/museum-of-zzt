@@ -1,6 +1,0 @@
-<div class="extra">
-    <h3>Featured Reviews</h3>
-    <ul>
-    {% for a in featured_articles %}<li><a href="{{a.url}}">{{a.title}}</a> by {{a.author}}{% if a.summary %} &mdash; <i>{{a.summary}}</i>{% endif %}</li>{% endfor %}
-    </ul>
-</div>

@@ -825,9 +825,10 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             return {"value": "<span class='faded'>{} <i>View Contents</i></span>".format(self.prepare_icons_for_field("major")), "safe": True}
 
         url = "/file/view/{}/".format(self.key) if self.can_museum_download() else ""
-        texts = {"detailed": "View Contents", "list": self.title, "gallery": self.title, "title": self.title}
-        text = escape(texts[view])
+        texts = {"detailed": "View Contents"}
+        text = escape(texts.get(view, self.title))
         icon_kind = "major" if view == "detailed" else "all"
+
         return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(icon_kind), text), "safe": True}
 
     def get_field_review(self, view="detailed"):
@@ -1084,6 +1085,26 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         return context
 
+    def context_cl_info(self):
+        """ Context for use as a CL info tag """
+        context = self.context_universal()
+        context["title"] = self.get_field_view(view="cl_info")
+
+        fields = ["authors", "companies", "zfile_date"]
+        context["fields"] = []
+        for field_name in fields:
+            field_context = self.get_field(field_name, "cl_info")
+            context["fields"].append(field_context)
+
+        action_list = ["download", "play"]
+        actions = []
+        for action in action_list:
+            actions.append(self.get_field(action, view="cl_info"))
+        actions.append(self.get_field_view(view="detailed"))
+        context["actions"] = actions
+
+        return context
+
     def process_kwargs(self, kwargs):
         if kwargs.get("poll_idx"):  # Add role for background color when displaying poll choices
             self.context["roles"].append("poll-option-{}".format(kwargs["poll_idx"]))
@@ -1093,6 +1114,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if kwargs.get("zgames"):  # Include other Zgames to toggle between displaying information on
             self.context["zgames"] = kwargs["zgames"]
             self.context["other_zgame_count"] = len(self.context["zgames"]) - 1
+        if kwargs.get("engine"):  # CL Info tags
+            self.context["engine"] = kwargs["engine"]
+            self.context["emulator"] = kwargs.get("emulator")
         return True
     # END NEW FOR 2023
 

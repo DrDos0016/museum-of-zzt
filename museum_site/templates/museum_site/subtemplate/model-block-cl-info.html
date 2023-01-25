@@ -1,0 +1,19 @@
+{% load static %}
+{% load site_tags %}
+{% load markdown_deux_tags %}
+
+<div class="c {{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
+<div class="model-block-title c">
+    <h2>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h2>
+</div>
+{% if actions %}<div class="model-block-actions">{% for action in actions %}{% if not forloop.first %} | {% endif %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
+<div class="model-block-meta">
+    {% for field in fields %}
+    <div class="datum">
+        <div class="label">{{field.label}}:</div>
+        <div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
+    </div>
+    {% endfor %}
+    {% if engine %}Played Using: {{engine}}{% if emulator %} via {{emulator}}{% endif %}{% endif %}
+</div>
+</div>

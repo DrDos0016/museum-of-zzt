@@ -315,6 +315,33 @@
 {
     flex:1;
 }
+/* CL Info View -- CL Info Template Tag */
+.model-block.cl_info
+{
+    grid-template-areas:
+    "title"
+    "data"
+    "actions";
+    border:0px;
+}
+
+.model-block.cl_info .datum > div
+{
+    display:inline-block;
+}
+
+.model-block.cl_info .model-block-actions
+{
+    grid-area:actions;
+    display:block;
+    border:0px;
+}
+
+.model-block.cl_info .model-block-actions > *
+{
+    display:inline;
+}
+
 /* UNORGANIZED BELOW THIS POINT */
 
 .model-block .prefix
