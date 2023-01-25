@@ -565,18 +565,6 @@ def ssv_links(raw, param, lookup=""):
     return mark_safe(output[:-2] + "\n")
 
 
-@register.simple_tag()
-def zfile_links(zfile=None, debug=False):
-    template = "museum_site/blocks/file-links.html"
-    context = {}
-
-    if zfile:
-        context["links"] = zfile.links(debug)
-
-    output = render_to_string(template, context)
-    return mark_safe(output + "\n")
-
-
 @register.simple_tag(takes_context=True)
 def model_block(context, item, view="detailed", template_view=None, *args, **kwargs):
     item.init_model_block_context(view, request=context["request"], show_staff=context["request"].session.get("SHOW_STAFF", False), *args, **kwargs)
