@@ -80,9 +80,9 @@ Sort: <select name="sort">
 <span id="new-review"></span>
 {% if recent %}
     <p><i>You have <a href="#rev-{{recent}}">recently reviewed</a> this file and cannot submit an additional review at this time.</i></p>
-{% elif file.is_uploaded %}
+{% elif 18 in file.detail_ids %}{% comment %}TODO - Magic Number{% endcomment %}
     <p>Unpublished files cannot be reviewed as their content may still be modified by the uploader.</p>
-{% elif file.is_lost %}
+{% elif 17 in file.detail_ids %}{% comment %}TODO - Magic Number{% endcomment %}
     <p>Lost files cannot be reviewed as they cannot be played in order to review them!</p>
 {% elif banned %}
     <p><b>Banned account.</b></p>
