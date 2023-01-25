@@ -1,0 +1,35 @@
+{% load static %}
+{% load site_tags %}
+{% load markdown_deux_tags %}
+
+<div class="{{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
+<div class="model-block-title">
+    <h1>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h1>
+</div>
+{% if zgames|length > 1 %}
+<select id="alt-file-listing" name="associated_file">
+    <option value="{{model_key}}">+{{other_zgame_count}} Other associated file{{other_zgame_count|pluralize}}</option>
+    {% for zgame in zgames %}{% if zgame.pk != pk %}<option value="{{zgame.key}}">{{zgame.title}}</option>{% endif %}
+    {% endfor %}
+</select>
+{% endif %}
+{% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
+<div class="model-block-meta">
+    {% for field in fields %}
+    <div class="datum">
+        <div class="label">{{field.label}}</div>
+        <div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
+    </div>
+    {% endfor %}
+</div>
+</div>
+
+{% comment %}
+{% if zgames|length > 1 %}
+-        <select id="alt-file-listing" name="associated_file">
+-            <option value="{{file.filename}}">+{{zgames|length|add:"-1"}} Other associated file{% if zgames|length > 2 %}s{% endif %}</option>
+-            {% for zgame in zgames %}
+-                {% if zgame.id != file.id %}<option value="{{zgame.filename}}">{{zgame.title}}</option>{% endif %}
+-            {% endfor %}
+-        </select>{% endif %}
+{% endcomment %}

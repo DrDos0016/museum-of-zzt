@@ -115,33 +115,10 @@
 </div>
 {% block zfile_header %}
 {% if file %}
-<div class="file-meta">
-    {% if file and not local %}
-    <div class="file-heading">
-        {% include "museum_site/datum/title-datum.html" with f=file.title_datum_context %}
-        {% if zgames|length > 1 %}
-        <select id="alt-file-listing" name="associated_file">
-            <option value="{{file.filename}}">+{{zgames|length|add:"-1"}} Other associated file{% if zgames|length > 2 %}s{% endif %}</option>
-            {% for zgame in zgames %}
-                {% if zgame.id != file.id %}<option value="{{zgame.filename}}">{{zgame.title}}</option>{% endif %}
-            {% endfor %}
-        </select>{% endif %}
-    </div>
-    <div class="file-links">{% zfile_links zfile=file debug=request.session.DEBUG %}</div>
-    <div class="file-data">
-    {% with file.file_viewer_block_context as data %}
-        {% for col in data.columns %}
-            {% for field in col %}
-                {% include "museum_site/datum/"|add:field.datum|add:"-datum.html" with f=field %}
-            {% endfor %}
-        {% endfor %}
-    {% endwith %}
-    </div>
+    {% if not local %}{% model_block file "header" zgames=zgames %}
+    {% else %}<h1>Local File Viewer - <input type="file" id="local-file-path"> <button id="local-load">Load File</button></h1>
     {% endif %}
-    {% if local %}
-    <h1>Local File Viewer - <input type="file" id="local-file-path"> <button id="local-load">Load File</button></h1>
-    {% endif %}
-</div>
+
 {% endif %}
 {% endblock zfile_header %}
 {% block content %}
