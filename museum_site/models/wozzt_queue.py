@@ -283,6 +283,13 @@ class WoZZT_Queue(BaseModel):
         url = self.file.url() + "?file={}&board={}".format(self.zzt_file, self.board)
         return {"label": "Source", "value": "<a href='{}' target='_blank'>View</a>".format(url), "safe": True}
 
+    def get_field_priority(self, view="detailed"):
+        return {"label": "Priority", "value": "<input name='priority' value='{}'> <input name='update-priority' type='button' value='Apply'>".format(self.priority), "safe": True}
+
+    def get_field_delete(self, view="detailed"):
+        return {"label": "Delete", "value": "<input name='delete' type='button' value='Delete'>", "safe": True}
+
+
     def context_detailed(self):
         context = self.context_universal()
         context["roles"] = ["model-block", "detailed"]
@@ -291,6 +298,9 @@ class WoZZT_Queue(BaseModel):
         columns = [
             ["tweet", "source"],
         ]
+
+        if self.show_staff:
+            columns[0] += ["priority", "delete"]
 
         for col in columns:
             column_fields = []
