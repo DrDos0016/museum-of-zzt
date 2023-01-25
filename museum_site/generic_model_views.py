@@ -68,9 +68,6 @@ class Model_List_View(ListView):
         context["request"] = self.request
         context["debug"] = self.request.session.get("DEBUG")
 
-        # Set block based on view
-        context["block_template"] = "museum_site/blocks/new-generic-{}-block.html".format(context["view"])
-
         # Set title
         context["title"] = self.get_title()
 

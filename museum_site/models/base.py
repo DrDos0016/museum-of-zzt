@@ -50,33 +50,6 @@ class BaseModel(models.Model):
             self._init_icons()
         return self._major_icons
 
-    def initial_context(self, *args, **kwargs):
-        context = {
-            "pk": self.pk,
-            "hash_id": "{}-{}".format(self.model_name.lower(), self.pk),
-            "model": self.model_name,
-            "preview": {"url": self.preview_url(), "alt": self.preview_url()},
-            "url": self.url(),
-            "icons": self.get_all_icons(),
-            "major_icons": self.get_major_icons(),
-            "roles": [],
-            "debug": False,
-            "request": None,
-            "extras": [],
-        }
-
-        request = kwargs.get("request")
-        context["request"] = request
-
-        # Debug mode
-        if request and request.session.get("DEBUG"):
-            context["debug"] = True
-
-        if hasattr(self, "extra_context"):
-            context.update(self.extra_context)
-
-        return context
-
     def ssv(self, field_name, field_attr="title"):
         # Get a string of slash separated values for a many-to-many field
         ssv = ""

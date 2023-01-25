@@ -1,3 +1,0 @@
-<tr class="{% for r in roles %} {{r}}{% endfor %}" data-model="{{model}}" data-pk="{{pk}}" id="{{hash_id}}">
-    {% for cell in cells %}{% include "museum_site/datum/"|add:cell.datum|add:"-datum.html" with f=cell %}{% endfor %}
-</tr>

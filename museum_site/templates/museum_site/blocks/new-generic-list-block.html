@@ -1,3 +1,0 @@
-<tr class="{% for r in obj.context.roles %} {{r}}{% endfor %}" data-model="{{obj.context.model}}" data-pk="{{obj.context.pk}}" id="{{obj.context.hash_id}}">
-    {% for cell in obj.context.cells %}{% include "museum_site/datum/"|add:cell.datum|add:"-datum.html" with f=cell %}{% endfor %}
-</tr>

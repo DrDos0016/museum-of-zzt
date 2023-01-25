@@ -1,7 +1,6 @@
 {% load static %}
 {% load site_tags %}
 {% load markdown_deux_tags %}
-
 <div class="{{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
     <div class="model-block-top-margin"><span title="{{model}} #{{pk}}">{{model_key}}</span></div>
     <div class="model-block-title">
@@ -18,10 +17,3 @@
     {% if extras %}<div class="extras">{% for extra in extras %}{% include extra.template %}{% endfor %}</div>{% endif %}
     {% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
 </div>
-{% comment %}
-TODO: ANY OF THIS JUNK?
-{% if obj.context.links %}
-{% if obj.context.model == "File" %}{% zfile_links zfile=obj.context.file debug=request.session.DEBUG %}{% endif %}
-{% if obj.context.model == "Collection" %}{% include "museum_site/blocks/collection-links.html"|lower with slug=obj.context.slug %}{% endif %}
-{% endif %}
-{% endcomment %}
