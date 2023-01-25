@@ -36,11 +36,17 @@ from museum_site.querysets.zfile_querysets import *
 
 class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     """ ZFile object repesenting an a file hosted on the Museum site """
-    objects = ZFile_Queryset.as_manager()
-
     model_name = "File"
     to_init = ["detail_ids", "icons", "actions", "extras"]
     table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
+
+    # Uninitizalized shared attributes
+    actions = None
+    detail_ids = None
+    extras = None
+    all_downloads = None
+    all_downloads_count = None
+
     sort_options = [
         {"text": "Title", "val": "title"},
         {"text": "Author", "val": "author"},
@@ -64,12 +70,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         "-publish_date": ["-publish_date", "sort_title"]
     }
 
-    # Uninitizalized shared attributes
-    actions = None
-    detail_ids = None  # Populated by self.init_detail_ids()
-    all_downloads = None
-    all_downloads_count = None
-
     SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
     PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not been fully checked by staff."
     ICONS = {
@@ -87,7 +87,10 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         (REVIEW_YES, "Can Review"),
     )
 
-    # Fields
+    # Database
+    objects = ZFile_Queryset.as_manager()
+
+    # Database Fields
     letter = models.CharField(max_length=1, db_index=True, editable=False, help_text="Letter used for filtering browse pages")
     filename = models.CharField(max_length=50, help_text="Filename of the zip file containing this zfile's contents")
     key = models.CharField(max_length=50, db_index=True, default="", help_text="Unique identifier used for URLs and filtering. Filename w/out extension")
@@ -163,10 +166,48 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def __str__(self):
         return "{} [{}][#{}]".format(self.title, self.key, self.id)
 
-    # Populating functions
+    # Initalizing functions
     def init_detail_ids(self):
         if self.detail_ids is None:
             self.detail_ids = self.details.all().values_list("id", flat=True)
+
+    def _init_actions(self, request={}, show_staff=False):
+        """ Determine which actions may be performed on this zfile """
+        self.actions = {"review": False}
+        self.actions["download"] = True if self.downloads.all().count() else False
+        self.actions["view"] = True if self.can_museum_download() else False
+        self.actions["play"] = True if self.archive_name or (self.actions["view"] and self.supports_zeta_player()) else False
+        self.actions["article"] = True if self.article_count else False
+        # Review
+        if (self.actions["download"] and self.can_review) or self.review_count:
+            self.actions["review"] = True
+        if self.actions["review"] and self.is_detail(DETAIL_UPLOADED):
+            self.actions["review"] = False
+        self.actions["attributes"] = True
+
+    def _init_detail_ids(self):
+        self.detail_ids = self.details.all().values_list("id", flat=True)
+
+    def _init_roles(self, view):
+        super()._init_roles(view)
+        to_add = []
+
+        if self.explicit:
+            to_add.append("explicit")
+        if DETAIL_UPLOADED in self.detail_ids:
+            to_add.append("unpublished")
+        if DETAIL_FEATURED in self.detail_ids:
+            to_add.append("featured")
+        if DETAIL_LOST in self.detail_ids:
+            to_add.append("lost")
+
+        for i in to_add:
+            self.roles.append(i)
+
+    def init_all_downloads(self):
+        if self.all_downloads is None:
+            self.all_downloads = self.downloads.all()
+            self.all_downloads_count = len(self.all_downloads)
 
     # Database functions
     def basic_save(self, *args, **kwargs):
@@ -230,13 +271,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             output.append(a.title)
         return output
 
-    def company_list(self):
-        """ STILL USED IN CL-INFO.HTML """
-        output = []
-        for c in self.companies.all():
-            output.append(c.title)
-        return output
-
     def genre_list(self):
         output = []
         for g in self.genres.all():
@@ -260,20 +294,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             output += '<a href="{}">{}</a>, '.format(url, i)
         return output
 
-    def is_lost(self):  # Used in file-review.html
-        self.init_detail_ids()
-        return True if DETAIL_LOST in self.detail_ids else False
-
-    def is_uploaded(self):  # Used in file-review.html
-        self.init_detail_ids()
-        return True if DETAIL_UPLOADED in self.detail_ids else False
-
-    def is_weave(self):  # Used in file.html
-        self.init_detail_ids()
-        return True if DETAIL_WEAVE in self.detail_ids else False
-
     def is_detail(self, detail_id):
-        self.init_detail_ids()
+        self._init_detail_ids()  # TODO may or may not need to do this
         return True if detail_id in self.detail_ids else False
 
     def supports_zeta_player(self):
@@ -636,93 +658,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             return True
         return False
 
-    # NEW FOR 2023
-    def init_all_downloads(self):
-        if self.all_downloads is None:
-            self.all_downloads = self.downloads.all()
-            self.all_downloads_count = len(self.all_downloads)
-
-    def get_download_url(self):
-        """ Returns a URL for downloading the zfile """
-        self.init_all_downloads()
-        if self.all_downloads_count == 0:
-            return ""
-        elif self.all_downloads_count == 1:
-            return self.all_downloads.first().url
-        else:
-            return "/file/download/{}/".format(self.key)
-
-    def get_download_text(self):
-        """ Returns text for links to download the zfile """
-        self.init_all_downloads()
-        if self.all_downloads_count < 2:
-            return "Download"
-        else:
-            return "Downloads ({})".format(self.all_downloads_count)
-
-    def get_play_url(self):
-        """ Returns text for links to play the zfile online """
-        # TODO: Always returns a valid link
-        return "/file/play/{}".format(self.key)
-        return ""
-
-    def get_play_text(self):
-        """ Returns a URL for playing online """
-        return "Play Online"
-
-    def get_view_url(self):
-        """ Returns a URL for viewing the zfile's contents """
-        if self.can_museum_download():
-            return "/file/view/{}/".format(self.key)
-        return ""
-
-    def get_view_text(self):
-        """ Returns text for links to view the zfile's contents """
-        return "View Contents"
-
-    def get_review_url(self):
-        """ Returns a URL for reading the zfile's reviews """
-        if self.can_review or self.review_count > 0:  # If a review exists, allow it to be read even if new reviews are prohibited
-            return "/file/review/{}/".format(self.key)
-        return ""
-
-    def get_review_text(self):
-        """ Returns text for links to read the zfile's reviews """
-        return "Reviews ({})".format(self.review_count)
-
-    def get_article_url(self):
-        """ Returns a URL for viewing the zfile's related articles """
-        if self.article_count:
-            return "/file/article/{}/".format(self.key)
-        return ""
-
-    def get_article_text(self):
-        """ Returns text for links to view the zfile's related articles """
-        return "Articles ({})".format(self.article_count)
-
-    def get_attributes_url(self):
-        """ Returns a URL for viewing the zfile's attributes """
-        return "/file/attribute/{}/".format(self.key)
-
-    def get_attributes_text(self):
-        """ Returns text for links to view the zfile's attributes """
-        return "Attributes"
-
-    def get_action_link(self, action, value="", target=None):
-        """ Method for revamp """
-        self._init_actions()
-        url = getattr(self, "get_{}_url".format(action))()
-        if not value:
-            value = getattr(self, "get_{}_text".format(action))()
-
-        link = {"value": value, "url": url}
-
-        link["tag"] = "a" if self.actions[action] else "span"
-
-        if target:
-            link["target"] = target
-        return link
-
+    # Fields for HTML display
     def get_field_download(self, view="detailed"):
         restricted = {"value": "<span class='faded'>{} <i>Download</i></span>".format(self.prepare_icons_for_field()), "safe": True}
         if not self.actions["download"]:
@@ -792,7 +728,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def get_field_tools(self, view="detailed"):
         url = "/tools/{}/".format(self.key)
         return {"label": "Tools", "value": "<a href='{}'>Tools {} #{}</a>".format(url, self.model_name, self.pk), "safe": True}
-
 
     def get_field_authors(self, view="detailed"):
         qs = self.authors.all()
@@ -868,94 +803,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         return {"label": "Publish Date", "value": publish_date_str, "safe": True}
 
-    def context_detailed(self):
-        context = self.context_universal()
-        context["show_actions"] = True
-        context["columns"] = []
-
-        columns = [
-            ["authors", "companies", "zfile_date", "genres", "filename", "size"],
-            ["details", "rating", "boards", "language", "publish_date"],
-        ]
-
-        if self.show_staff:
-            columns[1].append("edit")
-            columns[1].append("tools")
-
-        for col in columns:
-            column_fields = []
-            for field_name in col:
-                field_context = self.get_field(field_name)
-                column_fields.append(field_context)
-            context["columns"].append(column_fields)
-
-        action_list = ["download", "play", "view", "review", "article", "attributes"]
-        if self.show_staff:
-            action_list.append("edit")
-            action_list.append("tools")
-        actions = []
-        for action in action_list:
-            actions.append(self.get_field(action, view="detailed"))
-
-        context["actions"] = actions
-        return context
-
-    def context_list(self):
-        context = self.context_universal()
-        context["cells"] = []
-
-        cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
-        for field_name in cell_list:
-            cell_fields = self.get_field(field_name, view="list")
-            context["cells"].append(cell_fields)
-        return context
-
-    def context_gallery(self):
-        context = self.context_universal()
-        context["fields"] = [
-            self.get_field("authors", view="gallery")
-        ]
-        return context
-
-    def context_poll(self):
-        """ Poll context is based on Gallery context """
-        context = self.context_gallery()
-        context["roles"].append("gallery")
-        return context
-
-    def _init_actions(self, request={}, show_staff=False):
-        """ Determine which actions may be performed on this zfile """
-        self.actions = {"review": False}
-        self.actions["download"] = True if self.downloads.all().count() else False
-        self.actions["view"] = True if self.can_museum_download() else False
-        self.actions["play"] = True if self.archive_name or (self.actions["view"] and self.supports_zeta_player()) else False
-        self.actions["article"] = True if self.article_count else False
-        # Review
-        if (self.actions["download"] and self.can_review) or self.review_count:
-            self.actions["review"] = True
-        if self.actions["review"] and self.is_detail(DETAIL_UPLOADED):
-            self.actions["review"] = False
-        self.actions["attributes"] = True
-
-    def _init_detail_ids(self):
-        self.detail_ids = self.details.all().values_list("id", flat=True)
-
-    def _init_roles(self, view):
-        super()._init_roles(view)
-        to_add = []
-
-        if self.explicit:
-            to_add.append("explicit")
-        if DETAIL_UPLOADED in self.detail_ids:
-            to_add.append("unpublished")
-        if DETAIL_FEATURED in self.detail_ids:
-            to_add.append("featured")
-        if DETAIL_LOST in self.detail_ids:
-            to_add.append("lost")
-
-        for i in to_add:
-            self.roles.append(i)
-
     def _init_extras(self):
         self.extras = []
         if DETAIL_FEATURED in self.detail_ids:
@@ -995,8 +842,81 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
                 context["utility_description"] = self.description
         return context
 
+    def process_kwargs(self, kwargs):
+        if kwargs.get("poll_idx"):  # Add role for background color when displaying poll choices
+            self.context["roles"].append("poll-option-{}".format(kwargs["poll_idx"]))
+        if kwargs.get("poll_data"):  # Add poll data to display
+            self.context["poll_description"] = kwargs["poll_data"].summary
+            self.context["poll_patron_nominated"] = kwargs["poll_data"].backer
+        if kwargs.get("zgames"):  # Include other Zgames to toggle between displaying information on
+            self.context["zgames"] = kwargs["zgames"]
+            self.context["other_zgame_count"] = len(self.context["zgames"]) - 1
+        if kwargs.get("engine"):  # CL Info tags
+            self.context["engine"] = kwargs["engine"]
+            self.context["emulator"] = kwargs.get("emulator")
+        return True
+
+    # Context Methods
+    def context_detailed(self):
+        """ Context to display object as a detailed model block """
+        context = self.context_universal()
+        context["show_actions"] = True
+        context["columns"] = []
+
+        columns = [
+            ["authors", "companies", "zfile_date", "genres", "filename", "size"],
+            ["details", "rating", "boards", "language", "publish_date"],
+        ]
+
+        if self.show_staff:
+            columns[1].append("edit")
+            columns[1].append("tools")
+
+        for col in columns:
+            column_fields = []
+            for field_name in col:
+                field_context = self.get_field(field_name)
+                column_fields.append(field_context)
+            context["columns"].append(column_fields)
+
+        action_list = ["download", "play", "view", "review", "article", "attributes"]
+        if self.show_staff:
+            action_list.append("edit")
+            action_list.append("tools")
+        actions = []
+        for action in action_list:
+            actions.append(self.get_field(action, view="detailed"))
+
+        context["actions"] = actions
+        return context
+
+    def context_list(self):
+        """ Context to display object as a list model block """
+        context = self.context_universal()
+        context["cells"] = []
+
+        cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
+        for field_name in cell_list:
+            cell_fields = self.get_field(field_name, view="list")
+            context["cells"].append(cell_fields)
+        return context
+
+    def context_gallery(self):
+        """ Context to display object as a gallery model block """
+        context = self.context_universal()
+        context["fields"] = [
+            self.get_field("authors", view="gallery")
+        ]
+        return context
+
+    def context_poll(self):
+        """ Context to display object as a poll model block (used when listed poll options) """
+        context = self.context_gallery()
+        context["roles"].append("gallery")
+        return context
+
     def context_header(self):
-        """ Context for use as a header (such as in the file viewer) """
+        """ Context to display object as page header (such as in the file viewer) """
         context = self.context_universal()
         context["show_actions"] = True
         context["title"] = self.get_field_view(view="header")
@@ -1020,7 +940,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return context
 
     def context_cl_info(self):
-        """ Context for use as a CL info tag """
+        """ Context to display object for a Closer Look subject (cl_info templatetag) """
         context = self.context_universal()
         context["title"] = self.get_field_view(view="cl_info")
 
@@ -1036,23 +956,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             actions.append(self.get_field(action, view="cl_info"))
         actions.append(self.get_field_view(view="detailed"))
         context["actions"] = actions
-
         return context
-
-    def process_kwargs(self, kwargs):
-        if kwargs.get("poll_idx"):  # Add role for background color when displaying poll choices
-            self.context["roles"].append("poll-option-{}".format(kwargs["poll_idx"]))
-        if kwargs.get("poll_data"):  # Add poll data to display
-            self.context["poll_description"] = kwargs["poll_data"].summary
-            self.context["poll_patron_nominated"] = kwargs["poll_data"].backer
-        if kwargs.get("zgames"):  # Include other Zgames to toggle between displaying information on
-            self.context["zgames"] = kwargs["zgames"]
-            self.context["other_zgame_count"] = len(self.context["zgames"]) - 1
-        if kwargs.get("engine"):  # CL Info tags
-            self.context["engine"] = kwargs["engine"]
-            self.context["emulator"] = kwargs.get("emulator")
-        return True
-    # END NEW FOR 2023
 
 
 class ZFile_Admin(admin.ModelAdmin):
