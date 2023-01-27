@@ -6,7 +6,6 @@ from django.utils.safestring import mark_safe
 
 from museum_site.models.base import BaseModel
 from museum_site.querysets.collection_querysets import *
-from museum_site.templatetags.zzt_tags import char
 
 
 class Collection(BaseModel):
@@ -109,22 +108,6 @@ class Collection(BaseModel):
     @property
     def visibility_str(self):
         return self.VISIBILITY_CHOICES[self.visibility][1]
-
-    @mark_safe
-    def author_link(self):
-        if self.user:
-            link = '{} <a href="{}">{}</a>'.format(
-                char(
-                    self.user.profile.char, self.user.profile.fg,
-                    self.user.profile.bg, scale=2
-                ),
-                self.user.profile.link(),
-                self.user.username
-            )
-        else:
-            link = "Anonymous"
-
-        return link
 
     def get_meta_tag_context(self):
         """ Returns a dict of keys and values for <meta> tags  """

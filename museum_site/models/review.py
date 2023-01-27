@@ -9,7 +9,6 @@ from museum_site.common import profanity_filter
 from museum_site.core.misc import epoch_to_unknown
 from museum_site.models.base import BaseModel
 from museum_site.querysets.review_querysets import *
-from museum_site.templatetags.zzt_tags import char
 
 
 class Review(BaseModel):
@@ -68,24 +67,6 @@ class Review(BaseModel):
             self.author
         )
         return output
-
-    @mark_safe
-    def author_link(self):
-        if self.user:
-            link = '{} <a href="{}">{}</a>'.format(
-                char(
-                    self.user.profile.char, self.user.profile.fg,
-                    self.user.profile.bg, scale=2
-                ),
-                self.user.profile.link(),
-                self.user.username
-            )
-        elif self.author:
-            link = self.author
-        else:
-            link = "Anonymous"
-
-        return link
 
     def get_author(self):
         # Returns a string of the username on a review if one exists,
