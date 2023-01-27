@@ -66,10 +66,9 @@
     font-family:"cp437";
     font-size:16px;
     text-align:right;
-    color:var(--block-margin-lowlight);
 }
 
-.model-block-top-margin span { cursor:help; }
+.model-block-top-margin a { color:var(--block-margin-lowlight); }
 
 .model-block.detailed .preview-image { margin:14px auto 14px auto; }
 

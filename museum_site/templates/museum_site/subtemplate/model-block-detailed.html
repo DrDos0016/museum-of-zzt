@@ -3,7 +3,7 @@
 {% load markdown_deux_tags %}
 
 <div class="{{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
-    <div class="model-block-top-margin"><span title="{{model}} #{{pk}}">{{model_key}}</span></div>
+    <div class="model-block-top-margin"><a href="#{{model_key}}" title="{{model}} #{{pk}}">{{model_key}}</a></div>
     <img class="preview-image {% if not preview.no_zoom %} zoomable{% endif %}{% if preview.zoomed %} zoomed{% else %} thumbnail{% endif %}" src="{% static preview.url %}" alt="{{preview.url}}">
     <div class="model-block-title">
         <h2>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h2>
