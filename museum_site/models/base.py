@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.safestring import mark_safe
 
+from museum_site.templatetags.zzt_tags import char
+
 
 class BaseModel(models.Model):
     model_name = None
@@ -80,6 +82,19 @@ class BaseModel(models.Model):
         for i in getattr(self, "table_fields", ["TABLE FIELDS ARE UNDEFINED"]):
             row += "<th>{}</th>".format(i)
         return "<tr>" + row + "</tr>"
+
+    @mark_safe
+    def author_link(self, default_name="Anonymous"):
+        """ Return HTML link to author profile if a user is found, otherwise use an author field if it exists, otherwise a default value """
+        if self.user:
+            link = '{} <a href="{}">{}</a>'.format(
+                char(self.user.profile.char, self.user.profile.fg, self.user.profile.bg, scale=2), self.user.profile.link(), self.user.username
+            )
+        elif hasattr(self, "author") and self.author:
+            link = self.author
+        else:
+            link = default_name
+        return link
 
     # 2023 Model Blocks
     def init_model_block_context(self, view="detailed", request=None, *args, **kwargs):
