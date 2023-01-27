@@ -1034,6 +1034,16 @@ def set_screenshot(request, key):
     return render(request, "museum_site/tools/set_screenshot.html", data)
 
 
+def sms(request):
+    context = {"title": "Social Media Shotgun"}
+    if request.method == "POST":
+        form = Social_Media_Shotgun_Form(request.POST, request.FILES)
+    else:
+        form = Social_Media_Shotgun_Form()
+    context["form"] = form
+    return render(request, "museum_site/tools/sms.html", context)
+
+
 """
         PUBLIC TOOLS BELOW
 """

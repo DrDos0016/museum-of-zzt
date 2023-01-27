@@ -1,0 +1,4 @@
+{% if char_limit %}
+<div class="chars-remaining"><span>{{char_limit}}</span> characters remaining</div>
+{% endif %}
+<textarea id="{{widget.attrs.id}}" name="{{widget.name}}" class="char-limited-widget" maxlength="{{char_limit}}">{% if widget.value %}{{widget.value|stringformat:'s'}}{% endif %}</textarea>

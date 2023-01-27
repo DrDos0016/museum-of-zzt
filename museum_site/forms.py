@@ -1510,3 +1510,46 @@ class Upload_Delete_Confirmation_Form(forms.Form):
     def clean_confirmation(self):
         if self.cleaned_data["confirmation"].upper() != "DELETE":
             self.add_error("confirmation", "You must provide confirmation before an upload can be deleted!")
+
+
+class Social_Media_Shotgun_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Social Media Shotgun"
+    submit_value = "Post"
+    attrs = {"method": "POST"}
+
+    ACCOUNTS = (
+        ("twitter", "Twitter"),
+        ("tumblr", "Tumblr"),
+        ("mastodon", "Mastodon"),
+        ("patreon", "Patreon"),
+        ("discord", "Discord"),
+        ("cohost", "Cohost"),
+    )
+
+    KINDS = (
+        ("misc", "—"),
+        ("stream-live", "Going Live"),
+        ("stream-schedule", "Stream Schedule"),
+        ("stream-promo", "Stream Promo"),
+        ("patreon-plug", "Patreon Plug"),
+        ("project-update", "Project Update Post"),
+    )
+
+    kinds = forms.ChoiceField(choices=KINDS, label="Post Type")
+
+    body = forms.CharField(
+        widget=Enhanced_Text_Area_Widget(char_limit=9999),
+        help_text="Tweets are limited to 240 characters.<br>Toots are limited to 500 characters.",
+    )
+
+    media = forms.FileField(
+        required=False,
+        help_text="Select the media you wish to upload.",
+        label="Media", widget=UploadFileWidget(target_text="Drag & Drop Media Here or Click to Choose")
+    )
+
+    accounts = forms.MultipleChoiceField(
+        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS,
+        initial=["twitter", "tumblr", "mastodon"]
+    )

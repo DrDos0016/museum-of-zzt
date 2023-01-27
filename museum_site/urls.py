@@ -239,6 +239,7 @@ urlpatterns = [
     path("tools/scan/", museum_site.tool_views.scan, name="museum_scan"),
     path("tools/series/add/", museum_site.tool_views.series_add, name="series_add"),
     path("tools/set_screenshot/<str:key>/", museum_site.tool_views.set_screenshot, name="set_screenshot"),
+    path("tools/sms/", museum_site.tool_views.sms, name="social_media_shotgun"),
     path("tools/stream-card/", museum_site.tool_views.stream_card, name="stream_card"),
     path("tools/<str:key>/", museum_site.tool_views.tool_index, name="tool_index_with_file"),
 

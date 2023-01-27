@@ -1,0 +1,20 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+
+{% block scripts %}
+<script src="{% static 'js/museum-forms.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<h1>{{form.heading}}</h1>
+
+{{form.text_prefix|default:""|safe}}
+
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+{% endblock %}

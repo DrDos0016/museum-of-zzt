@@ -150,6 +150,9 @@ class Enhanced_Text_Widget(forms.TextInput):
         context["char_limit"] = self.char_limit
         return context
 
+class Enhanced_Text_Area_Widget(Enhanced_Text_Widget):
+    template_name = "museum_site/widgets/enhanced-textarea-widget.html"
+
 
 class Enhanced_Date_Widget(forms.TextInput):
     template_name = "museum_site/widgets/enhanced-date-widget.html"
