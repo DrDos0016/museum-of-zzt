@@ -203,8 +203,8 @@ def guide_words(*args, **kwargs):
         if items[0] != "" and items[1] != "":
             output = """
             <div class="guide-words">
-                <span><a class="left" href="#article-{}">{}</a></span>
-                <span><a class="right" href="#article-{}">{}</a></span>
+                <span><a class="left" href="#{}">{}</a></span>
+                <span><a class="right" href="#{}">{}</a></span>
             </div>
             """.format(
                 items[0].id, link_text[0],
@@ -228,8 +228,8 @@ def guide_words(*args, **kwargs):
         if items[0] != "" and items[1] != "":
             output = """
             <div class="guide-words">
-                <span><a class="left" href="#review-{}">{}</a></span>
-                <span><a class="right" href="#review-{}">{}</a></span>
+                <span><a class="left" href="#{}">{}</a></span>
+                <span><a class="right" href="#{}">{}</a></span>
             </div>
             """.format(
                 items[0].id, link_text[0],
@@ -253,8 +253,8 @@ def guide_words(*args, **kwargs):
         if items[0] != "" and items[1] != "":
             output = """
             <div class="guide-words">
-                <span><a class="left" href="#collection-{}">{}</a></span>
-                <span><a class="right" href="#collection-{}">{}</a></span>
+                <span><a class="left" href="#{}">{}</a></span>
+                <span><a class="right" href="#{}">{}</a></span>
             </div>
             """.format(
                 items[0].id, link_text[0],
