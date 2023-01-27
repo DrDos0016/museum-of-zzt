@@ -11,22 +11,10 @@ from django.utils.safestring import mark_safe
 from museum.settings import STATIC_URL
 from museum_site.models import File, Article
 from museum_site.constants import (
-    ADMIN_NAME, TIER_NAMES, PROTOCOL, DOMAIN, LANGUAGES
+    ADMIN_NAME, PROTOCOL, DOMAIN, LANGUAGES
 )
 
 register = Library()
-
-LOOKUPS = {
-    "language": LANGUAGES,
-}
-
-
-@register.filter
-def as_template(raw):
-    context_data = {"TODO": "TODO", "CROP": "CROP"}  # Expected TODO usage.
-    raw = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}" + raw
-    return Template(raw).render(Context(context_data))
-
 
 @register.filter
 def get_articles_by_id(raw):
@@ -56,14 +44,6 @@ def get_files_by_id(raw):
                 screenshot="red-x-error.png",
             )
     return files
-
-
-@register.filter(name="tiername")
-@stringfilter
-def tiername_filter(raw):
-    output = TIER_NAMES.get(raw, "Unknown Tier Or No Tier Selected")
-    return output
-
 
 @register.filter(name="zfill")
 @stringfilter
@@ -548,7 +528,10 @@ class Spoiler(template.Node):
 
 @register.simple_tag(takes_context=True)
 def model_block(context, item, view="detailed", template_view=None, *args, **kwargs):
-    item.init_model_block_context(view, request=context["request"], show_staff=context["request"].session.get("SHOW_STAFF", False), *args, **kwargs)
+    if context["request"]:
+        item.init_model_block_context(view, request=context["request"], show_staff=context["request"].session.get("SHOW_STAFF", False), *args, **kwargs)
+    else:
+        item.init_model_block_context(view, request=context["request"], show_staff=False, *args, **kwargs)
     context = item.context
     if template_view is None:
         template_view = view

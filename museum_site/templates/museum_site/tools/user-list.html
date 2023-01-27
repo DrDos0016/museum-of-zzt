@@ -28,7 +28,7 @@
         <td class="c">{{u.is_staff|yesno:"✅, "}}</td>
         <td class="c">{{u.profile.patron|yesno:"✅,❌"}}</td>
         <td class="r">({{u.profile.get_pledge}})</td>
-        <td class="c">{{u.profile.patron_tier|tiername}}</td>
+        <td class="c">{{u.profile.patron_tier_name}}</td>
     </tr>
     {% endfor %}
 </table>

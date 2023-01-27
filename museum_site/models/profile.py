@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
 
-from museum_site.constants import UPLOAD_CAP
+from museum_site.constants import UPLOAD_CAP, TIER_NAMES
 from museum_site.querysets.profile_querysets import *
 
 
@@ -99,6 +99,10 @@ class Profile(models.Model):
         else:
             amount = ("$0.0" + strval)
         return amount
+
+    def patron_tier_name(self):
+        name = TIER_NAMES.get(self.patron_tier, "Unknown Tier Or No Tier Selected")
+        return name
 
     def scrub(self):
         self.patron = False
