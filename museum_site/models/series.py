@@ -15,6 +15,7 @@ class Series(BaseModel):
     objects = Series_Queryset.as_manager()
     model_name = "Series"
     table_fields = ["Series", "Updated", "Latest", "First", "Total"]
+    cell_list = ["view", "last_updated", "latest_article", "first_article", "total_articles"]
     sort_options = [
         {"text": "Newest Entry", "val": "latest"},
         {"text": "Title", "val": "title"}
@@ -136,8 +137,7 @@ class Series(BaseModel):
         context["roles"] = ["list"]
         context["cells"] = []
 
-        cell_list = ["view", "last_updated", "latest_article", "first_article", "total_articles"]
-        for field_name in cell_list:
+        for field_name in self.cell_list:
             cell_fields = self.get_field(field_name, view="list")
             context["cells"].append(cell_fields)
         return context

@@ -17,6 +17,7 @@ class Review(BaseModel):
 
     model_name = "Review"
     table_fields = ["Title", "File", "Reviewer", "Date", "Rating"]
+    cell_list = ["view", "zfile", "author", "review_date", "rating"]
     sort_options = [
         {"text": "Newest", "val": "-date"},
         {"text": "Oldest", "val": "date"},
@@ -168,8 +169,7 @@ class Review(BaseModel):
         context["roles"] = ["list"]
         context["cells"] = []
 
-        cell_list = ["view", "zfile", "author", "review_date", "rating"]
-        for field_name in cell_list:
+        for field_name in self.cell_list:
             cell_fields = self.get_field(field_name, view="list")
             context["cells"].append(cell_fields)
         return context

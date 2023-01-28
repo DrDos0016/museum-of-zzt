@@ -39,6 +39,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     model_name = "File"
     to_init = ["detail_ids", "icons", "actions", "extras"]
     table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
+    cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
 
     # Uninitizalized shared attributes
     actions = None
@@ -895,8 +896,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         context = self.context_universal()
         context["cells"] = []
 
-        cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
-        for field_name in cell_list:
+        for field_name in self.cell_list:
             cell_fields = self.get_field(field_name, view="list")
             context["cells"].append(cell_fields)
         return context

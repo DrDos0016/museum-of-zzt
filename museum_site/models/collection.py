@@ -12,6 +12,7 @@ class Collection(BaseModel):
     """ Representation of a group of files with custom descriptions """
     objects = Collection_Queryset.as_manager()
     model_name = "Collection"
+    cell_list = ["view", "author", "modified", "item_count", "short_description"]
     to_init = ["yours"]
     is_yours = False
     table_fields = ["Title", "Author", "Last Modified", "Items", "Short Desc."]
@@ -194,8 +195,7 @@ class Collection(BaseModel):
         context["roles"] = ["list"]
         context["cells"] = []
 
-        cell_list = ["view", "author", "modified", "item_count", "short_description"]
-        for field_name in cell_list:
+        for field_name in self.cell_list:
             cell_fields = self.get_field(field_name, view="list")
             context["cells"].append(cell_fields)
         return context

@@ -19,6 +19,8 @@ class Article(BaseModel):
     """ Article object repesenting an article """
     objects = Article_Queryset.as_manager()
 
+    cell_list = ["view", "authors", "article_date", "category", "description"]
+
     to_init = ["access_level", "icons"]
     model_name = "Article"
     table_fields = ["Title", "Author", "Date", "Category", "Description"]
@@ -331,8 +333,7 @@ class Article(BaseModel):
         context["roles"] = ["list"]
         context["cells"] = []
 
-        cell_list = ["view", "authors", "article_date", "category", "description"]
-        for field_name in cell_list:
+        for field_name in self.cell_list:
             cell_fields = self.get_field(field_name, view="list")
             context["cells"].append(cell_fields)
         return context
