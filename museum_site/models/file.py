@@ -171,7 +171,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.detail_ids is None:
             self.detail_ids = self.details.all().values_list("id", flat=True)
 
-    def _init_actions(self, request={}, show_staff=False):
+    def _init_actions(self):
         """ Determine which actions may be performed on this zfile """
         self.actions = {"review": False}
         self.actions["download"] = True if self.downloads.all().count() else False
@@ -187,6 +187,19 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def _init_detail_ids(self):
         self.detail_ids = self.details.all().values_list("id", flat=True)
+
+    def _init_extras(self):
+        self.extras = []
+        if DETAIL_FEATURED in self.detail_ids:
+            self.extras.append({"kind": "featured-world", "template": "museum_site/subtemplate/extra-featured-world.html"})
+        if DETAIL_LOST in self.detail_ids and self.description:
+            self.extras.append({"kind": "lost-world", "template": "museum_site/subtemplate/extra-lost.html"})
+        if DETAIL_PROGRAM in self.detail_ids and self.description:
+            # TODO: This PK check is a hotfix for "description" being used for many types of descriptions
+            if self.pk not in [85]:
+                self.extras.append({"kind": "program-description", "template": "museum_site/subtemplate/extra-utility.html"})
+        elif DETAIL_UTILITY in self.detail_ids and self.description:
+            self.extras.append({"kind": "utility-description", "template": "museum_site/subtemplate/extra-utility.html"})
 
     def _init_roles(self, view):
         super()._init_roles(view)
@@ -475,7 +488,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         context = {"datum": "title", "tag": "h1", "value": self.title, "icons": self.get_all_icons()}
         return context
 
-    def _init_icons(self, request={}, show_staff=False):
+    def _init_icons(self):
         # Populates major and minor icons for file
         self._minor_icons = []
         self._major_icons = []
@@ -802,19 +815,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             publish_date_str = self.publish_date.strftime("%b %d, %Y, %I:%M:%S %p")
 
         return {"label": "Publish Date", "value": publish_date_str, "safe": True}
-
-    def _init_extras(self):
-        self.extras = []
-        if DETAIL_FEATURED in self.detail_ids:
-            self.extras.append({"kind": "featured-world", "template": "museum_site/subtemplate/extra-featured-world.html"})
-        if DETAIL_LOST in self.detail_ids and self.description:
-            self.extras.append({"kind": "lost-world", "template": "museum_site/subtemplate/extra-lost.html"})
-        if DETAIL_PROGRAM in self.detail_ids and self.description:
-            # TODO: This PK check is a hotfix for "description" being used for many types of descriptions
-            if self.pk not in [85]:
-                self.extras.append({"kind": "program-description", "template": "museum_site/subtemplate/extra-utility.html"})
-        elif DETAIL_UTILITY in self.detail_ids and self.description:
-            self.extras.append({"kind": "utility-description", "template": "museum_site/subtemplate/extra-utility.html"})
 
     def context_extras(self):
         # TODO This is probably the weakest part of this rewrite

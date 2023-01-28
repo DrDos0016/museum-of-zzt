@@ -529,9 +529,9 @@ class Spoiler(template.Node):
 @register.simple_tag(takes_context=True)
 def model_block(context, item, view="detailed", template_view=None, *args, **kwargs):
     if context["request"]:
-        item.init_model_block_context(view, request=context["request"], show_staff=context["request"].session.get("SHOW_STAFF", False), *args, **kwargs)
+        item.init_model_block_context(view, request=context["request"])
     else:
-        item.init_model_block_context(view, request=context["request"], show_staff=False, *args, **kwargs)
+        item.init_model_block_context(view, request=context["request"])
     context = item.context
     if template_view is None:
         template_view = view

@@ -176,7 +176,32 @@ class Article(BaseModel):
     def early_access_price(self):
         return self.EARLY_ACCESS_PRICING.get(self.published, "???")
 
-    def _init_icons(self, request={}, show_staff=False):
+    def _init_access_level(self):
+        if self.published == self.PUBLISHED:
+            return True
+
+        # Pull data from the request
+        if self.request:
+            patronage = self.request.user.profile.patronage if self.request.user.is_authenticated else 0
+            secret = self.request.POST.get("secret", "")
+            secret_get = self.request.GET.get("secret")
+        else:
+            patronage = 0
+            secret = ""
+            secret_get = None
+
+        # Patronage based access level increases
+        if patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
+            self.user_access_level = self.UNPUBLISHED
+        elif patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
+            self.user_access_level = self.UPCOMING
+
+        # Password based access level increases
+        self.user_access_level = self.UPCOMING if secret == PASSWORD2DOLLARS else self.user_access_level  # Universal Upcoming PW
+        self.user_access_level = self.UNPUBLISHED if secret == PASSWORD5DOLLARS else self.user_access_level  # Universal Upcoming PW
+        self.user_access_level = self.UNPUBLISHED if (secret_get == self.secret) else self.user_access_level  # Local PW
+
+    def _init_icons(self):
         # Populates major and minor icons for file
         self._minor_icons = []
         self._major_icons = []
@@ -319,28 +344,3 @@ class Article(BaseModel):
             self.get_field("authors", view="gallery")
         ]
         return context
-
-    def _init_access_level(self):
-        if self.published == self.PUBLISHED:
-            return True
-
-        # Pull data from the request
-        if self.request:
-            patronage = self.request.user.profile.patronage if self.request.user.is_authenticated else 0
-            secret = self.request.POST.get("secret", "")
-            secret_get = self.request.GET.get("secret")
-        else:
-            patronage = 0
-            secret = ""
-            secret_get = None
-
-        # Patronage based access level increases
-        if patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
-            self.user_access_level = self.UNPUBLISHED
-        elif patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
-            self.user_access_level = self.UPCOMING
-
-        # Password based access level increases
-        self.user_access_level = self.UPCOMING if secret == PASSWORD2DOLLARS else self.user_access_level  # Universal Upcoming PW
-        self.user_access_level = self.UNPUBLISHED if secret == PASSWORD5DOLLARS else self.user_access_level  # Universal Upcoming PW
-        self.user_access_level = self.UNPUBLISHED if (secret_get == self.secret) else self.user_access_level  # Local PW

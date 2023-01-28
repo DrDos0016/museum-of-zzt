@@ -24,11 +24,9 @@ class BaseModel(models.Model):
         name = self.model_name.replace("-", "_").lower()
         return "/admin/museum_site/{}/{}/change/".format(name, self.id)
 
-    def _init_actions(self, request={}, show_staff=False): self.actions = {}
-
-    def _init_detail_ids(self, request={}, show_staff=False): self.detail_ids = []
-
-    def _init_extras(self, request={}, show_staff=False): self.extras = []
+    def _init_actions(self): self.actions = {}
+    def _init_detail_ids(self): self.detail_ids = []
+    def _init_extras(self): self.extras = []
 
     def _init_roles(self, view):
         self.roles = []
@@ -36,7 +34,7 @@ class BaseModel(models.Model):
             self.roles.append("model-block")
         self.roles.append(view)
 
-    def _init_icons(self, request={}, show_staff=False):
+    def _init_icons(self):
         self._minor_icons = []
         self._major_icons = []
 
