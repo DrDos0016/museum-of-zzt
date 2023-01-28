@@ -8,6 +8,7 @@ class BaseModel(models.Model):
     model_name = None
     to_init = []
     table_fields = []
+    cell_list = []
     supported_views = ["detailed", "list", "gallery"]
     has_icons = False  # Updated from class specific obj._init_icons()
     actions = {}
@@ -50,18 +51,6 @@ class BaseModel(models.Model):
             self._init_icons()
         return self._major_icons
 
-    def ssv(self, field_name, field_attr="title"):
-        # Get a string of slash separated values for a many-to-many field
-        ssv = ""
-        if hasattr(self, field_name):
-            entries = list(
-                getattr(self, field_name).all().values_list(
-                    field_attr, flat=True
-                )
-            )
-            ssv = "/".join(entries)
-        return ssv
-
     def get_related_list(self, obj, field=None):
         """ Get all associated instances of related object OBJ and return them in a list. Optionally filter only to a specified FIELD """
         output = []
@@ -77,7 +66,7 @@ class BaseModel(models.Model):
     @mark_safe
     def table_header(self):
         row = ""
-        for i in getattr(self, "table_fields", ["TABLE FIELDS ARE UNDEFINED"]):
+        for i in getattr(self, "table_fields"):
             row += "<th>{}</th>".format(i)
         return "<tr>" + row + "</tr>"
 
