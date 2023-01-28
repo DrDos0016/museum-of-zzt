@@ -22,7 +22,7 @@ from django.urls import get_resolver
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core import *
-from museum_site.core.file_utils import place_uploaded_file
+from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
 from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.core.misc import calculate_sort_title, calculate_boards_in_zipfile
 from museum_site.forms import *
@@ -674,7 +674,7 @@ def replace_zip(request, pk):
 
         # Update checksum
         if request.POST.get("update-checksum"):
-            data["new_file"].calculate_checksum()
+            data["new_file"].checksum = calculate_md5_checksum(data["new_file"].phys_path())
         if request.POST.get("update-board-count"):
             (data["new_file"].playable_boards, data["new_file"].total_boards) = calculate_boards_in_zipfile(data["new_file"].phys_path())
         if request.POST.get("update-size"):
@@ -914,7 +914,7 @@ def tool_index(request, key=None):
                 data["file"].calculate_article_count()
                 data["new"] = data["file"].article_count
             elif field == "checksum":
-                data["file"].calculate_checksum()
+                data["file"].checksum = calculate_md5_checksum(data["file"].phys_path())
                 data["new"] = data["file"].checksum
             elif field == "boards":
                 (data["file"].playable_boards, data["file"].total_boards) = calculate_boards_in_zipfile(data["file"].phys_path())

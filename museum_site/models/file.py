@@ -1,4 +1,3 @@
-import hashlib
 import html
 import os
 import zipfile
@@ -19,11 +18,12 @@ except ImportError:
 
 from museum_site.common import zipinfo_datetime_tuple_to_str
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH
-from museum_site.core.transforms import qs_to_links
 from museum_site.core.detail_identifiers import *
+from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile
-from museum_site.core.zeta_identifiers import *
 from museum_site.core.image_utils import optimize_image
+from museum_site.core.transforms import qs_to_links
+from museum_site.core.zeta_identifiers import *
 from museum_site.models.zfile_legacy import ZFile_Legacy
 from museum_site.models.zfile_urls import ZFile_Urls
 from museum_site.models.review import Review
@@ -244,8 +244,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         self.calculate_reviews()  # Calculate Review Scores
 
         # Update blank md5s
-        if self.checksum == "" or self.checksum is None:
-            self.calculate_checksum()
+        if not self.checksum:
+            self.checksum = calculate_md5_checksum(self.phys_path())
 
         # Set board counts for non-uploads
         if HAS_ZOOKEEPER and not kwargs.get("new_upload"):
@@ -340,26 +340,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.id is not None:
             ratings = Review.objects.average_rating_for_zfile(self.id)
             self.rating = None if ratings["rating__avg"] is None else round(ratings["rating__avg"], 2)
-
-    def calculate_checksum(self, path=None, set_to_results=True):
-        # Calculate an md5 checksum of the zip file
-        if path is None:
-            path = self.phys_path()
-        try:
-            with open(path, "rb") as fh:
-                m = hashlib.md5()
-                while True:
-                    byte_stream = fh.read(102400)
-                    m.update(byte_stream)
-                    if not byte_stream:
-                        break
-        except FileNotFoundError:
-            return False
-
-        checksum = m.hexdigest()
-        if set_to_results:
-            self.checksum = checksum
-        return checksum
 
     def calculate_size(self):
         self.size = os.path.getsize(self.phys_path())
@@ -597,7 +577,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             checksummed = False
 
         # Calculate file's checksum
-        md5 = self.calculate_checksum(set_to_results=False)
+        md5 = calculate_md5_checksum(self.phys_path())
         if checksummed and (self.checksum != md5):
             issues["checksum_mismatch"] = "Checksum in DB does not match calculated checksum: {} / {}".format(self.checksum, md5)
 

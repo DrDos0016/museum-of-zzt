@@ -11,6 +11,7 @@ from museum_site.common import *
 from museum_site.constants import *
 from museum_site.constants import BANNED_IPS
 from museum_site.core import *
+from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile
 from museum_site.forms import *
 from museum_site.models import *
@@ -150,7 +151,7 @@ def upload(request):
             if request.FILES.get("zfile"):  # Only set if there's a zip
                 zfile.filename = upload_filename
                 zfile.size = uploaded_file.size
-                zfile.calculate_checksum(file_path)
+                zfile.checksum = calculate_md5_checksum(file_path)
                 (zfile.playable_boards, zfile.total_boards) = calculate_boards_in_zipfile(zfile.phys_path())
             zfile.letter = set_letter
             zfile.key = zfile.filename.lower()[:-4]

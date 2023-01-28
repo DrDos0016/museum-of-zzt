@@ -1,9 +1,26 @@
+import hashlib
 import os
 import shutil
 
 from django.http import Http404, HttpResponse
 
 from museum_site.constants import STATIC_PATH
+
+
+def calculate_md5_checksum(path):
+    try:
+        with open(path, "rb") as fh:
+            m = hashlib.md5()
+            while True:
+                byte_stream = fh.read(102400)
+                m.update(byte_stream)
+                if not byte_stream:
+                    break
+    except FileNotFoundError:
+        return ""
+
+    checksum = m.hexdigest()
+    return checksum
 
 
 def delete_this(path):
