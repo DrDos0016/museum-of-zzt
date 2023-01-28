@@ -17,9 +17,7 @@ try:
 except ImportError:
     HAS_ZOOKEEPER = False
 
-from museum.settings import STATIC_URL
-
-from museum_site.common import zipinfo_datetime_tuple_to_str, record
+from museum_site.common import zipinfo_datetime_tuple_to_str
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH
 from museum_site.core.transforms import qs_to_links
 from museum_site.core.detail_identifiers import *
