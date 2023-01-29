@@ -19,10 +19,6 @@ class Author(models.Model):
     def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
-        # Save
-        super(Author, self).save(*args, **kwargs)
-
     def generate_automatic_slug(self, save=True):
         self.slug = slugify(self.title)
         if self.slug == "":
