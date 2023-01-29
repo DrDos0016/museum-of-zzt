@@ -675,7 +675,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def get_field_play(self, view="detailed"):
         if not self.actions["play"]:
             return {"value": "<span class='faded'>{} <i>Play Online</i></span>".format(self.prepare_icons_for_field("major")), "safe": True}
-        url = "/file/view/{}/".format(self.key)
+        url = "/file/play/{}/".format(self.key)
         return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field("major"), "Play Online"), "safe": True}
 
     def get_field_view(self, view="detailed"):
