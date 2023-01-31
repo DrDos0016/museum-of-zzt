@@ -115,10 +115,12 @@ article[data-schema="80col"]
     background:var(--side-link-border);
     margin:auto;
     max-width:640px;
-    border-top:2px solid var(--border-color);
+    border:1px solid var(--border-color);
     font-family:cp437;
     text-align:center;
 }
+
+.zzt-img.zzt-board + .img-caption { width:480px; }
 
 .material
 {
