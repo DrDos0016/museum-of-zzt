@@ -95,5 +95,5 @@ def article_search(request):
             ("id", "!ID Old"),
         ]
 
-    data = {"title": "Articl!e Search", "form": form}
+    data = {"title": "Article Search", "form": form}
     return render(request, "museum_site/generic-form-display.html", data)
