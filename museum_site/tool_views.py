@@ -843,6 +843,7 @@ def tool_index(request, key=None):
 
     if key:
         data["file"] = File.objects.get(key=key)
+        data["title"] = "[{}] - {} - Tool Index".format(data["file"].key, data["file"].title)
 
     # Targets for auditing
     data["audit_targets"] = audit(request, target=None, return_target_dict=True)
