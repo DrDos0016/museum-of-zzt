@@ -49,8 +49,7 @@ PATRON_DISCLAIMER_TEXT = (
 class ZGameForm(forms.ModelForm):
     field_order = ["zfile", "title", "author", "company", "genre", "explicit", "release_date", "language", "description"]
     zfile = forms.FileField(
-        help_text=("Select the file you wish to upload. "
-                   "All uploads <i>must</i> be zipped."),
+        help_text=("Select the file you wish to upload. All uploads <i>must</i> be zipped."),
         label="File", widget=UploadFileWidget(target_text="Drag & Drop A Zip File Here or Click to Choose", allowed_filetypes=".zip,application/zip")
     )
     company = Tag_List_Field(

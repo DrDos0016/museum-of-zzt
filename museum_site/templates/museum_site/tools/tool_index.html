@@ -96,27 +96,27 @@ $(document).ready(function (){
             </tr>
             <tr>
                 <td>Upload ID</td>
-                <td><a href="/admin/museum_site/upload/{{upload_info.id}}/change/">{{upload_info.id}}</a></td>
+                <td><a href="/admin/museum_site/upload/{{file.upload.id}}/change/">{{file.upload.id}}</a></td>
             </tr>
             <tr>
                 <td>User</td>
-                <td>{% if upload_info.user_id %}<a href="{{upload_info.user.profile.link}}">{{upload_info.user.username}}</a>{% else %}<i>Unregistered Guest</i> {% endif %}</td>
+                <td>{{file.upload.author_link}}</td>
             </tr>
             <tr>
                 <td>Date</td>
-                <td>{{upload_info.date}}</td>
+                <td>{{file.upload.date}}</td>
             </tr>
             <tr>
                 <td>Edit Token</td>
-                <td><a href="/upload?token={{upload_info.edit_token}}">{{upload_info.edit_token}}</a></td>
+                <td><a href="/upload?token={{file.upload.edit_token}}">{{file.upload.edit_token}}</a></td>
             </tr>
             <tr>
                 <td>IP</td>
-                <td>{{upload_info.ip}}</td>
+                <td>{{file.upload.ip}}</td>
             </tr>
             <tr>
                 <td>Notes</td>
-                <td>{% if upload_info.notes %}<textarea id="upload-notes">{{upload_info.notes}}</textarea>{% else %}<i>None</i>{% endif %}</td>
+                <td>{% if file.upload.notes %}<textarea id="upload-notes">{{file.upload.notes}}</textarea>{% else %}<i>None</i>{% endif %}</td>
             </tr>
         </table>
 
@@ -194,11 +194,6 @@ $(document).ready(function (){
                 <td class="c">-</td>
             </tr>
             <tr>
-                <td>Upload Date</td>
-                <td>{{file.upload_date}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
                 <td>Publish Date</td>
                 <td>{{file.publish_date}}</td>
                 <td class="c">-</td>
@@ -246,11 +241,6 @@ $(document).ready(function (){
             <tr>
                 <td>Archive.org Name</td>
                 <td>{{file.archive_name}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Uploader IP</td>
-                <td>{{file.uploader_ip|default:"-"}}</td>
                 <td class="c">-</td>
             </tr>
             <tr>

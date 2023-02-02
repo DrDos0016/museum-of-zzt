@@ -58,31 +58,29 @@
 </table>
 {% endwith %}
 
-
-{% if upload_info %}
 <h2 id="heading-upload">File Upload Info</h2>
 <table class="data-table" id="tool-info">
     <tr>
         <th>Upload ID</th>
-        <td>{{upload_info.id}}</a></td>
+        <td>{{file.upload.pk}}</a></td>
     </tr>
     <tr>
         <th>User</th>
-        <td>{% if upload_info.user_id %}Registered User{% else %}Unregistered Guest{% endif %}</td>
+        <td>{% if file.upload.user_id %}Registered User{% else %}Unregistered Guest{% endif %}</td>
     </tr>
     <tr>
         <th>Date</th>
-        <td>{{upload_info.date}}</td>
+        <td>{{file.upload.date}}</td>
     </tr>
     {% if request.user.is_staff %}
     <tr><th colspan="2" style="background:red">Staff Only Information</th></tr>
-    <tr><th>Edit Token</th><td>{{upload_info.edit_token}}</td></tr>
-    <tr><th>IP</th><td>{{upload_info.ip}}</td></tr>
-    <tr><th>Notes</th><td><textarea class="upload-notes">{{upload_info.notes}}</textarea></td></tr>
-    <tr><th>Announced on Discord</th><td>{{upload_info.announced|yesno|title}}</td></tr>
+    <tr><th>User</th><td>{{file.upload.author_link}}</td></tr>
+    <tr><th>Edit Token</th><td>{{file.upload.edit_token}}</td></tr>
+    <tr><th>IP</th><td>{{file.upload.ip}}</td></tr>
+    <tr><th>Notes</th><td><textarea class="upload-notes">{{file.upload.notes}}</textarea></td></tr>
+    <tr><th>Announced on Discord</th><td>{{file.upload.announced|yesno|title}}</td></tr>
     {% endif %}
 </table>
-{% endif %}
 
 <h2 id="heading-aliases">File Aliases</h2>
 <ul class="data-table">

@@ -86,13 +86,6 @@
 </table>
 
 <table>
-    <tr><th colspan="2">Orphaned Uploads (no Zfile assocs.)</th></tr>
-    {% for i in uploads %}
-    <tr><td>{{i}}</td><td><a href="{{i.admin_url}}" target="_blank">Admin</a></td></tr>
-    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
-</table>
-
-<table>
     <tr><th colspan="2">Orphaned Zeta Configs (no Zfile assocs.)</th></tr>
     {% for i in zeta_configs %}
     <tr><td>{{i}}</td><td><a href="{{i.admin_url}}" target="_blank">Admin</a></td></tr>

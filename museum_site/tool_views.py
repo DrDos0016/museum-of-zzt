@@ -131,8 +131,7 @@ def empty_upload_queue(request):
         queue = File.objects.unpublished()
         message = ""
         for zfile in queue:
-            upload = Upload.objects.filter(file_id=zfile.pk).first()
-            status = zfile.remove_uploaded_zfile(upload)
+            status = zfile.remove_uploaded_zfile()
             message += status + "\n----------------------------------------\n"
         data["message"] = message
 
@@ -373,7 +372,6 @@ def orphaned_objects(request):
         "downloads": [],
         "genres": [],
         "reviews": [],
-        "uploads": [],
         "zeta_configs": [],
     }
 
@@ -416,11 +414,6 @@ def orphaned_objects(request):
     for i in qs:
         if i.zfile is None:
             data["reviews"].append(i)
-
-    qs = Upload.objects.all().order_by("-id")
-    for i in qs:
-        if i.file is None:
-            data["uploads"].append(i)
 
     qs = Zeta_Config.objects.all().order_by("-id")
     for i in qs:
@@ -547,9 +540,8 @@ def publish(request, key, mode="PUBLISH"):
                 dl.save()
 
         # Increment publish count for users
-        upload = Upload.objects.get(file__id=data["file"].id)
-        if upload.user_id:
-            profile = Profile.objects.get(pk=upload.user_id)
+        if data["file"].upload.user_id:
+            profile = Profile.objects.get(pk=data["file"].upload.user_id)
             profile.files_published += 1
             profile.save()
 
@@ -893,7 +885,6 @@ def tool_index(request, key=None):
         file_tool_list = sorted(file_tool_list, key=lambda s: s["text"])
         file_tool_list.insert(0, {"url": data["file"].admin_url(), "text": "Django Admin Page"})
 
-        data["upload_info"] = Upload.objects.get(file_id=data["file"])
         data["content_info"] = data["file"].content.all()
 
         # Simple validation tools
@@ -954,9 +945,7 @@ def set_screenshot(request, key):
     data["file_list"].sort()
 
     if request.POST.get("manual"):
-        upload_path = os.path.join(
-            STATIC_PATH, "images/screenshots/{}/".format(zfile.letter)
-        )
+        upload_path = os.path.join(STATIC_PATH, "images/screenshots/{}/".format(zfile.letter))
         file_path = place_uploaded_file(
             upload_path,
             request.FILES.get("uploaded_file"),

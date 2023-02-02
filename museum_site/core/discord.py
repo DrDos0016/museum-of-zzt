@@ -56,7 +56,7 @@ def discord_announce_review(review, env=None):
     return True
 
 
-def discord_announce_upload(upload, env=None):
+def discord_announce_upload(upload, zfile, env=None):
     if upload.announced:
         return False
 
@@ -76,8 +76,6 @@ def discord_announce_upload(upload, env=None):
         upload.save()
         return False
 
-    zfile = upload.file
-
     # Check that this isn't an immediate reupload
     if zfile.title == cache.get("DISCORD_LAST_ANNOUNCED_FILE_NAME", ""):
         record("# DISCORD ANNOUNCEMENT SUPPRESSED DUE TO BEING A REPEATED UPLOAD")
@@ -87,9 +85,7 @@ def discord_announce_upload(upload, env=None):
     else:
         cache.set("DISCORD_LAST_ANNOUNCED_FILE_NAME", zfile.title)
 
-    preview_url = HOST + "static/" + urllib.parse.quote(
-         zfile.preview_url()
-    )
+    preview_url = HOST + "static/" + urllib.parse.quote(zfile.preview_url())
 
     if zfile.release_date:
         year = " ({})".format(str(zfile.release_date)[:4])
@@ -99,21 +95,10 @@ def discord_announce_upload(upload, env=None):
         "*A new item has been uploaded to the Museum queue!*\n"
         "**{}** by {}{}\n"
         "Explore: https://museumofzzt.com{}\n"
-    ).format(
-        zfile.title, ", ".join(zfile.related_list("authors")),
-        year,
-        urllib.parse.quote(zfile.view_url())
-    )
+    ).format(zfile.title, ", ".join(zfile.related_list("authors")), year, urllib.parse.quote(zfile.view_url()))
 
-    discord_data = {
-        "content": discord_post,
-        "embeds": [{"image": {"url": preview_url}}]
-    }
-    resp = requests.post(
-        NEW_UPLOAD_WEBHOOK_URL,
-        headers={"Content-Type": "application/json"},
-        data=json.dumps(discord_data)
-    )
+    discord_data = {"content": discord_post, "embeds": [{"image": {"url": preview_url}}] }
+    resp = requests.post(NEW_UPLOAD_WEBHOOK_URL, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
 
     upload.announced = True
     upload.save()

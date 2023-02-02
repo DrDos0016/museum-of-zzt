@@ -26,7 +26,7 @@ def main():
     end_date = year + "-12-31 23:59:59Z"
     # Total uploads
     total = 0
-    qs = Upload.objects.filter(date__gte=start_date, date__lte=end_date).exclude(file_id=None)
+    qs = Upload.objects.filter(date__gte=start_date, date__lte=end_date)
     total = len(qs)
     print("TOTAL UPLOADS", total)
 

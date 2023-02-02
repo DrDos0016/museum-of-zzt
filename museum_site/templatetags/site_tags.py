@@ -154,10 +154,8 @@ def guide_words(*args, **kwargs):
                 else:
                     link_text[x] = "-Unknown Publication Date-"
             elif "uploaded" in sort:
-                if items[x].upload_set.first().date:
-                    link_text[x] = items[x].upload_set.first().date.strftime(
-                        "%b %d, %Y"
-                    )
+                if items[x].upload and items[x].upload.date:
+                    link_text[x] = items[x].upload.date.strftime("%b %d, %Y")
                 else:
                     link_text[x] = "-Unknown Upload Date-"
             elif "id" in sort:

@@ -157,6 +157,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     details = models.ManyToManyField("Detail", default=None, blank=True)
     downloads = models.ManyToManyField("Download", default=None, blank=True)
     genres = models.ManyToManyField("Genre", default=None, blank=True)
+    upload = models.ForeignKey("Upload", null=True, blank=True, on_delete=models.SET_NULL)
     zeta_config = models.ForeignKey("Zeta_Config", null=True, blank=True, default=1, on_delete=models.SET_NULL)
 
     class Meta:
@@ -485,7 +486,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
-    def remove_uploaded_zfile(self, upload):
+    def remove_uploaded_zfile(self):
         message = "Removing ZFile: "
         message += str(self) + "\n"
 
@@ -496,8 +497,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             message += "Removed physical file\n"
 
         # Remove the Upload object
-        if upload is not None:
-            upload.delete()
+        if self.upload:
+            self.upload.delete()
             message += "Removed Upload object\n"
         else:
             message += "No Upload object detected.\n"

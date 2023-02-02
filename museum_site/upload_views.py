@@ -33,6 +33,7 @@ def upload(request):
         data["submit_text"] = "Edit Upload"
 
     if not UPLOADS_ENABLED:
+        # TODO This should be nicer for such an extreme scenario
         return redirect("/")
 
     if banned_ip(request.META["REMOTE_ADDR"]):
@@ -46,8 +47,8 @@ def upload(request):
     edit_token = (request.GET.get("token", "") + request.POST.get("edit_token", ""))[-16:]  # Galaxy brain
 
     if edit_token:
-        upload_obj = Upload.objects.get(edit_token=edit_token)
-        zgame_obj = upload_obj.file
+        zgame_obj = File.objects.get(upload__edit_token=edit_token)
+        upload_obj = zgame_obj.upload
         download_obj = zgame_obj.downloads.exclude(kind="zgames").first()
 
     if request.method == "POST":  # User Submitted
@@ -97,19 +98,13 @@ def upload(request):
 
         for f in file_list:
             if f.filename.upper().endswith(".ZZT"):
-                upload_form.fields["generate_preview_image"].choices = (
-                    upload_form.fields["generate_preview_image"].choices +
-                    [(f.filename, f.filename)]
-                )
+                upload_form.fields["generate_preview_image"].choices = upload_form.fields["generate_preview_image"].choices + [(f.filename, f.filename)]
 
     if request.method == "POST":
         # Patch in the specified filename to use for preview images as valid
         gpi = request.POST.get("generate_preview_image")
         if gpi and gpi not in ("AUTO", "NONE"):
-            upload_form.fields["generate_preview_image"].choices = (
-                upload_form.fields["generate_preview_image"].choices +
-                [(gpi, gpi)]
-            )
+            upload_form.fields["generate_preview_image"].choices = (upload_form.fields["generate_preview_image"].choices + [(gpi, gpi)])
 
         # Set the maximum upload size properly
         zgame_form.max_upload_size = get_max_upload_size(request)
@@ -145,7 +140,6 @@ def upload(request):
             # Check if editing caused a letter change
             original_letter = zfile.letter
             set_letter = get_letter_from_title(zfile.title)
-            print("Letter?", original_letter, set_letter)
             letter_change = True if original_letter != set_letter else False
 
             if request.FILES.get("zfile"):  # Only set if there's a zip
@@ -196,16 +190,15 @@ def upload(request):
 
             zfile.language = "/".join(zgame_form.cleaned_data["language"])
 
-
             # Create and prepare new Upload object
             upload = upload_form.save(commit=False)
-            upload.file_id = zfile.id
             upload.generate_edit_token(force=False)
             upload.ip = request.META.get("REMOTE_ADDR")
             if request.user.is_authenticated:
                 upload.user_id = request.user.id
-            upload.file_id = zfile.id
             upload.save()
+            # Associate Upload with ZFile
+            zfile.upload_id = upload.pk
 
             # Play Form
             zeta_config_id = int(play_form.cleaned_data["zeta_config"])
@@ -253,7 +246,7 @@ def upload(request):
                 zfile.screenshot = ""
 
             # Make Announcement (if needed)
-            discord_announce_upload(upload)
+            discord_announce_upload(upload, zfile)
 
             # Final save
             zfile.basic_save()
@@ -283,8 +276,8 @@ def upload(request):
 def upload_complete(request, token):
     data = {"title": "Upload Complete"}
 
-    data["upload"] = Upload.objects.get(edit_token=token)
-    data["file"] = File.objects.get(pk=data["upload"].file.id)
+    data["file"] = File.objects.get(upload__edit_token=token)
+    data["upload"] = data["file"].upload
 
     # Generate Content object
     Content.generate_content_object(data["file"])
@@ -312,7 +305,7 @@ class Upload_Action_View(ListView):
         context["form"] = Upload_Action_Form(initial={"action": action})
 
         if self.request.user.is_authenticated:
-            context["my_uploads"] = Upload.objects.unpublished_user_uploads(self.request.user.id)
+            context["my_uploads"] = File.objects.unpublished_user_uploads(self.request.user.id)
 
         return context
 
@@ -339,7 +332,7 @@ class Upload_Delete_Confirmation_View(FormView):
         context = super().get_context_data(**kwargs)
 
         if self.upload:
-            context["selected_file"] = self.upload.file
+            context["selected_file"] = File.objects.get(upload_id=self.upload.pk)
 
         if self.request.GET.get("success"):
             context["heading"] = "Upload Deleted Successfully"
@@ -348,5 +341,6 @@ class Upload_Delete_Confirmation_View(FormView):
         return context
 
     def form_valid(self, form):
-        self.upload.file.remove_uploaded_zfile(self.upload)
+        zfile = File.objects.get(upload_id=self.upload.pk)
+        zfile.remove_uploaded_zfile()
         return super().form_valid(form)

@@ -159,9 +159,6 @@ class ZFile_List_View(Model_List_View):
         elif self.value and self.field == "language":
             qs = qs.filter(language__icontains=self.value)
 
-        # Pull in upload info
-        qs = qs.prefetch_related("upload_set").distinct()
-
         qs = self.sort_queryset(qs)
         return qs
 

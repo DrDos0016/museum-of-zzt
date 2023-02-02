@@ -16,7 +16,6 @@ from museum_site.models import *
 def file_attributes(request, key):
     data = {}
     data["file"] = get_object_or_404(File, key=key)
-    data["upload_info"] = Upload.objects.get(file_id=data["file"])
     data["reviews"] = Review.objects.for_zfile(data["file"].pk).defer("content")
     data["title"] = data["file"].title + " - Attributes"
     return render(request, "museum_site/attributes.html", data)
@@ -69,14 +68,10 @@ def file_viewer(request, key, local=False):
             letter = "uploaded"
             data["uploaded"] = True
 
-        zip_file = zipfile.ZipFile(
-            data["file"].phys_path()
-        )
+        zip_file = zipfile.ZipFile(data["file"].phys_path())
         files = zip_file.namelist()
         files.sort(key=str.lower)
-        data["zip_info"] = sorted(
-            zip_file.infolist(), key=lambda k: k.filename.lower()
-        )
+        data["zip_info"] = sorted(zip_file.infolist(), key=lambda k: k.filename.lower())
         data["zip_comment"] = zip_file.comment.decode("latin-1")
         # TODO: "latin-1" may or may not actually be the case
 
@@ -84,9 +79,7 @@ def file_viewer(request, key, local=False):
         for f in files:
             if (f and f[-1] != os.sep and not f.startswith("__MACOSX" + os.sep) and not f.upper().endswith(".DS_STORE")):
                 data["files"].append(f)
-        data["load_file"] = urllib.parse.unquote(
-            request.GET.get("file", "")
-        )
+        data["load_file"] = urllib.parse.unquote(request.GET.get("file", ""))
         data["load_board"] = request.GET.get("board", "")
     else:  # Local files
         data["file"] = "Local File Viewer"
