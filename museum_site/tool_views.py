@@ -260,7 +260,7 @@ def manage_cache(request):
 
     # Refresh
     if request.GET.get("refresh"):
-        # TODO: This will need to live elsewhere should the cache keys grow
+        # This will need to live elsewhere should the cache keys grow
         refresh = request.GET["refresh"]
         if refresh == "UPLOAD_QUEUE_SIZE":
             cache.set(refresh, File.objects.unpublished().count())

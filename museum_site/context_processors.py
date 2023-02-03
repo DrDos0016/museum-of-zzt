@@ -2,13 +2,21 @@ from datetime import datetime
 
 from django.core.cache import cache
 
-from museum_site.models.file import File
 from museum_site.constants import TERMS_DATE, DEBUG, CSS_INCLUDES, BOOT_TS, EMAIL_ADDRESS
+from museum_site.core.detail_identifiers import *
 from museum_site.common import env_from_host, qs_sans
+from museum_site.models.file import File
 
 
 def museum_global(request):
     data = {}
+
+    # Not the full list, just what's currently needed
+    data["DETAIL"] = {
+        "LOST": DETAIL_LOST,  # file-review.html
+        "UPLOADED": DETAIL_UPLOADED,  # file-review.html
+        "WEAVE": DETAIL_WEAVE,  # file.html
+    }
 
     # Debug mode
     if DEBUG or request.GET.get("DEBUG") or request.session.get("DEBUG"):

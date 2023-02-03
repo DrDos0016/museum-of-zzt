@@ -369,7 +369,7 @@ def cl_info(context, pk=None, engine=None, emulator=None):
     if zfile is None:
         zfile = File()
         zfile.id = -1
-        zfile.title = "UNKNOWN ZFILE TODO"
+        zfile.title = "UNKNOWN ZFILE TODO"  # Expected TODO usage.
         links = []
     else:
         return model_block(context, zfile, "cl_info", engine=engine, emulator=emulator)
