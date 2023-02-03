@@ -84,8 +84,8 @@ $(document).ready(function (){
 | <a href="?category=tuesday">Title Screen Tuesday</a>
 {% if request.user.is_staff %}
 | <a href="?category=discord">Discord Queue</a>
-| <a href="?category=failed">Failed Tweets</a></p>
-| <a href="?category=farewell">Twitter Farewell</a></p>
+| <a href="?category=failed">Failed Tweets</a>
+| <a href="?category=farewell">Twitter Farewell</a>
 {% endif %}
 <p>Current Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
 

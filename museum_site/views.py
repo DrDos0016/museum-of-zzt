@@ -302,7 +302,7 @@ def worlds_of_zzt_queue(request):
     data["queue_size"] = len(data["queue"])
 
     size = 16
-    if (request.user.is_authenticated and request.user.profile.patron) or request.user.is_staff:
+    if (request.user.is_authenticated and request.user.profile.patron) or request.user.is_staff or category == "farewell":
         size = 999
     data["queue"] = data["queue"][:size]
     return render(request, "museum_site/wozzt-queue.html", data)
