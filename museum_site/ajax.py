@@ -99,7 +99,6 @@ def debug_file(request):
         return HttpResponse("No file provided.")
 
 
-
 def get_suggestions_for_field(request, field):
     """ Used on file upload page """
     output = {"suggestions": []}

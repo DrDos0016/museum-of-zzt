@@ -21,6 +21,7 @@ class Museum_Site_Config(AppConfig):
     def ready(self):
         from museum_site.models import File
         from museum_site.signals import article_post_save
+        from museum_site.core.character_sets import init_charsets
 
         now = datetime.utcnow()
         site_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -59,5 +60,13 @@ class Museum_Site_Config(AppConfig):
         for (k, v) in INITIAL_CACHE.items():
             cache.set(k, v)
             print("{:<25}: {}".format(k, v))
+
+        # Initialize character sets
+        print("--------------- Initializing Character Sets ----------------")
+        (standard_charsets, custom_charsets) = init_charsets(site_root=site_root)
+        print("{} standard character sets found".format(len(standard_charsets)))
+        print("{} custom character sets found".format(len(custom_charsets)))
+        cache.set("CHARSETS", standard_charsets)
+        cache.set("CUSTOM_CHARSETS", custom_charsets)
 
         print("==================== Startup Complete ======================")

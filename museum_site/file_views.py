@@ -2,6 +2,7 @@ import os
 import urllib.parse
 import zipfile
 
+from django.core.cache import cache
 from django.shortcuts import render, get_object_or_404
 
 from museum_site.common import *
@@ -59,7 +60,7 @@ def file_viewer(request, key, local=False):
         data["letter"] = data["file"].letter
 
         # Check for recommended custom charset
-        for charset in CUSTOM_CHARSETS:
+        for charset in cache.get("CUSTOM_CHARSETS", []):
             if data["file"].id == charset["id"]:
                 data["custom_charset"] = charset["filename"]
                 break
@@ -104,26 +105,26 @@ def file_viewer(request, key, local=False):
 
     if not data["local"]:
         if data["file"].is_detail(DETAIL_ZZT):
-            for charset in CHARSETS:
+            for charset in cache.get("CHARSETS", []):
                 if charset["engine"] == "ZZT":
                     data["charsets"].append(charset)
-            for charset in CUSTOM_CHARSETS:
+            for charset in cache.get("CUSTOM_CHARSETS", []):
                 if charset["engine"] == "ZZT":
                     data["custom_charsets"].append(charset)
         elif data["file"].is_detail(DETAIL_SZZT):
-            for charset in CHARSETS:
+            for charset in cache.get("CHARSETS", []):
                 if charset["engine"] == "SZZT":
                     data["charsets"].append(charset)
-            for charset in CUSTOM_CHARSETS:
+            for charset in cache.get("CUSTOM_CHARSETS", []):
                 if charset["engine"] == "SZZT":
                     data["custom_charsets"].append(charset)
         else:
-            data["charsets"] = CHARSETS
-            data["custom_charsets"] = CUSTOM_CHARSETS
-    # TODO LOCAL FILES CAN'T GET CHARSETS WITH THIS
+            data["charsets"] = cache.get("CHARSETS", [])
+            data["custom_charsets"] = cache.get("CUSTOM_CHARSETS", [])
+    # TODO LOCAL FILES SHOW ZZT AND SUPER ZZT CHARSETS
     else:
-        data["charsets"] = CHARSETS
-        data["custom_charsets"] = CUSTOM_CHARSETS
+        data["charsets"] = cache.get("CHARSETS", [])
+        data["custom_charsets"] = cache.get("CUSTOM_CHARSETS", [])
 
     return render(request, "museum_site/file.html", data)
 

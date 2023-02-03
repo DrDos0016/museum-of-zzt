@@ -11,6 +11,7 @@ import urllib.parse
 
 from PIL import Image
 
+
 def qs_sans(params, key):
     """ Returns a query string with a key removed """
     qs = params.copy()

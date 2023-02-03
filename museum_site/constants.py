@@ -137,55 +137,6 @@ FP = namedtuple(
     REVIEWS_SHOWN=10
 )
 
-# Character Sets
-CHARSETS = [
-    {
-        "id": 0,
-        "filename": "cp437.png",
-        "name": "Code Page 437",
-        "engine": "ZZT",
-    },
-    {
-        "id": 0,
-        "filename": "szzt-cp437.png",
-        "name": "Code Page 437 (SZZT)",
-        "engine": "SZZT",
-    }
-]
-CUSTOM_CHARSETS = []
-
-# Paths
-DATA_PATH = os.path.join(SITE_ROOT, "museum_site", "static", "data") + os.sep
-CHARSET_PATH = os.path.join(
-    SITE_ROOT, "museum_site", "static", "images", "charsets"
-) + os.sep
-
-pngs = sorted(glob.glob(
-    os.path.join(
-        SITE_ROOT, "museum_site", "static", "images", "charsets", "*.png"
-    )
-))
-for png in pngs:
-    filename = os.path.basename(png)
-    if filename.find("cp437") != -1:  # Skip non-custom fonts
-        continue
-
-    if filename.startswith("szzt"):
-        charset_id = int(filename.split("-")[1])
-    else:
-        charset_id = int(filename.split("-")[0])
-
-    name = filename.split("-")[-1][:-4]
-    engine = "ZZT" if "szzt" not in filename else "SZZT"
-    CUSTOM_CHARSETS.append({
-        "id": charset_id,
-        "filename": filename,
-        "name": name,
-        "engine": engine,
-    })
-
-CUSTOM_CHARSETS.sort(key=lambda charset: charset["name"].lower())
-
 exe_names = {
     "szzt.zip": "Super ZZT v2.0 (Registered)",
     "wozzt356.zip": "Worlds of ZZT v3.56",
