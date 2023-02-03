@@ -16,6 +16,7 @@ from museum_site.core.misc import calculate_sort_title, get_letter_from_title, c
 from museum_site.forms import *
 from museum_site.models import *
 from museum_site.private import NEW_UPLOAD_WEBHOOK_URL
+from museum_site.views import generic_template_page
 
 
 def upload(request):
@@ -33,11 +34,21 @@ def upload(request):
         data["submit_text"] = "Edit Upload"
 
     if not UPLOADS_ENABLED:
-        # TODO This should be nicer for such an extreme scenario
-        return redirect("/")
+        return generic_template_page(request, "Uploads Temporarily Disabled", "museum_site/error.html", context={
+            "msg": (
+                "<p>The Museum of ZZT is not currently accepting new uploads at this time. "
+                "This is likely due to technical issues. "
+                "For more information, please visit the Worlds of ZZT accounts on the social media pages linked in the right side bar.</p>"
+            )
+        })
 
     if banned_ip(request.META["REMOTE_ADDR"]):
-        return HttpResponse("Banned account.")
+        return generic_template_page(request, "Upload Ban", "museum_site/error.html", context={
+            "msg": (
+                "<p>You have been banned from uploading files. If you believe this has been in error, "
+                "contact <a href='mailto:doctordos@gmail.com'>Dr. Dos</a>.</p>"
+            )
+        })
 
     # Prepare the proper form
     edit_token = ""
