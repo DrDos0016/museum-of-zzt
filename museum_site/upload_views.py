@@ -62,9 +62,10 @@ def upload(request):
             "release_date": str(datetime.now())[:10]
         }
         if zgame_obj:
+            print(zgame_obj.language)
             zgame_initial = {
                 "explicit": int(zgame_obj.explicit),
-                "language": zgame_obj.language,
+                "language": zgame_obj.language.split("/"),
                 "release_date": str(zgame_obj.release_date),
                 "author": ",".join(zgame_obj.related_list("authors")),
                 "company": ",".join(zgame_obj.get_related_list("companies", "title")),
