@@ -85,6 +85,7 @@ $(document).ready(function (){
 {% if request.user.is_staff %}
 | <a href="?category=discord">Discord Queue</a>
 | <a href="?category=failed">Failed Tweets</a></p>
+| <a href="?category=farewell">Twitter Farewell</a></p>
 {% endif %}
 <p>Current Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
 
@@ -117,6 +118,7 @@ $(document).ready(function (){
         <option value="wozzt">Worlds of ZZT</option>
         <option value="tuesday"{% if request.GET.category == 'tuesday' %} selected{% endif %}>Title Screen Tuesday</option>
         <option value="discord"{% if request.GET.category == 'discord' %} selected{% endif %}>Discord Queue</option>
+        <option value="farewell"{% if request.GET.category == 'farewell' %} selected{% endif %}>Twitter Farewell</option>
     </select> |
     <input type="submit" value="Roll">
 </form>
