@@ -37,6 +37,13 @@ function add_item()
         "url": $("input[name=url]").val(),
     }
 
+    // Check something was selected to be added
+    if (! form_data["zfile_id"] && ! form_data["url"])
+    {
+        $("#added-item-text").html("No File Specified!");
+        return false;
+    }
+
     // Blank the fields
     var original_text = $("#collection-add-button").val();
     if ($("input[name=url]").val())
@@ -82,6 +89,13 @@ function remove_item()
         "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
         "zfile_id": $("input[name=removed_file]:checked").val(),
         "collection_id": $("input[name=collection_id]").val(),
+    }
+
+    // Check something was selected to be removed
+    if (! form_data["zfile_id"])
+    {
+        $("#removed-item-text").html("No File Specified!");
+        return false;
     }
 
     // Blank the fields
