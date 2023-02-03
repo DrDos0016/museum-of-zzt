@@ -514,7 +514,13 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         content = self.content.all()
         for c in content:
             c.delete()
-        message += "Remove Content object(s)\n"
+        message += "Removed Content object(s)\n"
+
+        # Remove the download objects
+        downloads = self.downloads.all()
+        for d in downloads:
+            d.delete()
+        message += "Removed Download objects(s)\n"
 
         # Remove the file object
         self.delete()
