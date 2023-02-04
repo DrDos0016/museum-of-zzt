@@ -1,4 +1,5 @@
 import pprint
+import time
 
 import urllib.parse
 
@@ -526,14 +527,10 @@ class Spoiler(template.Node):
 
 @register.simple_tag(takes_context=True)
 def model_block(context, item, view="detailed", template_view=None, *args, **kwargs):
-    if context["request"]:
-        item.init_model_block_context(view, request=context["request"])
-    else:
-        item.init_model_block_context(view, request=context["request"])
-    context = item.context
+    item.init_model_block_context(view, request=context["request"])
     if template_view is None:
         template_view = view
-    return render_to_string("museum_site/subtemplate/model-block-{}.html".format(template_view.replace("_", "-")), context)
+    return render_to_string("museum_site/subtemplate/model-block-{}.html".format(template_view.replace("_", "-")), item.context)
 
 
 @register.simple_tag(takes_context=True)

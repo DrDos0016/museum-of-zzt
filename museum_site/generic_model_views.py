@@ -102,7 +102,7 @@ class ZFile_List_View(Model_List_View):
         super().setup(request, *args, **kwargs)
         self.letter = self.kwargs.get("letter")
         self.search_type = None
-        self.genre_slug = self.kwargs.get("genre_slug") # TODO IS THIS NEEDED
+        self.genre_slug = self.kwargs.get("genre_slug")  # TODO IS THIS NEEDED
         self.field = self.kwargs.get("field")
         self.value = self.kwargs.get("value")
         self.author = None
@@ -578,7 +578,7 @@ class Article_Categories_List_View(Model_List_View):
             i.set_initial_attributes(
                 {
                     "title": cats[key].category,
-                    "preview": {"url":"/pages/article-categories/{}.png".format(key), "alt":cats[key].title},
+                    "preview": {"url": "/pages/article-categories/{}.png".format(key), "alt": cats[key].title},
                     "article_count": counts[key],
                     "latest": {"url": cats[key].url(), "value": cats[key].title},
                     "description": CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>")

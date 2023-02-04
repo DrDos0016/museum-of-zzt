@@ -87,6 +87,7 @@ class BaseModel(models.Model):
     def init_model_block_context(self, view="detailed", request=None, *args, **kwargs):
         """ Entry point for 2023 Model Blocks """
         self.request = request
+        self.context = {}
         if request:
             self.show_staff = request.user.is_staff
         for init_func in self.to_init:  # Initialize the object
