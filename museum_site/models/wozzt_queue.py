@@ -36,6 +36,7 @@ class WoZZT_Queue(BaseModel):
     objects = WoZZT_Queue_Queryset.as_manager()
     model_name = "WoZZT-Queue"
     table_fields = ["Date", "Time", "Tweet", "Link"]
+    media_url = ""  # Used for Discord webhook
 
     file = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
     zzt_file = models.CharField(max_length=80)
@@ -207,7 +208,7 @@ class WoZZT_Queue(BaseModel):
         resp = client.create_photo("worldsofzzt", state="published", tags=tags, caption=self.render_text("tumblr"), data=self.image_path())
         return resp
 
-    def send_tweet(self, tweet_related=True, discord_hook=True):
+    def send_tweet(self, tweet_related=True):
         try_shorter = False  # Try a shorter variant if this one is too long
         # Tweet the image
         with open(self.image_path(), "rb") as imagefile:
@@ -244,12 +245,6 @@ class WoZZT_Queue(BaseModel):
             if related_count:
                 article_text = (f"More information on \"{self.file.title}\" is available here: https://museumofzzt.com{self.file.article_url()}")
                 resp = t.statuses.update(status=article_text, in_reply_to_status_id=twitter_id)
-
-        if discord_hook and twitter_id:
-            discord_data = {"content": self.render_text("discord"), "embeds": [{"image": {"url": twitter_img}}]}
-            resp = requests.post(WEBHOOK_URL, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
-            record(resp)
-            record(resp.content)
         return True
 
     def send_mastodon(self):
@@ -260,11 +255,23 @@ class WoZZT_Queue(BaseModel):
         # Upload the image
         media_resp = mastodon.media_post(media_file=self.image_path())
         if media_resp.get("id"):
+            self.media_url = media_resp.get("url", "")
             toot_resp = mastodon.status_post(status=self.render_text("mastodon"), media_ids=[media_resp["id"]])
         else:
             return media_resp
 
         return toot_resp
+
+    def send_discord(self):
+        """ Requires an image url to attach. Cron uses Mastodon image. """
+        if not self.media_url:
+            record("Cannot send to Discord without setting self.media_url")
+            return False
+        discord_data = {"content": self.render_text("discord"), "embeds": [{"image": {"url": self.media_url}}]}
+        resp = requests.post(WEBHOOK_URL, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
+        record(resp)
+        record(resp.content)
+        return True
 
     def delete_image(self):
         try:
