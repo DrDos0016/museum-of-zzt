@@ -43,7 +43,6 @@ class Article(BaseModel):
 
     SCHEMAS = (
         ("text", "Plaintext"),
-        ("md", "Markdown"),  # TODO NOT WORKING 2022 (but also not used)
         ("html", "HTML"),
         ("django", "Django"),
         ("80col", "80 Column Text"),
