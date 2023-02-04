@@ -102,7 +102,6 @@ class ZFile_List_View(Model_List_View):
         super().setup(request, *args, **kwargs)
         self.letter = self.kwargs.get("letter")
         self.search_type = None
-        self.genre_slug = self.kwargs.get("genre_slug")  # TODO IS THIS NEEDED
         self.field = self.kwargs.get("field")
         self.value = self.kwargs.get("value")
         self.author = None
@@ -127,9 +126,6 @@ class ZFile_List_View(Model_List_View):
 
         if self.letter:
             qs = qs.filter(letter=self.letter)
-        elif self.genre_slug:
-            self.genre = Genre.objects.get(slug=self.genre_slug)
-            qs = qs.filter(genres=self.genre)
         elif self.request.path == "/file/browse/new-finds/":
             qs = File.objects.new_finds()
         elif self.request.path == "/file/browse/new-releases/":
