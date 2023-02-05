@@ -928,6 +928,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         """ Context to display object for a Closer Look subject (cl_info templatetag) """
         context = self.context_universal()
         context["title"] = self.get_field_view(view="cl_info")
+        context["engine"] = self.cl_info["engine"]
+        context["emulator"] = self.cl_info["emulator"]
 
         fields = ["authors", "companies", "zfile_date"]
         context["fields"] = []

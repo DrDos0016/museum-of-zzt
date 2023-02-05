@@ -53,12 +53,6 @@ def zfill_filter(raw, length):
     return output
 
 
-@register.filter
-def url_parse(raw):
-    output = urllib.parse.quote(raw)
-    return output
-
-
 @register.simple_tag()
 def content_warning(*args, **kwargs):
     output = """
@@ -365,15 +359,15 @@ def zfl(key, text="", qs="", target="_blank", i=True, *args, **kwargs):
 
 
 @register.simple_tag(takes_context=True)
-def cl_info(context, pk=None, engine=None, emulator=None):
+def cl_info(context, pk=None, engine="", emulator=""):
     zfile = File.objects.filter(pk=pk).first()
     if zfile is None:
         zfile = File()
         zfile.id = -1
         zfile.title = "UNKNOWN ZFILE TODO"  # Expected TODO usage.
-        links = []
-    else:
-        return model_block(context, zfile, "cl_info", engine=engine, emulator=emulator)
+
+    zfile.cl_info = {"engine": engine, "emulator": emulator}
+    return model_block(context, zfile, "cl_info", engine=engine, emulator=emulator)
 
 
 @register.tag(name="commentary")
