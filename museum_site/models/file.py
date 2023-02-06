@@ -38,6 +38,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     to_init = ["detail_ids", "icons", "actions", "extras"]
     table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
     cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
+    guide_word_values = {"id": "pk", "title": "title", "author": "author", "company": "company", "rating": "rating", "release": "release_date", "publish_date": "publish_date", "uploaded": "upload_date"}
 
     # Uninitizalized shared attributes
     actions = None
@@ -944,6 +945,25 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         actions.append(self.get_field_view(view="detailed"))
         context["actions"] = actions
         return context
+
+    # Guide Word Functions
+    def get_guideword_author(self):
+        output = []
+        for author in self.authors.all():
+            output.append(author.title)
+        return ", ".join(output)
+
+    def get_guideword_company(self):
+        output = []
+        for author in self.companies.all():
+            output.append(author.title)
+        return ", ".join(output)
+
+    def get_guideword_rating(self): return self.rating_str()
+
+    def get_guideword_release_date(self): return self.release_date.strftime("%b %d, %Y")
+    def get_guideword_publish_date(self): return self.publish_date.strftime("%b %d, %Y")
+    def get_guideword_upload_date(self): return self.upload.date.strftime("%b %d, %Y")
 
 
 class ZFile_Admin(admin.ModelAdmin):

@@ -548,3 +548,18 @@ def queryset_to_model_blocks(context, items, view="detailed", auto_wrap=True, *a
             output += "</div>\n"
 
     return mark_safe(output + "\n")
+
+@register.simple_tag()
+
+def new_guide_words(qs, *args, **kwargs):
+    sort = kwargs.get("sort")
+    location = kwargs.get("location")
+
+    output = """<div class="guide-words">
+        <span><a class="left" href="#{}">{}</a></span>
+        <span><a class="right" href="#{}">{}</a></span>
+    </div>"""
+
+    (first_key, first_value) = qs.first().guide_words(sort)
+    (last_key, last_value) = qs.last().guide_words(sort)
+    return mark_safe(output.format(first_key, first_value, last_key, last_value) + "\n")

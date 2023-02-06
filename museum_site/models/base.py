@@ -20,10 +20,18 @@ class BaseModel(models.Model):
     roles = []
     request = None
     show_staff = False
+    guide_word_values = {}
+
+    class Meta:
+        abstract = True
 
     def admin_url(self):
         name = self.model_name.replace("-", "_").lower()
         return "/admin/museum_site/{}/{}/change/".format(name, self.id)
+
+    @property
+    def model_key(self):
+        return self.key if hasattr(self, "key") else self.pk
 
     def _init_actions(self): self.actions = {}
     def _init_detail_ids(self): self.detail_ids = []
@@ -118,7 +126,7 @@ class BaseModel(models.Model):
         context = {
             "model": self.model_name,
             "pk": self.pk,
-            "model_key": self.key if hasattr(self, "key") else self.pk,
+            "model_key": self.model_key,
             "url": self.url(),
             "roles": self.roles,
             "preview": {
@@ -147,5 +155,11 @@ class BaseModel(models.Model):
             return icons + "</div>"
         return ""
 
-    class Meta:
-        abstract = True
+    def guide_words(self, sort):
+        sort = sort.replace("-", "")  # Strip reverse sign
+        attr = self.guide_word_values.get(sort, "title")
+        value = getattr(self, "get_guideword_{}".format(attr))()
+        return (self.model_key, value)
+
+    def get_guideword_pk(self): return self.pk
+    def get_guideword_title(self): return self.title
