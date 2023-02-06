@@ -242,6 +242,8 @@ def upload(request):
                     except FileNotFoundError:
                         pass
                     screenshot_filename = zgame_obj.screenshot
+                else:
+                    screenshot_filename = upload_filename[:-4] + ".png"
             else:
                 screenshot_filename = upload_filename[:-4] + ".png"
             if gpi != "NONE":
