@@ -228,14 +228,10 @@ def upload(request):
                     screenshot_filename = zgame_obj.screenshot
                 elif zgame_obj.screenshot:  # Move existing screenshot to new letter
                     old_path = os.path.join(
-                        STATIC_PATH, "images/screenshots/{}/{}".format(
-                            original_letter, zgame_obj.screenshot
-                        )
+                        STATIC_PATH, "images/screenshots/{}/{}".format(original_letter, zgame_obj.screenshot)
                     )
                     new_path = os.path.join(
-                        STATIC_PATH, "images/screenshots/{}/{}".format(
-                            set_letter, zgame_obj.screenshot
-                        )
+                        STATIC_PATH, "images/screenshots/{}/{}".format(set_letter, zgame_obj.screenshot)
                     )
                     try:
                         os.rename(old_path, new_path)
@@ -248,9 +244,7 @@ def upload(request):
                 screenshot_filename = upload_filename[:-4] + ".png"
             if gpi != "NONE":
                 if gpi.upper().endswith(".ZZT"):
-                    zfile.generate_screenshot(
-                        world=gpi, filename=screenshot_filename
-                    )
+                    zfile.generate_screenshot(world=gpi, filename=screenshot_filename)
                 if gpi == "AUTO" and not zfile.screenshot:
                     zfile.generate_screenshot(filename=screenshot_filename)
             else:
