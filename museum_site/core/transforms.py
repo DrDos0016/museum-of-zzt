@@ -1,6 +1,6 @@
 from django.template.defaultfilters import escape
 
-def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False, allow_none=False):
+def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False, allow_none=False, qs_kwargs={}):
     """ Transform a queryset into a list suitable for Django's forms. """
     output = []
 
@@ -10,14 +10,13 @@ def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False, allow_no
     if allow_any:
         output.append(("any", "- ANY -"))
 
-    for i in qs:
-        output.append(
-            (str(val.format(i)).lower(), text.format(i))
-        )
+    for i in qs(**qs_kwargs):
+        output.append((str(val.format(i)).lower(), text.format(i)))
     return output
 
 
 def qs_to_categorized_select_choices(qs, text="{0}", val="{0.pk}", category_order=None):
+    # TODO: This queryset is pre-evaluated before calling this function
     output = []
 
     categories = {}

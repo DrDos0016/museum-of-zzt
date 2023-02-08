@@ -7,3 +7,6 @@ class Genre_Queryset(Base_Queryset):
 
     def visible(self):
         return self.filter(visible=True)
+
+    def advanced_search_query(self):
+        return self.filter(visible=True).only("pk", "title", "slug")

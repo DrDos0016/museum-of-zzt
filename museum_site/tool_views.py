@@ -780,6 +780,13 @@ def series_add(request):
     data["form"] = form
     return render(request, "museum_site/generic-form-display-output.html", data)
 
+@staff_member_required
+def share_publication_pack(request):
+    context = {"title": "Publication Pack - Share"}
+
+    context["form"] = Publication_Pack_Select_Form(request.POST if request.POST else None)
+    return render(request, "museum_site/generic-form-display-output.html", context)
+
 
 def stream_card(request):
     # Does not require staff for simplicity's sake. This page is harmless and

@@ -205,3 +205,6 @@ class ZFile_Queryset(Base_Queryset):
     def unpublished_user_uploads(self, user_id):
         """ Returns zfiles uploaded by user_id that have remain unpublished """
         return self.filter(upload__user_id=user_id, details=DETAIL_UPLOADED).order_by("-id")
+
+    def tool_zfile_select(self):
+        return self.all().only("id", "title", "key")

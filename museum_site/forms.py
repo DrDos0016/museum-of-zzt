@@ -58,8 +58,8 @@ class ZGameForm(forms.ModelForm):
         help_text=("Any companies this file is published under. If there are none, leave this field blank. If there are multiple, separate them with a comma."),
     )
     genre = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(choices=qs_to_select_choices(Genre.objects.filter(visible=True)), buttons=["Clear"], show_selected=True),
-        choices=qs_to_select_choices(Genre.objects.filter(visible=True)),
+        widget=Scrolling_Checklist_Widget(choices=qs_to_select_choices(Genre.objects.visible), buttons=["Clear"], show_selected=True),
+        choices=qs_to_select_choices(Genre.objects.filter, qs_kwargs={"visible": True}),
         required=False,
         help_text=(
             "Check any applicable genres that describe the content of the uploaded file. Use 'Other' if a genre isn't represented and mention it in the upload"
@@ -345,7 +345,7 @@ class Advanced_Search_Form(forms.Form):
     contents = forms.CharField(label="Zip file contents contains", help_text="Enter a filename to search for in the file's zip file", required=False)
     company = forms.CharField(label="Company contains", required=False)
     genre = forms.ChoiceField(
-        choices=qs_to_select_choices(Genre.objects.filter(visible=True).only("pk", "title", "slug"), allow_any=True, val="{0.title}"),
+        choices=qs_to_select_choices(Genre.objects.advanced_search_query, allow_any=True, val="{0.title}"),
         required=False,
     )
     board = Manual_Field(
@@ -1359,7 +1359,7 @@ class Tool_ZFile_Select_Form(forms.Form):
 
     key = forms.ChoiceField(
         label="ZFile",
-        choices=qs_to_select_choices(File.objects.all().only("id", "title", "key"), val="{0.key}"),
+        choices=qs_to_select_choices(File.objects.tool_zfile_select, val="{0.key}"),
     )
 
 
@@ -1401,7 +1401,7 @@ class Livestream_Vod_Form(forms.Form):
     preview_image = forms.FileField()
     crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
     publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
-    series = forms.ChoiceField(choices=qs_to_select_choices(Series.objects.filter(visible=True), allow_none=True))
+    series = forms.ChoiceField(choices=qs_to_select_choices(Series.objects.visible, allow_none=True))
     associated_zfile = forms.MultipleChoiceField(
         widget=Scrolling_Checklist_Widget(
             choices=associated_file_choices,
@@ -1552,3 +1552,11 @@ class Social_Media_Shotgun_Form(forms.Form):
         required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS,
         initial=["twitter", "tumblr", "mastodon"]
     )
+
+class Publication_Pack_Select_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Select Publication Pack"
+    submit_value = "Post"
+    attrs = {"method": "POST"}
+
+    pack = forms.ChoiceField(choices=qs_to_select_choices(Article.objects.publication_packs))

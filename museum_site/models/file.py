@@ -464,11 +464,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             output += '<a href="/file/browse/language/{}/">{}</a>, '.format(quote(i[1], safe=""), html.escape(i[0]))
         return output[:-2]
 
-    def title_datum_context(self):
-        # Returns a context for displaying the ZFile's title datum
-        context = {"datum": "title", "tag": "h1", "value": self.title, "icons": self.get_all_icons()}
-        return context
-
     def _init_icons(self):
         # Populates major and minor icons for file
         self._minor_icons = []

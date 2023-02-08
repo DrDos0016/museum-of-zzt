@@ -232,6 +232,7 @@ urlpatterns = [
     path("tools/patron-article-rotation/", museum_site.tool_views.patron_article_rotation, name="patron_article_rotation"),
     path("tools/patron-input/", museum_site.tool_views.patron_input, name="patron_input"),
     path("tools/prep-publication-pack/", museum_site.tool_views.prep_publication_pack, name="prep_publication_pack"),
+    path("tools/publication-pack/share/", museum_site.tool_views.share_publication_pack, name="share_publication_pack"),
     path("tools/publish/<str:key>/", museum_site.tool_views.publish, name="publish"),
     path("tools/review-approvals/", museum_site.tool_views.review_approvals, name="review_approvals"),
     path("tools/reletter/<str:key>/", museum_site.tool_views.reletter, name="reletter"),

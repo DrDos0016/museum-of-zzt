@@ -27,9 +27,7 @@ CSS_INCLUDES = ["museum-site.css", "main.css", "zzt.css", "low-res.css", "forms.
 
 # Private settings - (Patron Locked Content, IA API)
 try:
-    from museum_site.private import (
-        PASSWORD2DOLLARS, PASSWORD5DOLLARS, IA_ACCESS, IA_SECRET, BANNED_IPS
-    )
+    from museum_site.private import PASSWORD2DOLLARS, PASSWORD5DOLLARS, IA_ACCESS, IA_SECRET, BANNED_IPS
     IA_SUPPORT = True
 except ModuleNotFoundError:
     print("PRIVATE.PY NOT FOUND. USING DEV VALUES")
