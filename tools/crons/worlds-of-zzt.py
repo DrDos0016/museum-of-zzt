@@ -19,13 +19,16 @@ def main():
         entry = WoZZT_Queue.objects.filter(category="wozzt")
 
     entry = entry.order_by("-priority", "id")[0]
+
+    # Send everywhere
     entry.send_tumblr()
     entry.send_mastodon()
-    success = entry.send_tweet()
+    entry.send_discord()
+    #entry.send_tweet()
 
-    if success:
-        entry.delete_image()
-        entry.delete()
+    # Delete
+    entry.delete_image()
+    entry.delete()
     print("Done.")
 
 
