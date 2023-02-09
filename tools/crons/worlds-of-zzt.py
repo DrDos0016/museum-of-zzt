@@ -21,9 +21,17 @@ def main():
     entry = entry.order_by("-priority", "id")[0]
 
     # Send everywhere
-    entry.send_tumblr()
-    entry.send_mastodon()
-    entry.send_discord()
+    try:
+        entry.send_tumblr()
+    except:
+        None
+
+    try:
+        entry.send_mastodon()
+        entry.send_discord()
+    except:
+        None
+
     #entry.send_tweet()
 
     # Delete
