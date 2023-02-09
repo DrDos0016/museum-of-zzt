@@ -1556,7 +1556,28 @@ class Social_Media_Shotgun_Form(forms.Form):
 class Publication_Pack_Select_Form(forms.Form):
     use_required_attribute = False
     heading = "Select Publication Pack"
+    submit_value = "Select"
+    attrs = {"method": "POST"}
+
+    pack = forms.ChoiceField(choices=qs_to_select_choices(Article.objects.publication_packs))
+
+
+class Publication_Pack_Share_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Share Publication Pack"
     submit_value = "Post"
     attrs = {"method": "POST"}
 
     pack = forms.ChoiceField(choices=qs_to_select_choices(Article.objects.publication_packs))
+    article_start = forms.IntegerField(initial=0, widget=forms.HiddenInput())
+    idx = forms.IntegerField(label="Index", required=False, widget=forms.HiddenInput())
+    body = forms.CharField(
+        label="Description",
+        widget=forms.Textarea(),
+        help_text="Body of Post"
+    )
+    image1 = forms.URLField(label="Image 1", required=False)
+    image2 = forms.URLField(label="Image 2", required=False)
+    image3 = forms.URLField(label="Image 3", required=False)
+    image4 = forms.URLField(label="Image 4", required=False)
+    mastodon_id = forms.CharField(required=False)

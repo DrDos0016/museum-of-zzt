@@ -16,7 +16,7 @@ from django.core.cache import cache
 from django.db.models import Q
 from django.template.loader import render_to_string
 from django.shortcuts import render
-from django.template.defaultfilters import slugify
+from django.template.defaultfilters import slugify, striptags
 from django.urls import get_resolver
 
 from museum_site.common import *
@@ -780,12 +780,71 @@ def series_add(request):
     data["form"] = form
     return render(request, "museum_site/generic-form-display-output.html", data)
 
+
 @staff_member_required
 def share_publication_pack(request):
     context = {"title": "Publication Pack - Share"}
 
-    context["form"] = Publication_Pack_Select_Form(request.POST if request.POST else None)
-    return render(request, "museum_site/generic-form-display-output.html", context)
+    if not request.POST.get("pack"):
+        form = Publication_Pack_Select_Form()
+    else:
+        if request.POST.get("idx"):
+            idx = int(request.POST["idx"]) + 1
+            article_start = int(request.POST.get("article_start", 0))
+            print("POSTING IDX", idx)
+        else:
+            idx = 0
+            article_start = 0
+        pack_id = int(request.POST["pack"])
+        article = Article.objects.get(pk=pack_id)
+        all_matches = re.findall("{%.*model_block.*%}", article.content)
+        zfile_ids = []
+        for m in all_matches:
+            if "view=" in m:  # Use the gallery frame to get IDs
+                zfile_ids.append(re.sub(r"\D", "", m[:m.find("%}")]))  # Just the PK used in the template tag
+
+        article_content = article.content[article_start:]
+        entry_start = article_content.find('{% model_block file %}') + 24
+        entry_end = article_content[entry_start:].find("<hr>")
+        entry_scope = article_content[entry_start:entry_end + entry_start]
+
+        adding_text = True
+        zfile_description = ""
+        zfile_screenshots = []
+        for line in entry_scope.split("\n"):
+            if "image-set" in line:
+                adding_text = False
+
+            if adding_text:
+                zfile_description += line
+            if "screenshot-thumb" in line:
+                match = re.findall(r'{%.* static path\|add:".*"', line)[0]
+                match = match[match.find('"') + 1:]
+                match = match[:match.find('"')]
+                zfile_screenshots.append(match)
+
+        zfile_screenshots += ["", "", "", ""]  # Force length of at least 3
+
+        if idx < len(zfile_ids):
+            zfile = File.objects.get(pk=zfile_ids[idx])
+            body = zfile.citation_str() + "\n" + striptags(zfile_description)
+            screenshot_path_prefix = HOST + "static/" + article.path()
+            form = Publication_Pack_Share_Form(
+                initial={
+                    "pack": pack_id,
+                    "idx": idx,
+                    "body": body,
+                    "image1": HOST + "static/" + zfile.preview_url(),
+                    "image2": screenshot_path_prefix + zfile_screenshots[0],
+                    "image3": screenshot_path_prefix + zfile_screenshots[1],
+                    "image4": screenshot_path_prefix + zfile_screenshots[2],
+                    "article_start": entry_end + entry_start + int(request.POST.get("article_start", 0))
+                }
+            )
+        else:
+            return redirect("/tools/publication-pack/share")
+    context["form"] = form
+    return render(request, "museum_site/tools/share-publication-pack.html", context)
 
 
 def stream_card(request):
