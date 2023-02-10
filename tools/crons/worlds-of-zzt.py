@@ -32,7 +32,10 @@ def main():
     except:
         None
 
-    #entry.send_tweet()
+    try:
+        entry.send_tweet()
+    except:
+        None
 
     # Delete
     entry.delete_image()
