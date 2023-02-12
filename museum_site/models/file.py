@@ -825,8 +825,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return context
 
     def process_kwargs(self, kwargs):
-        if kwargs.get("poll_idx"):  # Add role for background color when displaying poll choices
-            self.context["roles"].append("poll-option-{}".format(kwargs["poll_idx"]))
         if kwargs.get("poll_data"):  # Add poll data to display
             self.context["poll_description"] = kwargs["poll_data"].summary
             self.context["poll_patron_nominated"] = kwargs["poll_data"].backer

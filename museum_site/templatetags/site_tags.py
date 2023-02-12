@@ -521,7 +521,7 @@ class Spoiler(template.Node):
 
 @register.simple_tag(takes_context=True)
 def model_block(context, item, view="detailed", template_view=None, *args, **kwargs):
-    item.init_model_block_context(view, request=context["request"])
+    item.init_model_block_context(view, request=context["request"], **kwargs)
     if template_view is None:
         template_view = view
     return render_to_string("museum_site/subtemplate/model-block-{}.html".format(template_view.replace("_", "-")), item.context)

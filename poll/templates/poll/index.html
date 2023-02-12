@@ -49,11 +49,11 @@ main .gallery-frame
 <p>Poll open from <b>{{display_poll.start_date}}</b> through <b>{{display_poll.end_date}}</b></p>
 
 <div class="gallery-frame poll-gallery">
-    {% model_block display_poll.option1.file view="poll" poll_idx=1 poll_data=display_poll.option1 %}
-    {% model_block display_poll.option2.file view="poll" poll_idx=2 poll_data=display_poll.option2 %}
-    {% model_block display_poll.option3.file view="poll" poll_idx=3 poll_data=display_poll.option3 %}
-    {% model_block display_poll.option4.file view="poll" poll_idx=4 poll_data=display_poll.option4 %}
-    {% model_block display_poll.option5.file view="poll" poll_idx=5 poll_data=display_poll.option5 %}
+    <span class="ega-darkblue-bg">{% model_block display_poll.option1.file view="poll" poll_data=display_poll.option1 %}</span>
+    <span class="ega-darkgreen-bg">{% model_block display_poll.option2.file view="poll" poll_data=display_poll.option2 %}</span>
+    <span class="ega-darkcyan-bg">{% model_block display_poll.option3.file view="poll" poll_data=display_poll.option3 %}</span>
+    <span class="ega-darkred-bg">{% model_block display_poll.option4.file view="poll" poll_data=display_poll.option4 %}</span>
+    <span class="ega-darkpurple-bg">{% model_block display_poll.option5.file view="poll" poll_data=display_poll.option5 %}</span>
 
     {% if display_poll.active and not results_mode %}
     <form method="POST" id="poll-form" class="cp437" action="/poll/results/{{display_poll.id}}/">
