@@ -6,11 +6,11 @@
         <h2>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h2>
     </div>
     <div class="model-block-data">
-        <div class="datum">
         {% for field in fields %}
+        <div class="datum">
             <div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
-        {% endfor %}
         </div>
+        {% endfor %}
     </div>
     {% block poll_data %}{% endblock %}
 </div>

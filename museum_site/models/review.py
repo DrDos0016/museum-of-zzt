@@ -178,8 +178,8 @@ class Review(BaseModel):
         context = self.context_universal()
         context["roles"] = ["model-block", "gallery"]
         context["fields"] = [
+            self.get_field("rating", view="gallery"),
             self.get_field("author", view="gallery"),
-            self.get_field("rating", view="gallery")
         ]
         return context
 
