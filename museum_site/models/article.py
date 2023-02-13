@@ -268,10 +268,13 @@ class Article(BaseModel):
         tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
         return tags
 
-    def get_field_view(self, view="detailed"):
+    def get_field_view(self, view="detailed", text_override=""):
         url = "/article/view/{}/{}/".format(self.pk, slugify(self.title))
-        texts = {"detailed": "View Contents", "list": self.title, "gallery": self.title, "title": self.title}
-        text = texts[view]
+        if text_override:
+            text = text_override
+        else:
+            texts = {"detailed": "View Contents", "list": self.title, "gallery": self.title, "title": self.title}
+            text = texts[view]
         return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), text), "safe": True}
 
     def get_field_authors(self, view="detailed"):
