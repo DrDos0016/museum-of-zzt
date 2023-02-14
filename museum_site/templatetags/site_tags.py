@@ -93,173 +93,6 @@ def content_warning(*args, **kwargs):
 
 
 @register.simple_tag()
-def guide_words(*args, **kwargs):
-    sort = kwargs.get("sort", "")
-    model = kwargs.get("model")
-    items = (kwargs.get("first_item", ""), kwargs.get("last_item", ""))
-    location = kwargs.get("location", "top")
-    link_text = ["???", "???"]
-
-    if items == ("", ""):
-        # Try a manually passed object list
-        if kwargs.get("object_list"):
-            first = kwargs["object_list"][0]
-            last = kwargs["object_list"][len(kwargs["object_list"]) - 1]
-            items = (first, last)
-
-    if sort is None:
-        sort = ""
-
-    output = ""
-
-    # Treat Collection Entries as their associated Files
-    if model == "Collection Entry":
-        model = "File"
-        if items[0] and items[1]:
-            items = (items[0].zfile, items[1].zfile)
-
-    if model == "File":
-        # Figure out link text
-        for x in range(0, len(link_text)):
-            if items[x] == "":
-                continue
-            if sort == "author":
-                if items[x].authors.count():
-                    link_text[x] = ", ".join(items[x].related_list("authors"))
-                else:
-                    link_text[x] = "-Unknown Author-"  # This shouldn't appear
-            elif sort == "company":
-                if items[x].companies.count():
-                    link_text[x] = items[x].get_all_company_names()
-                else:
-                    link_text[x] = "-No company-"
-            elif sort == "rating":
-                if items[x].rating:
-                    link_text[x] = items[x].rating
-                else:
-                    link_text[x] = "-No Rating-"
-            elif "release" in sort:
-                if items[x].release_date:
-                    link_text[x] = items[x].release_date.strftime("%b %d, %Y")
-                else:
-                    link_text[x] = "-Unknown Release Date-"
-            elif "publish_date" in sort:
-                if items[x].publish_date:
-                    link_text[x] = items[x].publish_date.strftime("%b %d, %Y")
-                else:
-                    link_text[x] = "-Unknown Publication Date-"
-            elif "uploaded" in sort:
-                if items[x].upload and items[x].upload.date:
-                    link_text[x] = items[x].upload.date.strftime("%b %d, %Y")
-                else:
-                    link_text[x] = "-Unknown Upload Date-"
-            elif "id" in sort:
-                link_text[x] = "[{}] {}".format(items[x].id, items[x].title)
-            else:  # Title
-                link_text[x] = items[x].title
-
-        if items[0] != "" and items[1] != "":
-            output = """
-            <div class="guide-words {}">
-                <div class="l"><a class="left" href="#{}">{}</a></div>
-                <div class="r"><a class="right" href="#{}">{}</a></div>
-            </div>
-            """.format(
-                location,
-                items[0].key, link_text[0],
-                items[1].key, link_text[1]
-            )
-        else:
-            output = ""
-    elif model == "Article":
-        # Figure out link text
-        for x in range(0, len(link_text)):
-            if items[x] == "":
-                continue
-            if sort == "author":
-                if items[x].author:
-                    link_text[x] = items[x].author
-                else:
-                    link_text[x] = "-Unknown Author-"  # This shouldn't appear
-            elif sort == "-date" or sort == "date":
-                if items[x].publish_date and items[x].publish_date.year > 1970:
-                    link_text[x] = items[x].publish_date.strftime("%b %d, %Y")
-                else:
-                    link_text[x] = "-Unknown Date-"
-            elif sort == "category":
-                link_text[x] = items[x].category
-            elif "id" in sort:
-                link_text[x] = "[{}] {}".format(items[x].id, items[x].title)
-            else:  # Title
-                link_text[x] = items[x].title
-
-        if items[0] != "" and items[1] != "":
-            output = """
-            <div class="guide-words">
-                <span><a class="left" href="#{}">{}</a></span>
-                <span><a class="right" href="#{}">{}</a></span>
-            </div>
-            """.format(
-                items[0].id, link_text[0],
-                items[1].id, link_text[1]
-            )
-        else:
-            output = ""
-    elif model == "Review":
-        for x in range(0, len(link_text)):
-            if items[x] == "":
-                continue
-            if sort == "file":
-                link_text[x] = items[x].zfile.title
-            elif sort == "reviewer":
-                link_text[x] = items[x].author
-            elif sort == "date" or sort == "-date":
-                link_text[x] = items[x].date.strftime("%b %d, %Y")
-            elif sort == "rating":
-                link_text[x] = items[x].rating if items[x].rating >= 0 else "-No Rating-"
-
-        if items[0] != "" and items[1] != "":
-            output = """
-            <div class="guide-words">
-                <span><a class="left" href="#{}">{}</a></span>
-                <span><a class="right" href="#{}">{}</a></span>
-            </div>
-            """.format(
-                items[0].id, link_text[0],
-                items[1].id, link_text[1]
-            )
-        else:
-            output = ""
-    elif model == "Collection":
-        for x in range(0, len(link_text)):
-            if items[x] == "":
-                continue
-            if sort == "modified" or sort == "-modified":
-                link_text[x] = items[x].modified.strftime("%b %d, %Y")
-            elif sort == "title":
-                link_text[x] = items[x].title
-            elif sort == "author":
-                link_text[x] = items[x].user.username
-            elif sort == "id" or sort == "-id":
-                link_text[x] = items[x].pk
-
-        if items[0] != "" and items[1] != "":
-            output = """
-            <div class="guide-words">
-                <span><a class="left" href="#{}">{}</a></span>
-                <span><a class="right" href="#{}">{}</a></span>
-            </div>
-            """.format(
-                items[0].id, link_text[0],
-                items[1].id, link_text[1]
-            )
-        else:
-            output = ""
-
-    return mark_safe(output + "\n")
-
-
-@register.simple_tag()
 def meta_tags(*args, **kwargs):
     # Default values
     base_url = "{}://{}{}".format(PROTOCOL, DOMAIN, STATIC_URL[:-1])
@@ -550,16 +383,18 @@ def queryset_to_model_blocks(context, items, view="detailed", auto_wrap=True, *a
     return mark_safe(output + "\n")
 
 @register.simple_tag()
+def guide_words(qs, *args, **kwargs):
+    if len(qs) == 0:
+        return ""
 
-def new_guide_words(qs, *args, **kwargs):
-    sort = kwargs.get("sort")
-    location = kwargs.get("location")
+    sort = kwargs.get("sort", "")
+    location = kwargs.get("location", "top")
 
     output = """<div class="guide-words">
         <span><a class="left" href="#{}">{}</a></span>
         <span><a class="right" href="#{}">{}</a></span>
     </div>"""
 
-    (first_key, first_value) = qs.first().guide_words(sort)
-    (last_key, last_value) = qs.last().guide_words(sort)
+    (first_key, first_value) = qs[0].guide_words(sort)
+    (last_key, last_value) = qs[len(qs) - 1].guide_words(sort)
     return mark_safe(output.format(first_key, first_value, last_key, last_value) + "\n")

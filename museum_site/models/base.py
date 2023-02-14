@@ -156,10 +156,14 @@ class BaseModel(models.Model):
         return ""
 
     def guide_words(self, sort):
-        sort = sort.replace("-", "")  # Strip reverse sign
+        if sort:
+            sort = sort.replace("-", "")  # Strip reverse sign
         attr = self.guide_word_values.get(sort, "title")
         value = getattr(self, "get_guideword_{}".format(attr))()
-        return (self.model_key, value)
+        if self.model_name != "Collection Entry":
+            return (self.model_key, value)
+        else:
+            return (self.zfile.model_key, value)
 
     def get_guideword_pk(self): return self.pk
     def get_guideword_title(self): return self.title

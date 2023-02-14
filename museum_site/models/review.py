@@ -204,3 +204,4 @@ class Review(BaseModel):
             return "<i>-No Rating-</i>"
         else:
             return self.rating
+    def get_guideword_zfile(self): return self.zfile.title

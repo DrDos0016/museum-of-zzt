@@ -956,9 +956,13 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def get_guideword_rating(self): return self.rating_str()
 
-    def get_guideword_release_date(self): return self.release_date.strftime("%b %d, %Y")
-    def get_guideword_publish_date(self): return self.publish_date.strftime("%b %d, %Y")
-    def get_guideword_upload_date(self): return self.upload.date.strftime("%b %d, %Y")
+    def get_guideword_release_date(self): return self.release_date.strftime("%b %d, %Y") if self.release_date is not None else "- Unknown Date -"
+    def get_guideword_publish_date(self): return self.publish_date.strftime("%b %d, %Y") if self.publish_date is not None else "- Unknown Date -"
+    def get_guideword_upload_date(self):
+        if self.upload is not None:
+            if self.upload.date:
+                return self.upload.date.strftime("%b %d, %Y")
+        return "- Unknown Date -"
 
 
 class ZFile_Admin(admin.ModelAdmin):
