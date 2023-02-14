@@ -950,6 +950,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         output = []
         for author in self.companies.all():
             output.append(author.title)
+        if output == []:
+            return "<i>None</i>"
         return ", ".join(output)
 
     def get_guideword_rating(self): return self.rating_str()

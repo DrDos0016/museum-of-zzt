@@ -13,6 +13,7 @@ class Collection(BaseModel):
     objects = Collection_Queryset.as_manager()
     model_name = "Collection"
     cell_list = ["view", "author", "modified", "item_count", "short_description"]
+    guide_word_values = {"id": "pk", "title": "title", "author": "author", "modified": "modified"}
     to_init = ["yours"]
     is_yours = False
     table_fields = ["Title", "Author", "Last Modified", "Items", "Short Desc."]
@@ -223,6 +224,9 @@ class Collection(BaseModel):
         elif self.visibility == self.UNLISTED:
             self.roles.append("unlisted")
 
+    def get_guideword_modified(self): return self.modified.strftime("%b %d, %Y")
+    def get_guideword_author(self): return self.user.username
+
 
 
 class Collection_Entry(BaseModel):
@@ -248,6 +252,8 @@ class Collection_Entry(BaseModel):
         "id": ["id"],
         "-id": ["-id"],
     }
+
+    guide_word_values = {"id": "pk", "title": "title", "author": "author", "company": "company", "rating": "rating", "release": "release_date"}
 
     supported_views = ["detailed"]
     model_name = "Collection Entry"
@@ -297,3 +303,10 @@ class Collection_Entry(BaseModel):
     def _init_zfile(self):
         if self.zfile:
             self.zfile.init_model_block_context("detailed", self.request, self.show_staff)
+
+    def get_guideword_title(self): return self.zfile.get_guideword_title()
+    def get_guideword_author(self): return self.zfile.get_guideword_author()
+    def get_guideword_company(self): return self.zfile.get_guideword_company()
+    def get_guideword_rating(self): return self.zfile.get_guideword_rating()
+    def get_guideword_release_date(self): return self.zfile.get_guideword_release_date()
+    def get_guideword_canonical(self): return self.zfile.get_guideword_title()  # Deliberate

@@ -18,6 +18,7 @@ class Review(BaseModel):
     model_name = "Review"
     table_fields = ["Title", "File", "Reviewer", "Date", "Rating"]
     cell_list = ["view", "zfile", "author", "review_date", "rating"]
+    guide_word_values = {"id": "pk", "reviewer": "reviewer", "date": "date", "file": "zfile", "rating": "rating"}
     sort_options = [
         {"text": "Newest", "val": "-date"},
         {"text": "Oldest", "val": "date"},
@@ -195,3 +196,11 @@ class Review(BaseModel):
             field_context = self.get_field(field_name, view="review_content")
             context["fields"].append(field_context)
         return context
+
+    def get_guideword_date(self): return self.date.strftime("%b %d, %Y")
+    def get_guideword_reviewer(self): return self.author
+    def get_guideword_rating(self):
+        if self.rating < 0:
+            return "<i>-No Rating-</i>"
+        else:
+            return self.rating

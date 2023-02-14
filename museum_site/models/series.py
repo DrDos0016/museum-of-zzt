@@ -16,6 +16,7 @@ class Series(BaseModel):
     model_name = "Series"
     table_fields = ["Series", "Updated", "Latest", "First", "Total"]
     cell_list = ["view", "last_updated", "latest_article", "first_article", "total_articles"]
+    guide_word_values = {"id": "pk", "latest": "latest", "title": "title"}
     sort_options = [
         {"text": "Newest Entry", "val": "latest"},
         {"text": "Title", "val": "title"}
@@ -153,3 +154,5 @@ class Series(BaseModel):
             self.get_field("first_article", view="gallery"),
         ]
         return context
+
+    def get_guideword_latest(self): return self.last_entry_date.strftime("%b %d, %Y")

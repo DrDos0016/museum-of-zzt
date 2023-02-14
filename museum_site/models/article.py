@@ -20,6 +20,7 @@ class Article(BaseModel):
     objects = Article_Queryset.as_manager()
 
     cell_list = ["view", "authors", "article_date", "category", "description"]
+    guide_word_values = {"id": "pk", "title": "title", "author": "author", "category": "category", "date": "date"}
 
     to_init = ["access_level", "icons"]
     model_name = "Article"
@@ -347,3 +348,7 @@ class Article(BaseModel):
             self.get_field("authors", view="gallery")
         ]
         return context
+
+    def get_guideword_author(self): return self.author
+    def get_guideword_category(self): return self.category
+    def get_guideword_date(self): return self.publish_date.strftime("%b %d, %Y")
