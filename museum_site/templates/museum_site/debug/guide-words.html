@@ -1,0 +1,89 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block content %}
+<ul>
+    <li><a href="?show=all">ALL</a></li>
+    <li><a href="?show=zfiles">ZFiles</a></li>
+    <li><a href="?show=articles">Articles</a></li>
+    <li><a href="?show=reviews">Reviews</a></li>
+    <li><a href="?show=series">Series</a></li>
+    <li><a href="?show=wozzt">WoZZT Queue</a></li>
+    <li><a href="?show=collection">Collections</a></li>
+    <li><a href="?show=collection-contents">Collection Contents</a></li>
+</ul>
+
+<form method="POST">
+{% csrf_token %}
+<input name="secret" placeholder="Article Password"> <input type="submit">
+</form>
+
+<hr>
+guide_word_values = {"id": "pk", "title": "title", "author": "", "company": "", "rating": "", "release": "", "publish_date": "", "uploaded": ""}
+<hr>
+
+{% if show == "all" or show == "zfiles" %}
+<h2>ZFiles</h2>
+    ID: {% guide_words zfiles sort="id" location="top" %}
+    Title: {% guide_words zfiles sort="title" location="top" %}
+    Author: {% guide_words zfiles sort="author" location="top" %}
+    Company: {% guide_words zfiles sort="company" location="top" %}
+    Rating: {% guide_words zfiles sort="rating" location="top" %}
+    Release Date: {% guide_words zfiles sort="release" location="top" %}
+    Pub Date: {% guide_words zfiles sort="publish_date" location="top" %}
+    Upload Date: {% guide_words zfiles sort="uploaded" location="top" %}
+{% endif %}
+
+{% if show == "all" or show == "articles" %}
+<h2>Articles</h2>
+    ID: {% guide_words articles sort="id" location="top" %}
+    Newest: {% guide_words articles sort="date" location="top" %}
+    Oldest: {% guide_words articles sort="date" location="top" %}
+    Title: {% guide_words articles sort="title" location="top" %}
+    Author: {% guide_words articles sort="author" location="top" %}
+    Category: {% guide_words articles sort="category" location="top" %}
+{% endif %}
+
+{% if show == "all" or show == "reviews" %}
+<h2>Reviews</h2>
+    ID: {% guide_words reviews sort="id" location="top" %}
+    Newest: {% guide_words reviews sort="date" location="top" %}
+    Oldest: {% guide_words reviews sort="date" location="top" %}
+    Reviewer: {% guide_words reviews sort="reviewer" location="top" %}
+    ZFile: {% guide_words reviews sort="zfile" location="top" %}
+    Rating: {% guide_words reviews sort="rating" location="top" %}
+{% endif %}
+
+{% if show == "all" or show == "series" %}
+<h2>Series</h2>
+    ID: {% guide_words series sort="id" location="top" %}
+    Newest Entry: {% guide_words series sort="latest" location="top" %}
+    Title: {% guide_words series sort="title" location="top" %}
+{% endif %}
+
+{% if show == "all" or show == "wozzt" %}
+<h2>WoZZT_Queue</h2>
+{% endif %}
+
+{% if show == "all" or show == "collection" %}
+<h2>Collections</h2>
+    ID: {% guide_words collections sort="id" location="top" %}
+    Newest: {% guide_words collections sort="modified" location="top" %}
+    Oldest: {% guide_words collections sort="modified" location="top" %}
+    Title: {% guide_words collections sort="title" location="top" %}
+    Author: {% guide_words collections sort="author" location="top" %}
+{% endif %}
+
+{% if show == "all" or show == "collection-contents" %}
+<h2>Collection Contents</h2>
+    ID: {% guide_words collection_contents sort="id" location="top" %}
+    Title: {% guide_words collection_contents sort="title" location="top" %}
+    Author: {% guide_words collection_contents sort="author" location="top" %}
+    Company: {% guide_words collection_contents sort="company" location="top" %}
+    Rating: {% guide_words collection_contents sort="rating" location="top" %}
+    Release Date: {% guide_words collection_contents sort="release" location="top" %}
+    Canonical: {% guide_words collection_contents sort="canonical" location="top" %}
+{% endif %}
+
+{% endblock %}
