@@ -560,7 +560,7 @@ def publish(request, key, mode="PUBLISH"):
     data["file_list"].sort()
 
     # Get suggested details based on the file list
-    data["suggestions"] = get_detail_suggestions(data["file_list"])
+    data["suggestions"] = get_detail_suggestions(data["file_list"], Detail.objects.all().values("pk", "title"))
 
     if mode == "PUBLISH":
         # Get suggest details based on file metadata

@@ -1,7 +1,6 @@
 import os
 
 from museum_site.core.detail_identifiers import *
-from museum_site.models.detail import Detail
 
 
 class File_Extension_Info(object):
@@ -207,7 +206,7 @@ EXTENSIONS = {
 }
 
 
-def get_detail_suggestions(file_list):
+def get_detail_suggestions(file_list, qs):
     suggestions = {
         "hints": [],
         "hint_ids": [],
@@ -231,7 +230,6 @@ def get_detail_suggestions(file_list):
             suggestions["unknown_extensions"].append(ext)
 
     # Get detail names
-    qs = Detail.objects.all().values("pk", "title")
     detail_mapping = {}
     for d in qs:
         detail_mapping[d["pk"]] = d["title"]

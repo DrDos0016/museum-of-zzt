@@ -9,7 +9,6 @@ from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
 from museum_site.constants import *
-from museum_site.core.misc import epoch_to_unknown
 from museum_site.models.base import BaseModel
 from museum_site.private import PASSWORD2DOLLARS, PASSWORD5DOLLARS
 from museum_site.querysets.article_querysets import *

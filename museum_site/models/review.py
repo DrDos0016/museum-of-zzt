@@ -6,7 +6,6 @@ from django.template.defaultfilters import timesince
 from django.utils.safestring import mark_safe
 
 from museum_site.common import profanity_filter
-from museum_site.core.misc import epoch_to_unknown
 from museum_site.models.base import BaseModel
 from museum_site.querysets.review_querysets import *
 
