@@ -124,7 +124,7 @@ class Article(BaseModel):
         return os.path.join(self.path(), "preview.png")
 
     def path(self):
-        year = self.publish_date.year if self.publish_date.year != 1970 else "unk"
+        year = self.publish_date.year if self.publish_date else "unk"
         return ("articles/{}/{}/".format(year, self.static_directory))
 
     def render(self, context={}):
@@ -284,7 +284,7 @@ class Article(BaseModel):
         return {"label": "Author{}".format(plural), "value": ", ".join(authors)}
 
     def get_field_article_date(self, view="detailed"):
-        return {"label": "Publish Date", "value": self.publish_date}
+        return {"label": "Publish Date", "value": self.publish_date.strftime("%b %d, %Y") if self.publish_date else "<i>- Unknown Date - </i>", "safe": True}
 
     def get_field_category(self, view="detailed"):
         return {"label": "Category", "value": self.category}
@@ -351,4 +351,4 @@ class Article(BaseModel):
 
     def get_guideword_author(self): return self.author
     def get_guideword_category(self): return self.category
-    def get_guideword_date(self): return self.publish_date.strftime("%b %d, %Y")
+    def get_guideword_date(self): return self.publish_date.strftime("%b %d, %Y") if self.publish_date is not None else "- Unknown Date -"
