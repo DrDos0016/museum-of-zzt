@@ -16,7 +16,7 @@
         <div>
             <p class="summary">{{article.description}}</p>
             <div class="author">Authored By: {{article.author}}</div>
-            <div class="publish-date">Published: {% if article.publish_date.year == 1970 %}<i>Unknown</i>{% else %}{{article.publish_date}}{% endif %}</div>
+            <div class="publish-date">Published: {% if article.publish_date.year == None %}<i>Unknown</i>{% else %}{{article.publish_date}}{% endif %}</div>
             {% if article.series.all %}<div class="series">Part of Series: {{article.series_links|safe}}</div>{% endif %}
             {% if article.revision_details %}<div class="revision-label">Revisions (as of {{article.last_revised|default:"Unknown"}}):</div>
             <div class="revision-details">{{article.revision_details|linebreaksbr}}</div>{% endif %}
