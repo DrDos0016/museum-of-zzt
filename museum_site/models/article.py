@@ -91,7 +91,7 @@ class Article(BaseModel):
     content = models.TextField(help_text="Body of the article.", default="")
     css = models.TextField(help_text="Custom CSS. Must include <style></style> if set.", default="", blank=True)
     schema = models.CharField(help_text="Schema for the article. Used to determine parsing method.", max_length=6, choices=SCHEMAS, default="django")
-    publish_date = models.DateField(help_text="Date the article was made public on the Museum", default="1970-01-01")
+    publish_date = models.DateField(help_text="Date the article was made public on the Museum", default=None, null=True, blank=True)
     published = models.IntegerField(help_text="Publication Status", default=UNPUBLISHED, choices=PUBLICATION_STATES)
     last_modified = models.DateTimeField(help_text="Date DB entry was last modified", auto_now=True)
     last_revised = models.DateTimeField(help_text="Date article content was last revised", default=None, null=True, blank=True)

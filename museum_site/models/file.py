@@ -798,6 +798,15 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         return {"label": "Publish Date", "value": publish_date_str, "safe": True}
 
+    def get_field_upload_date(self, view="detailed"):
+        if (self.upload is None or self.upload.date is None):
+            upload_date_str = "<i>Unknown</i>"
+        else:
+            upload_date_str = self.upload.date.strftime("%b %d, %Y, %I:%M:%S %p")
+
+        return {"label": "Upload Date", "value": upload_date_str, "safe": True}
+
+
     def context_extras(self):
         # TODO This is probably the weakest part of this rewrite
         context = {}
@@ -845,8 +854,12 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         columns = [
             ["authors", "companies", "zfile_date", "genres", "filename", "size"],
-            ["details", "rating", "boards", "language", "publish_date"],
+            ["details", "rating", "boards", "language"],
         ]
+        if self.is_detail(DETAIL_UPLOADED):
+            columns[1].append("upload_date")
+        else:
+            columns[1].append("publish_date")
 
         if self.show_staff:
             columns[1].append("edit")
