@@ -177,25 +177,17 @@ def zeta_launcher(
             if f.lower().endswith(".exe") and basename == f:
                 generic_exe = f
             # Prioritize these two
-            if f.lower() in ["zzt.exe", "superz.exe"] or f.lower().startswith("weave"):
+            if f.lower() in ["zzt.exe", "superz.exe"] or (f.lower().startswith("weave") and f.lower().endswith("exe")):
                 break
-        data["zeta_config"].commands = (
-            data["zeta_config"].commands.replace("{executable_file}", generic_exe)
-        )
+        data["zeta_config"].commands = data["zeta_config"].commands.replace("{executable_file}", generic_exe)
 
     # Override for "Live" Zeta edits
     if request.GET.get("live"):
         data["zeta_live"] = True
-        data["zeta_url"] = "/zeta-live?pk={}&world={}&start={}".format(
-            data["file"].id,
-            request.GET.get("world"),
-            request.GET.get("start", 0)
-        )
+        data["zeta_url"] = "/zeta-live?pk={}&world={}&start={}".format(data["file"].id, request.GET.get("world"), request.GET.get("start", 0))
         data["zeta_config"].arguments = request.GET.get("world", "")
     elif request.GET.get("discord"):
-        data["zeta_url"] = "/zeta-live?discord=1&world={}".format(
-            request.GET.get("world")
-        )
+        data["zeta_url"] = "/zeta-live?discord=1&world={}".format(request.GET.get("world"))
 
     # Set default scale
     data["zeta_player_scale"] = int(request.COOKIES.get("zeta_player_scale", 1))
@@ -215,10 +207,7 @@ def zeta_launcher(
 
 def zeta_live(request):
     if request.GET.get("discord"):
-        with open(
-            "/var/projects/museum/museum_site/static/data/discord-zzt/" +
-            request.GET.get("filename"), "rb"
-        ) as fh:
+        with open("/var/projects/museum/museum_site/static/data/discord-zzt/" + request.GET.get("filename"), "rb") as fh:
             response = HttpResponse(content_type="application/octet-stream")
             response["Content-Disposition"] = "attachment; filename=DISCORD.ZIP"
             response.write(fh.read())
