@@ -784,19 +784,29 @@ def series_add(request):
 @staff_member_required
 def share_publication_pack(request):
     context = {"title": "Publication Pack - Share"}
+    twitter_id = ""
+    mastodon_id = ""
 
-    if not request.POST.get("pack"):
+    if not request.GET.get("pack"):
         form = Publication_Pack_Select_Form()
     else:
         if request.POST.get("idx"):
             idx = int(request.POST["idx"]) + 1
             article_start = int(request.POST.get("article_start", 0))
-            print("POSTING IDX", idx)
+            form = Publication_Pack_Share_Form(request.POST)
+            if form.is_valid():
+                print("Valid form posting IDX", idx)
+                form.process()
+                twitter_id = form.reply_ids["twitter"]
+                mastodon_id = form.reply_ids["mastodon"]
+            else:
+                print("INVALID FORM")
         else:
             idx = 0
             article_start = 0
-        pack_id = int(request.POST["pack"])
+        pack_id = int(request.GET["pack"])
         article = Article.objects.get(pk=pack_id)
+        context["article_path"] = article.path()
         all_matches = re.findall("{%.*model_block.*%}", article.content)
         zfile_ids = []
         for m in all_matches:
@@ -827,20 +837,24 @@ def share_publication_pack(request):
 
         if idx < len(zfile_ids):
             zfile = File.objects.get(pk=zfile_ids[idx])
+            zfile_prefix = "/static/images/screenshots/{}/".format(zfile.letter)
+            article_prefix = "/static/" + article.path()
             body = zfile.citation_str() + "\n" + striptags(zfile_description)
-            screenshot_path_prefix = HOST + "static/" + article.path()
-            form = Publication_Pack_Share_Form(
-                initial={
-                    "pack": pack_id,
-                    "idx": idx,
-                    "body": body,
-                    "image1": HOST + "static/" + zfile.preview_url(),
-                    "image2": screenshot_path_prefix + zfile_screenshots[0],
-                    "image3": screenshot_path_prefix + zfile_screenshots[1],
-                    "image4": screenshot_path_prefix + zfile_screenshots[2],
-                    "article_start": entry_end + entry_start + int(request.POST.get("article_start", 0))
-                }
-            )
+            initial_form_data = {
+                "pack": pack_id,
+                "idx": idx,
+                "body": body,
+                "image1": zfile.screenshot,
+                "image2": zfile_screenshots[0],
+                "image3": zfile_screenshots[1],
+                "image4": zfile_screenshots[2],
+                "article_start": entry_end + entry_start + int(request.POST.get("article_start", 0)),
+                "zfile_prefix": zfile_prefix,
+                "article_prefix": article_prefix,
+                "twitter_id": twitter_id,
+                "mastodon_id": mastodon_id,
+            }
+            form = Publication_Pack_Share_Form(initial=initial_form_data)
         else:
             return redirect("/tools/publication-pack/share")
     context["form"] = form

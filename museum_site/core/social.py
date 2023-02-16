@@ -1,3 +1,7 @@
+import os
+
+from museum_site.constants import SITE_ROOT
+
 import pytumblr
 
 from mastodon import Mastodon
@@ -33,7 +37,7 @@ class Social():
         self.login()
 
     def log_response(self, response):
-        response_history.append(response)
+        self.response_history.append(response)
 
     def get_last_response(self):
         return self.response_history[-1]
@@ -43,6 +47,9 @@ class Social():
         self.media = []
         if clear_history:
             self.response_history = []
+
+    def reset_media(self):
+        self.media = []
 
 
 class Social_Mastodon(Social):
@@ -55,7 +62,10 @@ class Social_Mastodon(Social):
 
     def login(self):
         self.client =  Mastodon(client_id=os.path.join(SITE_ROOT, "museum_site", "wozzt-mastodon.secret"))
-        self.client.log_in(MASTODON_EMAIL, MASTODON_PASS)
+        response = self.client.log_in(MASTODON_EMAIL, MASTODON_PASS)
+
+        self.log_response(response)
+        return response
 
     def upload_media(self, media_path=None, media_url=None, media_bytes=None):
         if media_bytes:
@@ -81,7 +91,7 @@ class Social_Mastodon(Social):
                 media.append(m["id"])
         else:
             media=None
-        response = self.client.status_post(status=body, in_reply_to=self.reply_to, media_ids=media)
+        response = self.client.status_post(status=body, in_reply_to_id=self.reply_to, media_ids=media)
 
         self.log_response(response)
         return response
@@ -108,3 +118,32 @@ class Social_Twitter(Social):
     def login(self):
         self.client = Twitter(auth=OAuth(self.token, self.oauth_secret, self.consumer_key, self.consumer_secret))
         self.upload_client = Twitter(domain='upload.twitter.com', auth=OAuth(self.token, self.oauth_secret, self.consumer_key, self.consumer_secret))
+
+    def upload_media(self, media_path=None, media_url=None, media_bytes=None):
+        if media_bytes:
+            print("Bytes are currently unsupported.")
+            return False
+        if media_url:
+            path("External media is currently unsupported.")
+            return False
+        if media_path:
+            with open(media_path, "rb") as imagefile:
+                imagedata = imagefile.read()
+
+                response = self.upload_client.media.upload(media=imagedata)["media_id_string"]
+
+                if response:
+                    self.media.append(response)
+
+                self.log_response(response)
+        return response
+
+    def post(self, body):
+        if self.media:
+            media = ",".join(self.media)
+        else:
+            media=""
+
+        response = self.client.statuses.update(status=body, media_ids=media, in_reply_to_status_id=self.reply_to, tweet_mode="extended")
+        self.log_response(response)
+        return response

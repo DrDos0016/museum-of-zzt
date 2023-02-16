@@ -23,6 +23,7 @@ from museum_site.constants import (
 from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import delete_this
 from museum_site.core.form_utils import any_plus, get_sort_option_form_choices
+from museum_site.core.social import Social_Twitter, Social_Mastodon
 from museum_site.fields import *
 from museum_site.models import *
 from museum_site.private import IA_ACCESS, IA_SECRET
@@ -1557,18 +1558,22 @@ class Publication_Pack_Select_Form(forms.Form):
     use_required_attribute = False
     heading = "Select Publication Pack"
     submit_value = "Select"
-    attrs = {"method": "POST"}
-
     pack = forms.ChoiceField(choices=qs_to_select_choices(Article.objects.publication_packs))
 
 
 class Publication_Pack_Share_Form(forms.Form):
     use_required_attribute = False
+    reply_ids = {"twitter": "", "mastodon": ""}
     heading = "Share Publication Pack"
     submit_value = "Post"
     attrs = {"method": "POST"}
 
-    pack = forms.ChoiceField(choices=qs_to_select_choices(Article.objects.publication_packs))
+    ACCOUNTS = (
+        ("mastodon", "Mastodon"),
+        ("twitter", "Twitter"),
+    )
+
+    pack = forms.IntegerField(widget=forms.HiddenInput())
     article_start = forms.IntegerField(initial=0, widget=forms.HiddenInput())
     idx = forms.IntegerField(label="Index", required=False, widget=forms.HiddenInput())
     body = forms.CharField(
@@ -1576,8 +1581,51 @@ class Publication_Pack_Share_Form(forms.Form):
         widget=forms.Textarea(),
         help_text="Body of Post"
     )
-    image1 = forms.URLField(label="Image 1", required=False)
-    image2 = forms.URLField(label="Image 2", required=False)
-    image3 = forms.URLField(label="Image 3", required=False)
-    image4 = forms.URLField(label="Image 4", required=False)
+    image1 = forms.CharField(label="Image 1", required=False, help_text="Relative to Zfile prefix if path is not absolute")
+    image2 = forms.CharField(label="Image 2", required=False, help_text="Relative to Article prefix if path is not absolute")
+    image3 = forms.CharField(label="Image 3", required=False, help_text="Relative to Article prefix if path is not absolute")
+    image4 = forms.CharField(label="Image 4", required=False, help_text="Relative to Article prefix if path is not absolute")
+    twitter_id = forms.CharField(required=False)
     mastodon_id = forms.CharField(required=False)
+    zfile_prefix = forms.CharField()
+    article_prefix = forms.CharField()
+
+    accounts = forms.MultipleChoiceField(
+        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS,
+        initial=["twitter", "mastodon"],
+        help_text="Accounts to post this content to",
+    )
+
+    def process(self):
+        accounts = self.cleaned_data.get("accounts", False)
+        print(accounts)
+
+        for account in accounts:
+            if account == "mastodon":
+                s = Social_Mastodon()
+            elif account == "twitter":
+                s = Social_Twitter()
+
+            reply_id = "{}_id".format(account)
+
+            s.login()  # Login
+            s.reset_media()
+            for i in range(1,5):  # Upload all media
+                self.upload_media(s, i)
+
+            if self.cleaned_data.get(reply_id):  # Set reply ID if one exists
+                s.reply_to = self.cleaned_data[reply_id]
+
+            response = s.post(self.cleaned_data.get("body", ""))  # Post
+            self.reply_ids[account] = response.get("id", "???")  # Record ID for reply
+
+    def upload_media(self, s, i):
+        media_path = ""
+        field_value = self.cleaned_data.get("image{}".format(i))
+        if not field_value:
+            return
+        elif not field_value.startswith("/"):
+            media_path = os.path.join(SITE_ROOT, "museum_site")
+            media_path += self.cleaned_data.get("article_prefix") if i != 1 else self.cleaned_data.get("zfile_prefix")
+        media_path += field_value
+        response = s.upload_media(media_path)

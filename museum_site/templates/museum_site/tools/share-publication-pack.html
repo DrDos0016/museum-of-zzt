@@ -1,0 +1,54 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block scripts %}
+<script src="{% static 'js/museum-forms.js' %}"></script>
+<script>
+$(document).ready(function (){
+    $("input[type=url]").change(render_images);
+    render_images();
+});
+
+function render_images()
+{
+    var zfile_prefix = $("#id_zfile_prefix").val();
+    var article_prefix = $("#id_article_prefix").val();
+    var urls = [
+        $("#id_image4").val(),
+        $("#id_image3").val(),
+        $("#id_image2").val(),
+        $("#id_image1").val(),
+    ];
+
+    $(".image-preview").each(function (){
+        if (urls.length == 4)
+        {
+            $(this).attr("src",  zfile_prefix + urls.pop());
+        }
+        else
+            $(this).attr("src",  article_prefix + urls.pop());
+    });
+
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>{{form.heading}}</h1>
+
+{{form.text_prefix|default:""|safe}}
+
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+
+<hr>
+<img src="" class="image-preview">
+<img src="" class="image-preview">
+<img src="" class="image-preview">
+<img src="" class="image-preview">
+
+{% block form_output %}{% endblock %}
+{% endblock %}
