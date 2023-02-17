@@ -1010,7 +1010,7 @@ def set_screenshot(request, key):
     data = {
         "title": "Set Screenshot",
     }
-    zfile = File.objects.get(key=key)
+    zfile = File.objects.get(pk=key)
     data["file"] = zfile
     data["file_list"] = []
 
@@ -1026,25 +1026,16 @@ def set_screenshot(request, key):
 
     if request.POST.get("manual"):
         upload_path = os.path.join(STATIC_PATH, "images/screenshots/{}/".format(zfile.letter))
-        file_path = place_uploaded_file(
-            upload_path,
-            request.FILES.get("uploaded_file"),
-            custom_name=zfile.filename[:-4] + ".png"
-        )
+        file_path = place_uploaded_file(upload_path, request.FILES.get("uploaded_file"), custom_name=zfile.filename[:-4] + ".png")
         optimize_image(file_path)
         zfile.screenshot = zfile.filename[:-4] + ".png"
         zfile.basic_save()
 
     if request.GET.get("file"):
         with zipfile.ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
-            zf.extract(
-                request.GET["file"],
-                path=SITE_ROOT + "/museum_site/static/data/"
-            )
+            zf.extract(request.GET["file"], path=SITE_ROOT + "/museum_site/static/data/")
 
-        z = zookeeper.Zookeeper(
-            SITE_ROOT + "/museum_site/static/data/" + request.GET["file"]
-        )
+        z = zookeeper.Zookeeper(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])
         data["board_list"] = []
         for board in z.boards:
             data["board_list"].append(board.title)
@@ -1053,13 +1044,9 @@ def set_screenshot(request, key):
         data["board_num"] = int(request.GET["board"])
 
         if data["board_num"] != 0:
-            z.boards[data["board_num"]].screenshot(
-                SITE_ROOT + "/museum_site/static/data/temp"
-            )
+            z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp")
         else:
-            z.boards[data["board_num"]].screenshot(
-                SITE_ROOT + "/museum_site/static/data/temp", title_screen=True
-            )
+            z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp", title_screen=True)
         data["show_preview"] = True
 
     image_path = ""
@@ -1084,18 +1071,12 @@ def set_screenshot(request, key):
         if image_path:
             image.save(image_path)
         else:
-            image_path = os.path.join(
-                SITE_ROOT +
-                "/museum_site/static/images/screenshots/{}/{}".format(
-                    zfile.letter, zfile.filename[:-4]
-                ) + ".png")
+            image_path = os.path.join(SITE_ROOT + "/museum_site/static/images/screenshots/{}/{}".format(zfile.letter, zfile.filename[:-4]) + ".png")
             image.save(image_path)
             zfile.screenshot = zfile.filename[:-4] + ".png"
             zfile.basic_save()
 
-    if os.path.isfile(
-        SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")
-    ):
+    if os.path.isfile(SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")):
         os.remove(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])
 
     # Optimize the image
