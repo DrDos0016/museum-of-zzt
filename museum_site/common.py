@@ -41,13 +41,6 @@ def throttle_check(
     return True
 
 
-def get_max_upload_size(request):
-    max_upload_size = UPLOAD_CAP
-    if request.user.is_authenticated:
-        max_upload_size = request.user.profile.max_upload_size
-    return max_upload_size
-
-
 def zipinfo_datetime_tuple_to_str(raw):
     dt = raw.date_time
     y = str(dt[0])

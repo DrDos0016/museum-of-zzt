@@ -9,7 +9,7 @@ from django.views.generic import ListView, FormView
 
 from museum_site.common import *
 from museum_site.constants import *
-from museum_site.constants import BANNED_IPS
+from museum_site.constants import BANNED_IPS, UPLOAD_CAP
 from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile
@@ -20,7 +20,8 @@ from museum_site.views import generic_template_page
 
 
 def upload(request):
-    data = {"title": "Upload File", "your_max_upload_size": get_max_upload_size(request)}
+    data = {"title": "Upload File"}
+    data["your_max_upload_size"] = request.user.profile.max_upload_size if request.user.is_authenticated else UPLOAD_CAP
 
     keys = list(request.POST.keys())
     keys = sorted(keys)
@@ -119,7 +120,7 @@ def upload(request):
             upload_form.fields["generate_preview_image"].choices = (upload_form.fields["generate_preview_image"].choices + [(gpi, gpi)])
 
         # Set the maximum upload size properly
-        zgame_form.max_upload_size = get_max_upload_size(request)
+        zgame_form.max_upload_size = data["your_max_upload_size"]
 
         # For edits, a file upload is optional and the same name is okay
         if edit_token:
