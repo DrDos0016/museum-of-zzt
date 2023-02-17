@@ -13,7 +13,6 @@ from datetime import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.db.models import Q
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.template.defaultfilters import slugify, striptags
@@ -122,10 +121,7 @@ def audit_colors(request):
 
 @staff_member_required
 def empty_upload_queue(request):
-    data = {
-        "title": "Empty Upload Queue",
-        "message": "",
-    }
+    data = {"title": "Empty Upload Queue", "message": ""}
 
     if request.GET.get("empty"):
         queue = File.objects.unpublished()
@@ -151,9 +147,7 @@ def extract_font(request, key):
     if request.GET.get("font"):
         # Extract the file
         zip_file.extract(request.GET["font"], path=DATA_PATH)
-        charset_name = os.path.splitext(
-            os.path.basename(request.GET["font"])
-        )[0]
+        charset_name = os.path.splitext(os.path.basename(request.GET["font"]))[0]
 
         try:
             f_id = ("0000"+str(f.id))[-4:]
@@ -178,9 +172,7 @@ def extract_font(request, key):
 
 @staff_member_required
 def livestream_description_generator(request):
-    data = {
-        "title": "Livestream Description Generator",
-    }
+    data = {"title": "Livestream Description Generator",}
 
     if request.GET:
         data["form"] = Livestream_Description_Form(request.GET)
@@ -294,11 +286,7 @@ def mirror(request, key):
 
     if engine:
         subject = engine + ";" + subject
-        description = (
-            "<p>World created using the {} engine.</p>\n\n"
-        ).format(
-            engine
-        )
+        description = "<p>World created using the {} engine.</p>\n\n".format(engine)
 
     if engine:
         description += (
@@ -323,12 +311,8 @@ def mirror(request, key):
     form.fields["year"].initial = zfile.release_year()
     form.fields["subject"].initial = subject
     form.fields["description"].initial = description
-    form.fields["url"].initial = (
-        url_prefix + zfile.filename[:-4]
-    ).replace(" ", "_")
-    form.fields["filename"].initial = (
-        url_prefix + zfile.filename
-    ).replace(" ", "_")
+    form.fields["url"].initial = (url_prefix + zfile.filename[:-4]).replace(" ", "_")
+    form.fields["filename"].initial = (url_prefix + zfile.filename).replace(" ", "_")
     if ENV == "PROD":
         form.fields["collection"].initial = "open_source_software"
     if engine == "ZZT":
@@ -338,10 +322,7 @@ def mirror(request, key):
 
     world_choices = [("", "None")]
     for f in zfile.get_zip_info():
-        if (
-            f.filename.upper().endswith(".ZZT") or
-            f.filename.upper().endswith(".SZT")
-        ):
+        if f.filename.upper().endswith(".ZZT") or f.filename.upper().endswith(".SZT"):
             world_choices.append((f.filename, f.filename))
     form.fields["default_world"].choices = world_choices
     if len(world_choices) > 1:
@@ -425,10 +406,7 @@ def orphaned_objects(request):
 
 @staff_member_required
 def patron_article_rotation(request):
-    data = {
-        "title": "Patron Article Rotation",
-        "today": datetime.now()
-    }
+    data = {"title": "Patron Article Rotation", "today": datetime.now()}
 
     articles = Article.objects.in_early_access()
     newest = articles.last()
@@ -436,18 +414,13 @@ def patron_article_rotation(request):
 
     data["articles"] = [newest] + rest
 
-    return render(
-        request, "museum_site/tools/patron-article-rotation.html", data
-    )
+    return render(request, "museum_site/tools/patron-article-rotation.html", data)
 
 
 @staff_member_required
 def patron_input(request):
     """ Returns page listing patron users' suggestions/nominations/input """
-    data = {
-        "title": "Patron Input",
-        "users": User.objects.order_by("-id")
-    }
+    data = {"title": "Patron Input", "users": User.objects.order_by("-id")}
 
     category = request.GET.get("category", "stream-poll-nominations")
     data["category"] = category.replace("-", " ").title()
@@ -645,10 +618,10 @@ def reletter(request, key):
 
 
 @staff_member_required
-def replace_zip(request, pk):
+def replace_zip(request, key):
     """ Returns page with latest Museum scan results"""
     data = {"title": "Replace Zip"}
-    data["file"] = File.objects.get(pk=pk)
+    data["file"] = File.objects.get(key=key)
 
     # Original file info
     data["stat"] = os.stat(data["file"].phys_path())
@@ -756,11 +729,7 @@ def series_add(request):
         if form.is_valid():
             series = form.save(commit=False)
             series.slug = slugify(series.title)
-            file_path = place_uploaded_file(
-                Series.PREVIEW_DIRECTORY_FULL_PATH,
-                request.FILES.get("preview"),
-                custom_name=series.slug + ".png"
-            )
+            file_path = place_uploaded_file(Series.PREVIEW_DIRECTORY_FULL_PATH, request.FILES.get("preview"), custom_name=series.slug + ".png")
 
             if form.cleaned_data["crop"] != "NONE":
                 crop_file(file_path, preset=form.cleaned_data["crop"])
@@ -939,21 +908,10 @@ def tool_index(request, key=None):
         url_str = str(u.pattern)
         if url_str.startswith("tools/") and u.name not in restricted_urls:
             if url_str.find("<") == -1:
-                tool_list.append({
-                    "url_name": u.name,
-                    "text": u.name.replace("_", " ").title()
-                })
+                tool_list.append({"url_name": u.name, "text": u.name.replace("_", " ").title()})
             elif data.get("file"):
                 formatted_pattern = "/" + str(u.pattern)
-                formatted_pattern = formatted_pattern.replace(
-                    "<int:pk>", str(data["file"].pk)
-                ).replace(
-                    "<str:letter>", data["file"].letter
-                ).replace(
-                    "<str:filename>", data["file"].filename
-                ).replace(
-                    "<str:key>", data["file"].key
-                )
+                formatted_pattern = formatted_pattern.replace("<str:key>", data["file"].key)
                 file_tool_list.append({
                     "url": formatted_pattern,
                     "text": u.name.replace("_", " ").title()
@@ -1007,9 +965,7 @@ def tool_index(request, key=None):
 @staff_member_required
 def set_screenshot(request, key):
     """ Returns page to generate and set a file's screenshot """
-    data = {
-        "title": "Set Screenshot",
-    }
+    data = {"title": "Set Screenshot"}
     zfile = File.objects.get(pk=key)
     data["file"] = zfile
     data["file_list"] = []
@@ -1058,9 +1014,7 @@ def set_screenshot(request, key):
         zfile.screenshot = zfile.filename[:-4] + ".png"
         zfile.save()
     elif request.POST.get("b64img"):
-        raw = request.POST.get("b64img").replace(
-            "data:image/png;base64,", "", 1
-        )
+        raw = request.POST.get("b64img").replace("data:image/png;base64,", "", 1)
         from io import BytesIO
         import base64
 
