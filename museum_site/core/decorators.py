@@ -2,7 +2,7 @@ from django.http import Http404
 from django.urls import resolve
 
 from museum_site.common import redirect_with_querystring
-
+from museum_site.core.misc import env_from_host
 
 def dev_only(func, *args, **kwargs):
     def inner(*args, **kwargs):

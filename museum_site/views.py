@@ -18,7 +18,7 @@ from museum_site.private import (
 
 def ascii_reference(request):
     context = {"title": "Ascii Character Reference"}
-    context["range"] = list(range(0,256))
+    context["range"] = list(range(0, 256))
     context["scale"] = 2
     context["orientation"] = "horiz"
     context["meta_context"] = {
@@ -148,12 +148,14 @@ def random(request):
     else:
         return redirect("index")
 
+
 def set_theme(request):
     request.session["theme"] = request.GET.get("theme", "light")
     if request.GET.get("redirect"):
         return redirect("my_profile")
     else:
         return HttpResponse(request.GET.get("theme", "light"))
+
 
 def scroll_navigation(request):
 

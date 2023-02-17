@@ -109,16 +109,16 @@ if os.path.isfile(os.path.join(SITE_ROOT, "PROD")):
     PROTOCOL = "https"
     DOMAIN = "museumofzzt.com"
     ENV = "PROD"
-elif os.path.isfile(os.path.join(SITE_ROOT, "DEV")):
-    HOST = "http://django.pi:8000/"
-    PROTOCOL = "http"
-    DOMAIN = "django.pi:8000"
-    ENV = "DEV"
 elif os.path.isfile(os.path.join(SITE_ROOT, "BETA")):
     HOST = "https://beta.museumofzzt.com/"
     PROTOCOL = "https"
     DOMAIN = "beta.museumofzzt.com"
     ENV = "BETA"
+else:  # DEV
+    HOST = "http://django.pi:8000/"
+    PROTOCOL = "http"
+    DOMAIN = "django.pi:8000"
+    ENV = "DEV"
 
 # Magic Numbers
 UPCOMING_ARTICLE_MINIMUM_PATRONAGE = 200

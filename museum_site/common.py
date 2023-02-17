@@ -32,16 +32,6 @@ def qs_sans(params, key):
     return qs_nokey.urlencode()
 
 
-def env_from_host(host):
-    print("CALLING ENV FROM HOST", host)
-    if host in ["beta.museumofzzt.com"]:
-        return "BETA"
-    elif host in ["museumofzzt.com", "www.museumofzzt.com"]:
-        return "PROD"
-    else:
-        return "DEV"
-
-
 def throttle_check(
     request, attempt_name, expiration_name, max_attempts,
     lockout_mins=5
