@@ -33,6 +33,7 @@ def qs_sans(params, key):
 
 
 def env_from_host(host):
+    print("CALLING ENV FROM HOST", host)
     if host in ["beta.museumofzzt.com"]:
         return "BETA"
     elif host in ["museumofzzt.com", "www.museumofzzt.com"]:
@@ -182,20 +183,6 @@ def parse_pld(pld):
     ]
 
     return render_to_string("museum_site/blocks/fv-palette.html", context)
-
-
-def upal_to_rgb(v):
-    (r_comp, g_comp, b_comp) = (v[0], v[1], v[2])
-
-    r_intensity = r_comp / 63
-    g_intensity = g_comp / 63
-    b_intensity = b_comp / 63
-
-    r = int(r_intensity * 255)
-    g = int(g_intensity * 255)
-    b = int(b_intensity * 255)
-
-    return (r, g, b)
 
 
 def banned_ip(ip):
