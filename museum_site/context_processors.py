@@ -4,7 +4,6 @@ from django.core.cache import cache
 
 from museum_site.constants import TERMS_DATE, DEBUG, CSS_INCLUDES, BOOT_TS, EMAIL_ADDRESS
 from museum_site.core.detail_identifiers import *
-from museum_site.common import qs_sans
 from museum_site.models.file import File
 
 
@@ -36,11 +35,6 @@ def museum_global(request):
         data["drupe"] = True
     if data["datetime"].day == 1 and data["datetime"].month == 4:  # April 1st
         data["april"] = True
-
-    # Common query string modifications
-    data["qs_sans_page"] = qs_sans(request.GET, "page")
-    data["qs_sans_view"] = qs_sans(request.GET, "view")
-    data["qs_sans_both"] = qs_sans(request.GET, ["page", "view"])
 
     # E-mail
     data["EMAIL_ADDRESS"] = EMAIL_ADDRESS

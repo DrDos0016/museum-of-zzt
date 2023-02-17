@@ -1,29 +1,30 @@
 {% load site_tags %}
 <!--paginator-block.html-->
+{% with qs_sans_page=request.GET|qs_sans:'page' qs_sans_view=request.GET|qs_sans:'view' qs_sans_both=request.GET|qs_sans:'page,view' %}
 {% if paginator.num_pages > 1 %}
 <nav class="paginator-block">
     <div class="page-snap">
-        <a href="?page=1{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" class="page-first" title="First Page">◄◄</a>
+        <a href="?page=1{{qs_sans_page}}" class="page-first" title="First Page">◄◄</a>
         {% if page_obj.has_previous %}
-            <a class="page-prev" href="?page={{page_obj.previous_page_number}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" title="Previous Page">◄</a>
+            <a class="page-prev" href="?page={{page_obj.previous_page_number}}{{qs_sans_page}}" title="Previous Page">◄</a>
             {% else %}<div class="page-prev">◄</div>
         {% endif %}
         <div class="page-info">
             Page #
-            <select name="page-selector" data-params="{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">
+            <select name="page-selector" data-params="{{qs_sans_page}}">
                 {% for p in paginator.page_range %}<option{% if p == page_obj.number %} selected{% endif %}>{{p}}</option>
                 {% endfor %}
             </select>
             / {{paginator.num_pages}}
         </div>
         {% if page_obj.has_next %}
-            <a class="page-next" href="?page={{page_obj.next_page_number}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" title="Next Page">►</a>
+            <a class="page-next" href="?page={{page_obj.next_page_number}}{{qs_sans_page}}" title="Next Page">►</a>
             {% else %}<div class="page-next">►</div>
         {% endif %}
-        <a href="?page={{paginator.num_pages}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}" class="page-last" title="Last Page">►►</a>
+        <a href="?page={{paginator.num_pages}}{{qs_sans_page}}" class="page-last" title="Last Page">►►</a>
     </div>
     <div class="page-links">
-        {% for p in page_range %}<a class="page-number-link{% if p == page_obj.number %} selected{% endif %}" href="?page={{p}}{% if qs_sans_page %}&{{qs_sans_page}}{% endif %}">{{p}}</a>
+        {% for p in page_range %}<a class="page-number-link{% if p == page_obj.number %} selected{% endif %}" href="?page={{p}}{{qs_sans_page}}">{{p}}</a>
         {% endfor %}
     </div>
 </nav>
@@ -33,11 +34,11 @@
     {% for v in available_views %}
     {% if view == "list" %}
         {% if v == view %}<span class="view selected">{{v|title}} View</span></a>
-        {% else %}<a class="view" href="?view={{v}}{% if qs_sans_both %}&{{qs_sans_both}}{% endif %}">{{v|title}} View</a>{% endif %}
+        {% else %}<a class="view" href="?view={{v}}{{qs_sans_both}}">{{v|title}} View</a>{% endif %}
     {% else %}
         {% if v == view %}<span class="view selected">{{v|title}} View</span>
-        {% elif v == "list" %}<a class="view" href="?view={{v}}{% if qs_sans_both %}&{{qs_sans_both}}{% endif %}">{{v|title}} View</a>
-        {% else %}<a class="view" href="?view={{v}}{% if qs_sans_view %}&{{qs_sans_view}}{% endif %}">{{v|title}} View</a>
+        {% elif v == "list" %}<a class="view" href="?view={{v}}{{qs_sans_both}}">{{v|title}} View</a>
+        {% else %}<a class="view" href="?view={{v}}{{qs_sans_view}}">{{v|title}} View</a>
         {% endif %}
     {% endif %}
     {% if not forloop.last %} ♦ {% endif %}
@@ -64,3 +65,4 @@
 {% endif %}
 
 {% if not disable_guide_words %}{% guide_words object_list sort=sort location=location %}{% endif %}
+{% endwith %}

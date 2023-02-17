@@ -12,26 +12,6 @@ import urllib.parse
 from PIL import Image
 
 
-def qs_sans(params, key):
-    """ Returns a query string with a key removed """
-    qs = params.copy()
-
-    # If key is actually a list
-    if isinstance(key, list):
-        qs_nokey = qs.copy()
-        for k in key:
-            if k in qs:
-                qs_nokey.pop(k)
-    else:
-        if key in qs:
-            qs_nokey = qs.copy()
-            qs_nokey.pop(key)
-        else:
-            qs_nokey = qs
-
-    return qs_nokey.urlencode()
-
-
 def throttle_check(
     request, attempt_name, expiration_name, max_attempts,
     lockout_mins=5

@@ -398,3 +398,17 @@ def guide_words(qs, *args, **kwargs):
     (first_key, first_value) = qs[0].guide_words(sort)
     (last_key, last_value) = qs[len(qs) - 1].guide_words(sort)
     return mark_safe(output.format(first_key, first_value, last_key, last_value) + "\n")
+
+
+@register.filter
+def qs_sans(raw, args):
+    query_dict = raw.copy()
+
+    for key in args.split(","):
+        if key in query_dict.keys():
+            del query_dict[key]
+
+    query_string = query_dict.urlencode()
+    if query_string:
+        return "&" + query_string
+    return ""
