@@ -52,6 +52,16 @@ class Museum_Site_Config(AppConfig):
         print("-------------------- Initializing Cache --------------------")
         INITIAL_CACHE = {}
 
+        if os.path.isfile(os.path.join(site_root, "DEV")):
+            INITIAL_CACHE["ENV"] = "DEV"
+        elif os.path.isfile(os.path.join(site_root, "BETA")):
+            INITIAL_CACHE["ENV"] = "BETA"
+        elif os.path.isfile(os.path.join(site_root, "PROD")):
+            INITIAL_CACHE["ENV"] = "PROD"
+        else:
+            print("Environment Flag File not found. Assuming DEV enironment.\nCreate a file named DEV/BETA/PROD in: {}".format(site_root))
+            INITIAL_CACHE["ENV"] = "DEV"
+
         try:
             INITIAL_CACHE["UPLOAD_QUEUE_SIZE"] = File.objects.unpublished().count()
         except ProgrammingError:

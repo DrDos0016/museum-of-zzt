@@ -4,7 +4,7 @@ from django.core.cache import cache
 
 from museum_site.constants import TERMS_DATE, DEBUG, CSS_INCLUDES, BOOT_TS, EMAIL_ADDRESS
 from museum_site.core.detail_identifiers import *
-from museum_site.common import env_from_host, qs_sans
+from museum_site.common import qs_sans
 from museum_site.models.file import File
 
 
@@ -26,7 +26,7 @@ def museum_global(request):
 
     # Server info
     data["HOST"] = request.get_host()
-    data["ENV"] = env_from_host(data["HOST"])
+    data["ENV"] = cache.get("ENV")
     data["PROTOCOL"] = "https" if request.is_secure() else "http"
     data["DOMAIN"] = data["PROTOCOL"] + "://" + data["HOST"]
 
