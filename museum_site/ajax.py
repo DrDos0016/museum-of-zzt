@@ -14,6 +14,7 @@ from museum_site.models import *
 from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core.misc import extract_file_key_from_url
+from museum_site.core.palette import parse_pld
 from museum_site.templatetags.site_tags import model_block
 
 
