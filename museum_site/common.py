@@ -2,7 +2,6 @@ from django.shortcuts import redirect, reverse
 
 from museum_site.models import *
 from museum_site.constants import *
-from museum_site.private import BANNED_IPS
 
 from datetime import datetime
 import codecs
@@ -24,13 +23,3 @@ def zipinfo_datetime_tuple_to_str(raw):
 def record(*args, **kwargs):
     if not os.path.isfile("/var/projects/museum-of-zzt/PROD"):
         print(*args, **kwargs)
-
-
-def banned_ip(ip):
-    if ip in BANNED_IPS:
-        return True
-    elif "." in ip:
-        ip = ".".join(ip.split(".")[:-1]) + ".*"
-        if ip in BANNED_IPS:
-            return True
-        return False

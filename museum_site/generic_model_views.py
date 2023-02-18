@@ -8,10 +8,10 @@ from django.views.generic import DetailView, ListView
 
 from markdown_deux.templatetags import markdown_deux_tags
 
-from museum_site.common import banned_ip
 from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED, MODEL_BLOCK_VERSION
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.form_utils import clean_params
+from museum_site.core.misc import banned_ip
 from museum_site.forms import ReviewForm
 from museum_site.models import *
 from museum_site.text import CATEGORY_DESCRIPTIONS

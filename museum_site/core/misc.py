@@ -5,7 +5,7 @@ import urllib.parse
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from museum_site.constants import SITE_ROOT
+from museum_site.constants import BANNED_IPS, SITE_ROOT
 from museum_site.common import record
 
 try:
@@ -231,3 +231,13 @@ def profanity_filter(text):
         output.append(word)
 
     return " ".join(output)
+
+
+def banned_ip(ip):
+    if ip in BANNED_IPS:
+        return True
+    elif "." in ip:
+        ip = ".".join(ip.split(".")[:-1]) + ".*"
+        if ip in BANNED_IPS:
+            return True
+        return False
