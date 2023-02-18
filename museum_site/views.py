@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from museum_site.common import *
 from museum_site.constants import *
 from museum_site.models import *
 from museum_site.private import (

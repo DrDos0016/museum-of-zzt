@@ -2,7 +2,7 @@ import smtplib
 import ssl
 
 from django.contrib.auth.models import User
-from museum_site.common import *
+from museum_site.core.misc import record
 from museum_site.constants import *
 from museum_site.models import *
 

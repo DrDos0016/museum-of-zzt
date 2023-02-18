@@ -12,7 +12,6 @@ django.setup()
 from django.contrib.auth.models import User  # noqa: E402
 
 from museum_site.models import *  # noqa: E402
-from museum_site.common import *  # noqa: E402
 from museum_site.constants import *  # noqa: E402
 
 now = datetime.utcnow()

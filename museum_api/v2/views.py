@@ -1,6 +1,5 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
-from museum_site.common import *
 from museum_site.constants import *
 from museum_site.models import *
 

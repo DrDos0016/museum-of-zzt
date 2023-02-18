@@ -3,7 +3,6 @@ from datetime import date
 from django.shortcuts import render
 from django.views import View
 
-from museum_site.common import *
 from museum_site.constants import *
 from museum_site.models import *
 

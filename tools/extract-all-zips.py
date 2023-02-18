@@ -11,7 +11,7 @@ django.setup()
 from django.contrib.auth.models import User  # noqa: E402
 
 from museum_site.models import *  # noqa: E402
-from museum_site.common import SITE_ROOT  # noqa: E402
+from museum_site.constants import SITE_ROOT  # noqa: E402
 
 
 Z_EXTRACT = os.path.join(SITE_ROOT, "tools", "z-extract")

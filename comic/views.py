@@ -3,11 +3,7 @@ import math
 from django.shortcuts import render, redirect
 from .models import Comic
 
-# Use main site's page size if availalbe
-try:
-    from z2_site.common import PAGE_SIZE
-except ImportError:
-    PAGE_SIZE = 25  # Fallback
+from museum_site.constants import PAGE_SIZE
 
 def cast(request, comic_account):
     data = {}

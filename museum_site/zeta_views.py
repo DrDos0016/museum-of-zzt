@@ -6,7 +6,6 @@ from io import BytesIO
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core.decorators import rusty_key_check
 from museum_site.core.detail_identifiers import *

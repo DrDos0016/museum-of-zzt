@@ -19,7 +19,7 @@ django.setup()
 from museum_site.models import File  # noqa: E402
 
 from museum_site.core.detail_identifiers import *
-from museum_site.common import SITE_ROOT  # noqa: E402
+from museum_site.constants import SITE_ROOT  # noqa: E402
 
 CRON_ROOT = os.path.join(SITE_ROOT, "tools", "crons")
 MASS_DL_DATA_PATH = os.path.join(

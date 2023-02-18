@@ -16,8 +16,8 @@ from mastodon import Mastodon
 from twitter import *
 
 from museum.settings import STATIC_URL
-from museum_site.common import record
 from museum_site.constants import SITE_ROOT, TEMP_PATH
+from museum_site.core.misc import record
 from museum_site.models import BaseModel, File
 from museum_site.querysets.wozzt_queue_querysets import *
 try:

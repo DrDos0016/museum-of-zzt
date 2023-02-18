@@ -18,12 +18,11 @@ from django.shortcuts import render
 from django.template.defaultfilters import slugify, striptags
 from django.urls import get_resolver
 
-from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
 from museum_site.core.image_utils import crop_file, optimize_image
-from museum_site.core.misc import calculate_sort_title, calculate_boards_in_zipfile
+from museum_site.core.misc import calculate_sort_title, calculate_boards_in_zipfile, record
 from museum_site.forms import *
 from museum_site.models import *
 

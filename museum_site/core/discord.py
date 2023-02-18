@@ -6,7 +6,7 @@ import requests
 from django.core.cache import cache
 
 from museum_site.constants import *
-from museum_site.common import record
+from museum_site.core.misc import record
 from museum_site.private import NEW_REVIEW_WEBHOOK_URL, NEW_UPLOAD_WEBHOOK_URL, DISCORD_INVITE_URL
 
 # Announcement Settings

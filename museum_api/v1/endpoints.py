@@ -12,8 +12,6 @@ from PIL import Image
 
 from museum_site.models import File, WoZZT_Queue
 from museum_site.core.detail_identifiers import *
-
-from museum_site.common import *
 from museum_site.constants import *
 
 try:

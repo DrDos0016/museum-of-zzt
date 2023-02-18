@@ -10,7 +10,6 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
-from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core import redirect_with_querystring
 from museum_site.forms import *

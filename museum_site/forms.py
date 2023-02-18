@@ -16,13 +16,13 @@ from PIL import Image
 from internetarchive import upload as ia_upload
 
 from museum_site.core import *
-from museum_site.common import record
 from museum_site.constants import (
     LICENSE_CHOICES, LICENSE_SOURCE_CHOICES, LANGUAGE_CHOICES, TERMS, UPLOAD_TEST_MODE, SITE_ROOT, TEMP_PATH, YEAR, EMAIL_ADDRESS
 )
 from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import delete_this
 from museum_site.core.form_utils import any_plus, get_sort_option_form_choices
+from museum_site.core.misc import record
 from museum_site.core.social import Social_Twitter, Social_Mastodon
 from museum_site.fields import *
 from museum_site.models import *

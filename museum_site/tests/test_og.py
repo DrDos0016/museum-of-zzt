@@ -5,7 +5,6 @@ import requests
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from museum_site.common import *
 from museum_site.constants import *
 from museum_site.forms import *
 from museum_site.models import *
