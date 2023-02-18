@@ -1,4 +1,3 @@
-from django.template.loader import render_to_string
 from django.shortcuts import redirect, reverse
 
 from museum_site.models import *
@@ -8,37 +7,6 @@ from museum_site.private import BANNED_IPS
 from datetime import datetime
 import codecs
 import urllib.parse
-
-from PIL import Image
-
-
-def throttle_check(
-    request, attempt_name, expiration_name, max_attempts,
-    lockout_mins=5
-):
-    # Origin time for calculating lockout
-    now = datetime.now()
-
-    # Increment attempts
-    request.session[attempt_name] = request.session.get(attempt_name, 0) + 1
-
-    # Lockout after <max_attempts>
-    if request.session[attempt_name] > max_attempts:
-        # If they're already locked out and the timer's expired, resume
-        if (
-            request.session.get(expiration_name) and
-            (str(now)[:19] > request.session[expiration_name])
-        ):
-            request.session[attempt_name] = 1
-            del request.session[attempt_name]
-            del request.session[expiration_name]
-            return True
-
-        # Otherwise lock them out
-        delta = timedelta(minutes=lockout_mins)
-        request.session[expiration_name] = str(now + delta)
-        return False
-    return True
 
 
 def zipinfo_datetime_tuple_to_str(raw):
@@ -56,96 +24,6 @@ def zipinfo_datetime_tuple_to_str(raw):
 def record(*args, **kwargs):
     if not os.path.isfile("/var/projects/museum-of-zzt/PROD"):
         print(*args, **kwargs)
-
-
-def redirect_with_querystring(name, qs, *args, **kwargs):
-    url = reverse(name, args=args, kwargs=kwargs)
-    if qs:
-        url += "?" + qs
-    return redirect(url)
-
-
-def profanity_filter(text):
-    PROFANITY = [
-        'ergneq', 'snttbg', 'shpx', 'fuvg', 'qnza', 'nff', 'cvff', 'phag', 'avttre', 'ovgpu'
-    ]
-    output = []
-    words = text.split(" ")
-    for word in words:
-        for p in PROFANITY:
-            pword = codecs.encode(p, "rot_13")
-            if word.lower().find(pword) != -1:
-                replacement = ("✖" * len(pword))
-                word = word.lower().replace(pword, replacement)
-        output.append(word)
-
-    return " ".join(output)
-
-
-def explicit_redirect_check(request, pk):
-    if int(request.session.get("show_explicit_for", 0)) != pk:
-        next_param = urllib.parse.quote(request.get_full_path())
-        if not request.session.get("bypass_explicit_content_warnings"):
-            return redirect_with_querystring("explicit_warning", "next={}&pk={}".format(next_param, pk))
-    return "NO-REDIRECT"
-
-
-def parse_pld(pld):
-    context = {}
-    colors = []
-    upal_vals = []
-    indices = [
-        0x00, 0x03, 0x06, 0x09, 0x0C, 0x0F, 0x3C, 0x15,
-        0xA8, 0xAB, 0xAE, 0xB1, 0xB4, 0xB7, 0xBA, 0xBD,
-    ]
-
-    for i in indices:
-        upal_val = (pld[i], pld[i+1], pld[i+2])
-        upal_vals.append(upal_val)
-
-    # Create swatch
-    x = 0
-    y = 0
-    im = Image.new("RGBA", (256, 16))
-    for v in upal_vals:
-        colors.append(upal_to_rgb(v))
-
-    context["table_rows"] = [
-        {"css_bg": "ega-black-bg", "color": "Black", "custom": colors[0],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[0][2]))[2:]).upper()},
-        {"css_bg": "ega-darkblue-bg", "color": "Dark Blue", "custom": colors[1],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[1][2]))[2:]).upper()},
-        {"css_bg": "ega-darkgreen-bg", "color": "Dark Green", "custom": colors[2],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[2][2]))[2:]).upper()},
-        {"css_bg": "ega-darkcyan-bg", "color": "Dark Cyan", "custom": colors[3],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[3][2]))[2:]).upper()},
-        {"css_bg": "ega-darkred-bg", "color": "Dark Red", "custom": colors[4],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[4][2]))[2:]).upper()},
-        {"css_bg": "ega-darkpurple-bg", "color": "Dark Purple", "custom": colors[5],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[5][2]))[2:]).upper()},
-        {"css_bg": "ega-darkyellow-bg", "color": "Dark Yellow", "custom": colors[6],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[6][2]))[2:]).upper()},
-        {"css_bg": "ega-gray-bg", "color": "Gray", "custom": colors[7],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[7][2]))[2:]).upper()},
-        {"css_bg": "ega-darkgray-bg", "color": "Dark Gray", "custom": colors[8],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[8][2]))[2:]).upper()},
-        {"css_bg": "ega-blue-bg", "color": "Blue", "custom": colors[9],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[9][2]))[2:]).upper()},
-        {"css_bg": "ega-green-bg", "color": "Green", "custom": colors[10],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[10][2]))[2:]).upper()},
-        {"css_bg": "ega-cyan-bg", "color": "Cyan", "custom": colors[11],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[11][2]))[2:]).upper()},
-        {"css_bg": "ega-red-bg", "color": "Red", "custom": colors[12],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[12][2]))[2:]).upper()},
-        {"css_bg": "ega-purple-bg", "color": "Purple", "custom": colors[13],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[13][2]))[2:]).upper()},
-        {"css_bg": "ega-yellow-bg", "color": "Yellow", "custom": colors[14],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[14][2]))[2:]).upper()},
-        {"css_bg": "ega-white-bg", "color": "White", "custom": colors[15],
-         "hex": "#" + (str(hex(colors[15][0]))[2:] + str(hex(colors[15][1]))[2:] + str(hex(colors[15][2]))[2:]).upper()},
-    ]
-
-    return render_to_string("museum_site/blocks/fv-palette.html", context)
 
 
 def banned_ip(ip):

@@ -10,6 +10,7 @@ from museum_site.common import *
 from museum_site.constants import *
 from museum_site.core.decorators import rusty_key_check
 from museum_site.core.detail_identifiers import *
+from museum_site.core.redirects import explicit_redirect_check
 from museum_site.core.zeta_identifiers import *
 from museum_site.models import *
 

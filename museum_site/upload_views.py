@@ -13,6 +13,7 @@ from museum_site.constants import BANNED_IPS, UPLOAD_CAP
 from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile
+from museum_site.core.redirects import redirect_with_querystring
 from museum_site.forms import *
 from museum_site.models import *
 from museum_site.private import NEW_UPLOAD_WEBHOOK_URL

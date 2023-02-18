@@ -187,3 +187,47 @@ def env_from_host(host):
         return "PROD"
     else:
         return "DEV"
+
+
+def throttle_check(request, attempt_name, expiration_name, max_attempts, lockout_mins=5):
+    """ This function was used for account resets and no longer seems to be implemented """
+    # Origin time for calculating lockout
+    now = datetime.now()
+
+    # Increment attempts
+    request.session[attempt_name] = request.session.get(attempt_name, 0) + 1
+
+    # Lockout after <max_attempts>
+    if request.session[attempt_name] > max_attempts:
+        # If they're already locked out and the timer's expired, resume
+        if (
+            request.session.get(expiration_name) and
+            (str(now)[:19] > request.session[expiration_name])
+        ):
+            request.session[attempt_name] = 1
+            del request.session[attempt_name]
+            del request.session[expiration_name]
+            return True
+
+        # Otherwise lock them out
+        delta = timedelta(minutes=lockout_mins)
+        request.session[expiration_name] = str(now + delta)
+        return False
+    return True
+
+
+def profanity_filter(text):
+    PROFANITY = [
+        'ergneq', 'snttbg', 'shpx', 'fuvg', 'qnza', 'nff', 'cvff', 'phag', 'avttre', 'ovgpu'
+    ]
+    output = []
+    words = text.split(" ")
+    for word in words:
+        for p in PROFANITY:
+            pword = codecs.encode(p, "rot_13")
+            if word.lower().find(pword) != -1:
+                replacement = ("✖" * len(pword))
+                word = word.lower().replace(pword, replacement)
+        output.append(word)
+
+    return " ".join(output)
