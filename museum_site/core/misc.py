@@ -241,3 +241,15 @@ def banned_ip(ip):
         if ip in BANNED_IPS:
             return True
         return False
+
+
+def zipinfo_datetime_tuple_to_str(raw):
+    dt = raw.date_time
+    y = str(dt[0])
+    m = str(dt[1]).zfill(2)
+    d = str(dt[2]).zfill(2)
+    h = str(dt[3]).zfill(2)
+    mi = str(dt[4]).zfill(2)
+    s = str(dt[5]).zfill(2)
+    out = "{}-{}-{} {}:{}:{}".format(y, m, d, h, mi, s)
+    return out

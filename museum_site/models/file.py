@@ -16,11 +16,10 @@ try:
 except ImportError:
     HAS_ZOOKEEPER = False
 
-from museum_site.common import zipinfo_datetime_tuple_to_str
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH
 from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import calculate_md5_checksum
-from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile
+from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile, zipinfo_datetime_tuple_to_str
 from museum_site.core.image_utils import optimize_image
 from museum_site.core.transforms import qs_to_links
 from museum_site.core.zeta_identifiers import *
