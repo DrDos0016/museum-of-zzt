@@ -2,7 +2,7 @@ import os
 
 from datetime import datetime
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from museum_site.constants import *
 from museum_site.core.file_utils import serve_file_as

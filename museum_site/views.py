@@ -5,7 +5,7 @@ import re
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from museum_site.constants import *
 from museum_site.models import *
@@ -157,7 +157,6 @@ def set_theme(request):
 
 
 def scroll_navigation(request):
-
     if request.GET.get("id"):
         ref = int(request.GET["id"])
         scroll = None

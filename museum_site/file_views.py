@@ -3,7 +3,7 @@ import urllib.parse
 import zipfile
 
 from django.core.cache import cache
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from museum_site.constants import *
 from museum_site.core import *

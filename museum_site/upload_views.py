@@ -4,7 +4,7 @@ from datetime import datetime
 
 from django.core.cache import cache
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, FormView
 
 from museum_site.constants import *
