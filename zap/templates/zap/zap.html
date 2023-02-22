@@ -1,0 +1,12 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block content %}
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+{% for button in form.extra_buttons %}{{button|safe}}{% endfor %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+{% endblock %}

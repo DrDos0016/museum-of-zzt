@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "comic",
     "poll",
     "museum_api",
+    "zap",
 ]
 
 MIDDLEWARE = [

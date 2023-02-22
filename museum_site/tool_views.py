@@ -1052,6 +1052,15 @@ def sms(request):
     return render(request, "museum_site/tools/sms.html", context)
 
 
+def sms_stream_schedule(request):
+    context = {"title": "SMS Stream Schedule"}
+    if request.method == "POST":
+        form = SMS_Stream_Schedule_Form(request.POST, request.FILES)
+    else:
+        form = SMS_Stream_Schedule_Form()
+    return render(request, "museum_site/generic-form-display-output.html", context)
+
+
 """
         PUBLIC TOOLS BELOW
 """

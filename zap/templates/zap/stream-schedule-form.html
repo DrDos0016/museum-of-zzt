@@ -1,0 +1,40 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block scripts %}
+<script src="{% static 'js/html2canvas.min.js' %}"></script>
+<script>
+$("document").ready(function(){
+    $("#preview").click(preview);
+});
+
+function preview()
+{
+    var form_data = $("#stream-schedule-form").serializeArray();
+    console.log(form_data);
+    $.ajax({
+        url:"/tools/zap/preview/stream-schedule/",
+        data:form_data,
+        method:"POST",
+    }).done(function (response){
+        $("#preview-frame").html(response);
+    });
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<form id="stream-schedule-form" {% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+{% for button in form.extra_buttons %}{{button|safe}}{% endfor %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+
+<hr>
+
+<div id="preview-frame"></div>
+
+
+{% endblock %}
