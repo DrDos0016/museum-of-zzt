@@ -184,12 +184,10 @@ class Article(BaseModel):
         # Pull data from the request
         if self.request:
             patronage = self.request.user.profile.patronage if self.request.user.is_authenticated else 0
-            secret = self.request.POST.get("secret", "")
-            secret_get = self.request.GET.get("secret")
+            secret = self.request.POST.get("secret", self.request.GET.get("secret", ""))
         else:
             patronage = 0
             secret = ""
-            secret_get = None
 
         # Patronage based access level increases
         if patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
@@ -200,7 +198,7 @@ class Article(BaseModel):
         # Password based access level increases
         self.user_access_level = self.UPCOMING if secret == PASSWORD2DOLLARS else self.user_access_level  # Universal Upcoming PW
         self.user_access_level = self.UNPUBLISHED if secret == PASSWORD5DOLLARS else self.user_access_level  # Universal Upcoming PW
-        self.user_access_level = self.UNPUBLISHED if (secret_get == self.secret) else self.user_access_level  # Local PW
+        self.user_access_level = self.UNPUBLISHED if (self.secret and secret == self.secret) else self.user_access_level  # Per-Article PW
 
     def _init_icons(self):
         # Populates major and minor icons for file
@@ -270,6 +268,8 @@ class Article(BaseModel):
 
     def get_field_view(self, view="detailed", text_override=""):
         url = "/article/view/{}/{}/".format(self.pk, slugify(self.title))
+        if self.request and self.request.POST.get("secret"):
+            url += "?secret={}".format(self.request.POST.get("secret"))
         if text_override:
             text = text_override
         else:

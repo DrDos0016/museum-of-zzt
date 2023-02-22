@@ -18,23 +18,9 @@ class Article_Detail_View(DetailView):
             del kwargs["slug"]
         super().setup(request, *args, **kwargs)
 
-    def get_user_access_level(self):
-        access = Article.PUBLISHED  # Default access level
-        if self.request.user.is_authenticated:  # Check for patronage based access level
-            if self.request.user.profile.patronage >= UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE:
-                access = Article.UNPUBLISHED
-            elif self.request.user.profile.patronage >= UPCOMING_ARTICLE_MINIMUM_PATRONAGE:
-                access = Article.UPCOMING
-
-        # Check for generic or article specific passwords
-        if self.request.GET.get("secret") in [PASSWORD5DOLLARS, self.object.secret]:
-            access = Article.UNPUBLISHED
-        elif self.request.GET.get("secret") == PASSWORD2DOLLARS:
-            access = Article.UPCOMING
-        return access
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        self.object.init_model_block_context("detailed", request=self.request)
         context["title"] = self.object.title
         context["slug"] = self.slug
         context["private_disclaimer"] = (self.object.published != Article.PUBLISHED)
@@ -56,7 +42,7 @@ class Article_Detail_View(DetailView):
         return context
 
     def render_to_response(self, context, **response_kwargs):
-        if self.object.published > self.get_user_access_level():  # Access level too low for article
+        if self.object.published > self.object.user_access_level:  # Access level too low for article
             return redirect_with_querystring("article_lock", self.request.META["QUERY_STRING"], article_id=self.object.pk, slug=self.slug)
         if self.object.published == Article.REMOVED:  # Block requests for REMOVED articles
             raise PermissionDenied()
@@ -80,6 +66,7 @@ def patron_articles(request):
 def article_lock(request, article_id, slug=""):
     """ Page shown when a non-public article is attempted to be viewed """
     article = Article.objects.get(pk=article_id)
+    article.init_model_block_context("detailed", request=request)
     article.allow_comments = False
     data = {"title": "Restricted Article", "article": article, "cost": article.early_access_price, "release": article.publish_date}
     return render(request, "museum_site/article_lock.html", data)
