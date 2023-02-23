@@ -378,7 +378,7 @@ class Advanced_Search_Form(forms.Form):
     details = forms.MultipleChoiceField(
         widget=Scrolling_Checklist_Widget(
             choices=qs_to_categorized_select_choices(
-                Detail.objects.filter(visible=True),
+                Detail.objects.visible,
                 category_order=["ZZT", "SZZT", "Media", "Other"]
             ),
             categories=True,
@@ -386,7 +386,7 @@ class Advanced_Search_Form(forms.Form):
             show_selected=True,
             default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE]
         ),
-        choices=qs_to_categorized_select_choices(Detail.objects.filter(visible=True), category_order=["ZZT", "SZZT", "Media", "Other"]),
+        choices=qs_to_categorized_select_choices(Detail.objects.visible, category_order=["ZZT", "SZZT", "Media", "Other"]),
         required=False,
     )
     sort = forms.ChoiceField(
@@ -743,7 +743,7 @@ class SeriesForm(forms.ModelForm):
     associations = forms.MultipleChoiceField(
         widget=Scrolling_Checklist_Widget(
             choices=qs_to_categorized_select_choices(
-                Article.objects.not_removed(),
+                Article.objects.not_removed,
             ),
         ),
         choices=list(Article.objects.not_removed().values_list("id", "title")),

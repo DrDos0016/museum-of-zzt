@@ -15,6 +15,11 @@
     font-size: 14pt;
 }
 
+.article-pages.bottom
+{
+    margin-top:7px;
+}
+
 /* Used in Publication Packs */
 .image-set
 {
@@ -38,10 +43,14 @@
     display:grid;
     grid-template-areas: "preview info";
     grid-template-columns:minmax(240px, auto) 1fr;
-    border-bottom:1px solid var(--border-color);
-    column-gap:32px;
+    column-gap:8px;
     width:100%;
-    margin-bottom:7px;
+    margin:auto;
+}
+
+#article-meta h1, #article-meta h2
+{
+    margin:0px;
 }
 
 #article-meta .preview-container
@@ -52,7 +61,7 @@
     padding-bottom:4px;
 }
 
-#article-meta .info { grid-area:info; }
+#article-meta .info { grid-area:info; max-width:500px; }
 #article-meta .info > div { font-size:10pt; font-family:monospace;}
 #article-meta .info p { font-size:12pt; }
 #article-meta .preview { border:1px solid; }

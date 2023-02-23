@@ -232,7 +232,8 @@ pre.cp437 { line-height:14px;}
     max-width:500px;
     margin:auto;
     border:1px dashed var(--border-color);
-    margin-bottom:1em;
+    margin-top:14px;
+    margin-bottom:14px;
 }
 
 .content-warning .text, .sticky-note .text

@@ -88,6 +88,7 @@ class Article(BaseModel):
     author = models.CharField(help_text="Author(s) of the article. Slash separated.", max_length=50)
     category = models.CharField(help_text="Categorization of the article.", choices=CATEGORY_CHOICES, max_length=50)
     content = models.TextField(help_text="Body of the article.", default="")
+    footnotes = models.TextField(help_text="Footnotes for article.", default="")
     css = models.TextField(help_text="Custom CSS. Must include <style></style> if set.", default="", blank=True)
     schema = models.CharField(help_text="Schema for the article. Used to determine parsing method.", max_length=6, choices=SCHEMAS, default="django")
     publish_date = models.DateField(help_text="Date the article was made public on the Museum", default=None, null=True, blank=True)
@@ -129,11 +130,7 @@ class Article(BaseModel):
     def render(self, context={}):
         """ Render article content for use in a django template """
         if self.schema == "django":
-            context_data = {
-                "TODO": "TODO", "CROP": "CROP",  # Expected TODO usage.
-                "path": self.path,
-                "request": context.get("request")
-            }
+            context_data = {"TODO": "TODO", "CROP": "CROP", "path": self.path, "request": context.get("request")}  # Expected TODO usage.
             head = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}"
             return Template(head + self.content).render(Context(context_data))
         elif self.schema == "html":
@@ -142,6 +139,12 @@ class Article(BaseModel):
             return linebreaks(mark_safe(self.content))
         elif self.schema == "80col":
             return '<pre class="80col cp437" id="80col-content">1{}</pre>'.format(self.content)
+
+    def render_footnotes(self, context={}):
+        """ Render footnotes for use in a django template -- assumes django schema """
+        context_data = {"path": self.path, "request": context.get("request")}
+        head = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}"
+        return Template(head + self.footnotes).render(Context(context_data))
 
     def series_links(self):
         """ Returns HTML links to related series """

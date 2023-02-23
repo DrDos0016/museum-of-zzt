@@ -2,6 +2,7 @@ from django.template.defaultfilters import escape
 
 def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False, allow_none=False, qs_kwargs={}):
     """ Transform a queryset into a list suitable for Django's forms. """
+    # TODO: This is a bad function that causes problems when making DB changes, requiring a temporary "return output" line below
     output = []
 
     if allow_none:
@@ -15,17 +16,16 @@ def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False, allow_no
     return output
 
 
-def qs_to_categorized_select_choices(qs, text="{0}", val="{0.pk}", category_order=None):
-    # TODO: This queryset is pre-evaluated before calling this function
+def qs_to_categorized_select_choices(qs, text="{0}", val="{0.pk}", category_order=None, qs_kwargs={}):
+    # TODO: This is a bad function that causes problems when making DB changes, requiring a temporary "return output" line below
     output = []
 
     categories = {}
-    for i in qs:
+
+    for i in qs(**qs_kwargs):
         if not categories.get(i.category):
             categories[i.category] = []
-        categories[i.category].append(
-            (str(i.pk), i.title)
-        )
+        categories[i.category].append((str(i.pk), i.title))
 
     if category_order is None:
         category_order = list(categories.keys())
