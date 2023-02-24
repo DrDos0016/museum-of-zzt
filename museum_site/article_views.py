@@ -38,8 +38,10 @@ class Article_Detail_View(DetailView):
         context["next"] = None if context["page"] + 1 > context["page_count"] else context["page"] + 1
         context["prev"] = context["page"] - 1
         context["article"].content = self.object.content.split("<!--Page-->")[context["page"]-1]
-        if "<!--Page-->" in context["article"].footnotes:
+        if "<!--Page-->" in context["article"].footnotes:  # Only split if there are mutiple pages that need footnotes
             context["article"].footnotes = self.object.footnotes.split("<!--Page-->")[context["page"]-1]
+        elif context["page"] > 1:  # Otherwise hide the footnotes on all but the first page
+            context["article"].footnotes = ""
 
         return context
 
