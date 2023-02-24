@@ -1,0 +1,28 @@
+{% extends "museum_site/main.html" %}
+{% comment %}Outline used for rendering Articles {% endcomment %}
+{% load static %}
+{% load site_tags %}
+
+{% block meta %}{% endblock %}
+
+{% block style %}{% endblock %}
+
+{% block scripts %}{% endblock %}
+
+{% block content %}
+    {% block article_overview %}{% endblock %}
+    {% block article_controls %}{% endblock %}
+    <hr>
+    {% if page_range %}{% include "museum_site/blocks/article_view_page_block.html" with location='bottom' %}{% endif %}
+    {% block article_prefix %}{% endblock %}
+    <article class="{{article.category|slugify}}" data-article_id="{{article.id}}" data-schema="{{article.schema}}">
+        {% block article_body %}{% endblock %}
+        {% block article_footnotes %}{% endblock %}
+    </article>
+    {% if page_range %}{% include "museum_site/blocks/article_view_page_block.html" with location='bottom' %}{% endif %}
+
+    <hr>
+    {% block article_footer %}{% endblock %}
+    <hr>
+    {% block comments %}{% endblock %}
+{% endblock %}
