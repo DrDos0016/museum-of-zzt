@@ -38,7 +38,8 @@ class Article_Detail_View(DetailView):
         context["next"] = None if context["page"] + 1 > context["page_count"] else context["page"] + 1
         context["prev"] = context["page"] - 1
         context["article"].content = self.object.content.split("<!--Page-->")[context["page"]-1]
-        context["article"].footnotes = self.object.footnotes.split("<!--Page-->")[context["page"]-1]
+        if "<!--Page-->" in context["article"].footnotes:
+            context["article"].footnotes = self.object.footnotes.split("<!--Page-->")[context["page"]-1]
 
         return context
 
