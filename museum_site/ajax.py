@@ -262,7 +262,7 @@ def get_collection_addition(request):
     if not collection_id:
         return HttpResponse("")
     entry = Collection_Entry.objects.get_latest_addition_to_collection(collection_id)
-    html = model_block({"request": request}, entry.zfile)
+    html = model_block({"request": request}, entry)
     return HttpResponse(html)
 
 

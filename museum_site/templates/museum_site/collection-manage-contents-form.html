@@ -142,7 +142,7 @@ var collection_id = {{collection.id|default:0}};
 <h2>Collection Contents</h2>
 <div id="collection-contents">
 {% for entry in contents %}
-{% model_block entry.zfile %}
+{% model_block entry %}
 {% endfor %}
 </div>
 {% else %}
