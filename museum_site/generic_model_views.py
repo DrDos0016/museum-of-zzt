@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from time import time
 
 from django.db.models import Count
@@ -297,6 +297,7 @@ class ZFile_Review_List_View(Model_List_View):
         return qs
 
     def get_context_data(self, **kwargs):
+        print("IN HERE")
         context = super().get_context_data(**kwargs)
         context["file"] = self.head_object
         context["title"] = "{} - Reviews".format(self.head_object.title)
@@ -313,7 +314,8 @@ class ZFile_Review_List_View(Model_List_View):
             return context
 
         # Prevent doubling up on reviews
-        recent = self.qs.filter(ip=self.request.META.get("REMOTE_ADDR"), date=context["today"])
+        cutoff = context["today"] + timedelta(days=-1)
+        recent = self.qs.filter(ip=self.request.META.get("REMOTE_ADDR"), date__gte=cutoff)
         if recent:
             context["recent"] = recent.first().pk
             return context
@@ -326,7 +328,7 @@ class ZFile_Review_List_View(Model_List_View):
             del review_form.fields["author"]
 
         # Post a review if one was submitted
-        if self.request.POST and review_form.is_valid():
+        if self.request.POST and review_form.is_valid() and not recent:
             review = review_form.save(commit=False)
             if self.request.user.is_authenticated:
                 review.author = self.request.user.username
