@@ -85,10 +85,10 @@ class Article(BaseModel):
 
     # Fields
     title = models.CharField(help_text="Title of the the article.", max_length=100)
-    author = models.CharField(help_text="Author(s) of the article. Slash separated.", max_length=50)
+    author = models.CharField(help_text="Author(s) of the article. Slash separated.", max_length=50, default="Dr. Dos")
     category = models.CharField(help_text="Categorization of the article.", choices=CATEGORY_CHOICES, max_length=50)
     content = models.TextField(help_text="Body of the article.", default="")
-    footnotes = models.TextField(help_text="Footnotes for article.", default="")
+    footnotes = models.TextField(help_text="Footnotes for article.", default="", blank=True)
     css = models.TextField(help_text="Custom CSS. Must include <style></style> if set.", default="", blank=True)
     schema = models.CharField(help_text="Schema for the article. Used to determine parsing method.", max_length=6, choices=SCHEMAS, default="django")
     publish_date = models.DateField(help_text="Date the article was made public on the Museum", default=None, null=True, blank=True)
