@@ -50,6 +50,9 @@ class Series(BaseModel):
     def __str__(self):
         return "[" + str(self.id) + "] " + self.title
 
+    def to_select(self):
+        return self.title
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         if self.id:

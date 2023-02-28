@@ -46,3 +46,8 @@ class Tag_List_Field(forms.MultipleChoiceField):
 
     def validate(self, value):
         pass  # All data entered is valid
+
+
+class Enhanced_Model_Choice_Field(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.to_select()

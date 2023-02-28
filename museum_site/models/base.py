@@ -167,3 +167,7 @@ class BaseModel(models.Model):
 
     def get_guideword_pk(self): return self.pk
     def get_guideword_title(self): return self.title
+
+    def to_select(self):
+        # Return a string representation of the object meant for user facing widgets
+        return self.__str__()

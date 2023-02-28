@@ -449,12 +449,6 @@ class Article_Search_Form(forms.Form):
     # TODO this may need to be moved/replaced if DB model changes
     CATEGORIES = Article.CATEGORY_CHOICES
 
-    SERIES_CHOICES = [("Any", "- ANY -")] + list(
-        Series.objects.filter(visible=True).order_by("title").values_list(
-            "id", "title"
-        )
-    )
-
     SORTS = (
         ("title", "Title"),
         ("author", "Author"),
@@ -470,7 +464,7 @@ class Article_Search_Form(forms.Form):
     category = forms.MultipleChoiceField(
         required=False, widget=forms.CheckboxSelectMultiple, choices=CATEGORIES
     )
-    series = forms.ChoiceField(label="In Series", choices=SERIES_CHOICES)
+    series = Enhanced_Model_Choice_Field(label="In Series", queryset=Series.objects.visible(), empty_label="- ANY -")
     sort = forms.ChoiceField(choices=SORTS)
 
 
