@@ -165,15 +165,11 @@ class ZGameForm(forms.ModelForm):
         if zfile and zfile.name:
             dupe = File.objects.filter(filename=zfile.name).first()
             if dupe and dupe.id != self.expected_file_id:
-                raise forms.ValidationError(
-                    "The selected filename is already in use. Please rename your zipfile."
-                )
+                raise forms.ValidationError("The selected filename is already in use. Please rename your zipfile.")
 
         # Check maximum upload size
         if zfile and zfile.size > self.max_upload_size:
-            raise forms.ValidationError(
-                "File exceeds your maximum upload size! Contact Dr. Dos for a manual upload."
-            )
+            raise forms.ValidationError("File exceeds your maximum upload size! Contact Dr. Dos for a manual upload.")
 
         return zfile
 
@@ -461,9 +457,7 @@ class Article_Search_Form(forms.Form):
     author = forms.CharField(label="Author contains", required=False)
     text = forms.CharField(label="Text contains", required=False)
     year = forms.ChoiceField(label="Publication year", choices=YEARS)
-    category = forms.MultipleChoiceField(
-        required=False, widget=forms.CheckboxSelectMultiple, choices=CATEGORIES
-    )
+    category = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=CATEGORIES)
     series = Enhanced_Model_Choice_Field(label="In Series", queryset=Series.objects.visible(), empty_label="- ANY -")
     sort = forms.ChoiceField(choices=SORTS)
 
@@ -815,10 +809,7 @@ class Livestream_Description_Form(forms.Form):
         required=False,
     )
     stream_date = forms.CharField(
-        widget=forms.DateInput(
-            format=("%y-%m-%d"),
-            attrs={"type": "date"}
-        ),
+        widget=forms.DateInput(format=("%y-%m-%d"), attrs={"type": "date"}),
         help_text="Date of original livestream",
         required=False
     )
@@ -844,9 +835,7 @@ class Livestream_Description_Form(forms.Form):
 class Prep_Publication_Pack_Form(forms.Form):
     use_required_attribute = False
     submit_value = "Generate Publication Pack"
-    publish_date = forms.CharField(
-        widget=Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Clear")
-    )
+    publish_date = forms.CharField(widget=Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Clear"))
     associated = forms.MultipleChoiceField(
         widget=Ordered_Scrolling_Radio_Widget(choices=associated_file_choices(query="unpublished")),
         choices=associated_file_choices(query="unpublished"),
@@ -869,9 +858,7 @@ class Change_Username_Form(forms.Form):
     attrs = {"method": "POST"}
     text_prefix = "<p>You may use this form to change your username. Afterwards, you will be required to login again with your new username and password.</p>"
 
-    current_password = forms.CharField(
-        widget=forms.PasswordInput()
-    )
+    current_password = forms.CharField(widget=forms.PasswordInput())
     new_username = forms.CharField()
     confirm_username = forms.CharField()
 
@@ -929,19 +916,9 @@ class Change_Ascii_Char_Form(forms.Form):
         widget=Ascii_Character_Widget(),
         help_text="Click on an ASCII character in the table to select it",
     )
-    foreground = forms.ChoiceField(
-        choices=COLOR_CHOICES,
-        widget=Ascii_Color_Widget(choices=COLOR_CHOICES),
-    )
-    background = forms.ChoiceField(
-        choices=COLOR_CHOICES,
-        widget=Ascii_Color_Widget(choices=COLOR_CHOICES, allow_transparent=True),
-    )
-    preview = Faux_Field(
-        label="Preview",
-        widget=Faux_Widget("museum_site/widgets/ascii-preview-widget.html"),
-        required=False,
-    )
+    foreground = forms.ChoiceField(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES))
+    background = forms.ChoiceField(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES, allow_transparent=True))
+    preview = Faux_Field(label="Preview", widget=Faux_Widget("museum_site/widgets/ascii-preview-widget.html"), required=False)
 
 
 class Change_Pronouns_Form(forms.Form):
@@ -960,10 +937,7 @@ class Change_Pronouns_Form(forms.Form):
         ("CUSTOM", "Custom (specify below)")
     )
 
-    pronouns = forms.ChoiceField(
-        choices=PRONOUN_CHOICES,
-        widget=forms.RadioSelect(choices=PRONOUN_CHOICES)
-    )
+    pronouns = forms.ChoiceField(choices=PRONOUN_CHOICES, widget=forms.RadioSelect(choices=PRONOUN_CHOICES))
     custom = forms.CharField(required=False)
 
 
@@ -1000,9 +974,7 @@ class Change_Email_Form(forms.Form):
         "<p>You may change your account's email address here. This address will be used to help you recover your account in the event your forget your "
         "username or password, so keep it up to date!</p>")
 
-    current_password = forms.CharField(
-        widget=forms.PasswordInput()
-    )
+    current_password = forms.CharField(widget=forms.PasswordInput())
     new_email = forms.EmailField()
     confirm_email = forms.EmailField()
 
@@ -1048,9 +1020,7 @@ class Change_Patronage_Visibility_Form(forms.Form):
     )
 
     visibility = forms.ChoiceField(
-        widget=forms.RadioSelect(
-            choices=(("show", "Show patron status"), ("hide", "Hide patron status"))
-        ),
+        widget=forms.RadioSelect(choices=(("show", "Show patron status"), ("hide", "Hide patron status"))),
         choices=(("show", "Show patron status"), ("hide", "Hide patron status")),
         label="Patronage Visibility"
     )
@@ -1076,12 +1046,7 @@ class Change_Patron_Stream_Poll_Nominations_Form(forms.Form):
     submit_value = "Change Stream Poll Nominations"
     heading = "Change Stream Poll Nominations"
     attrs = {"method": "POST"}
-
-    stream_poll_nominations = forms.CharField(
-        widget=forms.Textarea(),
-        label="Nominations",
-        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
-    )
+    stream_poll_nominations = forms.CharField(widget=forms.Textarea(), label="Nominations", help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS))
 
 
 class Change_Patron_Stream_Selections_Form(forms.Form):
@@ -1089,12 +1054,7 @@ class Change_Patron_Stream_Selections_Form(forms.Form):
     submit_value = "Change Stream Selections"
     heading = "Change Stream Selections"
     attrs = {"method": "POST"}
-
-    stream_selections = forms.CharField(
-        widget=forms.Textarea(),
-        label="Stream Selections",
-        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
-    )
+    stream_selections = forms.CharField(widget=forms.Textarea(), label="Stream Selections", help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS))
 
 
 class Change_Closer_Look_Poll_Nominations_Form(forms.Form):
@@ -1115,12 +1075,7 @@ class Change_Guest_Stream_Selections_Form(forms.Form):
     submit_value = "Change Guest Stream Selections"
     heading = "Change Guest Stream Selections"
     attrs = {"method": "POST"}
-
-    guest_stream_selections = forms.CharField(
-        widget=forms.Textarea(),
-        label="Guest Stream Selections",
-        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
-    )
+    guest_stream_selections = forms.CharField(widget=forms.Textarea(), label="Guest Stream Selections", help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS))
 
 
 class Change_Closer_Look_Selections_Form(forms.Form):
@@ -1128,12 +1083,7 @@ class Change_Closer_Look_Selections_Form(forms.Form):
     submit_value = "Change Closer Look Selections"
     heading = "Change Closer Look Selections"
     attrs = {"method": "POST"}
-
-    closer_look_selections = forms.CharField(
-        widget=forms.Textarea(),
-        label="Closer Look Selections",
-        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
-    )
+    closer_look_selections = forms.CharField(widget=forms.Textarea(), label="Closer Look Selections", help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS))
 
 
 class Change_Bkzzt_Topics_Form(forms.Form):
@@ -1141,12 +1091,7 @@ class Change_Bkzzt_Topics_Form(forms.Form):
     submit_value = "Change BKZZT Topics"
     heading = "Change BKZZT Topics"
     attrs = {"method": "POST"}
-
-    bkzzt_topics = forms.CharField(
-        widget=forms.Textarea(),
-        label="BKZZT Topic Selections",
-        help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS)
-    )
+    bkzzt_topics = forms.CharField(widget=forms.Textarea(), label="BKZZT Topic Selections", help_text=PATRON_DISCLAIMER_TEXT.format(EMAIL_ADDRESS))
 
 
 class User_Registration_Form(forms.Form):
@@ -1159,18 +1104,9 @@ class User_Registration_Form(forms.Form):
     requested_email = forms.EmailField(label="Email address", help_text="A valid email address is required to verify your account.")
     action = forms.CharField(widget=forms.HiddenInput(), initial="register")
     first_name = forms.CharField(required=False)  # Spam trap
-    password = forms.CharField(
-        min_length=8,
-        widget=forms.PasswordInput(),
-        help_text=PASSWORD_HELP_TEXT
-    )
-    confirm_password = forms.CharField(
-        min_length=8,
-        widget=forms.PasswordInput(),
-    )
-    terms = forms.BooleanField(
-        widget=Terms_Of_Service_Widget(terms=TERMS)
-    )
+    password = forms.CharField(min_length=8, widget=forms.PasswordInput(), help_text=PASSWORD_HELP_TEXT)
+    confirm_password = forms.CharField(min_length=8, widget=forms.PasswordInput(),)
+    terms = forms.BooleanField(widget=Terms_Of_Service_Widget(terms=TERMS))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -1317,9 +1253,7 @@ class Updated_Terms_Of_Service_Form(forms.Form):
         "must accept the current version of the terms.</p>"
     )
 
-    terms = forms.BooleanField(
-        widget=Terms_Of_Service_Widget(terms=TERMS)
-    )
+    terms = forms.BooleanField(widget=Terms_Of_Service_Widget(terms=TERMS))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -1335,15 +1269,9 @@ class Login_Form(forms.Form):
     heading = "Account Login"
     submit_value = "Login"
     attrs = {"method": "POST"}
-
     action = forms.CharField(widget=forms.HiddenInput(), initial="login")
-    username = forms.CharField(
-        help_text="<a href='/user/forgot-username/' tabindex='-1'>Forgot Username</a>"
-    )
-    password = forms.CharField(
-        help_text="<a href='/user/forgot-password/' tabindex='-1'>Forgot Password</a>",
-        widget=forms.PasswordInput()
-    )
+    username = forms.CharField(help_text="<a href='/user/forgot-username/' tabindex='-1'>Forgot Username</a>")
+    password = forms.CharField(help_text="<a href='/user/forgot-password/' tabindex='-1'>Forgot Password</a>", widget=forms.PasswordInput())
 
 
 class Tool_ZFile_Select_Form(forms.Form):
