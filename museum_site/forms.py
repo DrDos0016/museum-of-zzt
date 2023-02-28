@@ -58,9 +58,9 @@ class ZGameForm(forms.ModelForm):
         required=False,
         help_text=("Any companies this file is published under. If there are none, leave this field blank. If there are multiple, separate them with a comma."),
     )
-    genre = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(choices=qs_to_select_choices(Genre.objects.visible), buttons=["Clear"], show_selected=True),
-        choices=qs_to_select_choices(Genre.objects.filter, qs_kwargs={"visible": True}),
+    genre = forms.ModelMultipleChoiceField(
+        widget=Scrolling_Checklist_Widget(buttons=["Clear"], show_selected=True),
+        queryset=Genre.objects.visible(),
         required=False,
         help_text=(
             "Check any applicable genres that describe the content of the uploaded file. Use 'Other' if a genre isn't represented and mention it in the upload"
@@ -202,7 +202,7 @@ class ZGameForm(forms.ModelForm):
 
         if len(self.cleaned_data["genre"]):
             for genre in self.cleaned_data["genre"]:
-                if int(genre) not in valid_genres:
+                if int(genre.pk) not in valid_genres:
                     raise forms.ValidationError("An invalid genre was specified.")
         else:
             raise forms.ValidationError("At least one genre must be specified.")
@@ -345,10 +345,7 @@ class Advanced_Search_Form(forms.Form):
     filename = forms.CharField(label="Filename contains", required=False)
     contents = forms.CharField(label="Zip file contents contains", help_text="Enter a filename to search for in the file's zip file", required=False)
     company = forms.CharField(label="Company contains", required=False)
-    genre = forms.ChoiceField(
-        choices=qs_to_select_choices(Genre.objects.advanced_search_query, allow_any=True, val="{0.title}"),
-        required=False,
-    )
+    genre = forms.ModelChoiceField(required=False, queryset=Genre.objects.advanced_search_query(), to_field_name="title", empty_label="- ANY -")
     board = Manual_Field(
         label="Minimum / Maximum board count",
         widget=Board_Range_Widget(min_val=0, max_val=999, max_length=3),
@@ -1357,11 +1354,7 @@ class Login_Form(forms.Form):
 
 class Tool_ZFile_Select_Form(forms.Form):
     use_required_attribute = False
-
-    key = forms.ChoiceField(
-        label="ZFile",
-        choices=qs_to_select_choices(File.objects.tool_zfile_select, val="{0.key}"),
-    )
+    key = forms.ModelChoiceField(label="ZFile", queryset=File.objects.tool_zfile_select(), to_field_name="key")
 
 
 class Stream_Card_Form(forms.Form):
@@ -1402,7 +1395,7 @@ class Livestream_Vod_Form(forms.Form):
     preview_image = forms.FileField()
     crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
     publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
-    series = forms.ChoiceField(choices=qs_to_select_choices(Series.objects.visible, allow_none=True))
+    series = forms.ModelChoiceField(queryset=Series.objects.visible(), empty_label="- NONE -", required=False)
     associated_zfile = forms.MultipleChoiceField(
         widget=Scrolling_Checklist_Widget(
             choices=associated_file_choices,
@@ -1477,9 +1470,8 @@ class Livestream_Vod_Form(forms.Form):
             fa.save()
 
         # Associate the article with the selected series (if any)
-        if self.cleaned_data["series"] != "none":
-            series = Series.objects.get(pk=int(self.cleaned_data["series"]))
-            a.series.add(series)
+        if self.cleaned_data["series"]:
+            a.series.add(self.cleaned_data["series"])
             a.save()
 
         return a
@@ -1558,7 +1550,7 @@ class Publication_Pack_Select_Form(forms.Form):
     use_required_attribute = False
     heading = "Select Publication Pack"
     submit_value = "Select"
-    pack = forms.ChoiceField(choices=qs_to_select_choices(Article.objects.publication_packs))
+    pack = forms.ModelChoiceField(queryset=Article.objects.publication_packs())
 
 
 class Publication_Pack_Share_Form(forms.Form):

@@ -170,10 +170,6 @@ class Debug_Form(forms.Form):
         help_text="Today and Unknown",
         required=False,
     )
-    #genre = forms.ChoiceField(
-    #    choices=qs_to_select_choices(Genre.objects.filter(visible=True).only("pk", "title", "slug"), allow_any=True, val="{0.title}"),
-    #    required=False,
-    #)
     board = Manual_Field(
         widget=Board_Range_Widget(min_val=0, max_val=999, max_length=3),
         required=False,
