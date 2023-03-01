@@ -21,6 +21,7 @@ from django.urls import get_resolver
 from museum_site.constants import *
 from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
+from museum_site.core.form_utils import load_form
 from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.core.misc import calculate_sort_title, calculate_boards_in_zipfile, record
 from museum_site.forms.tool_forms import (
@@ -162,9 +163,7 @@ def extract_font(request, key):
             z = zookeeper.Zookeeper()
             z.export_font(
                 os.path.join(DATA_PATH, request.GET["font"]),
-                os.path.join(
-                    CHARSET_PATH, "{}-{}.png".format(f_id, charset_name)
-                ),
+                os.path.join(CHARSET_PATH, "{}-{}.png".format(f_id, charset_name)),
                 1
             )
             data["result"] = "Ripped {}-{}.png".format(f_id, charset_name)
@@ -184,7 +183,6 @@ def livestream_description_generator(request):
 
     if request.GET:
         data["form"] = Livestream_Description_Form(request.GET)
-        data["form"].refresh_choices()
         associated = request.GET.getlist("associated")
         unordered = list(File.objects.filter(pk__in=associated))
         data["zfiles"] = []
@@ -216,21 +214,13 @@ def livestream_description_generator(request):
 
     else:
         data["form"] = Livestream_Description_Form()
-        data["form"].refresh_choices()
 
     return render(request, "museum_site/tools/livestream-description-generator.html", data)
 
 
 @staff_member_required
 def log_viewer(request):
-    data = {
-        "title": "Log Viewer",
-        "range": range(1, 16),
-        "logs": [
-            "access", "backup", "cron", "discord", "error", "mass_dl",
-            "wozztbot"
-        ]
-    }
+    data = {"title": "Log Viewer", "range": range(1, 16), "logs": ["access", "backup", "cron", "discord", "error", "mass_dl", "wozztbot"]}
 
     if request.GET.get("log"):
         path = os.path.join(SITE_ROOT, "log", request.GET["log"])
@@ -310,10 +300,7 @@ def mirror(request, key):
         contents.append((f.filename, f.filename))
 
     # Initialize
-    if request.method == "POST":
-        form = IA_Mirror_Form(request.POST, request.FILES)
-    else:
-        form = IA_Mirror_Form()
+    form = load_form(IA_Mirror_Form, request)
     form.fields["title"].initial = zfile.title
     form.fields["creator"].initial = ";".join(zfile.related_list("authors"))
     form.fields["year"].initial = zfile.release_year()
@@ -729,30 +716,27 @@ def scan(request):
 def series_add(request):
     data = {"title": "Series - Add"}
 
-    if request.method != "POST":
-        form = Series_Form()
-    else:
-        form = Series_Form(request.POST, request.FILES)
+    form = load_form(Series_Form, request)
 
-        if form.is_valid():
-            series = form.save(commit=False)
-            series.slug = slugify(series.title)
-            file_path = place_uploaded_file(Series.PREVIEW_DIRECTORY_FULL_PATH, request.FILES.get("preview"), custom_name=series.slug + ".png")
+    if form.is_bound and form.is_valid():
+        series = form.save(commit=False)
+        series.slug = slugify(series.title)
+        file_path = place_uploaded_file(Series.PREVIEW_DIRECTORY_FULL_PATH, request.FILES.get("preview"), custom_name=series.slug + ".png")
 
-            if form.cleaned_data["crop"] != "NONE":
-                crop_file(file_path, preset=form.cleaned_data["crop"])
-            series.preview = series.slug + ".png"
-            series.save()
+        if form.cleaned_data["crop"] != "NONE":
+            crop_file(file_path, preset=form.cleaned_data["crop"])
+        series.preview = series.slug + ".png"
+        series.save()
 
-            # Add initial associations
-            ids = [int(i) for i in form.cleaned_data["associations"]]
-            qs = Article.objects.filter(id__in=ids)
-            for a in qs:
-                a.series.add(series)
+        # Add initial associations
+        ids = [int(i) for i in form.cleaned_data["associations"]]
+        qs = Article.objects.filter(id__in=ids)
+        for a in qs:
+            a.series.add(series)
 
-            series.save()  # Resave to update dates
-            data["success"] = True
-            data["output_html"] = "Successfully added series: <a href='{}'>{}</a>".format(series.url(), series.title)
+        series.save()  # Resave to update dates
+        data["success"] = True
+        data["output_html"] = "Successfully added series: <a href='{}'>{}</a>".format(series.url(), series.title)
 
     data["form"] = form
     return render(request, "museum_site/generic-form-display-output.html", data)
@@ -1053,20 +1037,14 @@ def set_screenshot(request, key):
 
 def sms(request):
     context = {"title": "Social Media Shotgun"}
-    if request.method == "POST":
-        form = Social_Media_Shotgun_Form(request.POST, request.FILES)
-    else:
-        form = Social_Media_Shotgun_Form()
+    form = load_form(Social_Media_Shotgun_Form, request)
     context["form"] = form
     return render(request, "museum_site/tools/sms.html", context)
 
 
 def sms_stream_schedule(request):
     context = {"title": "SMS Stream Schedule"}
-    if request.method == "POST":
-        form = SMS_Stream_Schedule_Form(request.POST, request.FILES)
-    else:
-        form = SMS_Stream_Schedule_Form()
+    form = load_form(SMS_Stream_Schedule_Form, request)
     return render(request, "museum_site/generic-form-display-output.html", context)
 
 
