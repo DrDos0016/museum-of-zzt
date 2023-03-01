@@ -12,7 +12,7 @@ from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.form_utils import clean_params
 from museum_site.core.misc import banned_ip
-from museum_site.forms.review_forms import ReviewForm
+from museum_site.forms.review_forms import Review_Form
 from museum_site.models import *
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
@@ -321,7 +321,7 @@ class ZFile_Review_List_View(Model_List_View):
             return context
 
         # Initialize form
-        review_form = ReviewForm(self.request.POST) if self.request.POST else ReviewForm()
+        review_form = Review_Form(self.request.POST) if self.request.POST else Review_Form()
 
         # Remove anonymous option for logged in users
         if self.request.user.is_authenticated:

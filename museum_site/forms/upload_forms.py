@@ -9,7 +9,7 @@ from museum_site.models import Download, File, Genre, Upload, Zeta_Config
 from museum_site.widgets import Enhanced_Date_Widget, Enhanced_Text_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget
 
 
-class DownloadForm(forms.ModelForm):
+class Download_Form(forms.ModelForm):
     use_required_attribute = False
     url = forms.URLField(
         required=False,
@@ -42,7 +42,7 @@ class DownloadForm(forms.ModelForm):
         self.fields["kind"].widget.choices = self.fields["kind"].widget.choices[1:]  # Remove "zgames" as a possible alterante download location
 
 
-class PlayForm(forms.Form):
+class Play_Form(forms.Form):
     zeta_config = forms.ChoiceField(
         choices=Zeta_Config.objects.select_list(),
         label="Configuration",
@@ -56,7 +56,7 @@ class PlayForm(forms.Form):
     )
 
 
-class UploadForm(forms.ModelForm):
+class Upload_Form(forms.ModelForm):
     generate_preview_image = forms.ChoiceField(
         choices=[  # List rather than tuple so it can be modified later
             ("AUTO", "Automatic"),
@@ -133,7 +133,7 @@ class Upload_Delete_Confirmation_Form(forms.Form):
             self.add_error("confirmation", "You must provide confirmation before an upload can be deleted!")
 
 
-class ZGameForm(forms.ModelForm):
+class ZGame_Form(forms.ModelForm):
     field_order = ["zfile", "title", "author", "company", "genre", "explicit", "release_date", "language", "description"]
     zfile = forms.FileField(
         help_text=("Select the file you wish to upload. All uploads <i>must</i> be zipped."),

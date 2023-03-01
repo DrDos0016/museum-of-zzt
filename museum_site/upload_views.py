@@ -13,7 +13,7 @@ from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.misc import banned_ip, calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile, record
 from museum_site.core.redirects import redirect_with_querystring
-from museum_site.forms.upload_forms import DownloadForm, PlayForm, UploadForm, Upload_Action_Form, Upload_Delete_Confirmation_Form, ZGameForm
+from museum_site.forms.upload_forms import Download_Form, Play_Form, Upload_Form, Upload_Action_Form, Upload_Delete_Confirmation_Form, ZGame_Form
 from museum_site.models import *
 from museum_site.private import NEW_UPLOAD_WEBHOOK_URL
 from museum_site.views import generic_template_page
@@ -64,10 +64,10 @@ def upload(request):
         download_obj = zgame_obj.downloads.exclude(kind="zgames").first()
 
     if request.method == "POST":  # User Submitted
-        zgame_form = ZGameForm(request.POST, request.FILES, instance=zgame_obj)
-        play_form = PlayForm(request.POST)
-        upload_form = UploadForm(request.POST, instance=upload_obj)
-        download_form = DownloadForm(request.POST, instance=download_obj)
+        zgame_form = ZGame_Form(request.POST, request.FILES, instance=zgame_obj)
+        play_form = Play_Form(request.POST)
+        upload_form = Upload_Form(request.POST, instance=upload_obj)
+        download_form = Download_Form(request.POST, instance=download_obj)
     else:  # Unbound Form
         zgame_initial = {
             "author": "", "explicit": 0, "language": "en",
@@ -83,13 +83,13 @@ def upload(request):
                 "company": ",".join(zgame_obj.get_related_list("companies", "title")),
                 "genre": zgame_obj.get_related_list("genres", "pk"),
             }
-            play_form = PlayForm(initial={"zeta_config": zgame_obj.zeta_config_id})
+            play_form = Play_Form(initial={"zeta_config": zgame_obj.zeta_config_id})
         else:
-            play_form = PlayForm()
+            play_form = Play_Form()
 
-        zgame_form = ZGameForm(initial=zgame_initial, instance=zgame_obj)
-        upload_form = UploadForm(initial={"announced": 0, "generate_preview_image": ("AUTO" if ENV != "DEV" else "NONE")}, instance=upload_obj)
-        download_form = DownloadForm(instance=download_obj)
+        zgame_form = ZGame_Form(initial=zgame_initial, instance=zgame_obj)
+        upload_form = Upload_Form(initial={"announced": 0, "generate_preview_image": ("AUTO" if ENV != "DEV" else "NONE")}, instance=upload_obj)
+        download_form = Download_Form(instance=download_obj)
 
     if edit_token:
         # Update help for zfile when editing an upload

@@ -37,7 +37,7 @@ def associated_file_choices(query="all"):
     return choices
 
 
-class SeriesForm(forms.ModelForm):
+class Series_Form(forms.ModelForm):
     user_required_attribute = False
     attrs = {"method": "POST", "enctype": "multipart/form-data"}
     submit_value = "Add Series"
@@ -206,7 +206,7 @@ class Livestream_Vod_Form(forms.Form):
         return a
 
 
-class MirrorForm(forms.Form):
+class IA_Mirror_Form(forms.Form):
     use_required_attribute = False
     required = False
 

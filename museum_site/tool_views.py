@@ -24,14 +24,14 @@ from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_f
 from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.core.misc import calculate_sort_title, calculate_boards_in_zipfile, record
 from museum_site.forms.tool_forms import (
+    IA_Mirror_Form,
     Livestream_Description_Form,
     Livestream_Vod_Form,
-    MirrorForm,
     Prep_Publication_Pack_Form,
     Publication_Pack_Select_Form,
     Publication_Pack_Share_Form,
     Tool_ZFile_Select_Form,
-    SeriesForm,
+    Series_Form,
 )
 from museum_site.models import *
 
@@ -311,9 +311,9 @@ def mirror(request, key):
 
     # Initialize
     if request.method == "POST":
-        form = MirrorForm(request.POST, request.FILES)
+        form = IA_Mirror_Form(request.POST, request.FILES)
     else:
-        form = MirrorForm()
+        form = IA_Mirror_Form()
     form.fields["title"].initial = zfile.title
     form.fields["creator"].initial = ";".join(zfile.related_list("authors"))
     form.fields["year"].initial = zfile.release_year()
@@ -730,9 +730,9 @@ def series_add(request):
     data = {"title": "Series - Add"}
 
     if request.method != "POST":
-        form = SeriesForm()
+        form = Series_Form()
     else:
-        form = SeriesForm(request.POST, request.FILES)
+        form = Series_Form(request.POST, request.FILES)
 
         if form.is_valid():
             series = form.save(commit=False)
