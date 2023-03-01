@@ -29,3 +29,13 @@ def clean_params(p, list_items=[]):
     for k in to_delete:
         del p[k]
     return p
+
+
+def load_form(f, request, initial=None):
+    if request.method == "POST":
+        form = f(request.POST, request.FILES)
+    elif initial:
+        form = f(initial)
+    else:
+        form = f()
+    return form
