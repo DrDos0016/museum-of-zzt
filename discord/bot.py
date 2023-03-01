@@ -31,8 +31,10 @@ except ImportError:
     sys.exit()
 
 SERVER = None
-PUBLIC_ROLES = ["ZZTer", "MZXer", "He/Him", "She/Her", "It/Its", "They/Them",
-"Stream-Alerts-Asie", "Stream-Alerts-Dos", "Stream-Alerts-Meap", "Stream-Alerts-All"]
+PUBLIC_ROLES = [
+    "ZZTer", "MZXer", "He/Him", "She/Her", "It/Its", "They/Them",
+    "Stream-Alerts-Asie", "Stream-Alerts-Dos", "Stream-Alerts-Meap", "Stream-Alerts-All"
+]
 COMMANDS = ["addrole", "help", "removerole", "scroll", "zzt", "vouch"]
 CHANNELS = []
 LAST_TIME = {
@@ -112,6 +114,7 @@ async def addrole(ctx, *args):
         if status.get("RESPONSE"):
             await ctx.send(status["RESPONSE"])
 
+
 @bot.command(help="Vouch for another user. (Syntax: !vouch USERNAME)")
 async def vouch(ctx, *args):
     VALID_ROOMS = ("bot-dev", "welcome")
@@ -140,7 +143,6 @@ async def vouch(ctx, *args):
             "You cannot vouch for yourself!"
         )
         return False
-
 
     matched = False
     for u in bot.get_all_members():

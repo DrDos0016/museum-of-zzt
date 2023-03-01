@@ -324,6 +324,7 @@ def zzt_img(*args, **kwargs):
         output += '<div class="img-caption">¥ This board is dark during normal gameplay. ¥</div>'
     return mark_safe(output)
 
+
 @register.simple_tag()
 def szzt_img(*args, **kwargs):
     return zzt_img(*args, **kwargs, szzt=True)

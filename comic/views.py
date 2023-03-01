@@ -5,6 +5,7 @@ from .models import Comic
 
 from museum_site.constants import PAGE_SIZE
 
+
 def cast(request, comic_account):
     data = {}
     return render(request, "comic/cast.html", data)
@@ -16,7 +17,7 @@ def index(request):
 
 
 def search(request, comic_account):
-    data = {"comic_account":comic_account, "page": request.GET.get("page", 1)}
+    data = {"comic_account": comic_account, "page": request.GET.get("page", 1)}
     data["q"] = request.GET.get("q")
     if data["q"]:
         data["results"] = Comic.objects.filter(
@@ -36,9 +37,7 @@ def strip(request, comic_account, id=None, name=None):
     data = {"comic_account": comic_account}
     if id is None:
         # TODO: This is terrible.
-        FIRST_COMIC = {"bencomic": 1, "lemmy": 878, "mr-shapiro": 967,
-                       "nomad":971, "kaddar":981, "revvy":988, "zamros": 994,
-                       "frost":1015, "ubgs": 1053}
+        FIRST_COMIC = {"bencomic": 1, "lemmy": 878, "mr-shapiro": 967, "nomad": 971, "kaddar": 981, "revvy": 988, "zamros": 994, "frost": 1015, "ubgs": 1053}
         id = FIRST_COMIC[comic_account]
     data["comic"] = Comic.objects.get(comic_account=comic_account, pk=id)
     data["prev"] = Comic.objects.filter(comic_account=comic_account, pk__lt=id).order_by("-id")

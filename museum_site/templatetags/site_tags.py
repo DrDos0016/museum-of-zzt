@@ -17,6 +17,7 @@ from museum_site.constants import (
 
 register = Library()
 
+
 @register.filter
 def get_articles_by_id(raw):
     if "-" in raw:
@@ -45,6 +46,7 @@ def get_files_by_id(raw):
                 screenshot="red-x-error.png",
             )
     return files
+
 
 @register.filter(name="zfill")
 @stringfilter
@@ -381,6 +383,7 @@ def queryset_to_model_blocks(context, items, view="detailed", auto_wrap=True, *a
             output += "</div>\n"
 
     return mark_safe(output + "\n")
+
 
 @register.simple_tag()
 def guide_words(qs, *args, **kwargs):

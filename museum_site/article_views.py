@@ -59,7 +59,9 @@ def patron_articles(request):
     data["meta_context"] = {
         "description": [
             "name",
-            "Take a look at these {} unpublished articles currently available to Worlds of ZZT patrons!".format(len(data["upcoming"]) + len(data["unpublished"]))
+            "Take a look at these {} unpublished articles currently available to Worlds of ZZT patrons!".format(
+                len(data["upcoming"]) + len(data["unpublished"])
+            )
         ],
         "og:title": ["property", data["title"] + " - Museum of ZZT"],
         "og:image": ["property", "pages/early-access-preview.png"]
