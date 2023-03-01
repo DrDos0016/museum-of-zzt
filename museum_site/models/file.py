@@ -166,6 +166,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def __str__(self):
         return "{} [{}][#{}]".format(self.title, self.key, self.id)
 
+    def to_select(self):
+        return "{} [{}]".format(self.title, self.key)
+
     # Initalizing functions
     def init_detail_ids(self):
         if self.detail_ids is None:
