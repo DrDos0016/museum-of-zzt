@@ -1,22 +1,14 @@
 from django import forms
 
-
+from museum_site.fields import Enhanced_Model_Choice_Field
 from museum_site.models import File, Collection, Collection_Entry
 
 
-def associated_file_choices(query="all"):
-    """ TODO Use a ModelChoiceField  instead of this """
-    raw = getattr(File.objects, query)().only("id", "title", "key")
-    choices = []
-    for i in raw:
-        choices.append((i.id, "{} [{}]".format(i.title, i.key)))
-    return choices
-
 class Collection_Content_Form(forms.ModelForm):
     use_required_attribute = False
-    associated_file = forms.ChoiceField(
+    associated_file = Enhanced_Model_Choice_Field(
         widget=forms.RadioSelect(attrs={"class": "ul-scrolling-checklist"}),
-        choices=associated_file_choices,
+        queryset=File.objects.all(),
         label="File To Add",
     )
     url = forms.CharField(
@@ -29,4 +21,3 @@ class Collection_Content_Form(forms.ModelForm):
     class Meta:
         model = Collection_Entry
         fields = ["associated_file", "url", "collection_description"]
-

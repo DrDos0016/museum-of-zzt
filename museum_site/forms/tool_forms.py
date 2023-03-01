@@ -15,7 +15,7 @@ from museum_site.core.social import Social_Twitter, Social_Mastodon
 from museum_site.core.transforms import qs_to_categorized_select_choices
 from museum_site.constants import SITE_ROOT, TEMP_PATH
 from museum_site.private import IA_ACCESS, IA_SECRET
-from museum_site.fields import Manual_Field
+from museum_site.fields import Enhanced_Model_Choice_Field, Manual_Field
 from museum_site.models import Article, File, Series
 from museum_site.widgets import (
     Enhanced_Date_Widget, Enhanced_Text_Widget, Ordered_Scrolling_Radio_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget
@@ -27,14 +27,6 @@ PREVIEW_IMAGE_CROP_CHOICES = (
     ("SZZT", "448x400 Super ZZT Board"),
     ("NONE", "Do Not Crop Image"),
 )
-
-def associated_file_choices(query="all"):
-    """ TODO Use a ModelChoiceField  instead of this """
-    raw = getattr(File.objects, query)().only("id", "title", "key")
-    choices = []
-    for i in raw:
-        choices.append((i.id, "{} [{}]".format(i.title, i.key)))
-    return choices
 
 
 class Series_Form(forms.ModelForm):
@@ -67,12 +59,13 @@ class Livestream_Description_Form(forms.Form):
     heading = "Livestream Description Generator"
     use_required_attribute = False
     submit_value = "Select"
-    associated = forms.MultipleChoiceField(
-        widget=Ordered_Scrolling_Radio_Widget(choices=associated_file_choices()),
-        choices=associated_file_choices(),
+    associated = Enhanced_Model_Choice_Field(
+        widget=Ordered_Scrolling_Radio_Widget(),
+        queryset=File.objects.all(),
         label="Associated ZFiles",
         help_text="Select one or more ZFiles",
         required=False,
+        empty_label=None
     )
     stream_date = forms.CharField(
         widget=forms.DateInput(format=("%y-%m-%d"), attrs={"type": "date"}),
@@ -91,11 +84,6 @@ class Livestream_Description_Form(forms.Form):
         required=False,
         help_text="Timestamps for when ad breaks ended. Must be manually added to list of streamed worlds",
     )
-
-    def refresh_choices(self):
-        valid_choices = associated_file_choices()
-        self.fields["associated"].choices = valid_choices
-        self.fields["associated"].widget.choices = valid_choices
 
 
 class Livestream_Vod_Form(forms.Form):
@@ -125,13 +113,13 @@ class Livestream_Vod_Form(forms.Form):
     crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
     publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
     series = forms.ModelChoiceField(queryset=Series.objects.visible(), empty_label="- NONE -", required=False)
-    associated_zfile = forms.MultipleChoiceField(
+    associated_zfile = Enhanced_Model_Choice_Field(
         widget=Scrolling_Checklist_Widget(
-            choices=associated_file_choices,
             filterable=True,
             show_selected=True,
         ),
-        choices=associated_file_choices,
+        queryset=File.objects.all(),
+        empty_label=None,
         required=False,
     )
 
@@ -372,9 +360,10 @@ class Prep_Publication_Pack_Form(forms.Form):
     use_required_attribute = False
     submit_value = "Generate Publication Pack"
     publish_date = forms.CharField(widget=Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Clear"))
-    associated = forms.MultipleChoiceField(
-        widget=Ordered_Scrolling_Radio_Widget(choices=associated_file_choices(query="unpublished")),
-        choices=associated_file_choices(query="unpublished"),
+    associated = Enhanced_Model_Choice_Field(
+        widget=Ordered_Scrolling_Radio_Widget(),
+        queryset=File.objects.unpublished(),
+        empty_label=None,
         label="Associated ZFiles",
         help_text="Select one or more ZFiles",
         required=False,
