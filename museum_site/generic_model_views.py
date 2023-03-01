@@ -297,7 +297,6 @@ class ZFile_Review_List_View(Model_List_View):
         return qs
 
     def get_context_data(self, **kwargs):
-        print("IN HERE")
         context = super().get_context_data(**kwargs)
         context["file"] = self.head_object
         context["title"] = "{} - Reviews".format(self.head_object.title)
