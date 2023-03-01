@@ -9,7 +9,7 @@ from museum_site.constants import *
 from museum_site.core import *
 from museum_site.core.detail_identifiers import *
 from museum_site.core.redirects import explicit_redirect_check, redirect_with_querystring
-from museum_site.forms import Advanced_Search_Form
+from museum_site.forms.zfile_forms import Advanced_Search_Form
 from museum_site.models import *
 
 

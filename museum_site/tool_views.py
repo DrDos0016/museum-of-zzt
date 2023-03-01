@@ -23,7 +23,16 @@ from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
 from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.core.misc import calculate_sort_title, calculate_boards_in_zipfile, record
-from museum_site.forms import *
+from museum_site.forms.tool_forms import (
+    Livestream_Description_Form,
+    Livestream_Vod_Form,
+    MirrorForm,
+    Prep_Publication_Pack_Form,
+    Publication_Pack_Select_Form,
+    Publication_Pack_Share_Form,
+    Tool_ZFile_Select_Form,
+    SeriesForm,
+)
 from museum_site.models import *
 
 try:

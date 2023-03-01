@@ -12,7 +12,32 @@ from django.utils.safestring import mark_safe
 
 from museum_site.constants import *
 from museum_site.core import redirect_with_querystring
-from museum_site.forms import *
+from museum_site.forms.patron_forms import (
+    Change_Patron_Crediting_Preferences_Form,
+    Change_Patron_Bkzzt_Topics_Form,
+    Change_Patron_Closer_Look_Poll_Nominations_Form,
+    Change_Patron_Closer_Look_Selections_Form,
+    Change_Patron_Email_Form,
+    Change_Patron_Guest_Stream_Selections_Form,
+    Change_Patron_Stream_Poll_Nominations_Form,
+    Change_Patron_Stream_Selections_Form,
+    Change_Patronage_Visibility_Form,
+)
+from museum_site.forms.user_forms import (
+    Activate_Account_Form,
+    Change_Ascii_Char_Form,
+    Change_Email_Form,
+    Change_Password_Form,
+    Change_Pronouns_Form,
+    Change_Username_Form,
+    Forgot_Password_Form,
+    Forgot_Username_Form,
+    Login_Form,
+    Resend_Account_Activation_Email_Form,
+    Reset_Password_Form,
+    Updated_Terms_Of_Service_Form,
+    User_Registration_Form,
+)
 from museum_site.models import *
 from museum_site.mail import (
     send_forgotten_username_email,
@@ -101,14 +126,14 @@ def change_crediting_preferences(request):
     data = {"title": "Change Credit Preferences"}
 
     if request.method == "POST":
-        form = Change_Crediting_Preferences_Form(request.POST)
+        form = Change_Patron_Crediting_Preferences_Form(request.POST)
         if form.is_valid():
             request.user.profile.site_credits_name = form.cleaned_data["site_credits_name"]
             request.user.profile.stream_credits_name = form.cleaned_data["stream_credits_name"]
             request.user.profile.save()
             return redirect("my_profile")
     else:
-        form = Change_Crediting_Preferences_Form(
+        form = Change_Patron_Crediting_Preferences_Form(
             initial={"site_credits_name": request.user.profile.site_credits_name, "stream_credits_name": request.user.profile.stream_credits_name}
         )
 
@@ -209,10 +234,10 @@ def change_patron_perks(request):
     reqs = {
         "/user/change-stream-poll-nominations/": {"form": Change_Patron_Stream_Poll_Nominations_Form, "field": "stream_poll_nominations"},
         "/user/change-stream-selections/": {"form": Change_Patron_Stream_Selections_Form, "field": "stream_selections"},
-        "/user/change-closer-look-poll-nominations/": {"form": Change_Closer_Look_Poll_Nominations_Form, "field": "closer_look_nominations"},
-        "/user/change-guest-stream-selections/": {"form": Change_Guest_Stream_Selections_Form, "field": "guest_stream_selections"},
-        "/user/change-closer-look-selections/": {"form": Change_Closer_Look_Selections_Form, "field": "closer_look_selections"},
-        "/user/change-bkzzt-topics/": {"form": Change_Bkzzt_Topics_Form, "field": "bkzzt_topics"},
+        "/user/change-closer-look-poll-nominations/": {"form": Change_Patron_Closer_Look_Poll_Nominations_Form, "field": "closer_look_nominations"},
+        "/user/change-guest-stream-selections/": {"form": Change_Patron_Guest_Stream_Selections_Form, "field": "guest_stream_selections"},
+        "/user/change-closer-look-selections/": {"form": Change_Patron_Closer_Look_Selections_Form, "field": "closer_look_selections"},
+        "/user/change-bkzzt-topics/": {"form": Change_Patron_Bkzzt_Topics_Form, "field": "bkzzt_topics"},
     }
 
     if request.method == "POST":
@@ -399,7 +424,7 @@ def resend_account_activation(request):
     }
 
     if request.method == "POST":
-        form = Resent_Account_Activation_Email_Form(request.POST)
+        form = Resend_Account_Activation_Email_Form(request.POST)
         if form.is_valid():
             qs = User.objects.filter(email=form.cleaned_data["email"])
             if len(qs) == 1:
@@ -414,7 +439,7 @@ def resend_account_activation(request):
                     send_account_verification_email(user, request.META["HTTP_HOST"] + reverse("activate_account_with_token", args=[token]))
                     return redirect("activate_account")
     else:
-        form = Resent_Account_Activation_Email_Form()
+        form = Resend_Account_Activation_Email_Form()
 
     data["form"] = form
     return render(request, "museum_site/generic-form-display.html", data)

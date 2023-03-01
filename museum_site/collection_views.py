@@ -4,7 +4,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 
 from museum_site.constants import *
-from museum_site.forms import Collection_Content_Form
+from museum_site.forms.collection_forms import Collection_Content_Form
 from museum_site.models import *
 
 
