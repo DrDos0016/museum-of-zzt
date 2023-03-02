@@ -41,18 +41,8 @@ def get_files_by_id(raw):
         files[str(f.id)] = f
     for _id in ids:
         if not files.get(str(_id)):
-            files[str(_id)] = File(
-                id=-1, title="ERROR: File #{} not found".format(_id),
-                screenshot="red-x-error.png",
-            )
+            files[str(_id)] = File(id=-1, title="ERROR: File #{} not found".format(_id), screenshot="red-x-error.png")
     return files
-
-
-@register.filter(name="zfill")
-@stringfilter
-def zfill_filter(raw, length):
-    output = raw.zfill(length)
-    return output
 
 
 @register.simple_tag()
@@ -83,9 +73,7 @@ def content_warning(*args, **kwargs):
     skip_link = kwargs.get("key", "#end-cw")
 
     if not kwargs.get("noskip"):
-        skip_text = ' | <a href="{}">Jump past warned content</a>'.format(
-            skip_link
-        )
+        skip_text = ' | <a href="{}">Jump past warned content</a>'.format(skip_link)
     else:
         skip_text = ""
 
