@@ -1,0 +1,26 @@
+{% extends "zap/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block zap_body %}
+<ul>
+    <li><a href="{% url 'zap_media_upload' %}">Media Upload</a></li>
+    <li><a href="{% url 'zap_create_post' %}">Create Post</a></li>
+    <li><a href="{% url 'zap_create_stream_schedule' %}">Create Stream Schedule</a></li>
+</ul>
+
+<hr>
+<h2>Events</h2>
+<table class="mono">
+    <tr><th>PK</th><th>Event</th><th>Kind</th><th>Actions</th></tr>
+    {% for e in events %}<tr>
+        <td>{{e.pk}}</td>
+        <td><a href="/tools/zap/view/{{e.pk}}/">{{e.title}}</a></td>
+        <td>{{e.kind}}</td>
+        <td>
+            <a href="{% url 'zap_create_stream_schedule' %}?pk={{e.pk}}">Edit</a><br>
+            <a href="{% url 'zap_create_post' %}?pk={{e.pk}}">Post Event</a><br>
+        </td>
+    </tr>{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block content %}
+    <nav>
+        <a href="/tools/zap/">ZAP</a>
+    </nav>
+    {% block zap_body %}
+    {% endblock %}
+{% endblock %}

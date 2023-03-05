@@ -131,28 +131,30 @@
         </div>
     </div>
     <div class="post-twitch">
-        <h2><a href="https://twitch.tv/worldsofzzt" target="_blank">https://twitch.tv/worldsofzzt</a></h2>
+        <h2><a href="https://twitch.tv/worldsofzzt" target="_blank" class="noext">https://twitch.tv/worldsofzzt</a></h2>
     </div>
+    {% if title_1 %}
     <div class="stream">
         <div class="time">{{date_1}}<br>{{time_1}}</div>
-        <img src="" id="preview-image1">
-        <h2>{{title_1}}</h2>
-        <div class="description">{{desc_1}}</div>
-    </div>
-    {% if title_2 %}
-    <div class="stream">
-        <div class="time">{{date_1}}<br>{{time_1}}</div>
-        <img src="" id="preview-image1">
+        <img src="{{media_1}}" id="preview-image1">
         <h2>{{title_1}}</h2>
         <div class="description">{{desc_1}}</div>
     </div>
     {% endif %}
+    {% if title_2 %}
+    <div class="stream">
+        <div class="time">{{date_2}}<br>{{time_2}}</div>
+        <img src="{{media_2}}" id="preview-image2">
+        <h2>{{title_2}}</h2>
+        <div class="description">{{desc_2}}</div>
+    </div>
+    {% endif %}
     {% if title_3 %}
     <div class="stream">
-        <div class="time">{{date_1}}<br>{{time_1}}</div>
-        <img src="" id="preview-image1">
-        <h2>{{title_1}}</h2>
-        <div class="description">{{desc_1}}</div>
+        <div class="time">{{date_3}}<br>{{time_3}}</div>
+        <img src="{{media_3}}" id="preview-image3">
+        <h2>{{title_3}}</h2>
+        <div class="description">{{desc_3}}</div>
     </div>
     {% endif %}
 

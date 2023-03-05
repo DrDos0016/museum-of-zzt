@@ -1,0 +1,71 @@
+{% extends "zap/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+#preview-frame
+{
+    margin:auto;
+    border:10px solid #FAF;
+    display:inline-block;
+}
+
+#image-render-preview
+{
+    max-width:250px;
+    max-height:250px;
+}
+
+#image-render-preview canvas
+{
+    max-width:250px;
+    max-height:250px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/html2canvas.min.js' %}"></script>
+<script>
+$(document).ready(function (){
+    html2canvas(document.querySelector("#preview-frame-inner")).then(canvas => {$("#image-render-preview")[0].appendChild(canvas)});
+    $("#save_render_to_image_button").click(save_render_to_image);
+});
+
+function save_render_to_image()
+{
+    $("#save_render_to_image_button").attr("disabled", true);
+    $("#save_render_to_image_response").html("");
+    var pk = $("input[name=pk]").val();
+    var image_data = $("#image-render-preview canvas")[0].toDataURL("image/png");
+
+    $.ajax({
+        url:"/tools/zap/ajax/save-image-render/",
+        data:{
+            "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
+            "pk": pk,
+            "image_data": image_data
+        },
+        method:"POST",
+    }).done(function (response){
+        $("#save_render_to_image_response").html(response);
+        $("#save_render_to_image_button").attr("disabled", false);
+    });
+}
+
+</script>
+{% endblock %}
+
+{% block zap_body %}
+<h1>Event - {{event.title}}</h1>
+
+<div id="preview-frame"><div id="preview-frame-inner">{{event.render}}</div></div>
+<hr>
+<div id="image-render-preview"></div>
+<hr>
+{% csrf_token %}
+<input type="hidden" name="pk" value="{{event.pk}}">
+<input id="save_render_to_image_button" type="button" value="Save Render To Image"> <div id="save_render_to_image_response"></div>
+<hr>
+{% endblock %}
