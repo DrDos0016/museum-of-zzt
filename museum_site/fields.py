@@ -51,3 +51,6 @@ class Tag_List_Field(forms.MultipleChoiceField):
 class Enhanced_Model_Choice_Field(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.to_select()
+
+    def clean(self, value):
+        return value
