@@ -49,11 +49,12 @@
 }
 
 @media (max-width:999px) {
-#article-meta
-{
-    grid-template-areas:
-    "preview"
-    "info";
+    #article-meta
+    {
+        grid-template-areas:
+        "preview"
+        "info";
+    }
 }
 
 #article-meta h1, #article-meta h2
