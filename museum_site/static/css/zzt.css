@@ -124,6 +124,7 @@ display:inline-block;
 .zzt-img img
 {
     max-width:100%;
+    vertical-align:top;
 }
 
 .zzt-img.zzt-sidebar
