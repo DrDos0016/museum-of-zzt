@@ -249,3 +249,8 @@ FILE_VIEWER_TEXT_EXTENSIONS = (
 FILE_VIEWER_HEX_EXTENSIONS = (".hi", ".zzt", ".brd", ".mh", ".sav", ".szt", ".mwz", ".z_t", ".hgs",)
 FILE_VIEWER_B64_EXTENSIONS = (".jpg", ".jpeg", ".bmp", ".gif", ".png", ".ico", ".avi")
 FILE_VIEWER_AUDIO_EXTENSIONS = (".wav", ".mp3", ".ogg", ".mid", ".midi")
+
+
+# Form related constants
+FORM_ANY = "- Any -"
+FORM_NONE = "- None -"

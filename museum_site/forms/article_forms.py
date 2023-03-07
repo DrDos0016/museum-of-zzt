@@ -1,7 +1,7 @@
 from django import forms
 from django.urls import reverse_lazy
 
-from museum_site.constants import YEAR
+from museum_site.constants import YEAR, FORM_ANY, FORM_NONE
 from museum_site.fields import Enhanced_Model_Choice_Field
 from museum_site.models import Article, Series
 
@@ -16,7 +16,7 @@ class Article_Search_Form(forms.Form):
     submit_value = "Search Articles"
 
     YEARS = (
-        [("Any", "- ANY - ")] +
+        [("Any", FORM_ANY)] +
         [(y, y) for y in range(YEAR, 1990, -1)] +
         [("Unk", "Unknown")]
     )
@@ -34,5 +34,5 @@ class Article_Search_Form(forms.Form):
     text = forms.CharField(label="Text contains", required=False)
     year = forms.ChoiceField(label="Publication year", choices=YEARS)
     category = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=Article.CATEGORY_CHOICES)
-    series = Enhanced_Model_Choice_Field(label="In Series", queryset=Series.objects.visible(), empty_label="- ANY -")
+    series = Enhanced_Model_Choice_Field(label="In Series", queryset=Series.objects.visible(), empty_label=FORM_ANY)
     sort = forms.ChoiceField(choices=SORTS)

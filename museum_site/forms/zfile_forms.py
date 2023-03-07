@@ -2,7 +2,7 @@ from django import forms
 
 from museum_site.core.detail_identifiers import *
 from museum_site.core.transforms import language_select_choices, range_select_choices, qs_to_categorized_select_choices
-from museum_site.constants import LANGUAGES, YEAR
+from museum_site.constants import LANGUAGES, YEAR, FORM_ANY, FORM_NONE
 from museum_site.fields import Manual_Field
 from museum_site.models import Detail, Genre
 from museum_site.widgets import Associated_Content_Widget, Board_Range_Widget, Range_Widget, Scrolling_Checklist_Widget
@@ -19,7 +19,7 @@ class Advanced_Search_Form(forms.Form):
     filename = forms.CharField(label="Filename contains", required=False)
     contents = forms.CharField(label="Zip file contents contains", help_text="Enter a filename to search for in the file's zip file", required=False)
     company = forms.CharField(label="Company contains", required=False)
-    genre = forms.ModelChoiceField(required=False, queryset=Genre.objects.advanced_search_query(), to_field_name="title", empty_label="- ANY -")
+    genre = forms.ModelChoiceField(required=False, queryset=Genre.objects.advanced_search_query(), to_field_name="title", empty_label=FORM_ANY)
     board = Manual_Field(
         label="Minimum / Maximum board count",
         widget=Board_Range_Widget(min_val=0, max_val=999, max_length=3),

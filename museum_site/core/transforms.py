@@ -1,20 +1,6 @@
 from django.template.defaultfilters import escape
 
-def qs_to_select_choices(qs, text="{0}", val="{0.pk}", allow_any=False, allow_none=False, qs_kwargs={}):
-    """ Transform a queryset into a list suitable for Django's forms. """
-    # TODO: This is a bad function that causes problems when making DB changes, requiring a temporary "return output" line below
-    output = []
-
-    if allow_none:
-        output.append(("none", "- NONE -"))
-
-    if allow_any:
-        output.append(("any", "- ANY -"))
-
-    for i in qs(**qs_kwargs):
-        output.append((str(val.format(i)).lower(), text.format(i)))
-    return output
-
+from museum_site.constants import FORM_ANY, FORM_NONE
 
 def qs_to_categorized_select_choices(qs, text="{0}", val="{0.pk}", category_order=None, qs_kwargs={}):
     # TODO: This is a bad function that causes problems when making DB changes, requiring a temporary "return output" line below
@@ -45,7 +31,7 @@ def range_select_choices(first, last, order="asc", allow_any=False, allow_unknow
     output = list(zip(years, years))
 
     if allow_any:
-        output.insert(0, ("any", "- ANY -"))
+        output.insert(0, ("any", FORM_ANY))
 
     if allow_unknown:
         output.append(("unk", "Unknown"))
@@ -60,7 +46,7 @@ def language_select_choices(languages, allow_any=False, allow_non_english=False)
         output.append(("non-english", "Non-English"))
 
     if allow_any:
-        output.insert(0, ("any", "- ANY -"))
+        output.insert(0, ("any", FORM_ANY))
 
     return output
 

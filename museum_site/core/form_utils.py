@@ -1,7 +1,9 @@
+from museum_site.constants import FORM_ANY, FORM_NONE
+
 def any_plus(choices):
     """ Appends Any as an option to the choices for a form"""
     choices = list(choices)
-    choices.insert(0, ("any", "- ANY -"))
+    choices.insert(0, ("any", FORM_ANY))
     return choices
 
 
