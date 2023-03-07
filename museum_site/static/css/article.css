@@ -121,6 +121,16 @@ article[data-schema="80col"]
     max-width:750px;
 }
 
+.cl-image-set
+{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-start;
+    justify-content:center;
+    max-width:750px;
+    margin:auto;
+}
+
 .zzt-img + .side-commentary, .zzt-scroll + .side-commentary, p + .side-commentary
 {
     margin-top:0.25em;
