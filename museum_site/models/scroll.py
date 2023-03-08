@@ -14,12 +14,12 @@ class Scroll(models.Model):
 ╞╧═════════════════════════════════════════════╧╡```"""
 
     # Fields
-    identifier = models.IntegerField()
+    source = models.CharField(max_length=160)
+    identifier = models.IntegerField(null=True, blank=True, default=None)
     content = models.TextField(
         default="",
         help_text="Lines starting with @ will be skipped. Initial whitespace is trimmed by DB, so an extra @ line is a fix."
     )
-    source = models.CharField(max_length=160)
     published = models.BooleanField(default=False)
     suggestion = models.CharField(max_length=500, blank=True, default="")
 
@@ -58,3 +58,16 @@ class Scroll(models.Model):
                 continue
             output.append(line)
         return "\n".join(output)
+
+    def save(self, *args, **kwargs):
+        if self.published and not self.identifier:
+            qs = Scroll.objects.filter(published=True).order_by("-identifier")
+            s = qs.first()
+            if s is None:
+                self.identifier = 1
+            else:
+                self.identifier = s.identifier + 1
+
+        if self.source.startswith("https://museumofzzt.com"):
+            self.source = self.source.replace("https://museumofzzt.com", "")
+        super().save(*args, **kwargs)
