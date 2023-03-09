@@ -19,6 +19,7 @@ from django.template.defaultfilters import slugify, striptags
 from django.urls import get_resolver
 
 from museum_site.constants import *
+from museum_site.constants import DATE_NERD
 from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
 from museum_site.core.form_utils import load_form
@@ -194,7 +195,7 @@ def livestream_description_generator(request):
                     break
 
         if request.GET.get("stream_date"):
-            data["stream_date"] = datetime.strptime(request.GET.get("stream_date", "1970-01-01"), "%Y-%m-%d")
+            data["stream_date"] = datetime.strptime(request.GET.get("stream_date", "1970-01-01"), DATE_NERD)
         else:
             data["stream_date"] = datetime.now()
         if request.GET.getlist("timestamp"):
