@@ -5,7 +5,7 @@ from django.template.defaultfilters import slugify
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
-from museum_site.constants import STATIC_PATH
+from museum_site.constants import STATIC_PATH, DATE_HR
 from museum_site.models.base import BaseModel
 from museum_site.querysets.series_querysets import Series_Queryset
 
@@ -150,4 +150,4 @@ class Series(BaseModel):
         ]
         return context
 
-    def get_guideword_latest(self): return self.last_entry_date.strftime("%b %d, %Y")
+    def get_guideword_latest(self): return self.last_entry_date.strftime(DATE_HR)

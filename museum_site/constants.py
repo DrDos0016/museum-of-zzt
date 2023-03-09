@@ -254,3 +254,8 @@ FILE_VIEWER_AUDIO_EXTENSIONS = (".wav", ".mp3", ".ogg", ".mid", ".midi")
 # Form related constants
 FORM_ANY = "- Any -"
 FORM_NONE = "- None -"
+
+# Date/Time Formats
+DATE_HR = "%b %d, %Y" # ex: "Mar 05, 2023"
+DATE_NERD = "%Y-%m-%d"  # ex: "2010-02-06"
+DATE_FULL = "%b %d, %Y, %I:%M:%S %p"  # ex: "Nov 06, 2022, 08:06:03 PM"

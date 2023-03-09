@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
 from museum_site.constants import *
+from museum_site.constants import DATE_HR
 from museum_site.models.base import BaseModel
 from museum_site.private import PASSWORD2DOLLARS, PASSWORD5DOLLARS
 from museum_site.querysets.article_querysets import *
@@ -286,7 +287,7 @@ class Article(BaseModel):
         return {"label": "Author{}".format(plural), "value": ", ".join(authors)}
 
     def get_field_article_date(self, view="detailed"):
-        return {"label": "Publish Date", "value": self.publish_date.strftime("%b %d, %Y") if self.publish_date else "<i>- Unknown Date - </i>", "safe": True}
+        return {"label": "Publish Date", "value": self.publish_date.strftime(DATE_HR) if self.publish_date else "<i>- Unknown Date - </i>", "safe": True}
 
     def get_field_category(self, view="detailed"):
         return {"label": "Category", "value": self.category}
@@ -353,4 +354,4 @@ class Article(BaseModel):
 
     def get_guideword_author(self): return self.author
     def get_guideword_category(self): return self.category
-    def get_guideword_date(self): return self.publish_date.strftime("%b %d, %Y") if self.publish_date is not None else "- Unknown Date -"
+    def get_guideword_date(self): return self.publish_date.strftime(DATE_HR) if self.publish_date is not None else "- Unknown Date -"

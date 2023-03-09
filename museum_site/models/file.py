@@ -16,7 +16,7 @@ try:
 except ImportError:
     HAS_ZOOKEEPER = False
 
-from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH
+from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH, DATE_NERD, DATE_FULL, DATE_HR
 from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile, zipinfo_datetime_tuple_to_str
@@ -231,6 +231,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def save(self, *args, **kwargs):
         # Pre save
+        zfile_exists = os.path.isfile(self.phys_path())
+
         # Force lowercase letter
         if not self.letter:
             self.letter = get_letter_from_title(self.title)
@@ -248,11 +250,11 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         self.calculate_reviews()  # Calculate Review Scores
 
         # Update blank md5s
-        if not self.checksum:
+        if not self.checksum and zfile_exists:
             self.checksum = calculate_md5_checksum(self.phys_path())
 
         # Set board counts for non-uploads
-        if HAS_ZOOKEEPER and not kwargs.get("new_upload"):
+        if HAS_ZOOKEEPER and not kwargs.get("new_upload") and zfile_exists:
             if not self.playable_boards or not self.total_boards:
                 (self.playable_boards, self.total_boards) = calculate_boards_in_zipfile(self.phys_path())
 
@@ -415,9 +417,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     @mark_safe
     def publish_date_str(self):
-        if (self.publish_date is None) or (self.publish_date.strftime("%Y-%m-%d") < "2018-11-07"):
+        if (self.publish_date is None) or (self.publish_date.strftime(DATE_NERD) < "2018-11-07"):
             return "<i>Unknown</i>"
-        return self.publish_date.strftime("%b %d, %Y, %I:%M:%S %p")
+        return self.publish_date.strftime(DATE_FULL)
 
     @mark_safe
     def boards_str(self):
@@ -741,7 +743,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             date_str = "<i>Unknown</i>"
             url = "/file/browse/year/{}/".format(self.release_year(default="unk"))
         else:
-            date_str = self.release_date.strftime("%b %d, %Y")
+            date_str = self.release_date.strftime(DATE_HR)
             url = "/file/browse/year/{}/".format(self.release_year(default="unk"))
 
         return {"label": "Released", "value": "<a href='{}'>{}</a>".format(url, date_str), "safe": True}
@@ -793,10 +795,10 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return {"label": "Language", "value": language_str[:-2], "safe": True}
 
     def get_field_publish_date(self, view="detailed"):
-        if (self.publish_date is None) or (self.publish_date.strftime("%Y-%m-%d") < "2018-11-07"):
+        if (self.publish_date is None) or (self.publish_date.strftime(DATE_NERD) < "2018-11-07"):
             publish_date_str = "<i>Unknown</i>"
         else:
-            publish_date_str = self.publish_date.strftime("%b %d, %Y, %I:%M:%S %p")
+            publish_date_str = self.publish_date.strftime(DATE_FULL)
 
         return {"label": "Publish Date", "value": publish_date_str, "safe": True}
 
@@ -804,7 +806,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if (self.upload is None or self.upload.date is None):
             upload_date_str = "<i>Unknown</i>"
         else:
-            upload_date_str = self.upload.date.strftime("%b %d, %Y, %I:%M:%S %p")
+            upload_date_str = self.upload.date.strftime(DATE_FULL)
 
         return {"label": "Upload Date", "value": upload_date_str, "safe": True}
 
@@ -971,12 +973,12 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def get_guideword_rating(self): return self.rating_str()
 
-    def get_guideword_release_date(self): return self.release_date.strftime("%b %d, %Y") if self.release_date is not None else "- Unknown Date -"
-    def get_guideword_publish_date(self): return self.publish_date.strftime("%b %d, %Y") if self.publish_date is not None else "- Unknown Date -"
+    def get_guideword_release_date(self): return self.release_date.strftime(DATE_HR) if self.release_date is not None else "- Unknown Date -"
+    def get_guideword_publish_date(self): return self.publish_date.strftime(DATE_HR) if self.publish_date is not None else "- Unknown Date -"
     def get_guideword_upload_date(self):
         if self.upload is not None:
             if self.upload.date:
-                return self.upload.date.strftime("%b %d, %Y")
+                return self.upload.date.strftime(DATE_HR)
         return "- Unknown Date -"
 
 

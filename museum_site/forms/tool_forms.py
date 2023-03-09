@@ -68,7 +68,7 @@ class Livestream_Description_Form(forms.Form):
         empty_label=None
     )
     stream_date = forms.CharField(
-        widget=forms.DateInput(format=("%y-%m-%d"), attrs={"type": "date"}),
+        widget=forms.DateInput(attrs={"type": "date"}),
         help_text="Date of original livestream",
         required=False
     )

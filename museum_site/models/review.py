@@ -6,6 +6,7 @@ from django.template.defaultfilters import timesince
 from django.utils.safestring import mark_safe
 
 from museum_site.core.misc import profanity_filter
+from museum_site.constants import DATE_HR
 from museum_site.models.base import BaseModel
 from museum_site.querysets.review_querysets import *
 
@@ -113,9 +114,9 @@ class Review(BaseModel):
 
     def get_field_review_date(self, view="detailed"):
         if view == "review_content":
-            return {"label": "Review Date", "value": "{} ago ({})".format(timesince(self.date), self.date.strftime("%b %d, %Y")), "safe": True}
+            return {"label": "Review Date", "value": "{} ago ({})".format(timesince(self.date), self.date.strftime(DATE_HR)), "safe": True}
         else:
-            return {"label": "Review Date", "value": self.date.strftime("%b %d, %Y"), "safe": True}
+            return {"label": "Review Date", "value": self.date.strftime(DATE_HR), "safe": True}
 
     def get_field_rating(self, view="detailed"):
         if self.rating is not None:
@@ -196,7 +197,7 @@ class Review(BaseModel):
             context["fields"].append(field_context)
         return context
 
-    def get_guideword_date(self): return self.date.strftime("%b %d, %Y")
+    def get_guideword_date(self): return self.date.strftime(DATE_HR)
     def get_guideword_reviewer(self): return self.author
     def get_guideword_rating(self):
         if self.rating < 0:

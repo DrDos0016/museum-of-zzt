@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from museum_site.models.base import BaseModel
+from museum_site.constants import DATE_HR
 from museum_site.querysets.collection_querysets import *
 
 
@@ -224,7 +225,7 @@ class Collection(BaseModel):
         elif self.visibility == self.UNLISTED:
             self.roles.append("unlisted")
 
-    def get_guideword_modified(self): return self.modified.strftime("%b %d, %Y")
+    def get_guideword_modified(self): return self.modified.strftime(DATE_HR)
     def get_guideword_author(self): return self.user.username
 
 
