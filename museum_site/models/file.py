@@ -75,8 +75,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role": "explicit-icon"},
         "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its contents have not been fully checked by staff.", "role": "unpub-icon"},
         "featured": {"glyph": "🗝️", "title": "This file is a featured world.", "role": "fg-icon"},
-        "lost": {"glyph": "❌", "title": "This file is a known to be lost. Little if any data is available.", "role": "lost-icon"},
+        "lost": {"glyph": "❌", "title": "This file is known to be lost. Little if any data is available.", "role": "lost-icon"},
         "weave": {"glyph": "🧵", "title": "This file contains content designed for Weave ZZT.", "role": "weave-icon"},
+        "antiquated": {"glyph": "⌛", "title": "This file is known to be antiquated. Its use is not recommended today.", "role": "outdated-icon"}
     }
 
     (REVIEW_NO, REVIEW_APPROVAL, REVIEW_YES) = (0, 1, 2)
@@ -760,7 +761,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return {"label": "Size", "value": filesizeformat(self.size), "title": "{} bytes".format(self.size)}
 
     def get_field_details(self, view="detailed"):
-        qs = self.details.all()
+        qs = self.details.visible()
         plural = "s" if qs.count() > 1 else ""
         return {"label": "Detail{}".format(plural), "value": qs_to_links(qs), "safe": True}
 
