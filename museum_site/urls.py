@@ -32,6 +32,7 @@ urlpatterns = [
     path("action/set-theme/", museum_site.views.set_theme, name="set_theme"),
 
     # /ajax/
+    path("ajax/submit-form/<slug:slug>/", museum_site.ajax.submit_form, name="ajax_submit_form"),
     path("ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions, name="ajax_get_search_suggestions"),
     path("ajax/get-<str:field>-suggestions/", museum_site.ajax.get_suggestions_for_field, name="ajax_get_suggestions_for_field"),
     path("ajax/get_zip_file/", museum_site.ajax.get_zip_file, name="ajax_get_zip_file"),
@@ -43,6 +44,7 @@ urlpatterns = [
     path("ajax/collection/get-collection-addition/", museum_site.ajax.get_collection_addition, name="ajax_collection_get_addition"),
     path("ajax/collection/remove-from-collection/", museum_site.ajax.remove_from_collection, name="ajax_collection_remove"),
     path("ajax/collection/update-collection-entry/", museum_site.ajax.update_collection_entry, name="ajax_collection_update"),
+    path("ajax/collection/get-available-collections/", museum_site.ajax.otf_get_available_collections, name="ajax_otf_get_collections"),
 
     # /article/
     path("article/", museum_site.generic_model_views.Article_List_View.as_view(), name="article_directory"),
@@ -80,6 +82,7 @@ urlpatterns = [
     path("collection/edit/<slug:slug>/", login_required(museum_site.collection_views.Collection_Update_View.as_view()), name="edit_collection"),
     path("collection/user/", login_required(museum_site.generic_model_views.Collection_List_View.as_view()), name="my_collections"),
     path("collection/view/<slug:collection_slug>/", museum_site.generic_model_views.Collection_Contents_View.as_view(), name="view_collection"),
+    path("collection/on-the-fly-collections/", museum_site.collection_views.On_The_Fly_Collections_View.as_view(), name="on_the_fly_collections"),
 
     # /debug/
     path("ajax/debug_file/", museum_site.ajax.debug_file),

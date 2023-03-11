@@ -3,7 +3,7 @@ form
     margin:auto;
 }
 
-input[type="button"], input[type="submit"]
+input[type="button"], input[type="submit"], button
 {
     background:var(--notice-bg);
     font-family:cp437;
@@ -11,6 +11,8 @@ input[type="button"], input[type="submit"]
     font-size:16px;
     padding:1px 4px 1px 4px;
     min-height:28px;
+    border:1px solid var(--border-color);
+    overflow:hidden;
 }
 
 .field-wrapper
@@ -258,7 +260,7 @@ li.arrangeable, li.arrangeable label { cursor:grab; }
 .label-button { padding-left:16px; }
 .label-button:hover { cursor:pointer; }
 
-input[type=button]:hover, input[type=submit]:hover
+input[type=button]:hover, input[type=submit]:hover, button:hover
 {
     text-decoration:underline;
     text-decoration-style:dashed;

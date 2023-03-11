@@ -15,6 +15,7 @@ from museum_site.constants import *
 from museum_site.core.misc import extract_file_key_from_url, record
 from museum_site.core.palette import parse_pld
 from museum_site.templatetags.site_tags import model_block
+from museum_site.forms.collection_forms import Collection_Content_Form
 
 
 def get_zip_file(request):
@@ -179,6 +180,7 @@ def wozzt_queue_add(request):
 
 
 def add_to_collection(request):
+    # TODO - This should be using the actual form and .process()
     if not request.POST.get("collection_id"):
         return HttpResponse("")
     # Confirm this is your collection
@@ -313,3 +315,39 @@ def update_collection_entry(request):
 
     resp = "SUCCESS"
     return HttpResponse(resp)
+
+
+def otf_get_available_collections(request):
+    output = {"collections": []}
+    if not request.user:
+        return JsonResponse(output)
+    if request.user and not request.user.id:
+        return JsonResponse(output)
+
+    qs = Collection.objects.filter(user_id=request.user.id).only("pk", "title", "visibility").order_by("title")
+    for c in qs:
+        output["collections"].append({"pk": c.pk, "title": c.title, "visibility": c.visibility_str[:3]})
+
+    return JsonResponse(output)
+
+
+def submit_form(request, slug):
+    available_forms = {
+        "Collection_Content_Form": Collection_Content_Form,
+    }
+
+    form_name = slug.replace("-", "_").title()
+    form = available_forms.get(form_name)
+
+    if not form:
+        return JsonResponse({"success": False, "errors": [{"message": "Form not found"}]})
+
+    form = form(request.POST)
+    form.set_request(request)
+
+    if form.is_valid():
+        form.process()
+    else:
+        return JsonResponse({"success": False, "errors": form.errors.get_json_data()["__all__"]})
+
+    return JsonResponse({"success": True})

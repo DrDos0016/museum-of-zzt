@@ -1,7 +1,9 @@
 from django.template.defaultfilters import slugify
 from django.urls import reverse
+from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.shortcuts import render
 
 from museum_site.constants import *
 from museum_site.forms.collection_forms import Collection_Content_Form
@@ -121,3 +123,24 @@ class Collection_Manage_Contents_View(FormView):
 
     def form_valid(self, form):
         return "Ok!"
+
+
+class On_The_Fly_Collections_View(TemplateView):
+    template_name = "museum_site/collection-on-the-fly-collections.html"
+    title = "Manage On The Fly Collections"
+
+    def get(self, request, *args, **kwargs):
+        context = {"title": self.title}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        request.session["active_tool"] = "on-the-fly-collections" if request.POST.get("on_the_fly") == "enable" else ""
+
+        context = {"title": self.title}
+        if request.session["active_tool"] == "on-the-fly-collections":
+            context["output"] = "On The Fly Collections are now enabled."
+            request.session["active_tool_template"] = "museum_site/tools/on-the-fly-collections.html"
+        else:
+            context["output"] = "On The Fly Collections are now disabled."
+            request.session["active_tool_template"] = ""
+        return render(request, self.template_name, context)

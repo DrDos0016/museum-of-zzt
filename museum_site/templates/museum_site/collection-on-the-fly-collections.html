@@ -1,0 +1,31 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load markdown_deux_tags %}
+{% load site_tags %}
+
+{% block content %}
+<h1>Manage On The Fly Collections</h1>
+
+<h1>HEY IF YOU SEE THIS KNOW THAT IT IS NOT YET READY DESPITE NOT ACTIVELY BEING DISABLED</h1>
+
+<p>"On The Fly" Collections are an alternative way to create collections designed to integrate collection functionality throughout the site.</p>
+
+<p>By enabling On The Fly Collections, most pages on the Museum will have form controls along the top of the page that allow you to quickly add whatever file is being viewed to a collection.</p>
+
+<p>The "X" button on the right side of the header will disable the functionality until it is activated again.</p>
+
+<p>A drop down menu will allow specifying a collection to add to, with the ability to create a new collection as well. Newly created collections in this manner will have their visibility set to <span class="keyword">PRIVATE</span>.</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <label><input type="radio" name="on_the_fly" value="enable"{% if request.session.active_tool == 'on-the-fly-collections' %} checked {% endif %}> Enable On The Fly Collections</label>
+    <br>
+    <label><input type="radio" name="on_the_fly" value="disable"{% if request.session.active_tool != 'on-the-fly-collections' %} checked {% endif %}> Disable On The Fly Collections</label>
+    <br>
+    <input type="submit" value="Apply" name="action">
+</form>
+
+<p><b>{{output}}</b></p>
+
+AT: {{request.session.active_tool|default:"no active tooling"}}
+{% endblock %}

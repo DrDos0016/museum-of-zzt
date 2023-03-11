@@ -40,6 +40,8 @@
     <a href="#sidebar-right" id="exhibits-shortcut">Exhibits</a>
 </nav>
 
+{% block active_tool %}{% if request.session.active_tool %}<section id="active-tool">{% include request.session.active_tool_template %}</section>{% endif %}{% endblock %}
+
 <section id="sidebar-left" class="sidebar">
     <header id="logo-area">
         {% if ENV != "DEV" %}<a href="/" id="logo"><img src="{% static 'chrome/logos/museum-logo-by-lazymoth.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>

@@ -4,5 +4,6 @@
 <ul>
 <li><a href="{% url 'new_collection' %}">Create A New Collection</a></li>
 <li><a href="{% url 'my_collections' %}">Manage My Collections</a></li>
+{% if request.user.is_staff %}<li><a href="{% url 'on_the_fly_collections' %}">STAFF ONLY FOR NOW Manage On The Fly Collections</a></li>{% endif %}
 </ul>
 {% else %}Creating collections requires being signed into a <a href="{% url 'login_user' %}">Museum of ZZT account</a>.{% endif %}</p>
