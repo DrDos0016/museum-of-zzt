@@ -42,17 +42,20 @@
     max-width:15%;
 }
 
-
-
 #otf-wrapper > div.otf-hidden { display:none; }
 .otf-selected { background-color: var(--selected-tab); }
 </style>
 
 <script>
+var otf_bound = false;
 var collection_list = null;
 var otf_to_add_pk = 0;
 var otf_selected_title = "";
-$(document).ready(function (){
+$(document).ready(initialize_otf_collections);
+
+function initialize_otf_collections()
+{
+    console.log("initializing");
     // Pull collection lists
     $.ajax({
         url:"/ajax/collection/get-available-collections/",
@@ -60,21 +63,28 @@ $(document).ready(function (){
         console.log(response);
         collection_list = response["collections"];
         populate_collection_list();
-        $(".otf-active").addClass("otf-hidden");
-        $(".otf-active").removeClass("otf-active");
-        $("#otf-main").addClass("otf-active");
-        $("#otf-main").removeClass("otf-hidden");
-        $("#otf-collection-list").change(otf_change_check);
-        $(".otf-cancel-button").click(otf_cancel);
-        $("#otf-set-desc-button").click(otf_set_desc);
-        $("#otf-clear-desc-button").click(otf_clear_desc);
-        $(".model-block").click($(this), otf_select_zfile);
-        $("#otf-quit").click(function (){
-            window.location = "/collection/on-the-fly-collections/";
-        });
-        $("#otf-add-zfile").click(otf_add_selected_zfile);
+
+        if (! otf_bound)
+        {
+            $(".otf-active").addClass("otf-hidden");
+            $(".otf-active").removeClass("otf-active");
+            $("#otf-main").addClass("otf-active");
+            $("#otf-main").removeClass("otf-hidden");
+
+            $("#otf-collection-list").change(otf_change_check);
+            $(".otf-cancel-button").click(otf_cancel);
+            $("#otf-set-desc-button").click(otf_set_desc);
+            $("#otf-clear-desc-button").click(otf_clear_desc);
+            $(".model-block").click($(this), otf_select_zfile);
+            $("#otf-quit").click(function (){
+                window.location = "/collection/on-the-fly-collections/";
+            });
+            $("#otf-add-zfile").click(otf_add_selected_zfile);
+            $("#otf-create-collection").click(otf_create_collection);
+            otf_bound = true;
+        }
     });
-});
+}
 
 function otf_change_check()
 {
@@ -116,6 +126,7 @@ function otf_set_desc()
 
 function otf_clear_desc()
 {
+    console.log("Clear desc called");
     $("#otf-description").val("");
 }
 
@@ -183,6 +194,42 @@ function otf_add_selected_zfile()
     });
 }
 
+function otf_create_collection()
+{
+    console.log("Creating collection...");
+    $.ajax({
+        url:"/ajax/submit-form/collection-form/",
+        method:"POST",
+        data:{
+            "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
+            "title": $("input[name=otf-new-collection-name]").val(),
+        }
+    }).done(function (response){
+        console.log("Called ajax form");
+        console.log(response);
+
+        if (response.errors)
+        {
+            var output = "";
+            for (var idx = 0; idx < response.errors.length; idx++)
+            {
+                output += response.errors[idx].message + "\n";
+                console.log(response.errors[idx]);
+            }
+            $("#otf-response").text("Error: " + output);
+        }
+        if (response.success)
+        {
+            $("#otf-response").text("Added: " + otf_selected_title);
+            initialize_otf_collections();
+            $(".otf-active").addClass("otf-hidden");
+            $(".otf-active").removeClass("otf-active");
+            $("#otf-main").addClass("otf-active");
+            $("#otf-main").removeClass("otf-hidden");
+        }
+    });
+}
+
 function populate_collection_list()
 {
     $("#otf-collection-list").html('<option value="">- Choose Collection -</option><option value="">- Create New Collection -</option>');
@@ -206,7 +253,7 @@ function populate_collection_list()
     </div>
     <div id="otf-new-collection" class="otf-hidden">
         <input name="otf-new-collection-name" placeholder="New Collection Name">
-        <button type="button" id="otf-create-collection">Create New Collection</button>
+        <button type="button" id="otf-create-collection">Create</button>
         <button type="button" class="otf-cancel-button">Cancel</button>
     </div>
 </div>

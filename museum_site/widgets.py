@@ -288,3 +288,6 @@ class Terms_Of_Service_Widget(forms.CheckboxInput):
         context = super().get_context(name, value, attrs)
         context["terms"] = self.terms
         return context
+
+class Collection_Title_Widget(Enhanced_Text_Widget):
+    template_name = "museum_site/widgets/collection-title-widget.html"
