@@ -1,8 +1,46 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.template.defaultfilters import slugify
 
 from museum_site.fields import Enhanced_Model_Choice_Field
 from museum_site.models import File, Collection, Collection_Entry
+from museum_site.widgets import Collection_Title_Widget
+
+
+class Collection_Form(forms.ModelForm):
+    """ TODO: Currently only used with On The Fly Collections """
+    use_required_attribute = False
+    request = None
+    attrs = {"method": "POST"}
+    heading = "Create New Collection"
+    submit_value = "Create Collection"
+
+    class Meta:
+        model = Collection
+        fields = ["title", "short_description", "description", "visibility", "default_sort"]
+        widgets = {"title": Collection_Title_Widget(char_limit=120)}
+
+    def set_request(self, request): self.request = request
+
+    def clean(self):
+        print("Cleaning")
+        cleaned_data = super().clean()
+
+        if self.request is None:
+            raise ValidationError("Form did not have request populated")
+
+        # Check slug is available
+        self.slug = slugify(self.cleaned_data["title"])
+        if Collection.objects.duplicate_check(self.slug):
+            raise ValidationError("Collection title already in use")
+
+    def process(self):
+        # Set the slug/user and save the collection
+        c = self.save(commit=False)
+        c.slug = self.slug
+        c.user = self.request.user
+        c.save()
+        print("Perfecto")
 
 
 class Collection_Content_Form(forms.ModelForm):
@@ -37,7 +75,7 @@ class Collection_Content_Form(forms.ModelForm):
 
         # Confirm this is your collection
         c = Collection.objects.get(pk=cleaned_data.get("collection_id"))
-        if self.request.user.id  != c.user.id:
+        if self.request.user.id != c.user.id:
             raise ValidationError("You do not have permission to modify this collection.")
 
         # Check for duplicates
@@ -46,6 +84,8 @@ class Collection_Content_Form(forms.ModelForm):
             raise ValidationError("File already exists in collection!")
 
         self.collection_object = c
+
+        raise ValidationError("FORCED ERROR FOR FORM")
 
     def process(self):
         # TODO - This function is only used with on the fly collections
