@@ -15,7 +15,7 @@ from museum_site.constants import *
 from museum_site.core.misc import extract_file_key_from_url, record
 from museum_site.core.palette import parse_pld
 from museum_site.templatetags.site_tags import model_block
-from museum_site.forms.collection_forms import Collection_Content_Form
+from museum_site.forms.collection_forms import Collection_Content_Form, Collection_Form
 
 
 def get_zip_file(request):
@@ -334,6 +334,7 @@ def otf_get_available_collections(request):
 def submit_form(request, slug):
     available_forms = {
         "Collection_Content_Form": Collection_Content_Form,
+        "Collection_Form": Collection_Form,
     }
 
     form_name = slug.replace("-", "_").title()
@@ -348,6 +349,7 @@ def submit_form(request, slug):
     if form.is_valid():
         form.process()
     else:
-        return JsonResponse({"success": False, "errors": form.errors.get_json_data()["__all__"]})
+        print(form.errors.get_json_data())
+        return JsonResponse({"success": False, "errors": form.errors.get_json_data()})
 
     return JsonResponse({"success": True})
