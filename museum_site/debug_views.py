@@ -9,6 +9,8 @@ from museum_site.core.file_utils import serve_file_as
 from museum_site.models import *
 from museum_site.forms import *
 
+from museum_site.forms.collection_forms import Collection_Form
+
 
 def debug(request, filename=None):
     data = {"title": "DEBUG PAGE"}
@@ -18,6 +20,8 @@ def debug(request, filename=None):
 
     if filename == "saves.html":
         return debug_saves(request)
+    if filename == "debug-collection-form":
+        return debug_collection_form(request)
 
     f = File.objects.get(pk=int(request.GET.get("id", 420)))
     s = Series.objects.get(pk=10)
@@ -68,9 +72,7 @@ def debug(request, filename=None):
         return serve_file_as(request.GET.get("serve"), request.GET.get("as", ""))
 
     if filename:
-        return render(
-            request, "museum_site/debug/{}.html".format(filename), data
-        )
+        return render(request, "museum_site/debug/{}.html".format(filename), data)
     else:
         return render(request, "museum_site/debug/debug.html", data)
 
@@ -138,3 +140,22 @@ def debug_play(request):
         context["form"] = Zeta_Advanced_Form()
 
     return render(request, "museum_site/debug/debug-play.html", context)
+
+
+def debug_collection_form(request):
+    context = {"title": "Debug Collection Form"}
+
+    if request.method == "POST":
+        form = Collection_Form(request.POST)
+        form.set_request(request)
+        print("POSTING")
+        if form.is_valid():
+            print("VALID")
+            form.process()
+        else:
+            print(form.errors)
+    else:
+        form = Collection_Form()
+
+    context["form"] = form
+    return render(request, "museum_site/debug/debug-collection-form.html", context)
