@@ -6,7 +6,6 @@ from django.utils.safestring import mark_safe
 
 
 class Event(models.Model):
-
     # Fields
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -48,3 +47,25 @@ class Event(models.Model):
         if context.get("title_3"):
             output += "{} @ {} -  {}\n".format(context["date_3"], context["time_3"], context["title_3"])
         return output.strip()
+
+
+"""
+class Post(models.Model):
+    # Fields
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    body = models.TextField()
+    media_1 = models.CharField(max_length=255, blank=True, default="")
+    media_2 = models.CharField(max_length=255, blank=True, default="")
+    media_3 = models.CharField(max_length=255, blank=True, default="")
+    media_4 = models.CharField(max_length=255, blank=True, default="")
+
+    tweet_id = models.IntegerField(default=0)
+    tumblr_id = models.IntegerField(default=0)
+    mastodon_id = models.IntegerField(default=0)
+    patreon_id = models.IntegerField(default=0)
+    cohost_id = models.IntegerField(default=0)
+
+    event = models.ForeignKey("Event", null=True, blank=True, on_delete=models.SET_NULL)
+"""

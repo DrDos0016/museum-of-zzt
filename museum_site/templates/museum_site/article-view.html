@@ -11,6 +11,7 @@
 
 {% block scripts %}
 <script>
+var jump = "{{request.GET.jump|default:''}}";
 $(document).ready(function (){
     $("select[name=80col-font]").change(function (){
         var new_font = $(this).val();
@@ -27,7 +28,24 @@ $(document).ready(function (){
             $("#80col-content").addClass("cp437");
         }
     });
+
+    if (jump)
+    {
+        jump_to(jump);
+    }
 });
+
+function jump_to(jump)
+{
+    var raw = $("article").html();
+    var location = raw.indexOf(jump);
+    if (location != -1)
+    {
+        var replaced = raw.replace(jump, "<span id='jump-point'>" + jump + "</span>");
+        $("article").html(replaced);
+        window.location = "#jump-point";
+    }
+}
 </script>
 {% endblock %}
 

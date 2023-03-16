@@ -1,5 +1,7 @@
 import base64
+import glob
 import json
+import os
 
 from datetime import datetime, timezone
 
@@ -9,11 +11,11 @@ from django.shortcuts import render
 
 from museum_site.constants import SITE_ROOT
 from .forms import *
-from .core import *
+from .core import ZAP_UPLOAD_PATH, ZAP_STATIC_PATH
 
 
 @staff_member_required
-def create_stream_schedule(request):
+def stream_schedule_create(request):
     context = {"title": "Create Stream Schedule"}
     return prefab_form(request, ZAP_Create_Stream_Schedule_Form)
 
@@ -22,6 +24,15 @@ def create_stream_schedule(request):
 def index(request):
     context = {"title": "ZAP"}
     events = Event.objects.all().order_by("-pk")[:25]
+
+    today = datetime.now(tz=timezone.utc)
+    raw_uploads = glob.glob(os.path.join(ZAP_UPLOAD_PATH, str(today.year), ("0" + str(today.month))[-2:], "*"))
+    context["recent_uploads"] = []
+    for u in raw_uploads:
+        context["recent_uploads"].append(u[u.find("/static/"):])
+
+    context["current_month_path"] = os.path.join(ZAP_STATIC_PATH, str(today.year), ("0" + str(today.month))[-2:])
+    context["last_month_path"] = ""
 
     context["events"] = events
     return render(request, "zap/index.html", context)
@@ -96,9 +107,10 @@ def save_image_render(request):
 
     return HttpResponse("Saved {} at {}".format(file_name, str(now)[:19]))
 
+
 @staff_member_required
-def create_post(request):
-    context = {"title": "ZAP - Share Event - {}"}
+def post_create(request):
+    context = {"title": "ZAP - Create Post"}
     if request.GET.get("pk"):
         event = Event.objects.get(pk=request.GET.get("pk"))
     else:
@@ -117,3 +129,18 @@ def create_post(request):
     context["form"] = form
     context["event"] = event
     return render(request, "zap/create-post.html", context)
+
+
+@staff_member_required
+def post_boost(request):
+    context = {"title": "ZAP - Boost Post"}
+
+    if request.method == "POST":
+        form = ZAP_Post_Boost_Form(request.POST)
+        if form.is_valid():
+            form.process(request)
+    else:
+        form = ZAP_Post_Boost_Form()
+
+    context["form"] = form
+    return render(request, "zap/boost-post.html", context)

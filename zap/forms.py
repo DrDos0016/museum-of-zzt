@@ -34,10 +34,10 @@ class ZAP_Post_Form(forms.Form):
         help_text="Tweets are limited to 240 characters.<br>Toots are limited to 500 characters.",
     )
 
-    media_1 = forms.CharField(required=False)
-    media_2 = forms.CharField(required=False)
-    media_3 = forms.CharField(required=False)
-    media_4 = forms.CharField(required=False)
+    media_1 = forms.CharField(required=False, help_text="Should begin with /static/...")
+    media_2 = forms.CharField(required=False, help_text="Should begin with /static/...")
+    media_3 = forms.CharField(required=False, help_text="Should begin with /static/...")
+    media_4 = forms.CharField(required=False, help_text="Should begin with /static/...")
 
     def smart_start(self, event=None):
         if not event:
@@ -107,9 +107,10 @@ class ZAP_Media_Upload_Form(forms.Form):
     uploaded_file_name = forms.CharField(required=False, help_text="Alternate name to use for upload")
 
     def process(self, request):
+        self.uploaded_file_names = []
         for k in request.FILES:
-            print(request.FILES[k])
-            zap_upload_file(request.FILES[k], self.cleaned_data.get("uploaded_file_name"))
+            uploaded_file_name = zap_upload_file(request.FILES[k], self.cleaned_data.get("uploaded_file_name"))
+            self.uploaded_file_names.append(uploaded_file_name)
 
 
 class ZAP_Create_Stream_Schedule_Form(forms.Form):
@@ -161,11 +162,13 @@ class ZAP_Create_Stream_Schedule_Form(forms.Form):
 
         # Friday 6pm Pacific
         self.fields["date_1"].initial = date(today + timedelta(days=4), "l M j")
-        self.fields["time_1"].initial = "6:00pm PST / 9:00pm EST / 02:00 UTC"
+        # self.fields["time_1"].initial = "6:00pm PST / 9:00pm EST / 02:00 UTC"
+        self.fields["time_1"].initial = "6:00pm PDT / 9:00pm EDT / 01:00 UTC"
 
         # Sunday Noon Pacific
         self.fields["date_2"].initial = date(today + timedelta(days=6), "l M j")
-        self.fields["time_2"].initial = "Noon PST / 3:00pm EST / 20:00 UTC"
+        # self.fields["time_2"].initial = "Noon PST / 3:00pm EST / 20:00 UTC"
+        self.fields["time_2"].initial = "Noon PDT / 3:00pm EDT / 19:00 UTC"
         self.fields["title_2"].initial = "Wildcard Stream: "
         return True
 
@@ -182,3 +185,34 @@ class ZAP_Create_Stream_Schedule_Form(forms.Form):
         event.kind = "stream-schedule"
         event.json_str = json_str
         event.save()
+
+class ZAP_Post_Boost_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Boost Post"
+    submit_value = "Boost"
+    attrs = {
+        "method": "POST",
+    }
+
+    accounts = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS)
+    post_id = forms.IntegerField()
+
+    def process(self, request):
+        print("Processing...")
+        self.responses = {}
+
+        accounts = self.cleaned_data.get("accounts", False)
+        print(accounts)
+
+        for account in accounts:
+            self.responses[account] = []
+            if account == "mastodon":
+                s = Social_Mastodon()
+            elif account == "twitter":
+                s = Social_Twitter()
+
+            s.login()  # Login
+
+            response = s.boost(self.cleaned_data.get["post_id"])  # Boost
+            self.responses[account].append(response)
+        self.processed = True

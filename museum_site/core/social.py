@@ -1,4 +1,5 @@
 import os
+import time
 
 from museum_site.constants import SITE_ROOT
 
@@ -96,6 +97,11 @@ class Social_Mastodon(Social):
         self.log_response(response)
         return response
 
+    def boost(self, post_id):
+        response = self.client.status_reblog(str(post_id))
+        self.log_response(response)
+        return response
+
 
 class Social_Tumblr(Social):
     def _init_keys(self):
@@ -145,5 +151,15 @@ class Social_Twitter(Social):
             media=""
 
         response = self.client.statuses.update(status=body, media_ids=media, in_reply_to_status_id=self.reply_to, tweet_mode="extended")
+        self.log_response(response)
+        return response
+
+    def boost(self, post_id):
+        post_id = str(post_id)
+        # Must un-retweet to prevent errors for re-retweet attempts
+        response = self.client.statuses.unretweet(id=post_id)
+        self.log_response(response)
+        time.sleep(0.5)  # Probably not necessary
+        response = self.client.statuses.retweet(id=post_id)
         self.log_response(response)
         return response

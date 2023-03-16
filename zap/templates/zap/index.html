@@ -2,10 +2,21 @@
 {% load static %}
 {% load site_tags %}
 
+{% block style %}
+<style>
+    #zap-recent-uploads img
+    {
+        max-width:250px;
+        max-height:250px;
+    }
+</style>
+{% endblock %}
+
 {% block zap_body %}
 <ul>
     <li><a href="{% url 'zap_media_upload' %}">Media Upload</a></li>
     <li><a href="{% url 'zap_create_post' %}">Create Post</a></li>
+    <li><a href="{% url 'zap_boost_post' %}">Boost Post</a></li>
     <li><a href="{% url 'zap_create_stream_schedule' %}">Create Stream Schedule</a></li>
 </ul>
 
@@ -23,4 +34,22 @@
         </td>
     </tr>{% endfor %}
 </table>
+
+<h2>Recent Uploads</h2>
+<table class="mono" id="zap-recent-uploads">
+    <tr><th>Image</th><th>Paths</th></tr>
+    {% for i in recent_uploads %}
+    <tr>
+        <td><a href="{{i}}" target="_blank" class="noext"><img src="{{i}}"></a></td>
+        <td>{{i}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Recent Renders</h2>
+<table class="mono">
+    <tr><th>Image</th><th>Paths</th></tr>
+</table>
+
+{{current_month_path}}
 {% endblock %}

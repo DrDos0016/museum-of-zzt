@@ -4,25 +4,6 @@
 
 {% block scripts %}
 <script src="/static/js/museum-forms.js"></script>
-<script src="{% static 'js/html2canvas.min.js' %}"></script>
-<script>
-$("document").ready(function(){
-    $("#preview").click(preview);
-});
-
-function preview()
-{
-    var form_data = $("#stream-schedule-form").serializeArray();
-    console.log(form_data);
-    $.ajax({
-        url:"/tools/zap/preview/stream-schedule/",
-        data:form_data,
-        method:"POST",
-    }).done(function (response){
-        $("#preview-frame").html(response);
-    });
-}
-</script>
 {% endblock %}
 
 {% block zap_body %}
@@ -35,7 +16,17 @@ function preview()
 
 <hr>
 
-<div id="preview-frame"></div>
+<table>
+    {% for ufn in form.uploaded_file_names %}
+    <tr>
+        <td><img src="{% static '/zap/media/'|add:ufn %}" style="max-width:500px"></td>
+        <td><ul>
+            <li>{{ufn}}</li>
+            <li><a href="https://museumofzzt.com{% static '/zap/media/'|add:ufn %}">https://museumofzzt.com{% static '/zap/media/'|add:ufn %}</a></li>
+        </ul></td>
+    </tr>
+    {% endfor %}
+</table>
 
 
 {% endblock %}
