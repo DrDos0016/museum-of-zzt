@@ -1,5 +1,5 @@
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import DetailView
 from museum_site.constants import *
 from museum_site.core.redirects import redirect_with_querystring
@@ -72,6 +72,10 @@ def patron_articles(request):
 def article_lock(request, article_id, slug=""):
     """ Page shown when a non-public article is attempted to be viewed """
     article = Article.objects.get(pk=article_id)
+
+    if article.published == Article.PUBLISHED:  # Don't show a lock page for published articles
+        return redirect(article.url())
+
     article.init_model_block_context("detailed", request=request)
     article.allow_comments = False
     data = {"title": "Restricted Article", "article": article, "cost": article.early_access_price, "release": article.publish_date}
