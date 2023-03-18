@@ -11,6 +11,7 @@ import requests
 
 django.setup()
 
+from museum_site.constants import SITE_ROOT
 from museum_site.models import *
 from museum_site.core.detail_identifiers import *
 
