@@ -23,7 +23,6 @@ class Collection_Form(forms.ModelForm):
     def set_request(self, request): self.request = request
 
     def clean(self):
-        print("Cleaning")
         cleaned_data = super().clean()
 
         if self.request is None:
@@ -40,7 +39,6 @@ class Collection_Form(forms.ModelForm):
         c.slug = self.slug
         c.user = self.request.user
         c.save()
-        print("Perfecto")
 
 
 class Collection_Content_Form(forms.ModelForm):
@@ -84,8 +82,6 @@ class Collection_Content_Form(forms.ModelForm):
             raise ValidationError("File already exists in collection!")
 
         self.collection_object = c
-
-        raise ValidationError("FORCED ERROR FOR FORM")
 
     def process(self):
         # TODO - This function is only used with on the fly collections

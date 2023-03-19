@@ -2,9 +2,11 @@
 <style>
 #otf-wrapper
 {
+    box-sizing:border-box;
     background: var(--block-bg);
     border: 1px solid var(--border-color);
-    max-width:750px;
+    width:750px;
+    max-width:100vw;
     margin:auto;
     padding:2px;
 }
@@ -44,6 +46,12 @@
 
 #otf-wrapper > div.otf-hidden { display:none; }
 .otf-selected { background-color: var(--selected-tab); }
+
+#otf-error-list
+{
+    resize:none;
+    width:80%;
+}
 </style>
 
 <script>
@@ -55,21 +63,16 @@ $(document).ready(initialize_otf_collections);
 
 function initialize_otf_collections()
 {
-    console.log("initializing");
     // Pull collection lists
     $.ajax({
         url:"/ajax/collection/get-available-collections/",
     }).done(function (response){
-        console.log(response);
         collection_list = response["collections"];
         populate_collection_list();
 
         if (! otf_bound)
         {
-            $(".otf-active").addClass("otf-hidden");
-            $(".otf-active").removeClass("otf-active");
-            $("#otf-main").addClass("otf-active");
-            $("#otf-main").removeClass("otf-hidden");
+            otf_show_panel("#otf-main");
 
             $("#otf-collection-list").change(otf_change_check);
             $(".otf-cancel-button").click(otf_cancel);
@@ -90,10 +93,7 @@ function otf_change_check()
 {
     if ($("#otf-collection-list option:selected").text() == "- Create New Collection -")
     {
-        $(".otf-active").addClass("otf-hidden");
-        $(".otf-active").removeClass("otf-active");
-        $("#otf-new-collection").addClass("otf-active");
-        $("#otf-new-collection").removeClass("otf-hidden");
+        otf_show_panel("#otf-new-collection");
     }
     else if ($("#otf-collection-list option:selected").text() == "- Choose Collection -")
     {
@@ -107,10 +107,7 @@ function otf_change_check()
 
 function otf_cancel()
 {
-    $(".otf-active").addClass("otf-hidden");
-    $(".otf-active").removeClass("otf-active");
-    $("#otf-main").addClass("otf-active");
-    $("#otf-main").removeClass("otf-hidden");
+    otf_show_panel("#otf-main");
     if ($("#otf-collection-list option:selected").text() == "- Create New Collection -")
         $("#otf-collection-list").val("");
     otf_change_check();
@@ -118,15 +115,11 @@ function otf_cancel()
 
 function otf_set_desc()
 {
-    $(".otf-active").addClass("otf-hidden");
-    $(".otf-active").removeClass("otf-active");
-    $("#otf-set-desc").addClass("otf-active");
-    $("#otf-set-desc").removeClass("otf-hidden");
+    otf_show_panel("#otf-set-desc");
 }
 
 function otf_clear_desc()
 {
-    console.log("Clear desc called");
     $("#otf-description").val("");
 }
 
@@ -166,7 +159,6 @@ function show_selected()
 
 function otf_add_selected_zfile()
 {
-    console.log("Adding zfile");
     $.ajax({
         url:"/ajax/submit-form/collection-content-form/",
         method:"POST",
@@ -177,15 +169,9 @@ function otf_add_selected_zfile()
             "collection_description": $("#otf-description").val(),
         }
     }).done(function (response){
-        console.log(response);
         if (response.errors)
         {
-            var output = "";
-            for (var idx = 0; idx < response.errors.length; idx++)
-            {
-                output += response.errors[idx].message + "\n";
-            }
-            $("#otf-response").text("Error: " + output);
+            otf_show_errors(response.errors);
         }
         if (response.success)
         {
@@ -196,7 +182,6 @@ function otf_add_selected_zfile()
 
 function otf_create_collection()
 {
-    console.log("Creating collection...");
     $.ajax({
         url:"/ajax/submit-form/collection-form/",
         method:"POST",
@@ -205,18 +190,9 @@ function otf_create_collection()
             "title": $("input[name=otf-new-collection-name]").val(),
         }
     }).done(function (response){
-        console.log("Called ajax form");
-        console.log(response);
-
         if (response.errors)
         {
-            var output = "";
-            for (var idx = 0; idx < response.errors.length; idx++)
-            {
-                output += response.errors[idx].message + "\n";
-                console.log(response.errors[idx]);
-            }
-            $("#otf-response").text("Error: " + output);
+            otf_show_errors(response.errors);
         }
         if (response.success)
         {
@@ -224,10 +200,33 @@ function otf_create_collection()
             initialize_otf_collections();
             $(".otf-active").addClass("otf-hidden");
             $(".otf-active").removeClass("otf-active");
-            $("#otf-main").addClass("otf-active");
-            $("#otf-main").removeClass("otf-hidden");
+            otf_show_panel("#otf-main");
         }
     });
+}
+
+function otf_show_panel(panel)
+{
+    $(".otf-active").addClass("otf-hidden");
+    $(".otf-active").removeClass("otf-active");
+    $(panel).addClass("otf-active");
+    $(panel).removeClass("otf-hidden");
+}
+
+function otf_show_errors(errors)
+{
+    output = "";
+    for (var [k, v] of Object.entries(errors))
+    {
+        for (i in errors[k])
+        {
+            output += errors[k][i]["message"] + "\n";
+        }
+    }
+
+    $("#otf-error-list").val(output);
+    $("#otf-response").html("The requested action could not be performed.")
+    otf_show_panel("#otf-errors");
 }
 
 function populate_collection_list()
@@ -255,6 +254,10 @@ function populate_collection_list()
         <input name="otf-new-collection-name" placeholder="New Collection Name">
         <button type="button" id="otf-create-collection">Create</button>
         <button type="button" class="otf-cancel-button">Cancel</button>
+    </div>
+    <div id="otf-errors" class="otf-hidden">
+        <textarea id="otf-error-list" readonly></textarea>
+        <button type="button" class="otf-cancel-button">Back</button>
     </div>
 </div>
 {% csrf_token %}
