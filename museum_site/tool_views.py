@@ -291,9 +291,9 @@ def mirror(request, key):
         description += (
             "<p><i>Please note that emulation via DOSBox frequently suffers "
             "from slow performance, laggy input, and audio issues, especially "
-            "on more demanding {} worlds. An alternate emulator for ZZT such "
+            "on more demanding {} worlds. An alternate emulator for {} such "
             "as Zeta or a modern source port like ClassicZoo may provide a "
-            "better experience.</i></p>").format(engine)
+            "better experience.</i></p>").format(engine, engine)
 
     raw_contents = zfile.get_zip_info()
     contents = []
@@ -631,7 +631,7 @@ def replace_zip(request, key):
             for chunk in request.FILES["replacement"].chunks():
                 fh.write(chunk)
 
-        data["new_file"] = File.objects.get(pk=pk)
+        data["new_file"] = File.objects.get(key=key)
 
         # Update checksum
         if request.POST.get("update-checksum"):
