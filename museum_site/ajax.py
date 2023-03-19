@@ -1,4 +1,5 @@
 import base64
+import json
 import uuid
 import zipfile
 import binascii
@@ -328,6 +329,8 @@ def otf_get_available_collections(request):
     for c in qs:
         output["collections"].append({"pk": c.pk, "title": c.title, "visibility": c.visibility_str[:3]})
 
+    request.session["otf_collection_json"] = json.dumps(output)
+    request.session["otf_refresh"] = False
     return JsonResponse(output)
 
 

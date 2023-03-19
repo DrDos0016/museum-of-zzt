@@ -140,6 +140,7 @@ class On_The_Fly_Collections_View(TemplateView):
         if request.session["active_tool"] == "on-the-fly-collections":
             context["output"] = "On The Fly Collections are now enabled."
             request.session["active_tool_template"] = "museum_site/tools/on-the-fly-collections.html"
+            request.session["otf_refresh"] = True
         else:
             context["output"] = "On The Fly Collections are now disabled."
             request.session["active_tool_template"] = ""

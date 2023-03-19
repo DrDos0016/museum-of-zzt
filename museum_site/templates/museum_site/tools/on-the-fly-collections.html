@@ -56,37 +56,59 @@
 
 <script>
 var otf_bound = false;
-var collection_list = null;
+var otf_user_collection_json = "{{request.session.otf_collection_json|default:'{}'|escapejs}}";
+var collection_list = {};
 var otf_to_add_pk = 0;
 var otf_selected_title = "";
+var otf_needs_refresh = {{request.session.otf_refresh|yesno:"true,false"}};
 $(document).ready(initialize_otf_collections);
 
 function initialize_otf_collections()
 {
-    // Pull collection lists
-    $.ajax({
-        url:"/ajax/collection/get-available-collections/",
-    }).done(function (response){
-        collection_list = response["collections"];
-        populate_collection_list();
-
-        if (! otf_bound)
+    if (otf_needs_refresh)
+    {
+        // Pull collection lists
+        $.ajax({
+            url:"/ajax/collection/get-available-collections/",
+        }).done(function (response){
+            collection_list = response["collections"];
+            otf_bind_controls();
+        });
+    }
+    else
+    {
+        var parsed = JSON.parse(otf_user_collection_json);
+        if (parsed.collections)
         {
-            otf_show_panel("#otf-main");
-
-            $("#otf-collection-list").change(otf_change_check);
-            $(".otf-cancel-button").click(otf_cancel);
-            $("#otf-set-desc-button").click(otf_set_desc);
-            $("#otf-clear-desc-button").click(otf_clear_desc);
-            $(".model-block").click($(this), otf_select_zfile);
-            $("#otf-quit").click(function (){
-                window.location = "/collection/on-the-fly-collections/";
-            });
-            $("#otf-add-zfile").click(otf_add_selected_zfile);
-            $("#otf-create-collection").click(otf_create_collection);
-            otf_bound = true;
+            collection_list = parsed.collections;
+            otf_bind_controls();
         }
-    });
+        else
+        {
+            $("#otf-response").html("Could not parse collections. Try disabling and re-enabling On The Fly Collections?");
+        }
+    }
+}
+
+function otf_bind_controls()
+{
+    populate_collection_list();
+    if (! otf_bound)
+    {
+        otf_show_panel("#otf-main");
+
+        $("#otf-collection-list").change(otf_change_check);
+        $(".otf-cancel-button").click(otf_cancel);
+        $("#otf-set-desc-button").click(otf_set_desc);
+        $("#otf-clear-desc-button").click(otf_clear_desc);
+        $(".model-block").click($(this), otf_select_zfile);
+        $("#otf-quit").click(function (){
+            window.location = "/collection/on-the-fly-collections/";
+        });
+        $("#otf-add-zfile").click(otf_add_selected_zfile);
+        $("#otf-create-collection").click(otf_create_collection);
+        otf_bound = true;
+    }
 }
 
 function otf_change_check()
@@ -188,6 +210,8 @@ function otf_create_collection()
         data:{
             "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
             "title": $("input[name=otf-new-collection-name]").val(),
+            "visibility": 1, // TODO: Magic Number
+            "default_sort": "manual",
         }
     }).done(function (response){
         if (response.errors)
@@ -196,7 +220,9 @@ function otf_create_collection()
         }
         if (response.success)
         {
-            $("#otf-response").text("Added: " + otf_selected_title);
+            $("#otf-response").text("Created: " + $("input[name=otf-new-collection-name]").val());
+            otf_needs_refresh = true; // Pull the new collection via AJAX
+            $("input[name=otf-new-collection-name]").val("");
             initialize_otf_collections();
             $(".otf-active").addClass("otf-hidden");
             $(".otf-active").removeClass("otf-active");
@@ -218,9 +244,14 @@ function otf_show_errors(errors)
     output = "";
     for (var [k, v] of Object.entries(errors))
     {
+        if (k == "__all__")
+            var field_name = "Form"
+        else
+            var field_name = k;
+
         for (i in errors[k])
         {
-            output += errors[k][i]["message"] + "\n";
+            output += field_name + ": " + errors[k][i]["message"] + "\n";
         }
     }
 
