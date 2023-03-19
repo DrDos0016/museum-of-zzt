@@ -359,7 +359,6 @@ class IA_Mirror_Form(forms.Form):
 class Prep_Publication_Pack_Form(forms.Form):
     use_required_attribute = False
     submit_value = "Generate Publication Pack"
-    publish_date = forms.CharField(widget=Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Clear"))
     associated = Enhanced_Model_Choice_Field(
         widget=Ordered_Scrolling_Radio_Widget(),
         queryset=File.objects.unpublished(),
