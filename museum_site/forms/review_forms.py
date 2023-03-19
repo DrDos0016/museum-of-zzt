@@ -5,6 +5,7 @@ from museum_site.core.form_utils import any_plus, get_sort_option_form_choices
 from museum_site.constants import YEAR
 from museum_site.models import Review
 
+
 class Review_Form(forms.ModelForm):
     RATINGS = (
         (-1, "No rating"), (0, "0.0"), (0.5, "0.5"), (1.0, "1.0"), (1.5, "1.5"), (2.0, "2.0"),
@@ -20,8 +21,7 @@ class Review_Form(forms.ModelForm):
     class Meta:
         model = Review
         fields = ["author", "title", "content", "rating"]
-
-        labels = {"title": "Review Title", "author": "Your Name", "content": "Review",}
+        labels = {"title": "Review Title", "author": "Your Name", "content": "Review"}
 
         help_texts = {
             "content": (
@@ -43,9 +43,9 @@ class Review_Form(forms.ModelForm):
 
 
 class Review_Search_Form(forms.ModelForm):
+    FIRST_REVIEW_YEAR = 2002
     RATINGS = (
-        (0, "0.0"), (0.5, "0.5"), (1.0, "1.0"), (1.5, "1.5"), (2.0, "2.0"),
-        (2.5, "2.5"), (3.0, "3.0"), (3.5, "3.5"), (4.0, "4.0"), (4.5, "4.5"), (5.0, "5.0"),
+        (0, "0.0"), (0.5, "0.5"), (1.0, "1.0"), (1.5, "1.5"), (2.0, "2.0"), (2.5, "2.5"), (3.0, "3.0"), (3.5, "3.5"), (4.0, "4.0"), (4.5, "4.5"), (5.0, "5.0"),
     )
 
     heading = "Review Search"
@@ -54,10 +54,7 @@ class Review_Search_Form(forms.ModelForm):
 
     # Fields
     use_required_attribute = False
-    review_date = forms.ChoiceField(
-        label="Year Reviewed",
-        choices=any_plus(((str(x), str(x)) for x in range(YEAR, 2001, -1)))  # Earliest review is from 2002
-    )
+    review_date = forms.ChoiceField(label="Year Reviewed", choices=any_plus(((str(x), str(x)) for x in range(YEAR, (FIRST_REVIEW_YEAR - 1), -1))))
     min_rating = forms.ChoiceField(label="Minimum Rating", choices=RATINGS)
     max_rating = forms.ChoiceField(label="Maximum Rating", choices=RATINGS, initial=5.0)
     ratingless = forms.BooleanField(label="Include Reviews Without Ratings", initial=True)
@@ -66,11 +63,5 @@ class Review_Search_Form(forms.ModelForm):
     class Meta:
         model = Review
         fields = ["title", "author", "content"]
-
-        labels = {
-            "title": "Title Contains",
-            "author": "Author Contains",
-            "content": "Text Contains",
-        }
-
+        labels = {"title": "Title Contains", "author": "Author Contains", "content": "Text Contains"}
         widgets = {"content": forms.TextInput()}
