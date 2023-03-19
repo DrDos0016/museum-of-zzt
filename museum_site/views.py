@@ -85,7 +85,7 @@ def explicit_warning(request):
 
 
 def discord_overview(request):
-    context = {"title": "Joinining The Worlds of ZZT Discord"}
+    context = {"title": "Joining The Worlds of ZZT Discord"}
     context["meta_context"] = {
         "description": ["name", "Rules, information, and an invite link to the Worlds of ZZT Discord server"],
         "og:title": ["property", context["title"] + " - Museum of ZZT"],
