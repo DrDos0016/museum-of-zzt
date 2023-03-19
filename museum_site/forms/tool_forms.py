@@ -29,171 +29,6 @@ PREVIEW_IMAGE_CROP_CHOICES = (
 )
 
 
-class Series_Form(forms.ModelForm):
-    user_required_attribute = False
-    attrs = {"method": "POST", "enctype": "multipart/form-data"}
-    submit_value = "Add Series"
-
-    associations = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(
-            choices=qs_to_categorized_select_choices(
-                Article.objects.not_removed,
-            ),
-        ),
-        choices=list(Article.objects.not_removed().values_list("id", "title")),
-        required=False,
-        label="Associated Articles"
-    )
-    preview = forms.FileField(
-        help_text="Select the image you wish to upload.",
-        label="Preview Image", widget=UploadFileWidget(target_text="Drag & Drop Image Here or Click to Choose", allowed_filetypes=".png,image/png")
-    )
-    crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
-
-    class Meta:
-        model = Series
-        fields = ["title", "description", "visible"]
-
-
-class Livestream_Description_Form(forms.Form):
-    heading = "Livestream Description Generator"
-    use_required_attribute = False
-    submit_value = "Select"
-    associated = Enhanced_Model_Choice_Field(
-        widget=Ordered_Scrolling_Radio_Widget(),
-        queryset=File.objects.all(),
-        label="Associated ZFiles",
-        help_text="Select one or more ZFiles",
-        required=False,
-        empty_label=None
-    )
-    stream_date = forms.CharField(
-        widget=forms.DateInput(attrs={"type": "date"}),
-        help_text="Date of original livestream",
-        required=False
-    )
-    timestamp = Manual_Field(
-        label="Timestamp(s)",
-        widget=Tagged_Text_Widget(),
-        required=False,
-        help_text="Separate with commas. Match order in associated ZFiles.",
-    )
-    ad_break_endings = Manual_Field(
-        label="Ad Break End Timestamp(s)",
-        widget=Tagged_Text_Widget(),
-        required=False,
-        help_text="Timestamps for when ad breaks ended. Must be manually added to list of streamed worlds",
-    )
-
-
-class Livestream_Vod_Form(forms.Form):
-    use_required_attribute = False
-    heading = "Add Livestream VOD"
-    submit_value = "Add Livestream VOD"
-    attrs = {"method": "POST", "enctype": "multipart/form-data"}
-
-    author = forms.CharField(initial="Dr. Dos")
-    title = forms.CharField(widget=Enhanced_Text_Widget(char_limit=80), help_text="Used exactly as entered. Don't forget the 'Livestream - ' prefix!")
-    date = forms.DateField(widget=Enhanced_Date_Widget(buttons=["today"]))
-    video_url = forms.URLField(help_text=(
-            "https://youtu.be/<b>{id}</b>, <br>https://www.youtube.com/watch?v=<b>{id}</b>&feature=youtu.be, <br>"
-            "or https://studio.youtube.com/video/<b>{id}</b>/edit format."
-        ),
-        label="Video URL"
-    )
-    video_description = forms.CharField(
-        widget=forms.Textarea(),
-        help_text=(
-            "Copy/Paste from YouTube video details editor. Manually erase everything from "
-            "'<i>Join us for future livestreams...</i>' to the end of the description."
-        )
-    )
-    description = forms.CharField(widget=Enhanced_Text_Widget(char_limit=250), label="Article Summary")
-    preview_image = forms.FileField()
-    crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
-    publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
-    series = forms.ModelChoiceField(queryset=Series.objects.visible(), empty_label="- NONE -", required=False)
-    associated_zfile = Enhanced_Model_Choice_Field(
-        widget=Scrolling_Checklist_Widget(
-            filterable=True,
-            show_selected=True,
-        ),
-        queryset=File.objects.all(),
-        empty_label=None,
-        required=False,
-    )
-
-    def clean_video_url(self):
-        video_url = self.cleaned_data["video_url"]
-
-        # Strip the URL part and get the ID
-        video_url = video_url.replace("https://youtu.be/", "")
-        video_url = video_url.replace("https://www.youtube.com/watch?v=", "")
-        video_url = video_url.replace("https://studio.youtube.com/video/", "")
-        video_url = video_url.replace("/edit", "")
-        if "&" in video_url:
-            video_url = video_url[:video_url.find("&")]
-
-        return video_url
-
-    def create_article(self):
-        preview_image = self.files["preview_image"]
-
-        # Prepare the Article
-        a = Article()
-        key = ("pk-" + self.cleaned_data["associated_zfile"][0]) if self.cleaned_data["associated_zfile"] else "no-assoc"
-        a.title = self.cleaned_data["title"]
-        a.author = self.cleaned_data["author"]
-        a.category = "Livestream"
-        a.schema = "django"
-        a.publish_date = self.cleaned_data["date"]
-        a.published = self.cleaned_data["publication_status"]
-        a.description = self.cleaned_data["description"]
-        a.static_directory = "ls-{}-{}".format(key, self.cleaned_data["video_url"])
-        a.allow_comments = True
-
-        # Context for subtemplate
-        final_desc = urlize(self.cleaned_data["video_description"])
-        final_desc = linebreaks(final_desc)
-        subcontext = {"video_id": self.cleaned_data["video_url"], "desc": final_desc}
-
-        # Render the subtemplate
-        a.content = render_to_string("museum_site/subtemplate/stream-vod-article.html", subcontext)
-
-        # Process the uploaded image
-        folder = os.path.join(SITE_ROOT, "museum_site", "static", "articles", str(self.cleaned_data["date"])[:4], a.static_directory)
-        try:
-            os.mkdir(folder)
-        except FileExistsError:
-            pass
-
-        # Save the file to the uploaded folder
-        file_path = os.path.join(folder, "preview.png")
-        with open(file_path, 'wb+') as fh:
-            for chunk in preview_image.chunks():
-                fh.write(chunk)
-
-        # Crop image if needed
-        if self.cleaned_data.get("crop") != "NONE":
-            crop_file(file_path, preset=self.cleaned_data["crop"])
-
-        # Save the article so it has an ID
-        a.save()
-
-        # Associate the article with the relevant file(s)
-        for file_association in self.cleaned_data["associated_zfile"]:
-            fa = File.objects.get(pk=int(file_association))
-            fa.articles.add(a)
-            fa.save()
-
-        # Associate the article with the selected series (if any)
-        if self.cleaned_data["series"]:
-            a.series.add(self.cleaned_data["series"])
-            a.save()
-
-        return a
-
-
 class IA_Mirror_Form(forms.Form):
     use_required_attribute = False
     required = False
@@ -354,6 +189,167 @@ class IA_Mirror_Form(forms.Form):
         # Remove the working files/folders
         delete_this(wip_dir)
         return r
+
+
+class Series_Form(forms.ModelForm):
+    user_required_attribute = False
+    attrs = {"method": "POST", "enctype": "multipart/form-data"}
+    submit_value = "Add Series"
+
+    associations = forms.MultipleChoiceField(
+        widget=Scrolling_Checklist_Widget(choices=qs_to_categorized_select_choices(Article.objects.not_removed)),
+        choices=list(Article.objects.not_removed().values_list("id", "title")),
+        required=False,
+        label="Associated Articles"
+    )
+    preview = forms.FileField(
+        help_text="Select the image you wish to upload.",
+        label="Preview Image", widget=UploadFileWidget(target_text="Drag & Drop Image Here or Click to Choose", allowed_filetypes=".png,image/png")
+    )
+    crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
+
+    class Meta:
+        model = Series
+        fields = ["title", "description", "visible"]
+
+
+class Livestream_Description_Form(forms.Form):
+    heading = "Livestream Description Generator"
+    use_required_attribute = False
+    submit_value = "Select"
+    associated = Enhanced_Model_Choice_Field(
+        widget=Ordered_Scrolling_Radio_Widget(),
+        queryset=File.objects.all(),
+        label="Associated ZFiles",
+        help_text="Select one or more ZFiles",
+        required=False,
+        empty_label=None
+    )
+    stream_date = forms.CharField(
+        widget=forms.DateInput(attrs={"type": "date"}),
+        help_text="Date of original livestream",
+        required=False
+    )
+    timestamp = Manual_Field(
+        label="Timestamp(s)",
+        widget=Tagged_Text_Widget(),
+        required=False,
+        help_text="Separate with commas. Match order in associated ZFiles.",
+    )
+    ad_break_endings = Manual_Field(
+        label="Ad Break End Timestamp(s)",
+        widget=Tagged_Text_Widget(),
+        required=False,
+        help_text="Timestamps for when ad breaks ended. Must be manually added to list of streamed worlds",
+    )
+
+
+class Livestream_Vod_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Add Livestream VOD"
+    submit_value = "Add Livestream VOD"
+    attrs = {"method": "POST", "enctype": "multipart/form-data"}
+
+    author = forms.CharField(initial="Dr. Dos")
+    title = forms.CharField(widget=Enhanced_Text_Widget(char_limit=80), help_text="Used exactly as entered. Don't forget the 'Livestream - ' prefix!")
+    date = forms.DateField(widget=Enhanced_Date_Widget(buttons=["today"]))
+    video_url = forms.URLField(help_text=(
+            "https://youtu.be/<b>{id}</b>, <br>https://www.youtube.com/watch?v=<b>{id}</b>&feature=youtu.be, <br>"
+            "or https://studio.youtube.com/video/<b>{id}</b>/edit format."
+        ),
+        label="Video URL"
+    )
+    video_description = forms.CharField(
+        widget=forms.Textarea(),
+        help_text=(
+            "Copy/Paste from YouTube video details editor. Manually erase everything from "
+            "'<i>Join us for future livestreams...</i>' to the end of the description."
+        )
+    )
+    description = forms.CharField(widget=Enhanced_Text_Widget(char_limit=250), label="Article Summary")
+    preview_image = forms.FileField()
+    crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
+    publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
+    series = forms.ModelChoiceField(queryset=Series.objects.visible(), empty_label="- NONE -", required=False)
+    associated_zfile = Enhanced_Model_Choice_Field(
+        widget=Scrolling_Checklist_Widget(
+            filterable=True,
+            show_selected=True,
+        ),
+        queryset=File.objects.all(),
+        empty_label=None,
+        required=False,
+    )
+
+    def clean_video_url(self):
+        video_url = self.cleaned_data["video_url"]
+
+        # Strip the URL part and get the ID
+        video_url = video_url.replace("https://youtu.be/", "")
+        video_url = video_url.replace("https://www.youtube.com/watch?v=", "")
+        video_url = video_url.replace("https://studio.youtube.com/video/", "")
+        video_url = video_url.replace("/edit", "")
+        if "&" in video_url:
+            video_url = video_url[:video_url.find("&")]
+
+        return video_url
+
+    def create_article(self):
+        preview_image = self.files["preview_image"]
+
+        # Prepare the Article
+        a = Article()
+        key = ("pk-" + self.cleaned_data["associated_zfile"][0]) if self.cleaned_data["associated_zfile"] else "no-assoc"
+        a.title = self.cleaned_data["title"]
+        a.author = self.cleaned_data["author"]
+        a.category = "Livestream"
+        a.schema = "django"
+        a.publish_date = self.cleaned_data["date"]
+        a.published = self.cleaned_data["publication_status"]
+        a.description = self.cleaned_data["description"]
+        a.static_directory = "ls-{}-{}".format(key, self.cleaned_data["video_url"])
+        a.allow_comments = True
+
+        # Context for subtemplate
+        final_desc = urlize(self.cleaned_data["video_description"])
+        final_desc = linebreaks(final_desc)
+        subcontext = {"video_id": self.cleaned_data["video_url"], "desc": final_desc}
+
+        # Render the subtemplate
+        a.content = render_to_string("museum_site/subtemplate/stream-vod-article.html", subcontext)
+
+        # Process the uploaded image
+        folder = os.path.join(SITE_ROOT, "museum_site", "static", "articles", str(self.cleaned_data["date"])[:4], a.static_directory)
+        try:
+            os.mkdir(folder)
+        except FileExistsError:
+            pass
+
+        # Save the file to the uploaded folder
+        file_path = os.path.join(folder, "preview.png")
+        with open(file_path, 'wb+') as fh:
+            for chunk in preview_image.chunks():
+                fh.write(chunk)
+
+        # Crop image if needed
+        if self.cleaned_data.get("crop") != "NONE":
+            crop_file(file_path, preset=self.cleaned_data["crop"])
+
+        # Save the article so it has an ID
+        a.save()
+
+        # Associate the article with the relevant file(s)
+        for file_association in self.cleaned_data["associated_zfile"]:
+            fa = File.objects.get(pk=int(file_association))
+            fa.articles.add(a)
+            fa.save()
+
+        # Associate the article with the selected series (if any)
+        if self.cleaned_data["series"]:
+            a.series.add(self.cleaned_data["series"])
+            a.save()
+
+        return a
 
 
 class Prep_Publication_Pack_Form(forms.Form):
