@@ -33,7 +33,7 @@ def museum_global(request):
     data["datetime"] = datetime.utcnow()
     if data["datetime"].day == 27:  # Drupe Day
         data["drupe"] = True
-    if data["datetime"].day == 1 and data["datetime"].month == 4:  # April 1st
+    if (data["datetime"].day == 1 and data["datetime"].month == 4) or request.GET.get("april"):  # April 1st
         data["april"] = True
 
     # E-mail
