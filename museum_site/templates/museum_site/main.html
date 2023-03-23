@@ -6,7 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block title %}{{title}}{% endblock %}{% if title %} - {% endif %}Museum of ZZT</title>
+<title>{% if title %}{{title}} - {% endif %}Museum of ZZT</title>
 {% for file in CSS_INCLUDES %}<link rel="stylesheet" type="text/css" href="{% static 'css/'|add:file %}?{{BOOT_TS}}">
 {% endfor %}<link rel="shortcut icon" href="{% static 'chrome/favicon.png' %}">
 {% block meta %}{% meta_tags path=request.get_full_path %}{% endblock %}
@@ -42,6 +42,7 @@
 
 {% block active_tool %}{% if request.session.active_tool %}<section id="active-tool">{% include request.session.active_tool_template %}</section>{% endif %}{% endblock %}
 
+{% block sidebar_left %}
 <section id="sidebar-left" class="sidebar">
     <header id="logo-area">
         {% if ENV != "DEV" %}<a href="/" id="logo"><img src="{% static 'chrome/logos/museum-logo-by-lazymoth.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
@@ -109,6 +110,7 @@
         <a href="{% url 'file_details' %}">All Details</a>
     </div>
 </section>
+{% endblock %}
 
 <main id="content" class="block{% for class in content_classes %} {{class}}{% endfor %}" data-url-name="{{request.resolver_match.url_name|default:'null_url_name'}}">
 <div id="top-margin">
@@ -127,6 +129,7 @@
 {% endblock %}
 </main>
 
+{% block sidebar_right %}
 <section id="sidebar-right" class="sidebar">
     <nav id="top-links" class="cp437">
         <a id="top-link" class="nohover" href="#top"><div class="key">▲</div><div class="text">Top</div></a>
@@ -210,7 +213,9 @@
         <a class="inline" href="{% url 'rss_feeds' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Feeds" title="RSS Feeds"></a>
     </div>
 </section>
+{% endblock %}
 
+{% block footer %}
 <footer id="footer">
     - Museum of ZZT -
 {% if drupe %}Happy Drupe Day! -{% endif %}
@@ -264,6 +269,7 @@ $("meta").each(function (){
 </script>
 {% endif %}
 </footer>
+{% endblock %}
 
 <datalist id="search-suggestions">
 </datalist>
