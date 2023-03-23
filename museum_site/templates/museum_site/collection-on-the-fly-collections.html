@@ -6,15 +6,19 @@
 {% block content %}
 <h1>Manage On The Fly Collections</h1>
 
-<h1>HEY IF YOU SEE THIS KNOW THAT IT IS NOT YET READY DESPITE NOT ACTIVELY BEING DISABLED</h1>
-
 <p>"On The Fly" Collections are an alternative way to create collections designed to integrate collection functionality throughout the site.</p>
 
-<p>By enabling On The Fly Collections, most pages on the Museum will have form controls along the top of the page that allow you to quickly add whatever file is being viewed to a collection.</p>
+<p>By enabling On The Fly Collections, most pages on the Museum will have form controls along the top of the page that allow you to select from files shown on the page and add them to a collection.</p>
 
-<p>The "X" button on the right side of the header will disable the functionality until it is activated again.</p>
+<p>The "Quit" button will bring you back to this page where you can confirm you wish to stop working with collections.</p>
 
-<p>A drop down menu will allow specifying a collection to add to, with the ability to create a new collection as well. Newly created collections in this manner will have their visibility set to <span class="keyword">PRIVATE</span>.</p>
+<p>Files can be selected by clicking on any non-link in the model block that details them. This includes all gallery blocks and detailed blocks used when browsing the File Archives, as well as the page header when viewing a specific file. This applies anywhere throughout the site, so other places may use these as well. The only exception of note is list view table rows. The currently selected file is listed on the top of the page and highlighted within the page.</p>
+
+<p>A drop down menu allows you to choose which collection the file should be added to. In brackets, the visibility of the Collection is listed to make it clear if your additions can be seen immediately. A textarea allows you to enter a description for the File being added to the Collection which may be left blank.</p>
+
+<p>The "- Create New Collection -" option will change the tool to display a prompt to enter a name for a new collection. Newly created collections in this manner are automatically set to <span class="keyword">PRIVATE</span> visibility, have no descriptions set, and default the ordering of the collection to use the order files were added.</p>
+
+<p>All of these options can be changed from the main Collection tool later when the Collection is ready to be shared, so you're not completely free of it just yet.</p>
 
 <form method="POST">
     {% csrf_token %}

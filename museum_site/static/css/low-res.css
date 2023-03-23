@@ -65,6 +65,13 @@
 #low-res-shortcuts a:nth-child(odd) { background-color:var(--ega-darkcyan); color: var(--ega-cyan);}
 #low-res-shortcuts a:nth-child(even) { background-color:var(--ega-gray); color: var(--ega-white);}
 
+#active-tool
+{
+    /* "Attach" to the main mobile header */
+    margin-top:-15px;
+    top:28px;
+}
+
 #content { max-width:95vw; }
 #sidebar-left, #sidebar-right { min-width:auto; }
 #sidebar-left { margin-top:0px; }
