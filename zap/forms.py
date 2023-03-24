@@ -9,7 +9,7 @@ from museum_site.core.social import Social_Mastodon, Social_Twitter
 from museum_site.constants import SITE_ROOT
 from museum_site.widgets import *
 from zap.core import querydict_to_json_str, zap_upload_file
-from zap.models import Event
+from zap.models import Event, Post
 
 ACCOUNTS = (
     ("twitter", "Twitter"),
@@ -54,7 +54,8 @@ class ZAP_Post_Form(forms.Form):
         self.responses = {}
         print("Processing ZAP Post Form")
 
-        accounts = self.cleaned_data.get("accounts", False)
+        accounts = self.cleaned_data.get("accounts", [])
+        post_responses = {}
         print(accounts)
 
         for account in accounts:
@@ -77,7 +78,21 @@ class ZAP_Post_Form(forms.Form):
             #    s.reply_to = self.cleaned_data[reply_id]
 
             response = s.post(self.cleaned_data.get("body", ""))  # Post
+            post_responses[account] = response
             self.responses[account].append(response)
+
+        # Create the Post object
+        p = Post()
+        p.body = self.cleaned_data.get("body", "")
+        p.media_1 = self.cleaned_data.get("media_1", "")
+        p.media_2 = self.cleaned_data.get("media_2", "")
+        p.media_3 = self.cleaned_data.get("media_3", "")
+        p.media_4 = self.cleaned_data.get("media_4", "")
+        p.tweet_id = post_responses["twitter"].get("id", 0) if "twitter" in accounts else 0
+        p.mastodon_id = post_responses["mastodon"].get("id", 0) if "twitter" in accounts else 0
+        if request.GET.get("pk"):
+            p.event = request.GET.get("pk")
+        p.save()
         self.processed = True
 
     def upload_media(self, s, i):
@@ -199,6 +214,9 @@ class ZAP_Post_Boost_Form(forms.Form):
 
     def process(self, request):
         print("Processing...")
+        post = Post.objects.get(pk=self.cleaned_data["post_id"])
+        social_id_dict = post.get_social_id_dict()
+
         self.responses = {}
 
         accounts = self.cleaned_data.get("accounts", False)
@@ -213,6 +231,6 @@ class ZAP_Post_Boost_Form(forms.Form):
 
             s.login()  # Login
 
-            response = s.boost(self.cleaned_data.get["post_id"])  # Boost
+            response = s.boost(social_id_dict[account])  # Boost
             self.responses[account].append(response)
         self.processed = True

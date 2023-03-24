@@ -24,6 +24,7 @@ def stream_schedule_create(request):
 def index(request):
     context = {"title": "ZAP"}
     events = Event.objects.all().order_by("-pk")[:25]
+    posts = Post.objects.all().order_by("-pk")[:25]
 
     today = datetime.now(tz=timezone.utc)
     raw_uploads = glob.glob(os.path.join(ZAP_UPLOAD_PATH, str(today.year), ("0" + str(today.month))[-2:], "*"))
@@ -35,6 +36,7 @@ def index(request):
     context["last_month_path"] = ""
 
     context["events"] = events
+    context["posts"] = posts
     return render(request, "zap/index.html", context)
 
 
@@ -134,13 +136,16 @@ def post_create(request):
 @staff_member_required
 def post_boost(request):
     context = {"title": "ZAP - Boost Post"}
+    post = Post.objects.get(pk=request.GET["pk"])
 
     if request.method == "POST":
         form = ZAP_Post_Boost_Form(request.POST)
         if form.is_valid():
             form.process(request)
     else:
-        form = ZAP_Post_Boost_Form()
+        initial_values = {"accounts": post.posted_where(), "post_id": post.pk}
+        form = ZAP_Post_Boost_Form(initial=initial_values)
 
     context["form"] = form
+    context["post"] = post
     return render(request, "zap/boost-post.html", context)

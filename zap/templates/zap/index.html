@@ -16,9 +16,22 @@
 <ul>
     <li><a href="{% url 'zap_media_upload' %}">Media Upload</a></li>
     <li><a href="{% url 'zap_create_post' %}">Create Post</a></li>
-    <li><a href="{% url 'zap_boost_post' %}">Boost Post</a></li>
     <li><a href="{% url 'zap_create_stream_schedule' %}">Create Stream Schedule</a></li>
 </ul>
+
+<h2>Posts</h2>
+<table class="mono">
+    <tr><th>PK</th><th>Event</th><th>Date</th><th>Where</th><th>Actions</th></tr>
+    {% for p in posts %}<tr>
+        <td>{{p.pk}}</td>
+        <td>{% if p.event_id %}<a href="/tools/zap/view/{{p.event_id}}/">{{p.event.title}}</a>{% else %}&mdash;{% endif %}</td>
+        <td>{{p.created}}</td>
+        <td>{% for service in p.posted_where %}{{service}}, {% endfor %}</td>
+        <td>
+            <a href="{% url 'zap_boost_post' %}?pk={{p.pk}}">Boost</a>
+        </td>
+    </tr>{% endfor %}
+</table>
 
 <hr>
 <h2>Events</h2>

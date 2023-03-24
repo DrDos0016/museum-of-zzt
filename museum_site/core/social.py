@@ -114,6 +114,15 @@ class Social_Tumblr(Social):
         self.client = pytumblr.TumblrRestClient(self.consumer_key, self.consumer_secret, self.token, self.oauth_secret)
 
 
+    def upload_media(self, *args, **kwargs):
+        return True
+
+    def post(self):
+        response = client.create_photo("worldsofzzt", state="published", tags=[], caption=self.render_text("tumblr"), data=self.image_path())
+        self.log_response()
+        return response
+
+
 class Social_Twitter(Social):
     def _init_keys(self):
         self.consumer_key = TWITTER_CONSUMER_KEY

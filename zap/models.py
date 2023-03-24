@@ -49,7 +49,7 @@ class Event(models.Model):
         return output.strip()
 
 
-"""
+
 class Post(models.Model):
     # Fields
     created = models.DateTimeField(auto_now_add=True)
@@ -61,11 +61,38 @@ class Post(models.Model):
     media_3 = models.CharField(max_length=255, blank=True, default="")
     media_4 = models.CharField(max_length=255, blank=True, default="")
 
-    tweet_id = models.IntegerField(default=0)
-    tumblr_id = models.IntegerField(default=0)
-    mastodon_id = models.IntegerField(default=0)
-    patreon_id = models.IntegerField(default=0)
-    cohost_id = models.IntegerField(default=0)
+    tweet_id = models.CharField(default="", blank=True, max_length=32)
+    tumblr_id = models.CharField(default="", blank=True, max_length=32)
+    mastodon_id = models.CharField(default="", blank=True, max_length=32)
+    patreon_id = models.CharField(default="", blank=True, max_length=32)
+    cohost_id = models.CharField(default="", blank=True, max_length=32)
 
     event = models.ForeignKey("Event", null=True, blank=True, on_delete=models.SET_NULL)
-"""
+
+    def posted_where(self):
+        where = []
+        if self.tweet_id:
+            where.append("twitter")
+        if self.tumblr_id:
+            where.append("tumblr")
+        if self.mastodon_id:
+            where.append("mastodon")
+        if self.patreon_id:
+            where.append("patreon")
+        if self.cohost_id:
+            where.append("cohost")
+        return where
+
+    def get_social_id_dict(self):
+        output = {}
+        if self.tweet_id:
+            output["twitter"] = self.tweet_id
+        if self.tumblr_id:
+            output["tumblr"] = self.tumblr_id
+        if self.mastodon_id:
+            output["mastodon"] = self.mastodon_id
+        if self.patreon_id:
+            output["patreon"] = self.patreon_id
+        if self.cohost_id:
+            output["cohost"] = self.cohost_id
+        return output
