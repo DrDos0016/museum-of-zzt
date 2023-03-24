@@ -79,7 +79,7 @@ def article_lock(request, article_id, slug=""):
     article.init_model_block_context("detailed", request=request)
     article.allow_comments = False
     data = {"title": "Restricted Article", "article": article, "cost": article.early_access_price, "release": article.publish_date}
-    return render(request, "museum_site/article_lock.html", data)
+    return render(request, "museum_site/article-lock.html", data)
 
 
 def article_search(request):
