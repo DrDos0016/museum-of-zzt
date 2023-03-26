@@ -261,10 +261,7 @@ class Livestream_Vod_Form(forms.Form):
     )
     video_description = forms.CharField(
         widget=forms.Textarea(),
-        help_text=(
-            "Copy/Paste from YouTube video details editor. Manually erase everything from "
-            "'<i>Join us for future livestreams...</i>' to the end of the description."
-        )
+        help_text="Copy/Paste from YouTube video details editor. Everything after the first ♦ will be truncated"
     )
     description = forms.CharField(widget=Enhanced_Text_Widget(char_limit=250), label="Article Summary")
     preview_image = forms.FileField()
@@ -293,6 +290,12 @@ class Livestream_Vod_Form(forms.Form):
             video_url = video_url[:video_url.find("&")]
 
         return video_url
+
+    def clean_video_description(self):
+        video_description = self.cleaned_data["video_description"]
+        if "♦" in video_description:
+            video_description = video_description[:video_description.find("♦")]
+        return video_description
 
     def create_article(self):
         preview_image = self.files["preview_image"]
