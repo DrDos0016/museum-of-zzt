@@ -5,7 +5,6 @@ from datetime import datetime, timezone, timedelta
 from django import forms
 from django.template.defaultfilters import date
 
-from museum_site.core.social import Social_Mastodon, Social_Twitter
 from museum_site.constants import SITE_ROOT
 from museum_site.widgets import *
 from zap.core import querydict_to_json_str, zap_upload_file
@@ -27,6 +26,7 @@ class ZAP_Post_Form(forms.Form):
     attrs = {"method": "POST"}
     processed = False
 
+    title = forms.CharField(required=False)
     accounts = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS)
 
     body = forms.CharField(
@@ -60,11 +60,7 @@ class ZAP_Post_Form(forms.Form):
 
         for account in accounts:
             self.responses[account] = []
-            if account == "mastodon":
-                s = Social_Mastodon()
-            elif account == "twitter":
-                s = Social_Twitter()
-
+            s = zap_get_social_account(account)
             reply_id = "{}_id".format(account)
 
             s.login()  # Login
@@ -83,22 +79,24 @@ class ZAP_Post_Form(forms.Form):
 
         # Create the Post object
         p = Post()
+        p.title = self.cleaned_data.get("title", "")
         p.body = self.cleaned_data.get("body", "")
         p.media_1 = self.cleaned_data.get("media_1", "")
         p.media_2 = self.cleaned_data.get("media_2", "")
         p.media_3 = self.cleaned_data.get("media_3", "")
         p.media_4 = self.cleaned_data.get("media_4", "")
         p.tweet_id = post_responses["twitter"].get("id", 0) if "twitter" in accounts else 0
-        p.mastodon_id = post_responses["mastodon"].get("id", 0) if "twitter" in accounts else 0
+        p.mastodon_id = post_responses["mastodon"].get("id", 0) if "mastodon" in accounts else 0
+        p.tumblr_id = post_responses["tumblr"].get("id", 0) if "tumblr" in accounts else 0
         if request.GET.get("pk"):
-            p.event = request.GET.get("pk")
+            p.event_id = request.GET.get("pk")
         p.save()
         self.processed = True
 
     def upload_media(self, s, i):
         media_path = ""
         field_value = self.cleaned_data.get("media_{}".format(i))
-        if not field_value or not field_value.startswith("/static/zap/"):
+        if not field_value or not field_value.startswith("/static/"):
             return
 
         media_path = os.path.join(SITE_ROOT, "museum_site")
@@ -224,10 +222,7 @@ class ZAP_Post_Boost_Form(forms.Form):
 
         for account in accounts:
             self.responses[account] = []
-            if account == "mastodon":
-                s = Social_Mastodon()
-            elif account == "twitter":
-                s = Social_Twitter()
+            s = zap_get_social_account(account)
 
             s.login()  # Login
 

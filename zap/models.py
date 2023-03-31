@@ -54,6 +54,7 @@ class Post(models.Model):
     # Fields
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    title = models.CharField(max_length=80, default="Untitled")
 
     body = models.TextField()
     media_1 = models.CharField(max_length=255, blank=True, default="")
@@ -71,15 +72,15 @@ class Post(models.Model):
 
     def posted_where(self):
         where = []
-        if self.tweet_id:
+        if self.tweet_id and self.tweet_id != "0":
             where.append("twitter")
-        if self.tumblr_id:
+        if self.tumblr_id and self.tumblr_id != "0":
             where.append("tumblr")
-        if self.mastodon_id:
+        if self.mastodon_id and self.mastodon_id != "0":
             where.append("mastodon")
-        if self.patreon_id:
+        if self.patreon_id and self.mastodon_id != "0":
             where.append("patreon")
-        if self.cohost_id:
+        if self.cohost_id and self.cohost_id != "0":
             where.append("cohost")
         return where
 

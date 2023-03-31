@@ -2,6 +2,7 @@ import json
 import os
 
 from datetime import datetime, timezone
+from museum_site.core.social import Social_Mastodon, Social_Twitter, Social_Tumblr
 
 ZAP_UPLOAD_PATH = "/var/projects/museum-of-zzt/museum_site/static/zap/media/"
 ZAP_STATIC_PATH = "/static/zap/media/"
@@ -36,3 +37,13 @@ def zap_upload_file(uploaded_file, requested_file_name=""):
         for chunk in uploaded_file.chunks():
             fh.write(chunk)
     return file_static_path
+
+
+def zap_get_social_account(account):
+    if account == "mastodon":
+        s = Social_Mastodon()
+    elif account == "twitter":
+        s = Social_Twitter()
+    elif account == "tumblr":
+        s = Social_Tumblr()
+    return s
