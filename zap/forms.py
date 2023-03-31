@@ -7,7 +7,7 @@ from django.template.defaultfilters import date
 
 from museum_site.constants import SITE_ROOT
 from museum_site.widgets import *
-from zap.core import querydict_to_json_str, zap_upload_file
+from zap.core import querydict_to_json_str, zap_upload_file, zap_get_social_account
 from zap.models import Event, Post
 
 ACCOUNTS = (
