@@ -496,6 +496,9 @@ def user_profile(request, user_id=None, **kwargs):
         "reg_attempts",
         "pw_reset_attempts",
         "theme",
+        "otf_refresh",
+        "otf_collection_json",
+        "active_tool_template",
     ]
 
     data["TIERS"] = {
