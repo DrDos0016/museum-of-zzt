@@ -73,7 +73,7 @@ class Social_Mastodon(Social):
             print("Bytes are currently unsupported.")
             return False
         if media_url:
-            path("External media is currently unsupported.")
+            print("External media is currently unsupported.")
             return False
         if media_path:
             response = self.client.media_post(media_file=media_path)
@@ -104,8 +104,10 @@ class Social_Mastodon(Social):
 
 
 class Social_Tumblr(Social):
+    uploaded_media = []
+
     def _init_keys(self):
-        self.consumer_key = TUMBLR_OAUTH_CONSUMER,
+        self.consumer_key = TUMBLR_OAUTH_CONSUMER
         self.consumer_secret = TUMBLR_OAUTH_CONSUMER_SECRET
         self.token = TUMBLR_OAUTH_TOKEN
         self.oauth_secret = TUMBLR_OAUTH_SECRET
@@ -114,12 +116,36 @@ class Social_Tumblr(Social):
         self.client = pytumblr.TumblrRestClient(self.consumer_key, self.consumer_secret, self.token, self.oauth_secret)
 
 
-    def upload_media(self, *args, **kwargs):
+    def upload_media(self, media_path=None, media_url=None, media_bytes=None):
+        print("Uploading media")
+        if media_bytes:
+            print("Bytes are currently unsupported.")
+            return False
+        if media_url:
+            path("External media is currently unsupported.")
+            return False
+        if media_path:
+            self.uploaded_media.append(os.path.join(SITE_ROOT, "museum_site", media_path))
         return True
 
-    def post(self):
-        response = client.create_photo("worldsofzzt", state="published", tags=[], caption=self.render_text("tumblr"), data=self.image_path())
-        self.log_response()
+    def post(self, body):
+        print("BODY", body)
+        if self.uploaded_media:
+            response = self.client.create_photo("worldsofzzt", state="published", caption=body, data=self.uploaded_media)
+        else:
+            response = self.client.create_text("worldsofzzt", state="published", body=body)
+        self.log_response(response)
+        return response
+
+    def boost(self, post_id):
+        response = self.client.posts("worldsofzzt", type=None, **{"id": post_id})
+        self.log_response(response)
+
+        if response.get("posts") and response["posts"][0].get("reblog_key"):
+            reblog_key = response["posts"][0]["reblog_key"]
+
+            response = self.client.reblog("worldsofzzt", id=post_id, reblog_key=reblog_key)
+            self.log_response(response)
         return response
 
 
@@ -139,7 +165,7 @@ class Social_Twitter(Social):
             print("Bytes are currently unsupported.")
             return False
         if media_url:
-            path("External media is currently unsupported.")
+            print("External media is currently unsupported.")
             return False
         if media_path:
             with open(media_path, "rb") as imagefile:
