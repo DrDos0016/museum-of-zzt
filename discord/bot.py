@@ -35,10 +35,12 @@ PUBLIC_ROLES = [
     "ZZTer", "MZXer", "He/Him", "She/Her", "It/Its", "They/Them",
     "Stream-Alerts-Asie", "Stream-Alerts-Dos", "Stream-Alerts-Meap", "Stream-Alerts-All"
 ]
-COMMANDS = ["addrole", "help", "removerole", "scroll", "zzt", "vouch"]
+COMMANDS = ["addrole", "help", "removerole", "scroll", "zzt", "vouch", "link", "live"]
 CHANNELS = []
 LAST_TIME = {
     "addrole": 0,
+    "link": 0,
+    "live": 0,
     "removerole": 0,
     "scroll": 0,
     "zzt": 0,
@@ -77,9 +79,7 @@ def check_permissions(ctx, VALID_ROOMS, VALID_USERS, COOLDOWN):
     return {"SUCCESS": True, "REASON": "", "RESPONSE": ""}
 
 
-@bot.command(help="Add a role. (Roles: {})".format(
-                ", ".join(PUBLIC_ROLES)
-            ))
+@bot.command(help="Add a role. (Roles: {})".format(", ".join(PUBLIC_ROLES)))
 async def addrole(ctx, *args):
     VALID_ROOMS = ("bots", "bot-dev", "welcome")
     VALID_USERS = ()
@@ -104,11 +104,7 @@ async def addrole(ctx, *args):
         for r in to_add:
             new_roles.append(get(ctx.guild.roles, name=r))
         await member.add_roles(*new_roles)
-        await ctx.send(
-            "Your roles have been updated! (Added: {})".format(
-                ", ".join(to_add)
-            )
-        )
+        await ctx.send("Your roles have been updated! (Added: {})".format(", ".join(to_add)))
     else:
         print(status.get("REASON"))
         if status.get("RESPONSE"):
@@ -157,9 +153,7 @@ async def vouch(ctx, *args):
         )
     else:
         await vouched_user.add_roles(get(ctx.guild.roles, name="Veryspecial"))
-        await ctx.send(
-            "`{}` has been vouched for!".format(vouched_user.name)
-        )
+        await ctx.send("`{}` has been vouched for!".format(vouched_user.name))
 
 
 @bot.command()
@@ -173,9 +167,28 @@ async def help(ctx):
         await ctx.send(HELP)
 
 
-@bot.command(help="Remove a role. (Roles: {})".format(
-                ", ".join(PUBLIC_ROLES)
-            ))
+@bot.command()
+async def link(ctx, category="?"):
+    VALID_ROOMS = ("bots", "bot-dev", "welcome", "zzt", "zzt-worlds", "zzt-programs", "zzt-bugs")
+    VALID_USERS = ()
+    COOLDOWN = 0
+    status = check_permissions(ctx, VALID_ROOMS, VALID_USERS, COOLDOWN)
+    if status["SUCCESS"]:
+        await ctx.send(LINKS.get(category.lower(), INVALID_LINK_TEXT))
+
+
+@bot.command()
+async def live(ctx, category="?"):
+    VALID_ROOMS = ("bot-dev", "announcements",)
+    VALID_USERS = ("Dos#0079")
+    COOLDOWN = 0
+
+    status = check_permissions(ctx, VALID_ROOMS, VALID_USERS, COOLDOWN)
+    if status["SUCCESS"]:
+        await ctx.send("Now streaming on https://twitch.tv/worldsofzzt")
+
+
+@bot.command(help="Remove a role. (Roles: {})".format(", ".join(PUBLIC_ROLES)))
 async def removerole(ctx, *args):
     VALID_ROOMS = ("bots", "bot-dev", "welcome")
     VALID_USERS = ()
@@ -200,11 +213,7 @@ async def removerole(ctx, *args):
         for r in to_add:
             new_roles.append(get(ctx.guild.roles, name=r))
         await member.remove_roles(*new_roles)
-        await ctx.send(
-            "Your roles have been updated! (Removed: {})".format(
-                ", ".join(to_add)
-            )
-        )
+        await ctx.send("Your roles have been updated! (Removed: {})".format(", ".join(to_add)))
     else:
         print(status.get("REASON"))
         if status.get("RESPONSE"):
@@ -257,9 +266,7 @@ async def zzt(ctx):
             data = resp.json()["data"]
             discord_post = "**{}** by {} ({})\n"
             if data["file"]["company"]:
-                discord_post += "Published by: {}\n".format(
-                    data["file"]["company"]
-                )
+                discord_post += "Published by: {}\n".format(data["file"]["company"])
             discord_post += "`[{}] - \"{}\"` \n"
             discord_post += "Explore: <{url}?file={f}&board={b}>\n".format(
                 url=data["museum_link"].replace(" ", "%20%"),
@@ -268,9 +275,7 @@ async def zzt(ctx):
             )
 
             if data["file"]["archive_name"]:
-                discord_post += (
-                    "Play: <{}>".format(data["play_link"])
-                )
+                discord_post += ("Play: <{}>".format(data["play_link"]))
 
             discord_post = discord_post.format(
                 data["file"]["title"], ", ".join(data["file"]["author"]),
