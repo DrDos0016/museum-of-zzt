@@ -1,7 +1,7 @@
 import os
 import time
 
-from museum_site.constants import SITE_ROOT
+from museum_site.constants import APP_ROOT
 
 import pytumblr
 
@@ -62,7 +62,7 @@ class Social_Mastodon(Social):
         self.password = MASTODON_PASS
 
     def login(self):
-        self.client =  Mastodon(client_id=os.path.join(SITE_ROOT, "museum_site", "wozzt-mastodon.secret"))
+        self.client =  Mastodon(client_id=os.path.join(APP_ROOT, "wozzt-mastodon.secret"))
         response = self.client.log_in(MASTODON_EMAIL, MASTODON_PASS)
 
         self.log_response(response)
@@ -125,7 +125,7 @@ class Social_Tumblr(Social):
             path("External media is currently unsupported.")
             return False
         if media_path:
-            self.uploaded_media.append(os.path.join(SITE_ROOT, "museum_site", media_path))
+            self.uploaded_media.append(os.path.join(APP_ROOT, media_path))
         return True
 
     def post(self, body):

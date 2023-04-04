@@ -12,9 +12,14 @@ BOOT_TS = START_TIME.strftime("%m%d%H%M%S")
 YEAR = datetime.now().year
 
 # Paths
+APP_NAME = "museum_site"
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # /var/projects/museum-of-zzt
+APP_ROOT = os.path.join(SITE_ROOT, APP_NAME)  # /var/projects/museum-of-zzt/museum_site
 TEMP_PATH = os.path.join(SITE_ROOT, "temp")  # /var/projects/museum-of-zzt/temp
-STATIC_PATH = os.path.join(SITE_ROOT, "museum_site", "static")  # /var/projects/museum-of-zzt/museum_site/static
+STATIC_PATH = os.path.join(SITE_ROOT, APP_NAME, "static")  # /var/projects/museum-of-zzt/museum_site/static
+PREVIEW_IMAGE_BASE_PATH = os.path.join(STATIC_PATH, "images", "screenshots")  # /var/projects/museum-of-zzt/museum_site/static/images/screenshots
+ZGAMES_BASE_PATH = os.path.join(SITE_ROOT, "zgames")  # /var/projects/museum-of-zzt/zgames
+DATA_PATH = os.path.join(STATIC_PATH, "data")  # /var/projects/museum-of-zzt/museum_site/static/data
 
 # Contact Information
 EMAIL_ADDRESS = "doctordos@gmail.com"
@@ -147,18 +152,10 @@ exe_names = {
     "cleenzzt-moz.zip": "CleenZZT",
 }
 ZETA_EXECUTABLES = []
-exes = sorted(glob.glob(
-    os.path.join(
-        SITE_ROOT, "museum_site", "static", "data", "zeta86_engines",
-        "*.[zZ][iI][pP]"
-    )
-))
+exes = sorted(glob.glob(os.path.join(DATA_PATH, "zeta86_engines", "*.[zZ][iI][pP]")))
 for exe in exes:
     filename = os.path.basename(exe)
-    ZETA_EXECUTABLES.append({
-        "filename": filename,
-        "name": exe_names.get(filename, filename)
-    })
+    ZETA_EXECUTABLES.append({"filename": filename, "name": exe_names.get(filename, filename)})
 
 ZETA_EXECUTABLES.sort(key=lambda executable: executable["name"].lower())
 

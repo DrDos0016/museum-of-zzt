@@ -35,7 +35,7 @@ def get_zip_file(request):
         letter = "uploaded"
 
     try:
-        zip_file = zipfile.ZipFile(os.path.join(SITE_ROOT, "zgames", letter, zip_file))
+        zip_file = zipfile.ZipFile(os.path.join(ZGAMES_BASE_PATH, letter, zip_file))
         fh = zip_file.open(filename)
     except NotImplementedError as error:
         record(filename)
@@ -172,7 +172,7 @@ def wozzt_queue_add(request):
     raw = d["b64img"].replace("data:image/png;base64,", "", 1)
 
     image = Image.open(BytesIO(base64.b64decode(raw)))
-    filepath = os.path.join(SITE_ROOT, "museum_site", "static", "wozzt-queue", e.uuid + ".png")
+    filepath = os.path.join(STATIC_PATH, "wozzt-queue", e.uuid + ".png")
 
     image.save(filepath)
     e.save()

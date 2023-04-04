@@ -5,7 +5,7 @@ import urllib.parse
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from museum_site.constants import BANNED_IPS, SITE_ROOT
+from museum_site.constants import BANNED_IPS, TEMP_PATH
 
 try:
     import zookeeper
@@ -19,7 +19,6 @@ def calculate_boards_in_zipfile(zip_path):
     total_boards = None
     temp_playable = 0
     temp_total = 0
-    temp_path = os.path.join(SITE_ROOT, "temp")
 
     try:
         zf = zipfile.ZipFile(zip_path)
@@ -38,12 +37,12 @@ def calculate_boards_in_zipfile(zip_path):
 
         # Extract the file
         try:
-            zf.extract(f, path=temp_path)
+            zf.extract(f, path=TEMP_PATH)
         except Exception:
             record("Could not extract {}. Aborting.".format(f))
             return (None, None)
 
-        z = zookeeper.Zookeeper(os.path.join(temp_path, f))
+        z = zookeeper.Zookeeper(os.path.join(TEMP_PATH, f))
 
         to_explore = []
         accessible = []
@@ -90,7 +89,7 @@ def calculate_boards_in_zipfile(zip_path):
         temp_total += len(z.boards)
 
         # Delete the extracted file from the temp folder
-        os.remove(os.path.join(temp_path, f))
+        os.remove(os.path.join(TEMP_PATH, f))
 
     # Use null instead of 0 to avoid showing up in searches w/ board limits
     playable_boards = None if temp_playable == 0 else temp_playable

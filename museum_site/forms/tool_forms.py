@@ -13,7 +13,7 @@ from museum_site.core.file_utils import delete_this
 from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.core.social import Social_Twitter, Social_Mastodon
 from museum_site.core.transforms import qs_to_categorized_select_choices
-from museum_site.constants import SITE_ROOT, TEMP_PATH
+from museum_site.constants import APP_ROOT, DATA_PATH, STATIC_PATH, TEMP_PATH
 from museum_site.private import IA_ACCESS, IA_SECRET
 from museum_site.fields import Enhanced_Model_Choice_Field, Manual_Field
 from museum_site.models import Article, File, Series
@@ -137,10 +137,7 @@ class IA_Mirror_Form(forms.Form):
 
         # Extract any additional packages
         for package in self.cleaned_data["packages"]:
-            package_path = os.path.join(
-                SITE_ROOT, "museum_site", "static", "data", "ia_packages",
-                package
-            )
+            package_path = os.path.join(DATA_PATH, "ia_packages", package)
             zf = zipfile.ZipFile(package_path)
             files = zf.infolist()
             for f in files:
@@ -322,7 +319,7 @@ class Livestream_Vod_Form(forms.Form):
         a.content = render_to_string("museum_site/subtemplate/stream-vod-article.html", subcontext)
 
         # Process the uploaded image
-        folder = os.path.join(SITE_ROOT, "museum_site", "static", "articles", str(self.cleaned_data["date"])[:4], a.static_directory)
+        folder = os.path.join(STATIC_PATH, "articles", str(self.cleaned_data["date"])[:4], a.static_directory)
         try:
             os.mkdir(folder)
         except FileExistsError:
@@ -445,7 +442,7 @@ class Publication_Pack_Share_Form(forms.Form):
         if not field_value:
             return
         elif not field_value.startswith("/"):
-            media_path = os.path.join(SITE_ROOT, "museum_site")
+            media_path = os.path.join(APP_ROOT)
             media_path += self.cleaned_data.get("article_prefix") if i != 1 else self.cleaned_data.get("zfile_prefix")
         media_path += field_value
         response = s.upload_media(media_path)

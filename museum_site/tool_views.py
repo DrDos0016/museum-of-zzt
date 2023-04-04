@@ -94,7 +94,7 @@ def audit(request, target, return_target_dict=False):
 def audit_colors(request):
     data = {"title": "DEBUG COLORS", "stylesheets": {}, "variables": {}}
 
-    for full_path in glob.glob(os.path.join(SITE_ROOT, "museum_site", "static", "css", "*.css")):
+    for full_path in glob.glob(os.path.join(STATIC_PATH, "css", "*.css")):
         stylesheet = os.path.basename(full_path)
         data["stylesheets"][stylesheet] = []
         data["variables"][stylesheet] = []
@@ -489,7 +489,7 @@ def publish(request, key, mode="PUBLISH"):
     if request.POST.get("action") and mode == "PUBLISH":
         # Move the file
         src = SITE_ROOT + data["file"].download_url()
-        dst = "{}/zgames/{}/{}".format(SITE_ROOT, data["file"].letter, data["file"].filename)
+        dst = "{}/{}/{}".format(ZGAMES_BASE_PATH, data["file"].letter, data["file"].filename)
         shutil.move(src, dst)
 
         # Adjust the details
@@ -988,7 +988,7 @@ def set_screenshot(request, key):
         with zipfile.ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
             zf.extract(request.GET["file"], path=SITE_ROOT + "/museum_site/static/data/")
 
-        z = zookeeper.Zookeeper(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])
+        z = zookeeper.Zookeeper(DATA_PATH + "/" + request.GET["file"])
         data["board_list"] = []
         for board in z.boards:
             data["board_list"].append(board.title)
@@ -997,9 +997,9 @@ def set_screenshot(request, key):
         data["board_num"] = int(request.GET["board"])
 
         if data["board_num"] != 0:
-            z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp")
+            z.boards[data["board_num"]].screenshot(TEMP_PATH)
         else:
-            z.boards[data["board_num"]].screenshot(SITE_ROOT + "/museum_site/static/data/temp", title_screen=True)
+            z.boards[data["board_num"]].screenshot(TEMP_PATH, title_screen=True)
         data["show_preview"] = True
 
     image_path = ""
@@ -1022,13 +1022,13 @@ def set_screenshot(request, key):
         if image_path:
             image.save(image_path)
         else:
-            image_path = os.path.join(SITE_ROOT + "/museum_site/static/images/screenshots/{}/{}".format(zfile.letter, zfile.filename[:-4]) + ".png")
+            image_path = os.path.join(PREVIEW_IMAGE_BASE_PATH, zfile.letter, zfile.filename[:-4] + ".png")
             image.save(image_path)
             zfile.screenshot = zfile.filename[:-4] + ".png"
             zfile.basic_save()
 
-    if os.path.isfile(SITE_ROOT + "/museum_site/static/data/" + request.GET.get("file", "")):
-        os.remove(SITE_ROOT + "/museum_site/static/data/" + request.GET["file"])
+    if os.path.isfile(DATA_PATH + "/" + request.GET.get("file", "")):
+        os.remove(DATA_PATH + "/" + request.GET["file"])
 
     # Optimize the image
     optimize_image(image_path)

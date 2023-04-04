@@ -137,7 +137,7 @@ def upload(request):
         if success:
             if request.FILES.get("zfile"):
                 uploaded_file = request.FILES["zfile"]
-                upload_directory = os.path.join(SITE_ROOT, "zgames", "uploaded")
+                upload_directory = os.path.join(ZGAMES_BASE_PATH, "uploaded")
                 upload_filename = zgame_obj.filename if zgame_obj else uploaded_file.name
                 # Move the uploaded file to its destination directory
                 file_path = os.path.join(upload_directory, upload_filename)
