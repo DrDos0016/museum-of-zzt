@@ -16,7 +16,7 @@ from mastodon import Mastodon
 from twitter import *
 
 from museum.settings import STATIC_URL
-from museum_site.constants import SITE_ROOT, TEMP_PATH
+from museum_site.constants import TEMP_PATH, STATIC_PATH, APP_ROOT
 from museum_site.core.misc import record
 from museum_site.models import BaseModel, File
 from museum_site.querysets.wozzt_queue_querysets import *
@@ -61,10 +61,7 @@ class WoZZT_Queue(BaseModel):
         return output
 
     def image_path(self):
-        output = os.path.join(
-            SITE_ROOT, "museum_site", "static", "wozzt-queue",
-            self.uuid + ".png"
-        )
+        output = os.path.join(STATIC_PATH, "wozzt-queue", self.uuid + ".png")
         return output
 
     def url(self):
@@ -137,20 +134,12 @@ class WoZZT_Queue(BaseModel):
                     None  # Already removed earlier
 
         if len(board_possibilities) == 0:
-            record(
-                "WOZZT_QUEUE.PY: Ran out of board possibilities #",
-                self.file_id
-            )
+            record("WOZZT_QUEUE.PY: Ran out of board possibilities #", self.file_id)
             return False
 
         board_num = random.choice(board_possibilities)
 
-        z.boards[board_num].screenshot(
-            os.path.join(
-                SITE_ROOT, "museum_site", "static", "wozzt-queue", self.uuid
-            ),
-            title_screen=(board_num == 0)
-        )
+        z.boards[board_num].screenshot(os.path.join(STATIC_PATH, "wozzt-queue", self.uuid), title_screen=(board_num == 0))
         self.board = board_num
         self.board_name = z.boards[board_num].title
 
@@ -249,7 +238,7 @@ class WoZZT_Queue(BaseModel):
 
     def send_mastodon(self):
         # Log in
-        mastodon = Mastodon(client_id=os.path.join(SITE_ROOT, "museum_site", "wozzt-mastodon.secret"))
+        mastodon = Mastodon(client_id=os.path.join(APP_ROOT, "wozzt-mastodon.secret"))
         mastodon.log_in(MASTODON_EMAIL, MASTODON_PASS)
 
         # Upload the image
