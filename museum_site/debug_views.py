@@ -114,6 +114,9 @@ def debug_article(request, fname=""):
     data["article"] = article
     data["veryspecial"] = True
     data["title"] = "WIP {} [{} words]".format(fname, article.word_count())
+
+    request.session["active_tool"] = "staff-article-wip"
+    request.session["active_tool_template"] = "museum_site/tools/staff-article-wip.html"
     return render(request, "museum_site/tools/article-wip.html", data)
 
 
