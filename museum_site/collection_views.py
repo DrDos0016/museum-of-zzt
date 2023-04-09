@@ -134,7 +134,7 @@ class On_The_Fly_Collections_View(TemplateView):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        request.session["active_tool"] = "on-the-fly-collections" if request.POST.get("on_the_fly") == "enable" else ""
+        request.session["active_tool"] = "on-the-fly-collections" if request.POST.get("on_the_fly") == "enable" else request.session.get("active_tool", "")
 
         context = {"title": self.title}
         if request.session["active_tool"] == "on-the-fly-collections":
