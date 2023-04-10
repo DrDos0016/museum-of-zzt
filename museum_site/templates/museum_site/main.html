@@ -24,7 +24,7 @@
 </script>
 {% else %}<!--N/A-->{% endif %}
 {% endblock %}
-<script src="/static/js/jquery.3.1.0.min.js"></script>
+<script src="{% static 'js/jquery.3.1.0.min.js %}"></script>
 <script src="{% static 'js/museum.js' %}?{{BOOT_TS}}"></script>
 {% block scripts %}{% endblock %}
 {% block staff_scripts %}{% endblock %}
