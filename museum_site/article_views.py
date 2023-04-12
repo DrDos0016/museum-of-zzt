@@ -5,6 +5,7 @@ from museum_site.constants import *
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.forms.article_forms import Article_Search_Form
 from museum_site.models import *
+# Adding to test
 
 
 class Article_Detail_View(DetailView):
