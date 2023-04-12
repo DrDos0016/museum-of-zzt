@@ -24,5 +24,16 @@
     <hr>
     {% block article_footer %}{% endblock %}
     <hr>
+    {% block wip_finalize %}
+    {% if request.user.is_staff and request.GET.finalize %}
+    <h2 id="finalization">Finalization</h2>
+
+    <h3>Link Audit</h3>
+    <table id="link-table">
+        <tr><th>Text</th><th>Target</th><th>Path</th></tr>
+    </table>
+    {% endif %}
+    {% endblock wip_finalize %}
+
     {% block comments %}{% endblock %}
 {% endblock %}

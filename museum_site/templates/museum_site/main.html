@@ -24,7 +24,7 @@
 </script>
 {% else %}<!--N/A-->{% endif %}
 {% endblock %}
-<script src="/static/js/jquery.3.1.0.min.js"></script>
+<script src="{% static 'js/jquery.3.1.0.min.js %}"></script>
 <script src="{% static 'js/museum.js' %}?{{BOOT_TS}}"></script>
 {% block scripts %}{% endblock %}
 {% block staff_scripts %}{% endblock %}
@@ -32,7 +32,7 @@
 {% block staff_style %}{% endblock %}
 </head>
 
-<body class="grid-root{% if april %} april {% endif %}{% if request.session.theme %} theme-{{request.session.theme}}{% endif %}" id="top">
+<body class="grid-root{% if april %} april {% endif %}{% if request.session.theme %} theme-{{request.session.theme}}{% endif %}" {% if request.session.active_tool %}data-active-tool="true"{% endif %} id="top">
 <nav id="low-res-shortcuts" class="cp437">
     <a href="#top" id="top-shortcut">▲ Top</a>
     <a href="/" id="home-shortcut">Home</a>

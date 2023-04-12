@@ -30,6 +30,7 @@ urlpatterns = [
 
     # /action/
     path("action/set-theme/", museum_site.views.set_theme, name="set_theme"),
+    path("action/close-tool/", museum_site.views.close_tool, name="close_tool"),
 
     # /ajax/
     path("ajax/submit-form/<slug:slug>/", museum_site.ajax.submit_form, name="ajax_submit_form"),

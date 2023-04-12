@@ -1,0 +1,108 @@
+{% comment %}This template is meant to be included and not used directly{% endcomment %}
+<style>
+#crop-controls input
+{
+    width:2em;
+    font-family:monospace;
+    text-align:center;
+}
+
+#active
+{
+    width:10em;
+    display:inline-block;
+}
+
+#crop-controls #crop-output
+{
+    width:12em;
+    text-align:left;
+}
+
+.zzt-img.zzt-CROP
+{
+    border:8px solid red;
+}
+
+.side-commentary.TODO .commentary {% comment %}Expected TODO usage.{% endcomment %}
+{
+    background:#FF8888;
+}
+
+.editing
+{
+    cursor:crosshair;
+}
+
+.red
+{
+    background:red;
+}
+
+#tweet-controls
+{
+    display:grid;
+    grid-template-areas:
+    "text screens"
+    "files nil";
+    grid-template-columns:409px auto;
+    grid-gap:7px 4px;
+}
+
+#tweet-files
+{
+    grid-area: files;
+}
+
+#tweet-text {
+    height:350px;
+    grid-area: text;
+}
+
+#tweet-screens
+{
+    grid-area: screens;
+    display:flex;
+    flex-wrap:wrap;
+    grid-gap:8px;
+}
+
+.tweet-image
+{
+    width:240px;
+    height:175px;
+}
+
+#tweet-copy-text
+{
+    flex:1 0 250px;
+}
+</style>
+{% if request.GET.spellcheck %}
+<style>
+.zzt-img, .zzt-scroll, .patreon-plug, .zzt-txt-message, audio, video, .overview-block,
+.overview-links, .image-set, article img, code { display:none; }
+</style>
+{% endif %}
+
+<script src="/static/js/debug-crop.js"></script>
+<div id="crop-controls" class="cp437">
+    [<div id="active"></div>]
+    L: <input name="top" value="">
+    T: <input name="left" value="">
+    R: <input name="bottom" value="">
+    B: <input name="right" value="">
+    Cr0p: <input id="crop-output">
+    <label><input id="mcrop" type="checkbox" value="mcrop" style="height:20px"> MCr0p</label>
+    <label><input id="szzt" type="checkbox" value="szzt" style="height:20px"> SZZT</label>
+    <br>
+    <div style="display:none">
+    Raw X/Y: <input name="raw-xy" value="-/-">
+    Tile X/Y: <input name="tile-xy" value="-/-">
+    </div>
+    <a href="?spellcheck=1&page=all">Spellcheck</a> |
+    <a href="?finalize=1#finalization">Finalize</a> |
+    <a href="?tweet=1">Tweet Pub. Pack</a> |
+    <a href="{% url 'close_tool' %}?next={{request.path|urlize}}">Quit</a>
+</div>
+{% csrf_token %}

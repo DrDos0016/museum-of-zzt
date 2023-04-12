@@ -1,20 +1,4 @@
 "use strict";
-
-var CROP_CONTROLS = `<div id='crop-controls' class="cp437">
-[<div id="active"></div>]
-L: <input name="top" value="">
-T: <input name="left" value="">
-R: <input name="bottom" value="">
-B: <input name="right" value="">
-(​r0p: <input id="crop-output">
-<label><input id="mcrop" type="checkbox" value="mcrop" style="height:20px"> M(r0p</label>
-<label><input id="szzt" type="checkbox" value="szzt" style="height:20px"> SZZT/label>
-<div style="display:none">
-Raw X/Y: <input name="raw-xy" value="-/-">
-Tile X/Y: <input name="tile-xy" value="-/-">
-</div>
-</div>`;
-
 var CHAR_WIDTH = 8;
 var CHAR_HEIGHT = 14;
 var H_RES = 80;
@@ -26,8 +10,6 @@ $(document).ready(function (){
     console.log("Loaded debug crop tool.");
 
     $(".zzt-img").click(crop);
-    $("body").append(CROP_CONTROLS);
-
     $("#crop-controls input").click(function (){$(this).select()});
     $("#crop-controls input").keyup(function (e){ adjust(e) });
     $("#crop-controls input").keyup(preview);
