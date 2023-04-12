@@ -35,11 +35,12 @@ PUBLIC_ROLES = [
     "ZZTer", "MZXer", "He/Him", "She/Her", "It/Its", "They/Them",
     "Stream-Alerts-Asie", "Stream-Alerts-Dos", "Stream-Alerts-Meap", "Stream-Alerts-All"
 ]
-COMMANDS = ["addrole", "help", "removerole", "scroll", "zzt", "vouch", "link", "live"]
+COMMANDS = ["addrole", "help", "removerole", "scroll", "zzt", "vouch", "link", "links", "live",]
 CHANNELS = []
 LAST_TIME = {
     "addrole": 0,
     "link": 0,
+    "links": 0,
     "live": 0,
     "removerole": 0,
     "scroll": 0,
@@ -175,6 +176,10 @@ async def link(ctx, category="?"):
     status = check_permissions(ctx, VALID_ROOMS, VALID_USERS, COOLDOWN)
     if status["SUCCESS"]:
         await ctx.send(LINKS.get(category.lower(), INVALID_LINK_TEXT))
+
+@bot.command()
+async def links(ctx, category="?"):
+    await link(ctx, category)
 
 
 @bot.command()
