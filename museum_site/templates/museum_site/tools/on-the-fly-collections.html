@@ -142,6 +142,15 @@ function otf_select_zfile(e)
     if ($(target).data("model") != "File" || ! $(target).data("pk"))
         return true;
 
+    if ($(target).hasClass("otf-selected"))
+    {
+        $(".otf-selected").removeClass("otf-selected");
+        can_add_check();
+        $("#otf-response").html("Click to select a file");
+        otf_to_add_pk = 0;
+        return true;
+    }
+
     $(".otf-selected").removeClass("otf-selected");
     $(target).addClass("otf-selected");
     can_add_check();
