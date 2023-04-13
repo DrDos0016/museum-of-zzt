@@ -18,169 +18,6 @@ from museum_site.constants import (
 register = Library()
 
 
-@register.filter
-def get_articles_by_id(raw):
-    if "-" in raw:
-        ends = raw.split("-")
-        ids = list(range(int(ends[0]), int(ends[1]) + 1))
-    else:
-        ids = list(map(int, raw.split(",")))
-    qs = Article.objects.filter(pk__in=ids)
-    articles = {}
-    for a in qs:
-        articles[str(a.id)] = a
-    return articles
-
-
-@register.filter
-def get_files_by_id(raw):
-    ids = list(map(int, raw.split(",")))
-    qs = File.objects.filter(pk__in=ids)
-    files = {}
-    for f in qs:
-        files[str(f.id)] = f
-    for _id in ids:
-        if not files.get(str(_id)):
-            files[str(_id)] = File(id=-1, title="ERROR: File #{} not found".format(_id), screenshot="red-x-error.png")
-    return files
-
-
-@register.simple_tag()
-def content_warning(*args, **kwargs):
-    output = """
-        <div class="content-warning">
-        <div class="text">
-            <b class="heading">CONTENT WARNING</b>
-            <p>The following content contains material which may be offensive
-            to some audiences. It was most likely originally created by a
-            teenager who has since grown up. This material does not necessarily
-            reflect its creator's current opinions nor behaviors.</p>
-
-            <p>Specifically, this page contains depictions of or references to:
-            <br><b>{}</b></p>
-
-            <div class="r">
-                <span class="jsLink" name="cw-hide-all">Hide all future content
-                warnings</span> |
-                <span class="jsLink" name="cw-hide-this"
-                data-content-warning-key="{}">Hide this</span>
-                {}
-
-            </div>
-        </div>
-    </div>
-    """
-    skip_link = kwargs.get("key", "#end-cw")
-
-    if not kwargs.get("noskip"):
-        skip_text = ' | <a href="{}">Jump past warned content</a>'.format(skip_link)
-    else:
-        skip_text = ""
-
-    output = output.format(", ".join(args).title(), skip_link, skip_text)
-
-    return mark_safe(output + "\n")
-
-
-@register.simple_tag()
-def meta_tags(*args, **kwargs):
-    # Default values
-    base_url = "{}://{}{}".format(PROTOCOL, DOMAIN, STATIC_URL[:-1])
-    path = kwargs.get("path", "").split("?")[0]  # Sans QS
-    url = base_url + path
-    og_default = "pages/og_default.jpg"
-    tags = {
-        "author": ["name", ADMIN_NAME],
-        "description": [
-            "name",
-            "The Museum of ZZT is an online archive dedicated to the "
-            "preservation and curation of ZZT worlds. Explore more than 3000 "
-            "indie-made ZZT worlds spanning its 30+ year history"
-        ],
-        "og:type": ["property", "website"],
-        "og:url": ["property", "{}://{}".format(PROTOCOL, DOMAIN) + path],
-        "og:title": ["property", "Museum of ZZT"],
-        "og:image": ["property", og_default],
-    }
-
-    if kwargs.get("context"):
-        tags.update(kwargs["context"])
-
-    # Prepend static url to image
-    tags["og:image"][1] = "{}://{}".format(PROTOCOL, DOMAIN) + STATIC_URL + tags["og:image"][1]
-
-    # Twitter tags
-    tags["twitter:site"] = ["name", "@worldsofzzt"]
-    tags["twitter:card"] = ["name", "summary_large_image"]
-    tags["twitter:title"] = ["name", tags["og:title"][1]]
-    tags["twitter:description"] = ["name", tags["description"][1]]
-    tags["twitter:image"] = ["name", tags["og:image"][1]]
-
-    # Assemble HTML meta tags
-    BLANK = '<meta {}="{}" content="{}">\n'
-    meta_tag_html = ""
-    for key in tags.keys():
-        meta_tag_html += BLANK.format(
-            tags[key][0], key, tags[key][1].replace('"', "'")
-        )
-
-    return mark_safe(meta_tag_html[:-1])
-
-
-@register.simple_tag()
-def patreon_plug(*args, **kwargs):
-    return render_to_string("museum_site/subtemplate/patreon-plug.html", {})
-
-
-@register.simple_tag()
-def plug(service='UNKNOWN-SERVICE'):
-    services = {"youtube": "YouTube"}  # Stylized spellings
-    title = services.get(service, service.title())
-    ext = "png" if service != "mastodon" else "svg"
-    output = """
-    <div class="plug plug-{0}"><a href="/{0}/" target="_blank" class="noext noul">
-        <div class="logo"><img src="/static/icons/plug-{0}.{ext}"></div>
-        <div class="text">Worlds of ZZT on {title}</div>
-    </a></div>
-    """.format(service, title=title, ext=ext)
-    return mark_safe(output + "\n")
-
-
-@register.simple_tag()
-def zfl(key, text="", qs="", target="_blank", i=True, *args, **kwargs):
-    """ ZFile Link """
-    """ {% zfl codered Code Red %}"""
-
-    key_str = key
-    attrs_str = ""
-    qs_str = ""
-    target_str = ' target="{}"'.format(target) if target else ""
-
-    if key.startswith("http"):
-        key_str = key.split("/")[-2]
-    if "?" in key:
-        qs_str = "?" + key.split("?")[1]
-
-    if text == "":
-        text = "<span class='debug'>TODO: Incomplete ZFL - {}</span>".format(key_str)  # Expected TODO usage.
-
-    if qs:
-        # Convert copied/pasted URLs to just the querystring
-        if qs.startswith("http"):
-            qs = qs.split("?")[1]
-        qs_str = "?{}".format(qs)
-
-        # Prevent double questionmarks
-        if qs_str.startswith("??"):
-            qs_str = qs_str[1:]
-
-    output = '<a href="/file/view/{}/{}"{}{}>{}</a>'.format(key_str, qs_str, target_str, attrs_str, text)
-
-    # Italicize text if needed
-    output = "<i>" + output + "</i>" if i else output
-    return mark_safe(output)
-
-
 @register.simple_tag(takes_context=True)
 def cl_info(context, pk=None, engine="", emulator=""):
     zfile = File.objects.filter(pk=pk).first()
@@ -229,11 +66,7 @@ class Commentary(template.Node):
 
         commentary = commentary.strip()
         if (commentary and commentary[0] != "<") or commentary.startswith("<!"):
-            commentary = (
-                "<p>" + commentary.replace("\r\n\r\n", "</p><p>").replace(
-                    "\n\n", "</p><p>"
-                ) + "</p>"
-            )
+            commentary = "<p>" + commentary.replace("\r\n\r\n", "</p><p>").replace("\n\n", "</p><p>") + "</p>"
 
         debug_classes = ""
         if "TODO" in commentary:  # Expected TODO usage.
@@ -251,21 +84,99 @@ class Commentary(template.Node):
     </div>
 </div>
 """
-        return output.format(
-            debug_classes=debug_classes,
-            material=material,
-            commentary=commentary
-        )
+        return output.format(debug_classes=debug_classes, material=material, commentary=commentary)
 
 
 @register.simple_tag()
-def fn(num=1):
+def content_warning(*args, **kwargs):
+    output = """
+        <div class="content-warning">
+        <div class="text">
+            <b class="heading">CONTENT WARNING</b>
+            <p>The following content contains material which may be offensive
+            to some audiences. It was most likely originally created by a
+            teenager who has since grown up. This material does not necessarily
+            reflect its creator's current opinions nor behaviors.</p>
+
+            <p>Specifically, this page contains depictions of or references to:
+            <br><b>{}</b></p>
+
+            <div class="r">
+                <span class="jsLink" name="cw-hide-all">Hide all future content
+                warnings</span> |
+                <span class="jsLink" name="cw-hide-this"
+                data-content-warning-key="{}">Hide this</span>
+                {}
+
+            </div>
+        </div>
+    </div>
+    """
+    skip_link = kwargs.get("key", "#end-cw")
+
+    if not kwargs.get("noskip"):
+        skip_text = ' | <a href="{}">Jump past warned content</a>'.format(skip_link)
+    else:
+        skip_text = ""
+
+    output = output.format(", ".join(args).title(), skip_link, skip_text)
+
+    return mark_safe(output + "\n")
+
+
+@register.simple_tag(name="fn")
+def footnote(num=1):
     if num > 0:
         output = "<sup><a href='#fn-{}' id='fnl-{}'>[{}]</a></sup>"
     else:
         num = -1 * num
         output = "<sup><a href='#fnl-{}' id='fn-{}'>[{}]</a></sup>"
     return mark_safe(output.format(num, num, num))
+
+
+@register.filter
+def get_articles_by_id(raw):
+    if "-" in raw:
+        ends = raw.split("-")
+        ids = list(range(int(ends[0]), int(ends[1]) + 1))
+    else:
+        ids = list(map(int, raw.split(",")))
+    qs = Article.objects.filter(pk__in=ids)
+    articles = {}
+    for a in qs:
+        articles[str(a.id)] = a
+    return articles
+
+
+@register.filter
+def get_files_by_id(raw):
+    ids = list(map(int, raw.split(",")))
+    qs = File.objects.filter(pk__in=ids)
+    files = {}
+    for f in qs:
+        files[str(f.id)] = f
+    for _id in ids:
+        if not files.get(str(_id)):
+            files[str(_id)] = File(id=-1, title="ERROR: File #{} not found".format(_id), screenshot="red-x-error.png")
+    return files
+
+
+@register.simple_tag()
+def guide_words(qs, *args, **kwargs):
+    if len(qs) == 0:
+        return ""
+
+    sort = kwargs.get("sort", "")
+    location = kwargs.get("location", "top")
+
+    output = """<div class="guide-words">
+        <span><a class="left" href="#{}">{}</a></span>
+        <span><a class="right" href="#{}">{}</a></span>
+    </div>"""
+
+    (first_key, first_value) = qs[0].guide_words(sort)
+    (last_key, last_value) = qs[len(qs) - 1].guide_words(sort)
+    return mark_safe(output.format(first_key, first_value, last_key, last_value) + "\n")
 
 
 @register.tag(name="il")
@@ -291,6 +202,59 @@ class IL(template.Node):
         url = "/search?q={}&auto=1".format(q) + filename + board + coords
         output = "<a class='il' target='_blank' href='{url}'>{text}</a>".format(url=url, text=text)
         return output
+
+
+@register.simple_tag()
+def meta_tags(*args, **kwargs):
+    # Default values
+    base_url = "{}://{}{}".format(PROTOCOL, DOMAIN, STATIC_URL[:-1])
+    path = kwargs.get("path", "").split("?")[0]  # Sans QS
+    url = base_url + path
+    og_default = "pages/og_default.jpg"
+    tags = {
+        "author": ["name", ADMIN_NAME],
+        "description": [
+            "name",
+            "The Museum of ZZT is an online archive dedicated to the "
+            "preservation and curation of ZZT worlds. Explore more than 3000 "
+            "indie-made ZZT worlds spanning its 30+ year history"
+        ],
+        "og:type": ["property", "website"],
+        "og:url": ["property", "{}://{}".format(PROTOCOL, DOMAIN) + path],
+        "og:title": ["property", "Museum of ZZT"],
+        "og:image": ["property", og_default],
+    }
+
+    if kwargs.get("context"):
+        tags.update(kwargs["context"])
+
+    # Prepend static url to image
+    tags["og:image"][1] = "{}://{}".format(PROTOCOL, DOMAIN) + STATIC_URL + tags["og:image"][1]
+
+    # Twitter tags
+    tags["twitter:site"] = ["name", "@worldsofzzt"]
+    tags["twitter:card"] = ["name", "summary_large_image"]
+    tags["twitter:title"] = ["name", tags["og:title"][1]]
+    tags["twitter:description"] = ["name", tags["description"][1]]
+    tags["twitter:image"] = ["name", tags["og:image"][1]]
+
+    # Assemble HTML meta tags
+    BLANK = '<meta {}="{}" content="{}">\n'
+    meta_tag_html = ""
+    for key in tags.keys():
+        meta_tag_html += BLANK.format(
+            tags[key][0], key, tags[key][1].replace('"', "'")
+        )
+
+    return mark_safe(meta_tag_html[:-1])
+
+
+@register.simple_tag(takes_context=True)
+def model_block(context, item, view="detailed", template_view=None, *args, **kwargs):
+    item.init_model_block_context(view, request=context["request"], **kwargs)
+    if template_view is None:
+        template_view = view
+    return render_to_string("museum_site/subtemplate/model-block-{}.html".format(template_view.replace("_", "-")), item.context)
 
 
 @register.tag(name="notice")
@@ -320,34 +284,37 @@ class Notice(template.Node):
         return output
 
 
-@register.tag(name="spoiler")
-def spoiler(parser, token):
-    nodelist = parser.parse(('endspoiler',))
-    parser.delete_first_token()
-    args = token.split_contents()
-    display = "inline-block"
-    if len(args) > 1:
-        display = token.split_contents()[1]
-    return Spoiler(nodelist, display)
+@register.simple_tag()
+def patreon_plug(*args, **kwargs):
+    return render_to_string("museum_site/subtemplate/patreon-plug.html", {})
 
 
-class Spoiler(template.Node):
-    def __init__(self, nodelist, display):
-        self.nodelist = nodelist
-        self.display = display
+@register.simple_tag()
+def plug(service='UNKNOWN-SERVICE'):
+    services = {"youtube": "YouTube"}  # Stylized spellings
+    title = services.get(service, service.title())
+    ext = "png" if service != "mastodon" else "svg"
+    output = """
+    <div class="plug plug-{0}"><a href="/{0}/" target="_blank" class="noext noul">
+        <div class="logo"><img src="/static/icons/plug-{0}.{ext}"></div>
+        <div class="text">Worlds of ZZT on {title}</div>
+    </a></div>
+    """.format(service, title=title, ext=ext)
+    return mark_safe(output + "\n")
 
-    def render(self, context):
-        text = self.nodelist[0].render(context)
-        output = "<div class='spoiler' style='display:{}'>{}</div>".format(self.display, text)
-        return output
 
+@register.filter
+def qs_sans(raw, args):
+    query_dict = raw.copy()
 
-@register.simple_tag(takes_context=True)
-def model_block(context, item, view="detailed", template_view=None, *args, **kwargs):
-    item.init_model_block_context(view, request=context["request"], **kwargs)
-    if template_view is None:
-        template_view = view
-    return render_to_string("museum_site/subtemplate/model-block-{}.html".format(template_view.replace("_", "-")), item.context)
+    for key in args.split(","):
+        if key in query_dict.keys():
+            del query_dict[key]
+
+    query_string = query_dict.urlencode()
+    if query_string:
+        return "&" + query_string
+    return ""
 
 
 @register.simple_tag(takes_context=True)
@@ -373,33 +340,58 @@ def queryset_to_model_blocks(context, items, view="detailed", auto_wrap=True, *a
     return mark_safe(output + "\n")
 
 
+@register.tag(name="spoiler")
+def spoiler(parser, token):
+    nodelist = parser.parse(('endspoiler',))
+    parser.delete_first_token()
+    args = token.split_contents()
+    display = "inline-block"
+    if len(args) > 1:
+        display = token.split_contents()[1]
+    return Spoiler(nodelist, display)
+
+
+class Spoiler(template.Node):
+    def __init__(self, nodelist, display):
+        self.nodelist = nodelist
+        self.display = display
+
+    def render(self, context):
+        text = self.nodelist[0].render(context)
+        output = "<div class='spoiler' style='display:{}'>{}</div>".format(self.display, text)
+        return output
+
+
 @register.simple_tag()
-def guide_words(qs, *args, **kwargs):
-    if len(qs) == 0:
-        return ""
+def zfl(key, text="", qs="", target="_blank", i=True, *args, **kwargs):
+    """ ZFile Link """
+    """ {% zfl codered Code Red %}"""
 
-    sort = kwargs.get("sort", "")
-    location = kwargs.get("location", "top")
+    key_str = key
+    attrs_str = ""
+    qs_str = ""
+    target_str = ' target="{}"'.format(target) if target else ""
 
-    output = """<div class="guide-words">
-        <span><a class="left" href="#{}">{}</a></span>
-        <span><a class="right" href="#{}">{}</a></span>
-    </div>"""
+    if key.startswith("http"):
+        key_str = key.split("/")[-2]
+    if "?" in key:
+        qs_str = "?" + key.split("?")[1]
 
-    (first_key, first_value) = qs[0].guide_words(sort)
-    (last_key, last_value) = qs[len(qs) - 1].guide_words(sort)
-    return mark_safe(output.format(first_key, first_value, last_key, last_value) + "\n")
+    if text == "":
+        text = "<span class='debug'>TODO: Incomplete ZFL - {}</span>".format(key_str)  # Expected TODO usage.
 
+    if qs:
+        # Convert copied/pasted URLs to just the querystring
+        if qs.startswith("http"):
+            qs = qs.split("?")[1]
+        qs_str = "?{}".format(qs)
 
-@register.filter
-def qs_sans(raw, args):
-    query_dict = raw.copy()
+        # Prevent double questionmarks
+        if qs_str.startswith("??"):
+            qs_str = qs_str[1:]
 
-    for key in args.split(","):
-        if key in query_dict.keys():
-            del query_dict[key]
+    output = '<a href="/file/view/{}/{}"{}{}>{}</a>'.format(key_str, qs_str, target_str, attrs_str, text)
 
-    query_string = query_dict.urlencode()
-    if query_string:
-        return "&" + query_string
-    return ""
+    # Italicize text if needed
+    output = "<i>" + output + "</i>" if i else output
+    return mark_safe(output)
