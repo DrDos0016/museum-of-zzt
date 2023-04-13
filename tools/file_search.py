@@ -9,7 +9,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
 from museum_site.models import File  # noqa: E402
-from museum_site.constants import SITE_ROOT  # noqa: E402
+from museum_site.constants import ZGAMES_BASE_PATH  # noqa: E402
 
 
 def main():
@@ -49,9 +49,7 @@ def main():
 
         # Open the zip
         try:
-            zf = zipfile.ZipFile(
-                os.path.join(SITE_ROOT, "zgames", (letter + "/" + fn))
-            )
+            zf = zipfile.ZipFile(os.path.join(ZGAMES_BASE_PATH, (letter + "/" + fn)))
         except Exception as e:
             # The audit script should handle missing/invalid zips, not this.
             print(e)
