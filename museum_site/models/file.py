@@ -8,6 +8,7 @@ from django.core.cache import cache
 from django.contrib import admin
 from django.db import models
 from django.template.defaultfilters import filesizeformat, escape
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 try:
@@ -426,34 +427,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def boards_str(self):
         return "{} / {}".format(self.playable_boards, self.total_boards)
 
-    @mark_safe
-    def details_links(self):
-        output = ""
-        for i in self.details.visible():
-            output += '<a href="/file/browse/detail/{}/">{}</a>, '.format(i.slug, i.title)
-        return output[:-2]
-
-    @mark_safe
-    def author_links(self):
-        output = ""
-        for i in self.authors.all():
-            output += '<a href="/file/browse/author/{}/">{}</a>, '.format(quote(i.slug, safe=""), html.escape(i.title))
-        return output[:-2]
-
-    @mark_safe
-    def genre_links(self):
-        output = ""
-        for i in self.genres.all():
-            output += '<a href="/file/browse/genre/{}/">{}</a>, '.format(quote(i.slug, safe=""), html.escape(i.title))
-        return output[:-2]
-
-    @mark_safe
-    def company_links(self):
-        output = ""
-        for i in self.companies.all():
-            output += '<a href="/file/browse/company/{}/">{}</a>, '.format(quote(i.slug, safe=""), html.escape(i.title))
-        return output[:-2]
-
     def language_pairs(self):
         language_list = self.language.split("/")
         output = []
@@ -461,13 +434,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         for i in language_list:
             output.append((LANGUAGES.get(i, i), i))
         return output
-
-    @mark_safe
-    def language_links(self):
-        output = ""
-        for i in self.language_pairs():
-            output += '<a href="/file/browse/language/{}/">{}</a>, '.format(quote(i[1], safe=""), html.escape(i[0]))
-        return output[:-2]
 
     def _init_icons(self):
         # Populates major and minor icons for file
@@ -792,7 +758,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def get_field_language(self, view="detailed"):
         language_str = ""
         for lang in self.language.split("/"):
-            language_str += "<a href='/file/browse/language/{}/'>{}</a>, ".format(lang, LANGUAGES.get(lang, "Other"))
+            url = reverse("browse_field", args=["language", LANGUAGES.get(lang, "Other")])
+            language_str += "<a href='{}'>{}</a>, ".format(url, LANGUAGES.get(lang, "Other"))
         return {"label": "Language", "value": language_str[:-2], "safe": True}
 
     def get_field_publish_date(self, view="detailed"):

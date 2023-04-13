@@ -134,14 +134,15 @@ class On_The_Fly_Collections_View(TemplateView):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        request.session["active_tool"] = "on-the-fly-collections" if request.POST.get("on_the_fly") == "enable" else request.session.get("active_tool", "")
-
         context = {"title": self.title}
-        if request.session["active_tool"] == "on-the-fly-collections":
+        if request.POST.get("on_the_fly") == "enable":
             context["output"] = "On The Fly Collections are now enabled."
+            request.session["active_tool"] = "on-the-fly-collections"
             request.session["active_tool_template"] = "museum_site/tools/on-the-fly-collections.html"
             request.session["otf_refresh"] = True
         else:
+            if request.session.get("active_tool") == "on-the-fly-collections":
+                request.session["active_tool"] = ""
             context["output"] = "On The Fly Collections are now disabled."
             request.session["active_tool_template"] = ""
         return render(request, self.template_name, context)

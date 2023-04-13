@@ -1,62 +1,54 @@
 {% extends "museum_site/main.html" %}
+{% load site_tags %}
 
 {% block content %}
 <h1>Upload Policy</h1>
-<i>Last updated: June 28th, 2018</i><br>
+<i>Last updated: April 12th, 2023</i><br>
 
-<p>The Museum of ZZT operates with the goal of collecting and sharing as complete a copy of all worlds produced with ZZT and related to ZZT as possible.
-In order to accomplish this visitors are encouraged to upload their own works as well as the works of others which are currently missing from the Museum.</p>
+<p>The Museum of ZZT operates with the goal of collecting and sharing as complete a copy of all worlds produced with ZZT and related to ZZT as possible. In order to accomplish this visitors are encouraged to upload their own works as well as the works of others which are currently missing from the Museum.</p>
 
 <h2>Acceptable Files</h2>
 <p>All files uploaded via the upload form must be compressed and in the ZIP archive format.</p>
 
 <p>Uploaded files must contain at least one of the following:
-
-<ul>
-<li>ZZT World Files.</li>
-<li>Super ZZT World Files.</li>
-<li>ZIG World Files.</li>
-<li>ZZM Audio Files.</li>
-<li>Programs to aid in the creation, modification, or playing of previously listed file types</li>
-<li>Custom palettes or fonts specifically created for the creation of previously listed world files.</li>
-<li>Graphic or Audio Files relating to ZZT or its derivatives (excluding MegaZeux as <a href="http://vault.digitalmzx.net">DigitalMZX</a> covers those).</li>
-</ul>
+    <ul>
+        <li>ZZT (and derivative) World Files.</li>
+        <li>Super ZZT World Files.</li>
+        <li>ZIG World Files.</li>
+        <li>ZZM Audio Files.</li>
+        <li>Programs to aid in the creation, modification, or playing of previously listed file types</li>
+        <li>Custom palettes or fonts specifically created for the creation of previously listed world files.</li>
+        <li>Graphic or Audio Files relating to ZZT or its derivatives (excluding MegaZeux as <a href="http://digitalmzx.com">DigitalMZX</a> covers those).</li>
+    </ul>
 </p>
 
-<p>To prevent abuse a maximum filesize of 1 megabyte per ZIP file is enforced.</p>
+<p>To prevent abuse, a maximum file size of <b>one megabyte</b> per ZIP file is enforced for non-registered users. If this is insufficient, contact <a href="mailto:{{EMAIL_ADDRESS}}">Dr. Dos</a> to either have your upload limit increased or have the upload performed by staff.</p>
 
-<p>Other files, such as articles, walkthroughs, historical documents, or files which exceed the filesize limitations should be submitted via <a href="mailto:{{EMAIL_ADDRESS}}">E-Mail</a>.</p>
+<p>Other media, such as articles, walkthroughs, or historical documents should be submitted via <a href="mailto:{{EMAIL_ADDRESS}}">E-Mail</a>.</p>
 
 <h2>Acceptable Content</h2>
-<p>Prior archives such as z2 had rules in place to require that all uploaded ZZT worlds created after a certain point were required to have a minimum file size and make use of extended Super Tool Kit colors.
-The Museum has no such restrictions on quality filters.</p>
+<p>Prior archives such as z2 had rules in place requiring all uploaded ZZT worlds to have a minimum file size and make use of extended Super Tool Kit colors. The Museum has no such restrictions on quality filters. Any worlds which can be reasonably believed to have been made in good faith are welcome.</p>
 
-<p>The ZZT community's history is one with several titles created to insult and harass other community members. These sort of titles are frowned upon today and it is ultimately the staff's decision on
-whether or not uploaded material should be published.</p>
+<p>The ZZT community, in darker times, had its share of worlds created to harass other community members. These sort of titles are frowned upon today. Whether or not uploaded material, be it historical or newly created, should be published it ultimately the staff's decision.</p>
+
+<p>If you are unsure if a world you have should be uploaded <a href="mailto:{{EMAIL_ADDRESS}}">simply ask</a>.</p>
 
 <h2>Metadata</h2>
 <p>When uploading files, some data such as the title of the upload and authors who have worked on it are requested by the site to be filled out by the user. Other information is automatically parsed by the Museum site.</p>
 
-<p>If you are uploading files of your own, you are free to modify them for upload to the Museum as you see fit.
-When uploading data created by someone else, please refrain from making any changes to the content.
-Include as much of the original content available (high scores, text files) without modification. If there is
-additional information that needs to be provided, please create a text file of your own to insert into the ZIP file.</p>
+<p>If you are uploading files of your own, you are free to modify them for upload to the Museum as you see fit. When uploading data created by someone else, please refrain from making any changes to the content. Include as much of the original content available (high scores, text files) without modification. If there is additional information that needs to be provided, please create a text file of your own to insert into the ZIP file and identify it as not being part of the original release.</p>
 
 <h2>Incomplete Worlds</h2>
 
-<p>Worlds which haven't been completed are acceptable to upload, but should be clearly noted as such in the title. These may be demos that have intentional end points or worlds which had simply been abandoned and end abruptly rather
-than having been packaged for release. If you have many incomplete worlds you wish to upload (such as sharing the entire contents of your old ZZT projects folder) it is preferred to bundle them together and publish them as such as seen in Gingermuffins' <a href="/file/a/Abandoned_Games.zip">Abandoned Games</a> collection.</p>
+<p>Worlds which haven't been completed are acceptable to upload, but should be clearly noted as such in the title. These may be demos that have intentional end points or worlds which had simply been abandoned and end abruptly rather than having been packaged for release. If you have many incomplete worlds you wish to upload (such as sharing the entire contents of your old ZZT projects folder) it is preferred to bundle them together and publish them as such as seen in Gingermuffins' {% zfl "abandoned_games" "Abandoned Games" %} collection.</p>
 
 <h2>World Variants</h2>
 
-<p>Prior archives such as z2 had inconsistently enforced rules where upon receiving an upload of a completed world, the demo would be removed. A similar policy
-existed for worlds which received updates which in some way made an older version "obsolete". The Museum has no such restriction and welcomes all revisions of worlds
-so that the changes may be compared between original release and update or demo and final release.</p>
+<p>Prior archives such as z2 had inconsistently enforced rules where upon receiving an upload of a completed world, the demo would be removed. A similar policy existed for worlds which received updates which in some way made an older version "obsolete". The Museum has no such restriction and welcomes all revisions of worlds so that the changes may be compared between original release and update or demo and final release.</p>
 
-<h2>Playing Online</h2>
+<p>Currently the Museum has no official way to track these versions of the same title. When uploading, version information should be included in the title. If the versioning has an official name such as "1.1", "v2" or "Gold Edition" use that to unique identify the file compared to other versions. If no official versioning exists, using the date in some form is preferred. This also applies if multiple revisions of a file exist that share an official version number (ex: "Cool Game v3" and "Cool Game v3 (Mar 2002)". Staff will handle additional title renaming if necessary.</p>
 
-<p>Archive.org offers the ability to upload ZZT worlds and have them playable in browser. The Museum of ZZT supports embedding of these pages to play on the Museum site.
-Unless requested by the author (either in an included text file or contact with staff via E-Mail), any and all compatible uploads will also be mirrored on Archive.org to
-support this feature. Archive.org pages are produced automatically on the file being published when applicable. Unless stated somewhere within the ZIP file, the
-registered edition of ZZT v3.2 (or Super ZZT) will be used for playing uploaded content.</p>
+<h2>Modified Files</h2>
+
+<p>If you have a world which you believe to have been modified by somebody other than the original author and no un-modified file is unavailable, you are encouraged to upload it. Please identify the file as being suspected of modification in the title and/or an accompanying text file.</p>
 {% endblock %}
