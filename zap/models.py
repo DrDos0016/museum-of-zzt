@@ -97,3 +97,18 @@ class Post(models.Model):
         if self.cohost_id:
             output["cohost"] = self.cohost_id
         return output
+
+    def posted_where_links(self):
+        output = []
+        where = self.posted_where()
+
+        service_urls = {
+            "twitter": "https://twitter.com/worldofzzt/status/{}".format(self.tweet_id),
+            "tumblr": "https://worldsofzzt.tumblr.com/post/{}".format(self.tumblr_id),
+            "mastodon": "https://botsin.space/@worldsofzzt/{}".format(self.mastodon_id),
+        }
+
+        for service in where:
+            html = '<a href="{}" target="_blank" class="no-ext"><img src="/static/zap/icons/{}.png".></a>'.format(service_urls[service], service)
+            output.append(html)
+        return output

@@ -26,7 +26,7 @@
         <td>{{p.pk}}</td>
         <td>{% if p.event_id %}<a href="/tools/zap/view/{{p.event_id}}/">{{p.event.title}}</a>{% else %}{{p.title}}{% endif %}</td>
         <td>{{p.created}}</td>
-        <td>{% for service in p.posted_where %}<img src="{% static 'zap/icons/'|add:service|add:'.png' %}"> {% endfor %}</td>
+        <td>{% for service in p.posted_where_links %}{{service|safe}} {% endfor %}</td>
         <td>
             <a href="{% url 'zap_boost_post' %}?pk={{p.pk}}">Boost</a>
         </td>
