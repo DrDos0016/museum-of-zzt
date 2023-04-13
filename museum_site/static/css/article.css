@@ -192,7 +192,8 @@ article aside
     list-style:none;
     border-top:1px dashed var(--border-color);
     border-bottom:1px dashed var(--border-color);
-    width:750px;
+    box-sizing:border-box;
+    max-width:750px;
     margin:auto;
     margin-top:14px;
     padding:7px 0px 7px 0px;

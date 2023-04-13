@@ -27,6 +27,22 @@
     display:grid;
     grid-template-areas:
     "low-res low-res"
+    "content content"
+    "links links"
+    "left left"
+    "right right"
+    "footer footer";
+
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:repeat(6, auto);
+    justify-items:center;
+}
+
+.grid-root[data-active-tool="true"]
+{
+    display:grid;
+    grid-template-areas:
+    "low-res low-res"
     "tool tool"
     "content content"
     "links links"
