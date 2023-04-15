@@ -11,16 +11,12 @@
     display:inline-block;
 }
 
-#image-render-preview
-{
-    max-width:250px;
-    max-height:250px;
-}
-
 #image-render-preview canvas
 {
     max-width:250px;
     max-height:250px;
+    display:inline-block;
+    margin:8px;
 }
 </style>
 {% endblock %}
@@ -28,30 +24,57 @@
 {% block scripts %}
 <script src="{% static 'js/html2canvas.min.js' %}"></script>
 <script>
+var idx = 1;
+var items = 0;
 $(document).ready(function (){
-    html2canvas(document.querySelector("#preview-frame-inner")).then(canvas => {$("#image-render-preview")[0].appendChild(canvas)});
     $("#save_render_to_image_button").click(save_render_to_image);
+    items = $("#preview-frame .stream").length;
+
+    render_canvas();
 });
+
+function render_canvas()
+{
+    console.log("RENDERING!");
+    html2canvas(document.querySelector("#preview-frame-inner")).then(canvas => {
+        $("#image-render-preview")[0].appendChild(canvas);
+        $("#preview-frame .stream[data-idx=" + idx + "]").hide();
+
+        if (idx < items)
+        {
+            idx++;
+            render_canvas();
+        }
+        else
+        {
+            $("#preview-frame .stream").show();
+        }
+    });
+}
 
 function save_render_to_image()
 {
     $("#save_render_to_image_button").attr("disabled", true);
     $("#save_render_to_image_response").html("");
     var pk = $("input[name=pk]").val();
-    var image_data = $("#image-render-preview canvas")[0].toDataURL("image/png");
 
-    $.ajax({
-        url:"/tools/zap/ajax/save-image-render/",
-        data:{
-            "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
-            "pk": pk,
-            "image_data": image_data
-        },
-        method:"POST",
-    }).done(function (response){
-        $("#save_render_to_image_response").html(response);
-        $("#save_render_to_image_button").attr("disabled", false);
-    });
+    for (var render_idx = 1; render_idx <= $("#image-render-preview canvas").length; render_idx++)
+    {
+        var image_data = $("#image-render-preview canvas")[render_idx - 1].toDataURL("image/png");
+
+        $.ajax({
+            url:"/tools/zap/ajax/save-image-render/",
+            data:{
+                "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
+                "pk": pk,
+                "image_data": image_data,
+                "idx": render_idx
+            },
+            method:"POST",
+        }).done(function (response){
+            $("#save_render_to_image_response").html($("#save_render_to_image_response").html() + response + "<br>");
+        });
+    }
 }
 
 </script>

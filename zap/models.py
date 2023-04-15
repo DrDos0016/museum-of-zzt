@@ -21,7 +21,7 @@ class Event(models.Model):
         return json.loads(self.json_str)
 
     def get_image_render_url(self):
-        return "/static/zap/renders/event-{}-image-render.png".format(self.pk)
+        return "/static/zap/renders/event-{}-image-render-1.png".format(self.pk)
 
     @mark_safe
     def render(self):

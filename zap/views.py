@@ -95,8 +95,9 @@ def save_image_render(request):
     event = Event.objects.get(pk=request.POST["pk"])
     raw = request.POST["image_data"][22:]  # Strip image identifier and only store raw data
     image_data = base64.b64decode(raw)
+    idx = request.POST["idx"]
 
-    file_name = "event-{}-image-render.png".format(event.pk)
+    file_name = "event-{}-image-render-{}.png".format(event.pk, idx)
 
     # Save the image data
     with open(os.path.join(zap_renders_path, file_name), "wb") as fh:
