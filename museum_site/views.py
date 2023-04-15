@@ -186,9 +186,7 @@ def site_credits(request):
     data = {"title": "Credits"}
 
     # Get all article authors
-    data["authors"] = Article.objects.credited_authors().distinct().values_list(
-        "author", flat=True
-    )
+    data["authors"] = Article.objects.credited_authors().distinct().values_list("author", flat=True)
     data["list"] = []
     for author in data["authors"]:
         split = author.split("/")
