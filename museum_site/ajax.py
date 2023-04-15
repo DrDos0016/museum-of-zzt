@@ -9,13 +9,12 @@ from io import BytesIO
 
 from django.http import HttpResponse, JsonResponse
 from PIL import Image
-from markdown_deux.templatetags import markdown_deux_tags
 
 from museum_site.models import *
 from museum_site.constants import *
 from museum_site.core.misc import extract_file_key_from_url, record
 from museum_site.core.palette import parse_pld
-from museum_site.templatetags.site_tags import model_block
+from museum_site.templatetags.site_tags import model_block, render_markdown
 from museum_site.forms.collection_forms import Collection_Content_Form, Collection_Form
 
 
@@ -140,7 +139,7 @@ def render_review_text(request):
     # output = profanity_filter(request.POST.get("text", ""))
     output = request.POST.get("text", "")
     if output:
-        output = markdown_deux_tags.markdown_filter(output)
+        output = render_markdown(output)
     return HttpResponse(output)
 
 

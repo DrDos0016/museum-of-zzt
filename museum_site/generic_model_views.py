@@ -6,14 +6,13 @@ from django.shortcuts import redirect
 from django.template.defaultfilters import slugify
 from django.views.generic import DetailView, ListView
 
-from markdown_deux.templatetags import markdown_deux_tags
-
 from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED, MODEL_BLOCK_VERSION
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.form_utils import clean_params
 from museum_site.core.misc import banned_ip
 from museum_site.forms.review_forms import Review_Form
 from museum_site.models import *
+from museum_site.templatetags.site_tags import render_markdown
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
@@ -523,7 +522,7 @@ class Collection_Contents_View(Model_List_View):
         context = super().get_context_data(**kwargs)
         context["title"] = self.head_object.title
         context["prefix_text"] = "{}\n<h2>Collection Contents ({} file{})</h2>".format(
-            markdown_deux_tags.markdown_filter(self.head_object.description),
+            render_markdown(self.head_object.description),
             self.head_object.item_count,
             ("" if self.head_object.item_count == 1 else "s")
         )

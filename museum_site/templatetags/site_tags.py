@@ -3,10 +3,12 @@ import time
 
 import urllib.parse
 
+import markdown
+
 from django import template
 from django.template import Template, Context, Library
 from django.template.loader import render_to_string
-from django.template.defaultfilters import stringfilter
+from django.template.defaultfilters import stringfilter, escape
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
@@ -202,6 +204,11 @@ class IL(template.Node):
         url = "/search?q={}&auto=1".format(q) + filename + board + coords
         output = "<a class='il' target='_blank' href='{url}'>{text}</a>".format(url=url, text=text)
         return output
+
+@register.filter(name="markdown")
+def render_markdown(raw):
+    filtered = escape(raw)
+    return mark_safe(markdown.markdown(filtered))
 
 
 @register.simple_tag()

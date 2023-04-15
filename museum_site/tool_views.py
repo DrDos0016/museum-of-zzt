@@ -827,48 +827,6 @@ def share_publication_pack(request):
     return render(request, "museum_site/tools/share-publication-pack.html", context)
 
 
-def stream_card(request):
-    # Does not require staff for simplicity's sake. This page is harmless and
-    # can only read data from the DB, not modify it.
-    data = {"title": "Stream Card"}
-    data["files"] = File.objects.all().values("id", "title").order_by("sort_title")
-
-    if request.GET.getlist("pk"):
-        form = Stream_Card_Form(request.GET)
-    else:
-        form = Stream_Card_Form()
-
-    requested_pks = request.GET.getlist("pk")[1:]
-
-    data["raw"] = request.GET.get("card_md", "")
-    data["pks"] = list(map(int, requested_pks))
-    checked_files = File.objects.filter(pk__in=data["pks"])
-
-    if not data["raw"] and data["pks"]:
-        default = "# World{}:\n".format("s" if len(data["pks"]) > 1 else "")
-        for f in checked_files:
-            default += f.title + "\n\n"
-
-        default += "# Author{}:\n".format("s" if len(data["pks"]) > 1 else "")
-        for f in checked_files:
-            default += ", ".join(f.related_list("authors")) + "\n\n"
-
-        default += "# Compan{}:\n".format("ies" if len(data["pks"]) > 1 else "y")
-        for f in checked_files:
-            if f.companies.count():
-                default += f.get_all_company_names() + "\n\n"
-
-        default += "# Year{}:\n".format("s" if len(data["pks"]) > 1 else "")
-        for f in checked_files:
-            default += (f.release_year() or "?") + "/"
-        default = default[:-1]
-
-        data["raw"] = default
-
-    data["form"] = form
-    return render(request, "museum_site/tools/stream-card.html", data)
-
-
 @staff_member_required
 def tool_index(request, key=None):
     data = {
@@ -1034,19 +992,6 @@ def set_screenshot(request, key):
     optimize_image(image_path)
 
     return render(request, "museum_site/tools/set_screenshot.html", data)
-
-
-def sms(request):
-    context = {"title": "Social Media Shotgun"}
-    form = load_form(Social_Media_Shotgun_Form, request)
-    context["form"] = form
-    return render(request, "museum_site/tools/sms.html", context)
-
-
-def sms_stream_schedule(request):
-    context = {"title": "SMS Stream Schedule"}
-    form = load_form(SMS_Stream_Schedule_Form, request)
-    return render(request, "museum_site/generic-form-display-output.html", context)
 
 
 """

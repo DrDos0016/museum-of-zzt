@@ -162,3 +162,12 @@ def debug_collection_form(request):
 
     context["form"] = form
     return render(request, "museum_site/debug/debug-collection-form.html", context)
+
+
+def debug_wozzt(request):
+    context = {}
+
+    #qs = File.objects.roulette(str(datetime.now()), 100)
+    qs = File.objects.roulette("PLACEHOLDERSEED", 101).order_by("id")
+    context["qs"] = qs
+    return render(request, "museum_site/debug/debug-wozzt.html", context)

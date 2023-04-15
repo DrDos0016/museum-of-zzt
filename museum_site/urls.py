@@ -96,6 +96,7 @@ urlpatterns = [
     path("debug/article/", museum_site.debug_views.debug_article),
     path("debug/play/", museum_site.debug_views.debug_play),
     path("debug/widgets/", museum_site.debug_views.debug_widgets),
+    path("debug/wozzt/", museum_site.debug_views.debug_wozzt),
 
     # /detail/
     path("detail/", museum_site.help_views.Detail_Overview_View.as_view(), name="file_details"),
@@ -244,9 +245,6 @@ urlpatterns = [
     path("tools/scan/", museum_site.tool_views.scan, name="museum_scan"),
     path("tools/series/add/", museum_site.tool_views.series_add, name="series_add"),
     path("tools/set_screenshot/<str:key>/", museum_site.tool_views.set_screenshot, name="set_screenshot"),
-    path("tools/sms/", museum_site.tool_views.sms, name="social_media_shotgun"),
-    path("tools/sms/stream-schedule", museum_site.tool_views.sms_stream_schedule, name="sms_stream_schedule"),
-    path("tools/stream-card/", museum_site.tool_views.stream_card, name="stream_card"),
     path("tools/<str:key>/", museum_site.tool_views.tool_index, name="tool_index_with_file"),
 
     # /upload/

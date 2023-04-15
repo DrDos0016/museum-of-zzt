@@ -1,7 +1,5 @@
 {% load static %}
 {% load site_tags %}
-{% load markdown_deux_tags %}
-
 <div class="{{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
 <div class="model-block-title">
     <h1>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h1>
