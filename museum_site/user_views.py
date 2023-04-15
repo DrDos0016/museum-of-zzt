@@ -383,7 +383,7 @@ def login_user(request):
                         mark_safe(
                             "This account has not been activated. Check the email address you signed up with for instructions on how to activate your "
                             "account.<br>"
-                            "<a href='/user/resend-activation/'> Resend Activation Email</a>"
+                            "<a href='{}'> Resend Activation Email</a>".format(reverse("resend_activation"))
                         )
                     )
                 else:
