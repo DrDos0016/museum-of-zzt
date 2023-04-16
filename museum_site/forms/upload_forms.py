@@ -281,14 +281,19 @@ class ZGame_Form(forms.ModelForm):
 
         # Make sure all requested genres exist
         valid_genres = list(Genre.objects.filter(visible=True).values_list("id", flat=True))
+        to_add = []
 
         if len(self.cleaned_data["genre"]):
             for genre in self.cleaned_data["genre"]:
                 if int(genre.pk) not in valid_genres:
                     raise forms.ValidationError("An invalid genre was specified.")
+                # Some genres imply others -- TODO make these constants
+                if int(genre.pk) in [1, 8, 29, 61, 62] and 16 not in to_add:  # 1:24HoZ, 8:BK, 16:Contest, 29:Ludum, 61:WoZZT, 62:Oktroll
+                    to_add.append(16)  # Contest
         else:
             raise forms.ValidationError("At least one genre must be specified.")
-        return self.cleaned_data["genre"]
+
+        return list(self.cleaned_data["genre"]) + to_add
 
     def clean_language(self):
         if UPLOAD_TEST_MODE:
