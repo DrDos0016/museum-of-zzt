@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<script src="{% static 'js/jquery.3.1.0.min.js' %}"></script>
+<script>
+var SCROLL_SPEED = 8000;
+$(document).ready(function (){
+    //setInterval(scroll_row, SCROLL_SPEED)
+    scroll_row();
+});
+
+function finish()
+{
+    var current = $("#underlay").css("top");
+    console.log("CURRENT", current);
+
+    for (var n = 0; n < 6; n++)
+    {
+        old_image = $("#underlay img")[0];
+        $("#underlay img:first-child").remove();
+        $("#underlay").append(old_image);
+    }
+
+    $("#underlay").css("top", "-350px");
+
+    scroll_row();
+}
+
+function scroll_row()
+{
+    $("#underlay").animate({top: "-=175"}, SCROLL_SPEED, "linear", finish);
+}
+</script>
+
+<style>
+body
+{
+    margin:0;
+    background:#AAA;
+}
+
+#root
+{
+    width:1440px;
+    height:1050px;
+    background:#000;
+}
+
+#underlay
+{
+    position:relative;
+    top:-350px;
+    left:0px;
+    height:1600px;
+    width:1440px;
+    overflow:hidden;
+    rotate: 0deg;
+    display:flex;
+    flex-wrap:wrap;
+}
+
+#underlay img
+{
+    width:240px;
+    height:175px;
+    filter:brightness(0.70);
+}
+</style>
+
+<body>
+<div id="root">
+    <div id="underlay">{% for zf in qs %}<img src="{% static zf.preview_url %}">{% endfor %}</div>
+</div>
+</body>
+</html>
