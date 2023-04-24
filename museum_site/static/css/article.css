@@ -153,7 +153,6 @@ article[data-schema="80col"]
 .material
 {
     margin-right:0.5em;
-    flex:1;
 }
 
 @media (max-width:1280px)
