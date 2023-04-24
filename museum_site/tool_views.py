@@ -277,6 +277,9 @@ def mirror(request, key):
     elif zfile.is_detail(DETAIL_SZZT):
         url_prefix = "szzt_"
         engine = "Super ZZT"
+    else:
+        url_prefix="!!!UNKNOWN_ENGINE!!!"
+        engine = "!!!UNKNOWN_ENGINE!!!"
 
     subject = ";".join(zfile.genre_list())
 
