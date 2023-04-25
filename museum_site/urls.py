@@ -314,6 +314,4 @@ urlpatterns = [
 
 # Serve static files on DEV
 if DEBUG:
-    urlpatterns += static(
-        "/zgames", document_root=os.path.join(BASE_DIR, "zgames")
-    )
+    urlpatterns += static("/zgames", document_root=os.path.join(BASE_DIR, "zgames"))

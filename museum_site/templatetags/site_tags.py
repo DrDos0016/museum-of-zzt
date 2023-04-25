@@ -12,7 +12,7 @@ from django.template.defaultfilters import stringfilter, escape
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
-from museum_site.models import File, Article
+from museum_site.models import File, Article, Series
 from museum_site.constants import (
     ADMIN_NAME, PROTOCOL, DOMAIN, LANGUAGES
 )
@@ -262,6 +262,34 @@ def model_block(context, item, view="detailed", template_view=None, *args, **kwa
     if template_view is None:
         template_view = view
     return render_to_string("museum_site/subtemplate/model-block-{}.html".format(template_view.replace("_", "-")), item.context)
+
+
+@register.simple_tag(name="m")
+def model_block_link_tag(model_name, identifier, text=None, i=True, *args, **kwargs):
+    """ Model Link """
+    """ {% m "model_name" <pk/key> "link text" %}"""
+
+    available_models = {"zfile": File, "series": Series, "article": Article}
+    attr = "pk" if isinstance(identifier, int) else "key"
+    try:
+        item = available_models[model_name].objects.filter(**{attr: identifier})
+    except KeyError:
+        return mark_safe("TODO INVALID MODEL BLOCK LINK TAG", model_name, identifier)
+
+    if item:
+        item = item.first()
+    else:
+        return mark_safe("TODO INVALID MODEL BLOCK LINK TAG", model_name, identifier)
+
+    if text is None:
+        text = item.title
+
+    if i:
+        text = "<i>" + text + "</i>"
+
+    output = "<a href='' target='_blank'>{}</a>".format(text)
+
+    return mark_safe(output)
 
 
 @register.tag(name="notice")
