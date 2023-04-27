@@ -136,6 +136,10 @@ class Scrolling_Checklist_Widget(forms.SelectMultiple):
         context["default"] = self.default
         return context
 
+class Language_Checklist_Widget(Scrolling_Checklist_Widget):
+    template_name = "museum_site/widgets/language-checklist-widget.html"
+
+
 
 class Enhanced_Text_Widget(forms.TextInput):
     template_name = "museum_site/widgets/enhanced-text-widget.html"

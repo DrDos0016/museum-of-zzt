@@ -213,8 +213,7 @@ def upload(request):
             zfile.upload_id = upload.pk
 
             # Play Form
-            zeta_config_id = int(play_form.cleaned_data["zeta_config"])
-            zfile.zeta_config_id = zeta_config_id
+            zfile.zeta_config_id = play_form.cleaned_data["zeta_config"].pk if play_form.cleaned_data["zeta_config"] else -1  # TODO constant
 
             # Download Form
             if download_form.cleaned_data["url"]:

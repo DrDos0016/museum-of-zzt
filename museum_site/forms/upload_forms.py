@@ -6,7 +6,9 @@ from museum_site.constants import LANGUAGES, LANGUAGE_CHOICES, UPLOAD_TEST_MODE
 from museum_site.core.misc import record
 from museum_site.fields import Tag_List_Field
 from museum_site.models import Download, File, Genre, Upload, Zeta_Config
-from museum_site.widgets import Enhanced_Date_Widget, Enhanced_Text_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget
+from museum_site.widgets import (
+    Enhanced_Date_Widget, Enhanced_Text_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget, Language_Checklist_Widget
+)
 
 
 class Download_Form(forms.ModelForm):
@@ -43,16 +45,19 @@ class Download_Form(forms.ModelForm):
 
 
 class Play_Form(forms.Form):
-    zeta_config = forms.ChoiceField(
-        choices=Zeta_Config.objects.select_list(),
+    zeta_config = forms.ModelChoiceField(
+        queryset=Zeta_Config.objects.filter(category__lte=1).order_by("category"),
         label="Configuration",
         help_text=(
             'Choose the intended configuration for playing the upload in the '
             'browser. If this upload cannot be ran with Zeta, select '
-            '"Incompatible with Zeta" at the end of the list. For the vast '
+            '"Incompatible with Zeta". For the vast '
             'majority of ZZT worlds "ZZT v3.2 (Registered)" is the correct '
             'choice.'
-        )
+        ),
+        empty_label="Incompatible with Zeta",
+        required=False,
+        initial=1  # TODO Constant
     )
 
 
@@ -167,7 +172,7 @@ class ZGame_Form(forms.ModelForm):
         widget=Tagged_Text_Widget(),
     )
     language = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(
+        widget=Language_Checklist_Widget(
             choices=LANGUAGE_CHOICES,
             buttons=["Clear"],
             show_selected=True,
