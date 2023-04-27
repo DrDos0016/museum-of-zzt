@@ -3,29 +3,18 @@ import sys
 import mimetypes
 mimetypes.add_type("application/wasm", ".wasm", True)
 
-try:
-    from .private import DATABASES
-except ImportError:
-    error = """ERROR: Database settings not found.
-Make sure museum/private.py exists and contains a DATABASE variable that
-matches Django's configuration format.
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get("MOZ_DB_NAME", "museum_of_zzt"),
+        'USER': os.environ.get("MOZ_DB_USER", "root"),
+        'PASSWORD': os.environ.get("MOZ_DB_PASS", ""),
+        'HOST': os.environ.get("MOZ_DB_HOST", ""),
+        'PORT': os.environ.get("MOZ_DB_PORT", ""),
+    }
+}
 
-See: https://docs.djangoproject.com/en/3.0/ref/settings/#databases"
-"""
-    print(error)
-    sys.exit()
-
-try:
-    from .private import SECRET_KEY
-except ImportError:
-    error = """ERROR: SECRET_KEY not found.
-Make sure museum/private.py exists and contains a SECRET_KEY variable that
-matches Django's configuration format.
-
-See: https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-SECRET_KEY
-"""
-    print(error)
-    sys.exit()
+SECRET_KEY = os.environ.get("MOZ_SECRET_KEY", "!c;LOCKED FILE")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

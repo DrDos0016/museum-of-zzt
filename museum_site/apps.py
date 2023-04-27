@@ -5,7 +5,7 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.db.utils import ProgrammingError
 from django import VERSION as DJANGO_VERSION
-from sys import version
+from sys import version, exit
 from datetime import datetime
 
 NONREPO_CONTENT = [
@@ -33,6 +33,14 @@ class Museum_Site_Config(AppConfig):
         print("Server Time :", now)
         print("Site Root   :", site_root)
         print("Environment :", settings.ENVIRONMENT)
+        print("============================================================")
+
+        # Check for placeholder secret key
+        if settings.SECRET_KEY == "!c;LOCKED FILE":
+            print("!!! YOU ARE USING THE PLACEHOLDER SECRET KEY !!!")
+            print("Please set the environment variable MOZ_SECRET_KEY")
+            if settings.ENVIRONMENT != "DEV":
+                exit()
 
         # Check for non-repo content
         missing = []
