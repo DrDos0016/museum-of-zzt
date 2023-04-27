@@ -2,25 +2,6 @@ from django.template.defaultfilters import escape
 
 from museum_site.constants import FORM_ANY, FORM_NONE
 
-def qs_to_categorized_select_choices(qs, text="{0}", val="{0.pk}", category_order=None, qs_kwargs={}):
-    # TODO: This is a bad function that causes problems when making DB changes, requiring a temporary "return output" line below
-    output = []
-
-    categories = {}
-
-    for i in qs(**qs_kwargs):
-        if not categories.get(i.category):
-            categories[i.category] = []
-        categories[i.category].append((str(i.pk), i.title))
-
-    if category_order is None:
-        category_order = list(categories.keys())
-
-    for key in category_order:
-        output.append((key, categories.get(key)))
-
-    return output
-
 
 def range_select_choices(first, last, order="asc", allow_any=False, allow_unknown=False):
     years = range(first, last + 1)

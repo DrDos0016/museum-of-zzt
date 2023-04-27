@@ -733,9 +733,7 @@ def series_add(request):
         series.save()
 
         # Add initial associations
-        ids = [int(i) for i in form.cleaned_data["associations"]]
-        qs = Article.objects.filter(id__in=ids)
-        for a in qs:
+        for a in form.cleaned_data["associations"]:
             a.series.add(series)
 
         series.save()  # Resave to update dates

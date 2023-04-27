@@ -12,7 +12,6 @@ from internetarchive import upload as ia_upload
 from museum_site.core.file_utils import delete_this
 from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.core.social import Social_Twitter, Social_Mastodon
-from museum_site.core.transforms import qs_to_categorized_select_choices
 from museum_site.constants import APP_ROOT, DATA_PATH, STATIC_PATH, TEMP_PATH
 from museum_site.private import IA_ACCESS, IA_SECRET
 from museum_site.fields import Enhanced_Model_Choice_Field, Manual_Field
@@ -193,12 +192,17 @@ class Series_Form(forms.ModelForm):
     attrs = {"method": "POST", "enctype": "multipart/form-data"}
     submit_value = "Add Series"
 
-    associations = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(choices=qs_to_categorized_select_choices(Article.objects.not_removed)),
-        choices=list(Article.objects.not_removed().values_list("id", "title")),
+    associations = forms.ModelMultipleChoiceField(
+        label="Associated Articles",
         required=False,
-        label="Associated Articles"
+        queryset=Article.objects.not_removed(),
+        to_field_name="pk",
+        widget=Scrolling_Checklist_Widget(
+            buttons=["Clear"],
+            show_selected=True,
+        )
     )
+
     preview = forms.FileField(
         help_text="Select the image you wish to upload.",
         label="Preview Image", widget=UploadFileWidget(target_text="Drag & Drop Image Here or Click to Choose", allowed_filetypes=".png,image/png")

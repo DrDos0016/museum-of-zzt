@@ -2,18 +2,19 @@
     {% if filterable %}<div class="scrolling-checklist-filter">
         Filter: <input class="widget-filter" value="" id="{{widget.attrs.id}}"> <input class="widget-clear" type="button" value="Clear">
     </div>{% endif %}
-    {% if categories %}
-        {% for category in choices %}
-        <div class="checklist-header">{{category.0}}</div>
-            {% for item in category.1 %}
-            <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0}}"{% if item.0|stringformat:'s' in widget.value %} checked {% endif %}>{{item.1}}</label>
-            {% endfor %}
-        {% endfor %}
-    {% else %}
+
+    {% for category in categories %}
+        <div class="checklist-header">{{category}}</div>
         {% for item in choices %}
-        <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0}}"{% if item.0|stringformat:'s' in widget.value %} checked {% endif %}>{{item.1}}</label>
+        {% if item.0.instance.category == category %}
+        <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0.instance.pk}}"{% if item.0.instance.pk|stringformat:'s' in widget.value %} checked {% endif %}>{{item.0.instance.title}}</label>
+        {% endif %}
         {% endfor %}
-    {% endif %}
+    {% empty %}
+        {% for item in choices %}
+        <label><input name="{{widget.name}}" type="{{input_method}}" value="{{item.0.instance.pk}}"{% if item.0.instance.pk|stringformat:'s' in widget.value %} checked {% endif %}>{{item.0.instance.title}}</label>
+        {% endfor %}
+    {% endfor %}
 </div>
 {% for button in buttons %}
 <input type="button" value="{{button}}" class="widget-control-button" data-input-name="{{widget.name}}"{% if button == "Default" %}data-default="{{default|join:'/'}}"{% endif %}>

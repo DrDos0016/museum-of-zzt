@@ -114,7 +114,7 @@ class Ordered_Scrolling_Radio_Widget(forms.SelectMultiple):
 class Scrolling_Checklist_Widget(forms.SelectMultiple):
     template_name = "museum_site/widgets/scrolling-checklist-widget.html"
 
-    def __init__(self, attrs=None, choices=(), filterable=True, categories=False, buttons=[], show_selected=False, default=[]):
+    def __init__(self, attrs=None, choices=(), filterable=True, categories=None, buttons=[], show_selected=False, default=[]):
         super().__init__(attrs)
         self.input_method = "checkbox"
         self.choices = choices

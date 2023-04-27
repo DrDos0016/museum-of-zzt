@@ -1,7 +1,7 @@
 from django import forms
 
 from museum_site.core.detail_identifiers import *
-from museum_site.core.transforms import language_select_choices, range_select_choices, qs_to_categorized_select_choices
+from museum_site.core.transforms import language_select_choices, range_select_choices
 from museum_site.constants import LANGUAGES, YEAR, FORM_ANY, FORM_NONE
 from museum_site.fields import Manual_Field
 from museum_site.models import Detail, Genre
@@ -46,19 +46,16 @@ class Advanced_Search_Form(forms.Form):
         widget=Associated_Content_Widget(),
         required=False,
     )
-    details = forms.MultipleChoiceField(
+    details = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Detail.objects.visible(),
+        to_field_name="pk",
         widget=Scrolling_Checklist_Widget(
-            choices=qs_to_categorized_select_choices(
-                Detail.objects.visible,
-                category_order=["ZZT", "SZZT", "Media", "Other"]
-            ),
-            categories=True,
+            categories = ["ZZT", "SZZT", "Media", "Other"],
+            default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE],
             buttons=["Clear", "Default"],
             show_selected=True,
-            default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE]
-        ),
-        choices=qs_to_categorized_select_choices(Detail.objects.visible, category_order=["ZZT", "SZZT", "Media", "Other"]),
-        required=False,
+        )
     )
     sort = forms.ChoiceField(
         label="Sort results by",

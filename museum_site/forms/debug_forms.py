@@ -43,20 +43,6 @@ class Debug_Form(forms.Form):
         widget=Associated_Content_Widget(),
         required=False,
     )
-    details = forms.MultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(
-            choices=qs_to_categorized_select_choices(
-                Detail.objects.visible,
-                category_order=["ZZT", "SZZT", "Media", "Other"]
-            ),
-            categories=True,
-            buttons=["Clear", "Default"],
-            show_selected=True,
-            default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]
-        ),
-        choices=qs_to_categorized_select_choices(Detail.objects.visible, category_order=["ZZT", "SZZT", "Media", "Other"]),
-        required=False,
-    )
     nonfilterable = forms.MultipleChoiceField(
         widget=Scrolling_Checklist_Widget(
             choices=(("A", "A"), ("B", "B"), ("C", "C")),
