@@ -2,6 +2,7 @@ import os
 import zipfile
 import urllib.parse
 
+from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
 
@@ -254,5 +255,5 @@ def zipinfo_datetime_tuple_to_str(raw):
 
 
 def record(*args, **kwargs):
-    if not os.path.isfile("/var/projects/museum-of-zzt/PROD"):
+    if settings.ENVIRONMENT != "PROD":
         print(*args, **kwargs)

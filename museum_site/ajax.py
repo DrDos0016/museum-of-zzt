@@ -90,16 +90,6 @@ def get_zip_file(request):
     return HttpResponse("This file type is not currently supported for embedded content.", status=501)
 
 
-def debug_file(request):
-    if not os.path.isfile("/var/projects/DEV"):
-        return HttpResponse("Not on production.")
-    if request.GET.get("file"):
-        fh = open(request.GET["file"], "rb")
-        return HttpResponse(binascii.hexlify(fh.read()))
-    else:
-        return HttpResponse("No file provided.")
-
-
 def get_suggestions_for_field(request, field):
     """ Used on file upload page """
     output = {"suggestions": []}

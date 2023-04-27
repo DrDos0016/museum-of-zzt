@@ -1,6 +1,6 @@
-import os
+from django.conf import settings
 
-if os.path.isfile("/var/projects/DEV"):
+if settings.ENVIRONMENT == "DEV":
     WOZZT_URL = "http://django.pi:8000/api/worlds-of-zzt/?category=discord"
 else:
     WOZZT_URL = "https://museumofzzt.com/api/worlds-of-zzt/?category=discord"

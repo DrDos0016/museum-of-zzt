@@ -1,10 +1,10 @@
 import glob
 import os
 
+from django.conf import settings
+
 from collections import namedtuple
 from datetime import datetime
-
-DEBUG = True if os.path.isfile("/var/projects/DEV") else False  # Debug mode
 
 # Times and Dates
 START_TIME = datetime.utcnow()
@@ -109,12 +109,12 @@ TOKEN_EXPIRATION_SECS = 600
 ADMIN_NAME = "Dr. Dos"
 
 # Host/Environment information
-if os.path.isfile(os.path.join(SITE_ROOT, "PROD")):
+if settings.ENVIRONMENT == "PROD":
     HOST = "https://museumofzzt.com/"
     PROTOCOL = "https"
     DOMAIN = "museumofzzt.com"
     ENV = "PROD"
-elif os.path.isfile(os.path.join(SITE_ROOT, "BETA")):
+elif settings.ENVIRONMENT == "BETA":
     HOST = "https://beta.museumofzzt.com/"
     PROTOCOL = "https"
     DOMAIN = "beta.museumofzzt.com"

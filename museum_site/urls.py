@@ -86,7 +86,6 @@ urlpatterns = [
     path("collection/on-the-fly-collections/", museum_site.collection_views.On_The_Fly_Collections_View.as_view(), name="on_the_fly_collections"),
 
     # /debug/
-    path("ajax/debug_file/", museum_site.ajax.debug_file),
     path("debug/", museum_site.debug_views.debug),
     path("debug/403/", museum_site.views.error_403),
     path("debug/404/", museum_site.views.error_404),

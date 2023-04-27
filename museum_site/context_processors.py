@@ -1,8 +1,9 @@
 from datetime import datetime
 
 from django.core.cache import cache
+from django.conf import settings
 
-from museum_site.constants import TERMS_DATE, DEBUG, CSS_INCLUDES, BOOT_TS, EMAIL_ADDRESS
+from museum_site.constants import TERMS_DATE, CSS_INCLUDES, BOOT_TS, EMAIL_ADDRESS
 from museum_site.core.detail_identifiers import *
 from museum_site.models.file import File
 
@@ -18,7 +19,7 @@ def museum_global(request):
     }
 
     # Debug mode
-    if DEBUG or request.GET.get("DEBUG") or request.session.get("DEBUG"):
+    if settings.DEBUG or request.GET.get("DEBUG") or request.session.get("DEBUG"):
         data["debug"] = True
     else:
         data["debug"] = False

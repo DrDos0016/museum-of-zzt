@@ -2,6 +2,7 @@ from django.core.cache import cache
 import os
 
 from django.apps import AppConfig
+from django.conf import settings
 from django.db.utils import ProgrammingError
 from django import VERSION as DJANGO_VERSION
 from sys import version
@@ -31,12 +32,7 @@ class Museum_Site_Config(AppConfig):
         print("Django      :", ".".join(map(str, DJANGO_VERSION)))
         print("Server Time :", now)
         print("Site Root   :", site_root)
-        if os.path.isfile(os.path.join(site_root, "DEV")):
-            print("Environment : DEV")
-        if os.path.isfile(os.path.join(site_root, "BETA")):
-            print("Environment : BETA")
-        if os.path.isfile(os.path.join(site_root, "PROD")):
-            print("Environment : PROD")
+        print("Environment :", settings.ENVIRONMENT)
 
         # Check for non-repo content
         missing = []
@@ -51,16 +47,7 @@ class Museum_Site_Config(AppConfig):
         # Initialize cache
         print("-------------------- Initializing Cache --------------------")
         INITIAL_CACHE = {}
-
-        if os.path.isfile(os.path.join(site_root, "DEV")):
-            INITIAL_CACHE["ENV"] = "DEV"
-        elif os.path.isfile(os.path.join(site_root, "BETA")):
-            INITIAL_CACHE["ENV"] = "BETA"
-        elif os.path.isfile(os.path.join(site_root, "PROD")):
-            INITIAL_CACHE["ENV"] = "PROD"
-        else:
-            print("Environment Flag File not found. Assuming DEV enironment.\nCreate a file named DEV/BETA/PROD in: {}".format(site_root))
-            INITIAL_CACHE["ENV"] = "DEV"
+        INITIAL_CACHE["ENV"] = settings.ENVIRONMENT
 
         try:
             INITIAL_CACHE["UPLOAD_QUEUE_SIZE"] = File.objects.unpublished().count()
