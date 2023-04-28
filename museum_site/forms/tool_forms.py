@@ -13,7 +13,7 @@ from museum_site.core.file_utils import delete_this
 from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.core.social import Social_Twitter, Social_Mastodon
 from museum_site.constants import APP_ROOT, DATA_PATH, STATIC_PATH, TEMP_PATH
-from museum_site.private import IA_ACCESS, IA_SECRET
+from museum_site.settings import IA_ACCESS, IA_SECRET
 from museum_site.fields import Enhanced_Model_Choice_Field, Manual_Field
 from museum_site.models import Article, File, Series
 from museum_site.widgets import (

@@ -6,7 +6,8 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from museum_site.constants import BANNED_IPS, TEMP_PATH
+from museum_site.constants import TEMP_PATH
+from museum_site.settings import BANNED_IPS
 
 try:
     import zookeeper

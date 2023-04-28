@@ -8,7 +8,7 @@ import pytumblr
 from mastodon import Mastodon
 from twitter import *
 
-from museum_site.private import (
+from museum_site.settings import (
     MASTODON_CLIENT_KEY,
     MASTODON_CLIENT_SECRET,
     MASTODON_ACCESS_TOKEN,

@@ -3,30 +3,36 @@
 ## Installation And Initial Setup
 
 These instructions were based on the experience of setting up a development
-environment in October 2021. They can definitely be made friendlier. My
+environment in April 2023. They can definitely be made friendlier. My
 apologies.
 
 ## Prerequisites
 
-* Python 3.8.10 or newer (or potentially older)
-* MariaDB (or MySQL)
+* Python 3.8.10 or newer
+* MariaDB/MySQL if you wish to use the repo's database dump
 
 1. Clone Repo: `git clone https://github.com/DrDos0016/museum-of-zzt.git`
 2. In the repository's root directory, create Python3 virtural environment: `python3 -m venv venv`
-3. Activate the virtual envrionment: `source venv/bin/activate`
-4. Update pip: `pip install --upgrade pip`
-5. Download libraries from requirements.txt: `pip install -r requirements.txt`
-6. (You may need to install the package "libmariadb-dev-compat")
-7. If you get an error about conflicting requirements, install idna and requests via `pip install idna`, `pip install requests`, and then comment out the line in requirements.txt for `idna`.
-8. Copy the `museum/example-private.py` settings file to `museum/private.py` and configure your database settings and secret key  (see Non-Repository Content section)
-9. Copy the `museum_site/example-private.py` settings file to `museum_site/private.py` and configure any site settings to your environment if needed (see Non-Repository Content section)
-10. Install the Zookeeper ZZT Python library version 1. Clone the repository `git clone https://github.com/DrDos0016/zookeeper.git` and copy the `zookeeper` directory into the project root or symlink it as appropriate.
-11. Mark your development environment as such by creating a file in the project root named `DEV`
-12. Create the database in MariaDB/MySQL: `CREATE DATABASE museum_of_zzt`
-13. Import the repo's provided database dump: `python3 tools/import_database.py museum_repo_db.sql`
-14. Run any database migrations `python3 manage.py migrate`
-15. Run the Django development server: `python3 manage.py runserver`
-16. The site should be running at [127.0.0.1:8000](http://127.0.0.1:8000)
+3. Activate the virtual envrionment: `source venv/bin/activate`pip
+4. Download libraries from requirements.txt: `pip install -r requirements.txt`
+5. Configure any environment variables that need to be changed for your environment (see Environment Variables section). Database credentials will likely be required, while most others have fallbacks that will work fine in a dev environment.
+6. Install the Zookeeper ZZT Python library version 1. Clone the repository `git clone https://github.com/DrDos0016/zookeeper.git` and copy the `zookeeper` directory into the project root or symlink it as appropriate.
+7. Create the database in MariaDB/MySQL: `CREATE DATABASE museum_of_zzt`. Django supports other database engines, but the public copies of the database are designed for these engines.
+8. Import the repo's provided database dump: `python3 tools/import_database.py museum_repo_db.sql`
+9. Run any database migrations created since the last time the repo's database has been updated `python3 manage.py migrate`
+10. Run the Django development server: `python3 manage.py runserver`. The site should now be running at [127.0.0.1:8000](http://127.0.0.1:8000).
+
+## Environment Variables
+
+Many private settings are stored using environment variables with placeholder defaults available to allow the site to function in a dev environment. Most are used in `museum/settings.py` and imported from there when needed.
+
+MOZ_DB_NAME - The name of the database used by the site (default: `museum_of_zzt`)
+MOZ_DB_USER - The username that will connect to the database (default: `root`)
+MOZ_DB_PASS - The password used to connect to the database (default: `<empty_string>`)
+MOZ_SECRET_KEY - The Secret Key used by django (default: `!c;LOCKED FILE`). If this key is detected on startup a message is produced telling you to change this before moving to a non-dev environment. If this key is detected in a non-dev environment, the startup process will stop itself from proceding.
+MOZ_UNREGISTERED_SUPPORTERS_FILE - A path used to a json file to display Patrons on the site credits page (default: `None`). If this value has not been set, the site credits page will only display registered users marked as patrons. This value is read in `museum_site/views.py`.
+
+Several more exist to provide keys to third party services (the Internet Archive, Discord, various social media sites). These names and defaults may be found in `museum_site/settings.py`
 
 ## Using Tools
 
@@ -40,6 +46,7 @@ I generally avoid including *binary* content in the Museum repository which isn'
 As such, the following features are deliberately missing by default:
 
 ### /zgames/
+
 
 This directory contains all the ZZT (related) files hosted on the Museum.
 

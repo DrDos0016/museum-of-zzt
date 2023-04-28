@@ -7,7 +7,7 @@ from django.core.cache import cache
 
 from museum_site.constants import *
 from museum_site.core.misc import record
-from museum_site.private import NEW_REVIEW_WEBHOOK_URL, NEW_UPLOAD_WEBHOOK_URL, DISCORD_INVITE_URL
+from museum_site.settings import NEW_REVIEW_WEBHOOK_URL, NEW_UPLOAD_WEBHOOK_URL, DISCORD_INVITE_URL
 
 # Announcement Settings
 ANNOUNCE_ALL = 2

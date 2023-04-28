@@ -30,19 +30,6 @@ PLAY_METHODS = {"archive": {"name": "Archive.org - DosBox Embed"}, "zeta": {"nam
 # Global CSS Files
 CSS_INCLUDES = ["museum-site.css", "main.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"]
 
-# Private settings - (Patron Locked Content, IA API)
-try:
-    from museum_site.private import PASSWORD2DOLLARS, PASSWORD5DOLLARS, IA_ACCESS, IA_SECRET, BANNED_IPS
-    IA_SUPPORT = True
-except ModuleNotFoundError:
-    print("PRIVATE.PY NOT FOUND. USING DEV VALUES")
-    PASSWORD2DOLLARS = "test2dollars"
-    PASSWORD5DOLLARS = "test5dollars"
-    IA_ACCESS = "Not found"
-    IA_SECRET = "Not found"
-    IA_SUPPORT = False
-    BANNED_IPS = [""]
-
 # Pagination
 PAGE_SIZE = 25  # Default items per page
 LIST_PAGE_SIZE = 250  # Default items per page in LIST view

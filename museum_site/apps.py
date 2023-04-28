@@ -10,7 +10,6 @@ from datetime import datetime
 
 NONREPO_CONTENT = [
     "backups/", "zookeeper/",
-    "museum_site/private.py",
     "museum_site/static/data/mass_dl.json",
 ]
 

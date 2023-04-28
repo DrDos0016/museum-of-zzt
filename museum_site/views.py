@@ -9,10 +9,7 @@ from django.shortcuts import render, redirect
 
 from museum_site.constants import *
 from museum_site.models import *
-from museum_site.private import (
-    UNREGISTERED_SUPPORTERS, UNREGISTERED_BIGGER_SUPPORTERS,
-    UNREGISTERED_BIGGEST_SUPPORTERS, DISCORD_INVITE_URL
-)
+from museum_site.settings import DISCORD_INVITE_URL
 
 
 def ascii_reference(request):
@@ -197,34 +194,44 @@ def site_credits(request):
     data["split"] = math.ceil(len(data["list"]) / 4.0)
 
     # Hardcoded credits
-    supporters = UNREGISTERED_SUPPORTERS
-    bigger_supporters = UNREGISTERED_BIGGER_SUPPORTERS
-    biggest_supporters = UNREGISTERED_BIGGEST_SUPPORTERS
-
-    # Emails to reference
+    unregistered_supporters_file = os.environ.get("MOZ_UNREGISTERED_SUPPORTERS_FILE", None)
+    supporters = []
+    bigger_supporters = []
+    biggest_supporters = []
     hc_emails = []
     bigger_hc_emails = []
     biggest_hc_emails = []
-    for row in supporters:
-        hc_emails.append(row["email"])
-    for row in bigger_supporters:
-        bigger_hc_emails.append(row["email"])
-    for row in biggest_supporters:
-        biggest_hc_emails.append(row["email"])
+
+    if unregistered_supporters_file is not None:
+        with open(unregistered_supporters_file) as fh:
+            raw = json.loads(fh.read())
+
+        for row in raw:
+            if row.get("pledge") == "biggest":
+                biggest_supporters.append(row)
+            elif row.get("pledge") == "bigger":
+                bigger_supporters.append(row)
+            else:
+                supporters.append(row)
+
+        # Emails to reference
+        for row in supporters:
+            hc_emails.append(row["email"])
+        for row in bigger_supporters:
+            bigger_hc_emails.append(row["email"])
+        for row in biggest_supporters:
+            biggest_hc_emails.append(row["email"])
+    else:
+        supporters = []
+        bigger_supporters = []
+        biggest_supporters = []
 
     # Get users known to be patrons
     no_longer_hardcoded = []
     patrons = Profile.objects.patrons()
     for p in patrons:
         if p.site_credits_name:
-            info = {
-                "name": p.site_credits_name,
-                "char": p.char,
-                "fg": p.fg,
-                "bg": p.bg,
-                "img": "blank-portrait.png",
-                "email": p.patron_email
-            }
+            info = {"name": p.site_credits_name, "char": p.char, "fg": p.fg, "bg": p.bg, "img": "blank-portrait.png", "email": p.patron_email}
 
             if p.patron_email in hc_emails:
                 idx = hc_emails.index(p.patron_email)

@@ -15,7 +15,7 @@ from museum_site.core.misc import banned_ip, calculate_sort_title, get_letter_fr
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.forms.upload_forms import Download_Form, Play_Form, Upload_Form, Upload_Action_Form, Upload_Delete_Confirmation_Form, ZGame_Form
 from museum_site.models import *
-from museum_site.private import NEW_UPLOAD_WEBHOOK_URL
+from museum_site.settings import NEW_UPLOAD_WEBHOOK_URL
 from museum_site.views import generic_template_page
 
 

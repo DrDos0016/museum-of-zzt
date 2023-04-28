@@ -7,10 +7,12 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
-from museum.private import DATABASES  # noqa: E402
+
+from django.conf import settings  # noqa: E402
 
 
 def main():
+    DATABASES = settings.DATABASES
     user = DATABASES["default"]["USER"]
     password = DATABASES["default"]["PASSWORD"]
     name = DATABASES["default"]["NAME"]
