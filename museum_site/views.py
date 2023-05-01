@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 
 from museum_site.constants import *
 from museum_site.models import *
-from museum_site.settings import DISCORD_INVITE_URL
+from museum_site.settings import DISCORD_INVITE_URL, PASSWORD5DOLLARS
 
 
 def ascii_reference(request):
@@ -23,6 +23,16 @@ def ascii_reference(request):
         "og:image": ["property", "pages/ascii-reference.png"]
     }
     return render(request, "museum_site/ascii-reference.html", context)
+
+def beta_unlock(request):
+    context = {"title": "Access Beta Site"}
+    if request.POST.get("beta_password"):
+        if request.POST["beta_password"] == PASSWORD5DOLLARS:
+            request.session["CAN_USE_BETA_SITE"] = True
+            return redirect("index")
+        else:
+            context["invalid_password"] = True
+    return render(request, "museum_site/beta-unlock.html", context)
 
 def close_tool(request):
     if request.session["active_tool"]:

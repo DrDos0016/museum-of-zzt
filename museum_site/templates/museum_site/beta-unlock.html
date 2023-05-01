@@ -1,0 +1,22 @@
+{% extends "museum_site/main.html" %}
+
+{% block content %}
+<h1>Access The Museum of ZZT Beta Site</h1>
+
+<div class="c{% if invalid_password %} field-with-error{% endif %}">
+<form method="POST">
+    {% csrf_token %}
+    <label>Beta Site Password: <input name="beta_password" type="password"></label>
+    <input type="submit" value="Submit">
+    <br>
+    {% if invalid_password %}<div class="c b">Invalid Password!</div>{% endif %}
+</form>
+</div>
+
+
+<p>The Museum of ZZT Beta Site is only accessible for Patrons that wish to help test new Museum features before they're ready as well as to allow users to experiment with site functions in non-damaging ways. A password is required for entry.</p>
+
+<p>Patrons pledging $5 or more per month can find the password on their <a href="https://museumofzzt.com/user/profile/" target="_blank">Museum of ZZT profile page</a>.
+
+<p>The database used on the beta is occassionally refreshed from the live site's database resulting in anything done here being erased. Do not rely on any beta site content, especially user submitted, to necessarily last.</p>
+{% endblock %}

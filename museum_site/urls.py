@@ -284,6 +284,7 @@ urlpatterns = [
 
     # /*/ -- Miscellaneous Pages
     path("ascii/", museum_site.views.ascii_reference, name="ascii"),
+    path("beta-unlock/", museum_site.views.beta_unlock, name="beta_unlock"),
     path("explicit-warning/", museum_site.views.explicit_warning, name="explicit_warning"),
     path("discord/", museum_site.views.discord_overview, name="discord"),
     path("credits/", museum_site.views.site_credits, name="credits"),
