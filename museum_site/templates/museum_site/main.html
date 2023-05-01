@@ -45,8 +45,9 @@
 {% block sidebar_left %}
 <section id="sidebar-left" class="sidebar">
     <header id="logo-area">
-        {% if ENV != "DEV" %}<a href="/" id="logo"><img src="{% static 'chrome/logos/museum-logo-by-lazymoth.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
-        {% else %}<a href="/" id="logo"><img src="{% static 'chrome/logos/museum-logo-by-lazymoth-INVERTED.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
+        {% if ENV == "PROD" %}<a href="/" id="logo"><img src="{% static 'chrome/logos/museum-logo-by-lazymoth.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
+        {% elif ENV == "BETA" %}<a href="/" id="logo"><img src="{% static 'chrome/logos/museum-logo-by-lazymoth-BETA.png' %}" alt="Original Museum of ZZT Logo by LazyMoth"></a>
+        {% elif ENV == "DEV" %}<a href="/" id="logo"><img src="{% static 'chrome/logos/museum-logo-by-lazymoth-INVERTED.png' %}" alt="Original Museum of ZZT Logo by LazyMoth"></a>
         {% endif %}
     </header>
 
