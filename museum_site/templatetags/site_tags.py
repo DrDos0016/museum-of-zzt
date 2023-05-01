@@ -16,6 +16,7 @@ from museum_site.models import File, Article, Series
 from museum_site.constants import (
     ADMIN_NAME, PROTOCOL, DOMAIN, LANGUAGES
 )
+from museum_site.templatetags.zzt_tags import char
 
 register = Library()
 
@@ -124,6 +125,22 @@ def content_warning(*args, **kwargs):
     output = output.format(", ".join(args).title(), skip_link, skip_text)
 
     return mark_safe(output + "\n")
+
+
+@register.simple_tag()
+def counter(*args):
+    counter_data = {"h": (3, "red"), "a": (132, "darkcyan"), "t": (157, "darkyellow"), "g": (4, "cyan"), "s": (158, "white")}
+    output = ""
+    for idx in range(0, len(args), 2):
+        (char_num, char_fg) = counter_data[args[idx]]
+        c = char(num=char_num, fg=char_fg, bg="black", scale=2)
+        value = args[idx+1]
+        sign = "+" if value > 0 else "-"
+        color = "green" if value > 0 else "red"
+        output += c + "<span class='cp437 ega-{} ega-black-bg' style='font-size:32px'>{}{}</span> ".format(color, sign, abs(value))
+
+    output = output.strip()
+    return mark_safe(output)
 
 
 @register.simple_tag(name="fn")

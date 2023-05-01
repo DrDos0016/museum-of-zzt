@@ -278,5 +278,6 @@ img.zzt-szzt-message
     min-width:8px;
     min-height:14px;
     background-image:url("/static/images/cp437-transparent.png");
+    vertical-align:bottom;
 }
 /* End Individual Characters */
