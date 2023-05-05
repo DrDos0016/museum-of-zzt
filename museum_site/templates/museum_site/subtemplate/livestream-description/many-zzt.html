@@ -4,10 +4,10 @@
 
 {% block stream_contents %}
 ♦ Stream Contents ♦
-{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) "{{zfile.title}}" by {{zfile.author_list|join:", "}}{% if zfile.release_year %} ({{zfile.release_year}}){% endif %} [{{DOMAIN}}{{zfile.url}}]
+{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) "{{zfile.title}}" by {{zfile.author_list|join:", "}}{% if zfile.release_year %} ({{zfile.release_year}}){% endif %} [https://{{DOMAIN}}{{zfile.url}}]
 {% endfor %}{% for break in ad_break_endings %}&bull; ({{break}}) End of Ad Break {{forloop.counter}}
 {% endfor %}{% endblock %}
 
 {% block play_links %}♦ Play these worlds directly in your browser ♦
-{% for zfile in zfiles %}&bull; {{DOMAIN}}{{zfile.play_url}}
+{% for zfile in zfiles %}&bull; https://{{DOMAIN}}{{zfile.play_url}}
 {% endfor %}{% endblock %}

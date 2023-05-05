@@ -1,6 +1,6 @@
 {% extends "museum_site/subtemplate/livestream-description/base.html" %}
 
-{% block overview %}♦ Livestream of the ZZT world "{{zfiles.0.title}}" by {{zfiles.0.author_list|join:", "}}{% if zfiles.0.release_year %} ({{zfiles.0.release_year}}){% endif %} [{{DOMAIN}}{{zfiles.0.url}}]. ♦{% endblock %}
+{% block overview %}♦ Livestream of the ZZT world "{{zfiles.0.title}}" by {{zfiles.0.author_list|join:", "}}{% if zfiles.0.release_year %} ({{zfiles.0.release_year}}){% endif %} [https://{{DOMAIN}}{{zfiles.0.url}}]. ♦{% endblock %}
 
 {% block stream_contents %}{% if ad_break_endings %}
 ♦ Stream Contents ♦
@@ -8,5 +8,5 @@
 {% endfor %}{% endif %}{% endblock %}
 
 {% block play_links %}♦ Play this world directly in your browser ♦
-{% for zfile in zfiles %}&bull; {{DOMAIN}}{{zfile.play_url}}
+{% for zfile in zfiles %}&bull; https://{{DOMAIN}}{{zfile.play_url}}
 {% endfor %}{% endblock %}
