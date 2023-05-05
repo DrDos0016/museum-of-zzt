@@ -295,7 +295,7 @@ class Livestream_Vod_Form(forms.Form):
     def clean_video_description(self):
         video_description = self.cleaned_data["video_description"]
         if "♦ Join" in video_description:
-            video_description = video_description[:video_description.find("♦")]
+            video_description = video_description[:video_description.find("♦ Join")]
         return video_description
 
     def create_article(self):
