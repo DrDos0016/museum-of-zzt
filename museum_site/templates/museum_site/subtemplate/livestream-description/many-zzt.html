@@ -1,0 +1,13 @@
+{% extends "museum_site/subtemplate/livestream-description/base.html" %}
+
+{% block overview %}♦ Livestream of {{zfiles|length}} ZZT worlds. ♦{% endblock %}
+
+{% block stream_contents %}
+♦ Stream Contents ♦
+{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) "{{zfile.title}}" by {{zfile.author_list|join:", "}}{% if zfile.release_year %} ({{zfile.release_year}}){% endif %} [{{DOMAIN}}{{zfile.url}}]
+{% endfor %}{% for break in ad_break_endings %}&bull; ({{break}}) End of Ad Break {{forloop.counter}}
+{% endfor %}{% endblock %}
+
+{% block play_links %}♦ Play these worlds directly in your browser ♦
+{% for zfile in zfiles %}&bull; {{DOMAIN}}{{zfile.play_url}}
+{% endfor %}{% endblock %}

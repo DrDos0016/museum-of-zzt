@@ -48,8 +48,8 @@ except ImportError:
 def add_livestream(request, key):
     data = {
         "title": "Add Livestream VOD",
-        "file": File.objects.get(key=key),
     }
+    zfile_pk = File.objects.get(key=key).pk if key != "NOZFILEASSOC" else ""
 
     if request.method == "POST":
         if not request.POST.get("transferred"):
@@ -62,7 +62,7 @@ def add_livestream(request, key):
                 "associated_zfile": request.POST.getlist("associated"), "video_description": request.POST.get("video_description")
             })
     else:
-        form = Livestream_Vod_Form(initial={"associated_zfile": data["file"].pk})
+        form = Livestream_Vod_Form(initial={"associated_zfile": zfile_pk})
 
     data["form"] = form
     return render(request, "museum_site/generic-form-display.html", data)
@@ -212,6 +212,16 @@ def livestream_description_generator(request):
                 else:
                     timestamp = request.GET.getlist("ad_break_endings")[idx]
                 data["ad_break_endings"].append(timestamp)
+
+        data["first_key"] = data["zfiles"][0].key if data["zfiles"] else "NOZFILEASSOC"
+        data["DOMAIN"] = DOMAIN
+
+
+        subtemplate_identifiers = {0: "no", 1: "one"}
+        zzt_amount = subtemplate_identifiers.get(len(data["zfiles"]), "many")
+        subtemplate = "museum_site/subtemplate/livestream-description/{}-zzt.html".format(zzt_amount)
+        rendered = render_to_string(subtemplate, data)
+        data["subtemplate"] = rendered
 
     else:
         data["form"] = Livestream_Description_Form()

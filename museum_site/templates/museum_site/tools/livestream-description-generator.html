@@ -20,32 +20,16 @@
 <hr>
 
 {% if request.GET %}
-<h2>Output</h2>
+    <h2>Output</h2>
 
-<p>Edit the description as needed. Copy/Paste into YouTube video description, then proceed to Add Livestream VOD tool.</p>
+    <p>Edit the description as needed. Copy/Paste into YouTube video description, then proceed to Add Livestream VOD tool.</p>
 
-<form method="POST" action="{% url 'add_livestream' zfiles.0.key %}">
-{% csrf_token %}
-<textarea style="width:120ch;height:40ch;" name="video_description">
-{% if zfiles|length == 1 %}Livestream of the ZZT world "{{zfiles.0.title}}" by {{zfiles.0.author_list|join:", "}}{% if zfiles.0.release_year %} ({{zfiles.0.release_year}}). Originally streamed on {{stream_date|date:"F jS, Y"}}{% endif %}
-{% else %}♦ Livestream of the following {{zfiles|length}} ZZT worlds. Originally streamed on {{stream_date|date:"F jS, Y"}} ♦
-{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) "{{zfile.title}}" by {{zfile.author_list|join:", "}}{% if zfile.release_year %} ({{zfile.release_year}}){% endif %} [{{DOMAIN}}{{zfile.url}}]
-{% endfor %}{% endif %}{% for break in ad_break_endings %}&bull; ({{break}}) End of Ad Break {{forloop.counter}}
-{% endfor %}
-♦ Join us for future livestreams at https://twitch.tv/worldsofzzt ♦
-
-♦ Play {% if zfiles|length == 1 %}this world{% else %}these worlds{% endif %} directly in your browser ♦
-{% for zfile in zfiles %}&bull; {{DOMAIN}}{{zfile.play_url}}
-{% endfor %}
-============================================================
-Support Worlds of ZZT on Patreon: https://patreon.com/worldsofzzt
-Follow Worlds of ZZT on Twitter: https://twitter.com/worldsofzzt
-Check out the Museum of ZZT! Download, explore, and play more than 3000 worlds: https://museumofzzt.com/
-Join the ZZT community on the Worlds of ZZT Discord: https://museumofzzt.com/discord/
-</textarea>
-{% for assoc in form.associated.value %}<input name="associated" value="{{assoc}}" type="hidden">{% endfor %}
-<br><br>
-<input type="hidden" name="transferred" value="1">
-<input type="submit" value="Proceed to Add Livestream VOD tool">
+    <form method="POST" action="{% url 'add_livestream' first_key %}">
+    {% csrf_token %}
+    <textarea style="width:120ch;height:40ch;" name="video_description">{{subtemplate}}</textarea>
+    {% for assoc in form.associated.value %}<input name="associated" value="{{assoc}}" type="hidden">{% endfor %}
+    <br><br>
+    <input type="hidden" name="transferred" value="1">
+    <input type="submit" value="Proceed to Add Livestream VOD tool">
 {% endif %}
 {% endblock %}

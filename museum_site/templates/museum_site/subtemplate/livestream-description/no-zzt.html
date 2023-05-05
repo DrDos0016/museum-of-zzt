@@ -1,0 +1,12 @@
+{% extends "museum_site/subtemplate/livestream-description/base.html" %}
+
+{% block overview %}♦ Livestream of "TITLE" by AUTHOR (YEAR). ♦{% endblock %}
+
+{% block stream_contents %}{% if ad_break_endings %}
+♦ Stream Contents ♦
+{% for break in ad_break_endings %}&bull; ({{break}}) End of Ad Break {{forloop.counter}}
+{% endfor %}{% endif %}{% endblock %}
+
+{% block play_links %}♦ Play this world ♦
+&bull; WHERE
+{% endblock %}
