@@ -225,7 +225,7 @@ $(document).ready(function (){
     {% if not components.advanced %}<button id="advanced-settings">Advanced Settings</button>{% endif %}
     <br><a href="{% url 'manage_saved_data' %}?pk={{file.id}}">Manage Saved Data</a>
     {% if request.user.is_staff %}
-    <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.pk}}/">
+    <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.key}}/">
         {% csrf_token %}
         <button id="debug-screenshot">Set Screenshot</button>
         <input type="hidden" name="b64img" id="b64img">
