@@ -59,7 +59,7 @@ $(document).ready(function (){
     <input type="button" id="set-screen" value="Set As Screenshot">
 
     <hr>
-    <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.id}}/" style="display:none">
+    <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.key}}/" style="display:none">
         {% csrf_token %}
         <button id="debug-screenshot">Set Screenshot</button>
         <input type="hidden" name="b64img" id="b64img">
