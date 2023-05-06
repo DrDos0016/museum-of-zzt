@@ -932,7 +932,7 @@ def tool_index(request, key=None):
 def set_screenshot(request, key):
     """ Returns page to generate and set a file's screenshot """
     data = {"title": "Set Screenshot"}
-    zfile = File.objects.get(pk=key)
+    zfile = File.objects.get(key=key)
     data["file"] = zfile
     data["file_list"] = []
 
