@@ -964,17 +964,19 @@ def set_screenshot(request, key):
 
     if request.GET.get("board"):
         data["board_num"] = int(request.GET["board"])
+        new_screenshot_path = os.path.join(TEMP_PATH, "temp")
 
         if data["board_num"] != 0:
-            z.boards[data["board_num"]].screenshot(TEMP_PATH)
+            z.boards[data["board_num"]].screenshot(new_screenshot_path)
         else:
-            z.boards[data["board_num"]].screenshot(TEMP_PATH, title_screen=True)
+            z.boards[data["board_num"]].screenshot(new_screenshot_path, title_screen=True)
         data["show_preview"] = True
 
     image_path = ""
     if request.POST.get("save"):
-        src = SITE_ROOT + "/museum_site/static/data/temp.png"
+        src = new_screenshot_path + ".png"
         image_path = zfile.screenshot_phys_path()
+        print("image_path", image_path)
         shutil.copyfile(src, image_path)
 
         zfile.screenshot = zfile.filename[:-4] + ".png"
