@@ -299,7 +299,7 @@ def update_collection_entry(request):
     entry.save()
 
     # Check if this is the new preview image
-    if request.POST.get("set_preview"):
+    if request.POST.get("set_preview") == "true":
         entry.collection.preview_image = entry.zfile
         entry.collection.save()
 
