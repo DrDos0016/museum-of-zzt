@@ -1,4 +1,7 @@
+import base64
 import os
+
+from io import BytesIO
 
 from PIL import Image
 
@@ -20,6 +23,11 @@ def crop_file(file_path, tl=(0, 0), br=(480, 350), optimize=True, preset=None):
     if optimize:
         optimize_image(file_path)
     return True
+
+
+def open_base64_image(raw):
+    headless = raw.replace("data:image/png;base64,", "", 1)
+    return Image.open(BytesIO(base64.b64decode(headless)))
 
 
 def optimize_image(image):

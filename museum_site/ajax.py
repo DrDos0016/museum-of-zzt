@@ -5,13 +5,11 @@ import zipfile
 import binascii
 import os
 
-from io import BytesIO
-
 from django.http import HttpResponse, JsonResponse
-from PIL import Image
 
 from museum_site.models import *
 from museum_site.constants import *
+from museum_site.core.image_utils import open_base64_image
 from museum_site.core.misc import extract_file_key_from_url, record
 from museum_site.core.palette import parse_pld
 from museum_site.templatetags.site_tags import model_block, render_markdown
@@ -135,7 +133,6 @@ def render_review_text(request):
 
 def wozzt_queue_add(request):
     resp = "SUCCESS"
-    d = request.POST
     e = WoZZT_Queue()
 
     if not request.POST or not request.user.is_staff:
@@ -143,6 +140,7 @@ def wozzt_queue_add(request):
 
     # Create queue object
     try:
+        d = request.POST
         e.file_id = int(d["file_id"])
         e.zzt_file = d["zzt_file"]
         e.board = int(d["board"])
@@ -158,11 +156,8 @@ def wozzt_queue_add(request):
         resp = "FAILED"
 
     # Save image
-    raw = d["b64img"].replace("data:image/png;base64,", "", 1)
-
-    image = Image.open(BytesIO(base64.b64decode(raw)))
+    image = open_base64_image(request.POST["b64img"])
     filepath = os.path.join(STATIC_PATH, "wozzt-queue", e.uuid + ".png")
-
     image.save(filepath)
     e.save()
 
