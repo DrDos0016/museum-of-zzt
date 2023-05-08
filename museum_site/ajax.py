@@ -16,6 +16,130 @@ from museum_site.templatetags.site_tags import model_block, render_markdown
 from museum_site.forms.collection_forms import Collection_Content_Form, Collection_Form
 
 
+def add_to_collection(request):
+    # TODO - This should be using the actual form and .process()
+    if not request.POST.get("collection_id"):
+        return HttpResponse("")
+    # Confirm this is your collection
+    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
+    if not request.user:
+        return HttpResponse("ERROR: Unauthorized user!")
+    if request.user and request.user.id != c.user.id:
+        return HttpResponse("ERROR: Unauthorized user!")
+
+    # If a URL was provided, convert that to an ID
+    if request.POST.get("url"):
+        url = request.POST.get("url")
+
+        if not url.startswith(HOST):
+            return HttpResponse("ERROR: Invalid url provided. Expecting - https://museumofzzt.com/file/&lt;action&gt;/&lt;key&gt;/")
+        else:
+            key = extract_file_key_from_url(url)
+            if key is None:
+                return HttpResponse("ERROR: Could not determine file key. Expecting - https://museumofzzt.com/file/&lt;action&gt;/&lt;key&gt;/")
+            zfile_id = File.objects.get(key=key).pk
+    else:
+        zfile_id = request.POST["zfile_id"]
+
+    # Check for duplicates
+    duplicate = Collection_Entry.objects.duplicate_check(request.POST["collection_id"], zfile_id)
+
+    if duplicate:
+        return HttpResponse("ERROR: ZFile already exists in collection!")
+
+    # Update collection item count
+    c.item_count += 1
+
+    entry = Collection_Entry(
+        collection_id=int(request.POST["collection_id"]),
+        zfile_id=int(zfile_id),
+        collection_description=request.POST["collection_description"],
+        order=c.item_count
+    )
+
+    # Save the collection entry
+    entry.save()
+
+    # Set the preview image if one isn't set yet
+    if c.preview_image is None:
+        c.preview_image = entry.zfile
+
+    # Save the collection
+    c.save()
+
+    resp = "SUCCESS"
+    return HttpResponse(resp)
+
+
+def arrange_collection(request):
+    """ Get the latest added file to a collection """
+    if not request.POST.get("collection_id"):
+        return HttpResponse("")
+    # Confirm this is your collection
+    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
+    if not request.user:
+        return HttpResponse("ERROR: Unauthorized user!")
+    if request.user and request.user.id != c.user.id:
+        return HttpResponse("ERROR: Unauthorized user!")
+
+    collection_id = int(request.POST.get("collection_id"))
+    order = request.POST.get("order").split("/")
+
+    entries = Collection_Entry.objects.get_items_in_collection(collection_id)
+
+    for entry in entries:
+        entry.order = order.index(str(entry.zfile.pk)) + 1
+        entry.save()
+
+    resp = "SUCCESS"
+    return HttpResponse(resp)
+
+
+def get_collection_addition(request):
+    """ Get the latest added file to a collection """
+    collection_id = int(request.GET.get("collection_id", 0))
+    if not collection_id:
+        return HttpResponse("")
+    entry = Collection_Entry.objects.get_latest_addition_to_collection(collection_id)
+    html = model_block({"request": request}, entry)
+    return HttpResponse(html)
+
+
+def get_search_suggestions(request, max_suggestions=25):
+    query = request.GET.get("q", "")
+    output = {"suggestions": []}
+
+    if query:
+        qs = File.objects.basic_search_suggestions(query=query)
+        for f in qs:
+            if f.title not in output["suggestions"]:
+                output["suggestions"].append(f.title)
+            if len(output["suggestions"]) >= max_suggestions:
+                break
+
+        if len(output["suggestions"]) < max_suggestions:
+            qs = File.objects.basic_search_suggestions(query=query, match_anywhere=True)
+
+            for f in qs:
+                if f.title not in output["suggestions"]:
+                    output["suggestions"].append(f.title)
+                if len(output["suggestions"]) >= max_suggestions:
+                    break
+    return JsonResponse(output)
+
+
+def get_suggestions_for_field(request, field):
+    """ Used on file upload page """
+    output = {"suggestions": []}
+    model = {"author": Author, "company": Company}.get(field)
+    if model is not None:
+        qs = model.objects.all().only("title").order_by("title")
+        for i in qs:
+            output["suggestions"].append(i.title)
+        output["suggestions"] = sorted(output["suggestions"], key=lambda s: s.casefold())
+    return JsonResponse(output)
+
+
 def get_zip_file(request):
     if not request.GET:  # Ask for nothing, receive nothing
         return HttpResponse("")
@@ -88,39 +212,44 @@ def get_zip_file(request):
     return HttpResponse("This file type is not currently supported for embedded content.", status=501)
 
 
-def get_suggestions_for_field(request, field):
-    """ Used on file upload page """
-    output = {"suggestions": []}
-    model = {"author": Author, "company": Company}.get(field)
-    if model is not None:
-        qs = model.objects.all().only("title").order_by("title")
-        for i in qs:
-            output["suggestions"].append(i.title)
-        output["suggestions"] = sorted(output["suggestions"], key=lambda s: s.casefold())
+def otf_get_available_collections(request):
+    output = {"collections": []}
+    if not request.user:
+        return JsonResponse(output)
+    if request.user and not request.user.id:
+        return JsonResponse(output)
+
+    qs = Collection.objects.filter(user_id=request.user.id).only("pk", "title", "visibility").order_by("title")
+    for c in qs:
+        output["collections"].append({"pk": c.pk, "title": c.title, "visibility": c.visibility_str[:3]})
+
+    request.session["otf_collection_json"] = json.dumps(output)
+    request.session["otf_refresh"] = False
     return JsonResponse(output)
 
 
-def get_search_suggestions(request, max_suggestions=25):
-    query = request.GET.get("q", "")
-    output = {"suggestions": []}
+def remove_from_collection(request):
+    if not request.POST.get("collection_id"):
+        return HttpResponse("")
+    # Confirm this is your collection
+    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
+    if not request.user:
+        return HttpResponse("ERROR: Unauthorized user!")
+    if request.user and request.user.id != c.user.id:
+        return HttpResponse("ERROR: Unauthorized user!")
 
-    if query:
-        qs = File.objects.basic_search_suggestions(query=query)
-        for f in qs:
-            if f.title not in output["suggestions"]:
-                output["suggestions"].append(f.title)
-            if len(output["suggestions"]) >= max_suggestions:
-                break
+    entry = Collection_Entry.objects.get(
+        collection_id=int(request.POST["collection_id"]),
+        zfile_id=int(request.POST["zfile_id"]),
+    )
 
-        if len(output["suggestions"]) < max_suggestions:
-            qs = File.objects.basic_search_suggestions(query=query, match_anywhere=True)
+    entry.delete()
+    # Update count
+    c.item_count -= 1
+    c.save()
 
-            for f in qs:
-                if f.title not in output["suggestions"]:
-                    output["suggestions"].append(f.title)
-                if len(output["suggestions"]) >= max_suggestions:
-                    break
-    return JsonResponse(output)
+    resp = "SUCCESS"
+    return HttpResponse(resp)
 
 
 def render_review_text(request):
@@ -129,6 +258,55 @@ def render_review_text(request):
     if output:
         output = render_markdown(output)
     return HttpResponse(output)
+
+
+def submit_form(request, slug):
+    available_forms = {
+        "Collection_Content_Form": Collection_Content_Form,
+        "Collection_Form": Collection_Form,
+    }
+
+    form_name = slug.replace("-", "_").title()
+    form = available_forms.get(form_name)
+
+    if not form:
+        return JsonResponse({"success": False, "errors": [{"message": "Form not found"}]})
+
+    form = form(request.POST)
+    form.set_request(request)
+
+    if form.is_valid():
+        form.process()
+    else:
+        print(form.errors.get_json_data())
+        return JsonResponse({"success": False, "errors": form.errors.get_json_data()})
+
+    return JsonResponse({"success": True})
+
+
+def update_collection_entry(request):
+    if not request.POST.get("collection_id"):
+        return HttpResponse("")
+    # Confirm this is your collection
+    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
+    if not request.user:
+        return HttpResponse("ERROR: Unauthorized user!")
+    if request.user and request.user.id != c.user.id:
+        return HttpResponse("ERROR: Unauthorized user!")
+
+    pk = int(request.POST.get("entry_id"))
+
+    entry = Collection_Entry.objects.get(pk=pk)
+    entry.collection_description = request.POST.get("desc", "")
+    entry.save()
+
+    # Check if this is the new preview image
+    if request.POST.get("set_preview") == "true":
+        entry.collection.preview_image = entry.zfile
+        entry.collection.save()
+
+    resp = "SUCCESS"
+    return HttpResponse(resp)
 
 
 def wozzt_queue_add(request):
@@ -162,181 +340,3 @@ def wozzt_queue_add(request):
     e.save()
 
     return HttpResponse(resp)
-
-
-def add_to_collection(request):
-    # TODO - This should be using the actual form and .process()
-    if not request.POST.get("collection_id"):
-        return HttpResponse("")
-    # Confirm this is your collection
-    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
-    if not request.user:
-        return HttpResponse("ERROR: Unauthorized user!")
-    if request.user and request.user.id != c.user.id:
-        return HttpResponse("ERROR: Unauthorized user!")
-
-    # If a URL was provided, convert that to an ID
-    if request.POST.get("url"):
-        url = request.POST.get("url")
-
-        if not url.startswith(HOST):
-            return HttpResponse("ERROR: Invalid url provided. Expecting - https://museumofzzt.com/file/&lt;action&gt;/&lt;key&gt;/")
-        else:
-            key = extract_file_key_from_url(url)
-            if key is None:
-                return HttpResponse("ERROR: Could not determine file key. Expecting - https://museumofzzt.com/file/&lt;action&gt;/&lt;key&gt;/")
-            zfile_id = File.objects.get(key=key).pk
-    else:
-        zfile_id = request.POST["zfile_id"]
-
-    # Check for duplicates
-    duplicate = Collection_Entry.objects.duplicate_check(request.POST["collection_id"], zfile_id)
-
-    if duplicate:
-        return HttpResponse("ERROR: ZFile already exists in collection!")
-
-    # Update collection item count
-    c.item_count += 1
-
-    entry = Collection_Entry(
-        collection_id=int(request.POST["collection_id"]),
-        zfile_id=int(zfile_id),
-        collection_description=request.POST["collection_description"],
-        order=c.item_count
-    )
-
-    # Save the collection entry
-    entry.save()
-
-    # Set the preview image if one isn't set yet
-    if c.preview_image is None:
-        c.preview_image = entry.zfile
-
-    # Save the collection
-    c.save()
-
-    resp = "SUCCESS"
-    return HttpResponse(resp)
-
-
-def remove_from_collection(request):
-    if not request.POST.get("collection_id"):
-        return HttpResponse("")
-    # Confirm this is your collection
-    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
-    if not request.user:
-        return HttpResponse("ERROR: Unauthorized user!")
-    if request.user and request.user.id != c.user.id:
-        return HttpResponse("ERROR: Unauthorized user!")
-
-    entry = Collection_Entry.objects.get(
-        collection_id=int(request.POST["collection_id"]),
-        zfile_id=int(request.POST["zfile_id"]),
-    )
-
-    entry.delete()
-    # Update count
-    c.item_count -= 1
-    c.save()
-
-    resp = "SUCCESS"
-    return HttpResponse(resp)
-
-
-def get_collection_addition(request):
-    """ Get the latest added file to a collection """
-    collection_id = int(request.GET.get("collection_id", 0))
-    if not collection_id:
-        return HttpResponse("")
-    entry = Collection_Entry.objects.get_latest_addition_to_collection(collection_id)
-    html = model_block({"request": request}, entry)
-    return HttpResponse(html)
-
-
-def arrange_collection(request):
-    """ Get the latest added file to a collection """
-    if not request.POST.get("collection_id"):
-        return HttpResponse("")
-    # Confirm this is your collection
-    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
-    if not request.user:
-        return HttpResponse("ERROR: Unauthorized user!")
-    if request.user and request.user.id != c.user.id:
-        return HttpResponse("ERROR: Unauthorized user!")
-
-    collection_id = int(request.POST.get("collection_id"))
-    order = request.POST.get("order").split("/")
-
-    entries = Collection_Entry.objects.get_items_in_collection(collection_id)
-
-    for entry in entries:
-        entry.order = order.index(str(entry.zfile.pk)) + 1
-        entry.save()
-
-    resp = "SUCCESS"
-    return HttpResponse(resp)
-
-
-def update_collection_entry(request):
-    if not request.POST.get("collection_id"):
-        return HttpResponse("")
-    # Confirm this is your collection
-    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
-    if not request.user:
-        return HttpResponse("ERROR: Unauthorized user!")
-    if request.user and request.user.id != c.user.id:
-        return HttpResponse("ERROR: Unauthorized user!")
-
-    pk = int(request.POST.get("entry_id"))
-
-    entry = Collection_Entry.objects.get(pk=pk)
-    entry.collection_description = request.POST.get("desc", "")
-    entry.save()
-
-    # Check if this is the new preview image
-    if request.POST.get("set_preview") == "true":
-        entry.collection.preview_image = entry.zfile
-        entry.collection.save()
-
-    resp = "SUCCESS"
-    return HttpResponse(resp)
-
-
-def otf_get_available_collections(request):
-    output = {"collections": []}
-    if not request.user:
-        return JsonResponse(output)
-    if request.user and not request.user.id:
-        return JsonResponse(output)
-
-    qs = Collection.objects.filter(user_id=request.user.id).only("pk", "title", "visibility").order_by("title")
-    for c in qs:
-        output["collections"].append({"pk": c.pk, "title": c.title, "visibility": c.visibility_str[:3]})
-
-    request.session["otf_collection_json"] = json.dumps(output)
-    request.session["otf_refresh"] = False
-    return JsonResponse(output)
-
-
-def submit_form(request, slug):
-    available_forms = {
-        "Collection_Content_Form": Collection_Content_Form,
-        "Collection_Form": Collection_Form,
-    }
-
-    form_name = slug.replace("-", "_").title()
-    form = available_forms.get(form_name)
-
-    if not form:
-        return JsonResponse({"success": False, "errors": [{"message": "Form not found"}]})
-
-    form = form(request.POST)
-    form.set_request(request)
-
-    if form.is_valid():
-        form.process()
-    else:
-        print(form.errors.get_json_data())
-        return JsonResponse({"success": False, "errors": form.errors.get_json_data()})
-
-    return JsonResponse({"success": True})
