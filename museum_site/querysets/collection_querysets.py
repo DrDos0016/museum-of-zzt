@@ -18,6 +18,8 @@ class Collection_Queryset(Base_Queryset):
 
 class Collection_Entry_Queryset(Base_Queryset):
     def duplicate_check(self, collection_id, zfile_id):
+        if zfile_id is None:  # Skip the check if no zfile_id is provided
+            return False
         return self.filter(collection_id=int(collection_id), zfile_id=int(zfile_id)).exists()
 
     def get_items_in_collection(self, collection_id):

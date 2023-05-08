@@ -16,61 +16,6 @@ from museum_site.templatetags.site_tags import model_block, render_markdown
 from museum_site.forms.collection_forms import Collection_Content_Form, Collection_Form
 
 
-def add_to_collection(request):
-    # TODO - This should be using the actual form and .process()
-    if not request.POST.get("collection_id"):
-        return HttpResponse("")
-    # Confirm this is your collection
-    c = Collection.objects.get(pk=int(request.POST["collection_id"]))
-    if not request.user:
-        return HttpResponse("ERROR: Unauthorized user!")
-    if request.user and request.user.id != c.user.id:
-        return HttpResponse("ERROR: Unauthorized user!")
-
-    # If a URL was provided, convert that to an ID
-    if request.POST.get("url"):
-        url = request.POST.get("url")
-
-        if not url.startswith(HOST):
-            return HttpResponse("ERROR: Invalid url provided. Expecting - https://museumofzzt.com/file/&lt;action&gt;/&lt;key&gt;/")
-        else:
-            key = extract_file_key_from_url(url)
-            if key is None:
-                return HttpResponse("ERROR: Could not determine file key. Expecting - https://museumofzzt.com/file/&lt;action&gt;/&lt;key&gt;/")
-            zfile_id = File.objects.get(key=key).pk
-    else:
-        zfile_id = request.POST["zfile_id"]
-
-    # Check for duplicates
-    duplicate = Collection_Entry.objects.duplicate_check(request.POST["collection_id"], zfile_id)
-
-    if duplicate:
-        return HttpResponse("ERROR: ZFile already exists in collection!")
-
-    # Update collection item count
-    c.item_count += 1
-
-    entry = Collection_Entry(
-        collection_id=int(request.POST["collection_id"]),
-        zfile_id=int(zfile_id),
-        collection_description=request.POST["collection_description"],
-        order=c.item_count
-    )
-
-    # Save the collection entry
-    entry.save()
-
-    # Set the preview image if one isn't set yet
-    if c.preview_image is None:
-        c.preview_image = entry.zfile
-
-    # Save the collection
-    c.save()
-
-    resp = "SUCCESS"
-    return HttpResponse(resp)
-
-
 def arrange_collection(request):
     """ Get the latest added file to a collection """
     if not request.POST.get("collection_id"):
@@ -278,10 +223,9 @@ def submit_form(request, slug):
     if form.is_valid():
         form.process()
     else:
-        print(form.errors.get_json_data())
-        return JsonResponse({"success": False, "errors": form.errors.get_json_data()})
+        return JsonResponse(form.response_failure())
 
-    return JsonResponse({"success": True})
+    return JsonResponse(form.response_success())
 
 
 def update_collection_entry(request):

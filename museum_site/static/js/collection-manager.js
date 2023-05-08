@@ -29,20 +29,14 @@ $(document).ready(function (){
 
 function add_item()
 {
-    var form_data = {
-        "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
-        "zfile_id": $("input[name=associated_file]:checked").val(),
-        "collection_description": $("textarea[name=collection_description]").val(),
-        "collection_id": $("input[name=collection_id]").val(),
-        "url": $("input[name=url]").val(),
-    }
-
     // Check something was selected to be added
-    if (! form_data["zfile_id"] && ! form_data["url"])
+    if (! $("input[name=associated_file]").val() && ! $("input[name=url]").val())
     {
         $("#added-item-text").html("No File Specified!");
         return false;
     }
+
+    var form_data = $("#form-add").serializeArray();
 
     // Blank the fields
     var original_text = $("#collection-add-button").val();
@@ -57,13 +51,13 @@ function add_item()
     $.ajax(
         {
             type: "POST",
-            url: "/ajax/collection/add-to-collection/",
+            url: "/ajax/submit-form/collection-content-form/",
             data: form_data,
         }
     ).always(
         function (e){
             console.log("E", e);
-            if (e == "SUCCESS")
+            if (e.success)
             {
                 $("#added-item-text").html("Added " + item_name);
                 $("textarea[name=collection_description]").val("");
@@ -75,7 +69,12 @@ function add_item()
             }
             else
             {
-                $("#added-item-text").html(e);
+                var error_output = "";
+                for (let k in e.errors)
+                {
+                    error_output += e.errors[k][0].message + " ";
+                }
+                $("#added-item-text").html(error_output);
             }
             $("#collection-add-button").val(original_text);
             $("#collection-add-button").prop("disabled", false);

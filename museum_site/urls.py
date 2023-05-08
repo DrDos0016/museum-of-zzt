@@ -40,7 +40,6 @@ urlpatterns = [
     path("ajax/render-review-text/", museum_site.ajax.render_review_text, name="ajax_render_review_text"),
     path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add, name="ajax_wozzt_queue_add"),
 
-    path("ajax/collection/add-to-collection/", museum_site.ajax.add_to_collection, name="ajax_collection_add"),
     path("ajax/collection/arrange-collection/", museum_site.ajax.arrange_collection, name="ajax_collection_arrange"),
     path("ajax/collection/get-collection-addition/", museum_site.ajax.get_collection_addition, name="ajax_collection_get_addition"),
     path("ajax/collection/remove-from-collection/", museum_site.ajax.remove_from_collection, name="ajax_collection_remove"),

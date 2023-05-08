@@ -2,6 +2,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 
+from museum_site.constants import HOST
+from museum_site.core.misc import extract_file_key_from_url
 from museum_site.fields import Enhanced_Model_Choice_Field
 from museum_site.models import File, Collection, Collection_Entry
 from museum_site.widgets import Collection_Title_Widget
@@ -40,6 +42,12 @@ class Collection_Form(forms.ModelForm):
         c.user = self.request.user
         c.save()
 
+    def response_success(self):
+        return {"success": True}
+
+    def response_failure(self):
+        return {"success": False, "errors": self.errors.get_json_data()}
+
 
 class Collection_Content_Form(forms.ModelForm):
     use_required_attribute = False
@@ -65,6 +73,21 @@ class Collection_Content_Form(forms.ModelForm):
     def set_request(self, request):
         self.request = request
 
+    def clean_url(self):
+        # Convert URL to zfile id
+        url = self.cleaned_data["url"]
+        if url == "":
+            return url
+
+        if not url.startswith(HOST):
+            raise ValidationError("ERROR: Invalid url provided. Expecting - https://museumofzzt.com/file/&lt;action&gt;/&lt;key&gt;/")
+        else:
+            key = extract_file_key_from_url(url)
+            if key is None:
+                raise ValidationError("ERROR: Could not determine file key. Expecting - https://museumofzzt.com/file/&lt;action&gt;/&lt;key&gt;/")
+            self.cleaned_data["associated_file"] = File.objects.get(key=key).pk
+        return url
+
     def clean(self):
         cleaned_data = super().clean()
 
@@ -84,7 +107,6 @@ class Collection_Content_Form(forms.ModelForm):
         self.collection_object = c
 
     def process(self):
-        # TODO - This function is only used with on the fly collections
         # Update collection item count
         self.collection_object.item_count += 1
 
@@ -104,3 +126,9 @@ class Collection_Content_Form(forms.ModelForm):
 
         # Save the collection
         self.collection_object.save()
+
+    def response_success(self):
+        return {"success": True}
+
+    def response_failure(self):
+        return {"success": False, "errors": self.errors.get_json_data()}
