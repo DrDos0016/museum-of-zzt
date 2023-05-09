@@ -51,10 +51,9 @@
         {% endif %}
     </header>
 
-    <div id="featured" class="block c">
-        <h2 class="l">Featured World️</h2>
+    <div id="featured" class="block">
+        <h2>Featured World️</h2>
         {% model_block fg "gallery" %}
-        <a href="{% url 'browse_field' 'detail' 'featured-world' %}" id="fp-fw-link">View All Featured Worlds</a>
     </div>
 
     <div id="worlds-block" class="block l">
@@ -74,6 +73,7 @@
         <div class="world-special">
             <a href="{% url 'browse' %}">All Files</a>
             <a href="{% url 'browse_collections' %}">Collections</a>
+            <a href="{% url 'browse_field' 'detail' 'featured-world' %}" id="fp-fw-link">Featured Worlds</a>
             <a href="{% url 'mass_downloads' %}">Mass Downloads</a>
             <a href="{% url 'new_finds' %}">New Finds</a>
             <a href="{% url 'new_releases' %}">New Releases</a>

@@ -48,8 +48,6 @@ def museum_global(request):
     data["fg"] = File.objects.featured_worlds().order_by("?").first()
     if request.GET.get("fgid"):
         data["fg"] = File.objects.reach(pk=int(request.GET["fgid"]))
-    if data["fg"]:
-        data["fg"].extra_context = {"nozoom": True}
 
     data["fg"] = data["fg"]
 

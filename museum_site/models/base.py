@@ -14,7 +14,6 @@ class BaseModel(models.Model):
     actions = {}
     show_actions = False
     context = {}
-    extra_context = {}
     extras = []
     detail_ids = []
     roles = []
