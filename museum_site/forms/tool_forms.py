@@ -256,7 +256,7 @@ class Livestream_Vod_Form(forms.Form):
     date = forms.DateField(widget=Enhanced_Date_Widget(buttons=["today"]))
     video_url = forms.URLField(help_text=(
             "https://youtu.be/<b>{id}</b>, <br>https://www.youtube.com/watch?v=<b>{id}</b>&feature=youtu.be, <br>"
-            "or https://studio.youtube.com/video/<b>{id}</b>/edit format."
+            "or https://studio.youtube.com/video/<b>{id}</b>/edit format. Add multiplate with commas (no space)."
         ),
         label="Video URL"
     )
@@ -280,17 +280,21 @@ class Livestream_Vod_Form(forms.Form):
     )
 
     def clean_video_url(self):
-        video_url = self.cleaned_data["video_url"]
+        videos = self.cleaned_data["video_url"].split(",")
+        video_urls = []
 
-        # Strip the URL part and get the ID
-        video_url = video_url.replace("https://youtu.be/", "")
-        video_url = video_url.replace("https://www.youtube.com/watch?v=", "")
-        video_url = video_url.replace("https://studio.youtube.com/video/", "")
-        video_url = video_url.replace("/edit", "")
-        if "&" in video_url:
-            video_url = video_url[:video_url.find("&")]
+        for video_url in videos:
+            print("OG URL", video_url)
+            # Strip the URL part and get the ID
+            video_url = video_url.replace("https://youtu.be/", "")
+            video_url = video_url.replace("https://www.youtube.com/watch?v=", "")
+            video_url = video_url.replace("https://studio.youtube.com/video/", "")
+            video_url = video_url.replace("/edit", "")
+            if "&" in video_url:
+                video_url = video_url[:video_url.find("&")]
+            video_urls.append(video_url)
 
-        return video_url
+        return video_urls
 
     def clean_video_description(self):
         video_description = self.cleaned_data["video_description"]
@@ -311,13 +315,13 @@ class Livestream_Vod_Form(forms.Form):
         a.publish_date = self.cleaned_data["date"]
         a.published = self.cleaned_data["publication_status"]
         a.description = self.cleaned_data["description"]
-        a.static_directory = "ls-{}-{}".format(key, self.cleaned_data["video_url"])
+        a.static_directory = "ls-{}-{}".format(key, self.cleaned_data["video_url"][0])
         a.allow_comments = True
 
         # Context for subtemplate
         final_desc = urlize(self.cleaned_data["video_description"])
         final_desc = linebreaks(final_desc)
-        subcontext = {"video_id": self.cleaned_data["video_url"], "desc": final_desc}
+        subcontext = {"video_ids": self.cleaned_data["video_url"], "desc": final_desc}
 
         # Render the subtemplate
         a.content = render_to_string("museum_site/subtemplate/stream-vod-article.html", subcontext)

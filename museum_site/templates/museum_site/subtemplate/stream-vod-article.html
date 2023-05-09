@@ -1,5 +1,6 @@
-<div class="c">
+{% for video_id in video_ids %}<div class="c">
     <iframe width="960" height="540" src="https://www.youtube.com/embed/{{video_id}}?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 </div>
+{% endfor %}
 
 {{desc|safe}}
