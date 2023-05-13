@@ -120,7 +120,9 @@ def debug_article(request, fname=""):
     return render(request, "museum_site/tools/article-wip.html", data)
 
 
-
+def debug_blank(request):
+    context = {"title": "Blank Test Page"}
+    return render(request, "museum_site/debug/debug-blank.html", context)
 
 
 def debug_widgets(request):

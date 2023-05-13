@@ -89,6 +89,7 @@ urlpatterns = [
     path("debug/403/", museum_site.views.error_403),
     path("debug/404/", museum_site.views.error_404),
     path("debug/500/", museum_site.views.error_500),
+    path("debug/blank", museum_site.debug_views.debug_blank),
     path("debug/<str:filename>.html", museum_site.debug_views.debug),
     path("debug/article/<str:fname>/", museum_site.debug_views.debug_article, name="debug_article"),
     path("debug/article/", museum_site.debug_views.debug_article),

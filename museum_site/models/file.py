@@ -11,12 +11,6 @@ from django.template.defaultfilters import filesizeformat, escape
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
-try:
-    import zookeeper
-    HAS_ZOOKEEPER = True
-except ImportError:
-    HAS_ZOOKEEPER = False
-
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH, DATE_NERD, DATE_FULL, DATE_HR
 from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import calculate_md5_checksum
@@ -259,7 +253,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self.checksum = calculate_md5_checksum(self.phys_path())
 
         # Set board counts for non-uploads
-        if HAS_ZOOKEEPER and not kwargs.get("new_upload") and zfile_exists:
+        if not kwargs.get("new_upload") and zfile_exists:
             if not self.playable_boards or not self.total_boards:
                 (self.playable_boards, self.total_boards) = calculate_boards_in_zipfile(self.phys_path())
 
@@ -354,53 +348,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def calculate_size(self):
         self.size = os.path.getsize(self.phys_path())
-
-    def generate_screenshot(self, world=None, board=0, font=None, filename=None):
-        # Get zip contents
-        zf = zipfile.ZipFile(self.phys_path())
-
-        # Guess the earliest dated world with a ZZT extension
-        if world is None:
-            all_files = zf.infolist()
-            worlds = []
-            for f in all_files:
-                if (f.filename.lower().endswith(".zzt")):
-                    worlds.append(f)
-
-            if worlds:
-                worlds = sorted(worlds, key=zipinfo_datetime_tuple_to_str)
-                world = worlds[0].filename
-
-        if world is None:
-            return False
-
-        # Name the screenshot
-        if filename is None or filename == "":
-            self.screenshot = self.filename[:-4] + ".png"
-        else:
-            self.screenshot = filename
-
-        # Extract the file and render
-        try:
-            zf.extract(world, path=SITE_ROOT + "/museum_site/static/data/")
-        except NotImplementedError:
-            return False
-        z = zookeeper.Zookeeper(SITE_ROOT + "/museum_site/static/data/" + world)
-        z.boards[board].screenshot(
-            self.screenshot_phys_path()[:-4],
-            title_screen=(not bool(board))
-        )
-
-        self.save()
-
-        # Delete the extracted world
-        # TODO: This leaves lingering folders for zips in folders
-        os.remove(SITE_ROOT + "/museum_site/static/data/" + world)
-
-        # Optimize the image
-        optimize_image(self.screenshot_phys_path())
-
-        return True
 
     def get_zip_info(self):
         try:

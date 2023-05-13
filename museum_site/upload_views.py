@@ -8,10 +8,11 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, FormView
 
 from museum_site.constants import *
-from museum_site.constants import UPLOAD_CAP
+from museum_site.constants import PREVIEW_IMAGE_BASE_PATH, UPLOAD_CAP
 from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum
-from museum_site.core.misc import banned_ip, calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile, record
+from museum_site.core.image_utils import optimize_image
+from museum_site.core.misc import banned_ip, calculate_boards_in_zipfile, calculate_sort_title, get_letter_from_title, generate_screenshot_from_zip, record
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.forms.upload_forms import Download_Form, Play_Form, Upload_Form, Upload_Action_Form, Upload_Delete_Confirmation_Form, ZGame_Form
 from museum_site.models import *
@@ -226,12 +227,8 @@ def upload(request):
                 if letter_change:  # Same letter, do nothing
                     screenshot_filename = zgame_obj.screenshot
                 elif zgame_obj.screenshot:  # Move existing screenshot to new letter
-                    old_path = os.path.join(
-                        STATIC_PATH, "images/screenshots/{}/{}".format(original_letter, zgame_obj.screenshot)
-                    )
-                    new_path = os.path.join(
-                        STATIC_PATH, "images/screenshots/{}/{}".format(set_letter, zgame_obj.screenshot)
-                    )
+                    old_path = os.path.join(STATIC_PATH, "images/screenshots/{}/{}".format(original_letter, zgame_obj.screenshot))
+                    new_path = os.path.join(STATIC_PATH, "images/screenshots/{}/{}".format(set_letter, zgame_obj.screenshot))
                     try:
                         os.rename(old_path, new_path)
                     except FileNotFoundError:
@@ -242,10 +239,20 @@ def upload(request):
             else:
                 screenshot_filename = upload_filename[:-4] + ".png"
             if gpi != "NONE":
+                screenshot_path = os.path.join(PREVIEW_IMAGE_BASE_PATH, zfile.letter, screenshot_filename)
+
                 if gpi.upper().endswith(".ZZT"):
-                    zfile.generate_screenshot(world=gpi, filename=screenshot_filename)
-                if gpi == "AUTO" and not zfile.screenshot:
-                    zfile.generate_screenshot(filename=screenshot_filename)
+                    generated_screenshot_success = generate_screenshot_from_zip(zfile.phys_path(), screenshot_path, world=gpi)
+                elif gpi == "AUTO" and not zfile.screenshot:
+                    generated_screenshot_success = generate_screenshot_from_zip(zfile.phys_path(), screenshot_path)
+                elif gpi == "AUTO" and zfile.screenshot:
+                    generated_screenshot_success = False  # Do nothing
+
+                if generated_screenshot_success:
+                    zfile.screenshot = screenshot_filename
+                    zfile.save()
+                    optimize_image(zfile.screenshot_phys_path())
+
             else:
                 # Delete current screenshot if one exists
                 if os.path.isfile(zfile.screenshot_phys_path()):

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from museum_site.constants import TEMP_PATH
+from museum_site.constants import DATA_PATH, TEMP_PATH
 from museum_site.settings import BANNED_IPS
 
 try:
@@ -17,6 +17,8 @@ except ImportError:
 
 
 def calculate_boards_in_zipfile(zip_path):
+    if not HAS_ZOOKEEPER:
+        return (None, None)
     playable_boards = None
     total_boards = None
     temp_playable = 0
@@ -98,6 +100,7 @@ def calculate_boards_in_zipfile(zip_path):
     total_boards = None if temp_total == 0 else temp_total
     return (playable_boards, total_boards)
 
+
 def calculate_sort_title(string):
     output = ""
     # Handle titles that start with A/An/The
@@ -130,6 +133,48 @@ def calculate_sort_title(string):
 
     return output
 
+
+def generate_screenshot_from_zip(zip_path, screenshot_path, world=None, board=0, font=None):
+    if not HAS_ZOOKEEPER:
+        return False
+
+    # Get zip contents
+    zf = zipfile.ZipFile(zip_path)
+
+    # Guess the earliest dated world with a ZZT extension
+    if world is None:
+        all_files = zf.infolist()
+        worlds = []
+        for f in all_files:
+            if (f.filename.lower().endswith(".zzt")):
+                worlds.append(f)
+
+        if worlds:
+            worlds = sorted(worlds, key=zipinfo_datetime_tuple_to_str)
+            world = worlds[0].filename
+
+    if world is None:
+        return False
+
+    # Extract the file and render
+    print("Extracting")
+    try:
+        zf.extract(world, path=DATA_PATH)
+    except NotImplementedError:
+        return False
+    zk = zookeeper.Zookeeper(os.path.join(DATA_PATH, world))
+    zk.boards[board].screenshot(os.path.join(screenshot_path[:-4]), title_screen=(not bool(board)))
+
+    print("SCREENSHOT SAVING TO", os.path.join(screenshot_path[:-4]))
+
+    # Delete the extracted world
+    # TODO: This leaves lingering folders for zips in folders
+    os.remove(os.path.join(DATA_PATH, world))
+
+    print("Returning true!")
+    return True
+
+
 def get_letter_from_title(title):
     """ Returns the letter a zfile should be listed under after removing (a/an/the) from the provided title """
     title = title.lower()
@@ -139,6 +184,7 @@ def get_letter_from_title(title):
 
     return title[0] if title[0] in "abcdefghijklmnopqrstuvwxyz" else "1"
 
+
 def legacy_redirect(request, name=None, *args, **kwargs):
     # Strip arguments if they're no longer needed
     if "strip" in kwargs:
@@ -147,9 +193,9 @@ def legacy_redirect(request, name=None, *args, **kwargs):
         kwargs.pop("strip")
 
     if kwargs.get("detail_slug"):  # /detail/view/<slug>/ to /file/browse/detail/<slug>
-        url = reverse("browse_field", kwargs={"field":"detail", "value":kwargs["detail_slug"]})
+        url = reverse("browse_field", kwargs={"field": "detail", "value": kwargs["detail_slug"]})
     elif kwargs.get("genre_slug"):  # /genre/<slug>/ to /file/browse/genre/<slug>
-        url = reverse("browse_field", kwargs={"field":"genre", "value":kwargs["genre_slug"]})
+        url = reverse("browse_field", kwargs={"field": "genre", "value": kwargs["genre_slug"]})
     else:
         url = reverse(name, args=args, kwargs=kwargs)
 
