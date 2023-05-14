@@ -210,7 +210,59 @@ $(document).ready(function (){
     // Simple input attributes
     $("input[data-click-select]").click(function (){$(this).select();});
     $("textarea[data-click-select]").click(function (){$(this).select();});
+
+    // Burger
+    $(".hamburger-menu-button").click($(this), toggle_burger);
+
 });
+
+function toggle_burger(e)
+{
+    // Get current menu state
+    var src = $(e.target);
+    var alt = (src.attr("id") == "left-hamburger") ? $("#right-hamburger") : $("#left-hamburger");
+    var current_state = src.data("state");
+
+    // Toggle open to closed and vice versa
+    if (current_state == "open")
+    {
+        src.data("state", "closed");
+        close_burger(src);
+    }
+    else
+    {
+        open_burger(src);
+        alt.data("state", "closed");
+        close_burger(alt);
+    }
+}
+
+function open_burger(src)
+{
+    src.addClass("ega-yellow");
+    src.removeClass("ega-white");
+    src.data("state", "open");
+    var direction = (src.attr("id") == "left-hamburger" ? "left" : "right");
+    var new_css = {};
+    new_css[direction] = "0%";
+    var target = $(src.data("target"));
+    target.css({"display": "flex"});
+    target.animate(new_css, 150, "linear", function (){});
+}
+
+function close_burger(src)
+{
+    src.addClass("ega-white");
+    src.removeClass("ega-yellow");
+    src.data("state", "closed");
+    var direction = (src.attr("id") == "left-hamburger" ? "left" : "right");
+    var new_css = {};
+    new_css[direction] = "-100%";
+    var target = $(src.data("target"));
+    target.animate(new_css, 150, "linear", function (){
+        target.hide();
+    });
+}
 
 function pre_search()
 {

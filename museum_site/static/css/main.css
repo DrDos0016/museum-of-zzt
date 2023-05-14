@@ -70,7 +70,7 @@
     padding:2px;
 }
 
-.sidebar { min-width:255px; max-width:255px; margin-left:8px; margin-right:8px; }
+.sidebar { min-width:255px; max-width:255px; margin-left:8px; margin-right:8px; display:flex; flex-direction:column; }
 #sidebar-left { grid-area: left; justify-self:end; }
 #sidebar-right { grid-area: right; justify-self:start; }
 #content { grid-area: content; margin-bottom: 0px; justify-self:center; width:100%; padding-top:0px; }
@@ -98,7 +98,6 @@
     padding-bottom:1px;
 }
 
-.sidebar #featured { margin-bottom:7px; }
 .sidebar #featured.block a { display:inline; }
 .sidebar .block a + a { border-top:1px dashed var(--side-link-border); }
 .sidebar #featured.block a + a { border-top:0; }
@@ -146,6 +145,7 @@
 
 #logo:hover { background-color:transparent; }
 
+#featured { margin-bottom:7px; }
 #featured a.nohover:hover { background:none; }
 #featured > a
 {

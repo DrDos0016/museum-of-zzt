@@ -33,11 +33,12 @@
 </head>
 
 <body class="grid-root{% if april %} april {% endif %}{% if request.session.theme %} theme-{{request.session.theme}}{% endif %}" {% if request.session.active_tool %}data-active-tool="true"{% endif %} id="top">
+
 <nav id="low-res-shortcuts" class="cp437">
-    <a href="#top" id="top-shortcut">▲ Top</a>
-    <a href="/" id="home-shortcut">Home</a>
-    <a href="#sidebar-left" id="files-shortcut">Files</a>
-    <a href="#sidebar-right" id="exhibits-shortcut">Exhibits</a>
+    <input type="button" id="left-hamburger" value="Archives" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-left">
+    <a href="{% url 'index' %}"><img src="{% static 'chrome/logos/museum-tiger-by-lazymoth.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
+    {% if user.is_authenticated and not forced_logout %}<a href="{% url 'my_profile' %}" title="Logged in as: {{user.username}}"><div class="key">{% char user.profile.char user.profile.fg user.profile.bg scale=3 %}</div></a>{% endif %}
+    <input type="button" id="right-hamburger" value="Exhibits" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-right">
 </nav>
 
 {% block active_tool %}{% if request.session.active_tool %}<section id="active-tool">{% include request.session.active_tool_template %}</section>{% endif %}{% endblock %}
@@ -102,7 +103,7 @@
         <a href="https://github.com/DrDos0016/zookeeper" target="_blank">Zookeeper</a>
     </div>
 
-    <div class="block">
+    <div id="specialty-block" class="block">
         <h2>Specialty Archives</h2>
         <a href="{% url 'browse_field' 'detail' 'super-zzt-world' %}">Super ZZT Worlds</a>
         <a href="{% url 'browse_field' 'detail' 'utility' %}">External Utilities</a>

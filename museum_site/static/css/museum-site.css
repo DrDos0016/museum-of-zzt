@@ -341,6 +341,7 @@ pre.cp437 { line-height:14px;}
 /* Text Formatting */
 .b { font-weight: bold; }
 .i { font-style: oblique; }
+.u { text-decoration: underline; }
 .caps { text-transform: uppercase; }
 .smaller { font-size: smaller; }
 .larger { font-size: larger; }
