@@ -210,12 +210,6 @@
 }
 
 #top-links a#top-link { display:none; }
-@media (max-width:999px)
-{
-    /* Reveal top of page link on mobile and shrink to make room */
-    #top-links a#top-link { display:flex; }
-    #top-links a {font-size:21px;}
-}
 
 #wozzt-block h2 { margin-bottom:0; }
 

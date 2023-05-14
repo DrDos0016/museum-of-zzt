@@ -56,13 +56,6 @@ body
     color:var(--text-color);
 }
 
-@media (max-width:999px) {
-    body
-    {
-        margin-top:0px;
-    }
-}
-
 /* Basic Elements */
 a { text-decoration:none; color:var(--link-color); }
 a:hover { text-decoration:underline; }
