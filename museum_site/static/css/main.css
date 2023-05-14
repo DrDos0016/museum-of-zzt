@@ -110,15 +110,9 @@
 
 .sidebar .block a:hover { background-color:var(--hover-bg); }
 
-#logo-area { margin-bottom:0; }
-
-@media (min-width: 1500px)
-{
-    #logo-area
-    {
-        grid-area: logo;
-        margin-bottom:-24px;
-    }
+#logo-area {
+    margin-bottom:-24px;
+    z-index:2;
 }
 
 @media (max-width: 1024px)
@@ -140,8 +134,6 @@
     margin-left:2px;
     content:"";
 }
-
-@media (max-width: 1100px) { .sidebar, #content { font-size:smaller; } }
 
 #logo:hover { background-color:transparent; }
 

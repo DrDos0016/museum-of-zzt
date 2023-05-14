@@ -1,4 +1,32 @@
-@media (max-width:480px) {
+@media (max-width:1280px) {
+    /* Conserve space and remove cp437 font for legibility at non-integer sizes */
+    #sidebar-left { margin-left:1px; }
+    #sidebar-right { margin-right:1px; }
+    .sidebar
+    {
+        min-width:180px;
+        max-width:180px;
+    }
+
+    #top-links a
+    {
+        font-size:20px;
+        font-family:monospace;
+    }
+
+    #top-links a .key
+    {
+        margin-left:0px;
+    }
+
+    #logo-area
+    {
+        margin-bottom: -16px;
+    }
+}
+
+@media (max-width:900px) {
+    /* Switch from 3 columns to 1 column */
     body
     {
         margin-top:0px;
@@ -29,6 +57,7 @@
         position:fixed;
         top:48px;
         width:75vw;
+        max-width: 360px;
         margin-left:0px;
         margin-right:0px;
         height: calc(100vh - 64px);
@@ -50,130 +79,117 @@
         border-left:2px solid var(--border-color);
         display:none;
     }
-}
 
-@media (max-width:999px) {
-.grid-root
-{
-    display:grid;
-    grid-template-areas:
-    "low-res low-res"
-    "content content"
-    "links links"
-    "left left"
-    "right right"
-    "footer footer";
+    .grid-root
+    {
+        display:grid;
+        grid-template-areas:
+        "low-res"
+        "content"
+        "links"
+        "footer";
 
-    grid-template-columns:1fr 1fr;
-    grid-template-rows:repeat(6, auto);
-    justify-items:center;
-}
+        grid-template-columns:1fr 1fr;
+        grid-template-rows:repeat(6, auto);
+        justify-items:center;
+    }
 
-.grid-root[data-active-tool="true"]
-{
-    display:grid;
-    grid-template-areas:
-    "low-res low-res"
-    "tool tool"
-    "content content"
-    "links links"
-    "left left"
-    "right right"
-    "footer footer";
+    .grid-root[data-active-tool="true"]
+    {
+        display:grid;
+        grid-template-areas:
+        "low-res"
+        "tool"
+        "content"
+        "links"
+        "footer";
 
-    grid-template-columns:1fr 1fr;
-    grid-template-rows:repeat(7, auto);
-    justify-items:center;
-}
+        grid-template-columns:1fr;
+        grid-template-rows:repeat(5, auto);
+        justify-items:center;
+    }
 
-#low-res-shortcuts
-{
-    grid-area:low-res;
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-between;
-    font-size:21px;
-    line-height:28px;
-    width:100vw;
-    position:sticky;
-    top:0px;
-    text-align:center;
-    column-gap:1px;
-    background-color:var(--ega-darkblue);
-    z-index:999;
-    height:48px;
-}
+    #low-res-shortcuts
+    {
+        grid-area:low-res;
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:space-between;
+        font-size:21px;
+        line-height:28px;
+        width:100vw;
+        position:sticky;
+        top:0px;
+        text-align:center;
+        column-gap:1px;
+        background-color:var(--ega-darkblue);
+        z-index:999;
+        height:48px;
+    }
 
-#low-res-shortcuts img
-{
-    max-height:48px;
-}
+    #low-res-shortcuts img
+    {
+        max-height:48px;
+    }
 
 
-#low-res-shortcuts input[type=button]
-{
-    border:0px;
-    /*color:var(--ega-white);*/
-    /*width:48px;
-    height:48px;*/
-    font-size:20px;
-    background-color:var(--ega-darkblue);
-}
+    #low-res-shortcuts input[type=button]
+    {
+        border:0px;
+        /*color:var(--ega-white);*/
+        /*width:48px;
+        height:48px;*/
+        font-size:20px;
+        background-color:var(--ega-darkblue);
+    }
 
-/*#left-hamburger { background-color:var(--ega-darkcyan);}
-#right-hamburger { background-color:var(--ega-gray);}*/
+    #low-res-shortcuts input[type=button]:hover
+    {
+        text-decoration:none;
+    }
 
-#low-res-shortcuts input[type=button]:hover
-{
-    text-decoration:none;
-}
+    #low-res-shortcuts a
+    {
+        width:64px;
+        height:48px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
 
-#low-res-shortcuts a
-{
-    width:64px;
-    height:48px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
+    #active-tool
+    {
+        /* "Attach" to the main mobile header */
+        margin-top:-15px;
+        top:28px;
+    }
 
-#low-res-shortcuts a img
-{
-}
+    #content { max-width:95vw; }
+    #sidebar-left, #sidebar-right { min-width:auto; }
+    #sidebar-left { margin-top:0px; }
 
-#active-tool
-{
-    /* "Attach" to the main mobile header */
-    margin-top:-15px;
-    top:28px;
-}
+    #letters { display:none; /* High-res only */ }
 
-#content { max-width:95vw; }
-#sidebar-left, #sidebar-right { min-width:auto; }
-#sidebar-left { margin-top:0px; }
+    #letters-select
+    {
+        display:block;
+        margin:auto;
+    }
 
-#letters { display:none; /* High-res only */ }
+    #top-link-div { display:block; }
 
-#letters-select
-{
-    display:block;
-    margin:auto;
-}
+    #expand-contract { display:none; }
 
-#top-link-div { display:block; }
+    #detail-list.field-group label { text-align:center; margin:2px; border:1px dotted var(--border-color)}
+    #detail-list.field-group label input[type=checkbox] { display:block; margin:auto; }
 
-#expand-contract { display:none; }
+    form { border:0px; padding:0px; }
+    form .field .genre-checklist { min-width:0px; }
 
-#detail-list.field-group label { text-align:center; margin:2px; border:1px dotted var(--border-color)}
-#detail-list.field-group label input[type=checkbox] { display:block; margin:auto; }
-
-form { border:0px; padding:0px; }
-form .field .genre-checklist { min-width:0px; }
-
-#upload-form input { width:100%; }
-#upload-form input[type=checkbox] { width:auto; }
-#upload-form .field { display:block; }
-#upload-form .field label { display:block; }
+    #upload-form input { width:100%; }
+    #upload-form input[type=checkbox] { width:auto; }
+    #upload-form .field { display:block; }
+    #upload-form .field label { display:block; }
 }
 
 /* Aug 2022 */
@@ -225,3 +241,12 @@ form .field .genre-checklist { min-width:0px; }
     }
 }
 /* End Aug 2022 */
+
+/* ZZT Images at < 480px */
+@media (max-width:479px) {
+    .zzt-img
+    {
+        overflow:scroll;
+    }
+}
+/* End ZZT Images at < 480px */

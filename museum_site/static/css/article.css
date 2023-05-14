@@ -48,7 +48,7 @@
     margin:auto;
 }
 
-@media (max-width:999px) {
+@media (max-width:500px) {
     #article-meta
     {
         grid-template-areas:

@@ -628,10 +628,14 @@ select[name=page-selector]
 .review-block h2 { margin-top:0; margin-bottom:0; }
 /* End Review Blocks */
 
-/* Newer Zoom for thumbnails */
+/* Thumbnails */
 img.zoomable.thumbnail:hover { cursor:zoom-in; }
 img.zoomable.zoomed:hover { cursor:zoom-out; }
-/* End Newer Zoom for thumbnails */
+@media (max-width:500px) {
+    img.zoomable.thumbnail:hover { cursor:default; }
+    img.zoomable.zoomed:hover { cursor:default; }
+}
+/* End thumbnails */
 
 #no-results
 {
