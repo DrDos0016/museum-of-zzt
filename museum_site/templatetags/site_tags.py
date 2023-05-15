@@ -289,6 +289,8 @@ def model_block_link_tag(model_name, identifier, text=None, i=True, *args, **kwa
     """ {% m "model_name" <pk/key> "link text" %}"""
 
     available_models = {"zfile": File, "series": Series, "article": Article}
+
+
     attr = "pk" if isinstance(identifier, int) else "key"
     try:
         item = available_models[model_name].objects.filter(**{attr: identifier})
@@ -306,7 +308,7 @@ def model_block_link_tag(model_name, identifier, text=None, i=True, *args, **kwa
     if i:
         text = "<i>" + text + "</i>"
 
-    output = "<a href='' target='_blank'>{}</a>".format(text)
+    output = "<a href='{}' target='_blank'>{}</a>".format(item.url(), text)
 
     return mark_safe(output)
 
