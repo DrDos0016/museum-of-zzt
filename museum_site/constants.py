@@ -20,6 +20,7 @@ STATIC_PATH = os.path.join(SITE_ROOT, APP_NAME, "static")  # /var/projects/museu
 PREVIEW_IMAGE_BASE_PATH = os.path.join(STATIC_PATH, "images", "screenshots")  # /var/projects/museum-of-zzt/museum_site/static/images/screenshots
 ZGAMES_BASE_PATH = os.path.join(SITE_ROOT, "zgames")  # /var/projects/museum-of-zzt/zgames
 DATA_PATH = os.path.join(STATIC_PATH, "data")  # /var/projects/museum-of-zzt/museum_site/static/data
+CHARSET_PATH = os.path.join(STATIC_PATH, "images", "charsets")
 
 # Contact Information
 EMAIL_ADDRESS = "doctordos@gmail.com"

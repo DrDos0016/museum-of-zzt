@@ -24,7 +24,7 @@ from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
 from museum_site.core.form_utils import load_form
 from museum_site.core.image_utils import crop_file, optimize_image
-from museum_site.core.misc import calculate_sort_title, calculate_boards_in_zipfile, record
+from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate_boards_in_zipfile, record, zookeeper_init, zookeeper_extract_font
 from museum_site.forms.tool_forms import (
     IA_Mirror_Form,
     Livestream_Description_Form,
@@ -36,12 +36,6 @@ from museum_site.forms.tool_forms import (
     Series_Form,
 )
 from museum_site.models import *
-
-try:
-    import zookeeper
-    HAS_ZOOKEEPER = True
-except ImportError:
-    HAS_ZOOKEEPER = False
 
 
 @staff_member_required
@@ -161,12 +155,7 @@ def extract_font(request, key):
 
         try:
             f_id = ("0000"+str(f.id))[-4:]
-            z = zookeeper.Zookeeper()
-            z.export_font(
-                os.path.join(DATA_PATH, request.GET["font"]),
-                os.path.join(CHARSET_PATH, "{}-{}.png".format(f_id, charset_name)),
-                1
-            )
+            zookeeper_extract_font(request.GET["font"], f_id, charset_name)
             data["result"] = "Ripped {}-{}.png".format(f_id, charset_name)
         except Exception as e:
             data["result"] = "Could not rip font!"
@@ -957,7 +946,7 @@ def set_screenshot(request, key):
         with zipfile.ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
             zf.extract(request.GET["file"], path=SITE_ROOT + "/museum_site/static/data/")
 
-        z = zookeeper.Zookeeper(DATA_PATH + "/" + request.GET["file"])
+        z = zookeeper_init(DATA_PATH + "/" + request.GET["file"])
         data["board_list"] = []
         for board in z.boards:
             data["board_list"].append(board.title)

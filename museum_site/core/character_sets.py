@@ -1,9 +1,10 @@
 import glob
 import os
 
+from museum_site.constants import CHARSET_PATH
+
 # Character Sets
 def init_charsets(site_root):
-    print("INIT CHARSETS")
     standard_charsets = [
         {"id": 0, "filename": "cp437.png", "name": "Code Page 437", "engine": "ZZT"},
         {"id": 0, "filename": "szzt-cp437.png", "name": "Code Page 437 (SZZT)", "engine": "SZZT"},
@@ -11,8 +12,6 @@ def init_charsets(site_root):
 
     # Pull custom charsets
     custom_charsets = []
-
-    CHARSET_PATH = os.path.join(site_root, "museum_site", "static", "images", "charsets") + os.sep
 
     pngs = sorted(glob.glob(os.path.join(CHARSET_PATH, "*.png")))
     for png in pngs:

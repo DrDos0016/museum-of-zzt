@@ -6,7 +6,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from museum_site.constants import DATA_PATH, TEMP_PATH
+from museum_site.constants import DATA_PATH, TEMP_PATH, CHARSET_PATH
 from museum_site.settings import BANNED_IPS
 
 try:
@@ -304,3 +304,19 @@ def zipinfo_datetime_tuple_to_str(raw):
 def record(*args, **kwargs):
     if settings.ENVIRONMENT != "PROD":
         print(*args, **kwargs)
+
+
+def zookeeper_init(*args, **kwargs):
+    if not HAS_ZOOKEEPER:
+        return False
+
+    z = zookeeper.Zookeeper(*args, **kwargs)
+    return z
+
+
+def zookeeper_extract_font(font_filename, font_id, charset_name):
+    if not HAS_ZOOKEEPER:
+        return False
+
+    z = zookeeper.Zookeeper()
+    z.export_font(os.path.join(DATA_PATH, font_filename), os.path.join(CHARSET_PATH, "{}-{}.png".format(font_id, charset_name)), 1)
