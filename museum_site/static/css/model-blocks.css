@@ -385,7 +385,7 @@
 }
 
 /* Featued World on Front Page */
-#featured .model-block.gallery
+#featured-block .model-block.gallery
 {
     border:0;
     padding:0;
