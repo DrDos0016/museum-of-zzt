@@ -636,6 +636,3 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
 }
 
 #top-margin button:hover { color:var(--text-color); }
-
-.cl-info { text-align:center; }
-.cl-info-links div { display:inline; }
