@@ -3,6 +3,19 @@ form
     margin:auto;
 }
 
+input, select, textarea
+{
+    border:1px solid var(--border-color);
+    background:var(--input-bg);
+    font-size:larger;
+    color: var(--text-color);
+}
+
+@media (max-width: 1024px)
+{
+    input, select, textarea { font-size:medium; }
+}
+
 input[type="button"], input[type="submit"], button
 {
     background:var(--notice-bg);

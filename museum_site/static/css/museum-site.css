@@ -112,6 +112,11 @@ blockquote footer
     font-style:normal;
 }
 
+details > summary { list-style:none; cursor:pointer; }
+.detail-state { float:right; }
+details .detail-state::before { content:"➕"; }
+details[open] .detail-state::before { content:"➖"; }
+
 figure { text-align:center; }
 figure figcaption { font-family:"cp437"; }
 
@@ -166,18 +171,6 @@ td
     padding:7px 4px 7px 4px;
 }
 
-input, select, textarea
-{
-    border:1px solid var(--border-color);
-    background:var(--input-bg);
-    font-size:larger;
-    color: var(--text-color);
-}
-
-@media (max-width: 1024px)
-{
-    input, select, textarea { font-size:medium; }
-}
 /* End Basic Elements */
 
 /* Fonts */
@@ -205,10 +198,6 @@ pre.cp437 { line-height:14px;}
 /* End Fonts */
 
 /* Site specific pseudo-elements */
-.cut-heading:hover { cursor:pointer; }
-.cut-wrapper.cut-open { display:block; }
-.cut-wrapper.cut-closed { display:none; }
-
 .keyword { font-family:"cp437", monospace; font-size:16pt; }
 
 .spoiler, .spoiler a

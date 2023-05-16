@@ -49,12 +49,12 @@
         <a href="{% url 'index' %}" id="logo"><img src="{% static logo_path %}" alt="Museum of ZZT Logo by LazyMoth"></a>
     </header>
 
-    <div id="featured" class="block">
+    <div id="featured-block" class="block">
         <h2>Featured World️</h2>
         {% model_block fg "gallery" %}
     </div>
 
-    <div id="worlds-block" class="block l">
+    <div id="archives-block" class="block">
         <h2>File Archives</h2>
         <div id="letters" class="c cp437">
             <a href="{% url 'browse_letter' '1'%}">#</a>{% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
@@ -90,7 +90,7 @@
         </div>
     </div>
 
-    <div id="downloads-block" class="block">
+    <div id="essentials-block" class="block">
         <h2>Essentials</h2>
         <a href="{% url 'zzt_dl' %}">ZZT</a>
         <a href="http://zeta.asie.pl/" target="_blank">Zeta</a>
@@ -130,7 +130,7 @@
 
 {% block sidebar_right %}
 <section id="sidebar-right" class="sidebar">
-    <nav id="top-links" class="cp437">
+    <nav id="blue-block" class="cp437">
         <a href="{% url 'about_zzt' %}" class="nohover"><div class="key">A</div><div class="text">About ZZT</div></a>
         <a href="{% url 'upload' %}" class="nohover"><div class="key">U</div><div class="text">Upload</div></a>
         <a href="{% url 'support' %}" class="nohover"><div class="key">S</div><div class="text">Support</div></a>
@@ -143,7 +143,7 @@
         {% endif %}
     </nav>
 
-    <div class="block">
+    <div id="exibits-block" class="block">
         <h2>Exhibits</h2>
 
         <h3>Worlds of ZZT</h3>
@@ -199,16 +199,16 @@
         <a href="{% url 'upload_policy' %}">Upload Policy</a>
     </div>
 
-    <div id="social" class="block">
-        <a class="inline" href="https://twitter.com/worldsofzzt" target="_blank"><img src="{% static 'icons/Twitter_Social_Icon_Rounded_Square_Color.png' %}" alt="Twitter" title="Twitter"></a>
-        <a class="inline" href="https://botsin.space/@worldsofzzt" target="_blank"><img src="{% static 'icons/mastodon-logo.svg' %}" alt="Mastodon" title="Mastodon"></a>
-        <a class="inline" href="https://worldsofzzt.tumblr.com" target="_blank"><img src="{% static 'icons/tumblr.png' %}" alt="Tumblr" title="Tumblr"></a>
-        <a class="inline" href="{% url 'discord' %}"><img src="{% static 'icons/Discord-Logo-Color.png' %}" alt="Discord" title="Worlds of ZZT Discord"></a>
-        <a class="inline" href="https://patreon.com/worldsofzzt" target="_blank"><img src="{% static 'icons/patreon_logo.png' %}" alt="Patreon" title="Patreon"></a>
-        <a class="inline" href="https://www.youtube.com/c/WorldsofZZT" target="_blank"><img src="{% static 'icons/YouTube-social-squircle_red_24px.png' %}" alt="YouTube" title="YouTube"></a>
-        <a class="inline" href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'icons/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>
-        <a class="inline" href="https://github.com/DrDos0016/museum-of-zzt" target="_blank"><img src="{% static 'icons/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
-        <a class="inline" href="{% url 'rss_feeds' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Feeds" title="RSS Feeds"></a>
+    <div id="social-block" class="block">
+        <a href="https://twitter.com/worldsofzzt" target="_blank"><img src="{% static 'icons/Twitter_Social_Icon_Rounded_Square_Color.png' %}" alt="Twitter" title="Twitter"></a>
+        <a href="https://botsin.space/@worldsofzzt" target="_blank"><img src="{% static 'icons/mastodon-logo.svg' %}" alt="Mastodon" title="Mastodon"></a>
+        <a href="https://worldsofzzt.tumblr.com" target="_blank"><img src="{% static 'icons/tumblr.png' %}" alt="Tumblr" title="Tumblr"></a>
+        <a href="{% url 'discord' %}"><img src="{% static 'icons/Discord-Logo-Color.png' %}" alt="Discord" title="Worlds of ZZT Discord"></a>
+        <a href="https://patreon.com/worldsofzzt" target="_blank"><img src="{% static 'icons/patreon_logo.png' %}" alt="Patreon" title="Patreon"></a>
+        <a href="https://www.youtube.com/c/WorldsofZZT" target="_blank"><img src="{% static 'icons/YouTube-social-squircle_red_24px.png' %}" alt="YouTube" title="YouTube"></a>
+        <a href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'icons/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>
+        <a href="https://github.com/DrDos0016/museum-of-zzt" target="_blank"><img src="{% static 'icons/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
+        <a href="{% url 'rss_feeds' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Feeds" title="RSS Feeds"></a>
     </div>
 </section>
 {% endblock %}
