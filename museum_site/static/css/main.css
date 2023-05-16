@@ -160,7 +160,7 @@
 
 #search-form input { max-width:70%; flex:1; }
 
-#top-links a:hover, #social a:hover { background-color:inherit; text-decoration:none; }
+#top-links a:hover, #social-block a:hover { background-color:inherit; text-decoration:none; }
 #top-links
 {
     margin-bottom:14px;
@@ -199,19 +199,19 @@
 
 #wozzt-block h2 { margin-bottom:0; }
 
-#social
+#social-block
 {
     display:flex;
     flex-wrap:wrap;
     justify-content:space-around;
 }
-#social a
+#social-block a
 {
     width:24px;
     height:24px;
     border-top:0px;
 }
-#social a::after
+#social-block a::after
 {
     margin:0;
     padding:0;
