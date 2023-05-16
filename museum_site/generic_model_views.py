@@ -197,9 +197,8 @@ class ZFile_List_View(Model_List_View):
         if self.search_type == "basic":
             context["basic_search_fields"] = ["Title", "Author", "Company", "Genre", "Filename"]
 
-        # Add advanced search modify button
-        if self.search_type == "advanced":
-            context["query_edit_url_name"] = "advanced_search"
+        # Add search modify button
+        context["query_edit_url_name"] = "advanced_search"
 
         # Remove view/sort widgets if no results were found
         if not context.get("object_list"):

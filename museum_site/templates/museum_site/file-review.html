@@ -15,7 +15,6 @@
 }
 
 #review-form-controls input { flex:0 0 40%; }
-#review-preview-wrapper { display: none; opacity: 0; }
 #new-review { display:none; }
 </style>
 {% endblock %}
@@ -24,36 +23,19 @@
 <script>
 $(document).ready(function (){
     $("#preview-review").click(function (){
-        $("#rev-preview-block").hide();
         $.ajax({
         url:"/ajax/render-review-text/",
         method:"POST",
         data:{
-            "text":$("#id_content").val(),
+            "title":$("#id_title").val(),
+            "content":$("#id_content").val(),
+            "rating":$("#id_rating").val(),
+            "author":$("#id_author").val(),
             "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val()
         }
         }).done(function (rendered){
-            var rating = $("select[name=rating]").val();
-            var has_rating = parseInt(rating);
-            $("#rev-preview-title").text($("input[name=title]").val());
-            $("#rev-preview-author").text($("input[name=author]").val());
-            $("#rev-preview-text").html(rendered);
-
-            $("#rev-preview-rating").hide();
-            $("#rev-preview-no-rating").hide();
-
-            if (has_rating == -1)
-            {
-                $("#rev-preview-no-rating").show();
-            }
-            else
-            {
-                $("#rev-preview-rating-number").text(rating);
-                $("#rev-preview-rating").show();
-            }
-
-            $("#review-preview-wrapper").show();
-            $("#review-preview-wrapper").animate({opacity: 1}, 250);
+            console.log(rendered);
+            $("#review-preview-wrapper").html(rendered);
         });
     });
 });
@@ -108,18 +90,5 @@ Sort: <select name="sort">
     <p>This file is no longer accepting new reviews at this time.</p>
 {% endif%}
 <hr>
-<div id="review-preview-wrapper">
-    <div class="review-block">
-    <h2 id="rev-preview-title"></h2>
-    <div class="info">
-        By: <span id="rev-preview-author">{{request.user.username}}</span><br>
-        Reviewed: <span id="rev-preview-date">{{today|date}}</span><br>
-    </div>
-    <hr>
-    <article id="rev-preview-text"></article>
-    <hr>
-    <span id="rev-preview-rating"><b>Rating:</b> <span id="rev-preview-rating-number"></span> out of 5.0</span>
-    <span id="rev-preview-no-rating"><i>This user has opted out of providing a numeric rating</i></span>
-    </div>
-</div>
+<div id="review-preview-wrapper"></div>
 {% endblock %}

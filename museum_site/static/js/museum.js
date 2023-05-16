@@ -187,7 +187,7 @@ $(document).ready(function (){
     });
 
     // Resize Youtube Livestream embeds
-    resize_yt_embed();
+    //resize_yt_embed();
 
     // Simple input attributes
     $("input[data-click-select]").click(function (){$(this).select();});

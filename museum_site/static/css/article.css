@@ -204,12 +204,20 @@ article aside
 }
 /* End article formatting */
 
-/* LEGACY CSS -- DO NOT ADD MORE USES OF THESe RULES */
+@media (max-width:1529px) { article.livestream iframe[src^="https://www.youtube.com"] { width:480px; height:270px; } }
+
+/* LEGACY CSS -- DO NOT ADD MORE USES OF THESE RULES */
 /* Used in old Featured Game reviews */
-.img-set
-{
-    display:block;
-    text-align:center;
-    margin:auto;
-}
+.img-set { text-align:center; }
 .img-set img { border:1px solid var(--border-color); }
+
+/* Used in MTP reviews */
+article.featured-game a.screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 160px;
+    margin: 0.25em auto 0.25em auto;
+    text-align: center;
+}
+

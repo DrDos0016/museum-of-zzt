@@ -361,19 +361,8 @@ pre.cp437 { line-height:14px;}
 .screenshot-thumb { width:240px; display:block; }
 .screenshot-thumb.zoomed { width:auto; height:auto; max-width:100%; }
 .screenshot-thumb:hover { cursor:zoom-in; }
-
-@media (max-width: 1650px)
-{
-    /* Front page only at this resolution */
-    #fp-new-files-grid .gallery-block > .screenshot-thumb:not(.zoomed) { width:120px; }
-}
-
-@media (max-width: 1100px)
-{
-    .gallery-block > .screenshot-thumb:not(.zoomed) { width:120px; }
-}
+.screenshot-thumb.zoomed:hover { cursor:zoom-out; }
 /* End Generic Structures */
-
 
 /* Generic Model Directories */
 .guide-words
@@ -424,8 +413,6 @@ pre.cp437 { line-height:14px;}
 .column .row:hover { background:var(--hover-bg); }
 /* End 4-Column Directories */
 /* End Specific Structures */
-
-/* File Structures */
 
 /* ZZT-OOP Syntax */
 code
@@ -493,35 +480,6 @@ code.cheat {
 
 #oop-wrapper.zzt-scroll code::before, #oop-wrapper.zzt-scroll code::after { content:"  •    •    •    •    •    •    •    •    •\A"; }
 /* End ZZT-OOP Syntax */
-
-/* Hotfixes */
-/* Screenshots in MTP reviews */
-article.featured-game a.screen {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 160px;
-    margin: 0.25em auto 0.25em auto;
-    text-align: center;
-}
-/* End Hotfixes */
-
-/* Livestream (960x540) */
-@media (max-width:1529px) {article.livestream iframe[src^="https://www.youtube.com"] { width:480px; height:270px; }}
-/*@media (max-width:1469px) {article.livestream iframe[src^="https://www.youtube.com"] { width:800px; height:450px; }}
-@media (max-width:1369px) {article.livestream iframe[src^="https://www.youtube.com"] { width:800px; height:450px; }}*/
-
-/* Comics */
-#comics-nav
-{
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-end;
-    border-top:1px solid var(--border-color);
-    margin-top:7px;
-    padding-top:7px;
-}
-/* End Comics */
 
 /* Paginator */
 .paginator-block
@@ -597,18 +555,6 @@ select[name=page-selector]
     height:64px;
     margin:7px 4px 7px 4px;
 }
-
-/* Review Blocks */
-.review-block
-{
-    padding:14px 8px 14px 8px;
-    margin-bottom:14px;
-    margin-top:14px;
-    border:1px solid var(--border-color);
-}
-
-.review-block h2 { margin-top:0; margin-bottom:0; }
-/* End Review Blocks */
 
 /* Thumbnails */
 img.zoomable.thumbnail:hover { cursor:zoom-in; }

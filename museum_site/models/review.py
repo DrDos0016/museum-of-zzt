@@ -91,6 +91,8 @@ class Review(BaseModel):
         self.ip = ""
 
     def url(self):
+        if self.zfile is None:
+            return "#rev-XX"
         return self.zfile.review_url() + "#rev-{}".format(self.id)
 
     def preview_url(self):
@@ -114,7 +116,10 @@ class Review(BaseModel):
 
     def get_field_review_date(self, view="detailed"):
         if view == "review_content":
-            return {"label": "Review Date", "value": "{} ago ({})".format(timesince(self.date), self.date.strftime(DATE_HR)), "safe": True}
+            if self.date:
+                return {"label": "Review Date", "value": "{} ago ({})".format(timesince(self.date), self.date.strftime(DATE_HR)), "safe": True}
+            else:
+                return {"label": "Review Date", "value": ""}
         else:
             return {"label": "Review Date", "value": self.date.strftime(DATE_HR), "safe": True}
 

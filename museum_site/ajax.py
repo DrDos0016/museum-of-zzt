@@ -199,9 +199,18 @@ def remove_from_collection(request):
 
 def render_review_text(request):
     # output = profanity_filter(request.POST.get("text", ""))
-    output = request.POST.get("text", "")
+    output = request.POST.get("content", "")
     if output:
-        output = render_markdown(output)
+        review = Review(
+            title=request.POST.get("title", "Untitled Review"),
+            content=request.POST.get("content", ""),
+            rating=float(request.POST.get("rating", -1)),
+            author=request.POST.get("author", "Anonymous"),
+        )
+        if request.user.is_authenticated:
+            review.user_id = request.user.id
+            review.author = request.user.username
+        output = model_block({"request": request}, review, view="review_content")
     return HttpResponse(output)
 
 
