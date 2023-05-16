@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 import base64
 import random
+import zipfile
 
 from io import BytesIO
 from time import time
@@ -12,13 +13,8 @@ from PIL import Image
 
 from museum_site.models import File, WoZZT_Queue
 from museum_site.core.detail_identifiers import *
+from museum_site.core.misc import HAS_ZOOKEEPER, zookeeper_init
 from museum_site.constants import *
-
-try:
-    import zookeeper
-    HAS_ZOOKEEPER = True
-except ImportError:
-    HAS_ZOOKEEPER = False
 
 
 from django.http import JsonResponse
@@ -87,7 +83,7 @@ def worlds_of_zzt(request):
         zh.extract(selected, TEMP_PATH)
 
         # Parse the world with Zookeeper
-        z = zookeeper.Zookeeper(os.path.join(TEMP_PATH, selected))
+        z = zookeeper_init(os.path.join(TEMP_PATH, selected))
         board_num = random.randint(0, len(z.boards) - 1)
         img_path = os.path.join(TEMP_PATH, str(ts))
         z.boards[board_num].screenshot(img_path, title_screen=(board_num == 0), format="RGB")
