@@ -8,7 +8,6 @@ from urllib.parse import quote
 
 import pytumblr
 import requests
-import zookeeper
 
 from django.db import models
 from django.template.loader import render_to_string
@@ -17,7 +16,7 @@ from twitter import *
 
 from museum.settings import STATIC_URL
 from museum_site.constants import TEMP_PATH, STATIC_PATH, APP_ROOT
-from museum_site.core.misc import record
+from museum_site.core.misc import record, zookeeper_init
 from museum_site.models import BaseModel, File
 from museum_site.querysets.wozzt_queue_querysets import *
 from museum_site.settings import (
@@ -107,7 +106,7 @@ class WoZZT_Queue(BaseModel):
             return False
 
         # Parse the world with Zookeeper
-        z = zookeeper.Zookeeper(os.path.join(TEMP_PATH, selected))
+        z = zookeeper_init(os.path.join(TEMP_PATH, selected))
 
         # Select a random board (unless it's meant for Tuesday)
         if title_screen:
