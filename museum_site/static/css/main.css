@@ -15,10 +15,7 @@
     justify-content:space-around;
 }
 
-.grid-root[data-active-tool=true]
-{
-    margin-top:70px;
-}
+.grid-root[data-active-tool=true] { margin-top:70px; }
 
 .grid-root.expanded
 {
@@ -39,7 +36,6 @@
 
 .grid-root.expanded #content
 {
-    box-sizing:border-box;
     width:98vw;
     margin-left: 1vw;
     margin-right: 1vw;
@@ -122,7 +118,6 @@
 
 #logo:hover { background-color:transparent; }
 
-#featured-block { margin-bottom:7px; }
 #featured-block a.nohover:hover { background:none; }
 #featured-block > a
 {
@@ -147,14 +142,11 @@
 #search-form
 {
     display:flex;
-    width:100%;
     column-gap:4px;
-    margin-top:2px;
-    margin-bottom:2px;
     border-top:1px dashed var(--side-link-border);
     border-bottom:1px dashed var(--side-link-border);
-    padding-top:2px;
-    padding-bottom:2px;
+    margin:2px 0px 2px 0px;
+    padding:2px 0px 2px 0px;
     font-size:10pt;
 }
 
@@ -163,7 +155,7 @@
 #blue-block a:hover, #social-block a:hover { background-color:inherit; text-decoration:none; }
 #blue-block
 {
-    margin-bottom:14px;
+    margin-bottom:7px;
     background-color:var(--ega-darkblue);
 }
 #blue-block a
@@ -177,8 +169,7 @@
 }
 #blue-block a:nth-child(even) .key { background-color:var(--ega-gray); }
 #blue-block a:nth-child(odd) .key { background-color:var(--ega-darkcyan); }
-#blue-block a:visited { color:var(--ega-yellow); }
-#blue-block a:hover { text-decoration:none; }
+
 #blue-block a .key
 {
     text-align:center;
@@ -194,8 +185,6 @@
     margin-left:16px;
     height:28px;
 }
-
-#wozzt-block h2 { margin-bottom:0; }
 
 #social-block
 {
@@ -229,38 +218,3 @@
     max-width:800px;
     margin:auto;
 }
-
-.file-meta
-{
-    margin-bottom:14px;
-}
-
-/* ZFile Page Header */
-.file-links
-{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-evenly;
-    border-top:1px solid var(--border-color);
-    border-bottom:1px solid var(--border-color);
-    padding-top:3px;
-    padding-bottom:3px;
-    font-weight:bold;
-    width:100%;
-}
-
-.file-data
-{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-evenly;
-    text-align:center;
-    border-bottom:1px solid var(--border-color);
-    padding-top:3px;
-    padding-bottom:3px;
-    gap:4px;
-}
-
-.file-data > div { flex:1; }
-
-.file-heading { display:flex; }

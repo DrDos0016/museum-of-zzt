@@ -2,27 +2,12 @@
     /* Conserve space and remove cp437 font for legibility at non-integer sizes */
     #sidebar-left { margin-left:1px; }
     #sidebar-right { margin-right:1px; }
-    .sidebar
-    {
-        min-width:180px;
-        max-width:180px;
-    }
+    .sidebar { min-width:180px; max-width:180px; }
 
-    #blue-block a
-    {
-        font-size:20px;
-        font-family:monospace;
-    }
+    #blue-block a { font-size:20px; font-family:monospace; }
+    #blue-block a .key { margin-left:0px; }
 
-    #blue-block a .key
-    {
-        margin-left:0px;
-    }
-
-    #logo-area
-    {
-        margin-bottom: -16px;
-    }
+    #logo-area { margin-bottom: -16px; }
 
     #social-block
     {
