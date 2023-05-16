@@ -176,24 +176,6 @@ $(document).ready(function (){
         setTimeout(pre_search, 200);
     });
 
-    // Open/Close Cuts
-    $(".cut-heading").click(function (){
-        var state = $(this).find(".cut-state");
-        var cur = state.text();
-        if (cur == "➖")
-        {
-            state.text("➕");
-            $(this).next().removeClass("cut-open");
-            $(this).next().addClass("cut-closed");
-        }
-        else if (cur == "➕")
-        {
-            state.text("➖");
-            $(this).next().removeClass("cut-closed");
-            $(this).next().addClass("cut-open");
-        }
-    });
-
     // Review Profanity Filter
     $("input[name=review-profanity-filter]").change(function (){
         var val = $(this).val();
