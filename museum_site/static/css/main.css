@@ -5,22 +5,19 @@
     grid-template-areas:
     "left content right"
     "footer footer footer";
-    grid-template-columns:1fr minmax(auto, 1280px) 1fr;
+    grid-template-columns:1fr minmax(auto, 1300px) 1fr;
     grid-template-rows:auto auto;
-    grid-gap:7px 8px;
+    grid-gap:7px 6px;
     max-width:1920px;
     margin-left: auto;
     margin-right: auto;
     justify-items:center;
+    justify-content:space-around;
 }
 
 .grid-root[data-active-tool=true]
 {
-    grid-template-areas:
-    "tool tool tool"
-    "left content right"
-    "footer footer footer";
-    grid-template-rows:auto auto auto;
+    margin-top:70px;
 }
 
 .grid-root.expanded
@@ -51,12 +48,9 @@
 #low-res-shortcuts { display:none; }
 
 #active-tool {
-    grid-area: tool;
-    margin:-7px auto 0px auto;
-    position:sticky;
+    position:fixed;
     top:0px;
     max-width:750px;
-    justify-self: start;
     z-index:4;
 }
 
@@ -70,9 +64,9 @@
     padding:2px;
 }
 
-.sidebar { min-width:255px; max-width:255px; margin-left:8px; margin-right:8px; display:flex; flex-direction:column; }
-#sidebar-left { grid-area: left; justify-self:end; }
-#sidebar-right { grid-area: right; justify-self:start; }
+.sidebar { min-width:255px; max-width:255px; display:flex; flex-direction:column; }
+#sidebar-left { grid-area: left; justify-self:end; margin-left:6px; }
+#sidebar-right { grid-area: right; justify-self:start; margin-right:6px;  }
 #content { grid-area: content; margin-bottom: 0px; justify-self:center; width:100%; padding-top:0px; }
 
 #content h1 { margin-bottom:0px; }
@@ -83,6 +77,7 @@
     margin-bottom:7px;
     background:var(--block-bg);
     border:1px solid var(--border-color);
+    box-sizing:border-box;
 }
 
 .sidebar h2, .sidebar h3 {
@@ -228,6 +223,13 @@
     grid-area: footer;
     text-align: center;
     font-size: 10pt;
+}
+
+#debug-block
+{
+    width:95vw;
+    max-width:800px;
+    margin:auto;
 }
 
 .file-meta

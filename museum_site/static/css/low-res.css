@@ -46,6 +46,7 @@
     .sidebar
     {
         max-width:initial;
+        z-index:10;
     }
 
     #logo-area { display:none; }
@@ -84,14 +85,14 @@
     {
         display:grid;
         grid-template-areas:
-        "low-res"
         "content"
         "links"
         "footer";
 
         grid-template-columns:1fr 1fr;
-        grid-template-rows:repeat(6, auto);
+        grid-template-rows:repeat(4, auto);
         justify-items:center;
+        grid-gap:4px 0px;
     }
 
     .grid-root[data-active-tool="true"]
@@ -99,26 +100,29 @@
         display:grid;
         grid-template-areas:
         "low-res"
-        "tool"
         "content"
         "links"
         "footer";
 
         grid-template-columns:1fr;
-        grid-template-rows:repeat(5, auto);
+        grid-template-rows:repeat(4, auto);
         justify-items:center;
+    }
+
+    .grid-root[data-active-tool="true"] #content
+    {
+        margin-top:44px;
     }
 
     #low-res-shortcuts
     {
-        grid-area:low-res;
         display:flex;
         flex-wrap:wrap;
         justify-content:space-between;
         font-size:21px;
         line-height:28px;
         width:100vw;
-        position:sticky;
+        position:fixed;
         top:0px;
         text-align:center;
         column-gap:1px;
@@ -136,9 +140,6 @@
     #low-res-shortcuts input[type=button]
     {
         border:0px;
-        /*color:var(--ega-white);*/
-        /*width:48px;
-        height:48px;*/
         font-size:20px;
         background-color:var(--ega-darkblue);
     }
@@ -160,11 +161,10 @@
     #active-tool
     {
         /* "Attach" to the main mobile header */
-        margin-top:-15px;
-        top:28px;
+        top:48px;
     }
 
-    #content { max-width:94vw; }
+    #content { margin:auto; width:100vw; margin-top: 48px; }
     #sidebar-left, #sidebar-right { min-width:auto; }
     #sidebar-left { margin-top:0px; }
 

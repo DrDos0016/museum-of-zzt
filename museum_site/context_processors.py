@@ -30,6 +30,14 @@ def museum_global(request):
     data["PROTOCOL"] = "https" if request.is_secure() else "http"
     data["DOMAIN"] = data["PROTOCOL"] + "://" + data["HOST"]
 
+    # Logo Path
+    if data["ENV"] == "DEV":
+        data["logo_path"] = "chrome/logos/museum-logo-by-lazymoth-INVERTED.png"
+    elif data["ENV"] == "BETA":
+        data["logo_path"] = "chrome/logos/museum-logo-by-lazymoth-BETA.png"
+    else:
+        data["logo_path"] = "chrome/logos/museum-logo-by-lazymoth.png"
+
     # Server date/time
     data["datetime"] = datetime.utcnow()
     if data["datetime"].day == 27:  # Drupe Day

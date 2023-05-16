@@ -46,10 +46,7 @@
 {% block sidebar_left %}
 <section id="sidebar-left" class="sidebar">
     <header id="logo-area">
-        {% if ENV == "PROD" %}<a href="/" id="logo"><img src="{% static 'chrome/logos/museum-logo-by-lazymoth.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
-        {% elif ENV == "BETA" %}<a href="/" id="logo"><img src="{% static 'chrome/logos/museum-logo-by-lazymoth-BETA.png' %}" alt="Original Museum of ZZT Logo by LazyMoth"></a>
-        {% elif ENV == "DEV" %}<a href="/" id="logo"><img src="{% static 'chrome/logos/museum-logo-by-lazymoth-INVERTED.png' %}" alt="Original Museum of ZZT Logo by LazyMoth"></a>
-        {% endif %}
+        <a href="{% url 'index' %}" id="logo"><img src="{% static logo_path %}" alt="Museum of ZZT Logo by LazyMoth"></a>
     </header>
 
     <div id="featured" class="block">
@@ -226,17 +223,17 @@ Additional content copyright its  <a href="{% url 'credits' %}">respective owner
 Server Time: {{datetime}}<br>
 <a href="{% url 'my_profile' %}">View my data</a><br>
 {% if debug %}
-<div class="debug">
+<div id="debug-block" class="debug block" style="font-size:10pt;background:var(--ega-red);">
 Device Resolution: <span id="debug-res"></span><br>
 Page Dimensions: <span id="debug-view"></span><br>
-<textarea style="width:100ch;height:50px;max-width:90vw;margin:auto;">
+<textarea style="width:95%;margin:auto;display:none;">
 Domain: {{DOMAIN}}
 Absolute URI: {{request.build_absolute_uri}}
 HTTP_HOST: {{request.META.HTTP_HOST}} | Host: {{HOST}} | Env: {{ENV}}
 </textarea><br>
 View this page on: <a href="https://beta.museumofzzt.com{{request.path}}" target="_blank">BETA</a> <a href="https://museumofzzt.com{{request.path}}" target="_blank">LIVE</a>
 <br>
-<table id="meta-tags" class="data-table" style="max-width:800px;margin:auto;background:#FFF;">
+<table id="meta-tags" class="data-table" style="max-width:800px;margin:auto;background:#FFF;font-size:10pt;">
 </table>
 </div>
 
