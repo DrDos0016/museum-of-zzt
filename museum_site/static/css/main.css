@@ -98,8 +98,8 @@
     padding-bottom:1px;
 }
 
-.sidebar #featured.block a { display:inline; }
 .sidebar .block a + a { border-top:1px dashed var(--side-link-border); }
+.sidebar #featured.block a { display:inline; } /* Fix Multiple Authors appearing on multiple lines with doubled borders */
 .sidebar #featured.block a + a { border-top:0; }
 
 .sidebar a[target=_blank]
@@ -113,16 +113,6 @@
 #logo-area {
     margin-bottom:-24px;
     z-index:2;
-}
-
-@media (max-width: 1024px)
-{
-    .low-res-hidden { display:none; }
-}
-
-@media (min-width: 1025px)
-{
-    .low-res-break { display:none; }
 }
 
 .sidebar a[target=_blank]::after
@@ -145,6 +135,7 @@
     margin:0;
     text-align:left;
 }
+#featured img:hover { cursor:default; }
 
 #letters
 {
