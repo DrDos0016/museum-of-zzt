@@ -10,6 +10,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from museum_site.constants import SITE_ROOT
+from museum_site.models import Article
 from .forms import *
 from .core import ZAP_UPLOAD_PATH, ZAP_STATIC_PATH
 
@@ -43,6 +44,20 @@ def index(request):
 @staff_member_required
 def media_upload(request):
     return prefab_form(request, ZAP_Media_Upload_Form)
+
+@staff_member_required
+def create_publication_pack_post(request):
+    context = {"title": "ZAP - Create Publication Pack Post"}
+
+    if not request.GET.get("model"):
+        form = ZAP_Model_Select_Form(queryset=Article.objects.filter(category="Publication Pack"))
+    elif request.method == "POST":
+        form = ZAP_Publication_Pack_Form(request.POST)
+    else:
+        form = ZAP_Publication_Pack_Form()
+
+    context["form"] = form
+    return render(request, "zap/create-publication-pack-post.html", context)
 
 
 @staff_member_required

@@ -19,6 +19,11 @@ ACCOUNTS = (
     ("cohost", "Cohost"),
 )
 
+class ZAP_Model_Select_Form(forms.Form):
+    def __init__(self, *args, **kwargs):
+        print("Custom init")
+        super().__init__(*args, **kwargs)
+
 
 class ZAP_Post_Form(forms.Form):
     use_required_attribute = False
@@ -229,3 +234,14 @@ class ZAP_Post_Boost_Form(forms.Form):
             response = s.boost(social_id_dict[account])  # Boost
             self.responses[account].append(response)
         self.processed = True
+
+
+class ZAP_Publication_Pack_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Publication Pack Form"
+    submit_value = "Post"
+    attrs = {
+        "method": "POST",
+    }
+
+    #publication_pack = forms.ModelChoice()
