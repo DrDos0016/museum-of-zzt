@@ -1,7 +1,7 @@
 import os
 
 # Internet Archive
-IA_ACCESS = os.environ.get("MOZ_SECRET_KEY", "!c;LOCKED FILE")
+IA_ACCESS = os.environ.get("MOZ_IA_ACCESS", "!c;LOCKED FILE")
 IA_SECRET = os.environ.get("MOZ_IA_SECRET", "-UNDEFINED-")
 
 # Patreon
