@@ -59,15 +59,10 @@ Sort: <select name="sort">
 {% endif %}
 
 <span id="new-review"></span>
-{% if recent %}
-    <p><i>You have <a href="#rev-{{recent}}">recently reviewed</a> this file and cannot submit an additional review at this time.</i></p>
-{% elif DETAIL.UPLOADED in file.detail_ids %}
-    <p>Unpublished files cannot be reviewed as their content may still be modified by the uploader.</p>
-{% elif DETAIL.LOST in file.detail_ids %}
-    <p>Lost files cannot be reviewed as they cannot be played in order to review them!</p>
-{% elif banned %}
-    <p><b>Banned account.</b></p>
-{% elif file.can_review %}
+{% if cant_review_message %}
+    <h2>Cannot Review File</h2>
+    <p>{{cant_review_message|safe}}</p>
+{% else %}
     <h2>New Review</h2>
     <form method="POST">
     {% csrf_token %}
@@ -85,9 +80,6 @@ Sort: <select name="sort">
         <input type="submit" value="Submit Review">
     </div>
     </form>
-{% else %}
-    <h2>Reviews Disabled</h2>
-    <p>This file is no longer accepting new reviews at this time.</p>
 {% endif%}
 <hr>
 <div id="review-preview-wrapper"></div>

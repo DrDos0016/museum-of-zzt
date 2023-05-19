@@ -30,7 +30,7 @@ var details = [{% for d in file.details.all %}{{d.id}}, {% endfor %}];
 {% endblock %}
 
 {% block content %}
-{% if DETAIL.WEAVE in file.detail_ids %}
+{% if weave %}
 <div id="fv-prefix">
     <p>⚠️ Support for Weave ZZT content in the Museum's File Viewer is very limited. Weave specific features have not yet been implemented. Issues should be expected when exploring Weave ZZT related files (especially visuals).</p>
 </div>

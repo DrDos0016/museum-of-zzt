@@ -226,13 +226,15 @@ Server Time: {{datetime}}<br>
 <div id="debug-block" class="debug block" style="font-size:10pt;background:var(--ega-red);">
 Device Resolution: <span id="debug-res"></span><br>
 Page Dimensions: <span id="debug-view"></span><br>
-<textarea style="width:95%;margin:auto;display:none;">
+<textarea style="width:95%;margin:auto;">
+URL Name: "{{resolved_url.url_name}}" Path: {{request.path}}
 Domain: {{DOMAIN}}
 Absolute URI: {{request.build_absolute_uri}}
 HTTP_HOST: {{request.META.HTTP_HOST}} | Host: {{HOST}} | Env: {{ENV}}
 </textarea><br>
 View this page on: <a href="https://beta.museumofzzt.com{{request.path}}" target="_blank">BETA</a> <a href="https://museumofzzt.com{{request.path}}" target="_blank">LIVE</a>
 <br>
+
 <table id="meta-tags" class="data-table" style="max-width:800px;margin:auto;background:#FFF;font-size:10pt;">
 </table>
 </div>

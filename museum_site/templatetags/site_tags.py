@@ -289,18 +289,19 @@ def model_block_link_tag(model_name, identifier, text=None, i=True, *args, **kwa
     """ {% m "model_name" <pk/key> "link text" %}"""
 
     available_models = {"zfile": File, "series": Series, "article": Article}
+    error_message = "TODO INVALID MODEL BLOCK LINK TAG [{}][{}]".format(model_name, identifier)
 
 
     attr = "pk" if isinstance(identifier, int) else "key"
     try:
         item = available_models[model_name].objects.filter(**{attr: identifier})
     except KeyError:
-        return mark_safe("TODO INVALID MODEL BLOCK LINK TAG", model_name, identifier)
+        return mark_safe(error_message)
 
     if item:
         item = item.first()
     else:
-        return mark_safe("TODO INVALID MODEL BLOCK LINK TAG", model_name, identifier)
+        return mark_safe(error_message)
 
     if text is None:
         text = item.title

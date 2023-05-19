@@ -68,6 +68,8 @@ def file_viewer(request, key, local=False):
         if data["file"].is_detail(DETAIL_UPLOADED):
             letter = "uploaded"
             data["uploaded"] = True
+        if data["file"].is_detail(DETAIL_WEAVE):
+            data["weave"] = True
 
         zip_file = zipfile.ZipFile(data["file"].phys_path())
         files = zip_file.namelist()

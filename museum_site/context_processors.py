@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.core.cache import cache
 from django.conf import settings
+from django.urls import resolve
 
 from museum_site.constants import TERMS_DATE, CSS_INCLUDES, BOOT_TS, EMAIL_ADDRESS
 from museum_site.core.detail_identifiers import *
@@ -11,18 +12,11 @@ from museum_site.models.file import File
 def museum_global(request):
     data = {}
 
-    # Not the full list, just what's currently needed
-    data["DETAIL"] = {
-        "LOST": DETAIL_LOST,  # file-review.html
-        "UPLOADED": DETAIL_UPLOADED,  # file-review.html
-        "WEAVE": DETAIL_WEAVE,  # file.html
-    }
+    # Resolved URL
+    data["resolved_url"] = resolve(request.path)
 
     # Debug mode
-    if settings.DEBUG or request.GET.get("DEBUG") or request.session.get("DEBUG"):
-        data["debug"] = True
-    else:
-        data["debug"] = False
+    data["debug"] = True if (settings.DEBUG or request.GET.get("DEBUG") or request.session.get("DEBUG")) else False
 
     # Server info
     data["HOST"] = request.get_host()
@@ -31,12 +25,8 @@ def museum_global(request):
     data["DOMAIN"] = data["PROTOCOL"] + "://" + data["HOST"]
 
     # Logo Path
-    if data["ENV"] == "DEV":
-        data["logo_path"] = "chrome/logos/museum-logo-by-lazymoth-INVERTED.png"
-    elif data["ENV"] == "BETA":
-        data["logo_path"] = "chrome/logos/museum-logo-by-lazymoth-BETA.png"
-    else:
-        data["logo_path"] = "chrome/logos/museum-logo-by-lazymoth.png"
+    logo_path_mods = {"DEV": "-INVERTED", "BETA": "-BETA"}
+    data["logo_path"] = "chrome/logos/museum-logo-by-lazymoth{}.png".format(logo_path_mods.get(data["ENV"], ""))
 
     # Server date/time
     data["datetime"] = datetime.utcnow()
@@ -56,8 +46,6 @@ def museum_global(request):
     data["fg"] = File.objects.featured_worlds().order_by("?").first()
     if request.GET.get("fgid"):
         data["fg"] = File.objects.reach(pk=int(request.GET["fgid"]))
-
-    data["fg"] = data["fg"]
 
     # Queue size
     data["UPLOAD_QUEUE_SIZE"] = cache.get("UPLOAD_QUEUE_SIZE", "-")

@@ -7,6 +7,7 @@ from django.template.defaultfilters import slugify
 from django.views.generic import DetailView, ListView
 
 from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED, MODEL_BLOCK_VERSION
+from museum_site.core.detail_identifiers import DETAIL_UPLOADED, DETAIL_LOST
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.form_utils import clean_params
 from museum_site.core.misc import banned_ip
@@ -305,16 +306,33 @@ class ZFile_Review_List_View(Model_List_View):
             {"text": "Rating", "val": "rating"}
         ]
 
+        # Check that the file supports reviews
+        if not context["file"].can_review:
+            context["cant_review_message"] = "This file is no longer accepting new reviews at this time."
+            return context
+
         # Check for banned users
         if banned_ip(self.request.META["REMOTE_ADDR"]):
-            context["banned"] = True
+            context["cant_review_message"] = "<b>Banned account.</b>"
             return context
 
         # Prevent doubling up on reviews
         cutoff = context["today"] + timedelta(days=-1)
         recent = self.qs.filter(ip=self.request.META.get("REMOTE_ADDR"), date__gte=cutoff)
         if recent:
-            context["recent"] = recent.first().pk
+            context["cant_review_message"] = (
+                "<i>You have <a href='#rev-{}'>recently reviewed</a> this file and cannot submit an additional review at this time.</i>".format(
+                    recent.first().pk
+                )
+            )
+            return context
+
+        # Prevent unpublished/lost file reviews
+        if context["file"].is_detail(DETAIL_UPLOADED):
+            context["cant_review_message"] = "Unpublished files cannot be reviewed as their content may still be modified by the uploader."
+            return context
+        elif context["file"].is_detail(DETAIL_LOST):
+            context["cant_review_message"] = "Lost files cannot be reviewed as they cannot be played!"
             return context
 
         # Initialize form
