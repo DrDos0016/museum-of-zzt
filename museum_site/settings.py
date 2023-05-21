@@ -35,6 +35,10 @@ WEBHOOK_URL = os.environ.get("MOZ_WEBHOOK_URL", "-UNDEFINED-")
 NEW_UPLOAD_WEBHOOK_URL = os.environ.get("MOZ_NEW_UPLOAD_WEBHOOK_URL", "-UNDEFINED-")
 NEW_REVIEW_WEBHOOK_URL = os.environ.get("MOZ_NEW_REVIEW_WEBHOOK_URL", "-UNDEFINED-")
 
+# SMTP
+SMTP_AUTH_USER = os.environ.get("MOZ_SMTP_AUTH_USER", "-UNDEFINED-")
+SMTP_AUTH_PASS = os.environ.get("MOZ_SMTP_AUTH_PASS", "-UNDEFINED-")
+
 # IP Bans
 # TODO: This is janky and temporary
 BANNED_IPS = [
