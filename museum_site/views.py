@@ -35,10 +35,9 @@ def beta_unlock(request):
     return render(request, "museum_site/beta-unlock.html", context)
 
 def close_tool(request):
-    if request.session["active_tool"]:
+    if request.session.get("active_tool"):
         del request.session["active_tool"]
-    if request.GET.get("next"):
-        return redirect(request.GET.get("next", "index"))
+    return redirect(request.GET.get("next", "index"))
 
 def directory(request, category):
     """ Returns a directory of all authors/companies/genres in the database """
