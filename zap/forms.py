@@ -110,6 +110,26 @@ class ZAP_Post_Form(forms.Form):
         response = s.upload_media(media_path)
         return response
 
+class ZAP_Reply_Form(ZAP_Post_Form):
+    tweet_id = forms.CharField(widget=forms.HiddenInput())
+    tumblr_id = forms.CharField(widget=forms.HiddenInput())
+    mastodon_id = forms.CharField(widget=forms.HiddenInput())
+
+    def smart_start(self, post=None):
+        if not post:
+            return False
+
+        #del self.fields["accounts"]
+        self.fields["title"].initial = "Reply to " + post.title
+        self.fields["tweet_id"].initial = post.tweet_id
+        self.fields["tumblr_id"].initial = post.tumblr_id
+        self.fields["mastodon_id"].initial = post.mastodon_id
+
+        return True
+
+    def process(self, request):
+        print("Proccing form")
+
 
 class ZAP_Media_Upload_Form(forms.Form):
     use_required_attribute = False

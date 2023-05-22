@@ -28,7 +28,10 @@
         <td>{{p.created}}</td>
         <td>{% for service in p.posted_where_links %}{{service|safe}} {% endfor %}</td>
         <td>
-            <a href="{% url 'zap_boost_post' %}?pk={{p.pk}}">Boost</a>
+            <ul>
+                <li><a href="{% url 'zap_boost_post' %}?pk={{p.pk}}">Boost</a></li>
+                <li><a href="{% url 'zap_reply_post' %}?pk={{p.pk}}">Reply</a></li>
+            </ul>
         </td>
     </tr>{% endfor %}
 </table>

@@ -165,3 +165,25 @@ def post_boost(request):
     context["form"] = form
     context["post"] = post
     return render(request, "zap/boost-post.html", context)
+
+
+def post_reply(request):
+    context = {"title": "ZAP - Reply To Post"}
+    if request.GET.get("pk"):
+        post = Post.objects.get(pk=request.GET.get("pk"))
+    else:
+        post = None
+
+
+    if request.method == "POST":
+        form = ZAP_Reply_Form(request.POST)
+        if form.is_valid():
+            form.process(request)
+    else:
+        form = ZAP_Reply_Form()
+        if post:
+            form.smart_start(post)
+
+    context["form"] = form
+    context["post"] = post
+    return render(request, "zap/create-post.html", context)
