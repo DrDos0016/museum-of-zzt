@@ -12,6 +12,8 @@ zookeeper
 private*
 test-*
 
+unregistered_patrons.json
+
 comic/static/comic/frost/*
 comic/static/comic/kaddar/*
 comic/static/comic/lemmy/*
