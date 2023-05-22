@@ -1,0 +1,181 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+{% load zzt_tags %}
+
+{% block scripts %}
+<script src="{% static 'js/html2canvas.min.js' %}"></script>
+<script>
+$("document").ready(function(){
+    $("#render").click(render_canvas);
+});
+
+function render_canvas()
+{
+    html2canvas(document.querySelector("#schedule")).then(canvas => {document.body.appendChild(canvas)});
+}
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+@font-face
+{
+    /* http://int10h.org/oldschool-pc-fonts/readme/ */
+    font-family: 'Roboto';
+    src: url('/static/fonts/RobotoSlab-VariableFont_wght.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.stream
+{
+    display:grid;
+    grid-template-areas:
+    "screen time"
+    "screen title"
+    "screen description";
+    width:1024px;
+    padding:14px 8px 28px 8px;
+    box-sizing:border-box;
+    column-gap:32px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows:auto auto 1fr;
+    background-color:var(--ega-darkblue);
+    color:var(--ega-white);
+    font-family:"cp437";
+}
+
+.stream img
+{
+    grid-area:screen;
+    border-top:14px solid var(--ega-white);
+    border-bottom:14px solid var(--ega-white);
+    border-left:16px solid var(--ega-white);
+    border-right:16px solid var(--ega-white);
+    box-shadow: 16px 14px var(--ega-gray);
+    max-width:480px;
+
+}
+
+.stream h2
+{
+    grid-area:title;
+    font-weight:normal;
+    font-size:42px;
+    margin:0;
+    font-family:cp437;
+    text-align:center;
+}
+
+.stream .time
+{
+    grid-area:time;
+    font-size:18pt;
+    color:var(--ega-cyan);
+    text-align:center;
+}
+
+.stream .description
+{
+    grid-area:description;
+    align-self:center;
+    color:var(--ega-yellow);
+    margin-right:8px;
+    font-size:28px;
+}
+
+.post-header
+{
+    display:flex;
+    align-items:center;
+    height:80px;
+    color:var(--ega-yellow);
+    background-color:var(--ega-darkblue);
+    font-family:cp437;
+    font-weight:normal;
+    font-size:20pt;
+}
+
+.post-header h1
+{
+    flex:1;
+    text-align:center;
+    font-weight:normal;
+    color:var(--ega-white);
+}
+
+.post-twitch
+{
+    background-color:var(--ega-darkpurple);
+    color:var(--ega-white);
+    font-size:20pt;
+    font-family:roboto;
+    text-align:center;
+}
+
+.post-twitch h2
+{
+    margin:0;
+    text-align:right;
+    margin-right:50px;
+}
+
+#post-logo
+{
+    position:relative;
+    top:40px;
+    max-height:160px;
+}
+
+.divider
+{
+    height:28px;
+    background:var(--ega-black);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<input type="button" value="Render" id="render">
+
+<label>Starting Monday <input name="start_date"></label>
+<hr>
+
+<div style="width:1024px;" id="schedule">
+    <div class="post-header">
+        <img src="{% static 'chrome/logos/museum-tiger-by-lazymoth.png' %}" id="post-logo">
+        <div>
+            <h1>Worlds of ZZT Stream Schedule</h1>
+            <div class="r ega-cyan">Feb. 20th through Feb. 26th</div>
+        </div>
+    </div>
+    <div class="post-twitch">
+        <h2>https://twitch.tv/worldsofzzt</h2>
+    </div>
+    <div class="stream">
+        <div class="time">Friday Feb. 24<br>6:00pm PDT / 9:00pm EDT / 01:00 UTC</div>
+        <img src="https://museumofzzt.com/static/images/screenshots/c/catalog.png">
+        <h2>Evan Darrow Showcase</h2>
+        <div class="description">A variety of ZZT worlds known for their low quality!</div>
+    </div>
+    <div class="stream">
+        <div class="time">Sunday Feb. 26<br>Noon PST / 3pm EST / 20:00 UTC</div>
+        <img src="http://django.pi:8000/static/debug-search.png">
+        <h2>Wildcard Stream:<br>X of Y!</h2>
+        <div class="description">Caves? Of Death. Forests? Of Doom. Swords? Of Destiny. A collection of unpreserved worlds that fit the X of Y pattern.</div>
+    </div>
+</div>
+{% endblock %}
+
+{% comment %}
+Schedule for the week of Feb.  5th:
+Fri 6pm PDT / 9pm EDT / 01:00 UTC
+Ezanya Remastered
+⭐️⭐️⭐️
+Sat Noon PDT / 3pm EDT / 19:00 UTC
+Bonus stream! Jill of the Jungle w/ guest Anna Anthropy
+⭐️⭐️⭐️
+Sun Noon PDT / 3pm EDT / 19:00 UTC
+4 Unpreserved ZZT worlds by authors with 1 release
+{% endcomment %}

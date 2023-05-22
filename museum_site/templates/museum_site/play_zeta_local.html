@@ -1,0 +1,409 @@
+{% extends base %}
+{% load site_tags %}
+{% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}{% endblock %}
+
+{% block style %}
+<style>
+#play-area
+{
+    text-align:center;
+    margin:auto;
+    margin-top:7px;
+}
+
+#zzt_canvas
+{
+    image-rendering:crisp-edges;
+}
+
+#zeta-controls
+{
+    margin-bottom:1em;
+}
+
+#zeta-config
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    border:0px;
+    margin-bottom:1em;
+}
+
+.setting
+{
+    flex:1 0 20%;
+    padding:7px 8px 7px 8px;
+    font-family:mono;
+    border:1px solid #000;
+    margin:2px;
+}
+
+.setting .heading
+{
+    text-align:center;
+    border-bottom:1px dashed #000;
+    margin-bottom:7px;
+}
+
+.setting label
+{
+    display:block;
+}
+
+.setting .list
+{
+    height:260px;
+    overflow:auto;
+}
+
+#apply-config
+{
+    width:100%;
+    margin-top:10px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("select[name=player]").change(function (){
+        window.location = "?player=" + $(this).val();
+    });
+});
+</script>
+<script type="text/javascript" src="/static/zeta86/zeta_loader.js?{{BOOT_TS}}"></script>
+<script type="text/javascript">
+var url = new URL(window.location);
+var scale = {{zeta_player_scale|default:1}};
+var base_w = {{zeta_config.base_width|default:640}};
+var base_h = {{zeta_config.base_height|default:350}};
+var ZETA = null;
+
+$(document).ready(function (){
+    $("#zzt_canvas").width(base_w * scale);
+    $("#zzt_canvas").height(base_h * scale);
+
+    $("#popout").click(function (e){
+        var popout_url = new URL(url);
+        popout_url.searchParams.set("player", "zeta");
+        popout_url.searchParams.set("mode", "popout");
+        popout_url.searchParams.set("scale", scale);
+        window.open(popout_url, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+    });
+
+
+    $(".zoom").click(function (){
+        if ($(this).val() == "+")
+        {
+            scale++;
+        }
+        else
+        {
+            scale--;
+        }
+
+        $(".zoom").attr("disabled", false);
+        $(this).attr("disabled", true);
+
+        $("#zzt_canvas").width(base_w * scale);
+        $("#zzt_canvas").height(base_h * scale);
+
+        var now = new Date();
+        var time = now.getTime();
+        var expireTime = time + (1000 * 31536000); // 1yr
+        now.setTime(expireTime);
+        document.cookie = "zeta_player_scale=" + scale + ";expires=" + now.toGMTString() + ";path=/";
+        console.log("Set scale cookie to " + scale);
+    });
+
+    $("#fullscreen").click(function (){
+        $("#zzt_canvas")[0].requestFullscreen();
+    });
+
+    $("#advanced-settings").click(function (){
+        url.searchParams.set("advanced", 1);
+        window.location = url;
+    });
+
+    // FONT STUFF
+
+    var file_reader = new FileReader();
+    file_reader.onload = function (e) {
+        var byte_array = new Uint8Array(file_reader.result);
+        var hex_string = "";
+
+        for (var idx in byte_array)
+        {
+            hex_string += ("0" + byte_array[idx].toString(16)).slice(-2);
+        }
+
+        // Create world info for BRD files
+        if (ext == "brd")
+        {
+            hex_string = "ffff000000000000000000000000006400000000000000000000000000084155544f47454e57" + "0".repeat(948) + hex_string;
+        }
+
+        console.log(hex_string)
+    }
+
+    ZetaLoad({
+        path: "/static/zeta86/",
+        render: {
+            canvas: document.getElementById("zzt_canvas"),
+            blink_cycle_duration: {{zeta_config.blink_duration}},
+            /*charset_override: {{zeta_config.charset|default:""}}*/
+        },
+        {% if not request.GET.no_args %}arg: "{{zeta_config.arguments|default:""|escapejs}}",{% endif %}
+        {% if zeta_config.commands and not request.GET.no_commands %}commands: {{zeta_config.commands|safe}},{% endif %}
+        storage: {
+            type: "auto",
+            database: "{{zeta_database|default:'generic-zeta-save-db'}}"
+        },
+        audio : {
+            bufferSize: {{zeta_config.audio_buffer}},
+            sampleRate: {{zeta_config.sample_rate}},
+            noteDelay: {{zeta_config.note_delay}},
+            volume: {{zeta_config.volume}},
+        },
+        files: [
+            {% if zeta_config.executable %}
+            {
+                "type": "zip",
+                "url": "/static/data/zeta86_engines/{{zeta_config.executable}}",
+            },
+            {% endif %}
+            {% for file in included_files %}
+            {
+                "type": "zip",
+                "url": "{{file|safe}}",
+            },
+            {% endfor %}
+            {% if zeta_url %}
+            {
+                "type": "zip",
+                "url": "{{zeta_url|safe}}",
+            },
+            {% endif %}
+        ],
+    }, function(zeta) {
+        ZETA = zeta;
+    });
+
+    $("#load-world").click(function (){
+        $("#id_zfile").click();
+    });
+
+});
+</script>
+{% if request.user.is_staff %}
+<script>
+// Staff functions
+$(document).ready(function (){
+    $("#debug-screenshot").click(function (){
+        data_url = document.getElementById("zzt_canvas").toDataURL();
+        $("#b64img").val(data_url);
+        $("#screenshot-submit").click();
+    });
+});
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<input id="id_zfile" type="file">
+
+<div id="play-area">
+    {% if player == "archive" %}
+    <iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
+    {% elif player == "zeta" %}
+    <canvas id="zzt_canvas" width="{{zeta_config.base_width|default:640}}" height="{{zeta_config.base_height|default:350}}"></canvas>
+    {% if unpublished %}<p>This file is currently UNPUBLISHED. Support for Zeta has been assumed, but the file may not be compatible.</p>{% endif %}
+    {% endif %}
+</div>
+
+{% if components.controls %}<div id="zeta-controls" class="c">
+    <button id="load-world">Load World</button>
+    <button id="load-zip">Load Zip File</button>
+    <button id="popout">Popout</button>
+    <button id="zoom-out" class="zoom" value="-"{% if zeta_player_scale == 1 %} disabled{% endif %}>-</button>
+    <button id="zoom-in" class="zoom" value="+"{% if zeta_player_scale == 2 %} disabled{% endif %}>+</button>
+    <button id="fullscreen">Fullscreen</button>
+    {% if not components.advanced %}<button id="advanced-settings">Advanced Settings</button>{% endif %}
+    <br><a href="{% url 'manage_saved_data' %}?pk={{file.id}}">Manage Saved Data</a>
+    {% if request.user.is_staff %}
+    <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.id}}/">
+        {% csrf_token %}
+        <button id="debug-screenshot">Set Screenshot</button>
+        <input type="hidden" name="b64img" id="b64img">
+        <input type="submit" id="screenshot-submit" style="display:none">
+    </form>
+    {% endif %}
+</div>{% endif %}
+
+{% if components.players %}
+<div id="player-list" class="c">
+    <b>Play Method</b><br>
+    <select name="player">
+        {% for k, info in players.items %}
+        <option value="{{k}}"{% if k == player %} selected{% endif %}>{{info.name}}</option>
+        {% endfor %}
+    </select>
+</div>
+{% endif %}
+
+{% if components.credits %}<div class="zeta-credits">
+    <p><b><a href="https://zeta.asie.pl" target="_blank">Zeta</a></b> created and maintained by asie.</p>
+</div>{% endif %}
+
+{% if components.instructions %}<div class="zeta-instructions">
+    <h2>Common Problems and Solutions</h2>
+
+    <p><b>I'm stuck in the world I'm playing!</b></p>
+    <p>Depending on how you're stuck, you may want to try the following:
+
+        <ul>
+            <li>A lack of health or other resources: Press "?" to open the cheat prompt and use the appropriate cheat listed on the <a href="{% url 'zzt_cheats' %}" target="_blank">ZZT Cheats</a> page.</li>
+            <li>The player is surrounded and unable to move: Press "?" to open the cheat prompt and type "ZAP" to erase the four tiles surrounding the player</li>
+            <li>The player has been destroyed: Oops. Hope you saved. This happens due to a bug with how conveyors work and your game has been soft locked.</li>
+            <li>I paused with "P" and can't unpause: The only way to unpause is to move. If you pause while the player is surrounded, the game becomes soft locked. It's best to use "Escape" as a pause method instead. Keep in mind that the game starts paused as well, so saving while surrounded (something easy to do with engine based games like ZZT platformers) will result in a save that can't be played when restored.</li>
+            <li>I don't know where to go next: Try looking for some information in the file's <a href="{{file.review_url}}" target="_blank">reviews</a> or associated <a href="{{file.article_url}}" target="_blank">articles</a>. A small number of files have full walkthroughs. You can also use the <a href="{{file.view_url}}" target="_blank">file viewer</a> to explore the world freely.</li>
+            <li>I need some item, but don't know where to find it: Use the <a href="{{file.view_url}}" target="_blank">file viewer</a>! Click on objects to view their code and look for things like <code class="inline zzt-oop">#if crowbar escape</code>. Then use the ZZT-OOP Search in the World tab to look for <code class="inline zzt-oop">#set crowbar</code> to find where the item is acquired.</li>
+            <li>I'm in a twisty maze of passages, all alike or dealing with some other maze-like situation. The <a href="{{file.view_url}}" target="_blank">file viewer</a> can help reveal some hidden tiles more easily. Under the preferences tab try out other board rendering methods to reveal fake walls or empties.</li>
+        </ul>
+    </p>
+
+    <p><b>I hit "P" to play and got a <i>DOS Error</i>!</b></p>
+    <p>This is caused either by ZZT or Zeta not correctly pointing to the proper world. This most frequently happens with games that require non-default Zeta configurations or worlds whose filename doesn't match the one stored within the file itself by ZZT. Try pressing "Enter" to close the message, pressing "W" to open the world menu, and selecting the world from this menu to reload the world.</p>
+
+    <p><b>I hit "E" to edit a world and got a red flash and a <i>Can not edit &lt;WORLD&gt;!</i>/<i>Can not edit a saved game!</i> message!</b></p>
+    <p>The world you tried to edit is locked. From within the editor hit "?" to open the cheat prompt and enter "+DEBUG". Reload the world with "L" and the world should open just fine. <a href="/article/323/a-guide-to-zzt-lock-picking" target="_blank"><i>More about Locks</i></a></p>
+
+    <p><b>All these boards are named <i><span class="cp437">►</span> LOCKED FILE</i> and refuse to open except for one named <i>:c</i> that stops emulation when I open it!</b></p>
+    <p>The world you're editing is (also) Super Locked. You can open the locked boards by hitting "Escape" instead of "Enter". The <i>:c</i> board is purposely corrupt and can't be opened from ZZT's editor. <a href="/article/323/a-guide-to-zzt-lock-picking" target="_blank"><i>More about Locks</i></a></p>
+</div>{% endif %}
+
+<p><b>Current Zeta configuration:</b> <span class="cp437">{% if request.GET.zeta_config %}Custom Configuration{% else %}{{file.zeta_config}}{% endif %}</span></p>
+
+{% if components.advanced %}<form id="zeta-config">
+    <div class="setting">
+        <div class="heading">Zeta Config</div>
+        <div class="list">
+        <select name="zeta_config">
+            {% for config in config_list %}
+            {% ifchanged %}<optgroup label="{{config.category_as_text}}">{% endifchanged %}
+            <option value="{{config.id}}"{% if zeta_config.id == config.id %} selected{% endif %}>{{config.name}}</option>
+            {% endfor %}
+        </select><br>
+        Arguments: {% if zeta_config.args %}{{zeta_config.args}}{% else %}<i>None</i>{% endif %}<br>
+        Commands: {% if zeta_config.commands %}{{zeta_config.commands}}{% else %}<i>None</i>{% endif %}<br>
+        <label class="option"><input type="checkbox" name="no_args" value="1"{% if request.GET.no_args %} checked{% endif %}> Disable config's args<label>
+        <label class="option"><input type="checkbox" name="no_commands" value="1"{% if request.GET.no_commands %} checked{% endif %}> Disable config's commands<label>
+        </div>
+    </div>
+
+    <div class="setting">
+        <div class="heading">Executable</div>
+        <div class="list">
+            <label class="option"><input type="radio" name="executable" value="AUTO" checked> Use Config</label>
+        {% for exe in ZETA_EXECUTABLES %}
+        <label class="option"><input type="radio" name="executable" value="{{exe.filename}}"{% if executable == exe.filename %} checked{% endif %}> {{exe.name}}</label>
+        {% endfor %}
+        <label class="option"><input type="radio" name="executable" value="NONE"{% if executable == exe.filename %} checked{% endif %}> None</label>
+        </div>
+    </div>
+
+    {% comment %}
+    <div class="setting">
+        <div class="heading">Storage</div>
+        <label class="option">
+            Type<br>
+            <select name="storage-type">
+                <option value="auto">Auto</option>
+                <option value="localstorage">Local Storage</option>
+                <option value="indexeddb">Indexed DB</option>
+            </select>
+        </label>
+        <label class="option">DB Name (blank for auto)<br><input type="text" value="" name="database"></label>
+    </div>
+    {% endcomment %}
+
+    <div class="setting">
+        <div class="heading">Render</div>
+        {% comment %}
+        <label class="option">
+            Type<br>
+            <select name="render">
+                <option value="auto">Auto</option>
+                <option value="canvas">Canvas</option>
+            </select>
+        </label>
+        {% endcomment %}
+        <label class="option">Blink Duration (-1 disables)<br><input type="number" name="blink_cycle" value="{{request.GET.blink_cycle}}" step="0.001" placeholder="0.466"></label>
+    </div>
+
+    <div class="setting">
+        <div class="heading">Charset Override</div>
+        <div class="list">
+        <label class="option"><input type="radio" name="charset_override" value=""{% if charset_override == "" %} checked{% endif %}> Code Page 437</label>
+        {% for charset in charsets %}
+        <label class="option"><input type="radio" name="charset_override" value="{{charset}}"{% if charset_override == charset %} checked{% endif %}> {{charset|slice:"5:-4"}}</label>
+        {% endfor %}
+        <img src="/static/images/charsets/{{request.GET.charset_override|default:'cp437.png'}}" style="background:#000">
+        </div>
+    </div>
+
+    <div class="setting">
+        <div class="heading">Audio</div>
+        <div class="list">
+            {% comment %}
+            <label class="option">
+                Type<br>
+                <select name="audio-type">
+                    <option value="auto">Auto</option>
+                    <option value="buffer">Buffer</option>
+                </select>
+            </label>
+            {% endcomment %}
+            <label class="option">Buffer Size (Samples)<br><input type="number" name="bufferSize" value="{{request.GET.bufferSize}}" placeholder="2048"></label>
+            <label class="option">Sample Rate (Hz)<br><input type="number" name="sampleRate" value="{{request.GET.sampleRate}}" placeholder="48000"></label>
+            <label class="option">Note Delay (ms)<br><input type="number" name="noteDelay" value="{{request.GET.noteDelay}}" placeholder="1"></label>
+            <label class="option">Volume<br><input type="number" name="volume" value="{{request.GET.volume}}" placeholder="0.2" min="0.0" max="1.0" step="0.1"></label>
+        </div>
+    </div>
+
+    <div class="setting">
+        <div class="heading">Included Files (<span id="included-file-count">{{file_count}}</span>)</div>
+        <div class="list" id="all-files">
+            {% for f in all_files %}
+            <label class="option"><input name="file_id" value="{{f.id}}" type="checkbox"{% if f.id in file_ids %} checked{% endif %}> {{f.title}}</label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="setting">
+    <button id="apply-config">Apply</button>
+    <br><br>
+    <label class="option"><input type="checkbox" name="advanced" value="1"{% if request.GET.advanced %} checked{% endif %}> Continue to show advanced settings</label>
+    <br>
+    Primary File (used for default Zeta config):<br><b>{{file.title}}</b>
+    </div>
+</form>
+
+<h3>Information on Advanced Options</h3>
+<p>&bull; When choosing a custom executable, it may be overridden by the Zeta configuration's launch commands. Disable them if needed.</p>
+
+<p>&bull; Support for custom charsets is not yet implemented.</p>
+
+<p>&bull; The are no reasons to adjust the audio settings (other than volume). They are included for completion's sake as all files assume the default settings.</p>
+
+<p>&bull; Including too many files may cause issues.</p>
+
+<p>&bull; When only file is included the Museum uses the ID of that file as the basis for storing data such as game saves. When multiple files are included the database name
+will change to a "generic-zeta-save-db". This is done so that you don't need to recreate the exact set of files to restore saves. It may be wise to avoid including extra files
+to prevent a cluttered save list as you play through more worlds.</p>
+
+<p>&bull; When multiple files are included, the Zeta config exectued by default is that of the first file in the list by ID. To use a different file's config in the set, it must be chosen manually.</p>
+{% endif %}
+{% endblock %}

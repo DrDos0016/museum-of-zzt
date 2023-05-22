@@ -1,0 +1,71 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+.event
+{
+    width:750px;
+    background:var(--ega-darkblue);
+    margin:auto;
+    font-family:"cp437";
+    font-size:28px;
+    color:var(--ega-white);
+
+    display:grid;
+    grid-template-areas:
+    "notice notice notice"
+    "when kind action"
+    "when title action";
+    grid-gap:8px;
+}
+
+.event .patron-notice { grid-area:notice; }
+.event .kind { grid-area:kind; }
+.event .title { grid-area:title; }
+.event .when { grid-area:when; }
+.event .action { grid-area:action; }
+
+.event .patron-notice { background:var(--ega-darkred); text-align:center; }
+
+.event .kind
+{
+    color:var(--ega-yellow);
+    font-size:48px;
+}
+
+.event .title
+{
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+<h1>Upcoming Events</h1>
+
+Closer Look Poll - Mar. 1 - Mar. 10
+Friday Stream Theme Poll - Mar. 1 - Mar. 10
+Worlds of ZZT Livestream - Friday 6pm
+Worlds of ZZT Livestream - Sunday Noon
+
+<div class="events">
+<h2>Ongoing Events:</h2>
+    <div class="event">
+        <div class="patron-notice">Patrons Only!</div>
+        <div class="kind">Closer Look Poll</div>
+        <div class="title">Poll for April</div>
+        <div class="when">Fri. 6:00 pm</div>
+        <div class="action">Vote!</div>
+    </div>
+<h2>Upcoming Events:</h2>
+    <div class="event">
+        <div class="kind">Worlds of ZZT Livestream</div>
+        <div class="title">Wildcard Stream</div>
+        <div class="when">Fri. 6:00 pm</div>
+        <div class="action">Watch!</div>
+    </div>
+</div>
+{% endblock %}
