@@ -37,7 +37,7 @@ NEW_REVIEW_WEBHOOK_URL = os.environ.get("MOZ_NEW_REVIEW_WEBHOOK_URL", "-UNDEFINE
 
 # SMTP
 SMTP_HOST = os.environ.get("MOZ_SMTP_HOST", "localhost")
-SMTP_PORT = os.environ.get("MOZ_SMTP_PORT", 25)
+SMTP_PORT = os.environ.get("MOZ_SMTP_PORT", 0)
 SMTP_AUTH_USER = os.environ.get("MOZ_SMTP_AUTH_USER", "-UNDEFINED-")
 SMTP_AUTH_PASS = os.environ.get("MOZ_SMTP_AUTH_PASS", "-UNDEFINED-")
 
