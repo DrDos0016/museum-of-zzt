@@ -22,14 +22,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
 from museum_site.models import Scroll  # noqa: E402
-try:
-    from private import TOKEN
-except ImportError:
-    print("ERROR: private.py not found\n\
-    This file contians a constant named TOKEN with the Discord API key.\n\
-    Exiting.")
-    sys.exit()
 
+TOKEN = os.environ.get("MOZ_DISCORD_BOT_TOKEN", "-UNDEFINED-")
 SERVER = None
 PUBLIC_ROLES = [
     "ZZTer", "MZXer", "He/Him", "She/Her", "It/Its", "They/Them",
