@@ -1,5 +1,6 @@
 import os
 import sys
+import tempfile
 
 from datetime import datetime, timedelta
 
@@ -7,15 +8,14 @@ from museum_site.constants import SITE_ROOT
 
 
 def main():
+    PREFIX = "moz-"
     PYTHON = os.path.join(SITE_ROOT, "venv", "bin", "python3")
-    BACKUPS = os.path.join(SITE_ROOT, "backups")
-    TEMP = os.path.join(SITE_ROOT, "temp")
-    PROJECTS = "/var/projects"
+    BACKUPS = os.environ.get("MOZ_BACKUP_DIR", os.path.join(SITE_ROOT, "backups"))
+    TEMP_DIR = tempfile.TemporaryDirectory(prefix=PREFIX)
+    TEMP = TEMP_DIR.name
 
     DUMP_SCRIPT = os.path.join(SITE_ROOT, "tools", "dump_database.py")
     DB_BACKUP = os.path.join(TEMP, "database.sql")
-
-    timestamp = datetime.now() + timedelta(days=-1)
 
     today = str(datetime.now())[:10]
 
@@ -38,9 +38,9 @@ def main():
     print("[3/3] Backing up museum", datetime.now())
     print("Compressing...")
     tar_name = os.path.join(BACKUPS, today + "_museum.tar.gz")
-    command = (
-        "tar --exclude='.git' --exclude='backups/*' --exclude='log/*' --exclude='temp/*' --exclude='venv' --exclude='zgames' -czf {} -C {} museum-of-zzt"
-    ).format(tar_name, PROJECTS,)
+    print(tar_name)
+    command = "tar --exclude='.git' --exclude='venv' --exclude='zgames' -czf {} -C {} museum-of-zzt".format(tar_name, os.path.join(SITE_ROOT, ".."))
+    print(command)
     os.system(command)
     print("DONE.", datetime.now())
 

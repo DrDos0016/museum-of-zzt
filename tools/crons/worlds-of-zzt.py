@@ -4,7 +4,6 @@ import django
 
 from datetime import datetime
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
 from museum_site.models.wozzt_queue import WoZZT_Queue  # noqa: E402
@@ -24,18 +23,18 @@ def main():
     try:
         entry.send_tumblr()
     except:
-        None
+        print("Failed to send: Tumblr")
 
     try:
         entry.send_mastodon()
         entry.send_discord()
     except:
-        None
+        print("Failed to send: Mastodon and/or Discord")
 
     try:
         entry.send_tweet()
     except:
-        None
+        print("Failed to send: Twitter")
 
     # Delete
     entry.delete_image()

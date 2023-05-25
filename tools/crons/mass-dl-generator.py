@@ -6,25 +6,25 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import zipfile
 
 import django
 
 from datetime import datetime
 
-sys.path.append("/var/projects/museum")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
 from museum_site.models import File  # noqa: E402
 
 from museum_site.core.detail_identifiers import *
-from museum_site.constants import SITE_ROOT  # noqa: E402
+from museum_site.constants import SITE_ROOT, DATA_PATH  # noqa: E402
 
 CRON_ROOT = os.path.join(SITE_ROOT, "tools", "crons")
-MASS_DL_DATA_PATH = os.path.join(
-    SITE_ROOT, "museum_site", "static", "data", "mass_dl.json"
-)
+MASS_DL_DATA_PATH = os.path.join(DATA_PATH, "mass_dl.json")
+PREFIX = "moz-"
+TEMP_DIR = tempfile.TemporaryDirectory(prefix=PREFIX)
+TEMP_DIR_PATH = TEMP_DIR.name
 
 HEADER = """
 T H E   M U S E U M   O F   Z Z T   P R E S E N T S
@@ -227,9 +227,7 @@ def main():
         "featured_worlds": FEATURED_HEADER,
     }
 
-    special_zips = (
-        "szzt_worlds", "utilities", "zig_worlds", "zzm_audio", "featured_worlds"
-    )
+    special_zips = ("szzt_worlds", "utilities", "zig_worlds", "zzm_audio", "featured_worlds")
 
     # Get all files by release date
     qs = File.objects.all().order_by("release_date", "letter", "title")
@@ -274,18 +272,14 @@ def main():
     for zip_name in zip_names:
         print("Creating", zip_name)
         file_listing = ""
-        zf = zipfile.ZipFile(
-            os.path.join(SITE_ROOT, "temp", zip_name + ".zip"), "w"
-        )
+        zf = zipfile.ZipFile(os.path.join(TEMP_DIR_PATH, zip_name + ".zip"), "w")
 
         # Add the relevant files
         for f in file_list[zip_name]:
             try:
                 zf.write(f.phys_path(), arcname=os.path.basename(f.phys_path()))
                 f_rd = str(f.release_date) if f.release_date is not None else ""
-                file_listing += '{} "{}" by {} [{}]'.format(
-                    f_rd, f.title, ", ".join(f.related_list("authors")), f.filename
-                ).strip() + "\n"
+                file_listing += '{} "{}" by {} [{}]'.format(f_rd, f.title, ", ".join(f.related_list("authors")), f.filename).strip() + "\n"
                 pass
             except FileNotFoundError:
                 print('File not found: "{}"'.format(f.phys_path()))
@@ -296,9 +290,7 @@ def main():
         readme_name = "Museum of ZZT Collection - {}.txt".format(category)
         readme_body = readme_bodies.get(zip_name, HEADER)
         if zip_name not in special_zips:
-            readme_body = readme_body.format(
-                zip_name.split("_")[-1], len(file_list[zip_name])
-            )
+            readme_body = readme_body.format(zip_name.split("_")[-1], len(file_list[zip_name]))
         else:
             readme_body = readme_body.format(len(file_list[zip_name]))
 
@@ -349,19 +341,15 @@ def main():
 
             # Replace any zips that need to be replaced
             try:
-                src = os.path.join(SITE_ROOT, "temp", "{}.zip".format(zip_name))
-                dst = os.path.join(
-                    SITE_ROOT, "zgames", "mass", "{}.zip".format(zip_name)
-                )
+                src = os.path.join(TEMP_DIR_PATH, "{}.zip".format(zip_name))
+                dst = os.path.join(SITE_ROOT, "zgames", "mass", "{}.zip".format(zip_name))
                 shutil.move(src, dst)
             except Exception:
                 print("Failed to move", src)
 
         # Remove the zip
         try:
-            os.remove(
-                os.path.join(SITE_ROOT, "temp", "{}.zip".format(zip_name))
-            )
+            os.remove(os.path.join(TEMP_DIR_PATH, "{}.zip".format(zip_name)))
         except Exception:
             continue
 

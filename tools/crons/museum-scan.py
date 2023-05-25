@@ -11,15 +11,11 @@ import requests
 
 django.setup()
 
-from museum_site.constants import SITE_ROOT
-from museum_site.models import *
-from museum_site.core.detail_identifiers import *
-
+from museum_site.constants import DATA_PATH  # noqa: E402
+from museum_site.models import *  # noqa: E402
+from museum_site.core.detail_identifiers import *  # noqa: E402
 
 TEST_ARCHIVE_LINKS = True if "iatest" in sys.argv else False
-IGNORE_LIST = (
-
-)
 
 
 def main():
@@ -42,10 +38,11 @@ def main():
     output["issues"] = all_issues
     output["meta"]["finished"] = str(datetime.now())
 
-    with open(os.path.join(SITE_ROOT, "museum_site", "static", "data", "scan.json"), "w") as fh:
+    with open(os.path.join(DATA_PATH, "scan.json"), "w") as fh:
         fh.write(json.dumps(output))
 
     return True
+
 
 if __name__ == "__main__":
     main()

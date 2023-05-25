@@ -7,14 +7,19 @@ import django
 
 from datetime import datetime
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
+#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
 django.setup()
 
 from django.contrib.auth.models import User  # noqa: E402
 
 from museum_site.models import *  # noqa: E402
-from private_patreon import *  # noqa: E402
+
+PATREON_CLIENT_ID = os.environ.get("MOZ_PATREON_CLIENT_ID", "-UNDEFINED-")
+PATREON_CLIENT_SECRET = os.environ.get("MOZ_PATREON_CLIENT_SECRET", "-UNDEFINED-")
+PATREON_ACCESS_TOKEN = os.environ.get("MOZ_PATREON_ACCESS_TOKEN", "-UNDEFINED-")
+PATREON_REFRESH_TOKEN = os.environ.get("MOZ_PATREON_REFRESH_TOKEN", "-UNDEFINED-")
+WOZZT_CAMPAIGN_ID = os.environ.get("MOZ_PATREON_CAMPAIGN_ID", "-UNDEFINED-")
 
 
 def main():
@@ -30,24 +35,17 @@ def main():
                 email = patron["attributes"]["email"]
                 status = str(patron["attributes"]["patron_status"])
                 status = status.split("_")[0]
-                pledge = (
-                    patron["attributes"]["currently_entitled_amount_cents"]
-                )
+                pledge = patron["attributes"]["currently_entitled_amount_cents"]
                 last_date = patron["attributes"]["last_charge_date"]
                 last_status = patron["attributes"]["last_charge_status"]
                 tier_id = 0
                 if patron["relationships"]["currently_entitled_tiers"]["data"]:
-                    tier_id = (
-                        patron["relationships"]["currently_entitled_tiers"]
-                        ["data"][0]["id"]
-                    )
+                    tier_id = patron["relationships"]["currently_entitled_tiers"]["data"][0]["id"]
 
                 #print(pledge, status, last_date, last_status, email)
 
                 if status == "active":
-                    qs = User.objects.filter(
-                        profile__patron_email=email, is_active=True
-                    ).only("id")
+                    qs = User.objects.filter(profile__patron_email=email, is_active=True).only("id")
                     if qs:
                         profile = Profile.objects.get(user_id=qs[0].id)
                         was_patron = profile.patron
@@ -60,10 +58,7 @@ def main():
                             if tier_id:
                                 profile.patron_tier = tier_id
                             profile.save()
-                            print(
-                                "Marked", profile, "as Patron with pledge of",
-                                pledge, "tier", tier_id
-                            )
+                            print("Marked", profile, "as Patron with pledge of", pledge, "tier", tier_id)
         else:
             break
 
@@ -78,10 +73,7 @@ def main():
 
 def get_campaign_members(url=None):
     if url is None:
-        url = (
-            "https://www.patreon.com/api/oauth2/v2/campaigns/"
-            "{}/members".format(WOZZT_CAMPAIGN_ID)
-        )
+        url = "https://www.patreon.com/api/oauth2/v2/campaigns/{}/members".format(WOZZT_CAMPAIGN_ID)
         qs = (
             "?include=currently_entitled_tiers&fields[member]=patron_status,"
             "email,currently_entitled_amount_cents,last_charge_date,"

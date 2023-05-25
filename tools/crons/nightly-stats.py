@@ -12,7 +12,7 @@ django.setup()
 from django.contrib.auth.models import User  # noqa: E402
 
 from museum_site.models import *  # noqa: E402
-from museum_site.constants import *  # noqa: E402
+from museum_site.constants import DATA_PATH  # noqa: E402
 
 now = datetime.utcnow()
 year = now.year
@@ -34,16 +34,12 @@ def main():
     stats.append(calculate_companies())
     stats.append(calculate_total_articles())
 
-    """
-    for raw in stats:
+    """for raw in stats:
         (name, val) = raw.split("=")
-        print(name, val)
-    """
+        print(name, val)"""
 
     stats_str = "|".join(stats)
-    log_path = os.path.join(
-        SITE_ROOT, "museum_site", "static", "data", "{}-stats.log".format(year)
-    )
+    log_path = os.path.join(DATA_PATH, "{}-stats.log".format(year))
     with open(log_path, "a") as fh:
         fh.write(stats_str + "\n")
 
