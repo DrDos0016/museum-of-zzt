@@ -30,6 +30,9 @@ class Command(BaseCommand):
             elif item == "data":
                 tar_path = os.path.join("museum_site", "static", "data")
                 item_path = os.path.join(settings.BASE_DIR, tar_path)
+            elif item == "credits":
+                tar_path = os.path.join("museum_site", "static", "credits")
+                item_path = os.path.join(settings.BASE_DIR, tar_path)
             else:
                 # Compress /static/ directory
                 tar_path = os.path.join(item, "static", item)
