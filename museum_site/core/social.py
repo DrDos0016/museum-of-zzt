@@ -14,6 +14,7 @@ from museum_site.settings import (
     MASTODON_ACCESS_TOKEN,
     MASTODON_EMAIL,
     MASTODON_PASS,
+    MASTODON_SECRETS_FILE,
 
     TUMBLR_OAUTH_CONSUMER,
     TUMBLR_OAUTH_CONSUMER_SECRET,
@@ -62,7 +63,7 @@ class Social_Mastodon(Social):
         self.password = MASTODON_PASS
 
     def login(self):
-        self.client =  Mastodon(client_id=os.path.join(APP_ROOT, "wozzt-mastodon.secret"))
+        self.client =  Mastodon(client_id=MASTODON_SECRETS_FILE)
         response = self.client.log_in(MASTODON_EMAIL, MASTODON_PASS)
 
         self.log_response(response)

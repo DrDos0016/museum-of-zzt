@@ -13,6 +13,7 @@ private*
 test-*
 
 unregistered_patrons.json
+wozzt-mastodon.secret
 
 comic/static/comic/frost/*
 comic/static/comic/kaddar/*

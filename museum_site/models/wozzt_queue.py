@@ -23,7 +23,8 @@ from museum_site.settings import (
     TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_SECRET, TWITTER_OAUTH_TOKEN,
     WEBHOOK_URL,
     TUMBLR_OAUTH_CONSUMER, TUMBLR_OAUTH_CONSUMER_SECRET, TUMBLR_OAUTH_TOKEN, TUMBLR_OAUTH_SECRET,
-    MASTODON_ACCESS_TOKEN, MASTODON_CLIENT_KEY, MASTODON_CLIENT_SECRET, MASTODON_EMAIL, MASTODON_PASS
+    MASTODON_ACCESS_TOKEN, MASTODON_CLIENT_KEY, MASTODON_CLIENT_SECRET, MASTODON_EMAIL, MASTODON_PASS,
+    MASTODON_SECRETS_FILE
 )
 
 
@@ -234,7 +235,7 @@ class WoZZT_Queue(BaseModel):
 
     def send_mastodon(self):
         # Log in
-        mastodon = Mastodon(client_id=os.path.join(APP_ROOT, "wozzt-mastodon.secret"))
+        mastodon = Mastodon(client_id=MASTODON_SECRETS_FILE)
         mastodon.log_in(MASTODON_EMAIL, MASTODON_PASS)
 
         # Upload the image
