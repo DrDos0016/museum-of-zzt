@@ -48,6 +48,7 @@ SCROLLS = list(Scroll.objects.filter(published=True).order_by("id"))
 
 intents = discord.Intents.default()
 intents.members = True
+intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 bot.remove_command("help")  # Roll our own
 
