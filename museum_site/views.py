@@ -343,14 +343,14 @@ def error_500(request):
         new_path = "/".join(new_components)
         return redirect(new_path)
 
-    return HttpResponse("500 Error")
+    return HttpResponse("500 Error - Museum of ZZT", status=500)
 
 
 def error_403(request, exception=None):
     context = {}
-    return render(request, "museum_site/403.html", context)
+    return render(request, "museum_site/403.html", context, status=403)
 
 
 def error_404(request, exception=None):
     context = {}
-    return render(request, "museum_site/404.html", context)
+    return render(request, "museum_site/404.html", context, status=404)
