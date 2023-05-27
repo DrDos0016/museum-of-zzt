@@ -39,6 +39,7 @@ ALLOWED_HOSTS = [
     "testserver",
     "10.0.0.101",
     "10.0.0.98",
+    "kudzu.museumofzzt.com",
 ]
 
 
