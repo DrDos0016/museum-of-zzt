@@ -33,29 +33,18 @@ $(document).ready(function (){
 </div>
 
 <div class="directory">
-{% for row in list %}
-    {% if forloop.counter0|divisibleby:split %}
+    {% for column in columns %}
     <div class="column">
-    {% endif %}
-    {% ifchanged %}
-    <div class="header">
-        {{row.1.0|upper}}
-    </div>
-    {% else %}
-        {% if forloop.counter0|divisibleby:split %}
-        <div class="header">
-            {{row.1.0|upper}} (cntd.)
-        </div>
-        {% endif %}
-    {% endifchanged %}
-        <div class="row">
-            {% if row.0 %}
-            <a href="{% url 'browse_field' category row.0.slug|default:'ERROR' %}{% if category != 'genre' %}?sort=release{% endif %}">{{row.0.title}}</a>
+        {% for entry in column %}
+            {% if entry.kind == "header" %}
+            <div class="header">{{entry.title}}</div>
+            {% else %}
+            <div class="row">
+                <a href="{{entry.url}}">{{entry.title}}</a>
+            </div>
             {% endif %}
-        </div>
-    {% if forloop.counter|divisibleby:split or forloop.last %}
+        {% endfor %}
     </div>
-    {% endif %}
-{% endfor %}
+    {% endfor %}
 </div>
 {% endblock %}

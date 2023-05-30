@@ -55,21 +55,40 @@ def directory(request, category):
 
     # Break the list of results into 4 columns
     data_list = sorted(data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.title.lower()))
-    first_letters = []
 
-    for entry in data_list:
-        if entry.title == "":
-            continue
-        elif entry.title[0] in "1234567890":
-            first_letters.append("#")
-        elif entry.title[0].upper() not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-            first_letters.append("*")
-        else:
-            first_letters.append(entry.title[0].upper())
+    # Split the list into 4 sets
+    column_length = math.ceil(len(data_list) / 4)
+    wip_columns = []
+    for idx in range(0,4):
+        wip_columns.append(data_list[:column_length])
+        data_list = data_list[column_length:]
 
-    data["list"] = list(zip(data_list, first_letters))
-    data["split"] = math.ceil(len(data_list) / 4.0)
+    # Add headings to create final columns
+    final_columns = [[], [], [], []]
+    observed_letters = []
+    last_letter = ""
+    force_header = False
+    for idx in range(0,4):
+        wip_column = wip_columns[idx]
+        if idx != 0:
+            force_header = True
 
+        for entry in wip_column:
+            first_letter = entry.title[0].upper()
+            if first_letter in "1234567890":
+                first_letter = "#"
+            elif first_letter not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+                first_letter = "*"
+            if (first_letter not in observed_letters) or force_header:
+                observed_letters.append(first_letter)
+                final_columns[idx].append({"kind": "header", "title": first_letter + (" (cntd.)" if force_header else "")})
+                force_header = False
+
+            final_columns[idx].append({"url": entry.url, "title": entry.title, "kind": "entry"})
+        # Mark letters repeated between columns
+        last_letter = first_letter
+
+    data["columns"] = final_columns
     return render(request, "museum_site/directory.html", data)
 
 
