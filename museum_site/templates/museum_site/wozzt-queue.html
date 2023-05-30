@@ -86,7 +86,7 @@ $(document).ready(function (){
 | <a href="?category=discord">Discord Queue</a>
 | <a href="?category=failed">Failed Tweets</a>
 {% endif %}
-<p>Current Category: <b>{{request.GET.category|title|default:"Wozzt"}}</b><br>
+<p>Current Category: <b>{{category|title|default:"Wozzt"}}</b><br>
 
 {% if request.GET.category == "tuesday" %}
 <p>The Title Screen Tuesday queue is posted from once every three hours starting at 00:45 UTC on Tuesdays. It consists of randomly selected title screen boards from (nearly) every non-explicit marked ZZT world hosted on the Museum of ZZT that can be displayed with the default character set and palette.</p>

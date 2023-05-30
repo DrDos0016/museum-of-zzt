@@ -335,6 +335,9 @@ def worlds_of_zzt_queue(request):
                 entry.delete_image()
                 entry.delete()
                 return HttpResponse("OK")
+    else:
+        if category not in ["wozzt", "tuesday"]:
+            category = "wozzt"
 
     data["queue"] = WoZZT_Queue.objects.queue_for_category(category)
     data["queue_size"] = len(data["queue"])
@@ -343,6 +346,7 @@ def worlds_of_zzt_queue(request):
     if (request.user.is_authenticated and request.user.profile.patron) or request.user.is_staff or category == "farewell":
         size = 999
     data["queue"] = data["queue"][:size]
+    data["category"] = category
     return render(request, "museum_site/wozzt-queue.html", data)
 
 
