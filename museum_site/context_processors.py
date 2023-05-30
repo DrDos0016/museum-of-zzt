@@ -13,7 +13,8 @@ def museum_global(request):
     data = {}
 
     # Resolved URL
-    data["resolved_url"] = resolve(request.path)
+    if request.resolver_match:
+        data["resolved_url"] = resolve(request.path)
 
     # Debug mode
     data["debug"] = True if (settings.DEBUG or request.GET.get("DEBUG") or request.session.get("DEBUG")) else False

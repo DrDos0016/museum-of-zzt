@@ -24,7 +24,7 @@ def main():
     if confirm == "yes":
 
         print("Importing {}...".format(name, filename))
-        command = "mysql -u {} -p{} {} < {}".format(
+        command = "mysql -u {} -p'{}' {} < {}".format(
             user, password, name, filename
         )
         os.system(command)
