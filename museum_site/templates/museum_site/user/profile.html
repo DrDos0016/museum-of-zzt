@@ -204,8 +204,8 @@ function iso8601_to_user_tz(selector)
         </td>
     </tr>
     <tr>
-        <th>Beta Site Credentials<br>[$5+]</th>
-        {% if user_obj.profile.patronage >= 500 %}<td class="mono">Username: {{BETA_USERNAME}}<br>Password: {{BETA_PASSWORD}}</td>
+        <th>Beta Site Password<br>[$5+]</th>
+        {% if user_obj.profile.patronage >= 500 %}<td class="mono">Password: {{BETA_PASSWORD}}</td>
         <td><a href="https://beta.museumofzzt.com" target="_blank">Visit Beta Site</a></td>
         {% else %}
         <td colspan="2"><i>Unavailable at your current pledge and/or tier.</i></td>
