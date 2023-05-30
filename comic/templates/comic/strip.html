@@ -58,7 +58,7 @@
 <script>
 $(document).ready(function (){
     $("#comic_nav").change(function (){
-        destination = "/comic/{{comic_account}}/strip/" + $(this).val() + "/" + $("#comic_nav option:selected").data("slug");
+        destination = "/comic/{{comic_account}}/strip/" + $(this).val() + "/" + $("#comic_nav option:selected").data("slug") + "/";
         window.location = destination;
     });
 });
