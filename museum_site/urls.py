@@ -96,6 +96,7 @@ urlpatterns = [
     path("debug/play/", museum_site.debug_views.debug_play),
     path("debug/widgets/", museum_site.debug_views.debug_widgets),
     path("debug/wozzt/", museum_site.debug_views.debug_wozzt),
+    path("debug/wozzt2/", museum_site.debug_views.debug_wozzt2),
 
     # /detail/
     path("detail/", museum_site.help_views.Detail_Overview_View.as_view(), name="file_details"),
@@ -248,6 +249,7 @@ urlpatterns = [
 
     # /upload/
     path("upload/", museum_site.upload_views.upload, name="upload"),
+    #path("upload/", museum_site.upload_views.Upload_View.as_view(), name="upload"),
     path("upload/complete/<str:token>/", museum_site.upload_views.upload_complete, name="upload_complete"),
     path("upload/delete/confirm/", museum_site.upload_views.Upload_Delete_Confirmation_View.as_view(), name="upload_delete_confirmation"),
     path("upload/<str:action>/", museum_site.upload_views.Upload_Action_View.as_view(), name="upload_action"),

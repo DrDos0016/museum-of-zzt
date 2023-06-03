@@ -173,3 +173,9 @@ def debug_wozzt(request):
     qs = File.objects.roulette("PLACEHOLDERSEED", 101).order_by("id")
     context["qs"] = qs
     return render(request, "museum_site/debug/debug-wozzt.html", context)
+
+
+def debug_wozzt2(request):
+    context = {}
+    context["zfiles"] = File.objects.filter(pk__in=request.GET.getlist("pk"))
+    return render(request, "museum_site/debug/debug-wozzt2.html", context)

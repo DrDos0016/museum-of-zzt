@@ -873,6 +873,22 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         context["actions"] = actions
         return context
 
+    def context_stream(self):
+        """ Context to display object during stream overviews """
+        context = self.context_universal()
+
+        fields = ["authors", "companies", "zfile_date"]
+
+        context["fields"] = []
+        for field in fields:
+            field_info = self.get_field(field)
+            if field_info.get("label") == "Company" and field_info.get("value") == "":
+                continue
+            context["fields"].append(field_info)
+
+        return context
+
+
     # Guide Word Functions
     def get_guideword_author(self):
         output = []

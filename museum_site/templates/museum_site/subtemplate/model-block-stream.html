@@ -1,0 +1,20 @@
+{% load static %}
+{% load site_tags %}
+
+<div class="{{roles|join:' '}} cp437" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
+    <div class="model-block-top-margin"></div>
+    <img class="preview-image {% if not preview.no_zoom %} zoomable{% endif %}{% if preview.zoomed %} zoomed{% else %} thumbnail{% endif %}" src="{% static preview.url %}" alt="{{preview.url}}">
+    <div class="model-block-title">
+        <h2>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h2>
+    </div>
+    <div class="model-block-data">
+        <div class="col">
+        {% for field in fields %}
+        <div class="datum">
+                <div class="label">{{field.label}}</div>
+                <div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>

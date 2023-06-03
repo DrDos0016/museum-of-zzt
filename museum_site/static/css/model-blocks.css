@@ -358,6 +358,36 @@
 {
     display:inline;
 }
+/* End CL Info View */
+
+/* Stream View */
+/* Detailed View */
+.model-block.stream
+{
+    grid-template-areas:
+    "screenshot title"
+    "screenshot data";
+
+    column-gap:8px;
+    grid-template-columns: minmax(240px, auto) 1fr;
+    grid-template-rows:min-content 1fr;
+    max-width:720px;
+    width:720px;
+    background-color:var(--ega-darkblue);
+    border:4px solid var(--ega-blue);
+    border-radius:14px;
+    padding:7px 4px 7px 4px;
+    margin:7px auto 0px auto;
+}
+
+.model-block.stream .model-block-icons { display:none; }
+.model-block.stream .model-block-title h2 { font-size:36px; font-weight:400; }
+.model-block.stream .model-block-data { font-size:28px; font-weight:400; }
+.model-block.stream .model-block-data .datum { border:0px; }
+.model-block.stream h2 a { color:var(--ega-yellow); }
+.model-block.stream a { color:var(--ega-cyan); }
+.model-block.stream .label { min-width:10ch; }
+/* End Stream View */
 
 /* UNORGANIZED BELOW THIS POINT */
 
