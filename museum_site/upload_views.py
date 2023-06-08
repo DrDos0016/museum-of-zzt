@@ -329,10 +329,10 @@ class Upload_View(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.mode == "new":
-            context["title"] = "!!! Upload File"
+            context["title"] = "Upload File"
             context["submit_text"] = context["title"]
         else:
-            context["title"] = "!!! Edit Unpublished Upload"
+            context["title"] = "Edit Unpublished Upload"
             context["submit_text"] = "Edit Upload"
 
         context["zgame_form"] = self.zgame_form
