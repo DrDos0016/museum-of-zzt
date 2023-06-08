@@ -32,4 +32,14 @@
 {% endfor %}</textarea>
 </div>
 {% endif %}
+
+{% if form.responses.tumblr %}
+<div>
+<h3>Tumblr</h3>
+<textarea>{% for r in form.responses.tumblr %}{{r}}
+==========================================
+{% endfor %}</textarea>
+</div>
+{% endif %}
+
 {% endblock %}
