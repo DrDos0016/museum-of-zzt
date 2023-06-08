@@ -19,7 +19,7 @@ def main():
     filename = "museum_db_dump.sql" if len(sys.argv) < 2 else sys.argv[-1]
 
     print("Dumping {} to {}".format(name, filename))
-    command = "mysqldump -u {} -p{} {} > {}".format(user, password, name, filename)
+    command = "mysqldump -u {} -p'{}' {} > {}".format(user, password, name, filename)
     os.system(command)
     print("DONE.")
 
