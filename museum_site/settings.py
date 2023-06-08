@@ -42,7 +42,9 @@ SMTP_PORT = os.environ.get("MOZ_SMTP_PORT", 0)
 SMTP_AUTH_USER = os.environ.get("MOZ_SMTP_AUTH_USER", "-UNDEFINED-")
 SMTP_AUTH_PASS = os.environ.get("MOZ_SMTP_AUTH_PASS", "-UNDEFINED-")
 
-# IP Bans
+# IP Address Related
+REMOTE_ADDR_HEADER = os.environ.get("MOZ_REMOTE_ADDR_HEADER", "REMOTE_ADDR")
+
 # TODO: This is janky and temporary
 BANNED_IPS = [
     #"127.0.0.*",

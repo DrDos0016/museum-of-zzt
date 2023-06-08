@@ -1,11 +1,16 @@
+import time
+import os
 import zipfile
 
 from django import forms
 
-from museum_site.constants import LANGUAGES, LANGUAGE_CHOICES, UPLOAD_TEST_MODE
-from museum_site.core.misc import record
-from museum_site.fields import Tag_List_Field
-from museum_site.models import Download, File, Genre, Upload, Zeta_Config
+from museum_site.constants import LANGUAGES, LANGUAGE_CHOICES, UPLOAD_TEST_MODE, ZGAMES_BASE_PATH, PREVIEW_IMAGE_BASE_PATH
+from museum_site.core.detail_identifiers import *
+from museum_site.core.file_utils import calculate_md5_checksum
+from museum_site.core.image_utils import optimize_image
+from museum_site.core.misc import calculate_boards_in_zipfile, calculate_sort_title, get_letter_from_title, generate_screenshot_from_zip, record
+from museum_site.fields import Choice_Field_No_Validation, Tag_List_Field
+from museum_site.models import Author, Company, Detail, Download, File, Genre, Upload, Zeta_Config
 from museum_site.widgets import (
     Enhanced_Date_Widget, Enhanced_Text_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget, Language_Checklist_Widget
 )
@@ -62,7 +67,7 @@ class Play_Form(forms.Form):
 
 
 class Upload_Form(forms.ModelForm):
-    generate_preview_image = forms.ChoiceField(
+    generate_preview_image = Choice_Field_No_Validation(
         choices=[  # List rather than tuple so it can be modified later
             ("AUTO", "Automatic"),
             ("NONE", "None")
@@ -72,7 +77,7 @@ class Upload_Form(forms.ModelForm):
             "preview image. Leave set to 'Automatic' to use the oldest file in "
             "the zip file. This image may be changed during publication."
         ),
-
+        required=False
     )
     edit_token = forms.CharField(required=False, widget=forms.HiddenInput())
 
@@ -110,6 +115,12 @@ class Upload_Form(forms.ModelForm):
             ),
         }
 
+    def process(self, ip, user_id=None):
+        self.upload = self.save(commit=False)
+        self.upload.generate_edit_token(force=False)
+        self.upload.ip = ip
+        self.upload.user_id = user_id
+        self.upload.save()
 
 class Upload_Action_Form(forms.Form):
     use_required_attribute = False
@@ -139,6 +150,9 @@ class Upload_Delete_Confirmation_Form(forms.Form):
 
 
 class ZGame_Form(forms.ModelForm):
+    UPLOAD_DIRECTORY = os.path.join(ZGAMES_BASE_PATH, "uploaded")
+    mode = "new"
+
     field_order = ["zfile", "title", "author", "company", "genre", "explicit", "release_date", "language", "description"]
     zfile = forms.FileField(
         help_text=("Select the file you wish to upload. All uploads <i>must</i> be zipped."),
@@ -190,6 +204,8 @@ class ZGame_Form(forms.ModelForm):
     max_upload_size = 0
     editing = False
     expected_file_id = 0  # For replacing a zip
+
+    uploaded_zipfile = None
 
     class Meta:
         model = File
@@ -317,3 +333,96 @@ class ZGame_Form(forms.ModelForm):
         else:
             raise forms.ValidationError("At least one language must be specified.")
         return self.cleaned_data["language"]
+
+    def process(self):
+        self.process_zgame_form()
+        # Final save
+        self.zfile.basic_save()
+
+        # Create a Download for zgames
+        download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zfile.filename, kind="zgames")
+        if created:
+            self.zfile.downloads.add(download)
+
+    def process_zgame_form(self):
+        # Create the ZFile object intended to be saved to the database
+        self.zfile = self.save(commit=False)
+
+        # If a zipfile was uploaded...
+        if self.cleaned_data["zfile"]:
+            if self.mode == "new":  # Set filename to the uploaded zipfile's if this is a new upload
+                self.zfile.filename = self.cleaned_data["zfile"].name
+            zfile_path = os.path.join(self.UPLOAD_DIRECTORY, self.zfile.filename)
+            self.upload_submitted_zipfile(zfile_path)
+            self.zfile.size = self.cleaned_data["zfile"].size
+            self.zfile.checksum = calculate_md5_checksum(zfile_path)
+            (self.zfile.playable_boards, self.zfile.total_boards) = calculate_boards_in_zipfile(zfile_path)
+
+        self.zfile.letter = get_letter_from_title(self.zfile.title)
+
+        if self.mode == "new":
+            self.zfile.key = self.zfile.filename.lower()[:-4]
+            self.zfile.release_source = "User upload"
+
+        self.zfile.sort_title = calculate_sort_title(self.zfile.title)
+        self.zfile.language = "/".join(self.cleaned_data["language"])
+        self.zfile.basic_save()
+        self.zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
+
+        # Clear old many-to-many associations
+        if self.mode == "edit":
+            to_clear = ["genres", "companies", "authors"]
+            for m2m in to_clear:
+                self.clear_zfile_m2m(m2m)
+
+        # Create new many-to-many associations
+        for genre in self.cleaned_data["genre"]:
+            self.zfile.genres.add(genre)
+
+        for company in self.cleaned_data["company"]:
+            if company == "":
+                continue
+            (c_obj, created) = Company.objects.get_or_create(title=company.strip())
+            self.zfile.companies.add(c_obj)
+            # If it's newly created, set the slug
+            if created:
+                c_obj.generate_automatic_slug(save=True)
+
+        for author in self.cleaned_data["author"].split("/"):
+            if author == "":
+                continue
+            (a_obj, created) = Author.objects.get_or_create(title=author.strip())
+            self.zfile.authors.add(a_obj)
+            # If it's newly created, set the slug
+            if created:
+                a_obj.generate_automatic_slug(save=True)
+
+    def upload_submitted_zipfile(self, zfile_path):
+        """ Move the uploaded zipfile to its destination directory """
+        with open(zfile_path, 'wb+') as fh:
+            for chunk in self.cleaned_data["zfile"].chunks():
+                fh.write(chunk)
+
+    def clear_zfile_m2m(self, m2m):
+        """ Clears all associations with specified many to many field """
+        getattr(self.zfile, m2m).clear()
+
+    def generate_preview_image(self, requested_image_source="AUTO"):
+        if requested_image_source == "NONE":
+            # Remove existing screenshot if one exists
+            if self.zfile.screenshot:
+                os.remove(self.zfile.screenshot_phys_path())
+                self.zfile.screenshot = ""
+            return True
+        elif requested_image_source == "AUTO":
+            if self.zfile.screenshot:
+                return True  # Keep existing preview image
+            requested_image_source = None  # Provide no specific world when generating the image
+
+        # Generate a new image
+        screenshot_filename = self.zfile.filename[:-4] + ".png"
+        screenshot_path = os.path.join(PREVIEW_IMAGE_BASE_PATH, self.zfile.bucket(), screenshot_filename)
+        if generate_screenshot_from_zip(self.zfile.phys_path(), screenshot_path, world=requested_image_source):
+            self.zfile.screenshot = screenshot_filename
+            optimize_image(self.zfile.screenshot_phys_path())
+        return True

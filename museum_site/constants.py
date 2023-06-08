@@ -13,13 +13,13 @@ YEAR = datetime.now().year
 
 # Paths
 APP_NAME = "museum_site"
-SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # /var/projects/museum-of-zzt
-APP_ROOT = os.path.join(SITE_ROOT, APP_NAME)  # /var/projects/museum-of-zzt/museum_site
-TEMP_PATH = os.path.join(SITE_ROOT, "temp")  # /var/projects/museum-of-zzt/temp
-STATIC_PATH = os.path.join(SITE_ROOT, APP_NAME, "static")  # /var/projects/museum-of-zzt/museum_site/static
-PREVIEW_IMAGE_BASE_PATH = os.path.join(STATIC_PATH, "images", "screenshots")  # /var/projects/museum-of-zzt/museum_site/static/images/screenshots
+SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # /museum-of-zzt
+APP_ROOT = os.path.join(SITE_ROOT, APP_NAME)  # /museum-of-zzt/museum_site
+TEMP_PATH = os.path.join(SITE_ROOT, "temp")  # /museum-of-zzt/temp
+STATIC_PATH = os.path.join(SITE_ROOT, APP_NAME, "static")  # /museum-of-zzt/museum_site/static
+PREVIEW_IMAGE_BASE_PATH = os.path.join(STATIC_PATH, "screenshots")  # /museum-of-zzt/museum_site/static/screenshots
 ZGAMES_BASE_PATH = os.path.join(SITE_ROOT, "zgames")  # /var/projects/museum-of-zzt/zgames
-DATA_PATH = os.path.join(STATIC_PATH, "data")  # /var/projects/museum-of-zzt/museum_site/static/data
+DATA_PATH = os.path.join(STATIC_PATH, "data")  # /museum-of-zzt/museum_site/static/data
 CHARSET_PATH = os.path.join(STATIC_PATH, "images", "charsets")
 
 # Contact Information

@@ -29,10 +29,10 @@ class ZFile_Urls:
     def preview_url(self):
         if self.screenshot:
             if self.screenshot not in self.SPECIAL_SCREENSHOTS:
-                return os.path.join("images/screenshots/{}/{}".format(self.letter, self.screenshot))
+                return os.path.join("screenshots/{}/{}".format(self.bucket(), self.screenshot))
             else:
-                return os.path.join("images/screenshots/{}".format(self.screenshot))
-        return os.path.join("images/screenshots/no_screenshot.png")
+                return os.path.join("screenshots/{}".format(self.screenshot))
+        return os.path.join("screenshots/no_screenshot.png")
 
     def url(self):
         return "/file/view/{}/".format(self.key)

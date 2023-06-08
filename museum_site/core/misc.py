@@ -157,21 +157,17 @@ def generate_screenshot_from_zip(zip_path, screenshot_path, world=None, board=0,
         return False
 
     # Extract the file and render
-    print("Extracting")
     try:
         zf.extract(world, path=DATA_PATH)
-    except NotImplementedError:
+    except (NotImplementedError, KeyError):
         return False
     zk = zookeeper.Zookeeper(os.path.join(DATA_PATH, world))
     zk.boards[board].screenshot(os.path.join(screenshot_path[:-4]), title_screen=(not bool(board)))
-
-    print("SCREENSHOT SAVING TO", os.path.join(screenshot_path[:-4]))
 
     # Delete the extracted world
     # TODO: This leaves lingering folders for zips in folders
     os.remove(os.path.join(DATA_PATH, world))
 
-    print("Returning true!")
     return True
 
 

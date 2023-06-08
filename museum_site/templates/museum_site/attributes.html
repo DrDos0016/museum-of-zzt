@@ -16,9 +16,9 @@
 <tr><th>MD5 Checksum</td><td class="caps">{{file.checksum}}</td></tr>
 <tr><th>Company</th><td>{{file.get_all_company_names|default:"<i>No company</i>"}}</td></tr>
 <tr><th>Explicit</th><td>{{file.explicit}}</td></tr>
-<tr><th>Description</th><td>{% if file.description %}<textarea>{{file.description}}</textarea>{% else %}<i>No description</i>{% endif %}</td></tr>
-<tr><th>Alternate Downloads</th><td><a href="#heading-downloads">{{file.downloads.count}}</a></td></tr>
+<tr><th>Description</th><td>{% if file.description %}<textarea readonly>{{file.description}}</textarea>{% else %}<i>No description</i>{% endif %}</td></tr>
 <tr><th>Details</th><td><a href="#heading-details">{{file.details.count}}</a></td></tr>
+<tr><th>Download Sources</th><td><a href="#heading-downloads">{{file.downloads.count}}</a></td></tr>
 <tr><th>File Exists</th><td>{{file.file_exists}}</td></tr>
 <tr><th>Filename</th><td>{{file.filename}}</td></tr>
 <tr><th>Key</th><td>{{file.key|default:"<i>No key set</i>"}}</td></tr>
@@ -33,7 +33,7 @@
 <tr><th>Release Date</th><td>{{file.release_date}}</td></tr>
 <tr><th>Release Date Source</th><td>{{file.release_source}}</td></tr>
 <tr><th>Reviews</th><td><a href="#heading-reviews">{{file.review_count}}</a></td></tr>
-<tr><th>Preview Image Filename</th><td><a href="{% static file.preview_url %}" target="_blank">{{file.screenshot}}</a></td></tr>
+<tr><th>Preview Image Filename</th><td><a href="{% static file.preview_url %}" target="_blank">{{file.screenshot|default:"None"}}</a></td></tr>
 <tr><th>Size</th><td>{{file.size}} bytes ({{file.size|filesizeformat}})</td></tr>
 <tr><th>Supports Zeta Player</th><td>{{file.supports_zeta_player}}</td></tr>
 <tr><th>Title</th><td>{{file.title}}</td></tr>

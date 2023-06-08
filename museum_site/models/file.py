@@ -268,11 +268,16 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def screenshot_phys_path(self):
         """ Returns the physical path to the preview image. If the file has no preview image set or is using a shared screenshot, return an empty string. """
         if self.screenshot and self.screenshot not in self.SPECIAL_SCREENSHOTS:
-            return os.path.join(STATIC_PATH, "images/screenshots/{}/{}".format(self.letter, self.screenshot))
+            return os.path.join(STATIC_PATH, "screenshots/{}/{}".format(self.bucket(), self.screenshot))
         else:
             return ""
 
     # Other Functions
+    def bucket(self):
+        bucket_name = str(self.pk // 1000 * 1000).zfill(4)
+        return bucket_name
+
+
     def file_exists(self): return True if os.path.isfile(self.phys_path()) else False
 
     def related_list(self, related):

@@ -13,6 +13,7 @@ from museum_site.core.form_utils import clean_params
 from museum_site.core.misc import banned_ip
 from museum_site.forms.review_forms import Review_Form
 from museum_site.models import *
+from museum_site.settings import REMOTE_ADDR_HEADER
 from museum_site.templatetags.site_tags import render_markdown
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
@@ -290,7 +291,7 @@ class ZFile_Review_List_View(Model_List_View):
         if key.lower().endswith(".zip"):
             key = key[:-4]
         self.head_object = File.objects.get(key=key)
-        qs = Review.objects.for_zfile_and_user(pk=self.head_object.pk, ip=self.request.META["REMOTE_ADDR"], user_id=self.request.user.id)
+        qs = Review.objects.for_zfile_and_user(pk=self.head_object.pk, ip=self.request.META[REMOTE_ADDR_HEADER], user_id=self.request.user.id)
         self.qs = qs  # Needed to easily check for recent reviews later
         qs = self.sort_queryset(qs)
         return qs
@@ -312,13 +313,13 @@ class ZFile_Review_List_View(Model_List_View):
             return context
 
         # Check for banned users
-        if banned_ip(self.request.META["REMOTE_ADDR"]):
+        if banned_ip(self.request.META[REMOTE_ADDR_HEADER]):
             context["cant_review_message"] = "<b>Banned account.</b>"
             return context
 
         # Prevent doubling up on reviews
         cutoff = context["today"] + timedelta(days=-1)
-        recent = self.qs.filter(ip=self.request.META.get("REMOTE_ADDR"), date__gte=cutoff)
+        recent = self.qs.filter(ip=self.request.META.get(REMOTE_ADDR_HEADER), date__gte=cutoff)
         if recent:
             context["cant_review_message"] = (
                 "<i>You have <a href='#rev-{}'>recently reviewed</a> this file and cannot submit an additional review at this time.</i>".format(
@@ -348,7 +349,7 @@ class ZFile_Review_List_View(Model_List_View):
             if self.request.user.is_authenticated:
                 review.author = self.request.user.username
                 review.user_id = self.request.user.id
-            review.ip = self.request.META.get("REMOTE_ADDR")
+            review.ip = self.request.META.get(REMOTE_ADDR_HEADER)
             review.date = context["today"]
             review.zfile_id = self.head_object.id
 

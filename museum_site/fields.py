@@ -54,3 +54,8 @@ class Enhanced_Model_Choice_Field(forms.ModelChoiceField):
 
     def clean(self, value):
         return value
+
+class Choice_Field_No_Validation(forms.ChoiceField):
+    """ Allows a list of choices where any value is treated as valid. Used for specifying preview images on upload. """
+    def valid_value(self, value):
+        return True
