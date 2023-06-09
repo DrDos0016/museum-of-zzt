@@ -24,14 +24,9 @@ DEBUG = True if (ENVIRONMENT == "DEV") else False
 
 ALLOWED_HOSTS = [
     "django.pi",
-    "z2.pokyfriends.com",
-    "museum.pokyfriends.com",
     "museumofzzt.com",
     "www.museumofzzt.com",
-    "openbeta.museumofzzt.com",
-    "merbotia.museumofzzt.com",
     "beta.museumofzzt.com",
-    "api.museumofzzt.com",
     "192.168.1.66",
     "169.254.242.177",
     "10.42.0.1",
@@ -56,6 +51,7 @@ INSTALLED_APPS = [
     "poll",
     "museum_api",
     "zap",
+    "stream",
 ]
 
 MIDDLEWARE = [

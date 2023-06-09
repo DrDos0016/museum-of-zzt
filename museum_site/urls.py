@@ -95,8 +95,6 @@ urlpatterns = [
     path("debug/article/", museum_site.debug_views.debug_article),
     path("debug/play/", museum_site.debug_views.debug_play),
     path("debug/widgets/", museum_site.debug_views.debug_widgets),
-    path("debug/wozzt/", museum_site.debug_views.debug_wozzt),
-    path("debug/wozzt2/", museum_site.debug_views.debug_wozzt2),
 
     # /detail/
     path("detail/", museum_site.help_views.Detail_Overview_View.as_view(), name="file_details"),

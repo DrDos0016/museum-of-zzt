@@ -8,6 +8,7 @@ urlpatterns = [
     path("api/", include("museum_api.urls")),
     path("comic/", include("comic.urls")),
     path("poll/", include("poll.urls")),
+    path("stream/", include("stream.urls")),
     path("tools/zap/", include("zap.urls")),
     path("", include("museum_site.urls")),
 ]
