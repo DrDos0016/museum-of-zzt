@@ -49,13 +49,14 @@ class Article(BaseModel):
         ("80col", "80 Column Text"),
     )
 
-    (REMOVED, PUBLISHED, UPCOMING, UNPUBLISHED) = (0, 1, 2, 3)
+    (REMOVED, PUBLISHED, UPCOMING, UNPUBLISHED, IN_PROGRESS) = (0, 1, 2, 3, 4)
 
     PUBLICATION_STATES = (
         (PUBLISHED, "Published"),
         (UPCOMING, "Upcoming"),
         (UNPUBLISHED, "Unpublished"),
         (REMOVED, "Removed"),
+        (IN_PROGRESS, "In Progress"),
     )
 
     EARLY_ACCESS_PRICING = {UPCOMING: "$2.00 USD", UNPUBLISHED: "$5.00 USD"}

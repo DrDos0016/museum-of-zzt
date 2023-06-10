@@ -30,9 +30,9 @@ class Article_Queryset(Base_Queryset):
         """ Return qs of all articles that are REMOVED """
         return self.filter(published=self.model.REMOVED)
 
-    def not_removed(self):
-        """ Return qs of all articles that are -NOT- REMOVED """
-        return self.exclude(published=self.model.REMOVED)
+    def accessible(self):
+        """ Return qs of all articles that are -NOT- REMOVED and -NOT- IN_PROGRESS """
+        return self.exclude(published=self.model.REMOVED).exclude(published=self.model.IN_PROGRESS)
 
     def publication_packs(self):
         """ Return qs of all articles that are PUBLISHED and categorized as Publication Packs """
@@ -46,7 +46,7 @@ class Article_Queryset(Base_Queryset):
         return self.filter(category=category).published().defer("content").order_by("-publish_date")
 
     def search(self, p):
-        qs = self.exclude(published=self.model.REMOVED)
+        qs = self.accessible()
 
         # Filter by series first as it excludes almost all articles
         if p.get("series") and p["series"] != "Any":

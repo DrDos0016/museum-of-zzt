@@ -93,7 +93,7 @@
 
 <h2 id="heading-articles">File Articles</h2>
 <ul class="data-table">
-{% for a in file.articles.not_removed %}
+{% for a in file.articles.accessible %}
     <li><a href="{{a.url}}">{{a.title}}</a></li>
 {% empty %}
     <li><i>None</i></li>

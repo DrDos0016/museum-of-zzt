@@ -195,7 +195,7 @@ class Series_Form(forms.ModelForm):
     associations = forms.ModelMultipleChoiceField(
         label="Associated Articles",
         required=False,
-        queryset=Article.objects.not_removed(),
+        queryset=Article.objects.accessible(),
         to_field_name="pk",
         widget=Scrolling_Checklist_Widget(
             buttons=["Clear"],

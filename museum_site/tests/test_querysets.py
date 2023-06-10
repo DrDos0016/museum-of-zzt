@@ -78,8 +78,8 @@ class Article_Queryset_Test(TestCase):
         answer = ["Removed Article"]
         self.assertEqual(results, answer)
 
-    def test_not_removed(self):
-        qs = Article.objects.not_removed().order_by("id")[:5]
+    def test_accessible(self):
+        qs = Article.objects.accessible().order_by("id")[:5]
 
         results = []
         for a in qs:

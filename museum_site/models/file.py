@@ -339,7 +339,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def calculate_article_count(self):
         if self.id is not None:
-            self.article_count = self.articles.all().exclude(published=Article.REMOVED).count()
+            self.article_count = self.articles.accessible().count()
 
     def calculate_reviews(self):
         # Calculate Review Count
@@ -496,7 +496,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if DETAIL_LOST in detail_list and exists:
             issues["not_lost"] = "File is marked as 'Lost', but a Zip exists."
 
-        articles = self.articles.all()
+        articles = self.articles.accessible()
         article_len = len(articles)
         if article_len != self.article_count:
             issues["article_count"] = "Articles in DB do not match 'article_count': {}/{}".format(article_len, self.article_count)

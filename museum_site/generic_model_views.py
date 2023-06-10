@@ -268,7 +268,7 @@ class ZFile_Article_List_View(Model_List_View):
     def get_queryset(self):
         key = self.kwargs.get("key")
         self.head_object = File.objects.get(key=key)
-        qs = Article.objects.not_removed().filter(file=self.head_object)
+        qs = Article.objects.accessible().filter(file=self.head_object)
         qs = self.sort_queryset(qs)
         return qs
 
@@ -568,7 +568,7 @@ class Article_Categories_List_View(Model_List_View):
     def get_queryset(self):
         # Find the counts of each category
         counts = {}
-        count_qs = Article.objects.not_removed().values("category").annotate(total=Count("category")).order_by("category")
+        count_qs = Article.objects.accessible().values("category").annotate(total=Count("category")).order_by("category")
         for c in count_qs:
             counts[slugify(c["category"])] = c["total"]
 

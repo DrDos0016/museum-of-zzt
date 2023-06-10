@@ -48,7 +48,7 @@ class Article_Detail_View(DetailView):
     def render_to_response(self, context, **response_kwargs):
         if self.object.published > self.object.user_access_level:  # Access level too low for article
             return redirect_with_querystring("article_lock", self.request.META["QUERY_STRING"], article_id=self.object.pk, slug=self.slug)
-        if self.object.published == Article.REMOVED:  # Block requests for REMOVED articles
+        if self.object.published in [Article.IN_PROGRESS, Article.REMOVED]:  # Block requests for IN_PROGRESS/REMOVED articles
             raise PermissionDenied()
         return super().render_to_response(context, **response_kwargs)
 
