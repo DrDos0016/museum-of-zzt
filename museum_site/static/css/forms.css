@@ -202,7 +202,7 @@ input:disabled { background:var(--file-list-bg); }
 .field_filter input { font-size:smaller; }
 .field_filter label { font-weight:bold; }
 
-#id_zfile, #id_preview { display:none; } /* Auto hide widgets for drag and drop alternatives */
+#upload_form #id_zfile, #id_preview { display:none; } /* Auto hide widgets for drag and drop alternatives */
 
 .field-with-error { background-color:var(--field-error-bg);; }
 
