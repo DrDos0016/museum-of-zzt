@@ -2,9 +2,10 @@ import json
 import os
 
 from datetime import datetime, timezone
+from museum_site.constants import STATIC_PATH
 from museum_site.core.social import Social_Mastodon, Social_Twitter, Social_Tumblr
 
-ZAP_UPLOAD_PATH = "/var/projects/museum-of-zzt/museum_site/static/zap/media/"
+ZAP_UPLOAD_PATH = os.path.join(STATIC_PATH, "zap", "media")
 ZAP_STATIC_PATH = "/static/zap/media/"
 
 
