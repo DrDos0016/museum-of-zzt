@@ -15,7 +15,6 @@ YEAR = datetime.now().year
 APP_NAME = "museum_site"
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # /museum-of-zzt
 APP_ROOT = os.path.join(SITE_ROOT, APP_NAME)  # /museum-of-zzt/museum_site
-TEMP_PATH = os.path.join(SITE_ROOT, "temp")  # /museum-of-zzt/temp
 STATIC_PATH = os.path.join(SITE_ROOT, APP_NAME, "static")  # /museum-of-zzt/museum_site/static
 PREVIEW_IMAGE_BASE_PATH = os.path.join(STATIC_PATH, "screenshots")  # /museum-of-zzt/museum_site/static/screenshots
 ZGAMES_BASE_PATH = os.path.join(SITE_ROOT, "zgames")  # /var/projects/museum-of-zzt/zgames

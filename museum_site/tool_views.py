@@ -6,6 +6,7 @@ import os
 import pwd
 import re
 import shutil
+import tempfile
 import zipfile
 
 from datetime import datetime
@@ -924,6 +925,8 @@ def set_screenshot(request, key):
     zfile = File.objects.get(key=key)
     data["file"] = zfile
     data["file_list"] = []
+    tdh = tempfile.TemporaryDirectory(prefix="moz-")
+    wip_dir = tdh.name
 
     if not HAS_ZOOKEEPER:
         return HttpResponse("Zookeeper library not found.")
@@ -944,28 +947,26 @@ def set_screenshot(request, key):
 
     if request.GET.get("file"):
         with zipfile.ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
-            zf.extract(request.GET["file"], path=SITE_ROOT + "/museum_site/static/data/")
+            zf.extract(request.GET["file"], path=wip_dir)
 
-        z = zookeeper_init(DATA_PATH + "/" + request.GET["file"])
+        z = zookeeper_init(os.path.join(wip_dir, request.GET["file"]))
         data["board_list"] = []
         for board in z.boards:
             data["board_list"].append(board.title)
 
     if request.GET.get("board"):
         data["board_num"] = int(request.GET["board"])
-        new_screenshot_path = os.path.join(TEMP_PATH, "temp")
+        new_screenshot_path = os.path.join(wip_dir, "temp-screenshot")
 
         if data["board_num"] != 0:
             z.boards[data["board_num"]].screenshot(new_screenshot_path)
         else:
             z.boards[data["board_num"]].screenshot(new_screenshot_path, title_screen=True)
-        data["show_preview"] = True
 
     image_path = ""
     if request.POST.get("save"):
         src = new_screenshot_path + ".png"
         image_path = zfile.screenshot_phys_path()
-        print("image_path", image_path)
         shutil.copyfile(src, image_path)
 
         zfile.screenshot = zfile.filename[:-4] + ".png"

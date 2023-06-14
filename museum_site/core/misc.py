@@ -1,4 +1,5 @@
 import os
+import tempfile
 import zipfile
 import urllib.parse
 
@@ -6,7 +7,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from museum_site.constants import DATA_PATH, TEMP_PATH, CHARSET_PATH
+from museum_site.constants import DATA_PATH, CHARSET_PATH
 from museum_site.settings import BANNED_IPS
 
 try:
@@ -31,6 +32,8 @@ def calculate_boards_in_zipfile(zip_path):
         return (None, None)
 
     file_list = zf.namelist()
+    tdh = tempfile.TemporaryDirectory(prefix="moz-")
+    temp_dir = tdh.name
 
     for f in file_list:
         name, ext = os.path.splitext(f)
@@ -41,12 +44,12 @@ def calculate_boards_in_zipfile(zip_path):
 
         # Extract the file
         try:
-            zf.extract(f, path=TEMP_PATH)
+            zf.extract(f, path=temp_dir)
         except Exception:
             record("Could not extract {}. Aborting.".format(f))
             return (None, None)
 
-        z = zookeeper.Zookeeper(os.path.join(TEMP_PATH, f))
+        z = zookeeper.Zookeeper(os.path.join(temp_dir, f))
 
         to_explore = []
         accessible = []
@@ -91,9 +94,6 @@ def calculate_boards_in_zipfile(zip_path):
 
         temp_playable += len(to_explore) - false_positives
         temp_total += len(z.boards)
-
-        # Delete the extracted file from the temp folder
-        os.remove(os.path.join(TEMP_PATH, f))
 
     # Use null instead of 0 to avoid showing up in searches w/ board limits
     playable_boards = None if temp_playable == 0 else temp_playable

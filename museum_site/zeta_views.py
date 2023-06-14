@@ -219,16 +219,12 @@ def zeta_live(request):
 
     f = File.objects.get(pk=int(pk))
 
-    temp_bytes = BytesIO()
-
     # Open original zip and extract the file
     with zipfile.ZipFile(f.phys_path()) as orig_zip:
         orig_file = orig_zip.read(fname)
 
     # Adjust starting board
     modded_file = orig_file[:17] + start + orig_file[18:]
-
-    # temp_bytes.write(orig_file)
 
     # Extract the file
     # Adjust the file

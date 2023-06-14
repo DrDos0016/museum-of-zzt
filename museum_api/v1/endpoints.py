@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 import base64
 import random
+import tempfile
 import zipfile
 
 from io import BytesIO
@@ -37,6 +38,9 @@ SORT_CODES = {
 def worlds_of_zzt(request):
     if not HAS_ZOOKEEPER:
         return server_error_500(request)
+
+    TEMP_DIR = tempfile.TemporaryDirectory(prefix="moz-")
+    TEMP_PATH = TEMP_DIR.name
 
     # Timestamp
     ts = int(time())

@@ -1,6 +1,7 @@
 import json
 import os
 import random
+import tempfile
 import uuid
 import zipfile
 
@@ -15,7 +16,7 @@ from mastodon import Mastodon
 from twitter import *
 
 from museum.settings import STATIC_URL
-from museum_site.constants import TEMP_PATH, STATIC_PATH, APP_ROOT
+from museum_site.constants import STATIC_PATH, APP_ROOT
 from museum_site.core.misc import record, zookeeper_init
 from museum_site.models import BaseModel, File
 from museum_site.querysets.wozzt_queue_querysets import *
@@ -98,12 +99,12 @@ class WoZZT_Queue(BaseModel):
         self.zzt_file = selected
 
         # Extract it
+        TEMP_DIR = tempfile.TemporaryDirectory(prefix="moz-")
+        TEMP_PATH = TEMP_DIR.name
         try:
             zf.extract(selected, TEMP_PATH)
         except NotImplementedError:
-            record(
-                "WOZZT_QUEUE.PY: Failed to extract using file #", self.file_id
-            )
+            record("WOZZT_QUEUE.PY: Failed to extract using file #", self.file_id)
             return False
 
         # Parse the world with Zookeeper
