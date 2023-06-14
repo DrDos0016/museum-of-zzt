@@ -12,10 +12,10 @@ class ZFile_Urls:
         return "/file/attribute/{}/".format(self.key)
 
     def download_url(self):
-        if (not self.id) or self.is_detail(DETAIL_UPLOADED):
-            return "/zgames/uploaded/{}".format(self.filename)
-        else:
-            return "/zgames/{}/{}".format(self.letter, self.filename)
+        zgame = self.downloads.filter(kind="zgames").first()
+        if zgame:
+            return zgame.url
+        return "#"
 
     def play_url(self):
         return "/file/play/{}/".format(self.key)
