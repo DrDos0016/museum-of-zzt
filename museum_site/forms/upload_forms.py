@@ -3,6 +3,7 @@ import os
 import zipfile
 
 from django import forms
+from django.utils.text import slugify
 
 from museum_site.constants import LANGUAGES, LANGUAGE_CHOICES, UPLOAD_TEST_MODE, ZGAMES_BASE_PATH, PREVIEW_IMAGE_BASE_PATH
 from museum_site.core.detail_identifiers import *
@@ -382,20 +383,30 @@ class ZGame_Form(forms.ModelForm):
         for company in self.cleaned_data["company"]:
             if company == "":
                 continue
-            (c_obj, created) = Company.objects.get_or_create(title=company.strip())
-            self.zfile.companies.add(c_obj)
-            # If it's newly created, set the slug
-            if created:
-                c_obj.generate_automatic_slug(save=True)
+            company_slug = slugify(company, allow_unicode=True)
+            slug_exists = Company.objects.filter(slug=company_slug)
+            if slug_exists:
+                c_obj = slug_exists.first()
+                self.zfile.companies.add(c_obj)
+            else:
+                (c_obj, created) = Company.objects.get_or_create(title=company.strip())
+                self.zfile.companies.add(c_obj)
+                if created:  # If it's newly created, set the slug
+                    c_obj.generate_automatic_slug(save=True)
 
         for author in self.cleaned_data["author"].split("/"):
             if author == "":
                 continue
-            (a_obj, created) = Author.objects.get_or_create(title=author.strip())
-            self.zfile.authors.add(a_obj)
-            # If it's newly created, set the slug
-            if created:
-                a_obj.generate_automatic_slug(save=True)
+            author_slug = slugify(author, allow_unicode=True)
+            slug_exists = Author.objects.filter(slug=author_slug)
+            if slug_exists:
+                a_obj = slug_exists.first()
+                self.zfile.authors.add(a_obj)
+            else:
+                (a_obj, created) = Author.objects.get_or_create(title=author.strip())
+                self.zfile.authors.add(a_obj)
+                if created:  # If it's newly created, set the slug
+                    a_obj.generate_automatic_slug(save=True)
 
     def upload_submitted_zipfile(self, zfile_path):
         """ Move the uploaded zipfile to its destination directory """

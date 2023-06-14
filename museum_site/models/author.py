@@ -1,6 +1,6 @@
 from django.db import models
-from django.template.defaultfilters import slugify
 from django.urls import reverse
+from django.utils.text import slugify
 
 from museum_site.querysets.author_querysets import *
 
@@ -20,7 +20,7 @@ class Author(models.Model):
         return self.title
 
     def generate_automatic_slug(self, save=True):
-        self.slug = slugify(self.title)
+        self.slug = slugify(self.title, allow_unicode=True)
         if self.slug == "":
             self.slug = self.title.lower()
         if save:
