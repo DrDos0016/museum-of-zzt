@@ -28,7 +28,9 @@ def title_screen_background(request):
 
 def overview(request):
     context = {}
-    context["zfiles"] = qs_manual_order(File.objects.filter(pk__in=request.GET.getlist("pk")), request.GET.getlist("pk"))
+    #context["zfiles"] = qs_manual_order(File.objects.filter(pk__in=request.GET.getlist("pk")), request.GET.getlist("pk"))
+    stream = Stream.objects.filter(pk=request.GET.get("pk")).first()
+    context["stream"] = stream
     return render(request, "stream/overview.html", context)
 
 

@@ -57,8 +57,8 @@ body
 {
     position:absolute;
     top:857px;
-    right:20px;
-    width:300px;
+    left:1120px;
+    width:284px;
     background-color:var(--ega-darkcyan);
     border-color:var(--ega-cyan);
 }
@@ -67,14 +67,16 @@ body
 {
     max-width:110px;
 }
+
+{% if request.GET.debug %}#root { background:#333; }{% endif %}
 </style>
 
 <body>
 <div id="root">
     <div id="world-text" class="rounded-block"><img src="{% static 'images/tour.png' %}"><br>Overview</div>
     <div id="moz-logo" class="rounded-block">Support the Stream!<br><img src="{% static 'chrome/logos/museum-tiger-by-lazymoth.png' %}"><br><span style="font-size:24px">museumofzzt.com/support/</span></div>
-    {% for zf in zfiles %}
-    {% model_block zf "stream" %}
+    {% for entry in stream.entries.all %}
+        {% model_block entry "stream" %}
     {% endfor %}
 </div>
 </body>
