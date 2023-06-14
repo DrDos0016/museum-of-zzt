@@ -1587,7 +1587,7 @@ function load_charset()
             TILE_HEIGHT = CANVAS_HEIGHT / ENGINE.board_height;
 
             canvas = document.getElementById("world-canvas");
-            ctx = canvas.getContext("2d", { alpha: false });
+            ctx = canvas.getContext("2d", { alpha: true });
 
             draw_board();
         });
