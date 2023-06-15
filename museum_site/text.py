@@ -2,7 +2,7 @@ CATEGORY_DESCRIPTIONS = {
 "bugs-and-glitches": "<p>Articles which discuss bugs and glitches in ZZT and how others have exploited them to their benefit.</p>",
 "closer-look": "<p>A core feature of the Museum. Closer Looks are articles that (typically) focus on a specific ZZT world and document a journey through it from start to finish, discussing gameplay, design, coding, and the legacy of the released world.</p>",
 "contest": "<p>Articles which relate to ZZT contests such as award ceremonies and (un)official scores for events.</p>",
-"featured-game": "<p>Articles which cover specific ZZT and Super ZZT worlds of some notability. These include historical reviews for community awards such as \"Game of the Month\" awards as well as more recent reviews to better showcase ZZT worlds that are well worth your time.</p>",
+"featured-world": "<p>Articles which cover specific ZZT and Super ZZT worlds of some notability. These include historical reviews for community awards such as \"Game of the Month\" awards as well as more recent reviews to better showcase ZZT worlds that are well worth your time.</p>",
 "help": "<p>Articles containing help on a variety of topics. This category contains articles that answer questions about ZZT, how to run it, how to create games for it, reference materials, game recommendations, and various other \"how-to\" guides.</p>",
 "historical": "<p>Articles which contain documents and historical information including scans, newsletters, and message board logs.</p>",
 "interview": "<p>Articles in which a subject is interviewed about topics including their past/present/future with ZZT as well as discussing non-ZZT games they created inspired by ZZT.</p>",

@@ -11,7 +11,7 @@ from museum_site.models import *
 from museum_site.constants import *
 from museum_site.core.image_utils import open_base64_image
 from museum_site.core.misc import extract_file_key_from_url, record
-from museum_site.core.palette import parse_pld
+from museum_site.core.palette import parse_pld, parse_pal
 from museum_site.templatetags.site_tags import model_block, render_markdown
 from museum_site.forms.collection_forms import Collection_Content_Form, Collection_Form
 
@@ -153,6 +153,8 @@ def get_zip_file(request):
         return response
     elif ext == ".pld":
         return HttpResponse(parse_pld(fh.read()))
+    elif ext == ".pal":
+        return HttpResponse(parse_pal(fh.read()))
 
     return HttpResponse("This file type is not currently supported for embedded content.", status=501)
 

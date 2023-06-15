@@ -73,7 +73,7 @@ class Article(BaseModel):
         ("Bugs And Glitches", "Bugs And Glitches"),
         ("Closer Look", "Closer Look"),
         ("Contest", "Contest"),
-        ("Featured Game", "Featured Game"),
+        ("Featured World", "Featured World"),
         ("Help", "Help"),
         ("Historical", "Historical"),
         ("Interview", "Interview"),
