@@ -96,6 +96,9 @@ def explicit_warning(request):
     data = {}
     data["title"] = "Explicit Content Ahead!"
 
+    if request.GET.get("pk"):
+        data["file"] = File.objects.get(pk=request.GET.get("pk"))
+
     if request.POST.get("action") == "Continue":
         if request.POST.get("explicit-warning") == "off":
             request.session["bypass_explicit_content_warnings"] = True

@@ -232,7 +232,12 @@ def render_markdown(raw):
 def meta_tags(*args, **kwargs):
     # Default values
     base_url = "{}://{}{}".format(PROTOCOL, DOMAIN, STATIC_URL[:-1])
-    path = kwargs.get("path", "").split("?")[0]  # Sans QS
+
+    if kwargs.get("include_qs"):
+        path = kwargs.get("path", "")
+    else:
+        path = kwargs.get("path", "").split("?")[0]  # Sans QS
+
     url = base_url + path
     og_default = "pages/og_default.jpg"
     tags = {

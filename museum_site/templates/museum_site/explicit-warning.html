@@ -1,12 +1,17 @@
 {% extends "museum_site/main.html" %}
+{% load site_tags %}
+
+{% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context include_qs=True %}{% endblock %}
 
 {% block content %}
-<h1>Explicit Content Ahead!</h1>
+<h2>Explicit Content Ahead!</h2>
 
-<p><b>This file is known to contain content not suitable for minors.</b></p>
+<p><b>This file is known to contain explicit content.</b></p>
+
+{% if file.explicit_warning %}{{file.explicit_warning|linebreaks}}{% else %}
+<i>No detailed information has been be set for this file. Browse/Play at your own risk.</i>{% endif %}
 
 <p>Please confirm that you are both of age to view explicit content and that you wish to do so.</p>
-
 <form method="POST">
 {% csrf_token %}
 

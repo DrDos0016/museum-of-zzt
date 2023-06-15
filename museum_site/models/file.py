@@ -139,6 +139,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     # Museum Properties
     explicit = models.BooleanField(default=False, help_text="Boolean to mark zfile as containing explicit content.")
+    explicit_warning = models.CharField(max_length=1024, help_text="Specific warning for zfile's explicit content.", default="", blank=True)
     spotlight = models.BooleanField(default=True, help_text="Boolean to mark zfile as being suitable for display on the front page.")
     can_review = models.IntegerField(
         default=REVIEW_YES, choices=REVIEW_LEVELS, help_text="Choice of whether the file can be reviewed freely, pending approval, or not at all."
