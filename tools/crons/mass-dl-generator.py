@@ -32,7 +32,7 @@ T H E   M U S E U M   O F   Z Z T   P R E S E N T S
 A compiliation of all ZZT worlds released in {} hosted on the Museum of ZZT.
 
 To run:
-- Download ZZT v3.2 from https://museumofzzt.com/file/z/zzt.zip
+- Download ZZT v3.2 from https://museumofzzt.com/file/view/zzt/
 - Extract ZZT and any worlds you wish you play into a directory
 - Download the latest version of Zeta from https://zeta.asie.pl
 - Extract Zeta into the directory containing ZZT and your ZZT worlds
@@ -53,15 +53,18 @@ T H E   M U S E U M   O F   Z Z T   P R E S E N T S
 A compiliation of all Super ZZT worlds hosted on the Museum of ZZT.
 
 To run:
-- Download Super ZZT from https://museumofzzt.com/file/s/szzt.zip
-- Download DOSBox from http://www.dosbox.com
+- Download Super ZZT from https://museumofzzt.com/file/view/szzt/
 - Extract Super ZZT and any worlds you wish you play into a directory
-- Mount the directory in DOSBox with the command:
-  mount c C:\\path\\to\\Super ZZT\\directory
-- Run SZZT.EXE /e and follow the on screen setup instructions (the
-  /e flag enables Super ZZT's editor by pressing "E")
+- Download the latest version of Zeta from https://zeta.asie.pl
+- Extract Zeta into the directory containing Super ZZT and your Super
+  ZZT worlds
+- Run zeta86.exe and configure Super ZZT (You'll likely want "K"eyboard
+  and "C"olor)
 - Press W to bring up the world list and ENTER to select a world
 - Press P to play!
+- By default, Super ZZT's editor is restricted. To enable it, you must
+  pass a commandline arugment to the program when launching zeta:
+  `zeta86.exe -e "SUPERZ.EXE /e`
 
 {} files are included in this compilation:
 
