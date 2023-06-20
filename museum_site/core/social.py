@@ -130,11 +130,17 @@ class Social_Tumblr(Social):
         return True
 
     def post(self, body):
-        print("BODY", body)
         if self.uploaded_media:
             response = self.client.create_photo("worldsofzzt", state="published", caption=body, data=self.uploaded_media)
         else:
-            response = self.client.create_text("worldsofzzt", state="published", body=body)
+            if "http" in body:
+                pre = body[body.find("http"):]
+                url = pre[:pre.find(" ")]
+                self.client.create_link("worldsofzzt", url=url, description=body)
+            else:
+                response = self.client.create_text("worldsofzzt", state="published", body=body)
+
+        self.uploaded_media = []
         self.log_response(response)
         return response
 
@@ -147,6 +153,7 @@ class Social_Tumblr(Social):
 
             response = self.client.reblog("worldsofzzt", id=post_id, reblog_key=reblog_key)
             self.log_response(response)
+
         return response
 
 
