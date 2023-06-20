@@ -2,6 +2,7 @@ import base64
 import glob
 import json
 import os
+import re
 
 from datetime import datetime, timezone
 
@@ -10,7 +11,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from museum_site.constants import SITE_ROOT
-from museum_site.models import Article
+from museum_site.core.transforms import qs_manual_order
+from museum_site.models import Article, File
 from .forms import *
 from .core import ZAP_UPLOAD_PATH, ZAP_STATIC_PATH
 
@@ -107,23 +109,32 @@ def view_event(request, pk):
 def save_image_render(request):
     zap_static_root = os.path.join(SITE_ROOT, "museum_site", "static", "zap")
     zap_renders_path = os.path.join(zap_static_root, "renders")
-    event = Event.objects.get(pk=request.POST["pk"])
+
+    if request.POST.get("filename"):
+        file_name = request.POST.get("filename")
+        event = None
+    else:
+        event = Event.objects.get(pk=request.POST["pk"])
+        idx = request.POST["idx"]
+        file_name = "event-{}-image-render-{}.png".format(event.pk, idx)
+
     raw = request.POST["image_data"][22:]  # Strip image identifier and only store raw data
     image_data = base64.b64decode(raw)
-    idx = request.POST["idx"]
 
-    file_name = "event-{}-image-render-{}.png".format(event.pk, idx)
 
     # Save the image data
     with open(os.path.join(zap_renders_path, file_name), "wb") as fh:
         fh.write(image_data)
 
-    # Log the render
     now = datetime.now(timezone.utc)
-    event.image_render_datetime = now
-    event.save()
+
+    # Log the render
+    if event:
+        event.image_render_datetime = now
+        event.save()
 
     return HttpResponse("Saved {} at {}".format(file_name, str(now)[:19]))
+
 
 
 @staff_member_required
@@ -187,3 +198,24 @@ def post_reply(request):
     context["form"] = form
     context["post"] = post
     return render(request, "zap/create-post.html", context)
+
+
+@staff_member_required
+def share_publication_pack(request):
+    context = {"title": "Publication Pack - Share"}
+
+    article = Article.objects.get(pk=request.GET["pk"])
+
+    all_matches = re.findall("{%.*model_block.*%}", article.content)
+    zfile_ids = []
+    for m in all_matches:
+        if "view=" in m or "gallery" in m:  # Use the gallery frame to get IDs
+            zfile_ids.append(re.sub(r"\D", "", m[:m.find("%}")]))  # Just the PK used in the template tag
+
+    zfiles = qs_manual_order(File.objects.filter(pk__in=zfile_ids), zfile_ids)
+
+    context["article"] = article
+    context["zfiles"] = zfiles
+    context["article_title"] = article.title.split("-")[2]
+    context["vol"] = article.title.split("-")[1]
+    return render(request, "museum_site/tools/share-publication-pack-redux.html", context)

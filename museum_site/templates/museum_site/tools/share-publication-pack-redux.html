@@ -1,0 +1,138 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+#share-pub-pack
+{
+    max-width:775px;
+    background-color:var(--ega-black);
+    padding:8px;
+}
+
+#share-pub-pack .model-block
+{
+    border: 4px solid var(--ega-blue);
+    border-radius: 14px;
+    padding: 7px 4px 7px 4px;
+    text-align: center;
+    color: var(--ega-white);
+    background-color: var(--ega-darkblue);
+}
+
+#share-pub-pack .model-block, #share-pub-pack .model-block a { font-family:cp437; }
+#share-pub-pack .model-block h2 a { color: var(--ega-yellow) }
+#share-pub-pack .model-block a { color: var(--ega-white) }
+
+.gallery-frame
+{
+    gap:2px 3px;
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+.gallery-frame a:visited { color:var(--ega-yellow); }
+
+.model-block-icons
+{
+    display:none;
+}
+
+#pack-article-meta
+{
+    width:100%;
+    grid-template-areas:
+    "screenshot info";
+    grid-template-columns: 480px 1fr;
+    grid-gap:4px;
+}
+
+#pack-article-meta h1 { font-size:28px; font-weight:400; color:var(--ega-yellow);}
+#pack-article-meta #article-info {
+    grid-area: info;
+    margin-left:auto;
+    margin-right:auto;
+    display:flex;
+    flex-direction:column;
+    flex-gap:8px;
+    font-size:28px;
+}
+
+#pack-article-meta #article-info .model-block-data
+{
+    margin-top:8px;
+}
+
+.model-block.gallery .model-block-title { margin:0px; }
+
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/html2canvas.min.js' %}"></script>
+<script>
+$(document).ready(function (){
+    render_canvas();
+    $("#save_render_to_image_button").click(save_render_to_image);
+});
+function render_canvas()
+{
+    console.log("RENDERING!");
+    html2canvas(document.querySelector("#share-pub-pack")).then(canvas => {
+        $("#preview-frame")[0].appendChild(canvas);
+    });
+}
+
+function save_render_to_image()
+{
+    $("#save_render_to_image_button").attr("disabled", true);
+    $("#save_render_to_image_response").html("");
+    var pk = $("input[name=pk]").val();
+    var image_data = $("#preview-frame canvas")[0].toDataURL("image/png");
+
+    $.ajax({
+        url:"/tools/zap/ajax/save-image-render/",
+        data:{
+            "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
+            "filename": "publication-pack-pk-" + $("#pack-pk").val() + "-share.png",
+            "image_data": image_data,
+        },
+        method:"POST",
+    }).done(function (response){
+        $("#save_render_to_image_response").html($("#save_render_to_image_response").html() + response + "<br>");
+    });
+}
+
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>Render:</h2>
+
+{% csrf_token %}
+<input id="save_render_to_image_button" type="button" value="Save Render To Image"> <div id="save_render_to_image_response"></div>
+<input type="hidden" id="pack-pk" value="{{request.GET.pk}}">
+<br>
+<div id="preview-frame"></div>
+
+<hr>
+
+<h2>Raw:</h2>
+
+<div id="share-pub-pack">
+    <div class="gallery-frame">
+    <div class="model-block gallery" id="pack-article-meta">
+        <img src="{% static article.preview_url %}" class="screenshot-thumb preview zoomed">
+        <div id="article-info">
+            <div class="model-block-title l"><h1>Publication Pack<br>{{vol}}<br>{{article_title}}</h1></div>
+            <div class="model-block-data">{{article.description}}</div>
+        </div>
+    </div>
+    {% for zf in zfiles %}
+    {% model_block zf view="gallery" %}
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
