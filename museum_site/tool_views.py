@@ -746,6 +746,7 @@ def series_add(request):
 
 @staff_member_required
 def share_publication_pack(request):
+    """ TODO: This tool can probably be removed? """
     context = {"title": "Publication Pack - Share"}
     twitter_id = ""
     mastodon_id = ""
