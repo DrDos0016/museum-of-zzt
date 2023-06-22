@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.shortcuts import render
 
+from museum_site.settings import REMOTE_ADDR_HEADER
 from .models import Poll, Option, Vote
 
 
@@ -33,7 +34,7 @@ def index(request, poll_id=None):
     # Add vote if necessary
     if request.POST.get("action") == "Vote" and data["display_poll"].active and request.POST.get("vote") and request.POST.get("email"):
         vote = Vote(
-            ip=request.META["REMOTE_ADDR"],
+            ip=request.META[REMOTE_ADDR_HEADER],
             timestamp=datetime.now(),
             email=request.POST["email"],
             option_id=int(request.POST["vote"]),
