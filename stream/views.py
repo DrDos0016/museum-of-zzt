@@ -13,7 +13,7 @@ from stream.models import Stream, Stream_Entry
 
 # Create your views here.
 def index(request):
-    context = {"title": "Streamy"}
+    context = {"title": "Stream"}
     return render(request, "stream/index.html", context)
 
 

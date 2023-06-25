@@ -1,1 +1,15 @@
-Stream Index.
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block content %}
+<h2>Stream Index</h2>
+
+<ul>
+<li><a href="{% url 'stream_schedule' %}">Stream Schedule</a></li>
+<li><a href="{% url 'title_screen_background' %}">Title Screen Background</a></li>
+<li><a href="{% url 'overview' %}?bgcolor=000">Stream Overview</a></li>
+<li><a href="{% url 'stream_add' %}">Create New Livestream</a></li>
+<li><a href="{% url 'stream_entry_add' %}">Create New Stream Entry</a></li>
+</ul>
+{% endblock %}
