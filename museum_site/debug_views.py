@@ -2,6 +2,7 @@ import os
 
 from datetime import datetime
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 
 from museum_site.constants import *
@@ -12,6 +13,7 @@ from museum_site.forms import *
 from museum_site.forms.collection_forms import Collection_Form
 
 
+@staff_member_required
 def debug(request, filename=None):
     data = {"title": "DEBUG PAGE"}
     data["ARTICLE_DEBUG"] = True
@@ -77,6 +79,7 @@ def debug(request, filename=None):
         return render(request, "museum_site/debug/debug.html", data)
 
 
+@staff_member_required
 def debug_article(request, fname=""):
     data = {"id": 0}
     data["TODO"] = "TODO"  # Expected TODO usage.
@@ -120,11 +123,13 @@ def debug_article(request, fname=""):
     return render(request, "museum_site/tools/article-wip.html", data)
 
 
+@staff_member_required
 def debug_blank(request):
     context = {"title": "Blank Test Page"}
     return render(request, "museum_site/debug/debug-blank.html", context)
 
 
+@staff_member_required
 def debug_widgets(request):
     context = {}
 
@@ -136,6 +141,7 @@ def debug_widgets(request):
     return render(request, "museum_site/debug/debug-widget.html", context)
 
 
+@staff_member_required
 def debug_play(request):
     context = {}
 
@@ -147,6 +153,7 @@ def debug_play(request):
     return render(request, "museum_site/debug/debug-play.html", context)
 
 
+@staff_member_required
 def debug_collection_form(request):
     context = {"title": "Debug Collection Form"}
 
