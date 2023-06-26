@@ -134,6 +134,7 @@ class Social_Tumblr(Social):
             response = self.client.create_photo("worldsofzzt", state="published", caption=body, data=self.uploaded_media)
         else:
             if "http" in body:
+                body = body.replace("\n", " ")
                 pre = body[body.find("http"):]
                 url = pre[:pre.find(" ")]
                 self.client.create_link("worldsofzzt", url=url, description=body)
