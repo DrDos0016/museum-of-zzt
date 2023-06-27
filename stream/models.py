@@ -21,6 +21,13 @@ class Stream(BaseModel):
         print(self.when.tzinfo)
         return self.when
 
+    def __str__(self):
+        if self.when:
+            stream_date = self.when.strftime("%Y-%m-%d")
+        else:
+            stream_date = "No Date Set"
+        return "{} ({}) [#{}]".format(self.title, stream_date, self.pk)
+
 
 class Stream_Entry(BaseModel):
     model_name = "Stream Entry"
