@@ -151,6 +151,11 @@ class Review(BaseModel):
     def get_field_reviewer_link(self, view="review-content"):
         return {"value": "<a href='/review/author/{}/'>Other reviews written by {}</a>".format(self.author.lower(), self.author), "safe": True}
 
+    def context_universal(self, request=None):
+        context = super().context_universal(request)
+        context["model_key"] = "rev-{}".format(context["model_key"])
+        return context
+
     def context_detailed(self):
         context = self.context_universal()
         context["roles"] = ["model-block", "detailed"]
