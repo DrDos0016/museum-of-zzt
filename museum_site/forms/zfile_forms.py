@@ -16,8 +16,8 @@ class Advanced_Search_Form(forms.Form):
 
     title = forms.CharField(label="Title contains", required=False)
     author = forms.CharField(label="Author contains", required=False)
-    filename = forms.CharField(label="Filename contains", required=False)
-    contents = forms.CharField(label="Zip file contents contains", help_text="Enter a filename to search for in the file's zip file", required=False)
+    filename = forms.CharField(label="Filename contains", help_text="Enter a filename used for a zip file", required=False)
+    contents = forms.CharField(label="Zip file contents contains", help_text="Enter a filename to find within a zip file", required=False)
     company = forms.CharField(label="Company contains", required=False)
     genre = forms.ModelChoiceField(required=False, queryset=Genre.objects.advanced_search_query(), to_field_name="title", empty_label=FORM_ANY)
     board = Manual_Field(
