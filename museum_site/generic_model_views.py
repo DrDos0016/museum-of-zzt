@@ -13,6 +13,7 @@ from museum_site.core.form_utils import clean_params
 from museum_site.core.misc import banned_ip
 from museum_site.forms.review_forms import Review_Form
 from museum_site.models import *
+from museum_site.models import File as ZFile
 from museum_site.settings import REMOTE_ADDR_HEADER
 from museum_site.templatetags.site_tags import render_markdown
 from museum_site.text import CATEGORY_DESCRIPTIONS
@@ -96,7 +97,7 @@ class Model_List_View(ListView):
 
 
 class ZFile_List_View(Model_List_View):
-    model = File
+    model = ZFile
     letter = None
 
     def setup(self, request, *args, **kwargs):
@@ -123,19 +124,19 @@ class ZFile_List_View(Model_List_View):
                 self.sorted_by = "random"
 
     def get_queryset(self):
-        qs = File.objects.search(self.request.GET)
+        qs = ZFile.objects.search(self.request.GET)
 
         if self.letter:
             qs = qs.filter(letter=self.letter)
         elif self.request.path == "/file/browse/new-finds/":
-            qs = File.objects.new_finds()
+            qs = ZFile.objects.new_finds()
         elif self.request.path == "/file/browse/new-releases/":
-            qs = File.objects.new_releases()
+            qs = ZFile.objects.new_releases()
         elif self.request.path == "/file/roulette/":
-            qs = File.objects.roulette(self.request.GET["seed"], PAGE_SIZE)  # Cap results for list view
+            qs = ZFile.objects.roulette(self.request.GET["seed"], PAGE_SIZE)  # Cap results for list view
         elif self.search_type == "advanced":
             cleaned_params = clean_params(self.request.GET.copy(), list_items=["details"])
-            qs = File.objects.advanced_search(cleaned_params)
+            qs = ZFile.objects.advanced_search(cleaned_params)
         elif self.value and self.field == "author":
             qs = qs.filter(authors__slug=self.value)
             self.author = Author.objects.reach(slug=self.value)
@@ -267,7 +268,7 @@ class ZFile_Article_List_View(Model_List_View):
 
     def get_queryset(self):
         key = self.kwargs.get("key")
-        self.head_object = File.objects.get(key=key)
+        self.head_object = ZFile.objects.get(key=key)
         qs = Article.objects.accessible().filter(file=self.head_object)
         qs = self.sort_queryset(qs)
         return qs
@@ -290,7 +291,7 @@ class ZFile_Review_List_View(Model_List_View):
         key = self.kwargs.get("key")
         if key.lower().endswith(".zip"):
             key = key[:-4]
-        self.head_object = File.objects.get(key=key)
+        self.head_object = ZFile.objects.get(key=key)
         qs = Review.objects.for_zfile_and_user(pk=self.head_object.pk, ip=self.request.META[REMOTE_ADDR_HEADER], user_id=self.request.user.id)
         self.qs = qs  # Needed to easily check for recent reviews later
         qs = self.sort_queryset(qs)
@@ -361,7 +362,7 @@ class ZFile_Review_List_View(Model_List_View):
             review.save()
 
             # Update file's review count/scores if the review is approved
-            if self.head_object.can_review == File.REVIEW_YES and review.approved:
+            if self.head_object.can_review == ZFile.REVIEW_YES and review.approved:
                 self.head_object.calculate_reviews()
                 # Make Announcement
                 discord_announce_review(review)
