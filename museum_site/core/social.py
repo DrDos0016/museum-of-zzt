@@ -55,6 +55,8 @@ class Social():
 
 
 class Social_Mastodon(Social):
+    uploaded_media = []
+
     def _init_keys(self):
         self.consumer_key = MASTODON_CLIENT_KEY
         self.consumer_secret = MASTODON_CLIENT_SECRET
@@ -95,6 +97,7 @@ class Social_Mastodon(Social):
             media=None
         response = self.client.status_post(status=body, in_reply_to_id=self.reply_to, media_ids=media)
 
+        self.uploaded_media = []
         self.log_response(response)
         return response
 
@@ -159,6 +162,8 @@ class Social_Tumblr(Social):
 
 
 class Social_Twitter(Social):
+    uploaded_media = []
+
     def _init_keys(self):
         self.consumer_key = TWITTER_CONSUMER_KEY
         self.consumer_secret = TWITTER_CONSUMER_SECRET
@@ -195,6 +200,7 @@ class Social_Twitter(Social):
             media=""
 
         response = self.client.statuses.update(status=body, media_ids=media, in_reply_to_status_id=self.reply_to, tweet_mode="extended")
+        self.uploaded_media = []
         self.log_response(response)
         return response
 
