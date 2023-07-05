@@ -12,6 +12,7 @@ from museum_site.models import File
 from stream.models import Stream, Stream_Entry
 
 # Create your views here.
+@staff_member_required
 def index(request):
     context = {"title": "Stream"}
     return render(request, "stream/index.html", context)
