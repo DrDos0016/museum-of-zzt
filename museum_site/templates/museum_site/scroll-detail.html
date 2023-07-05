@@ -1,4 +1,5 @@
 {% extends "museum_site/main.html" %}
+{% load site_tags %}
 {% load zzt_tags %}
 
 {% block style %}
@@ -6,6 +7,9 @@
 #scroll-nav
 {
     justify-content:center;
+    border-top:1px solid var(--border-color);
+    border-bottom:1px solid var(--border-color);
+    font-weight:bold;
 }
 
 #scroll-nav a
@@ -18,7 +22,16 @@
 {% endblock %}
 
 {% block content %}
-<h1>Scroll {{scroll.identifier}}</h1>
+<h1>Scroll {{scroll.identifier}} - {{scroll.title}}</h1>
+<nav id="scroll-nav" class="flex-container">
+    <a href="{% url 'scroll_directory' %}">Scrolls of ZZT</a>
+    <a href="{% url 'scroll_navigation' 'first' %}">First Scroll</a>
+    <a href="{% url 'scroll_navigation' 'prev' %}?id={{scroll.identifier}}">Previous Scroll</a>
+    <a href="{{scroll.source}}">Scroll Source</a>
+    <a href="{% url 'scroll_navigation' 'random' %}">Random Scroll</a>
+    <a href="{% url 'scroll_navigation' 'next' %}?id={{scroll.identifier}}">Next Scroll</a>
+    <a href="{% url 'scroll_navigation' 'latest' %}">Latest Scroll</a>
+</nav>
 
 <div class="c">
 {% scroll %}@Scroll {{scroll.identifier}}
@@ -26,15 +39,7 @@
 {% endscroll %}
 </div>
 
-<nav id="scroll-nav" class="flex-container">
-<a href="{% url 'scroll_first' %}">First Scroll</a>
-<a href="{% url 'scroll_previous' %}?id={{scroll.identifier}}">Previous Scroll</a>
-<a href="{{scroll.source}}">Scroll Source</a>
-<a href="{% url 'scroll_random' %}">Random Scroll</a>
-<a href="{% url 'scroll_next' %}?id={{scroll.identifier}}">Next Scroll</a>
-<a href="{% url 'scroll_latest' %}">Latest Scroll</a>
-</nav>
-
-<p>Scrolls of ZZT are hand-picked moments of some of the more iconic, interesting, or just plain weird bits of text to be found in various ZZT worlds. Enjoy the inanity!</p>
-
+{% if scroll.zfile %}
+<h2>Originating File</h2>
+{% model_block scroll.zfile %}{% endif %}
 {% endblock %}

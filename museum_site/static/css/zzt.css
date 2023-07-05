@@ -79,7 +79,7 @@
 .zzt-scroll .content
 {
     padding-left:32px;
-    min-width:336px; /*336*/
+    min-width:336px;
     height:210px;
     overflow-y:scroll;
     -webkit-overflow-scrolling: touch;
