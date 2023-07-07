@@ -136,7 +136,8 @@ class BaseModel(models.Model):
             },
             "title": self.get_field("view", view="title"),
             "extras": self.extras,
-            "request": self.request
+            "request": self.request,
+            "admin_url": self.admin_url(),
         }
         return context
 

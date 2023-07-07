@@ -34,6 +34,15 @@ class Article_Queryset(Base_Queryset):
         """ Return qs of all articles that are -NOT- REMOVED and -NOT- IN_PROGRESS """
         return self.exclude(published=self.model.REMOVED).exclude(published=self.model.IN_PROGRESS)
 
+    # Composite publishing levels
+    def published_or_upcoming(self):
+        return self.filter(Q(published=self.model.PUBLISHED) | Q(published=self.model.UPCOMING))
+
+    def published_or_upcoming_or_unpublished(self):
+        return self.filter(Q(published=self.model.PUBLISHED) | Q(published=self.model.UPCOMING) | Q(published=self.model.UNPUBLISHED))
+
+    # End Composite publishing levels
+
     def publication_packs(self):
         """ Return qs of all articles that are PUBLISHED and categorized as Publication Packs """
         return self.filter(category="Publication Pack").published().defer("content").order_by("-publish_date", "-id")

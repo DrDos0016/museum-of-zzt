@@ -1,7 +1,7 @@
 {% load static %}
 {% load site_tags %}
 <div class="{{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
-    <div class="model-block-top-margin"><a href="#{{model_key}}" title="{{model}} #{{pk}}">{{pk}}</a></div>
+    <div class="model-block-top-margin">{% if request.user.is_staff %}<a href="{{admin_url}}" target="_blank">Edit</a> {% endif %}<a href="#{{model_key}}" title="{{model}} #{{pk}}">{{pk}}</a></div>
     <div class="model-block-title">
         <h2>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h2>
     </div>

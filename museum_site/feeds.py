@@ -1,18 +1,13 @@
+from datetime import datetime
+
 from django.contrib.syndication.views import Feed
+from django.db.models import Q
 from django.urls import reverse
 from django.template.defaultfilters import slugify
 
 from museum_site.models import Article, File, Review
 
-
-class LatestArticlesFeed(Feed):
-    title = "Museum of ZZT - Latest Articles RSS"
-    link = "/article/"
-    description = "Museum of ZZT article feed"
-
-    def items(self):
-        return Article.objects.published().order_by("-id")[:25]
-
+class Base_Feed(Feed):
     def item_title(self, item):
         return item.title
 
@@ -20,20 +15,38 @@ class LatestArticlesFeed(Feed):
         return item.description
 
     def item_link(self, item):
-        return reverse("article_view", args=[item.pk, slugify(item.title)])
+        return item.url()
 
 
-class Upcoming_Articles_Feed(LatestArticlesFeed):
+
+class Latest_Articles_Feed(Base_Feed):
+    title = "Museum of ZZT - Latest Articles RSS"
+    link = "/article/"
+    description = "Museum of ZZT article feed"
+
     def items(self):
-        return Article.objects.exclude(published=Article.REMOVED).exclude(published=Article.UNPUBLISHED).order_by("-id")[:25]
+        return Article.objects.published().order_by("-id")[:25]
+
+    def item_pubdate(self, item):
+        return datetime.combine(item.publish_date, datetime.min.time())
+
+    def item_author_name(self, item):
+        return item.author
 
 
-class Unpublished_Articles_Feed(LatestArticlesFeed):
+class Upcoming_Articles_Feed(Latest_Articles_Feed):
+    title = "Museum of ZZT - Latest/Upcoming Articles RSS"
     def items(self):
-        return Article.objects.exclude(published=Article.REMOVED).order_by("-id")[:25]
+        return Article.objects.published_or_upcoming().order_by("-id")[:25]
 
 
-class LatestFilesFeed(Feed):
+class Unpublished_Articles_Feed(Latest_Articles_Feed):
+    title = "Museum of ZZT - Latest/Upcoming/Unpublished Articles RSS"
+    def items(self):
+        return Article.objects.published_or_upcoming_or_unpublished().order_by("-id")[:25]
+
+
+class Latest_Files_Feed(Base_Feed):
     title = "Museum of ZZT - Latest Published Files RSS"
     link = "/file/browse/"
     description = "Museum of ZZT published file feed"
@@ -55,16 +68,22 @@ class LatestFilesFeed(Feed):
         return output
 
     def item_link(self, item):
-        return reverse("file", args=[item.key])
+        return item.url()
+
+    def item_pubdate(self, item):
+        return item.publish_date
+
+    def item_author_name(self, item):
+        return ", ".join(item.related_list("authors"))
 
 
-class LatestReviewsFeed(Feed):
+class Latest_Reviews_Feed(Base_Feed):
     title = "Museum of ZZT - Latest Reviews RSS"
     link = "/review/"
     description = "Museum of ZZT review feed"
 
     def items(self):
-        return Review.objects.exclude(zfile_id=None).order_by("-id")[:25]
+        return Review.objects.latest_approved_reviews().order_by("-id")[:25]
 
     def item_title(self, item):
         return item.title
@@ -76,12 +95,18 @@ class LatestReviewsFeed(Feed):
         return output
 
     def item_link(self, item):
-        return reverse("reviews", args=[item.zfile.filename]) + "#rev-" + str(item.pk)
+        return item.url()
+
+    def item_pubdate(self, item):
+        return item.date
+
+    def item_author_name(self, item):
+        return item.get_author()
 
 
-class LatestUploadsFeed(Feed):
+class Latest_Uploads_Feed(Base_Feed):
     title = "Museum of ZZT - Latest Uploaded Files RSS"
-    link = "/detail/view/uploaded/"
+    link = "/file/browse/detail/uploaded/"
     description = "Museum of ZZT file upload feed"
 
     def items(self):
@@ -101,4 +126,10 @@ class LatestUploadsFeed(Feed):
         return output
 
     def item_link(self, item):
-        return reverse("file", args=[item.filename])
+        return item.url()
+
+    def item_pubdate(self, item):
+        return item.upload.date
+
+    def item_author_name(self, item):
+        return ", ".join(item.related_list("authors"))
