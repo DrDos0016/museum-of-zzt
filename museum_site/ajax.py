@@ -299,5 +299,5 @@ def wozzt_queue_add(request):
 
 
 def get_stream_entry(request):
-    item = Stream_Entry.objects.get(pk=reqeust.GET.get("pk"))
+    item = Stream_Entry.objects.get(pk=request.GET.get("pk"))
     return JsonResponse(item.as_json())

@@ -49,27 +49,27 @@ class Stream_Entry(BaseModel):
             return "{} [SE#{}]".format(self.zfile.title, self.pk)
 
     def get_field_view(self, view="stream"):
-        if not self.zfile:
+        if self.title_override:
             return {"label": "Title", "value": "<a>{}</a>".format(self.title_override), "safe": True}
         return self.zfile.get_field_view(view="title")
 
     def get_field_authors(self, view="stream"):
-        if not self.zfile:
+        if self.author_override:
             return {"label": "Author", "value": "<a>{}</a>".format(self.author_override), "safe": True}
         return self.zfile.get_field_authors()
 
     def get_field_companies(self, view="stream"):
-        if not self.zfile:
+        if self.company_override:
             return {"label": "Company", "value": "<a>{}</a>".format(self.company_override), "safe": True}
         return self.zfile.get_field_companies()
 
     def get_field_zfile_date(self, view="stream"):
-        if not self.zfile:
-            return {"label": "Releasede", "value": "<a>{}</a>".format(self.release_date_override), "safe": True}
+        if self.release_date_override:
+            return {"label": "Released", "value": "<a>{}</a>".format(self.release_date_override), "safe": True}
         return self.zfile.get_field_zfile_date()
 
     def preview_url(self):
-        if not self.zfile:
+        if not self.preview_image_override:
             return self.preview_image_override
         return self.zfile.preview_url()
 
@@ -90,3 +90,13 @@ class Stream_Entry(BaseModel):
     def _init_zfile(self):
         if self.zfile:
             self.zfile.init_model_block_context("detailed", self.request, self.show_staff)
+
+    def as_json(self):
+        self.zfile._init_actions()
+        output = {
+            "title": self.get_field_view(view="stream"),
+            "authors": self.get_field_authors(view="stream"),
+            "companies": self.get_field_companies(view="stream"),
+            "date": self.get_field_zfile_date(view="stream"),
+        }
+        return output
