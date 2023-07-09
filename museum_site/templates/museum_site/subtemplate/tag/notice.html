@@ -1,0 +1,39 @@
+<div class="{{kind}}">
+    <div class="text">
+        <b class="heading">{{heading}}</b>
+        {% block notice_text %}
+        {% endblock %}
+    </div>
+</div>
+
+
+{% comment %}
+<div class="content-warning">
+    <div class="text">
+        <b class="heading">CONTENT WARNING</b>
+        <p>The following content contains material which may be offensive
+        to some audiences. It was most likely originally created by a
+        teenager who has since grown up. This material does not necessarily
+        reflect its creator's current opinions nor behaviors.</p>
+
+        <p>Specifically, this page contains depictions of or references to:
+        <br><b>{}</b></p>
+
+        <div class="r">
+            <span class="jsLink" name="cw-hide-all">Hide all future content
+            warnings</span> |
+            <span class="jsLink" name="cw-hide-this"
+            data-content-warning-key="{}">Hide this</span>
+            {}
+
+        </div>
+    </div>
+</div>
+
+<div class="sticky-note">
+    <div class="text">
+        <b class="heading">{}</b>
+        {}
+    </div>
+</div>
+{% endcomment %}

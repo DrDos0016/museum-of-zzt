@@ -14,6 +14,7 @@ from museum_site.core.misc import extract_file_key_from_url, record
 from museum_site.core.palette import parse_pld, parse_pal
 from museum_site.templatetags.site_tags import model_block, render_markdown
 from museum_site.forms.collection_forms import Collection_Content_Form, Collection_Form
+from stream.models import Stream_Entry
 
 
 def arrange_collection(request):
@@ -295,3 +296,8 @@ def wozzt_queue_add(request):
     e.save()
 
     return HttpResponse(resp)
+
+
+def get_stream_entry(request):
+    item = Stream_Entry.objects.get(pk=reqeust.GET.get("pk"))
+    return JsonResponse(item.as_json())

@@ -90,8 +90,10 @@ class Commentary(template.Node):
         return output.format(debug_classes=debug_classes, material=material, commentary=commentary)
 
 
-@register.simple_tag()
+@register.inclusion_tag("museum_site/subtemplate/tag/content-warning.html")
 def content_warning(*args, **kwargs):
+    return{"kind": "content-warning", "heading":"CONTENT WARNING", "warnings": args, "skip_id":kwargs.get("key", "#end-cw"), "noskip":kwargs.get("noskip")}
+
     output = """
         <div class="content-warning">
         <div class="text">

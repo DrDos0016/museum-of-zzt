@@ -1,0 +1,16 @@
+{% extends "museum_site/subtemplate/tag/notice.html" %}
+
+{% block notice_text %}
+<p>The following content contains material which may be offensive to some audiences. This material does not necessarily reflect its creator's current opinions /behaviors.</p>
+
+<p>Specifically, content following this notice contains depictions of or references to:
+    <ul>
+        {% for warning in warnings %}<li><b>{{warning|title}}</b></li>
+        {% endfor %}
+    </ul>
+</p>
+
+{% if not noskip %}
+<div class="r"><a href="{{skip_id}}">Jump past warned content</a></div>
+{% endif %}
+{% endblock %}
