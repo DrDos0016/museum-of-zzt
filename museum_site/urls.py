@@ -35,7 +35,7 @@ urlpatterns = [
     # /ajax/
     path("ajax/submit-form/<slug:slug>/", museum_site.ajax.submit_form, name="ajax_submit_form"),
     path("ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions, name="ajax_get_search_suggestions"),
-    path("ajax/get-stream-entry/", museum_site.ajax.get_stream_entry, name="ajax_get_stream_entry"),
+    path("ajax/get-stream-entries/", museum_site.ajax.get_stream_entries, name="ajax_get_stream_entries"),
     path("ajax/get-<str:field>-suggestions/", museum_site.ajax.get_suggestions_for_field, name="ajax_get_suggestions_for_field"),
     path("ajax/get_zip_file/", museum_site.ajax.get_zip_file, name="ajax_get_zip_file"),
     path("ajax/render-review-text/", museum_site.ajax.render_review_text, name="ajax_render_review_text"),
