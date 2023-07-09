@@ -302,7 +302,7 @@ def get_stream_entries(request):
     if request.GET.get("pk"):
         qs = Stream_Entry.objects.filter(pk=request.GET["pk"])
     else:
-        qs = Stream_Entry.objects.all()[:10]
+        qs = Stream_Entry.objects.all().order_by("-id")[:10]
 
     output = {"items": []}
 
