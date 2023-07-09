@@ -94,6 +94,7 @@ class Stream_Entry(BaseModel):
     def as_json(self):
         self.zfile._init_actions()
         output = {
+            "pk": self.pk,
             "title": self.get_field_view(view="stream"),
             "authors": self.get_field_authors(view="stream"),
             "companies": self.get_field_companies(view="stream"),
