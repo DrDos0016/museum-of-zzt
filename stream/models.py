@@ -69,7 +69,7 @@ class Stream_Entry(BaseModel):
         return self.zfile.get_field_zfile_date()
 
     def preview_url(self):
-        if not self.preview_image_override:
+        if self.preview_image_override:
             return self.preview_image_override
         return self.zfile.preview_url()
 
