@@ -12,3 +12,7 @@ class Base_Queryset(models.QuerySet):
     def spotlight(self, spotlight_value=True):
         """ Filters by spotlight field. Defaults to filtering where spotlight == True """
         return self.filter(spotlight=spotlight_value)
+
+    def api_all(self):
+        """ Returns all items, intended to be overriden when not all items should be public """
+        return self.all()

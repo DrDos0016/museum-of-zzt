@@ -38,6 +38,7 @@ def search(request):
 
 
 def zfile_get(request):
+    print("Non generic")
     resp = api_response(int(time.time()))
 
     # Validate params
@@ -102,4 +103,38 @@ def mapping_get(request):
         resp["status"] = "FAILURE"
 
     resp["data"] = data
+    return JsonResponse(resp)
+
+
+def model_action(request, model_name, action):
+    resp = api_response(int(time.time()))
+    allowed_models = ("zfile",  "scroll")
+
+    if model_name not in allowed_models:
+        return api_failure("'{}' is not a valid model".format(model_name), resp)
+
+    allowed_actions = {
+        "zfile": ("get", "random",),
+        "scroll": ("get", "random", "list"),
+    }
+
+    if action not in allowed_actions[model_name]:
+        return api_failure("'{}' is not a valid action for model '{}'".format(action, model_name), resp)
+
+    models = {"zfile": File, "scroll": Scroll}
+    model = models[model_name]
+
+    if action == "get":
+        identifier = "pk" if request.GET.get("pk") else "key"
+        qs = model.objects.filter(**{identifier: request.GET[identifier]})[:10]
+        model_data = json.loads(serializers.serialize("json", qs))
+    elif action == "random":
+        qs = model.objects.api_all().order_by("?")[:1]
+        model_data = json.loads(serializers.serialize("json", qs))
+    elif action == "list":
+        qs = model.objects.api_all()[:10]
+        model_data = json.loads(serializers.serialize("json", qs))
+
+    resp["status"] = "SUCCESS"
+    resp["data"] = model_data
     return JsonResponse(resp)

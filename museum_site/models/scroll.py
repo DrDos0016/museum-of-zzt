@@ -2,6 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 from museum_site.models.base import BaseModel
+from museum_site.querysets.base import Base_Queryset
 
 
 class Scroll(BaseModel):
@@ -26,6 +27,10 @@ class Scroll(BaseModel):
     guide_word_values = {"id": "pk", "title": "title", "file": "zfile"}
     table_fields = ["Title", "File", "Source"]
     cell_list = ["title", "zfile", "source"]
+
+    # Database
+    objects = Base_Queryset.as_manager()
+
     # Constants
     SCROLL_TOP = """```
 ╞╤═════════════════════════════════════════════╤╡

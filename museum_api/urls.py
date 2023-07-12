@@ -12,10 +12,10 @@ urlpatterns = [
 
     # Museum API - v2 - Endpoints
     path("v2/zfile/advanced-search/", museum_api.v2.endpoints.advanced_search, name="api2_zfile_advanced_search"),
-    path("v2/zfile/get/", museum_api.v2.endpoints.zfile_get, name="api2_zfile_get"),
     path("v2/zfile/get/random/", museum_api.v2.endpoints.zfile_get_random, name="api2_zfile_get_random"),
     path("v2/zfile/search/", museum_api.v2.endpoints.search, name="api2_zfile_search"),
     path("v2/mapping/get/", museum_api.v2.endpoints.mapping_get, name="api2_mapping_get"),
+    path("v2/<slug:model_name>/<slug:action>/", museum_api.v2.endpoints.model_action, name="api2_model_action"),
 
     # Museum API - v2 - Pages
     path("v2/help/", museum_api.v2.views.help, name="api2_help"),
