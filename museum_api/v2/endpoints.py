@@ -6,6 +6,10 @@ from django.http import JsonResponse, HttpResponse
 
 from museum_site.models import *
 
+API_HEADERS = {
+    "Access-Control-Allow-Origin": "*",
+}
+
 
 def api_response(request_time=None, status=None, initial_data={}):
     return {"status": status, "request_time": request_time, "data": initial_data}
@@ -137,4 +141,5 @@ def model_action(request, model_name, action):
 
     resp["status"] = "SUCCESS"
     resp["data"] = model_data
-    return JsonResponse(resp)
+
+    return JsonResponse(resp, headers=API_HEADERS)
