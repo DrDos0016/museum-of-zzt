@@ -137,10 +137,11 @@ class Social_Tumblr(Social):
             response = self.client.create_photo("worldsofzzt", state="published", caption=body, data=self.uploaded_media)
         else:
             if "http" in body:
+                body = body.replace("\r", " ")
                 body = body.replace("\n", " ")
                 pre = body[body.find("http"):]
-                url = pre[:pre.find(" ")]
-                self.client.create_link("worldsofzzt", url=url, description=body)
+                url = pre[:pre.find(" ")].strip()
+                response = self.client.create_link("worldsofzzt", url=url, description=body)
             else:
                 response = self.client.create_text("worldsofzzt", state="published", body=body)
 
