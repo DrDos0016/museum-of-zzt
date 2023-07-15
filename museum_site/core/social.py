@@ -33,6 +33,7 @@ class Social():
     reply_to = None
     response_history = []
     media = []
+    uploaded_media = []
 
     def __init__(self):
         self._init_keys()
@@ -47,16 +48,16 @@ class Social():
     def reset(self, clear_history=True):
         self.reply_to = None
         self.media = []
+        self.uploaded_media = []
         if clear_history:
             self.response_history = []
 
     def reset_media(self):
         self.media = []
+        self.uploaded_media = []
 
 
 class Social_Mastodon(Social):
-    uploaded_media = []
-
     def _init_keys(self):
         self.consumer_key = MASTODON_CLIENT_KEY
         self.consumer_secret = MASTODON_CLIENT_SECRET
@@ -108,8 +109,6 @@ class Social_Mastodon(Social):
 
 
 class Social_Tumblr(Social):
-    uploaded_media = []
-
     def _init_keys(self):
         self.consumer_key = TUMBLR_OAUTH_CONSUMER
         self.consumer_secret = TUMBLR_OAUTH_CONSUMER_SECRET
@@ -163,8 +162,6 @@ class Social_Tumblr(Social):
 
 
 class Social_Twitter(Social):
-    uploaded_media = []
-
     def _init_keys(self):
         self.consumer_key = TWITTER_CONSUMER_KEY
         self.consumer_secret = TWITTER_CONSUMER_SECRET
