@@ -49,3 +49,6 @@ REMOTE_ADDR_HEADER = os.environ.get("MOZ_REMOTE_ADDR_HEADER", "REMOTE_ADDR")
 BANNED_IPS = [
     #"127.0.0.*",
 ]
+
+# External Article Development
+EXTERNAL_ARTICLE_PATH = os.environ.get("MOZ_EXTERNAL_ARTICLE_PATH", "-UNDEFINED-")
