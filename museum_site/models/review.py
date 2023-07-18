@@ -95,6 +95,11 @@ class Review(BaseModel):
             return "#rev-XX"
         return self.zfile.review_url() + "#rev-{}".format(self.id)
 
+    def get_absolute_url(self):
+        if self.zfile is None:
+            return "#rev-XX"
+        return self.zfile.review_url() + "#rev-{}".format(self.pk)
+
     def preview_url(self):
         return self.zfile.preview_url()
 

@@ -62,7 +62,7 @@ function jump_to(jump)
             {% if article.revision_details %}<div class="revision-label">Revisions (as of {{article.last_revised|default:"Unknown"}}):</div>
             <div class="revision-details">{{article.revision_details|linebreaksbr}}</div>{% endif %}
             {% if request.user.is_staff %}
-            <div><b>Staff Functions:</b> <a href="/admin/museum_site/article/{{article.id}}/change/">Edit Article {{article.id}}</a> | <a href="{% url 'debug_article' article.id %}">WIP Tools</a></div>
+            <div><b>Staff Functions:</b> <a href="{{article.admin_url}}">Edit Article {{article.id}}</a> | <a href="{% url 'debug_article' article.id %}">WIP Tools</a></div>
             {% endif %}
         </div>
     </div>

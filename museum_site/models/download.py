@@ -1,6 +1,7 @@
 import os
 
 from django.db import models
+from django.urls import reverse
 
 from museum_site.models.base import BaseModel
 from museum_site.constants import SITE_ROOT
@@ -38,6 +39,9 @@ class Download(BaseModel):
 
     def __str__(self):
         return "[{}] {} - {}".format(self.id, self.kind, self.url)
+
+    def get_absolute_url(self):
+        return self.url
 
     def hosted_on(self):
         if self.kind == "zgames":

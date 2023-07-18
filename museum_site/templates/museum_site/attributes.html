@@ -94,7 +94,7 @@
 <h2 id="heading-articles">File Articles</h2>
 <ul class="data-table">
 {% for a in file.articles.accessible %}
-    <li><a href="{{a.url}}">{{a.title}}</a></li>
+    <li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
 {% empty %}
     <li><i>None</i></li>
 {% endfor %}
@@ -103,7 +103,7 @@
 <h2 id="heading-authors">File Authors</h2>
 <ul class="data-table">
 {% for a in file.authors.all %}
-    <li><a href="{{a.url}}">{{a.title}}</a></li>
+    <li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
 {% empty %}
     <li><i>None</i></li>
 {% endfor %}
@@ -112,7 +112,7 @@
 <h2 id="heading-companies">File Companies</h2>
 <ul class="data-table">
 {% for c in file.companies.all %}
-    <li><a href="{{c.url}}">{{c.title}}</a></li>
+    <li><a href="{{c.get_absolute_url}}">{{c.title}}</a></li>
 {% empty %}
     <li><i>None</i></li>
 {% endfor %}
@@ -122,7 +122,7 @@
 <table class="data-table" id="contents-info">
     <tr><th>Filename</th><th>Path</th><th>Ext.</th><th>Mod. Date</th><th>Dir</th><th>CRC-32</th><th>Size</th></tr>
     {% for f in file.content.all %}
-    <tr><td><a href="{{file.url}}?file={{f.title|urlencode}}" target="_blank">{{f.title}}</a></td><td>{{f.path}}</td><td>{{f.ext}}</td><td>{{f.mod_date}}</td><td class="c">{{f.directory|yesno:"Y,N"}}</td><td class="r">{{f.crc32}}</td><td class="r" title="{{f.size}} bytes">{{f.size|filesizeformat}}</td></tr>
+    <tr><td><a href="{{file.get_absolute_url}}?file={{f.title|urlencode}}" target="_blank">{{f.title}}</a></td><td>{{f.path}}</td><td>{{f.ext}}</td><td>{{f.mod_date}}</td><td class="c">{{f.directory|yesno:"Y,N"}}</td><td class="r">{{f.crc32}}</td><td class="r" title="{{f.size}} bytes">{{f.size|filesizeformat}}</td></tr>
     {% empty %}
         <tr><td colspan="7" class="c"><i>No Contents Found</i></td></tr>
     {% endfor %}
@@ -138,7 +138,7 @@
 <h2 id="heading-downloads">File Downloads</h2>
 <ul class="data-table">
 {% for d in file.downloads.all %}
-    <li><a href="{{d.url}}" target="_blank">{{d.kind}}</a></li>
+    <li><a href="{{d.get_absolute_url}}" target="_blank">{{d.kind}}</a></li>
 {% empty %}
     <li><i>None</i></li>
 {% endfor %}
@@ -147,7 +147,7 @@
 <h2 id="heading-reviews">File Reviews</h2>
 <ul class="data-table">
 {% for r in reviews %}
-    <li><a href="{{file.review_url}}/#rev-{{r.pk}}">{{r.title|default:"<i>Untitled Review</i>"}}</a></li>
+    <li><a href="{{r.url}}">{{r.title|default:"<i>Untitled Review</i>"}}</a></li>
 {% empty %}
     <li><i>None</i></li>
 {% endfor %}

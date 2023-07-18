@@ -9,6 +9,7 @@ from museum_site.constants import *
 from museum_site.core.file_utils import serve_file_as
 from museum_site.models import *
 from museum_site.forms import *
+from museum_site.settings import EXTERNAL_ARTICLE_PATH
 
 from museum_site.forms.collection_forms import Collection_Form
 
@@ -100,7 +101,7 @@ def debug_article(request, fname=""):
 
         filepath = os.path.join(SITE_ROOT, "wip", fname)
         if not os.path.isfile(filepath):
-            filepath = "/media/drdos/Thumb16/projects/" + request.GET.get("file")
+            filepath = os.path.join(EXTERNAL_ARTICLE_PATH, request.GET.get("file"))
 
         with open(filepath) as fh:
             article = Article.objects.get(pk=2)

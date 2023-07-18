@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from django.db import models
 from django.template import Template, Context
 from django.template.defaultfilters import slugify, linebreaks
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
@@ -118,6 +119,9 @@ class Article(BaseModel):
     def __str__(self):
         output = "[{}] {} by {}".format(self.id, self.title, self.author)
         return output
+
+    def get_absolute_url(self):
+        return reverse("article_view", kwargs={"pk": self.pk, "slug": slugify(self.title)})
 
     def url(self):
         return "/article/view/{}/{}/".format(self.id, slugify(self.title))

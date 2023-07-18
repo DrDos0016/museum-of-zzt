@@ -1,5 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 
 from museum_site.models.base import BaseModel
 from museum_site.querysets.base import Base_Queryset
@@ -61,6 +62,9 @@ class Scroll(BaseModel):
 
     def url(self):
         return "/scroll/view/{}/{}/".format(self.id, slugify(self.title))
+
+    def get_absolute_url(self):
+        return reverse("scroll_view", kwargs={"pk":self.pk, "slug":slugify(self.title)})
 
     def preview_url(self):
         return ""

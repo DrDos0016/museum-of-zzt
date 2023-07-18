@@ -2,6 +2,7 @@ import os
 
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
@@ -65,6 +66,9 @@ class Series(BaseModel):
         if not self.preview:
             self.preview = self.slug + ".png"
         super(Series, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("series_oveview", kwargs={"series_id": self.pk, "slug": self.slug})
 
     def url(self):
         return "/series/{}/{}/".format(self.id, self.slug)

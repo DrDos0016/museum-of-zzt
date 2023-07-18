@@ -1,5 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 
 from museum_site.models.base import BaseModel
 from museum_site.querysets.genre_querysets import *
@@ -22,6 +23,9 @@ class Genre(BaseModel):
 
     def url(self):
         return "/file/browse/genre/{}/".format(self.slug)
+
+    def get_absolute_url(self):
+        return reverse("browse_field", kwargs={"field":"genre", "value":self.slug})
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)

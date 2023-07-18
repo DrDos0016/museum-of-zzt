@@ -1,15 +1,17 @@
 import os
 
+from django.urls import reverse
+
 from museum.settings import STATIC_URL
 from museum_site.core.detail_identifiers import *
 
 
 class ZFile_Urls:
     def article_url(self):
-        return "/file/article/{}/".format(self.key)
+        return reverse("article", kwargs={"key": self.key})
 
     def attributes_url(self):
-        return "/file/attribute/{}/".format(self.key)
+        return reverse("file_attributes", kwargs={"key": self.key})
 
     def download_url(self):
         zgame = self.downloads.filter(kind="zgames").first()
@@ -17,14 +19,17 @@ class ZFile_Urls:
             return zgame.url
         return "#"
 
+    def get_absolute_url(self):
+        return reverse("file", kwargs={"key": self.key})
+
     def play_url(self):
-        return "/file/play/{}/".format(self.key)
+        return reverse("play", kwargs={"key": self.key})
 
     def review_url(self):
-        return "/file/review/{}/".format(self.key)
+        return reverse("reviews", kwargs={"key": self.key})
 
     def tool_url(self):
-        return "/tools/{}/".format(self.key)
+        return reverse("tool_index_with_file", kwargs={"key": self.key})
 
     def preview_url(self):
         if self.screenshot:
@@ -34,8 +39,8 @@ class ZFile_Urls:
                 return os.path.join("screenshots/{}".format(self.screenshot))
         return os.path.join("screenshots/no_screenshot.png")
 
-    def url(self):
-        return "/file/view/{}/".format(self.key)
+    def url(self):  # TODO Replace all these calls
+        return self.get_absolute_url()
 
-    def view_url(self):
-        return self.url()
+    def view_url(self):  # TODO Replace all these calls too!!
+        return self.get_absolute_url()
