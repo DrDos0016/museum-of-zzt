@@ -103,6 +103,9 @@ class Collection(BaseModel):
     def url(self):
         return reverse("view_collection", kwargs={"collection_slug": self.slug})
 
+    def get_absolute_url(self):
+        return reverse("view_collection", kwargs={"collection_slug": self.slug})
+
     def preview_url(self):
         if self.preview_image:
             return self.preview_image.preview_url()
@@ -276,10 +279,13 @@ class Collection_Entry(BaseModel):
         return "Collection Entry #{} - [{}]".format(self.pk, self.zfile.title)
 
     def url(self):
-        return self.zfile.url() if self.zfile is not None else "images/screenshots/no_screenshot.png"
+        return self.zfile.get_absolute_url() if self.zfile is not None else "#"
+
+    def get_absolute_url(self):
+        return self.zfile.get_absolute_url() if self.zfile is not None else "#"
 
     def preview_url(self):
-        return self.zfile.preview_url() if self.zfile is not None else "#"
+        return self.zfile.preview_url() if self.zfile is not None else "images/screenshots/no_screenshot.png"
 
     def get_field(self, field_name, view="detailed"):
         if hasattr(self, "get_field_{}".format(field_name)):

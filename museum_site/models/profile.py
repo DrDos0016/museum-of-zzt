@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 
 from museum_site.constants import UPLOAD_CAP, TIER_NAMES
 from museum_site.querysets.profile_querysets import *
@@ -82,6 +83,9 @@ class Profile(models.Model):
     def link(self):
         slug = slugify(self.user.username)
         return "/user/profile/{}/{}/".format(self.user.id, slug)
+
+    def get_absolute_url(self):
+        return reverse("user_profile", kwargs={"user_id":self.user.id, "unused_slug":slugify(self.user.username)})
 
     def public_patron_status(self):
         if self.patron_visibility:

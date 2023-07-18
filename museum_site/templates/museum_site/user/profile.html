@@ -63,7 +63,7 @@ function iso8601_to_user_tz(selector)
     </tr>
     <tr>
         <th>Profile Link</th>
-        <td colspan="2"><a href="{{user_obj.profile.link}}">Public Profile</a></td>
+        <td colspan="2"><a href="{{user_obj.profile.get_absolute_url}}">Public Profile</a></td>
     </tr>
     {% if user_obj.profile.public_patron_status %}<tr>
         <th>Patron</th>

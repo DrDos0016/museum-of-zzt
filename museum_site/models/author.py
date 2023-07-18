@@ -30,3 +30,6 @@ class Author(models.Model):
         if not self.slug:
             self.slug = "ERROR"
         return reverse("browse_field", kwargs={"field":"author", "value": self.slug})
+
+    def get_absolute_url(self):
+        return reverse("browse_field", kwargs={"field":"author", "value": self.slug})

@@ -35,7 +35,7 @@
 
 <p>If you are a patron that meets these requirements you can enter your password to access this article in the field below:</p>
 
-<form class="c" action="{{article.url}}"{% if request.GET.secret %} style="background-color:#FCC"{% endif %}>
+<form class="c" action="{{article.get_absolute_url}}"{% if request.GET.secret %} style="background-color:#FCC"{% endif %}>
 {% if request.GET.secret %}<p class="c b">Incorrect Password!</p>{% endif %}
 <input name="secret" type="password" value="">
 <input type="submit" value="Unlock">

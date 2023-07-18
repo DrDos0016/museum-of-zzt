@@ -29,7 +29,7 @@
     <th>Edit Token</th>
 {% for zf in my_uploads %}
 <tr>
-<td><a href="{{zf.url}}">{{zf.title}}</a></td>
+<td><a href="{{zf.get_absolute_url}}">{{zf.title}}</a></td>
 <td>{{zf.upload.date}}</td>
 {% if action == "Edit" %}
 <td><a href="{% url 'upload' %}?token={{zf.upload.edit_token}}">{{zf.upload.edit_token}}</a></td>
