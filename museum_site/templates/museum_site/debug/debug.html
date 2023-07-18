@@ -3,6 +3,7 @@
 {% load static %}
 {% load zzt_tags %}
 {% load site_tags %}
+{% load tz %}
 
 {% block style %}
 <style>
@@ -54,6 +55,8 @@
 {% endfor %}
 </ol>
 
+{% get_current_timezone as TIME_ZONE %}
+<p>Hello. TZ IS {{TIME_ZONE}}</p>
 
 <a href="{% url 'youtube' %}" target="_blank" class="noext noul"><div class="plug plug-youtube">
     <div class="logo"><img src="{% static '/icons/youtube-small.png' %}"></div>
