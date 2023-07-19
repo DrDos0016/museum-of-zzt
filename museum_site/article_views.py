@@ -1,10 +1,11 @@
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import DetailView
+from django.views.generic import DetailView, FormView
 from museum_site.constants import *
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.forms.article_forms import Article_Search_Form
 from museum_site.models import *
+from museum_site.generic_model_views import Article_List_View, Model_Search_View
 
 
 class Article_Detail_View(DetailView):
@@ -84,6 +85,8 @@ def article_lock(request, article_id, slug=""):
 
 def article_search(request):
     """ Returns page containing multiple filters to use when searching """
+    if request.GET:
+        return Article_Search_View.as_view()
     form = Article_Search_Form(request.GET if request.GET else None)
 
     if request.session.get("DEBUG"):
@@ -94,3 +97,11 @@ def article_search(request):
 
     data = {"title": "Article Search", "form": form}
     return render(request, "museum_site/generic-form-display.html", data)
+
+
+class Article_Search_View(Model_Search_View):
+    form_class = Article_Search_Form
+    model = Article
+    model_list_view_class = Article_List_View
+    template_name = "museum_site/generic-form-display.html"
+    title = "Article Search"

@@ -86,7 +86,7 @@
         </div>
         </form>
         <div class="advanced-search">
-            <a href="{% url 'advanced_search' %}">Advanced Search</a>
+            <a href="{% url 'search' %}">Advanced Search</a>
         </div>
     </div>
 
@@ -191,12 +191,14 @@
         <a href="{% url 'worlds_of_zzt' %}">Worlds of ZZT Queue</a>
 
         <h3>Policies</h3>
-        <a href="{% url 'correction_policy' %}">Correction Policy</a>
-        <a href="{% url 'data_integrity' %}">Data Integrity</a>
-        <a href="{% url 'removal_policy' %}">Removal Policy</a>
-        <a href="{% url 'review_policy' %}">Review Policy</a>
-        <a href="{% url 'credits' %}">Site Credits</a>
-        <a href="{% url 'upload_policy' %}">Upload Policy</a>
+        <a href="{% url 'policy' 'correction' %}">Correction Policy</a>
+        <a href="{% url 'policy' 'data-integrity' %}">Data Integrity</a>
+        <a href="{% url 'policy' 'removal' %}">Removal Policy</a>
+        <a href="{% url 'policy' 'review' %}">Review Policy</a>
+        <a href="{% url 'policy' 'upload' %}">Upload Policy</a>
+
+        <h3>Credits</h3>
+        <a href="{% url 'credits' %}">Museum of ZZT Credits</a>
     </div>
 
     <div id="social-block" class="block">

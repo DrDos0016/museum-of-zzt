@@ -42,7 +42,7 @@ class Review_Form(forms.ModelForm):
         return author
 
 
-class Review_Search_Form(forms.ModelForm):
+class Review_Search_Form(forms.Form):
     FIRST_REVIEW_YEAR = 2002
     RATINGS = (
         (0, "0.0"), (0.5, "0.5"), (1.0, "1.0"), (1.5, "1.5"), (2.0, "2.0"), (2.5, "2.5"), (3.0, "3.0"), (3.5, "3.5"), (4.0, "4.0"), (4.5, "4.5"), (5.0, "5.0"),
@@ -54,14 +54,11 @@ class Review_Search_Form(forms.ModelForm):
 
     # Fields
     use_required_attribute = False
-    review_date = forms.ChoiceField(label="Year Reviewed", choices=any_plus(((str(x), str(x)) for x in range(YEAR, (FIRST_REVIEW_YEAR - 1), -1))))
-    min_rating = forms.ChoiceField(label="Minimum Rating", choices=RATINGS)
-    max_rating = forms.ChoiceField(label="Maximum Rating", choices=RATINGS, initial=5.0)
-    ratingless = forms.BooleanField(label="Include Reviews Without Ratings", initial=True)
-    sort = forms.ChoiceField(label="Sort Results By", choices=get_sort_option_form_choices(Review.sort_options))
-
-    class Meta:
-        model = Review
-        fields = ["title", "author", "content"]
-        labels = {"title": "Title Contains", "author": "Author Contains", "content": "Text Contains"}
-        widgets = {"content": forms.TextInput()}
+    title = forms.CharField(label="Title contains", required=False)
+    author = forms.CharField(label="Author contains", required=False)
+    text = forms.CharField(label="Text contains", required=False)
+    review_date = forms.ChoiceField(label="Year reviewed", choices=any_plus(((str(x), str(x)) for x in range(YEAR, (FIRST_REVIEW_YEAR - 1), -1))))
+    min_rating = forms.ChoiceField(label="Minimum rating", choices=RATINGS)
+    max_rating = forms.ChoiceField(label="Maximum rating", choices=RATINGS, initial=5.0)
+    ratingless = forms.BooleanField(label="Include reviews without ratings", initial=True, required=False)
+    sort = forms.ChoiceField(label="Sort results by", choices=get_sort_option_form_choices(Review.sort_options))

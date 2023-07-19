@@ -49,6 +49,7 @@ class Advanced_Search_Form(forms.Form):
     details = forms.ModelMultipleChoiceField(
         required=False,
         queryset=Detail.objects.visible(),
+        initial=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE],
         to_field_name="pk",
         widget=Scrolling_Checklist_Widget(
             categories = ["ZZT", "SZZT", "Media", "Other"],
@@ -69,7 +70,7 @@ class Advanced_Search_Form(forms.Form):
         required=False,
     )
 
-    def __init__(self, data=None, initial={}):
+    def __init__(self, data=None, initial={}, prefix=None):
         super().__init__(data, initial=initial)
         for field in self.manual_fields:
             self.fields[field].widget.manual_data = self.data.copy()  # Copy to make mutable

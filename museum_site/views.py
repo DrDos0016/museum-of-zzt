@@ -4,6 +4,7 @@ import re
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import TemplateView
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify
@@ -386,3 +387,13 @@ def error_403(request, exception=None):
 def error_404(request, exception=None):
     context = {}
     return render(request, "museum_site/404.html", context, status=404)
+
+
+class Policy_View(TemplateView):
+    def get_template_names(self):
+        return "museum_site/policy-{}.html".format(self.kwargs["slug"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.kwargs["slug"].replace("-", " ").title() + " Policy"
+        return context

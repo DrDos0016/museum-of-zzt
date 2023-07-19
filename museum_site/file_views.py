@@ -10,6 +10,7 @@ from museum_site.core import *
 from museum_site.core.detail_identifiers import *
 from museum_site.core.redirects import explicit_redirect_check, redirect_with_querystring
 from museum_site.forms.zfile_forms import Advanced_Search_Form
+from museum_site.generic_model_views import Model_Search_View, ZFile_List_View
 from museum_site.models import *
 
 
@@ -150,3 +151,11 @@ def advanced_search(request):
 
     data["form"] = form
     return render(request, "museum_site/generic-form-display.html", data)
+
+
+class ZFile_Search_View(Model_Search_View):
+    form_class = Advanced_Search_Form
+    model = File
+    model_list_view_class = ZFile_List_View
+    template_name = "museum_site/generic-form-display.html"
+    title = "File Search"

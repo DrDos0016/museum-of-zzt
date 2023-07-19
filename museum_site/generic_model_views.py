@@ -4,7 +4,7 @@ from time import time
 from django.db.models import Count
 from django.shortcuts import redirect
 from django.template.defaultfilters import slugify
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, FormView, ListView
 
 from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED, MODEL_BLOCK_VERSION
 from museum_site.core.detail_identifiers import DETAIL_UPLOADED, DETAIL_LOST
@@ -25,6 +25,7 @@ class Model_List_View(ListView):
     paginate_by = NO_PAGINATION
     has_local_context = True
     force_view = None
+    non_search_params = {"sort", "view", "page"}  # Set of GET params that do not indicate a search is being performed
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -34,6 +35,7 @@ class Model_List_View(ListView):
         if self.allow_pagination:
             self.paginate_by = PAGE_SIZE if self.view != "list" else LIST_PAGE_SIZE
         self.sorted_by = request.GET.get("sort")
+        self.searching = self.is_searching(self.request)
 
     def get_selected_view_format(self, request, available_views=["detailed", "list", "gallery"]):
         """ Determine which view should be used for model blocks. """
@@ -69,6 +71,7 @@ class Model_List_View(ListView):
         context["page_range"] = self.get_nearby_page_range(context["page_obj"].number, context["paginator"].num_pages)
         context["request"] = self.request
         context["debug"] = self.request.session.get("DEBUG")
+        context["searching"] = self.searching
 
         # Set title
         context["title"] = self.get_title()
@@ -94,6 +97,15 @@ class Model_List_View(ListView):
         upper = min(upper, total_pages + 1)
         page_range = range(lower, upper)
         return page_range
+
+    def is_searching(self, request):
+        # Determine if this request is browsing or searching
+        if request.GET:
+            key_set = set(list(request.GET.keys()))
+            diff = key_set - self.non_search_params
+            if diff:
+                return True
+        return False
 
 
 class ZFile_List_View(Model_List_View):
@@ -201,7 +213,7 @@ class ZFile_List_View(Model_List_View):
             context["basic_search_fields"] = ["Title", "Author", "Company", "Genre", "Filename"]
 
         # Add search modify button
-        context["query_edit_url_name"] = "advanced_search"
+        context["query_edit_url_name"] = "search"
 
         # Remove view/sort widgets if no results were found
         if not context.get("object_list"):
@@ -436,9 +448,9 @@ class Review_List_View(Model_List_View):
         if self.author:  # Don't allow sorting by reviewer when showing a single reviewer's reviews
             context["sort_options"].remove({"text": "Reviewer", "val": "reviewer"})
 
-        # TODO: This properly adds the link, but the form isn't populated with the current search params
-        # if self.request.GET:
-        #    context["query_edit_url_name"] = "review_search"
+        if self.request.GET:
+            context["search_type"] = "Advanced"
+            context["query_edit_url_name"] = "review_search"
         return context
 
 
@@ -479,6 +491,10 @@ class Article_List_View(Model_List_View):
 
         if prefix_templates.get(self.category_slug):
             context["prefix_template"] = prefix_templates[self.category_slug]
+
+        if self.request.GET:
+            context["search_type"] = "Advanced"
+            context["query_edit_url_name"] = "article_search"
         return context
 
     def get_title(self):
@@ -638,4 +654,22 @@ class Scroll_Detail_View(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Scroll #{}".format(context["scroll"].pk)
+        return context
+
+class Model_Search_View(FormView):
+    def get(self, request, *args, **kwargs):
+        if request.GET and request.GET.get("action") != "edit":  # Show search results
+            return self.model_list_view_class.as_view()(request, *args, **kwargs)
+        else:  # Show search form
+            return super().get(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        if self.request.GET:
+            form_kwargs["data"] = self.request.GET
+        return form_kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.title
         return context

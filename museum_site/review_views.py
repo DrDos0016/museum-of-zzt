@@ -6,6 +6,7 @@ from django.views.generic import ListView
 
 from museum_site.constants import *
 from museum_site.forms.review_forms import Review_Search_Form
+from museum_site.generic_model_views import Model_Search_View, Review_List_View
 from museum_site.models import *
 
 
@@ -56,3 +57,11 @@ class Reviewer_Directory_View(ListView):
 
         context["split"] = math.ceil(len(context["items"]) / 4.0)
         return context
+
+
+class Review_Search_View(Model_Search_View):
+    form_class = Review_Search_Form
+    model = Review
+    model_list_view_class = Review_List_View
+    template_name = "museum_site/generic-form-display.html"
+    title = "Review Search"

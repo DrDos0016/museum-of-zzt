@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<h1>Data Integrity</h1>
+<h1>Data Integrity Policy</h1>
 
 <p>The Museum of ZZT catalogs a large amount of data on its files. In some cases it may be useful to know how that data is obtained and where potential inaccuracies may be found.</p>
 
@@ -33,7 +33,7 @@
         Names of authors when they had multiple aliases are set to those used in the file with some standardization between files. Aliases are preferred over given names. Similar aliases are grouped together to make finding all of an
         individual's files easier. (Example: There are files attributed to the same person under the aliases "Zenith", "Nadir", "Zenith Nadir". The author field for all these files has been set to "Zenith Nadir".)
         <br><br>
-        Authors with works under a deadname are updated to a preferred name. The author field on your own releases may be set to whichever name your prefer. See the <a href="{% url 'correction_policy' ">Correction Policy</a> page.
+        Authors with works under a deadname are updated to a preferred name. The author field on your own releases may be set to whichever name your prefer. See the <a href="{% url 'policy' 'correction' %}">Correction Policy</a> page.
         </td>
     </tr>
     <tr>

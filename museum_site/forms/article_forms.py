@@ -11,7 +11,7 @@ class Article_Search_Form(forms.Form):
     heading = "Article Search"
     attrs = {
         "method": "GET",
-        "action": reverse_lazy("article_directory"),
+        "action": reverse_lazy("article_search"),
     }
     submit_value = "Search Articles"
 

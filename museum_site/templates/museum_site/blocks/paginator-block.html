@@ -54,7 +54,7 @@
         </select>
 </div>
 {% endif %}
-{% if search_type is not None %}
+{% if searching %}
 <div class="modify-query">
     {% if search_type == "basic" and paginator.count %}
     Limit Search To: {% for field in basic_search_fields %}<a href="{% url 'search' %}?{{field.lower}}={{request.GET.q}}">{{field}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
