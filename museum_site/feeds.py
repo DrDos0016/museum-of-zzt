@@ -16,7 +16,7 @@ class Base_Feed(Feed):
         return item.description
 
     def item_link(self, item):
-        return item.url()
+        return item.get_absolute_url()
 
 
 class Latest_Articles_Feed(Base_Feed):
@@ -69,9 +69,6 @@ class Latest_Files_Feed(Base_Feed):
             output += "Published by: " + str(item.get_all_company_names()) + "\n"
         return output
 
-    def item_link(self, item):
-        return item.url()
-
     def item_pubdate(self, item):
         return item.publish_date
 
@@ -95,9 +92,6 @@ class Latest_Reviews_Feed(Base_Feed):
         if item.rating >= 0:
             output += " ({}/5.0)".format(item.rating)
         return output
-
-    def item_link(self, item):
-        return item.url()
 
     def item_pubdate(self, item):
         return item.date
@@ -126,9 +120,6 @@ class Latest_Uploads_Feed(Base_Feed):
         if item.get_all_company_names():
             output += "Published by: " + str(item.get_all_company_names()) + "\n"
         return output
-
-    def item_link(self, item):
-        return item.url()
 
     def item_pubdate(self, item):
         return item.upload.date
