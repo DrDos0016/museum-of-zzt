@@ -46,7 +46,7 @@ class Article_Function_Test(TestCase):
 
     def test_url(self):
         test_article = Article.objects.get(title="Test Article")
-        self.assertEqual(test_article.url(), "/article/view/1/test-article/")
+        self.assertEqual(test_article.get_absolute_url(), "/article/view/1/test-article/")
 
     def test_preview_url(self):
         test_article = Article.objects.get(title="Test Article")

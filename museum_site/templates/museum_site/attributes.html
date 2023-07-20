@@ -147,7 +147,7 @@
 <h2 id="heading-reviews">File Reviews</h2>
 <ul class="data-table">
 {% for r in reviews %}
-    <li><a href="{{r.url}}">{{r.title|default:"<i>Untitled Review</i>"}}</a></li>
+    <li><a href="{{r.get_absolute_url}}">{{r.title|default:"<i>Untitled Review</i>"}}</a></li>
 {% empty %}
     <li><i>None</i></li>
 {% endfor %}

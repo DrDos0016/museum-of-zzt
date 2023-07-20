@@ -16,7 +16,7 @@ class ZFile_Urls:
     def download_url(self):
         zgame = self.downloads.filter(kind="zgames").first()
         if zgame:
-            return zgame.url
+            return zgame.get_absolute_url()
         return "#"
 
     def get_absolute_url(self):

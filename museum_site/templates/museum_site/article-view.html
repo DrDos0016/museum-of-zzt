@@ -138,7 +138,7 @@ function jump_to(jump)
         {% endfor %}
     </div>
     <div class="c">
-    <a href="{{article.series.all.first.url}}">View All</a>
+    <a href="{{article.series.all.first.get_absolute_url}}">View All</a>
     </div>
 {% endif %}
 </div>

@@ -402,15 +402,15 @@ def logout_user(request):
 
 
 def manage_saved_data(request):
-    data = {
+    if not request.GET.get("pk"):
+        return redirect("index")
+
+    context = {
         "title": "Manage Saved Data",
         "pk": request.GET.get("pk"),
         "file": get_object_or_404(File, pk=request.GET.get("pk"))
     }
-
-    if not request.GET.get("pk"):
-        return redirect("index")
-    return render(request, "museum_site/user/manage-saved-data.html", data)
+    return render(request, "museum_site/user/manage-saved-data.html", context)
 
 
 def resend_account_activation(request):

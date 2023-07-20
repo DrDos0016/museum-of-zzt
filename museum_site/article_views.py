@@ -1,11 +1,14 @@
 from django.core.exceptions import PermissionDenied
+from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import DetailView, FormView
+
 from museum_site.constants import *
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.forms.article_forms import Article_Search_Form
 from museum_site.models import *
 from museum_site.generic_model_views import Model_List_View, Model_Search_View
+from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
 class Article_Detail_View(DetailView):
@@ -75,7 +78,7 @@ def article_lock(request, article_id, slug=""):
     article = Article.objects.get(pk=article_id)
 
     if article.published == Article.PUBLISHED:  # Don't show a lock page for published articles
-        return redirect(article.url())
+        return redirect(article.get_absolute_url())
 
     article.init_model_block_context("detailed", request=request)
     article.allow_comments = False
@@ -184,7 +187,7 @@ class Article_Categories_List_View(Model_List_View):
                     "title": cats[key].category,
                     "preview": {"url": "/pages/article-categories/{}.png".format(key), "alt": cats[key].title},
                     "article_count": counts[key],
-                    "latest": {"url": cats[key].url(), "value": cats[key].title},
+                    "latest": {"url": cats[key].get_absolute_url(), "value": cats[key].title},
                     "description": CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>")
                 }
             )

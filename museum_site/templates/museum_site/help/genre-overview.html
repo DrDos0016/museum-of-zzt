@@ -33,7 +33,7 @@ article .genre a
 <h2>Genre List</h2>
 
 {% for g in genres %}
-<p class="genre"><a href="{{g.url}}">{{g.title}}</a> - {{g.description|safe}}</a></p>
+<p class="genre"><a href="{{g.get_absolute_url}}">{{g.title}}</a> - {{g.description|safe}}</a></p>
 {% endfor %}
 
 </article>

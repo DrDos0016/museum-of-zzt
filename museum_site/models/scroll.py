@@ -122,10 +122,10 @@ class Scroll(BaseModel):
         return context
 
     def get_field_title(self, view="list"):
-        return {"label": "", "value": "<a href='{}'>{}</a>".format(self.url(), self.title), "safe": True}
+        return {"label": "", "value": "<a href='{}'>{}</a>".format(self.get_absolute_url(), self.title), "safe": True}
 
     def get_field_zfile(self, view="list"):
-        return {"label": "", "value": "<a href='{}'>{}</a>".format(self.zfile.url(), self.zfile.title), "safe": True}
+        return {"label": "", "value": "<a href='{}'>{}</a>".format(self.zfile.get_absolute_url(), self.zfile.title), "safe": True}
 
     def get_field_source(self, view="list"):
         return {"label": "", "value": "<a href='{}'>{}</a>".format(self.source, "Source"), "safe": True}

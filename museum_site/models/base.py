@@ -126,7 +126,7 @@ class BaseModel(models.Model):
             "model": self.model_name,
             "pk": self.pk,
             "model_key": self.model_key,
-            "url": self.url(),
+            "url": self.get_absolute_url(),
             "roles": self.roles,
             "preview": {
                 "no_zoom": False,

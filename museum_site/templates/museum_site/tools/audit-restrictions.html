@@ -22,7 +22,7 @@
 <tr>
 {% for zf in zfile_qs %}
 <tr>
-    <td><a href="{{zf.url}}" target="_blank">{{zf.title}}</a></td>
+    <td><a href="{{zf.get_absolute_url}}" target="_blank">{{zf.title}}</a></td>
     <td class="c"><a href="{{zf.admin_url}}" target="_blank">Admin</a></td>
 </tr>
 {% endfor %}
@@ -42,7 +42,7 @@
 <tr>
 {% for zf in review_qs %}
 <tr>
-    <td><a href="{{zf.url}}" target="_blank">{{zf.title}}</a></td>
+    <td><a href="{{zf.get_absolute_url}}" target="_blank">{{zf.title}}</a></td>
     <td class="c"><a href="{{zf.review_url}}" target="_blank">Reviews</a></td>
     <td class="review-level-{{zf.can_review}}">{{zf.get_can_review_string}}</td>
     <td class="c"><a href="{{zf.admin_url}}" target="_blank">Admin</a></td>

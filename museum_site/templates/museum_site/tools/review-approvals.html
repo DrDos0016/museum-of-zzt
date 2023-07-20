@@ -26,7 +26,7 @@
         <td>{{r.get_author}}</td>
         <td>{{r.date}}</td>
         <td>{{r.ip}}</td>
-        <td><a href="{{r.zfile.url}}" target="_blank">{{r.zfile.title}}</a></td>
+        <td><a href="{{r.zfile.get_absolute_url}}" target="_blank">{{r.zfile.title}}</a></td>
         <td>{{r.rating}}</td>
         <td><textarea style="width:400px;height:150px">{{r.content}}</textarea></td>
         <td>

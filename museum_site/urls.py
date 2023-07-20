@@ -182,7 +182,7 @@ urlpatterns = [
     path("policy/<slug:slug>/", museum_site.views.Policy_View.as_view(), name="policy"),
 
     # /policy/ -- Legacy Redirects
-    path("data-integrity/", RedirectView.as_view(url="/policy/data-integrity", permanent=True)),
+    path("data-integrity/", RedirectView.as_view(url="/policy/data-integrity/", permanent=True)),
 
     # /review/
     path("review/", RedirectView.as_view(pattern_name="review_directory", permanent=True)),

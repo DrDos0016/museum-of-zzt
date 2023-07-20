@@ -68,7 +68,7 @@ class Series(BaseModel):
         super(Series, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("series_oveview", kwargs={"series_id": self.pk, "slug": self.slug})
+        return reverse("series_overview", kwargs={"series_id": self.pk, "slug": self.slug})
 
     def url(self):
         return "/series/{}/{}/".format(self.id, self.slug)
@@ -87,7 +87,7 @@ class Series(BaseModel):
 
 
     def get_field_view(self, view="detailed"):
-        return {"value": "<a href='{}'>{}</a>".format(self.url(), self.title), "safe": True}
+        return {"value": "<a href='{}'>{}</a>".format(self.get_absolute_url(), self.title), "safe": True}
 
     def get_field_last_updated(self, view="detailed"):
         article = self.article_set.all().order_by("-publish_date").first()

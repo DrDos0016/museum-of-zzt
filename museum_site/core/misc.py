@@ -223,12 +223,8 @@ def extract_file_key_from_url(url):
 
 
 def env_from_host(host):
-    if host in ["beta.museumofzzt.com"]:
-        return "BETA"
-    elif host in ["museumofzzt.com", "www.museumofzzt.com"]:
-        return "PROD"
-    else:
-        return "DEV"
+    envs = {"beta.museumofzzt.com": "BETA", "museumofzzt.com": "PROD", "www.museumofzzt.com": "PROD"}
+    return envs.get(host, "DEV")
 
 
 def throttle_check(request, attempt_name, expiration_name, max_attempts, lockout_mins=5):

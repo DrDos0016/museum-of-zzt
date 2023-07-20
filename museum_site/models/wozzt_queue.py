@@ -65,6 +65,9 @@ class WoZZT_Queue(BaseModel):
     def url(self):
         return "X"
 
+    def get_absolute_url(self):
+        return "X"
+
     def preview_url(self):
         return os.path.join("wozzt-queue", self.uuid + ".png")
 
@@ -274,7 +277,7 @@ class WoZZT_Queue(BaseModel):
         return {"label": "Tweet", "value": "<textarea name='wozzt-tweet' readonly>{}</textarea>".format(self.render_text("twitter")), "safe": True}
 
     def get_field_source(self, view="detailed"):
-        url = self.file.url() + "?file={}&board={}".format(self.zzt_file, self.board)
+        url = self.file.get_absolute_url() + "?file={}&board={}".format(self.zzt_file, self.board)
         return {"label": "Source", "value": "<a href='{}' target='_blank'>View</a>".format(url), "safe": True}
 
     def get_field_priority(self, view="detailed"):

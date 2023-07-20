@@ -109,7 +109,7 @@ class Review(BaseModel):
         super(Review, self).save(*args, **kwargs)
 
     def get_field_view(self, view="detailed"):
-        return {"value": "<a href='{}'>{}</a>".format(self.url(), self.title), "safe": True}
+        return {"value": "<a href='{}'>{}</a>".format(self.get_absolute_url(), self.title), "safe": True}
 
     def get_field_zfile(self, view="detailed"):
         self.zfile._init_actions()

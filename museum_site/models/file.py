@@ -594,7 +594,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.all_downloads_count == 0:
             return restricted
 
-        url = self.all_downloads.first().url if self.all_downloads_count == 1 else "/file/download/{}/".format(self.key)
+        url = self.all_downloads.first().get_absolute_url() if self.all_downloads_count == 1 else "/file/download/{}/".format(self.key)
 
         # Change text for list view
         if view == "list":

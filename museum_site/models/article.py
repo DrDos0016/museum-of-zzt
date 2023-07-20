@@ -157,7 +157,7 @@ class Article(BaseModel):
         output = ""
 
         for s in self.series.all():
-            output += '<a href="{}">{}</a>, '.format(s.url(), s.title)
+            output += '<a href="{}">{}</a>, '.format(s.get_absolute_url(), s.title)
 
         return output[:-2]
 
@@ -300,7 +300,7 @@ class Article(BaseModel):
     def get_field_series(self, view="detailed"):
         output = ""
         for s in self.series.all():
-            output += '<a href="{}">{}</a>, '.format(s.url(), s.title)
+            output += '<a href="{}">{}</a>, '.format(s.get_absolute_url(), s.title)
         return {"label": "Series", "value": output[:-2], "safe": True}
 
     def get_field_description(self, view="detailed"):

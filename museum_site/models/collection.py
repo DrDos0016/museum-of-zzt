@@ -126,7 +126,7 @@ class Collection(BaseModel):
         return tags
 
     def get_field_view(self, view="detailed"):
-        return {"value": "<a href='{}'>{}</a>".format(self.url(), self.title), "safe": True}
+        return {"value": "<a href='{}'>{}</a>".format(self.get_absolute_url(), self.title), "safe": True}
 
     def get_field_author(self, view="detailed"):
         return {"label": "Author", "value": self.author_link()}

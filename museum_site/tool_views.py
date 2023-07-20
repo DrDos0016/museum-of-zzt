@@ -51,7 +51,7 @@ def add_livestream(request, key):
             form = Livestream_Vod_Form(request.POST, request.FILES)
             if form.is_valid():
                 a = form.create_article()
-                return redirect(a.url())
+                return redirect(a.get_absolute_url())
         else:  # Transferred from description generator tool
             form = Livestream_Vod_Form(initial={
                 "associated_zfile": request.POST.getlist("associated"), "video_description": request.POST.get("video_description")
@@ -738,7 +738,7 @@ def series_add(request):
 
         series.save()  # Resave to update dates
         data["success"] = True
-        data["output_html"] = "Successfully added series: <a href='{}'>{}</a>".format(series.url(), series.title)
+        data["output_html"] = "Successfully added series: <a href='{}'>{}</a>".format(series.get_absolute_url(), series.title)
 
     data["form"] = form
     return render(request, "museum_site/generic-form-display-output.html", data)

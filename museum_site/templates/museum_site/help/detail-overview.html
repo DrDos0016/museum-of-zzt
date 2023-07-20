@@ -26,22 +26,22 @@ article .detail a
 
 <h2>ZZT Details</h2>
 {% for d in details.ZZT %}
-<p class="detail"><a href="{{d.url}}">{{d.title}}</a> - {{d.description|safe}}</a></p>
+<p class="detail"><a href="{{d.get_absolute_url}}">{{d.title}}</a> - {{d.description|safe}}</a></p>
 {% endfor %}
 
 <h2>Super ZZT Details</h2>
 {% for d in details.SZZT %}
-<p class="detail"><a href="{{d.url}}">{{d.title}}</a> - {{d.description|safe}}</a></p>
+<p class="detail"><a href="{{d.get_absolute_url}}">{{d.title}}</a> - {{d.description|safe}}</a></p>
 {% endfor %}
 
 <h2>Media Details</h2>
 {% for d in details.Media %}
-<p class="detail"><a href="{{d.url}}">{{d.title}}</a> - {{d.description|safe}}</a></p>
+<p class="detail"><a href="{{d.get_absolute_url}}">{{d.title}}</a> - {{d.description|safe}}</a></p>
 {% endfor %}
 
 <h2>Other Details</h2>
 {% for d in details.Other %}
-<p class="detail"><a href="{{d.url}}">{{d.title}}</a> - {{d.description|safe}}</a></p>
+<p class="detail"><a href="{{d.get_absolute_url}}">{{d.title}}</a> - {{d.description|safe}}</a></p>
 {% endfor %}
 
 </article>

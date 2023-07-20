@@ -53,5 +53,5 @@ def qs_to_links(qs):
     output = ""
     html = "<a href='{}'>{}</a>, "
     for i in qs:
-        output += html.format(i.url(), escape(i.title))
+        output += html.format(i.get_absolute_url(), escape(i.title))
     return output[:-2]

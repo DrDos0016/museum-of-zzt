@@ -38,7 +38,7 @@ class Download(BaseModel):
         super(Download, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "[{}] {} - {}".format(self.id, self.kind, self.url)
+        return "[{}] {} - {}".format(self.id, self.kind, self.get_absolute_url())
 
     def get_absolute_url(self):
         return self.url

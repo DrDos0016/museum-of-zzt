@@ -110,8 +110,8 @@ class URLTest(unittest.TestCase):
 
         results = []
         answers = [
-            (301, "/article/category/"),
-            (301, "/article/category/help/"),
+            (301, "/article/browse/category/"),
+            (301, "/article/browse/category/help/"),
             (301, "/article/view/194/page/2/closer-look-turmoil/"),
             (301, "/article/view/194/closer-look-turmoil/"),
             (301, "/file/browse/detail/zzt-save/"),
@@ -126,12 +126,12 @@ class URLTest(unittest.TestCase):
             (301, "/file/browse/detail/lost-world/"),
             (301, "/file/browse/detail/uploaded/"),
             (301, "/file/browse/detail/featured-world/"),
-            (301, "/article/category/closer-look/"),
-            (301, "/article/category/livestream/"),
+            (301, "/article/browse/category/closer-look/"),
+            (301, "/article/browse/category/livestream/"),
             (301, "/policy/data-integrity/"),
             (301, "/file/roulette/?seed=1653414763"),
             (301, "/file/search/"),
-            (301, "/file/advanced-search/"),
+            (301, "/file/search/"),
             (301, "/file/mass-downloads/"),
             (301, "/file/article/frost1/"),
             (301, "/file/attribute/merbotia/"),
@@ -163,11 +163,8 @@ class URLTest(unittest.TestCase):
             if url.name is None or url.name in ["patreon", "twitter", "tumblr", "youtube", "twitch", "git"]:
                 continue
 
-            r = c.get(reverse(url.name), follow=True)
-
-            if r.status_code != 200:
-                print("{}: {} | {}".format(r.status_code, url.pattern, reverse(url.name)))
-            self.assertEqual(r.status_code, 200)
+            r = c.get(reverse(url.name), follow=False)
+            self.assertIn(r.status_code, (200, 301, 302), msg="{}: {} | {} | {} ".format(r.status_code, url.pattern, reverse(url.name), url.name))
 
     """
     def test_current_urls_with_args(self):

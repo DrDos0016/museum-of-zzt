@@ -316,7 +316,7 @@ def model_block_link_tag(model_name, identifier, text=None, i=True, *args, **kwa
     if i:
         text = "<i>" + text + "</i>"
 
-    output = "<a href='{}' target='_blank'>{}</a>".format(item.url(), text)
+    output = "<a href='{}' target='_blank'>{}</a>".format(item.get_absolute_url(), text)
 
     return mark_safe(output)
 

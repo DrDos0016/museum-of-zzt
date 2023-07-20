@@ -86,7 +86,7 @@ def directory(request, category):
                 final_columns[idx].append({"kind": "header", "title": first_letter + (" (cntd.)" if force_header else "")})
                 force_header = False
 
-            final_columns[idx].append({"url": entry.url, "title": entry.title, "kind": "entry"})
+            final_columns[idx].append({"url": entry.get_absolute_url(), "title": entry.title, "kind": "entry"})
         # Mark letters repeated between columns
         last_letter = first_letter
 
