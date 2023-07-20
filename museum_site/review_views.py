@@ -6,20 +6,8 @@ from django.views.generic import ListView
 
 from museum_site.constants import *
 from museum_site.forms.review_forms import Review_Search_Form
-from museum_site.generic_model_views import Model_Search_View, Review_List_View
+from museum_site.generic_model_views import Model_Search_View, Model_List_View
 from museum_site.models import *
-
-
-class Review_Search_Form_View(FormView):
-    model = Review
-    form_class = Review_Search_Form
-    template_name = "museum_site/generic-form-display.html"
-    title = "Review Search"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["title"] = self.title
-        return context
 
 
 class Reviewer_Directory_View(ListView):
@@ -57,6 +45,37 @@ class Reviewer_Directory_View(ListView):
 
         context["split"] = math.ceil(len(context["items"]) / 4.0)
         return context
+
+
+class Review_List_View(Model_List_View):
+    model = Review
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        if self.sorted_by is None:
+            self.sorted_by = "-date"
+        self.author = self.kwargs.get("author")
+
+    def get_queryset(self):
+        if self.author:
+            qs = Review.objects.search(p={"author": self.author})
+        else:
+            qs = Review.objects.search(self.request.GET)
+
+        qs = self.sort_queryset(qs)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.author:  # Don't allow sorting by reviewer when showing a single reviewer's reviews
+            context["sort_options"].remove({"text": "Reviewer", "val": "reviewer"})
+
+        if self.request.GET:
+            context["search_type"] = "Advanced"
+            context["query_edit_url_name"] = "review_search"
+        return context
+
+
 
 
 class Review_Search_View(Model_Search_View):

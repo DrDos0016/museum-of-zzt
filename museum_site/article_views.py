@@ -5,7 +5,7 @@ from museum_site.constants import *
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.forms.article_forms import Article_Search_Form
 from museum_site.models import *
-from museum_site.generic_model_views import Article_List_View, Model_Search_View
+from museum_site.generic_model_views import Model_List_View, Model_Search_View
 
 
 class Article_Detail_View(DetailView):
@@ -97,6 +97,108 @@ def article_search(request):
 
     data = {"title": "Article Search", "form": form}
     return render(request, "museum_site/generic-form-display.html", data)
+
+
+class Article_List_View(Model_List_View):
+    model = Article
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.category_slug = kwargs.get("category_slug")
+        self.category = None
+
+        # Convert category slug to article.category string
+        if self.category_slug:
+            if self.category_slug == "lets-play":  # Special case for apostrophe
+                self.category = "Let's Play"
+            else:
+                self.category = self.category_slug.replace("-", " ")
+                self.category = self.category.title()
+
+    def get_queryset(self):
+        qs = Article.objects.search(self.request.GET)
+
+        if self.category:
+            qs = qs.filter(category=self.category)
+        if self.sorted_by is None:
+            self.sorted_by = "-date"
+
+        qs = self.sort_queryset(qs)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        prefix_templates = {
+            "closer-look": "museum_site/prefixes/closer-look.html",
+            "livestream": "museum_site/prefixes/livestream.html",
+            "publication-pack": "museum_site/prefixes/publication-pack.html",
+        }
+
+        if prefix_templates.get(self.category_slug):
+            context["prefix_template"] = prefix_templates[self.category_slug]
+
+        if self.request.GET:
+            context["search_type"] = "Advanced"
+            context["query_edit_url_name"] = "article_search"
+        return context
+
+    def get_title(self):
+        if self.category:
+            return "{} Directory".format(self.category)
+        return super().get_title()
+
+
+
+class Article_Categories_List_View(Model_List_View):
+    model = Article
+    allow_pagination = False
+    has_local_context = False
+    force_view = "detailed"
+
+    def get_queryset(self):
+        # Find the counts of each category
+        counts = {}
+        count_qs = Article.objects.accessible().values("category").annotate(total=Count("category")).order_by("category")
+        for c in count_qs:
+            counts[slugify(c["category"])] = c["total"]
+
+        # Find the latest article of each category
+        seen_categories = []
+        cats = {}
+        cats_qs = Article.objects.published().defer("content").order_by("-id")
+        for a in cats_qs:
+            if a.category not in seen_categories:
+                seen_categories.append(a.category)
+                cats[a.category_slug().lower()] = a
+            if len(seen_categories) == len(Article.CATEGORY_CHOICES):
+                break
+
+        qs = []
+        for key in CATEGORY_DESCRIPTIONS:
+            if not cats.get(key):
+                continue
+
+            i = Article_Category_Block()
+            i.set_initial_attributes(
+                {
+                    "title": cats[key].category,
+                    "preview": {"url": "/pages/article-categories/{}.png".format(key), "alt": cats[key].title},
+                    "article_count": counts[key],
+                    "latest": {"url": cats[key].url(), "value": cats[key].title},
+                    "description": CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>")
+                }
+            )
+
+            qs.append(i)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Article Categories"
+        context["available_views"] = ["detailed"]
+        context["sort_options"] = None
+        context["disable_guide_words"] = True
+        return context
 
 
 class Article_Search_View(Model_Search_View):

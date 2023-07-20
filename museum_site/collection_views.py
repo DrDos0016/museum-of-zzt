@@ -7,6 +7,7 @@ from django.shortcuts import render
 
 from museum_site.constants import *
 from museum_site.forms.collection_forms import Collection_Content_Form
+from museum_site.generic_model_views import Model_List_View
 from museum_site.models import *
 
 
@@ -146,3 +147,76 @@ class On_The_Fly_Collections_View(TemplateView):
             context["output"] = "On The Fly Collections are now disabled."
             request.session["active_tool_template"] = ""
         return render(request, self.template_name, context)
+
+
+class Collection_List_View(Model_List_View):
+    model = Collection
+
+    def get_queryset(self):
+        if self.request.path == "/collection/user/":
+            qs = Collection.objects.collections_for_user(self.request.user.id)
+        else:  # Default listing
+            qs = Collection.objects.populated_public_collections()
+
+        if self.sorted_by is None:
+            self.sorted_by = "-modified"
+
+        qs = self.sort_queryset(qs)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["prefix_template"] = "museum_site/prefixes/collection.html"
+        return context
+
+    def get_title(self):
+        if self.request.path == "/collection/user/":
+            return "My Collections"
+        return super().get_title()
+
+
+class Collection_Contents_View(Model_List_View):
+    model = Collection_Entry
+
+    def get_queryset(self):
+        slug = self.kwargs.get("collection_slug")
+        self.head_object = Collection.objects.get(slug=slug)
+        qs = Collection_Entry.objects.get_items_in_collection(self.head_object.pk)
+
+        if self.sorted_by is None:
+            self.sorted_by = self.head_object.default_sort
+
+        qs = self.sort_queryset(qs)
+        # Remove duplicate entries -- TODO This seems quite janky
+        if self.sorted_by in ["author", "company"]:
+            pruned = []
+            observed_ids = []
+            for i in qs:
+                if i.pk not in observed_ids:
+                    observed_ids.append(i.pk)
+                    pruned.append(i)
+            return pruned
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.head_object.title
+        context["prefix_text"] = "{}\n<h2>Collection Contents ({} file{})</h2>".format(
+            render_markdown(self.head_object.description),
+            self.head_object.item_count,
+            ("" if self.head_object.item_count == 1 else "s")
+        )
+
+        # If there's no manual order available, don't show the option
+        if context["head_object"].default_sort != "manual":
+            context["sort_options"] = Collection_Entry.sort_options[1:]
+
+        return context
+
+    def render_to_response(self, context, **kwargs):
+        # Prevent non-creators from viewing private collections
+        if context["head_object"].visibility == Collection.PRIVATE:
+            if self.request.user.id != context["head_object"].user_id:
+                self.template_name = "museum_site/collection-invalid-permissions.html"
+        return super().render_to_response(context, **kwargs)

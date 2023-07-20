@@ -18,6 +18,8 @@ import museum_site.generic_model_views  # noqa: E402
 import museum_site.feeds  # noqa: E402
 import museum_site.help_views  # noqa: E402
 import museum_site.review_views  # noqa: E402
+import museum_site.scroll_views  # noqa: E402
+import museum_site.series_views  # noqa: E402
 import museum_site.tool_views  # noqa: E402
 import museum_site.user_views  # noqa: E402
 import museum_site.upload_views  # noqa: E402
@@ -50,9 +52,9 @@ urlpatterns = [
 
     # /article/
     path("article/",  RedirectView.as_view(pattern_name="article_directory", permanent=True)),
-    path("article/browse/", museum_site.generic_model_views.Article_List_View.as_view(), name="article_directory"),
-    path("article/browse/category/", museum_site.generic_model_views.Article_Categories_List_View.as_view(), name="article_categories"),
-    path("article/browse/category/<slug:category_slug>/", museum_site.generic_model_views.Article_List_View.as_view(), name="article_category"),
+    path("article/browse/", museum_site.article_views.Article_List_View.as_view(), name="article_directory"),
+    path("article/browse/category/", museum_site.article_views.Article_Categories_List_View.as_view(), name="article_categories"),
+    path("article/browse/category/<slug:category_slug>/", museum_site.article_views.Article_List_View.as_view(), name="article_category"),
     path("article/search/", museum_site.article_views.Article_Search_View.as_view(), name="article_search"),
     path("article/view/<int:pk>/page/<int:page>/<slug:slug>/", museum_site.article_views.Article_Detail_View.as_view(), name="article_view_page"),
     path("article/view/<int:pk>/<slug:slug>/", museum_site.article_views.Article_Detail_View.as_view(), {"page": 1}, name="article_view"),
@@ -79,7 +81,7 @@ urlpatterns = [
 
     # /collection/
     path("collection/", RedirectView.as_view(pattern_name="browse_collections", permanent=True)),
-    path("collection/browse/", museum_site.generic_model_views.Collection_List_View.as_view(), name="browse_collections"),
+    path("collection/browse/", museum_site.collection_views.Collection_List_View.as_view(), name="browse_collections"),
     path("collection/delete/<slug:slug>/", login_required(museum_site.collection_views.Collection_Delete_View.as_view()), name="delete_collection"),
     path("collection/edit/<slug:slug>/", login_required(museum_site.collection_views.Collection_Update_View.as_view()), name="edit_collection"),
     path(
@@ -88,8 +90,8 @@ urlpatterns = [
     ),
     path("collection/new/", login_required(museum_site.collection_views.Collection_Create_View.as_view()), name="new_collection"),
     path("collection/on-the-fly-collections/", museum_site.collection_views.On_The_Fly_Collections_View.as_view(), name="on_the_fly_collections"),
-    path("collection/view/<slug:collection_slug>/", museum_site.generic_model_views.Collection_Contents_View.as_view(), name="view_collection"),
-    path("collection/user/", login_required(museum_site.generic_model_views.Collection_List_View.as_view()), name="my_collections"),
+    path("collection/view/<slug:collection_slug>/", museum_site.collection_views.Collection_Contents_View.as_view(), name="view_collection"),
+    path("collection/user/", login_required(museum_site.collection_views.Collection_List_View.as_view()), name="my_collections"),
 
     # /debug/
     path("debug/", museum_site.debug_views.debug),
@@ -124,19 +126,19 @@ urlpatterns = [
 
     # /file/
     path("file/", RedirectView.as_view(pattern_name="browse", permanent=True)),
-    path("file/browse/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse"),
-    path("file/browse/new-finds/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="new_finds"),
-    path("file/browse/new-releases/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="new_releases"),
-    path("file/browse/<str:letter>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse_letter"),
-    path("file/browse/<str:field>/<path:value>/", museum_site.generic_model_views.ZFile_List_View.as_view(), name="browse_field"),
+    path("file/browse/", museum_site.file_views.ZFile_List_View.as_view(), name="browse"),
+    path("file/browse/new-finds/", museum_site.file_views.ZFile_List_View.as_view(), name="new_finds"),
+    path("file/browse/new-releases/", museum_site.file_views.ZFile_List_View.as_view(), name="new_releases"),
+    path("file/browse/<str:letter>/", museum_site.file_views.ZFile_List_View.as_view(), name="browse_letter"),
+    path("file/browse/<str:field>/<path:value>/", museum_site.file_views.ZFile_List_View.as_view(), name="browse_field"),
     path("file/random/", museum_site.views.random, name="random"),
-    path("file/roulette/", museum_site.generic_model_views.prepare_roulette, name="roulette"),
+    path("file/roulette/", museum_site.file_views.prepare_roulette, name="roulette"),
     path("file/search/", museum_site.file_views.ZFile_Search_View.as_view(), name="search"),
     path("file/mass-downloads/", museum_site.views.mass_downloads, name="mass_downloads"),
-    path("file/article/<str:key>/", museum_site.generic_model_views.ZFile_Article_List_View.as_view(), name="article"),
+    path("file/article/<str:key>/", museum_site.file_views.ZFile_Article_List_View.as_view(), name="article"),
     path("file/attribute/<str:key>/", museum_site.file_views.file_attributes, name="file_attributes"),
     path("file/download/<str:key>/", museum_site.file_views.file_download, name="file_download"),
-    path("file/review/<str:key>/", museum_site.generic_model_views.ZFile_Review_List_View.as_view(), name="reviews"),
+    path("file/review/<str:key>/", museum_site.file_views.ZFile_Review_List_View.as_view(), name="reviews"),
     path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "key": ""}, name="local_file"),
     path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),
     path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),
@@ -184,11 +186,10 @@ urlpatterns = [
 
     # /review/
     path("review/", RedirectView.as_view(pattern_name="review_directory", permanent=True)),
-    path("review/browse/", museum_site.generic_model_views.Review_List_View.as_view(), name="review_directory"),
+    path("review/browse/", museum_site.review_views.Review_List_View.as_view(), name="review_directory"),
     path("review/browse/author/", museum_site.review_views.Reviewer_Directory_View.as_view(), name="reviewer_directory"),
-    path("review/browse/author/<str:author>/", museum_site.generic_model_views.Review_List_View.as_view(), name="reviews_by_author"),
+    path("review/browse/author/<str:author>/", museum_site.review_views.Review_List_View.as_view(), name="reviews_by_author"),
     path("review/search/", museum_site.review_views.Review_Search_View.as_view(), name="review_search"),
-    #path("review/search/", museum_site.review_views.Review_Search_Form_View.as_view(), name="review_search"),
     # /review/ -- Legacy Redirects
     path("review/author/", RedirectView.as_view(pattern_name="reviewer_directory", permanent=True)),
     path("review/author/<str:author>/", RedirectView.as_view(pattern_name="reviews_by_author", permanent=True)),
@@ -204,14 +205,14 @@ urlpatterns = [
 
     # /scroll/
     path("scroll/", RedirectView.as_view(pattern_name="scroll_directory", permanent=True)),
-    path("scroll/browse/", museum_site.generic_model_views.Scroll_List_View.as_view(), name="scroll_directory"),
+    path("scroll/browse/", museum_site.scroll_views.Scroll_List_View.as_view(), name="scroll_directory"),
     path("scroll/<slug:navigation>/", museum_site.views.scroll_navigation, name="scroll_navigation"),
-    path("scroll/view/<int:pk>/", museum_site.generic_model_views.Scroll_Detail_View.as_view(), name="scroll_view"),
-    path("scroll/view/<int:pk>/<slug:slug>/", museum_site.generic_model_views.Scroll_Detail_View.as_view(), name="scroll_view"),
+    path("scroll/view/<int:pk>/", museum_site.scroll_views.Scroll_Detail_View.as_view(), name="scroll_view"),
+    path("scroll/view/<int:pk>/<slug:slug>/", museum_site.scroll_views.Scroll_Detail_View.as_view(), name="scroll_view"),
 
     # /series/
-    path("series/browse/", museum_site.generic_model_views.Series_List_View.as_view(), name="series_directory"),
-    path("series/view/<int:series_id>/<slug:slug>/", museum_site.generic_model_views.Series_Contents_View.as_view(), name="series_overview"),
+    path("series/browse/", museum_site.series_views.Series_List_View.as_view(), name="series_directory"),
+    path("series/view/<int:series_id>/<slug:slug>/", museum_site.series_views.Series_Contents_View.as_view(), name="series_overview"),
     # /series/ -- Legacy Redirects
     path("series/", RedirectView.as_view(pattern_name="series_directory", permanent=True)),
     path("series/<int:series_id>/<slug:slug>/", RedirectView.as_view(pattern_name="series_overview", permanent=True)),
