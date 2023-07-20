@@ -194,7 +194,7 @@ urlpatterns = [
     path("review/author/<str:author>/", RedirectView.as_view(pattern_name="reviews_by_author", permanent=True)),
 
     # /rss/
-    path("rss/", museum_site.views.generic_template_page, {"template": "museum_site/rss-info.html", "title": "RSS Feeds"}, name="rss_feeds"),
+    path("rss/", museum_site.views.RSS_View.as_view(), name="rss_feeds"),
     path("rss/articles/", museum_site.feeds.Latest_Articles_Feed(), name="rss_articles"),
     path("rss/articles/upcoming/", museum_site.feeds.Upcoming_Articles_Feed(), name="rss_upcoming_articles"),
     path("rss/articles/unpublished/", museum_site.feeds.Unpublished_Articles_Feed(), name="rss_unpublished_articles"),

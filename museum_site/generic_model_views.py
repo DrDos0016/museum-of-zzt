@@ -4,7 +4,7 @@ from time import time
 from django.db.models import Count
 from django.shortcuts import redirect
 from django.template.defaultfilters import slugify
-from django.views.generic import DetailView, FormView, ListView
+from django.views.generic import DetailView, FormView, ListView, TemplateView
 
 from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED, MODEL_BLOCK_VERSION
 from museum_site.core.detail_identifiers import DETAIL_UPLOADED, DETAIL_LOST
@@ -673,3 +673,6 @@ class Model_Search_View(FormView):
         context = super().get_context_data(**kwargs)
         context["title"] = self.title
         return context
+
+class Generic_Error_View(TemplateView):
+    template_name = "museum_site/error.html"

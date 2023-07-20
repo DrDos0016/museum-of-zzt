@@ -45,7 +45,6 @@ from museum_site.mail import (
     send_account_verification_email,
 )
 from museum_site.settings import BETA_USERNAME, BETA_PASSWORD
-from museum_site.views import generic_template_page
 
 
 def activate_account(request, token=None):

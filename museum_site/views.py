@@ -135,11 +135,6 @@ def discord_overview(request):
     return render(request, "museum_site/discord.html", context)
 
 
-def generic_template_page(request, title="", template="", context={}):
-    context["title"] = title
-    return render(request, template, context)
-
-
 def index(request):
     """ Returns front page """
     data = {}
@@ -396,4 +391,12 @@ class Policy_View(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = self.kwargs["slug"].replace("-", " ").title() + " Policy"
+        return context
+
+class RSS_View(TemplateView):
+    template_name = "museum_site/rss-info.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "RSS Feeds"
         return context
