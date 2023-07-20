@@ -1,4 +1,0 @@
-<{{f.tag|default:"div"}} class="datum{% if f.kind %} {{f.kind}}{% endif %}">
-    {% if f.label %}<div class="label">{{f.label}}</div>{% endif %}
-    {% if f.value %}<div class="value"{% if f.title %}title="{{f.title}}"{% endif %}><textarea name="{{f.name}}"{% if f.readonly %} readonly{% endif %}>{{f.value}}</textarea></div>{% endif %}
-</{{f.tag|default:"div"}}>

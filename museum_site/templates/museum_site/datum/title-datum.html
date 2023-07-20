@@ -1,4 +1,0 @@
-<{{f.tag|default:"h2"}} class="title datum{% if f.kind %} {{f.kind}}{% endif %}">
-    {% if f.label %}<div class="label">{{f.label}}{{f.roles}}</div>{% endif %}
-    {% if f.value %}<div class="value">{% if f.icons %}<span class="link-icons">{% for i in f.icons %}<span title="{{i.title}}" class="icon {{i.role}}">{{i.glyph|safe}}</span>{% endfor %}</span>{% endif %}{% if f.url %}<a href="{{f.url}}"{% if f.target %} target="{{f.target}}"{% endif %}{% if f.roles %} class="{% for r in f.roles %} {{r}}{% endfor %}"{% endif %}>{{f.value}}</a>{% else %}{{f.value}}{% endif %}</div>{% endif %}
-</{{f.tag|default:"h2"}}>
