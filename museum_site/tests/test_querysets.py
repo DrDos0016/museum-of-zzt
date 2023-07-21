@@ -113,28 +113,10 @@ class Article_Queryset_Test(TestCase):
     """def test_search(self):"""
 
 class ZFile_Queryset_Test(TestCase):
+    fixtures = ["detail.json", "genre.json", "zeta_configs.json"]
+
     @classmethod
     def setUpTestData(cls):
-        # Create Zeta Configs
-        zeta_32r = Zeta_Config.objects.create(name="ZZT v3.2R", category=0)
-        zeta_32r.pk = ZETA_ZZT32R
-        zeta_32r.save()
-
-        # Create Details
-        detail_zzt_world = Detail.objects.create(title="ZZT World")
-        detail_uploaded = Detail.objects.create(title="Uploaded")
-        detail_new_find = Detail.objects.create(title="New Find")
-        detail_lost = Detail.objects.create(title="Lost World")
-        # Update Detail PKs to match expected constants
-        detail_zzt_world.pk = DETAIL_ZZT
-        detail_zzt_world.save()
-        detail_uploaded.pk = DETAIL_UPLOADED
-        detail_uploaded.save()
-        detail_new_find.pk = DETAIL_NEW_FIND
-        detail_new_find.save()
-        detail_lost.pk = DETAIL_LOST
-        detail_lost.save()
-
         # Create Test ZFiles
         zf1 = File.objects.create(title="Adventure", release_date=None, filename="ADV.ZIP")
         zf2 = File.objects.create(title="ZZT Future",release_date=date(year=2069, month=4, day=20), filename="zztfuture.zip")
@@ -143,10 +125,10 @@ class ZFile_Queryset_Test(TestCase):
         zf5 = File.objects.create(title="MISSINGNO.", filename="lost4evr.zip")
 
         # Add details
-        zf3.details.add(detail_uploaded)
-        zf1.details.add(detail_new_find)
-        zf4.details.add(detail_new_find)
-        zf5.details.add(detail_lost)
+        zf3.details.add(DETAIL_UPLOADED)
+        zf1.details.add(DETAIL_NEW_FIND)
+        zf4.details.add(DETAIL_NEW_FIND)
+        zf5.details.add(DETAIL_LOST)
 
     def test_new_releases(self):
         qs = File.objects.filter(pk__lte=4).new_releases()  # Preserve ordering

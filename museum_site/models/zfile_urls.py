@@ -14,9 +14,12 @@ class ZFile_Urls:
         return reverse("file_attributes", kwargs={"key": self.key})
 
     def download_url(self):
-        zgame = self.downloads.filter(kind="zgames").first()
-        if zgame:
-            return zgame.get_absolute_url()
+        try:
+            zgame = self.downloads.filter(kind="zgames").first()
+            if zgame:
+                return zgame.get_absolute_url()
+        except ValueError:
+            return "X"
         return "#"
 
     def get_absolute_url(self):
