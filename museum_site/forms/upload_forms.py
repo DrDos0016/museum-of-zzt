@@ -347,7 +347,7 @@ class ZGame_Form(forms.ModelForm):
 
     def process_zgame_form(self):
         # Create the ZFile object intended to be saved to the database
-        self.zfile = self.save(commit=False)
+        self.zfile = self.save(commit=False)  # FULLSAVE
 
         # If a zipfile was uploaded...
         if self.cleaned_data["zfile"]:

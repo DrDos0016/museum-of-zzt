@@ -503,7 +503,7 @@ def publish(request, key, mode="PUBLISH"):
         # Save
         data["file"].spotlight = request.POST.get("spotlight", False)
         data["file"].publish_date = datetime.now()
-        data["file"].save()
+        data["file"].save()  # FULLSAVE
 
         # Adjust the zgames download to point to the letter directory
         for dl in data["file"].downloads.all():
@@ -611,7 +611,7 @@ def reletter(request, key):
 
         # Update the database entry
         data["file"].letter = letter
-        data["file"].save()
+        data["file"].save()  # FULLSAVE
 
     return render(request, "museum_site/tools/reletter.html", data)
 
@@ -645,7 +645,7 @@ def replace_zip(request, key):
             data["new_file"].calculate_size()
         if request.POST.get("update-contents"):
             Content.generate_content_object(data["new_file"])
-        data["new_file"].save()
+        data["new_file"].save()  # FULLSAVE
 
         data["new_stat"] = os.stat(data["file"].phys_path())
         data["new_mtime"] = datetime.fromtimestamp(data["stat"].st_mtime)
@@ -676,7 +676,7 @@ def review_approvals(request):
                     r.save()
                     zfile = File.objects.get(pk=r.zfile.id)
                     zfile.calculate_reviews()
-                    zfile.save()
+                    zfile.save()  # FULLSAVE
                     title = zfile.title
                     data["output"] += "Approved Review for `{}`<br>".format(title)
                     discord_announce_review(r)
@@ -971,7 +971,7 @@ def set_screenshot(request, key):
         shutil.copyfile(src, image_path)
 
         zfile.screenshot = zfile.filename[:-4] + ".png"
-        zfile.save()
+        zfile.save() # FULLSAVE
     elif request.POST.get("b64img"):
         raw = request.POST.get("b64img").replace("data:image/png;base64,", "", 1)
         from io import BytesIO

@@ -348,7 +348,7 @@ class Livestream_Vod_Form(forms.Form):
         for file_association in self.cleaned_data["associated_zfile"]:
             fa = File.objects.get(pk=int(file_association))
             fa.articles.add(a)
-            fa.save()
+            fa.save()  # FULLSAVE
 
         # Associate the article with the selected series (if any)
         if self.cleaned_data["series"]:

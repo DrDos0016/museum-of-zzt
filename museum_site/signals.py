@@ -15,10 +15,10 @@ def article_post_save(sender, instance, **kwargs):
                 zfile_ids = ids.split(",")
                 break
         for i in zfile_ids:
-            f = File.objects.filter(pk=int(i)).first()
-            if f:
-                f.articles.add(instance.pk)
-                f.save()
+            zf = File.objects.filter(pk=int(i)).first()
+            if zf:
+                zf.articles.add(instance.pk)
+                zf.save()  # FULLSAVE
 
     # Update dates for Series
     if instance.series is not None:

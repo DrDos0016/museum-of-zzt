@@ -415,7 +415,7 @@ class ZFile_Review_List_View(Model_List_View):
                 self.head_object.calculate_reviews()
                 # Make Announcement
                 discord_announce_review(review)
-                self.head_object.save()
+                self.head_object.save()  # FULLSAVE (ZFile)
 
             # Re-get the queryset with the new review included and without including the form again
             context["object_list"] = self.get_queryset()

@@ -107,7 +107,7 @@ class Upload_View(TemplateView):
 
             self.zgame_form.generate_preview_image(self.upload_form.cleaned_data["generate_preview_image"])  # Generate Preview Image
             discord_announce_upload(self.upload_form.upload, self.zgame_form.zfile)  # Announce to Discord (if needed)
-            self.zgame_form.zfile.save()  # Final Save
+            self.zgame_form.zfile.save()  # Final Save FULLSAVE
             # Create ZGames Download
             zgames_download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zgame_form.zfile.filename, kind="zgames")
             if created:
