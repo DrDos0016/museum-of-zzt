@@ -11,6 +11,9 @@ class Custom_Block(BaseModel):
     def url(self):
         return "CUSTOM URL"
 
+    def get_absolute_url(self):
+        return "CUSTOM URL"
+
     def preview_url(self):
         return self.custom_context["preview"]["url"]
 
