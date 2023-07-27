@@ -940,10 +940,10 @@ def set_screenshot(request, key):
     data["file_list"].sort()
 
     if request.POST.get("manual"):
-        upload_path = os.path.join(STATIC_PATH, "images/screenshots/{}/".format(zfile.letter))
-        file_path = place_uploaded_file(upload_path, request.FILES.get("uploaded_file"), custom_name=zfile.filename[:-4] + ".png")
+        file_path = place_uploaded_file(wip_dir, request.FILES.get("uploaded_file"), custom_name=zfile.filename[:-4] + ".png")
         optimize_image(file_path)
         zfile.screenshot = zfile.filename[:-4] + ".png"
+        shutil.copyfile(file_path, zfile.screenshot_phys_path())
         zfile.basic_save()
 
     if request.GET.get("file"):
