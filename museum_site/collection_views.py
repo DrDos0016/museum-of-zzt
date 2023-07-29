@@ -9,6 +9,7 @@ from museum_site.constants import *
 from museum_site.forms.collection_forms import Collection_Content_Form
 from museum_site.generic_model_views import Model_List_View
 from museum_site.models import *
+from museum_site.templatetags.site_tags import render_markdown
 
 
 class Collection_Create_View(CreateView):
