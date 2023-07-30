@@ -23,7 +23,7 @@ class Series_Contents_View(Model_List_View):
     def get_queryset(self):
         pk = self.kwargs.get("series_id")
         self.head_object = Series.objects.get(pk=pk)
-        qs = self.head_object.article_set.all()
+        qs = self.head_object.article_set.accessible()
         qs = self.sort_queryset(qs)
         return qs
 
