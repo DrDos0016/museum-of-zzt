@@ -247,7 +247,6 @@ urlpatterns = [
     path("tools/<str:key>/", museum_site.tool_views.tool_index, name="tool_index_with_file"),
 
     # /upload/
-    #path("upload/", museum_site.upload_views.upload, name="upload"),
     path("upload/", museum_site.upload_views.Upload_View.as_view(), name="upload"),
     path("upload/complete/<str:token>/", museum_site.upload_views.upload_complete, name="upload_complete"),
     path("upload/delete/confirm/", museum_site.upload_views.Upload_Delete_Confirmation_View.as_view(), name="upload_delete_confirmation"),

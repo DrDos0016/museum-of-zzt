@@ -1,1 +1,5 @@
-/var/projects/museum-of-zzt/venv/bin/python3 /var/projects/museum-of-zzt/discord/bot.py >> /var/projects/museum-of-zzt/log/discord.log 2>&1 &
+#!/bin/bash
+set -a
+source $HOME/env/$HOSTNAME-museum-of-zzt.env;
+set +a
+$HOME/projects/museum-of-zzt/venv/bin/python3 $HOME/projects/museum-of-zzt/discord/bot.py >> $HOME/projects/museum-of-zzt/log/discord.log 2>&1 &
