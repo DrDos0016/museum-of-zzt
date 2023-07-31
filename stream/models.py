@@ -42,6 +42,8 @@ class Stream_Entry(BaseModel):
 
     def url(self): return ""
 
+    def get_absolute_url(self): return ""
+
     def __str__(self):
         if self.zfile is None:
             return "{} [SE#{}]".format(self.title_override, self.pk)
@@ -92,6 +94,8 @@ class Stream_Entry(BaseModel):
             self.zfile.init_model_block_context("detailed", self.request, self.show_staff)
 
     def as_json(self):
+        if not self.zfile:
+            return {}
         self.zfile._init_actions()
         output = {
             "pk": self.pk,
