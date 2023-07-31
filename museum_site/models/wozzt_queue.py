@@ -204,29 +204,33 @@ class WoZZT_Queue(BaseModel):
         with open(self.image_path(), "rb") as imagefile:
             imagedata = imagefile.read()
 
+            """
             t_up = Twitter(domain='upload.twitter.com', auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
             img1 = t_up.media.upload(media=imagedata)["media_id_string"]
             t = Twitter(auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
+            """
+
+            auth = OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+            t = Twitter2(auth=auth)
+            t_up = Twitter(domain='upload.twitter.com', auth=auth)
+            upload_response = t_up.media.upload(media=imagedata)
+            img1 = upload_response["media_id_string"]
+
 
             try:
-                resp = t.statuses.update(status=self.render_text("twitter"), media_ids=img1, tweet_mode="extended")
+                #resp = t.statuses.update(status=self.render_text("twitter"), media_ids=img1, tweet_mode="extended")
+                json_data = {"text": self.render_text("twitter")}
+                json_data["media"] = {
+                    "media_ids": [img1]
+                }
+
+                response = t.tweets(_json=json_data)
+
             except TwitterHTTPError as error:
-                for err in error.response_data.get("errors", []):
-                    if err.get("code") == 186:  # "Tweets needs to be a bit shorter.":
-                        try_shorter = True
-                if not try_shorter:
-                    return False
+                print(error)
+                return False
 
-            if try_shorter:
-                try:
-                    resp = t.statuses.update(status=self.render_text("twitter-short"), media_ids=img1, tweet_mode="extended")
-                except TwitterHTTPError as error:
-                    self.category = "failed"
-                    self.save()
-                    return False
-
-            twitter_id = resp.get("id")
-            twitter_img = resp["entities"]["media"][0]["media_url"]
+            twitter_id = response.get("data", {}).get("id", 0)
 
         # Twitter - Related Articles
         if tweet_related and twitter_id:
@@ -234,7 +238,9 @@ class WoZZT_Queue(BaseModel):
 
             if related_count:
                 article_text = (f"More information on \"{self.file.title}\" is available here: https://museumofzzt.com{self.file.article_url()}")
-                resp = t.statuses.update(status=article_text, in_reply_to_status_id=twitter_id)
+                #resp = t.statuses.update(status=article_text, in_reply_to_status_id=twitter_id)
+                json_data = {"text": article_text, "reply": {"in_reply_to_tweet_id": str(twitter_id)}}
+                resp = t.tweets(_json=json_data)
         return True
 
     def send_mastodon(self):

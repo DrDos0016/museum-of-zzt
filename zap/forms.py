@@ -90,7 +90,7 @@ class ZAP_Post_Form(forms.Form):
         p.media_2 = self.cleaned_data.get("media_2", "")
         p.media_3 = self.cleaned_data.get("media_3", "")
         p.media_4 = self.cleaned_data.get("media_4", "")
-        p.tweet_id = post_responses["twitter"].get("id", 0) if "twitter" in accounts else 0
+        p.tweet_id = post_responses["twitter"].get("data", {}).get("id", 0) if "twitter" in accounts else 0
         p.mastodon_id = post_responses["mastodon"].get("id", 0) if "mastodon" in accounts else 0
         p.tumblr_id = post_responses["tumblr"].get("id", 0) if "tumblr" in accounts else 0
         if request.GET.get("pk"):

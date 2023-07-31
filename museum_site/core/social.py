@@ -169,8 +169,9 @@ class Social_Twitter(Social):
         self.oauth_secret = TWITTER_OAUTH_SECRET
 
     def login(self):
-        self.client = Twitter(auth=OAuth(self.token, self.oauth_secret, self.consumer_key, self.consumer_secret))
-        self.upload_client = Twitter(domain='upload.twitter.com', auth=OAuth(self.token, self.oauth_secret, self.consumer_key, self.consumer_secret))
+        auth = OAuth(self.token, self.oauth_secret, self.consumer_key, self.consumer_secret)
+        self.client = Twitter2(auth=auth)
+        self.upload_client = Twitter(domain='upload.twitter.com', auth=auth)
 
     def upload_media(self, media_path=None, media_url=None, media_bytes=None):
         if media_bytes:
@@ -192,22 +193,33 @@ class Social_Twitter(Social):
         return response
 
     def post(self, body):
+        json_data = {"text": body}
         if self.media:
-            media = ",".join(self.media)
-        else:
-            media=""
+            json_data["media"] = {
+                "media_ids": self.media
+            }
 
-        response = self.client.statuses.update(status=body, media_ids=media, in_reply_to_status_id=self.reply_to, tweet_mode="extended")
+        response = self.client.tweets(_json=json_data)
+
         self.uploaded_media = []
         self.log_response(response)
         return response
 
     def boost(self, post_id):
+        """ IDK if this is possible on the free tier
+        print("Post ID", post_id)
         post_id = str(post_id)
         # Must un-retweet to prevent errors for re-retweet attempts
-        response = self.client.statuses.unretweet(id=post_id)
-        self.log_response(response)
-        time.sleep(0.5)  # Probably not necessary
-        response = self.client.statuses.retweet(id=post_id)
+        #response = self.client.statuses.unretweet(id=post_id)
+        #response = self.client.tweets(_json={"id": "4800564439", "source_tweet_id": post_id})  # TODO Unhardcode @WoZZT User ID
+        #self.log_response(response)
+        #time.sleep(0.5)  # Probably not necessary
+        #response = self.client.statuses.retweet(id=post_id)
+        json_data = {
+            "tweet_id": post_id
+        }
+        response = self.client.users._id.retweets(_id="4800564439", _json=json_data) # TODO Unhardcode @WoZZT User ID (_id param)
         self.log_response(response)
         return response
+        """
+        return {"reminder": "Twitter Boosting is unavailable."}
