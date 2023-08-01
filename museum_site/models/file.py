@@ -230,37 +230,18 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         super(File, self).save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        # Pre save
-        zfile_exists = os.path.isfile(self.phys_path())
-
-        # Force lowercase letter
-        if not self.letter:
-            self.letter = get_letter_from_title(self.title)
-        else:
-            self.letter = self.letter.lower()
-
-        self.sort_title = calculate_sort_title(self.title)  # Get sort title
-        self.calculate_article_count()  # Recalculate Article Count
-
-        # If the screenshot is blank and a file exists for it, set it
-        file_exists = os.path.isfile(os.path.join(SITE_ROOT, "museum_site/static/images/screenshots/") + self.letter + "/" + self.filename[:-4] + ".png")
-        if self.screenshot == "" and file_exists:
-            self.screenshot = self.filename[:-4] + ".png"
-
-        self.calculate_reviews()  # Calculate Review Scores
-
-        # Update blank md5s
-        if not self.checksum and zfile_exists:
+        self.sort_title = calculate_sort_title(self.title)
+        if self.screenshot == "":
+            if os.path.isfile(os.path.join(STATIC_PATH, "screenshots/{}/{}".format(self.bucket(), self.filename[:-4] + ".png"))):
+                self.screenshot = self.filename[:-4] + ".png"
+        if not self.checksum:
             self.checksum = calculate_md5_checksum(self.phys_path())
 
-        # Set board counts for non-uploads
-        if not kwargs.get("new_upload") and zfile_exists:
-            if not self.playable_boards or not self.total_boards:
-                (self.playable_boards, self.total_boards) = calculate_boards_in_zipfile(self.phys_path())
+        if self.pk:  # Updates for already saved models
+            self.calculate_article_count()
+        else:  # Updates for newly created models
+            (self.playable_boards, self.total_boards) = calculate_boards_in_zipfile(self.phys_path())
 
-        # Actual save call
-        if kwargs.get("new_upload"):
-            del kwargs["new_upload"]
         super(File, self).save(*args, **kwargs)
 
     # Filepaths
@@ -343,6 +324,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self.article_count = self.articles.accessible().count()
 
     def calculate_reviews(self):
+        print("Calculating Reviews for", self.title)
         # Calculate Review Count
         if self.id is not None:
             self.review_count = Review.objects.for_zfile(self.id).count()
