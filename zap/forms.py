@@ -97,6 +97,7 @@ class ZAP_Post_Form(forms.Form):
             p.event_id = request.GET.get("pk")
         p.save()
         self.processed = True
+        self.post_object = p
 
     def upload_media(self, s, i):
         media_path = ""

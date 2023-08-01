@@ -12,10 +12,12 @@
 <input type="submit" value="{{form.submit_value}}">
 </form>
 <hr>
+<ul>{% for service in form.post_object.posted_where_links %}<li>{{service|safe}}</li>{% endfor %}</ul>
+
 {% if form.responses.twitter %}
 <div>
 <h3>Twitter</h3>
-<textarea>{% for r in form.responses.twitter %}{{r}}
+<textarea class="zap-post-response">{% for r in form.responses.twitter %}{{r}}
 ==========================================
 {% endfor %}</textarea>
 </div>
@@ -24,7 +26,7 @@
 {% if form.responses.mastodon %}
 <div>
 <h3>Mastodon</h3>
-<textarea>{% for r in form.responses.mastodon %}{{r}}
+<textarea class="zap-post-response">{% for r in form.responses.mastodon %}{{r}}
 ==========================================
 {% endfor %}</textarea>
 </div>
@@ -33,7 +35,7 @@
 {% if form.responses.tumblr %}
 <div>
 <h3>Tumblr</h3>
-<textarea>{% for r in form.responses.tumblr %}{{r}}
+<textarea class="zap-post-response">{% for r in form.responses.tumblr %}{{r}}
 ==========================================
 {% endfor %}</textarea>
 </div>

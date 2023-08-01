@@ -382,3 +382,10 @@ input[name=rss-url]
 {
     max-height:175px;
 }
+
+
+.zap-post-response
+{
+    width:750px;
+    height:80px;
+}
