@@ -12,7 +12,7 @@ import stream.views
 
 
 urlpatterns = [
-    path("", stream.views.index, name="stream_index"),
+    path("",  RedirectView.as_view(pattern_name="stream_schedule", permanent=True)),
     path("title-screen-background/", stream.views.title_screen_background, name="title_screen_background"),
     path("overview/", stream.views.overview, name="overview"),
     path("schedule/", stream.views.Stream_Schedule_View.as_view(), name="stream_schedule"),
