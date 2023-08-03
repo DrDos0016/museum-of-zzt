@@ -421,19 +421,19 @@ class ZGame_Form(forms.ModelForm):
     def generate_preview_image(self, requested_image_source="AUTO"):
         if requested_image_source == "NONE":
             # Remove existing screenshot if one exists
-            if self.zfile.screenshot:
+            if self.zfile.has_preview_image:
                 os.remove(self.zfile.screenshot_phys_path())
-                self.zfile.screenshot = ""
+                self.zfile.has_preview_image = False
             return True
         elif requested_image_source == "AUTO":
-            if self.zfile.screenshot:
+            if self.zfile.has_preview_image:
                 return True  # Keep existing preview image
             requested_image_source = None  # Provide no specific world when generating the image
 
         # Generate a new image
-        screenshot_filename = self.zfile.filename[:-4] + ".png"
+        screenshot_filename = self.zfile.key + ".png"
         screenshot_path = os.path.join(PREVIEW_IMAGE_BASE_PATH, self.zfile.bucket(), screenshot_filename)
         if generate_screenshot_from_zip(self.zfile.phys_path(), screenshot_path, world=requested_image_source):
-            self.zfile.screenshot = screenshot_filename
+            self.zfile.has_preview_image = True
             optimize_image(self.zfile.screenshot_phys_path())
         return True

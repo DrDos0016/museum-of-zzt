@@ -35,12 +35,12 @@ class ZFile_Urls:
         return reverse("tool_index_with_file", kwargs={"key": self.key})
 
     def preview_url(self):
-        if self.screenshot:
-            if self.screenshot not in self.SPECIAL_SCREENSHOTS:
-                return os.path.join("screenshots/{}/{}".format(self.bucket(), self.screenshot))
-            else:
-                return os.path.join("screenshots/{}".format(self.screenshot))
-        return os.path.join("screenshots/no_screenshot.png")
+        if self.has_preview_image:
+            return os.path.join("screenshots/{}/{}.png".format(self.bucket(), self.key))
+        else:
+            if self.is_detail(DETAIL_ZZM):
+                return os.path.join("screenshots/zzm_screenshot.png")
+            return os.path.join("screenshots/no_screenshot.png")
 
     def url(self):  # TODO Replace all these calls
         return self.get_absolute_url()

@@ -67,7 +67,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         "-publish_date": ["-publish_date", "sort_title"]
     }
 
-    SPECIAL_SCREENSHOTS = ["zzm_screenshot.png"]
     PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not been fully checked by staff."
     ICONS = {
         "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role": "explicit-icon"},
@@ -117,10 +116,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         blank=True,
         help_text="Identifier used on archive.org mirrors. Typically the 'zzt_' + zip name w/out extension. (ex: zzt_burgerj)"
     )
-    screenshot = models.CharField(
-        max_length=80, blank=True, default="",
-        help_text="Filename for preview image. /static/images/screenshots/&lt;letter&gt;/&lt;screenshot&gt;"
-    )
     file_license = models.CharField(max_length=150, default="Unknown", help_text="License the file is released under.")
     license_source = models.CharField(max_length=150, default="", blank=True, help_text="Source of licensing information.")
 
@@ -140,6 +135,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     # Museum Properties
     explicit = models.BooleanField(default=False, help_text="Boolean to mark zfile as containing explicit content.")
     explicit_warning = models.CharField(max_length=1024, help_text="Specific warning for zfile's explicit content.", default="", blank=True)
+    has_preview_image = models.BooleanField(default=False, help_text="Whether or not a preview image is available for this ZFile.")
     spotlight = models.BooleanField(default=True, help_text="Boolean to mark zfile as being suitable for display on the front page.")
     can_review = models.IntegerField(
         default=REVIEW_YES, choices=REVIEW_LEVELS, help_text="Choice of whether the file can be reviewed freely, pending approval, or not at all."
@@ -231,17 +227,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def save(self, *args, **kwargs):
         self.sort_title = calculate_sort_title(self.title)
-        if self.screenshot == "":
-            if os.path.isfile(os.path.join(STATIC_PATH, "screenshots/{}/{}".format(self.bucket(), self.filename[:-4] + ".png"))):
-                self.screenshot = self.filename[:-4] + ".png"
-        if not self.checksum:
-            self.checksum = calculate_md5_checksum(self.phys_path())
-
         if self.pk:  # Updates for already saved models
             self.calculate_article_count()
-        else:  # Updates for newly created models
-            (self.playable_boards, self.total_boards) = calculate_boards_in_zipfile(self.phys_path())
-
         super(File, self).save(*args, **kwargs)
 
     # Filepaths
@@ -249,10 +236,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def screenshot_phys_path(self):
         """ Returns the physical path to the preview image. If the file has no preview image set or is using a shared screenshot, return an empty string. """
-        if self.screenshot and self.screenshot not in self.SPECIAL_SCREENSHOTS:
-            return os.path.join(STATIC_PATH, "screenshots/{}/{}".format(self.bucket(), self.screenshot))
-        else:
-            return ""
+        return os.path.join(STATIC_PATH, "screenshots/{}/{}.png".format(self.bucket(), self.key)) if self.has_preview_image else ""
 
     # Other Functions
     def bucket(self):
