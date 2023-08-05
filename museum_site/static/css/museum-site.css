@@ -548,6 +548,26 @@ select[name=page-selector]
     font-family:cp437;
     font-size:larger;
 }
+
+.letter-links
+{
+    display:flex;
+    flex-wrap:wrap;
+    text-align:center;
+    font-family:cp437;
+    font-size:14pt;
+    margin:auto;
+    margin-top:4px;
+    max-width:700px;
+}
+
+.letter-links a
+{
+    padding:0px 0.5ch 0px 0.5ch;
+    flex:0 0 2.5ch;
+}
+
+.letter-links a:hover {background:var(--hover-bg);}
 /* End Paginator */
 
 .itch-badge
@@ -604,7 +624,7 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     display:flex;
     justify-content:space-between;
     align-items:center;
-    height:20px;
+    min-height:20px;
 }
 
 .fv-grid #top-margin
@@ -617,6 +637,8 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     padding:0px;
     border:0;
     background:transparent;
+    height:20px;
+    min-height:20px;
 }
 
 #toggle-light-dark-theme
@@ -629,7 +651,7 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
 .theme-dark #toggle-light-dark-theme { color:var(--lowlight-button-color); }
 
 #expand-contract {
-    height:14px;
+    line-height:20px;
     font-family:sans-serif;
     background:var(--block-bg);
     color:var(--lowlight-button-color);
