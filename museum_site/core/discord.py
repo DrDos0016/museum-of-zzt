@@ -95,7 +95,7 @@ def discord_announce_upload(upload, zfile, env=None):
         "*A new item has been uploaded to the Museum queue!*\n"
         "**{}** by {}{}\n"
         "Explore: https://museumofzzt.com{}\n"
-    ).format(zfile.title, ", ".join(zfile.related_list("authors")), year, urllib.parse.quote(zfile.view_url()))
+    ).format(zfile.title, ", ".join(zfile.related_list("authors")), year, urllib.parse.quote(zfile.get_absolute_url()))
 
     discord_data = {"content": discord_post, "embeds": [{"image": {"url": preview_url}}] }
     resp = requests.post(NEW_UPLOAD_WEBHOOK_URL, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))

@@ -44,6 +44,3 @@ class ZFile_Urls:
 
     def url(self):  # TODO Replace all these calls
         return self.get_absolute_url()
-
-    def view_url(self):  # TODO Replace all these calls too!!
-        return self.get_absolute_url()

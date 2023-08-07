@@ -162,7 +162,7 @@ class WoZZT_Queue(BaseModel):
 
     def render_text(self, medium):
         context = {
-            "board_url": self.file.view_url() + "?file=" + quote(self.zzt_file) + "&board=" + str(self.board),
+            "board_url": self.file.get_absolute_url() + "?file=" + quote(self.zzt_file) + "&board=" + str(self.board),
             "zfile_title": self.file.title,
             "zfile_author": self.file.related_list("authors"),
             "zfile_year": self.file.release_year(),

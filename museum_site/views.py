@@ -173,7 +173,7 @@ def random(request):
     """ Returns a random ZZT file page """
     selection = File.objects.random_zzt_world()
     if selection is not None:
-        return redirect(selection.view_url())
+        return redirect(selection.get_absolute_url())
     else:
         return redirect("index")
 

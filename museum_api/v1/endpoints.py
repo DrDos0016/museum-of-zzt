@@ -103,7 +103,7 @@ def worlds_of_zzt(request):
         os.remove(os.path.join(TEMP_PATH, selected))
 
     # Check if the file is playable online
-    museum_link = "https://museumofzzt.com" + f.view_url()
+    museum_link = "https://museumofzzt.com" + f.get_absolute_url()
     archive_link = "https://archive.org/details/" + f.archive_name if f.archive_name else None
     play_link = "https://museumofzzt.com" + f.play_url()
 
