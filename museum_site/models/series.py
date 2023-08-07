@@ -70,8 +70,8 @@ class Series(BaseModel):
     def get_absolute_url(self):
         return reverse("series_overview", kwargs={"series_id": self.pk, "slug": self.slug})
 
-    def url(self):
-        return "/series/{}/{}/".format(self.id, self.slug)
+    def url(self):  # TODO: Remove all calls
+        return self.get_absolute_url()
 
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)

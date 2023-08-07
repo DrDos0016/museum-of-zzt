@@ -21,8 +21,8 @@ class Genre(BaseModel):
     def __str__(self):
         return self.title
 
-    def url(self):
-        return "/file/browse/genre/{}/".format(self.slug)
+    def url(self):  # TODO: Remove all calls
+        return self.get_absolute_url()
 
     def get_absolute_url(self):
         return reverse("browse_field", kwargs={"field":"genre", "value":self.slug})

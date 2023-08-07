@@ -67,7 +67,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         "-publish_date": ["-publish_date", "sort_title"]
     }
 
-    PREFIX_UNPUBLISHED = "UNPUBLISHED FILE - This file's contents have not been fully checked by staff."
     ICONS = {
         "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role": "explicit-icon"},
         "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its contents have not been fully checked by staff.", "role": "unpub-icon"},
@@ -222,9 +221,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self.all_downloads_count = len(self.all_downloads)
 
     # Database functions
-    def basic_save(self, *args, **kwargs):
-        super(File, self).save(*args, **kwargs)
-
     def save(self, *args, **kwargs):
         self.sort_title = calculate_sort_title(self.title)
         if self.pk:  # Updates for already saved models
@@ -560,7 +556,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.all_downloads_count == 0:
             return restricted
 
-        url = self.all_downloads.first().get_absolute_url() if self.all_downloads_count == 1 else "/file/download/{}/".format(self.key)
+        url = self.all_downloads.first().get_absolute_url() if self.all_downloads_count == 1 else reverse("file_download", kwargs={"key": self.key})
+
 
         # Change text for list view
         if view == "list":
@@ -571,7 +568,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def get_field_play(self, view="detailed"):
         if not self.actions["play"]:
             return {"value": "<span class='faded'>{} <i>Play Online</i></span>".format(self.prepare_icons_for_field("major")), "safe": True}
-        url = "/file/play/{}/".format(self.key)
+        url = reverse("play", kwargs={"key": self.key})
         return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field("major"), "Play Online"), "safe": True}
 
     def get_field_view(self, view="detailed"):
@@ -582,7 +579,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
                 return {"value": "<span class='faded'>{} <i>{}</i></span>".format(self.prepare_icons_for_field(), escape(self.title)), "safe": True}
             return {"value": "<span class='faded'>{} <i>View Contents</i></span>".format(self.prepare_icons_for_field("major")), "safe": True}
 
-        url = "/file/view/{}/".format(self.key) if self.can_museum_download() else ""
+        url = reverse("file", kwargs={"key": self.key}) if self.can_museum_download() else ""
         texts = {"detailed": "View Contents"}
         text = escape(texts.get(view, self.title))
         icon_kind = "major" if view == "detailed" else "all"
@@ -594,7 +591,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if not self.actions["review"]:
             return restricted
 
-        url = "/file/review/{}/".format(self.key)
+        url = reverse("reviews", kwargs={"key": self.key})
         text = "Reviews ({})".format(self.review_count)
         return {"value": "<a href='{}'>{}</a>".format(url, text), "safe": True}
 
@@ -602,7 +599,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         restricted = {"value": "<span class='faded'><i>Articles (0)</i></span>", "safe": True}  # If count is non-zero you can click the link
         if not self.actions["article"]:
             return restricted
-        url = "/file/article/{}/".format(self.key)
+        url = reverse("article", kwargs={"key": self.key})
         text = "Articles ({})".format(self.article_count)
         return {"value": "<a href='{}'>{}</a>".format(url, text), "safe": True}
 
@@ -610,11 +607,11 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         restricted = {"value": "<span class='faded'><i>Articles (0)</i></span>", "safe": True}  # If count is non-zero you can click the link
         if not self.actions["attributes"]:
             return restricted
-        url = "/file/attribute/{}/".format(self.key)
+        url = reverse("file_attributes", kwargs={"key": self.key})
         return {"value": "<a href='{}'>Attributes</a>".format(url), "safe": True}
 
     def get_field_tools(self, view="detailed"):
-        url = "/tools/{}/".format(self.key)
+        url = reverse("tool_index_with_file", kwargs={"key": self.key})
         return {"label": "Tools", "value": "<a href='{}'>Tools {} #{}</a>".format(url, self.model_name, self.pk), "safe": True}
 
     def get_field_authors(self, view="detailed"):
@@ -630,10 +627,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def get_field_zfile_date(self, view="detailed"):
         if self.release_date is None:
             date_str = "<i>Unknown</i>"
-            url = "/file/browse/year/{}/".format(self.release_year(default="unk"))
         else:
             date_str = self.release_date.strftime(DATE_HR)
-            url = "/file/browse/year/{}/".format(self.release_year(default="unk"))
+        url = reverse("browse_field", kwargs={"field": "year", "value": self.release_year(default="unk")})
 
         return {"label": "Released", "value": "<a href='{}'>{}</a>".format(url, date_str), "safe": True}
 

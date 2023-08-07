@@ -82,7 +82,9 @@ class BaseModel(models.Model):
         """ Return HTML link to author profile if a user is found, otherwise use an author field if it exists, otherwise a default value """
         if self.user:
             link = '{} <a href="{}">{}</a>'.format(
-                char(self.user.profile.char, self.user.profile.fg, self.user.profile.bg, scale=2), self.user.profile.link(), self.user.username
+                char(self.user.profile.char, self.user.profile.fg, self.user.profile.bg, scale=2),
+                self.user.profile.get_absolute_url(),
+                self.user.username
             )
         elif hasattr(self, "author") and self.author:
             link = self.author

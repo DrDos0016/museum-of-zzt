@@ -556,7 +556,7 @@ def user_profile(request, user_id=None, **kwargs):
         data["meta_context"] = {
             "author": ["name", data["user_obj"].username],
             "description": ["name", "User profile for {}".format(data["user_obj"].username)],
-            "og:url": ["property", "https://museumofzzt.com" + data["user_obj"].profile.link()],
+            "og:url": ["property", "https://museumofzzt.com" + data["user_obj"].profile.get_absolute_url()],
         }
     else:
         data["title"] = "Profile for Guest Visitor"

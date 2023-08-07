@@ -1,4 +1,5 @@
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 
 from museum_site.models.base import BaseModel
 
@@ -19,11 +20,11 @@ class Custom_Block(BaseModel):
 
 
 class Article_Category_Block(Custom_Block):
-    """ Faux Detailed Block used for listing article categories on /article/category/ """
+    """ Faux Detailed Block used for listing article categories on Articles By Category page """
     model_name = "Article Category"
 
     def get_field_view(self, view="detailed"):
-        url = "/article/category/{}/".format(slugify(self.custom_context["title"]))
+        url = reverse("article_category", kwargs={"category_slug": slugify(self.custom_context["title"])})
         texts = {
             "detailed": "View Contents", "list": self.custom_context["title"], "gallery": self.custom_context["title"], "title": self.custom_context["title"]
         }

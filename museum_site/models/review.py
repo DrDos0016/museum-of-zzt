@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import timesince
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from museum_site.core.misc import profanity_filter
@@ -154,7 +155,8 @@ class Review(BaseModel):
         return {"label": "Review", "value": self.content, "markdown": True}
 
     def get_field_reviewer_link(self, view="review-content"):
-        return {"value": "<a href='/review/author/{}/'>Other reviews written by {}</a>".format(self.author.lower(), self.author), "safe": True}
+        url = reverse("reviews_by_author", kwargs={"author": self.author.lower()})
+        return {"value": "<a href='{}'>Other reviews written by {}</a>".format(url, self.author), "safe": True}
 
     def context_universal(self, request=None):
         context = super().context_universal(request)

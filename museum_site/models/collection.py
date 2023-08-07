@@ -149,13 +149,16 @@ class Collection(BaseModel):
         return {"label": "Visibility", "value": self.visibility_str}
 
     def get_field_edit_collection(self, view="detailed"):
-        return {"value": "<a href='/collection/edit/{}/'>Edit Collection</a>".format(self.slug), "safe": True}
+        url =  reverse("edit_collection", kwargs={"slug": slugify(self.title)})
+        return {"value": "<a href='{}'>Edit Collection</a>".format(url), "safe": True}
 
     def get_field_manage_contents(self, view="detailed"):
-        return {"value": "<a href='/collection/manage-contents/{}/'>Manage Collection Contents</a>".format(self.slug), "safe": True}
+        url = reverse("manage_collection_contents", kwargs={"slug": slugify(self.title)})
+        return {"value": "<a href='{}'>Manage Collection Contents</a>".format(url), "safe": True}
 
     def get_field_delete(self, view="detailed"):
-        return {"value": "<a href='/collection/delete/{}/'>Delete Collection</a>".format(self.slug), "safe": True}
+        url = reverse("delete_collection", kwargs={"slug": slugify(self.title)})
+        return {"value": "<a href='{}'>Delete Collection</a>".format(url), "safe": True}
 
     def get_field(self, field_name, view="detailed"):
         if hasattr(self, "get_field_{}".format(field_name)):
@@ -285,7 +288,7 @@ class Collection_Entry(BaseModel):
         return self.zfile.get_absolute_url() if self.zfile is not None else "#"
 
     def preview_url(self):
-        return self.zfile.preview_url() if self.zfile is not None else "images/screenshots/no_screenshot.png"
+        return self.zfile.preview_url() if self.zfile is not None else "screenshots/no_screenshot.png"
 
     def get_field(self, field_name, view="detailed"):
         if hasattr(self, "get_field_{}".format(field_name)):

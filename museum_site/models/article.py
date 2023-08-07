@@ -123,8 +123,8 @@ class Article(BaseModel):
     def get_absolute_url(self):
         return reverse("article_view", kwargs={"pk": self.pk, "slug": slugify(self.title)})
 
-    def url(self):
-        return "/article/view/{}/{}/".format(self.id, slugify(self.title))
+    def url(self):  # TODO: Remove all calls
+        return self.get_absolute_url()
 
     def preview_url(self):
         return os.path.join(self.path(), "preview.png")
@@ -276,7 +276,7 @@ class Article(BaseModel):
         return tags
 
     def get_field_view(self, view="detailed", text_override=""):
-        url = "/article/view/{}/{}/".format(self.pk, slugify(self.title))
+        url = self.get_absolute_url()
         if self.request and self.request.POST.get("secret"):
             url += "?secret={}".format(self.request.POST.get("secret"))
         if text_override:

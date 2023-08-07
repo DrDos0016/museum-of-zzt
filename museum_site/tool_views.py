@@ -333,7 +333,7 @@ def mirror(request, key):
         if "200" in str(data["resp"]):
             zfile.archive_name = request.POST.get("url")
             if request.POST.get("collection") != "test_collection":
-                zfile.basic_save()
+                zfile.save()
 
     data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
@@ -909,7 +909,7 @@ def tool_index(request, key=None):
             elif field == "contents":
                 Content.generate_content_object(data["file"])
 
-        data["file"].basic_save()
+        data["file"].save()
 
     if not data.get("file"):
         data["all_files"] = File.objects.all().values("key", "title").order_by("title")
@@ -944,7 +944,7 @@ def set_screenshot(request, key):
         optimize_image(file_path)
         zfile.screenshot = zfile.filename[:-4] + ".png"
         shutil.copyfile(file_path, zfile.screenshot_phys_path())
-        zfile.basic_save()
+        zfile.save()
 
     if request.GET.get("file"):
         with zipfile.ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
@@ -987,7 +987,7 @@ def set_screenshot(request, key):
             image_path = os.path.join(PREVIEW_IMAGE_BASE_PATH, zfile.letter, zfile.filename[:-4] + ".png")
             image.save(image_path)
             zfile.screenshot = zfile.filename[:-4] + ".png"
-            zfile.basic_save()
+            zfile.save()
 
     if os.path.isfile(DATA_PATH + "/" + request.GET.get("file", "")):
         os.remove(DATA_PATH + "/" + request.GET["file"])
