@@ -338,7 +338,7 @@ class ZGame_Form(forms.ModelForm):
     def process(self):
         self.process_zgame_form()
         # Final save
-        self.zfile.basic_save()
+        self.zfile.save()
 
         # Create a Download for zgames
         download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zfile.filename, kind="zgames")
@@ -367,7 +367,7 @@ class ZGame_Form(forms.ModelForm):
 
         self.zfile.sort_title = calculate_sort_title(self.zfile.title)
         self.zfile.language = "/".join(self.cleaned_data["language"])
-        self.zfile.basic_save()
+        self.zfile.save()
         self.zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
 
         # Clear old many-to-many associations
