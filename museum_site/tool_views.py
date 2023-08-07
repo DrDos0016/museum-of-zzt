@@ -508,7 +508,7 @@ def publish(request, key, mode="PUBLISH"):
         # Adjust the zgames download to point to the letter directory
         for dl in data["file"].downloads.all():
             if dl.kind == "zgames":
-                dl.url = dl.url.replace("uploaded", data["file"].letter)
+                dl.url = dl.url.replace("uploaded", data["file"].letter, 1)
                 dl.save()
 
         # Increment publish count for users

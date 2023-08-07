@@ -123,9 +123,6 @@ class Article(BaseModel):
     def get_absolute_url(self):
         return reverse("article_view", kwargs={"pk": self.pk, "slug": slugify(self.title)})
 
-    def url(self):  # TODO: Remove all calls
-        return self.get_absolute_url()
-
     def preview_url(self):
         return os.path.join(self.path(), "preview.png")
 

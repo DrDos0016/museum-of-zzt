@@ -41,6 +41,3 @@ class ZFile_Urls:
             if self.is_detail(DETAIL_ZZM):
                 return os.path.join("screenshots/zzm_screenshot.png")
             return os.path.join("screenshots/no_screenshot.png")
-
-    def url(self):  # TODO Replace all these calls
-        return self.get_absolute_url()

@@ -60,9 +60,6 @@ class Scroll(BaseModel):
     def __str__(self):
         return "Scroll #{} ID:{} Pub:{}".format(self.identifier, self.id, self.published)
 
-    def url(self):  # TODO: Remove all calls
-        return self.get_absolute_url()
-
     def get_absolute_url(self):
         return reverse("scroll_view", kwargs={"pk":self.pk, "slug":slugify(self.title)})
 
