@@ -178,7 +178,7 @@ def get_files_by_id(raw):
         files[str(f.id)] = f
     for _id in ids:
         if not files.get(str(_id)):
-            files[str(_id)] = File(id=-1, title="ERROR: File #{} not found".format(_id), screenshot="red-x-error.png")
+            files[str(_id)] = File(id=-1, title="ERROR: File #{} not found".format(_id), key="NOKEY")
     return files
 
 

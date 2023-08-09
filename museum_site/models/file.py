@@ -165,10 +165,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return "{} [{}]".format(self.title, self.key)
 
     # Initalizing functions
-    def init_detail_ids(self):
-        if self.detail_ids is None:
-            self.detail_ids = self.details.all().values_list("id", flat=True)
-
     def _init_actions(self):
         """ Determine which actions may be performed on this zfile """
         self.actions = {"review": False}
@@ -184,6 +180,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         self.actions["attributes"] = True
 
     def _init_detail_ids(self):
+        print("DETAIL IDS FOR", self.title)
         self.detail_ids = self.details.all().values_list("id", flat=True)
 
     def _init_extras(self):
@@ -238,7 +235,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def bucket(self):
         bucket_name = str(self.pk // 1000 * 1000).zfill(4)
         return bucket_name
-
 
     def file_exists(self): return True if os.path.isfile(self.phys_path()) else False
 
@@ -544,7 +540,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     # Fields for HTML display
     def get_field_download(self, view="detailed"):
-        restricted = {"value": "<span class='faded'>{} <i>Download</i></span>".format(self.prepare_icons_for_field()), "safe": True}
+        restricted = self.field_context(text="Download", icons="all", kind="faded")
         if not self.actions["download"]:
             if view == "list":
                 restricted["value"] = restricted["value"].replace("Download", "DL")
@@ -558,71 +554,61 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
         url = self.all_downloads.first().get_absolute_url() if self.all_downloads_count == 1 else reverse("file_download", kwargs={"key": self.key})
 
-
         # Change text for list view
         if view == "list":
             text = "DLs…" if text.startswith("Downloads") else "DL"
 
-        return {"label": "Download", "value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(), text), "safe": True}
+        return self.field_context(label="Download", url=url, icons="all", text=text)
 
     def get_field_play(self, view="detailed"):
         if not self.actions["play"]:
-            return {"value": "<span class='faded'>{} <i>Play Online</i></span>".format(self.prepare_icons_for_field("major")), "safe": True}
-        url = reverse("play", kwargs={"key": self.key})
-        return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field("major"), "Play Online"), "safe": True}
+            return self.field_context(text="Play Online", icons="major", kind="faded")
+        return self.field_context(url=reverse("play", kwargs={"key": self.key}), text="Play Online", icons="major")
 
     def get_field_view(self, view="detailed"):
         if view == "header":
-            return {"value": "{}{}".format(self.prepare_icons_for_field(), self.title), "safe": True}
+            context = self.field_context(icons="all")
+            context["value"] = self.title  # Text only, no link
+            return context
         if not self.actions["view"]:
             if view == "list" or view == "title":
-                return {"value": "<span class='faded'>{} <i>{}</i></span>".format(self.prepare_icons_for_field(), escape(self.title)), "safe": True}
-            return {"value": "<span class='faded'>{} <i>View Contents</i></span>".format(self.prepare_icons_for_field("major")), "safe": True}
+                return self.field_context(text=escape(self.title), icons="all", kind="faded")
+            return self.field_context(text="View Contents", icons="all", kind="faded")
 
         url = reverse("file", kwargs={"key": self.key}) if self.can_museum_download() else ""
         texts = {"detailed": "View Contents"}
         text = escape(texts.get(view, self.title))
         icon_kind = "major" if view == "detailed" else "all"
 
-        return {"value": "<a href='{}'>{}{}</a>".format(url, self.prepare_icons_for_field(icon_kind), text), "safe": True}
+        return self.field_context(url=url, icons=icon_kind, text=text)
 
     def get_field_review(self, view="detailed"):
-        restricted = {"value": "<span class='faded'><i>Reviews (0)</i></span>", "safe": True}  # If count is non-zero you can click the link
         if not self.actions["review"]:
-            return restricted
-
-        url = reverse("reviews", kwargs={"key": self.key})
-        text = "Reviews ({})".format(self.review_count)
-        return {"value": "<a href='{}'>{}</a>".format(url, text), "safe": True}
+            return self.field_context(text="Reviews (0)", kind="faded")
+        return self.field_context(url=reverse("reviews", kwargs={"key": self.key}), text="Reviews ({})".format(self.review_count))
 
     def get_field_article(self, view="detailed"):
-        restricted = {"value": "<span class='faded'><i>Articles (0)</i></span>", "safe": True}  # If count is non-zero you can click the link
         if not self.actions["article"]:
-            return restricted
-        url = reverse("article", kwargs={"key": self.key})
-        text = "Articles ({})".format(self.article_count)
-        return {"value": "<a href='{}'>{}</a>".format(url, text), "safe": True}
+            return self.field_context(text="Articles (0)", kind="faded")
+        return self.field_context(url=reverse("article", kwargs={"key": self.key}), text="Articles ({})".format(self.article_count))
 
     def get_field_attributes(self, view="detailed"):
-        restricted = {"value": "<span class='faded'><i>Articles (0)</i></span>", "safe": True}  # If count is non-zero you can click the link
         if not self.actions["attributes"]:
-            return restricted
-        url = reverse("file_attributes", kwargs={"key": self.key})
-        return {"value": "<a href='{}'>Attributes</a>".format(url), "safe": True}
+            return self.field_context(text="Attributes", kind="faded")
+        return self.field_context(url=reverse("file_attributes", kwargs={"key": self.key}), text="Attributes")
 
     def get_field_tools(self, view="detailed"):
-        url = reverse("tool_index_with_file", kwargs={"key": self.key})
-        return {"label": "Tools", "value": "<a href='{}'>Tools {} #{}</a>".format(url, self.model_name, self.pk), "safe": True}
+        return self.field_context(
+            label="Tools", url=reverse("tool_index_with_file", kwargs={"key": self.key}), text="Tools {} #{}".format(self.model_name, self.pk)
+        )
 
     def get_field_authors(self, view="detailed"):
         qs = self.authors.all()
-        plural = "s" if qs.count() > 1 else ""
-        return {"label": "Author{}".format(plural), "value": qs_to_links(qs), "safe": True}
+        return self.field_context(label="Author{}".format("s" if qs.count() > 1 else ""), text=qs_to_links(qs), kind="text")
 
     def get_field_companies(self, view="detailed"):
         qs = self.companies.all()
-        plural = "ies" if qs.count() > 1 else "y"
-        return {"label": "Compan{}".format(plural), "value": qs_to_links(qs), "safe": True}
+        return self.field_context(label="Compan{}".format("ies" if qs.count() > 1 else "y"), text=qs_to_links(qs), kind="text")
 
     def get_field_zfile_date(self, view="detailed"):
         if self.release_date is None:
@@ -630,24 +616,21 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         else:
             date_str = self.release_date.strftime(DATE_HR)
         url = reverse("browse_field", kwargs={"field": "year", "value": self.release_year(default="unk")})
-
-        return {"label": "Released", "value": "<a href='{}'>{}</a>".format(url, date_str), "safe": True}
+        return self.field_context(label="Released", text=date_str, url=url, kind="link")
 
     def get_field_genres(self, view="detailed"):
         qs = self.genres.all()
-        plural = "s" if qs.count() > 1 else ""
-        return {"label": "Genre{}".format(plural), "value": qs_to_links(qs), "safe": True}
+        return self.field_context(label="Genre{}".format("s" if qs.count() > 1 else ""), text=qs_to_links(qs), kind="link")
 
     def get_field_filename(self, view="detailed"):
-        return {"label": "Filename", "value": self.filename}
+        return self.field_context(label="Filename", text=self.filename, kind="text")
 
     def get_field_size(self, view="detailed"):
-        return {"label": "Size", "value": filesizeformat(self.size), "title": "{} bytes".format(self.size)}
+        return self.field_context(label="Size", text=filesizeformat(self.size), title="{} bytes".format(self.size), kind="text")
 
     def get_field_details(self, view="detailed"):
         qs = self.details.visible()
-        plural = "s" if qs.count() > 1 else ""
-        return {"label": "Detail{}".format(plural), "value": qs_to_links(qs), "safe": True}
+        return self.field_context(label="Detail{}".format("s" if qs.count() > 1 else ""), text=qs_to_links(qs), kind="text")
 
     def get_field_rating(self, view="detailed"):
         if self.rating is not None:
@@ -657,44 +640,44 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             rating = "<i>No rating</i>"
 
         plural = "s" if self.review_count != 1 else ""
-        output = {"label": "Rating", "value": "{} ({} Review{})".format(rating, self.review_count, plural), "safe": True}
+        output = self.field_context(label="Rating", text="{} ({} Review{})".format(rating, self.review_count, plural), kind="text")
         if view == "list":
             if self.review_count:
-                output = {"label": "Rating", "value": "{}<br>({})".format(rating.split(" ")[0], self.review_count), "safe": True}
+                output = self.field_context(label="Rating", text="{}<br>({})".format(rating.split(" ")[0]), kind="text")
             else:
-                output = {"label": "Rating", "value": "{}".format(rating), "safe": True}
+                output = self.field_context(label="Rating", text="{}".format(rating), kind="text")
         if view == "header":
             output["value"] = output["value"].replace(" (", "<br>(")
         return output
 
     def get_field_boards(self, view="detailed"):
-        return {
-            "label": "Board Count", "value": "{} / {}".format(self.playable_boards, self.total_boards),
-            "title": "Playable/Total boards. Values are automatic estimates and may be inaccurate."
-        }
+        return self.field_context(
+            label="Board Count",
+            text="{} / {}".format(self.playable_boards, self.total_boards),
+            title="Playable/Total boards. Values are automatic estimates and may be inaccurate.",
+            kind="text"
+        )
 
     def get_field_language(self, view="detailed"):
         language_str = ""
         for lang in self.language.split("/"):
-            url = reverse("browse_field", args=["language", LANGUAGES.get(lang, "Other")])
+            url = reverse("browse_field", args=["language", LANGUAGES.get(lang, "other").lower()])
             language_str += "<a href='{}'>{}</a>, ".format(url, LANGUAGES.get(lang, "Other"))
-        return {"label": "Language", "value": language_str[:-2], "safe": True}
+        return self.field_context(label="Language", text=language_str[:-2], kind="text")
 
     def get_field_publish_date(self, view="detailed"):
         if (self.publish_date is None) or (self.publish_date.strftime(DATE_NERD) < "2018-11-07"):
             publish_date_str = "<i>Unknown</i>"
         else:
             publish_date_str = self.publish_date.strftime(DATE_FULL)
-
-        return {"label": "Publish Date", "value": publish_date_str, "safe": True}
+        return self.field_context(label="Publish Date", text=publish_date_str, kind="text")
 
     def get_field_upload_date(self, view="detailed"):
         if (self.upload is None or self.upload.date is None):
             upload_date_str = "<i>Unknown</i>"
         else:
             upload_date_str = self.upload.date.strftime(DATE_FULL)
-
-        return {"label": "Upload Date", "value": upload_date_str, "safe": True}
+        return self.field_context(label="Upload Date", text=upload_date_str, kind="text")
 
     def context_extras(self):
         # TODO This is probably the weakest part of this rewrite
@@ -840,7 +823,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         actions.append(self.get_field_view(view="detailed"))
         context["actions"] = actions
         return context
-
 
     # Guide Word Functions
     def get_guideword_author(self):

@@ -173,3 +173,15 @@ class BaseModel(models.Model):
     def to_select(self):
         # Return a string representation of the object meant for user facing widgets
         return self.__str__()
+
+    def field_context(self, label="", text="", icons=None, url="#", title="", safe=True, kind="link"):
+        icons_str = self.prepare_icons_for_field(kind=icons) if icons else ""
+        if kind == "link":
+            value = "<a href='{}'>{}{}</a>".format(url, icons_str, text)
+        elif kind == "faded":
+            value = "<span class='faded'>{}<i>{}</i></span>".format(icons_str, text)
+        elif kind == "text":
+            value = text if not title else "<span title='{}'>{}</span>".format(title, text)
+
+        context = {"label": label, "value": value, "safe": safe}
+        return context
