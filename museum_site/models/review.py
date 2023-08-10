@@ -113,8 +113,6 @@ class Review(BaseModel):
         return {"value": "<a href='{}'>{}</a>".format(self.get_absolute_url(), self.title), "safe": True}
 
     def get_field_zfile(self, view="detailed"):
-        self.zfile._init_actions()
-        self.zfile._init_icons()
         return {"label": "File", "value": self.zfile.get_field_view("title")["value"], "safe": True}
 
     def get_field_author(self, view="detailed"):

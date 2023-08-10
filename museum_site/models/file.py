@@ -9,6 +9,7 @@ from django.contrib import admin
 from django.db import models
 from django.template.defaultfilters import filesizeformat, escape
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH, DATE_NERD, DATE_FULL, DATE_HR
@@ -29,7 +30,7 @@ from museum_site.querysets.zfile_querysets import *
 class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     """ ZFile object repesenting an a file hosted on the Museum site """
     model_name = "File"
-    to_init = ["detail_ids", "icons", "actions", "extras"]
+    to_init = ["icons"]
     table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
     cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
     guide_word_values = {
@@ -38,9 +39,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     }
 
     # Uninitizalized shared attributes
-    actions = None
-    detail_ids = None
-    extras = None
+    #actions = None
+    #detail_ids = None
+    #extras = None
     all_downloads = None
     all_downloads_count = None
 
@@ -164,37 +165,59 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def to_select(self):
         return "{} [{}]".format(self.title, self.key)
 
-    # Initalizing functions
-    def _init_actions(self):
-        """ Determine which actions may be performed on this zfile """
-        self.actions = {"review": False}
-        self.actions["download"] = True if self.downloads.all().count() else False
-        self.actions["view"] = True if self.can_museum_download() else False
-        self.actions["play"] = True if self.archive_name or (self.actions["view"] and self.supports_zeta_player()) else False
-        self.actions["article"] = True if self.article_count else False
+    # Cached Properties
+    @cached_property
+    def actions(self):
+        output = {"download": False, "view": False, "play": False, "article": False, "review": False, "attributes": False}
+        output["download"] = True if self.downloads.all().count() else False
+        output["view"] = True if self.can_museum_download() else False
+        output["play"] = True if self.archive_name or (output["view"] and self.supports_zeta_player()) else False
+        output["article"] = True if self.article_count else False
         # Review
-        if (self.actions["download"] and self.can_review) or self.review_count:
-            self.actions["review"] = True
-        if self.actions["review"] and self.is_detail(DETAIL_UPLOADED):
-            self.actions["review"] = False
-        self.actions["attributes"] = True
+        if (output["download"] and self.can_review) or self.review_count:
+            output["review"] = True
+        if output["review"] and self.is_detail(DETAIL_UPLOADED):
+            output["review"] = False
+        output["attributes"] = True
+        return output
 
-    def _init_detail_ids(self):
-        print("DETAIL IDS FOR", self.title)
-        self.detail_ids = self.details.all().values_list("id", flat=True)
+    @cached_property
+    def detail_ids(self):
+        return self.details.all().values_list("id", flat=True)
 
-    def _init_extras(self):
-        self.extras = []
+    @cached_property
+    def extras(self):
+        output = []
         if DETAIL_FEATURED in self.detail_ids:
-            self.extras.append({"kind": "featured-world", "template": "museum_site/subtemplate/extra-featured-world.html"})
+            output.append({"kind": "featured-world", "template": "museum_site/subtemplate/extra-featured-world.html"})
         if DETAIL_LOST in self.detail_ids and self.description:
-            self.extras.append({"kind": "lost-world", "template": "museum_site/subtemplate/extra-lost.html"})
+            output.append({"kind": "lost-world", "template": "museum_site/subtemplate/extra-lost.html"})
         if DETAIL_PROGRAM in self.detail_ids and self.description:
             # TODO: This PK check is a hotfix for "description" being used for many types of descriptions
             if self.pk not in [85]:
-                self.extras.append({"kind": "program-description", "template": "museum_site/subtemplate/extra-utility.html"})
+                output.append({"kind": "program-description", "template": "museum_site/subtemplate/extra-utility.html"})
         elif DETAIL_UTILITY in self.detail_ids and self.description:
-            self.extras.append({"kind": "utility-description", "template": "museum_site/subtemplate/extra-utility.html"})
+            output.append({"kind": "utility-description", "template": "museum_site/subtemplate/extra-utility.html"})
+        return output
+
+    # Initalizing functions
+    def _init_icons(self):
+        # Populates major and minor icons for file
+        self._minor_icons = []
+        self._major_icons = []
+
+        if self.explicit:
+            self._major_icons.append(self.ICONS["explicit"])
+        if self.is_detail(DETAIL_UPLOADED):
+            self._major_icons.append(self.ICONS["unpublished"])
+        if self.is_detail(DETAIL_LOST):
+            self._major_icons.append(self.ICONS["lost"])
+        if self.is_detail(DETAIL_WEAVE):
+            self._major_icons.append(self.ICONS["weave"])
+        if self.is_detail(DETAIL_FEATURED):
+            self._minor_icons.append(self.ICONS["featured"])
+
+        self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
     def _init_roles(self, view):
         super()._init_roles(view)
@@ -275,7 +298,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return output
 
     def is_detail(self, detail_id):
-        self._init_detail_ids()  # TODO may or may not need to do this
         return True if detail_id in self.detail_ids else False
 
     def supports_zeta_player(self):
@@ -300,7 +322,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self.article_count = self.articles.accessible().count()
 
     def calculate_reviews(self):
-        print("Calculating Reviews for", self.title)
         # Calculate Review Count
         if self.id is not None:
             self.review_count = Review.objects.for_zfile(self.id).count()
@@ -348,24 +369,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         for i in language_list:
             output.append((LANGUAGES.get(i, i), i))
         return output
-
-    def _init_icons(self):
-        # Populates major and minor icons for file
-        self._minor_icons = []
-        self._major_icons = []
-
-        if self.explicit:
-            self._major_icons.append(self.ICONS["explicit"])
-        if self.is_detail(DETAIL_UPLOADED):
-            self._major_icons.append(self.ICONS["unpublished"])
-        if self.is_detail(DETAIL_LOST):
-            self._major_icons.append(self.ICONS["lost"])
-        if self.is_detail(DETAIL_WEAVE):
-            self._major_icons.append(self.ICONS["weave"])
-        if self.is_detail(DETAIL_FEATURED):
-            self._minor_icons.append(self.ICONS["featured"])
-
-        self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
     def remove_uploaded_zfile(self):
         message = "Removing ZFile: "
@@ -643,7 +646,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         output = self.field_context(label="Rating", text="{} ({} Review{})".format(rating, self.review_count, plural), kind="text")
         if view == "list":
             if self.review_count:
-                output = self.field_context(label="Rating", text="{}<br>({})".format(rating.split(" ")[0]), kind="text")
+                output = self.field_context(label="Rating", text="{}<br>({})".format(rating.split(" ")[0], self.review_count), kind="text")
             else:
                 output = self.field_context(label="Rating", text="{}".format(rating), kind="text")
         if view == "header":

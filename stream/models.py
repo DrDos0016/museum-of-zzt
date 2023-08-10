@@ -96,7 +96,6 @@ class Stream_Entry(BaseModel):
     def as_json(self):
         if not self.zfile:
             return {}
-        self.zfile._init_actions()
         output = {
             "pk": self.pk,
             "title": self.get_field_view(view="stream"),

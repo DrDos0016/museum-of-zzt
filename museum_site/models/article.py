@@ -306,9 +306,6 @@ class Article(BaseModel):
     def get_field_associated_zfiles(self, view="detailed"):
         links = []
         for zf in self.file_set.all().order_by("sort_title"):
-            zf._init_detail_ids()
-            zf._init_icons()
-            zf._init_actions()
             links.append(zf.get_field_view(view="title").get("value", ""))
         if links == []:
             link_str = "<i>None</i>"
