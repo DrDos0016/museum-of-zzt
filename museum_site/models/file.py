@@ -690,9 +690,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             kind = extra["kind"]
             if kind == "featured-world":
                 context["featured_reviews"] = []
-                # TODO: Eventually replace with articles.category() and show unpublished
-                # articles = self.articles.category("Featured Game")
-                articles = self.articles.filter(category="Featured Game").defer("content").order_by("-publish_date")
+                articles = self.articles.category("Featured World").order_by("-publish_date")
                 for a in articles:
                     a.request = self.request
                     a._init_access_level()

@@ -222,7 +222,7 @@ def v1_api_json(zf):
         "genres": zf.genre_list(),
         "release_date": zf.release_date,
         "release_source": zf.release_source,
-        "screenshot": zf.screenshot,
+        "screenshot": zf.preview_url(),
         "company": zf.get_related_list("companies", "title"),
         "description": zf.description,
         "review_count": zf.review_count,

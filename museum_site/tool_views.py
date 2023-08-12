@@ -810,7 +810,7 @@ def share_publication_pack(request):
                     "pack": pack_id,
                     "idx": idx,
                     "body": body,
-                    "image1": zfile.screenshot,
+                    "image1": zfile.preview_url(),
                     "image2": zfile_screenshots[0],
                     "image3": zfile_screenshots[1],
                     "image4": zfile_screenshots[2],
