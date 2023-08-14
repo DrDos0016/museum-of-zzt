@@ -90,7 +90,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     # Database Fields
     letter = models.CharField(max_length=1, db_index=True, editable=False, help_text="Letter used for filtering browse pages")
     filename = models.CharField(max_length=50, help_text="Filename of the zip file containing this zfile's contents")
-    key = models.CharField(max_length=50, db_index=True, default="", help_text="Unique identifier used for URLs and filtering. Filename w/out extension")
+    key = models.CharField(unique=True, max_length=50, db_index=True, default="", help_text="Unique identifier used for URLs and filtering. Filename w/out extension")
     size = models.IntegerField(default=0, editable=False, help_text="Size in bytes of the zip file")
     title = models.CharField(max_length=80, help_text="Canonical name of the release")
     release_date = models.DateField(default=None, null=True, blank=True, help_text="Release date of zip file's contents.")
@@ -437,9 +437,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             issues["release_date"] = "Release date is prior to 1991."
         if self.release_date and self.release_source == "":
             issues["release_date_source"] = "Release source is blank, but release date is set."
-        if self.screenshot == "":
+        if not self.has_screenshot == "":
             issues["preview_image"] = "No preview image."
-        if self.screenshot and (not os.path.isfile(os.path.join(STATIC_PATH, self.preview_url()))):
+        if self.has_screenshot and (not os.path.isfile(os.path.join(STATIC_PATH, self.preview_url()))):
             issues["preview_image_missing"] = "Screenshot does not exist at {}".format(self.preview_url())
 
         # Review related

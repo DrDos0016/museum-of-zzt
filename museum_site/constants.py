@@ -17,9 +17,9 @@ SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # /muse
 APP_ROOT = os.path.join(SITE_ROOT, APP_NAME)  # /museum-of-zzt/museum_site
 STATIC_PATH = os.path.join(SITE_ROOT, APP_NAME, "static")  # /museum-of-zzt/museum_site/static
 PREVIEW_IMAGE_BASE_PATH = os.path.join(STATIC_PATH, "screenshots")  # /museum-of-zzt/museum_site/static/screenshots
-ZGAMES_BASE_PATH = os.path.join(SITE_ROOT, "zgames")  # /var/projects/museum-of-zzt/zgames
+ZGAMES_BASE_PATH = os.path.join(SITE_ROOT, "zgames")  # /museum-of-zzt/zgames
 DATA_PATH = os.path.join(STATIC_PATH, "data")  # /museum-of-zzt/museum_site/static/data
-CHARSET_PATH = os.path.join(STATIC_PATH, "images", "charsets")
+CHARSET_PATH = os.path.join(STATIC_PATH, "images", "charsets")  # /museum-of-zzt/museum_site/static/images/charsets
 
 # Contact Information
 EMAIL_ADDRESS = "doctordos@gmail.com"

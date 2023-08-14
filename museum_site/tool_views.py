@@ -41,9 +41,7 @@ from museum_site.models import *
 
 @staff_member_required
 def add_livestream(request, key):
-    data = {
-        "title": "Add Livestream VOD",
-    }
+    data = {"title": "Add Livestream VOD"}
     zfile_pk = File.objects.get(key=key).pk if key != "NOZFILEASSOC" else ""
 
     if request.method == "POST":
@@ -170,7 +168,7 @@ def extract_font(request, key):
 
 @staff_member_required
 def livestream_description_generator(request):
-    data = {"title": "Livestream Description Generator",}
+    data = {"title": "Livestream Description Generator"}
 
     if request.GET:
         data["form"] = Livestream_Description_Form(request.GET)
@@ -205,7 +203,6 @@ def livestream_description_generator(request):
 
         data["first_key"] = data["zfiles"][0].key if data["zfiles"] else "NOZFILEASSOC"
         data["DOMAIN"] = DOMAIN
-
 
         subtemplate_identifiers = {0: "no", 1: "one"}
         zzt_amount = subtemplate_identifiers.get(len(data["zfiles"]), "many")
@@ -278,7 +275,7 @@ def mirror(request, key):
         url_prefix = "szzt_"
         engine = "Super ZZT"
     else:
-        url_prefix="!!!UNKNOWN_ENGINE!!!"
+        url_prefix= "!!!UNKNOWN_ENGINE!!!"
         engine = "!!!UNKNOWN_ENGINE!!!"
 
     subject = ";".join(zfile.genre_list())
@@ -549,71 +546,44 @@ def publish(request, key, mode="PUBLISH"):
 
 @staff_member_required
 def reletter(request, key):
-    data = {"title": "Re-Letter Zip"}
-    data["file"] = File.objects.get(key=key)
+    context = {"title": "Re-Letter Zip"}
+    zf = File.objects.get(key=key)
+    context["file"] = zf
+    old_letter = zf.letter
 
     if request.POST.get("new_letter"):
-        letter = request.POST["new_letter"].lower()
-        old_letter = data["file"].letter
+        new_letter = request.POST["new_letter"].lower()
 
-        # Validate letter
-        if letter not in "abcdefghijklmnopqrstuvwxyz1":
-            data["results"] = "Invalid letter specified"
-            return render(request, "museum_site/tools/reletter.html", data)
+        # Validate Letter
+        if new_letter not in "abcdefghijklmnopqrstuvwxyz1":
+            context["results"] = "Invalid letter specified"
+            return render(request, "museum_site/tools/reletter.html", context)
 
-        # Validate that nothing will be clobbered
-        dst = os.path.join(SITE_ROOT, "zgames", letter, data["file"].filename)
-        if os.path.isfile(dst):
-            data["results"] = "A zip with the same name already exists in that letter!"
-            return render(request, "museum_site/tools/reletter.html", data)
+        # Validate no file with that name already exists in the new letter
+        old_path = os.path.join(ZGAMES_BASE_PATH, old_letter, zf.filename)
+        new_path = os.path.join(ZGAMES_BASE_PATH, new_letter, zf.filename)
+        if os.path.isfile(new_path):
+            context["results"] = "A zipfile already exists at {}!".format(new_path)
+            return render(request, "museum_site/tools/reletter.html", context)
 
-        # Copy the file to the new letter directory
-        src = data["file"].phys_path()
-        dst = os.path.join(SITE_ROOT, "zgames", letter, data["file"].filename)
-
+        # Move the file
         try:
-            shutil.copy(src, dst)
-            shutil.copystat(src, dst)
+            os.rename(old_path, new_path)
         except FileNotFoundError as e:
-            data["results"] = "Copy failure!"
-            data["error"] = str(e)
-            return render(request, "museum_site/tools/reletter.html", data)
+            context["results"] = "A zipfile already exists at {}!".format(new_path)
+            context["error"] = str(e)
+            return render(request, "museum_site/tools/reletter.html", context)
 
-        # Remove the old zipfile
-        try:
-            os.remove(src)
-        except FileNotFoundError as e:
-            data["results"] = "Failed to remove {}.".format(src)
-            data["error"] = str(e)
-            return render(request, "museum_site/tools/reletter.html", data)
+        context["results"] = "Successfully Re-Lettered from <b>{}</b> to <b>{}</b>".format(old_letter.upper(), new_letter.upper())
 
-        # Copy the screenshot to the new letter directory
-        src = data["file"].screenshot_phys_path()
-        dst = os.path.join(STATIC_PATH, "images", "screenshots", letter, data["file"].screenshot)
+        # Update the ZFile and Download
+        zf.letter = new_letter
+        zf.save()
+        dl = zf.downloads.filter(kind="zgames").first()
+        dl.url = "/zgames/{}/{}".format(zf.letter, zf.filename)
+        dl.save()
 
-        try:
-            shutil.copy(src, dst)
-            shutil.copystat(src, dst)
-        except FileNotFoundError as e:
-            data["results"] = "Screenshot copy failure!"
-            data["error"] = str(e)
-            return render(request, "museum_site/tools/reletter.html", data)
-
-        # Remove the old screenshot
-        try:
-            os.remove(src)
-        except FileNotFoundError as e:
-            data["results"] = "Failed to remove {}.".format(src)
-            data["error"] = str(e)
-            return render(request, "museum_site/tools/reletter.html", data)
-
-        data["results"] = ("Successfully Re-Lettered from <b>{}</b> to <b>{}</b>").format(old_letter.upper(), letter.upper())
-
-        # Update the database entry
-        data["file"].letter = letter
-        data["file"].save()  # FULLSAVE
-
-    return render(request, "museum_site/tools/reletter.html", data)
+    return render(request, "museum_site/tools/reletter.html", context)
 
 
 @staff_member_required
@@ -676,7 +646,7 @@ def review_approvals(request):
                     r.save()
                     zfile = File.objects.get(pk=r.zfile.id)
                     zfile.calculate_reviews()
-                    zfile.save()  # FULLSAVE
+                    zfile.save()
                     title = zfile.title
                     data["output"] += "Approved Review for `{}`<br>".format(title)
                     discord_announce_review(r)
@@ -922,15 +892,15 @@ def tool_index(request, key=None):
 @staff_member_required
 def set_screenshot(request, key):
     """ Returns page to generate and set a file's screenshot """
+    if not HAS_ZOOKEEPER:
+        return HttpResponse("Zookeeper library not found.")
+
     data = {"title": "Set Screenshot"}
     zfile = File.objects.get(key=key)
     data["file"] = zfile
     data["file_list"] = []
     tdh = tempfile.TemporaryDirectory(prefix="moz-")
     wip_dir = tdh.name
-
-    if not HAS_ZOOKEEPER:
-        return HttpResponse("Zookeeper library not found.")
 
     with zipfile.ZipFile(SITE_ROOT + zfile.download_url(), "r") as zf:
         all_files = zf.namelist()
@@ -942,7 +912,7 @@ def set_screenshot(request, key):
     if request.POST.get("manual"):
         file_path = place_uploaded_file(wip_dir, request.FILES.get("uploaded_file"), custom_name=zfile.filename[:-4] + ".png")
         optimize_image(file_path)
-        zfile.screenshot = zfile.filename[:-4] + ".png"
+        zfile.has_preview_image = True
         shutil.copyfile(file_path, zfile.screenshot_phys_path())
         zfile.save()
 
@@ -970,8 +940,8 @@ def set_screenshot(request, key):
         image_path = zfile.screenshot_phys_path()
         shutil.copyfile(src, image_path)
 
-        zfile.screenshot = zfile.filename[:-4] + ".png"
-        zfile.save() # FULLSAVE
+        zfile.has_preview_image = True
+        zfile.save()
     elif request.POST.get("b64img"):
         raw = request.POST.get("b64img").replace("data:image/png;base64,", "", 1)
         from io import BytesIO
@@ -986,7 +956,7 @@ def set_screenshot(request, key):
         else:
             image_path = os.path.join(PREVIEW_IMAGE_BASE_PATH, zfile.letter, zfile.filename[:-4] + ".png")
             image.save(image_path)
-            zfile.screenshot = zfile.filename[:-4] + ".png"
+            zfile.has_preview_image = True
             zfile.save()
 
     if os.path.isfile(DATA_PATH + "/" + request.GET.get("file", "")):
