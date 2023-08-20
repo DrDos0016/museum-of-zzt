@@ -206,6 +206,9 @@ class ZFile_List_View(Model_List_View):
             qs = qs.filter(language__icontains=self.value)
 
         qs = self.sort_queryset(qs)
+
+        # Get related
+        qs = qs.prefetch_related("authors", "companies", "details", "downloads", "genres")
         return qs
 
     def get_context_data(self, **kwargs):
