@@ -10,6 +10,7 @@ import tempfile
 import zipfile
 
 from datetime import datetime
+from io import BytesIO
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
@@ -19,12 +20,14 @@ from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify, striptags
 from django.urls import get_resolver
 
+from PIL import Image  # TODO: This should not be imported here
+
 from museum_site.constants import *
 from museum_site.constants import DATE_NERD
 from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
 from museum_site.core.form_utils import load_form
-from museum_site.core.image_utils import crop_file, optimize_image
+from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_PRESETS
 from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate_boards_in_zipfile, record, zookeeper_init, zookeeper_extract_font
 from museum_site.forms.tool_forms import (
     IA_Mirror_Form,
@@ -35,6 +38,7 @@ from museum_site.forms.tool_forms import (
     Publication_Pack_Share_Form,
     Tool_ZFile_Select_Form,
     Series_Form,
+    Stream_VOD_Thumbnail_Generator_Form
 )
 from museum_site.models import *
 
@@ -966,6 +970,34 @@ def set_screenshot(request, key):
     optimize_image(image_path)
 
     return render(request, "museum_site/tools/set_screenshot.html", data)
+
+
+@staff_member_required
+def stream_vod_thumbnail_generator(request):
+    context = {"title": "Stream VOD Thumbnail Generator"}
+    if request.POST:
+        context["form"] = Stream_VOD_Thumbnail_Generator_Form(request.POST, request.FILES)
+        context["text_color"] = request.POST.get("title_color", "cyan")
+        context["shadow_color"] = "dark" + request.POST.get("title_color", "cyan")
+
+        raw = BytesIO(request.FILES["background_image"].read())
+        image = Image.open(raw)
+        preset = request.POST.get("crop")
+        if preset:
+            tl = (IMAGE_CROP_PRESETS[preset][0], IMAGE_CROP_PRESETS[preset][1])
+            br = (IMAGE_CROP_PRESETS[preset][2], IMAGE_CROP_PRESETS[preset][3])
+            image = image.crop((tl[0], tl[1], br[0], br[1]))
+
+        with BytesIO() as output:
+            image.save(output, format="PNG")
+            contents = output.getvalue()
+
+            b64_bytes = base64.b64encode(contents)
+            context["b64_image"] = "data:image/png;base64," + str(b64_bytes)[2:-1]
+    else:
+        context["form"] = Stream_VOD_Thumbnail_Generator_Form()
+
+    return render(request, "museum_site/tools/stream-vod-thumbnail-generator.html", context)
 
 
 """

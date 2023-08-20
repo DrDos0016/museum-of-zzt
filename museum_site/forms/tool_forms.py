@@ -1,3 +1,4 @@
+import base64
 import glob
 import os
 import time
@@ -18,6 +19,7 @@ from museum_site.settings import IA_ACCESS, IA_SECRET
 from museum_site.fields import Enhanced_Model_Choice_Field, Manual_Field
 from museum_site.models import Article, File, Series
 from museum_site.widgets import (
+    Ascii_Color_Widget,
     Enhanced_Date_Widget, Enhanced_Text_Widget, Ordered_Scrolling_Radio_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget
 )
 
@@ -452,6 +454,28 @@ class Publication_Pack_Share_Form(forms.Form):
             media_path += self.cleaned_data.get("article_prefix") if i != 1 else self.cleaned_data.get("zfile_prefix")
         media_path += field_value
         response = s.upload_media(media_path)
+
+
+class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Stream VOD Thumbnail Generator"
+    attrs = {"method": "POST", "enctype": "multipart/form-data"}
+    submit_value = "Generate"
+
+    COLOR_CHOICES = (
+        ("blue", "Blue"),
+        ("green", "Green"),
+        ("cyan", "Cyan"),
+        ("red", "Red"),
+        ("purple", "Purple"),
+        ("yellow", "Yellow"),
+    )
+
+    title = forms.CharField(label="Title", required=False)
+    subtitle = forms.CharField(label="Subtitle", required=False)
+    title_color = forms.ChoiceField(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES))
+    background_image = forms.FileField(label="Background Image", widget=UploadFileWidget())
+    crop = forms.ChoiceField(label="Background Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
 
 
 class Tool_ZFile_Select_Form(forms.Form):

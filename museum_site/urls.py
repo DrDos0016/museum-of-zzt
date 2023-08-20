@@ -244,6 +244,7 @@ urlpatterns = [
     path("tools/scan/", museum_site.tool_views.scan, name="museum_scan"),
     path("tools/series/add/", museum_site.tool_views.series_add, name="series_add"),
     path("tools/set_screenshot/<str:key>/", museum_site.tool_views.set_screenshot, name="set_screenshot"),
+    path("tools/stream-vod-thumbnail-generator/", museum_site.tool_views.stream_vod_thumbnail_generator, name="tool_stream_vod_thumbnail_generator"),
     path("tools/<str:key>/", museum_site.tool_views.tool_index, name="tool_index_with_file"),
 
     # /upload/

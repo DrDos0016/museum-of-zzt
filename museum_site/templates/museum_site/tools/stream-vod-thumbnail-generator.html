@@ -1,0 +1,115 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+{% load zzt_tags %}
+
+{% block scripts %}
+<script src="{% static 'js/museum-forms.js' %}"></script>
+<script src="/static/js/change-ascii-char.js"></script>
+{% for script in scripts %}<script src="{% static script %}"></script>{% endfor %}
+{% endblock %}
+
+{% block style %}
+<style>
+.workspace
+{
+    width:1280px;
+    height:720px;
+    border:10px solid #F0F;
+    border-bottom:50px solid #F0F;
+    position:relative;
+    background-color:var(--ega-black);
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    flex-direction:column;
+    margin-bottom:14px;
+
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:contain;
+}
+
+.workspace > *
+{
+    position:absolute;
+}
+
+.screenshot-wrapper
+{
+    top:10px;
+    left:160px;
+    display:none;
+}
+
+.title-wrapper
+{
+    top:175px;
+    left:0px;
+    background-color:rgba(0, 0, 0, 0.50);
+    width:100%;
+    text-align:center;
+    position:static;
+    z-index:10;
+}
+
+.stream-title
+{
+    color:var(--ega-{{text_color|default:'cyan'}});
+    font-size:140px;
+    text-shadow: 7px 7px 0px var(--ega-{{shadow_color|default:'darkcyan'}});
+}
+
+.stream-subtitle
+{
+    color:var(--ega-white);
+    font-size:105px;
+    text-shadow: 3px 3px 0px var(--ega-gray);
+}
+
+.tiger-wrapper
+{
+    left:0px;
+    bottom: -20px;
+}
+
+.tiger-wrapper img
+{
+    height:120px;
+}
+
+.bigchar { text-align:center; width:160px; }
+.lion { top:0px; left:0px; transform:rotate(-20deg); }
+.bear { top:0px; right:0px; transform:rotate(20deg); }
+.ruffian { right:0px; bottom: 0px; transform:rotate(-20deg); }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{form.heading}}</h1>
+
+{{form.text_prefix|default:""|safe}}
+
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+
+{% if request.POST %}
+<hr>
+<div class="workspace" style="background-image:url({{b64_image}})">
+    <div class="bigchar lion">{% char 234 "red" "transparent" scale=14 %}</div>
+    <div class="tiger-wrapper">
+        <img src="{% static 'chrome/logos/museum-tiger-by-lazymoth.png' %}" class="">
+    </div>
+    <div class="bigchar bear">{% char 153 "darkyellow" "transparent" scale=14 %}</div>
+    <div class="bigchar ruffian">{% char 5 "purple" "transparent" scale=14 %}</div>
+    <div class="cp437 title-wrapper">
+        <div class="stream-title">{{request.POST.title}}</div>
+        <div class="stream-subtitle">{{request.POST.subtitle}}</div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
