@@ -8,10 +8,11 @@
 {% if actions %}<div class="model-block-actions">{% for action in actions %}{% if not forloop.first %} | {% endif %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
 <div class="model-block-meta">
     {% for field in fields %}
+    {% if field.value %}
     <div class="datum">
         <div class="label">{{field.label}}:</div>
         <div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
-    </div>
+    </div>{% endif %}
     {% endfor %}
     {% if engine %}Played Using: {{engine}}{% if emulator %} via {{emulator}}{% endif %}{% endif %}
 </div>
