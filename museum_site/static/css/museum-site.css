@@ -72,6 +72,7 @@ a[target=_blank]
 a[href^="https://www.digitalmzx.com"]
 {
     padding-left:12px;
+    padding-right:16px;
     background:url("/static/chrome/mzx-smiley.png"), url("/static/chrome/external_link.png");
     background-position:center left, top right;
     background-repeat:no-repeat;
