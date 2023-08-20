@@ -36,7 +36,7 @@
 
 <nav id="low-res-shortcuts" class="cp437">
     <input type="button" id="left-hamburger" value="Archives" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-left">
-    <a href="{% url 'index' %}"><img src="{% static 'chrome/logos/museum-tiger-by-lazymoth.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
+    <a href="{% url 'index' %}"><img src="{% static 'chrome/logos/museum-tiger-by-lazymoth-48px.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
     {% if user.is_authenticated and not forced_logout %}<a href="{% url 'my_profile' %}" title="Logged in as: {{user.username}}"><div class="key">{% char user.profile.char user.profile.fg user.profile.bg scale=3 %}</div></a>{% endif %}
     <input type="button" id="right-hamburger" value="Exhibits" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-right">
 </nav>
