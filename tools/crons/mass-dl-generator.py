@@ -116,6 +116,15 @@ A compiliation of all Featured Worlds hosted on the Museum of ZZT.
 
 """[1:]
 
+WEAVE_HEADER = """
+T H E   M U S E U M   O F   Z Z T   P R E S E N T S
+
+A compiliation of all Weave ZZT worlds hosted on the Museum of ZZT.
+
+{} files are included in this compilation:
+
+"""[1:]
+
 FOOTER = """
 - https://museumofzzt.com -
 """
@@ -148,6 +157,7 @@ TEMPLATE_JSON = {
     "zig_worlds": {"md5": "", "file_count": 0},
     "zzm_audio": {"md5": "", "file_count": 0},
     "featured_worlds": {"md5": "", "file_count": 0},
+    "weave_worlds": {"md5": "", "file_count": 0},
 }
 
 
@@ -180,6 +190,7 @@ def main():
         "zig_worlds": [],
         "zzm_audio": [],
         "featured_worlds": [],
+        "weave_worlds": [],
     }
 
     id_list = {
@@ -210,6 +221,7 @@ def main():
         "zig_worlds": "",
         "zzm_audio": "",
         "featured_worlds": "",
+        "weave_worlds": "",
     }
 
     new_info = {}
@@ -220,6 +232,7 @@ def main():
         "zig_worlds": "ZIG Worlds",
         "zzm_audio": "ZZM Audio Files",
         "featured_worlds": "Featured Worlds",
+        "weave_worlds": "Weave ZZT Worlds",
     }
 
     readme_bodies = {
@@ -228,9 +241,10 @@ def main():
         "zig_worlds": ZIG_HEADER,
         "zzm_audio": ZZM_HEADER,
         "featured_worlds": FEATURED_HEADER,
+        "weave_worlds": WEAVE_HEADER
     }
 
-    special_zips = ("szzt_worlds", "utilities", "zig_worlds", "zzm_audio", "featured_worlds")
+    special_zips = ("szzt_worlds", "utilities", "zig_worlds", "zzm_audio", "featured_worlds", "weave_worlds")
 
     # Get all files by release date
     qs = File.objects.all().order_by("release_date", "letter", "title")
@@ -265,6 +279,9 @@ def main():
         if f.is_detail(DETAIL_FEATURED):
             file_list["featured_worlds"].append(f)
             id_list["featured_worlds"] += str(f.id)
+        if f.is_detail(DETAIL_WEAVE):
+            file_list["weave_worlds"].append(f)
+            id_list["weave_worlds"] += str(f.id)
 
     print("Files iterated.")
 
