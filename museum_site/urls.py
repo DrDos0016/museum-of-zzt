@@ -284,10 +284,10 @@ urlpatterns = [
     path("user/change-bkzzt-topics/", museum_site.user_views.change_patron_perks, name="change_bkzzt_topics"),
 
     # /*/ -- Miscellaneous Pages
-    path("ascii/", museum_site.views.ascii_reference, name="ascii"),
+    path("ascii/", museum_site.views.Ascii_Reference_View.as_view(), name="ascii"),
     path("beta-unlock/", museum_site.views.beta_unlock, name="beta_unlock"),
     path("explicit-warning/", museum_site.views.explicit_warning, name="explicit_warning"),
-    path("discord/", museum_site.views.discord_overview, name="discord"),
+    path("discord/", museum_site.views.Discord_Overview_View.as_view(), name="discord"),
     path("credits/", museum_site.views.site_credits, name="credits"),
     path("patron-articles/", museum_site.article_views.patron_articles, name="patron_articles"),
     path("worlds-of-zzt/", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),

@@ -839,7 +839,7 @@ def tool_index(request, key=None):
         url_str = str(u.pattern)
         if url_str.startswith("tools/") and u.name not in restricted_urls:
             if url_str.find("<") == -1:
-                tool_list.append({"url_name": u.name, "text": u.name.replace("_", " ").title()})
+                tool_list.append({"url_name": u.name, "text": u.name.replace("_", " ").replace("tool ", "").title()})
             elif data.get("file"):
                 formatted_pattern = "/" + str(u.pattern)
                 formatted_pattern = formatted_pattern.replace("<str:key>", data["file"].key)

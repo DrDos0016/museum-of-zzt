@@ -1,30 +1,80 @@
 import json
 import math
+import os
 import re
 
+from django.db.models import Count
+from django.db.models.functions import ExtractYear
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify
+from django.views.generic import TemplateView
 
+from museum_site.core.detail_identifiers import *
 from museum_site.constants import *
 from museum_site.models import *
 from museum_site.settings import DISCORD_INVITE_URL, PASSWORD5DOLLARS
 
 
-def ascii_reference(request):
-    context = {"title": "Ascii Character Reference"}
-    context["range"] = list(range(0, 256))
-    context["scale"] = 2
-    context["orientation"] = "horiz"
-    context["meta_context"] = {
-        "description": ["name", "A reference page for the ASCII characters used by ZZT"],
-        "og:title": ["property", context["title"] + " - Museum of ZZT"],
-        "og:image": ["property", "pages/ascii-reference.png"]
-    }
-    return render(request, "museum_site/ascii-reference.html", context)
+class Museum_Base_Template_View(TemplateView):
+    def get_title(self):
+        return self.title if self.title else ""
+
+    def get_meta_context(self):
+        return {}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.get_title()
+        return context
+
+    def render_to_response(self, context, **response_kwargs):
+        if hasattr(self, "redirect_to"):
+            return redirect(self.redirect_to)
+        return super().render_to_response(context, **response_kwargs)
+
+
+class Ascii_Reference_View(Museum_Base_Template_View):
+    title = "Ascii Character Reference"
+    template_name = "museum_site/ascii-reference.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["range"] = list(range(0, 256))
+        context["scale"] = 2
+        context["orientation"] = "horiz"
+        context["meta_context"] = {
+            "description": ["name", "A reference page for the ASCII characters used by ZZT"],
+            "og:title": ["property", context["title"] + " - Museum of ZZT"],
+            "og:image": ["property", "pages/ascii-reference.png"]
+        }
+        return context
+
+
+class Discord_Overview_View(Museum_Base_Template_View):
+    title = "Joining The Worlds of ZZT Discord"
+    template_name = "museum_site/discord.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["meta_context"] = {
+            "description": ["name", "Rules, information, and an invite link to the Worlds of ZZT Discord server"],
+            "og:title": ["property", context["title"] + " - Museum of ZZT"],
+            "og:image": ["property", "pages/discord.png"]
+        }
+
+        if self.request.POST and self.request.POST.get("agreed") != "agreed":
+            context["error"] = True
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if self.request.POST.get("agreed") == "agreed":
+            self.redirect_to = DISCORD_INVITE_URL
+        return self.get(request, *args, **kwargs)
+
 
 def beta_unlock(request):
     context = {"title": "Access Beta Site"}
@@ -36,10 +86,12 @@ def beta_unlock(request):
             context["invalid_password"] = True
     return render(request, "museum_site/beta-unlock.html", context)
 
+
 def close_tool(request):
     if request.session.get("active_tool"):
         del request.session["active_tool"]
     return redirect(request.GET.get("next", "index"))
+
 
 def directory(request, category):
     """ Returns a directory of all authors/companies/genres in the database """
@@ -61,7 +113,7 @@ def directory(request, category):
     # Split the list into 4 sets
     column_length = math.ceil(len(data_list) / 4)
     wip_columns = []
-    for idx in range(0,4):
+    for idx in range(0, 4):
         wip_columns.append(data_list[:column_length])
         data_list = data_list[column_length:]
 
@@ -70,7 +122,7 @@ def directory(request, category):
     observed_letters = []
     last_letter = ""
     force_header = False
-    for idx in range(0,4):
+    for idx in range(0, 4):
         wip_column = wip_columns[idx]
         if idx != 0:
             force_header = True
@@ -119,22 +171,6 @@ def explicit_warning(request):
     return render(request, "museum_site/explicit-warning.html", data)
 
 
-def discord_overview(request):
-    context = {"title": "Joining The Worlds of ZZT Discord"}
-    context["meta_context"] = {
-        "description": ["name", "Rules, information, and an invite link to the Worlds of ZZT Discord server"],
-        "og:title": ["property", context["title"] + " - Museum of ZZT"],
-        "og:image": ["property", "pages/discord.png"]
-    }
-
-    if request.method == "POST":
-        if request.POST.get("agreed") != "agreed":
-            context["error"] = True
-        return redirect(DISCORD_INVITE_URL)
-
-    return render(request, "museum_site/discord.html", context)
-
-
 def index(request):
     """ Returns front page """
     data = {}
@@ -152,21 +188,52 @@ def index(request):
 
 def mass_downloads(request):
     """ Returns a page for downloading files by release year """
-    data = {"title": "Mass Downloads"}
+    context = {"title": "Mass Downloads"}
+    zzt_counts = File.objects.filter(details__id=DETAIL_ZZT).annotate(year=ExtractYear("release_date")).values("year").annotate(count=Count("pk"))
+    szzt_count = {"label": "Super ZZT Worlds", "count": File.objects.filter(details__id=DETAIL_SZZT).count(), "zip": "szzt_worlds.zip"}
+    weave_count = {"label": "Weave ZZT Worlds", "count": File.objects.filter(details__id=DETAIL_WEAVE).count(), "zip": "weave_worlds.zip"}
+    zig_count = {"label": "ZIG Worlds", "count": File.objects.filter(details__id=DETAIL_ZIG).count(), "zip": "zig_worlds.zip"}
+    utilities_count = {"label": "Utilities", "count": File.objects.filter(details__id=DETAIL_UTILITY).count(), "zip": "utilities.zip"}
+    zzm_audio_count = {"label": "ZZM Audio Files", "count": File.objects.filter(details__id=DETAIL_ZZM).count(), "zip": "zzm_audio.zip"}
+    featured_world_count = {"label": "Featured Worlds", "count": File.objects.filter(details__id=DETAIL_FEATURED).count(), "zip": "featured_worlds.zip"}
 
-    # Counts for each year
-    """
-    data["counts"] = {}
-    dates = File.objects.all().only("release_date")
-    for row in dates:
-        year = str(row.release_date)[:4]
-        if year not in data["counts"].keys():
-            data["counts"][year] = 1
-        else:
-            data["counts"][year] += 1
-    """
+    zzt_1990s = []
+    zzt_2000s = []
+    zzt_2010s = {"label": "ZZT Worlds - 2010-2019", "count": 0, "zip": "zzt_worlds_2010-2019.zip"}
+    zzt_2020s = {"label": "ZZT Worlds - 2020-2029", "count": 0, "zip": "zzt_worlds_2020-2029.zip"}
+    for item in zzt_counts:
+        if item["year"] == None:
+            item["year"] = "Unknown"
+            item["zip"] = "zzt_worlds_UNKNOWN.zip"
+            item["label"] = "ZZT Worlds - Unknown"
+            zzt_1990s.append(item)
+        elif int(item["year"]) < 2000:
+            item["label"] = "ZZT Worlds - {}".format(item["year"])
+            item["zip"] = "zzt_worlds_{}.zip".format(item["year"])
+            zzt_1990s.append(item)
+        elif int(item["year"]) < 2010:
+            item["label"] = "ZZT Worlds - {}".format(item["year"])
+            item["zip"] = "zzt_worlds_{}.zip".format(item["year"])
+            zzt_2000s.append(item)
+        elif int(item["year"]) < 2020:
+            zzt_2010s["count"] += item["count"]
+        elif int(item["year"]) < 2030:
+            zzt_2020s["count"] += item["count"]
 
-    return render(request, "museum_site/mass_downloads.html", data)
+    columns = [
+        zzt_1990s, zzt_2000s, [zzt_2010s, zzt_2020s], [szzt_count, weave_count, zig_count, utilities_count, zzm_audio_count, featured_world_count]
+    ]
+
+    for column in columns:
+        for row in column:
+            path = os.path.join(ZGAMES_BASE_PATH, "mass", row["zip"])
+            if os.path.isfile(path):
+                stat = os.stat(path)
+                row["size"] = stat.st_size
+                row["updated"] = datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d")
+
+    context["columns"] = columns
+    return render(request, "museum_site/mass-downloads.html", context)
 
 
 def random(request):
@@ -392,6 +459,7 @@ class Policy_View(TemplateView):
         context = super().get_context_data(**kwargs)
         context["title"] = self.kwargs["slug"].replace("-", " ").title() + " Policy"
         return context
+
 
 class RSS_View(TemplateView):
     template_name = "museum_site/rss-info.html"
