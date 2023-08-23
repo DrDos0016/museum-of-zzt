@@ -101,10 +101,10 @@ class Collection(BaseModel):
         super(Collection, self).save(*args, **kwargs)
 
     def url(self):
-        return reverse("view_collection", kwargs={"collection_slug": self.slug})
+        return reverse("collection_view", kwargs={"collection_slug": self.slug})
 
     def get_absolute_url(self):
-        return reverse("view_collection", kwargs={"collection_slug": self.slug})
+        return reverse("collection_view", kwargs={"collection_slug": self.slug})
 
     def preview_url(self):
         if self.preview_image:
@@ -149,15 +149,15 @@ class Collection(BaseModel):
         return {"label": "Visibility", "value": self.visibility_str}
 
     def get_field_edit_collection(self, view="detailed"):
-        url =  reverse("edit_collection", kwargs={"slug": slugify(self.title)})
+        url =  reverse("collection_edit", kwargs={"slug": slugify(self.title)})
         return {"value": "<a href='{}'>Edit Collection</a>".format(url), "safe": True}
 
     def get_field_manage_contents(self, view="detailed"):
-        url = reverse("manage_collection_contents", kwargs={"slug": slugify(self.title)})
+        url = reverse("collection_manage_contents", kwargs={"slug": slugify(self.title)})
         return {"value": "<a href='{}'>Manage Collection Contents</a>".format(url), "safe": True}
 
     def get_field_delete(self, view="detailed"):
-        url = reverse("delete_collection", kwargs={"slug": slugify(self.title)})
+        url = reverse("collection_delete", kwargs={"slug": slugify(self.title)})
         return {"value": "<a href='{}'>Delete Collection</a>".format(url), "safe": True}
 
     def get_field(self, field_name, view="detailed"):

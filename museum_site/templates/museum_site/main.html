@@ -70,7 +70,7 @@
         </div>
         <div class="world-special">
             <a href="{% url 'browse' %}">All Files</a>
-            <a href="{% url 'browse_collections' %}">Collections</a>
+            <a href="{% url 'collection_browse' %}">Collections</a>
             <a href="{% url 'browse_field' 'detail' 'featured-world' %}" id="fp-fw-link">Featured Worlds</a>
             <a href="{% url 'mass_downloads' %}">Mass Downloads</a>
             <a href="{% url 'new_finds' %}">New Finds</a>
@@ -106,7 +106,7 @@
         <a href="{% url 'browse_field' 'detail' 'utility' %}">External Utilities</a>
         <a href="{% url 'browse_field' 'detail' 'zig-world' %}">ZIG Worlds</a>
         <a href="{% url 'browse_field' 'detail' 'zzm-audio' %}">ZZM Audio</a>
-        <a href="{% url 'file_details' %}">All Details</a>
+        <a href="{% url 'details_browse' %}">All Details</a>
     </div>
 </section>
 {% endblock %}
@@ -147,14 +147,14 @@
         <h2>Exhibits</h2>
 
         <h3>Worlds of ZZT</h3>
-        <a href="{% url 'article_category' 'closer-look' %}">Closer Looks</a>
-        <a href="{% url 'article_category' 'livestream' %}">Livestream VODs</a>
-        <a href="{% url 'article_category' 'publication-pack' %}">Publication Packs</a>
+        <a href="{% url 'article_browse_category' 'closer-look' %}">Closer Looks</a>
+        <a href="{% url 'article_browse_category' 'livestream' %}">Livestream VODs</a>
+        <a href="{% url 'article_browse_category' 'publication-pack' %}">Publication Packs</a>
         <a href="{% url 'stream_schedule' %}">Stream Schedule</a>
 
         <h3>Articles</h3>
-        <a href="{% url 'article_categories' %}">Articles By Category</a>
-        <a href="{% url 'article_directory' %}">Article Directory</a>
+        <a href="{% url 'article_browse_categories' %}">Articles By Category</a>
+        <a href="{% url 'article_browse' %}">Article Directory</a>
         <a href="{% url 'series_directory' %}">Articles By Series</a>
         <a href="{% url 'article_search' %}">Search Articles</a>
 
@@ -170,7 +170,7 @@
 
         <h3>Playing ZZT Worlds</h3>
         <a href="{% url 'zeta' %}">Using ZZT with Zeta</a>
-        <a href="{% url 'article_category' 'walkthrough' %}">Walkthroughs</a>
+        <a href="{% url 'article_browse_category' 'walkthrough' %}">Walkthroughs</a>
         <a href="{% url 'zzt_cheats' %}">ZZT Cheats</a>
 
         <h3>Editing ZZT Worlds</h3>

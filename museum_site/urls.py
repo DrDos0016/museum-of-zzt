@@ -32,8 +32,8 @@ urlpatterns = [
     path("", museum_site.views.index, name="index"),
 
     # /action/
-    path("action/set-theme/", museum_site.views.set_theme, name="set_theme"),
-    path("action/close-tool/", museum_site.views.close_tool, name="close_tool"),
+    path("action/set-theme/", museum_site.views.set_theme, name="action_set_theme"),
+    path("action/close-tool/", museum_site.views.close_tool, name="action_close_tool"),
 
     # /ajax/
     path("ajax/submit-form/<slug:slug>/", museum_site.ajax.submit_form, name="ajax_submit_form"),
@@ -51,24 +51,24 @@ urlpatterns = [
     path("ajax/collection/get-available-collections/", museum_site.ajax.otf_get_available_collections, name="ajax_otf_get_collections"),
 
     # /article/
-    path("article/",  RedirectView.as_view(pattern_name="article_directory", permanent=True)),
-    path("article/browse/", museum_site.article_views.Article_List_View.as_view(), name="article_directory"),
-    path("article/browse/category/", museum_site.article_views.Article_Categories_List_View.as_view(), name="article_categories"),
-    path("article/browse/category/<slug:category_slug>/", museum_site.article_views.Article_List_View.as_view(), name="article_category"),
+    path("article/",  RedirectView.as_view(pattern_name="article_browse", permanent=True)),
+    path("article/browse/", museum_site.article_views.Article_List_View.as_view(), name="article_browse"),
+    path("article/browse/category/", museum_site.article_views.Article_Categories_List_View.as_view(), name="article_browse_categories"),
+    path("article/browse/category/<slug:category_slug>/", museum_site.article_views.Article_List_View.as_view(), name="article_browse_category"),
     path("article/search/", museum_site.article_views.Article_Search_View.as_view(), name="article_search"),
     path("article/view/<int:pk>/page/<int:page>/<slug:slug>/", museum_site.article_views.Article_Detail_View.as_view(), name="article_view_page"),
     path("article/view/<int:pk>/<slug:slug>/", museum_site.article_views.Article_Detail_View.as_view(), {"page": 1}, name="article_view"),
     path("article/lock/<int:article_id>/<slug:slug>/", museum_site.article_views.article_lock, name="article_lock"),
 
     # /article/ -- Legacy Redirects
-    path("article/category/", RedirectView.as_view(pattern_name="article_categories", permanent=True)),
-    path("article/category/<slug:category_slug>/", RedirectView.as_view(pattern_name="article_category", permanent=True)),
-    path("article/categories/", legacy_redirect, {"name": "article_categories"}),
-    path("article/<slug:category_slug>/", legacy_redirect, {"name": "article_category"}),
+    path("article/category/", RedirectView.as_view(pattern_name="article_browse_categories", permanent=True)),
+    path("article/category/<slug:category_slug>/", RedirectView.as_view(pattern_name="article_browse_category", permanent=True)),
+    path("article/categories/", legacy_redirect, {"name": "article_browse_categories"}),
+    path("article/<slug:category_slug>/", legacy_redirect, {"name": "article_browse_category"}),
     path("article/<int:pk>/page/<int:page>/<slug:slug>/", legacy_redirect, {"name": "article_view_page"}),
     path("article/<int:pk>/<slug:slug>/", legacy_redirect, {"name": "article_view"}),
-    path("closer-looks/", legacy_redirect, {"name": "article_category", "category_slug": "closer-look"}),
-    path("livestreams/", legacy_redirect, {"name": "article_category", "category_slug": "livestream"}),
+    path("closer-looks/", legacy_redirect, {"name": "article_browse_category", "category_slug": "closer-look"}),
+    path("livestreams/", legacy_redirect, {"name": "article_brose_category", "category_slug": "livestream"}),
 
     # Article Shortcut URLs
     path("about-zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 534, "slug": "about-zzt"}, name="about_zzt"),
@@ -80,18 +80,18 @@ urlpatterns = [
     path("zzt-cheats/", RedirectView.as_view(pattern_name="article_view"), {"pk": 22, "slug": "zzt-cheats"}, name="zzt_cheats"),
 
     # /collection/
-    path("collection/", RedirectView.as_view(pattern_name="browse_collections", permanent=True)),
-    path("collection/browse/", museum_site.collection_views.Collection_List_View.as_view(), name="browse_collections"),
-    path("collection/delete/<slug:slug>/", login_required(museum_site.collection_views.Collection_Delete_View.as_view()), name="delete_collection"),
-    path("collection/edit/<slug:slug>/", login_required(museum_site.collection_views.Collection_Update_View.as_view()), name="edit_collection"),
+    path("collection/", RedirectView.as_view(pattern_name="collection_browse", permanent=True)),
+    path("collection/browse/", museum_site.collection_views.Collection_List_View.as_view(), name="collection_browse"),
+    path("collection/delete/<slug:slug>/", login_required(museum_site.collection_views.Collection_Delete_View.as_view()), name="collection_delete"),
+    path("collection/edit/<slug:slug>/", login_required(museum_site.collection_views.Collection_Update_View.as_view()), name="collection_edit"),
     path(
         "collection/manage-contents/<slug:slug>/",
-        login_required(museum_site.collection_views.Collection_Manage_Contents_View.as_view()), name="manage_collection_contents"
+        login_required(museum_site.collection_views.Collection_Manage_Contents_View.as_view()), name="collection_manage_contents"
     ),
-    path("collection/new/", login_required(museum_site.collection_views.Collection_Create_View.as_view()), name="new_collection"),
-    path("collection/on-the-fly-collections/", museum_site.collection_views.On_The_Fly_Collections_View.as_view(), name="on_the_fly_collections"),
-    path("collection/view/<slug:collection_slug>/", museum_site.collection_views.Collection_Contents_View.as_view(), name="view_collection"),
-    path("collection/user/", login_required(museum_site.collection_views.Collection_List_View.as_view()), name="my_collections"),
+    path("collection/new/", login_required(museum_site.collection_views.Collection_Create_View.as_view()), name="collection_new"),
+    path("collection/on-the-fly-collections/", museum_site.collection_views.On_The_Fly_Collections_View.as_view(), name="collection_on_the_fly_collections"),
+    path("collection/view/<slug:collection_slug>/", museum_site.collection_views.Collection_Contents_View.as_view(), name="collection_view"),
+    path("collection/user/", login_required(museum_site.collection_views.Collection_List_View.as_view()), name="collection_user"),
 
     # /debug/
     path("debug/", museum_site.debug_views.debug),
@@ -106,10 +106,10 @@ urlpatterns = [
     path("debug/widgets/", museum_site.debug_views.debug_widgets),
 
     # /detail/
-    path("detail/browse/", museum_site.help_views.Detail_Overview_View.as_view(), name="file_details"),
+    path("detail/browse/", museum_site.help_views.Detail_Overview_View.as_view(), name="detail_browse"),
 
     # /detail/ -- Legacy Redirects
-    path("detail/", RedirectView.as_view(pattern_name="file_details", permanent=True)),
+    path("detail/", RedirectView.as_view(pattern_name="detail_browse", permanent=True)),
     path("detail/view/<slug:detail_slug>/", legacy_redirect, {"name": "browse_field"}),
     path("detail/<slug:detail_slug>/", legacy_redirect, {"name": "browse_field"}),
     path("zzt-worlds/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "zzt-world"}, name="zzt_worlds"),
@@ -124,7 +124,7 @@ urlpatterns = [
     path("uploaded/", legacy_redirect, {"name": "browse_field", "field": "detail", "value": "uploaded"}, name="uploaded_worlds"),
     path("featured/", legacy_redirect, {"name": "browse_field", "field": "detail", "value": "featured-world"}, name="featured_games"),
 
-    # /file/
+    # /file/ -- TODO HERE for url name auditing
     path("file/", RedirectView.as_view(pattern_name="browse", permanent=True)),
     path("file/browse/", museum_site.file_views.ZFile_List_View.as_view(), name="browse"),
     path("file/browse/new-finds/", museum_site.file_views.ZFile_List_View.as_view(), name="new_finds"),

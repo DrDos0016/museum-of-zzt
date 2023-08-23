@@ -72,7 +72,7 @@
     <div class="column">
     {% endif %}
         <div class="row">
-            <a href="{% url 'article_directory' %}?&author={{row}}&sort=title">{{row}}</a>
+            <a href="{% url 'article_browse' %}?&author={{row}}&sort=title">{{row}}</a>
         </div>
     {% if forloop.counter|divisibleby:split or forloop.last %}
     </div>

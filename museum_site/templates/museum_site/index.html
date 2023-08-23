@@ -60,12 +60,12 @@ community can be easily discovered and that their importance can be recognized.
     {% queryset_to_model_blocks spotlight_articles view="list" %}
 {% endwith %}
 <div class="view-more">
-    <a href="{% url 'article_directory' %}">View More</a>
+    <a href="{% url 'article_browse' %}">View All Articles</a>
 </div>
 
 <h2>Latest Reviews</h2>
 {% queryset_to_model_blocks reviews view="list" %}
 <div class="view-more">
-    <a href="{% url 'review_directory' %}">View More</a>
+    <a href="{% url 'review_directory' %}">View All Reviews</a>
 </div>
 {% endblock %}

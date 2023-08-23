@@ -48,7 +48,7 @@ class Collection_Create_View(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("manage_collection_contents", kwargs={"slug": self.object.slug})
+        return reverse("collection_manage_contents", kwargs={"slug": self.object.slug})
 
 
 class Collection_Update_View(UpdateView):
@@ -75,7 +75,7 @@ class Collection_Update_View(UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("my_collections")
+        return reverse("collection_user")
 
 
 class Collection_Delete_View(DeleteView):
@@ -90,7 +90,7 @@ class Collection_Delete_View(DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse("my_collections")
+        return reverse("collection_user")
 
 
 class Collection_Manage_Contents_View(FormView):

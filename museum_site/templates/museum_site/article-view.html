@@ -126,7 +126,7 @@ function jump_to(jump)
     {% endif %}
 
     <a href="#top">Top of Page</a><br>
-    <a href="{% url 'article_directory' %}">Article directory</a><br>
+    <a href="{% url 'article_browse' %}">Article directory</a><br>
     <a href="{% url 'index' %}">Main page</a>
 
     {% if article.series.all %}

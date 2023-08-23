@@ -24,7 +24,7 @@ class Article_Category_Block(Custom_Block):
     model_name = "Article Category"
 
     def get_field_view(self, view="detailed"):
-        url = reverse("article_category", kwargs={"category_slug": slugify(self.custom_context["title"])})
+        url = reverse("article_browse_category", kwargs={"category_slug": slugify(self.custom_context["title"])})
         texts = {
             "detailed": "View Contents", "list": self.custom_context["title"], "gallery": self.custom_context["title"], "title": self.custom_context["title"]
         }
