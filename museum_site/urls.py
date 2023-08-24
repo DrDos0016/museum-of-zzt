@@ -68,7 +68,7 @@ urlpatterns = [
     path("article/<int:pk>/page/<int:page>/<slug:slug>/", legacy_redirect, {"name": "article_view_page"}),
     path("article/<int:pk>/<slug:slug>/", legacy_redirect, {"name": "article_view"}),
     path("closer-looks/", legacy_redirect, {"name": "article_browse_category", "category_slug": "closer-look"}),
-    path("livestreams/", legacy_redirect, {"name": "article_brose_category", "category_slug": "livestream"}),
+    path("livestreams/", legacy_redirect, {"name": "article_browse_category", "category_slug": "livestream"}),
 
     # Article Shortcut URLs
     path("about-zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 534, "slug": "about-zzt"}, name="about_zzt"),
@@ -167,16 +167,16 @@ urlpatterns = [
     # More at the end of the list...
 
     # /genre/
-    path("genre/browse/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_overview"),
+    path("genre/browse/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_browse"),
     # /genre/ -- Legacy Redirects
-    path("genre/", RedirectView.as_view(pattern_name="genre_overview", permanent=True)),
-    path("genre/<slug:genre_slug>/", legacy_redirect, {"name": "browse_field"}, name="browse_genre"),
+    path("genre/", RedirectView.as_view(pattern_name="genre_browse", permanent=True)),
+    path("genre/<slug:genre_slug>/", legacy_redirect, {"name": "browse_field"}),
 
     # /help/
     path("help/", RedirectView.as_view(url="/article/help/")),
     path("help/detail/", museum_site.help_views.Detail_Overview_View.as_view(), name="help_detail"),
     path("help/genre/", museum_site.help_views.Genre_Overview_View.as_view(), name="help_genre"),
-    path("help/zfile/", museum_site.help_views.zfiles, name="help_zfiles"),
+    path("help/zfile/", museum_site.help_views.zfiles, name="help_zfile"),
 
     # /policy/
     path("policy/<slug:slug>/", museum_site.views.Policy_View.as_view(), name="policy"),
@@ -185,37 +185,37 @@ urlpatterns = [
     path("data-integrity/", RedirectView.as_view(url="/policy/data-integrity/", permanent=True)),
 
     # /review/
-    path("review/", RedirectView.as_view(pattern_name="review_directory", permanent=True)),
-    path("review/browse/", museum_site.review_views.Review_List_View.as_view(), name="review_directory"),
-    path("review/browse/author/", museum_site.review_views.Reviewer_Directory_View.as_view(), name="reviewer_directory"),
-    path("review/browse/author/<str:author>/", museum_site.review_views.Review_List_View.as_view(), name="reviews_by_author"),
+    path("review/", RedirectView.as_view(pattern_name="review_browse", permanent=True)),
+    path("review/browse/", museum_site.review_views.Review_List_View.as_view(), name="review_browse"),
+    path("review/browse/author/", museum_site.review_views.Reviewer_Directory_View.as_view(), name="review_browse_authors"),
+    path("review/browse/author/<str:author>/", museum_site.review_views.Review_List_View.as_view(), name="review_browse_author"),
     path("review/search/", museum_site.review_views.Review_Search_View.as_view(), name="review_search"),
     # /review/ -- Legacy Redirects
-    path("review/author/", RedirectView.as_view(pattern_name="reviewer_directory", permanent=True)),
-    path("review/author/<str:author>/", RedirectView.as_view(pattern_name="reviews_by_author", permanent=True)),
+    path("review/author/", RedirectView.as_view(pattern_name="review_browse_authors", permanent=True)),
+    path("review/author/<str:author>/", RedirectView.as_view(pattern_name="review_browse_author", permanent=True)),
 
     # /rss/
-    path("rss/", museum_site.views.RSS_View.as_view(), name="rss_feeds"),
+    path("rss/", museum_site.views.RSS_View.as_view(), name="rss"),
     path("rss/articles/", museum_site.feeds.Latest_Articles_Feed(), name="rss_articles"),
-    path("rss/articles/upcoming/", museum_site.feeds.Upcoming_Articles_Feed(), name="rss_upcoming_articles"),
-    path("rss/articles/unpublished/", museum_site.feeds.Unpublished_Articles_Feed(), name="rss_unpublished_articles"),
+    path("rss/articles/upcoming/", museum_site.feeds.Upcoming_Articles_Feed(), name="rss_articles_upcoming"),
+    path("rss/articles/unpublished/", museum_site.feeds.Unpublished_Articles_Feed(), name="rss_articles_unpublished"),
     path("rss/files/", museum_site.feeds.Latest_Files_Feed(), name="rss_files"),
     path("rss/reviews/", museum_site.feeds.Latest_Reviews_Feed(), name="rss_reviews"),
     path("rss/uploads/", museum_site.feeds.Latest_Uploads_Feed(), name="rss_uploads"),
 
     # /scroll/
-    path("scroll/", RedirectView.as_view(pattern_name="scroll_directory", permanent=True)),
-    path("scroll/browse/", museum_site.scroll_views.Scroll_List_View.as_view(), name="scroll_directory"),
+    path("scroll/", RedirectView.as_view(pattern_name="scroll_browse", permanent=True)),
+    path("scroll/browse/", museum_site.scroll_views.Scroll_List_View.as_view(), name="scroll_browse"),
     path("scroll/<slug:navigation>/", museum_site.views.scroll_navigation, name="scroll_navigation"),
-    path("scroll/view/<int:pk>/", museum_site.scroll_views.Scroll_Detail_View.as_view(), name="scroll_view"),
+    path("scroll/view/<int:pk>/", museum_site.scroll_views.Scroll_Detail_View.as_view()),
     path("scroll/view/<int:pk>/<slug:slug>/", museum_site.scroll_views.Scroll_Detail_View.as_view(), name="scroll_view"),
 
     # /series/
-    path("series/browse/", museum_site.series_views.Series_List_View.as_view(), name="series_directory"),
-    path("series/view/<int:series_id>/<slug:slug>/", museum_site.series_views.Series_Contents_View.as_view(), name="series_overview"),
+    path("series/browse/", museum_site.series_views.Series_List_View.as_view(), name="series_browse"),
+    path("series/view/<int:series_id>/<slug:slug>/", museum_site.series_views.Series_Contents_View.as_view(), name="series_view"),
     # /series/ -- Legacy Redirects
-    path("series/", RedirectView.as_view(pattern_name="series_directory", permanent=True)),
-    path("series/<int:series_id>/<slug:slug>/", RedirectView.as_view(pattern_name="series_overview", permanent=True)),
+    path("series/", RedirectView.as_view(pattern_name="series_browse", permanent=True)),
+    path("series/<int:series_id>/<slug:slug>/", RedirectView.as_view(pattern_name="series_view", permanent=True)),
 
     # /tool/
     # path("tool/tinyzoo-converter/", museum_site.tool_views.tinyzoo_converter, name="tinyzoo_converter"),
@@ -250,7 +250,7 @@ urlpatterns = [
     # /upload/
     path("upload/", museum_site.upload_views.Upload_View.as_view(), name="upload"),
     path("upload/complete/<str:token>/", museum_site.upload_views.upload_complete, name="upload_complete"),
-    path("upload/delete/confirm/", museum_site.upload_views.Upload_Delete_Confirmation_View.as_view(), name="upload_delete_confirmation"),
+    path("upload/delete/confirm/", museum_site.upload_views.Upload_Delete_Confirmation_View.as_view(), name="upload_delete_confirm"),
     path("upload/<str:action>/", museum_site.upload_views.Upload_Action_View.as_view(), name="upload_action"),
 
     # /user/

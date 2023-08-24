@@ -153,7 +153,7 @@ class Review(BaseModel):
         return {"label": "Review", "value": self.content, "markdown": True}
 
     def get_field_reviewer_link(self, view="review-content"):
-        url = reverse("reviews_by_author", kwargs={"author": self.author.lower()})
+        url = reverse("review_browse_author", kwargs={"author": self.author.lower()})
         return {"value": "<a href='{}'>Other reviews written by {}</a>".format(url, self.author), "safe": True}
 
     def context_universal(self, request=None):

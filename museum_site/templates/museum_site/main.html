@@ -106,7 +106,7 @@
         <a href="{% url 'browse_field' 'detail' 'utility' %}">External Utilities</a>
         <a href="{% url 'browse_field' 'detail' 'zig-world' %}">ZIG Worlds</a>
         <a href="{% url 'browse_field' 'detail' 'zzm-audio' %}">ZZM Audio</a>
-        <a href="{% url 'details_browse' %}">All Details</a>
+        <a href="{% url 'detail_browse' %}">All Details</a>
     </div>
 </section>
 {% endblock %}
@@ -155,12 +155,12 @@
         <h3>Articles</h3>
         <a href="{% url 'article_browse_categories' %}">Articles By Category</a>
         <a href="{% url 'article_browse' %}">Article Directory</a>
-        <a href="{% url 'series_directory' %}">Articles By Series</a>
+        <a href="{% url 'series_browse' %}">Articles By Series</a>
         <a href="{% url 'article_search' %}">Search Articles</a>
 
         <h3>Reviews</h3>
-        <a href="{% url 'review_directory' %}">Review Directory</a>
-        <a href="{% url 'reviewer_directory' %}">Reviewer Directory</a>
+        <a href="{% url 'review_browse' %}">Review Directory</a>
+        <a href="{% url 'review_browse_authors' %}">Reviewer Directory</a>
         <a href="{% url 'review_search' %}">Search Reviews</a>
 
         <h3>Directories</h3>
@@ -188,7 +188,7 @@
         <a href="https://beta.museumofzzt.com">$5+ Private Beta</a>
 
         <h3>Just For Fun</h3>
-        <a href="{% url 'scroll_directory' %}">Scrolls of ZZT</a>
+        <a href="{% url 'scroll_browse' %}">Scrolls of ZZT</a>
         <a href="{% url 'worlds_of_zzt' %}">Worlds of ZZT Queue</a>
 
         <h3>Policies</h3>
@@ -211,7 +211,7 @@
         <a href="https://www.youtube.com/c/WorldsofZZT" target="_blank"><img src="{% static 'icons/YouTube-social-squircle_red_24px.png' %}" alt="YouTube" title="YouTube"></a>
         <a href="https://twitch.tv/worldsofzzt" target="_blank"><img src="{% static 'icons/Glitch_Purple_RGB.png' %}" alt="Twitch" title="Twitch"></a>
         <a href="https://github.com/DrDos0016/museum-of-zzt" target="_blank"><img src="{% static 'icons/GitHub-Mark-32px.png' %}" alt="GitHub" title="GitHub"></a>
-        <a href="{% url 'rss_feeds' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Feeds" title="RSS Feeds"></a>
+        <a href="{% url 'rss' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS Feeds" title="RSS Feeds"></a>
     </div>
 </section>
 {% endblock %}

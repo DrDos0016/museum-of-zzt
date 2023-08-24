@@ -257,7 +257,7 @@ class Upload_Action_View(ListView):
             if self.request.GET.get("action") == "edit":
                 return redirect_with_querystring("upload", "token={}".format(self.request.GET["token"]))
             if self.request.GET.get("action") == "delete":
-                return redirect_with_querystring("upload_delete_confirmation", "token={}".format(self.request.GET["token"]))
+                return redirect_with_querystring("upload_delete_confirm", "token={}".format(self.request.GET["token"]))
         return super().render_to_response(context)
 
 

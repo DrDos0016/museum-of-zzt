@@ -68,7 +68,7 @@ class Series(BaseModel):
         super(Series, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("series_overview", kwargs={"series_id": self.pk, "slug": self.slug})
+        return reverse("series_view", kwargs={"series_id": self.pk, "slug": self.slug})
 
     def preview_url(self):
         return os.path.join(self.PREVIEW_DIRECTORY, self.preview)

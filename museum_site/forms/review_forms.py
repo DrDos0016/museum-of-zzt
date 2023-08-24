@@ -49,7 +49,7 @@ class Review_Search_Form(forms.Form):
     )
 
     heading = "Review Search"
-    attrs = {"method": "GET", "action": reverse_lazy("review_directory")}
+    attrs = {"method": "GET", "action": reverse_lazy("review_browse")}
     submit_value = "Search Reviews"
 
     # Fields

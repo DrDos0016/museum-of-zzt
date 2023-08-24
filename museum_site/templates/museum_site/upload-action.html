@@ -34,7 +34,7 @@
 {% if action == "Edit" %}
 <td><a href="{% url 'upload' %}?token={{zf.upload.edit_token}}">{{zf.upload.edit_token}}</a></td>
 {% elif action == "Delete" %}
-<td><a href="{% url 'upload_delete_confirmation' %}?token={{zf.upload.edit_token}}">{{zf.upload.edit_token}}</a></td>
+<td><a href="{% url 'upload_delete_confirm' %}?token={{zf.upload.edit_token}}">{{zf.upload.edit_token}}</a></td>
 {% endif %}
 </tr>
 {% endfor %}

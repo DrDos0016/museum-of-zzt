@@ -44,13 +44,13 @@
 </tr>
 <tr>
     <th>[$2+] Upcoming + Published Articles</th>
-    <td><input name="rss-url" value="{{DOMAIN}}{% url 'rss_upcoming_articles' %}" data-click-select></td>
-    <td class="c"><a href="{% url 'rss_upcoming_articles' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a></td>
+    <td><input name="rss-url" value="{{DOMAIN}}{% url 'rss_articles_upcoming' %}" data-click-select></td>
+    <td class="c"><a href="{% url 'rss_articles_upcoming' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a></td>
 </tr>
 <tr>
     <th>[$5+] Unpublished + Upcoming +<br> Published Articles</th>
-    <td><input name="rss-url" value="{{DOMAIN}}{% url 'rss_unpublished_articles' %}" data-click-select></td>
-    <td class="c"><a href="{% url 'rss_unpublished_articles' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a></td>
+    <td><input name="rss-url" value="{{DOMAIN}}{% url 'rss_articles_unpublished' %}" data-click-select></td>
+    <td class="c"><a href="{% url 'rss_articles_unpublished' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a></td>
 </tr>
 
 </table>
