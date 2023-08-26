@@ -110,8 +110,8 @@ urlpatterns = [
 
     # /detail/ -- Legacy Redirects
     path("detail/", RedirectView.as_view(pattern_name="detail_browse", permanent=True)),
-    path("detail/view/<slug:detail_slug>/", legacy_redirect, {"name": "browse_field"}),
-    path("detail/<slug:detail_slug>/", legacy_redirect, {"name": "browse_field"}),
+    path("detail/view/<slug:detail_slug>/", legacy_redirect, {"name": "zfile_browse_field"}),
+    path("detail/<slug:detail_slug>/", legacy_redirect, {"name": "zfile_browse_field"}),
     path("zzt-worlds/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "zzt-world"}, name="zzt_worlds"),
     path("super-zzt/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "super-zzt-world"}, name="szzt_worlds"),
     path("utilities/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "utility"}, name="utilities"),
@@ -121,56 +121,56 @@ urlpatterns = [
     path("modified-exe/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "modified-executable"}, name="modified_exe"),
     path("ms-dos/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "ms-dos"}, name="ms_dos"),
     path("lost-worlds/", legacy_redirect, {"name": "files_by_detail", "detail_slug": "lost-world"}, name="lost_worlds"),
-    path("uploaded/", legacy_redirect, {"name": "browse_field", "field": "detail", "value": "uploaded"}, name="uploaded_worlds"),
-    path("featured/", legacy_redirect, {"name": "browse_field", "field": "detail", "value": "featured-world"}, name="featured_games"),
+    path("uploaded/", legacy_redirect, {"name": "zfile_browse_field", "field": "detail", "value": "uploaded"}, name="uploaded_worlds"),
+    path("featured/", legacy_redirect, {"name": "zfile_browse_field", "field": "detail", "value": "featured-world"}, name="featured_games"),
 
-    # /file/ -- TODO HERE for url name auditing
-    path("file/", RedirectView.as_view(pattern_name="browse", permanent=True)),
-    path("file/browse/", museum_site.file_views.ZFile_List_View.as_view(), name="browse"),
-    path("file/browse/new-finds/", museum_site.file_views.ZFile_List_View.as_view(), name="new_finds"),
-    path("file/browse/new-releases/", museum_site.file_views.ZFile_List_View.as_view(), name="new_releases"),
-    path("file/browse/<str:letter>/", museum_site.file_views.ZFile_List_View.as_view(), name="browse_letter"),
-    path("file/browse/<str:field>/<path:value>/", museum_site.file_views.ZFile_List_View.as_view(), name="browse_field"),
-    path("file/random/", museum_site.views.random, name="random"),
-    path("file/roulette/", museum_site.file_views.prepare_roulette, name="roulette"),
-    path("file/search/", museum_site.file_views.ZFile_Search_View.as_view(), name="search"),
-    path("file/mass-downloads/", museum_site.views.mass_downloads, name="mass_downloads"),
-    path("file/article/<str:key>/", museum_site.file_views.ZFile_Article_List_View.as_view(), name="article"),
-    path("file/attribute/<str:key>/", museum_site.file_views.file_attributes, name="file_attributes"),
-    path("file/download/<str:key>/", museum_site.file_views.file_download, name="file_download"),
-    path("file/review/<str:key>/", museum_site.file_views.ZFile_Review_List_View.as_view(), name="reviews"),
-    path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "key": ""}, name="local_file"),
-    path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),
-    path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="get_file_by_pk"),
+    # /file/
+    path("file/", RedirectView.as_view(pattern_name="zfile_browse", permanent=True)),
+    path("file/browse/", museum_site.file_views.ZFile_List_View.as_view(), name="zfile_browse"),
+    path("file/browse/new-finds/", museum_site.file_views.ZFile_List_View.as_view(), name="zfile_browse_new_finds"),
+    path("file/browse/new-releases/", museum_site.file_views.ZFile_List_View.as_view(), name="zfile_browse_new_releases"),
+    path("file/browse/<str:letter>/", museum_site.file_views.ZFile_List_View.as_view(), name="zfile_browse_letter"),
+    path("file/browse/<str:field>/<path:value>/", museum_site.file_views.ZFile_List_View.as_view(), name="zfile_browse_field"),
+    path("file/random/", museum_site.views.random, name="zfile_random"),
+    path("file/roulette/", museum_site.file_views.prepare_roulette, name="zfile_roulette"),
+    path("file/search/", museum_site.file_views.ZFile_Search_View.as_view(), name="zfile_search"),
+    path("file/mass-downloads/", museum_site.views.mass_downloads, name="zfile_mass_downloads"),
+    path("file/article/<str:key>/", museum_site.file_views.ZFile_Article_List_View.as_view(), name="zfile_article"),
+    path("file/attribute/<str:key>/", museum_site.file_views.file_attributes, name="zfile_attribute"),
+    path("file/download/<str:key>/", museum_site.file_views.file_download, name="zfile_download"),
+    path("file/review/<str:key>/", museum_site.file_views.ZFile_Review_List_View.as_view(), name="zfile_review"),
+    path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "key": ""}, name="zfile_view_local"),
+    path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),  # TODO
+    path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="zfile_pk"),
     #path(
     #    "file/play/local/", museum_site.zeta_views.zeta_launcher,
     #    {"components": ["credits", "controls", "instructions", "players"], "key":"LOCAL"}, name="play_local"
     #),
     path(
         "file/play/<str:key>/", museum_site.zeta_views.zeta_launcher,
-        {"components": ["credits", "controls", "instructions", "players"]}, name="play"
+        {"components": ["credits", "controls", "instructions", "players"]}, name="zfile_play"
     ),
     # /file/ -- Legacy Redirects
-    path("random/", legacy_redirect, {"name": "random"}),
-    path("roulette/", legacy_redirect, {"name": "roulette"}),
-    path("search/", legacy_redirect, {"name": "search"}),
-    path("advanced-search/", legacy_redirect, {"name": "search"}),
-    path("file/advanced-search/", RedirectView.as_view(pattern_name="search", permanent=True), name="advanced_search"),
-    path("mass-downloads/", legacy_redirect, {"name": "mass_downloads"}),
-    path("article/<str:letter>/<str:key>/", legacy_redirect, {"name": "article", "strip": ["letter"]}),
-    path("attributes/<str:letter>/<str:key>/", legacy_redirect, {"name": "file_attributes", "strip": ["letter"]}),
-    path("download/<str:letter>/<str:key>/", legacy_redirect, {"name": "file_download", "strip": ["letter"]}),
-    path("file/local/", legacy_redirect, {"name": "local_file"}),
+    path("random/", legacy_redirect, {"name": "zfile_random"}),
+    path("roulette/", legacy_redirect, {"name": "zfile_roulette"}),
+    path("search/", legacy_redirect, {"name": "zfile_search"}),
+    path("advanced-search/", legacy_redirect, {"name": "zfile_search"}),
+    path("file/advanced-search/", RedirectView.as_view(pattern_name="zfile_search", permanent=True)),
+    path("mass-downloads/", legacy_redirect, {"name": "zfile_mass_downloads"}),
+    path("article/<str:letter>/<str:key>/", legacy_redirect, {"name": "zfile_article", "strip": ["letter"]}),
+    path("attributes/<str:letter>/<str:key>/", legacy_redirect, {"name": "zfile_attribute", "strip": ["letter"]}),
+    path("download/<str:letter>/<str:key>/", legacy_redirect, {"name": "zfile_download", "strip": ["letter"]}),
+    path("file/local/", legacy_redirect, {"name": "zfile_view_local"}),
     path("file/<str:letter>/<str:key>/", legacy_redirect, {"name": "file", "strip": ["letter"]}),
-    path("pk/<int:pk>/", legacy_redirect, {"name": "get_file_by_pk"}),
-    path("play/<str:letter>/<str:key>/", legacy_redirect, {"name": "play", "strip": ["letter"]}),
+    path("pk/<int:pk>/", legacy_redirect, {"name": "zfile_pk"}),
+    path("play/<str:letter>/<str:key>/", legacy_redirect, {"name": "zfile_play", "strip": ["letter"]}),
     # More at the end of the list...
 
     # /genre/
     path("genre/browse/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_browse"),
     # /genre/ -- Legacy Redirects
     path("genre/", RedirectView.as_view(pattern_name="genre_browse", permanent=True)),
-    path("genre/<slug:genre_slug>/", legacy_redirect, {"name": "browse_field"}),
+    path("genre/<slug:genre_slug>/", legacy_redirect, {"name": "zfile_browse_field"}),
 
     # /help/
     path("help/", RedirectView.as_view(url="/article/help/")),
@@ -306,11 +306,11 @@ urlpatterns = [
     path("directory/<slug:category>/", museum_site.views.directory, name="directory"),
 
     # Legacy Redirects -- URLs which have changed but should still work to prevent link-rot
-    path("review/<str:letter>/<str:key>/", legacy_redirect, {"name": "reviews", "strip": ["letter"]}),
-    path("browse/", legacy_redirect, {"name": "browse"}),
-    path("browse/<str:letter>/", legacy_redirect, {"name": "browse_letter"}),
-    path("new/", legacy_redirect, {"name": "new_releases"}),
-    path("new-releases/", legacy_redirect, {"name": "new_releases"}),
+    path("review/<str:letter>/<str:key>/", legacy_redirect, {"name": "zfile_review", "strip": ["letter"]}),
+    path("browse/", legacy_redirect, {"name": "zfile_browse"}),
+    path("browse/<str:letter>/", legacy_redirect, {"name": "zfile_browse_letter"}),
+    path("new/", legacy_redirect, {"name": "zfile_browse_new_releases"}),
+    path("new-releases/", legacy_redirect, {"name": "zfile_browse_new_releases"}),
 ]
 
 # Serve static files on DEV

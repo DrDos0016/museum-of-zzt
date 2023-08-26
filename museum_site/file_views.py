@@ -252,7 +252,7 @@ class ZFile_List_View(Model_List_View):
             context["basic_search_fields"] = ["Title", "Author", "Company", "Genre", "Filename"]
 
         # Add search modify button
-        context["query_edit_url_name"] = "search"
+        context["query_edit_url_name"] = "zfile_search"
 
         # Remove view/sort widgets if no results were found
         if not context.get("object_list"):
@@ -437,4 +437,4 @@ def prepare_roulette(request):
     if request.GET.get("seed"):
         return ZFile_List_View.as_view()(request)
     else:
-        return redirect(reverse("roulette") + "?seed={}".format(int(time())))
+        return redirect(reverse("zfile_roulette") + "?seed={}".format(int(time())))

@@ -29,9 +29,9 @@ class Author(models.Model):
     def url(self):
         if not self.slug:
             self.slug = "ERROR"
-        return reverse("browse_field", kwargs={"field":"author", "value": self.slug})
+        return reverse("zfile_browse_field", kwargs={"field":"author", "value": self.slug})
 
     def get_absolute_url(self):
         if not self.slug:
             self.slug = "ERROR"
-        return reverse("browse_field", kwargs={"field":"author", "value": self.slug})
+        return reverse("zfile_browse_field", kwargs={"field":"author", "value": self.slug})

@@ -36,18 +36,18 @@ community can be easily discovered and that their importance can be recognized.
         </div>
     </div>
     <div class="view-more l">
-        <a href="{% url 'new_releases' %}">View All New Releases</a>
+        <a href="{% url 'zfile_browse_new_releases' %}">View All New Releases</a>
     </div>
     <div class="view-more r">
-        <a href="{% url 'new_finds' %}">View All New Finds</a>
+        <a href="{% url 'zfile_browse_new_finds' %}">View All New Finds</a>
     </div>
 </div>
 
 <div id="mobile-fp-file-frame">
-    <h2><a href="{% url 'new_releases' %}">New Releases</a></h2>
+    <h2><a href="{% url 'zfile_browse_new_releases' %}">New Releases</a></h2>
     {% queryset_to_model_blocks new_releases view="gallery" auto_wrap=False %}
     <hr>
-    <h2><a href="{% url 'new_finds' %}">New Finds</a></h2>
+    <h2><a href="{% url 'zfile_browse_new_finds' %}">New Finds</a></h2>
     {% queryset_to_model_blocks files view="gallery" auto_wrap=False %}
 </div>
 

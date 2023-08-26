@@ -15,7 +15,7 @@ class Reviewer_Directory_View(ListView):
     title = "Reviewer Directory"
     category = "Reviewer"
     template_name = "museum_site/generic-listing.html"
-    url_name = "review_browse_authors"
+    url_name = "review_browse_author"
     query_string = ""
 
     def get_queryset(self):

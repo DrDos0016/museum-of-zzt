@@ -22,7 +22,7 @@ class Genre(BaseModel):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("browse_field", kwargs={"field":"genre", "value":self.slug})
+        return reverse("zfile_browse_field", kwargs={"field":"genre", "value":self.slug})
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)

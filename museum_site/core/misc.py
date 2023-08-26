@@ -189,9 +189,9 @@ def legacy_redirect(request, name=None, *args, **kwargs):
         kwargs.pop("strip")
 
     if kwargs.get("detail_slug"):  # /detail/view/<slug>/ to /file/browse/detail/<slug>
-        url = reverse("browse_field", kwargs={"field": "detail", "value": kwargs["detail_slug"]})
+        url = reverse("zfile_browse_field", kwargs={"field": "detail", "value": kwargs["detail_slug"]})
     elif kwargs.get("genre_slug"):  # /genre/<slug>/ to /file/browse/genre/<slug>
-        url = reverse("browse_field", kwargs={"field": "genre", "value": kwargs["genre_slug"]})
+        url = reverse("zfile_browse_field", kwargs={"field": "genre", "value": kwargs["genre_slug"]})
     else:
         url = reverse(name, args=args, kwargs=kwargs)
 

@@ -32,10 +32,10 @@ class Detail(BaseModel):
         return "[" + str(self.id) + "] " + self.title
 
     def url(self):
-        return "/file/browse/detail/{}/".format(self.slug)
+        return self.get_absolute_url()
 
     def get_absolute_url(self):
-        return reverse("browse_field", kwargs={"field":"detail", "value":self.slug})
+        return reverse("zfile_browse_field", kwargs={"field":"detail", "value":self.slug})
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)

@@ -8,10 +8,10 @@ from museum_site.core.detail_identifiers import *
 
 class ZFile_Urls:
     def article_url(self):
-        return reverse("article", kwargs={"key": self.key})
+        return reverse("zfile_article", kwargs={"key": self.key})
 
     def attributes_url(self):
-        return reverse("file_attributes", kwargs={"key": self.key})
+        return reverse("zfile_attribute", kwargs={"key": self.key})
 
     def download_url(self):
         try:
@@ -26,10 +26,10 @@ class ZFile_Urls:
         return reverse("file", kwargs={"key": self.key})
 
     def play_url(self):
-        return reverse("play", kwargs={"key": self.key})
+        return reverse("zfile_play", kwargs={"key": self.key})
 
     def review_url(self):
-        return reverse("reviews", kwargs={"key": self.key})
+        return reverse("zfile_review", kwargs={"key": self.key})
 
     def tool_url(self):
         return reverse("tool_index_with_file", kwargs={"key": self.key})

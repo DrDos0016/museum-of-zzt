@@ -57,36 +57,36 @@
     <div id="archives-block" class="block">
         <h2>File Archives</h2>
         <div id="letters" class="c cp437">
-            <a href="{% url 'browse_letter' '1'%}">#</a>{% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-            <a href="{% url 'browse_letter' l|lower %}">{{l}}</a>{% endfor %}
+            <a href="{% url 'zfile_browse_letter' '1'%}">#</a>{% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+            <a href="{% url 'zfile_browse_letter' l|lower %}">{{l}}</a>{% endfor %}
         </div>
         <div id="letters-select">
             <select id="letter-select">
                 <option value="">By Letter</option>
                 {% for l in "1ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-                <option value="{% url 'browse_letter' l %}">{{l}}</option>{% endfor %}
+                <option value="{% url 'zfile_browse_letter' l %}">{{l}}</option>{% endfor %}
             </select>
             <input id="letter-button" type="button" value="Go">
         </div>
         <div class="world-special">
-            <a href="{% url 'browse' %}">All Files</a>
+            <a href="{% url 'zfile_browse' %}">All Files</a>
             <a href="{% url 'collection_browse' %}">Collections</a>
-            <a href="{% url 'browse_field' 'detail' 'featured-world' %}" id="fp-fw-link">Featured Worlds</a>
-            <a href="{% url 'mass_downloads' %}">Mass Downloads</a>
-            <a href="{% url 'new_finds' %}">New Finds</a>
-            <a href="{% url 'new_releases' %}">New Releases</a>
-            <a href="{% url 'random' %}">Random ZZT World</a>
-            <a href="{% url 'roulette' %}">Roulette</a>
+            <a href="{% url 'zfile_browse_field' 'detail' 'featured-world' %}" id="fp-fw-link">Featured Worlds</a>
+            <a href="{% url 'zfile_mass_downloads' %}">Mass Downloads</a>
+            <a href="{% url 'zfile_browse_new_finds' %}">New Finds</a>
+            <a href="{% url 'zfile_browse_new_releases' %}">New Releases</a>
+            <a href="{% url 'zfile_random' %}">Random ZZT World</a>
+            <a href="{% url 'zfile_roulette' %}">Roulette</a>
             <a href="{% url 'uploaded_worlds' %}">Upload Queue ({{UPLOAD_QUEUE_SIZE}})</a>
         </div>
-        <form method="GET" action="{% url 'search' %}">
+        <form method="GET" action="{% url 'zfile_search' %}">
         <div id="search-form">
             <input name="q" value="{{request.GET.q|default:''}}" list="search-suggestions" autocomplete="off" placeholder="Title/Author/Genre/Filename" title="Search by Title/Author/Genre/Filename" data-click-select>
             <input id="search-button" type="submit" value="Search">
         </div>
         </form>
         <div class="advanced-search">
-            <a href="{% url 'search' %}">Advanced Search</a>
+            <a href="{% url 'zfile_search' %}">Advanced Search</a>
         </div>
     </div>
 
@@ -102,10 +102,10 @@
 
     <div id="specialty-block" class="block">
         <h2>Specialty Archives</h2>
-        <a href="{% url 'browse_field' 'detail' 'super-zzt-world' %}">Super ZZT Worlds</a>
-        <a href="{% url 'browse_field' 'detail' 'utility' %}">External Utilities</a>
-        <a href="{% url 'browse_field' 'detail' 'zig-world' %}">ZIG Worlds</a>
-        <a href="{% url 'browse_field' 'detail' 'zzm-audio' %}">ZZM Audio</a>
+        <a href="{% url 'zfile_browse_field' 'detail' 'super-zzt-world' %}">Super ZZT Worlds</a>
+        <a href="{% url 'zfile_browse_field' 'detail' 'utility' %}">External Utilities</a>
+        <a href="{% url 'zfile_browse_field' 'detail' 'zig-world' %}">ZIG Worlds</a>
+        <a href="{% url 'zfile_browse_field' 'detail' 'zzm-audio' %}">ZZM Audio</a>
         <a href="{% url 'detail_browse' %}">All Details</a>
     </div>
 </section>
@@ -175,7 +175,7 @@
 
         <h3>Editing ZZT Worlds</h3>
         <a href="{% url 'ascii' %}">ASCII Characters</a>
-        <a href="{% url 'local_file' %}">Local File Viewer</a>
+        <a href="{% url 'zfile_view_local' %}">Local File Viewer</a>
 
         <h3>Historical</h3>
         <a href="http://zzt.org" target="_blank">z2 ZZT Archive</a>

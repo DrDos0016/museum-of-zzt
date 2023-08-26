@@ -555,7 +555,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if self.all_downloads_count == 0:
             return restricted
 
-        url = self.all_downloads.first().get_absolute_url() if self.all_downloads_count == 1 else reverse("file_download", kwargs={"key": self.key})
+        url = self.all_downloads.first().get_absolute_url() if self.all_downloads_count == 1 else reverse("zfile_download", kwargs={"key": self.key})
 
         # Change text for list view
         if view == "list":
@@ -566,7 +566,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def get_field_play(self, view="detailed"):
         if not self.actions["play"]:
             return self.field_context(text="Play Online", icons="major", kind="faded")
-        return self.field_context(url=reverse("play", kwargs={"key": self.key}), text="Play Online", icons="major")
+        return self.field_context(url=reverse("zfile_play", kwargs={"key": self.key}), text="Play Online", icons="major")
 
     def get_field_view(self, view="detailed"):
         if view == "header":
@@ -588,17 +588,17 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def get_field_review(self, view="detailed"):
         if not self.actions["review"]:
             return self.field_context(text="Reviews (0)", kind="faded")
-        return self.field_context(url=reverse("reviews", kwargs={"key": self.key}), text="Reviews ({})".format(self.review_count))
+        return self.field_context(url=reverse("zfile_review", kwargs={"key": self.key}), text="Reviews ({})".format(self.review_count))
 
     def get_field_article(self, view="detailed"):
         if not self.actions["article"]:
             return self.field_context(text="Articles (0)", kind="faded")
-        return self.field_context(url=reverse("article", kwargs={"key": self.key}), text="Articles ({})".format(self.article_count))
+        return self.field_context(url=reverse("zfile_article", kwargs={"key": self.key}), text="Articles ({})".format(self.article_count))
 
     def get_field_attributes(self, view="detailed"):
         if not self.actions["attributes"]:
             return self.field_context(text="Attributes", kind="faded")
-        return self.field_context(url=reverse("file_attributes", kwargs={"key": self.key}), text="Attributes")
+        return self.field_context(url=reverse("zfile_attribute", kwargs={"key": self.key}), text="Attributes")
 
     def get_field_tools(self, view="detailed"):
         return self.field_context(
@@ -618,7 +618,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             date_str = "<i>Unknown</i>"
         else:
             date_str = self.release_date.strftime(DATE_HR)
-        url = reverse("browse_field", kwargs={"field": "year", "value": self.release_year(default="unk")})
+        url = reverse("zfile_browse_field", kwargs={"field": "year", "value": self.release_year(default="unk")})
         return self.field_context(label="Released", text=date_str, url=url, kind="link")
 
     def get_field_genres(self, view="detailed"):
@@ -664,7 +664,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def get_field_language(self, view="detailed"):
         language_str = ""
         for lang in self.language.split("/"):
-            url = reverse("browse_field", args=["language", LANGUAGES.get(lang, "other").lower()])
+            url = reverse("zfile_browse_field", args=["language", LANGUAGES.get(lang, "other").lower()])
             language_str += "<a href='{}'>{}</a>, ".format(url, LANGUAGES.get(lang, "Other"))
         return self.field_context(label="Language", text=language_str[:-2], kind="text")
 
