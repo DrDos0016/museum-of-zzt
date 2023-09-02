@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+from django.template.defaultfilters import slugify
 from django.views.generic import DetailView
 
 from museum_site.generic_model_views import Model_List_View
@@ -23,10 +25,36 @@ class Scroll_Detail_View(DetailView):
         qs = Scroll.objects.filter(pk=self.kwargs["pk"], published=True)
         return qs
 
-    def get_slug_field(self):
-        return "identifier"
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Scroll #{}".format(context["scroll"].pk)
         return context
+
+
+def scroll_navigation(request, navigation="random"):
+    VALID_NAVIGATIONS = ["next", "prev", "first", "latest", "random"]
+    navigation = navigation if navigation in VALID_NAVIGATIONS else "random"
+    scroll = None
+
+    if request.GET.get("id"):
+        ref = int(request.GET["id"])
+        if navigation == "next":
+            scroll = Scroll.objects.filter(published=True, pk__gt=ref).order_by("id").first()
+        elif navigation == "prev":
+            scroll = Scroll.objects.filter(published=True, pk__lt=ref).order_by("-id").first()
+    else:
+        if navigation == "first":
+            scroll = Scroll.objects.filter(published=True).order_by("id").first()
+        elif navigation == "latest":
+            scroll = Scroll.objects.filter(published=True).order_by("-id").first()
+
+    if not scroll:
+        if navigation == "next":
+            scroll = Scroll.objects.filter(published=True).order_by("-id").first()
+        elif navigation == "prev":
+            scroll = Scroll.objects.filter(published=True).order_by("id").first()
+        else: # Random
+            scroll = Scroll.objects.filter(published=True).order_by("?").first()
+
+    slug = slugify(scroll.title) if scroll else "unlabeled-scroll"
+    return redirect(scroll.get_absolute_url())

@@ -253,31 +253,6 @@ def set_theme(request):
         return HttpResponse(request.GET.get("theme", "light"))
 
 
-def scroll_navigation(request, navigation="random"):
-    VALID_NAVIGATIONS = ["next", "prev", "first", "latest", "random"]
-    navigation = navigation if navigation in VALID_NAVIGATIONS else "random"
-
-    if request.GET.get("id"):
-        ref = int(request.GET["id"])
-        scroll = None
-        if navigation == "next":
-            scroll = Scroll.objects.filter(published=True, identifier__gt=ref).order_by("id").first()
-        elif navigation == "prev":
-            scroll = Scroll.objects.filter(published=True, identifier__lt=ref).order_by("-id").first()
-        identifier = scroll.identifier if scroll else 1
-    else:
-        if navigation == "first":
-            scroll = Scroll.objects.filter(published=True).order_by("id").first()
-        elif navigation == "latest":
-            scroll = Scroll.objects.filter(published=True).order_by("-id").first()
-        else:  # Random
-            scroll = Scroll.objects.filter(published=True).order_by("?").first()
-        identifier = scroll.identifier if scroll else 1
-
-    slug = slugify(scroll.title) if scroll else "unlabeled-scroll"
-    return redirect("/scroll/view/{}/{}/".format(identifier, slug))
-
-
 def site_credits(request):
     """ Returns page for site credits """
     data = {"title": "Credits"}

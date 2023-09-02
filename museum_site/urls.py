@@ -206,7 +206,7 @@ urlpatterns = [
     # /scroll/
     path("scroll/", RedirectView.as_view(pattern_name="scroll_browse", permanent=True)),
     path("scroll/browse/", museum_site.scroll_views.Scroll_List_View.as_view(), name="scroll_browse"),
-    path("scroll/<slug:navigation>/", museum_site.views.scroll_navigation, name="scroll_navigation"),
+    path("scroll/<slug:navigation>/", museum_site.scroll_views.scroll_navigation, name="scroll_navigation"),
     path("scroll/view/<int:pk>/", museum_site.scroll_views.Scroll_Detail_View.as_view()),
     path("scroll/view/<int:pk>/<slug:slug>/", museum_site.scroll_views.Scroll_Detail_View.as_view(), name="scroll_view"),
 

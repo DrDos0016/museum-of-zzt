@@ -26,10 +26,10 @@
 <nav id="scroll-nav" class="flex-container">
     <a href="{% url 'scroll_browse' %}">Scrolls of ZZT</a>
     <a href="{% url 'scroll_navigation' 'first' %}">First Scroll</a>
-    <a href="{% url 'scroll_navigation' 'prev' %}?id={{scroll.identifier}}">Previous Scroll</a>
+    <a href="{% url 'scroll_navigation' 'prev' %}?id={{scroll.pk}}">Previous Scroll</a>
     <a href="{{scroll.source}}">Scroll Source</a>
     <a href="{% url 'scroll_navigation' 'random' %}">Random Scroll</a>
-    <a href="{% url 'scroll_navigation' 'next' %}?id={{scroll.identifier}}">Next Scroll</a>
+    <a href="{% url 'scroll_navigation' 'next' %}?id={{scroll.pk}}">Next Scroll</a>
     <a href="{% url 'scroll_navigation' 'latest' %}">Latest Scroll</a>
 </nav>
 
