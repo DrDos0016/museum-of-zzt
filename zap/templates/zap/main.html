@@ -4,7 +4,11 @@
 
 {% block content %}
     <nav>
-        <a href="/tools/zap/">ZAP</a>
+    <ul>
+        {% for urlpattern in zap_url_patterns %}
+        <li><a href="{% url urlpattern.name %}">{{urlpattern.title|default:'Nameless URL'}}</a></li>
+        {% endfor %}
+    </ul>
     </nav>
     {% block zap_body %}
     {% endblock %}

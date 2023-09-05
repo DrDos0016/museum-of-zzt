@@ -9,8 +9,10 @@ from datetime import datetime, timezone
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.urls import include
 
 from museum_site.constants import SITE_ROOT
+from museum_site.core.redirects import redirect_with_querystring
 from museum_site.core.transforms import qs_manual_order
 from museum_site.models import Article, File
 from .forms import *
@@ -18,14 +20,20 @@ from .core import ZAP_UPLOAD_PATH, ZAP_STATIC_PATH
 
 
 @staff_member_required
-def stream_schedule_create(request):
-    context = {"title": "Create Stream Schedule"}
-    return prefab_form(request, ZAP_Create_Stream_Schedule_Form)
-
-
-@staff_member_required
 def index(request):
     context = {"title": "ZAP"}
+    all_zap_url_patterns = include("zap.urls")[0].urlpatterns
+    filtered_url_patterns = []
+    for p in all_zap_url_patterns:
+        if "<" in str(p.pattern) or "ajax" in str(p.pattern):  # Skip patterns with arguments or AJAX
+            continue
+        title = p.name.replace("_", " ").title()
+        if title == "Zap Index":
+            title = "ZAP"
+        if title.startswith("Zap "):
+            title = title[4:]
+        filtered_url_patterns.append({"name": p.name, "title": title})
+    context["zap_url_patterns"] = filtered_url_patterns
     events = Event.objects.all().order_by("-pk")[:25]
     posts = Post.objects.all().order_by("-pk")[:25]
 
@@ -46,6 +54,7 @@ def index(request):
 @staff_member_required
 def media_upload(request):
     return prefab_form(request, ZAP_Media_Upload_Form)
+
 
 @staff_member_required
 def create_publication_pack_post(request):
@@ -121,7 +130,6 @@ def save_image_render(request):
     raw = request.POST["image_data"][22:]  # Strip image identifier and only store raw data
     image_data = base64.b64decode(raw)
 
-
     # Save the image data
     with open(os.path.join(zap_renders_path, file_name), "wb") as fh:
         fh.write(image_data)
@@ -136,7 +144,6 @@ def save_image_render(request):
     return HttpResponse("Saved {} at {}".format(file_name, str(now)[:19]))
 
 
-
 @staff_member_required
 def post_create(request):
     context = {"title": "ZAP - Create Post"}
@@ -144,7 +151,6 @@ def post_create(request):
         event = Event.objects.get(pk=request.GET.get("pk"))
     else:
         event = None
-
 
     if request.method == "POST":
         form = ZAP_Post_Form(request.POST)
@@ -162,6 +168,8 @@ def post_create(request):
 
 @staff_member_required
 def post_boost(request):
+    if not request.GET.get("pk"):
+        return redirect_with_querystring("zap_post_select", "next=" + request.path)
     context = {"title": "ZAP - Boost Post"}
     post = Post.objects.get(pk=request.GET["pk"])
 
@@ -185,7 +193,6 @@ def post_reply(request):
     else:
         post = None
 
-
     if request.method == "POST":
         form = ZAP_Reply_Form(request.POST)
         if form.is_valid():
@@ -200,22 +207,33 @@ def post_reply(request):
     return render(request, "zap/create-post.html", context)
 
 
+def post_select(request):
+    context = {"title": "Select a Post!"}
+    context["posts"] = Post.objects.all().order_by("-id")
+    return render(request, "zap/post-select.html", context)
+
+
 @staff_member_required
 def share_publication_pack(request):
     context = {"title": "Publication Pack - Share"}
 
-    article = Article.objects.get(pk=request.GET["pk"])
+    if not request.GET.get("pk"):
+        context["next"] = request.path
+        context["articles"] = Article.objects.publication_packs()
+        return render(request, "zap/article-select.html", context)
+    else:
+        article = Article.objects.get(pk=request.GET["pk"])
 
-    all_matches = re.findall("{%.*model_block.*%}", article.content)
-    zfile_ids = []
-    for m in all_matches:
-        if "view=" in m or "gallery" in m:  # Use the gallery frame to get IDs
-            zfile_ids.append(re.sub(r"\D", "", m[:m.find("%}")]))  # Just the PK used in the template tag
+        all_matches = re.findall("{%.*model_block.*%}", article.content)
+        zfile_ids = []
+        for m in all_matches:
+            if "view=" in m or "gallery" in m:  # Use the gallery frame to get IDs
+                zfile_ids.append(re.sub(r"\D", "", m[:m.find("%}")]))  # Just the PK used in the template tag
 
-    zfiles = qs_manual_order(File.objects.filter(pk__in=zfile_ids), zfile_ids)
+        zfiles = qs_manual_order(File.objects.filter(pk__in=zfile_ids), zfile_ids)
 
-    context["article"] = article
-    context["zfiles"] = zfiles
-    context["article_title"] = article.title.split("-")[2]
-    context["vol"] = article.title.split("-")[1]
+        context["article"] = article
+        context["zfiles"] = zfiles
+        context["article_title"] = article.title.split("-")[2]
+        context["vol"] = article.title.split("-")[1]
     return render(request, "museum_site/tools/share-publication-pack-redux.html", context)

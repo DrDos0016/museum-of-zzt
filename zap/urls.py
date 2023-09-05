@@ -14,9 +14,8 @@ urlpatterns = [
     path("post/create/", zap.views.post_create, name="zap_create_post"),
     path("post/boost/", zap.views.post_boost, name="zap_boost_post"),
     path("post/reply/", zap.views.post_reply, name="zap_reply_post"),
-    path("publication-pack-post/create/", zap.views.create_publication_pack_post, name="zap_create_publication_pack_post"),
+    path("post/select/", zap.views.post_select, name="zap_post_select"),
     path("publication-pack/share/", zap.views.share_publication_pack, name="zap_share_publication_pack"),
-    path("stream-schedule/create", zap.views.stream_schedule_create, name="zap_create_stream_schedule"),
     path("view/<int:pk>/", zap.views.view_event, name="zap_view_event"),
     path("preview/<slug:form_key>/", zap.views.preview, name="zap_preview"),
 ]
