@@ -1,0 +1,15 @@
+{% extends "zap/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block zap_body %}
+<h1>Post Select</h1>
+
+<form action="{{request.GET.next}}">
+    <select name="pk">
+        {% for p in posts %}
+        <option value="{{p.pk}}">{{p.title}}</option>{% endfor %}
+    </select>
+    <input type="submit">
+</form>
+{% endblock %}

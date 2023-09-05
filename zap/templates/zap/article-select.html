@@ -1,0 +1,17 @@
+{% extends "zap/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block zap_body %}
+<h1>Article Select</h1>
+
+<form action="{{request.GET.next|default:next}}">
+    <select name="pk">
+        {% for a in articles %}
+        <option value="{{a.pk}}">{{a.title}}</option>{% endfor %}
+    </select>
+    <input type="submit">
+</form>
+<hr>
+Desintation: {{request.GET.next|default:next}}
+{% endblock %}
