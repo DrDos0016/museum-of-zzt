@@ -109,7 +109,7 @@ class Collection(BaseModel):
     def preview_url(self):
         if self.preview_image:
             return self.preview_image.preview_url()
-        return "images/screenshots/no_screenshot.png"
+        return "screenshots/no_screenshot.png"
 
     @property
     def visibility_str(self):
