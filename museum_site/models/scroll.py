@@ -57,7 +57,7 @@ class Scroll(BaseModel):
         ordering = ["-id"]
 
     def __str__(self):
-        return "Scroll #{} ID:{} Pub:{}".format(self.identifier, self.id, self.published)
+        return "Scroll #{} ID:{} Pub:{}".format(self.pk, self.id, self.published)
 
     def get_absolute_url(self):
         return reverse("scroll_view", kwargs={"pk":self.pk, "slug":slugify(self.title)})
@@ -71,7 +71,7 @@ class Scroll(BaseModel):
     def render_for_discord(self):
         lines = self.lines()
 
-        output = self.SCROLL_TOP.replace("###", ("000"+str(self.identifier))[-3:])
+        output = self.SCROLL_TOP.replace("###", ("000"+str(self.pk))[-3:])
         for line in lines:
             line = line.replace("\r", "")
             line = line.replace("\n", "")
@@ -93,14 +93,6 @@ class Scroll(BaseModel):
         return "\n".join(output)
 
     def save(self, *args, **kwargs):
-        if self.published and not self.identifier:
-            qs = Scroll.objects.filter(published=True).order_by("-identifier")
-            s = qs.first()
-            if s is None:
-                self.identifier = 1
-            else:
-                self.identifier = s.identifier + 1
-
         if self.source.startswith("https://museumofzzt.com"):
             self.source = self.source.replace("https://museumofzzt.com", "")
         super().save(*args, **kwargs)
