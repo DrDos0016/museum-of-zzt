@@ -41,6 +41,7 @@ urlpatterns = [
     path("ajax/get-stream-entries/", museum_site.ajax.get_stream_entries, name="ajax_get_stream_entries"),
     path("ajax/get-<str:field>-suggestions/", museum_site.ajax.get_suggestions_for_field, name="ajax_get_suggestions_for_field"),
     path("ajax/get_zip_file/", museum_site.ajax.get_zip_file, name="ajax_get_zip_file"),
+    path("ajax/get-zip-file-by-key/", museum_site.ajax.get_zip_file_by_key, name=""),
     path("ajax/render-review-text/", museum_site.ajax.render_review_text, name="ajax_render_review_text"),
     path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add, name="ajax_wozzt_queue_add"),
 
@@ -104,6 +105,7 @@ urlpatterns = [
     path("debug/article/", museum_site.debug_views.debug_article),
     path("debug/play/", museum_site.debug_views.debug_play),
     path("debug/widgets/", museum_site.debug_views.debug_widgets),
+    path("debug/attrs/<str:key>/", museum_site.debug_views.debug_attrs),
 
     # /detail/
     path("detail/browse/", museum_site.help_views.Detail_Overview_View.as_view(), name="detail_browse"),
@@ -141,6 +143,7 @@ urlpatterns = [
     path("file/review/<str:key>/", museum_site.file_views.ZFile_Review_List_View.as_view(), name="zfile_review"),
     path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "key": ""}, name="zfile_view_local"),
     path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),  # TODO
+    #path("file/view/<str:key>/new/", museum_site.debug_views.file_viewer_new, name="file"),  # TODO
     path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="zfile_pk"),
     #path(
     #    "file/play/local/", museum_site.zeta_views.zeta_launcher,

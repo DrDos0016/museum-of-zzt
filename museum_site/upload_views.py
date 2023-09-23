@@ -79,6 +79,7 @@ class Upload_View(TemplateView):
         context["play_form"] = self.play_form
         context["upload_form"] = self.upload_form
         context["download_form"] = self.download_form
+        context["your_max_upload_size"] = self.request.user.profile.max_upload_size if self.request.user.is_authenticated else UPLOAD_CAP
         return context
 
     def get(self, *args, **kwargs):

@@ -20,6 +20,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{% static 'js/museum-forms.js' %}"></script>
 <script>
 $(document).ready(function (){
     $("#preview-review").click(function (){
@@ -31,7 +32,7 @@ $(document).ready(function (){
             "content":$("#id_content").val(),
             "rating":$("#id_rating").val(),
             "author":$("#id_author").val(),
-            "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val()
+            "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
         }
         }).done(function (rendered){
             console.log(rendered);
@@ -45,7 +46,7 @@ $(document).ready(function (){
 {% block content %}
 {% if object_list %}
 <div class="view-links">
-    <div><a href="#new-review">New Review</a></div>
+    <div><a href="#give-feedback">Give Feedback</a></div>
 </div>
 <div class="sort-methods">
 Sort: <select name="sort">
@@ -54,16 +55,22 @@ Sort: <select name="sort">
         {% endfor %}
     </select>
 </div>
+<div class="modify-query">
+    Filter Feedback To: <a href="?filter=reviews">Reviews</a>, <a href="?filter=hints">Hints &amp; Solutions</a>, <a href="?filter=cws">Content Warnings</a>, <a href="?filter=bugs">Bug Reports</a>
+    {% if request.GET.filter %}
+    , <a href="{{request.path}}">Remove Filter</a>
+    {% endif %}
+</div>
 
 {% queryset_to_model_blocks object_list view="review_content" %}
 {% endif %}
 
-<span id="new-review"></span>
+<section id="give-feedback">
 {% if cant_review_message %}
-    <h2>Cannot Review File</h2>
+    <h2>Cannot Give Feedback On File</h2>
     <p>{{cant_review_message|safe}}</p>
 {% else %}
-    <h2>New Review</h2>
+    <h2>Give Feedback</h2>
     <form method="POST">
     {% csrf_token %}
     {% if request.user.is_authenticated %}
@@ -75,12 +82,18 @@ Sort: <select name="sort">
     </div>
     {% endif %}
     {% include "museum_site/blocks/generic-form.html" %}
+    {% if not user.is_authenticated %}
+    <div style="border-top:1px dashed #000;">
+    <p>Feedback can only be provided on a file once every 24 hours for guests. Please sign in to a <a href="{% url 'login_user' %}">Museum of ZZT account</a> if you wish to provide additional feedback.</p>
+    </div>
+    {% endif %}
     <div id="review-form-controls">
-        <input type="button" id="preview-review" value="Preview Review">
-        <input type="submit" value="Submit Review">
+        <input type="button" id="preview-review" value="Preview Feedback">
+        <input type="submit" value="Submit Feedback">
     </div>
     </form>
 {% endif%}
 <hr>
 <div id="review-preview-wrapper"></div>
+</section>
 {% endblock %}

@@ -19,6 +19,7 @@
 <tr><th>Description</th><td>{% if file.description %}<textarea readonly>{{file.description}}</textarea>{% else %}<i>No description</i>{% endif %}</td></tr>
 <tr><th>Details</th><td><a href="#heading-details">{{file.details.count}}</a></td></tr>
 <tr><th>Download Sources</th><td><a href="#heading-downloads">{{file.downloads.count}}</a></td></tr>
+<tr><th>Feedback</th><td>{{file.feedback_count}}</td></tr>
 <tr><th>File Exists</th><td>{{file.file_exists}}</td></tr>
 <tr><th>Filename</th><td>{{file.filename}}</td></tr>
 <tr><th>Key</th><td>{{file.key|default:"<i>No key set</i>"}}</td></tr>

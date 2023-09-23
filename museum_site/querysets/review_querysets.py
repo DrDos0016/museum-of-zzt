@@ -29,6 +29,10 @@ class Review_Queryset(Base_Queryset):
         if p.get("review_date") and p["review_date"] != "any":
             qs = qs.filter(date__year=p["review_date"])
 
+        if not p.get("non_search") and p.getlist("tags"):
+            tags = p.getlist("tags")
+            qs = qs.filter(tags__in=tags)
+
         if p.get("ratingless"):
             if p.get("min_rating"):
                 qs = qs.filter(Q(rating__gte=p["min_rating"]) | Q(rating=-1))
@@ -45,6 +49,8 @@ class Review_Queryset(Base_Queryset):
         # Don't pull review text unless searching by it
         if not p.get("content"):
             qs = qs.defer("content")
+
+        qs = qs.distinct()
         return qs
 
     def for_zfile(self, pk):

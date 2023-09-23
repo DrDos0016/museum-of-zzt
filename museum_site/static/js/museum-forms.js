@@ -27,8 +27,6 @@ $(document).ready(function (){
         var ext = file.name.toLowerCase().slice(-4);
         $(this).prev("input[type=file]")[0].files = dt.files;
 
-        console.log("HELLO", ext, file);
-
         if (ext == ".zip")
             parse_zip_file(file);
         else if (ext == ".zzt")

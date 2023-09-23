@@ -86,6 +86,17 @@ def get_suggestions_for_field(request, field):
     return JsonResponse(output)
 
 
+def get_zip_file_by_key(request):
+    if not request.GET:  # Ask for nothing, receive nothing
+        return HttpResponse("")
+
+    zfile = File.objects.get(key=request.GET.get("key"))
+    with open(zfile.phys_path(), "rb") as fh:
+        output = base64.b64encode(fh.read())
+    return HttpResponse(output)
+
+
+
 def get_zip_file(request):
     if not request.GET:  # Ask for nothing, receive nothing
         return HttpResponse("")

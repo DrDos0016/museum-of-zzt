@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import timesince
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
 from museum_site.core.misc import profanity_filter
@@ -58,17 +59,24 @@ class Review(BaseModel):
     date = models.DateTimeField(auto_now_add=True)
     ip = models.GenericIPAddressField(blank=True, null=True)
     approved = models.BooleanField(default=True)
+    tags = models.ManyToManyField(
+        "Feedback_Tag", default=None, blank=True,
+        help_text="Tag your feedback to identify what kind of information it provides. Any feedback with a rating will be automatically tagged as a review."
+    )
 
     class Meta:
         ordering = ["-date", "-id"]
 
     def __str__(self):
-        output = "[{}] Review of '{}' [{}] by {}".format(
-            self.id,
-            self.zfile.title,
-            self.zfile.filename,
-            self.author
-        )
+        if self.zfile:
+            output = "[{}] Review of '{}' [{}] by {}".format(
+                self.id,
+                self.zfile.title,
+                self.zfile.filename,
+                self.author
+            )
+        else:
+            output = "Review Object"
         return output
 
     def get_author(self):
@@ -82,6 +90,11 @@ class Review(BaseModel):
         if output == "":
             output = "Unknown"
         return output
+
+
+    @cached_property
+    def get_tags(self):
+        return self.tags.all()
 
     def filtered_content(self):
         return self.content
@@ -110,22 +123,22 @@ class Review(BaseModel):
         super(Review, self).save(*args, **kwargs)
 
     def get_field_view(self, view="detailed"):
-        return {"value": "<a href='{}'>{}</a>".format(self.get_absolute_url(), self.title), "safe": True}
+        return {"value": "<a href='{}'>{}</a>".format(self.get_absolute_url(), self.title or "<i>Untitled Review</i>"), "safe": True}
 
     def get_field_zfile(self, view="detailed"):
         return {"label": "File", "value": self.zfile.get_field_view("title")["value"], "safe": True}
 
     def get_field_author(self, view="detailed"):
-        return {"label": "Reviewer", "value": self.author_link(), "safe": True}
+        return {"label": "Submitted By", "value": self.author_link(), "safe": True}
 
     def get_field_review_date(self, view="detailed"):
         if view == "review_content":
             if self.date:
-                return {"label": "Review Date", "value": "{} ago ({})".format(timesince(self.date), self.date.strftime(DATE_HR)), "safe": True}
+                return {"label": "Date", "value": "{} ago ({})".format(timesince(self.date), self.date.strftime(DATE_HR)), "safe": True}
             else:
-                return {"label": "Review Date", "value": ""}
+                return {"label": "Date", "value": ""}
         else:
-            return {"label": "Review Date", "value": self.date.strftime(DATE_HR), "safe": True}
+            return {"label": "Date", "value": self.date.strftime(DATE_HR), "safe": True}
 
     def get_field_rating(self, view="detailed"):
         if self.rating is not None:
@@ -150,11 +163,19 @@ class Review(BaseModel):
         return output
 
     def get_field_content(self, view="review-content"):
-        return {"label": "Review", "value": self.content, "markdown": True}
+        return {"label": "Feedback", "value": self.content, "markdown": True}
 
     def get_field_reviewer_link(self, view="review-content"):
         url = reverse("review_browse_author", kwargs={"author": self.author.lower()})
-        return {"value": "<a href='{}'>Other reviews written by {}</a>".format(url, self.author), "safe": True}
+        return {"value": "<a href='{}'>Other feedback given by {}</a>".format(url, self.author), "safe": True}
+
+    def get_field_tags(self, view="review-content"):
+        tags = None
+        if self.zfile:
+            tags = list(self.tags.all().order_by("title").values_list("title", flat=True))
+        if not tags:
+            tags = ["<i>None</i>"]
+        return {"label": "Tags", "value": ", ".join(tags), "safe": True}
 
     def context_universal(self, request=None):
         context = super().context_universal(request)
@@ -167,7 +188,7 @@ class Review(BaseModel):
         context["columns"] = []
 
         columns = [
-            ["zfile", "author", "review_date"],
+            ["zfile", "author", "review_date", "tags"],
         ]
         if self.rating != -1:  # Show numeric rating if the review has one
             columns[0].append("rating")
@@ -205,11 +226,17 @@ class Review(BaseModel):
         context["roles"] = ["model-block", "review-content"]
         context["show_actions"] = False
         context["fields"] = []
-        field_list = ["author", "review_date", "content", "rating", "reviewer_link"]
+        field_list = ["author", "review_date", "tags", "content", "rating", "reviewer_link"]
+
+        if not self.pk:
+            field_list.remove("tags")
+        elif not self.is_tagged(1):  # TODO: Constant for Review
+            field_list.remove("rating")
 
         for field_name in field_list:
             field_context = self.get_field(field_name, view="review_content")
-            context["fields"].append(field_context)
+            if field_context:
+                context["fields"].append(field_context)
         return context
 
     def get_guideword_date(self): return self.date.strftime(DATE_HR)
@@ -220,3 +247,25 @@ class Review(BaseModel):
         else:
             return self.rating
     def get_guideword_zfile(self): return self.zfile.title
+
+    def is_tagged(self, tag_id):
+        if self.pk and tag_id in self.tags.all().values_list("id", flat=True):
+            return True
+        return False
+
+class Feedback_Tag(models.Model):
+    TAGS = (
+        ("Review", "Review"),
+        ("Content Warning", "Content Warning"),
+        ("Bug Report", "Bug Report"),
+        ("Hints", "Hints and Solutions"),
+    )
+
+    title = models.CharField(choices=TAGS, max_length=25)
+
+    class Meta:
+        ordering = ["title"]
+
+    def __str__(self):
+        return self.title
+

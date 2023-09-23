@@ -15,7 +15,7 @@ from .download import Download
 from .file import File, ZFile_Admin
 from .genre import Genre
 from .profile import Profile
-from .review import Review
+from .review import Review, Feedback_Tag
 from .scroll import Scroll
 from .series import Series
 from .upload import Upload

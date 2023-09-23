@@ -1,0 +1,8 @@
+Hello! {{foo}} is foo.
+
+<table class="mono">
+    {% for attr in attrs.values %}<tr>
+        <th{% if attr.colspan %} colspan="{{attr.colspan}}"{% endif %}>{{attr.heading}}</th>
+        <td{% if attr.td_class %} class="{{attr.td_class}}"{% endif %}>{{attr.value|safe}}</td>
+    </tr>{% endfor %}
+</table>

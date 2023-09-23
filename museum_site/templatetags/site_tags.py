@@ -1,4 +1,5 @@
 import pprint
+import re
 import time
 
 import urllib.parse
@@ -227,7 +228,22 @@ class IL(template.Node):
 @register.filter(name="markdown")
 def render_markdown(raw):
     filtered = escape(raw)
-    return mark_safe(markdown.markdown(filtered))
+    marked = markdown.markdown(filtered)
+
+    # TODO: This should probably be a bit more formal
+    matches = re.findall("\|\|", marked)
+    spoiler_tag_count = len(matches)
+    if spoiler_tag_count % 2 != 0:
+        spoiler_tag_count -= 1
+
+    for x in range(0, spoiler_tag_count):
+        if x % 2 == 0:
+            marked = marked.replace("||", "<span class='spoiler'>", 1)
+        else:
+            marked = marked.replace("||", "</span>", 1)
+    #print(marked)
+
+    return mark_safe(marked)
 
 
 @register.simple_tag()

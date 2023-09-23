@@ -200,6 +200,20 @@ LANGUAGES = {
     "xx": "Other"
 }
 
+LANGUAGES_REVERSED = {
+    "Czech": "cs",
+    "Danish": "da",
+    "Dutch": "nl",
+    "English": "en",
+    "French": "fr",
+    "German": "de",
+    "Italian": "it",
+    "Norwegian": "no",
+    "Polish": "pl",
+    "Spanish": "es",
+    "Other": "xx",
+}
+
 LANGUAGE_CHOICES = tuple(LANGUAGES.items())
 
 LICENSE_CHOICES = [

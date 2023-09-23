@@ -10,6 +10,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 
 from museum_site.constants import *
+from museum_site.constants import LANGUAGES_REVERSED
 from museum_site.core import *
 from museum_site.core.detail_identifiers import *
 from museum_site.core.redirects import explicit_redirect_check, redirect_with_querystring
@@ -203,7 +204,8 @@ class ZFile_List_View(Model_List_View):
             else:
                 qs = qs.filter(release_date__gte="{}-01-01".format(self.value), release_date__lte="{}-12-31".format(self.value))
         elif self.value and self.field == "language":
-            qs = qs.filter(language__icontains=self.value)
+            language_code = LANGUAGES_REVERSED.get(self.value.title(), "??")
+            qs = qs.filter(language__icontains=language_code)
 
         qs = self.sort_queryset(qs)
 
@@ -296,7 +298,7 @@ class ZFile_List_View(Model_List_View):
         elif self.request.path.startswith("/file/browse/year/"):
             return "Browse Year - {}".format(self.value)
         elif self.request.path.startswith("/file/browse/language/"):
-            return "Browse Language - {}".format(self.value.upper())
+            return "Browse Language - {}".format(self.value.title())
         # Default
         return "Browse - All Files"
 
@@ -345,6 +347,10 @@ class ZFile_Review_List_View(Model_List_View):
             key = key[:-4]
         self.head_object = ZFile.objects.get(key=key)
         qs = Review.objects.for_zfile_and_user(pk=self.head_object.pk, ip=self.request.META[REMOTE_ADDR_HEADER], user_id=self.request.user.id)
+
+        if self.request.GET.get("filter"):
+            tag_names = {"reviews": 1, "hints": 4, "cws": 2, "bugs": 3}
+            qs = qs.filter(tags=tag_names[self.request.GET["filter"]])
         self.qs = qs  # Needed to easily check for recent reviews later
         qs = self.sort_queryset(qs)
         return qs
@@ -352,7 +358,7 @@ class ZFile_Review_List_View(Model_List_View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["file"] = self.head_object
-        context["title"] = "{} - Reviews".format(self.head_object.title)
+        context["title"] = "{} - Feedback".format(self.head_object.title)
         context["today"] = datetime.now(tz=timezone.utc)
         context["sort_options"] = [
             {"text": "Newest", "val": "-date"},
@@ -362,7 +368,7 @@ class ZFile_Review_List_View(Model_List_View):
 
         # Check that the file supports reviews
         if not context["file"].can_review:
-            context["cant_review_message"] = "This file is no longer accepting new reviews at this time."
+            context["cant_review_message"] = "This file is no longer accepting new feedback at this time."
             return context
 
         # Check for banned users
@@ -370,27 +376,34 @@ class ZFile_Review_List_View(Model_List_View):
             context["cant_review_message"] = "<b>Banned account.</b>"
             return context
 
-        # Prevent doubling up on reviews
-        cutoff = context["today"] + timedelta(days=-1)
-        recent = self.qs.filter(ip=self.request.META.get(REMOTE_ADDR_HEADER), date__gte=cutoff)
-        if recent:
-            context["cant_review_message"] = (
-                "<i>You have <a href='#rev-{}'>recently reviewed</a> this file and cannot submit an additional review at this time.</i>".format(
-                    recent.first().pk
+        # Prevent doubling up on feedback
+        recent = False
+        if not self.request.user.is_authenticated:  # Guests cannot supply additional feedback
+            cutoff = context["today"] + timedelta(days=-1)
+            recent = self.qs.filter(ip=self.request.META.get(REMOTE_ADDR_HEADER), date__gte=cutoff)
+            if recent:
+                context["cant_review_message"] = (
+                    "<i>You have <a href='#rev-{}'>recently given feedback</a on> this file and cannot submit additional feedback at this time.</i>".format(
+                        recent.first().pk
+                    )
                 )
-            )
-            return context
+                return context
+        else:  # For Users, check that their latest review body isn't identical to the feedback they're submitting
+            latest_feedback = Review.objects.filter(user_id=self.request.user.id).order_by("-id").first()
+            latest_content = latest_feedback.content
+            if self.request.POST.get("content") == latest_content:
+                recent = True  # Prevent this feedback from going through a second time
 
         # Prevent unpublished/lost file reviews
         if context["file"].is_detail(DETAIL_UPLOADED):
-            context["cant_review_message"] = "Unpublished files cannot be reviewed as their content may still be modified by the uploader."
+            context["cant_review_message"] = "Unpublished files cannot receive feedback as their content may still be modified by the uploader."
             return context
         elif context["file"].is_detail(DETAIL_LOST):
             context["cant_review_message"] = "Lost files cannot be reviewed as they cannot be played!"
             return context
 
         # Initialize form
-        review_form = Review_Form(self.request.POST) if self.request.POST else Review_Form()
+        review_form = Review_Form(self.request.POST) if self.request.POST else Review_Form(initial={"tags": "1"})  # TODO Constant
 
         # Remove anonymous option for logged in users
         if self.request.user.is_authenticated:
@@ -413,9 +426,17 @@ class ZFile_Review_List_View(Model_List_View):
                 review_approved = False
             review.save()
 
+            # Add tags
+            for tag in review_form.cleaned_data["tags"]:
+                review.tags.add(tag.pk)
+            # Force "Review" tag if there's a rating
+            if float(review_form.cleaned_data["rating"]) >= 0:
+                review.tags.add(1) # TODO: Constant
+
             # Update file's review count/scores if the review is approved
             if self.head_object.can_review == ZFile.REVIEW_YES and review.approved:
                 self.head_object.calculate_reviews()
+                self.head_object.calculate_feedback()
                 # Make Announcement
                 discord_announce_review(review)
                 self.head_object.save()  # FULLSAVE (ZFile)
@@ -423,6 +444,12 @@ class ZFile_Review_List_View(Model_List_View):
             # Re-get the queryset with the new review included and without including the form again
             context["object_list"] = self.get_queryset()
             context["recent"] = review.pk
+
+            # Create a new form for non-guests:
+            if self.request.user.is_authenticated:
+                context["form"] = Review_Form(initial={"tags": "1"})
+                del context["form"].fields["author"]
+
             return context
 
         context["form"] = review_form

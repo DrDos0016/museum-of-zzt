@@ -56,9 +56,15 @@ class Review_List_View(Model_List_View):
             self.sorted_by = "-date"
         self.author = self.kwargs.get("author")
 
+    def get_title(self):
+        if self.request.GET:
+            return "Search Results"
+        else:
+            return super().get_title()
+
     def get_queryset(self):
         if self.author:
-            qs = Review.objects.search(p={"author": self.author})
+            qs = Review.objects.search(p={"author": self.author, "non_search": True})
         else:
             qs = Review.objects.search(self.request.GET)
 

@@ -111,6 +111,12 @@ input:disabled { background:var(--file-list-bg); }
     resize: vertical;
 }
 
+.field-wrapper[data-field=tags] .scrolling-checklist
+{
+    min-height:auto;
+    height:auto;
+}
+
 .scrolling-checklist label { display:block; }
 .scrolling-checklist label + label {  border-top: 1px dotted var(--border-color); }
 .scrolling-checklist label.selected { background: var(--header-bg);}

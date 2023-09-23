@@ -898,7 +898,7 @@ def stream_vod_thumbnail_generator(request):
         raw = BytesIO(request.FILES["background_image"].read())
         image = Image.open(raw)
         preset = request.POST.get("crop")
-        if preset:
+        if preset != "NONE":
             tl = (IMAGE_CROP_PRESETS[preset][0], IMAGE_CROP_PRESETS[preset][1])
             br = (IMAGE_CROP_PRESETS[preset][2], IMAGE_CROP_PRESETS[preset][3])
             image = image.crop((tl[0], tl[1], br[0], br[1]))

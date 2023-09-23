@@ -1,11 +1,15 @@
 import os
+import urllib.parse
+import zipfile
 
 from datetime import datetime
 
+from django.core.cache import cache
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 
 from museum_site.constants import *
+from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import serve_file_as
 from museum_site.models import *
 from museum_site.forms import *
@@ -172,3 +176,19 @@ def debug_collection_form(request):
 
     context["form"] = form
     return render(request, "museum_site/debug/debug-collection-form.html", context)
+
+
+@staff_member_required
+def file_viewer_new(request, key, local=False):
+    """ Returns page exploring a file's zip contents """
+    context = {}
+
+    context["zfile"] = File.objects.get(key=key)
+    return render(request, "museum_site/file-viewer.html", context)
+
+@staff_member_required
+def debug_attrs(request, key):
+    context = {"title": "Debug Attributes"}
+    zf = File.objects.get(key=key)
+    context["zfile"] = zf
+    return render(request, "museum_site/debug/debug-attrs.html", context)

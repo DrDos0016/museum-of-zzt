@@ -3,7 +3,8 @@ from django.urls import reverse_lazy
 
 from museum_site.core.form_utils import any_plus, get_sort_option_form_choices
 from museum_site.constants import YEAR
-from museum_site.models import Review
+from museum_site.models import Review, Feedback_Tag
+from museum_site.widgets import Scrolling_Checklist_Widget
 
 
 class Review_Form(forms.ModelForm):
@@ -20,13 +21,17 @@ class Review_Form(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ["author", "title", "content", "rating"]
-        labels = {"title": "Review Title", "author": "Your Name", "content": "Review"}
+        fields = ["author", "title", "content", "rating", "tags"]
+        labels = {"title": "Title", "author": "Your Name", "content": "Feedback"}
 
         help_texts = {
             "content": (
-                '<a href="http://daringfireball.net/projects/markdown/syntax" target="_blank" tabindex="-1">Markdown syntax</a> is supported for formatting.'
+                '<a href="http://daringfireball.net/projects/markdown/syntax" target="_blank" tabindex="-1">Markdown syntax</a> is supported for formatting.<br>Additionally, you may place text behind a spoiler tag by wrapping it in two pipe characters (ex: <span class="mono">||this is hidden||</span>).'
             ),
+        }
+
+        widgets = {
+            "tags": Scrolling_Checklist_Widget(filterable=False, buttons=None, show_selected=False),
         }
 
     def clean_author(self):
@@ -57,6 +62,7 @@ class Review_Search_Form(forms.Form):
     title = forms.CharField(label="Title contains", required=False)
     author = forms.CharField(label="Author contains", required=False)
     text = forms.CharField(label="Text contains", required=False)
+    tags = forms.ModelMultipleChoiceField(queryset=Feedback_Tag.objects.all(), widget=Scrolling_Checklist_Widget(filterable=False, buttons=None, show_selected=False), help_text="If any box is checked, feedback must be tagged with at least one checked tag")
     review_date = forms.ChoiceField(label="Year reviewed", choices=any_plus(((str(x), str(x)) for x in range(YEAR, (FIRST_REVIEW_YEAR - 1), -1))))
     min_rating = forms.ChoiceField(label="Minimum rating", choices=RATINGS)
     max_rating = forms.ChoiceField(label="Maximum rating", choices=RATINGS, initial=5.0)
