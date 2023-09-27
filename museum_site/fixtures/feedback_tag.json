@@ -1,0 +1,1 @@
+[{"model": "museum_site.feedback_tag", "pk": 1, "fields": {"title": "Review"}}, {"model": "museum_site.feedback_tag", "pk": 2, "fields": {"title": "Content Warning"}}, {"model": "museum_site.feedback_tag", "pk": 3, "fields": {"title": "Bug Report"}}, {"model": "museum_site.feedback_tag", "pk": 4, "fields": {"title": "Hints"}}]
