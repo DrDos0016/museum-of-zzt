@@ -438,7 +438,13 @@ class ZFile_Review_List_View(Model_List_View):
                 self.head_object.calculate_reviews()
                 self.head_object.calculate_feedback()
                 # Make Announcement
-                discord_announce_review(review)
+                # TODO: This is temporary -- Logged in users posting solely a bug report will not generate an annoucement
+                make_announcement = True
+                if self.request.user.is_authenticated:
+                    if "3" in self.request.POST.getlist("tags") and len(self.request.POST.getlist("tags")) == 1:
+                        make_announcement = False
+                if make_announcement:
+                    discord_announce_review(review)
                 self.head_object.save()  # FULLSAVE (ZFile)
 
             # Re-get the queryset with the new review included and without including the form again
