@@ -258,7 +258,7 @@ class Feedback_Tag(models.Model):
         ("Review", "Review"),
         ("Content Warning", "Content Warning"),
         ("Bug Report", "Bug Report"),
-        ("Hints", "Hints and Solutions"),
+        ("Hints and Solutions", "Hints and Solutions"),
     )
 
     title = models.CharField(choices=TAGS, max_length=25)
