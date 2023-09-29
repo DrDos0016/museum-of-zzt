@@ -222,6 +222,11 @@ $(document).ready(function (){
                 <td class="c">-</td>
             </tr>
             <tr>
+                <td>Feedback Count</td>
+                <td>{{file.feedback_count}}</td>
+                <td class="c"><a href="?recalculate=feedback&old={{file.feedback_count}}">Recalculate</a></td>
+            </tr>
+            <tr>
                 <td>Review Count / Rating</td>
                 <td>{{file.review_count}} / {{file.rating}}</td>
                 <td class="c"><a href="?recalculate=reviews&old={{file.review_count}}%2F{{file.rating}}">Recalculate</a></td>

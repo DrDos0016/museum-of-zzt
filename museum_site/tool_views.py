@@ -786,6 +786,9 @@ def tool_index(request, key=None):
             elif field == "reviews":
                 data["file"].calculate_reviews()
                 data["new"] = "{}/{}".format(data["file"].review_count, data["file"].rating)
+            elif field == "feedback":
+                data["file"].calculate_feedback()
+                data["new"] = "{}".format(data["file"].feedback_count)
             elif field == "articles":
                 data["file"].calculate_article_count()
                 data["new"] = data["file"].article_count
