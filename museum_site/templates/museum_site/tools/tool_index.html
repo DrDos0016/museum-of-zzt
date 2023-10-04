@@ -1,6 +1,7 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
 {% load site_tags %}
+{% load zfile_attrs %}
 
 {% block style %}
 <style>
@@ -28,6 +29,15 @@ $(document).ready(function (){
     $("#file-select").click(function (){
         var val = $("#file-identifier").val();
         window.location = window.location + val;
+    });
+
+    $("#recalculate-button").click(function (){
+        var recalculate = $("select[name=recalculate] option:selected").val();
+        var old = $("select[name=recalculate] option:selected").data("old");
+        var location = ("" + window.location)
+        if (location.indexOf("?") != -1)
+            var location = location.slice(0, location.indexOf("?"));
+        window.location = location + "?recalculate=" + recalculate + "&old=" + old;
     });
 });
 </script>
@@ -149,114 +159,20 @@ $(document).ready(function (){
     </div>
 
     <div>
-    <h3>File Info</h3>
-        <table class="dataTable" id="tool-info">
-            <tr>
-                <th>Field</th>
-                <th>Value</th>
-                <th>Status</th>
-            </tr>
-            <tr>
-                <td>Letter</td>
-                <td>{{file.letter}}</td>
-                <td class="c {{valid_letter|lower}}">{{valid_letter}}</td>
-            </tr>
-            <tr>
-                <td>Filename</td>
-                <td>{{file.filename}}</td>
-                <td class="c {{valid_filename|lower}}">{{valid_filename}}</td>
-            </tr>
-            <tr>
-                <td>Title</td>
-                <td>{{file.title}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Sort Title</td>
-                <td>{{file.sort_title}}</td>
-                <td class="c"><a href="?recalculate=sort-title&old={{file.sort_title}}">Recalculate</a></td>
-            </tr>
-            <tr>
-                <td>Author</td>
-                <td>{{file.author_list|join:", "}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Size</td>
-                <td>{{file.size|filesizeformat}} ({{file.size}} bytes)</td>
-                <td class="c"><a href="?recalculate=size&old={{file.size}}">Recalculate</a></td>
-            </tr>
-            <tr>
-                <td>Genre</td>
-                <td>{% for g in file.genres.all %}{{g}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Release Date / Source</td>
-                <td>{{file.release_date}} / {{file.release_source}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Publish Date</td>
-                <td>{{file.publish_date}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Last Modified</td>
-                <td>{{file.last_modified}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Screenshot</td>
-                <td>{{file.screenshot}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Company</td>
-                <td>{{file.get_all_company_names}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Description</td>
-                <td>{{file.description}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Feedback Count</td>
-                <td>{{file.feedback_count}}</td>
-                <td class="c"><a href="?recalculate=feedback&old={{file.feedback_count}}">Recalculate</a></td>
-            </tr>
-            <tr>
-                <td>Review Count / Rating</td>
-                <td>{{file.review_count}} / {{file.rating}}</td>
-                <td class="c"><a href="?recalculate=reviews&old={{file.review_count}}%2F{{file.rating}}">Recalculate</a></td>
-            </tr>
-            <tr>
-                <td>Article Count</td>
-                <td>{{file.article_count}}</td>
-                <td class="c"><a href="?recalculate=articles&old={{file.article_count}}">Recalculate</a></td>
-            </tr>
-            <tr>
-                <td>Checksum</td>
-                <td>{{file.checksum}}</td>
-                <td class="c"><a href="?recalculate=checksum&old={{file.checksum}}">Recalculate</a></td>
-            </tr>
-            <tr>
-                <td>Playable/Total Boards</td>
-                <td>{{file.playable_boards}} / {{file.total_boards}}</td>
-                <td class="c"><a href="?recalculate=boards&old={{file.playable_boards}}%2F{{file.total_boards}}">Recalculate</a></td>
-            </tr>
-            <tr>
-                <td>Archive.org Name</td>
-                <td>{{file.archive_name}}</td>
-                <td class="c">-</td>
-            </tr>
-            <tr>
-                <td>Details</td>
-                <td>{% for detail in file.details.all %}[{{detail.id}}] {{detail.title}}<br>{% endfor %}</td>
-                <td class="c">-</td>
-            </tr>
-        </table>
+        <h3>File Info</h3>
+        <div>
+            <select name="recalculate">
+                <option value="feedback" data-old="{{file.feedback_count}}">Feedback Count</option>
+                <option value="reviews" data-old="{{file.review_count}}/{{file.rating}}">Review Count/Rating</option>
+                <option value="articles" data-old="{{file.article_count}}">Article Count</option>
+                <option value="sort-title" data-old="{{file.sort_title}}">Sort Title</option>
+                <option value="checksum" data-old="{{file.checksum}}">Checksum</option>
+                <option value="boards" data-old="{{file.playable_boards}}/{{file.total_boards}}">Playable/Total Boards</option>
+                <option value="size" data-old="{{file.size}}">Size</option>
+            </select>
+            <input type="button" value="Recalculate" id="recalculate-button">
+        </div>
+        {% zfile_attrs file %}
     </div>
 </div>
 {% endif %}

@@ -63,9 +63,9 @@ community can be easily discovered and that their importance can be recognized.
     <a href="{% url 'article_browse' %}">View All Articles</a>
 </div>
 
-<h2>Latest Reviews</h2>
+<h2>Latest Feedback</h2>
 {% queryset_to_model_blocks reviews view="list" %}
 <div class="view-more">
-    <a href="{% url 'review_browse' %}">View All Reviews</a>
+    <a href="{% url 'review_browse' %}">View All Feedback</a>
 </div>
 {% endblock %}

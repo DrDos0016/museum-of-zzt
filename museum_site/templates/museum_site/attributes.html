@@ -1,6 +1,7 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
 {% load site_tags %}
+{% load zfile_attrs %}
 
 {% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}{% endblock %}
 
@@ -8,45 +9,7 @@
 {% model_block file %}
 
 <h2 id="heading-attr">File Attributes</h2>
-<table class="data-table">
-<tr><th>Aliases</th><td><a href="#heading-aliases">{{file.aliases.count}}</a></td></tr>
-<tr><th>Articles</th><td><a href="#heading-articles">{{file.article_count}}</a></td></tr>
-<tr><th>Author</th><td>{{file.author_list|join:", "}}</td></tr>
-<tr><th>Boards Playable/Total</th><td>{{file.playable_boards}} / {{file.total_boards}}</td></tr>
-<tr><th>MD5 Checksum</td><td class="caps">{{file.checksum}}</td></tr>
-<tr><th>Company</th><td>{{file.get_all_company_names|default:"<i>No company</i>"}}</td></tr>
-<tr><th>Explicit</th><td>{{file.explicit}}</td></tr>
-<tr><th>Description</th><td>{% if file.description %}<textarea readonly>{{file.description}}</textarea>{% else %}<i>No description</i>{% endif %}</td></tr>
-<tr><th>Details</th><td><a href="#heading-details">{{file.details.count}}</a></td></tr>
-<tr><th>Download Sources</th><td><a href="#heading-downloads">{{file.downloads.count}}</a></td></tr>
-<tr><th>Feedback</th><td>{{file.feedback_count}}</td></tr>
-<tr><th>File Exists</th><td>{{file.file_exists}}</td></tr>
-<tr><th>Filename</th><td>{{file.filename}}</td></tr>
-<tr><th>Key</th><td>{{file.key|default:"<i>No key set</i>"}}</td></tr>
-<tr><th>Genre</th><td>{% for g in file.genre_list %}{{g}}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
-<tr><th>ID</th><td>{{file.id}}</td></tr>
-<tr><th>Internet Archive Identifier</th><td>{% if file.archive_name %}<a href="https://archive.org/details/{{file.archive_name}}" target="_blank">{{file.archive_name}}{% else %}<i>None</i>{% endif %}</td></tr>
-<tr><th>Language</th><td>{{file.language_list}}</td></tr>
-<tr><th>Last Modified</th><td>{{file.last_modified}}</td></tr>
-<tr><th>Letter</th><td class="caps">{{file.letter}}</td></tr>
-<tr><th>Publish Date</th><td>{{file.publish_date}}</td></tr>
-<tr><th>Rating</th><td>{{file.rating}} / 5.00</td></tr>
-<tr><th>Release Date</th><td>{{file.release_date}}</td></tr>
-<tr><th>Release Date Source</th><td>{{file.release_source}}</td></tr>
-<tr><th>Reviews</th><td><a href="#heading-reviews">{{file.review_count}}</a></td></tr>
-<tr><th>Preview Image Filename</th><td><a href="{% static file.preview_url %}" target="_blank">{{file.screenshot|default:"None"}}</a></td></tr>
-<tr><th>Size</th><td>{{file.size}} bytes ({{file.size|filesizeformat}})</td></tr>
-<tr><th>Supports Zeta Player</th><td>{{file.supports_zeta_player}}</td></tr>
-<tr><th>Title</th><td>{{file.title}}</td></tr>
-<tr><th>Zeta Configuration</th><td>{{file.zeta_config}}</td></tr>
-{% if request.user.is_staff %}
-<tr><th colspan="2" style="background:red">Staff Only Information</th></tr>
-<tr><th>Sort Title</th><td>{{file.sort_title}}</td></tr>
-<tr><th>License</th><td>{{file.file_license}}</td></tr>
-<tr><th>License Source</th><td>{{file.license_source}}</td></tr>
-<tr><th>Can Spotlight</th><td>{{file.spotlight}}</td></tr>
-{% endif %}
-</table>
+{% zfile_attrs file %}
 
 <h2 id="heading-permissions">File Permissions</h2>
 {% with file.supported_actions as supported_actions %}
@@ -74,50 +37,14 @@
         <td>{{file.upload.date}}</td>
     </tr>
     {% if request.user.is_staff %}
-    <tr><th colspan="2" style="background:red">Staff Only Information</th></tr>
-    <tr><th>User</th><td>{{file.upload.author_link}}</td></tr>
-    <tr><th>Edit Token</th><td>{{file.upload.edit_token}}</td></tr>
-    <tr><th>IP</th><td>{{file.upload.ip}}</td></tr>
-    <tr><th>Notes</th><td><textarea class="upload-notes">{{file.upload.notes}}</textarea></td></tr>
-    <tr><th>Announced on Discord</th><td>{{file.upload.announced|yesno|title}}</td></tr>
+    <tr><th colspan="2" class="staff-bg">Staff Information</th></tr>
+    <tr><th class="staff-bg">User</th><td>{{file.upload.author_link}}</td></tr>
+    <tr><th class="staff-bg">Edit Token</th><td>{{file.upload.edit_token}}</td></tr>
+    <tr><th class="staff-bg">IP</th><td>{{file.upload.ip}}</td></tr>
+    <tr><th class="staff-bg">Notes</th><td><textarea class="upload-notes">{{file.upload.notes}}</textarea></td></tr>
+    <tr><th class="staff-bg">Announced on Discord</th><td>{{file.upload.announced|yesno|title}}</td></tr>
     {% endif %}
 </table>
-
-<h2 id="heading-aliases">File Aliases</h2>
-<ul class="data-table">
-{% for a in file.aliases.all %}
-    <li>{{a.alias}}</li>
-{% empty %}
-    <li><i>None</i></li>
-{% endfor %}
-</ul>
-
-<h2 id="heading-articles">File Articles</h2>
-<ul class="data-table">
-{% for a in file.articles.accessible %}
-    <li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
-{% empty %}
-    <li><i>None</i></li>
-{% endfor %}
-</ul>
-
-<h2 id="heading-authors">File Authors</h2>
-<ul class="data-table">
-{% for a in file.authors.all %}
-    <li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
-{% empty %}
-    <li><i>None</i></li>
-{% endfor %}
-</ul>
-
-<h2 id="heading-companies">File Companies</h2>
-<ul class="data-table">
-{% for c in file.companies.all %}
-    <li><a href="{{c.get_absolute_url}}">{{c.title}}</a></li>
-{% empty %}
-    <li><i>None</i></li>
-{% endfor %}
-</ul>
 
 <h2 id="heading-contents">File Contents</h2>
 <table class="data-table" id="contents-info">
@@ -128,31 +55,5 @@
         <tr><td colspan="7" class="c"><i>No Contents Found</i></td></tr>
     {% endfor %}
 </table>
-
-<h2 id="heading-details">File Details</h2>
-<ul class="data-table">
-{% for d in file.details.all %}
-<li>{{d.title}}</li>
-{% endfor %}
-</ul>
-
-<h2 id="heading-downloads">File Downloads</h2>
-<ul class="data-table">
-{% for d in file.downloads.all %}
-    <li><a href="{{d.get_absolute_url}}" target="_blank">{{d.kind}}</a></li>
-{% empty %}
-    <li><i>None</i></li>
-{% endfor %}
-</ul>
-
-<h2 id="heading-reviews">File Reviews</h2>
-<ul class="data-table">
-{% for r in reviews %}
-    <li><a href="{{r.get_absolute_url}}">{{r.title|default:"<i>Untitled Review</i>"}}</a></li>
-{% empty %}
-    <li><i>None</i></li>
-{% endfor %}
-</ul>
-
 </section>
 {% endblock %}

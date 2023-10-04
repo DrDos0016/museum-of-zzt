@@ -771,10 +771,6 @@ def tool_index(request, key=None):
 
         data["content_info"] = data["file"].content.all()
 
-        # Simple validation tools
-        data["valid_letter"] = True if data["file"].letter in "1abcdefghijklmnopqrstuvwxyz" else False
-        data["valid_filename"] = True if data["file"].phys_path() else False
-
         if request.GET.get("recalculate"):
             field = request.GET["recalculate"]
             if field == "sort-title":

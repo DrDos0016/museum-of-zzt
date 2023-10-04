@@ -1,8 +1,70 @@
-Hello! {{foo}} is foo.
-
-<table class="mono">
-    {% for attr in attrs.values %}<tr>
-        <th{% if attr.colspan %} colspan="{{attr.colspan}}"{% endif %}>{{attr.heading}}</th>
-        <td{% if attr.td_class %} class="{{attr.td_class}}"{% endif %}>{{attr.value|safe}}</td>
-    </tr>{% endfor %}
+<table class="zfile-attr-table">
+    <tr><th>Title</th><td>{{zfile.title}}</td></tr>
+    <tr><th>Checksum (MD5)</th><td>{{zfile.checksum}}</td></tr>
+    <tr><th>Description</th><td>{{zfile.description|default:"<i>None</i>"}}</td></tr>
+    <tr><th>Explicit</th><td>{{zfile.explicit|yesno|title}}</td></tr>
+    <tr><th>File Available</th><td>{{zfile.file_exists|yesno|title}}</td></tr>
+    <tr><th>Filename</th><td>{{zfile.filename}}</td></tr>
+    <tr><th>Internet Archive Identifier</th><td>{{zfile.archive_name}}</td></tr>
+    <tr><th>Key</th><td>{{zfile.key}}</td></tr>
+    <tr><th>Languages</th><td>{{zfile.language_list}}</td></tr>
+    <tr><th>Letter</th><td>{{zfile.letter|upper}}</td></tr>
+    <tr><th>Museum ID</th><td>{{zfile.pk}}</td></tr>
+    <tr><th>Preview Image</th><td>{% if zfile.has_preview_image %}<a href="/static/{{zfile.preview_url}}">{{zfile.preview_url}}</a>{% else %}<i>No preview image</i>{% endif %}</td></tr>
+    <tr><th>Rating</th><td>{{zfile.rating|default:"<i>No Rating</i>"}}{% if zfile.rating %} / 5.00{% endif %}</td></tr>
+    <tr><th>Size</th><td>{{zfile.size|filesizeformat}} ({{zfile.size}} bytes)</td></tr>
+    <tr><th>Supports Zeta</th><td>{{zfile.supports_zeta_player|yesno|title}}</td></tr>
+    {% if zfile.total_boards %}
+    <tr><th colspan="2">Board Counts</th></tr>
+        <tr><th>Playable (estimated)</th><td>{{zfile.playable_boards|default:"Not set"}}</td></tr>
+        <tr><th>Total</th><td>{{zfile.total_boards|default:"Not set"}}</td></tr>
+    {% endif %}
+    <tr><th colspan="2">Dates</th></tr>
+        <tr><th>Last Modified</th><td>{{zfile.last_modified}}</td></tr>
+        <tr><th>Publish Date</th><td>{% if zfile.publish_date|stringformat:"s" <= '2018-11-06 00:00:00+00:00' %}<i>Not Recorded</i>{% else %}{{zfile.publish_date|default:"<i>Unknown</i>"}}{% endif %}</td></tr>
+        <tr><th>Release Date</th><td>{{zfile.release_date}}</td></tr>
+    <tr><th>Release Date Source</th><td>{{zfile.release_source}}</td></tr>
+    <tr><th colspan="2">Related Data</th></tr>
+    <tr>
+        <th>Aliases ({{zfile.aliases.count}})</th>
+        <td><ul>{% for alias in zfile.aliases.all %}<li>{{alias.alias}}</li>{% empty %}<li><i>None</i></li>{% endfor %}</ul></td>
+    </tr>
+    <tr>
+        <th>Articles ({{zfile.articles.count}})</th>
+        <td><ul>{% for a in zfile.articles.all %}<li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>{% empty %}<li><i>None</i></li>{% endfor %}</ul></td>
+    </tr>
+    <tr>
+        <th>Authors ({{zfile.authors.count}})</th>
+        <td><ul>{% for author in zfile.authors.all %}<li><a href="{{author.get_absolute_url}}">{{author.title}}</a></li>{% empty %}<li><i>None</i></li>{% endfor %}</ul></td>
+    </tr>
+    <tr>
+        <th>Companies ({{zfile.companies.count}})</th>
+        <td><ul>{% for company in zfile.companies.all %}<li><a href="{{company.get_absolute_url}}">{{company.title}}</a></li>{% empty %}<li><i>None</i></li>{% endfor %}</ul></td>
+    </tr>
+    <tr>
+        <th>Details ({{zfile.details.count}})</th>
+        <td><ul>{% for detail in zfile.details.all %}<li><a href="{{detail.get_absolute_url}}">{{detail.title}}</a></li>{% empty %}<li><i>None</i></li>{% endfor %}</ul></td>
+    </tr>
+    <tr>
+        <th>Download Sources ({{zfile.downloads.count}})</th>
+        <td><ul>{% for dl in zfile.downloads.all %}<li><a href="{{dl.get_absolute_url}}">{{dl.kind}}</a></li>{% empty %}<li><i>No Downloads Avaiable</i></li>{% endfor %}</ul></td>
+    </tr>
+    <tr>
+        <th>Feedback ({{zfile.feedback_count}}) [{{zfile.review_count}} reviews]</th>
+        <td><ul>{% for fb in feedback %}<li><a href="{{fb.url}}">{{fb.title}}</a></li>{% empty %}<li><i>No Feedback</i></li>{% endfor %}</ul></td>
+    </tr>
+    <tr>
+        <th>Genres ({{zfile.genres.count}})</th>
+        <td><ul>{% for genre in zfile.genres.all %}<li><a href="{{genre.url}}">{{genre.title}}</a></li>{% empty %}<li><i>None</i></li>{% endfor %}</ul></td>
+    </tr>
+    <tr>
+        <th>Zeta Configuration</th>
+        <td>{{zfile.zeta_config|default:"<i>None</i>"}}</td>
+    </tr>
+        <th colspan="2" class="staff-bg">Staff Information</th>
+    </tr>
+        <tr><th class="staff-bg">Sort Title</th><td>{{zfile.sort_title}}</td></tr>
+        <tr><th class="staff-bg">License</th><td>{{zfile.license|default:"<i>None</i>"}}</td></tr>
+        <tr><th class="staff-bg">License Source</th><td>{{zfile.license_source|default:"<i>None</i>"}}</td></tr>
+        <tr><th class="staff-bg">Can Spotlight</th><td>{{zfile.spotlight|yesno|title}}</td></tr>
 </table>

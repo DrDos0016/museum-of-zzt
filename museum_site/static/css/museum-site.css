@@ -345,6 +345,7 @@ pre.cp437 { line-height:14px;}
 .fit-height { height: calc(100vh - 44px ); align-self:start; }
 .jsLink { cursor:pointer; color:var(--link-color); }
 .no-margin { margin:0; }
+.staff-bg { background-color:var(--ega-purple); }
 .zoomed { cursor:zoom-out; width:auto; }
 .true { background-color:var(--ega-green); }
 .false { background-color:var(--ega-red); }
@@ -618,6 +619,24 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     height:5em;
     width:100%;
     font-size:smaller;
+}
+
+.zfile-attr-table
+{
+    font-family:monospace;
+    font-size:12pt;
+}
+
+.zfile-attr-table th
+{
+    text-align:left;
+    width:30%;
+}
+
+.zfile-attr-table th[colspan="2"]
+{
+    text-align:center;
+    width:100%;
 }
 
 #top-margin
