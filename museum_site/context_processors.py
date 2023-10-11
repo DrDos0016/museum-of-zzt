@@ -12,6 +12,12 @@ from museum_site.models.file import File
 def museum_global(request):
     data = {}
 
+    # Base Template
+    if request.path.startswith("/tools/"):
+        data["BASE_TEMPLATE"] = "museum_site/tools/tool-main.html"
+    else:
+        data["BASE_TEMPLATE"] = "museum_site/main.html"
+
     # Resolved URL
     if request.resolver_match:
         data["resolved_url"] = resolve(request.path)
