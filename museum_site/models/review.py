@@ -120,6 +120,9 @@ class Review(BaseModel):
     def save(self, *args, **kwargs):
         if self.author == "":
             self.author = "Anonymous"
+        if f.user_id:
+            self.author = self.user.username
+
         super(Review, self).save(*args, **kwargs)
 
     def get_field_view(self, view="detailed"):
