@@ -116,6 +116,7 @@
 <main id="content" class="block{% for class in content_classes %} {{class}}{% endfor %}" data-url-name="{{request.resolver_match.url_name|default:'null_url_name'}}">
 <div id="top-margin">
     <button id="toggle-light-dark-theme" title="Toggle Light/Dark Theme">¥</button>
+    {% block top_margin_middle %}{% endblock %}
     <button id="expand-contract" title="Toggle sidebars">⮜ ⮞</button>
 </div>
 {% block zfile_header %}

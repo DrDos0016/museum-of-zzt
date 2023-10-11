@@ -71,7 +71,7 @@ Sort: <select name="sort">
     <p>{{cant_review_message|safe}}</p>
 {% else %}
     <h2>Give Feedback</h2>
-    <form method="POST">
+    <form method="POST" action="{{request.path}}">
     {% csrf_token %}
     {% if request.user.is_authenticated %}
     <div class="field-wrapper" data-field="author">
