@@ -120,7 +120,7 @@ class Review(BaseModel):
     def save(self, *args, **kwargs):
         if self.author == "":
             self.author = "Anonymous"
-        if f.user_id:
+        if self.user_id:
             self.author = self.user.username
 
         super(Review, self).save(*args, **kwargs)
