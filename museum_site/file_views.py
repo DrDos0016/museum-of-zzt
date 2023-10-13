@@ -13,6 +13,7 @@ from museum_site.constants import *
 from museum_site.constants import LANGUAGES_REVERSED
 from museum_site.core import *
 from museum_site.core.detail_identifiers import *
+from museum_site.core.feedback_tag_identifiers import *
 from museum_site.core.redirects import explicit_redirect_check, redirect_with_querystring
 from museum_site.forms.review_forms import Review_Form
 from museum_site.forms.zfile_forms import Advanced_Search_Form
@@ -338,7 +339,7 @@ class ZFile_Article_List_View(Model_List_View):
 
 class ZFile_Review_List_View(Model_List_View):
     model = Review
-    template_name = "museum_site/file-review.html"
+    template_name = "museum_site/zfile-feedback.html"
     allow_pagination = False
 
     def get_queryset(self):
@@ -403,7 +404,7 @@ class ZFile_Review_List_View(Model_List_View):
             return context
 
         # Initialize form
-        review_form = Review_Form(self.request.POST) if self.request.POST else Review_Form(initial={"tags": "1"})  # TODO Constant
+        review_form = Review_Form(self.request.POST) if self.request.POST else Review_Form(initial={"tags": FEEDBACK_TAG_REVIEW})
 
         # Remove anonymous option for logged in users
         if self.request.user.is_authenticated:
@@ -431,7 +432,7 @@ class ZFile_Review_List_View(Model_List_View):
                 review.tags.add(tag.pk)
             # Force "Review" tag if there's a rating
             if float(review_form.cleaned_data["rating"]) >= 0:
-                review.tags.add(1) # TODO: Constant
+                review.tags.add(FEEDBACK_TAG_REVIEW)
 
             # Update file's review count/scores if the review is approved
             if self.head_object.can_review == ZFile.REVIEW_YES and review.approved:

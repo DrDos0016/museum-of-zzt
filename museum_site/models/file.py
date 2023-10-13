@@ -14,6 +14,7 @@ from django.utils.safestring import mark_safe
 
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH, DATE_NERD, DATE_FULL, DATE_HR
 from museum_site.core.detail_identifiers import *
+from museum_site.core.feedback_tag_identifiers import *
 from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile, zipinfo_datetime_tuple_to_str
 from museum_site.core.image_utils import optimize_image
@@ -189,6 +190,10 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return self.details.all().values_list("id", flat=True)
 
     @cached_property
+    def zgame(self):
+        return self.downloads.filter(kind="zgames").first()
+
+    @cached_property
     def extras(self):
         output = []
         if DETAIL_FEATURED in self.detail_ids:
@@ -320,7 +325,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def calculate_reviews(self):
         # Calculate Review Count
         if self.id is not None:
-            self.review_count = Review.objects.for_zfile(self.id).filter(tags=1).count()  # TODO: Constant
+            self.review_count = Review.objects.for_zfile(self.id).filter(tags=FEEDBACK_TAG_REVIEW).count()
 
         # Calculate Rating
         if self.id is not None:

@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
+from museum_site.core.feedback_tag_identifiers import *
 from museum_site.core.misc import profanity_filter
 from museum_site.constants import DATE_HR
 from museum_site.models.base import BaseModel
@@ -14,18 +15,18 @@ from museum_site.querysets.review_querysets import *
 
 
 class Review(BaseModel):
-    """ Review object repesenting an review to a file """
+    """ Feedback object repesenting feedback provided to a zfile """
     objects = Review_Queryset.as_manager()
 
     model_name = "Review"
-    table_fields = ["Title", "File", "Reviewer", "Date", "Rating"]
+    table_fields = ["Title", "File", "Author", "Date", "Rating"]
     cell_list = ["view", "zfile", "author", "review_date", "rating"]
     guide_word_values = {"id": "pk", "reviewer": "reviewer", "date": "date", "file": "zfile", "rating": "rating"}
     sort_options = [
         {"text": "Newest", "val": "-date"},
         {"text": "Oldest", "val": "date"},
         {"text": "File", "val": "file"},
-        {"text": "Reviewer", "val": "reviewer"},
+        {"text": "Author", "val": "reviewer"},
         {"text": "Rating", "val": "rating"},
     ]
     sort_keys = {
@@ -38,16 +39,6 @@ class Review(BaseModel):
         "-id": ["-id"],
     }
 
-    """
-    Fields:
-    zfile            -- Link to File object
-    title           -- Title of the review
-    author          -- Author of the review
-    content         -- Body of review
-    rating          -- Rating given to file from 0.0 - 5.0
-    date            -- Date review was written
-    ip              -- IP address posting the review
-    """
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
@@ -233,7 +224,7 @@ class Review(BaseModel):
 
         if not self.pk:
             field_list.remove("tags")
-        elif not self.is_tagged(1):  # TODO: Constant for Review
+        elif not self.is_tagged(FEEDBACK_TAG_REVIEW):
             field_list.remove("rating")
 
         for field_name in field_list:

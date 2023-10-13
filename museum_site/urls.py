@@ -192,7 +192,7 @@ urlpatterns = [
     path("review/browse/", museum_site.review_views.Review_List_View.as_view(), name="review_browse"),
     path("review/browse/author/", museum_site.review_views.Reviewer_Directory_View.as_view(), name="review_browse_authors"),
     path("review/browse/author/<str:author>/", museum_site.review_views.Review_List_View.as_view(), name="review_browse_author"),
-    path("review/search/", museum_site.review_views.Review_Search_View.as_view(), name="review_search"),
+    path("review/search/", museum_site.review_views.Feedback_Search_View.as_view(), name="review_search"),
     # /review/ -- Legacy Redirects
     path("review/author/", RedirectView.as_view(pattern_name="review_browse_authors", permanent=True)),
     path("review/author/<str:author>/", RedirectView.as_view(pattern_name="review_browse_author", permanent=True)),

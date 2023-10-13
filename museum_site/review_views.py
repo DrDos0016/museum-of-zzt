@@ -84,9 +84,9 @@ class Review_List_View(Model_List_View):
 
 
 
-class Review_Search_View(Model_Search_View):
+class Feedback_Search_View(Model_Search_View):
     form_class = Review_Search_Form
     model = Review
     model_list_view_class = Review_List_View
     template_name = "museum_site/generic-form-display.html"
-    title = "Review Search"
+    title = "Feedback Search"

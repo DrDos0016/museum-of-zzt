@@ -270,11 +270,11 @@ def change_username(request):
         form = Change_Username_Form()
 
     if form.is_valid():
-        # Change a user's username and update author for their reviews
+        # Update username
         request.user.username = form.cleaned_data["new_username"]
         request.user.save()
 
-        # Update author field on this user's reviews
+        # Update author field on this user's feedback
         updated = Review.objects.filter(user_id=request.user.id).update(author=form.cleaned_data["new_username"])
 
         # Log out and redirect to login page
