@@ -18,6 +18,14 @@ class Review_Form(forms.ModelForm):
         choices=RATINGS,
         help_text="Optionally provide a numeric score from 0.0 to 5.0",
     )
+    spotlight = forms.ChoiceField(widget=forms.RadioSelect(),
+        choices=(
+            (1, "Yes. Showcase this feedback."),
+            (0, "No. Do not showcase this feedback.")
+        ),
+        help_text="Choose whether or not this feedback should be announced on the Museum of ZZT Discord server and appear on the front page.",
+        initial=1
+    )
 
     class Meta:
         model = Review

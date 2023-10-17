@@ -304,7 +304,6 @@ class ZFile_List_View(Model_List_View):
         return "Browse - All Files"
 
 
-
 class ZFile_Search_View(Model_Search_View):
     form_class = Advanced_Search_Form
     model = File
@@ -405,10 +404,10 @@ class ZFile_Review_List_View(Model_List_View):
 
         # Initialize form
         review_form = Review_Form(self.request.POST) if self.request.POST else Review_Form(initial={"tags": FEEDBACK_TAG_REVIEW})
-
-        # Remove anonymous option for logged in users
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated:  # Remove anonymous option for logged in users
             del review_form.fields["author"]
+        else:  # Remove spotlight toggling for guest users
+            del review_form.fields["spotlight"]
 
         # Post a review if one was submitted
         if self.request.POST and review_form.is_valid() and not recent:
@@ -416,6 +415,9 @@ class ZFile_Review_List_View(Model_List_View):
             if self.request.user.is_authenticated:
                 review.author = self.request.user.username
                 review.user_id = self.request.user.id
+                review.spotlight = review_form.cleaned_data.get("spotlight", True)
+            else:
+                review.spotlight = True
             review.ip = self.request.META.get(REMOTE_ADDR_HEADER)
             review.date = context["today"]
             review.zfile_id = self.head_object.id
@@ -439,12 +441,7 @@ class ZFile_Review_List_View(Model_List_View):
                 self.head_object.calculate_reviews()
                 self.head_object.calculate_feedback()
                 # Make Announcement
-                # TODO: This is temporary -- Logged in users posting solely a bug report will not generate an annoucement
-                make_announcement = True
-                if self.request.user.is_authenticated:
-                    if "3" in self.request.POST.getlist("tags") and len(self.request.POST.getlist("tags")) == 1:
-                        make_announcement = False
-                if make_announcement:
+                if (not self.request.user.is_authenticated) or review_form.cleaned_data.get("spotlight") == "1":  # Guests always have feedback announced
                     discord_announce_review(review)
                 self.head_object.save()  # FULLSAVE (ZFile)
 

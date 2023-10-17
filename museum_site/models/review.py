@@ -54,6 +54,7 @@ class Review(BaseModel):
         "Feedback_Tag", default=None, blank=True,
         help_text="Tag your feedback to identify what kind of information it provides. Any feedback with a rating will be automatically tagged as a review."
     )
+    spotlight = models.BooleanField(default=True, help_text="Boolean to mark feedback as suitable for display on the front page.")
 
     class Meta:
         ordering = ["-date", "-id"]
