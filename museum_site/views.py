@@ -179,7 +179,7 @@ def index(request):
     data["articles"] = Article.objects.spotlight()[:FP.ARTICLES_SHOWN]
     data["new_releases"] = File.objects.new_releases_frontpage(spotlight_filter=True)[:FP.NEW_RELEASES_SHOWN]
     data["files"] = File.objects.new_finds(spotlight_filter=True)[:FP.FILES_SHOWN]
-    data["feedback"] = Review.objects.latest_approved_reviews()[:FP.FEEDBACK_SHOWN]
+    data["feedback"] = Review.objects.latest_approved_reviews().filter(spotlight=True)[:FP.FEEDBACK_SHOWN]
     data["article_table_header"] = data["articles"][0].table_header() if data["articles"] else None
     data["feedback_table_header"] = data["feedback"][0].table_header() if data["feedback"] else None
 
