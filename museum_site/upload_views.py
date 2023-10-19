@@ -15,6 +15,7 @@ from museum_site.core.image_utils import optimize_image
 from museum_site.core.misc import banned_ip, calculate_boards_in_zipfile, calculate_sort_title, get_letter_from_title, generate_screenshot_from_zip, record
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.core.zeta_identifiers import *
+from museum_site.core.zfile_utils import delete_zfile
 from museum_site.forms.upload_forms import Download_Form, Play_Form, Upload_Form, Upload_Action_Form, Upload_Delete_Confirmation_Form, ZGame_Form
 from museum_site.generic_model_views import Generic_Error_View
 from museum_site.models import *
@@ -286,5 +287,6 @@ class Upload_Delete_Confirmation_View(FormView):
 
     def form_valid(self, form):
         zfile = File.objects.get(upload_id=self.upload.pk)
-        zfile.remove_uploaded_zfile()
+        delete_zfile(zfile)
+        cache.set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count())
         return super().form_valid(form)

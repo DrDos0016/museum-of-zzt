@@ -82,8 +82,6 @@ class Review_List_View(Model_List_View):
         return context
 
 
-
-
 class Feedback_Search_View(Model_Search_View):
     form_class = Review_Search_Form
     model = Review

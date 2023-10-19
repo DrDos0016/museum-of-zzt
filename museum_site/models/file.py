@@ -15,7 +15,6 @@ from django.utils.safestring import mark_safe
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH, DATE_NERD, DATE_FULL, DATE_HR
 from museum_site.core.detail_identifiers import *
 from museum_site.core.feedback_tag_identifiers import *
-from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile, zipinfo_datetime_tuple_to_str
 from museum_site.core.image_utils import optimize_image
 from museum_site.core.transforms import qs_to_links
@@ -78,11 +77,11 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         "antiquated": {"glyph": "⌛", "title": "This file is known to be antiquated. Its use is not recommended today.", "role": "outdated-icon"}
     }
 
-    (REVIEW_NO, REVIEW_APPROVAL, REVIEW_YES) = (0, 1, 2)
-    REVIEW_LEVELS = (
-        (REVIEW_NO, "Can't Review"),
-        (REVIEW_APPROVAL, "Requires Approval"),
-        (REVIEW_YES, "Can Review"),
+    (FEEDBACK_NO, FEEDBACK_APPROVAL, FEEDBACK_YES) = (0, 1, 2)
+    FEEDBACK_LEVELS = (
+        (FEEDBACK_NO, "Can't Give Feedback"),
+        (FEEDBACK_APPROVAL, "Requires Approval"),
+        (FEEDBACK_YES, "Can Give Feedback"),
     )
 
     # Database
@@ -142,7 +141,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     has_preview_image = models.BooleanField(default=False, help_text="Whether or not a preview image is available for this ZFile.")
     spotlight = models.BooleanField(default=True, help_text="Boolean to mark zfile as being suitable for display on the front page.")
     can_review = models.IntegerField(
-        default=REVIEW_YES, choices=REVIEW_LEVELS, help_text="Choice of whether the file can be reviewed freely, pending approval, or not at all."
+        default=FEEDBACK_YES, choices=FEEDBACK_LEVELS, help_text="Choice of whether the file can be reviewed freely, pending approval, or not at all."
     )
     publish_date = models.DateTimeField(null=True, default=None, db_index=True, blank=True, help_text="Date File was published on the Museum")
     last_modified = models.DateTimeField(auto_now=True, help_text="Date DB entry was last modified")
@@ -178,7 +177,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         output["play"] = True if self.archive_name or (output["view"] and self.supports_zeta_player()) else False
         output["article"] = True if self.article_count else False
         # Review
-        if (output["download"] and self.can_review) or self.review_count:
+        if (output["download"] and self.can_review) or self.feedback_count:
             output["review"] = True
         if output["review"] and self.is_detail(DETAIL_UPLOADED):
             output["review"] = False
@@ -361,137 +360,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             output.append((LANGUAGES.get(i, i), i))
         return output
 
-    def remove_uploaded_zfile(self):
-        message = "Removing ZFile: "
-        message += str(self) + "\n"
-
-        # Remove the physical file
-        path = self.phys_path()
-        if os.path.isfile(path):
-            os.remove(path)
-            message += "Removed physical file\n"
-
-        # Remove the Upload object
-        if self.upload:
-            self.upload.delete()
-            message += "Removed Upload object\n"
-        else:
-            message += "No Upload object detected.\n"
-
-        # Remove the preview image
-        screenshot_path = self.screenshot_phys_path()
-        if screenshot_path:
-            if os.path.isfile(screenshot_path):
-                os.remove(screenshot_path)
-                message += "Removed preview image\n"
-
-        # Remove the contents objects
-        content = self.content.all()
-        for c in content:
-            c.delete()
-        message += "Removed Content object(s)\n"
-
-        # Remove the download objects
-        downloads = self.downloads.all()
-        for d in downloads:
-            d.delete()
-        message += "Removed Download objects(s)\n"
-
-        # Remove the file object
-        self.delete()
-        message += "Removed ZFile object\n"
-
-        # Calculate queue size
-        cache.set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count())
-        message += "Updated cached queue size value. (Now: {})\n".format(cache.get("UPLOAD_QUEUE_SIZE"))
-        return message
-
     def get_can_review_string(self):
-        return File.REVIEW_LEVELS[self.can_review][1]
-
-    def scan(self):
-        issues = {}
-        exists = True
-        checksummed = True
-        """ Used for Museum Scan to identify basic issues """
-        # Validate letter
-        if self.letter not in "1abcdefghijklmnopqrstuvwxyz":
-            issues["letter"] = "Invalid letter: '{}'".format(self.letter)
-        if not os.path.isfile(self.phys_path()):
-            issues["missing_file"] = "File not found: '{}'".format(self.phys_path())
-            exists = False
-        if not self.sort_title:
-            issues["sort_title"] = "Sort title not set."
-        if exists and self.size != os.path.getsize(self.phys_path()):
-            issues["size_mismatch"] = "DB size doesn't match physical file size: {}/{}".format(self.size, os.path.getsize(self.phys_path()))
-        if self.release_date and self.release_date.year < 1991:
-            issues["release_date"] = "Release date is prior to 1991."
-        if self.release_date and self.release_source == "":
-            issues["release_date_source"] = "Release source is blank, but release date is set."
-        if not self.has_preview_image == "":
-            issues["preview_image"] = "No preview image."
-        if self.has_preview_image and (not os.path.isfile(os.path.join(STATIC_PATH, self.preview_url()))):
-            issues["preview_image_missing"] = "Screenshot does not exist at {}".format(self.preview_url())
-
-        # Review related
-        reviews = Review.objects.for_zfile(self.id)
-        rev_len = len(reviews)
-        if rev_len != self.review_count:
-            issues["review_count"] = "Reviews in DB do not match 'review_count': {}/{}".format(rev_len, self.review_count)
-
-        # Detail related
-        details = self.details.all()
-        detail_list = []
-        for detail in details:
-            detail_list.append(detail.id)
-
-        # Confirm LOST does not exist
-        if DETAIL_LOST in detail_list and exists:
-            issues["not_lost"] = "File is marked as 'Lost', but a Zip exists."
-
-        articles = self.articles.accessible()
-        article_len = len(articles)
-        if article_len != self.article_count:
-            issues["article_count"] = "Articles in DB do not match 'article_count': {}/{}".format(article_len, self.article_count)
-
-        if not self.checksum:
-            issues["blank_checksum"] = "Checksum not set."
-            checksummed = False
-
-        # Calculate file's checksum
-        md5 = calculate_md5_checksum(self.phys_path())
-        if checksummed and (self.checksum != md5):
-            issues["checksum_mismatch"] = "Checksum in DB does not match calculated checksum: {} / {}".format(self.checksum, md5)
-
-        # Board counts
-        if (DETAIL_ZZT in detail_list) and self.playable_boards is None:
-            issues["playable_boards"] = "File has no playable boards value but is marked as ZZT"
-
-        if (DETAIL_ZZT in detail_list) and self.total_boards is None:
-            issues["total_boards"] = "File has no total boards value but is marked as ZZT"
-
-        if self.archive_name == "" and (DETAIL_LOST not in detail_list and DETAIL_UPLOADED not in detail_list):
-            issues["archive_mirror"] = "File has no archive.org mirror"
-
-        # Contents in DB vs Contents in zip
-        db_contents = self.content.all()
-        crcs = []
-        for i in db_contents:
-            crcs.append(i.crc32)
-
-        zf = None
-        try:
-            zf = zipfile.ZipFile(self.phys_path())
-        except (zipfile.BadZipFile, FileNotFoundError):
-            zf = None
-
-        if zf is not None:
-            for zi in zf.infolist():
-                if str(zi.CRC) not in crcs:
-                    issues["content_error"] = "File's Contents object does not match ZipInfo"
-                    break
-
-        return issues
+        return File.FEEDBACK_LEVELS[self.can_review][1]
 
     def get_all_company_names(self):
         output = ""

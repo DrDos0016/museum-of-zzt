@@ -8,16 +8,31 @@
 <form>
     <label>Empty Upload Queue: <input type="checkbox" name="empty" value="yes"></label>
     <br>
+    <label>Starting PK: <input name="gte" value="0"></label>
     <input type="submit" value="Empty The Queue!">
 </form>
+<hr>
+<p>This will fully delete all materials in database and on disk that are unpublished and have a PK greater than or <i>equal to</i> the provided number.</p>
 {% else %}
 <b>This action can only be performed on the DEV server!</b>
 {% endif %}
-<hr>
 {% if request.GET.empty %}
 <h2>Event Log:</h2>
 <textarea style="width:90%;height:500px;">
 {{message}}
 </textarea>
 {% endif %}
+<hr>
+<table>
+<tr>
+    <th>PK</th>
+    <th>ZFile</th>
+</tr>
+{% for zfile in unpublished %}
+<tr>
+    <td class="mono r">{{zfile.pk}}</td>
+    <td class="mono"><a href="{{zfile.get_absolute_url}}" target="_blank">{{zfile.title}}</a></td>
+</tr>
+{% endfor %}
+</table>
 {% endblock %}

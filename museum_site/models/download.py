@@ -29,6 +29,8 @@ class Download(BaseModel):
     priority = models.IntegerField(default=10, editable=False)  # Priority for listing download sources (greater = more important)
     kind = models.CharField(max_length=100, choices=KIND_CHOICES, default="zgames")  # Location of download
     hosted_text = models.CharField(max_length=100, blank=True)  # String used for users to tell where a download is hosted
+    checksum = models.CharField(max_length=32, blank=True, default="", help_text="MD5 checksum of download. ZGames only. Blank for all others.")
+    size = models.IntegerField(default=0, editable=False, help_text="Size in bytes of download. ZGames only. Blank for all others.")
 
     class Meta:
         ordering = ["-priority"]

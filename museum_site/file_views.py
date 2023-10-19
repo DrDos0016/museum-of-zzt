@@ -423,10 +423,10 @@ class ZFile_Review_List_View(Model_List_View):
             review.zfile_id = self.head_object.id
 
             # Simple spam protection
-            if self.head_object.can_review == File.REVIEW_APPROVAL or (review.content.find("href") != -1) or (review.content.find("[url=") != -1):
+            if self.head_object.can_review == File.FEEDBACK_APPROVAL or (review.content.find("href") != -1) or (review.content.find("[url=") != -1):
                 review.approved = False
-            if not self.request.user.is_authenticated and review.content.find("http") != -1:
-                review_approved = False
+            if (not self.request.user.is_authenticated) and review.content.find("http") != -1:
+                review.approved = False
             review.save()
 
             # Add tags
@@ -437,7 +437,7 @@ class ZFile_Review_List_View(Model_List_View):
                 review.tags.add(FEEDBACK_TAG_REVIEW)
 
             # Update file's review count/scores if the review is approved
-            if self.head_object.can_review == ZFile.REVIEW_YES and review.approved:
+            if self.head_object.can_review == ZFile.FEEDBACK_YES and review.approved:
                 self.head_object.calculate_reviews()
                 self.head_object.calculate_feedback()
                 # Make Announcement

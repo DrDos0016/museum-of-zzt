@@ -28,6 +28,7 @@ from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
 from museum_site.core.form_utils import load_form
 from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_PRESETS
+from museum_site.core.zfile_utils import delete_zfile
 from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate_boards_in_zipfile, record, zookeeper_init, zookeeper_extract_font
 from museum_site.forms.tool_forms import (
     IA_Mirror_Form,
@@ -73,7 +74,7 @@ def audit(request, target, return_target_dict=False):
         },
         "restrictions": {
             "title": "Audit Restrictions", "template": "museum_site/tools/audit-restrictions.html",
-            "zfile_qs": File.objects.removed(), "review_qs": File.objects.exclude(can_review=File.REVIEW_YES)
+            "zfile_qs": File.objects.removed(), "review_qs": File.objects.exclude(can_review=File.FEEDBACK_YES)
         },
         "scrolls": {"title": "Audit Scrolls", "template": "museum_site/tools/audit-scrolls.html", "scrolls": Scroll.objects.all()},
         "users": {"title": "Audit Users", "template": "museum_site/tools/user-list.html", "users": User.objects.order_by("-id")},
@@ -128,17 +129,19 @@ def audit_colors(request):
 
 @staff_member_required
 def empty_upload_queue(request):
-    data = {"title": "Empty Upload Queue", "message": ""}
+    context = {"title": "Empty Upload Queue", "message": ""}
+    context["unpublished"] = File.objects.unpublished().order_by("-pk")
 
     if request.GET.get("empty"):
-        queue = File.objects.unpublished()
+        queue = File.objects.unpublished().filter(pk__gte=request.GET.get("gte", 0))
         message = ""
         for zfile in queue:
-            status = zfile.remove_uploaded_zfile()
-            message += status + "\n----------------------------------------\n"
-        data["message"] = message
+            output = delete_zfile(zfile)
+            message += "\n".join(output) + "\n----------------------------------------\n"
+        context["message"] = message
 
-    return render(request, "museum_site/tools/empty-upload-queue.html", data)
+    cache.set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count())  # Recalculate upload queue size
+    return render(request, "museum_site/tools/empty-upload-queue.html", context)
 
 
 @staff_member_required
@@ -630,11 +633,11 @@ def replace_zip(request, key):
 
 
 @staff_member_required
-def review_approvals(request):
+def feedback_approvals(request):
     """ Returns page listing users and info for reference """
     data = {
-        "title": "Reviews Pending Approval",
-        "reviews": Review.objects.pending_approval(),
+        "title": "Feedback Pending Approval",
+        "feedback": Review.objects.pending_approval(),
         "output": "",
     }
 
@@ -650,17 +653,18 @@ def review_approvals(request):
                     r.save()
                     zfile = File.objects.get(pk=r.zfile.id)
                     zfile.calculate_reviews()
+                    zfile.calculate_feedback()
                     zfile.save()
                     title = zfile.title
-                    data["output"] += "Approved Review for `{}`<br>".format(title)
+                    data["output"] += "Approved Feedback for `{}`<br>".format(title)
                     discord_announce_review(r)
                 else:
                     r = Review.objects.get(pk=pk)
                     title = r.zfile.title
                     r.delete()
-                    data["output"] += "Rejected Review for `{}`<br>".format(title)
+                    data["output"] += "Rejected Feedback for `{}`<br>".format(title)
 
-    return render(request, "museum_site/tools/review-approvals.html", data)
+    return render(request, "museum_site/tools/feedback-approvals.html", data)
 
 
 @staff_member_required

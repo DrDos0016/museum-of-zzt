@@ -1,0 +1,44 @@
+{% extends BASE_TEMPLATE %}
+{% load static %}
+{% load site_tags %}
+
+{% block content %}
+<h1>Feedback Approvals</h1>
+
+<p>{{output|default:"&mdash;"|safe}}</p>
+
+<form method="POST">
+{% csrf_token %}
+<table>
+    <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Date</th>
+        <th>IP</th>
+        <th>ZFile</th>
+        <th>Rating</th>
+        <th>Content</th>
+        <th style="width:200px">Action</th>
+    </tr>
+    {% for r in feedback %}
+    <tr>
+        <td><a href="{{r.admin_url}}">{{r.id}}</td>
+        <td>{{r.get_author}}</td>
+        <td>{{r.date}}</td>
+        <td>{{r.ip}}</td>
+        <td><a href="{{r.zfile.get_absolute_url}}" target="_blank">{{r.zfile.title}}</a></td>
+        <td>{{r.rating}}</td>
+        <td><textarea style="width:400px;height:150px">{{r.content}}</textarea></td>
+        <td>
+            <label><input name="action-{{r.id}}" type="radio" value="APPROVE"> Approve</label><br>
+            <label><input name="action-{{r.id}}" type="radio" value="REJECT"> Reject</label><br><br>
+            </form>
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td class="c b" colspan="8">There is no feedback pending approval at this time.</td></tr>
+    {% endfor %}
+</table>
+<input type="submit" value="Apply Approvals/Rejections">
+</form>
+{% endblock %}
