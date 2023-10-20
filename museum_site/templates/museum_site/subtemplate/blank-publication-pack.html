@@ -10,8 +10,7 @@
 <!--{{f.title}}-->
 {% templatetag openblock %} with files.{{f.id}} as file {% templatetag closeblock %}
 <span class="pub-pack-entry">
-<h2>{% templatetag openvariable %}file.citation_str{% templatetag closevariable %}</h2>
-{% templatetag openblock %} model_block file {% templatetag closeblock %}
+<h2>{% templatetag openblock %} zfile_citation file {% templatetag closeblock %}</h2>
 <p></p>
 <div class="image-set">
     <img src='{% templatetag openblock %} static path|add:"{{f.prefix}}-1.png" {% templatetag closeblock %}' class="screenshot-thumb">

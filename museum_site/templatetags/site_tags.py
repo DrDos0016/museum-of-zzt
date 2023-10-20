@@ -13,10 +13,11 @@ from django.template.defaultfilters import stringfilter, escape
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
-from museum_site.models import File, Article, Series
 from museum_site.constants import (
     ADMIN_NAME, PROTOCOL, DOMAIN, LANGUAGES
 )
+from museum_site.core.transforms import qs_manual_order
+from museum_site.models import File, Article, Series
 from museum_site.templatetags.zzt_tags import char
 
 register = Library()
@@ -173,7 +174,7 @@ def get_articles_by_id(raw):
 @register.filter
 def get_files_by_id(raw):
     ids = list(map(int, raw.split(",")))
-    qs = File.objects.filter(pk__in=ids)
+    qs = qs_manual_order(File.objects.filter(pk__in=ids), ids)
     files = {}
     for f in qs:
         files[str(f.id)] = f
@@ -440,6 +441,15 @@ class Spoiler(template.Node):
         text = self.nodelist[0].render(context)
         output = "<div class='spoiler' style='display:{}'>{}</div>".format(self.display, text)
         return output
+
+
+@register.simple_tag()
+def zfile_citation(zfile, **kwargs):
+    """ Returns a string of standard information used in publication packs """
+    title = '“{}”'.format(zfile.title)
+    author = "by {}".format(", ".join(zfile.related_list("authors"))) if not zfile.author_unknown() else ""
+    year = "({})".format(zfile.release_date.year) if zfile.release_date else ""
+    return " ".join([title, author, year])
 
 
 @register.simple_tag()

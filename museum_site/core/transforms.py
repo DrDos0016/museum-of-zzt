@@ -33,7 +33,7 @@ def language_select_choices(languages, allow_any=False, allow_non_english=False)
 
 
 def qs_manual_order(qs, ordering, field="pk", kind="int"):
-    """ Return a queryset arranged by a given ordering """
+    """ Return a queryset arranged by a given ordering. """
     qs = list(qs)
     ordered = []
     temp_dict = {}
@@ -45,7 +45,8 @@ def qs_manual_order(qs, ordering, field="pk", kind="int"):
             key = int(i)
         else:
             key = i
-        ordered.append(temp_dict[key])
+        if key in temp_dict:
+            ordered.append(temp_dict[key])
     return ordered
 
 

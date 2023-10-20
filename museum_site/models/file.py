@@ -39,9 +39,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     }
 
     # Uninitizalized shared attributes
-    #actions = None
-    #detail_ids = None
-    #extras = None
     all_downloads = None
     all_downloads_count = None
 
@@ -90,7 +87,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     # Database Fields
     letter = models.CharField(max_length=1, db_index=True, editable=False, help_text="Letter used for filtering browse pages")
     filename = models.CharField(max_length=50, help_text="Filename of the zip file containing this zfile's contents")
-    key = models.CharField(unique=True, max_length=50, db_index=True, default="", help_text="Unique identifier used for URLs and filtering. Filename w/out extension")
+    key = models.CharField(
+        unique=True, max_length=50, db_index=True, default="", help_text="Unique identifier used for URLs and filtering. Filename w/out extension"
+    )
     size = models.IntegerField(default=0, editable=False, help_text="Size in bytes of the zip file")
     title = models.CharField(max_length=80, help_text="Canonical name of the release")
     release_date = models.DateField(default=None, null=True, blank=True, help_text="Release date of zip file's contents.")
@@ -387,13 +386,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def author_unknown(self):
         """ Returns TRUE if the _only_ author is 'UNKNOWN' """
         return True if self.related_list("authors") == ["Unknown"] else False
-
-    def citation_str(self):
-        """ Returns a string of standard information used in publication packs """
-        title = '“{}”'.format(self.title)
-        author = "by {}".format(", ".join(self.related_list("authors"))) if not self.author_unknown() else ""
-        year = "({})".format(self.release_date.year) if self.release_date else ""
-        return " ".join([title, author, year])
 
     def can_museum_download(self):
         """ Return TRUE if a zfiles Download object is associated with this file and the file exists """
@@ -797,6 +789,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             output["license_source"] = self.license_source,
             output["can_spotlight"] = self.spotlight
         return output
+
 
 class ZFile_Admin(admin.ModelAdmin):
     exclude = ("content", "downloads",)
