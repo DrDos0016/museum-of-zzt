@@ -347,10 +347,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def release_year(self, default=""): return default if self.release_date is None else str(self.release_date)[:4]
 
-    @mark_safe
-    def boards_str(self):
-        return "{} / {}".format(self.playable_boards, self.total_boards)
-
     def language_pairs(self):
         language_list = self.language.split("/")
         output = []
@@ -382,10 +378,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         tags["og:title"] = ["property", self.title + " - Museum of ZZT"]
         tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
         return tags
-
-    def author_unknown(self):
-        """ Returns TRUE if the _only_ author is 'UNKNOWN' """
-        return True if self.related_list("authors") == ["Unknown"] else False
 
     def can_museum_download(self):
         """ Return TRUE if a zfiles Download object is associated with this file and the file exists """

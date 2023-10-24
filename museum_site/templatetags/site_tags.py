@@ -446,8 +446,10 @@ class Spoiler(template.Node):
 @register.simple_tag()
 def zfile_citation(zfile, **kwargs):
     """ Returns a string of standard information used in publication packs """
+    authors_list = zfile.related_list("authors")
+
     title = '“{}”'.format(zfile.title)
-    author = "by {}".format(", ".join(zfile.related_list("authors"))) if not zfile.author_unknown() else ""
+    author = "by {}".format(", ".join(authors_list)) if authors_list != ["Unknown"] else ""
     year = "({})".format(zfile.release_date.year) if zfile.release_date else ""
     return " ".join([title, author, year])
 
