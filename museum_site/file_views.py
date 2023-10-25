@@ -166,11 +166,11 @@ class ZFile_List_View(Model_List_View):
 
         # Default sort based on path
         if self.sorted_by is None:
-            if request.path == "/file/browse/":
+            if request.path == reverse("zfile_browse"):
                 self.sorted_by = "-publish_date"
-            if request.path == "/file/browse/detail/uploaded/":
+            if request.path == reverse("zfile_browse_field", kwargs={"field": "detail", "value": "uploaded"}):
                 self.sorted_by = "uploaded"
-            if request.path == "/file/roulette/":
+            if request.path == reverse("zfile_roulette"):
                 self.sorted_by = "random"
 
     def get_queryset(self):
@@ -178,11 +178,11 @@ class ZFile_List_View(Model_List_View):
 
         if self.letter:
             qs = qs.filter(letter=self.letter)
-        elif self.request.path == "/file/browse/new-finds/":
+        elif self.request.path == reverse("zfile_browse_new_finds"):
             qs = ZFile.objects.new_finds()
-        elif self.request.path == "/file/browse/new-releases/":
+        elif self.request.path == reverse("zfile_browse_new_releases"):
             qs = ZFile.objects.new_releases()
-        elif self.request.path == "/file/roulette/":
+        elif self.request.path == reverse("zfile_roulette"):
             qs = ZFile.objects.roulette(self.request.GET["seed"], PAGE_SIZE)  # Cap results for list view
         elif self.search_type == "advanced":
             cleaned_params = clean_params(self.request.GET.copy(), list_items=["details"])
