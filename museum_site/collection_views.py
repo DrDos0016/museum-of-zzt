@@ -154,7 +154,7 @@ class Collection_List_View(Model_List_View):
     model = Collection
 
     def get_queryset(self):
-        if self.request.path == "/collection/user/":
+        if self.request.path == reverse("collection_user"):
             qs = Collection.objects.collections_for_user(self.request.user.id)
         else:  # Default listing
             qs = Collection.objects.populated_public_collections()
@@ -171,7 +171,7 @@ class Collection_List_View(Model_List_View):
         return context
 
     def get_title(self):
-        if self.request.path == "/collection/user/":
+        if self.request.path == reverse("collection_user"):
             return "My Collections"
         return super().get_title()
 
