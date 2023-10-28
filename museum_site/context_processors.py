@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.core.cache import cache
 from django.conf import settings
-from django.urls import resolve
+from django.urls import resolve, reverse
 
 from museum_site.constants import TERMS_DATE, CSS_INCLUDES, BOOT_TS, EMAIL_ADDRESS
 from museum_site.core.detail_identifiers import *
@@ -59,7 +59,7 @@ def museum_global(request):
 
     # User TOS Date checks
     if request.user.is_authenticated:
-        if (TERMS_DATE > request.user.profile.accepted_tos and request.method == "GET" and request.path != "/user/update-tos/"):
+        if (TERMS_DATE > request.user.profile.accepted_tos and request.method == "GET" and request.path != reverse("update_tos")):
             # Force a new login
             for key in ["_auth_user_id", "_auth_user_backend", "_auth_user_hash"]:
                 if request.session.get(key):
