@@ -57,6 +57,14 @@ class Review_Form(forms.ModelForm):
 
         return author
 
+    def clean_tags(self):
+        tags = self.cleaned_data["tags"]
+        rating = float(self.cleaned_data["rating"])
+
+        if rating == -1 and not tags.exists():  # Feedback with rating will force the Review tag later in processing
+            raise forms.ValidationError("Feedback must be given at least one tag.")
+        return tags
+
 
 class Review_Search_Form(forms.Form):
     FIRST_FEEDBACK_YEAR = 2002
