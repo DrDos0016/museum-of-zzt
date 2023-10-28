@@ -1,27 +1,45 @@
 {% extends "museum_site/main.html" %}
 
 {% block content %}
-<h1>Review Policy</h1>
+<h1>Feedback Policy</h1>
 
-<p>With thousands of ZZT worlds preserved on the Museum of ZZT website, one of the biggest challenges for those who have never played ZZT worlds before is determining where to begin. This has been an issue with ZZT collections for years and has often been mitigated with the use of user reviews. The collection of reviews on z2 has been imported, but like any review system there are flaws.</p>
+<p>The Museum of ZZT allows both guests and registered users to provide feedback on any published file. Feedback must abide to the rules listed below in order to remain on the site. Failure to abide by these rules may lead to your ability to post feedback as well as other site functionality being removed.</p>
 
-<p>The imported reviews are all based on a scale from 0.0 - 5.0 with steps of 0.5. The Museum keeps this numeric rating in place, but also supports the option to omit a review score as more and more people begin to reconsider the usefulness of turning an experience with a ZZT world into an abstract number. <i>Rotten Robots</i> has a 3.25 rating, <i>Sketch the MP3 Monkey</i> has a 3.20, and <i>Hallucina 1383890</i> has a 3.17. What do those numbers mean?</p>
+<p>All feedback:</p>
 
-<p>Many of these old reviews are also very short, consist of people swearing at other reviews in disagreement, and generally aren't that helpful! But they sure are historical representations of the ZZT community. Reviews posted directly to the Museum are expected to fit a higher standard.
-</p>
-
-<p>Do not post reviews which:<br>
 <ul>
-    <li>Do not discuss the contents of the ZIP file archive they're associated with.</li>
-    <li>Are personal attacks on the world's author.</li>
-    <li>Contain slurs (racial, homophobic, transphobic, etc.) or generally create a toxic presence.</li>
+<li>Must discuss the contents of the ZIP file archive the feedback is being posted on.</li>
+<li>Must not contain personal attacks on the world's author(s).</li>
+<li>Must not contain slurs (racial, homophobic, transphobic, etc.) or generally create a toxic presence.</li>
+<li>Must not deliberately inflate/deflate a rating to actively counteract another piece of feedback's rating.</li>
+<li>Must be tagged with at least one feedback tag to better identify the contents of the feedback.</li>
 </ul>
-</p>
 
-<h2>Reviewing Your Own Worlds</h2>
-<p>ZZT has a long history and many authors may be interested in seeing how their worlds hold up today. Provided that some time has passed between the world's release and the author's review (there's no explicit amount of time, try to be reasonable), you may review your own world. However, it may be better to submit an article giving the world a proper post-mortem or revisit instead of using the review system.</p>
+<p>Guests are subject to more strict requirements when posting feedback due to the submission process being anonymous. These requirements include:</p>
+
+<ul>
+<li>Guest feedback is always announced on the Museum of ZZT Discord and featured on the front page so that spam and other feedback in violation of these terms can be found and removed promptly.</li>
+<li>Guest feedback is limited to one submission per day per file to prevent spamming any given file.</li>
+<li>Guest feedback can contain links to external sites, however, any feedback which contains a link requires staff approval before the feedback is visible to the public.</li>
+</ul>
+
+<h2>Feedback Tags</h2>
+<p>When giving feedback, users have the option to mark it as containing any of the following tags:</p>
+
+<ul>
+    <li><b>Bug Report</b> - For feedback which reports bugs and other issues with the file that may impact players' ability to complete the game in ways unintended by the author(s).</li>
+    <li><b>Content Warning</b> - For feedback which discusses content within the file that some players may not wish to see.</li>
+    <li><b>Hints and Solutions</b> - For feedback which contains information on how to get past certain obstacles which may not be clear such as the location of hidden items, trivia solutions, or navigational aids to get through mazes</li>
+    <li><b>Review</b> - For feedback discussing the highs and lows of playing the file.</li>
+</ul>
+
+<p>Reviews may include a numeric rating for the file ranging from 0.0 through 5.0 in steps of 0.5, replicating the scoring system used by z2's review system which the Museum has imported. You may choose to not provide a numeric score when reviewing a file, though any file which is given a score will automatically be tagged as a "Review" regardless of whether or not you have tagged it as such yourself.</p>
+
+<h2>Providing Feedback On Your Own Files</h2>
+<p>ZZT has a long history and many authors may be interested in seeing how their worlds hold up today. Provided that some time has passed between the world's release and the author's feedback (there's no explicit amount of time, try to be reasonable), you may provide feedback on your own world. However, it may be better to submit an article giving the world a proper post-mortem or revisit instead of using the review system.</p>
 
 <p>If you do review your own world, please opt out of giving a numeric score.</p>
 
-<p>If you believe a review should be removed because it violates these rules, please contact <a href="mailto:{{EMAIL_ADDRESS}}?subj=Museum Content Removal">Dr. Dos</a> with detailed information on what reviews should be deleted and why.</p>
+<hr>
+<p>If you believe certain feedback should be removed because it violates these rules, please contact <a href="mailto:{{EMAIL_ADDRESS}}?subj=Museum Feedback Removal">Dr. Dos</a> with detailed information on what feedback is in violation of which rules.</p>
 {% endblock %}
