@@ -87,10 +87,12 @@ Sort: <select name="sort">
     <p>Feedback can only be provided on a file once every 24 hours for guests. Please sign in to a <a href="{% url 'login_user' %}">Museum of ZZT account</a> if you wish to provide additional feedback.</p>
     </div>
     {% endif %}
+    {% if form %}
     <div id="review-form-controls">
         <input type="button" id="preview-review" value="Preview Feedback">
         <input type="submit" value="Submit Feedback">
     </div>
+    {% endif %}
     </form>
 {% endif%}
 <hr>

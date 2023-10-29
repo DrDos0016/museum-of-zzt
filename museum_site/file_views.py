@@ -411,48 +411,18 @@ class ZFile_Review_List_View(Model_List_View):
 
         # Post a review if one was submitted
         if self.request.POST and review_form.is_valid() and not recent:
-            review = review_form.save(commit=False)
-            if self.request.user.is_authenticated:
-                review.author = self.request.user.username
-                review.user_id = self.request.user.id
-                review.spotlight = review_form.cleaned_data.get("spotlight", True)
-            else:
-                review.spotlight = True
-            review.ip = self.request.META.get(REMOTE_ADDR_HEADER)
-            review.date = context["today"]
-            review.zfile_id = self.head_object.id
-
-            # Simple spam protection
-            if self.head_object.can_review == File.FEEDBACK_APPROVAL or (review.content.find("href") != -1) or (review.content.find("[url=") != -1):
-                review.approved = False
-            if (not self.request.user.is_authenticated) and review.content.find("http") != -1:
-                review.approved = False
-            review.save()
-
-            # Add tags
-            for tag in review_form.cleaned_data["tags"]:
-                review.tags.add(tag.pk)
-            # Force "Review" tag if there's a rating
-            if float(review_form.cleaned_data["rating"]) >= 0:
-                review.tags.add(FEEDBACK_TAG_REVIEW)
-
-            # Update file's review count/scores if the review is approved
-            if self.head_object.can_review == ZFile.FEEDBACK_YES and review.approved:
-                self.head_object.calculate_reviews()
-                self.head_object.calculate_feedback()
-                # Make Announcement
-                if (not self.request.user.is_authenticated) or review_form.cleaned_data.get("spotlight") == "1":  # Guests always have feedback announced
-                    discord_announce_review(review)
-                self.head_object.save()  # FULLSAVE (ZFile)
+            feedback = review_form.process(self.request, self.head_object)
 
             # Re-get the queryset with the new review included and without including the form again
             context["object_list"] = self.get_queryset()
-            context["recent"] = review.pk
+            context["recent"] = feedback.pk
 
             # Create a new form for non-guests:
             if self.request.user.is_authenticated:
                 context["form"] = Review_Form(initial={"tags": "1"})
                 del context["form"].fields["author"]
+            else:
+                context["form"] = None
 
             return context
 

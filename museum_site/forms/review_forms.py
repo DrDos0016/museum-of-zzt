@@ -1,9 +1,15 @@
+from datetime import datetime, timezone
+
 from django import forms
 from django.urls import reverse_lazy
 
+from museum_site.core.discord import discord_announce_review
+from museum_site.core.feedback_tag_identifiers import *
 from museum_site.core.form_utils import any_plus, get_sort_option_form_choices
 from museum_site.constants import YEAR
 from museum_site.models import Review, Feedback_Tag
+from museum_site.models import File as ZFile
+from museum_site.settings import REMOTE_ADDR_HEADER
 from museum_site.widgets import Scrolling_Checklist_Widget
 
 
@@ -64,6 +70,46 @@ class Review_Form(forms.ModelForm):
         if rating == -1 and not tags.exists():  # Feedback with rating will force the Review tag later in processing
             raise forms.ValidationError("Feedback must be given at least one tag.")
         return tags
+
+    def process(self, request, zfile):
+        feedback = self.save(commit=False)
+
+        # Prepare feedback object
+        if request.user.is_authenticated:  # Set user and spotlight for logged in users
+            feedback.author = request.user.username
+            feedback.user_id = request.user.id
+            feedback.spotlight = self.cleaned_data.get("spotlight", True)
+        else:  # Force spotlight for guests
+            feedback.spotlight = True
+        feedback.ip = request.META.get(REMOTE_ADDR_HEADER)
+        feedback.date = datetime.now(tz=timezone.utc)
+        feedback.zfile_id = zfile.pk
+
+        # Simple spam protection
+        if zfile.can_review == ZFile.FEEDBACK_APPROVAL or (feedback.content.find("href") != -1) or (feedback.content.find("[url=") != -1):
+            feedback.approved = False
+        if (not request.user.is_authenticated) and feedback.content.find("http") != -1:
+            feedback.approved = False
+
+        feedback.save()
+
+        # Add tags
+        for tag in self.cleaned_data["tags"]:
+            feedback.tags.add(tag.pk)
+        # Force "Review" tag if there's a rating
+        if float(self.cleaned_data["rating"]) >= 0:
+            feedback.tags.add(FEEDBACK_TAG_REVIEW)
+
+        # Update file's review count/scores if the review is approved
+        if feedback.approved and zfile.can_review == ZFile.FEEDBACK_YES:
+            zfile.calculate_reviews()
+            zfile.calculate_feedback()
+            # Make Announcement
+            if (not request.user.is_authenticated) or self.cleaned_data.get("spotlight") == "1":  # Guests always have feedback announced
+                discord_announce_review(feedback)
+            zfile.save()
+
+        return feedback
 
 
 class Review_Search_Form(forms.Form):
