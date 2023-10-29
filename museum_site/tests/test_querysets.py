@@ -118,11 +118,11 @@ class ZFile_Queryset_Test(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Create Test ZFiles
-        zf1 = File.objects.create(title="Adventure", release_date=None, filename="ADV.ZIP")
-        zf2 = File.objects.create(title="ZZT Future",release_date=date(year=2069, month=4, day=20), filename="zztfuture.zip")
-        zf3 = File.objects.create(title="Unpublished Future", release_date=date(year=2069, month=12, day=25), filename="unpub-fut.zip")
-        zf4 = File.objects.create(title="The Next One", release_date=date(year=1997, month=3, day=14), filename="next1.zip")
-        zf5 = File.objects.create(title="MISSINGNO.", filename="lost4evr.zip")
+        zf1 = File.objects.create(title="Adventure", release_date=None, filename="ADV.ZIP", key="adv")
+        zf2 = File.objects.create(title="ZZT Future",release_date=date(year=2069, month=4, day=20), filename="zztfuture.zip", key="zztfuture")
+        zf3 = File.objects.create(title="Unpublished Future", release_date=date(year=2069, month=12, day=25), filename="unpub-fut.zip", key="unpub-fut")
+        zf4 = File.objects.create(title="The Next One", release_date=date(year=1997, month=3, day=14), filename="next1.zip", key="next1")
+        zf5 = File.objects.create(title="MISSINGNO.", filename="lost4evr.zip", key="lost4evr")
 
         # Add details
         zf3.details.add(DETAIL_UPLOADED)
