@@ -50,6 +50,13 @@ def scan(zfile):
     issues = {}
     exists = True
     checksummed = True
+
+    # Pull detail list
+    details = zfile.details.all()
+    detail_list = []
+    for detail in details:
+        detail_list.append(detail.id)
+
     """ Used for Museum Scan to identify basic issues """
     # Validate letter
     if zfile.letter not in "1abcdefghijklmnopqrstuvwxyz":
@@ -66,7 +73,8 @@ def scan(zfile):
     if zfile.release_date and zfile.release_source == "":
         issues["release_date_source"] = "Release source is blank, but release date is set."
     if not zfile.has_preview_image:
-        issues["preview_image"] = "No preview image."
+        if (DETAIL_LOST not in detail_list) and (DETAIL_ZZM not in detail_list):
+            issues["preview_image"] = "No preview image."
     if zfile.has_preview_image and (not os.path.isfile(zfile.screenshot_phys_path())):
         issues["preview_image_missing"] = "Screenshot does not exist at {}".format(zfile.preview_url())
 
@@ -75,12 +83,6 @@ def scan(zfile):
     rev_len = len(reviews)
     if rev_len != zfile.review_count:
         issues["review_count"] = "Reviews in DB do not match 'review_count': {}/{}".format(rev_len, zfile.review_count)
-
-    # Detail related
-    details = zfile.details.all()
-    detail_list = []
-    for detail in details:
-        detail_list.append(detail.id)
 
     # Confirm LOST does not exist
     if DETAIL_LOST in detail_list and exists:
