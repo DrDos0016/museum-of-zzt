@@ -159,7 +159,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     zeta_config = models.ForeignKey("Zeta_Config", null=True, blank=True, default=1, on_delete=models.SET_NULL)
 
     class Meta:
-        ordering = ["sort_title", "letter"]
+        ordering = ["sort_title"]
 
     def __str__(self):
         return "{} [{}][#{}]".format(self.title, self.key, self.id)
