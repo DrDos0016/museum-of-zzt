@@ -236,6 +236,7 @@ urlpatterns = [
     path("tools/manage-cache/", museum_site.tool_views.manage_cache, name="manage_cache"),
     path("tools/manage-details/<str:key>/", museum_site.tool_views.publish, {"mode": "MANAGE"}, name="manage_details"),
     path("tools/mirror/<str:key>/", museum_site.tool_views.mirror, name="mirror"),
+    path("tools/month-in-review/", museum_site.tool_views.month_in_review, name="month_in_review"),
     path("tools/orphaned-objects/", museum_site.tool_views.orphaned_objects, name="orphaned_objects"),
     path("tools/patron-article-rotation/", museum_site.tool_views.patron_article_rotation, name="patron_article_rotation"),
     path("tools/patron-input/", museum_site.tool_views.patron_input, name="patron_input"),

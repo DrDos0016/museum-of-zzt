@@ -41,6 +41,9 @@ class Article_Queryset(Base_Queryset):
     def published_or_upcoming_or_unpublished(self):
         return self.filter(Q(published=self.model.PUBLISHED) | Q(published=self.model.UPCOMING) | Q(published=self.model.UNPUBLISHED))
 
+    def upcoming_or_unpublished(self):
+        return self.filter(Q(published=self.model.UPCOMING) | Q(published=self.model.UNPUBLISHED))
+
     # End Composite publishing levels
 
     def publication_packs(self):

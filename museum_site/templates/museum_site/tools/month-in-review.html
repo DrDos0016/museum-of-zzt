@@ -1,0 +1,41 @@
+{% extends BASE_TEMPLATE %}
+{% load static %}
+
+{% block content %}
+<h1>{{title}}</h1>
+<form>
+    <select name="year">
+        {% for y in years %}<option value="{{y}}"{% if year == y %} selected{% endif %}>{{y}}</option>
+        {% endfor %}
+    </select>
+    <select name="month">
+        {% for m in months %}<option value="{{m}}"{% if month == m %} selected{% endif %}>{{m}}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+</form>
+<hr>
+
+<h2>Month In Review</h2>
+
+<h3>Files Published ({{files_published|length}})</h3>
+<ol>
+    {% for zf in files_published %}<li><a href="{{zf.get_absolute_url}}">{{zf.title}}</a></li>{% endfor %}
+</ol>
+
+<h3>Articles ({{articles|length}})</h3>
+<ol>
+    {% for a in articles %}<li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>{% endfor %}
+</ol>
+
+<h3>Livestreams ({{streams|length}})</h3>
+<ol>
+    {% for a in streams %}<li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>{% endfor %}
+</ol>
+
+<h3>Current Patron Exclusives ({{exclusives|length}})</h3>
+<ol>
+    {% for a in exclusives %}<li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>{% endfor %}
+</ol>
+
+{% endblock %}

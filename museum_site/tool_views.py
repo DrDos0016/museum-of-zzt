@@ -9,7 +9,7 @@ import shutil
 import tempfile
 import zipfile
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from io import BytesIO
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -341,6 +341,38 @@ def mirror(request, key):
 
     data["form"] = form
     return render(request, "museum_site/tools/mirror.html", data)
+
+
+@staff_member_required
+def month_in_review(request):
+    context = {"title": "Month In Review"}
+    now = datetime.now()
+    year = int(request.GET.get("year", now.year))
+    month = int(request.GET.get("month", now.month))
+    if month != 12:
+        next_date = datetime(year=year, month=month + 1, day=1)
+    else:
+        next_date = datetime(year=year + 1, month=1, day=1)
+    context["years"] = range(2015, int(now.year) + 1)
+    context["months"] = range(1, 13)
+    context["year"] = year
+    context["month"] = month
+
+    context["files_published"] = File.objects.filter(
+        publish_date__gte="{}-{}-01".format(year, month),
+        publish_date__lt=next_date
+    ).order_by("publish_date", "title")
+    context["articles"] = Article.objects.published().filter(
+        publish_date__gte="{}-{}-01".format(year, month),
+        publish_date__lt=next_date
+    ).exclude(category="livestream").order_by("publish_date", "title")
+    context["streams"] = Article.objects.published().filter(
+        publish_date__gte="{}-{}-01".format(year, month),
+        publish_date__lt=next_date
+    ).filter(category="livestream").order_by("publish_date", "title")
+    context["exclusives"] = Article.objects.upcoming_or_unpublished().order_by("publish_date", "title")
+    return render(request, "museum_site/tools/month-in-review.html", context)
+
 
 
 @staff_member_required
