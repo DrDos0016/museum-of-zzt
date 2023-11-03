@@ -3,7 +3,6 @@ import os
 
 from django.conf import settings
 
-from collections import namedtuple
 from datetime import datetime
 
 # Times and Dates
@@ -115,17 +114,6 @@ else:  # DEV
 # Magic Numbers
 UPCOMING_ARTICLE_MINIMUM_PATRONAGE = 200
 UNPUBLISHED_ARTICLE_MINIMUM_PATRONAGE = 500
-
-# Front Page
-FP = namedtuple(
-    "FrontPageItems",
-    ["ARTICLES_SHOWN", "NEW_RELEASES_SHOWN", "FILES_SHOWN", "FEEDBACK_SHOWN"],
-)(
-    ARTICLES_SHOWN=10,
-    NEW_RELEASES_SHOWN=12,
-    FILES_SHOWN=12,
-    FEEDBACK_SHOWN=10
-)
 
 exe_names = {
     "szzt.zip": "Super ZZT v2.0 (Registered)",

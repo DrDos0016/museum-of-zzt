@@ -3,6 +3,8 @@ import math
 import os
 import re
 
+from datetime import datetime
+
 from django.db.models import Count
 from django.db.models.functions import ExtractYear
 from django.contrib.admin.views.decorators import staff_member_required
@@ -14,7 +16,7 @@ from django.template.defaultfilters import slugify
 from django.views.generic import TemplateView
 
 from museum_site.core.detail_identifiers import *
-from museum_site.constants import *
+from museum_site.constants import ZGAMES_BASE_PATH
 from museum_site.models import *
 from museum_site.settings import DISCORD_INVITE_URL, PASSWORD5DOLLARS
 
@@ -173,17 +175,17 @@ def explicit_warning(request):
 
 def index(request):
     """ Returns front page """
-    data = {}
+    context = {}
 
     # Obtain latest content
-    data["articles"] = Article.objects.spotlight()[:FP.ARTICLES_SHOWN]
-    data["new_releases"] = File.objects.new_releases_frontpage(spotlight_filter=True)[:FP.NEW_RELEASES_SHOWN]
-    data["files"] = File.objects.new_finds(spotlight_filter=True)[:FP.FILES_SHOWN]
-    data["feedback"] = Review.objects.latest_approved_reviews().filter(spotlight=True)[:FP.FEEDBACK_SHOWN]
-    data["article_table_header"] = data["articles"][0].table_header() if data["articles"] else None
-    data["feedback_table_header"] = data["feedback"][0].table_header() if data["feedback"] else None
+    context["articles"] = Article.objects.spotlight()[:10]
+    context["new_releases"] = File.objects.new_releases_frontpage(spotlight_filter=True)[:12]
+    context["files"] = File.objects.new_finds(spotlight_filter=True)[:12]
+    context["feedback"] = Review.objects.latest_approved_reviews().filter(spotlight=True)[:10]
+    context["article_table_header"] = context["articles"][0].table_header() if context["articles"] else None
+    context["feedback_table_header"] = context["feedback"][0].table_header() if context["feedback"] else None
 
-    return render(request, "museum_site/index.html", data)
+    return render(request, "museum_site/index.html", context)
 
 
 def mass_downloads(request):
@@ -388,10 +390,7 @@ def worlds_of_zzt_queue(request):
 
     data["queue"] = WoZZT_Queue.objects.queue_for_category(category)
     data["queue_size"] = len(data["queue"])
-
-    size = 16
-    if (request.user.is_authenticated and request.user.profile.patron) or request.user.is_staff or category == "farewell":
-        size = 999
+    size = 999 if (request.user.is_authenticated and request.user.profile.patron) or request.user.is_staff else 16
     data["queue"] = data["queue"][:size]
     data["category"] = category
     return render(request, "museum_site/wozzt-queue.html", data)
