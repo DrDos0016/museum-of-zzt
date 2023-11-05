@@ -23,6 +23,8 @@ def zeta_launcher(
 ):
     data = {"title": "Zeta Launcher"}
 
+    PLAY_METHODS = {"archive": {"name": "Archive.org - DosBox Embed"}, "zeta": {"name": "Zeta"}}
+
     # Template rendering mode
     # full - Extends "world.html", has a file header
     # popout - Extends "play-popout.html", removes all site components
