@@ -158,7 +158,13 @@ class Review(BaseModel):
         return output
 
     def get_field_content(self, view="review-content"):
-        return {"label": "Feedback", "value": self.content, "markdown": True}
+        value = self.content
+        if self.zfile_id:
+            zfile_published_on = str(self.zfile.publish_date) if self.zfile.publish_date else "9999-01-01 00:00:00+00:00"
+            if zfile_published_on > str(self.date):
+                value = "**__This feedback was submitted prior to publication of this file and may not reflect its current contents__**\n\n" + value
+
+        return {"label": "Feedback", "value": value, "markdown": True}
 
     def get_field_reviewer_link(self, view="review-content"):
         url = reverse("review_browse_author", kwargs={"author": self.author.lower()})

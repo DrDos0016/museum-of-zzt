@@ -395,10 +395,7 @@ class ZFile_Review_List_View(Model_List_View):
                 recent = True  # Prevent this feedback from going through a second time
 
         # Prevent unpublished/lost file reviews
-        if context["file"].is_detail(DETAIL_UPLOADED):
-            context["cant_review_message"] = "Unpublished files cannot receive feedback as their content may still be modified by the uploader."
-            return context
-        elif context["file"].is_detail(DETAIL_LOST):
+        if context["file"].is_detail(DETAIL_LOST):
             context["cant_review_message"] = "Lost files cannot be reviewed as they cannot be played!"
             return context
 

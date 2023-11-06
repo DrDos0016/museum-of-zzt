@@ -178,8 +178,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         # Review
         if (output["download"] and self.can_review) or self.feedback_count:
             output["review"] = True
-        if output["review"] and self.is_detail(DETAIL_UPLOADED):
-            output["review"] = False
         output["attributes"] = True
         return output
 
