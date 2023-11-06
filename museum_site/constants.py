@@ -23,9 +23,6 @@ CHARSET_PATH = os.path.join(STATIC_PATH, "images", "charsets")  # /museum-of-zzt
 # Contact Information
 EMAIL_ADDRESS = "doctordos@gmail.com"
 
-# Play Online Options
-PLAY_METHODS = {"archive": {"name": "Archive.org - DosBox Embed"}, "zeta": {"name": "Zeta"}}
-
 # Global CSS Files
 CSS_INCLUDES = ["museum-site.css", "main.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"]
 
