@@ -8,13 +8,27 @@ from museum_site.models.base import BaseModel
 class Stream(BaseModel):
     model_name = "Stream"
 
+    CATEGORY_CHOICES = (
+        ("none", ""),
+        ("wildcard", "Unpreserved Worlds"),
+        ("theme", "Theme Stream"),
+        ("bonus", "Bonus Stream"),
+        ("new", "New Release Showcase"),
+        ("guest", "Special Guest Stream"),
+        ("community", "Community Event"),
+        ("beyond", "Beyond Worlds of ZZT"),
+        ("dev", "Game Dev Stream"),
+    )
+
     title = models.CharField(max_length=120)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=50, default="none")
     description = models.CharField(max_length=300)
     when = models.DateTimeField()
-    vod = models.ForeignKey("museum_site.Article", on_delete=models.SET_NULL, blank=True, null=True)
-    preview_image = models.CharField(max_length=120, help_text="Preview Image used instead of ZFile preview image")
+    preview_image = models.CharField(max_length=120, help_text="Preview Image used on stream schedule", default="/static/screenshots/no_screenshot.png")
     entries = models.ManyToManyField("Stream_Entry", default=None, blank=True, help_text="Stream Entries to be played during this stream")
     visible = models.BooleanField(default=True)
+    guests = models.CharField(max_length=300, help_text="Guests on stream", default=None, blank=True)
+    theme = models.CharField(max_length=120, help_text="Theme for stream", default=None, blank=True)
 
     def when_in_pacific(self):
         print(self.when)

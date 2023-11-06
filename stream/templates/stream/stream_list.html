@@ -19,17 +19,23 @@
     display:grid;
     grid-template-areas:
     "screen title"
+    "screen category"
     "screen time"
+    "screen guests"
     "screen description";
     padding:14px 8px 28px 8px;
     box-sizing:border-box;
     column-gap:32px;
-    row-gap:28px;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows:auto auto 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows:repeat(4, auto) 1fr;
     background-color:var(--ega-darkblue);
     color:var(--ega-white);
     font-family:"cp437";
+}
+
+.stream div
+{
+    margin-bottom:1.0ch;
 }
 
 img:not(.screenshot-thumb).stream-thumbnail
@@ -126,6 +132,21 @@ img:not(.screenshot-thumb).stream-thumbnail
     color:var(--ega-white);
 }
 
+.stream-category
+{
+    grid-area:category;
+    font-size:18pt;
+    color:var(--ega-yellow);
+    text-align:center;
+}
+
+.stream-guests
+{
+    grid-area:guests;
+    font-size:18pt;
+    color:var(--ega-green);
+}
+
 @media (max-width:1580px) {
     .post-header { padding-top: 14px; }
     #post-logo { max-height:80px; top:0px; }
@@ -164,6 +185,7 @@ img:not(.screenshot-thumb).stream-thumbnail
     {% for stream in streams %}
     <div class="stream" data-idx="{{forloop.counter}}">
         <h2>{{stream.title}}</h2>
+        {% if stream.category != "none" %}<div class="stream-category">{{stream.get_category_display}} {% if stream.theme %} - {{stream.theme}}{% endif %}</div>{% endif %}
         <div class="time">
             <div>
                 {% timezone "America/New_York" %}{{stream.when|date:'l N jS'}}<br>
@@ -176,6 +198,7 @@ img:not(.screenshot-thumb).stream-thumbnail
             </div>
         </div>
         <img src="{{stream.preview_image}}" class="stream-thumbnail">
+        {% if stream.guests %}<div class="stream-guests">Featuring Special Guests:<br>{{stream.guests}}</div>{% endif %}
         <div class="description">{{stream.description|safe}}
         </div>
     </div>

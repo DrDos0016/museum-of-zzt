@@ -30,7 +30,11 @@ def title_screen_background(request):
 def overview(request):
     context = {}
     #context["zfiles"] = qs_manual_order(File.objects.filter(pk__in=request.GET.getlist("pk")), request.GET.getlist("pk"))
-    stream = Stream.objects.filter(pk=request.GET.get("pk")).first()
+    if request.GET.get("pk"):
+        stream = Stream.objects.filter(pk=request.GET["pk"]).first()
+    else:
+        today = datetime.now()
+        stream = Stream.objects.filter(when__gte=today).first()
     context["stream"] = stream
     return render(request, "stream/overview.html", context)
 
