@@ -20,8 +20,6 @@ from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify, striptags
 from django.urls import get_resolver
 
-from PIL import Image  # TODO: This should not be imported here
-
 from museum_site.constants import *
 from museum_site.constants import DATE_NERD
 from museum_site.core import *
@@ -897,21 +895,12 @@ def set_screenshot(request, key):
         zfile.has_preview_image = True
         zfile.save()
     elif request.POST.get("b64img"):
-        raw = request.POST.get("b64img").replace("data:image/png;base64,", "", 1)
-        from io import BytesIO
-        import base64
-
-        image = Image.open(BytesIO(base64.b64decode(raw)))
-        image = image.crop((0, 0, 480, 350))
-        image_path = zfile.screenshot_phys_path()
-
-        if image_path:
-            image.save(image_path)
-        else:
-            image_path = os.path.join(PREVIEW_IMAGE_BASE_PATH, zfile.letter, zfile.filename[:-4] + ".png")
-            image.save(image_path)
-            zfile.has_preview_image = True
-            zfile.save()
+        image = open_base64_image(request.POST.get("b64img"))
+        image = image.crop(IMAGE_CROP_PRESETS["ZZT"])
+        image_path = os.path.join(STATIC_PATH, "screenshots/{}/{}.png".format(zfile.bucket(), zfile.key))
+        image.save(image_path)
+        zfile.has_preview_image = True
+        zfile.save()
 
     if os.path.isfile(DATA_PATH + "/" + request.GET.get("file", "")):
         os.remove(DATA_PATH + "/" + request.GET["file"])
