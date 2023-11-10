@@ -163,10 +163,7 @@ def explicit_warning(request):
                 del request.session["bypass_explicit_content_warnings"]
             request.session["show_explicit_for"] = int(request.GET.get("pk", 0))
 
-        next_page = request.GET.get("next")
-        if next_page.startswith("/"):
-            next_page = next_page[1:]
-        return redirect(HOST + next_page)
+        return redirect(request.GET.get("next"), "/")
     elif request.POST.get("action") == "Go Back":
         return redirect("index")
 
