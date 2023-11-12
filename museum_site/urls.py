@@ -103,6 +103,7 @@ urlpatterns = [
     path("debug/<str:filename>.html", museum_site.debug_views.debug),
     path("debug/article/<str:fname>/", museum_site.debug_views.debug_article, name="debug_article"),
     path("debug/article/", museum_site.debug_views.debug_article),
+    path("debug/form-elements/", museum_site.debug_views.debug_form_elements),
     path("debug/play/", museum_site.debug_views.debug_play),
     path("debug/widgets/", museum_site.debug_views.debug_widgets),
     path("debug/attrs/<str:key>/", museum_site.debug_views.debug_attrs),

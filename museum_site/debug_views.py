@@ -12,7 +12,7 @@ from museum_site.constants import *
 from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import serve_file_as
 from museum_site.models import *
-from museum_site.forms import *
+from museum_site.forms.debug_forms import Debug_Form_2023
 from museum_site.settings import EXTERNAL_ARTICLE_PATH
 
 from museum_site.forms.collection_forms import Collection_Form
@@ -132,6 +132,20 @@ def debug_article(request, fname=""):
 def debug_blank(request):
     context = {"title": "Blank Test Page"}
     return render(request, "museum_site/debug/debug-blank.html", context)
+
+
+@staff_member_required
+def debug_form_elements(request):
+    context = {}
+
+    if request.method == "POST":
+        context["form"] = Debug_Form_2023(request.POST)
+        f = context["form"]
+        print(f.data)
+    else:
+        context["form"] = Debug_Form_2023()
+
+    return render(request, "museum_site/debug/debug-form-elements.html", context)
 
 
 @staff_member_required

@@ -1,0 +1,190 @@
+/* Generic */
+.field-wrapper
+{
+    display:grid;
+    grid-template-areas:
+    "label value"
+    "help value"
+    "error error";
+    grid-template-columns:50% 1fr;
+    grid-template-rows:auto 1fr auto;
+    column-gap:4px;
+    border-top:1px dashed var(--border-color);
+    padding:7px 4px 7px 4px;
+}
+
+.field-wrapper label
+{
+    grid-area: label;
+    font-weight:bold;
+}
+
+.field-help
+{
+    grid-area: help;
+    margin:7px 4px 7px 4px;
+}
+
+.field-value
+{
+    grid-area: value;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:4px;
+}
+
+.field-value label
+{
+    font-weight:normal;
+}
+
+.field-with-error
+{
+    background-color: var(--field-error-bg);
+}
+
+.errorlist { font-weight:bold; }
+
+.field-value input, .field-value select, .field-value textarea, .field-value button
+{
+    flex:1 0;
+    box-sizing:border-box;
+    background: var(--input-bg);
+    border:1px solid var(--border-color);
+    font-size:14pt;
+    height:32px;
+}
+
+.field-value textarea { height:64px; font-size:12pt; }
+
+.field-value input[type=button], .field-value button
+{
+    font-family: "cp437";
+    background:var(--notice-bg);
+}
+
+.field-value .moz-choice-wrapper
+{
+    flex:1;
+    display:flex;
+    background:var(--unselected-tab);
+    font-weight:normal;
+    padding:4px;
+    border:1px solid var(--border-color);
+}
+
+.field-value .moz-choice-wrapper input[type=checkbox], .field-value .moz-choice-wrapper input[type=radio]
+{
+    width:20px;
+    height:20px;
+    flex:0 0 20px;
+    margin:0px;
+    margin-right:4px;
+}
+
+.field-value .moz-choice-wrapper:hover
+{
+    background:var(--hover-bg);
+    cursor:pointer;
+}
+
+.field-value.flex-layout-vertical
+{
+    flex-direction:column;
+    align-items:stretch;
+}
+
+/* Specialty Forms */
+.scrolling-checklist
+{
+    font-family:mono;
+    min-height: 200px;
+    height: 200px;
+    overflow: auto;
+    min-width: 300px;
+    border: 1px solid var(--border-color);
+    background: var(--board-list-bg);
+    resize: vertical;
+}
+
+.field-wrapper[data-field=tags] .scrolling-checklist
+{
+    min-height:auto;
+    height:auto;
+}
+
+.scrolling-checklist label { display:block; }
+.scrolling-checklist label + label {  border-top: 1px dotted var(--border-color); }
+.scrolling-checklist label.selected { background: var(--header-bg);}
+.scrolling-checklist label:hover { background:var(--hover-bg); }
+
+.checklist-header
+{
+    font-weight:bold;
+    background:var(--header-bg);
+    border-top:1px solid var(--border-color);
+    border-bottom:1px solid var(--border-color);
+    padding-left:3.5ch;
+}
+
+@media (max-width:480px) {
+    .field-wrapper
+    {
+        grid-template-columns:35% auto;
+    }
+}
+
+
+
+/* Specific Components */
+.field-value.field-layout-board-count
+{
+    flex-wrap:wrap;
+}
+
+.field-value.field-layout-board-count .board-count-radio-wrapper
+{
+    flex:1 0 100%;
+    flex-wrap:wrap;
+    gap:4px;
+    display:flex;
+    height:32px;
+    align-items:center;
+    justify-content:flex-start;
+}
+
+.field-value.field-layout-board-count input[type=radio]
+{
+    flex: 0 0 10%;
+}
+
+.field-value.field-layout-multi-column-list > div /* Django widget wraps all this in a div */
+{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    background:var(--input-bg);
+    height:200px;
+    border:1px solid var(--border-color);
+    flex-wrap:wrap;
+}
+
+.field-value.field-layout-multi-column-list div label
+{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    align-content:center;
+    border-bottom:1px dotted var(--border-color);
+}
+
+.field-value.field-layout-multi-column-list div label input[type=checkbox], .field-value.field-layout-checklist div label input[type=radio]
+{
+    flex:0 0 20px;
+}
+
+.field-value.field-layout-list
+{
+    background:blue;
+}

@@ -1,9 +1,18 @@
 from django import forms
+from django.core.exceptions import ValidationError
+
+from museum_site.constants import LANGUAGES, YEAR, FORM_ANY, FORM_NONE
+from museum_site.core.detail_identifiers import *
+from museum_site.core.transforms import language_select_choices, range_select_choices
+from museum_site.fields import Enhanced_Model_Choice_Field
+from museum_site.models import Article, Detail, Genre, Series, Review, Feedback_Tag
+from museum_site.widgets import Associated_Content_Widget, NEW_Board_Range_Widget, NEW_Range_Widget, Scrolling_Checklist_Widget
 
 STUB_CHOICES = (("A", "First"), ("B", "Second"), ("C", "Third"))
 
 """ These forms might not currently be implemented on the Museum """
 
+"""
 class Debug_Form(forms.Form):
     use_required_attribute = False
     manual_fields = ["board", "associated", "ssv_author", "rating"]
@@ -102,46 +111,123 @@ class Zeta_Advanced_Form(forms.Form):
         choices=STUB_CHOICES
     )
     show_again = forms.BooleanField()
+"""
+
+class Museum_Rating_Field(forms.Field):
+    widget = NEW_Range_Widget(min_allowed=0, max_allowed=5, max_length=4, step=0.01, include_clear=True)
+
+    def clean(self, val):
+        min_val = float(val[0]) if val[0] else None
+        max_val = float(val[1]) if val[1] else None
+
+        if (min_val is not None and max_val is not None):
+            if min_val > max_val:
+                raise ValidationError("Minimum rating must not be larger than maximum rating")
+        return (min_val, max_val)
 
 
-class Social_Media_Shotgun_Form(forms.Form):
+class Museum_Board_Count_Field(forms.Field):
+    widget = NEW_Board_Range_Widget(min_allowed=0, max_allowed=None, max_length=4, step=0.01, include_clear=True)
+    layout = "field-layout-board-count"
+
+    def clean(self, val):
+        min_val, max_val = (None, None)
+        print("SUBMITTED VAL", val)
+        if val is not None:
+            min_val = float(val[0]) if val[0] else None
+            max_val = float(val[1]) if val[1] else None
+
+
+        if (min_val is not None and max_val is not None):
+            if min_val > max_val:
+                raise ValidationError("Minimum board count must not be larger than maximum board count")
+        return (min_val, max_val)
+
+
+class Museum_Related_Content_Field(forms.Field):
+    widget=Associated_Content_Widget()
+    layout = "field-layout-flex-wrap"
+
+    def clean(self, val):
+        min_val, max_val = (None, None)
+        print("SUBMITTED VAL", val)
+        if val is not None:
+            min_val = float(val[0]) if val[0] else None
+            max_val = float(val[1]) if val[1] else None
+
+        if (min_val is not None and max_val is not None):
+            if min_val > max_val:
+                raise ValidationError("Minimum board count must not be larger than maximum board count")
+        return (min_val, max_val)
+
+
+class Museum_Multiple_Choice_Field(forms.MultipleChoiceField):
+    layout = "field-layout-multi-column-list"
+
+class Museum_Choice_Field(forms.ChoiceField):
+    layout = "field-layout-list"
+
+
+
+class Debug_Form_2023(forms.Form):
     use_required_attribute = False
-    heading = "Social Media Shotgun"
-    submit_value = "Post"
     attrs = {"method": "POST"}
+    submit_value = "Submit Debug Form"
+    heading = "Debug Form 2023"
 
-    ACCOUNTS = (
-        ("twitter", "Twitter"),
-        ("tumblr", "Tumblr"),
-        ("mastodon", "Mastodon"),
-        ("patreon", "Patreon"),
-        ("discord", "Discord"),
-        ("cohost", "Cohost"),
+    SORTS = (
+        ("title", "Title"),
+        ("author", "Author"),
+        ("category", "Category"),
+        ("-date", "Newest"),
+        ("date", "Oldest"),
     )
 
-    KINDS = (
-        ("misc", "—"),
-        ("stream-live", "Going Live"),
-        ("stream-schedule", "Stream Schedule"),
-        ("stream-promo", "Stream Promo"),
-        ("patreon-plug", "Patreon Plug"),
-        ("project-update", "Project Update Post"),
-    )
-
-    kinds = forms.ChoiceField(choices=KINDS, label="Post Type")
-
-    body = forms.CharField(
-        widget=Enhanced_Text_Area_Widget(char_limit=9999),
-        help_text="Tweets are limited to 240 characters.<br>Toots are limited to 500 characters.",
-    )
-
-    media = forms.FileField(
+    field_a = forms.CharField(help_text="Barebones Text Entry")
+    field_b = forms.CharField(label="Filename contains", help_text="Enter a filename used for a zip file", required=False)
+    genre = forms.ModelChoiceField(required=False, queryset=Genre.objects.advanced_search_query(), to_field_name="title", empty_label=FORM_ANY)
+    rating = Museum_Rating_Field(required=False)
+    board = Museum_Board_Count_Field(required=False, label="Minimum / Maximum Board Count")
+    year = forms.ChoiceField(
+        label="Release year",
+        choices=range_select_choices(1991, YEAR, allow_any=True, allow_unknown=True, order="desc"),
         required=False,
-        help_text="Select the media you wish to upload.",
-        label="Media", widget=UploadFileWidget(target_text="Drag & Drop Media Here or Click to Choose")
     )
-
-    accounts = forms.MultipleChoiceField(
-        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS,
-        initial=["twitter", "tumblr", "mastodon"]
+    lang = forms.ChoiceField(
+        label="Language",
+        choices=language_select_choices(LANGUAGES, allow_any=True, allow_non_english=True),
+        required=False,
     )
+    associated = Museum_Related_Content_Field(
+        label="Related content",
+        required=False,
+    )
+    details = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Detail.objects.visible(),
+        initial=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE],
+        to_field_name="pk",
+        widget=Scrolling_Checklist_Widget(
+            categories = ["ZZT", "SZZT", "Media", "Other"],
+            default=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_UPLOADED, DETAIL_WEAVE],
+            buttons=["Clear", "Default"],
+            show_selected=True,
+        )
+    )
+    category = Museum_Multiple_Choice_Field(required=False, widget=forms.CheckboxSelectMultiple, choices=Article.CATEGORY_CHOICES)
+    series = Enhanced_Model_Choice_Field(label="In Series", queryset=Series.objects.visible(), empty_label=FORM_ANY)
+    spotlight = Museum_Choice_Field(
+        widget=forms.RadioSelect(),
+        choices=(
+            (1, "Yes. Showcase this feedback."),
+            (0, "No. Do not showcase this feedback.")
+        ),
+        help_text="Choose whether or not this feedback should be announced on the Museum of ZZT Discord server and appear on the front page.",
+        initial=1
+    )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Feedback_Tag.objects.all(), widget=Scrolling_Checklist_Widget(filterable=False, buttons=None, show_selected=False),
+        help_text="If any box is checked, feedback must be tagged with at least one checked tag", required=False
+    )
+    ratingless = forms.BooleanField(label="Include feedback without a rating", initial=True, required=False)
+    sort = forms.ChoiceField(choices=SORTS)

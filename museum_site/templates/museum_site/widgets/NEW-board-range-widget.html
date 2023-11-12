@@ -1,0 +1,30 @@
+<input
+        type="number"
+        name="{{widget.name}}_min"
+        id="{{widget.attrs.id}}_min"
+        class="range-widget"
+        autocomplete="off"
+        value="{{min_value}}"
+        {% if step %}step="{{step}}"{% endif %}
+        {% if max_length %}maxlength="{{max_length}}"{% endif %}
+        {% if min_allowed is not None%}min="{{min_allowed}}"{% endif %}
+        {% if max_allowed is not None%}max="{{max_allowed}}"{% endif %}
+    >
+to {{value}}
+<input
+        type="number"
+        name="{{widget.name}}_max"
+        id="{{widget.attrs.id}}_max"
+        class="range-widget"
+        autocomplete="off"
+        value="{{max_value}}"
+        {% if step %}step="{{step}}"{% endif %}
+        {% if max_length %}maxlength="{{max_length}}"{% endif %}
+        {% if min_allowed is not None%}min="{{min_allowed}}"{% endif %}
+        {% if max_allowed is not None%}max="{{max_allowed}}"{% endif %}
+    >
+{% if include_clear %}<input class="range-clear" type="button" value="Clear" data-clear="{{widget.name}}">{% endif %}
+<div class="board-count-radio-wrapper">
+    <label class="moz-choice-wrapper"><input type="radio" name="board_type" value="playable"> Playable Boards</label>
+    <label class="moz-choice-wrapper"><input type="radio" name="board_type" value="total"> Total Boards</label>
+</div>

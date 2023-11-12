@@ -237,6 +237,69 @@ class Range_Widget(forms.Widget):
             context["manual_data"] = self.manual_data
         return context
 
+class NEW_Range_Widget(forms.Widget):
+    template_name = "museum_site/widgets/NEW-range-widget.html"
+
+    def __init__(self, attrs=None, min_allowed=None, max_allowed=None, max_length=None, step=1, include_clear=False):
+        super().__init__(attrs)
+        self.min_allowed = min_allowed
+        self.max_allowed = max_allowed
+        self.max_length = max_length
+        self.step = step
+        self.include_clear = include_clear
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["min_allowed"] = self.min_allowed
+        context["max_allowed"] = self.max_allowed
+        context["max_length"] = self.max_length
+        context["step"] = self.step
+        context["include_clear"] = self.include_clear
+        if value:
+            context["min_value"] = value[0]
+            context["max_value"] = value[1]
+        else:
+            context["min_value"] = ""
+            context["max_value"] = ""
+        print("CONTEXT FINAL")
+        print(context)
+        return context
+
+    def value_from_datadict(self, data, files, name):
+        return (data.get("rating_min"), data.get("rating_max"))
+
+
+class NEW_Board_Range_Widget(forms.Widget):
+    template_name = "museum_site/widgets/NEW-board-range-widget.html"
+
+    def __init__(self, attrs=None, min_allowed=None, max_allowed=None, max_length=None, step=1, include_clear=False):
+        super().__init__(attrs)
+        self.min_allowed = min_allowed
+        self.max_allowed = max_allowed
+        self.max_length = max_length
+        self.step = step
+        self.include_clear = include_clear
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["value_class"] = "debug"
+        context["min_allowed"] = self.min_allowed
+        context["max_allowed"] = self.max_allowed
+        context["max_length"] = self.max_length
+        context["step"] = self.step
+        context["include_clear"] = self.include_clear
+        if value:
+            context["min_value"] = value[0]
+            context["max_value"] = value[1]
+        else:
+            context["min_value"] = ""
+            context["max_value"] = ""
+        return context
+
+    def value_from_datadict(self, data, files, name):
+        return (data.get("board_min"), data.get("board_max"), data.get("board_type"))
+
+
 
 class Board_Range_Widget(Range_Widget):
     template_name = "museum_site/widgets/board-range-widget.html"

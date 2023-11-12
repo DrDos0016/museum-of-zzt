@@ -1,0 +1,105 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/NEW-forms.css?1111020413">
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/museum-forms.js"></script>
+{% endblock %}
+
+{% block content %}
+<h1>{{form.heading}}</h1>
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+
+<hr>
+<p>Form is Over</p>
+
+<h2>Raw Components</h2>
+
+<form method="GET">
+<div class="field-wrapper">
+    <label>This is my label</label>
+    <div class="field-value"><input id="raw-input"></div>
+</div>
+
+<div class="field-wrapper">
+    <label>This is my label</label>
+    <div class="field-value"><input><input><input name="spc1" placeholder="Spcl."></div>
+</div>
+
+<div class="field-wrapper">
+    <label>This is my label</label>
+    <div class="field-value">
+        <select id="raw-select">
+            <option value="1">Test Value 1</option>
+            <option value="1">Test Value 2</option>
+        </select>
+    </div>
+</div>
+
+<div class="field-wrapper">
+    <label>This is my label</label>
+    <div class="field-value">
+        <select id="raw-select-b">
+            <optgroup label="Test Values">
+                <option value="1">Test Value 1</option>
+                <option value="2">Test Value 2</option>
+            </optgroup>
+            <optgroup label="ZZT Games">
+                <option value="1">Burger Joint</option>
+                <option value="2">Code Red</option>
+                <option value="3">Town of ZZT</option>
+                <option value="4">ZZT Syndromes</option>
+            </optgroup>
+        </select>
+    </div>
+</div>
+
+<div class="field-wrapper">
+    <label>This is my label</label>
+    <div class="field-value">
+        <input type="button" id="raw-button" value="Button">
+    </div>
+</div>
+
+<div class="field-wrapper">
+    <label>This is my label</label>
+    <div class="field-value">
+        <textarea id="raw-textarea"></textarea>
+    </div>
+</div>
+
+<div class="field-wrapper">
+    <label>This is my label</label>
+    <div class="field-value">
+        <button id="raw-button-tag">Button Tag</button>
+    </div>
+</div>
+
+<div class="field-wrapper">
+    <label>Checkboxes</label>
+    <div class="field-value">
+        <label class="moz-choice-wrapper"><input type="checkbox" name="checkbox"> Checkbox with Direct Text Afterwards</label>
+        <label class="moz-choice-wrapper"><input type="checkbox" name="checkbox"> Checkbox with Direct Text Afterwards</label>
+        <label class="moz-choice-wrapper"><input type="checkbox" name="checkbox"> Checkbox with Direct Text Afterwards</label>
+    </div>
+</div>
+
+<div class="field-wrapper">
+    <label>Radio Buttons</label>
+    <div class="field-value flex-layout-vertical">
+        <label class="moz-choice-wrapper"><input type="radio" name="radio"> This upload does not contain explicit content</label>
+        <label class="moz-choice-wrapper"><input type="radio" name="radio"> This upload contains explicit content</label>
+        <label class="moz-choice-wrapper"><input type="radio" name="radio"> Radio button with Direct Text Afterwards</label>
+        <label class="moz-choice-wrapper"><input type="radio" name="radio"> Radio button with Direct Text Afterwards. And a heck of a lot of direct text actually!!</label>
+    </div>
+</div>
+</form>
+{% endblock %}

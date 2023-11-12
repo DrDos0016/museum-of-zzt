@@ -2,7 +2,7 @@
 <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
     {{field.errors}}
     {{field.label_tag}}
-    <div class="field-value">
+    <div class="field-value{% if field.field.layout %} {{field.field.layout}}{% endif %}">
         {{field}}
     </div>
     {% if field.help_text %}

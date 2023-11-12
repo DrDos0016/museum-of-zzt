@@ -46,12 +46,32 @@
 </style>
 {% endblock %}
 
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    var pressed = [];
+    $(window).keydown(function (e){
+        if (pressed.indexOf(e.keyCode) == -1)
+        {
+            pressed.push(e.keyCode);
+            console.log(pressed);
+        }
+    });
+
+    $(window).keyup(function (e){
+        pressed.pop(e.keyCode)
+        console.log(pressed)
+    });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <h1>Debug Page</h1>
 
 <ol>
 {% for zf in zfiles %}
-    <li>{{zf.citation_str}}</li>
+    <li>{% zfile_citation zf %}</li>
 {% endfor %}
 </ol>
 
