@@ -10,7 +10,7 @@ from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.image_utils import optimize_image
 from museum_site.core.misc import calculate_boards_in_zipfile, calculate_sort_title, get_letter_from_title, generate_screenshot_from_zip, record
-from museum_site.fields import Choice_Field_No_Validation, Tag_List_Field
+from museum_site.fields import Choice_Field_No_Validation, Tag_List_Field, Museum_Tagged_Text_Field, Museum_Choice_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Multiple_Choice_Field, Museum_Scrolling_Multiple_Choice_Field
 from museum_site.models import Author, Company, Detail, Download, File, Genre, Upload, Zeta_Config
 from museum_site.widgets import (
     Enhanced_Date_Widget, Enhanced_Text_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget, Language_Checklist_Widget
@@ -57,8 +57,8 @@ class Play_Form(forms.Form):
         help_text=(
             'Choose the intended configuration for playing the upload in the '
             'browser. If this upload cannot be ran with Zeta, select '
-            '"Incompatible with Zeta". For the vast '
-            'majority of ZZT worlds "ZZT v3.2 (Registered)" is the correct '
+            '"Incompatible with Zeta". For the majority of ZZT worlds '
+            '<span class="mono">`ZZT v3.2 (Registered)`</span> is the correct '
             'choice.'
         ),
         empty_label="Incompatible with Zeta",
@@ -81,6 +81,20 @@ class Upload_Form(forms.ModelForm):
         required=False
     )
     edit_token = forms.CharField(required=False, widget=forms.HiddenInput())
+    announced = Museum_Choice_Field(
+        label="Announce on Discord",
+        widget=forms.RadioSelect(),
+        choices=(
+            (0, "Announce this upload"),
+            (1, "Do not announce this upload")
+        ),
+        help_text="New uploads are automatically shared to the Discord of ZZT's "
+                "announcements channel. You may choose to not announce the "
+                "upload. The upload will still appear publically in the upload "
+                "queue and on RSS feeds.",
+        initial=0,
+        required=False
+    )
 
     class Meta:
         model = Upload
@@ -89,7 +103,6 @@ class Upload_Form(forms.ModelForm):
         labels = {
             "generate_preview_image": "Preview image",
             "notes": "Upload notes",
-            "announced": "Announce on Discord",
             }
 
         help_texts = {
@@ -159,21 +172,8 @@ class ZGame_Form(forms.ModelForm):
         help_text=("Select the file you wish to upload. All uploads <i>must</i> be zipped."),
         label="File", widget=UploadFileWidget(target_text="Drag & Drop A Zip File Here or Click to Choose", allowed_filetypes=".zip,application/zip")
     )
-    company = Tag_List_Field(
-        widget=Tagged_Text_Widget(suggestion_key="company"),
-        required=False,
-        help_text=("Any companies this file is published under. If there are none, leave this field blank. If there are multiple, separate them with a comma."),
-    )
-    genre = forms.ModelMultipleChoiceField(
-        widget=Scrolling_Checklist_Widget(buttons=["Clear"], show_selected=True),
-        queryset=Genre.objects.visible(),
-        required=False,
-        help_text=(
-            "Check any applicable genres that describe the content of the uploaded file. Use 'Other' if a genre isn't represented and mention it in the upload"
-            "notes field in the Upload Settings section. For a description of genres, see the <a href='/help/genre/' target='_blank'>Genre Overview</a> page."
-        )
-    )
-    author = forms.CharField(
+    # [Title]
+    author = Museum_Tagged_Text_Field(
         required=False,
         help_text=(
             "Separate multiple authors with a comma. Do not abbreviate "
@@ -184,11 +184,35 @@ class ZGame_Form(forms.ModelForm):
             "particular upload. If the author's name is not known, leave this "
             "field blank."
         ),
-        widget=Tagged_Text_Widget(),
     )
-    language = forms.MultipleChoiceField(
+    company = Museum_Tagged_Text_Field(
+        required=False,
+        help_text="Any companies this file is!! published under. If there are none, leave this field blank. If there are multiple, separate them with a comma.",
+    )
+    genre = Museum_Model_Scrolling_Multiple_Choice_Field(
+        required=False,
+        queryset=Genre.objects.visible(),
+        widget=Scrolling_Checklist_Widget(buttons=["Clear"], show_selected=True),
+        help_text=(
+            "Check any applicable genres that describe the content of the uploaded file. Use 'Other' if a genre isn't represented and mention it in the upload"
+            "notes field in the Upload Settings section. For a description of genres, see the <a href='/help/genre/' target='_blank'>Genre Overview</a> page."
+        )
+    )
+    explicit = Museum_Choice_Field(
+        widget=forms.RadioSelect(),
+        choices=(
+            (0, "This upload does not contain explicit content"),
+            (1, "This upload contains explicit content")
+        ),
+        help_text=(
+            "Check this box if the upload contains material not suitable for minors or non-consenting adults. Uploads marked as explicit require " "confirmation before accessing and never appear in Worlds of ZZT bot posts."
+        ),
+        initial=0
+    )
+    # [Release Date]
+    """
+    language = Museum_Scrolling_Multiple_Choice_Field(
         widget=Language_Checklist_Widget(
-            choices=LANGUAGE_CHOICES,
             buttons=["Clear"],
             show_selected=True,
         ),
@@ -199,6 +223,9 @@ class ZGame_Form(forms.ModelForm):
             'use "Other". If a language is not listed, use "Other" and specify the correct language in the upload notes section.'
         )
     )
+    """
+    language = Museum_Multiple_Choice_Field(required=False, widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_CHOICES, layout="multi-column")
+    # [Description]
 
     use_required_attribute = False
     # Properties handled in view
@@ -233,22 +260,10 @@ class ZGame_Form(forms.ModelForm):
                 "the file's author, and not a third party please wrap it in "
                 "quotation marks."
             ),
-            "explicit": (
-                "Check this box if the upload contains material not suitable "
-                "for minors or non-consenting adults. Uploads marked as "
-                "explicit will require confirmation before accessing and "
-                "never appear in Worlds of ZZT bot posts."
-            ),
         }
 
         widgets = {
             "title": Enhanced_Text_Widget(char_limit=80),
-            "explicit": forms.RadioSelect(
-                choices=(
-                    (0, "This upload does not contain explicit content"),
-                    (1, "This upload contains explicit content")
-                ),
-            ),
             "release_date": Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Unknown"),
             "zfile": UploadFileWidget(),
         }

@@ -8,10 +8,14 @@
 
 {% block scripts %}
 <script src="/static/js/museum-forms.js"></script>
+<script src="/static/js/change-ascii-char.js"></script>
 {% endblock %}
 
 {% block content %}
 <h1>{{form.heading}}</h1>
+
+<p>All form elements should continue to look clean down to at minimum 480px horizontal resolution.</p>
+
 <form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
 {% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
 {% include "museum_site/blocks/generic-form.html" %}

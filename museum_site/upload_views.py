@@ -38,7 +38,7 @@ def upload_complete(request, token):
 
 
 class Upload_View(TemplateView):
-    template_name = "museum_site/upload.html"
+    template_name = "museum_site/zfile-upload.html"
     # Database instances (loaded in TODO)
     zgame_obj = None
     upload_obj = None

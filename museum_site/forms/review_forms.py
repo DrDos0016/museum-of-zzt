@@ -7,6 +7,7 @@ from museum_site.core.discord import discord_announce_review
 from museum_site.core.feedback_tag_identifiers import *
 from museum_site.core.form_utils import any_plus, get_sort_option_form_choices
 from museum_site.constants import YEAR
+from museum_site.fields import Museum_Model_Multiple_Choice_Field, Museum_Choice_Field
 from museum_site.models import Review, Feedback_Tag
 from museum_site.models import File as ZFile
 from museum_site.settings import REMOTE_ADDR_HEADER
@@ -24,7 +25,11 @@ class Review_Form(forms.ModelForm):
         choices=RATINGS,
         help_text="Optionally provide a numeric score from 0.0 to 5.0",
     )
-    spotlight = forms.ChoiceField(
+    tags = Museum_Model_Multiple_Choice_Field(
+        queryset=Feedback_Tag.objects.all(), widget=forms.CheckboxSelectMultiple,
+        help_text="If any box is checked, feedback must be tagged with at least one checked tag", required=False
+    )
+    spotlight = Museum_Choice_Field(
         widget=forms.RadioSelect(),
         choices=(
             (1, "Yes. Showcase this feedback."),
@@ -36,7 +41,7 @@ class Review_Form(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ["author", "title", "content", "rating", "tags"]
+        fields = ["author", "title", "content", "rating"]
         labels = {"title": "Title", "author": "Your Name", "content": "Feedback"}
 
         help_texts = {
@@ -48,7 +53,7 @@ class Review_Form(forms.ModelForm):
         }
 
         widgets = {
-            "tags": Scrolling_Checklist_Widget(filterable=False, buttons=None, show_selected=False),
+            "content": forms.Textarea(attrs={"class":"height-256"})
         }
 
     def clean_author(self):
@@ -127,12 +132,20 @@ class Review_Search_Form(forms.Form):
     title = forms.CharField(label="Title contains", required=False)
     author = forms.CharField(label="Author contains", required=False)
     content = forms.CharField(label="Text contains", required=False)
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Feedback_Tag.objects.all(), widget=Scrolling_Checklist_Widget(filterable=False, buttons=None, show_selected=False),
+    tags = Museum_Model_Multiple_Choice_Field(
+        queryset=Feedback_Tag.objects.all(), widget=forms.CheckboxSelectMultiple,
         help_text="If any box is checked, feedback must be tagged with at least one checked tag", required=False
     )
     review_date = forms.ChoiceField(label="Year of feedback", choices=any_plus(((str(x), str(x)) for x in range(YEAR, (FIRST_FEEDBACK_YEAR - 1), -1))))
     min_rating = forms.ChoiceField(label="Minimum rating", choices=RATINGS)
     max_rating = forms.ChoiceField(label="Maximum rating", choices=RATINGS, initial=5.0)
-    ratingless = forms.BooleanField(label="Include feedback without a rating", initial=True, required=False)
+    ratingless = Museum_Choice_Field(
+        layout="horizontal",
+        widget=forms.RadioSelect(),
+        choices=(
+            (1, "Yes"),
+            (0, "No")
+        ),
+        label="Include feedback without a rating", initial=1, required=False
+    )
     sort = forms.ChoiceField(label="Sort results by", choices=get_sort_option_form_choices(Review.sort_options))

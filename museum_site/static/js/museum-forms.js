@@ -50,7 +50,7 @@ $(document).ready(function (){
             console.log("Unhandled file extension: " + ext);
     });
 
-    $(".widget input[type=checkbox]").click(function (){
+    $("input[type=checkbox]").click(function (){
         if ($(this).prop("checked"))
         {
             $(this).parent().addClass("selected");
@@ -61,8 +61,8 @@ $(document).ready(function (){
         }
         write_selected($(this).attr("name"));
     });
-    $(".widget input[type=radio]").click(function (){
-        $(this).parent().parent().children().removeClass("selected");
+    $("input[type=radio]").click(function (){
+        $(this).parent().parent().parent().find(".selected").removeClass("selected");
         $(this).parent().addClass("selected");
         write_selected($(this).attr("name"));
     });
@@ -70,9 +70,13 @@ $(document).ready(function (){
     $(".char-limited-widget").each(function (){
         $(this).on("input", function (){
             var len = $(this).val().length;
-            var max_chars = $(this).attr("maxlength");
+            var max_chars = $(this).data("charlimit");
             var remaining = max_chars - len;
             $(this).prev(".chars-remaining").find("span").html(remaining);
+            if (remaining < 0)
+                $(this).prev(".chars-remaining").css("color", "red");
+            else
+                $(this).prev(".chars-remaining").css("color", "initial");
         });
     });
 
@@ -88,7 +92,11 @@ $(document).ready(function (){
     $(".widget-control-button").click(function (){
         var name = $(this).data("input-name");
         if ($(this).val() == "Clear")
-            $("input[name="+name+"]:checked").click();
+        {
+            $("input[name="+name+"]:checked").click(); // Checkbox
+            $("input[name="+name+"]:checked").prop("checked", false); // Radio
+            $("input[name="+name+"]").parent().parent().children().removeClass("selected");
+        }
         else if ($(this).val() == "All")
             $("input[name="+name+"]").not(":checked").click();
         else if ($(this).val() == "Default")
@@ -109,6 +117,12 @@ $(document).ready(function (){
         }
 
         write_selected(name);
+    });
+
+    $(".widget-board-count-clear-button").click(function (){
+        console.log("MAGIC");
+        uncheck(".field-layout-board-count input:checked");
+        $(this).parent().find("input[type=number]").val("");
     });
 
     $(".tag-input").on("input", function (){
@@ -407,4 +421,15 @@ function set_uploaded_image(file)
     $(".upload-area").css("height", "20px");
     var preview = $("#uploaded-image-preview")[0];
     preview.src = URL.createObjectURL(file);
+}
+
+function uncheck(...selectors)
+{
+    /* Uncheck input and remove `selected` class */
+    for (const selector of selectors)
+    {
+        $(selector).parent().removeClass("selected");
+        $(selector).prop("checked", false);
+    }
+    return true;
 }

@@ -1,4 +1,5 @@
 from django import forms
+from museum_site.constants import TERMS
 
 
 class UploadFileWidget(forms.FileInput):
@@ -144,14 +145,17 @@ class Language_Checklist_Widget(Scrolling_Checklist_Widget):
 class Enhanced_Text_Widget(forms.TextInput):
     template_name = "museum_site/widgets/enhanced-text-widget.html"
 
-    def __init__(self, attrs=None, char_limit=None):
+    def __init__(self, attrs=None, char_limit=None, prefix_text=""):
         super().__init__(attrs)
-        if char_limit is not None:
-            self.char_limit = char_limit
+        self.char_limit = char_limit
+        self.prefix_text = prefix_text
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context["char_limit"] = self.char_limit
+        if self.char_limit:
+            context["char_limit"] = self.char_limit
+            context["field_maxlength"] = self.char_limit * 3
+        context["prefix_text"] = self.prefix_text
         return context
 
 class Enhanced_Text_Area_Widget(Enhanced_Text_Widget):
@@ -180,10 +184,14 @@ class Associated_Content_Widget(forms.Widget):
     def __init__(self, attrs=None, kind=None):
         super().__init__(attrs)
 
+    def value_from_datadict(self, data, files, name):
+        return (data.get("reviews"), data.get("articles"))
+
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        if hasattr(self, "manual_data"):
-            context["manual_data"] = self.manual_data
+        if value:
+            context["reviews"] = value[0]
+            context["articles"] = value[1]
         return context
 
 
@@ -248,6 +256,9 @@ class NEW_Range_Widget(forms.Widget):
         self.step = step
         self.include_clear = include_clear
 
+    def value_from_datadict(self, data, files, name):
+        return (data.get("rating_min"), data.get("rating_max"))
+
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         context["min_allowed"] = self.min_allowed
@@ -264,9 +275,6 @@ class NEW_Range_Widget(forms.Widget):
         print("CONTEXT FINAL")
         print(context)
         return context
-
-    def value_from_datadict(self, data, files, name):
-        return (data.get("rating_min"), data.get("rating_max"))
 
 
 class NEW_Board_Range_Widget(forms.Widget):
@@ -291,9 +299,11 @@ class NEW_Board_Range_Widget(forms.Widget):
         if value:
             context["min_value"] = value[0]
             context["max_value"] = value[1]
+            context["board_type"] = value[2]
         else:
             context["min_value"] = ""
             context["max_value"] = ""
+            context["board_type"] = ""
         return context
 
     def value_from_datadict(self, data, files, name):
@@ -347,13 +357,12 @@ class Faux_Widget(forms.Widget):
 class Terms_Of_Service_Widget(forms.CheckboxInput):
     template_name = "museum_site/widgets/terms-of-service-widget.html"
 
-    def __init__(self, attrs=None, terms=""):
+    def __init__(self, attrs=None):
         super().__init__(attrs)
-        self.terms = terms
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context["terms"] = self.terms
+        context["terms"] = TERMS
         return context
 
 class Collection_Title_Widget(Enhanced_Text_Widget):

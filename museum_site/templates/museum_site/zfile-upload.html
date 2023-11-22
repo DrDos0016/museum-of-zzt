@@ -1,0 +1,60 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+
+{% block scripts %}
+<script src="{% static 'js/upload.js' %}?{{BOOT_TS}}"></script>
+<script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
+<script src="{% static 'js/museum-forms.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<h1>{{title}}</h1>
+<p><ul>
+    <li>{% if not request.GET.token %}Upload a New File{% else %}<a href="{% url 'upload' %}">Upload a New File</a>{% endif %}</li>
+    <li><a href="{% url 'upload_action' 'edit' %}">Edit an existing upload</a></li>
+    <li><a href="{% url 'upload_action' 'delete' %}">Delete an existing upload</a></li>
+</ul></p>
+
+<form method="POST" enctype="multipart/form-data" id="upload_form">
+{% csrf_token %}
+
+<details open>
+    <summary><h2>File Information<div class="detail-state"></div></h2></summary>
+    {% with zgame_form as form %}
+        {% include "museum_site/blocks/generic-form.html" %}
+    {% endwith %}
+</details>
+<hr>
+
+<details>
+    <summary><h2>Play Online Settings<div class="detail-state"></div></h2></summary>
+    {% with play_form as form %}
+        {% include "museum_site/blocks/generic-form.html" %}
+    {% endwith %}
+</details>
+<hr>
+
+<details>
+    <summary><h2>Download Settings<div class="detail-state"></div></h2></summary>
+    {% with download_form as form %}
+        {% include "museum_site/blocks/generic-form.html" %}
+    {% endwith %}
+</details>
+<hr>
+
+
+<details>
+    <summary><h2>Upload Settings<div class="detail-state"></div></h2></summary>
+    {% with upload_form as form %}
+        {% include "museum_site/blocks/generic-form.html" %}
+    {% endwith %}
+</details>
+<hr>
+
+<input id="submit_upload" type="submit" name="action" value="{{submit_text|default:'Upload File'}}">
+
+<!--Suggestions-->
+<datalist id="author-suggestions"></datalist>
+<datalist id="company-suggestions"></datalist>
+</form>
+{% endblock %}

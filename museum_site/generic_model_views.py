@@ -105,10 +105,19 @@ class Model_List_View(ListView):
 
 class Model_Search_View(FormView):
     def get(self, request, *args, **kwargs):
-        if request.GET and request.GET.get("action") != "edit":  # Show search results
-            return self.model_list_view_class.as_view()(request, *args, **kwargs)
-        else:  # Show search form
+        destination = "form"
+        if request.GET and request.GET.get("action") != "edit":  # Show search results if valid
+            if request.GET.get("q"):  # Basic search
+                destination = "results"
+            else:
+                form = self.form_class(request.GET)
+                if form.is_valid():
+                    destination = "results"
+
+        if destination == "form":
             return super().get(request, *args, **kwargs)
+        else:  # Results
+            return self.model_list_view_class.as_view()(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()

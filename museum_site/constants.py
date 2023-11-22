@@ -24,7 +24,8 @@ CHARSET_PATH = os.path.join(STATIC_PATH, "images", "charsets")  # /museum-of-zzt
 EMAIL_ADDRESS = "doctordos@gmail.com"
 
 # Global CSS Files
-CSS_INCLUDES = ["museum-site.css", "main.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"]
+#CSS_INCLUDES = ["museum-site.css", "main.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"]
+CSS_INCLUDES = ["museum-site.css", "main.css", "zzt.css", "low-res.css", "NEW-forms.css", "model-blocks.css"]
 
 # Pagination
 PAGE_SIZE = 25  # Default items per page
@@ -34,7 +35,7 @@ PAGE_LINKS_DISPLAYED = 30  # Number of links to other pages displayed
 
 # Site Functions
 UPLOADS_ENABLED = True
-UPLOAD_CAP = 1048576  # 1 Megabyte (unless manually increased per user)
+UPLOAD_CAP = 2097152  # 2 Megabytes (unless manually increased per user)
 UPLOAD_TEST_MODE = False  # Coerce successful uploads in DEV to expedite testing of the upload process
 MODEL_BLOCK_VERSION = 2023
 
@@ -82,7 +83,8 @@ Users are expected to be respectful of other community members and privately con
 
 By accepting these terms of service you are agreeing to conduct yourself in a manner that aligns with these ideals.
 
-## Violations Violations of these terms may result in you and/or your account having permissions to participate in certain site functions (including but not limited to uploading files, posting reviews, participating on the Worlds of ZZT Discord) being revoked for any amount of time felt necessary.
+## Violations
+Violations of these terms may result in you and/or your account having permissions to participate in certain site functions (including but not limited to uploading files, posting reviews, participating on the Worlds of ZZT Discord) being revoked for any amount of time felt necessary.
 
 By accepting these terms of service you are acknowledging and agreeing to the consequences of violating these terms.
 """
@@ -120,7 +122,7 @@ exe_names = {
     "zzt30.zip": "ZZT v3.0 (Shareware)",
     "zzt31.zip": "ZZT v3.1 (Shareware)",
     "zzt32sw.zip": "ZZT v3.2 (Shareware)",
-    "czoo413-moz.zip": "ClassicZoo v4.13",
+    "classiczoo-437.zip": "ClassicZoo v4.37",
     "cleenzzt-moz.zip": "CleenZZT",
 }
 ZETA_EXECUTABLES = []

@@ -1,6 +1,7 @@
 from django import forms
 
 from museum_site.constants import EMAIL_ADDRESS
+from museum_site.fields import Museum_Choice_Field
 
 PATRON_DISCLAIMER_TEXT = (
     "This data isn't parsed in any way, so you may write anything you like as long as it can be understood by <a href='mailto:{}'>Dr. Dos</a>.<br><br> "
@@ -32,10 +33,12 @@ class Change_Patronage_Visibility_Form(forms.Form):
         "<p>Choose whether or not to disclose your status as a Worlds of ZZT patron on your public profile.</p>"
         "<p>This option has no effect for non-patrons.</p>"
     )
-
-    visibility = forms.ChoiceField(
-        widget=forms.RadioSelect(choices=(("show", "Show patron status"), ("hide", "Hide patron status"))),
-        choices=(("show", "Show patron status"), ("hide", "Hide patron status")),
+    visibility = Museum_Choice_Field(
+        widget=forms.RadioSelect(),
+        choices=(
+            ("show", "Show patron status."),
+            ("hide", "Hide patron status.")
+        ),
         label="Patronage Visibility"
     )
 

@@ -16,7 +16,11 @@
         {% endfor %}
     {% endfor %}
 </div>
-{% for button in buttons %}
-<input type="button" value="{{button}}" class="widget-control-button" data-input-name="{{widget.name}}"{% if button == "Default" %}data-default="{{default|join:'/'}}"{% endif %}>
-{% endfor %}
-{% if show_selected %}<div>Selected: <span class="widget-selected" data-input-name="{{widget.name}}"><i>None</i></span></div>{% endif %}
+<div class="scrolling-checklist-lower">
+    {% if show_selected %}<div class="selected-wrapper">Selected: <span class="widget-selected" data-input-name="{{widget.name}}"><i>None</i></span></div>{% endif %}
+    <div class="widget-control-wrapper">
+    {% for button in buttons %}
+    <input type="button" value="{{button}}" class="widget-control-button" data-input-name="{{widget.name}}"{% if button == "Default" %}data-default="{{default|join:'/'}}"{% endif %}>
+    {% endfor %}
+    </div>
+</div>

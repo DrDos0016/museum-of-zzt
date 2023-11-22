@@ -1,13 +1,23 @@
-<div class="related-content-header">Only Show files</div>
-<div class="flex-container">
-    <div class="related-content-wrapper">
-    <label><input name="reviews" type="radio" value="yes"{% if manual_data.reviews == "yes" %} checked{% endif %}> With reviews</label>
-    <label><input name="reviews" type="radio" value="no"{% if manual_data.reviews == "no" %} checked{% endif %}> Without reviews</label>
-    <label><input name="reviews" type="radio" value="any"{% if manual_data.reviews == "any" %} checked{% endif %}> Either</label>
+<label class="related-content-heading-label">Files Must Have:</label>
+<div>
+    <div>
+        <label><input type="radio" name="reviews" value="no"{% if reviews == 'no' %} checked{% endif %}>No Feedback</label>
     </div>
-    <div class="related-content-wrapper">
-    <label><input name="articles" type="radio" value="yes"{% if manual_data.articles == "yes" %} checked{% endif %}> With articles</label>
-    <label><input name="articles" type="radio" value="no"{% if manual_data.articles == "no" %} checked{% endif %}> Without articles</label>
-    <label><input name="articles" type="radio" value="any"{% if manual_data.articles == "any" %} checked{% endif %}> Either</label>
+    <div>
+        <label><input type="radio" name="reviews" value="yes"{% if reviews == 'yes' %} checked{% endif %}>1+ Feedback</label>
+    </div>
+    <div>
+        <input class="widget-control-button" type="button" value="Clear" data-input-name="reviews">
+    </div>
+</div>
+<div>
+    <div>
+        <label><input type="radio" name="articles" value="no"{% if articles == 'no' %} checked{% endif %}>No Articles</label>
+    </div>
+    <div>
+        <label><input type="radio" name="articles" value="yes"{% if articles == 'yes' %} checked{% endif %}>1+ Articles</label>
+    </div>
+    <div>
+        <input class="widget-control-button" type="button" value="Clear" data-input-name="articles">
     </div>
 </div>

@@ -388,11 +388,12 @@ class ZFile_Review_List_View(Model_List_View):
                     )
                 )
                 return context
-        else:  # For Users, check that their latest review body isn't identical to the feedback they're submitting
+        elif self.request.method == "POST":  # For Users, check that their latest review body isn't identical to the feedback they're submitting
             latest_feedback = Review.objects.filter(user_id=self.request.user.id).order_by("-id").first()
-            latest_content = latest_feedback.content
-            if self.request.POST.get("content") == latest_content:
-                recent = True  # Prevent this feedback from going through a second time
+            if latest_feedback:
+                latest_content = latest_feedback.content
+                if self.request.POST.get("content") == latest_content:
+                    recent = True  # Prevent this feedback from going through a second time
 
         # Prevent unpublished/lost file reviews
         if context["file"].is_detail(DETAIL_LOST):

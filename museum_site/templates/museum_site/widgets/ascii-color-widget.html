@@ -1,5 +1,5 @@
 {% for k,t in choices %}
-<button type="button" class="color-button ega-{{k}}-bg{% if widget.value.0 == k %} selected{% endif %}" value="{{k}}" title="{{t}}"></button>{% if forloop.counter == 8 %}<br>{% endif %}
+<button type="button" class="color-button ega-{{k}}-bg{% if widget.value.0 == k %} selected{% endif %}" value="{{k}}" title="{{t}}"></button>
 {% endfor %}
 <select name="{{widget.name}}" class="none">
     {% for k,t in choices %}<option{% if widget.value.0 == k %} selected {% endif %}>{{k}}</option>{% endfor %}

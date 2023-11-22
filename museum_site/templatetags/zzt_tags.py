@@ -51,6 +51,8 @@ def char(num=2, fg="white", bg="black", scale=2, mode="image"):
     CHARSET_WIDTH = 1024
     CHARSET_HEIGHT = 448
 
+    if num is None:
+        num = 0
     num = int(num)
 
     if num < 0 or num > 255:

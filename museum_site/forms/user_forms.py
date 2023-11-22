@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 
 from museum_site.constants import EMAIL_ADDRESS, TERMS
-from museum_site.fields import Faux_Field
+from museum_site.fields import Faux_Field, Museum_Color_Choice_Field, Museum_Choice_Field, Museum_TOS_Field
 from museum_site.widgets import Ascii_Character_Widget, Ascii_Color_Widget, Faux_Widget, Terms_Of_Service_Widget
 
 PASSWORD_HELP_TEXT = "Use a unique password for your account with a minimum length of <b>8</b> characters. Passwords are hashed and cannot be viewed by staff."
@@ -70,8 +70,8 @@ class Change_Ascii_Char_Form(forms.Form):
         widget=Ascii_Character_Widget(),
         help_text="Click on an ASCII character in the table to select it",
     )
-    foreground = forms.ChoiceField(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES))
-    background = forms.ChoiceField(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES, allow_transparent=True))
+    foreground = Museum_Color_Choice_Field(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES))
+    background = Museum_Color_Choice_Field(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES, allow_transparent=True))
     preview = Faux_Field(label="Preview", widget=Faux_Widget("museum_site/widgets/ascii-preview-widget.html"), required=False)
 
 
@@ -110,7 +110,7 @@ class Change_Password_Form(forms.Form):
     submit_value = "Change Password"
     heading = "Change Password"
     attrs = {"method": "POST"}
-    text_prefix = "<p>You may change your password here. Upon successfully changing your password, you will be required to login again.</p>"
+    text_prefix = "<p>You may change your password here. Upon successfully changing your password, <b>you will be required to login again</b>.</p>"
 
     current_password = forms.CharField(widget=forms.PasswordInput())
     new_password = forms.CharField(min_length=8, widget=forms.PasswordInput(), help_text=PASSWORD_HELP_TEXT)
@@ -145,7 +145,7 @@ class Change_Pronouns_Form(forms.Form):
         ("CUSTOM", "Custom (specify below)")
     )
 
-    pronouns = forms.ChoiceField(choices=PRONOUN_CHOICES, widget=forms.RadioSelect(choices=PRONOUN_CHOICES))
+    pronouns = Museum_Choice_Field(widget=forms.RadioSelect(), choices=PRONOUN_CHOICES)
     custom = forms.CharField(required=False)
 
 
@@ -154,7 +154,7 @@ class Change_Username_Form(forms.Form):
     submit_value = "Change Username"
     heading = "Change Username"
     attrs = {"method": "POST"}
-    text_prefix = "<p>You may use this form to change your username. Afterwards, you will be required to login again with your new username and password.</p>"
+    text_prefix = "<p>You may use this form to change your username. Afterwards, <b>you will be required to login again</b> with your new username and password.</p>"
 
     current_password = forms.CharField(widget=forms.PasswordInput())
     new_username = forms.CharField()
@@ -287,7 +287,7 @@ class Updated_Terms_Of_Service_Form(forms.Form):
         "must accept the current version of the terms.</p>"
     )
 
-    terms = forms.BooleanField(widget=Terms_Of_Service_Widget(terms=TERMS))
+    terms = Museum_TOS_Field()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -307,10 +307,9 @@ class User_Registration_Form(forms.Form):
     requested_username = forms.CharField(label="Username")
     requested_email = forms.EmailField(label="Email address", help_text="A valid email address is required to verify your account.")
     action = forms.CharField(widget=forms.HiddenInput(), initial="register")
-    first_name = forms.CharField(required=False)  # Spam trap
     password = forms.CharField(min_length=8, widget=forms.PasswordInput(), help_text=PASSWORD_HELP_TEXT)
     confirm_password = forms.CharField(min_length=8, widget=forms.PasswordInput(),)
-    terms = forms.BooleanField(widget=Terms_Of_Service_Widget(terms=TERMS))
+    terms = Museum_TOS_Field()
 
     def clean(self):
         cleaned_data = super().clean()

@@ -1,4 +1,46 @@
-/* Generic */
+/* Tags */
+input, select, textarea
+{
+    border:1px solid var(--border-color);
+    background: var(--input-bg);
+    font-size:12pt;
+    font-family:monospace;
+}
+
+input[type=button], input[type=submit], button
+{
+    font-family: "cp437";
+    background:var(--notice-bg);
+    border:1px solid var(--border-color); /* Needed for raw buttons */
+}
+
+input:disabled
+{
+    background:var(--unselected-tab);
+}
+
+form > input[type=submit] { margin-left:4px; margin-right:4px; min-width:250px; }
+input[type=submit] { height:30px; }
+
+label
+{
+    font-weight:bold;
+}
+
+/* Hover (Standard) */
+.moz-choice-wrapper:hover { background:var(--hover-bg); }
+.scrolling-checklist label:hover { background:var(--hover-bg); }
+.field-value.field-layout-list > div div label:hover { background:var(--hover-bg); }
+/* End Hover */
+
+/* Selected (Standard) */
+label.selected { background: var(--header-bg);}
+.field-value.field-layout-list > div div label.selected { background: var(--header-bg);}
+
+/* Hover (Selected) */
+/* label.selected:hover { background: var(--ega-gray);} */
+
+/* Django Forms */
 .field-wrapper
 {
     display:grid;
@@ -13,11 +55,19 @@
     padding:7px 4px 7px 4px;
 }
 
-.field-wrapper label
-{
-    grid-area: label;
-    font-weight:bold;
+@media (max-width:580px) {
+    .field-wrapper
+    {
+        grid-template-areas:
+         "label label"
+         "help help"
+         "value value"
+         "error error";
+        grid-template-columns:repeat(2, auto);
+    }
 }
+
+.field-wrapper > label { grid-area: label; }
 
 .field-help
 {
@@ -25,11 +75,16 @@
     margin:7px 4px 7px 4px;
 }
 
+.field-with-error { background-color: var(--field-error-bg); }
+
+.vcentered-form-text { align-self:center; };
+.errorlist { font-weight:bold; }
+
 .field-value
 {
     grid-area: value;
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:flex-start;
     gap:4px;
 }
@@ -37,56 +92,38 @@
 .field-value label
 {
     font-weight:normal;
+    font-family:monospace;
+    font-size:12pt;
 }
-
-.field-with-error
-{
-    background-color: var(--field-error-bg);
-}
-
-.errorlist { font-weight:bold; }
 
 .field-value input, .field-value select, .field-value textarea, .field-value button
 {
     flex:1 0;
     box-sizing:border-box;
-    background: var(--input-bg);
-    border:1px solid var(--border-color);
-    font-size:14pt;
-    height:32px;
+    height:30px;
+    width:100%;
 }
 
-.field-value textarea { height:64px; font-size:12pt; }
+.field-value input[type=date] { min-width:16ch; }
+.field-value textarea { height:100px; font-size:12pt; }
+textarea.height-256 { height:256px; }
 
-.field-value input[type=button], .field-value button
-{
-    font-family: "cp437";
-    background:var(--notice-bg);
-}
-
-.field-value .moz-choice-wrapper
+.moz-choice-wrapper
 {
     flex:1;
     display:flex;
-    background:var(--unselected-tab);
+    align-items:center;
     font-weight:normal;
-    padding:4px;
     border:1px solid var(--border-color);
+    background:var(--input-bg);
 }
 
-.field-value .moz-choice-wrapper input[type=checkbox], .field-value .moz-choice-wrapper input[type=radio]
+.field-value input[type=checkbox], .field-value input[type=radio]
 {
     width:20px;
     height:20px;
     flex:0 0 20px;
-    margin:0px;
-    margin-right:4px;
-}
-
-.field-value .moz-choice-wrapper:hover
-{
-    background:var(--hover-bg);
-    cursor:pointer;
+    margin:4px;
 }
 
 .field-value.flex-layout-vertical
@@ -96,28 +133,10 @@
 }
 
 /* Specialty Forms */
-.scrolling-checklist
-{
-    font-family:mono;
-    min-height: 200px;
-    height: 200px;
-    overflow: auto;
-    min-width: 300px;
-    border: 1px solid var(--border-color);
-    background: var(--board-list-bg);
-    resize: vertical;
-}
-
-.field-wrapper[data-field=tags] .scrolling-checklist
-{
-    min-height:auto;
-    height:auto;
-}
-
+.field-value .scrolling-checklist label { font-size:10pt; }
+.field-value .scrolling-checklist input[type=checkbox], .field-value .scrolling-checklist input[type=radio] { height:initial; }
 .scrolling-checklist label { display:block; }
 .scrolling-checklist label + label {  border-top: 1px dotted var(--border-color); }
-.scrolling-checklist label.selected { background: var(--header-bg);}
-.scrolling-checklist label:hover { background:var(--hover-bg); }
 
 .checklist-header
 {
@@ -135,9 +154,8 @@
     }
 }
 
-
-
-/* Specific Components */
+/* Layouts */
+/* Board Count Layout */
 .field-value.field-layout-board-count
 {
     flex-wrap:wrap;
@@ -149,42 +167,278 @@
     flex-wrap:wrap;
     gap:4px;
     display:flex;
-    height:32px;
+    min-height:32px;
     align-items:center;
     justify-content:flex-start;
 }
+/* End Board Count Layout */
 
-.field-value.field-layout-board-count input[type=radio]
+/* List Layout */
+.field-value.field-layout-list > div /* Actual div wrapping list of options */
 {
-    flex: 0 0 10%;
-}
-
-.field-value.field-layout-multi-column-list > div /* Django widget wraps all this in a div */
-{
+    width:100%;
+    border:1px solid var(--border-color);
     display:flex;
     flex-direction:column;
-    width:100%;
-    background:var(--input-bg);
-    height:200px;
-    border:1px solid var(--border-color);
-    flex-wrap:wrap;
+    gap:0px 4px;
 }
 
-.field-value.field-layout-multi-column-list div label
-{
-    display:flex;
-    gap:8px;
-    align-items:center;
-    align-content:center;
-    border-bottom:1px dotted var(--border-color);
-}
-
-.field-value.field-layout-multi-column-list div label input[type=checkbox], .field-value.field-layout-checklist div label input[type=radio]
+.field-value.field-layout-list > div div label input[type=checkbox], .field-value.field-layout-list > div div label input[type=radio]
 {
     flex:0 0 20px;
 }
+/* End List Layout */
 
-.field-value.field-layout-list
+/* Multicolumn List Layout (Uses List Layout components) */
+@media (max-width:1600px) { .field-value.field-layout-multi-column > div div label { font-size:10pt; } }
+
+.field-value.field-layout-multi-column > div /* Actual div wrapping list of options */
 {
-    background:blue;
+    flex-wrap:wrap;
+    height:145px;
+    background:var(--input-bg);
 }
+
+.field-value.field-layout-list > div div label /* List entry */
+{
+    display:flex;
+    gap:4px;
+    align-items:center;
+    align-content:center;
+    background:var(--input-bg);
+    border-bottom:1px dotted var(--border-color);
+}
+
+@media (max-width:1500px) { .field-value.field-layout-multi-column > div { height:205px; } }
+@media (max-width:1100px) { .field-value.field-layout-multi-column > div { height:205px; overflow:auto; flex-wrap:nowrap; } }
+/* End Multicolumn List Layout */
+
+/* Horizontal Layout */
+.field-value.field-layout-horizontal > div /* Actual div wrapping list of options */
+{
+    flex-direction:row;
+    border:0px;
+}
+
+.field-value.field-layout-horizontal > div div
+{
+    flex:1;
+    display:flex;
+    gap:4px;
+}
+
+.field-value.field-layout-horizontal > div div label
+{
+    display:flex;
+    flex:1;
+    gap:4px;
+    border:1px solid var(--border-color);
+}
+/* End Horizontal Layout */
+
+/* Scrolling Multiple Choice Layout */
+.field-value.field-layout-scrolling-list
+{
+    display:block;
+    font-family:monospace;
+}
+
+.scrolling-checklist
+{
+    min-height: 200px;
+    height: 200px;
+    width: 100%;
+    box-sizing:border-box;
+    overflow: auto;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    resize: vertical;
+}
+
+.scrolling-checklist-filter
+{
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0px;
+    padding: 2px 8px 2px 8px;
+    font-weight:bold;
+    display:flex;
+    gap:4px;
+    align-items:center;
+}
+
+.scrolling-checklist-lower
+{
+    margin-top:4px;
+    display:flex;
+    gap:4px;
+    width:100%;
+    min-height:40px;
+}
+
+.selected-wrapper
+{
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    padding:4px;
+    flex:1 0 50%;
+}
+
+.widget-control-wrapper
+{
+    flex:0 1 25%;
+    display:flex;
+    justify-content:flex-end;
+    gap:4px;
+}
+
+.widget-control-wrapper > input
+{
+    height:40px;
+}
+/* End Scrolling Multiple Choice Layout */
+
+/* TOS */
+.field-layout-tos { display:flex; flex-wrap:wrap; }
+.field-layout-tos textarea { flex:1 0 100%; border:4px double var(--border-color); }
+
+/* Related Content Widget */
+.field-layout-related-content
+{
+    flex-wrap:wrap;
+}
+
+.related-content-heading-label
+{
+    flex:1 0 100%;
+}
+
+
+label.related-content-heading-label
+{
+    font-weight:bold;
+}
+
+/* ASCII Char Widget */
+.ascii-table { display:grid; }
+.ascii-table.scale-1.horiz { grid-template-columns: repeat(32, 8px); }
+.ascii-table.scale-2.horiz { grid-template-columns: repeat(32, 16px); }
+.ascii-table.scale-1.vert { grid-template-columns: repeat(16, 8px); }
+.ascii-table.scale-2.vert { grid-template-columns: repeat(16, 16px); }
+@media (max-width:1600px) {
+    /* Force vertical layout at most res I guess */
+    .ascii-table.scale-1.horiz { grid-template-columns: repeat(16, 8px); }
+    .ascii-table.scale-2.horiz { grid-template-columns: repeat(16, 16px); }
+}
+.ascii-table .ascii-char-image:hover {
+    outline:4px solid var(--ega-yellow);
+    z-index:2;
+    cursor:pointer;
+}
+.ascii-selected-highlight { display:flex; align-items:center; }
+.ascii-selected-char { margin-left:0.5em; margin-right:0.5em; }
+/* End */
+
+/* CGA Color Widget */
+.field-value.field-layout-color
+{
+    max-width:288px;
+    flex-wrap:wrap;
+}
+
+.field-value button.color-button {
+    flex:0;
+    min-width:32px;
+    min-height:32px;
+    max-width:32px;
+    max-height:32px;
+    cursor:pointer;
+}
+button.color-button.selected { border:inset; }
+/* End */
+
+/* Enhanced Text Widget */
+.enhanced-text-widget-wrapper
+{
+    flex:1;
+}
+
+.enhanced-text-widget-wrapper div
+{
+    text-align:right;
+    font-family:monospace;
+    font-size:10pt;
+}
+
+.enhanced-text-widget-wrapper input
+{
+    width:100%;
+}
+/* End */
+
+/* Tagged Text Widget */
+.field-value.field-layout-tagged-text
+{
+    flex-wrap:wrap;
+    align-content:flex-start;
+}
+.field-value.field-layout-tagged-text input
+{
+    flex:1 0 100%;
+}
+/* End */
+
+/* Tags */
+.tag
+{
+    display:none; /* Template is hidden */
+    margin:4px;
+    font-weight:bold;
+}
+
+.tag-list { min-height:45px; }
+.tag-list > div { display:inline-block; }
+.tag-list > div:first-child { margin-left:0px; }
+.tag > div { display:inline-block; }
+.tag > div:hover { background:var(--hover-bg); }
+.tag.selected .tag-text { background-color:var(--hover-bg); }
+
+.tag-text
+{
+    display:inline-block;
+    background:var(--file-list-bg);
+    border:1px solid var(--border-color);
+    border-right:0;
+    border-radius:8px 0 0 8px;
+    padding:7px 8px 7px 8px;
+}
+
+.tag-text:hover { cursor:grab; }
+.tag-text.no-hover:hover { cursor:auto; }
+.tag-text.no-highlight:hover { background:var(--file-list-bg); }
+
+.tag-remove
+{
+    display:inline-block;
+    border:1px solid var(--border-color);
+    border-left:1px dashed var(--border-color);
+    border-radius:0 8px 8px 0;
+    background:var(--header-bg);
+    padding:7px 8px 7px 8px;
+}
+
+.tag-remove:hover { cursor:pointer; }
+
+.tag.dragging { opacity:0.25; }
+
+.tag-ghost
+{
+    border:1px dashed var(--border-color);
+    border-radius:8px;
+    padding:7px 8px 7px 8px;
+    width:4ch;
+    text-align:center;
+    font-weight:normal;
+}
+/* End Tags */
