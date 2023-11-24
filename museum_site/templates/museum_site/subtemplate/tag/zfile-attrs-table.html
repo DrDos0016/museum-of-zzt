@@ -1,6 +1,6 @@
 <table class="zfile-attr-table">
     <tr><th>Title</th><td>{{zfile.title}}</td></tr>
-    <tr><th>Checksum (MD5)</th><td>{{zfile.checksum}}</td></tr>
+    <tr><th>Checksum (MD5)</th><td>{{zfile.checksum|upper}}</td></tr>
     <tr><th>Description</th><td>{{zfile.description|default:"<i>None</i>"}}</td></tr>
     <tr><th>Explicit</th><td>{{zfile.explicit|yesno|title}}</td></tr>
     <tr><th>File Available</th><td>{{zfile.file_exists|yesno|title}}</td></tr>
