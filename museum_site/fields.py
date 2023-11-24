@@ -151,3 +151,8 @@ class Museum_Tagged_Text_Field(forms.CharField):
 class Museum_TOS_Field(forms.BooleanField):
     layout = "field-layout-tos"
     widget = Terms_Of_Service_Widget
+
+
+class Museum_Drag_And_Drop_File_Field(forms.FileField):
+    layout = "field-layout-file-uploader"
+    widget = UploadFileWidget()

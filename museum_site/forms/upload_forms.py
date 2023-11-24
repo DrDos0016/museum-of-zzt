@@ -10,7 +10,7 @@ from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.image_utils import optimize_image
 from museum_site.core.misc import calculate_boards_in_zipfile, calculate_sort_title, get_letter_from_title, generate_screenshot_from_zip, record
-from museum_site.fields import Choice_Field_No_Validation, Tag_List_Field, Museum_Tagged_Text_Field, Museum_Choice_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Multiple_Choice_Field, Museum_Scrolling_Multiple_Choice_Field
+from museum_site.fields import Choice_Field_No_Validation, Tag_List_Field, Museum_Tagged_Text_Field, Museum_Choice_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Multiple_Choice_Field, Museum_Scrolling_Multiple_Choice_Field, Museum_Drag_And_Drop_File_Field
 from museum_site.models import Author, Company, Detail, Download, File, Genre, Upload, Zeta_Config
 from museum_site.widgets import (
     Enhanced_Date_Widget, Enhanced_Text_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget, Language_Checklist_Widget
@@ -168,7 +168,7 @@ class ZGame_Form(forms.ModelForm):
     mode = "new"
 
     field_order = ["zfile", "title", "author", "company", "genre", "explicit", "release_date", "language", "description"]
-    zfile = forms.FileField(
+    zfile = Museum_Drag_And_Drop_File_Field(
         help_text=("Select the file you wish to upload. All uploads <i>must</i> be zipped."),
         label="File", widget=UploadFileWidget(target_text="Drag & Drop A Zip File Here or Click to Choose", allowed_filetypes=".zip,application/zip")
     )
@@ -210,20 +210,6 @@ class ZGame_Form(forms.ModelForm):
         initial=0
     )
     # [Release Date]
-    """
-    language = Museum_Scrolling_Multiple_Choice_Field(
-        widget=Language_Checklist_Widget(
-            buttons=["Clear"],
-            show_selected=True,
-        ),
-        choices=LANGUAGE_CHOICES,
-        required=False,
-        help_text=(
-            'Check any languages the player is expected to understand to comprehend the files in the upload. For worlds exclusively using created languages,'
-            'use "Other". If a language is not listed, use "Other" and specify the correct language in the upload notes section.'
-        )
-    )
-    """
     language = Museum_Multiple_Choice_Field(required=False, widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_CHOICES, layout="multi-column")
     # [Description]
 
@@ -264,8 +250,7 @@ class ZGame_Form(forms.ModelForm):
 
         widgets = {
             "title": Enhanced_Text_Widget(char_limit=80),
-            "release_date": Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Unknown"),
-            "zfile": UploadFileWidget(),
+            "release_date": Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Unknown")
         }
 
     def clean_zfile(self):
