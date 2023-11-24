@@ -1,21 +1,20 @@
-<div class="upload-wrapper">
-    <input type="file" name="{{widget.name}}" id="id_{{widget.name}}" class="drag-and-drop-file-widget"{%if allowed_filetypes %} accept="{{allowed_filetypes}}"{% endif %}>
-    <div class="upload-area c"><p>{{target_text|safe}}</p></div>
-    <div class="upload-info">
-        {% if allowed_filetypes == ".zip,application/zip" %}
-        <div class="file-list-header">
-            <span class="file-name">{{filename|default:"..."}}</span>
-            <span class="file-size">{{size|filesizeformat}}</span>
-        </div>
-        <ul class="file-list">
-            {% for f in zfi %}
-            <li>{{f.filename}}</li>
-            {% endfor %}
-        </ul>
-        {% elif allowed_filetypes == ".png,image/png" %}
-        <div>
-            <img id="uploaded-image-preview">
-        </div>
-        {% endif %}
+<div class="size-limit">Your maximum upload size: <b title="{{your_max_upload_size}} bytes">{{your_max_upload_size|filesizeformat}}</b></div>
+<div class="upload-area c"><p>{{target_text|safe}}</p></div>
+<div class="upload-info">
+    {% if allowed_filetypes == ".zip,application/zip" %}
+    <div class="file-list-header">
+        <span class="file-name">{{filename|default:"..."}}</span>
+        <span class="file-size">{{size|filesizeformat}}</span>
     </div>
+    <ul class="file-list">
+        {% for f in zfi %}
+        <li>{{f.filename}}</li>
+        {% endfor %}
+    </ul>
+    {% elif allowed_filetypes == ".png,image/png" %}
+    <div>
+        <img id="uploaded-image-preview">
+    </div>
+    {% endif %}
 </div>
+<input type="file" name="{{widget.name}}" id="id_{{widget.name}}" class="drag-and-drop-file-widget"{%if allowed_filetypes %} accept="{{allowed_filetypes}}"{% endif %}>
