@@ -1,5 +1,5 @@
 <div class="size-limit">Your maximum upload size: <b title="{{your_max_upload_size}} bytes">{{your_max_upload_size|filesizeformat}}</b></div>
-<div class="upload-area c"><p>{{target_text|safe}}</p></div>
+<div class="upload-area" data-file-widget="id_{{widget.name}}"><div class="text">{{target_text|safe}}</div></div>
 <div class="upload-info">
     {% if allowed_filetypes == ".zip,application/zip" %}
     <div class="file-list-header">

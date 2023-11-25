@@ -541,7 +541,7 @@ select[name=page-selector]
     font-size:larger;
 }
 
-.sort-methods select { font-family:cp437; }
+.sort-methods select { font-family:cp437; font-size:larger;}
 
 .modify-query
 {
@@ -678,3 +678,28 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
 }
 
 #top-margin button:hover { color:var(--text-color); }
+
+/* Nav Action Lists */
+.nav-actions
+{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    font-family:"cp437";
+    font-size:16px;
+}
+
+.nav-actions > *
+{
+    background:var(--notice-bg);
+    flex:1;
+    max-width:250px;
+    text-align:center;
+    border:1px solid var(--border-color);
+    padding:7px 4px 7px 4px;
+}
+
+.nav-actions > .selected
+{
+    background:var(--header-bg);
+}

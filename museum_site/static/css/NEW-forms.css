@@ -447,27 +447,37 @@ button.color-button.selected { border:inset; }
 .field-layout-file-uploader
 {
     flex-wrap:wrap;
+    font-family:monospace;
+    gap:0px;
 }
 
 .drag-and-drop-file-widget { display:none; }
+.size-limit { font-size: 10pt; text-align:right; width:100%; }
 .upload-area
 {
-    height:100px;
+    height:80px;
     font-family:cp437;
     border:3px dashed var(--border-color);
     cursor:pointer;
-    background:var(--header-bg);
-    flex:1 0 100%;
+    background:var(--notice-bg);
+    flex:1 1 100%;
+    display:flex;
+    align-items:center;
+}
+
+.upload-area .text {
+    text-align:center;
+    flex:1;
 }
 
 .upload-area.dragging { background:var(--hover-bg); }
 
 .upload-info
 {
-    font-family:monospace;
     font-size:larger;
     max-height:150px;
     overflow:auto;
+    flex:1;
 }
 
 .upload-info .file-list-header
@@ -480,6 +490,7 @@ button.color-button.selected { border:inset; }
 }
 
 .upload-info .file-size { float:right; }
-.upload-info .file-list li { border-bottom:1px dotted var(--border-color); }
+.upload-info .file-list { padding:0px; margin:0px; }
+.upload-info .file-list li { border-bottom:1px dotted var(--border-color); list-style:none; }
 
 /* End Upload File Widget */

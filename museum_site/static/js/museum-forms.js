@@ -1,8 +1,8 @@
 $(document).ready(function (){
     // Drag and Drop Uploading
     $(".upload-area").click(function (){
-        $(this).prev("input[type=file]").click();
-        //$("#id_zfile").click();
+        var target = $(this).data("file-widget");
+        $("#" + target).click();
     });
 
     $(".upload-area").on("dragover", function(e) {
@@ -25,7 +25,8 @@ $(document).ready(function (){
         const dt = e.originalEvent.dataTransfer;
         const file = dt.files[0];
         var ext = file.name.toLowerCase().slice(-4);
-        $(this).prev("input[type=file]")[0].files = dt.files;
+        var target = $(this).data("file-widget");
+        $("#" + target)[0].files = dt.files;
 
         if (ext == ".zip")
             parse_zip_file(file);
