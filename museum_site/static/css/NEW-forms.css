@@ -5,6 +5,7 @@ input, select, textarea
     background: var(--input-bg);
     font-size:12pt;
     font-family:monospace;
+    color:var(--text-color);
 }
 
 input[type=button], input[type=submit], button
@@ -12,6 +13,7 @@ input[type=button], input[type=submit], button
     font-family: "cp437";
     background:var(--notice-bg);
     border:1px solid var(--border-color); /* Needed for raw buttons */
+    color:var(--text-color);
 }
 
 input:disabled
