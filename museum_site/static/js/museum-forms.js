@@ -77,7 +77,7 @@ $(document).ready(function (){
             if (remaining < 0)
                 $(this).prev(".chars-remaining").css("color", "red");
             else
-                $(this).prev(".chars-remaining").css("color", "initial");
+                $(this).prev(".chars-remaining").css("color", "");
         });
     });
 
