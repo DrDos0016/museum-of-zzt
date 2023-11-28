@@ -16,7 +16,7 @@ input[type=button], input[type=submit], button
     color:var(--text-color);
 }
 
-input:disabled
+input:disabled, button:disabled
 {
     background:var(--unselected-tab);
 }
