@@ -12,12 +12,11 @@ var collection_id = {{collection.id|default:0}};
 {% block style %}
 <style>
 #content h2 { margin-bottom:0px; }
-#collection-add-button { min-width:165px; }
 #id_arrange_file label { margin-left: 20px; }
-.arrangeable-ghost { background:#FFF; }
+.arrangeable-ghost { background:var(--header-bg); border-top:1px dotted var(--border-color); border-bottom:1px dotted var(--border-color);}
 #id_arrange_file { min-height:250px; }
-.ul-scrolling-checklist li > label { display:block; }
 #content form { margin-top: 14px; }
+.arrangeable-list.scrolling-checklist label { display:flex; height: 25px; align-items:center; }
 </style>
 {% endblock %}
 
@@ -30,71 +29,20 @@ var collection_id = {{collection.id|default:0}};
 {% if operation == "add" and collection.is_yours %}
 <form method="POST" id="form-add">
 {% csrf_token %}
-{% for field in form.visible_fields %}
-<div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
-    {{field.label_tag}}
-    <div class="field-value">
-        {% if field.name == "associated_file" %}
-        <div id="associated_file_filter" class="field_filter">
-            <label>Filter: <input name="field_filter" id="add_field_filter" data-target="input[name=associated_file]">
-            <button name="field_filter_clear_button" type="button" data-target="input[name=associated_file]" data-field="#add_field_filter">Clear</button>
-            </label>
-        </div>
-        {% endif %}
-        {{field|safe}}
-    </div>
-    {% if field.help_text %}
-    <p class="field-help">{{field.help_text|safe}}</p>
-    {% endif %}
-    {{field.errors}}
-</div>
-{% endfor %}
-{% for field in form.hidden_fields %}
-{{field}}
-{% endfor %}
-
-<div><input type="button" value="{{action.text}}" id="collection-add-button"> <span class="mono b" id="added-item-text"></span></div>
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="button" value="Add To Collection" id="collection-add-button" class="ajax-submit-button"> <span class="mono b" id="added-item-text"></span>
 </form>
 {% elif operation == "remove" and collection.is_yours %}
 <form method="POST" id="form-remove">
 {% csrf_token %}
-<input name="collection_id" value="{{collection.id}}" type="hidden">
-<div class="field-wrapper">
-    <label>File To Remove:</label>
-    <div class="field-value">
-        <div id="associated_file_filter" class="field_filter">
-            <label>Filter: <input name="field_filter" id="remove_field_filter" data-target="input[name=removed_file]">
-            <button name="field_filter_clear_button" type="button" data-target="input[name=removed_file]" data-field="#remove_field_filter">Clear</button>
-            </label>
-        </div>
-        <ul id="id_removed_file" class="ul-scrolling-checklist">
-        {% for entry in contents %}
-        <li><label for="id_removed_file_{{forloop.counter0}}">
-            <input id="id_removed_file_{{forloop.counter0}}" class="ul-scrolling-checklist" type="radio" name="removed_file" value="{{entry.zfile.pk}}">{{entry.zfile.title}} [{{entry.zfile.key}}]
-        </label></li>
-        {% endfor %}
-        </ul>
-    </div>
-</div>
-<div><input type="button" value="Remove From Collection" id="collection-remove-button"> <span class="mono b" id="removed-item-text"></span></div>
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="button" value="Remove From Collection" id="collection-remove-button" class="ajax-submit-button"> <span class="mono b" id="removed-item-text"></span>
 </form>
 {% elif operation == "arrange" and collection.is_yours %}
 <form method="POST" id="form-arrange">
 {% csrf_token %}
-<input name="collection_id" value="{{collection.id}}" type="hidden">
-<div class="field-wrapper">
-    <label>Collection Order:</label>
-    <div class="field-value">
-        <ul id="id_arrange_file" class="ul-scrolling-checklist arrangeable-list">
-        {% for entry in contents %}
-        <li draggable="true" class="arrangeable order-item"><label for="id_arrange_file_{{forloop.counter0}}">
-            <input id="id_arrange_file_{{forloop.counter0}}" class="ul-scrolling-checklist" type="hidden" name="arrange_file" value="{{entry.zfile.pk}}">{{entry.zfile.title}} [{{entry.zfile.key}}]
-        </label></li>
-        {% endfor %}
-        </ul>
-    </div>
-</div>
-<div><input type="button" value="Arrange Collection" id="collection-arrange-button"> <span class="mono b" id="arranged-item-text"></span></div>
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="button" value="Arrange Collection" id="collection-arrange-button" class="ajax-submit-button"> <span class="mono b" id="arranged-item-text"></span>
 </form>
 {% elif operation == "edit-entry" and collection.is_yours %}
 <form id="form-edit-entry" method="POST">
@@ -125,7 +73,7 @@ var collection_id = {{collection.id|default:0}};
     </div>
     <p class="field-help">Check this box to change the collection's current preview image to this file's preview image.</p>
 </div>
-<div><input type="button" id="edit-entry-button" value="Update Collection Entry" disabled> <span class="mono b" id="edited-entry-text"></span></div>
+<input type="button" id="edit-entry-button" value="Update Collection Entry" class="ajax-submit-button" disabled> <span class="mono b" id="edited-entry-text"></span>
 </form>
 <input name="preview_image" value="{{collection.preview_image.id|default:''}}" type="hidden">
 <div id="original-descriptions" class="none">

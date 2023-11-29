@@ -86,7 +86,7 @@ function remove_item()
 {
     var form_data = {
         "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
-        "zfile_id": $("input[name=removed_file]:checked").val(),
+        "zfile_id": $("input[name=associated_file]:checked").val(),
         "collection_id": $("input[name=collection_id]").val(),
     }
 
@@ -99,7 +99,7 @@ function remove_item()
 
     // Blank the fields
     var original_text = $("#collection-remove-button").val();
-    var item_name = $("input[name=removed_file]:checked").parent().text().trim();
+    var item_name = $("input[name=associated_file]:checked").parent().remove();
     $("#collection-remove-button").prop("disabled", true);
     $("#id_removed_file li.selected").removeClass("selected");
     $("#collection-remove-button").val("Wait...");
@@ -215,7 +215,7 @@ function bind_arrangeables()
 function arrange_collection()
 {
     var order = "";
-    $("input[name=arrange_file]").each(function (){
+    $("input[name=associated_file]").each(function (){
         order += $(this).val() + "/";
     });
 

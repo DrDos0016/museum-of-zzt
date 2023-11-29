@@ -156,3 +156,6 @@ class Museum_TOS_Field(forms.BooleanField):
 class Museum_Drag_And_Drop_File_Field(forms.FileField):
     layout = "field-layout-file-uploader"
     widget = UploadFileWidget()
+
+class Museum_Collection_Name_Field(forms.CharField):
+    widget = Collection_Title_Widget()

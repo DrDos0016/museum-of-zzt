@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.shortcuts import render
 
 from museum_site.constants import *
-from museum_site.forms.collection_forms import Collection_Content_Form
+from museum_site.forms.collection_forms import Collection_Form, Collection_Content_Form, Collection_Content_Removal_Form, Collection_Content_Arrange_Form
 from museum_site.generic_model_views import Model_List_View
 from museum_site.models import *
 from museum_site.templatetags.site_tags import render_markdown
@@ -15,12 +15,13 @@ from museum_site.templatetags.site_tags import render_markdown
 class Collection_Create_View(CreateView):
     model = Collection
     template_name_suffix = "-form"
-    fields = ["title", "short_description", "description", "visibility", "default_sort"]
+    form_class = Collection_Form
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, **kwargs)
         self.url_name = self.request.resolver_match.url_name
         self.get_page_title()
+        self.request = request
 
     def get_page_title(self):
         self.title = "Create New Collection"
@@ -45,6 +46,7 @@ class Collection_Create_View(CreateView):
             form.add_error("title", "The requested collection title is already in use.")
             return self.form_invalid(form)
 
+        form.process(user=self.request.user)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -98,14 +100,24 @@ class Collection_Manage_Contents_View(FormView):
     template_name = "museum_site/collection-manage-contents-form.html"
 
     def setup(self, request, *args, **kwargs):
-        super().setup(request, **kwargs)
-        self.collection_slug = self.request.resolver_match.kwargs["slug"]
+        operation = request.GET.get("operation", "add")
+        if operation == "add":
+            self.form_class = Collection_Content_Form
+        elif operation == "remove":
+            self.form_class = Collection_Content_Removal_Form
+        elif operation == "arrange":
+            self.form_class = Collection_Content_Arrange_Form
+        self.collection_slug = request.resolver_match.kwargs["slug"]
         self.collection = Collection.objects.get(slug=self.collection_slug)
+        super().setup(request, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Manage Collection Contents"
         context["operation"] = self.request.GET.get("operation", "add")
+
+        if context["operation"] in ["remove", "arrange"]:
+            context["form"].update_associated_file_queryset(Collection_Entry.objects.get_items_in_collection(self.collection.pk))
 
         context["collection_actions"] = [
             {"text": "Add To Collection", "url": "?operation=add", },

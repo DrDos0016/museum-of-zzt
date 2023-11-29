@@ -22,7 +22,7 @@ input:disabled, button:disabled
 }
 
 form > input[type=submit] { margin-left:4px; margin-right:4px; min-width:250px; }
-input[type=submit] { height:30px; }
+input[type=submit], .ajax-submit-button { height:30px; }
 
 label
 {
@@ -494,5 +494,8 @@ button.color-button.selected { border:inset; }
 .upload-info .file-size { float:right; }
 .upload-info .file-list { padding:0px; margin:0px; }
 .upload-info .file-list li { border-bottom:1px dotted var(--border-color); list-style:none; }
-
 /* End Upload File Widget */
+
+/* Arrangeable Lists */
+.arrangeable { cursor: grab; }
+/* End Arrangeable Lists */

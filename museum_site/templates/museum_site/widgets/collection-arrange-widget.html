@@ -1,0 +1,5 @@
+<div class="scrolling-checklist widget arrangeable-list">
+{% for item in choices %}
+    <label class="arrangeable order-item" draggable=true><input name="{{widget.name}}" type="hidden" value="{{item.0.instance.pk}}">{{item.0.instance.title}} [{{item.0.instance.zfile.key}}]</label>
+{% endfor %}
+</div>

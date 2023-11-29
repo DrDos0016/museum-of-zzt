@@ -54,8 +54,8 @@ class Collection(BaseModel):
         ("author", "Author"),
         ("company", "Company"),
         ("rating", "Rating"),
-        ("release", "Release Date (Newest)"),
-        ("-release", "Release Date (Oldest)"),
+        ("-release", "Release Date (Newest)"),
+        ("release", "Release Date (Oldest)"),
     ]
 
     # Fields
@@ -320,3 +320,9 @@ class Collection_Entry(BaseModel):
     def get_guideword_rating(self): return self.zfile.get_guideword_rating()
     def get_guideword_release_date(self): return self.zfile.get_guideword_release_date()
     def get_guideword_canonical(self): return self.zfile.get_guideword_title()  # Deliberate
+
+    def title(self):  # Needed for compatibility with Collection forms / scrolling-checklist-widget
+        if self.zfile:
+            return self.zfile.title
+        else:
+            return "NO ZFILE"

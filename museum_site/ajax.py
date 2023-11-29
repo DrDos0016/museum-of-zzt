@@ -34,8 +34,10 @@ def arrange_collection(request):
     entries = Collection_Entry.objects.get_items_in_collection(collection_id)
 
     for entry in entries:
-        entry.order = order.index(str(entry.zfile.pk)) + 1
+        entry.order = order.index(str(entry.pk)) + 1
         entry.save()
+    c.default_sort = "manual"
+    c.save()
 
     resp = "SUCCESS"
     return HttpResponse(resp)
@@ -94,7 +96,6 @@ def get_zip_file_by_key(request):
     with open(zfile.phys_path(), "rb") as fh:
         output = base64.b64encode(fh.read())
     return HttpResponse(output)
-
 
 
 def get_zip_file(request):
@@ -199,7 +200,7 @@ def remove_from_collection(request):
 
     entry = Collection_Entry.objects.get(
         collection_id=int(request.POST["collection_id"]),
-        zfile_id=int(request.POST["zfile_id"]),
+        pk=int(request.POST["zfile_id"]),
     )
 
     entry.delete()

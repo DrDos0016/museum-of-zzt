@@ -115,9 +115,9 @@ class Ordered_Scrolling_Radio_Widget(forms.SelectMultiple):
 class Scrolling_Checklist_Widget(forms.SelectMultiple):
     template_name = "museum_site/widgets/scrolling-checklist-widget.html"
 
-    def __init__(self, attrs=None, choices=(), filterable=True, categories=None, buttons=[], show_selected=False, default=[]):
+    def __init__(self, attrs=None, choices=(), filterable=True, categories=None, buttons=[], show_selected=False, default=[], input_method="checkbox"):
         super().__init__(attrs)
-        self.input_method = "checkbox"
+        self.input_method = input_method
         self.choices = choices
         self.categories = categories
         self.filterable = filterable
@@ -367,3 +367,7 @@ class Terms_Of_Service_Widget(forms.CheckboxInput):
 
 class Collection_Title_Widget(Enhanced_Text_Widget):
     template_name = "museum_site/widgets/collection-title-widget.html"
+
+
+class Collection_Arrange_Widget(Scrolling_Checklist_Widget):
+    template_name = "museum_site/widgets/collection-arrange-widget.html"
