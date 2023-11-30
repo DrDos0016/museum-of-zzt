@@ -99,7 +99,8 @@ function remove_item()
 
     // Blank the fields
     var original_text = $("#collection-remove-button").val();
-    var item_name = $("input[name=associated_file]:checked").parent().remove();
+    var item_name = $("input[name=associated_file]:checked").parent().text();
+    $("input[name=associated_file]:checked").parent().remove();
     $("#collection-remove-button").prop("disabled", true);
     $("#id_removed_file li.selected").removeClass("selected");
     $("#collection-remove-button").val("Wait...");
