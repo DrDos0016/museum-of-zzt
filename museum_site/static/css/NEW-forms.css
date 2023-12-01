@@ -1,4 +1,10 @@
 /* Tags */
+input, select, input[type=button], input[type=submit], button
+{
+    font-size:12pt;
+    height:30px;
+}
+
 input, select, textarea
 {
     border:1px solid var(--border-color);
