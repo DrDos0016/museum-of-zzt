@@ -1,5 +1,5 @@
 from django import forms
-from museum_site.constants import TERMS
+from museum_site.constants import TERMS, UPLOAD_CAP
 
 
 class UploadFileWidget(forms.FileInput):
@@ -12,6 +12,7 @@ class UploadFileWidget(forms.FileInput):
         super().__init__(attrs)
         self.target_text = target_text
         self.allowed_filetypes = allowed_filetypes
+        self.max_upload_size = UPLOAD_CAP
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
@@ -20,6 +21,7 @@ class UploadFileWidget(forms.FileInput):
         context["size"] = self.size
         context["target_text"] = self.target_text
         context["allowed_filetypes"] = self.allowed_filetypes
+        context["max_upload_size"] = self.max_upload_size
         return context
 
     def set_info(self, filename, file_list, size):

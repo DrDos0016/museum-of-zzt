@@ -159,7 +159,9 @@ class Upload_View(TemplateView):
 
     def modify_forms(self):
         """ Called during (un)bound form initialization to set settings and adjust fields as needed """
-        self.zgame_form.max_upload_size = self.request.user.profile.max_upload_size if self.request.user.is_authenticated else UPLOAD_CAP
+        self.zgame_form.fields["zfile"].widget.max_upload_size = (
+            self.request.user.profile.max_upload_size if self.request.user.is_authenticated else UPLOAD_CAP
+        )
         if self.mode == "edit":
             # Update help for zfile when editing an upload
             self.zgame_form.fields["zfile"].help_text += (
