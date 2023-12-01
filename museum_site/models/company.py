@@ -38,4 +38,6 @@ class Company(models.Model):
         return reverse("zfile_browse_field", kwargs={"field":"company", "value": self.slug})
 
     def get_absolute_url(self):
+        if not self.slug:
+            self.slug = "ERROR"
         return reverse("zfile_browse_field", kwargs={"field":"company", "value": self.slug})

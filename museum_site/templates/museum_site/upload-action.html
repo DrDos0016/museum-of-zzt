@@ -4,14 +4,9 @@
 <h1>Select An Upload To {{action|title}}</h1>
 <nav class="nav-actions">
     <a href="{% url 'upload' %}">Upload a New File</a>
-    {% if action == "Edit" %}<div>Edit an existing upload</div>{% else %}<a href="{% url 'upload_action' 'edit' %}">Edit an existing upload</a>{% endif %}
-    {% if action == "Delete" %}<div>Delete an existing upload</div>{% else %}<a href="{% url 'upload_action' 'delete' %}">Delete an existing upload</a>{% endif %}
+    {% if action == "Edit" %}<div class="selected">Edit an existing upload</div>{% else %}<a href="{% url 'upload_action' 'edit' %}">Edit an existing upload</a>{% endif %}
+    {% if action == "Delete" %}<div class="selected">Delete an existing upload</div>{% else %}<a href="{% url 'upload_action' 'delete' %}">Delete an existing upload</a>{% endif %}
 </nav>
-<p><ul>
-    <li><a href="{% url 'upload' %}">Upload a New File</a></li>
-    <li>{% if action == "Edit" %}Edit an existing upload{% else %}<a href="{% url 'upload_action' 'edit' %}">Edit an existing upload</a>{% endif %}</li>
-    <li>{% if action == "Delete" %}Delete an existing upload{% else %}<a href="{% url 'upload_action' 'delete' %}">Delete an existing upload</a>{% endif %}</li>
-</ul></p>
 
 <p>{{action_verb}} an unpublished upload requires entering the <i>Edit Token</i> that was generated when the file was first uploaded.</p>
 

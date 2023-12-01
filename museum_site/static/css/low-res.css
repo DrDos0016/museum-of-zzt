@@ -134,6 +134,7 @@
         border:0px;
         font-size:20px;
         background-color:var(--ega-darkblue);
+        color:var(--ega-yellow);
     }
 
     #low-res-shortcuts input[type=button]:hover

@@ -293,6 +293,14 @@ class ZGame_Form(forms.ModelForm):
 
         return author
 
+    def clean_company(self):
+        company = self.cleaned_data["company"].replace(",", "/")
+
+        if company.endswith("/"):
+            company = company[:-1]
+
+        return company
+
     def clean_genre(self):
         if UPLOAD_TEST_MODE:
             record("UPLOAD_TEST_MODE: Bypassing clean_genre()")
@@ -380,7 +388,7 @@ class ZGame_Form(forms.ModelForm):
         for genre in self.cleaned_data["genre"]:
             self.zfile.genres.add(genre)
 
-        for company in self.cleaned_data["company"]:
+        for company in self.cleaned_data["company"].split("/"):
             if company == "":
                 continue
             company_slug = slugify(company, allow_unicode=True)
