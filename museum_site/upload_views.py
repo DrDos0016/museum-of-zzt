@@ -159,6 +159,8 @@ class Upload_View(TemplateView):
 
     def modify_forms(self):
         """ Called during (un)bound form initialization to set settings and adjust fields as needed """
+        # This needs to be consolidated at some point with the form passing to the field to the widget?
+        self.zgame_form.max_upload_size = self.request.user.profile.max_upload_size if self.request.user.is_authenticated else UPLOAD_CAP
         self.zgame_form.fields["zfile"].widget.max_upload_size = (
             self.request.user.profile.max_upload_size if self.request.user.is_authenticated else UPLOAD_CAP
         )
