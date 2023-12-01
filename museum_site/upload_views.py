@@ -175,7 +175,7 @@ class Upload_View(TemplateView):
             # Do not require a file upload when editing
             self.zgame_form.fields["zfile"].required = False
             self.zgame_form.mode = "edit"
-            self.zgame_form.expected_file_pk = self.zgame_obj.pk
+            self.zgame_form.expected_file_id = self.zgame_obj.pk
 
             # Prevent re-announcing edited uploads
             del self.upload_form.fields["announced"]
