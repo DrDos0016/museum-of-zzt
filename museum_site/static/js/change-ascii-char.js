@@ -16,7 +16,8 @@ $(document).ready(function (){
     });
 
     $(".color-button").click(function (){
-        $(".color-button").removeClass("selected");
+        let target = $(this).data("target");
+        $(".color-button[data-target="+target+"]").removeClass("selected");
         $(this).addClass("selected");
         $(this).parent().find("select").val($(this).val());
         update_preview();
