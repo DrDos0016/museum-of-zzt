@@ -4,7 +4,7 @@ from django.template.defaultfilters import slugify
 
 from museum_site.constants import HOST
 from museum_site.core.misc import extract_file_key_from_url
-from museum_site.fields import Enhanced_Model_Choice_Field, Museum_Collection_Name_Field, Museum_Model_Scrolling_Multiple_Choice_Field
+from museum_site.fields import Enhanced_Model_Choice_Field, Museum_Collection_Name_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Choice_Field
 from museum_site.models import File, Collection, Collection_Entry
 from museum_site.widgets import Collection_Title_Widget, Scrolling_Checklist_Widget, Collection_Arrange_Widget
 
@@ -165,3 +165,16 @@ class Collection_Content_Arrange_Form(forms.Form):
 
     def update_associated_file_queryset(self, qs):
         self.fields["associated_file"].queryset = qs
+
+
+class On_The_Fly_Collections_Toggle_Form(forms.Form):
+    otf_status = Museum_Choice_Field(
+        label="On The Fly Collections",
+        widget=forms.RadioSelect(),
+        choices=(
+            ("enable", "Enable"),
+            ("disable", "Disable")
+        ),
+        help_text="Enable/Disable the On The Fly Collections tool",
+        initial="disable",
+    )

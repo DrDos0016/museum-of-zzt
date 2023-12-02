@@ -6,7 +6,9 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.shortcuts import render
 
 from museum_site.constants import *
-from museum_site.forms.collection_forms import Collection_Form, Collection_Content_Form, Collection_Content_Removal_Form, Collection_Content_Arrange_Form
+from museum_site.forms.collection_forms import (
+    Collection_Form, Collection_Content_Form, Collection_Content_Removal_Form, Collection_Content_Arrange_Form, On_The_Fly_Collections_Toggle_Form
+)
 from museum_site.generic_model_views import Model_List_View
 from museum_site.models import *
 from museum_site.templatetags.site_tags import render_markdown
@@ -139,27 +141,33 @@ class Collection_Manage_Contents_View(FormView):
         return "Ok!"
 
 
-class On_The_Fly_Collections_View(TemplateView):
+class On_The_Fly_Collections_View(FormView):
     template_name = "museum_site/collection-on-the-fly-collections.html"
     title = "Manage On The Fly Collections"
+    form_class = On_The_Fly_Collections_Toggle_Form
+    form_output = ""
 
-    def get(self, request, *args, **kwargs):
-        context = {"title": self.title}
-        return render(request, self.template_name, context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.title
+        context["output"] = self.form_output
 
-    def post(self, request, *args, **kwargs):
-        context = {"title": self.title}
-        if request.POST.get("on_the_fly") == "enable":
-            context["output"] = "On The Fly Collections are now enabled."
-            request.session["active_tool"] = "on-the-fly-collections"
-            request.session["active_tool_template"] = "museum_site/tools/on-the-fly-collections.html"
-            request.session["otf_refresh"] = True
+        if self.request.session["active_tool"] == "on-the-fly-collections":
+            context["form"].fields["otf_status"].initial = "enable"
+        return context
+
+    def form_valid(self, form):
+        if form.cleaned_data.get("otf_status") == "enable":
+            self.form_output = "On The Fly Collections are now enabled."
+            self.request.session["active_tool"] = "on-the-fly-collections"
+            self.request.session["active_tool_template"] = "museum_site/tools/on-the-fly-collections.html"
+            self.request.session["otf_refresh"] = True
         else:
-            if request.session.get("active_tool") == "on-the-fly-collections":
-                request.session["active_tool"] = ""
-            context["output"] = "On The Fly Collections are now disabled."
-            request.session["active_tool_template"] = ""
-        return render(request, self.template_name, context)
+            if self.request.session.get("active_tool") == "on-the-fly-collections":
+                self.request.session["active_tool"] = ""
+            self.request.session["active_tool_template"] = ""
+            self.form_output = "On The Fly Collections are now disabled."
+        return self.get(self.request)
 
 
 class Collection_List_View(Model_List_View):
