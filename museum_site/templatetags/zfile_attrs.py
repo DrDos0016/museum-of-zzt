@@ -11,5 +11,5 @@ def zfile_attrs(zfile, **kwargs):
     output_format = kwargs.get("format", "table")
     template_name = "museum_site/subtemplate/tag/zfile-attrs-{}.html".format(output_format)
     attrs = zfile.get_all_attributes(include_staff_fields=True)
-    feedback = Review.objects.filter(zfile_id=zfile.pk).order_by("title")
+    feedback = Review.objects.for_zfile(zfile.pk).order_by("title")
     return {"template": template_name, "zfile": zfile, "feedback": feedback}
