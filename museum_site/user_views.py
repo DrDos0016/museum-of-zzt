@@ -57,6 +57,8 @@ def activate_account(request, token=None):
             user.is_active = True
             user.profile.activation_token = ""
             user.profile.activation_time = None
+            user.profile.site_credits_name = user.username
+            user.profile.stream_credits_name = user.username
             user.profile.save()
             user.save()
 

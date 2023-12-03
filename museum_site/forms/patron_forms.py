@@ -57,6 +57,12 @@ class Change_Patron_Crediting_Preferences_Form(forms.Form):
     site_credits_name = forms.CharField(required=False)
     stream_credits_name = forms.CharField(required=False)
 
+    def clean_site_credits_name(self):
+        return self.cleaned_data["site_credits_name"] if self.cleaned_data["site_credits_name"] != "" else "Anonymous"
+
+    def clean_stream_credits_name(self):
+        return self.cleaned_data["stream_credits_name"] if self.cleaned_data["stream_credits_name"] != "" else "Anonymous"
+
 
 class Change_Patron_Stream_Poll_Nominations_Form(forms.Form):
     use_required_attribute = False
