@@ -48,6 +48,9 @@ label.selected { background: var(--header-bg);}
 /* Hover (Selected) */
 /* label.selected:hover { background: var(--ega-gray);} */
 
+.controls { display:flex; gap:7px; }
+.controls > input { box-sizing:border-box; }
+
 /* Django Forms */
 .field-wrapper
 {

@@ -1,9 +1,6 @@
-<p>Collections are user creatable sets of files hosted on the Museum of ZZT.</p>
+{% load site_tags %}
+{% if request.user.is_authenticated %}{% nav_action_list "collection" request.path %}{% else %}
+<p><b>Creating collections requires being signed into a <a href="{% url 'login_user' %}">Museum of ZZT account</a>.</b></p>
+{% endif %}
 
-<p>{% if request.user.is_authenticated %}
-<ul>
-<li><a href="{% url 'collection_new' %}">Create A New Collection</a></li>
-<li><a href="{% url 'collection_user' %}">Manage My Collections</a></li>
-<li><a href="{% url 'collection_on_the_fly_collections' %}">Enable/Disable On The Fly Collections</a></li>
-</ul>
-{% else %}Creating collections requires being signed into a <a href="{% url 'login_user' %}">Museum of ZZT account</a>.{% endif %}</p>
+<p>Collections are user creatable sets of files hosted on the Museum of ZZT.</p>

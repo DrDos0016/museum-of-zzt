@@ -699,6 +699,8 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     padding:7px 4px 7px 4px;
 }
 
+.nav-actions > a { display:flex; align-items:center; justify-content: center; }
+
 .nav-actions > .selected
 {
     background:var(--header-bg);

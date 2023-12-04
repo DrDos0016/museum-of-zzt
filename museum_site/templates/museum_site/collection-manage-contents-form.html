@@ -22,8 +22,8 @@ var collection_id = {{collection.id|default:0}};
 
 {% block content %}
 <h1>{{title}}</h1>
-
-<div><h2 id="current-action-heading">{{action.text}}</h2>{% for action in collection_actions %}<a href="{{action.url}}">{{action.text}}</a>{% if not forloop.last %} | {% endif %}{% endfor %}</div>
+{% nav_action_list "collection-manage" request.GET.operation %}
+<h2 id="current-action-heading">{{action.text}}</h2>
 {% model_block collection %}
 
 {% if operation == "add" and collection.is_yours %}

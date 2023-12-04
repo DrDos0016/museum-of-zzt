@@ -21,6 +21,7 @@ function update_url()
 
 {% block content %}
 <h1>{{title}}</h1>
+{% nav_action_list "collection" request.path %}
 
 {% if action == "Create" %}
 <p>Collections are created in two steps. This page is used to create an empty collection. After creating the collection, you will be taken to a page where files can be added to it.</p>

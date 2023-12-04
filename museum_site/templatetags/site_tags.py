@@ -10,6 +10,7 @@ from django import template
 from django.template import Template, Context, Library
 from django.template.loader import render_to_string
 from django.template.defaultfilters import stringfilter, escape
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
@@ -487,3 +488,31 @@ def zfl(key, text="", qs="", target="_blank", i=True, *args, **kwargs):
     # Italicize text if needed
     output = "<i>" + output + "</i>" if i else output
     return mark_safe(output)
+
+
+@register.simple_tag()
+def nav_action_list(key, condition=None):
+    # TEMP LOCATION OF THIS INFORMATION
+    actions = []
+    print("CONDITION", condition)
+    if key == "collection":
+        actions = [
+            {"selected": True if condition.startswith("/collection/browse/") else False, "url": reverse("collection_browse"), "text": "Collection Directory"},
+            {"selected": True if condition.startswith("/collection/new/") else False, "url": reverse("collection_new"), "text": "Create Collection"},
+            {"selected": True if condition.startswith("/collection/user/") else False, "url": reverse("collection_user"), "text": "Manage Collections"},
+            {"selected": True if condition.startswith("/collection/on-the-fly-collections/") else False, "url": reverse("collection_on_the_fly_collections"), "text": "On The Fly Collections"},
+        ]
+    elif key == "collection-manage":
+        actions = [
+            {"selected": False, "url": "?operation=add", "text": "Add Entry"},
+            {"selected": False, "url": "?operation=remove", "text": "Remove Entry"},
+            {"selected": False, "url": "?operation=arrange", "text": "Arrange Entries"},
+            {"selected": False, "url": "?operation=edit-entry", "text": "Edit Entries"},
+        ]
+    elif key == "upload":
+        actions = [
+            {"selected": False, "url": reverse("upload"), "text": "Upload a New File"},
+            {"selected": False, "url": reverse("upload_action", "edit"), "text": "Edit An Existing Upload"},
+            {"selected": False, "url": reverse("upload_action", "delete"), "text": "Delete An Existing Upload"},
+        ]
+    return render_to_string("museum_site/subtemplate/tag/nav-action-list.html", {"actions": actions})

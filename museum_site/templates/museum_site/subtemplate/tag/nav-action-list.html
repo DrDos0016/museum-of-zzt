@@ -1,0 +1,4 @@
+<nav class="nav-actions">
+    {% for action in actions %}{% if action.selected %}<div class="selected">{{action.text}}</div>{% else %}<a href="{{action.url}}">{{action.text}}</a>{% endif %}
+    {% endfor %}
+</nav>
