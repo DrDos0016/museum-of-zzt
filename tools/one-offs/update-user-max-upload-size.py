@@ -18,7 +18,7 @@ def main():
     count = 0
     for p in qs:
         if p.max_upload_size < UPLOAD_CAP:
-            p.max_upoad_size = UPLOAD_CAP
+            p.max_upload_size = UPLOAD_CAP
             p.save()
             count += 1
 
