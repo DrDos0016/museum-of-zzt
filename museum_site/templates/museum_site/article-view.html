@@ -49,26 +49,6 @@ function jump_to(jump)
 </script>
 {% endblock %}
 
-{% block article_overview %}
-<div id="article-meta">
-    <div class="preview-container"><img src="{% static article.preview_url %}" class="screenshot-thumb preview"></div>
-    <div class="info">
-        <h{% if file %}2{% else %}1{% endif %}>{{article.title}}</h{% if file %}2{% else %}1{% endif %}>
-        <div>
-            <p class="summary">{{article.description}}</p>
-            <div class="author">Authored By: {{article.author}}</div>
-            <div class="publish-date">Published: {% if article.publish_date.year == None %}<i>Unknown</i>{% else %}{{article.publish_date}}{% endif %}</div>
-            {% if article.series.all %}<div class="series">Part of Series: {{article.series_links|safe}}</div>{% endif %}
-            {% if article.revision_details %}<div class="revision-label">Revisions (as of {{article.last_revised|default:"Unknown"}}):</div>
-            <div class="revision-details">{{article.revision_details|linebreaksbr}}</div>{% endif %}
-            {% if request.user.is_staff %}
-            <div><b>Staff Functions:</b> <a href="{{article.admin_url}}">Edit Article {{article.id}}</a> | <a href="{% url 'debug_article' article.id %}">WIP Tools</a></div>
-            {% endif %}
-        </div>
-    </div>
-</div>
-{% endblock %}
-
 {% block article_controls %}{% if article.schema == "80col" %}
 <hr>
 <div id="article-controls">
