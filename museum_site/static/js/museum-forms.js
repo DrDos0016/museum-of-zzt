@@ -121,7 +121,6 @@ $(document).ready(function (){
     });
 
     $(".widget-board-count-clear-button").click(function (){
-        console.log("MAGIC");
         uncheck(".field-layout-board-count input:checked");
         $(this).parent().find("input[type=number]").val("");
     });
@@ -196,7 +195,7 @@ $(document).ready(function (){
     // Update remaining characters
     $(".char-limited-widget").trigger("input");
     // Convert text to tags if needed
-    $(".tag-input").trigger("input");
+    convert_text_to_tags();
     // Update list of checked boxes
     $(".widget-selected").each(function (){
         var input_name = $(this).data("input-name");
@@ -433,4 +432,15 @@ function uncheck(...selectors)
         $(selector).prop("checked", false);
     }
     return true;
+}
+
+function convert_text_to_tags()
+{
+    $(".tag-input").each(function (){
+        if ($(this).val())
+        {
+            $(this).val($(this).val() + ",");
+            $(this).trigger("input");
+        }
+    });
 }
