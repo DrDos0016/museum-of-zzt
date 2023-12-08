@@ -70,7 +70,7 @@
     padding-bottom:4px;
 }
 
-#article-meta .info { grid-area:info; max-width:500px; }
+#article-meta .info { grid-area:info; }
 #article-meta .info > div { font-size:10pt; font-family:monospace;}
 #article-meta .info p { font-size:12pt; }
 #article-meta .preview { border:1px solid; }

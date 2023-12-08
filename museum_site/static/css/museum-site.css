@@ -135,6 +135,7 @@ figure.zzt-figure
 figure.zzt-figure figcaption { padding-top:7px; padding-bottom:7px; }
 figure.zzt-figure figcaption a { color:var(--ega-yellow); }
 
+#heading-wrapper { display:flex; align-items:center; gap:8px; }
 h1 {margin-top:0;}
 
 hr { height:14px; border:0px; background-image:url("/static/chrome/hr-center.png"); }

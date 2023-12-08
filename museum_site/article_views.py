@@ -143,6 +143,9 @@ class Article_List_View(Model_List_View):
         if self.request.GET:
             context["search_type"] = "Advanced"
             context["query_edit_url_name"] = "article_search"
+
+        if self.request.path == "/article/browse/":
+            context["rss_info"] = {"url_name": "rss_articles"}
         return context
 
     def get_title(self):

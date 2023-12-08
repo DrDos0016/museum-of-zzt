@@ -22,6 +22,7 @@
                 {% if article.series.all %}<div class="series">Part of Series: {{article.series_links|safe}}</div>{% endif %}
                 {% if article.revision_details %}<div class="revision-label">Revisions (as of {{article.last_revised|default:"Unknown"}}):</div>
                 <div class="revision-details">{{article.revision_details|linebreaksbr}}</div>{% endif %}
+                <div class="article-rss"><a href="{% url 'rss_articles' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon" style="width:16px;height:16px"></a></div>
                 {% if request.user.is_staff %}
                 <div><b>Staff Functions:</b> <a href="{{article.admin_url}}">Edit Article {{article.id}}</a> | <a href="{% url 'debug_article' article.id %}">WIP Tools</a></div>
                 {% endif %}

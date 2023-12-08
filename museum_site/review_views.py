@@ -79,6 +79,9 @@ class Review_List_View(Model_List_View):
         if self.request.GET:
             context["search_type"] = "Advanced"
             context["query_edit_url_name"] = "review_search"
+
+        if self.request.path == "/review/browse/":
+            context["rss_info"] = {"url_name": "rss_reviews"}
         return context
 
 

@@ -218,9 +218,10 @@ class ZFile_List_View(Model_List_View):
         context = super().get_context_data(**kwargs)
         context["search_type"] = self.search_type
 
-        # Modify sort options based on path
+        # Modify sort options and RSS icons based on path
         if self.request.path == "/file/browse/":
             context["sort_options"] = [{"text": "Publish Date", "val": "-publish_date"}] + context["sort_options"]
+            context["rss_info"] = {"url_name": "rss_files"}
         elif self.request.path == "/file/browse/new-finds/":
             context["sort_options"] = None
             context["sort"] = "-publish_date"
@@ -229,6 +230,7 @@ class ZFile_List_View(Model_List_View):
             context["prefix_template"] = "museum_site/prefixes/new-releases.html"
         elif self.request.path == "/file/browse/detail/uploaded/":
             context["sort_options"] = [{"text": "Upload Date", "val": "uploaded"}] + context["sort_options"]
+            context["rss_info"] = {"url_name": "rss_uploads"}
         elif self.request.path == "/file/roulette/":
             context["sort_options"] = [{"text": "Random", "val": "random"}] + context["sort_options"]
 
