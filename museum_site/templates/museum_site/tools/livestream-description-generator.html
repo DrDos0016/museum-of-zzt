@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block scripts %}
-<script src="{% static 'js/museum-forms.js' %}"></script>
-{% for script in scripts %}<script src="{% static script %}"></script>{% endfor %}
+<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
+{% for script in scripts %}<script src="{% static script %}?{{BOOT_TS}}"></script>{% endfor %}
 {% endblock %}
 
 {% block content %}

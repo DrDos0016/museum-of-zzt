@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block scripts %}
-<script src="{% static 'js/museum-forms.js' %}"></script>
+<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
 <script>
 $(document).ready(function (){
     $("input[type=url]").change(render_images);

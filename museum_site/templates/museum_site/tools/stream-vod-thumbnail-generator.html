@@ -4,9 +4,9 @@
 {% load zzt_tags %}
 
 {% block scripts %}
-<script src="{% static 'js/museum-forms.js' %}"></script>
-<script src="/static/js/change-ascii-char.js"></script>
-{% for script in scripts %}<script src="{% static script %}"></script>{% endfor %}
+<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
+<script src="/static/js/change-ascii-char.js?{{BOOT_TS}}"></script>
+{% for script in scripts %}<script src="{% static script %}?{{BOOT_TS}}"></script>{% endfor %}
 {% endblock %}
 
 {% block style %}

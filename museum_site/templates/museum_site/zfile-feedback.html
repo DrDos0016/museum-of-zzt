@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/museum-forms.js' %}"></script>
+<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
 <script>
 $(document).ready(function (){
     $("#preview-review").click(function (){

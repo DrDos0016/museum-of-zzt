@@ -10,7 +10,7 @@
 
 {% block content %}
 <!--generic-directory.html-->
-<h{{header_idx|default:"1"}}>{{title}}</h{{header_idx|default:"1"}}>
+<div id="heading-wrapper"><h{{header_idx|default:"1"}}>{{title}}</h{{header_idx|default:"1"}}>{% if rss_info %}<a href="{% url rss_info.url_name %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a>{% endif %}</div>
 {% if head_object %}{% model_block head_object %}{% endif %}
 {% if prefix_template %}{% include prefix_template %}{% elif prefix_text %}{{prefix_text|safe|linebreaks}}{% endif %}
 
