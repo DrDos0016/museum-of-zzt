@@ -139,9 +139,9 @@ class Scrolling_Checklist_Widget(forms.SelectMultiple):
         context["default"] = self.default
         return context
 
+
 class Language_Checklist_Widget(Scrolling_Checklist_Widget):
     template_name = "museum_site/widgets/language-checklist-widget.html"
-
 
 
 class Enhanced_Text_Widget(forms.TextInput):
@@ -159,6 +159,7 @@ class Enhanced_Text_Widget(forms.TextInput):
             context["field_maxlength"] = self.char_limit * 3
         context["prefix_text"] = self.prefix_text
         return context
+
 
 class Enhanced_Text_Area_Widget(Enhanced_Text_Widget):
     template_name = "museum_site/widgets/enhanced-textarea-widget.html"
@@ -247,6 +248,7 @@ class Range_Widget(forms.Widget):
             context["manual_data"] = self.manual_data
         return context
 
+
 class NEW_Range_Widget(forms.Widget):
     template_name = "museum_site/widgets/NEW-range-widget.html"
 
@@ -312,7 +314,6 @@ class NEW_Board_Range_Widget(forms.Widget):
         return (data.get("board_min"), data.get("board_max"), data.get("board_type"))
 
 
-
 class Board_Range_Widget(Range_Widget):
     template_name = "museum_site/widgets/board-range-widget.html"
 
@@ -366,6 +367,7 @@ class Terms_Of_Service_Widget(forms.CheckboxInput):
         context = super().get_context(name, value, attrs)
         context["terms"] = TERMS
         return context
+
 
 class Collection_Title_Widget(Enhanced_Text_Widget):
     template_name = "museum_site/widgets/collection-title-widget.html"

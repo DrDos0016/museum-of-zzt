@@ -5,6 +5,7 @@ from django.views.generic import DetailView
 from museum_site.generic_model_views import Model_List_View
 from museum_site.models import Scroll
 
+
 class Scroll_List_View(Model_List_View):
     model = Scroll
     allow_pagination = True
@@ -53,7 +54,7 @@ def scroll_navigation(request, navigation="random"):
             scroll = Scroll.objects.filter(published=True).order_by("-id").first()
         elif navigation == "prev":
             scroll = Scroll.objects.filter(published=True).order_by("id").first()
-        else: # Random
+        else:  # Random
             scroll = Scroll.objects.filter(published=True).order_by("?").first()
 
     slug = slugify(scroll.title) if scroll else "unlabeled-scroll"

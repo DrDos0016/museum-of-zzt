@@ -130,5 +130,6 @@ class Model_Search_View(FormView):
         context["title"] = self.title
         return context
 
+
 class Generic_Error_View(TemplateView):
     template_name = "museum_site/error.html"

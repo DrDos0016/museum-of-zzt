@@ -70,10 +70,10 @@ def debug(request, filename=None):
     data["collections"] = test_collections
     data["collection_contents"] = test_collection_contents
     data["show"] = request.GET.get("show", "zfiles")
-    #data["custom"] = test_custom_blocks
+    # data["custom"] = test_custom_blocks
 
     # Widget Debug
-    #data["checklist_items"] = File.objects.published()
+    # data["checklist_items"] = File.objects.published()
 
     if request.GET.get("serve"):
         return serve_file_as(request.GET.get("serve"), request.GET.get("as", ""))
@@ -199,6 +199,7 @@ def file_viewer_new(request, key, local=False):
 
     context["zfile"] = File.objects.get(key=key)
     return render(request, "museum_site/file-viewer.html", context)
+
 
 @staff_member_required
 def debug_attrs(request, key):

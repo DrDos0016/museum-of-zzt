@@ -201,7 +201,7 @@ def mass_downloads(request):
     zzt_2010s = {"label": "ZZT Worlds - 2010-2019", "count": 0, "zip": "zzt_worlds_2010-2019.zip"}
     zzt_2020s = {"label": "ZZT Worlds - 2020-2029", "count": 0, "zip": "zzt_worlds_2020-2029.zip"}
     for item in zzt_counts:
-        if item["year"] == None:
+        if item["year"] is None:
             item["year"] = "Unknown"
             item["zip"] = "zzt_worlds_UNKNOWN.zip"
             item["label"] = "ZZT Worlds - Unknown"

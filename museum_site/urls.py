@@ -75,7 +75,7 @@ urlpatterns = [
     path("about-zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 534, "slug": "about-zzt"}, name="about_zzt"),
     path("clones/", RedirectView.as_view(pattern_name="article_view"), {"pk": 6, "slug": "zzt-clones"}, name="clones"),
     path("getting-started/", RedirectView.as_view(pattern_name="article_view"), {"pk": 5, "slug": "getting-started-with-zzt"}, name="zzt_dosbox"),
-    path("support/", RedirectView.as_view(pattern_name="article_view"), {"pk": 576 , "slug": "supporting-the-worlds-of-zzt-project"}, name="support"),
+    path("support/", RedirectView.as_view(pattern_name="article_view"), {"pk": 576, "slug": "supporting-the-worlds-of-zzt-project"}, name="support"),
     path("zeta/", RedirectView.as_view(pattern_name="article_view"), {"pk": 399, "slug": "zzting-with-zeta"}, name="zeta"),
     path("zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 2, "slug": "zzt-versions"}, name="zzt_dl"),
     path("zzt-cheats/", RedirectView.as_view(pattern_name="article_view"), {"pk": 22, "slug": "zzt-cheats"}, name="zzt_cheats"),
@@ -144,12 +144,7 @@ urlpatterns = [
     path("file/review/<str:key>/", museum_site.file_views.ZFile_Review_List_View.as_view(), name="zfile_review"),
     path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "key": ""}, name="zfile_view_local"),
     path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),  # TODO
-    #path("file/view/<str:key>/new/", museum_site.debug_views.file_viewer_new, name="file"),  # TODO
     path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="zfile_pk"),
-    #path(
-    #    "file/play/local/", museum_site.zeta_views.zeta_launcher,
-    #    {"components": ["credits", "controls", "instructions", "players"], "key":"LOCAL"}, name="play_local"
-    #),
     path(
         "file/play/<str:key>/", museum_site.zeta_views.zeta_launcher,
         {"components": ["credits", "controls", "instructions", "players"]}, name="zfile_play"

@@ -54,7 +54,7 @@ def zfiles(request):
         rating=3.14,
         review_count=5,
         article_count=10,
-        #screenshot="zzt.png"
+        # screenshot="zzt.png"
     )
 
     data["example"] = example

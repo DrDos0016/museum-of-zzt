@@ -1,13 +1,13 @@
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.template.defaultfilters import slugify
 from django.views.generic import DetailView, FormView
 
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.forms.article_forms import Article_Search_Form
-from museum_site.models import Article, Article_Category_Block
 from museum_site.generic_model_views import Model_List_View, Model_Search_View
+from museum_site.models import Article, Article_Category_Block
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
@@ -152,7 +152,6 @@ class Article_List_View(Model_List_View):
         if self.category:
             return "{} Directory".format(self.category)
         return super().get_title()
-
 
 
 class Article_Categories_List_View(Model_List_View):

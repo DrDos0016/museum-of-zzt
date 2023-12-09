@@ -47,7 +47,7 @@ REMOTE_ADDR_HEADER = os.environ.get("MOZ_REMOTE_ADDR_HEADER", "REMOTE_ADDR")
 
 # TODO: This is janky and temporary
 BANNED_IPS = [
-    #"127.0.0.*",
+    # "127.0.0.*",
 ]
 
 # External Article Development

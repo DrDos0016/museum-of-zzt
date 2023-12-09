@@ -280,7 +280,7 @@ def mirror(request, key):
         url_prefix = "szzt_"
         engine = "Super ZZT"
     else:
-        url_prefix= "!!!UNKNOWN_ENGINE!!!"
+        url_prefix = "!!!UNKNOWN_ENGINE!!!"
         engine = "!!!UNKNOWN_ENGINE!!!"
 
     subject = ";".join(zfile.genre_list())
@@ -370,7 +370,6 @@ def month_in_review(request):
     ).filter(category="livestream").order_by("publish_date", "title")
     context["exclusives"] = Article.objects.upcoming_or_unpublished().order_by("publish_date", "title")
     return render(request, "museum_site/tools/month-in-review.html", context)
-
 
 
 @staff_member_required

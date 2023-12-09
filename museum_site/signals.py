@@ -3,6 +3,7 @@ from django.dispatch import receiver
 
 from museum_site.models import Article, File
 
+
 @receiver(post_save, sender=Article)
 def article_post_save(sender, instance, **kwargs):
     # Associate ZFiles with publication packs

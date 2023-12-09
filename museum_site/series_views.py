@@ -1,6 +1,7 @@
 from museum_site.generic_model_views import Model_List_View
 from museum_site.models import Article, Series
 
+
 class Series_List_View(Model_List_View):
     model = Series
     queryset = Series.objects.directory()
