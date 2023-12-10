@@ -159,7 +159,7 @@ class Review(BaseModel):
 
     def get_field_content(self, view="review-content"):
         value = self.content
-        if self.pk > 2000 and self.zfile_id and self.zfile.publish_date and str(self.zfile.publish_date) != "2018-11-06 00:00:00+00:00":
+        if self.pk and self.pk > 2000 and self.zfile_id and self.zfile.publish_date and str(self.zfile.publish_date) != "2018-11-06 00:00:00+00:00":
             if self.zfile.publish_date > self.date:
                 value = "**__This feedback was submitted prior to publication of this file and may not reflect its current contents__**\n\n" + value
 
