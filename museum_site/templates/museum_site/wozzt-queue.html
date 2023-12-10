@@ -13,6 +13,16 @@
     margin:0.5em;
     border:4px dashed #000;
 }
+
+#form-wozzt-roll
+{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border:5px double var(--border-color);
+}
+
+#form-wozzt-roll .field-wrapper { border-top: 0px; flex:1; }
 </style>
 {% endblock %}
 
@@ -109,16 +119,10 @@ $(document).ready(function (){
 </div>
 
 {% if request.user.is_staff %}
-<form method="POST" class="controls">
-    {% csrf_token %}
-    <input type="hidden" name="action" value="roll">
-    Quantity: <input name="count" value="{{request.POST.count|default:56}}" maxlength="2"> |
-    Category: <select name="category">
-        <option value="wozzt">Worlds of ZZT</option>
-        <option value="tuesday"{% if request.GET.category == 'tuesday' %} selected{% endif %}>Title Screen Tuesday</option>
-        <option value="discord"{% if request.GET.category == 'discord' %} selected{% endif %}>Discord Queue</option>
-    </select> |
-    <input type="submit" value="Roll">
+<form{% for k,v in wozzt_roll_form.attrs.items %} {{k}}="{{v}}"{% endfor %} id="form-wozzt-roll">
+    {% if wozzt_roll_form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+    {% include "museum_site/blocks/generic-form.html" with form=wozzt_roll_form %}
+    <input type="submit" value="{{wozzt_roll_form.submit_value}}">
 </form>
 {% endif %}
 

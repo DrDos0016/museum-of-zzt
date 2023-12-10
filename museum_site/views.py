@@ -17,6 +17,7 @@ from django.views.generic import TemplateView
 
 from museum_site.core.detail_identifiers import *
 from museum_site.constants import ZGAMES_BASE_PATH
+from museum_site.forms.wozzt_forms import WoZZT_Roll_Form
 from museum_site.models import *
 from museum_site.settings import DISCORD_INVITE_URL, PASSWORD5DOLLARS
 
@@ -355,26 +356,27 @@ def stub(request, *args, **kwargs):
 
 
 def worlds_of_zzt_queue(request):
-    data = {"title": "Worlds of ZZT Queue"}
+    context = {"title": "Worlds of ZZT Queue"}
     category = request.GET.get("category", "wozzt")
 
     if request.user.is_staff:
+        if request.method == "POST":
+            if request.POST.get("action") == "roll":
+                context["wozzt_roll_form"] = WoZZT_Roll_Form(request.POST)
+                if context["wozzt_roll_form"].is_valid():
+                    context["wozzt_roll_form"].process()
+
+        else:
+            context["wozzt_roll_form"] = WoZZT_Roll_Form(initial={"category": category})
+
+
         if request.POST.get("action"):
-            if request.POST["action"] == "roll":
-                count = request.POST.get("count")
-                category = request.POST.get("category")
-                title = True if category == "tuesday" else False
-
-                for x in range(0, int(count)):
-                    WoZZT_Queue().roll(category=category, title_screen=title)
-
-            elif request.POST["action"] == "set-priority":
+            if request.POST["action"] == "set-priority":
                 pk = int(request.POST.get("id"))
                 entry = WoZZT_Queue.objects.get(pk=pk)
                 entry.priority = int(request.POST.get("priority"))
                 entry.save()
                 return HttpResponse("OK")
-
             elif request.POST["action"] == "delete":
                 pk = int(request.POST.get("id"))
                 entry = WoZZT_Queue.objects.get(pk=pk)
@@ -382,15 +384,15 @@ def worlds_of_zzt_queue(request):
                 entry.delete()
                 return HttpResponse("OK")
     else:
-        if category not in ["wozzt", "tuesday"]:
+        if category not in ["wozzt", "tuesday"]:  # Guest can only view main queue and title screen tuesday queue
             category = "wozzt"
 
-    data["queue"] = WoZZT_Queue.objects.queue_for_category(category)
-    data["queue_size"] = len(data["queue"])
+    context["queue"] = WoZZT_Queue.objects.queue_for_category(category)
+    context["queue_size"] = len(context["queue"])
     size = 999 if (request.user.is_authenticated and request.user.profile.patron) or request.user.is_staff else 16
-    data["queue"] = data["queue"][:size]
-    data["category"] = category
-    return render(request, "museum_site/wozzt-queue.html", data)
+    context["queue"] = context["queue"][:size]
+    context["category"] = category
+    return render(request, "museum_site/wozzt-queue.html", context)
 
 
 def error_500(request):
