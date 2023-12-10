@@ -276,8 +276,6 @@ class NEW_Range_Widget(forms.Widget):
         else:
             context["min_value"] = ""
             context["max_value"] = ""
-        print("CONTEXT FINAL")
-        print(context)
         return context
 
 
