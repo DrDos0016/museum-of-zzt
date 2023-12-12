@@ -6,21 +6,17 @@ from io import BytesIO
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from museum_site.constants import *
+from museum_site.constants import ZETA_EXECUTABLES
 from museum_site.core.decorators import rusty_key_check
 from museum_site.core.detail_identifiers import *
 from museum_site.core.redirects import explicit_redirect_check
 from museum_site.core.zeta_identifiers import *
-from museum_site.models import *
+from museum_site.models import File as ZFile
+from museum_site.models import Zeta_Config
 
 
 @rusty_key_check
-def zeta_launcher(
-    request, key=None,
-    components=[
-        "controls", "instructions", "credits", "advanced", "players"
-    ]
-):
+def zeta_launcher(request, key=None, components=["controls", "instructions", "credits", "advanced", "players"]):
     data = {"title": "Zeta Launcher"}
 
     PLAY_METHODS = {"archive": {"name": "Archive.org - DosBox Embed"}, "zeta": {"name": "Zeta"}}
@@ -58,7 +54,7 @@ def zeta_launcher(
 
     if data["components"]["advanced"]:
         # data["charsets"] = CUSTOM_CHARSET_LIST
-        data["all_files"] = File.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
+        data["all_files"] = ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
 
     data["charset_override"] = request.GET.get("charset_override", "")
     data["executable"] = request.GET.get("executable", "AUTO")
@@ -67,7 +63,7 @@ def zeta_launcher(
 
     # Get files requested
     if key and key != "LOCAL":
-        data["file"] = File.objects.filter(key=key).first()
+        data["file"] = ZFile.objects.filter(key=key).first()
         data["local"] = False
     else:
         data["file"] = None  # This will be the "prime" file
@@ -80,7 +76,7 @@ def zeta_launcher(
 
     data["file_count"] = len(data["file_ids"])
     data["included_files"] = []
-    for f in File.objects.filter(pk__in=data["file_ids"]):
+    for f in ZFile.objects.filter(pk__in=data["file_ids"]):
         data["included_files"].append(f.download_url())
         if data["file"] is None:
             data["file"] = f
@@ -142,9 +138,7 @@ def zeta_launcher(
 
     # Get info for all Zeta configs if needed
     if data["components"]["advanced"]:
-        data["config_list"] = Zeta_Config.objects.exclude(
-            pk=ZETA_RESTRICTED
-        ).only("id", "name")
+        data["config_list"] = Zeta_Config.objects.exclude(pk=ZETA_RESTRICTED).only("id", "name")
 
     # Get Zeta Config for file
     data["zeta_config"] = data["file"].zeta_config if data["file"] else None
@@ -165,9 +159,7 @@ def zeta_launcher(
         for f in files:
             if f.lower().endswith(".com"):
                 generic_font = f
-        data["zeta_config"].commands = (
-            data["zeta_config"].commands.replace("{font_file}", generic_font)
-        )
+        data["zeta_config"].commands = (data["zeta_config"].commands.replace("{font_file}", generic_font))
 
     # Extra work for custom EXE
     if data["zeta_config"].name.startswith("Use Included EXE"):
@@ -219,7 +211,7 @@ def zeta_live(request):
     fname = request.GET["world"]
     start = int(request.GET["start"]).to_bytes(1, byteorder="little")
 
-    f = File.objects.get(pk=int(pk))
+    f = ZFile.objects.get(pk=int(pk))
 
     # Open original zip and extract the file
     with zipfile.ZipFile(f.phys_path()) as orig_zip:

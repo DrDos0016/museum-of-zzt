@@ -9,8 +9,6 @@ from museum_site.core.detail_identifiers import DETAIL_UPLOADED, DETAIL_LOST
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.form_utils import clean_params
 from museum_site.core.misc import banned_ip
-from museum_site.models import *
-from museum_site.models import File as ZFile
 from museum_site.templatetags.site_tags import render_markdown
 
 

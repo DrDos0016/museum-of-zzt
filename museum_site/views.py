@@ -18,7 +18,8 @@ from django.views.generic import TemplateView
 from museum_site.core.detail_identifiers import *
 from museum_site.constants import ZGAMES_BASE_PATH
 from museum_site.forms.wozzt_forms import WoZZT_Roll_Form
-from museum_site.models import *
+from museum_site.models import Article, Author, Company, Genre, Profile, Review, WoZZT_Queue
+from museum_site.models import File as ZFile
 from museum_site.settings import DISCORD_INVITE_URL, PASSWORD5DOLLARS
 
 
@@ -154,7 +155,7 @@ def explicit_warning(request):
     data["title"] = "Explicit Content Ahead!"
 
     if request.GET.get("pk"):
-        data["file"] = File.objects.get(pk=request.GET.get("pk"))
+        data["file"] = ZFile.objects.get(pk=request.GET.get("pk"))
 
     if request.POST.get("action") == "Continue":
         if request.POST.get("explicit-warning") == "off":
@@ -177,8 +178,8 @@ def index(request):
 
     # Obtain latest content
     context["articles"] = Article.objects.spotlight()[:10]
-    context["new_releases"] = File.objects.new_releases_frontpage(spotlight_filter=True)[:12]
-    context["files"] = File.objects.new_finds(spotlight_filter=True)[:12]
+    context["new_releases"] = ZFile.objects.new_releases_frontpage(spotlight_filter=True)[:12]
+    context["files"] = ZFile.objects.new_finds(spotlight_filter=True)[:12]
     context["feedback"] = Review.objects.latest_approved_reviews().filter(spotlight=True)[:10]
     context["article_table_header"] = context["articles"][0].table_header() if context["articles"] else None
     context["feedback_table_header"] = context["feedback"][0].table_header() if context["feedback"] else None
@@ -189,13 +190,13 @@ def index(request):
 def mass_downloads(request):
     """ Returns a page for downloading files by release year """
     context = {"title": "Mass Downloads"}
-    zzt_counts = File.objects.filter(details__id=DETAIL_ZZT).annotate(year=ExtractYear("release_date")).values("year").annotate(count=Count("pk"))
-    szzt_count = {"label": "Super ZZT Worlds", "count": File.objects.filter(details__id=DETAIL_SZZT).count(), "zip": "szzt_worlds.zip"}
-    weave_count = {"label": "Weave ZZT Worlds", "count": File.objects.filter(details__id=DETAIL_WEAVE).count(), "zip": "weave_worlds.zip"}
-    zig_count = {"label": "ZIG Worlds", "count": File.objects.filter(details__id=DETAIL_ZIG).count(), "zip": "zig_worlds.zip"}
-    utilities_count = {"label": "Utilities", "count": File.objects.filter(details__id=DETAIL_UTILITY).count(), "zip": "utilities.zip"}
-    zzm_audio_count = {"label": "ZZM Audio Files", "count": File.objects.filter(details__id=DETAIL_ZZM).count(), "zip": "zzm_audio.zip"}
-    featured_world_count = {"label": "Featured Worlds", "count": File.objects.filter(details__id=DETAIL_FEATURED).count(), "zip": "featured_worlds.zip"}
+    zzt_counts = ZFile.objects.filter(details__id=DETAIL_ZZT).annotate(year=ExtractYear("release_date")).values("year").annotate(count=Count("pk"))
+    szzt_count = {"label": "Super ZZT Worlds", "count": ZFile.objects.filter(details__id=DETAIL_SZZT).count(), "zip": "szzt_worlds.zip"}
+    weave_count = {"label": "Weave ZZT Worlds", "count": ZFile.objects.filter(details__id=DETAIL_WEAVE).count(), "zip": "weave_worlds.zip"}
+    zig_count = {"label": "ZIG Worlds", "count": ZFile.objects.filter(details__id=DETAIL_ZIG).count(), "zip": "zig_worlds.zip"}
+    utilities_count = {"label": "Utilities", "count": ZFile.objects.filter(details__id=DETAIL_UTILITY).count(), "zip": "utilities.zip"}
+    zzm_audio_count = {"label": "ZZM Audio Files", "count": ZFile.objects.filter(details__id=DETAIL_ZZM).count(), "zip": "zzm_audio.zip"}
+    featured_world_count = {"label": "Featured Worlds", "count": ZFile.objects.filter(details__id=DETAIL_FEATURED).count(), "zip": "featured_worlds.zip"}
 
     zzt_1990s = []
     zzt_2000s = []
@@ -238,7 +239,7 @@ def mass_downloads(request):
 
 def random(request):
     """ Returns a random ZZT file page """
-    selection = File.objects.random_zzt_world()
+    selection = ZFile.objects.random_zzt_world()
     if selection is not None:
         return redirect(selection.get_absolute_url())
     else:
@@ -369,7 +370,6 @@ def worlds_of_zzt_queue(request):
         else:
             context["wozzt_roll_form"] = WoZZT_Roll_Form(initial={"category": category})
 
-
         if request.POST.get("action"):
             if request.POST["action"] == "set-priority":
                 pk = int(request.POST.get("id"))
@@ -415,13 +415,11 @@ def error_500(request):
 
 
 def error_403(request, exception=None):
-    context = {}
-    return render(request, "museum_site/403.html", context, status=403)
+    return render(request, "museum_site/403.html", {}, status=403)
 
 
 def error_404(request, exception=None):
-    context = {}
-    return render(request, "museum_site/404.html", context, status=404)
+    return render(request, "museum_site/404.html", {}, status=404)
 
 
 class Policy_View(TemplateView):
