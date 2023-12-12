@@ -12,7 +12,6 @@ class Advanced_Search_Form(forms.Form):
     heading = "Advanced Search"
     attrs = {"method": "GET"}
     submit_value = "Search Files"
-    manual_fields = ["board", "rating", "associated"]
 
     title = forms.CharField(label="Title contains", required=False)
     author = forms.CharField(label="Author contains", required=False)
@@ -56,14 +55,6 @@ class Advanced_Search_Form(forms.Form):
         ),
         required=False,
     )
-
-    def __init__(self, data=None, initial={}, prefix=None):
-        super().__init__(data, initial=initial)
-        for field in self.manual_fields:
-            self.fields[field].widget.manual_data = self.data.copy()  # Copy to make mutable
-            # Coerce specific min/max inputs to generic min/max keys
-            self.fields[field].widget.manual_data["min"] = self.fields[field].widget.manual_data.get(field + "_min")
-            self.fields[field].widget.manual_data["max"] = self.fields[field].widget.manual_data.get(field + "_max")
 
     def clean_board(self):
         return self.clean_range("board", 0, 999, "Minimum board count is larger than maximum board count")

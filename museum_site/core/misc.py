@@ -295,7 +295,7 @@ def zipinfo_datetime_tuple_to_str(raw):
 
 def record(*args, **kwargs):
     if settings.ENVIRONMENT != "PROD":
-        print(*args, **kwargs)
+        print(*args, **kwargs)  # Non-Debug print
 
 
 def zookeeper_init(*args, **kwargs):
