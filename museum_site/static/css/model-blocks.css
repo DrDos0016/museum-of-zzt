@@ -115,7 +115,14 @@
 }
 
 .model-block-data .datum .label { flex:1; }
-.model-block-data .datum .value { flex:3; }
+.model-block-data .datum .value {
+    flex:3;
+    max-height:4.5ch;
+    overflow:auto;
+}
+
+.field-expand-button { cursor:pointer; font-size:10pt; color:var(--link-color); margin-left:1.5ch;}
+.model-block-data .datum .value.expanded { max-height:none; }
 
 .model-block-data .datum .value textarea
 {

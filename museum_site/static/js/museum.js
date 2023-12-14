@@ -196,6 +196,9 @@ $(document).ready(function (){
     // Burger
     $(".hamburger-menu-button").click($(this), toggle_burger);
 
+    // WIP
+    init_expandable_model_block_fields();
+
 });
 
 function toggle_burger(e)
@@ -357,4 +360,33 @@ function resize_yt_embed()
     var new_height = parseInt(Math.round(new_width / ratio));
     $("article.livestream iframe").width(new_width);
     $("article.livestream iframe").height(new_height);
+}
+
+function expand_field()
+{
+    if ($(this).data("expanded") == "1")
+    {
+        $(this).data("expanded", "0");
+        $(this).html("Show All");
+    }
+    else
+    {
+        $(this).data("expanded", "1");
+        $(this).html("Show Some");
+    }
+    $(this).parent().next(".value").toggleClass("expanded");
+}
+
+function init_expandable_model_block_fields()
+{
+    $(".model-block-data .datum .value").each(function (){
+        console.log($(this)[0].scrollHeight, $(this)[0].clientHeight);
+        if ($(this)[0].scrollHeight > $(this)[0].clientHeight && $(this).prev(".label").length)
+        {
+            let original = $(this).prev(".label").html();
+            let additional = "<div class='field-expand-button'>Show All</div>";
+            $(this).prev(".label").html(original + additional);
+        }
+    });
+    $(".field-expand-button").click(expand_field);
 }
