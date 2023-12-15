@@ -65,7 +65,7 @@ class Museum_Board_Count_Field(forms.Field):
     def clean(self, val):
         min_val, max_val = (None, None)
         if val is not None:
-            if val[2] is None and (val[0] != "" and val[1] != ""):
+            if val[2] is None and (val[0] not in ["", None] and val[1] not in ["", None]):
                 raise ValidationError("Filter requires playable or total board count to be specified")
             min_val = float(val[0]) if val[0] else None
             max_val = float(val[1]) if val[1] else None
