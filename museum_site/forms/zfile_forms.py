@@ -1,9 +1,10 @@
 from django import forms
 
 from museum_site.core.detail_identifiers import *
+from museum_site.core.sorters import ZFile_Sorter
 from museum_site.core.transforms import language_select_choices, range_select_choices
 from museum_site.constants import LANGUAGES, YEAR, FORM_ANY, FORM_NONE
-from museum_site.fields import Manual_Field, Museum_Related_Content_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Rating_Field, Museum_Board_Count_Field
+from museum_site.fields import Manual_Field, Museum_Related_Content_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Rating_Field, Museum_Board_Count_Field, Museum_Select_Field
 from museum_site.models import Detail, Genre
 from museum_site.widgets import Associated_Content_Widget, Board_Range_Widget, Range_Widget, Scrolling_Checklist_Widget
 
@@ -44,15 +45,10 @@ class Advanced_Search_Form(forms.Form):
             show_selected=True,
         )
     )
-    sort = forms.ChoiceField(
+    sort = Museum_Select_Field(
         label="Sort results by",
-        choices=(
-            ("title", "Title"),
-            ("author", "Author"),
-            ("company", "Company"),
-            ("rating", "Rating"),
-            ("release", "Release Date"),
-        ),
+        choices=ZFile_Sorter().get_sort_options_as_django_choices(),
+        full_choices=ZFile_Sorter().get_sort_options_as_django_choices(include_all=True),
         required=False,
     )
 

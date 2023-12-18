@@ -17,6 +17,7 @@ from museum_site.core.detail_identifiers import *
 from museum_site.core.feedback_tag_identifiers import *
 from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile, zipinfo_datetime_tuple_to_str
 from museum_site.core.image_utils import optimize_image
+from museum_site.core.sorters import ZFile_Sorter
 from museum_site.core.transforms import qs_to_links
 from museum_site.core.zeta_identifiers import *
 from museum_site.models.zfile_legacy import ZFile_Legacy
@@ -37,6 +38,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         "id": "pk", "title": "title", "author": "author", "company": "company", "rating": "rating", "release": "release_date",
         "publish_date": "publish_date", "uploaded": "upload_date"
     }
+
+    sorter = ZFile_Sorter
 
     # Uninitizalized shared attributes
     all_downloads = None

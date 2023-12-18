@@ -58,7 +58,11 @@ class Model_List_View(ListView):
         context = super().get_context_data(**kwargs)
         context["available_views"] = self.model.supported_views
         context["view"] = self.view
-        context["sort_options"] = self.get_sort_options(self.model.sort_options, debug=self.request.session.get("DEBUG"))
+        # TODO: Remove when all models support new format
+        if self.model.model_name in ["File"]:
+            context["sort_options"] = self.model.sorter().get_sort_options(include_tags=["basic", "debug" if self.request.session.get("DEBUG") else None])
+        else:
+            context["sort_options"] = self.get_sort_options(self.model.sort_options, debug=self.request.session.get("DEBUG"))
         context["sort"] = self.sorted_by
         context["model_name"] = self.model.model_name
         context["page_range"] = self.get_nearby_page_range(context["page_obj"].number, context["paginator"].num_pages)

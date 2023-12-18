@@ -160,3 +160,21 @@ class Museum_Drag_And_Drop_File_Field(forms.FileField):
 
 class Museum_Collection_Name_Field(forms.CharField):
     widget = Collection_Title_Widget()
+
+
+class Museum_Select_Field(forms.ChoiceField):
+    """ Standard Django Choice Field with ability to accept more values than are presented to the user (like !ID) """
+    full_choices = None
+
+    def __init__(self, *args, **kwargs):
+        if kwargs.get("full_choices"):
+            self.full_choices = kwargs["full_choices"]
+            del kwargs["full_choices"]
+        super().__init__(*args, **kwargs)
+
+    def validate(self, value):
+        """ Validate submitted data against the full list of choices, not just those presented to the user """
+        original_choices = self.choices
+        self.choices = self.full_choices
+        super().validate(value)
+        self.choices = original_choices

@@ -339,6 +339,13 @@
 {
     flex:1;
 }
+
+.model-block.header .model-block-meta .value
+{
+    max-height:85px;
+    overflow:auto;
+}
+
 /* CL Info View -- CL Info Template Tag */
 .model-block.cl_info
 {
