@@ -98,7 +98,6 @@ $(document).ready(function (){
     // Content warnings
     if (document.cookie.replace(/(?:(?:^|.*;\s*)hide_content_warnings\s*\=\s*([^;]*).*$)|^.*$/, "$1") == 1)
     {
-        console.log("Hiding CWs");
         $(".content-warning").hide();
     }
 
@@ -265,7 +264,6 @@ function pre_search()
         for (var idx in data["suggestions"])
         {
             output += '<option value="'+data["suggestions"][idx]+'">';
-            console.log(idx, data["suggestions"][idx]);
         }
         $("#search-suggestions").html(output);
         $("input[name=q]").focus();
@@ -380,7 +378,6 @@ function expand_field()
 function init_expandable_model_block_fields()
 {
     $(".model-block-data .datum .value").each(function (){
-        console.log($(this)[0].scrollHeight, $(this)[0].clientHeight);
         if ($(this)[0].scrollHeight > $(this)[0].clientHeight && $(this).prev(".label").length)
         {
             let original = $(this).prev(".label").html();
