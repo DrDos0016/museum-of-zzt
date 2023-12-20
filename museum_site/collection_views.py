@@ -152,7 +152,7 @@ class On_The_Fly_Collections_View(FormView):
         context["title"] = self.title
         context["output"] = self.form_output
 
-        if self.request.session["active_tool"] == "on-the-fly-collections":
+        if self.request.session.get("active_tool") == "on-the-fly-collections":
             context["form"].fields["otf_status"].initial = "enable"
         return context
 
@@ -231,8 +231,12 @@ class Collection_Contents_View(Model_List_View):
 
         # If there's no manual order available, don't show the option
         if context["head_object"].default_sort != "manual":
-            context["sort_options"] = Collection_Entry.sort_options[1:]
-
+            new_sort_options = []
+            for sort in context["sort_options"]:
+                if sort["val"] == "canonical":
+                    continue
+                new_sort_options.append(sort)
+            context["sort_options"] = new_sort_options
         return context
 
     def render_to_response(self, context, **kwargs):

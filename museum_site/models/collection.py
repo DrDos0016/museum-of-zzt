@@ -6,6 +6,7 @@ from django.utils.safestring import mark_safe
 
 from museum_site.models.base import BaseModel
 from museum_site.constants import DATE_HR
+from museum_site.core.sorters import Collection_Sorter, Collection_Entry_Sorter
 from museum_site.querysets.collection_querysets import *
 
 
@@ -18,23 +19,8 @@ class Collection(BaseModel):
     to_init = ["yours"]
     is_yours = False
     table_fields = ["Title", "Author", "Last Modified", "Items", "Short Desc."]
-    sort_options = [
-        {"text": "Newest", "val": "-modified"},
-        {"text": "Oldest", "val": "modified"},
-        {"text": "Title", "val": "title"},
-        {"text": "Author", "val": "author"},
-    ]
-    sort_keys = {
-        # Key - Value from <select> used in GET params
-        # Value - Django order_by param
-        "title": ["title"],
-        "author": ["user__username", "title"],
-        "modified": ["modified", "title"],
-        "-modified": ["-modified", "title"],
-        "id": ["id"],
-        "-id": ["-id"],
-    }
     supported_views = ["detailed"]
+    sorter = Collection_Sorter
 
     # Visibilities
     REMOVED = 0
@@ -237,30 +223,8 @@ class Collection(BaseModel):
 
 
 class Collection_Entry(BaseModel):
-    sort_options = [
-        {"text": "Collection Order", "val": "canonical"},
-        {"text": "Title", "val": "title"},
-        {"text": "Author", "val": "author"},
-        {"text": "Company", "val": "company"},
-        {"text": "Rating", "val": "rating"},
-        {"text": "Release Date (Newest)", "val": "-release"},
-        {"text": "Release Date (Oldest)", "val": "release"},
-    ]
-    sort_keys = {
-        # Key - Value from <select> used in GET params
-        # Value - Django order_by param
-        "canonical": ["order"],
-        "title": ["zfile__sort_title"],
-        "author": ["zfile__authors__title", "zfile__sort_title"],
-        "company": ["zfile__companies__title", "zfile__sort_title"],
-        "rating": ["-zfile__rating"],
-        "release": ["zfile__release_date", "zfile__sort_title"],
-        "-release": ["-zfile__release_date", "zfile__sort_title"],
-        "id": ["id"],
-        "-id": ["-id"],
-    }
-
     guide_word_values = {"id": "pk", "title": "title", "author": "author", "company": "company", "rating": "rating", "release": "release_date"}
+    sorter = Collection_Entry_Sorter
 
     supported_views = ["detailed"]
     model_name = "Collection Entry"
