@@ -453,11 +453,11 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def get_field_authors(self, view="detailed"):
         qs = self.authors.all()
-        return self.field_context(label="Author{}".format("s" if qs.count() > 1 else ""), text=qs_to_links(qs), kind="text")
+        return self.field_context(label="Author{}".format("s" if qs.count() > 1 else ""), text=qs_to_links(qs), kind="text", clamped=True)
 
     def get_field_companies(self, view="detailed"):
         qs = self.companies.all()
-        return self.field_context(label="Compan{}".format("ies" if qs.count() > 1 else "y"), text=qs_to_links(qs), kind="text")
+        return self.field_context(label="Compan{}".format("ies" if qs.count() > 1 else "y"), text=qs_to_links(qs), kind="text", clamped=True)
 
     def get_field_zfile_date(self, view="detailed"):
         if self.release_date is None:
@@ -469,7 +469,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def get_field_genres(self, view="detailed"):
         qs = self.genres.all()
-        return self.field_context(label="Genre{}".format("s" if qs.count() > 1 else ""), text=qs_to_links(qs), kind="link")
+        return self.field_context(label="Genre{}".format("s" if qs.count() > 1 else ""), text=qs_to_links(qs), kind="link", clamped=True)
 
     def get_field_filename(self, view="detailed"):
         return self.field_context(label="Filename", text=self.filename, kind="text")
@@ -479,7 +479,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def get_field_details(self, view="detailed"):
         qs = self.details.visible()
-        return self.field_context(label="Detail{}".format("s" if qs.count() > 1 else ""), text=qs_to_links(qs), kind="text")
+        return self.field_context(label="Detail{}".format("s" if qs.count() > 1 else ""), text=qs_to_links(qs), kind="text", clamped=True)
 
     def get_field_rating(self, view="detailed"):
         if self.rating is not None:

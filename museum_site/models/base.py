@@ -174,7 +174,7 @@ class BaseModel(models.Model):
         # Return a string representation of the object meant for user facing widgets
         return self.__str__()
 
-    def field_context(self, label="", text="", icons=None, url="#", title="", safe=True, kind="link"):
+    def field_context(self, label="", text="", icons=None, url="#", title="", safe=True, kind="link", clamped=False):
         icons_str = self.prepare_icons_for_field(kind=icons) if icons else ""
         if kind == "link":
             value = "<a href='{}'>{}{}</a>".format(url, icons_str, text)
@@ -183,5 +183,5 @@ class BaseModel(models.Model):
         elif kind == "text":
             value = text if not title else "<span title='{}'>{}</span>".format(title, text)
 
-        context = {"label": label, "value": value, "safe": safe}
+        context = {"label": label, "value": value, "safe": safe, "clamped": clamped}
         return context

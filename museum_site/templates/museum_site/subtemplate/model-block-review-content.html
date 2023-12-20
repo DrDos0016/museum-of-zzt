@@ -9,7 +9,7 @@
         {% for field in fields %}
         <div class="datum">
             {% if field.label %}<div class="label">{{field.label}}</div>{% endif %}
-            <div class="value{% if field.full_size %} expanded{% endif %}"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.markdown %}{{field.value|markdown}}{% elif field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
+            <div class="value{% if field.clamped %} clamped{% endif%}"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.markdown %}{{field.value|markdown}}{% elif field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
         </div>
         {% endfor %}
     </div>
