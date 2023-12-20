@@ -10,6 +10,7 @@ from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
 from museum_site.constants import *
+from museum_site.core.sorters import Article_Sorter
 from museum_site.constants import DATE_HR
 from museum_site.models.base import BaseModel
 from museum_site.settings import PASSWORD2DOLLARS, PASSWORD5DOLLARS
@@ -23,25 +24,11 @@ class Article(BaseModel):
     cell_list = ["view", "authors", "article_date", "category", "description"]
     guide_word_values = {"id": "pk", "title": "title", "author": "author", "category": "category", "date": "date"}
 
+    sorter = Article_Sorter
+
     to_init = ["access_level", "icons"]
     model_name = "Article"
     table_fields = ["Title", "Author", "Date", "Category", "Description"]
-    sort_options = [
-        {"text": "Newest", "val": "-date"},
-        {"text": "Oldest", "val": "date"},
-        {"text": "Title", "val": "title"},
-        {"text": "Author", "val": "author"},
-        {"text": "Category", "val": "category"},
-    ]
-    sort_keys = {
-        "-date": ["-publish_date", "title"],
-        "date": ["publish_date", "title"],
-        "title": ["title"],
-        "author": ["author", "title"],
-        "category": ["category", "title"],
-        "id": ["id"],
-        "-id": ["-id"],
-    }
 
     SCHEMAS = (
         ("text", "Plaintext"),

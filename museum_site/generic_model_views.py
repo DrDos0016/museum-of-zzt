@@ -58,8 +58,7 @@ class Model_List_View(ListView):
         context = super().get_context_data(**kwargs)
         context["available_views"] = self.model.supported_views
         context["view"] = self.view
-        # TODO: Remove when all models support new format
-        if self.model.model_name in ["File"]:
+        if self.model.model_name in ["File", "Article"]: # TODO: Remove when all models support new format
             context["sort_options"] = self.model.sorter().get_sort_options(include_tags=["basic", "debug" if self.request.session.get("DEBUG") else None])
         else:
             context["sort_options"] = self.get_sort_options(self.model.sort_options, debug=self.request.session.get("DEBUG"))
@@ -82,9 +81,16 @@ class Model_List_View(ListView):
         return "{} Directory".format(self.model.model_name)
 
     def sort_queryset(self, qs):
-        fields = self.model.sort_keys.get(self.sorted_by)
-        if fields is not None:
-            qs = qs.order_by(*fields)
+        if self.model.model_name in ["File", "Article"]: # TODO: Remove when all models support new format
+            db_ordering = self.model.sorter().get_db_ordering_for_value(self.sorted_by)
+            if db_ordering is not None:
+                qs = qs.order_by(*db_ordering)
+        else:
+            # print("LEGACY SORTING")
+            fields = self.model.sort_keys.get(self.sorted_by)
+            if fields is not None:
+                qs = qs.order_by(*fields)
+
         return qs
 
     def get_nearby_page_range(self, current_page, total_pages):
