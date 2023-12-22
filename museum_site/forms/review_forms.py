@@ -95,6 +95,8 @@ class Review_Form(forms.ModelForm):
             feedback.approved = False
         if (not request.user.is_authenticated) and feedback.content.find("http") != -1:
             feedback.approved = False
+        if True: # TODO Make this a proper constant or setting
+            feedback.approved = False
 
         feedback.save()
 
