@@ -58,10 +58,7 @@ class Model_List_View(ListView):
         context = super().get_context_data(**kwargs)
         context["available_views"] = self.model.supported_views
         context["view"] = self.view
-        if self.model.model_name in ["File", "Article", "Collection", "Collection Entry"]: # TODO: Remove when all models support new format
-            context["sort_options"] = self.model.sorter().get_sort_options(include_tags=["basic", "debug" if self.request.session.get("DEBUG") else None])
-        else:
-            context["sort_options"] = self.get_sort_options(self.model.sort_options, debug=self.request.session.get("DEBUG"))
+        context["sort_options"] = self.model.sorter().get_sort_options(include_tags=["basic", "debug" if self.request.session.get("DEBUG") else None])
         context["sort"] = self.sorted_by
         context["model_name"] = self.model.model_name
         context["page_range"] = self.get_nearby_page_range(context["page_obj"].number, context["paginator"].num_pages)
@@ -81,17 +78,9 @@ class Model_List_View(ListView):
         return "{} Directory".format(self.model.model_name)
 
     def sort_queryset(self, qs):
-        if self.model.model_name in ["File", "Article", "Collection", "Collection Entry"]: # TODO: Remove when all models support new format
-            # print("MODERN SORTING")
-            db_ordering = self.model.sorter().get_db_ordering_for_value(self.sorted_by)
-            if db_ordering is not None:
-                qs = qs.order_by(*db_ordering)
-        else:
-            # print("LEGACY SORTING")
-            fields = self.model.sort_keys.get(self.sorted_by)
-            if fields is not None:
-                qs = qs.order_by(*fields)
-
+        db_ordering = self.model.sorter().get_db_ordering_for_value(self.sorted_by)
+        if db_ordering is not None:
+            qs = qs.order_by(*db_ordering)
         return qs
 
     def get_nearby_page_range(self, current_page, total_pages):

@@ -7,6 +7,7 @@ from django.utils.safestring import mark_safe
 
 from museum.settings import STATIC_URL
 from museum_site.constants import STATIC_PATH, DATE_HR
+from museum_site.core.sorters import Series_Sorter
 from museum_site.models.base import BaseModel
 from museum_site.querysets.series_querysets import Series_Queryset
 
@@ -17,18 +18,7 @@ class Series(BaseModel):
     table_fields = ["Series", "Updated", "Latest", "First", "Total"]
     cell_list = ["view", "last_updated", "latest_article", "first_article", "total_articles"]
     guide_word_values = {"id": "pk", "latest": "latest", "title": "title"}
-    sort_options = [
-        {"text": "Newest Entry", "val": "latest"},
-        {"text": "Title", "val": "title"}
-    ]
-    sort_keys = {
-        # Key - Value from <select> used in GET params
-        # Value - Django order_by param
-        "title": ["title"],
-        "latest": ["-last_entry_date", "title"],
-        "id": ["id"],
-        "-id": ["-id"],
-    }
+    sorter = Series_Sorter
 
     # Constants
     PREVIEW_DIRECTORY = os.path.join("pages/series-directory/")

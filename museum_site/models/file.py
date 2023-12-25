@@ -45,29 +45,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     all_downloads = None
     all_downloads_count = None
 
-    sort_options = [
-        {"text": "Title", "val": "title"},
-        {"text": "Author", "val": "author"},
-        {"text": "Company", "val": "company"},
-        {"text": "Rating", "val": "rating"},
-        {"text": "Release Date (Newest)", "val": "-release"},
-        {"text": "Release Date (Oldest)", "val": "release"},
-    ]
-    sort_keys = {
-        # Key - Value from <select> used in GET params
-        # Value - Django order_by param
-        "title": ["sort_title"],
-        "author": ["authors__title", "sort_title"],
-        "company": ["companies__title", "sort_title"],
-        "rating": ["-rating", "sort_title"],
-        "release": ["release_date", "sort_title"],
-        "-release": ["-release_date", "sort_title"],
-        "uploaded": ["-id"],
-        "id": ["id"],
-        "-id": ["-id"],
-        "-publish_date": ["-publish_date", "sort_title"]
-    }
-
     ICONS = {
         "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role": "explicit-icon"},
         "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its contents have not been fully checked by staff.", "role": "unpub-icon"},

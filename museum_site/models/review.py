@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 
 from museum_site.core.feedback_tag_identifiers import *
 from museum_site.core.misc import profanity_filter
+from museum_site.core.sorters import Feedback_Sorter
 from museum_site.constants import DATE_HR
 from museum_site.models.base import BaseModel
 from museum_site.querysets.review_querysets import *
@@ -22,22 +23,7 @@ class Review(BaseModel):
     table_fields = ["Title", "File", "Author", "Date", "Rating"]
     cell_list = ["view", "zfile", "author", "review_date", "rating"]
     guide_word_values = {"id": "pk", "reviewer": "reviewer", "date": "date", "file": "zfile", "rating": "rating"}
-    sort_options = [
-        {"text": "Newest", "val": "-date"},
-        {"text": "Oldest", "val": "date"},
-        {"text": "File", "val": "file"},
-        {"text": "Author", "val": "reviewer"},
-        {"text": "Rating", "val": "rating"},
-    ]
-    sort_keys = {
-        "-date": ["-date", "zfile__sort_title"],
-        "date": ["date", "zfile__sort_title"],
-        "file": ["zfile__sort_title"],
-        "reviewer": ["author", "zfile__sort_title"],
-        "rating": ["-rating", "zfile__sort_title"],
-        "id": ["id"],
-        "-id": ["-id"],
-    }
+    sorter = Feedback_Sorter
 
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(

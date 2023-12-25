@@ -33,22 +33,6 @@ class Sorter():
         return None
 
 
-class ZFile_Sorter(Sorter):
-    sort_options = [
-        {"tag": "basic", "text": "Title", "val": "title", "db_ordering": ["sort_title"]},
-        {"tag": "basic", "text": "Author", "val": "author", "db_ordering": ["authors__title", "sort_title"]},
-        {"tag": "basic", "text": "Company", "val": "company", "db_ordering": ["companies__title", "sort_title"]},
-        {"tag": "basic", "text": "Rating", "val": "rating", "db_ordering": ["-rating", "sort_title"]},
-        {"tag": "basic", "text": "Release Date (Newest)", "val": "-release", "db_ordering": ["-release_date", "sort_title"]},
-        {"tag": "basic", "text": "Release Date (Oldest)", "val": "release", "db_ordering": ["release_date", "sort_title"]},
-        {"tag": "publish-date", "text": "Publication Date", "val": "-publish_date", "db_ordering": ["-publish_date", "sort_title"]},
-        {"tag": "upload-date", "text": "Upload Date", "val": "uploaded", "db_ordering": ["-id"]},
-        {"tag": "random", "text": "Random", "val": "random", "db_ordering": ["-publish_date", "sort_title"]},
-        {"tag": "debug", "text": "!ID (Newest)", "val": "-id", "db_ordering": ["-id"]},
-        {"tag": "debug", "text": "!ID (Oldest)", "val": "id", "db_ordering": ["id"]},
-    ]
-
-
 class Article_Sorter(Sorter):
     sort_options = [
         {"tag": "basic", "text": "Publication Date (Newest)", "val": "-date", "db_ordering": ["-publish_date", "title"]},
@@ -79,6 +63,52 @@ class Collection_Entry_Sorter(Sorter):
         {"tag": "basic", "text": "Rating", "val": "rating", "db_ordering": ["-zfile__rating", "zfile__sort_title"]},
         {"tag": "basic", "text": "Release Date (Newest)", "val": "-release", "db_ordering": ["-zfile__release_date", "zfile__sort_title"]},
         {"tag": "basic", "text": "Release Date (Oldest)", "val": "release", "db_ordering": ["zfile__release_date", "zfile__sort_title"]},
+        {"tag": "debug", "text": "!ID (Newest)", "val": "-id", "db_ordering": ["-id"]},
+        {"tag": "debug", "text": "!ID (Oldest)", "val": "id", "db_ordering": ["id"]},
+    ]
+
+
+class Feedback_Sorter(Sorter):
+    sort_options = [
+        {"tag": "basic", "text": "Newest", "val": "-date", "db_ordering": ["-date", "zfile__sort_title"]},
+        {"tag": "basic", "text": "Oldest", "val": "date", "db_ordering": ["date", "zfile__sort_title"]},
+        {"tag": "basic", "text": "File", "val": "file", "db_ordering": ["zfile__sort_title"]},
+        {"tag": "basic", "text": "Feedback Author", "val": "reviewer", "db_ordering": ["author", "zfile__sort_title"]},
+        {"tag": "basic", "text": "Rating", "val": "rating", "db_ordering": ["-rating", "zfile__sort_title"]},
+        {"tag": "debug", "text": "!ID (Newest)", "val": "-id", "db_ordering": ["-id"]},
+        {"tag": "debug", "text": "!ID (Oldest)", "val": "id", "db_ordering": ["id"]},
+    ]
+
+
+class Scroll_Sorter(Sorter):
+    sort_options = [
+        {"tag": "basic", "text": "Newest", "val": "-pk", "db_ordering": ["-pk"]},
+        {"tag": "basic", "text": "Oldest", "val": "pk", "db_ordering": ["pk"]},
+        {"tag": "basic", "text": "Title", "val": "title", "db_ordering": ["title"]},
+        {"tag": "basic", "text": "File", "val": "file", "db_ordering": ["zfile__sort_title"]},
+    ]
+
+
+class Series_Sorter(Sorter):
+    sort_options = [
+        {"tag": "basic", "text": "Newest Entry", "val": "latest", "db_ordering": ["-last_entry_date", "title"]},
+        {"tag": "basic", "text": "Title", "val": "title", "db_ordering": ["title"]},
+        {"tag": "debug", "text": "!ID (Newest)", "val": "-id", "db_ordering": ["-id"]},
+        {"tag": "debug", "text": "!ID (Oldest)", "val": "id", "db_ordering": ["id"]},
+    ]
+
+
+class ZFile_Sorter(Sorter):
+    sort_options = [
+        {"tag": "basic", "text": "Title", "val": "title", "db_ordering": ["sort_title"]},
+        {"tag": "basic", "text": "Author", "val": "author", "db_ordering": ["authors__title", "sort_title"]},
+        {"tag": "basic", "text": "Company", "val": "company", "db_ordering": ["companies__title", "sort_title"]},
+        {"tag": "basic", "text": "Rating", "val": "rating", "db_ordering": ["-rating", "sort_title"]},
+        {"tag": "basic", "text": "Release Date (Newest)", "val": "-release", "db_ordering": ["-release_date", "sort_title"]},
+        {"tag": "basic", "text": "Release Date (Oldest)", "val": "release", "db_ordering": ["release_date", "sort_title"]},
+        {"tag": "publish-date", "text": "Publication Date", "val": "-publish_date", "db_ordering": ["-publish_date", "sort_title"]},
+        {"tag": "upload-date", "text": "Upload Date", "val": "uploaded", "db_ordering": ["-id"]},
+        {"tag": "random", "text": "Random", "val": "random", "db_ordering": ["-publish_date", "sort_title"]},
         {"tag": "debug", "text": "!ID (Newest)", "val": "-id", "db_ordering": ["-id"]},
         {"tag": "debug", "text": "!ID (Oldest)", "val": "id", "db_ordering": ["id"]},
     ]

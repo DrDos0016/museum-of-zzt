@@ -6,8 +6,9 @@ from django.urls import reverse_lazy
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.feedback_tag_identifiers import *
 from museum_site.core.form_utils import any_plus, get_sort_option_form_choices
+from museum_site.core.sorters import Feedback_Sorter
 from museum_site.constants import YEAR
-from museum_site.fields import Museum_Model_Multiple_Choice_Field, Museum_Choice_Field
+from museum_site.fields import Museum_Model_Multiple_Choice_Field, Museum_Choice_Field, Museum_Select_Field
 from museum_site.models import Review, Feedback_Tag
 from museum_site.models import File as ZFile
 from museum_site.settings import REMOTE_ADDR_HEADER
@@ -150,4 +151,9 @@ class Review_Search_Form(forms.Form):
         ),
         label="Include feedback without a rating", initial=1, required=False
     )
-    sort = forms.ChoiceField(label="Sort results by", choices=get_sort_option_form_choices(Review.sort_options))
+    sort = Museum_Select_Field(
+        label="Sort results by",
+        choices=Feedback_Sorter().get_sort_options_as_django_choices(),
+        full_choices=Feedback_Sorter().get_sort_options_as_django_choices(include_all=True),
+        required=False,
+    )

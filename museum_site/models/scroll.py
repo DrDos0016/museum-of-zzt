@@ -2,6 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 
+from museum_site.core.sorters import Scroll_Sorter
 from museum_site.models.base import BaseModel
 from museum_site.querysets.base import Base_Queryset
 
@@ -9,23 +10,8 @@ from museum_site.querysets.base import Base_Queryset
 class Scroll(BaseModel):
     model_name = "Scroll"
     supported_views = ["list"]
-    sort_options = [
-        {"text": "Newest", "val": "-pk"},
-        {"text": "Oldest", "val": "pk"},
-        {"text": "Title", "val": "title"},
-        {"text": "File", "val": "file"},
-    ]
-    sort_keys = {
-        # Key - Value from <select> used in GET params
-        # Value - Django order_by param
-        "title": ["title"],
-        "pk": ["pk"],
-        "-pk": ["-pk"],
-        "file": ["zfile__sort_title"],
-        "id": ["id"],
-        "-id": ["-id"],
-    }
     guide_word_values = {"id": "pk", "title": "title", "file": "zfile"}
+    sorter = Scroll_Sorter
     table_fields = ["Title", "File", "Source"]
     cell_list = ["title", "zfile", "source"]
 
