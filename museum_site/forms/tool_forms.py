@@ -16,7 +16,7 @@ from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.core.social import Social_Twitter, Social_Mastodon
 from museum_site.constants import APP_ROOT, DATA_PATH, STATIC_PATH
 from museum_site.settings import IA_ACCESS, IA_SECRET
-from museum_site.fields import Enhanced_Model_Choice_Field, Manual_Field
+from museum_site.fields import Enhanced_Model_Choice_Field, Manual_Field, Museum_Drag_And_Drop_File_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Tagged_Model_Choice_Field
 from museum_site.models import Article, File, Series
 from museum_site.widgets import (
     Ascii_Color_Widget,
@@ -363,11 +363,11 @@ class Livestream_Vod_Form(forms.Form):
 class Prep_Publication_Pack_Form(forms.Form):
     use_required_attribute = False
     submit_value = "Generate Publication Pack"
-    associated = Enhanced_Model_Choice_Field(
+
+    associated = Museum_Tagged_Model_Choice_Field(
         widget=Ordered_Scrolling_Radio_Widget(),
         queryset=File.objects.unpublished(),
-        empty_label=None,
-        label="Associated ZFiles",
+        label="ZFiles to publish",
         help_text="Select one or more ZFiles",
         required=False,
     )
@@ -474,7 +474,13 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
     title = forms.CharField(label="Title", required=False)
     subtitle = forms.CharField(label="Subtitle", required=False)
     title_color = forms.ChoiceField(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES))
-    background_image = forms.FileField(label="Background Image", widget=UploadFileWidget())
+    #background_image = forms.FileField(label="Background Image", widget=UploadFileWidget())
+
+    background_image = Museum_Drag_And_Drop_File_Field(
+        widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose")
+    )
+
+
     crop = forms.ChoiceField(label="Background Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
 
 

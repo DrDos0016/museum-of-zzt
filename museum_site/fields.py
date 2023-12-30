@@ -178,3 +178,6 @@ class Museum_Select_Field(forms.ChoiceField):
         self.choices = self.full_choices
         super().validate(value)
         self.choices = original_choices
+
+class Museum_Tagged_Model_Choice_Field(forms.ModelMultipleChoiceField):
+    layout = "field-layout-scrolling-list"
