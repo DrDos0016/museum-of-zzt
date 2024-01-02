@@ -8,10 +8,15 @@ class UploadFileWidget(forms.FileInput):
     filename = ""
     size = 0
 
-    def __init__(self, attrs=None, target_text="TARGET TEXT", allowed_filetypes="", show_size_limit=False):
+    FILETYPE_PRESETS = {
+        "zip": ".zip,application/zip",
+        "image": "image/*",
+    }
+
+    def __init__(self, attrs=None, target_text="TARGET TEXT", allowed_preset="", show_size_limit=False):
         super().__init__(attrs)
         self.target_text = target_text
-        self.allowed_filetypes = allowed_filetypes
+        self.allowed_preset = allowed_preset
         self.max_upload_size = UPLOAD_CAP
         self.show_size_limit = show_size_limit
 
@@ -21,9 +26,10 @@ class UploadFileWidget(forms.FileInput):
         context["filename"] = self.filename
         context["size"] = self.size
         context["target_text"] = self.target_text
-        context["allowed_filetypes"] = self.allowed_filetypes
+        context["allowed_filetypes"] = self.FILETYPE_PRESETS.get(self.allowed_preset)
         context["max_upload_size"] = self.max_upload_size
         context["show_size_limit"] = self.show_size_limit
+        context["allowed_preset"] = self.allowed_preset
         return context
 
     def set_info(self, filename, file_list, size):

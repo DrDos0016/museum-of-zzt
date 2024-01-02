@@ -202,10 +202,10 @@ class Series_Form(forms.ModelForm):
             show_selected=True,
         )
     )
-
-    preview = forms.FileField(
+    preview = Museum_Drag_And_Drop_File_Field(
         help_text="Select the image you wish to upload.",
-        label="Preview Image", widget=UploadFileWidget(target_text="Drag & Drop Image Here or Click to Choose", allowed_filetypes=".png,image/png")
+        label="Preview Image",
+        widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose", allowed_preset="image"),
     )
     crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
 
@@ -474,10 +474,9 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
     title = forms.CharField(label="Title", required=False)
     subtitle = forms.CharField(label="Subtitle", required=False)
     title_color = forms.ChoiceField(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES))
-    #background_image = forms.FileField(label="Background Image", widget=UploadFileWidget())
 
     background_image = Museum_Drag_And_Drop_File_Field(
-        widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose")
+        widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose", allowed_preset="image"),
     )
 
 

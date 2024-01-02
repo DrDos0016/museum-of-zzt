@@ -1,7 +1,7 @@
 {% if show_size_limit %}<div class="size-limit">Your maximum upload size: <b title="{{your_max_upload_size}} bytes">{{max_upload_size|filesizeformat}}</b></div>{% endif %}
 <div class="upload-area" data-file-widget="id_{{widget.name}}"><div class="text">{{target_text|safe}}</div></div>
 <div class="upload-info">
-    {% if allowed_filetypes == ".zip,application/zip" %}
+    {% if allowed_preset == "zip" %}
     <div class="file-list-header">
         <span class="file-name">{{filename|default:"..."}}</span>
         <span class="file-size">{{size|filesizeformat}}</span>
@@ -11,7 +11,7 @@
         <li>{{f.filename}}</li>
         {% endfor %}
     </ul>
-    {% elif allowed_filetypes == ".png,image/png" %}
+    {% elif allowed_preset == "image" %}
     <div>
         <img id="uploaded-image-preview">
     </div>

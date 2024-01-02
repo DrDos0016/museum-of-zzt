@@ -39,13 +39,14 @@ $(document).ready(function (){
     });
 
     $(".drag-and-drop-file-widget").change(function (e){
+        const image_extensions = [".png", ".jpg", ".gif"]
         const file = $(this)[0].files[0];
         var ext = file.name.toLowerCase().slice(-4);
         if (ext == ".zip")
             parse_zip_file(file);
         else if (ext == ".zzt")
             set_uploaded_zzt_file(file);
-        else if (ext == ".png")
+        else if (image_extensions.indexOf(ext) != -1)
             set_uploaded_image(file);
         else
             console.log("Unhandled file extension: " + ext);

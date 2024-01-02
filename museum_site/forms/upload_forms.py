@@ -176,7 +176,7 @@ class ZGame_Form(forms.ModelForm):
     field_order = ["zfile", "title", "author", "company", "genre", "explicit", "release_date", "language", "description"]
     zfile = Museum_Drag_And_Drop_File_Field(
         help_text=("Select the file you wish to upload. All uploads <i>must</i> be zipped."),
-        label="File", widget=UploadFileWidget(target_text="Drag & Drop A Zip File Here or Click to Choose", allowed_filetypes=".zip,application/zip", show_size_limit=True)
+        label="File", widget=UploadFileWidget(target_text="Drag & Drop A Zip File Here or Click to Choose", allowed_preset="zip", show_size_limit=True)
     )
     # [Title]
     author = Museum_Tagged_Text_Field(
