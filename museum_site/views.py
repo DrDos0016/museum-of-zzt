@@ -264,7 +264,9 @@ def site_credits(request):
     for author in data["authors"]:
         split = author.split("/")
         for name in split:
-            if name != "Various" and name not in data["list"]:
+            if name in ["Various", "None"]:
+                continue
+            if name not in data["list"]:
                 data["list"].append(name)
     data["list"].sort(key=str.lower)
     data["split"] = math.ceil(len(data["list"]) / 4.0)
