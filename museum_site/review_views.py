@@ -58,7 +58,16 @@ class Review_List_View(Model_List_View):
 
     def get_title(self):
         if self.request.GET:
-            return "Search Results"
+            difference = 0
+            difference = difference - 1 if self.request.GET.get("page") else difference
+            difference = difference - 1 if self.request.GET.get("sort") else difference
+            difference = difference - 1 if self.request.GET.get("view") else difference
+            print("LEN  IS", len(self.request.GET.keys()))
+            print("DIFF IS", difference)
+            if (len(self.request.GET.keys()) + difference) > 0:
+                return "Search Results"
+            else:
+                return super().get_title()
         else:
             return super().get_title()
 
