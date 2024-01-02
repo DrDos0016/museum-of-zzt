@@ -23,7 +23,7 @@ class Stream(BaseModel):
     title = models.CharField(max_length=120)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=50, default="none")
     description = models.CharField(max_length=300)
-    when = models.DateTimeField()
+    when = models.DateTimeField(help_text="6pm PST = 2:00 UTC next day. 12pm PST = 20:00 UTC")
     preview_image = models.CharField(max_length=120, help_text="Preview Image used on stream schedule", default="/static/screenshots/no_screenshot.png")
     entries = models.ManyToManyField("Stream_Entry", default=None, blank=True, help_text="Stream Entries to be played during this stream")
     visible = models.BooleanField(default=True)
