@@ -67,7 +67,11 @@ def main():
         "2022": 0,
     }
     for u in qs:
-        year = str(u.file.release_date)[:4]
+        zf = File.objects.filter(upload__id=u.pk).first()
+        if not zf:
+            continue
+
+        year = str(zf.release_date)[:4]
         years[year] = years[year] + 1
     for y in years.keys():
         print(y, years[y])
@@ -94,7 +98,10 @@ def main():
         DETAIL_WEAVE: 0,
     }
     for u in qs:
-        f_details = u.file.details.all().values_list("id", flat=True)
+        zf = File.objects.filter(upload__id=u.pk).first()
+        if not zf:
+            continue
+        f_details = zf.details.all().values_list("id", flat=True)
         for l in f_details:
             if l in lookups:
                 details[l] = details[l] + 1
