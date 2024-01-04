@@ -1,9 +1,12 @@
 import base64
 import glob
+import json
 import os
 import time
 import tempfile
 import zipfile
+
+import requests
 
 from django import forms
 from django.template.defaultfilters import linebreaks, urlize
@@ -15,8 +18,12 @@ from museum_site.core.file_utils import delete_this
 from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.core.social import Social_Twitter, Social_Mastodon
 from museum_site.constants import APP_ROOT, DATA_PATH, STATIC_PATH
-from museum_site.settings import IA_ACCESS, IA_SECRET
-from museum_site.fields import Enhanced_Model_Choice_Field, Manual_Field, Museum_Drag_And_Drop_File_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Tagged_Model_Choice_Field
+from museum_site.settings import (
+    IA_ACCESS, IA_SECRET, DISCORD_WEBHOOK_ANNOUNCEMENTS_URL, DISCORD_WEBHOOK_PATRONS_URL, DISCORD_WEBHOOK_TEST_URL, DISCORD_WEBHOOK_FEED_URL,
+)
+from museum_site.fields import (
+    Enhanced_Model_Choice_Field, Manual_Field, Museum_Drag_And_Drop_File_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Tagged_Model_Choice_Field
+)
 from museum_site.models import Article, File, Series
 from museum_site.widgets import (
     Ascii_Color_Widget,
@@ -29,6 +36,39 @@ PREVIEW_IMAGE_CROP_CHOICES = (
     ("SZZT", "448x400 Super ZZT Board"),
     ("NONE", "Do Not Crop Image"),
 )
+
+
+class Discord_Announcement_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Discord Announcement"
+    attrs = {"method": "POST"}
+    submit_value = "Announce"
+
+    CHANNELS = (
+        ("announcements", "Announcements"),
+        ("patrons", "Patrons"),
+        ("moz-feed", "Museum of ZZT Feed"),
+        ("test", "Test Announcement (#bot-dev)"),
+    )
+
+    channel = forms.ChoiceField(choices=CHANNELS, initial="announcements")
+    body = forms.CharField(
+        label="Body",
+        widget=forms.Textarea(),
+        help_text="Discord Markdown supported"
+    )
+
+    def process(self):
+        destinations = {
+            "announcements": DISCORD_WEBHOOK_ANNOUNCEMENTS_URL, "patrons": DISCORD_WEBHOOK_PATRONS_URL, "moz-feed": DISCORD_WEBHOOK_FEED_URL,
+            "test": DISCORD_WEBHOOK_TEST_URL
+        }
+        destination_webhook = destinations.get(self.cleaned_data["channel"])
+
+        discord_data = {"content": self.cleaned_data["body"],}
+        resp = requests.post(destination_webhook, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
+        print(resp)
+        self.response = resp
 
 
 class IA_Mirror_Form(forms.Form):
@@ -478,7 +518,6 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
     background_image = Museum_Drag_And_Drop_File_Field(
         widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose", allowed_preset="image"),
     )
-
 
     crop = forms.ChoiceField(label="Background Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
 

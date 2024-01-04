@@ -29,6 +29,7 @@ from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_P
 from museum_site.core.zfile_utils import delete_zfile
 from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate_boards_in_zipfile, record, zookeeper_init, zookeeper_extract_font
 from museum_site.forms.tool_forms import (
+    Discord_Announcement_Form,
     IA_Mirror_Form,
     Livestream_Description_Form,
     Livestream_Vod_Form,
@@ -123,6 +124,23 @@ def audit_colors(request):
             data["variables"][stylesheet].sort()
 
     return render(request, "museum_site/tools/audit-colors.html", data)
+
+
+@staff_member_required
+def discord_announcement(request):
+    context = {"title": "Discord Announcement"}
+    if request.POST:
+        form = Discord_Announcement_Form(request.POST)
+        if form.is_valid():
+            form.process()
+            context["output_html"] = "<textarea>{}</textarea>".format(form.response)
+    elif ENV == "DEV":
+        form = Discord_Announcement_Form(initial={"channel": "test"})
+    else:
+        form = Discord_Announcement_Form()
+    context["form"] = form
+    return render(request, "museum_site/generic-form-display.html", context)
+
 
 
 @staff_member_required

@@ -224,6 +224,7 @@ urlpatterns = [
     path("tools/add-livestream/<str:key>/", museum_site.tool_views.add_livestream, name="add_livestream"),
     path("tools/audit/colors/", museum_site.tool_views.audit_colors, name="audit_colors"),
     path("tools/audit/<str:target>/", museum_site.tool_views.audit, name="audit"),
+    path("tools/discord-announcement/", museum_site.tool_views.discord_announcement, name="tool_discord_announcement"),
     path("tools/extract-font/<str:key>/", museum_site.tool_views.extract_font, name="extract_font"),
     path("tools/empty-upload-queue/", museum_site.tool_views.empty_upload_queue, name="empty_upload_queue"),
     path("tools/feedback-approvals/", museum_site.tool_views.feedback_approvals, name="feedback_approvals"),
