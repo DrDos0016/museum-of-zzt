@@ -351,8 +351,7 @@ class ZFile_Review_List_View(Model_List_View):
         qs = Review.objects.for_zfile_and_user(pk=self.head_object.pk, ip=self.request.META[REMOTE_ADDR_HEADER], user_id=self.request.user.id)
 
         if self.request.GET.get("filter"):
-            tag_names = {"reviews": 1, "hints": 4, "cws": 2, "bugs": 3}
-            qs = qs.filter(tags=tag_names[self.request.GET["filter"]])
+            qs = qs.filter(tags__key=self.request.GET["filter"])
         self.qs = qs  # Needed to easily check for recent reviews later
         qs = self.sort_queryset(qs)
         return qs
@@ -367,6 +366,7 @@ class ZFile_Review_List_View(Model_List_View):
             {"text": "Oldest", "val": "date"},
             {"text": "Rating", "val": "rating"}
         ]
+        context["filter_options"] = Feedback_Tag.objects.all()
 
         # Check that the file supports reviews
         if not context["file"].can_review:

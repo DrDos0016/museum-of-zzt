@@ -56,7 +56,7 @@ Sort: <select name="sort">
     </select>
 </div>
 <div class="modify-query">
-    Filter Feedback To: <a href="?filter=reviews">Reviews</a>, <a href="?filter=hints">Hints &amp; Solutions</a>, <a href="?filter=cws">Content Warnings</a>, <a href="?filter=bugs">Bug Reports</a>
+    Filter Feedback To: {% for feedback_tag in filter_options %}<a href="?filter={{feedback_tag.key}}">{{feedback_tag.title}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
     {% if request.GET.filter %}
     , <a href="{{request.path}}">Remove Filter</a>
     {% endif %}

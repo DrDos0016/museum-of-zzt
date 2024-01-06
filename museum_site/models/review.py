@@ -245,9 +245,11 @@ class Feedback_Tag(models.Model):
         ("Content Warning", "Content Warning"),
         ("Bug Report", "Bug Report"),
         ("Hints and Solutions", "Hints and Solutions"),
+        ("Table of Contents", "Table of Contents"),
     )
 
     title = models.CharField(choices=TAGS, max_length=25)
+    key = models.CharField(max_length=20)
 
     class Meta:
         ordering = ["title"]
