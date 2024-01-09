@@ -11,7 +11,7 @@ class Article_Queryset(Base_Queryset):
     def in_early_access(self):
         """ Return qs of all articles that are currently paywalled """
         return self.exclude(
-            Q(published=self.model.PUBLISHED) | Q(published=self.model.REMOVED)
+            Q(published=self.model.PUBLISHED) | Q(published=self.model.REMOVED) | Q(published=self.model.IN_PROGRESS)
         ).defer("content").order_by("publish_date", "id")
 
     def published(self):
