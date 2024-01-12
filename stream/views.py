@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
 from museum_site.core.transforms import qs_manual_order
-from museum_site.models import File
+from museum_site.models import File, Article
 from stream.models import Stream, Stream_Entry
 
 # Create your views here.
@@ -37,6 +37,13 @@ def overview(request):
         stream = Stream.objects.filter(when__gte=today).first()
     context["stream"] = stream
     return render(request, "stream/overview.html", context)
+
+
+def scene_ad_break(request):
+    context = {}
+
+    context["articles"] = Article.objects.in_early_access()
+    return render(request, "stream/scene/ad-break.html", context)
 
 
 @method_decorator(staff_member_required, name="dispatch")
