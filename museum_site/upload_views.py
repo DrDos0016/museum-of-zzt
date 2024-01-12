@@ -45,7 +45,7 @@ class Upload_View(TemplateView):
     download_obj = None
 
     # Initial data
-    zgame_initial = {"author": "", "explicit": 0, "language": "en", "release_date": str(datetime.now())[:10]}
+    zgame_initial = {"author": "", "explicit": 0, "language": "en", "release_date": None}
     upload_initial = {"announced": 0, "generate_preview_image": ("AUTO" if ENV != "DEV" else "NONE")}
     play_initial = None
 
@@ -58,6 +58,8 @@ class Upload_View(TemplateView):
 
         if self.mode == "edit":
             self.populate_db_instance_objects()
+
+        self.zgame_initial["release_date"] = str(datetime.now())[:10]  # Set to current date
 
         super().setup(request, *args, **kwargs)
 
