@@ -494,7 +494,6 @@ def zfl(key, text="", qs="", target="_blank", i=True, *args, **kwargs):
 def nav_action_list(key, condition=None):
     # TEMP LOCATION OF THIS INFORMATION
     actions = []
-    print("CONDITION", condition)
     if key == "collection":
         actions = [
             {"selected": True if condition.startswith("/collection/browse/") else False, "url": reverse("collection_browse"), "text": "Collection Directory"},
