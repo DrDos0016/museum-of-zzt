@@ -503,15 +503,25 @@ def nav_action_list(key, condition=None):
         ]
     elif key == "collection-manage":
         actions = [
-            {"selected": False, "url": "?operation=add", "text": "Add Entry"},
-            {"selected": False, "url": "?operation=remove", "text": "Remove Entry"},
-            {"selected": False, "url": "?operation=arrange", "text": "Arrange Entries"},
-            {"selected": False, "url": "?operation=edit-entry", "text": "Edit Entries"},
+            {"selected": True if condition in ["add", ""] else False, "url": "?operation=add", "text": "Add Entry"},
+            {"selected": True if condition == "remove" else False, "url": "?operation=remove", "text": "Remove Entry"},
+            {"selected": True if condition == "arrange" else False, "url": "?operation=arrange", "text": "Arrange Entries"},
+            {"selected": True if condition == "edit-entry" else False, "url": "?operation=edit-entry", "text": "Edit Entries"},
         ]
     elif key == "upload":
         actions = [
             {"selected": False, "url": reverse("upload"), "text": "Upload a New File"},
             {"selected": False, "url": reverse("upload_action", "edit"), "text": "Edit An Existing Upload"},
             {"selected": False, "url": reverse("upload_action", "delete"), "text": "Delete An Existing Upload"},
+        ]
+    elif key == "feedback":
+        # TODO: This is hardcoded and needs updating with each tag added to the database
+        actions = [
+            {"selected": True if condition == "" else False, "url": "?", "text": "All Feedback"},
+            {"selected": True if condition == "bugs" else False, "url": "?filter=bugs", "text": "Bug Reports"},
+            {"selected": True if condition == "cws" else False, "url": "?filter=cws", "text": "Content Warnings"},
+            {"selected": True if condition == "hints" else False, "url": "?filter=hints", "text": "Hints and Solutions"},
+            {"selected": True if condition == "reviews" else False, "url": "?filter=reviews", "text": "Reviews"},
+            {"selected": True if condition == "toc" else False, "url": "?filter=toc", "text": "Table of Contents"},
         ]
     return render_to_string("museum_site/subtemplate/tag/nav-action-list.html", {"actions": actions})

@@ -44,6 +44,7 @@ $(document).ready(function (){
 {% endblock %}
 
 {% block content %}
+{% nav_action_list "feedback" request.GET.filter %}
 {% if object_list %}
 <div class="view-links">
     <div><a href="#give-feedback">Give Feedback</a></div>
@@ -54,12 +55,6 @@ Sort: <select name="sort">
             <option value="{{option.val}}"{% if request.GET.sort == option.val %} selected {%endif %}>{{option.text}}</option>
         {% endfor %}
     </select>
-</div>
-<div class="modify-query">
-    Filter Feedback To: {% for feedback_tag in filter_options %}<a href="?filter={{feedback_tag.key}}">{{feedback_tag.title}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
-    {% if request.GET.filter %}
-    , <a href="{{request.path}}">Remove Filter</a>
-    {% endif %}
 </div>
 
 {% queryset_to_model_blocks object_list view="review_content" %}
