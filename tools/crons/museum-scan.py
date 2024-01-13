@@ -78,11 +78,17 @@ def scan(zfile):
     if zfile.has_preview_image and (not os.path.isfile(zfile.screenshot_phys_path())):
         issues["preview_image_missing"] = "Screenshot does not exist at {}".format(zfile.preview_url())
 
+    # All Feedback
+    feedback = Review.objects.for_zfile(zfile.id)
+    feedback_len = len(feedback)
+    if feedback_len != zfile.feedback_count:
+        issues["feedback_count"] = "Feedback count in DB does not match 'feedback_count': {}/{}".format(feedback_len, zfile.feedback_count)
+
     # Review related
-    reviews = Review.objects.for_zfile(zfile.id)
+    reviews = Review.objects.for_zfile(zfile.id).filter(tags__key="reviews")
     rev_len = len(reviews)
     if rev_len != zfile.review_count:
-        issues["review_count"] = "Reviews in DB do not match 'review_count': {}/{}".format(rev_len, zfile.review_count)
+        issues["review_count"] = "Review count in DB do not match 'review_count': {}/{}".format(rev_len, zfile.review_count)
 
     # Confirm LOST does not exist
     if DETAIL_LOST in detail_list and exists:
