@@ -86,20 +86,6 @@ def article_lock(request, article_id, slug=""):
     return render(request, "museum_site/article-lock.html", data)
 
 
-def article_search(request):
-    """ Returns page containing multiple filters to use when searching """
-    if request.GET:
-        return Article_Search_View.as_view()
-    form = Article_Search_Form(request.GET if request.GET else None)
-
-    if request.session.get("DEBUG"):
-        form.fields["sort"].choices += [
-            ("-id", "!ID New"),
-            ("id", "!ID Old"),
-        ]
-
-    data = {"title": "Article Search", "form": form}
-    return render(request, "museum_site/generic-form-display.html", data)
 
 
 class Article_List_View(Model_List_View):
