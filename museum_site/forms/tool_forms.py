@@ -511,9 +511,16 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
         ("yellow", "Yellow"),
     )
 
+    TEXT_SIZE_CHOICES = (  # Format = main-font-size:main-text-shadow:sub-font-size:sub-text-shadow
+        ("small", "Small"),
+        ("medium", "Medium"),
+        ("large", "Large"),
+    )
+
     title = forms.CharField(label="Title", required=False)
     subtitle = forms.CharField(label="Subtitle", required=False)
     title_color = forms.ChoiceField(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES))
+    text_size = forms.ChoiceField(choices=TEXT_SIZE_CHOICES, initial="large")
 
     background_image = Museum_Drag_And_Drop_File_Field(
         widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose", allowed_preset="image"),

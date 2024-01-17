@@ -56,15 +56,12 @@
 .stream-title
 {
     color:var(--ega-{{text_color|default:'cyan'}});
-    font-size:140px;
-    text-shadow: 7px 7px 0px var(--ega-{{shadow_color|default:'darkcyan'}});
+
 }
 
 .stream-subtitle
 {
     color:var(--ega-white);
-    font-size:105px;
-    text-shadow: 3px 3px 0px var(--ega-gray);
 }
 
 .tiger-wrapper
@@ -82,6 +79,14 @@
 .lion { top:0px; left:0px; transform:rotate(-20deg); }
 .bear { top:0px; right:0px; transform:rotate(20deg); }
 .ruffian { right:0px; bottom: 0px; transform:rotate(-20deg); }
+
+.stream-title.large { font-size:140px; text-shadow: 7px 7px 0px var(--ega-{{shadow_color|default:'darkcyan'}}); }
+.stream-title.medium { font-size:70px; text-shadow: 3px 3px 0px var(--ega-{{shadow_color|default:'darkcyan'}}); }
+.stream-title.small { font-size:35px; text-shadow: 2px 2px 0px var(--ega-{{shadow_color|default:'darkcyan'}}); }
+
+.stream-subtitle.large { font-size:105px; text-shadow: 3px 3px 0px var(--ega-gray); }
+.stream-subtitle.medium { font-size:49px; text-shadow: 2px 2px 0px var(--ega-gray); }
+.stream-subtitle.small { font-size:35px; text-shadow: 2px 2px 0px var(--ega-gray); }
 </style>
 {% endblock %}
 
@@ -106,8 +111,8 @@
     <div class="bigchar bear">{% char 153 "darkyellow" "transparent" scale=14 %}</div>
     <div class="bigchar ruffian">{% char 5 "purple" "transparent" scale=14 %}</div>
     <div class="cp437 title-wrapper">
-        <div class="stream-title">{{request.POST.title}}</div>
-        <div class="stream-subtitle">{{request.POST.subtitle}}</div>
+        <div class="stream-title {{request.POST.text_size|default:'large'}}">{{request.POST.title}}</div>
+        <div class="stream-subtitle {{request.POST.text_size|default:'large'}}">{{request.POST.subtitle}}</div>
     </div>
 </div>
 {% endif %}
