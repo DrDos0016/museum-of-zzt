@@ -385,7 +385,7 @@ class ZFile_Review_List_View(Model_List_View):
             recent = self.qs.filter(ip=self.request.META.get(REMOTE_ADDR_HEADER), date__gte=cutoff)
             if recent:
                 context["cant_review_message"] = (
-                    "<i>You have <a href='#rev-{}'>recently given feedback</a on> this file and cannot submit additional feedback at this time.</i>".format(
+                    "<i>You have <a href='#rev-{}'>recently given feedback</a> on this file and cannot submit additional feedback at this time.</i>".format(
                         recent.first().pk
                     )
                 )

@@ -22,10 +22,7 @@ class Review_Form(forms.ModelForm):
     )
 
     use_required_attribute = False
-    rating = forms.ChoiceField(
-        choices=RATINGS,
-        help_text="Optionally provide a numeric score from 0.0 to 5.0",
-    )
+    rating = forms.ChoiceField(choices=RATINGS, help_text="Optionally provide a numeric score from 0.0 to 5.0",)
     tags = Museum_Model_Multiple_Choice_Field(
         queryset=Feedback_Tag.objects.all(), widget=forms.CheckboxSelectMultiple,
         help_text="If any box is checked, feedback must be tagged with at least one checked tag", required=False
