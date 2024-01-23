@@ -525,3 +525,18 @@ def nav_action_list(key, condition=None):
             {"selected": True if condition == "toc" else False, "url": "?filter=toc", "text": "Table of Contents"},
         ]
     return render_to_string("museum_site/subtemplate/tag/nav-action-list.html", {"actions": actions})
+
+
+@register.simple_tag()
+def ml(url, text, target="_blank", i=True, *args, **kwargs):
+    """ Museum Link - Takes a full URL, strips the domain, adds italicized text and opens in a new tab """
+    """ {% ml "http://django.pi:8000/article/view/963/featured-world-the-2021-make-a-neat-zzt-board-contest-jam-type-thing-compilation/" "FW: Neat" %}"""
+    components = url.replace("http://", "").replace("https://", "").split("/")[1:]
+    output_url = "/" + "/".join(components)
+
+    output = '<a href="{}"{}>{}</a>'
+    target_string = "target=" +target if target else ""
+    output = output.format(output_url, target_string, text)
+    if i:
+        output = "<i>{}</i>".format(output)
+    return mark_safe(output)
