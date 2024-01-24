@@ -82,8 +82,9 @@ class Review_List_View(Model_List_View):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.author:  # Don't allow sorting by reviewer when showing a single reviewer's reviews
-            context["sort_options"].remove({"text": "Author", "val": "reviewer"})
+        # TODO This should still be the case, but it's causing an error on the live site right now
+        #if self.author:  # Don't allow sorting by reviewer when showing a single reviewer's reviews
+        #    context["sort_options"].remove({"text": "Author", "val": "reviewer"})
 
         if self.request.GET:
             context["search_type"] = "Advanced"
