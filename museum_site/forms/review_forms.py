@@ -16,6 +16,8 @@ from museum_site.widgets import Scrolling_Checklist_Widget
 
 
 class Review_Form(forms.ModelForm):
+    attrs = {"method": "POST"}
+    mode = "Create"
     RATINGS = (
         (-1, "No rating"), (0, "0.0"), (0.5, "0.5"), (1.0, "1.0"), (1.5, "1.5"), (2.0, "2.0"),
         (2.5, "2.5"), (3.0, "3.0"), (3.5, "3.5"), (4.0, "4.0"), (4.5, "4.5"), (5.0, "5.0"),
@@ -36,6 +38,7 @@ class Review_Form(forms.ModelForm):
         help_text="Choose whether or not this feedback should be announced on the Museum of ZZT Discord server and appear on the front page.",
         initial=1
     )
+    submit_value = "Submit Feedback"
 
     class Meta:
         model = Review
@@ -74,8 +77,13 @@ class Review_Form(forms.ModelForm):
             raise forms.ValidationError("Feedback must be given at least one tag.")
         return tags
 
-    def process(self, request, zfile):
-        feedback = self.save(commit=False)
+    def process(self, request, zfile, feedback=None):
+        if self.mode == "Create":
+            feedback = self.save(commit=False)
+        else:  # Pull new fields when editing. Others handled later
+            feedback.title = self.cleaned_data.get("title")
+            feedback.content = self.cleaned_data.get("content")
+            feedback.rating = self.cleaned_data.get("rating")
 
         # Prepare feedback object
         if request.user.is_authenticated:  # Set user and spotlight for logged in users
@@ -98,6 +106,9 @@ class Review_Form(forms.ModelForm):
 
         feedback.save()
 
+        if self.mode == "Edit":
+            feedback.tags.clear()
+
         # Add tags
         for tag in self.cleaned_data["tags"]:
             feedback.tags.add(tag.pk)
@@ -115,6 +126,11 @@ class Review_Form(forms.ModelForm):
             zfile.save()
 
         return feedback
+
+class Feedback_Edit_Form(Review_Form):
+    mode = "Edit"
+    zfile_id = forms.IntegerField(widget=forms.HiddenInput)
+
 
 
 class Review_Search_Form(forms.Form):
@@ -154,3 +170,23 @@ class Review_Search_Form(forms.Form):
         full_choices=Feedback_Sorter().get_sort_options_as_django_choices(include_all=True),
         required=False,
     )
+
+
+class Feedback_Delete_Confirmation_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Delete This Feedback"
+    attrs = {"method": "POST"}
+
+    confirmation = forms.CharField(
+        max_length=6,
+        help_text="To confirm you have the correct feedback and wish to delete it please type \"DELETE\" in the following text field.",
+    )
+    zfile_key = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["confirmation"].widget.attrs["placeholder"] = "DELETE"
+
+    def clean_confirmation(self):
+        if self.cleaned_data["confirmation"].upper() != "DELETE":
+            self.add_error("confirmation", "You must provide confirmation before an upload can be deleted!")

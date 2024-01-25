@@ -143,6 +143,12 @@
     border-top:1px dotted #000;
 }
 
+.review-content > .model-block-actions
+{
+    grid-template-columns: repeat(4, 1fr);
+    border-top:0px;
+}
+
 @media (max-width:500px) {
     .model-block-actions { grid-template-columns: repeat(3, 1fr); grid-template-rows:repeat(2, 48px); justify-items:center; align-items:center;}
     .model-block-actions .datum .value { line-height:32px; }

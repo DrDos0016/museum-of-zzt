@@ -1,0 +1,39 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+#id_confirmation { text-transform:uppercase; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{heading}}</h1>
+
+{% if selected_feedback %}
+{% model_block selected_feedback view="review_content" %}
+<br>
+<div class="sticky-note">
+    <div class="text">
+        <b class="heading">WARNING</b>
+        <p>Deleting feedback cannot be undone. All feedback data will be permanently removed. Please be certain this is the action you wish to take and the correct feedback has been selected before continuing.</p>
+    </div>
+</div>
+
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+{% elif request.GET.success %}
+<div class="c"><img src="{% static 'chrome/blank-board.png' %}" alt="A blank ZZT board"><br>
+<p class="cp437 larger">Your feedback has been deleted successfully.</p></div>
+{% else %}
+<p>No feedback with the provided ID was found.</p>
+{% endif %}
+<hr>
+
+{{selected_feedback.get_field_reviewer_link.value|safe}}<br>
+<a href="{{selected_zfile.review_url}}">View additional feedback for <i>{{selected_zfile.title}}</i></a>
+{% endblock %}

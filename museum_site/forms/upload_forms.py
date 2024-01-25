@@ -157,7 +157,7 @@ class Upload_Delete_Confirmation_Form(forms.Form):
 
     confirmation = forms.CharField(
         max_length=6,
-        help_text="To confirm you have the correct upload and wish to delete it please type \"DELETE\" in the following text input.",
+        help_text="To confirm you have the correct upload and wish to delete it please type \"DELETE\" in the following text field.",
     )
 
     def __init__(self, *args, **kwargs):

@@ -26,7 +26,7 @@ from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
 from museum_site.core.form_utils import load_form
 from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_PRESETS
-from museum_site.core.zfile_utils import delete_zfile
+from museum_site.core.model_utils import delete_zfile
 from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate_boards_in_zipfile, record, zookeeper_init, zookeeper_extract_font
 from museum_site.forms.tool_forms import (
     Discord_Announcement_Form,

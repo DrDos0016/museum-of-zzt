@@ -184,6 +184,8 @@ urlpatterns = [
     path("data-integrity/", RedirectView.as_view(url="/policy/data-integrity/", permanent=True)),
 
     # /review/
+    path("feedback/edit/<int:pk>/", museum_site.review_views.Feedback_Edit_View.as_view(), name="feedback_edit"),
+    path("feedback/delete/confirm/", museum_site.review_views.Feedback_Delete_Confirmation_View.as_view(), name="feedback_delete_confirm"),
     path("review/", RedirectView.as_view(pattern_name="review_browse", permanent=True)),
     path("review/browse/", museum_site.review_views.Review_List_View.as_view(), name="review_browse"),
     path("review/browse/author/", museum_site.review_views.Reviewer_Directory_View.as_view(), name="review_browse_authors"),

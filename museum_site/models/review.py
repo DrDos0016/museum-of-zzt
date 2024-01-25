@@ -20,6 +20,7 @@ class Review(BaseModel):
     objects = Review_Queryset.as_manager()
 
     model_name = "Review"
+    to_init = ["yours"]
     table_fields = ["Title", "File", "Author", "Date", "Rating"]
     cell_list = ["view", "zfile", "author", "review_date", "rating"]
     guide_word_values = {"id": "pk", "reviewer": "reviewer", "date": "date", "file": "zfile", "rating": "rating"}
@@ -163,6 +164,13 @@ class Review(BaseModel):
             tags = ["<i>None</i>"]
         return {"label": "Tags", "value": ", ".join(tags), "safe": True}
 
+    def get_field_edit_feedback(self, view="review-content"):
+        return self.field_context(url=reverse("feedback_edit", kwargs={"pk": self.pk}), text="Edit Feedback")
+
+    def get_field_delete_feedback(self, view="review-content"):
+        return self.field_context(url=reverse("feedback_delete_confirm") + "?pk={}".format(self.pk), text="Delete Feedback")
+
+
     def context_universal(self, request=None):
         context = super().context_universal(request)
         context["model_key"] = "rev-{}".format(context["model_key"])
@@ -210,9 +218,9 @@ class Review(BaseModel):
         # Context used when displaying a full review
         context = self.context_universal()
         context["roles"] = ["model-block", "review-content"]
-        context["show_actions"] = False
+        context["show_actions"] = True
         context["fields"] = []
-        field_list = ["author", "review_date", "tags", "content", "rating", "reviewer_link"]
+        field_list = ["author", "review_date", "tags", "content", "rating"]
 
         if not self.pk:
             field_list.remove("tags")
@@ -223,6 +231,17 @@ class Review(BaseModel):
             field_context = self.get_field(field_name, view="review_content")
             if field_context:
                 context["fields"].append(field_context)
+
+        action_list = ["reviewer_link"]
+        if self.is_yours:
+            action_list.append("edit_feedback")
+            action_list.append("delete_feedback")
+
+        actions = []
+        for action in action_list:
+            actions.append(self.get_field(action, view="detailed"))
+        context["actions"] = actions
+
         return context
 
     def get_guideword_date(self): return self.date.strftime(DATE_HR)
@@ -238,6 +257,12 @@ class Review(BaseModel):
         if self.pk and tag_id in self.tags.all().values_list("id", flat=True):
             return True
         return False
+
+    def _init_yours(self):
+        """ Determine if the item is "yours" """
+        self.is_yours = False
+        if self.request and self.user:
+            self.is_yours = True if self.request.user.pk == self.user.pk else False
 
 class Feedback_Tag(models.Model):
     TAGS = (
