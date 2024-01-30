@@ -225,7 +225,7 @@ def render_review_text(request):
         if request.user.is_authenticated:
             review.user_id = request.user.id
             review.author = request.user.username
-        output = model_block({"request": request}, review, view="review_content")
+        output = model_block({"request": request}, review, view="review_content", hide_actions=True)
     return HttpResponse(output)
 
 

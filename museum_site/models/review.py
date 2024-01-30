@@ -165,7 +165,8 @@ class Review(BaseModel):
         return {"label": "Tags", "value": ", ".join(tags), "safe": True}
 
     def get_field_edit_feedback(self, view="review-content"):
-        return self.field_context(url=reverse("feedback_edit", kwargs={"pk": self.pk}), text="Edit Feedback")
+        pk = self.pk if self.pk else 1
+        return self.field_context(url=reverse("feedback_edit", kwargs={"pk": pk}), text="Edit Feedback")
 
     def get_field_delete_feedback(self, view="review-content"):
         return self.field_context(url=reverse("feedback_delete_confirm") + "?pk={}".format(self.pk), text="Delete Feedback")
@@ -263,6 +264,10 @@ class Review(BaseModel):
         self.is_yours = False
         if self.request and self.user:
             self.is_yours = True if self.request.user.pk == self.user.pk else False
+
+    def process_kwargs(self, kwargs):
+        if kwargs.get("hide_actions"):
+            self.context["show_actions"] = False
 
 class Feedback_Tag(models.Model):
     TAGS = (

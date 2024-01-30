@@ -16,7 +16,7 @@ ANNOUNCE_NONE = 0
 DISCORD_ANNOUNCE_UPLOADS = ANNOUNCE_ALL
 DISCORD_ANNOUNCE_REVIEWS = ANNOUNCE_ALL
 
-def discord_announce_review(review, env=None):
+def discord_announce_review(review, env=None, mode="Create"):
     if env is None:
         env = ENV
 
@@ -35,11 +35,20 @@ def discord_announce_review(review, env=None):
          review.zfile.preview_url()
     )
 
-    discord_post = (
-        "*A new review for {} has been posted!*\n"
+    if mode == "Create":
+        discord_post = (
+            "*New feedback for {} has been posted!*\n"
+            "**{}** written by {}\n"
+            "Read: https://museumofzzt.com{}#rev-{}\n"
+        )
+    else:
+        discord_post = (
+        "*Feedback for {} has been updated!*\n"
         "**{}** written by {}\n"
         "Read: https://museumofzzt.com{}#rev-{}\n"
-    ).format(
+    )
+
+    discord_post = discord_post.format(
         review.zfile.title, review.title, review.get_author(),
         urllib.parse.quote(review.zfile.review_url()), review.id
     )

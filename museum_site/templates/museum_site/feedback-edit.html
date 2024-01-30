@@ -5,7 +5,42 @@
 {% block style %}
 <style>
 #id_confirmation { text-transform:uppercase; }
+
+#review-form-controls
+{
+    display:flex;
+    justify-content:space-between;
+    border-top:1px dashed #000;
+    padding:7px 4px 7px 4px;
+}
+
+#review-form-controls input { flex:0 0 40%; }
+#new-review { display:none; }
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
+<script>
+$(document).ready(function (){
+    $("#preview-review").click(function (){
+        $.ajax({
+        url:"/ajax/render-review-text/",
+        method:"POST",
+        data:{
+            "title":$("#id_title").val(),
+            "content":$("#id_content").val(),
+            "rating":$("#id_rating").val(),
+            "author":$("#id_author").val(),
+            "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
+        }
+        }).done(function (rendered){
+            console.log(rendered);
+            $("#review-preview-wrapper").html(rendered);
+        });
+    });
+});
+</script>
 {% endblock %}
 
 {% block content %}
@@ -17,7 +52,11 @@
 <form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
 {% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
 {% include "museum_site/blocks/generic-form.html" %}
-<input type="submit" value="{{form.submit_value}}">
+
+<div id="review-form-controls">
+    <input type="button" id="preview-review" value="Preview Feedback">
+    <input type="submit" value="{{form.submit_value}}">
+</div>
 </form>
 {% elif request.GET.success %}
 <div class="c"><img src="{% static 'chrome/blank-board.png' %}" alt="A blank ZZT board"><br>
@@ -26,7 +65,8 @@
 <p>No feedback with the provided ID was found.</p>
 {% endif %}
 <hr>
-
+<div id="review-preview-wrapper"></div>
+<hr>
 {{selected_feedback.get_field_reviewer_link.value|safe}}<br>
 <a href="{{selected_zfile.review_url}}">View additional feedback for <i>{{selected_zfile.title}}</i></a>
 {% endblock %}

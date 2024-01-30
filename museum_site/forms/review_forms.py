@@ -122,7 +122,7 @@ class Review_Form(forms.ModelForm):
             zfile.calculate_feedback()
             # Make Announcement
             if (not request.user.is_authenticated) or self.cleaned_data.get("spotlight") == "1":  # Guests always have feedback announced
-                discord_announce_review(feedback)
+                discord_announce_review(feedback, mode=self.mode)
             zfile.save()
 
         return feedback
