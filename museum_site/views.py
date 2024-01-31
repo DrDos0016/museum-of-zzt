@@ -9,6 +9,7 @@ from django.db.models import Count
 from django.db.models.functions import ExtractYear
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -441,3 +442,7 @@ class RSS_View(TemplateView):
         context = super().get_context_data(**kwargs)
         context["title"] = "RSS Feeds"
         return context
+
+
+class Company_Overview_View(DetailView):
+    template_name = "museum_site/company-view.html"

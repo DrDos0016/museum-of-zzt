@@ -94,6 +94,9 @@ urlpatterns = [
     path("collection/view/<slug:collection_slug>/", museum_site.collection_views.Collection_Contents_View.as_view(), name="collection_view"),
     path("collection/user/", login_required(museum_site.collection_views.Collection_List_View.as_view()), name="collection_user"),
 
+    # /company/
+    path("company/view/<slug:company_slug>/", museum_site.views.Company_Overview_View.as_view(), name="company_view"),
+
     # /debug/
     path("debug/", museum_site.debug_views.debug),
     path("debug/403/", museum_site.views.error_403),

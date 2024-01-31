@@ -2,10 +2,22 @@
 {% load static %}
 {% load site_tags %}
 
+{% block scripts %}
+<script>
+$("document").ready(function (){
+    $("#autoreject").click(function (){
+        $("input[value=REJECT]").click();
+    });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <h1>Feedback Approvals</h1>
 
 <p>{{output|default:"&mdash;"|safe}}</p>
+
+<input type="button" value="Select Reject On All Pending Feedback" id="autoreject">
 
 <form method="POST">
 {% csrf_token %}
