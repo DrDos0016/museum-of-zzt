@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from django import forms
+from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 
 from museum_site.core.discord import discord_announce_review
@@ -67,6 +68,11 @@ class Review_Form(forms.ModelForm):
         if author.find("/") != -1:
             raise forms.ValidationError("Author may not contain slashes.")
 
+        if self.is_guest:
+            if User.objects.filter(username=self.cleaned_data["author"]).count():  # Check that the author isn't already a user's username
+                raise forms.ValidationError("Name is already in use by a registered user. Sign into the appropriate account, or enter a unique name.")
+                return None
+
         return author
 
     def clean_tags(self):
@@ -90,8 +96,9 @@ class Review_Form(forms.ModelForm):
             feedback.author = request.user.username
             feedback.user_id = request.user.id
             feedback.spotlight = self.cleaned_data.get("spotlight", True)
-        else:  # Force spotlight for guests
-            feedback.spotlight = True
+        else:  # Guests
+            feedback.spotlight = True  # Force spotlight for guests
+
         feedback.ip = request.META.get(REMOTE_ADDR_HEADER)
         feedback.date = datetime.now(tz=timezone.utc)
         feedback.zfile_id = zfile.pk

@@ -406,8 +406,10 @@ class ZFile_Review_List_View(Model_List_View):
         review_form = Review_Form(self.request.POST) if self.request.POST else Review_Form(initial={"tags": FEEDBACK_TAG_REVIEW})
         if self.request.user.is_authenticated:  # Remove anonymous option for logged in users
             del review_form.fields["author"]
+            review_form.is_guest = False
         else:  # Remove spotlight toggling for guest users
             del review_form.fields["spotlight"]
+            review_form.is_guest = True
 
         # Post a review if one was submitted
         if self.request.POST and review_form.is_valid() and not recent:
