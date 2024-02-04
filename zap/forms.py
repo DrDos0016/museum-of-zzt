@@ -32,7 +32,7 @@ class ZAP_Post_Form(forms.Form):
     processed = False
 
     title = forms.CharField(required=False)
-    accounts = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS)
+    accounts = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["twitter", "tumblr", "mastodon"])
 
     body = forms.CharField(
         widget=Enhanced_Text_Area_Widget(char_limit=10000),
