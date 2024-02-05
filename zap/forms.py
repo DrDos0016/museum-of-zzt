@@ -6,17 +6,18 @@ from django import forms
 from django.template.defaultfilters import date
 
 from museum_site.constants import SITE_ROOT
+from museum_site.fields import Museum_Multiple_Choice_Field
 from museum_site.widgets import *
 from zap.core import querydict_to_json_str, zap_upload_file, zap_get_social_account
 from zap.models import Event, Post
 
 ACCOUNTS = (
-    ("twitter", "Twitter"),
-    ("tumblr", "Tumblr"),
+    ("cohost", "Cohost"),
+    ("discord", "Discord"),
     ("mastodon", "Mastodon"),
     ("patreon", "Patreon"),
-    ("discord", "Discord"),
-    ("cohost", "Cohost"),
+    ("tumblr", "Tumblr"),
+    ("twitter", "Twitter"),
 )
 
 class ZAP_Model_Select_Form(forms.Form):
@@ -32,7 +33,9 @@ class ZAP_Post_Form(forms.Form):
     processed = False
 
     title = forms.CharField(required=False)
-    accounts = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["twitter", "tumblr", "mastodon"])
+    accounts = Museum_Multiple_Choice_Field(
+        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["twitter", "tumblr", "mastodon"]
+    )
 
     body = forms.CharField(
         widget=Enhanced_Text_Area_Widget(char_limit=10000),

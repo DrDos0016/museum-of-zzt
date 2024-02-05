@@ -1,4 +1,5 @@
-{% if char_limit %}
-<div class="chars-remaining"><span>{{char_limit}}</span> characters remaining</div>
-{% endif %}
-<textarea id="{{widget.attrs.id}}" name="{{widget.name}}" class="char-limited-widget" maxlength="{{char_limit}}">{% if widget.value %}{{widget.value|stringformat:'s'}}{% endif %}</textarea>
+<div class="enhanced-text-widget-wrapper">
+    {% if char_limit %}<div class="chars-remaining"><span class="chars-remaining-value">{{char_limit}}</span> characters remaining</div>{% endif %}
+    {% if prefix_text %}<div>{{prefix_text}}</div>{% endif %}
+    <textarea id="{{widget.attrs.id}}" name="{{widget.name}}" class="char-limited-widget" maxlength="{{field_maxlength}}" data-charlimit="{{char_limit}}">{% if widget.value %}value="{{widget.value|stringformat:'s'}}"{% endif %}</textarea>
+</div>

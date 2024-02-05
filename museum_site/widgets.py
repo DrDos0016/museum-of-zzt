@@ -172,6 +172,19 @@ class Enhanced_Text_Widget(forms.TextInput):
 class Enhanced_Text_Area_Widget(Enhanced_Text_Widget):
     template_name = "museum_site/widgets/enhanced-textarea-widget.html"
 
+    def __init__(self, attrs=None, char_limit=None, prefix_text=""):
+        super().__init__(attrs)
+        self.char_limit = char_limit
+        self.prefix_text = prefix_text
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        if self.char_limit:
+            context["char_limit"] = self.char_limit
+            context["field_maxlength"] = self.char_limit * 3
+        context["prefix_text"] = self.prefix_text
+        return context
+
 
 class Enhanced_Date_Widget(forms.TextInput):
     template_name = "museum_site/widgets/enhanced-date-widget.html"
