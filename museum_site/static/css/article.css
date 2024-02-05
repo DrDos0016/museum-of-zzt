@@ -212,7 +212,7 @@ article aside
 .img-set img { border:1px solid var(--border-color); }
 
 /* Used in MTP reviews */
-article.featured-game a.screen {
+article.featured-world a.screen {
     display: flex;
     flex-direction: column;
     justify-content: center;
