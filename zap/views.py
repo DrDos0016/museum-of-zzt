@@ -73,7 +73,7 @@ def create_publication_pack_post(request):
 
 @staff_member_required
 def prefab_form(request, form):
-    context = {"title": "ZAP - Prefab"}
+    context = {"title": "ZAP - {}"}
 
     if request.method == "POST":
         form = form(request.POST, request.FILES)
@@ -89,6 +89,7 @@ def prefab_form(request, form):
             form.smart_start()
 
     context["form"] = form
+    context["title"] = context["title"].format(form.heading if hasattr(form, "heading") else "NO HEADING")
     return render(request, "zap/{}".format(form.template_name), context)
 
 

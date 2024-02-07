@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block zap_body %}
+<h1>{{form.heading}}</h1>
 <form id="stream-schedule-form" {% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
 {% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
 {% include "museum_site/blocks/generic-form.html" %}

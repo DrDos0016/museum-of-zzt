@@ -6,7 +6,7 @@ from django import forms
 from django.template.defaultfilters import date
 
 from museum_site.constants import SITE_ROOT
-from museum_site.fields import Museum_Multiple_Choice_Field
+from museum_site.fields import Museum_Multiple_Choice_Field, Museum_Drag_And_Drop_File_Field
 from museum_site.widgets import *
 from zap.core import querydict_to_json_str, zap_upload_file, zap_get_social_account
 from zap.models import Event, Post
@@ -145,7 +145,8 @@ class ZAP_Media_Upload_Form(forms.Form):
         "enctype": "multipart/form-data",
     }
 
-    user_upload = forms.FileField(required=False, label="Media", widget=UploadFileWidget(target_text="Drag & Drop Media Here or Click to Choose"))
+    user_upload = Museum_Drag_And_Drop_File_Field(label="Media", widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose"))
+
     uploaded_file_name = forms.CharField(required=False, help_text="Alternate name to use for upload")
 
     def process(self, request):
