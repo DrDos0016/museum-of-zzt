@@ -1,0 +1,19 @@
+{% extends "museum_site/main.html" %}
+
+{% load site_tags %}
+
+{% block content %}
+<h1>{{title}}</h1>
+
+<h2>Company Members</h2>
+
+<h2>Company Releases</h2>
+<table>
+<tr>
+    <th>Title</th><th>Author</th><th>Date</th>
+    {% for release in releases %}
+    {% model_block release view="list" %}
+    {% endfor %}
+</tr>
+</table>
+{% endblock %}

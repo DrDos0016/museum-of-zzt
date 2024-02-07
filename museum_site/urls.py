@@ -95,7 +95,7 @@ urlpatterns = [
     path("collection/user/", login_required(museum_site.collection_views.Collection_List_View.as_view()), name="collection_user"),
 
     # /company/
-    path("company/view/<slug:company_slug>/", museum_site.views.Company_Overview_View.as_view(), name="company_view"),
+    path("company/view/<slug:slug>/", museum_site.views.Company_Overview_View.as_view(), name="company_view"),
 
     # /debug/
     path("debug/", museum_site.debug_views.debug),

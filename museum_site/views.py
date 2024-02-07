@@ -446,3 +446,13 @@ class RSS_View(TemplateView):
 
 class Company_Overview_View(DetailView):
     template_name = "museum_site/company-view.html"
+    context_object_name = "company"
+
+    def get_queryset(self):
+        return Company.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = context["company"].title
+        context["releases"] = ZFile.objects.filter(companies=context["company"].pk)
+        return context
