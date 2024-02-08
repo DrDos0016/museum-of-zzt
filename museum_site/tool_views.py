@@ -11,7 +11,9 @@ import zipfile
 
 from datetime import datetime, timedelta
 from io import BytesIO
+from sys import version as PYTHON_VERSION
 
+from django import VERSION as DJANGO_VERSION
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -145,6 +147,8 @@ def audit_settings(request):
         "Terms of Service Date": TERMS_DATE,
         "Token Expiration Seconds": TOKEN_EXPIRATION_SECS,
     }
+    context["python_version"] = PYTHON_VERSION
+    context["django_version"] = ".".join(map(str, DJANGO_VERSION))
     return render(request, "museum_site/tools/audit-settings.html", context)
 
 
