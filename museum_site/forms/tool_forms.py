@@ -22,7 +22,8 @@ from museum_site.settings import (
     IA_ACCESS, IA_SECRET, DISCORD_WEBHOOK_ANNOUNCEMENTS_URL, DISCORD_WEBHOOK_PATRONS_URL, DISCORD_WEBHOOK_TEST_URL, DISCORD_WEBHOOK_FEED_URL,
 )
 from museum_site.fields import (
-    Enhanced_Model_Choice_Field, Manual_Field, Museum_Drag_And_Drop_File_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Tagged_Model_Choice_Field
+    Enhanced_Model_Choice_Field, Manual_Field, Museum_Drag_And_Drop_File_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Tagged_Model_Choice_Field,
+    Museum_Tagged_Text_Field
 )
 from museum_site.models import Article, File, Series
 from museum_site.widgets import (
@@ -258,6 +259,7 @@ class Livestream_Description_Form(forms.Form):
     heading = "Livestream Description Generator"
     use_required_attribute = False
     submit_value = "Select"
+
     associated = Enhanced_Model_Choice_Field(
         widget=Ordered_Scrolling_Radio_Widget(),
         queryset=File.objects.all(),
@@ -271,17 +273,12 @@ class Livestream_Description_Form(forms.Form):
         help_text="Date of original livestream",
         required=False
     )
-    timestamp = Manual_Field(
+
+
+    timestamp = Museum_Tagged_Text_Field(
         label="Timestamp(s)",
-        widget=Tagged_Text_Widget(),
         required=False,
         help_text="Separate with commas. Match order in associated ZFiles.",
-    )
-    ad_break_endings = Manual_Field(
-        label="Ad Break End Timestamp(s)",
-        widget=Tagged_Text_Widget(),
-        required=False,
-        help_text="Timestamps for when ad breaks ended. Must be manually added to list of streamed worlds",
     )
 
 
