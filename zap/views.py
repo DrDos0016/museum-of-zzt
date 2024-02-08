@@ -34,7 +34,6 @@ def index(request):
             title = title[4:]
         filtered_url_patterns.append({"name": p.name, "title": title})
     context["zap_url_patterns"] = filtered_url_patterns
-    events = Event.objects.all().order_by("-pk")[:25]
     posts = Post.objects.all().order_by("-pk")[:25]
 
     today = datetime.now(tz=timezone.utc)
@@ -46,7 +45,6 @@ def index(request):
     context["current_month_path"] = os.path.join(ZAP_STATIC_PATH, str(today.year), ("0" + str(today.month))[-2:])
     context["last_month_path"] = ""
 
-    context["events"] = events
     context["posts"] = posts
     return render(request, "zap/index.html", context)
 

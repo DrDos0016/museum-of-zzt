@@ -20,7 +20,7 @@ from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify, striptags
 from django.urls import get_resolver
 
-from museum_site.constants import *
+from museum_site.constants import *  # Deliberate for Audit Settings
 from museum_site.constants import DATE_NERD
 from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
@@ -124,6 +124,28 @@ def audit_colors(request):
             data["variables"][stylesheet].sort()
 
     return render(request, "museum_site/tools/audit-colors.html", data)
+
+
+@staff_member_required
+def audit_settings(request):
+    context = {"title": "Audit Settings"}
+    context["current_settings"] = {
+        "Uploads Enabled": UPLOADS_ENABLED,
+        "Allow Account Registration": ALLOW_REGISTRATION,
+        "Require Captcha (Unimplemented?)": REQUIRE_CAPTCHA,
+        "Boot Timestamp": BOOT_TS,
+        "CSS Includes": CSS_INCLUDES,
+        "Upload Cap (Default)": UPLOAD_CAP,
+        "Upload Test Mode": UPLOAD_TEST_MODE,
+        "Model Block Version": MODEL_BLOCK_VERSION,
+        "Minimum Password Length": MIN_PASSWORD_LENGTH,
+        "Maximum Login Attempts Permitted": MAX_LOGIN_ATTEMPTS,
+        "Maximum Registration Attempts Permitted": MAX_REGISTRATION_ATTEMPTS,
+        "Maximum Password Reset Attempts Permitted": MAX_PASSWORD_RESETS,
+        "Terms of Service Date": TERMS_DATE,
+        "Token Expiration Seconds": TOKEN_EXPIRATION_SECS,
+    }
+    return render(request, "museum_site/tools/audit-settings.html", context)
 
 
 @staff_member_required

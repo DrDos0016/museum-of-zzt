@@ -30,35 +30,25 @@
     </tr>{% endfor %}
 </table>
 
-<hr>
-<h2>Events</h2>
-<table class="mono">
-    <tr><th>PK</th><th>Event</th><th>Kind</th><th>Actions</th></tr>
-    {% for e in events %}<tr>
-        <td>{{e.pk}}</td>
-        <td><a href="/tools/zap/view/{{e.pk}}/">{{e.title}}</a></td>
-        <td>{{e.kind}}</td>
-        <td>
-            <a href="{% url 'zap_create_post' %}?pk={{e.pk}}">Post Event</a><br>
-        </td>
-    </tr>{% endfor %}
-</table>
-
 <h2>Recent Uploads</h2>
 <table class="mono" id="zap-recent-uploads">
     <tr><th>Image</th><th>Paths</th></tr>
     {% for i in recent_uploads %}
     <tr>
         <td><a href="{{i}}" target="_blank" class="noext"><img src="{{i}}"></a></td>
-        <td>{{i}}</td>
+        <td>
+            <ul>
+                <li>{{i}}</li>
+                <li><a href="https://museumofzzt.com{{i}}" target="_blank" class="noext">https://museumofzzt.com{{i}}</a></li>
+            </ul>
+        </td>
     </tr>
     {% endfor %}
 </table>
 
 <h2>Recent Renders</h2>
+<a href="{{current_month_path}}/">Renders for this month</a>
 <table class="mono">
     <tr><th>Image</th><th>Paths</th></tr>
 </table>
-
-{{current_month_path}}
 {% endblock %}
