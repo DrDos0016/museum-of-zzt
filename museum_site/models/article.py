@@ -250,6 +250,9 @@ class Article(BaseModel):
     def category_slug(self):
         return slugify(self.category)
 
+    def comments_permitted(self):
+        return True if self.allow_comments and self.published == self.PUBLISHED else False
+
     def get_meta_tag_context(self):
         """ Returns a dict of keys and values for <meta> tags  """
         tags = {}
