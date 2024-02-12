@@ -58,6 +58,16 @@ class Discord_Announcement_Form(forms.Form):
         widget=forms.Textarea(),
         help_text="Discord Markdown supported"
     )
+    image_embeds = forms.CharField(
+        required=False,
+        label="Image embeds",
+        widget=forms.Textarea(),
+        help_text="One URL per line. 10 Maximum embeds (unverified).<br>Ex: https://museumofzzt.com/static/screenshots/1000/zzt.png",
+    )
+
+    def clean_image_embeds(self):
+        embeds = self.cleaned_data["image_embeds"].split("\r\n")
+        return embeds
 
     def process(self):
         destinations = {
@@ -66,13 +76,27 @@ class Discord_Announcement_Form(forms.Form):
         }
         destination_webhook = destinations.get(self.cleaned_data["channel"])
 
-        discord_data = {"content": self.cleaned_data["body"],}
+        discord_data = {"content": self.cleaned_data["body"]}
+
+        if self.cleaned_data["image_embeds"]:
+            embeds = []
+            for embed in self.cleaned_data["image_embeds"]:
+                embeds.append({"image": {"url": embed}})
+            discord_data["embeds"] = embeds
+
         resp = requests.post(destination_webhook, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
-        print(resp)
         self.response = resp
+
+    def send_message(self, channel, body, image_embeds=[]):
+        # TODO: Is this too hacky?
+        self.cleaned_data = {"channel": channel, "body": body, "image_embeds": image_embeds}
+        self.process()
 
 
 class IA_Mirror_Form(forms.Form):
+    heading = "Internet Archive Mirroring"
+    submit_value = "Mirror File"
+    attrs = {"method": "POST", "enctype": "multipart/form-data"}
     use_required_attribute = False
     required = False
 
@@ -273,7 +297,6 @@ class Livestream_Description_Form(forms.Form):
         help_text="Date of original livestream",
         required=False
     )
-
 
     timestamp = Museum_Tagged_Text_Field(
         label="Timestamp(s)",

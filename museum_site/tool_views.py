@@ -312,7 +312,7 @@ def manage_cache(request):
 
 @staff_member_required
 def mirror(request, key):
-    data = {"title": "Internet Archive Mirroring"}
+    context = {"title": "Internet Archive Mirroring"}
 
     zfile = File.objects.get(key=key)
     engine = None
@@ -375,14 +375,22 @@ def mirror(request, key):
 
     # Mirror the file
     if request.method == "POST" and form.is_valid():
-        data["resp"] = form.mirror(zfile, request.FILES)
-        if "200" in str(data["resp"]):
-            zfile.archive_name = request.POST.get("url")
-            if request.POST.get("collection") != "test_collection":
-                zfile.save()
+        ia_responses = form.mirror(zfile, request.FILES)
+        context["output_html"] = "<textarea style='width:100%;height:150px'>\n"
 
-    data["form"] = form
-    return render(request, "museum_site/tools/mirror.html", data)
+        for ia_response in ia_responses:
+            context["output_html"] += "========================================\n"
+            context["output_html"] += "Status: {}\n".format(ia_response.status_code)
+            context["output_html"] += "Content:\n{}\n".format(ia_response.content)
+            if ia_response.status_code == 200:
+                print("SUCCESS RESPONSE")
+                zfile.archive_name = request.POST.get("url")
+                if request.POST.get("collection") != "test_collection":
+                    zfile.save()
+        context["output_html"] += "</textarea>"
+
+    context["form"] = form
+    return render(request, "museum_site/tools/mirror.html", context)
 
 
 @staff_member_required
