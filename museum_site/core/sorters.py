@@ -108,7 +108,7 @@ class ZFile_Sorter(Sorter):
         {"tag": "basic", "text": "Release Date (Oldest)", "val": "release", "db_ordering": ["release_date", "sort_title"]},
         {"tag": "publish-date", "text": "Publication Date", "val": "-publish_date", "db_ordering": ["-publish_date", "sort_title"]},
         {"tag": "upload-date", "text": "Upload Date", "val": "uploaded", "db_ordering": ["-id"]},
-        {"tag": "random", "text": "Random", "val": "random", "db_ordering": ["-publish_date", "sort_title"]},
+        {"tag": "random", "text": "Random", "val": "random", "db_ordering": ["?"]},
         {"tag": "debug", "text": "!ID (Newest)", "val": "-id", "db_ordering": ["-id"]},
         {"tag": "debug", "text": "!ID (Oldest)", "val": "id", "db_ordering": ["id"]},
     ]
