@@ -10,6 +10,7 @@ from museum_site.core.form_utils import any_plus, get_sort_option_form_choices
 from museum_site.core.sorters import Feedback_Sorter
 from museum_site.constants import YEAR
 from museum_site.fields import Museum_Model_Multiple_Choice_Field, Museum_Choice_Field, Museum_Select_Field
+from museum_site.forms.tool_forms import Discord_Announcement_Form
 from museum_site.models import Review, Feedback_Tag
 from museum_site.models import File as ZFile
 from museum_site.settings import REMOTE_ADDR_HEADER
@@ -123,6 +124,9 @@ class Review_Form(forms.ModelForm):
         if float(self.cleaned_data["rating"]) >= 0:
             feedback.tags.add(FEEDBACK_TAG_REVIEW)
 
+        # Log feedback for staff
+        Discord_Announcement_Form().send_message("log", "Feedback submitted: https://museumofzzt.com{}".format(feedback.get_absolute_url()))
+
         # Update file's review count/scores if the review is approved
         if feedback.approved and zfile.can_review == ZFile.FEEDBACK_YES:
             zfile.calculate_reviews()
@@ -131,6 +135,7 @@ class Review_Form(forms.ModelForm):
             if (not request.user.is_authenticated) or self.cleaned_data.get("spotlight") == "1":  # Guests always have feedback announced
                 discord_announce_review(feedback, mode=self.mode)
             zfile.save()
+
 
         return feedback
 

@@ -16,6 +16,7 @@ from museum_site.core.misc import banned_ip, calculate_boards_in_zipfile, calcul
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.core.zeta_identifiers import *
 from museum_site.core.model_utils import delete_zfile
+from museum_site.forms.tool_forms import Discord_Announcement_Form
 from museum_site.forms.upload_forms import Download_Form, Play_Form, Upload_Form, Upload_Action_Form, Upload_Delete_Confirmation_Form, ZGame_Form
 from museum_site.generic_model_views import Generic_Error_View
 from museum_site.models import *
@@ -111,12 +112,15 @@ class Upload_View(TemplateView):
 
             self.zgame_form.generate_preview_image(self.upload_form.cleaned_data["generate_preview_image"])  # Generate Preview Image
             discord_announce_upload(self.upload_form.upload, self.zgame_form.zfile)  # Announce to Discord (if needed)
+
             self.zgame_form.zfile.save()  # Final Save FULLSAVE
             # Create ZGames Download
             zgames_download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zgame_form.zfile.filename, kind="zgames")
             if created:
                 self.zgame_form.zfile.downloads.add(zgames_download)
 
+            # Log feedback for staff
+            Discord_Announcement_Form().send_message("log", "Upload submitted: https://museumofzzt.com{}".format(self.zgame_form.zfile.get_absolute_url()))
             return redirect("upload_complete", token=self.upload_form.upload.edit_token)  # Redirect to success page
 
         context = self.get_context_data()

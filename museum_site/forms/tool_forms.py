@@ -17,7 +17,7 @@ from internetarchive import upload as ia_upload
 from museum_site.core.file_utils import delete_this
 from museum_site.core.image_utils import crop_file, optimize_image
 from museum_site.core.social import Social_Twitter, Social_Mastodon
-from museum_site.constants import APP_ROOT, DATA_PATH, STATIC_PATH
+from museum_site.constants import APP_ROOT, DATA_PATH, STATIC_PATH, ENV
 from museum_site.settings import (
     IA_ACCESS, IA_SECRET, DISCORD_WEBHOOK_ANNOUNCEMENTS_URL, DISCORD_WEBHOOK_PATRONS_URL, DISCORD_WEBHOOK_TEST_URL, DISCORD_WEBHOOK_FEED_URL,
 )
@@ -50,6 +50,7 @@ class Discord_Announcement_Form(forms.Form):
         ("patrons", "Patrons"),
         ("moz-feed", "Museum of ZZT Feed"),
         ("test", "Test Announcement (#bot-dev)"),
+        ("log", "Logging (#bot-dev)"),
     )
 
     channel = forms.ChoiceField(choices=CHANNELS, initial="announcements")
@@ -89,8 +90,11 @@ class Discord_Announcement_Form(forms.Form):
 
     def send_message(self, channel, body, image_embeds=[]):
         # TODO: Is this too hacky?
-        self.cleaned_data = {"channel": channel, "body": body, "image_embeds": image_embeds}
-        self.process()
+        if ENV == "PROD":
+            self.cleaned_data = {"channel": channel, "body": body, "image_embeds": image_embeds}
+            self.process()
+        else:
+            print("Faux Logging to #{} -- {}".format(channel, body))
 
 
 class IA_Mirror_Form(forms.Form):
