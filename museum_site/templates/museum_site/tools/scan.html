@@ -24,7 +24,7 @@ Finished: {{scan_meta.finished}}<br>
 {% for cat in issues %}
 <table>
     <tr>
-        <th colspan="5">{{cat.0|title}}</th>
+        <th colspan="5">{{cat.0|title}} ({{cat|length|add:-1}})</th>
     </tr>
     {% for i in cat|slice:"1:" %}
         <tr>
