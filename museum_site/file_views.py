@@ -19,7 +19,7 @@ from museum_site.forms.review_forms import Review_Form
 from museum_site.forms.zfile_forms import Advanced_Search_Form
 from museum_site.generic_model_views import Model_List_View, Model_Search_View
 from museum_site.models import *
-from museum_site.models import File as ZFile
+from museum_site.models import File as ZFile, Article
 from museum_site.settings import REMOTE_ADDR_HEADER
 
 
@@ -207,6 +207,8 @@ class ZFile_List_View(Model_List_View):
         elif self.value and self.field == "language":
             language_code = LANGUAGES_REVERSED.get(self.value.title(), "??")
             qs = qs.filter(language__icontains=language_code)
+        elif self.field == "article":  # Browse ZFiles associated with an article's PK
+            qs = qs.filter(articles__pk=self.value)
 
         qs = self.sort_queryset(qs)
 
@@ -245,6 +247,9 @@ class ZFile_List_View(Model_List_View):
             context["prefix_template"] = "museum_site/prefixes/roulette.html"
         if self.request.GET.get("err") == "404":
             context["prefix_template"] = "museum_site/prefixes/file-404.html"
+        if self.request.path.startswith("/file/browse/article/"):
+            a = Article.objects.get(pk=self.value)
+            context["prefix_text"] = "Files associated with the article {}.".format(a.get_field_view(view="list").get("value", "?"))
 
         # Debug cheat
         if self.request.GET.get("q") == "+DEBUG":
@@ -302,6 +307,8 @@ class ZFile_List_View(Model_List_View):
             return "Browse Year - {}".format(self.value)
         elif self.request.path.startswith("/file/browse/language/"):
             return "Browse Language - {}".format(self.value.title())
+        elif self.request.path.startswith("/file/browse/article/"):
+            return "Browse Associated Files"
         # Default
         return "Browse - All Files"
 

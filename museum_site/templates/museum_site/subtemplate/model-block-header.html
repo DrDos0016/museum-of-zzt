@@ -9,6 +9,7 @@
     <option value="{{model_key}}">+{{other_zgame_count}} Other associated file{{other_zgame_count|pluralize}}</option>
     {% for zgame in zgames %}{% if zgame.pk != pk %}<option value="{{zgame.key}}">{{zgame.title}}</option>{% endif %}
     {% endfor %}
+    <option value="Browse-Associated">- Browse Associated Files -</option>
 </select>
 {% endif %}
 {% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
