@@ -73,7 +73,7 @@ class Discord_Announcement_Form(forms.Form):
     def process(self):
         destinations = {
             "announcements": DISCORD_WEBHOOK_ANNOUNCEMENTS_URL, "patrons": DISCORD_WEBHOOK_PATRONS_URL, "moz-feed": DISCORD_WEBHOOK_FEED_URL,
-            "test": DISCORD_WEBHOOK_TEST_URL
+            "test": DISCORD_WEBHOOK_TEST_URL, "log": DISCORD_WEBHOOK_TEST_URL,
         }
         destination_webhook = destinations.get(self.cleaned_data["channel"])
 
