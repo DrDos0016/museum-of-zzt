@@ -193,7 +193,7 @@ class Feedback_Delete_Confirmation_Form(forms.Form):
         max_length=6,
         help_text="To confirm you have the correct feedback and wish to delete it please type \"DELETE\" in the following text field.",
     )
-    zfile_key = forms.CharField()
+    zfile_key = forms.CharField(widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
