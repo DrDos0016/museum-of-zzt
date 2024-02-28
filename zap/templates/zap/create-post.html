@@ -3,7 +3,7 @@
 {% load site_tags %}
 
 {% block zap_body %}
-<h1>Share Event</h1>
+<h1>Create Post</h1>
 
 <form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
 {% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
@@ -36,6 +36,15 @@
 <div>
 <h3>Tumblr</h3>
 <textarea class="zap-post-response">{% for r in form.responses.tumblr %}{{r}}
+==========================================
+{% endfor %}</textarea>
+</div>
+{% endif %}
+
+{% if form.responses.cohost %}
+<div>
+<h3>Cohost</h3>
+<textarea class="zap-post-response">{% for r in form.responses.cohost %}{{r}}
 ==========================================
 {% endfor %}</textarea>
 </div>
