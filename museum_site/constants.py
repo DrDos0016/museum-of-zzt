@@ -122,7 +122,7 @@ exe_names = {
     "zzt30.zip": "ZZT v3.0 (Shareware)",
     "zzt31.zip": "ZZT v3.1 (Shareware)",
     "zzt32sw.zip": "ZZT v3.2 (Shareware)",
-    "classiczoo-437.zip": "ClassicZoo v4.37",
+    "classiczoo.zip": "ClassicZoo v4.39",
     "cleenzzt-moz.zip": "CleenZZT",
 }
 ZETA_EXECUTABLES = []
