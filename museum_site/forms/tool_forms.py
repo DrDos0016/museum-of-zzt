@@ -152,7 +152,7 @@ class IA_Mirror_Form(forms.Form):
         required=False,
         help_text=("Alternative zipfile to use instead of the Museum's copy"),
         label="Alternate Zip",
-        widget=UploadFileWidget()
+        widget=UploadFileWidget(target_text="Drag & Drop a Zip File Here or Click to Choose")
     )
     packages = forms.MultipleChoiceField(
         required=False, widget=forms.CheckboxSelectMultiple, choices=PACKAGES,
@@ -261,11 +261,10 @@ class Series_Form(forms.ModelForm):
     attrs = {"method": "POST", "enctype": "multipart/form-data"}
     submit_value = "Add Series"
 
-    associations = forms.ModelMultipleChoiceField(
+    associations = Museum_Model_Scrolling_Multiple_Choice_Field(
         label="Associated Articles",
         required=False,
         queryset=Article.objects.accessible(),
-        to_field_name="pk",
         widget=Scrolling_Checklist_Widget(
             buttons=["Clear"],
             show_selected=True,
@@ -288,13 +287,12 @@ class Livestream_Description_Form(forms.Form):
     use_required_attribute = False
     submit_value = "Select"
 
-    associated = Enhanced_Model_Choice_Field(
+    associated = Museum_Tagged_Model_Choice_Field(
         widget=Ordered_Scrolling_Radio_Widget(),
         queryset=File.objects.all(),
         label="Associated ZFiles",
         help_text="Select one or more ZFiles",
         required=False,
-        empty_label=None
     )
     stream_date = forms.CharField(
         widget=forms.DateInput(attrs={"type": "date"}),
@@ -329,18 +327,22 @@ class Livestream_Vod_Form(forms.Form):
         help_text="Copy/Paste from YouTube video details editor. Everything from '♦ Join...' will be truncated"
     )
     description = forms.CharField(widget=Enhanced_Text_Widget(char_limit=250), label="Article Summary")
-    preview_image = forms.FileField()
+    preview_image = Museum_Drag_And_Drop_File_Field(
+        help_text="Select the image you wish to upload.",
+        label="Preview Image",
+        widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose", allowed_preset="image"),
+    )
     crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
     publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
     series = forms.ModelChoiceField(queryset=Series.objects.visible(), empty_label="- NONE -", required=False)
-    associated_zfile = Enhanced_Model_Choice_Field(
-        widget=Scrolling_Checklist_Widget(
-            filterable=True,
-            show_selected=True,
-        ),
-        queryset=File.objects.all(),
-        empty_label=None,
+    associated_zfile = Museum_Model_Scrolling_Multiple_Choice_Field(
+        label="Associated ZFiles",
         required=False,
+        queryset=File.objects.all(),
+        widget=Scrolling_Checklist_Widget(
+            buttons=["Clear"],
+            show_selected=True,
+        )
     )
 
     def clean_video_url(self):
@@ -371,7 +373,7 @@ class Livestream_Vod_Form(forms.Form):
 
         # Prepare the Article
         a = Article()
-        key = ("pk-" + self.cleaned_data["associated_zfile"][0]) if self.cleaned_data["associated_zfile"] else "no-assoc"
+        key = ("pk-" + str(self.cleaned_data["associated_zfile"][0].pk)) if self.cleaned_data["associated_zfile"] else "no-assoc"
         a.title = self.cleaned_data["title"]
         a.author = self.cleaned_data["author"]
         a.category = "Livestream"
@@ -412,7 +414,7 @@ class Livestream_Vod_Form(forms.Form):
 
         # Associate the article with the relevant file(s)
         for file_association in self.cleaned_data["associated_zfile"]:
-            fa = File.objects.get(pk=int(file_association))
+            fa = File.objects.get(pk=file_association.pk)
             fa.articles.add(a)
             fa.save()  # FULLSAVE
 
@@ -450,76 +452,6 @@ class Publication_Pack_Select_Form(forms.Form):
     pack = forms.ModelChoiceField(queryset=Article.objects.publication_packs())
 
 
-class Publication_Pack_Share_Form(forms.Form):
-    use_required_attribute = False
-    reply_ids = {"twitter": "", "mastodon": ""}
-    heading = "Share Publication Pack"
-    submit_value = "Post"
-    attrs = {"method": "POST"}
-
-    ACCOUNTS = (
-        ("mastodon", "Mastodon"),
-        ("twitter", "Twitter"),
-    )
-
-    pack = forms.IntegerField(widget=forms.HiddenInput())
-    article_start = forms.IntegerField(initial=0, widget=forms.HiddenInput())
-    idx = forms.IntegerField(label="Index", required=False, widget=forms.HiddenInput())
-    body = forms.CharField(
-        label="Description",
-        widget=forms.Textarea(),
-        help_text="Body of Post"
-    )
-    image1 = forms.CharField(label="Image 1", required=False, help_text="Relative to Zfile prefix if path is not absolute")
-    image2 = forms.CharField(label="Image 2", required=False, help_text="Relative to Article prefix if path is not absolute")
-    image3 = forms.CharField(label="Image 3", required=False, help_text="Relative to Article prefix if path is not absolute")
-    image4 = forms.CharField(label="Image 4", required=False, help_text="Relative to Article prefix if path is not absolute")
-    twitter_id = forms.CharField(required=False)
-    mastodon_id = forms.CharField(required=False)
-    zfile_prefix = forms.CharField()
-    article_prefix = forms.CharField()
-
-    accounts = forms.MultipleChoiceField(
-        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS,
-        initial=["twitter", "mastodon"],
-        help_text="Accounts to post this content to",
-    )
-
-    def process(self):
-        accounts = self.cleaned_data.get("accounts", False)
-        print(accounts)
-
-        for account in accounts:
-            if account == "mastodon":
-                s = Social_Mastodon()
-            elif account == "twitter":
-                s = Social_Twitter()
-
-            reply_id = "{}_id".format(account)
-
-            s.login()  # Login
-            s.reset_media()
-            for i in range(1, 5):  # Upload all media
-                self.upload_media(s, i)
-
-            if self.cleaned_data.get(reply_id):  # Set reply ID if one exists
-                s.reply_to = self.cleaned_data[reply_id]
-
-            response = s.post(self.cleaned_data.get("body", ""))  # Post
-            self.reply_ids[account] = response.get("id", "???")  # Record ID for reply
-
-    def upload_media(self, s, i):
-        media_path = ""
-        field_value = self.cleaned_data.get("image{}".format(i))
-        if not field_value:
-            return
-        elif not field_value.startswith("/"):
-            media_path = os.path.join(APP_ROOT)
-            media_path += self.cleaned_data.get("article_prefix") if i != 1 else self.cleaned_data.get("zfile_prefix")
-        media_path += field_value
-        response = s.upload_media(media_path)
-
-
 class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
     use_required_attribute = False
     heading = "Stream VOD Thumbnail Generator"
@@ -535,7 +467,7 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
         ("yellow", "Yellow"),
     )
 
-    TEXT_SIZE_CHOICES = (  # Format = main-font-size:main-text-shadow:sub-font-size:sub-text-shadow
+    TEXT_SIZE_CHOICES = (
         ("small", "Small"),
         ("medium", "Medium"),
         ("large", "Large"),

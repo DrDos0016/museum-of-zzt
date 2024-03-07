@@ -133,25 +133,6 @@ for exe in exes:
 
 ZETA_EXECUTABLES.sort(key=lambda executable: executable["name"].lower())
 
-ASCII_UNICODE_CHARS = (
-    " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼"
-    "►◄↕‼¶§▬↨↑↓→←∟↔▲▼"
-    " !\"#$%&'()*+,-./"
-    "0123456789:;<=>?"
-    "@ABCDEFGHIJKLMNO"
-    "PQRSTUVWXYZ[\\]^_"
-    "`abcdefghijklmno"
-    "pqrstuvwxyz{|}~⌂"
-    "ÇüéâäàåçêëèïîìÄÅ"
-    "ÉæÆôöòûùÿÖÜ¢£¥₧ƒ"
-    "áíóúñÑªº¿⌐¬½¼¡«»"
-    "░▒▓│┤╡╢╖╕╣║╗╝╜╛┐"
-    "└┴┬├─┼╞╟╚╔╩╦╠═╬╧"
-    "╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀"
-    "ɑϐᴦᴨ∑ơµᴛɸϴΩẟ∞∅∈∩"
-    "≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ "
-)
-
 # Patreon Tiers IDs
 TIER_NONE = "0"
 TIER_CHAR_2 = "659278"  # $2
