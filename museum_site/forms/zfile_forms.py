@@ -1,10 +1,11 @@
 from django import forms
+from django.urls import reverse
 
 from museum_site.core.detail_identifiers import *
 from museum_site.core.sorters import ZFile_Sorter
 from museum_site.core.transforms import language_select_choices, range_select_choices
 from museum_site.constants import LANGUAGES, YEAR, FORM_ANY, FORM_NONE
-from museum_site.fields import Manual_Field, Museum_Related_Content_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Rating_Field, Museum_Board_Count_Field, Museum_Select_Field
+from museum_site.fields import Manual_Field, Museum_Related_Content_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Rating_Field, Museum_Board_Count_Field, Museum_Select_Field, Museum_Choice_Field
 from museum_site.models import Detail, Genre
 from museum_site.widgets import Associated_Content_Widget, Board_Range_Widget, Range_Widget, Scrolling_Checklist_Widget
 
@@ -74,3 +75,36 @@ class Advanced_Search_Form(forms.Form):
                 self.add_error(field_name, error_message)
 
         return []
+
+
+class View_Explicit_Content_Confirmation_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Explicit Content Ahead!"
+    attrs = {"method": "POST"}
+    submit_value = "Continue"
+
+    explicit_warning = Museum_Choice_Field(
+        label="Skip this warning",
+        widget=forms.RadioSelect(),
+        choices=(
+            ("on", "Continue to warn about explicit content"),
+            ("off", "Do not warn me about explicit content")
+        ),
+        help_text=(
+            "Choose whether or not to be warned about explicit content in the future."
+            "If these warnings are disabled, you may re-enable them from <a href='{}'>your profile</a> page."
+        ),
+        initial="on",
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(forms.Form, self).__init__(*args, **kwargs)
+        self.fields["explicit_warning"].help_text = self.fields["explicit_warning"].help_text.format(reverse("my_profile"))
+
+    def process(self, request):
+        if request.POST.get("explicit_warning") == "off":
+            request.session["bypass_explicit_content_warnings"] = True
+        else:
+            if request.session.get("bypass_explicit_content_warnings"):
+                del request.session["bypass_explicit_content_warnings"]

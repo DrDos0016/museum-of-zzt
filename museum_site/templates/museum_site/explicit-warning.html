@@ -1,10 +1,16 @@
 {% extends "museum_site/main.html" %}
+{% load static %}
 {% load site_tags %}
 
 {% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context include_qs=True %}{% endblock %}
 
+{% block scripts %}
+<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
+{% for script in scripts %}<script src="{% static script %}?{{BOOT_TS}}"></script>{% endfor %}
+{% endblock %}
+
 {% block content %}
-<h2>Explicit Content Ahead!</h2>
+<h2>{{form.heading}}</h2>
 
 <p><b>This file is known to contain explicit content.</b></p>
 
@@ -12,21 +18,12 @@
 <i>No detailed information has been be set for this file. Browse/Play at your own risk.</i>{% endif %}
 
 <p>Please confirm that you are both of age to view explicit content and that you wish to do so.</p>
-<form method="POST">
-{% csrf_token %}
 
-<div class="field-wrapper">
-    <label for="id_explicit_warning">Skip This Warning</label>
-    <div class="field-value">
-        <ul id="id_explicit_warning">
-            <li><label><input type="radio" id="explicit_warning" name="explicit-warning" value="on" checked>Continue to warn about explicit content.</label></li>
-            <li><label><input type="radio" id="explicit_warning" name="explicit-warning" value="off">Do not warn me about explicit content.</label></li>
-        </ul>
-    </div>
-    <p class="field-help">Choose whether or not to be warned about explicit content in the future. If these warnings are skipped, you may re-enable them from <a href="{% url 'my_profile' %}">your profile</a> page.</p>
-</div>
-<hr>
-<input type="submit" name="action" value="Continue">
-<input type="submit" name="action" value="Go Back">
+{{form.text_prefix|default:""|safe}}
+
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}"><input type="submit" name="action" value="Go Back">
 </form>
 {% endblock %}

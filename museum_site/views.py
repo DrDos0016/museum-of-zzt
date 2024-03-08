@@ -18,6 +18,7 @@ from django.views.generic import TemplateView
 
 from museum_site.core.detail_identifiers import *
 from museum_site.constants import ZGAMES_BASE_PATH
+from museum_site.forms.zfile_forms import View_Explicit_Content_Confirmation_Form
 from museum_site.forms.wozzt_forms import WoZZT_Roll_Form
 from museum_site.models import Article, Author, Company, Genre, Profile, Review, WoZZT_Queue
 from museum_site.models import File as ZFile
@@ -152,25 +153,27 @@ def directory(request, category):
 
 
 def explicit_warning(request):
-    data = {}
-    data["title"] = "Explicit Content Ahead!"
+    """ Returns an in-between page asking users to confirm they wish to continue to explicit content and if they wish to disable being asked in the future """
+    context = {"title": "Explicit Content Ahead!"}
+    form = View_Explicit_Content_Confirmation_Form(request.POST) if request.method == "POST" else View_Explicit_Content_Confirmation_Form()
 
     if request.GET.get("pk"):
-        data["file"] = ZFile.objects.get(pk=request.GET.get("pk"))
+        context["file"] = ZFile.objects.get(pk=request.GET.get("pk"))
 
-    if request.POST.get("action") == "Continue":
-        if request.POST.get("explicit-warning") == "off":
-            request.session["bypass_explicit_content_warnings"] = True
-        else:
-            if request.session.get("bypass_explicit_content_warnings"):
-                del request.session["bypass_explicit_content_warnings"]
-            request.session["show_explicit_for"] = int(request.GET.get("pk", 0))
+    if request.method == "POST":
+        # Go back from explicit content
+        if request.POST.get("action") == "Go Back":
+            return redirect("index")
 
-        return redirect(request.GET.get("next"), "/")
-    elif request.POST.get("action") == "Go Back":
-        return redirect("index")
+        # Process explicit warning settings
+        form.process(request)
 
-    return render(request, "museum_site/explicit-warning.html", data)
+        # Continue to explicit content
+        request.session["show_explicit_for"] = int(request.GET.get("pk", 0))
+        return redirect(request.GET.get("next", "/"))
+
+    context["form"] = form
+    return render(request, "museum_site/explicit-warning.html", context)
 
 
 def index(request):
