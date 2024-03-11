@@ -185,8 +185,6 @@ def index(request):
     context["new_releases"] = ZFile.objects.new_releases_frontpage(spotlight_filter=True)[:12]
     context["files"] = ZFile.objects.new_finds(spotlight_filter=True)[:12]
     context["feedback"] = Review.objects.latest_approved_reviews().filter(spotlight=True)[:10]
-    context["article_table_header"] = context["articles"][0].table_header() if context["articles"] else None
-    context["feedback_table_header"] = context["feedback"][0].table_header() if context["feedback"] else None
 
     return render(request, "museum_site/index.html", context)
 

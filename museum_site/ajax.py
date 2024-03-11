@@ -10,7 +10,7 @@ from django.http import HttpResponse, JsonResponse
 from museum_site.models import *
 from museum_site.constants import *
 from museum_site.core.image_utils import open_base64_image
-from museum_site.core.misc import extract_file_key_from_url, record
+from museum_site.core.misc import extract_file_key_from_url, record, zipinfo_datetime_tuple_to_str
 from museum_site.core.palette import parse_pld, parse_pal
 from museum_site.templatetags.site_tags import model_block, render_markdown
 from museum_site.forms.collection_forms import Collection_Content_Form, Collection_Form
@@ -321,3 +321,37 @@ def get_stream_entries(request):
     for item in qs:
         output["items"].append(item.as_json())
     return JsonResponse(output)
+
+
+def fetch_zip_info(request):
+    """ For new file viewer"""
+    path = request.GET.get("path")
+    zf_path = os.path.join(SITE_ROOT, path)
+    print("SR?", SITE_ROOT)
+    print("LOOKING FOR", zf_path)
+    zf = zipfile.ZipFile(zf_path)
+    output = {"items": []}
+
+    for zi in zf.infolist():
+        output["items"].append({"filename": zi.filename, "date_time": zipinfo_datetime_tuple_to_str(zi), "compress_type": zi.compress_type, "dir": zi.is_dir(), "crc32": zi.CRC, "compressed": zi.compress_size, "file_size": zi.file_size})
+    return JsonResponse(output)
+
+
+def fetch_zip_content(request):
+    """ For new file viewer"""
+    path = request.GET.get("path")
+    zf_path = os.path.join(SITE_ROOT, path)
+    content = request.GET.get("content")
+
+    print(zf_path, content)
+
+    zf = zipfile.ZipFile(zf_path)
+    output = {}
+
+    fh = zf.open(content)
+
+    response = HttpResponse(content_type="application/octet-stream")
+    response["Content-Disposition"] = "attachment; filename={}".format(os.path.basename(content))
+    response.write(fh.read())
+    return response
+

@@ -37,6 +37,8 @@ urlpatterns = [
 
     # /ajax/
     path("ajax/submit-form/<slug:slug>/", museum_site.ajax.submit_form, name="ajax_submit_form"),
+    path("ajax/fetch-zip-content/", museum_site.ajax.fetch_zip_content, name="ajax_fetch_zip_content"),
+    path("ajax/fetch-zip-info/", museum_site.ajax.fetch_zip_info, name="ajax_fetch_zip_info"),
     path("ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions, name="ajax_get_search_suggestions"),
     path("ajax/get-stream-entries/", museum_site.ajax.get_stream_entries, name="ajax_get_stream_entries"),
     path("ajax/get-<str:field>-suggestions/", museum_site.ajax.get_suggestions_for_field, name="ajax_get_suggestions_for_field"),
@@ -147,6 +149,7 @@ urlpatterns = [
     path("file/review/<str:key>/", museum_site.file_views.ZFile_Review_List_View.as_view(), name="zfile_review"),
     path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "key": ""}, name="zfile_view_local"),
     path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),  # TODO
+    #path("file/view/<str:key>/", museum_site.debug_views.file_viewer_new, name="file"),  # TODO
     path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="zfile_pk"),
     path(
         "file/play/<str:key>/", museum_site.zeta_views.zeta_launcher,
