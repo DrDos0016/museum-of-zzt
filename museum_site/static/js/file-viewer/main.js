@@ -1,30 +1,11 @@
 "use strict";
 
 import { File_Viewer } from "./modules/file_viewer.js";
-import { Handler } from "./modules/handler.js";
-import { Image_Handler } from "./modules/image_handler.js";
 
-let extension_handlers = {
-    ".PNG":"blah",
-    ".TXT":"texty",
-}
-
-console.log("Okay then");
-var h = new Handler();
-console.log("H", h);
-var i = new Image_Handler();
-console.log("I", i);
-
-
-let fv = new File_Viewer();
-let zip = new JSZip();
-
-
-$(document).ready(initialize);
 
 function initialize()
 {
-    console.log("Initializing!");
+    console.log("Initalizing! HTML Settings are: auto_load =", auto_load, "file_size =", file_size, "fv_default_domain=", fv_default_domain);
     fv.default_domain = fv_default_domain;
 
     // Bind pre-bindables
@@ -38,6 +19,8 @@ function initialize()
         else
             fetch_zipinfo(auto_load);
     }
+
+    DEBUG_FUNC();
 }
 
 
@@ -48,6 +31,7 @@ function fetch_zip_file(url)
     fetch(url).then(response => response.arrayBuffer()).then(data => open_zip(data));
 }
 
+
 function open_zip(buffer)
 {
     // Adds the contents of a zipfile into the file viewer, setting the bytes property for all files, then lists the files
@@ -55,18 +39,20 @@ function open_zip(buffer)
     zip.loadAsync(buffer).then(function (){
         for(let [filename, file] of Object.entries(zip.files))
         {
-            fv.add_file(filename, {}, {"loaded": true, "parsed": false});
-            file.async("uint8array").then(data => set_file_bytes(filename, data));
+            let fvpk = fv.add_file(filename, {}, {"loaded": true, "parsed": false});
+            file.async("uint8array").then(data => set_file_bytes(fvpk, data));
         }
         fv.display_file_list();
     });
 }
 
-function set_file_bytes(filename, data)
+
+function set_file_bytes(fvpk, data)
 {
     // Sets the bytes for a file in the file registry
-    fv.files[filename].bytes = data;
+    fv.files[fvpk].bytes = data;
 }
+
 
 function ingest_file()
 {
@@ -74,6 +60,7 @@ function ingest_file()
     if ($("input[name=file_load_widget]").val())
         ingest_file_from_upload();
 }
+
 
 function ingest_file_from_upload()
 {
@@ -90,6 +77,7 @@ function ingest_file_from_upload()
     reader.readAsArrayBuffer(file);
 }
 
+
 function fetch_zipinfo(url)
 {
     // Fetches the zipfile's info found at the provided URL.
@@ -101,6 +89,7 @@ function fetch_zipinfo(url)
     fetch(url).then(response => response.json()).then(data => ingest_file_list_from_zipfile(data));
 }
 
+
 function ingest_file_list_from_zipfile(data)
 {
     // Adds a zipinfo's file list into the file registry. Does not set file's bytes property.
@@ -111,6 +100,7 @@ function ingest_file_list_from_zipfile(data)
     fv.display_file_list();
 }
 
+
 function fetch_file_from_zip(zipfile_path, requested_file)
 {
     // Fetches a file contained in a zipfile
@@ -120,6 +110,7 @@ function fetch_file_from_zip(zipfile_path, requested_file)
     console.log("Request -> ", url);
     fetch(url).then(response => response.arrayBuffer()).then(data => ingest_unloaded_file(data, requested_file));
 }
+
 
 function ingest_unloaded_file(data, requested_file)
 {
@@ -136,15 +127,38 @@ function ingest_unloaded_file(data, requested_file)
 function output_file(e)
 {
     // Called when clicking on a file in the registry to display. Will load/parse file as needed
-    var requested_filename = e.target.textContent;
-    console.log("OUTPUTTING", requested_filename);
-    console.log(fv.files[requested_filename]);
+    var requested_fvpk = e.target.dataset.fvpk;
+    console.log("OUTPUTTING", requested_fvpk);
+    console.log(fv);
+    console.log(fv.files[requested_fvpk]);
 
-    if (! fv.files[requested_filename].meta.loaded)
+    if (! fv.files[requested_fvpk].meta.loaded)
         fv.load_file(requested_filename)
-    if (! fv.files[requested_filename].meta.parsed)
-        fv.parse_file(requested_filename);
+    if (! fv.files[requested_fvpk].meta.parsed)
+        fv.parse_file(requested_fvpk);
 
-    fv.display_file(requested_filename);
+    fv.display_file(requested_fvpk);
 
 }
+
+function DEBUG_FUNC()
+{
+    console.log("Running a debug func");
+    var foo = "";
+    for (var idx = 0; idx < 255; idx++)
+    {
+        foo += String.fromCharCode(idx);
+        if (foo.length == 16 && idx != 256)
+        {
+            console.log(foo)
+            foo = "";
+        }
+    }
+    console.log("Foo is", foo);
+
+}
+
+
+let fv = new File_Viewer();
+let zip = new JSZip();
+$(document).ready(initialize);

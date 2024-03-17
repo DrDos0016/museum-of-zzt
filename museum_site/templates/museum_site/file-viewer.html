@@ -11,11 +11,12 @@
 
 {% block scripts %}
 <script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
-<script async src="{% static 'js/file-viewer/file-viewer.js' %}?{{BOOT_TS}}"></script>
+<script async src="{% static 'js/file-viewer/main.js' %}?{{BOOT_TS}}" type="module"></script>
 <script>
 let auto_load = "{{zfile.download_url}}";
 let file_size = {{zfile.size}};
 let fv_default_domain = "{{DOMAIN}}";
+var DEBUG_VAR = null;
 </script>
 {% endblock %}
 
@@ -26,29 +27,9 @@ let fv_default_domain = "{{DOMAIN}}";
 </div>
 {% endif %}
 <div id="fv-main">
-    <div class="output preview active" id="preview-envelope">
+    <div class="envelope active" id="preview-envelope">
         <img src="{% static file.preview_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview">
         {% if file.description %}<p>{{file.description}}</p>{% endif %}
-    </div>
-    <div class="output image" id="image-envelope">
-        <img src="" class="image" id="fv-image">
-    </div>
-    <div class="output canvas" id="canvas-envelope">
-        <div id="fv-left-sidebar"></div>
-        <canvas id="world-canvas" height="350" width="480"></canvas>
-        <div id="fv-right-sidebar"></div>
-    </div>
-    <div class="output zeta" id="zeta-envelope">
-        Zeta
-    </div>
-    <div class="output audio" id="audio-envelope">
-        <i>Audio formats are not yet supported</i>
-    </div>
-    <div class="output video" id="video-envelope">
-        <i>Video formats are not yet supported</i>
-    </div>
-    <div class="output text" id="text-envelope">
-        <div id="text-body"></div>
     </div>
 </div>
 

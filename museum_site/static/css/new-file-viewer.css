@@ -3,6 +3,11 @@
     font-weight:bold;
 }
 
+.envelope { display:none; }
+.envelope.active { display:flex; }
+
+.envelope-image { justify-content:center; align-items:center; background:red; padding:10px; }
+
 /* EVERYTHING BELOW IS COPIED FROM ORIGINAL FILE VIEWER */
 
 .fv-grid /* Applied to center content element */
@@ -288,18 +293,12 @@ li.board div  { display:inline-block; } /* Board numbers and names */
     image-rendering: crisp-edges;
 }
 
-#image-envelope, #preview-envelope {
+#image-envelope {
     height:100%;
     text-align:center;
     display:flex;
     justify-content:center;
     align-items:center;
-}
-
-#preview-envelope p
-{
-    max-width:640px;
-    text-align:justify;
 }
 
 #fv-image, #fv-preview { border:1px solid var(--th-background)}
