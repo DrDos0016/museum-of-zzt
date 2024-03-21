@@ -20,10 +20,4 @@ export class Unsupported_Handler extends Handler
         envelope.html("Unsupported sowwy");
         envelope.addClass("active");
     }
-
-    magic() {
-        super.magic();
-        console.log("This is UNSUPPORTED HANDLER'S MAGIC");
-        return "Unsupport handler magic func return";
-    }
 }

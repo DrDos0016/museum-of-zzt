@@ -1,15 +1,8 @@
 import { Handler } from "./handler.js";
 import { Image_Handler } from "./image_handler.js";
 import { Unsupported_Handler } from "./unsupported_handler.js";
-import { ZZT_High_Score_Handler } from "./zzt_high_score_handler.js";
-
-let extension_handlers = {
-    ".PNG":Image_Handler,
-    ".JPG":Image_Handler,
-    ".BMP":Image_Handler,
-    ".HI":ZZT_High_Score_Handler,
-    ".TXT":"texty",
-}
+import { ZZT_High_Score_Handler } from "./high_score_handler.js";
+import { SZZT_High_Score_Handler } from "./high_score_handler.js";
 
 export class File_Viewer
 {
@@ -67,10 +60,8 @@ export class File_Viewer
         {
             console.log("HANDLER FOR", fvpk, "is null");
             let handler_class = get_handler_for_file(this.files[fvpk].meta.filename);
-            console.log("HANDLER CLASS", handler_class.name);
+            console.log("CREATED HANDLER CLASS", handler_class.name);
             this.files[fvpk].handler = handler_class;
-            console.log("OG prop?", this.files[fvpk].handler.og_prop);
-            console.log("DEBUG MAGIC", this.files[fvpk].handler.magic());
             DEBUG_VAR = this.files[fvpk].handler;
         }
 
@@ -83,9 +74,17 @@ function get_handler_for_file(filename)
     console.log("Getting file handler class");
     let components = filename.split(".");
     let ext = "." + components[components.length - 1].toUpperCase();
+    console.log("EXT IS", ext);
 
-    if (extension_handlers[ext])
-        return new extension_handlers[ext]();
-    else
-        return new Unsupported_Handler();
+    switch (true) {
+        case [".BMP", ".JPG", ".PNG"].indexOf(ext) != -1:
+            return new Image_Handler();
+        case [".HI", ".MH"].indexOf(ext) != -1:
+            return new ZZT_High_Score_Handler();
+        case ".HGS":
+            return new SZZT_High_Score_Handler();
+        default:
+            return new Unsupported_Handler();
+    };
+
 }

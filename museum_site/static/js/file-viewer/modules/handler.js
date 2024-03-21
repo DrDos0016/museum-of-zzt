@@ -1,9 +1,13 @@
+import { ASCII } from "./core.js";
+
 export class Handler
 {
     constructor() {
         this.name = "Base Handler";
         this.parsed = false;
-        this.bytes_idx = 0;
+        this.pos = 0;
+        this.bytes = null; // Bytearray of 8-bitvalues
+        this.data = null; // DataView for reading
         this.og_prop = "Base OG Property";
     }
 
@@ -22,12 +26,24 @@ export class Handler
         console.log("Base handler parsing bytes");
     }
 
-    magic() {
-        console.log("This is base handler magic()");
-        return "FizzBuzz";
+    read_Ascii(len)
+    {
+        let output = Array.from(this.bytes.slice(this.pos, this.pos+len)).map((x) => ASCII[x]).join("");
+        this.pos += len;
+        return output;
     }
 
-    read(count) {
-        return "X";
+    read_Uint8()
+    {
+        let output = this.data.getInt8(this.pos);
+        this.pos += 1;
+        return output;
+    }
+
+    read_Int16()
+    {
+        let output = this.data.getInt16(this.pos, true);
+        this.pos += 2;
+        return output;
     }
 }
