@@ -6,18 +6,10 @@ export class Unsupported_Handler extends Handler
     {
         super();
         this.name = "Unsupported Handler";
+        this.envelope_css_class = "unsupported";
     }
 
-    render(fvpk, bytes) {
-        $(".envelope.active").removeClass("active");
-        let envelope_id = "#envelope-" + fvpk;
-        if ($(envelope_id).length == 0)
-            this.create_envelope(fvpk, "image");
-
-        let envelope = $(envelope_id);
-
-        // Do the work
-        envelope.html("Unsupported sowwy");
-        envelope.addClass("active");
+    generate_html() {
+        return "<b>This file is not supported for in-browser rendering.</b>";
     }
 }

@@ -6,7 +6,7 @@
 .envelope { display:none; }
 .envelope.active { display:flex; }
 
-.envelope-image { justify-content:center; align-items:center; padding:10px; }
+.envelope-image { justify-content:center; align-items:center; }
 
 /* EVERYTHING BELOW IS COPIED FROM ORIGINAL FILE VIEWER */
 

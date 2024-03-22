@@ -2,6 +2,7 @@
 {% load static %}
 {% load site_tags %}
 {% load zzt_tags %}
+{% load zfile_attrs %}
 
 {% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}{% endblock %}
 
@@ -27,9 +28,9 @@ var DEBUG_VAR = null;
 </div>
 {% endif %}
 <div id="fv-main">
-    <div class="envelope active" id="preview-envelope">
-        <img src="{% static file.preview_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview">
-        {% if file.description %}<p>{{file.description}}</p>{% endif %}
+    <div class="envelope envelope-overview active" id="preview-envelope">
+        <img src="{% static zfile.preview_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview">
+        {% if zfile.description %}<p>{{zfile.description}}</p>{% endif %}
     </div>
 </div>
 
@@ -45,7 +46,7 @@ var DEBUG_VAR = null;
 
 <div id="region-file-list">
     <ul id="file-list">
-        <li class="preview-image-link selected" data-img="{% static file.preview_url %}">Overview</li>
+        <li class="fv-content selected" data-fvpk="fvpk-overview">Overview</li>
     </ul>
 </div>
 

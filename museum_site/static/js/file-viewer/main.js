@@ -101,61 +101,59 @@ function ingest_file_list_from_zipfile(data)
 }
 
 
-function fetch_file_from_zip(zipfile_path, requested_file)
+function fetch_file_from_zip(zipfile_path, requested_file, requested_fvpk)
 {
     // Fetches a file contained in a zipfile
     if (zipfile_path.indexOf("/") == 0)
         zipfile_path = zipfile_path.slice(1);
     let url = "/ajax/fetch-zip-content/?path=" + zipfile_path + "&content=" + requested_file;
     console.log("Request -> ", url);
-    fetch(url).then(response => response.arrayBuffer()).then(data => ingest_unloaded_file(data, requested_file));
+    fetch(url).then(response => response.arrayBuffer()).then(data => ingest_unloaded_file(data, requested_file, requested_fvpk));
 }
 
 
-function ingest_unloaded_file(data, requested_file)
+function ingest_unloaded_file(data, requested_file, fvpk)
 {
     // Sets the file registry's bytes for the file to {data}. Then parses + displays it.
     console.log("Ingested unloaded file: ", requested_file);
     var byte_array = new Uint8Array(data);
-    fv.files[requested_file].bytes = byte_array;
-    fv.files[requested_file].meta.loaded = true;
-    fv.parse_file(requested_file);
-    fv.display_file(requested_file);
+    fv.files[fvpk].bytes = byte_array;
+    fv.files[fvpk].meta.loaded = true;
+    fv.display_file(fvpk);
 }
 
 
 function output_file(e)
 {
     // Called when clicking on a file in the registry to display. Will load/parse file as needed
-    var requested_fvpk = e.target.dataset.fvpk;
-    console.log("OUTPUTTING", requested_fvpk);
-    console.log(fv);
-    console.log(fv.files[requested_fvpk]);
+    let requested_fvpk = e.target.dataset.fvpk;
+    let requested_filename = e.target.dataset.filename;
+    console.log("User Click on File:", requested_fvpk);
+
+    if (requested_fvpk == "fvpk-overview")
+        return display_overview();
 
     if (! fv.files[requested_fvpk].meta.loaded)
-        fv.load_file(requested_filename)
-    if (! fv.files[requested_fvpk].meta.parsed)
-        fv.parse_file(requested_fvpk);
+    {
+        console.log("Hang on, we need to load the bytes still");
+        console.log(fv.zip_file_path, requested_filename);
+        fetch_file_from_zip(fv.zip_file_path, requested_filename, requested_fvpk);
+    }
+    else
+        fv.display_file(requested_fvpk);
+}
 
-    fv.display_file(requested_fvpk);
-
+function display_overview()
+{
+    $(".fv-content.selected").removeClass("selected");
+    $(".fv-content[data-fvpk=fvpk-overview]").addClass("selected");
+    $(".envelope.active").removeClass("active");
+    $("#preview-envelope").addClass("active");
 }
 
 function DEBUG_FUNC()
 {
-    console.log("Running a debug func");
-    var foo = "";
-    for (var idx = 0; idx < 255; idx++)
-    {
-        foo += String.fromCharCode(idx);
-        if (foo.length == 16 && idx != 256)
-        {
-            console.log(foo)
-            foo = "";
-        }
-    }
-    console.log("Foo is", foo);
-
+    return true;
 }
 
 

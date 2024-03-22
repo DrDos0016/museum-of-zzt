@@ -2,43 +2,19 @@ import { Handler } from "./handler.js";
 
 export class ZZT_High_Score_Handler extends Handler
 {
-    constructor()
+    constructor(fvpk)
     {
-        super();
+        super(fvpk);
         this.name = "ZZT High Score Handler";
+        this.envelope_css_class = "high-score-list";
         this.scores = [];
         this.show_nameless = true; // Show scores without a name entered
         this.max_name_length = 50;
         this.dash_count = 34;
     }
 
-    render(fvpk, bytes) {
-        super.render(fvpk, bytes);
-
-        $(".envelope.active").removeClass("active");
-        let envelope_id = "#envelope-" + fvpk;
-        if ($(envelope_id).length == 0)
-            this.create_envelope(fvpk, "image");
-
-        let envelope = $(envelope_id);
-
-        let output = `<pre class="cp437 high-scores">Score  Name\n`;
-        output += `-----  ${"-".repeat(this.dash_count)}\n`;
-        for (var idx in this.scores)
-        {
-            if ((this.scores[idx].name.length != 0 || this.show_nameless) && this.scores[idx].score != -1)
-            {
-                let padded = ("" + this.scores[idx].score).padStart(5, " ");
-                output += `${padded}  ${this.scores[idx].name}\n`;
-            }
-        }
-        output += "</pre>";
-
-        envelope.html(output);
-        envelope.addClass("active");
-    }
-
     parse_bytes(bytes) {
+        console.log("high score parse bytes", bytes);
         this.pos = 0;
         this.bytes = bytes;
         this.data = new DataView(bytes.buffer);
@@ -52,17 +28,30 @@ export class ZZT_High_Score_Handler extends Handler
             score["score"] = this.read_Int16();  // 2 bytes of score
             this.scores.push(score);
         }
+    }
 
-        this.parsed = true;
-        console.log(this.scores);
+    generate_html() {
+        console.log("High score html generation");
+        let output = `<pre class="cp437">Score  Name\n`;
+        output += `-----  ${"-".repeat(this.dash_count)}\n`;
+        for (var idx in this.scores)
+        {
+            if ((this.scores[idx].name.length != 0 || this.show_nameless) && this.scores[idx].score != -1)
+            {
+                let padded = ("" + this.scores[idx].score).padStart(5, " ");
+                output += `${padded}  ${this.scores[idx].name}\n`;
+            }
+        }
+        output += "</pre>";
+        return output;
     }
 }
 
 export class SZZT_High_Score_Handler extends ZZT_High_Score_Handler
 {
-    constructor()
+    constructor(fvpk)
     {
-        super();
+        super(fvpk);
         this.name = "SZZT High Score Handler";
         this.max_name_length = 60;
         this.dash_count = 20;
