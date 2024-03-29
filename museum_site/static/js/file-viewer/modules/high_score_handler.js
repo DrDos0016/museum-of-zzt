@@ -2,9 +2,9 @@ import { Handler } from "./handler.js";
 
 export class ZZT_High_Score_Handler extends Handler
 {
-    constructor(fvpk)
+    constructor(fvpk, filename, bytes, meta)
     {
-        super(fvpk);
+        super(fvpk, filename, bytes, meta);
         this.name = "ZZT High Score Handler";
         this.envelope_css_class = "high-score-list";
         this.scores = [];
@@ -13,11 +13,10 @@ export class ZZT_High_Score_Handler extends Handler
         this.dash_count = 34;
     }
 
-    parse_bytes(bytes) {
-        console.log("high score parse bytes", bytes);
+    parse_bytes() {
+        console.log("high score parse bytes");
         this.pos = 0;
-        this.bytes = bytes;
-        this.data = new DataView(bytes.buffer);
+        this.data = new DataView(this.bytes.buffer);
 
         while (this.pos < this.data.byteLength)
         {

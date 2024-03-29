@@ -11,6 +11,8 @@ function initialize()
     // Bind pre-bindables
     $("#file-load-submit").click(ingest_file);
     $("#file-list").on("click", ".fv-content", output_file);
+    $("#fv-main").on("change", "select[name=fv-option]", run_fv_function);
+    $("#fv-main").on("click", ".fv-ui", run_fv_function);
 
     if (auto_load)
     {
@@ -130,6 +132,8 @@ function output_file(e)
     let requested_filename = e.target.dataset.filename;
     console.log("User Click on File:", requested_fvpk);
 
+    fv.active_fvpk = requested_fvpk;
+
     if (requested_fvpk == "fvpk-overview")
         return display_overview();
 
@@ -153,7 +157,31 @@ function display_overview()
 
 function DEBUG_FUNC()
 {
+    console.log("DEBUG FUNC");
+    console.log(fv);
     return true;
+}
+
+function run_fv_function(e)
+{
+    let to_run = $(this).data("fv_func");
+    console.log("I want ot run", to_run);
+
+    console.log("And this on the file is", fv.files[fv.active_fvpk][to_run]);
+    console.log("Type is", typeof fv.files[fv.active_fvpk][to_run]);
+    console.log("IDK", fv.files[fv.active_fvpk]);
+
+    // If the active file has the function, call from there
+    if (typeof fv.files[fv.active_fvpk][to_run] === "function")
+    {
+        console.log("Running FV Function");
+        fv.files[fv.active_fvpk][to_run]($(this).val());
+    }
+    else
+    {
+        console.log("Running uh upper function?");
+        fv[to_run]();
+    }
 }
 
 

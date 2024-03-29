@@ -2,23 +2,28 @@ import { ASCII } from "./core.js";
 
 export class Handler
 {
-    constructor(fvpk) {
+    constructor(fvpk, filename, bytes, meta) {
         this.name = "Base Handler";
-        this.envelope_css_class = "base";
         this.fvpk = fvpk;
+        this.filename = filename;
+        this.ext = this.get_ext_from_filename(filename);
+        this.bytes = bytes; // Bytearray of 8-bitvalues
+        this.meta = meta; // Metadata
+        this.envelope_css_class = "base";
+
         this.pos = 0;
-        this.bytes = null; // Bytearray of 8-bitvalues
         this.data = null; // DataView for reading
         this.envelope_id = null; // String to identify HTML for envelope
+
     }
 
-    render(bytes) {
+    render() {
         $(".envelope.active").removeClass("active");
 
         this.create_envelope();
         if (! this.parsed)
         {
-            this.parse_bytes(bytes);
+            this.parse_bytes();
             this.parsed = true;
         }
         let html = this.generate_html();
@@ -44,7 +49,7 @@ export class Handler
         $(this.envelope_id).addClass("active");
     }
 
-    parse_bytes(bytes) {
+    parse_bytes() {
         this.parsed = true;
         return true;
     }
@@ -68,5 +73,12 @@ export class Handler
         let output = this.data.getInt16(this.pos, true);
         this.pos += 2;
         return output;
+    }
+
+    get_ext_from_filename(filename)
+    {
+        let components = filename.split(".");
+        let ext = "." + components[components.length - 1].toUpperCase();
+        return ext;
     }
 }
