@@ -60,7 +60,20 @@ class Social():
         self.media = []
         self.uploaded_media = []
 
+    def clean_hashtags(self, tags):
+        # Default hashtag handler. Works for Cohost and Tumblr.
+        # IN: "#zzt, #museum of zzt, #ascii" OUT: ["zzt" , "museum of zzt", "ascii"]
+        cohost_hashtags_list = []
+        raw_tags = tags
+        tags = raw_tags.split(",")
+        for tag in tags:
+            tag = tag.strip()
+            if tag.startswith("#"):
+                cohost_hashtags_list.append(tag[1:])
+        return cohost_hashtags_list
+
 class Social_Cohost(Social):
+    """ https://pypi.org/project/cohost/ """
     def _init_keys(self):
         self.cookie = COHOST_COOKIE
 
@@ -86,6 +99,10 @@ class Social_Cohost(Social):
             # ZAP Form adds full filepath, but Cohost wants the path as a URL for hotlinking hence the replace() call
             media_string = "\n".join(self.media).replace(APP_ROOT, "")
             body = media_string + "\n" + body
+
+        # Attach hashtags
+        if tags:
+            tags = self.clean_hashtags(tags)
 
         # Attach post
         blocks.append(MarkdownBlock(body))
@@ -132,7 +149,7 @@ class Social_Mastodon(Social):
         return response
 
 
-    def post(self, body):
+    def post(self, body, title="", tags=[]):
         if self.media:
             media = []
             for m in self.media:
@@ -174,18 +191,30 @@ class Social_Tumblr(Social):
             self.uploaded_media.append(os.path.join(APP_ROOT, media_path))
         return True
 
-    def post(self, body):
+    def post(self, body, title="", tags=[]):
+        # Attach hashtags
+        if tags:
+            tags = self.clean_hashtags(tags)
+
         if self.uploaded_media:
-            response = self.client.create_photo("worldsofzzt", state="published", caption=body, data=self.uploaded_media)
+            if "http" in body:
+                body = body.replace("\r", " ")
+                body = body.replace("\n", " ")
+                pre = body[body.find("http"):]
+                url = pre[:pre.find(" ")].strip()
+                response = self.client.create_link("worldsofzzt", state="published", tags=tags, url=url, description=body, title=title)
+                # this can take a thumbnail URL with a thumbnail kwarg, but doesn't work with the uploaded media
+            else:
+                response = self.client.create_photo("worldsofzzt", state="published", tags=tags, caption=body, data=self.uploaded_media)
         else:
             if "http" in body:
                 body = body.replace("\r", " ")
                 body = body.replace("\n", " ")
                 pre = body[body.find("http"):]
                 url = pre[:pre.find(" ")].strip()
-                response = self.client.create_link("worldsofzzt", url=url, description=body)
+                response = self.client.create_link("worldsofzzt", state="published", tags=tags, url=url, description=body, title=title)
             else:
-                response = self.client.create_text("worldsofzzt", state="published", body=body)
+                response = self.client.create_text("worldsofzzt", state="published", tags=tags, body=body, title=title)
 
         self.uploaded_media = []
         self.log_response(response)
@@ -235,7 +264,7 @@ class Social_Twitter(Social):
                 self.log_response(response)
         return response
 
-    def post(self, body):
+    def post(self, body, title="", tags=[]):
         json_data = {"text": body}
         if self.media:
             json_data["media"] = {

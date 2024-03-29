@@ -32,7 +32,8 @@ class ZAP_Post_Form(forms.Form):
     attrs = {"method": "POST"}
     processed = False
 
-    title = forms.CharField(required=False)
+    post_shortcut = forms.ChoiceField(required=False, choices=[], help_text="Select to quickly set up a common post type.")
+    title = forms.CharField(help_text="Used as post title on Cohost/Tumblr.")
     accounts = Museum_Multiple_Choice_Field(
         required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["twitter", "tumblr", "mastodon"]
     )
@@ -41,6 +42,7 @@ class ZAP_Post_Form(forms.Form):
         widget=Enhanced_Text_Area_Widget(char_limit=10000),
         help_text="Tweets are limited to 240 characters.<br>Toots are limited to 500 characters.",
     )
+    hashtags = forms.CharField(required=False, help_text="Separate with comma. Prefix with `#` ie: `#zzt, #stream announcement`.")
 
     media_1 = forms.CharField(required=False, help_text="Should begin with /static/...")
     media_2 = forms.CharField(required=False, help_text="Should begin with /static/...")
@@ -81,7 +83,7 @@ class ZAP_Post_Form(forms.Form):
             #if self.cleaned_data.get(reply_id):  # Set reply ID if one exists
             #    s.reply_to = self.cleaned_data[reply_id]
 
-            response = s.post(self.cleaned_data.get("body", ""))  # Post
+            response = s.post(self.cleaned_data.get("body", ""), self.cleaned_data.get("title", ""), self.cleaned_data.get("hashtags", []))  # Post
             post_responses[account] = response
             self.responses[account].append(response)
 
