@@ -1,4 +1,5 @@
 import { ASCII } from "./core.js";
+import { PString } from "./core.js";
 
 export class Handler
 {
@@ -56,23 +57,42 @@ export class Handler
 
     read_Ascii(len)
     {
-        let output = Array.from(this.bytes.slice(this.pos, this.pos+len)).map((x) => ASCII[x]).join("");
+        try {
+            var output = Array.from(this.bytes.slice(this.pos, this.pos+len)).map((x) => ASCII[x]).join("");
+        } catch (e) {
+            var output = [0];
+        }
         this.pos += len;
         return output;
     }
 
     read_Uint8()
     {
-        let output = this.data.getInt8(this.pos);
+        try {
+            var output = this.data.getUint8(this.pos);
+        } catch (e) {
+            var output = 0;
+        }
         this.pos += 1;
         return output;
     }
 
     read_Int16()
     {
-        let output = this.data.getInt16(this.pos, true);
+        try {
+            var output = this.data.getInt16(this.pos, true);
+        } catch (e) {
+            var output = 0;
+        }
         this.pos += 2;
         return output;
+    }
+
+    read_PString(max_length)
+    {
+        // Reads 1 byte of current string length, and max_length bytes of string text
+        let current_length = this.read_Uint8();
+        return new PString(this.read_Ascii(max_length), current_length, max_length);
     }
 
     get_ext_from_filename(filename)

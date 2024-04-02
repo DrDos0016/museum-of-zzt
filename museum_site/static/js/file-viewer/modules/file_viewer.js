@@ -3,6 +3,13 @@ import { Image_Handler } from "./image_handler.js";
 import { Text_Handler } from "./text_handler.js";
 import { Unsupported_Handler } from "./unsupported_handler.js";
 import { ZZT_High_Score_Handler, SZZT_High_Score_Handler } from "./high_score_handler.js";
+import { ZZT_Handler } from "./zzt_handler.js";
+
+const EXTENSIONS_IMAGE = [".BMP", ".JPG", ".PNG"];
+const EXTENSIONS_HIGH_SCORE = [".HI", ".MH"];
+const EXTENSIONS_HIGH_SCORE_SZZT = [".HGS"];
+const EXTENSIONS_TEXT = [".TXT", ".NFO", ".DAT", ".OBJ", ".DOC"];
+const EXTENSIONS_ZZT = [".ZZT"];
 
 export class File_Viewer
 {
@@ -73,14 +80,16 @@ function create_handler_for_file(fvpk, filename, bytes, meta)
     let ext = "." + components[components.length - 1].toUpperCase();
 
     switch (true) {
-        case [".BMP", ".JPG", ".PNG"].indexOf(ext) != -1:
+        case EXTENSIONS_ZZT.indexOf(ext) != -1:
+            return new ZZT_Handler(fvpk, filename, bytes, meta);
+        case EXTENSIONS_IMAGE.indexOf(ext) != -1:
             return new Image_Handler(fvpk, filename, bytes, meta);
-        case [".HI", ".MH"].indexOf(ext) != -1:
+        case EXTENSIONS_HIGH_SCORE.indexOf(ext) != -1:
             return new ZZT_High_Score_Handler(fvpk, filename, bytes, meta);
-        case ".HGS":
+        case EXTENSIONS_HIGH_SCORE_SZZT.indexOf(ext) != -1:
             return new SZZT_High_Score_Handler(fvpk, filename, bytes, meta);
-        case [".TXT", ".NFO", ".DAT", ".OBJ"].indexOf(ext) != -1:
-        return new Text_Handler(fvpk, filename, bytes, meta);
+        case EXTENSIONS_TEXT.indexOf(ext) != -1:
+            return new Text_Handler(fvpk, filename, bytes, meta);
         default:
             return new Unsupported_Handler(fvpk, filename, bytes, meta);
     };

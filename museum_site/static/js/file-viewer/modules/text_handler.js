@@ -11,6 +11,8 @@ export class Text_Handler extends Handler
         this.encoding = "utf-8"; // utf-8, ascii
 
         this.available_encodings = ["utf-8", "ascii", "ASCII (Mapping)"];
+
+        this.extension_based_initialization();
     }
 
     parse_bytes() {
@@ -43,5 +45,13 @@ export class Text_Handler extends Handler
         this.encoding = encoding;
         this.parse_bytes();
         this.render();
+    }
+
+    extension_based_initialization()
+    {
+        if (this.ext == ".DOC")
+        {
+            console.log("Auto .DOC settings");
+        }
     }
 }

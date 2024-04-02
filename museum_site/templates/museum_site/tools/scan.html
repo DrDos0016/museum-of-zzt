@@ -24,10 +24,11 @@ Finished: {{scan_meta.finished}}<br>
 {% for cat in issues %}
 <table>
     <tr>
-        <th colspan="5">{{cat.0|title}} ({{cat|length|add:-1}})</th>
+        <th colspan="6">{{cat.0|title}} ({{cat|length|add:-1}})</th>
     </tr>
     {% for i in cat|slice:"1:" %}
         <tr>
+            <td><input type="checkbox"></td>
             <td><a href="{{i.zf.get_absolute_url}}" target="_blank">{{i.zf.title}}</a></td>
             <td>{% if cat.0 == "archive mirror" %}<a href="{% url 'mirror' i.zf.key %}">Mirror</a>{% endif %}</td>
             <td><a href="{{i.zf.tool_url}}" target="_blank">Tools</a></td>

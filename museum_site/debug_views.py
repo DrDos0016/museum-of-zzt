@@ -198,6 +198,7 @@ def file_viewer_new(request, key, local=False):
     context = {}
 
     context["zfile"] = File.objects.get(key=key)
+    context["file"] = context["zfile"]
     return render(request, "museum_site/file-viewer.html", context)
 
 
