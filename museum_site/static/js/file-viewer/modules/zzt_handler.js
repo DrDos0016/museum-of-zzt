@@ -9,6 +9,7 @@ export class ZZT_Handler extends Handler
         this.envelope_css_class = "zzt";
         this.world = {};
         this.boards = [];
+        this.renderer = new ZZT_Standard_Renderer();
 
         this.max_flags = 10;
         this.tile_count = 1500; // TODO Should we use width * height of boards?
@@ -29,6 +30,7 @@ export class ZZT_Handler extends Handler
 
     generate_html() {
         console.log("ZZT HTML Generation");
+
         let output = `<div style="flex:0 0 90%"><textarea style="width:90%;height:300px;">${JSON.stringify({"world": this.world, "boards": this.boards}, null, "\t")}</textarea>`;
 
         let temp = "";
@@ -38,6 +40,8 @@ export class ZZT_Handler extends Handler
         }
 
         output += `<hr>${temp}</div>`
+
+        //let output = this.renderer.render_board(this.boards[1]);
         return output;
     }
 
@@ -115,12 +119,21 @@ export class ZZT_Handler extends Handler
             board.title = this.read_PString(50);
 
             // RLE
+            board.elements = [];
             let read_tiles = 0;
             while (read_tiles < this.tile_count)
             {
                 let quantity = this.read_Uint8();
-                let element = this.read_Uint8();
+                let element_id = this.read_Uint8();
                 let color = this.read_Uint8();
+
+                // RLE quantities of 0 are treated as 256. This is never relevant, but it's been documented and should be supported.
+                if (quantity == 0)
+                    quantity = 256;
+
+                for (let quantity_idx = 0; quantity_idx < quantity; quantity_idx++)
+                    board.elements.push({"id": element_id, "color": color});
+
                 read_tiles += quantity;
                 board.meta.stats_address += 3;
 
@@ -166,7 +179,6 @@ export class ZZT_Handler extends Handler
                 if (stat.oop_length > 0)
                     stat.oop = this.read_Ascii(stat.oop_length);
 
-
                 read_stats++;
                 board.stats.push(stat);
             }
@@ -183,5 +195,53 @@ export class ZZT_Handler extends Handler
             boards.push(board);
         }
         return boards
+    }
+}
+
+class ZZT_Standard_Renderer
+{
+    constructor()
+    {
+        this.name = "ZZT Standard Renderer";
+    }
+
+    render_board(board)
+    {
+        /* DEBUG */
+        let TILE_WIDTH = 8;
+        let TILE_HEIGHT = 14;
+        var colors = [
+            "#000000", "#0000AA", "#00AA00", "#00AAAA",
+            "#AA0000", "#AA00AA", "#AA5500", "#AAAAAA",
+            "#555555", "#5555FF", "#55FF55", "#55FFFF",
+            "#FF5555", "#FF55FF", "#FFFF55", "#FFFFFF"
+        ];
+        var characters = [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63];
+        /* DEBUG */
+
+        console.log("Rendering a board");
+        const canvas = document.createElement("canvas");
+        let element_idx = 0;
+        canvas.setAttribute("width", "480px");
+        canvas.setAttribute("height", "350px");
+        canvas.setAttribute("style", "border:5px solid #000;");
+
+        const ctx = canvas.getContext("2d");
+
+        for (var y = 0; y < 25; y++)
+        {
+            for (var x = 0; x < 60; x++)
+            {
+                let element = board.elements[element_idx];
+                let fg = colors[element.color % 16];
+                let bg = colors[parseInt(element.color / 16) % 8];
+                ctx.globalCompositeOperation = "source-over";
+                ctx.fillStyle = bg;
+                ctx.fillRect(x*TILE_WIDTH, y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+                element_idx++;
+            }
+        }
+
+        return canvas;
     }
 }
