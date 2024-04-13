@@ -1,3 +1,4 @@
+import json
 import os
 import zipfile
 
@@ -152,14 +153,28 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
         data["zeta_config"] = Zeta_Config.objects.get(pk=ZETA_ZZT32R)
 
     # Extra work for custom fonts
-    if data["zeta_config"].name.startswith("Custom Font - Generic"):
+    if data["zeta_config"].name.startswith("Custom Font - "):
         generic_font = ""
         zip_file = zipfile.ZipFile(os.path.join(data["file"].phys_path()))
         files = zip_file.namelist()
+        font_type = "NONE"
         for f in files:
             if f.lower().endswith(".com"):
                 generic_font = f
-        data["zeta_config"].commands = (data["zeta_config"].commands.replace("{font_file}", generic_font))
+                font_type = ".COM"
+            elif f.lower().endswith(".chr"):
+                generic_font = f
+                font_type = ".CHR"
+
+        if font_type == ".COM":
+            data["zeta_config"].commands = (data["zeta_config"].commands.replace("{font_file}", generic_font))
+        elif font_type == ".CHR":
+            data["zeta_config"].commands = []
+            data["zeta_config"].engine = json.dumps({
+                "charset": generic_font,
+                "lock_charset": True,
+            })
+
 
     # Extra work for custom EXE
     if data["zeta_config"].name.startswith("Use Included EXE"):

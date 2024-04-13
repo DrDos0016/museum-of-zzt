@@ -155,6 +155,9 @@ $(document).ready(function (){
             blink_cycle_duration: {{zeta_config.blink_duration}},
             /*charset_override: {{zeta_config.charset|default:""}}*/
         },
+        {% if zeta_config.engine %}
+            engine: {{zeta_config.engine|safe}},
+        {% endif %}
         {% if not request.GET.no_args %}arg: "{{zeta_config.arguments|default:""|escapejs}}",{% endif %}
         {% if zeta_config.commands and not request.GET.no_commands %}commands: {{zeta_config.commands|safe}},{% endif %}
         storage: {

@@ -337,7 +337,7 @@ function pull_file()
     }
 
     // COM files can avoid calling the actual ZIP
-    if (ext == "com")
+    if (ext == "com" || ext == "chr")
     {
         // TODO this is really hacky for Super ZZT fonts even if it works
         var format = "img";
@@ -368,7 +368,7 @@ function pull_file()
         }
         else
         {
-            var output = "The specified .COM file is either not a custom font or has not yet been converted to PNG for Museum use.";
+            var output = `The specified ${ext} file is either not a custom font or has not yet been converted to PNG for Museum use.`;
             $("#text-body").html(output);
             set_active_envelope("text");
         }
