@@ -73,7 +73,7 @@ export class File_Viewer
 
     debug_board_change()
     {
-        this.files[this.active_fvpk].DEBUG_BOARD_NUM = parseInt($("select[name=debug_board_num_val]").val());
+        this.files[this.active_fvpk].selected_board = parseInt($("select[name=debug_board_num_val]").val());
         this.files[this.active_fvpk].render();
     }
 

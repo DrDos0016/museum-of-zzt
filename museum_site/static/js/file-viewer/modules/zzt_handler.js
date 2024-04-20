@@ -12,6 +12,7 @@ export class ZZT_Handler extends Handler
         this.world = {};
         this.boards = [];
         this.renderer = new ZZT_Standard_Renderer();
+        this.selected_board = null;
 
         this.max_flags = 10;
         this.tile_count = 1500; // TODO Should we use width * height of boards?
@@ -25,6 +26,7 @@ export class ZZT_Handler extends Handler
         // Parse World
         this.world = this.parse_world();
         this.boards = this.parse_boards();
+        this.selected_board = this.world.current_board;
 
         let fin = Date.now();
         console.log(`Bytes parsed in  ${fin - start}ms`);
@@ -32,10 +34,12 @@ export class ZZT_Handler extends Handler
 
     async generate_html() {
         console.log("ZZT HTML Generation");
-        let output = await this.renderer.render_board(this.boards[this.world.current_board]);
-        //this.display_world_info(); // TODO DEBUG
+        let board_idx = this.selected_board ? this.selected_board : this.world.current_board;
+        console.log("BOARD IDX HERE IS", board_idx);
+        let output = await this.renderer.render_board(this.boards[board_idx]);
+        this.display_world_info(); // TODO DEBUG
         //this.display_board_list(); // TODO DEBUG
-        this.display_json_string(); // TODO DEBUG
+        //this.display_json_string(); // TODO DEBUG
         console.log("THIS IS THE FINAL CONSOLE.LOG");
         return output;
     }
@@ -75,6 +79,7 @@ export class ZZT_Handler extends Handler
 
     parse_world()
     {
+        console.log("Parsing world");
         let world = {};
         world.identifier = this.read_Int16();
         world.total_boards = this.read_Int16();
@@ -155,7 +160,6 @@ export class ZZT_Handler extends Handler
                 board.meta.stats_address += 3;
 
             }
-            console.log("elements done", board.elements);
 
             // Board properties
             board.max_shots = this.read_Uint8();
@@ -209,10 +213,7 @@ export class ZZT_Handler extends Handler
                 this.pos = manual_pos;
             }
 
-            // Add the finalizared parsed board to the list
-            console.log("FINALIZED BOARD");
-            console.log(board);
-            boards.push(board);
+            boards.push(board);  // Add the finalizared parsed board to the list
         }
         return boards
     }
@@ -301,7 +302,7 @@ class ZZT_Standard_Renderer
         console.log("TOLD TO RENDER BOARD", board);
         if (! this.character_set.loaded)
             await this.character_set.load();
-        this.active_board = board;
+        this.rendered_board = board;
 
         console.log("Charset loaded, back in render board");
 
@@ -317,7 +318,7 @@ class ZZT_Standard_Renderer
         {
             for (var x = 1; x < 61; x++)
             {
-                let [fg, bg, char] = this.element_func[this.active_board.elements[x][y].id].apply(this, [x, y]);
+                let [fg, bg, char] = this.element_func[this.rendered_board.elements[x][y].id].apply(this, [x, y]);
                 this.stamp(x, y, fg, bg, char, ctx);
             }
         }
@@ -363,11 +364,11 @@ class ZZT_Standard_Renderer
         // Returns an array to support stat-stacking.
         let output = [];
         let matches = 0;
-        for (let idx = 0; idx < this.active_board.stats.length; idx++)
+        for (let idx = 0; idx < this.rendered_board.stats.length; idx++)
         {
-            if (this.active_board.stats[idx].x == x && this.active_board.stats[idx].y == y)
+            if (this.rendered_board.stats[idx].x == x && this.rendered_board.stats[idx].y == y)
             {
-                output.push(this.active_board.stats[idx])
+                output.push(this.rendered_board.stats[idx])
                 matches++;
             }
             if (matches >= limit)
@@ -383,19 +384,19 @@ class ZZT_Standard_Renderer
 
     basic_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], this.default_characters[element.id]];
     }
 
     empty_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         return [this.palette.hex_colors[0], this.palette.hex_colors[0], this.default_characters[element.id]];
     }
 
     text_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         if (element.id == 53) // White text gets black background instead of gray
             return [this.palette.hex_colors[15], this.palette.hex_colors[0], element.color]
         return [this.palette.hex_colors[15], this.palette.hex_colors[(element.id - 46)], element.color]
@@ -403,7 +404,7 @@ class ZZT_Standard_Renderer
 
     pusher_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         let stat = this.get_stats_for_element(x, y)[0];
         let char;
 
@@ -424,7 +425,7 @@ class ZZT_Standard_Renderer
 
     duplicator_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         let stat = this.get_stats_for_element(x, y)[0];
         let char;
 
@@ -445,7 +446,7 @@ class ZZT_Standard_Renderer
 
     bomb_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         let stat = this.get_stats_for_element(x, y)[0];
         let char;
 
@@ -462,7 +463,7 @@ class ZZT_Standard_Renderer
 
     star_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         let stat = this.get_stats_for_element(x, y)[0];
         let char;
 
@@ -480,7 +481,7 @@ class ZZT_Standard_Renderer
 
     conveyor_cw_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         let stat = this.get_stats_for_element(x, y)[0];
         let char;
 
@@ -499,7 +500,7 @@ class ZZT_Standard_Renderer
 
     conveyor_ccw_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         let stat = this.get_stats_for_element(x, y)[0];
         let char;
 
@@ -518,7 +519,7 @@ class ZZT_Standard_Renderer
 
     transporter_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         let stat = this.get_stats_for_element(x, y)[0];
         let char = stat.param1;
         let animation_characters = {"ns": [94, 126, 94, 45, 118, 95, 118, 45], "ew": [40, 60, 40, 179, 41, 62, 41, 179]};
@@ -539,20 +540,20 @@ class ZZT_Standard_Renderer
 
     line_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         let line_chars = [249, 208, 210, 186, 181, 188, 187, 185, 198, 200, 201, 204, 205, 202, 203, 206];
         let line_idx = 0
-        line_idx += (this.active_board.elements[x][y - 1].id == 31 || this.active_board.elements[x][y - 1].id == 1) ? 1 : 0;  // N
-        line_idx += (this.active_board.elements[x][y + 1].id == 31 || this.active_board.elements[x][y + 1].id == 1) ? 2 : 0;  // S
-        line_idx += (this.active_board.elements[x - 1][y].id == 31 || this.active_board.elements[x - 1][y].id == 1) ? 4 : 0;  // W
-        line_idx += (this.active_board.elements[x + 1][y].id == 31 || this.active_board.elements[x + 1][y].id == 1) ? 8 : 0;  // E
+        line_idx += (this.rendered_board.elements[x][y - 1].id == 31 || this.rendered_board.elements[x][y - 1].id == 1) ? 1 : 0;  // N
+        line_idx += (this.rendered_board.elements[x][y + 1].id == 31 || this.rendered_board.elements[x][y + 1].id == 1) ? 2 : 0;  // S
+        line_idx += (this.rendered_board.elements[x - 1][y].id == 31 || this.rendered_board.elements[x - 1][y].id == 1) ? 4 : 0;  // W
+        line_idx += (this.rendered_board.elements[x + 1][y].id == 31 || this.rendered_board.elements[x + 1][y].id == 1) ? 8 : 0;  // E
 
         return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], line_chars[line_idx]];
     }
 
     object_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         let stat = this.get_stats_for_element(x, y)[0];
         let char = stat.param1;
 
@@ -564,7 +565,7 @@ class ZZT_Standard_Renderer
 
     spinning_gun_draw(x, y)
     {
-        let element = this.active_board.elements[x][y];
+        let element = this.rendered_board.elements[x][y];
         let char;
 
         switch (this.tick % 8) {
