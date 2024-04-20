@@ -63,14 +63,14 @@ class Social():
     def clean_hashtags(self, tags):
         # Default hashtag handler. Works for Cohost and Tumblr.
         # IN: "#zzt, #museum of zzt, #ascii" OUT: ["zzt" , "museum of zzt", "ascii"]
-        cohost_hashtags_list = []
+        hashtag_list = []
         raw_tags = tags
         tags = raw_tags.split(",")
         for tag in tags:
             tag = tag.strip()
             if tag.startswith("#"):
-                cohost_hashtags_list.append(tag[1:])
-        return cohost_hashtags_list
+                hashtag_list.append(tag[1:])
+        return hashtag_list
 
 class Social_Cohost(Social):
     """ https://pypi.org/project/cohost/ """
@@ -92,7 +92,7 @@ class Social_Cohost(Social):
             full_media_path = HOST[:-1] + media_path
             self.media.append("<a href='{}' target='_blank'><img src='{}'></a>".format(full_media_path, full_media_path))
 
-    def post(self, body, title="", tags=[]):
+    def post(self, body, title="", tags=""):
         blocks = []
         # Attach media if any has been specified
         if self.media:
@@ -100,9 +100,8 @@ class Social_Cohost(Social):
             media_string = "\n".join(self.media).replace(APP_ROOT, "")
             body = media_string + "\n" + body
 
-        # Attach hashtags
-        if tags:
-            tags = self.clean_hashtags(tags)
+        # Attach hashtags by converting to list
+        tags = self.clean_hashtags(tags) if tags else []
 
         # Attach post
         blocks.append(MarkdownBlock(body))
