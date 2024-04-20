@@ -18,7 +18,7 @@ export class Handler
 
     }
 
-    render() {
+    async render() {
         $(".envelope.active").removeClass("active");
 
         this.create_envelope();
@@ -27,7 +27,7 @@ export class Handler
             this.parse_bytes();
             this.parsed = true;
         }
-        let html = this.generate_html();
+        let html = await this.generate_html();
 
         this.display_envelope(html);
     }

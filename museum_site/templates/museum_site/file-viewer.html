@@ -215,4 +215,8 @@ var DEBUG_VAR = null;
 <hr>
 FV Debug:
 <div id="FV-DEBUG">Empty debug</div>
+<select name="debug_board_num_val">
+    {% for num in debug_board_range %}<option>{{num}}</option>{% endfor %}
+</select>
+<input type="button" id="debug-board-num-button" data-fv_func="debug_board_change" value="Change Board">
 {% endblock %}

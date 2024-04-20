@@ -70,6 +70,13 @@ export class File_Viewer
         console.log("After", this.files[this.active_fvpk].name);
         this.files[fvpk].render();
     }
+
+    debug_board_change()
+    {
+        this.files[this.active_fvpk].DEBUG_BOARD_NUM = parseInt($("select[name=debug_board_num_val]").val());
+        this.files[this.active_fvpk].render();
+    }
+
 }
 
 function create_handler_for_file(fvpk, filename, bytes, meta)

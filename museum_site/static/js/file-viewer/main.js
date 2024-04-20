@@ -159,13 +159,15 @@ function DEBUG_FUNC()
 {
     console.log("DEBUG FUNC");
     console.log(fv);
+
+    $("#debug-board-num-button").click(run_fv_function);
     return true;
 }
 
 function run_fv_function(e)
 {
     let to_run = $(this).data("fv_func");
-    console.log("I want ot run", to_run);
+    console.log("I want to run", to_run);
 
     console.log("And this on the file is", fv.files[fv.active_fvpk][to_run]);
     console.log("Type is", typeof fv.files[fv.active_fvpk][to_run]);
