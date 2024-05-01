@@ -80,6 +80,8 @@ label.selected { background: var(--header-bg);}
 
 .field-wrapper > label { grid-area: label; }
 
+.field-wrapper[data-field=experiment] { display:none; }
+
 .field-help
 {
     grid-area: help;
@@ -142,6 +144,14 @@ textarea.height-256 { height:256px; }
     flex-direction:column;
     align-items:stretch;
 }
+
+.field-footer
+{
+    display:flex;
+    gap:8px;
+}
+
+.processed-input { border-bottom:1px solid #000; flex:1;}
 
 /* Specialty Forms */
 .field-value .scrolling-checklist label { font-size:10pt; }

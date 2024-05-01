@@ -340,6 +340,9 @@ def login_user(request):
         login_form = Login_Form()
         reg_form = User_Registration_Form(request.POST)
         if ALLOW_REGISTRATION and reg_form.is_valid():
+            if (reg_form.cleaned_data["experiment"] != ""):
+                return redirect("index")
+
             user = User.objects.create_user(
                 reg_form.cleaned_data["requested_username"], reg_form.cleaned_data["requested_email"], reg_form.cleaned_data["password"]
             )
