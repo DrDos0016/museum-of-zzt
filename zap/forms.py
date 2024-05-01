@@ -22,7 +22,6 @@ ACCOUNTS = (
 
 class ZAP_Model_Select_Form(forms.Form):
     def __init__(self, *args, **kwargs):
-        print("Custom init")
         super().__init__(*args, **kwargs)
 
 
@@ -52,8 +51,6 @@ class ZAP_Post_Form(forms.Form):
     def smart_start(self, event=None):
         if not event:
             return False
-        print("Starting with event", event)
-
         self.fields["body"].initial = event.prefab_post()
 
         if event.image_render_datetime:
@@ -62,11 +59,9 @@ class ZAP_Post_Form(forms.Form):
 
     def process(self, request):
         self.responses = {}
-        print("Processing ZAP Post Form")
 
         accounts = self.cleaned_data.get("accounts", [])
         post_responses = {}
-        print(accounts)
 
         for account in accounts:
             self.responses[account] = []
@@ -170,14 +165,12 @@ class ZAP_Post_Boost_Form(forms.Form):
     post_id = forms.IntegerField()
 
     def process(self, request):
-        print("Processing...")
         post = Post.objects.get(pk=self.cleaned_data["post_id"])
         social_id_dict = post.get_social_id_dict()
 
         self.responses = {}
 
         accounts = self.cleaned_data.get("accounts", False)
-        print(accounts)
 
         for account in accounts:
             self.responses[account] = []
