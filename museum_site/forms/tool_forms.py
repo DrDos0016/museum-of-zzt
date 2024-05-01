@@ -350,7 +350,6 @@ class Livestream_Vod_Form(forms.Form):
         video_urls = []
 
         for video_url in videos:
-            print("OG URL", video_url)
             # Strip the URL part and get the ID
             video_url = video_url.replace("https://youtu.be/", "")
             video_url = video_url.replace("https://www.youtube.com/watch?v=", "")
