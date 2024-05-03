@@ -33,6 +33,7 @@ export class File_Viewer
     render_file_list_item(fvpk)
     {
         // Writes a list litem to the page's file list section
+        console.log("HEWWO", this.files[fvpk].ext);
         $("#file-list").append(
             `<li class="fv-content" data-fvpk="${fvpk}" data-filename="${this.files[fvpk].filename}">${this.files[fvpk].filename}</li>`
         );
@@ -51,12 +52,14 @@ export class File_Viewer
     {
         // Displays the file {fvpk}
         console.log("FV wants to display...", fvpk);
+        $(".fv-content.selected ol").remove();
         $(".fv-content.selected").removeClass("selected");
         $(".fv-content[data-fvpk=" + fvpk + "]").addClass("selected");
         this.files[fvpk].render();
     }
 
-    reparse_active_file_as_text() {
+    reparse_active_file_as_text()
+    {
         console.log("Textifying?");
         let fvpk = this.files[this.active_fvpk].fvpk;
         let filename = this.files[this.active_fvpk].filename;
@@ -71,9 +74,11 @@ export class File_Viewer
         this.files[fvpk].render();
     }
 
-    debug_board_change()
+    board_change(new_board_number)
     {
-        this.files[this.active_fvpk].selected_board = parseInt($("select[name=debug_board_num_val]").val());
+        console.log("CALLING BOARD CHANGE");
+        console.log("NBN", new_board_number);
+        this.files[this.active_fvpk].selected_board = parseInt(new_board_number);
         this.files[this.active_fvpk].render();
     }
 

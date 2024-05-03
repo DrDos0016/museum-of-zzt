@@ -15,6 +15,6 @@ export class Image_Handler extends Handler
     }
 
     generate_html() {
-        return this.img;
+        return [{"target": this.envelope_id, "html": this.img}];
     }
 }

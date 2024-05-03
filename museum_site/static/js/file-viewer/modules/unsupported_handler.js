@@ -17,6 +17,6 @@ export class Unsupported_Handler extends Handler
         output += `<p>You may <span>Force this file to be treated as text</span></p>`;
         output += `<p>You may <span class="jsLink fv-ui" data-fv_func="reparse_active_file_as_text">Load this file as a text file</span> - This may allow some data to be read.</p>`;
 
-        return output;
+        return [{"target": this.envelope_id, "html": output}];
     }
 }

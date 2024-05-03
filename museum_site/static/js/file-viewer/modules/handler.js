@@ -15,7 +15,7 @@ export class Handler
         this.pos = 0;
         this.data = null; // DataView for reading
         this.envelope_id = null; // String to identify HTML for envelope
-
+        console.log("Handler made for", this.filename);
     }
 
     async render() {
@@ -27,9 +27,15 @@ export class Handler
             this.parse_bytes();
             this.parsed = true;
         }
-        let html = await this.generate_html();
+        let targets = await this.generate_html();
 
-        this.display_envelope(html);
+        console.log("IN BASE RENDER");
+
+        for (let idx = 0; idx < targets.length; idx++)
+        {
+            console.log("RENDERING TARGET", targets[idx].target);
+            this.display_envelope(targets[idx].html, targets[idx].target);
+        }
     }
 
     create_envelope() {
@@ -41,13 +47,16 @@ export class Handler
     }
 
     generate_html() {
-        return `<b>No custom HTML function exists for class ${this.name}!</b>`;
+        return [{"target": this.envelope_id, "html": `<b>No custom HTML function exists for class ${this.name}!</b>`}];
     }
 
-    display_envelope(html)
+    display_envelope(html, target=this.envelope_id)
     {
-        $(this.envelope_id).html(html);
-        $(this.envelope_id).addClass("active");
+        //$(this.envelope_id).html(html);
+        //$(this.envelope_id).addClass("active");
+
+        $(target).html(html);
+        $(target).addClass("active");
     }
 
     parse_bytes() {

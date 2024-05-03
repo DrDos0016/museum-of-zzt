@@ -1,6 +1,7 @@
 "use strict";
 
 import { File_Viewer } from "./modules/file_viewer.js";
+import { KEY } from "./modules/core.js";
 
 
 function initialize()
@@ -10,9 +11,34 @@ function initialize()
 
     // Bind pre-bindables
     $("#file-load-submit").click(ingest_file);
+
+
+    $("#file-list").on("click", ".board-list .board", {"func_name": "board_change", "value": "board-number"}, run_fv_function);
+    //$("#file-list").on("click", ".board-list .board", fv.board_change);
+
     $("#file-list").on("click", ".fv-content", output_file);
     $("#fv-main").on("change", "select[name=fv-option]", run_fv_function);
     $("#fv-main").on("click", ".fv-ui", run_fv_function);
+
+    // Keyboard Shortcuts
+    $(window).keyup(function (e){
+        let match;
+        if ($("input[name=q]").is(":focus") || $("input[name=code-search]").is(":focus")) // Disable when using search UI
+            return false;
+
+        if (! e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next Board
+        {
+            // Need to iterate over these until a non-hidden one is found.
+            if (match = $(".board.selected").nextAll(".board"))
+                match[0].click();
+        }
+        else if (! e.shiftKey && (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K)) // Previous Board
+        {
+            if (match = $(".board.selected").prevAll(".board"))
+                match[0].click();
+        }
+    });
+
 
     if (auto_load)
     {
@@ -129,6 +155,14 @@ function output_file(e)
 {
     // Called when clicking on a file in the registry to display. Will load/parse file as needed
     let requested_fvpk = e.target.dataset.fvpk;
+
+    if (! requested_fvpk)
+    {
+        console.log("NO FVPK!");
+        console.log(e.target);
+        return false;
+    }
+
     let requested_filename = e.target.dataset.filename;
     console.log("User Click on File:", requested_fvpk);
 
@@ -166,12 +200,10 @@ function DEBUG_FUNC()
 
 function run_fv_function(e)
 {
-    let to_run = $(this).data("fv_func");
-    console.log("I want to run", to_run);
-
-    console.log("And this on the file is", fv.files[fv.active_fvpk][to_run]);
-    console.log("Type is", typeof fv.files[fv.active_fvpk][to_run]);
-    console.log("IDK", fv.files[fv.active_fvpk]);
+    // Use pre-set func name if set
+    let to_run = (e.data.func_name) ? e.data.func_name : $(this).data("fv_func");
+    let params = (e.data.value) ? $(this).data(e.data.value) : null;
+    console.log("FV FUNC TO RUN IS", to_run);
 
     // If the active file has the function, call from there
     if (typeof fv.files[fv.active_fvpk][to_run] === "function")
@@ -182,7 +214,7 @@ function run_fv_function(e)
     else
     {
         console.log("Running uh upper function?");
-        fv[to_run]();
+        fv[to_run](params);
     }
 }
 

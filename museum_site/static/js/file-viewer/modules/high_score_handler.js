@@ -31,17 +31,19 @@ export class ZZT_High_Score_Handler extends Handler
 
     generate_html() {
         console.log("High score html generation");
-        let output = `<pre class="cp437">Score  Name\n`;
-        output += `-----  ${"-".repeat(this.dash_count)}\n`;
+        let html = `<pre class="cp437">Score  Name\n`;
+        html += `-----  ${"-".repeat(this.dash_count)}\n`;
         for (var idx in this.scores)
         {
             if ((this.scores[idx].name.length != 0 || this.show_nameless) && this.scores[idx].score != -1)
             {
                 let padded = ("" + this.scores[idx].score).padStart(5, " ");
-                output += `${padded}  ${this.scores[idx].name}\n`;
+                html += `${padded}  ${this.scores[idx].name}\n`;
             }
         }
-        output += "</pre>";
+        html += "</pre>";
+
+        let output = [{"target": this.envelope_id, "html": html}];
         return output;
     }
 }

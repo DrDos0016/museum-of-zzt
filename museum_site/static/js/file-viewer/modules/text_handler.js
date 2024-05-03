@@ -37,7 +37,7 @@ export class Text_Handler extends Handler
             output += `<option${this.encoding == this.available_encodings[idx] ? ' selected' : ''}>${this.available_encodings[idx]}</option>\n`;
         }
         output += `</select></label></div><pre class="cp437">${this.encoded_text}</pre>`;
-        return output;
+        return [{"target": this.envelope_id, "html": output}];
     }
 
     set_encoding(encoding)
