@@ -40,6 +40,7 @@ class Review_Form(forms.ModelForm):
         help_text="Choose whether or not this feedback should be announced on the Museum of ZZT Discord server and appear on the front page.",
         initial=1
     )
+    experiment = forms.CharField(label="Experiment", help_text="Used to prevent automated accounts. Avoid interacting with this field.", required=False)
     submit_value = "Submit Feedback"
 
     class Meta:
