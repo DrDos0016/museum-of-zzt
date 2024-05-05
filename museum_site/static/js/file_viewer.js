@@ -1230,7 +1230,14 @@ function stat_info(e)
         if (tile.name == "Passage")
         {
             var loaded_file = $("#file-list ul > li.selected").contents().filter(function(){ return this.nodeType == 3; })[0].nodeValue;
-            param3_display = `<a class="board-link" data-board="${stat.param3}" href="?file=${loaded_file}&board=${stat.param3}">${stat.param3} - ${world.boards[stat.param3].title}</a>`;
+            if (world.boards[stat.param3])
+            {
+                param3_display = `<a class="board-link" data-board="${stat.param3}" href="?file=${loaded_file}&board=${stat.param3}">${stat.param3} - ${world.boards[stat.param3].title}</a>`;
+            }
+            else
+            {
+                param3_display = `${stat.param3} - <i>Out of bounds board</i>`;
+            }
         }
 
         if (tile.name == "Spinning Gun" || tile.name == "Tiger")
