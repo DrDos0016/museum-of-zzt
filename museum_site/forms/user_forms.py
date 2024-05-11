@@ -310,7 +310,7 @@ class User_Registration_Form(forms.Form):
     password = forms.CharField(min_length=8, widget=forms.PasswordInput(), help_text=PASSWORD_HELP_TEXT)
     confirm_password = forms.CharField(min_length=8, widget=forms.PasswordInput(),)
     terms = Museum_TOS_Field()
-    experiment = forms.CharField(label="Experiment", required=False)
+    experiment = forms.CharField(label="Experiment", help_text="Used to prevent automated accounts. Avoid interacting with this field.", required=False)
 
     def clean(self):
         cleaned_data = super().clean()
