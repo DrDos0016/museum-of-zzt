@@ -15,7 +15,6 @@ export class Handler
         this.pos = 0;
         this.data = null; // DataView for reading
         this.envelope_id = null; // String to identify HTML for envelope
-        console.log("Handler made for", this.filename);
     }
 
     async render() {
@@ -31,10 +30,11 @@ export class Handler
 
         console.log("IN BASE RENDER");
 
+        $("#details .active").removeClass("active");
         for (let idx = 0; idx < targets.length; idx++)
         {
             console.log("RENDERING TARGET", targets[idx].target);
-            this.display_envelope(targets[idx].html, targets[idx].target);
+            this.display_envelope(targets[idx].html, targets[idx].target, targets[idx].focus);
         }
     }
 
@@ -50,13 +50,14 @@ export class Handler
         return [{"target": this.envelope_id, "html": `<b>No custom HTML function exists for class ${this.name}!</b>`}];
     }
 
-    display_envelope(html, target=this.envelope_id)
+    display_envelope(html, target=this.envelope_id, focus=true)
     {
-        //$(this.envelope_id).html(html);
-        //$(this.envelope_id).addClass("active");
-
         $(target).html(html);
-        $(target).addClass("active");
+        if (focus)
+        {
+            $("#details .active").removeClass("active");
+            $(target).addClass("active");
+        }
     }
 
     parse_bytes() {
@@ -109,5 +110,11 @@ export class Handler
         let components = filename.split(".");
         let ext = "." + components[components.length - 1].toUpperCase();
         return ext;
+    }
+
+    close()
+    {
+        console.log("Base handler CLOSE()");
+        $(this.envelope_id).removeClass("active");
     }
 }

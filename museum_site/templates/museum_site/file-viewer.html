@@ -22,20 +22,36 @@ var DEBUG_VAR = null;
 {% endblock %}
 
 {% block content %}
+<section id="file-viewer">
 {% if weave %}
 <div id="fv-prefix">
     <p>⚠️ Support for Weave ZZT content in the Museum's File Viewer is very limited. Weave specific features have not yet been implemented. Issues should be expected when exploring Weave ZZT related files (especially visuals).</p>
 </div>
 {% endif %}
 <div id="fv-main">
-    <div class="envelope envelope-overview active" id="preview-envelope">
-        <img src="{% static zfile.preview_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview">
-        {% if zfile.description %}<p>{{zfile.description}}</p>{% endif %}
+    {% comment %}This envelope must be manually created to display _something_ for users with JS disabled{% endcomment %}
+    <noscript>
+        <div id="fv-noscript-error" class="sticky-note">Javascript must be enabled in order for The Museum of ZZT file viewer to function.</div>
+    </noscript>
+    <div id="envelope-fvpk-overview" class="envelope envelope-overview active">
+        <div class="zf-preview-wrapper">
+            <img id="fv-preview" class="image" src="{% static zfile.preview_url|default:'images/no_screenshot.png' %}">
+        </div>
+        {% if zfile.description %}<div class="zf-desc-wrapper"><div><p>{{zfile.description|linebreaks}}</p></div></div>{% endif %}
     </div>
+    {% comment %}
+    <div class="envelope envelope-overview active" id="preview-envelope">
+        <div class="zf-preview-wrapper"><img src="{% static zfile.preview_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview"></div>
+        {% if zfile.description %}<div class="zf-desc-wrapper"><div><p>{{zfile.description|linebreaks}}</p></div></div>{% endif %}
+    </div>
+    {% endcomment %}
 </div>
 
-<div id="zip-name" name="zip-info">{{file.filename}}</div>
-<div id="file-tabs">
+<div id="region-file-list">
+    <ul id="file-list"></ul>
+</div>
+
+<div id="tabs">
     <div name="world-info">World</div>
     <div name="board-info">Board</div>
     <div name="element-info">Element</div>
@@ -44,172 +60,139 @@ var DEBUG_VAR = null;
     <div name="help">?</div>
 </div>
 
-<div id="region-file-list">
-    <ul id="file-list">
-        <li class="fv-content selected" data-fvpk="fvpk-overview">Overview</li>
-    </ul>
-</div>
-
-<div id="analysis">
-    <div id="file-data">
-        <div id="zip-info" class="toggle">
-            <table class="zip-info-table">
-                <tr>
-                <th>Filename</th>
-                <th title="Modification Date">Mod. Date</th>
-                <th title="Compression Method">Comp.</th>
-                <th title="Directory">Dir.</th>
-                <th>CRC-32</th>
-                <th>Compressed Size</th>
-                <th>Decompressed Size</th>
-                {% for f in zip_info %}
-                <tr>
-                    <td>{{f.filename}}</td>
-                    <td>{{f.date_time.0}}-{{f.date_time.1|stringformat:"02d"}}-{{f.date_time.2|stringformat:"02d"}}<br>{{f.date_time.3|stringformat:"02d"}}:{{f.date_time.4|stringformat:"02d"}}:{{f.date_time.5|stringformat:"02d"}}</td>
-                    <td class="c">{{f.compress_type}}</td>
-                    <td class="c">{{f.is_dir|yesno:"Y,N"}}</td>
-                    <td class="r">{{f.CRC}}</td>
-                    <td class="r">{{f.compress_size|filesizeformat}}</td>
-                    <td class="r">{{f.file_size|filesizeformat}}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            {% if zip_comment %}
-            <hr>
-            <b>ZIP Comment:</b><br>
-            <pre class="cp437" readonly id="zip-comment">{{zip_comment}}</pre>
-            {% endif %}
-        </div>
-        <div id="world-info" class="toggle"></div>
-        <div id="board-info" class="toggle"></div>
-        <div id="element-info" class="toggle"></div>
-        <div id="stat-info" class="toggle">
-            <a id='stat-toggle' class='jsLink'>Toggle Codeless Stats</a><br>
-            Sort by:
-            <select name="stat-sort">
-                <option value="code">Code Length</option>
-                <option value="coord">Coordinates</option>
-                <option value="name" selected>Name</option>
-                <option value="stat">Stat Index</option>
+<div id="details">
+    <div id="zip-info"></div>
+    <div id="world-info"></div>
+    <div id="board-info"></div>
+    <div id="element-info"></div>
+    <div id="stat-info">
+        <a id='stat-toggle' class='jsLink'>Toggle Codeless Stats</a><br>
+        Sort by:
+        <select name="stat-sort">
+            <option value="code">Code Length</option>
+            <option value="coord">Coordinates</option>
+            <option value="name" selected>Name</option>
+            <option value="stat">Stat Index</option>
+        </select>
+        <ol start="0"></ol>
+    </div>
+    <div id="preferences">
+        <div class="field">
+            <label for="pref-charset">Charset</label>
+            <select name="charset" id="pref-charset">
+                <optgroup label="Standard Fonts">
+                    {% for charset in charsets %}
+                    <option
+                        value="{{charset.filename}}"{% if request.charset == charset %} selected{% endif %}
+                        data-charset-id={{charset.id}}
+                        data-charset-engine={{charset.engine}}
+                    >{{charset.name}}{% if file.id == charset.id %} (RECOMMENDED){% endif %}</option>
+                    {% endfor %}
+                </optgroup>
+                <optgroup label="Custom Fonts">
+                    {% for charset in custom_charsets %}
+                    <option
+                        value="{{charset.filename}}"{% if request.charset == charset %} selected{% endif %}
+                        data-charset-id={{charset.id}}
+                        data-charset-engine={{charset.engine}}
+                    >{{charset.name}}{% if file.id == charset.id %} (RECOMMENDED){% endif %}</option>
+                    {% endfor %}
+                </optgroup>
             </select>
-            <ol start="0"></ol>
-        </div>
-        <div id="preferences" class="toggle">
-            <div class="field">
-                <label for="pref-charset">Charset</label>
-                <select name="charset" id="pref-charset">
-                    <optgroup label="Standard Fonts">
-                        {% for charset in charsets %}
-                        <option
-                            value="{{charset.filename}}"{% if request.charset == charset %} selected{% endif %}
-                            data-charset-id={{charset.id}}
-                            data-charset-engine={{charset.engine}}
-                        >{{charset.name}}{% if file.id == charset.id %} (RECOMMENDED){% endif %}</option>
-                        {% endfor %}
-                    </optgroup>
-                    <optgroup label="Custom Fonts">
-                        {% for charset in custom_charsets %}
-                        <option
-                            value="{{charset.filename}}"{% if request.charset == charset %} selected{% endif %}
-                            data-charset-id={{charset.id}}
-                            data-charset-engine={{charset.engine}}
-                        >{{charset.name}}{% if file.id == charset.id %} (RECOMMENDED){% endif %}</option>
-                        {% endfor %}
-                    </optgroup>
-                </select>
-            </div>
-
-            <div class="field">
-                <label for="pref-renderer">Board Rendering</label>
-                <select name="renderer" id="pref-renderer">
-                    <option value="zzt_standard" selected>Standard</option>
-                    <option value="zzt_objects">Object Highlight</option>
-                    <option value="zzt_code">Code Highlight</option>
-                    <option value="zzt_fake">Fake Wall Highlight</option>
-                    <option value="zzt_dark">Dark Board</option>
-                    <option value="zzt_empty">Visible Empties</option>
-                    <option value="zzt_empty_text">Empties as Text</option>
-                    <option value="weave_standard">Weave (Partial Support)</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label for="pref-intensity">High Intensity Backgrounds</label>
-                <select name="intensity" id="pref-intensity">
-                    <option value="high">On</option>
-                    <option value="low" selected>Off</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label for="pref-invisibles" id="pref-invisibles">Invisible Walls</label>
-                <select name="invisibles">
-                    <option value="revealed">Visible - Revealed</option>
-                    <option value="editor" selected>Visible - Editor</option>
-                    <option value="invisible">Invisible</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label for="pref-monitors">Monitors</label>
-                <select name="monitors" id="pref-monitors">
-                    <option value="hidden">Hidden - ZZT Style</option>
-                    <option value="m" selected>M - KevEdit Style</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label for="pref-edges">Board Edges</label>
-                <select name="edges" id="pref-edges">
-                    <option value="hidden" selected>Hidden - ZZT Style</option>
-                    <option value="e">E - KevEdit Style</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label for="pref-statlessobj">Statless Objects</label>
-                <select name="statlessobj" id="pref-statlessobj">
-                    <option value="hidden" selected>Hidden - ZZT Style</option>
-                    <option value="s">☻ - KevEdit Style</option>
-                </select>
-            </div>
-
-
-            <div class="field">
-                <label for="pref-edges">2x Zoom</label>
-                <input name="pref-board-scale" id="board-scale" type="checkbox"{% if request.COOKIES.file_viewer_scale == "2" %} checked{% endif %}>
-            </div>
         </div>
 
-        <div id="help" class="toggle">
-            <b>File Navigation (with a file selected)</b>
-            <ul>
-                <li>Shift + +/J: Next file</li>
-                <li>Shift + -/K: Previous file</li>
-            </ul>
-            <b>Board Navigation</b>
-            <ul>
-                <li>+/J: Next board</li>
-                <li>-/K: Previous board</li>
-                <li>Numpad 2/4/6/8: Follow board connection</li>
-                <li>Double click on a passage ({% char 240 %}) to travel to its destination</li>
-            </ul>
-            <b>Tab Hotkeys</b>
-            <ul>
-                <li>W - World tab</li>
-                <li>B - Board tab</li>
-                <li>E - Element tab</li>
-                <li>S - Stat tab</li>
-                <li>P - Preferences tab</li>
-            </ul>
-            <b>Misc</b>
-            <ul>
-                <li>Shift + B - Toggle high intensity backgrounds (blinking)</li>
-            </ul>
-            {% if request.user.is_staff %}{% include "museum_site/file_viewer_staff_module.html" %}{% endif %}
+        <div class="field">
+            <label for="pref-renderer">Board Rendering</label>
+            <select name="renderer" id="pref-renderer">
+                <option value="zzt_standard" selected>Standard</option>
+                <option value="zzt_objects">Object Highlight</option>
+                <option value="zzt_code">Code Highlight</option>
+                <option value="zzt_fake">Fake Wall Highlight</option>
+                <option value="zzt_dark">Dark Board</option>
+                <option value="zzt_empty">Visible Empties</option>
+                <option value="zzt_empty_text">Empties as Text</option>
+                <option value="weave_standard">Weave (Partial Support)</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="pref-intensity">High Intensity Backgrounds</label>
+            <select name="intensity" id="pref-intensity">
+                <option value="high">On</option>
+                <option value="low" selected>Off</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="pref-invisibles" id="pref-invisibles">Invisible Walls</label>
+            <select name="invisibles">
+                <option value="revealed">Visible - Revealed</option>
+                <option value="editor" selected>Visible - Editor</option>
+                <option value="invisible">Invisible</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="pref-monitors">Monitors</label>
+            <select name="monitors" id="pref-monitors">
+                <option value="hidden">Hidden - ZZT Style</option>
+                <option value="m" selected>M - KevEdit Style</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="pref-edges">Board Edges</label>
+            <select name="edges" id="pref-edges">
+                <option value="hidden" selected>Hidden - ZZT Style</option>
+                <option value="e">E - KevEdit Style</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="pref-statlessobj">Statless Objects</label>
+            <select name="statlessobj" id="pref-statlessobj">
+                <option value="hidden" selected>Hidden - ZZT Style</option>
+                <option value="s">☻ - KevEdit Style</option>
+            </select>
+        </div>
+
+
+        <div class="field">
+            <label for="pref-edges">2x Zoom</label>
+            <input name="pref-board-scale" id="board-scale" type="checkbox"{% if request.COOKIES.file_viewer_scale == "2" %} checked{% endif %}>
         </div>
     </div>
+
+    <div id="help">
+        <b>File Navigation (with a file selected)</b>
+        <ul>
+            <li>Shift + +/J: Next file</li>
+            <li>Shift + -/K: Previous file</li>
+        </ul>
+        <b>Board Navigation</b>
+        <ul>
+            <li>+/J: Next board</li>
+            <li>-/K: Previous board</li>
+            <li>Numpad 2/4/6/8: Follow board connection</li>
+            <li>Double click on a passage ({% char 240 %}) to travel to its destination</li>
+        </ul>
+        <b>Tab Hotkeys</b>
+        <ul>
+            <li>W - World tab</li>
+            <li>B - Board tab</li>
+            <li>E - Element tab</li>
+            <li>S - Stat tab</li>
+            <li>P - Preferences tab</li>
+        </ul>
+        <b>Misc</b>
+        <ul>
+            <li>Shift + B - Toggle high intensity backgrounds (blinking)</li>
+        </ul>
+        {% if request.user.is_staff %}{% include "museum_site/file_viewer_staff_module.html" %}{% endif %}
+    </div>
 </div>
+</section>
+
 <hr>
 <input type="file" name="file_load_widget"><input id="file-load-submit" type="button" value="Load File"> - Load a zip/zzt/whatever
 <hr>

@@ -42,7 +42,7 @@ export class ZZT_Standard_Renderer
         const canvas = document.createElement("canvas");
         canvas.setAttribute("width", `${(this.board_width + (2 * this.show_border)) * this.character_set.tile_width}px`);
         canvas.setAttribute("height", `${(this.board_height + (2 * this.show_border)) * this.character_set.tile_height}px`);
-        canvas.setAttribute("style", "border:5px solid #000;");
+        canvas.setAttribute("class", "fv-canvas");
 
         const ctx = canvas.getContext("2d");
 

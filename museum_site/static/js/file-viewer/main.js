@@ -1,6 +1,6 @@
 "use strict";
 
-import { File_Viewer } from "./modules/file_viewer.js";
+import { File_Viewer, create_handler_for_file } from "./modules/file_viewer.js";
 import { KEY } from "./modules/core.js";
 
 
@@ -8,17 +8,18 @@ function initialize()
 {
     console.log("Initalizing! HTML Settings are: auto_load =", auto_load, "file_size =", file_size, "fv_default_domain=", fv_default_domain);
     fv.default_domain = fv_default_domain;
+    // Add Overview
+    fv.files["fvpk-overview"] = create_handler_for_file("fvpk-overview", "Overview", [], {"loaded": true, "parsed": false});
 
     // Bind pre-bindables
     $("#file-load-submit").click(ingest_file);
-
-
     $("#file-list").on("click", ".board-list .board", {"func_name": "board_change", "value": "board-number"}, run_fv_function);
-    //$("#file-list").on("click", ".board-list .board", fv.board_change);
-
     $("#file-list").on("click", ".fv-content", output_file);
     $("#fv-main").on("change", "select[name=fv-option]", run_fv_function);
     $("#fv-main").on("click", ".fv-ui", run_fv_function);
+    $("#tabs").on("click", "div", display_tab);
+
+    $("#fv-main").on("mousemove", ".fv-canvas", canvas_mousemove);
 
     // Keyboard Shortcuts
     $(window).keyup(function (e){
@@ -63,14 +64,23 @@ function fetch_zip_file(url)
 function open_zip(buffer)
 {
     // Adds the contents of a zipfile into the file viewer, setting the bytes property for all files, then lists the files
-    console.log("Opening zip");
+    console.log("Opening Zip");
     zip.loadAsync(buffer).then(function (){
-        for(let [filename, file] of Object.entries(zip.files))
+        for(let [filename, info] of Object.entries(zip.files))
         {
-            let fvpk = fv.add_file(filename, {}, {"loaded": true, "parsed": false});
-            file.async("uint8array").then(data => set_file_bytes(fvpk, data));
+            console.log(info);
+            let fvpk = fv.add_file(filename, {}, {
+                "loaded": true,
+                "parsed": false,
+                "zipinfo": {
+                    "filename": info.filename, "date": info.date, "compression": "?", "dir": info.dir, "crc32": info._data.crc32,
+                    "compressed_size": info._data.compressedSize, "decompressed_size": info._data.uncompressedSize,
+                }
+            });
+            info.async("uint8array").then(data => set_file_bytes(fvpk, data));
         }
         fv.display_file_list();
+        $(".fv-content[data-fvpk=fvpk-overview]").click(); // Pre-click "Overview"
     });
 }
 
@@ -166,10 +176,29 @@ function output_file(e)
     let requested_filename = e.target.dataset.filename;
     console.log("User Click on File:", requested_fvpk);
 
+    if (e.target.classList.contains("selected"))
+    {
+        console.log("THIS FILE IS OPEN ALREADY!");
+        e.target.classList.remove("selected");
+        $(`.fv-content[data-fvpk=${requested_fvpk}] .board-list`).remove();
+        return false;
+    }
+
     fv.active_fvpk = requested_fvpk;
 
+    if (requested_fvpk == "fvpk-overview") // Give the overview handler a copy of the zip info
+    {
+        fv.files["fvpk-overview"].fv_files = fv.files;
+    }
+
+    /*
     if (requested_fvpk == "fvpk-overview")
+    {
+        $(".fv-content.selected ol").remove();
+        $(".fv-content.selected").removeClass("selected");
         return display_overview();
+    }
+    */
 
     if (! fv.files[requested_fvpk].meta.loaded)
     {
@@ -181,13 +210,39 @@ function output_file(e)
         fv.display_file(requested_fvpk);
 }
 
+/*
 function display_overview()
 {
+    console.log("Displaying overview?");
     $(".fv-content.selected").removeClass("selected");
     $(".fv-content[data-fvpk=fvpk-overview]").addClass("selected");
     $(".envelope.active").removeClass("active");
     $("#preview-envelope").addClass("active");
+
+    let output = `
+        <table class="zip-info-table">
+        <tr><th>Filename</th><th>Mod. Date</th><th>Dir.</th><th>CRC-32</th><th>Compressed Size</th><th>Decompressed Size</th></tr>
+    `;
+    // TODO: CRC32 is appearing as negative?
+    for(let [key, file] of Object.entries(fv.files))
+    {
+        let zi = file.meta.zipinfo
+        output += `<tr>
+            <td>${file.filename}</td>
+            <td class="c">${zi.date.toISOString().replace("T", " ").slice(0, 19)}</td>
+            <td class="c">${zi.dir ? "Y" : "N"}</td>
+            <td class="r">${zi.crc32}</td>
+            <td class="r">${zi.compressed_size}</td>
+            <td class="r">${zi.decompressed_size}</td>
+        </tr>`;
+    }
+
+    output += `</table>`;
+
+    $("#zip-info").html(output);
+    $("#zip-info").addClass("active");
 }
+*/
 
 function DEBUG_FUNC()
 {
@@ -216,6 +271,26 @@ function run_fv_function(e)
         console.log("Running uh upper function?");
         fv[to_run](params);
     }
+}
+
+function display_tab()
+{
+    let tab_id = $(this).attr("name");
+    $("#details div.active").removeClass("active");
+    $("#tabs div").removeClass("active");
+    $(this).addClass("active");
+    $(`#${tab_id}`).addClass("active");
+}
+
+function canvas_mousemove(e)
+{
+    let fvpk = $(this).parent().attr("id").replace("envelope-", "");
+    let border_size = parseInt($(this).css("border-left-width").replace("px", "")); // Assumes equal border sizes
+    var rect = this.getBoundingClientRect();
+    var base_x = e.pageX - rect.left - document.querySelector("html").scrollLeft - border_size;
+    var base_y = e.pageY - rect.top - document.querySelector("html").scrollTop - border_size;
+    //console.log("BASE X/Y:", base_x, base_y);
+    fv.files[fvpk].mousemove({"base_x": base_x, "base_y": base_y});
 }
 
 

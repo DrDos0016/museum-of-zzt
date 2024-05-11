@@ -1,5 +1,6 @@
 import { Handler } from "./handler.js";
 import { Image_Handler } from "./image_handler.js";
+import { Overview_Handler } from "./overview_handler.js";
 import { Text_Handler } from "./text_handler.js";
 import { Unsupported_Handler } from "./unsupported_handler.js";
 import { ZZT_High_Score_Handler, SZZT_High_Score_Handler } from "./high_score_handler.js";
@@ -33,7 +34,6 @@ export class File_Viewer
     render_file_list_item(fvpk)
     {
         // Writes a list litem to the page's file list section
-        console.log("HEWWO", this.files[fvpk].ext);
         $("#file-list").append(
             `<li class="fv-content" data-fvpk="${fvpk}" data-filename="${this.files[fvpk].filename}">${this.files[fvpk].filename}</li>`
         );
@@ -52,8 +52,17 @@ export class File_Viewer
     {
         // Displays the file {fvpk}
         console.log("FV wants to display...", fvpk);
+
+        // Close any open file (for now, TODO proper multi-file support)
+        let to_close = $(".fv-content.selected").data("fvpk");
+        if (to_close)
+        {
+            console.log(to_close, this.files);
+            this.files[to_close].close();
+        }
         $(".fv-content.selected ol").remove();
         $(".fv-content.selected").removeClass("selected");
+
         $(".fv-content[data-fvpk=" + fvpk + "]").addClass("selected");
         this.files[fvpk].render();
     }
@@ -84,12 +93,12 @@ export class File_Viewer
 
 }
 
-function create_handler_for_file(fvpk, filename, bytes, meta)
+export function create_handler_for_file(fvpk, filename, bytes, meta)
 {
-    console.log("Creating a file handler for", filename);
-    console.log("Meta btw is", meta);
     let components = filename.split(".");
     let ext = "." + components[components.length - 1].toUpperCase();
+
+    console.log("Handler for", filename);
 
     switch (true) {
         case EXTENSIONS_ZZT.indexOf(ext) != -1:
@@ -102,6 +111,8 @@ function create_handler_for_file(fvpk, filename, bytes, meta)
             return new SZZT_High_Score_Handler(fvpk, filename, bytes, meta);
         case EXTENSIONS_TEXT.indexOf(ext) != -1:
             return new Text_Handler(fvpk, filename, bytes, meta);
+        case fvpk == "fvpk-overview":
+            return new Overview_Handler(fvpk, filename, bytes, meta);
         default:
             return new Unsupported_Handler(fvpk, filename, bytes, meta);
     };

@@ -16,7 +16,6 @@ export class PString
 
     revealed_string()
     {
-        console.log("BOARD LEN", this.length, "MAX LEN", this.max_length);
         return this.value.slice(0, this.length) + "<span style='color:#A00'>" + this.value.slice(this.length, this.max_length) + "</span>";
     }
 }

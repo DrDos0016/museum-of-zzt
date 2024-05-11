@@ -31,7 +31,7 @@ export class ZZT_High_Score_Handler extends Handler
 
     generate_html() {
         console.log("High score html generation");
-        let html = `<pre class="cp437">Score  Name\n`;
+        let html = `<pre class="cp437" style="margin:auto">Score  Name\n`;
         html += `-----  ${"-".repeat(this.dash_count)}\n`;
         for (var idx in this.scores)
         {
