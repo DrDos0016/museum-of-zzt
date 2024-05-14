@@ -79,11 +79,9 @@
             <a href="{% url 'zfile_roulette' %}">Roulette</a>
             <a href="{% url 'uploaded_worlds' %}">Upload Queue ({{UPLOAD_QUEUE_SIZE}})</a>
         </div>
-        <form method="GET" action="{% url 'zfile_search' %}">
-        <div id="search-form">
-            <input name="q" value="{{request.GET.q|default:''}}" list="search-suggestions" autocomplete="off" placeholder="Title/Author/Genre/Filename" title="Search by Title/Author/Genre/Filename" data-click-select>
+        <form method="GET" action="{% url 'zfile_search' %}" id="search-form" title="Search by Title/Author/Genre/Filename">
+            <input name="q" value="{{request.GET.q|default:''}}" list="search-suggestions" autocomplete="off" placeholder="Title/Author/Genre/Filename"  data-click-select>
             <input id="search-button" type="submit" value="Search">
-        </div>
         </form>
         <div class="advanced-search">
             <a href="{% url 'zfile_search' %}">Advanced Search</a>
