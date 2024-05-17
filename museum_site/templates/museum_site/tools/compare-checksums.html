@@ -1,0 +1,16 @@
+{% extends "museum_site/generic-form-display-output.html" %}
+{% load static %}
+
+{% block form_output %}
+<hr>
+<table>
+<tr><th>PK</th><th>md5</th><th>Filename</th><th>Title</th><th>Attrs.</th></tr>
+{% for zf in matches %}
+    <tr><td><a href="{{zf.admin_url}}">{{zf.pk}}</a></td>
+    <td class="mono">{{zf.checksum}}</td>
+    <td>{{zf.filename}}</td>
+    <td><a href="{{zf.get_absolute_url}}">{{zf.title}}</a></td>
+    <td><a href="{{zf.attribue_url}}">Attributes</a></td>
+{% endfor %}
+</table>
+{% endblock %}

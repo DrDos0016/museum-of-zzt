@@ -23,9 +23,9 @@ from museum_site.settings import (
 )
 from museum_site.fields import (
     Enhanced_Model_Choice_Field, Manual_Field, Museum_Drag_And_Drop_File_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Tagged_Model_Choice_Field,
-    Museum_Tagged_Text_Field
+    Museum_Tagged_Text_Field, Museum_Choice_Field
 )
-from museum_site.models import Article, File, Series
+from museum_site.models import Article, Content, File, Series
 from museum_site.widgets import (
     Ascii_Color_Widget,
     Enhanced_Date_Widget, Enhanced_Text_Widget, Ordered_Scrolling_Radio_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget
@@ -38,6 +38,39 @@ PREVIEW_IMAGE_CROP_CHOICES = (
     ("NONE", "Do Not Crop Image"),
 )
 
+class Checksum_Comparison_Form(forms.Form):
+    use_required_attribute = False
+    heading = "Checksum Comparison"
+    attrs = {"method": "POST"}
+    submit_value = "Compare"
+
+    checksums = forms.CharField(label="Checksums", widget=forms.Textarea(), help_text="One checksum per line. Chars past the md5 are truncated so you can copy/paste md5sum's results directly.")
+    checksum_type = Museum_Choice_Field(
+        label="Checksum Type",
+        widget=forms.RadioSelect(),
+        choices=(
+            ("md5", "md5 - Used for zip files"),
+            ("crc32", "crc32 - Used for files within zip files")
+        ),
+        initial="md5"
+    )
+
+    def clean_checksums(self):
+        raw_checksums = self.cleaned_data["checksums"].split("\r\n")
+        checksums = []
+        for c in raw_checksums:
+            checksums.append(c[:32])
+        return checksums
+
+    def process(self):
+        checksums = self.cleaned_data["checksums"]
+        if self.cleaned_data["checksum_type"] == "md5":
+            qs = File.objects.filter(checksum__in=checksums).order_by("sort_title")
+        else:
+            qs = Content.objects.filter(crc32__in=checksums).values_list("pk", flat=True)
+            pks = list(qs)
+            qs = File.objects.filter(content__id__in=pks).order_by("sort_title")
+        return {"matches": qs}
 
 class Discord_Announcement_Form(forms.Form):
     use_required_attribute = False

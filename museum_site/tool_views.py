@@ -31,6 +31,7 @@ from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_P
 from museum_site.core.model_utils import delete_zfile
 from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate_boards_in_zipfile, record, zookeeper_init, zookeeper_extract_font
 from museum_site.forms.tool_forms import (
+    Checksum_Comparison_Form,
     Discord_Announcement_Form,
     IA_Mirror_Form,
     Livestream_Description_Form,
@@ -149,6 +150,20 @@ def audit_settings(request):
     context["python_version"] = PYTHON_VERSION
     context["django_version"] = ".".join(map(str, DJANGO_VERSION))
     return render(request, "museum_site/tools/audit-settings.html", context)
+
+
+@staff_member_required
+def compare_checksums(request):
+    context = {"title": "Compare Checksums"}
+    if request.method == "POST":
+        form = Checksum_Comparison_Form(request.POST)
+        if form.is_valid():
+            context.update(form.process())
+    else:
+        form = Checksum_Comparison_Form()
+
+    context["form"] = form
+    return render(request, "museum_site/tools/compare-checksums.html", context)
 
 
 @staff_member_required

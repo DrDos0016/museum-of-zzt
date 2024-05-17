@@ -233,6 +233,7 @@ urlpatterns = [
     path("tools/audit/colors/", museum_site.tool_views.audit_colors, name="audit_colors"),
     path("tools/audit/settings/", museum_site.tool_views.audit_settings, name="audit_settings"),
     path("tools/audit/<str:target>/", museum_site.tool_views.audit, name="audit"),
+    path("tools/compare-checksums/", museum_site.tool_views.compare_checksums, name="compare_checksums"),
     path("tools/discord-announcement/", museum_site.tool_views.discord_announcement, name="tool_discord_announcement"),
     path("tools/extract-font/<str:key>/", museum_site.tool_views.extract_font, name="extract_font"),
     path("tools/empty-upload-queue/", museum_site.tool_views.empty_upload_queue, name="empty_upload_queue"),
