@@ -5,10 +5,10 @@ export class ZZT_Handler extends Handler
 {
     constructor(fvpk, filename, bytes, meta)
     {
-        console.log("WTF IS META HERE", meta);
         super(fvpk, filename, bytes, meta);
         this.name = "ZZT Handler";
         this.envelope_css_class = "zzt";
+        this.initial_content = `<canvas class="fv-canvas" data-foo="BAR"></canvas><div id="testywesty"></div>`;
         this.world = {};
         this.boards = [];
         this.renderer = null;
@@ -34,7 +34,6 @@ export class ZZT_Handler extends Handler
             name = "ELEMENT #" + element.id;
         }
         let output = `(${stat.x}, ${stat.y}) ${name}`;
-        console.log(element);
         return output;
     }
 
@@ -52,22 +51,30 @@ export class ZZT_Handler extends Handler
         console.log(`Bytes parsed in  ${fin - start}ms`);
     }
 
-    async generate_html() {
+    async write_html() {
         console.log("ZZT HTML Generation");
-        let board_idx = (this.selected_board !== null) ? this.selected_board : this.world.current_board;
         if (! this.renderer)
-            this.renderer = new this.default_renderer();
+            this.renderer = new this.default_renderer(this.fvpk);
 
-        console.log("BOARD IDX IS", board_idx);
+        await this.display_board_canvas();
 
-        let output = [
-            {"target": this.envelope_id, "html": await this.renderer.render_board(this.boards[board_idx])},
+        let targets = [
+            {"target": "#testywesty", "html": "Here is some <b>information</b> below the canvas."},
             {"target": "#world-info", "html": this.get_world_info()},
-            {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.display_board_list()},
-            {"target": "#stat-info", "html": this.display_stat_list()},
-            {"target": "#board-info", "html": this.get_board_info(), "focus": true},
+            {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.write_board_list()},
+            {"target": "#stat-info", "html": this.write_stat_list()},
+            {"target": "#board-info", "html": this.get_board_info(),},
         ];
-        return output;
+
+        this.write_targets(targets);
+        return true;
+    }
+
+    show_envelopes()
+    {
+        console.log("ZZT Handler USER PREFS...", user_test);
+        $(this.envelope_id).addClass("active");
+        $("#board-info").addClass("active");
     }
 
     read_keys()
@@ -314,7 +321,7 @@ export class ZZT_Handler extends Handler
         return output;
     }
 
-    display_board_list()
+    write_board_list()
     {
         console.log("WRITING BOARD LIST");
         let output = `${this.filename}<ol class='board-list' start='0' data-fv_func='board_change'>\n`;
@@ -328,9 +335,9 @@ export class ZZT_Handler extends Handler
         return output;
     }
 
-    display_stat_list()
+    write_stat_list()
     {
-        console.log("WRITING SAT LIST");
+        console.log("WRITING STAT LIST");
         let output = `${this.filename}<ol class='stat-list' start='0' data-fv_func='stat-select'>\n`;
         for (var idx = 0; idx < this.boards[this.selected_board].stats.length; idx++)
         {
@@ -344,8 +351,17 @@ export class ZZT_Handler extends Handler
 
     display_json_string()
     {
+        // TODO Needs to be implemented to actually display this and request it.
         let output = `<pre style='max-width:80ch;max-height:25ch;overflow:auto;border:1px solid #000;'>${JSON.stringify({"world": this.world, "boards": this.boards}, null, "\t")}</pre>`;
         return output;
+    }
+
+    async display_board_canvas()
+    {
+        console.log("FUNC DISPLAY_BOARD_CANVAS", this.fvpk);
+        let board_idx = (this.selected_board !== null) ? this.selected_board : this.world.current_board;
+        let canvas = await this.renderer.render_board(this.boards[board_idx]);
+        return true;
     }
 
     mousemove(e)
@@ -359,6 +375,7 @@ export class ZZT_Handler extends Handler
         this.cursor_tile.x = tile_x;
         this.cursor_tile.y = tile_y;
 
-        console.log(tile_x, tile_y);
+        //console.log(tile_x, tile_y);
+        $("#testywesty").html(("" + tile_x).padStart(2, "0") + ", " + ("" + tile_y).padStart(2, "0"));
     }
 }

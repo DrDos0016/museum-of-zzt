@@ -3,9 +3,10 @@ import { Palette } from "./palette.js";
 
 export class ZZT_Standard_Renderer
 {
-    constructor()
+    constructor(fvpk=null)
     {
         this.name = "ZZT Standard Renderer";
+        this.fvpk = fvpk;
         this.board_width = 60;
         this.board_height = 25;
         this.show_border = false; // Render that border
@@ -38,11 +39,14 @@ export class ZZT_Standard_Renderer
 
         console.log("Charset loaded, back in render board");
 
-        console.log("Rendering a board");
-        const canvas = document.createElement("canvas");
+        console.log("Rendering a board (this.fvpk)", this.fvpk);
+        //const canvas = document.createElement("canvas");
+        const canvas = document.querySelector(`#envelope-${this.fvpk} .fv-canvas`);
         canvas.setAttribute("width", `${(this.board_width + (2 * this.show_border)) * this.character_set.tile_width}px`);
         canvas.setAttribute("height", `${(this.board_height + (2 * this.show_border)) * this.character_set.tile_height}px`);
         canvas.setAttribute("class", "fv-canvas");
+
+        //canvas.insertAdjacentHTML("afterend", "Is this real?");
 
         const ctx = canvas.getContext("2d");
 

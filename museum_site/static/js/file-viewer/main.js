@@ -49,7 +49,7 @@ function initialize()
             fetch_zipinfo(auto_load);
     }
 
-    DEBUG_FUNC();
+    //DEBUG_FUNC();
 }
 
 
@@ -68,7 +68,7 @@ function open_zip(buffer)
     zip.loadAsync(buffer).then(function (){
         for(let [filename, info] of Object.entries(zip.files))
         {
-            console.log(info);
+            //console.log(info);
             let fvpk = fv.add_file(filename, {}, {
                 "loaded": true,
                 "parsed": false,
@@ -191,15 +191,6 @@ function output_file(e)
         fv.files["fvpk-overview"].fv_files = fv.files;
     }
 
-    /*
-    if (requested_fvpk == "fvpk-overview")
-    {
-        $(".fv-content.selected ol").remove();
-        $(".fv-content.selected").removeClass("selected");
-        return display_overview();
-    }
-    */
-
     if (! fv.files[requested_fvpk].meta.loaded)
     {
         console.log("Hang on, we need to load the bytes still");
@@ -210,46 +201,10 @@ function output_file(e)
         fv.display_file(requested_fvpk);
 }
 
-/*
-function display_overview()
-{
-    console.log("Displaying overview?");
-    $(".fv-content.selected").removeClass("selected");
-    $(".fv-content[data-fvpk=fvpk-overview]").addClass("selected");
-    $(".envelope.active").removeClass("active");
-    $("#preview-envelope").addClass("active");
-
-    let output = `
-        <table class="zip-info-table">
-        <tr><th>Filename</th><th>Mod. Date</th><th>Dir.</th><th>CRC-32</th><th>Compressed Size</th><th>Decompressed Size</th></tr>
-    `;
-    // TODO: CRC32 is appearing as negative?
-    for(let [key, file] of Object.entries(fv.files))
-    {
-        let zi = file.meta.zipinfo
-        output += `<tr>
-            <td>${file.filename}</td>
-            <td class="c">${zi.date.toISOString().replace("T", " ").slice(0, 19)}</td>
-            <td class="c">${zi.dir ? "Y" : "N"}</td>
-            <td class="r">${zi.crc32}</td>
-            <td class="r">${zi.compressed_size}</td>
-            <td class="r">${zi.decompressed_size}</td>
-        </tr>`;
-    }
-
-    output += `</table>`;
-
-    $("#zip-info").html(output);
-    $("#zip-info").addClass("active");
-}
-*/
-
 function DEBUG_FUNC()
 {
     console.log("DEBUG FUNC");
     console.log(fv);
-
-    $("#debug-board-num-button").click(run_fv_function);
     return true;
 }
 

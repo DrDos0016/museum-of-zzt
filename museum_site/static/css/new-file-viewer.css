@@ -1,4 +1,4 @@
-.envelope { display:none; }
+.envelope { display:none; min-height:360px; }
 .envelope.active { display:flex; }
 
 .envelope-image { justify-content:center; align-items:center; }
@@ -153,6 +153,7 @@
     max-height:728px;
     overflow:auto;
     resize:vertical;
+    border-bottom:1px dashed var(--border-color);
     width:100%;
 }
 

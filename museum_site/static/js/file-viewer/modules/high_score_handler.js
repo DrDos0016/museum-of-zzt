@@ -29,7 +29,7 @@ export class ZZT_High_Score_Handler extends Handler
         }
     }
 
-    generate_html() {
+    write_html() {
         console.log("High score html generation");
         let html = `<pre class="cp437" style="margin:auto">Score  Name\n`;
         html += `-----  ${"-".repeat(this.dash_count)}\n`;
@@ -43,8 +43,9 @@ export class ZZT_High_Score_Handler extends Handler
         }
         html += "</pre>";
 
-        let output = [{"target": this.envelope_id, "html": html}];
-        return output;
+        let targets = [{"target": this.envelope_id, "html": html}];
+        this.write_targets(targets)
+        return true;
     }
 }
 

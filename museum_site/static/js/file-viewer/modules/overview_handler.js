@@ -21,14 +21,23 @@ export class Overview_Handler extends Handler
         return false;
     }
 
-    generate_html() {
+    show_envelopes()
+    {
+        console.log("ZZT Handler USER PREFS...", user_test);
+        $(this.envelope_id).addClass("active");
+        $("#zip-info").addClass("active");
+    }
+
+    write_html() {
         console.log("Overview HTML generation");
 
-        let output = [
+        let targets = [
             {"target": "#zip-info", "html": this.generate_zip_info_table()},
             {"target": this.envelope_id, "html": this.generate_overview()},
         ];
-        return output;
+
+        this.write_targets(targets);
+        return true;
     }
 
     generate_overview()

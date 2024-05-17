@@ -29,7 +29,8 @@ export class Text_Handler extends Handler
         }
     }
 
-    generate_html() {
+    write_html() {
+        // TODO: REDO THIS MORE LIKE ZZT HANDLER WITH AN ENVELOPE TEMPLATE
         console.log("Text file html generation");
         let output = `<div class="handler-controls"><label>Encoding: <select name='fv-option' data-fv_func='set_encoding'>`
         for (var idx = 0; idx < this.available_encodings.length; idx++)
@@ -37,7 +38,9 @@ export class Text_Handler extends Handler
             output += `<option${this.encoding == this.available_encodings[idx] ? ' selected' : ''}>${this.available_encodings[idx]}</option>\n`;
         }
         output += `</select></label></div><pre class="cp437">${this.encoded_text}</pre>`;
-        return [{"target": this.envelope_id, "html": output}];
+        let targets = [{"target": this.envelope_id, "html": output}];
+        this.write_targets(targets);
+        return true;
     }
 
     set_encoding(encoding)

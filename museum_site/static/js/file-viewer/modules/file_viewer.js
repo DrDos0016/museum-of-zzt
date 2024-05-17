@@ -46,6 +46,7 @@ export class File_Viewer
         {
             this.render_file_list_item(filename);
         }
+        console.log("============= DONE WITH DFL");
     }
 
     display_file(fvpk)
@@ -57,9 +58,10 @@ export class File_Viewer
         let to_close = $(".fv-content.selected").data("fvpk");
         if (to_close)
         {
-            console.log(to_close, this.files);
             this.files[to_close].close();
         }
+
+        // This removes the board list and deselects the file for any expanded files
         $(".fv-content.selected ol").remove();
         $(".fv-content.selected").removeClass("selected");
 
@@ -98,7 +100,7 @@ export function create_handler_for_file(fvpk, filename, bytes, meta)
     let components = filename.split(".");
     let ext = "." + components[components.length - 1].toUpperCase();
 
-    console.log("Handler for", filename);
+    console.log("Creating handler for", filename);
 
     switch (true) {
         case EXTENSIONS_ZZT.indexOf(ext) != -1:

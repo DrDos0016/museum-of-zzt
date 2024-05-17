@@ -11,6 +11,7 @@ export class Handler
         this.bytes = bytes; // Bytearray of 8-bitvalues
         this.meta = meta; // Metadata
         this.envelope_css_class = "base";
+        this.initial_content = ""; // HTML included in envelope
 
         this.pos = 0;
         this.data = null; // DataView for reading
@@ -18,7 +19,7 @@ export class Handler
     }
 
     async render() {
-        $(".envelope.active").removeClass("active");
+        this.deactivate_active_envelopes()
 
         this.create_envelope();
         if (! this.parsed)
@@ -26,37 +27,39 @@ export class Handler
             this.parse_bytes();
             this.parsed = true;
         }
-        let targets = await this.generate_html();
+        let ready = await this.write_html();
+        this.show_envelopes();
+    }
 
-        console.log("IN BASE RENDER");
-
+    deactivate_active_envelopes()
+    {
+        $(".envelope.active").removeClass("active");
         $("#details .active").removeClass("active");
-        for (let idx = 0; idx < targets.length; idx++)
-        {
-            console.log("RENDERING TARGET", targets[idx].target);
-            this.display_envelope(targets[idx].html, targets[idx].target, targets[idx].focus);
-        }
     }
 
     create_envelope() {
         if (! this.envelope_id)
         {
             this.envelope_id = "#envelope-" + this.fvpk;
-            $("#fv-main").append(`<div class="envelope envelope-${this.envelope_css_class}" id="envelope-${this.fvpk}"></div>`);
+            $("#fv-main").append(`<div class="envelope envelope-${this.envelope_css_class}" id="envelope-${this.fvpk}">${this.initial_content}</div>`);
         }
     }
 
-    generate_html() {
-        return [{"target": this.envelope_id, "html": `<b>No custom HTML function exists for class ${this.name}!</b>`}];
+    show_envelopes()
+    {
+        $(this.envelope_id).addClass("active");
     }
 
-    display_envelope(html, target=this.envelope_id, focus=true)
+    write_html() {
+        console.log(`WARNING -- No write_html function exists for class ${this.name}!`);
+        return true;
+    }
+
+    write_targets(targets)
     {
-        $(target).html(html);
-        if (focus)
+        for (let idx = 0; idx < targets.length; idx++)
         {
-            $("#details .active").removeClass("active");
-            $(target).addClass("active");
+            $(targets[idx].target).html(targets[idx].html);
         }
     }
 
@@ -107,6 +110,8 @@ export class Handler
 
     get_ext_from_filename(filename)
     {
+        if (! filename)
+            filename = "UHHH?.FAKE";
         let components = filename.split(".");
         let ext = "." + components[components.length - 1].toUpperCase();
         return ext;
