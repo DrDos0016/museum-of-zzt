@@ -23,18 +23,13 @@ ENVIRONMENT = os.environ.get("MOZ_ENVIRONMENT", "DEV")  # Valid options: DEV, BE
 DEBUG = True if (ENVIRONMENT == "DEV") else False
 
 ALLOWED_HOSTS = [
-    "django.pi",
     "museumofzzt.com",
     "www.museumofzzt.com",
     "beta.museumofzzt.com",
-    "192.168.1.66",
-    "169.254.242.177",
-    "10.42.0.1",
+    "django.pi",
+    "192.168.254.15",
     "127.0.0.1",
     "testserver",
-    "10.0.0.101",
-    "10.0.0.98",
-    "kudzu.museumofzzt.com",
 ]
 
 
