@@ -7,6 +7,56 @@
 <script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
 <script src="/static/js/change-ascii-char.js?{{BOOT_TS}}"></script>
 {% for script in scripts %}<script src="{% static script %}?{{BOOT_TS}}"></script>{% endfor %}
+<script>
+var ctx = null;
+
+$(document).ready(function (){
+    $("#update-thumbnail").click(function (){
+        ctx = document.getElementById("thumb-canvas").getContext("2d");
+        let img_src = $("#uploaded-image-preview").attr("src");
+        let title = $("#id_title").val();
+        let subtitle = $("#id_subtitle").val();
+        let color = $("select[name=title_color]").val();
+        let fg = "var(--ega-" + color + ")";
+        let bg = "var(--ega-dark" + color + ")";
+
+        let crop = $("#id_crop").val();
+
+        let size = $("#id_text_size").val();
+        let shadow_str = "";
+        let font_size = "";
+        if (size == "large")
+        {
+            shadow_str = `7px 7px 0px var(--ega-dark${color})`;
+            font_size = "140px";
+            sub_font_size = "105px";
+            sub_shadow_str = `3px 3px 0px var(--ega-gray)`;
+        }
+        else if (size == "medium")
+        {
+            shadow_str = `3px 3px 0px var(--ega-dark${color})`;
+            font_size = "70px";
+            sub_font_size = "49px";
+            sub_shadow_str = `2px 2px 0px var(--ega-gray)`;
+        }
+        else if (size == "small")
+        {
+            shadow_str = `2px 2px 0px var(--ega-dark${color})`;
+            font_size = "35px";
+            sub_font_size = "35px";
+            sub_shadow_str = `2px 2px 0px var(--ega-gray)`;
+        }
+
+        ctx.drawImage(document.getElementById("uploaded-image-preview"), 0, 0, 480, 350, 0, 0, 987, 720);
+
+        $(".stream-title").html(title);
+        $(".stream-title").css({"font-size": font_size, "text-shadow": shadow_str, "color": fg});
+        $(".stream-subtitle").html(subtitle);
+        $(".stream-subtitle").css({"font-size": sub_font_size, "text-shadow": sub_shadow_str});
+        $("#thumb-image").attr("src", img_src);
+    });
+});
+</script>
 {% endblock %}
 
 {% block style %}
@@ -30,7 +80,19 @@
     background-size:contain;
 }
 
-.workspace > *
+#background
+{
+    margin:auto;
+}
+
+#foreground
+{
+    position:absolute;
+    width:1280px;
+    height:720px;
+}
+
+#foreground .corner
 {
     position:absolute;
 }
@@ -44,24 +106,26 @@
 
 .title-wrapper
 {
-    top:175px;
-    left:0px;
-    background-color:rgba(0, 0, 0, 0.50);
-    width:100%;
+    width:1280px;
+    height:720px;
     text-align:center;
-    position:static;
     z-index:10;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
 }
 
 .stream-title
 {
     color:var(--ega-{{text_color|default:'cyan'}});
-
+    background-color:rgba(0, 0, 0, 0.50);
 }
 
 .stream-subtitle
 {
     color:var(--ega-white);
+    background-color:rgba(0, 0, 0, 0.50);
 }
 
 .tiger-wrapper
@@ -98,23 +162,26 @@
 <form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
 {% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
 {% include "museum_site/blocks/generic-form.html" %}
-<input type="submit" value="{{form.submit_value}}">
+<input type="submit" value="{{form.submit_value}}"> <input type="button" value="Update" id="update-thumbnail">
 </form>
 
-{% if request.POST %}
 <hr>
-<div class="workspace" style="background-image:url({{b64_image}})">
-    <div class="bigchar lion">{% char 234 "red" "transparent" scale=14 %}</div>
-    <div class="tiger-wrapper">
-        <img src="{% static 'chrome/logos/museum-tiger-by-lazymoth.png' %}" class="">
+<div class="workspace">
+    <div id="background">
+        <canvas id="thumb-canvas" width="987px" height="720px"></canvas>
     </div>
-    <div class="bigchar bear">{% char 153 "darkyellow" "transparent" scale=14 %}</div>
-    <div class="bigchar ruffian">{% char 5 "purple" "transparent" scale=14 %}</div>
-    <div class="cp437 title-wrapper">
-        <div class="stream-title {{request.POST.text_size|default:'large'}}">{{request.POST.title}}</div>
-        <div class="stream-subtitle {{request.POST.text_size|default:'large'}}">{{request.POST.subtitle}}</div>
+    <div id="foreground">
+        <div class="corner bigchar lion">{% char 234 "red" "transparent" scale=14 %}</div>
+        <div class="corner tiger-wrapper">
+            <img src="{% static 'chrome/logos/museum-tiger-by-lazymoth.png' %}" class="">
+        </div>
+        <div class="corner bigchar bear">{% char 153 "darkyellow" "transparent" scale=14 %}</div>
+        <div class="corner bigchar ruffian">{% char 5 "purple" "transparent" scale=14 %}</div>
+        <div class="cp437 title-wrapper">
+            <div class="stream-title {{request.POST.text_size|default:'large'}}">{{request.POST.title}}</div>
+            <div class="stream-subtitle {{request.POST.text_size|default:'large'}}">{{request.POST.subtitle}}</div>
+        </div>
     </div>
 </div>
-{% endif %}
 
 {% endblock %}
