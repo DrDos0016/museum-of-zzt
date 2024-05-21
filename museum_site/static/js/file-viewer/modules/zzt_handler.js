@@ -1,5 +1,6 @@
 import { Handler } from "./handler.js";
 import { ZZT_Standard_Renderer } from "./renderer.js";
+import { ZZT_ELEMENTS } from "./elements.js";
 
 export class ZZT_Handler extends Handler
 {
@@ -8,11 +9,12 @@ export class ZZT_Handler extends Handler
         super(fvpk, filename, bytes, meta);
         this.name = "ZZT Handler";
         this.envelope_css_class = "zzt";
-        this.initial_content = `<canvas class="fv-canvas" data-foo="BAR"></canvas><div id="testywesty"></div>`;
+        this.initial_content = `<div class="inner-envelope-wrapper"><canvas class="fv-canvas" data-foo="BAR"></canvas><div id="hover-wrapper"><div id="hover-element" style="display:none"></div></div></div>`;
         this.world = {};
         this.boards = [];
-        this.renderer = null;
         this.default_renderer = ZZT_Standard_Renderer;
+        this.renderer = new this.default_renderer(this.fvpk);
+        //this.renderer = null;
         this.selected_board = null;
 
         this.max_flags = 10;
@@ -59,7 +61,7 @@ export class ZZT_Handler extends Handler
         await this.display_board_canvas();
 
         let targets = [
-            {"target": "#testywesty", "html": "Here is some <b>information</b> below the canvas."},
+            {"target": "#hover-element", "html": ""},
             {"target": "#world-info", "html": this.get_world_info()},
             {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.write_board_list()},
             {"target": "#stat-info", "html": this.write_stat_list()},
@@ -376,6 +378,44 @@ export class ZZT_Handler extends Handler
         this.cursor_tile.y = tile_y;
 
         //console.log(tile_x, tile_y);
-        $("#testywesty").html(("" + tile_x).padStart(2, "0") + ", " + ("" + tile_y).padStart(2, "0"));
+        let x_padded = ("" + tile_x).padStart(2, "0");
+        let y_padded = ("" + tile_y).padStart(2, "0");
+        let element_id = this.boards[this.selected_board].elements[tile_x][tile_y].id;
+        let color_id = this.boards[this.selected_board].elements[tile_x][tile_y].color;
+        let element = ZZT_ELEMENTS[element_id];
+
+        // Color
+        let fg = color_id % 16;
+        let bg = parseInt(color_id / 16);
+        let bg_x = parseInt(fg * -8);
+        let bg_y = parseInt(bg * -14);
+        $("#hover-element").html(`(${x_padded}, ${y_padded})<br><div class='color-swatch' style='background-position: ${bg_x}px ${bg_y}px'></div> ${element.name}`);
+
+        // Positioning
+        if (tile_y < 7)
+            $("#hover-element").addClass("bottom");
+        else if (tile_y > 20)
+            $("#hover-element").removeClass("bottom");
+
+        $("#hover-element").show();
+    }
+
+    mouseout(e)
+    {
+        $("#hover-element").hide();
+    }
+
+    get_tile_from_cursor_position(e)
+    {
+        return {
+            "x": Math.abs(parseInt(e.base_x / this.renderer.character_set.tile_width)) + 1,
+            "y": Math.abs(parseInt(e.base_y / this.renderer.character_set.tile_height)) + 1,
+        }
+    }
+
+    canvas_click(e)
+    {
+        const tile = this.get_tile_from_cursor_position(e);
+        console.log("clicked tile", tile, tile.x, tile.y);
     }
 }

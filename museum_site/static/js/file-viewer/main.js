@@ -7,19 +7,20 @@ import { KEY } from "./modules/core.js";
 function initialize()
 {
     console.log("Initalizing! HTML Settings are: auto_load =", auto_load, "file_size =", file_size, "fv_default_domain=", fv_default_domain);
+
     fv.default_domain = fv_default_domain;
     // Add Overview
     fv.files["fvpk-overview"] = create_handler_for_file("fvpk-overview", "Overview", [], {"loaded": true, "parsed": false});
 
     // Bind pre-bindables
     $("#file-load-submit").click(ingest_file);
-    $("#file-list").on("click", ".board-list .board", {"func_name": "board_change", "value": "board-number"}, run_fv_function);
+    $("#file-list").on("click", ".board-list .board", (e) => {fv.board_title_click(e); });
     $("#file-list").on("click", ".fv-content", output_file);
-    $("#fv-main").on("change", "select[name=fv-option]", run_fv_function);
-    $("#fv-main").on("click", ".fv-ui", run_fv_function);
     $("#tabs").on("click", "div", display_tab);
 
     $("#fv-main").on("mousemove", ".fv-canvas", canvas_mousemove);
+    $("#fv-main").on("mouseout", ".fv-canvas", canvas_mouseout);
+    $("#fv-main").on("click", ".fv-canvas", canvas_click);
 
     // Keyboard Shortcuts
     $(window).keyup(function (e){
@@ -239,13 +240,25 @@ function display_tab()
 
 function canvas_mousemove(e)
 {
-    let fvpk = $(this).parent().attr("id").replace("envelope-", "");
+    let fvpk = $(this).parent().parent().attr("id").replace("envelope-", "");
     let border_size = parseInt($(this).css("border-left-width").replace("px", "")); // Assumes equal border sizes
     var rect = this.getBoundingClientRect();
     var base_x = e.pageX - rect.left - document.querySelector("html").scrollLeft - border_size;
     var base_y = e.pageY - rect.top - document.querySelector("html").scrollTop - border_size;
     //console.log("BASE X/Y:", base_x, base_y);
     fv.files[fvpk].mousemove({"base_x": base_x, "base_y": base_y});
+}
+
+function canvas_mouseout(e)
+{
+    let fvpk = $(this).parent().parent().attr("id").replace("envelope-", "");
+    fv.files[fvpk].mouseout();
+}
+
+function canvas_click(e)
+{
+    let fvpk = $(this).parent().parent().attr("id").replace("envelope-", "");
+    fv.files[fvpk].canvas_click(e);
 }
 
 

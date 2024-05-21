@@ -93,6 +93,13 @@ export class File_Viewer
         this.files[this.active_fvpk].render();
     }
 
+    board_title_click(e)
+    {
+        console.log("-----------------Board title click");
+        let bn = $(e.currentTarget).data("board-number");
+        this.board_change(bn);
+    }
+
 }
 
 export function create_handler_for_file(fvpk, filename, bytes, meta)
