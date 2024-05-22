@@ -1,0 +1,31 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+.wrapper
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Follow Worlds of ZZT Wherever!</h1>
+
+<div class="wrapper">
+{% plug 'cohost' %}
+{% plug 'discord' %}
+{% plug 'github' %}
+{% plug 'mastodon' %}
+{% plug 'patreon' %}
+{% plug 'rss' %}
+{% plug 'tumblr' %}
+{% plug 'twitch' %}
+{% plug 'twitter' %}
+{% plug 'youtube' %}
+</div>
+{% endblock %}

@@ -280,6 +280,8 @@ pre.cp437 { line-height:14px;}
     padding:7px 4px 7px 4px;
     border:5px double;
     margin:14px 8px 14px 8px;
+    background-color:var(--ega-gray); /* Default */
+    border-color:var(--ega-darkgray);
 }
 
 .plug a {
@@ -291,16 +293,25 @@ pre.cp437 { line-height:14px;}
 
 .plug .logo
 {
-    font-size:36pt;
     background-color:var(--ega-white);
     border-radius:100%;
     padding:8px;
+    height:40px;
+    width:40px;
     text-align:center;
     display:flex;
-    max-height:32px;
-    max-width:32px;
+    overflow:clip;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
+.plug .logo img
+{
+    background-color:var(--ega-white);
+    padding:10px;
+    max-width:30px;
+}
 .plug .text
 {
     font-family:cp437;
@@ -308,12 +319,16 @@ pre.cp437 { line-height:14px;}
     color:var(--ega-white);
 }
 
-.plug-mastodon { background:var(--ega-darkpurple); border-color:var(--ega-purple); }
+.plug-mastodon { background:var(--ega-darkblue); border-color:var(--ega-darkpurple); }
 .plug-twitter { background:var(--ega-darkcyan); border-color:var(--ega-cyan); }
 .plug-tumblr { background:var(--ega-darkblue); border-color:var(--ega-blue); }
 .plug-youtube { background:var(--ega-darkred); border-color:var(--ega-red); }
 .plug-twitch { background:var(--ega-darkpurple); border-color:var(--ega-purple); }
 .plug-discord { background:var(--ega-darkgray); border-color:var(--ega-gray); }
+.plug-patreon { background:var(--ega-darkred); border-color:var(--ega-yellow); }
+.plug-github { background:var(--ega-black); border-color:var(--ega-darkgray); }
+.plug-rss { background:var(--ega-darkyellow); border-color:var(--ega-yellow); }
+.plug-cohost { background:var(--ega-darkpurple); border-color:var(--ega-yellow); }
 /* End site specific pseudo-elements */
 
 /* Utility Classes */

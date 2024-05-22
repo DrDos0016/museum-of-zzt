@@ -176,6 +176,11 @@ def explicit_warning(request):
     return render(request, "museum_site/explicit-warning.html", context)
 
 
+def follow(request):
+    context = {"title": "Follow Worlds of ZZT"}
+    return render(request, "museum_site/follow.html", context)
+
+
 def index(request):
     """ Returns front page """
     context = {}

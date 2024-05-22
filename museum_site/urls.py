@@ -171,6 +171,9 @@ urlpatterns = [
     path("play/<str:letter>/<str:key>/", legacy_redirect, {"name": "zfile_play", "strip": ["letter"]}),
     # More at the end of the list...
 
+    # /follow/
+    path("follow/", museum_site.views.follow, name="follow"),
+
     # /genre/
     path("genre/browse/", museum_site.help_views.Genre_Overview_View.as_view(), name="genre_browse"),
     # /genre/ -- Legacy Redirects
