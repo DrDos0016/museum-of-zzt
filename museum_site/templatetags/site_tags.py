@@ -371,19 +371,23 @@ def patreon_plug(*args, **kwargs):
     return render_to_string("museum_site/subtemplate/patreon-plug.html", {})
 
 
-@register.simple_tag()
-def plug(service='UNKNOWN-SERVICE'):
-    services = {"youtube": "YouTube"}  # Stylized spellings
-    title = services.get(service, service.title())
-    ext = "png" if service != "mastodon" else "svg"
-    output = """
-    <div class="plug plug-{0}"><a href="/{0}/" target="_blank" class="noext noul">
-        <div class="logo"><img src="/static/icons/plug-{0}.{ext}"></div>
-        <div class="text">Worlds of ZZT on {title}</div>
-    </a></div>
-    """.format(service, title=title, ext=ext)
-    return mark_safe(output + "\n")
+@register.inclusion_tag("museum_site/subtemplate/tag/plug.html")
+def plug(service, **kwargs):
+    services = {
+        "twitter": {"service": "Twitter", "icon": "/static/icons/plug-twitter.png", "text": "Worlds of ZZT on Twitter"},
+        "mastodon": {"service": "Mastodon", "icon": "/static/icons/plug-mastodon.svg", "text": "Worlds of ZZT on Mastodon"},
+        "tumblr": {"service": "Tumblr", "icon": "/static/icons/plug-tumblr.png", "text": "Worlds of ZZT on Tumblr"},
+        "discord": {"service": "Discord", "icon": "/static/icons/plug-discord.png", "text": "Worlds of ZZT on Discord"},
+        "patreon": {"service": "Patreon", "icon": "/static/icons/patreon_logo.png", "text": "Worlds of ZZT on Patreon"},
+        "youtube": {"service": "YouTube", "icon": "/static/icons/plug-youtube.png", "text": "Worlds of ZZT on YouTube"},
+        "twitch": {"service": "Twitch", "icon": "/static/icons/plug-twitch.png", "text": "Worlds of ZZT on Twitch"},
+        "github": {"service": "GitHub", "icon": "/static/icons/GitHub-Mark-32px.png", "text": "Worlds of ZZT on GitHub"},
+        "rss": {"service": "RSS", "icon": "/static/icons/rss-large.png", "text": "Worlds of ZZT RSS Feeds"},
+        "cohost": {"service": "cohost", "icon": "/static/icons/plug-cohost.png", "text": "Worlds of ZZT on cohost"},
+    }
 
+    context = services.get(service)
+    return context
 
 @register.filter
 def qs_sans(raw, args):
