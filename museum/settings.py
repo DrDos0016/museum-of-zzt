@@ -120,8 +120,8 @@ LOGIN_URL = "login_user"
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'moz-cache-1',
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'moz_cache',
         'TIMEOUT': None
     }
 }
