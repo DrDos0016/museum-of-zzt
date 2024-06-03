@@ -21,13 +21,6 @@ export class Overview_Handler extends Handler
         return false;
     }
 
-    show_envelopes()
-    {
-        console.log("ZZT Handler USER PREFS...", user_test);
-        $(this.envelope_id).addClass("active");
-        $("#zip-info").addClass("active");
-    }
-
     write_html() {
         console.log("Overview HTML generation");
 

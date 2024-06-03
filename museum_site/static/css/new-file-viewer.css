@@ -44,9 +44,12 @@
     grid-template-rows:auto min-content 1fr;
     align-content:stretch;
     font-family: mono;
+    max-height:95vh;
 }
 
 #file-viewer table { margin:0px; background-color:var(--board-list-bg); }
+#file-viewer th, #file-viewer td { padding:0px; }
+#file-viewer td { padding-left:1ch; }
 
 #file-viewer > * { box-sizing: border-box; }
 
@@ -56,7 +59,7 @@
 #region-file-list { grid-area: file-list; }
 #details { grid-area: details; }
 
-#details { border-bottom:1px solid var(--border-color); border-right:1px solid var(--border-color) }
+#details { border-bottom:1px solid var(--border-color); border-right:1px solid var(--border-color); overflow:auto;}
 
 #details > div:not(.active)
 {
@@ -169,6 +172,67 @@
     height:0px;
 }
 
+details .oop-summary { font-style: oblique; }
+
+details .oop-summary::before
+{
+    content: "+ Show";
+}
+
+details[open] .oop-summary::before
+{
+    content: "- Hide";
+}
+
+/* TODO This will likely go in museum_site.css as it's generic and useful enough */
+.flex-table
+{
+    display:flex;
+    flex-wrap:wrap;
+}
+
+.flex-table .flex-row
+{
+    flex:1 0 100%;
+    display:flex;
+    align-content:center;
+}
+
+.flex-table .flex-row:hover > *
+{
+    background-color:var(--hover-bg);
+}
+
+.flex-table .label
+{
+    background-color:var(--th-background);
+    border-style: solid;
+    border-width:0px 1px 1px 1px;
+    border-color:var(--border-color);
+    padding-left:1ch;
+    font-weight:bold;
+}
+
+.flex-table .value
+{
+    background-color:var(--board-list-bg);
+    border-style: solid;
+    border-color:var(--border-color);
+    border-width:0px 1px 1px 1px;
+    padding-left:1ch;
+}
+
+/* Border tweaks */
+.flex-table .label + .value { border-left:0px; }
+.flex-table .value + .label { border-left:0px; } /* For multicolumn */
+.flex-table .flex-row:first-child .label { border-width:1px 1px 1px 1px; }
+.flex-table .flex-row:first-child .value { border-width:1px 1px 1px 1px; }
+
+.flex-table .flex-row .label { flex:1; }
+.flex-table .flex-row .value { flex:2; }
+.flex-table .c { margin:inherit; text-align:center; }
+/* END flex table */
+
 /* EVERYTHING BELOW IS COPIED FROM ORIGINAL FILE VIEWER */
 
 #fv-main
@@ -229,7 +293,6 @@
 
 #file-list
 {
-    grid-area: file-list;
     font-family:mono;
     overflow:auto;
     max-height:100%;

@@ -14,10 +14,11 @@ function initialize()
 
     // Bind pre-bindables
     $("#file-load-submit").click(ingest_file);
-    $("#file-list").on("click", ".board-list .board", (e) => {fv.board_title_click(e); });
+    $("#file-list").on("click", ".board-list .board", (e) => { fv.board_title_click(e); });
     $("#file-list").on("click", ".fv-content", output_file);
     $("#tabs").on("click", "div", display_tab);
 
+    $("#file-viewer").on("click", ".board-link", (e) => { fv.board_title_click(e); });
     $("#fv-main").on("mousemove", ".fv-canvas", canvas_mousemove);
     $("#fv-main").on("mouseout", ".fv-canvas", canvas_mouseout);
     $("#fv-main").on("click", ".fv-canvas", canvas_click);
@@ -39,6 +40,17 @@ function initialize()
             if (match = $(".board.selected").prevAll(".board"))
                 match[0].click();
         }
+
+        /*
+        else if (e.keyCode == KEY.NP_UP) // Board to North
+                $("a.board-link[data-direction=exit_north]").click();
+        else if (e.keyCode == KEY.NP_DOWN)) // Board to South
+                $("a.board-link[data-direction=exit_south]").click();
+        else if (e.keyCode == KEY.NP_RIGHT)) // Board to East
+                $("a.board-link[data-direction=exit_east]").click();
+        else if (e.keyCode == KEY.NP_LEFT) // Board to West
+            fv.board_title_click(fv.
+        */
     });
 
 
@@ -258,7 +270,11 @@ function canvas_mouseout(e)
 function canvas_click(e)
 {
     let fvpk = $(this).parent().parent().attr("id").replace("envelope-", "");
-    fv.files[fvpk].canvas_click(e);
+    let border_size = parseInt($(this).css("border-left-width").replace("px", "")); // Assumes equal border sizes
+    var rect = this.getBoundingClientRect();
+    var base_x = e.pageX - rect.left - document.querySelector("html").scrollLeft - border_size;
+    var base_y = e.pageY - rect.top - document.querySelector("html").scrollTop - border_size;
+    fv.files[fvpk].canvas_click({"base_x": base_x, "base_y": base_y});
 }
 
 

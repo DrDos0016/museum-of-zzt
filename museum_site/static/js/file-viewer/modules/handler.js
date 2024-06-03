@@ -28,12 +28,13 @@ export class Handler
             this.parsed = true;
         }
         let ready = await this.write_html();
-        this.show_envelopes();
+        $(this.envelope_id).addClass("active");
     }
 
     deactivate_active_envelopes()
     {
         $(".envelope.active").removeClass("active");
+        $("#tabs .active").removeClass("active");
         $("#details .active").removeClass("active");
     }
 
@@ -43,11 +44,6 @@ export class Handler
             this.envelope_id = "#envelope-" + this.fvpk;
             $("#fv-main").append(`<div class="envelope envelope-${this.envelope_css_class}" id="envelope-${this.fvpk}">${this.initial_content}</div>`);
         }
-    }
-
-    show_envelopes()
-    {
-        $(this.envelope_id).addClass("active");
     }
 
     write_html() {
@@ -121,5 +117,14 @@ export class Handler
     {
         console.log("Base handler CLOSE()");
         $(this.envelope_id).removeClass("active");
+    }
+
+    display_tab(tab)
+    {
+        console.log("TAB", tab);
+        $(`#tabs .active`).removeClass("active");
+        $(`#details .active`).removeClass("active");
+        $(`#tabs div[name=${tab}]`).addClass("active");
+        $(`#details #${tab}`).addClass("active");
     }
 }
