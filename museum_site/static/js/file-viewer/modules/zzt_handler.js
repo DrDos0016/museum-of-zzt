@@ -1,4 +1,4 @@
-import { padded, sort_stat_list_by_name, sort_stat_list_by_code, sort_stat_list_by_index, sort_stat_list_by_coords } from "./core.js";
+import { padded } from "./core.js"; // PString needed for watermark reading directly
 import { Handler } from "./handler.js";
 import { ZZT_Standard_Renderer } from "./renderer.js";
 import { ZZT_ELEMENTS } from "./elements.js";
@@ -10,13 +10,14 @@ export class ZZT_Handler extends Handler
         super(fvpk, filename, bytes, meta);
         this.name = "ZZT Handler";
         this.envelope_css_class = "zzt";
-        this.initial_content = `<div class="inner-envelope-wrapper"><canvas class="fv-canvas" data-foo="BAR"></canvas><div id="hover-wrapper"><div id="hover-element" style="display:none"></div></div></div>`;
+        this.initial_content = `<div class="inner-envelope-wrapper"><canvas class="fv-canvas" data-foo="BAR"></canvas><div class="hover-wrapper"><div class="hover-element" style="display:none"></div></div></div>`;
         this.world = {};
         this.boards = [];
         this.default_renderer = ZZT_Standard_Renderer;
         this.renderer = new this.default_renderer(this.fvpk);
         //this.renderer = null;
         this.selected_board = null;
+        this.auto_click = ""; // Coordinates to pre-click an element when loading
         this.color_names = [
             "Black", "Dark Blue", "Dark Green", "Dark Cyan", "Dark Red", "Dark Purple", "Dark Yellow", "Gray",
             "Dark Gray", "Blue", "Green", "Cyan", "Red", "Purple", "Yellow", "White"
@@ -30,13 +31,9 @@ export class ZZT_Handler extends Handler
         this.config = {
             "stats": {
                 "sort": "name",
-                "show_codeless": false,
+                "show_codeless": true,
             }
         }
-
-        //$("select[name='stat-sort']").change(function (){ this.config.stats.sort = $(this).val() });
-        //$("#file-viewer").on("click", ".board-link", (e) => { fv.board_title_click(e); });
-
     }
 
     static stat_list_label(stat, board)
@@ -45,9 +42,10 @@ export class ZZT_Handler extends Handler
         let name = ZZT_ELEMENTS[element.id].name;
         if (stat.oop[0] == "@")
         {
-            name = stat.oop.slice(0, stat.oop.indexOf("\n")) + ` ${stat.oop_length} bytes`;
+            name = stat.oop.slice(0, stat.oop.indexOf("\n"));
         }
-        let output = `(${padded(stat.x)}, ${padded(stat.y)}) ${name}`;
+        let byte_count = (stat.oop != "") ? ` ${stat.oop_length} bytes` : '';
+        let output = `<a class="stat-link jsLink" data-x="${stat.x}" data-y="${stat.y}">(${padded(stat.x)}, ${padded(stat.y)}) ${name}</a>${byte_count}`;
         return output;
     }
 
@@ -56,13 +54,17 @@ export class ZZT_Handler extends Handler
         this.pos = 0;
         this.data = new DataView(this.bytes.buffer);
 
-        // Parse World
+        // Parse File
         this.world = this.parse_world();
         this.boards = this.parse_boards();
-        this.selected_board = this.world.current_board;
+        this.locks = this.parse_locks();
+
+
+        if (this.selected_board === null)
+            this.selected_board = this.world.current_board;
 
         let fin = Date.now();
-        console.log(`Bytes parsed in  ${fin - start}ms`);
+        console.log(`${this.filename} - Bytes parsed in  ${fin - start}ms`);
     }
 
     async write_html() {
@@ -73,7 +75,7 @@ export class ZZT_Handler extends Handler
         await this.display_board_canvas();
 
         let targets = [
-            {"target": "#hover-element", "html": ""},
+            {"target": ".hover-element", "html": ""},
             {"target": "#world-info", "html": this.get_world_info()},
             {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.write_board_list()},
             {"target": "#stat-info", "html": this.write_stat_list()},
@@ -81,7 +83,16 @@ export class ZZT_Handler extends Handler
         ];
 
         this.write_targets(targets);
-        this.display_tab("board-info");
+        if (this.auto_click)
+        {
+            let coords = this.auto_click.replace("#", "").split(",");
+            this.auto_click = "";
+            this.write_element_info(parseInt(coords[0]), parseInt(coords[1]));
+        }
+        else
+        {
+            this.display_tab("board-info");
+        }
         return true;
     }
 
@@ -140,6 +151,7 @@ export class ZZT_Handler extends Handler
         world.board_time_hseconds = this.read_Int16(); // Hundredth-seconds
         world.is_save = this.read_Uint8();
         world.unused = this.read_unused(14);
+        world.watermark = this.read_Ascii(232).replace(/\u0000/g, "");
         return world;
     }
 
@@ -260,6 +272,29 @@ export class ZZT_Handler extends Handler
         return boards
     }
 
+    parse_locks()
+    {
+        let locks = [];
+
+        // Regular Lock
+        for (let idx in this.world.flags)
+        {
+            if (this.world.flags[idx].toString().toUpperCase() == "SECRET")
+                locks.push("Regular Lock");
+        }
+
+        // Super Lock
+        // TODO
+        if (this.boards[this.world.total_boards].title == ":c")// && this.boards[last_idx].corrupt)
+            locks.push("Super Lock");
+
+        // Save Lock
+        // TODO FIND A TEST WORLD
+        if (this.world.is_save)
+            locks.push("Save Lock");
+        return locks;
+    }
+
     get_world_info()
     {
         let output = `<div class="flex-table">`;
@@ -280,7 +315,14 @@ export class ZZT_Handler extends Handler
             {"value": this.yesno(this.world.is_save), "label": "Is Save", },
             //{"value": this.world.unused, "label": "", },
             {"value": this.get_flags_value(), "label": "Flags", },
+            {"value": this.get_locks_value(), "label": "Detected Locks", },
         ];
+
+        if (this.world.watermark)
+        {
+            console.log(`!!!${this.world.watermark}!!!`);
+            rows.push({"value": this.world.watermark, "label": "Watermark"});
+        }
 
         for (let i=0; i<rows.length; i++)
         {
@@ -314,17 +356,17 @@ export class ZZT_Handler extends Handler
 
         output += `<div class="flex-row"><div class="label c">Board Exits</div></div>\n`;
         rows = [
-            {"value": this.board_link(board.neighbor_boards[0]), "label": "↑"},
-            {"value": this.board_link(board.neighbor_boards[1]), "label": "↓"},
-            {"value": this.board_link(board.neighbor_boards[2]), "label": "←"},
-            {"value": this.board_link(board.neighbor_boards[3]), "label": "→"},
+            {"value": this.board_link(board.neighbor_boards[0], "north"), "label": "↑"},
+            {"value": this.board_link(board.neighbor_boards[1], "south"), "label": "↓"},
+            {"value": this.board_link(board.neighbor_boards[2], "west"), "label": "←"},
+            {"value": this.board_link(board.neighbor_boards[3], "east"), "label": "→"},
         ]
 
         for (let i=0; i<rows.length; i+=2)
         {
             output += `<div class="flex-row">
-                <div class="label c">${rows[i].label}</div><div class="value">${rows[i].value}</div>
-                <div class="label c">${rows[i+1].label}</div><div class="value">${rows[i+1].value}</div>
+                <div class="label c tiny">${rows[i].label}</div><div class="value">${rows[i].value}</div>
+                <div class="label c tiny">${rows[i+1].label}</div><div class="value">${rows[i+1].value}</div>
             </div>\n`;
         }
 
@@ -348,33 +390,35 @@ export class ZZT_Handler extends Handler
 
     write_stat_list()
     {
-        console.log("WRITING STAT LIST");
         let current_sort = this.config.stats.sort;
-        console.log("CURRENT SORT = ", current_sort);
+        let codeless = this.config.stats.show_codeless;
         //let current_sort = "index";
         let sort_funcs = {
-            "sort_stat_list_by_code": sort_stat_list_by_code,
-            "sort_stat_list_by_coords": sort_stat_list_by_coords,
-            "sort_stat_list_by_name": sort_stat_list_by_name,
-            "sort_stat_list_by_index": sort_stat_list_by_index,
+            "sort_stat_list_by_code": this.sort_stat_list_by_code,
+            "sort_stat_list_by_coords": this.sort_stat_list_by_coords,
+            "sort_stat_list_by_name": this.sort_stat_list_by_name,
+            "sort_stat_list_by_index": this.sort_stat_list_by_index,
         }
-        let codeless = this.config.stats.show_codeless;
-        let sorted_stat_list = sort_funcs[`sort_stat_list_by_${current_sort}`](this.boards[this.selected_board].stats, codeless);
+        //let sorted_stat_list = sort_funcs[`sort_stat_list_by_${current_sort}`]();
+        let sorted_stat_list = this[`sort_stat_list_by_${current_sort}`]();
         let output = `<div class="controls">
-            <div>Sort by: <select name="stat-sort">
+            <label>Sort by: <select name="stat-sort">
                 <option value="code"${(current_sort == 'code') ? ' selected' : ''}>Code Length</option>
                 <option value="coords"${(current_sort == 'coords') ? ' selected' : ''}>Coordinates</option>
                 <option value="name"${(current_sort == 'name') ? ' selected' : ''}>Name</option>
                 <option value="index"${(current_sort == 'index') ? ' selected' : ''}>Stat Index</option>
-            </select></div>
-            <div><input type="checkbox" name="show-codeless" checked> Show stats without code</div>
+            </select></label>
+            <label>Show stats without code: <input type="checkbox" name="show-codeless" ${codeless ? ' checked' : ''}></label>
         </div>`;
         output += `<ol class='stat-list' start='0' data-fv_func='stat-select'>\n`;
 
         for (var idx = 0; idx < sorted_stat_list.length; idx++)
         {
+            let hidden = "";
+            if (! codeless && sorted_stat_list[idx].oop == "")
+                hidden = " class='empty'";
             let stat_label = ZZT_Handler.stat_list_label(sorted_stat_list[idx], this.boards[this.selected_board]);
-            output += `<li>${stat_label}</li>`;
+            output += `<li${hidden}>${stat_label}</li>`;
         }
         output += "</ol>\n";
 
@@ -393,6 +437,7 @@ export class ZZT_Handler extends Handler
         console.log("FUNC DISPLAY_BOARD_CANVAS", this.fvpk);
         let board_idx = (this.selected_board !== null) ? this.selected_board : this.world.current_board;
         let canvas = await this.renderer.render_board(this.boards[board_idx]);
+        console.log("----------------- ADDING BOARD TO HISTORY", board_idx);
         return true;
     }
 
@@ -416,20 +461,20 @@ export class ZZT_Handler extends Handler
         let bg = parseInt(color_id / 16);
         let bg_x = parseInt(fg * -8);
         let bg_y = parseInt(bg * -14);
-        $("#hover-element").html(`(${padded(tile_x)}, ${padded(tile_y)})<br><div class='color-swatch' style='background-position: ${bg_x}px ${bg_y}px'></div> ${element.name}`);
+        $(".hover-element").html(`(${padded(tile_x)}, ${padded(tile_y)})<br><div class='color-swatch' style='background-position: ${bg_x}px ${bg_y}px'></div> ${element.name}`);
 
         // Positioning
         if (tile_y < 7)
-            $("#hover-element").addClass("bottom");
+            $(".hover-element").addClass("bottom");
         else if (tile_y > 20)
-            $("#hover-element").removeClass("bottom");
+            $(".hover-element").removeClass("bottom");
 
-        $("#hover-element").show();
+        $(".hover-element").show();
     }
 
     mouseout(e)
     {
-        $("#hover-element").hide();
+        $(".hover-element").hide();
     }
 
     get_tile_coordinates_from_cursor_position(e)
@@ -443,6 +488,8 @@ export class ZZT_Handler extends Handler
     canvas_click(e)
     {
         const coords = this.get_tile_coordinates_from_cursor_position(e);
+        // Update URL hash
+        history.replaceState(undefined, undefined, `#${coords.x},${coords.y}`)
         return this.write_element_info(coords.x, coords.y)
     }
 
@@ -548,10 +595,10 @@ export class ZZT_Handler extends Handler
         return identifiers["" + this.world.identifier] || default_identifier;
     }
 
-    board_link(board_num)
+    board_link(board_num, direction="")
     {
         if (board_num)
-            return `<a class="jsLink board-link" data-board-number="${board_num}">${padded(board_num)}. ${this.boards[board_num].title}</a>`;
+            return `<a class="jsLink board-link" data-board-number="${board_num}" data-direction="${direction}">${padded(board_num)}. ${this.boards[board_num].title}</a>`;
         return `<i>None</i>`;
     }
 
@@ -593,6 +640,27 @@ export class ZZT_Handler extends Handler
         }
         if (! has_flags)
             output = "<i>None</i>";
+        else
+            output += "</ol>\n";
+        return output;
+    }
+
+    get_locks_value()
+    {
+        let has_locks = false;
+        let output = "<ul>\n";
+        for (var idx = 0; idx < this.locks.length; idx++)
+        {
+            if (this.locks[idx].length)
+            {
+                has_locks = true;
+                output += `<li>${this.locks[idx]}</li>\n`;
+            }
+        }
+        if (! has_locks)
+            output = "<i>None</i>";
+        else
+            output += "</ul>\n";
         return output;
     }
 
@@ -710,4 +778,72 @@ export class ZZT_Handler extends Handler
         let output = `(${stat.step_x}, ${stat.step_y})${direction}`
         return output
     }
+
+    update_stat_sorting(e)
+    {
+        //console.log(e);
+        let value = $("select[name=stat-sort]").val();
+        let codeless = $("input[name=show-codeless]").prop("checked") ? true : false;
+        this.config.stats.sort = value;
+        this.config.stats.show_codeless = codeless;
+        this.write_targets([{"target": "#stat-info", "html": this.write_stat_list()}]);
+    }
+
+    sort_stat_list_by_name()
+    {
+        let sorted = this.boards[this.selected_board].stats.slice();
+        let board = this.boards[this.selected_board];
+
+        sorted.sort(function(a, b){
+            // TODO: Using stat_list_label and slicing makes this function easily break if formatting changes occur to stat list labels
+            let raw_stat_name1 = ZZT_Handler.stat_list_label(a, board);
+            let raw_stat_name2 = ZZT_Handler.stat_list_label(b, board);
+            let stat_name_1 = raw_stat_name1.slice(raw_stat_name1.indexOf(")") + 1).toLowerCase()
+            let stat_name_2 = raw_stat_name2.slice(raw_stat_name2.indexOf(")") + 1).toLowerCase()
+
+            if (stat_name_1 < stat_name_2)
+                    return -1;
+                else if (stat_name_1 > stat_name_2)
+                    return 1;
+                else
+                    return 0;
+        });
+
+        return sorted;
+    }
+
+    sort_stat_list_by_code()
+    {
+        let sorted = this.boards[this.selected_board].stats.slice();
+
+        sorted.sort(function(a, b){
+            if (a.oop_length < b.oop_length)
+                return 1;
+            else if (a.oop_length > b.oop_length)
+                return -1;
+            else
+                return 0;
+        });
+
+        return sorted;
+    }
+
+    sort_stat_list_by_coords()
+    {
+        let sorted = this.boards[this.selected_board].stats.slice();
+        console.log(sorted);
+
+        sorted.sort(function(a, b){
+            return (a.y * 60 + a.x) - (b.y * 60 + b.x);  // TODO Magic Number
+        });
+
+        return sorted;
+    }
+
+    sort_stat_list_by_index()
+    {
+        let sorted = this.boards[this.selected_board].stats.slice();
+        return sorted;
+    }
+
 }

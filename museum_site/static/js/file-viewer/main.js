@@ -12,6 +12,20 @@ function initialize()
     // Add Overview
     fv.files["fvpk-overview"] = create_handler_for_file("fvpk-overview", "Overview", [], {"loaded": true, "parsed": false});
 
+    // Determine what to auto load
+    if (auto_load.indexOf("?") != -1)
+    {
+        let params = new URLSearchParams(auto_load.split("?", 2)[1]);
+        if (params.has("file"))
+        {
+            //fv.auto_load_target_str = `.fv-content[data-filename='${params.get("file")}']`;
+            fv.has_auto_load_target = true;
+            fv.auto_load_filename = params.get("file");
+            fv.auto_load_board = params.get("board");
+        }
+    }
+
+
     // Bind pre-bindables
     $("#file-load-submit").click(ingest_file);
     $("#file-list").on("click", ".board-list .board", (e) => { fv.board_title_click(e); });
@@ -22,6 +36,10 @@ function initialize()
     $("#fv-main").on("mousemove", ".fv-canvas", canvas_mousemove);
     $("#fv-main").on("mouseout", ".fv-canvas", canvas_mouseout);
     $("#fv-main").on("click", ".fv-canvas", canvas_click);
+
+    $("#stat-info").on("change", "select[name=stat-sort]", (e) => { fv.resort_stats(e); });
+    $("#stat-info").on("change", "input[name=show-codeless]", (e) => { fv.resort_stats(e); });
+    $("#stat-info").on("click", ".stat-link", (e) => { fv.stat_click(e); });
 
     // Keyboard Shortcuts
     $(window).keyup(function (e){
@@ -40,17 +58,16 @@ function initialize()
             if (match = $(".board.selected").prevAll(".board"))
                 match[0].click();
         }
-
-        /*
-        else if (e.keyCode == KEY.NP_UP) // Board to North
-                $("a.board-link[data-direction=exit_north]").click();
-        else if (e.keyCode == KEY.NP_DOWN)) // Board to South
-                $("a.board-link[data-direction=exit_south]").click();
-        else if (e.keyCode == KEY.NP_RIGHT)) // Board to East
-                $("a.board-link[data-direction=exit_east]").click();
-        else if (e.keyCode == KEY.NP_LEFT) // Board to West
-            fv.board_title_click(fv.
-        */
+        else if (e.keyCode == KEY.NP_UP) { $("a.board-link[data-direction=north]").click(); }
+        else if (e.keyCode == KEY.NP_DOWN) { $("a.board-link[data-direction=south]").click(); }
+        else if (e.keyCode == KEY.NP_RIGHT) { $("a.board-link[data-direction=east]").click(); }
+        else if (e.keyCode == KEY.NP_LEFT) { $("a.board-link[data-direction=west]").click(); }
+        else if (e.keyCode == KEY.NP_LEFT) { $("a.board-link[data-direction=west]").click(); }
+        else if (e.keyCode == KEY.W) {$("#tabs div[data-shortcut='W'").click();}
+        else if (e.keyCode == KEY.B) {$("#tabs div[data-shortcut='B'").click();}
+        else if (e.keyCode == KEY.E) {$("#tabs div[data-shortcut='E'").click();}
+        else if (e.keyCode == KEY.S) {$("#tabs div[data-shortcut='S'").click();}
+        else if (e.keyCode == KEY.P) {$("#tabs div[data-shortcut='P'").click();}
     });
 
 
@@ -90,16 +107,23 @@ function open_zip(buffer)
                     "compressed_size": info._data.compressedSize, "decompressed_size": info._data.uncompressedSize,
                 }
             });
-            info.async("uint8array").then(data => set_file_bytes(fvpk, data));
+            info.async("uint8array").then(data => {
+                set_file_bytes(fvpk, data);
+                if (fv.files[fvpk].filename == fv.auto_load_filename)
+                    $(`.fv-content[data-filename='${fv.auto_load_filename}']`).click();
+            });
         }
         fv.display_file_list();
-        $(".fv-content[data-fvpk=fvpk-overview]").click(); // Pre-click "Overview"
+
+        if (! fv.has_auto_load_target) // Default auto load
+            $(`.fv-content[data-fvpk='fvpk-overview']`).click();
     });
 }
 
 
 function set_file_bytes(fvpk, data)
 {
+    console.log("SETTING FILE BYTES FOR", fv.files[fvpk].filename);
     // Sets the bytes for a file in the file registry
     fv.files[fvpk].bytes = data;
 }

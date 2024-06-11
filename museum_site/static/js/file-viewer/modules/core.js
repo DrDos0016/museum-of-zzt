@@ -31,36 +31,3 @@ export function padded(val, length=2, char="0")
 {
     return ("" + val).padStart(length, char);
 }
-
-
-export function sort_stat_list_by_name(stat_list, show_codeless)
-{
-    console.log("Sort by name");
-    return stat_list;
-}
-
-export function sort_stat_list_by_code(stat_list, show_codeless)
-{
-    console.log("Sort by CODE");
-    return stat_list;
-}
-
-export function sort_stat_list_by_coords(stat_list, show_codeless)
-{
-    console.log("Sort by COORDS");
-    return stat_list;
-}
-
-export function sort_stat_list_by_index(stat_list, show_codeless)
-{
-    if (show_codeless)
-        return stat_list;
-
-    let sorted = [];
-    for (let idx = 0; idx < stat_list.length; idx++)
-    {
-        if (stat_list[idx].oop)
-            sorted.push(stat_list[idx]);
-    }
-    return sorted;
-}

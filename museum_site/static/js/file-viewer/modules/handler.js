@@ -29,6 +29,7 @@ export class Handler
         }
         let ready = await this.write_html();
         $(this.envelope_id).addClass("active");
+        this.history_add();
     }
 
     deactivate_active_envelopes()
@@ -126,5 +127,27 @@ export class Handler
         $(`#details .active`).removeClass("active");
         $(`#tabs div[name=${tab}]`).addClass("active");
         $(`#details #${tab}`).addClass("active");
+    }
+
+    history_add()
+    {
+        if (this.filename == "Overview")
+            return false;
+
+        console.log("Base handler says ADD TO HISTORY! SB?", this.selected_board);
+
+        let state = {"open_file": this.filename}
+        let url = "?file=" + encodeURIComponent(this.filename);
+        //window.location.hash
+
+        if (this.selected_board !== undefined)
+        {
+            state["selected_board"] = this.selected_board;
+            url += "&board=" + this.selected_board;
+            if (window.location.hash)
+                url += window.location.hash;
+        }
+        console.log("Pushing History URL", url);
+        history.pushState(state, "", url);
     }
 }

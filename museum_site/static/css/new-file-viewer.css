@@ -12,7 +12,6 @@
 {
     padding:0px;
     margin:0px;
-    min-width:500px;
 }
 
 #file-list > li
@@ -40,11 +39,24 @@
     grid-template-areas: "envelope envelope"
     "file-list tabs"
     "file-list details";
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 500px 1fr;
     grid-template-rows:auto min-content 1fr;
     align-content:stretch;
     font-family: mono;
     max-height:95vh;
+}
+
+@media (max-width:800px) { /* TODO: Find good values */
+    #file-viewer
+    {
+        grid-template-areas: "envelope"
+        "tabs"
+        "details"
+        "file-list";
+        grid-template-columns:1fr;
+        grid-template-rows:auto auto auto auto;
+        max-height:32767px;
+    }
 }
 
 #file-viewer table { margin:0px; background-color:var(--board-list-bg); }
@@ -75,6 +87,7 @@
     border-width:1px 1px 1px 0px;
     border-color: var(--border-color);
     overflow-x:auto;
+    min-height:20px;
 }
 
 #tabs > div { flex: 3; background-color: var(--unselected-tab); }
@@ -82,6 +95,8 @@
 #tabs > div:hover { background-color: var(--hover-bg); cursor:pointer; text-decoration:underline; }
 #tabs > div + div { border-left: 1px solid var(--border-color); }
 #tabs > div[name=help] { flex: 1 }
+
+#tabs > div[data-shortcut]::first-letter { text-decoration:underline; }
 
 #details > div
 {
@@ -145,13 +160,13 @@
 .envelope-zzt.active {display:flex; justify-content:center; }
 
 
-#hover-wrapper
+.hover-wrapper
 {
     height:0px;
     position:absolute;
 }
 
-#hover-element
+.hover-element
 {
     position:relative;
     top:-358px;
@@ -162,7 +177,7 @@
     padding:7px 4px 7px 4px;
 }
 
-#hover-element.bottom
+.hover-element.bottom
 {
     top:-54px;
 }
@@ -213,6 +228,12 @@ details[open] .oop-summary::before
     font-weight:bold;
 }
 
+.flex-table .flex-row .label.tiny
+{
+    flex:0 0 6ch;
+    padding-left:0px;
+}
+
 .flex-table .value
 {
     background-color:var(--board-list-bg);
@@ -231,6 +252,23 @@ details[open] .oop-summary::before
 .flex-table .flex-row .label { flex:1; }
 .flex-table .flex-row .value { flex:2; }
 .flex-table .c { margin:inherit; text-align:center; }
+
+li.empty /* Hidden entries in lists that need to keep counting */
+{
+    visibility:hidden;
+    height:0px;
+}
+
+#stat-info .controls
+{
+    display:flex;
+    align-items:center;
+}
+
+#stat-info .controls input[type='checkbox']
+{
+    height:auto;
+}
 /* END flex table */
 
 /* EVERYTHING BELOW IS COPIED FROM ORIGINAL FILE VIEWER */

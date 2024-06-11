@@ -21,12 +21,20 @@ export class File_Viewer
     files = {};
     default_domain = "localhost";
     active_fvpk = "fvpk-overview"; // The FVPK of the currently displayed file
+    has_auto_load_target = false;
+    auto_load_file_name = "Overview"; // Click overview by default
 
     add_file(filename, bytes, meta)
     {
         // Adds a file into the file registry
         let fvpk = "fvpk-" + this.fvi_count;
         this.files[fvpk] = create_handler_for_file(fvpk, filename, bytes, meta);
+        if (this.has_auto_load_target && (filename == this.auto_load_filename))
+        {
+            this.files[fvpk].selected_board = this.auto_load_board;
+            this.files[fvpk].auto_click = window.location.hash;
+            console.log("HASH IS", window.location.hash);
+        }
         this.fvi_count++;
         return fvpk;
     }
@@ -98,6 +106,18 @@ export class File_Viewer
         console.log("-----------------Board title click");
         let bn = $(e.currentTarget).data("board-number");
         this.board_change(bn);
+    }
+
+    resort_stats(e)
+    {
+        console.log("Resorting stats!");
+        this.files[this.active_fvpk].update_stat_sorting(e);
+    }
+
+    stat_click(e)
+    {
+        let coords = {"x": $(e.currentTarget).data("x"), "y": $(e.currentTarget).data("y")};
+        this.files[this.active_fvpk].write_element_info(coords.x, coords.y)
     }
 
 }

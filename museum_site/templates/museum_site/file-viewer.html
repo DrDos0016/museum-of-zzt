@@ -14,7 +14,7 @@
 <script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
 <script async src="{% static 'js/file-viewer/main.js' %}?{{BOOT_TS}}" type="module"></script>
 <script>
-let auto_load = "{{zfile.download_url}}";
+let auto_load = "{{zfile.download_url}}{% if request.GET.file %}?file={{request.GET.file}}{% endif %}{% if request.GET.board %}&board={{request.GET.board}}{% endif %}";
 let file_size = {{zfile.size}};
 let fv_default_domain = "{{DOMAIN}}";
 var DEBUG_VAR = null;
@@ -53,11 +53,11 @@ var user_test = {"bar": "baz", "yes": true}; // DEBUG
 </div>
 
 <div id="tabs">
-    <div name="world-info">World</div>
-    <div name="board-info">Board</div>
-    <div name="element-info">Element</div>
-    <div name="stat-info">Stats</div>
-    <div name="preferences">Prefs.</div>
+    <div name="world-info" data-shortcut="W">World</div>
+    <div name="board-info" data-shortcut="B">Board</div>
+    <div name="element-info" data-shortcut="E">Element</div>
+    <div name="stat-info" data-shortcut="S">Stats</div>
+    <div name="preferences" data-shortcut="P">Prefs.</div>
     <div name="help">?</div>
 </div>
 
