@@ -96,7 +96,6 @@ export class File_Viewer
     board_change(new_board_number)
     {
         console.log("CALLING BOARD CHANGE");
-        console.log("NBN", new_board_number);
         this.files[this.active_fvpk].selected_board = parseInt(new_board_number);
         this.files[this.active_fvpk].render();
     }

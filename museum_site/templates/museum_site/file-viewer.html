@@ -17,6 +17,7 @@
 let auto_load = "{{zfile.download_url}}{% if request.GET.file %}?file={{request.GET.file}}{% endif %}{% if request.GET.board %}&board={{request.GET.board}}{% endif %}";
 let file_size = {{zfile.size}};
 let fv_default_domain = "{{DOMAIN}}";
+var initial_query_string = "{{request.META.QUERY_STRING|safe}}";
 var DEBUG_VAR = null;
 var user_test = {"bar": "baz", "yes": true}; // DEBUG
 </script>
@@ -200,5 +201,5 @@ var user_test = {"bar": "baz", "yes": true}; // DEBUG
 FV Debug:
 <div id="FV-DEBUG">Empty debug</div>
 <hr>
-<div id="debug-world-info">World info will go here.</div>
+<div id="debug-world-info">World{{request.META.QUERY_STRING}}</div>
 {% endblock %}

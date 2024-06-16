@@ -12,6 +12,7 @@ export class Handler
         this.meta = meta; // Metadata
         this.envelope_css_class = "base";
         this.initial_content = ""; // HTML included in envelope
+        this.initial_query_string = "";
 
         this.pos = 0;
         this.data = null; // DataView for reading
@@ -132,9 +133,10 @@ export class Handler
     history_add()
     {
         if (this.filename == "Overview")
-            return false;
-
-        console.log("Base handler says ADD TO HISTORY! SB?", this.selected_board);
+        {
+            history.pushState({}, "", ("" + window.location).split("?")[0]);
+            return;
+        }
 
         let state = {"open_file": this.filename}
         let url = "?file=" + encodeURIComponent(this.filename);
@@ -144,6 +146,15 @@ export class Handler
         {
             state["selected_board"] = this.selected_board;
             url += "&board=" + this.selected_board;
+
+            console.log("A:", url);
+            console.log("B:", initial_query_string);
+            if (url == ("?" + initial_query_string))
+            {
+                initial_query_string = ""
+                return false;
+
+            }
             if (window.location.hash)
                 url += window.location.hash;
         }

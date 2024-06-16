@@ -36,6 +36,7 @@ function initialize()
     $("#fv-main").on("mousemove", ".fv-canvas", canvas_mousemove);
     $("#fv-main").on("mouseout", ".fv-canvas", canvas_mouseout);
     $("#fv-main").on("click", ".fv-canvas", canvas_click);
+    $("#fv-main").on("dblclick", ".fv-canvas", canvas_double_click);
 
     $("#stat-info").on("change", "select[name=stat-sort]", (e) => { fv.resort_stats(e); });
     $("#stat-info").on("change", "input[name=show-codeless]", (e) => { fv.resort_stats(e); });
@@ -281,7 +282,6 @@ function canvas_mousemove(e)
     var rect = this.getBoundingClientRect();
     var base_x = e.pageX - rect.left - document.querySelector("html").scrollLeft - border_size;
     var base_y = e.pageY - rect.top - document.querySelector("html").scrollTop - border_size;
-    //console.log("BASE X/Y:", base_x, base_y);
     fv.files[fvpk].mousemove({"base_x": base_x, "base_y": base_y});
 }
 
@@ -301,6 +301,15 @@ function canvas_click(e)
     fv.files[fvpk].canvas_click({"base_x": base_x, "base_y": base_y});
 }
 
+function canvas_double_click(e)
+{
+    let fvpk = $(this).parent().parent().attr("id").replace("envelope-", "");
+    let border_size = parseInt($(this).css("border-left-width").replace("px", "")); // Assumes equal border sizes
+    var rect = this.getBoundingClientRect();
+    var base_x = e.pageX - rect.left - document.querySelector("html").scrollLeft - border_size;
+    var base_y = e.pageY - rect.top - document.querySelector("html").scrollTop - border_size;
+    fv.files[fvpk].canvas_double_click({"base_x": base_x, "base_y": base_y});
+}
 
 let fv = new File_Viewer();
 let zip = new JSZip();

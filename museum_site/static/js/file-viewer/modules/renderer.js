@@ -28,6 +28,8 @@ export class ZZT_Standard_Renderer
         this.element_func[39] = this.spinning_gun_draw;
         this.element_func[40] = this.pusher_draw;
         this.element_func.fill(this.text_draw, 47);
+
+        this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1};
     }
 
     async render_board(board)
@@ -58,17 +60,6 @@ export class ZZT_Standard_Renderer
                 this.stamp(x, y, fg, bg, char, ctx);
             }
         }
-
-        /*
-        let start = Date.now();
-        let fwee = 0;
-        for (let z = 0; z < 1000000000; z++)
-        {
-            fwee += z;
-        }
-        let fin = Date.now();
-        console.log(`Counted in  ${fin - start}ms`);
-        */
         return canvas;
     }
 
@@ -125,6 +116,7 @@ export class ZZT_Standard_Renderer
         if (output.length == 0) // This element is statless
         {
             console.log("STATLESS ELEMENT. TODO");
+            return [this.default_stat];
         }
         return output;
     }
@@ -146,7 +138,7 @@ export class ZZT_Standard_Renderer
         let element = this.rendered_board.elements[x][y];
         if (element.id == 53) // White text gets black background instead of gray
             return [this.palette.hex_colors[15], this.palette.hex_colors[0], element.color]
-        return [this.palette.hex_colors[15], this.palette.hex_colors[(element.id - 46)], element.color]
+        return [this.palette.hex_colors[15], this.palette.hex_colors[(element.id - 46) % 16], element.color]; // mod 16 to handle undefined elements
     }
 
     pusher_draw(x, y)
@@ -300,12 +292,18 @@ export class ZZT_Standard_Renderer
 
     object_draw(x, y)
     {
-        let element = this.rendered_board.elements[x][y];
-        let stat = this.get_stats_for_element(x, y)[0];
-        let char = stat.param1;
+        let element, stat, char;
+        element = this.rendered_board.elements[x][y];
 
-        if (typeof stat == "undefined")
-            return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], 63];
+        try
+        {
+            stat = this.get_stats_for_element(x, y)[0];
+            char = stat.param1;
+        }
+        catch (error)
+        {
+            char = 2; // TODO Magic Num
+        }
 
         return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], char];
     }

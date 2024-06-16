@@ -30,6 +30,7 @@ export class Overview_Handler extends Handler
         ];
 
         this.write_targets(targets);
+        this.display_tab("zip-info");
         return true;
     }
 

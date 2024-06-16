@@ -3,6 +3,16 @@ import { Handler } from "./handler.js";
 import { ZZT_Standard_Renderer } from "./renderer.js";
 import { ZZT_ELEMENTS } from "./elements.js";
 
+while (ZZT_ELEMENTS.length < 256)
+{
+    ZZT_ELEMENTS.push({
+        "id":ZZT_ELEMENTS.length,
+        "name":`<i>Undefined Element ${ZZT_ELEMENTS.length}</i> `,
+        "oop_name":"",
+        "character":63
+    })
+}
+
 export class ZZT_Handler extends Handler
 {
     constructor(fvpk, filename, bytes, meta)
@@ -24,6 +34,7 @@ export class ZZT_Handler extends Handler
         ];
 
         this.max_flags = 10;
+        this.max_stats = 150;
         this.tile_count = 1500; // TODO Should we use width * height of boards?
 
         this.cursor_tile = {"x": -1, "y": -1} // Tile the cursor was last seen over
@@ -32,14 +43,25 @@ export class ZZT_Handler extends Handler
             "stats": {
                 "sort": "name",
                 "show_codeless": true,
+            },
+            "corrupt": {
+                "enforce_stat_limit": true,
             }
         }
     }
 
     static stat_list_label(stat, board)
     {
-        let element = board.elements[stat.x][stat.y];
-        let name = ZZT_ELEMENTS[element.id].name;
+        let element, name;
+        try {
+            element = board.elements[stat.x][stat.y];
+            name = ZZT_ELEMENTS[element.id].name;
+        }
+        catch (error)
+        {
+            //console.error(error);
+            name = "<i>Out of Bounds Stat</i>";
+        }
         if (stat.oop[0] == "@")
         {
             name = stat.oop.slice(0, stat.oop.indexOf("\n"));
@@ -78,9 +100,14 @@ export class ZZT_Handler extends Handler
             {"target": ".hover-element", "html": ""},
             {"target": "#world-info", "html": this.get_world_info()},
             {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.write_board_list()},
+            {"target": "#element-info", "html": ""},
             {"target": "#stat-info", "html": this.write_stat_list()},
             {"target": "#board-info", "html": this.get_board_info(),},
+            //{"target": "#fv-main", "html": "<textarea style='width:700px;height:500px;'>" +this.display_json_string() + "</textarea>",},
         ];
+
+        // Erase hash?
+        window.location.hash = "";
 
         this.write_targets(targets);
         if (this.auto_click)
@@ -172,6 +199,7 @@ export class ZZT_Handler extends Handler
             };
             board.size = this.read_Int16();
             board.title = this.read_PString(50);
+            console.log("BOARD:", board.title, Date.now());
 
             board.elements = Array(62).fill(0).map(x=> Array(27).fill(0)); // This is necessary
 
@@ -189,6 +217,7 @@ export class ZZT_Handler extends Handler
             }
 
             // RLE
+            console.log("Parsing RLE", Date.now());
             let read_tiles = 0;
             let tile_idx = 0;
             while (read_tiles < this.tile_count)
@@ -211,10 +240,10 @@ export class ZZT_Handler extends Handler
 
                 read_tiles += quantity;
                 board.meta.stats_address += 3;
-
             }
 
             // Board properties
+            console.log("Parsing Props", Date.now());
             board.max_shots = this.read_Uint8();
             board.is_dark = this.read_Uint8();
             board.neighbor_boards = [this.read_Uint8(), this.read_Uint8(), this.read_Uint8(), this.read_Uint8()];
@@ -228,10 +257,12 @@ export class ZZT_Handler extends Handler
             board.meta.stats_address += 88;
 
             // Stats
+            console.log("Parsing Stats", board.stat_count, Date.now());
             board.stats = [];
 
             let read_stats = 0;
-            while (read_stats < board.stat_count + 1)
+            let stat_cutoff = (this.config.corrupt.enforce_stat_limit) ? Math.min(board.stat_count, this.max_stats) : board.stat_count;
+            while (read_stats < stat_cutoff + 1)
             {
                 let stat = {};
                 stat.x = this.read_Uint8();
@@ -268,6 +299,7 @@ export class ZZT_Handler extends Handler
             }
 
             boards.push(board);  // Add the finalizared parsed board to the list
+            console.log("Parsed board:", board.title, Date.now());
         }
         return boards
     }
@@ -344,7 +376,7 @@ export class ZZT_Handler extends Handler
             {"value": this.yesno(board.reenter_when_zapped), "label": "Re-enter When Zapped"},
             {"value": `(${board.start_player_x}, ${board.start_player_y})`, "label": "Re-enter X/Y"},
             {"value": this.val_or_none(board.time_limit), "label": "Time Limit"},
-            {"value": `${board.stat_count} / 151`, "label": "Stat Count"},
+            {"value": `${board.stat_count + 1} / 151`, "label": "Stat Count"},
             {"value": `${board.size} bytes`, "label": "Board Size"},
             {"value": (board.message.length ? board.message : "<i>None</i>"), "label": "Message"},
         ];
@@ -493,11 +525,47 @@ export class ZZT_Handler extends Handler
         return this.write_element_info(coords.x, coords.y)
     }
 
+    canvas_double_click(e)
+    {
+        const coords = this.get_tile_coordinates_from_cursor_position(e);
+        let element_id = this.boards[this.selected_board].elements[coords.x][coords.y].id;
+        if (element_id != 11) // TODO: Magic Number for Passage ID
+            return false;
+
+        let destination_board_num = -1;
+        for (var idx = 0; idx < this.boards[this.selected_board].stats.length; idx++)
+        {
+            let stat = this.boards[this.selected_board].stats[idx]
+            if (stat.x == coords.x && stat.y == coords.y)
+            {
+                destination_board_num = stat.param3;
+                break
+            }
+        }
+
+        if (destination_board_num == -1 || destination_board_num > this.world.total_boards)
+            return false;
+
+        this.selected_board = destination_board_num;
+        this.render();
+    }
+
     write_element_info(x, y)
     {
-        let element_id = this.boards[this.selected_board].elements[x][y].id;
-        let color_id = this.boards[this.selected_board].elements[x][y].color;
-        let element = ZZT_ELEMENTS[element_id];
+        let element_id, color_id, element;
+        try
+        {
+            element_id = this.boards[this.selected_board].elements[x][y].id;
+            color_id = this.boards[this.selected_board].elements[x][y].color;
+            element = ZZT_ELEMENTS[element_id];
+        }
+        catch (error)
+        {
+            console.log("TODO PLACEHOLDER");
+            element_id = 4;
+            color_id = 11;
+            element = ZZT_ELEMENTS[element_id];
+        }
         let output = `<table>`;
 
         let rows = [
@@ -516,7 +584,7 @@ export class ZZT_Handler extends Handler
             let stat_info = [
                 {"value": `${tile_stats[idx].param1}`, "label": `${this.get_param_name_for_element(element.id, 1)}`, },
                 {"value": `${tile_stats[idx].cycle}`, "label": "Cycle", },
-                {"value": `${tile_stats[idx].param2}`, "label": `${this.get_param_name_for_element(element.id, 2)}`, },
+                {"value": `${this.get_param2_value(element.id, tile_stats[idx].param2)}`, "label": `${this.get_param_name_for_element(element.id, 2)}`, },
                 {"value": `${ZZT_ELEMENTS[tile_stats[idx].under.element_id].name}`, "label": "Under Element", },
                 {"value": `${tile_stats[idx].param3}`, "label": `${this.get_param_name_for_element(element.id, 3)}`, },
                 {"value": `${this.get_color(tile_stats[idx].under.color)}`, "label": "Under Color", },
@@ -580,12 +648,18 @@ export class ZZT_Handler extends Handler
 
     get_param_name_for_element(element_id, param)
     {
-        console.log("GETTING PARAM NAME FOR PARAM", param);
         let default_param = "Param" + param;
 
         if (ZZT_ELEMENTS[element_id]["param" + param])
             return ZZT_ELEMENTS[element_id]["param" + param];
         return default_param
+    }
+
+    get_param2_value(element_id, raw)
+    {
+        if (element_id == 39 || element_id == 42) // TODO MAGIC NUMBER
+            return (raw >= 128) ? `${raw - 128} [Stars] (Raw: ${raw})` : `${raw} [Bullets]`;
+        return raw;
     }
 
     get_world_identifier()
@@ -598,7 +672,11 @@ export class ZZT_Handler extends Handler
     board_link(board_num, direction="")
     {
         if (board_num)
+        {
+            if (board_num < 0 || board_num >= this.boards.length)
+                return `<i>Corrupt Board Link</i>`;
             return `<a class="jsLink board-link" data-board-number="${board_num}" data-direction="${direction}">${padded(board_num)}. ${this.boards[board_num].title}</a>`;
+        }
         return `<i>None</i>`;
     }
 
@@ -692,7 +770,7 @@ export class ZZT_Handler extends Handler
 
     syntax_highlight(oop)
     {
-        var oop = oop.split("\n");
+        oop = oop.replaceAll("<", "&lt;").replaceAll(">", "&gt;").split("\n");
         for (var idx in oop)
         {
             // Symbols: @, #, /, ?, :, ', !, $
