@@ -186,6 +186,7 @@ img:not(.screenshot-thumb).stream-thumbnail
     <div class="stream" data-idx="{{forloop.counter}}">
         <h2>{{stream.title}}</h2>
         {% if stream.category != "none" %}<div class="stream-category">{{stream.get_category_display}} {% if stream.theme %} - {{stream.theme}}{% endif %}</div>{% endif %}
+        {% if stream.theme != "NOSTREAM" %}
         <div class="time">
             <div>
                 {% timezone "America/New_York" %}{{stream.when|date:'l N jS'}}<br>
@@ -197,6 +198,16 @@ img:not(.screenshot-thumb).stream-thumbnail
             {{stream.when|date:'H:i e'}}
             </div>
         </div>
+        {% else %}
+        <div class="time">
+            <div>
+                {% timezone "America/New_York" %}{{stream.when|date:'l N jS'}}<br>{% endtimezone %}
+            </div>
+            <div class="ega-purple r">
+            {{stream.when|date:'D M jS'}}<br>
+            </div>
+        </div>
+        {% endif %}
         <img src="{{stream.preview_image}}" class="stream-thumbnail">
         {% if stream.guests %}<div class="stream-guests">Featuring Special Guests:<br>{{stream.guests}}</div>{% endif %}
         <div class="description">{{stream.description|safe}}
