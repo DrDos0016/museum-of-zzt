@@ -40,6 +40,9 @@ export class ZZT_Handler extends Handler
         this.cursor_tile = {"x": -1, "y": -1} // Tile the cursor was last seen over
 
         this.config = {
+            "board_list": {
+                "show_overrun": false,
+            },
             "stats": {
                 "sort": "name",
                 "show_codeless": true,
@@ -98,7 +101,7 @@ export class ZZT_Handler extends Handler
 
         let targets = [
             {"target": ".hover-element", "html": ""},
-            {"target": "#world-info", "html": this.get_world_info()},
+            {"target": "#world-info", "html": this.get_world_tab()},
             {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.write_board_list()},
             {"target": "#element-info", "html": ""},
             {"target": "#stat-info", "html": this.write_stat_list()},
@@ -360,7 +363,20 @@ export class ZZT_Handler extends Handler
         {
             output += `<div class="flex-row"><div class="label">${rows[i].label}</div><div class="value">${rows[i].value}</div></div>\n`;
         }
-        output += `</table>`;
+        output += `</div>`;
+
+        return output;
+    }
+
+    get_world_tab()
+    {
+        let output = this.get_world_info();
+
+        output += `<div class="flex-table">\n`;
+
+        output += `<div class="flex-row"><div class="label">ZZT-OOP Search</div><div class="value"><input name="code-search" placeholder="#set housekey"><input type="button" value="Search"><input type="button" value="Clear"></div></div>\n`;
+
+        output += `</div>\n`;
 
         return output;
     }
@@ -410,10 +426,11 @@ export class ZZT_Handler extends Handler
     {
         console.log("WRITING BOARD LIST");
         let output = `${this.filename}<ol class='board-list' start='0' data-fv_func='board_change'>\n`;
+        let func = (this.config.board_list.show_overrun) ? "revealed_string" : "toString";
         for (var idx = 0; idx < this.boards.length; idx++)
         {
             let chk_selected = (idx == this.selected_board) ? " selected" : "";
-            output += `<li class='board${chk_selected}' data-board-number=${idx}>` + this.boards[idx].title.revealed_string() + "</li>\n";
+            output += `<li class='board${chk_selected}' data-board-number=${idx}>` + this.boards[idx].title[func]() + "</li>\n";
         }
         output += "</ol>\n";
 

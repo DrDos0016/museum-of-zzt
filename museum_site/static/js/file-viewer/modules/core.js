@@ -16,7 +16,7 @@ export class PString
 
     revealed_string()
     {
-        return this.value.slice(0, this.length) + "<span style='color:#A00'>" + this.value.slice(this.length, this.max_length) + "</span>";
+        return this.value.slice(0, this.length) + "<span class='string-overrun'>" + this.value.slice(this.length, this.max_length) + "</span>";
     }
 }
 

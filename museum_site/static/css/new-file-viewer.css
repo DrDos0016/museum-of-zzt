@@ -1,3 +1,5 @@
+.string-overrun { color:var(--ega-darkred); }
+
 .envelope { display:none; min-height:360px; }
 .envelope.active { display:flex; }
 
@@ -204,6 +206,11 @@ details[open] .oop-summary::before
 {
     display:flex;
     flex-wrap:wrap;
+}
+
+.flex-table + .flex-table
+{
+    margin-top:1ch;
 }
 
 .flex-table .flex-row
