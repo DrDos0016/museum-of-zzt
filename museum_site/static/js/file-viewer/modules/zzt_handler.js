@@ -374,7 +374,7 @@ export class ZZT_Handler extends Handler
 
         output += `<div class="flex-table">\n`;
 
-        output += `<div class="flex-row"><div class="label">ZZT-OOP Search</div><div class="value"><input name="code-search" placeholder="#set housekey"><input type="button" value="Search"><input type="button" value="Clear"></div></div>\n`;
+        output += `<div class="flex-row"><div class="label">ZZT-OOP Search</div><div class="value"><input name="code-search" placeholder="#set housekey"><input type="button" value="Search" name="code-search-button"><input type="button" value="Clear Search"><div class="code-search-no-results-message">&nbsp;</div></div></div>\n`;
 
         output += `</div>\n`;
 
@@ -939,6 +939,51 @@ export class ZZT_Handler extends Handler
     {
         let sorted = this.boards[this.selected_board].stats.slice();
         return sorted;
+    }
+
+    code_search(query)
+    {
+        query = query.toLowerCase();
+        let matches = [];
+        let hashes = [];
+        console.log("Scannning for", query);
+        $(`.fv-content[data-fvpk="${this.fvpk}"]`).html("&nbsp;");
+
+        for (let board in this.boards)
+        {
+            for (let stat in this.boards[board].stats)
+            {
+                if (this.boards[board].stats[stat].oop.toLowerCase().indexOf(query) != -1)
+                {
+                    let hash = `${board}-${stat.x}-${stat.y}`;
+                    if (hashes.indexOf(hash) == -1)
+                    {
+                        hashes.push(hash);
+                        matches.push({"board_idx": board, "x": this.boards[board].stats[stat].x, "y": this.boards[board].stats[stat].y});
+                    }
+                }
+            }
+        }
+
+        $(".code-search-no-results-message").html("");
+        if (matches.length)
+            this.write_code_search_results_list(matches);
+        else
+            $(".code-search-no-results-message").html(`<i>No code found matching <b>${query}</b></i>`);
+    }
+
+    write_code_search_results_list(matches)
+    {
+        let output = `${this.filename}<ol class='board-list' start='0' data-fv_func='board_change'>\n`;
+        let func = (this.config.board_list.show_overrun) ? "revealed_string" : "toString";
+        for (var idx = 0; idx < this.boards.length; idx++)
+        {
+            let chk_selected = (idx == this.selected_board) ? " selected" : "";
+            output += `<li class='board${chk_selected}' data-board-number=${idx}>` + this.boards[idx].title[func]() + "!!</li>\n";
+        }
+        output += "</ol>\n";
+
+        this.write_targets([{"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": output}])
     }
 
 }

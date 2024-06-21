@@ -119,6 +119,12 @@ export class File_Viewer
         this.files[this.active_fvpk].write_element_info(coords.x, coords.y)
     }
 
+    code_search(e)
+    {
+        let query = $("input[name=code-search]").val();
+        this.files[this.active_fvpk].code_search(query);
+    }
+
 }
 
 export function create_handler_for_file(fvpk, filename, bytes, meta)

@@ -42,6 +42,8 @@ function initialize()
     $("#stat-info").on("change", "input[name=show-codeless]", (e) => { fv.resort_stats(e); });
     $("#stat-info").on("click", ".stat-link", (e) => { fv.stat_click(e); });
 
+    $("#world-info").on("click", "input[name=code-search-button]", (e) => { fv.code_search(e); });
+
     // Keyboard Shortcuts
     $(window).keyup(function (e){
         let match;
