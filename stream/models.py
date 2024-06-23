@@ -21,6 +21,7 @@ class Stream(BaseModel):
     )
 
     title = models.CharField(max_length=120)
+    key = models.CharField(max_length=30, help_text="Key to identify stream with", blank=True, default="")
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=50, default="none")
     description = models.CharField(max_length=300)
     when = models.DateTimeField(help_text="6pm PST = 2:00 UTC next day. 12pm PST = 20:00 UTC")

@@ -32,6 +32,8 @@ def overview(request):
     #context["zfiles"] = qs_manual_order(File.objects.filter(pk__in=request.GET.getlist("pk")), request.GET.getlist("pk"))
     if request.GET.get("pk"):
         stream = Stream.objects.filter(pk=request.GET["pk"]).first()
+    elif request.GET.get("key"):
+        stream = Stream.objects.filter(key=request.GET["key"]).first()
     else:
         today = datetime.now()
         stream = Stream.objects.filter(when__gte=today).first()
