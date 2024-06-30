@@ -1,4 +1,5 @@
 .string-overrun { color:var(--ega-darkred); }
+.stat-match::marker { content: "⤷"; }
 
 .envelope { display:none; min-height:360px; }
 .envelope.active { display:flex; }
@@ -277,6 +278,22 @@ li.empty /* Hidden entries in lists that need to keep counting */
     height:auto;
 }
 /* END flex table */
+
+.code-search-form
+{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content: space-between;
+    padding:0.5ch;
+
+}
+
+.code-search-no-results-message
+{
+    flex:1 0 100%;
+    border-bottom:1px solid var(--ega-black);
+}
 
 /* EVERYTHING BELOW IS COPIED FROM ORIGINAL FILE VIEWER */
 

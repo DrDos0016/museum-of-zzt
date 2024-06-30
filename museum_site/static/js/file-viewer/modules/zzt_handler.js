@@ -21,6 +21,8 @@ export class ZZT_Handler extends Handler
         this.name = "ZZT Handler";
         this.envelope_css_class = "zzt";
         this.initial_content = `<div class="inner-envelope-wrapper"><canvas class="fv-canvas" data-foo="BAR"></canvas><div class="hover-wrapper"><div class="hover-element" style="display:none"></div></div></div>`;
+        this.showing_search_results = false;
+        this.query = "";
         this.world = {};
         this.boards = [];
         this.default_renderer = ZZT_Standard_Renderer;
@@ -93,6 +95,7 @@ export class ZZT_Handler extends Handler
     }
 
     async write_html() {
+        let BLANK_TARGET = {"target": null, "html": ""};
         console.log("ZZT HTML Generation");
         if (! this.renderer)
             this.renderer = new this.default_renderer(this.fvpk);
@@ -102,17 +105,25 @@ export class ZZT_Handler extends Handler
         let targets = [
             {"target": ".hover-element", "html": ""},
             {"target": "#world-info", "html": this.get_world_tab()},
-            {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.write_board_list()},
+            ((this.showing_search_results) ? BLANK_TARGET : {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.write_board_list()}),
             {"target": "#element-info", "html": ""},
             {"target": "#stat-info", "html": this.write_stat_list()},
             {"target": "#board-info", "html": this.get_board_info(),},
             //{"target": "#fv-main", "html": "<textarea style='width:700px;height:500px;'>" +this.display_json_string() + "</textarea>",},
         ];
 
+        if (this.showing_search_results)
+        {
+            $(`.board.selected`).removeClass("selected");
+            $(`.board[data-board-number=${this.selected_board}]`).addClass("selected");
+        }
+
         // Erase hash?
-        window.location.hash = "";
+        //console.log("I'm gonna erase a hash", window.location.hash);
+        //window.location.hash = "";
 
         this.write_targets(targets);
+        console.log("AUTO CLICK???", this.auto_click);
         if (this.auto_click)
         {
             let coords = this.auto_click.replace("#", "").split(",");
@@ -319,8 +330,7 @@ export class ZZT_Handler extends Handler
         }
 
         // Super Lock
-        // TODO
-        if (this.boards[this.world.total_boards].title == ":c")// && this.boards[last_idx].corrupt)
+        if (this.boards[this.world.total_boards].size == 4)
             locks.push("Super Lock");
 
         // Save Lock
@@ -336,7 +346,7 @@ export class ZZT_Handler extends Handler
         let rows = [
             {"value": this.get_world_identifier(this.world.identifier), "label": "Format", },
             {"value": this.world.world_name, "label": "Name"},
-            {"value": this.board_link(this.world.current_board), "label": "Current Board", },
+            {"value": this.board_link(this.world.current_board), "label": "Starting Board", },
             {"value": this.world.total_boards, "label": "Total Boards", },
             {"value": this.world.health, "label": "Health", },
             {"value": this.world.ammo, "label": "Ammo", },
@@ -355,7 +365,6 @@ export class ZZT_Handler extends Handler
 
         if (this.world.watermark)
         {
-            console.log(`!!!${this.world.watermark}!!!`);
             rows.push({"value": this.world.watermark, "label": "Watermark"});
         }
 
@@ -374,7 +383,7 @@ export class ZZT_Handler extends Handler
 
         output += `<div class="flex-table">\n`;
 
-        output += `<div class="flex-row"><div class="label">ZZT-OOP Search</div><div class="value"><input name="code-search" placeholder="#set housekey"><input type="button" value="Search" name="code-search-button"><input type="button" value="Clear Search"><div class="code-search-no-results-message">&nbsp;</div></div></div>\n`;
+        output += `<div class="flex-row"><div class="label">ZZT-OOP Search</div><div class="value code-search-form"><input name="code-search" placeholder="#set frontkey" value="${this.query}"><input type="button" value="Search" name="code-search-button"><input type="button" name="clear-search" value="Clear Search"><div class="code-search-no-results-message">&nbsp;</div></div></div>\n`;
 
         output += `</div>\n`;
 
@@ -539,7 +548,7 @@ export class ZZT_Handler extends Handler
         const coords = this.get_tile_coordinates_from_cursor_position(e);
         // Update URL hash
         history.replaceState(undefined, undefined, `#${coords.x},${coords.y}`)
-        return this.write_element_info(coords.x, coords.y)
+        return this.write_element_info(coords.x, coords.y);
     }
 
     canvas_double_click(e)
@@ -776,7 +785,6 @@ export class ZZT_Handler extends Handler
         for (let idx=0; idx<stats.length; idx++)
         {
             let stat = stats[idx];
-            console.log("OOP FOR STAT", idx, stat.oop);
             if (! stat.oop)
                 output.push("<i>None</i>");
             else
@@ -943,43 +951,81 @@ export class ZZT_Handler extends Handler
 
     code_search(query)
     {
+        this.query = query;
         query = query.toLowerCase();
-        let matches = [];
+        let matches = {};
         let hashes = [];
-        console.log("Scannning for", query);
-        $(`.fv-content[data-fvpk="${this.fvpk}"]`).html("&nbsp;");
+        let match_count = 0;
 
-        for (let board in this.boards)
+        for (let board_idx in this.boards)
         {
-            for (let stat in this.boards[board].stats)
+            for (let stat_idx in this.boards[board_idx].stats)
             {
-                if (this.boards[board].stats[stat].oop.toLowerCase().indexOf(query) != -1)
+                let stat = this.boards[board_idx].stats[stat_idx];
+                if (this.boards[board_idx].stats[stat_idx].oop.toLowerCase().indexOf(query) != -1)
                 {
-                    let hash = `${board}-${stat.x}-${stat.y}`;
+                    let hash = `${board_idx}-${stat_idx}`;
+                    console.log(hash);
                     if (hashes.indexOf(hash) == -1)
                     {
                         hashes.push(hash);
-                        matches.push({"board_idx": board, "x": this.boards[board].stats[stat].x, "y": this.boards[board].stats[stat].y});
+                        if (matches["" + board_idx])
+                            matches["" + board_idx].push(stat_idx);
+                        else
+                            matches["" + board_idx] = [stat_idx];
+                        match_count++;
                     }
                 }
             }
         }
 
-        $(".code-search-no-results-message").html("");
-        if (matches.length)
+        $(".code-search-no-results-message").html("&nbsp;");
+        if (hashes.length)
+        {
+            $(".code-search-no-results-message").html(`<i>${match_count} match${(match_count > 1) ? 'es' : ''} found.</i>`);
             this.write_code_search_results_list(matches);
+        }
         else
-            $(".code-search-no-results-message").html(`<i>No code found matching <b>${query}</b></i>`);
+        {
+            $(".code-search-no-results-message").html(`<i>No matching code found.</i>`);
+            this.write_board_list();
+        }
     }
 
     write_code_search_results_list(matches)
     {
+        this.showing_search_results = true;
+        console.log(matches);
         let output = `${this.filename}<ol class='board-list' start='0' data-fv_func='board_change'>\n`;
         let func = (this.config.board_list.show_overrun) ? "revealed_string" : "toString";
         for (var idx = 0; idx < this.boards.length; idx++)
         {
             let chk_selected = (idx == this.selected_board) ? " selected" : "";
-            output += `<li class='board${chk_selected}' data-board-number=${idx}>` + this.boards[idx].title[func]() + "!!</li>\n";
+            let visible = (matches["" + idx]) ? "": " none";
+            output += `<li class='board${chk_selected}${visible}' data-board-number=${idx} value="${idx}">` + this.boards[idx].title[func]() + "</li>\n";
+            if (visible == "") // Matched board
+            {
+                for (let match_idx = 0; match_idx < matches["" + idx].length; match_idx++)
+                {
+                    // TODO: So much of this is copy/pasted
+                    let stat = this.boards[idx].stats[matches["" + idx][match_idx]];
+                    let name;
+
+                    try {
+                        let element = this.boards[idx].elements[stat.x][stat.y];
+                        name = ZZT_ELEMENTS[element.id].name;
+                    }
+                    catch (error)
+                    {
+                        name = "<i>Out of Bounds Stat</i>";
+                    }
+                    if (stat.oop[0] == "@")
+                    {
+                        name = stat.oop.slice(0, stat.oop.indexOf("\n"));
+                    }
+                    output += `<li class="stat-match" data-board-number=${idx} data-x="${stat.x}" data-y="${stat.y}">(${padded(stat.x)},${padded(stat.y)}) ${name} ${stat.oop_length} bytes</li>\n`;
+                }
+            }
         }
         output += "</ol>\n";
 

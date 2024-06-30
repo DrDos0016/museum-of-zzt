@@ -103,6 +103,7 @@ export class File_Viewer
     board_title_click(e)
     {
         console.log("-----------------Board title click");
+        window.location.hash = "";
         let bn = $(e.currentTarget).data("board-number");
         this.board_change(bn);
     }
@@ -115,14 +116,35 @@ export class File_Viewer
 
     stat_click(e)
     {
+        e.preventDefault();
+        console.log("STAT CLICK START", $(e.currentTarget));
         let coords = {"x": $(e.currentTarget).data("x"), "y": $(e.currentTarget).data("y")};
+        console.log("COORDS?", coords);
         this.files[this.active_fvpk].write_element_info(coords.x, coords.y)
+    }
+
+    async stat_match_click(e)
+    {
+        console.log("STAT MATCH CLICK", e)
+        let coord_str = `#${$(e.target).data("x")},${$(e.target).data("y")}`;
+        this.files[this.active_fvpk].auto_click = coord_str;
+        await this.board_title_click(e);
+        history.replaceState(undefined, undefined, coord_str);
     }
 
     code_search(e)
     {
         let query = $("input[name=code-search]").val();
         this.files[this.active_fvpk].code_search(query);
+    }
+
+    clear_search(e)
+    {
+        console.log("Clearing search");
+        let active = this.files[this.active_fvpk];
+        $("input[name=code-search]").val("");
+        active.query = "";
+        active.write_targets([{"target": `.fv-content[data-fvpk="${active.fvpk}"]`, "html": active.write_board_list()}]);
     }
 
 }

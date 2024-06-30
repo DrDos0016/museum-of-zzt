@@ -31,6 +31,7 @@ function initialize()
     $("#file-list").on("click", ".board-list .board", (e) => { fv.board_title_click(e); });
     $("#file-list").on("click", ".fv-content", output_file);
     $("#tabs").on("click", "div", display_tab);
+    $("#file-list").on("click", ".stat-match", (e) => { fv.stat_match_click(e); });
 
     $("#file-viewer").on("click", ".board-link", (e) => { fv.board_title_click(e); });
     $("#fv-main").on("mousemove", ".fv-canvas", canvas_mousemove);
@@ -43,6 +44,7 @@ function initialize()
     $("#stat-info").on("click", ".stat-link", (e) => { fv.stat_click(e); });
 
     $("#world-info").on("click", "input[name=code-search-button]", (e) => { fv.code_search(e); });
+    $("#world-info").on("click", "input[name=clear-search]", (e) => { fv.clear_search(e); });
 
     // Keyboard Shortcuts
     $(window).keyup(function (e){
