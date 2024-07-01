@@ -5,18 +5,24 @@ import tempfile
 import uuid
 import zipfile
 
+from datetime import datetime
 from urllib.parse import quote
+
 
 import pytumblr
 import requests
 
+#from cohost.models.user import User
+#from cohost.models.block import MarkdownBlock
 from django.db import models
 from django.template.loader import render_to_string
 from mastodon import Mastodon
 from twitter import *
 
+
 from museum.settings import STATIC_URL
 from museum_site.constants import STATIC_PATH, APP_ROOT
+from museum_site.core.social import Social_Cohost
 from museum_site.core.misc import record, zookeeper_init
 from museum_site.models import BaseModel, File
 from museum_site.querysets.wozzt_queue_querysets import *
@@ -25,7 +31,7 @@ from museum_site.settings import (
     WEBHOOK_URL,
     TUMBLR_OAUTH_CONSUMER, TUMBLR_OAUTH_CONSUMER_SECRET, TUMBLR_OAUTH_TOKEN, TUMBLR_OAUTH_SECRET,
     MASTODON_ACCESS_TOKEN, MASTODON_CLIENT_KEY, MASTODON_CLIENT_SECRET, MASTODON_EMAIL, MASTODON_PASS,
-    MASTODON_SECRETS_FILE
+    MASTODON_SECRETS_FILE,
 )
 
 
@@ -161,6 +167,7 @@ class WoZZT_Queue(BaseModel):
         return True
 
     def render_text(self, medium):
+        now = datetime.utcnow()
         context = {
             "board_url": self.file.get_absolute_url() + "?file=" + quote(self.zzt_file) + "&board=" + str(self.board),
             "zfile_title": self.file.title,
@@ -174,6 +181,7 @@ class WoZZT_Queue(BaseModel):
             "zfile": self.file,
             "related_article_count": self.file.articles.published().exclude(category="Publication Pack").count(),
             "article_url": self.file.article_url(),
+            "cohost_image_url": "https://museumofzzt.com/static/" + os.path.join("wozzt-queue", "archive", str(now.year), self.uuid + ".png")
         }
 
         return render_to_string("museum_site/subtemplate/wozzt-{}.html".format(medium), context).strip()
@@ -267,6 +275,21 @@ class WoZZT_Queue(BaseModel):
         resp = requests.post(WEBHOOK_URL, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
         record(resp)
         record(resp.content)
+        return True
+
+    def send_chost(self):
+        s = Social_Cohost()
+        s.login()
+        s.reset_media()
+
+        # Move the image to the archive directory
+        now = datetime.utcnow()
+        archival_directory = os.path.join(STATIC_PATH, "wozzt-queue", "archive", str(now.year), self.uuid + ".png")
+        os.rename(self.image_path(), archival_directory)
+
+        # Make the post
+        title = "[{}] {}".format(self.file.key, self.file.title)
+        s.post(self.render_text("cohost"), title, "#bot")
         return True
 
     def delete_image(self):

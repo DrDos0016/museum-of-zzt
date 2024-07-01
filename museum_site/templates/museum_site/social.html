@@ -1,0 +1,71 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}?{{BOOT_TS}}">
+{% endblock %}
+
+{% block content %}
+<h1>Museum of ZZT</h1>
+<p>Welcome to the Museum of ZZT, a site dedicated to the preservation and
+curation of the many games and worlds created with ZZT.</p>
+
+<p>ZZT is a text-mode game from 1991 created by Tim Sweeney of Epic Games. ZZT
+has its own editor and scripting language which offers what may still be an
+unmatched level of accessibility to beginning game developers. A significant
+number of ZZT worlds were created by authors in their early teenage years, with
+some being made by children under 10. ZZT's simple ZZT-OOP scripting language
+gave many a friendly introduction to programming.</p>
+
+<p>The goal of the Museum of ZZT site is to collect these worlds, offer
+discussions into them and the community built around them, and keep them safely
+preserved. It is the hope of the Museum that the generally unknown works of ZZT
+community can be easily discovered and that their importance can be recognized.
+</p>
+
+<div id="fp-file-frame">
+    <h2 id="new-releases-heading">New Releases</h2>
+    <h2 id="latest-additions-heading">New Finds</h2>
+    <div class="gallery-list scrolling">
+        <div class="col">
+        {% queryset_to_model_blocks new_releases view="gallery" %}
+        </div>
+        <div class="col">
+        {% queryset_to_model_blocks files view="gallery" %}
+        </div>
+    </div>
+    <div class="view-more l">
+        <a href="{% url 'zfile_browse_new_releases' %}">View All New Releases</a>
+    </div>
+    <div class="view-more r">
+        <a href="{% url 'zfile_browse_new_finds' %}">View All New Finds</a>
+    </div>
+</div>
+
+<div id="mobile-fp-file-frame">
+    <h2><a href="{% url 'zfile_browse_new_releases' %}">New Releases</a></h2>
+    {% queryset_to_model_blocks new_releases view="gallery" auto_wrap=False %}
+    <hr>
+    <h2><a href="{% url 'zfile_browse_new_finds' %}">New Finds</a></h2>
+    {% queryset_to_model_blocks files view="gallery" auto_wrap=False %}
+</div>
+
+<h2>Latest Articles</h2>
+{% with articles|slice:":3" as spotlight_articles %}
+    {% queryset_to_model_blocks spotlight_articles view="detailed" %}
+{% endwith %}
+
+{% with articles|slice:"3:" as spotlight_articles %}
+    {% queryset_to_model_blocks spotlight_articles view="list" %}
+{% endwith %}
+<div class="view-more">
+    <a href="{% url 'article_browse' %}">View All Articles</a>
+</div>
+
+<h2>Latest Feedback</h2>
+{% queryset_to_model_blocks feedback view="list" %}
+<div class="view-more">
+    <a href="{% url 'review_browse' %}">View All Feedback</a>
+</div>
+{% endblock %}
