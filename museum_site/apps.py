@@ -73,4 +73,10 @@ class Museum_Site_Config(AppConfig):
         cache.set("CHARSETS", standard_charsets)
         cache.set("CUSTOM_CHARSETS", custom_charsets)
 
+        # Initialize WoZZT Archive
+        if not os.path.exists("museum_site/static/wozzt-queue/archive/"):
+            os.makedirs("museum_site/static/wozzt-queue/archive/")
+        if not os.path.exists("museum_site/static/wozzt-queue/archive/{}".format(now.year)):
+            os.makedirs("museum_site/static/wozzt-queue/archive/{}".format(now.year))
+
         print("==================== Startup Complete ======================")
