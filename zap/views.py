@@ -226,7 +226,7 @@ def share_publication_pack(request):
         all_matches = re.findall("{%.*model_block.*%}", article.content)
         zfile_ids = []
         for m in all_matches:
-            if "view=" in m or "gallery" in m:  # Use the gallery frame to get IDs
+            if "view=" in m or "gallery" in m or "list" in m:  # Use the gallery frame to get IDs
                 zfile_ids.append(re.sub(r"\D", "", m[:m.find("%}")]))  # Just the PK used in the template tag
 
         zfiles = qs_manual_order(File.objects.filter(pk__in=zfile_ids), zfile_ids)
