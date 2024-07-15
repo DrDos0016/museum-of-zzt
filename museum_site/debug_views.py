@@ -195,11 +195,14 @@ def debug_collection_form(request):
 @staff_member_required
 def file_viewer_new(request, key, local=False):
     """ Returns page exploring a file's zip contents """
-    context = {}
+    context = {"local": local}
 
-    context["zfile"] = File.objects.get(key=key)
-    context["file"] = context["zfile"]
-    context["debug_board_range"] = list(range(0, 101))
+    if not local:
+        context["zfile"] = File.objects.get(key=key)
+        context["file"] = context["zfile"]
+        context["title"] = context["zfile"].title
+    else:
+        context["title"] = "Local File Viewer"
     return render(request, "museum_site/file-viewer.html", context)
 
 

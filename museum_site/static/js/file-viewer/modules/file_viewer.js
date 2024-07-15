@@ -1,5 +1,6 @@
 import { Handler } from "./handler.js";
 import { Image_Handler } from "./image_handler.js";
+import { Local_File_Uploader_Handler } from "./local_file_uploader_handler.js";
 import { Overview_Handler } from "./overview_handler.js";
 import { Text_Handler } from "./text_handler.js";
 import { Unsupported_Handler } from "./unsupported_handler.js";
@@ -23,6 +24,7 @@ export class File_Viewer
     active_fvpk = "fvpk-overview"; // The FVPK of the currently displayed file
     has_auto_load_target = false;
     auto_load_file_name = "Overview"; // Click overview by default
+    scroll_y = window.scrollY;
 
     add_file(filename, bytes, meta)
     {
@@ -32,8 +34,8 @@ export class File_Viewer
         if (this.has_auto_load_target && (filename == this.auto_load_filename))
         {
             this.files[fvpk].selected_board = this.auto_load_board;
-            this.files[fvpk].auto_click = window.location.hash;
-            console.log("HASH IS", window.location.hash);
+            //this.files[fvpk].auto_click = window.location.hash;
+            //console.log("HASH IS", window.location.hash);
         }
         this.fvi_count++;
         return fvpk;
@@ -75,6 +77,7 @@ export class File_Viewer
 
         $(".fv-content[data-fvpk=" + fvpk + "]").addClass("selected");
         this.files[fvpk].render();
+        this.history_add();
     }
 
     reparse_active_file_as_text()
@@ -103,9 +106,11 @@ export class File_Viewer
     board_title_click(e)
     {
         console.log("-----------------Board title click");
-        window.location.hash = "";
+        this.scroll_y = window.scrollY;
         let bn = $(e.currentTarget).data("board-number");
         this.board_change(bn);
+        $(window).scrollTop(this.scroll_y);
+        this.history_add();
     }
 
     resort_stats(e)
@@ -129,7 +134,6 @@ export class File_Viewer
         let coord_str = `#${$(e.target).data("x")},${$(e.target).data("y")}`;
         this.files[this.active_fvpk].auto_click = coord_str;
         await this.board_title_click(e);
-        history.replaceState(undefined, undefined, coord_str);
     }
 
     code_search(e)
@@ -145,6 +149,37 @@ export class File_Viewer
         $("input[name=code-search]").val("");
         active.query = "";
         active.write_targets([{"target": `.fv-content[data-fvpk="${active.fvpk}"]`, "html": active.write_board_list()}]);
+    }
+
+    hover_stat_start(e)
+    {
+        this.files[this.active_fvpk].renderer.crosshair($(e.target).data("x"), $(e.target).data("y"), "on");
+    }
+
+
+    hover_stat_stop(e)
+    {
+        this.files[this.active_fvpk].renderer.crosshair($(e.target).data("x"), $(e.target).data("y"), "off");
+    }
+
+    history_add()
+    {
+        if (this.files[this.active_fvpk].filename == "Overview" || this.files[this.active_fvpk].filename == "Upload Local File")
+            return false;
+
+        let state = {"open_file": this.files[this.active_fvpk].filename, "board": this.files[this.active_fvpk].selected_board};
+
+
+        console.log("CURRENT STATE", history.state);
+        console.log("NEW STATE---", state);
+
+        if (state.board)
+            history.pushState(state, "", `?file=${state.open_file}&board=${state.board}`);
+        else
+            history.pushState(state, "", `?file=${state.open_file}`);
+
+        console.log("History pushed state", state);
+        return true;
     }
 
 }
@@ -169,6 +204,8 @@ export function create_handler_for_file(fvpk, filename, bytes, meta)
             return new Text_Handler(fvpk, filename, bytes, meta);
         case fvpk == "fvpk-overview":
             return new Overview_Handler(fvpk, filename, bytes, meta);
+        case fvpk == "fvpk-local":
+            return new Local_File_Uploader_Handler(fvpk, filename, bytes, meta);
         default:
             return new Unsupported_Handler(fvpk, filename, bytes, meta);
     };

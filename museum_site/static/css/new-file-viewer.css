@@ -71,7 +71,7 @@
 /* Grid areas */
 #fv-main { grid-area: envelope; }
 #tabs { grid-area: tabs; }
-#region-file-list { grid-area: file-list; }
+#region-file-list { grid-area: file-list; min-height:295px; }
 #details { grid-area: details; }
 
 #details { border-bottom:1px solid var(--border-color); border-right:1px solid var(--border-color); overflow:auto;}
@@ -190,6 +190,19 @@
     height:0px;
 }
 
+.crosshair-wrapper
+{
+    height:0px;
+    position:absolute;
+}
+
+.crosshair
+{
+    position:relative;
+    top:-358px;
+    left:5px;
+}
+
 details .oop-summary { font-style: oblique; }
 
 details .oop-summary::before
@@ -293,6 +306,13 @@ li.empty /* Hidden entries in lists that need to keep counting */
 {
     flex:1 0 100%;
     border-bottom:1px solid var(--ega-black);
+}
+
+#details .field-wrapper
+{
+    grid-template-areas: "label value"
+    "help help"
+    "error error";
 }
 
 /* EVERYTHING BELOW IS COPIED FROM ORIGINAL FILE VIEWER */

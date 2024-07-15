@@ -20,6 +20,7 @@ export class Handler
     }
 
     async render() {
+        console.log("CALLED HANDLER.RENDER()");
         this.deactivate_active_envelopes()
 
         this.create_envelope();
@@ -30,7 +31,6 @@ export class Handler
         }
         let ready = await this.write_html();
         $(this.envelope_id).addClass("active");
-        this.history_add();
     }
 
     deactivate_active_envelopes()
@@ -130,8 +130,9 @@ export class Handler
         $(`#details #${tab}`).addClass("active");
     }
 
-    history_add()
+    /*history_add()
     {
+        console.log("HISTORY ADD IS BEING CALLED");
         if (this.filename == "Overview")
         {
             history.pushState({}, "", ("" + window.location).split("?")[0]);
@@ -140,25 +141,24 @@ export class Handler
 
         let state = {"open_file": this.filename}
         let url = "?file=" + encodeURIComponent(this.filename);
-        //window.location.hash
 
         if (this.selected_board !== undefined)
         {
             state["selected_board"] = this.selected_board;
             url += "&board=" + this.selected_board;
 
-            console.log("A:", url);
-            console.log("B:", initial_query_string);
+            //console.log("A:", url);
+            //console.log("B:", initial_query_string);
             if (url == ("?" + initial_query_string))
             {
                 initial_query_string = ""
                 return false;
 
             }
-            if (window.location.hash)
-                url += window.location.hash;
+            //if (window.location.hash)
+                //url += window.location.hash;
         }
-        console.log("Pushing History URL", url);
+        console.log("Pushing History URL", url, "state:", state);
         history.pushState(state, "", url);
-    }
+    }*/
 }

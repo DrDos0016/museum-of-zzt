@@ -7,24 +7,23 @@ import { KEY } from "./modules/core.js";
 function initialize()
 {
     console.log("Initalizing! HTML Settings are: auto_load =", auto_load, "file_size =", file_size, "fv_default_domain=", fv_default_domain);
+    history.replaceState({"open_file": "Overview"}, "", document.location.href);
 
     fv.default_domain = fv_default_domain;
-    // Add Overview
-    fv.files["fvpk-overview"] = create_handler_for_file("fvpk-overview", "Overview", [], {"loaded": true, "parsed": false});
 
-    // Determine what to auto load
-    if (auto_load.indexOf("?") != -1)
+    if (mode == "standard")
     {
-        let params = new URLSearchParams(auto_load.split("?", 2)[1]);
-        if (params.has("file"))
-        {
-            //fv.auto_load_target_str = `.fv-content[data-filename='${params.get("file")}']`;
-            fv.has_auto_load_target = true;
-            fv.auto_load_filename = params.get("file");
-            fv.auto_load_board = params.get("board");
-        }
+        // Add Overview
+        fv.files["fvpk-overview"] = create_handler_for_file("fvpk-overview", "Overview", [], {"loaded": true, "parsed": false});
+    }
+    else if (mode == "local")
+    {
+        fv.files["fvpk-local"] = create_handler_for_file("fvpk-local", "Upload Local File", [], {"loaded": true, "parsed": false});
+        fv.files["fvpk-local"].active_fvpk = "fvpk-local";
     }
 
+    // Determine what to auto load
+    initialize_autoload();
 
     // Bind pre-bindables
     $("#file-load-submit").click(ingest_file);
@@ -39,12 +38,18 @@ function initialize()
     $("#fv-main").on("click", ".fv-canvas", canvas_click);
     $("#fv-main").on("dblclick", ".fv-canvas", canvas_double_click);
 
+    $("#details").on("mouseover", ".coords", (e) => { fv.hover_stat_start(e); });
+    $("#details").on("mouseout", ".coords", (e) => { fv.hover_stat_stop(e); });
+
     $("#stat-info").on("change", "select[name=stat-sort]", (e) => { fv.resort_stats(e); });
     $("#stat-info").on("change", "input[name=show-codeless]", (e) => { fv.resort_stats(e); });
     $("#stat-info").on("click", ".stat-link", (e) => { fv.stat_click(e); });
+    $("#stat-info").on("mouseover", ".stat-link", (e) => { fv.hover_stat_start(e); });
+    $("#stat-info").on("mouseout", ".stat-link", (e) => { fv.hover_stat_stop(e); });
 
     $("#world-info").on("click", "input[name=code-search-button]", (e) => { fv.code_search(e); });
     $("#world-info").on("click", "input[name=clear-search]", (e) => { fv.clear_search(e); });
+
 
     // Keyboard Shortcuts
     $(window).keyup(function (e){
@@ -63,6 +68,16 @@ function initialize()
             if (match = $(".board.selected").prevAll(".board"))
                 match[0].click();
         }
+        else if (e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next File
+        {
+            if (match = $(".fv-content.selected").nextAll(".fv-content"))
+                match[0].click();
+        }
+        else if (e.shiftKey && (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K)) // Previous File
+        {
+            if (match = $(".fv-content.selected").prevAll(".fv-content"))
+                match[0].click();
+        }
         else if (e.keyCode == KEY.NP_UP) { $("a.board-link[data-direction=north]").click(); }
         else if (e.keyCode == KEY.NP_DOWN) { $("a.board-link[data-direction=south]").click(); }
         else if (e.keyCode == KEY.NP_RIGHT) { $("a.board-link[data-direction=east]").click(); }
@@ -75,13 +90,48 @@ function initialize()
         else if (e.keyCode == KEY.P) {$("#tabs div[data-shortcut='P'").click();}
     });
 
+    // History
+    $(window).bind("popstate", function(e) {
+        console.log("POPSTATE", history.state);
 
+        if (history.state)
+        {
+            if (history.state.open_file != fv.files[fv.active_fvpk].filename)
+            {
+                //console.log("I need to change the current file to", history.state.open_file);
+                $(`.fv-content[data-filename="${history.state.open_file}"]`).click();
+
+            }
+
+            if (history.state.board != fv.files[fv.active_fvpk].selected_board)
+            {
+                if (typeof history.state.board == "undefined") // Close File
+                {
+                    $(`.fv-content[data-fvpk=${fv.active_fvpk}] .board-list`).remove();
+                    $(`.fv-content[data-fvpk=${fv.active_fvpk}]`).removeClass("selected");
+                }
+                else // Change board
+                {
+                    fv.board_change(history.state.board);
+                }
+            }
+        }
+    });
+
+
+    console.log("AUTO LOAD?", auto_load);
     if (auto_load)
     {
         if (file_size < fv.auto_load_max_size)
             fetch_zip_file(auto_load);
         else
             fetch_zipinfo(auto_load);
+    }
+
+    if (mode == "local")
+    {
+        fv.display_file_list();
+        $(`.fv-content[data-fvpk='fvpk-local']`).click();
     }
 
     //DEBUG_FUNC();
@@ -313,6 +363,20 @@ function canvas_double_click(e)
     var base_x = e.pageX - rect.left - document.querySelector("html").scrollLeft - border_size;
     var base_y = e.pageY - rect.top - document.querySelector("html").scrollTop - border_size;
     fv.files[fvpk].canvas_double_click({"base_x": base_x, "base_y": base_y});
+}
+
+function initialize_autoload()
+{
+    if (auto_load.indexOf("?") != -1)
+    {
+        let params = new URLSearchParams(auto_load.split("?", 2)[1]);
+        if (params.has("file"))
+        {
+            fv.has_auto_load_target = true;
+            fv.auto_load_filename = params.get("file");
+            fv.auto_load_board = params.get("board");
+        }
+    }
 }
 
 let fv = new File_Viewer();

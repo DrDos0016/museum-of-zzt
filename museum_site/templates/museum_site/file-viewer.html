@@ -14,8 +14,15 @@
 <script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
 <script async src="{% static 'js/file-viewer/main.js' %}?{{BOOT_TS}}" type="module"></script>
 <script>
+{% if not local %}
 let auto_load = "{{zfile.download_url}}{% if request.GET.file %}?file={{request.GET.file}}{% endif %}{% if request.GET.board %}&board={{request.GET.board}}{% endif %}";
 let file_size = {{zfile.size}};
+let mode = "standard";
+{% else %}
+let auto_load = "";
+let file_size = 0;
+let mode = "local";
+{% endif %}
 let fv_default_domain = "{{DOMAIN}}";
 var initial_query_string = "{{request.META.QUERY_STRING|safe}}";
 var DEBUG_VAR = null;
@@ -41,12 +48,6 @@ var user_test = {"bar": "baz", "yes": true}; // DEBUG
         </div>
         {% if zfile.description %}<div class="zf-desc-wrapper"><div><p>{{zfile.description|linebreaks}}</p></div></div>{% endif %}
     </div>
-    {% comment %}
-    <div class="envelope envelope-overview active" id="preview-envelope">
-        <div class="zf-preview-wrapper"><img src="{% static zfile.preview_url|default:'images/no_screenshot.png' %}" class="image" id="fv-preview"></div>
-        {% if zfile.description %}<div class="zf-desc-wrapper"><div><p>{{zfile.description|linebreaks}}</p></div></div>{% endif %}
-    </div>
-    {% endcomment %}
 </div>
 
 <div id="region-file-list">
@@ -69,90 +70,10 @@ var user_test = {"bar": "baz", "yes": true}; // DEBUG
     <div id="element-info"></div>
     <div id="stat-info"></div>
     <div id="preferences">
-        <div class="field">
-            <label for="pref-charset">Charset</label>
-            <select name="charset" id="pref-charset">
-                <optgroup label="Standard Fonts">
-                    {% for charset in charsets %}
-                    <option
-                        value="{{charset.filename}}"{% if request.charset == charset %} selected{% endif %}
-                        data-charset-id={{charset.id}}
-                        data-charset-engine={{charset.engine}}
-                    >{{charset.name}}{% if file.id == charset.id %} (RECOMMENDED){% endif %}</option>
-                    {% endfor %}
-                </optgroup>
-                <optgroup label="Custom Fonts">
-                    {% for charset in custom_charsets %}
-                    <option
-                        value="{{charset.filename}}"{% if request.charset == charset %} selected{% endif %}
-                        data-charset-id={{charset.id}}
-                        data-charset-engine={{charset.engine}}
-                    >{{charset.name}}{% if file.id == charset.id %} (RECOMMENDED){% endif %}</option>
-                    {% endfor %}
-                </optgroup>
-            </select>
-        </div>
+        <div id="prefs-file-viewer">
 
-        <div class="field">
-            <label for="pref-renderer">Board Rendering</label>
-            <select name="renderer" id="pref-renderer">
-                <option value="zzt_standard" selected>Standard</option>
-                <option value="zzt_objects">Object Highlight</option>
-                <option value="zzt_code">Code Highlight</option>
-                <option value="zzt_fake">Fake Wall Highlight</option>
-                <option value="zzt_dark">Dark Board</option>
-                <option value="zzt_empty">Visible Empties</option>
-                <option value="zzt_empty_text">Empties as Text</option>
-                <option value="weave_standard">Weave (Partial Support)</option>
-            </select>
         </div>
-
-        <div class="field">
-            <label for="pref-intensity">High Intensity Backgrounds</label>
-            <select name="intensity" id="pref-intensity">
-                <option value="high">On</option>
-                <option value="low" selected>Off</option>
-            </select>
-        </div>
-
-        <div class="field">
-            <label for="pref-invisibles" id="pref-invisibles">Invisible Walls</label>
-            <select name="invisibles">
-                <option value="revealed">Visible - Revealed</option>
-                <option value="editor" selected>Visible - Editor</option>
-                <option value="invisible">Invisible</option>
-            </select>
-        </div>
-
-        <div class="field">
-            <label for="pref-monitors">Monitors</label>
-            <select name="monitors" id="pref-monitors">
-                <option value="hidden">Hidden - ZZT Style</option>
-                <option value="m" selected>M - KevEdit Style</option>
-            </select>
-        </div>
-
-        <div class="field">
-            <label for="pref-edges">Board Edges</label>
-            <select name="edges" id="pref-edges">
-                <option value="hidden" selected>Hidden - ZZT Style</option>
-                <option value="e">E - KevEdit Style</option>
-            </select>
-        </div>
-
-        <div class="field">
-            <label for="pref-statlessobj">Statless Objects</label>
-            <select name="statlessobj" id="pref-statlessobj">
-                <option value="hidden" selected>Hidden - ZZT Style</option>
-                <option value="s">☻ - KevEdit Style</option>
-            </select>
-        </div>
-
-
-        <div class="field">
-            <label for="pref-edges">2x Zoom</label>
-            <input name="pref-board-scale" id="board-scale" type="checkbox"{% if request.COOKIES.file_viewer_scale == "2" %} checked{% endif %}>
-        </div>
+        <div id="prefs-active"></div>
     </div>
 
     <div id="help">
@@ -186,10 +107,4 @@ var user_test = {"bar": "baz", "yes": true}; // DEBUG
 </section>
 
 <hr>
-<input type="file" name="file_load_widget"><input id="file-load-submit" type="button" value="Load File"> - Load a zip/zzt/whatever
-<hr>
-FV Debug:
-<div id="FV-DEBUG">Empty debug</div>
-<hr>
-<div id="debug-world-info">World{{request.META.QUERY_STRING}}</div>
 {% endblock %}

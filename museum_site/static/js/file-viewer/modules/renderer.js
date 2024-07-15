@@ -30,6 +30,8 @@ export class ZZT_Standard_Renderer
         this.element_func.fill(this.text_draw, 47);
 
         this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1};
+
+        this.ctx = null;
     }
 
     async render_board(board)
@@ -50,32 +52,32 @@ export class ZZT_Standard_Renderer
 
         //canvas.insertAdjacentHTML("afterend", "Is this real?");
 
-        const ctx = canvas.getContext("2d");
+        this.ctx = canvas.getContext("2d");
 
         for (let y = 1; y < 26; y++)
         {
             for (let x = 1; x < 61; x++)
             {
                 let [fg, bg, char] = this.element_func[this.rendered_board.elements[x][y].id].apply(this, [x, y]);
-                this.stamp(x, y, fg, bg, char, ctx);
+                this.stamp(x, y, fg, bg, char);
             }
         }
         return canvas;
     }
 
-    stamp(x, y, fg, bg, char, ctx)
+    stamp(x, y, fg, bg, char)
     {
         const border_offset = (! this.show_border);
         let ch_x = char % 16;
         let ch_y = parseInt(char / 16);
         // Background
-            ctx.globalCompositeOperation = "source-over";
-            ctx.fillStyle = bg;
-            ctx.fillRect((x - border_offset) * this.character_set.tile_width, (y - border_offset) * this.character_set.tile_height, this.character_set.tile_width, this.character_set.tile_height);
+            this.ctx.globalCompositeOperation = "source-over";
+            this.ctx.fillStyle = bg;
+            this.ctx.fillRect((x - border_offset) * this.character_set.tile_width, (y - border_offset) * this.character_set.tile_height, this.character_set.tile_width, this.character_set.tile_height);
 
             // Foreground transparency
-            ctx.globalCompositeOperation = "xor";
-            ctx.drawImage(
+            this.ctx.globalCompositeOperation = "xor";
+            this.ctx.drawImage(
                 this.character_set.image,
                 ch_x * this.character_set.tile_width,
                 ch_y * this.character_set.tile_height,
@@ -88,13 +90,60 @@ export class ZZT_Standard_Renderer
             );
 
             // Foreground
-            ctx.globalCompositeOperation = "destination-over";
-            ctx.fillStyle = fg;
-            ctx.fillRect(
+            this.ctx.globalCompositeOperation = "destination-over";
+            this.ctx.fillStyle = fg;
+            this.ctx.fillRect(
                 (x - border_offset) * this.character_set.tile_width,
                 (y - border_offset) * this.character_set.tile_height,
                 this.character_set.tile_width, this.character_set.tile_height
             ); // -1 for border compensation
+    }
+
+    crosshair(center_x, center_y, state="on")
+    {
+        if (state == "on")
+        {
+
+            if (center_x < 0 || center_y < 0 || center_x > this.board_width || center_y > this.board_height)
+                return false;
+
+            let x = center_x - 1;
+            let y = center_y - 1;
+
+            if (! this.show_border)
+            {
+                x -= 1;
+                y -= 1;
+            }
+
+            let border_w = this.character_set.tile_width;
+            let border_h = this.character_set.tile_height;
+
+            $(".crosshair").css(
+            {
+                "width": border_w + "px",
+                "height": border_h + "px",
+                "border-top": `${border_h}px solid #FFD700`,
+                "border-right": `${border_w}px solid #FFD700`,
+                "border-bottom": `${border_h}px solid #FFD700`,
+                "border-left": `${border_w}px solid #FFD700`,
+                "margin-top": `${y * this.character_set.tile_height}px`,
+                "margin-left": `${x * this.character_set.tile_width}px`,
+            });
+            return true;
+        }
+
+        $(".crosshair").css(
+        {
+            "width": "0px",
+            "height": "0px",
+            "border-top": "0px",
+            "border-right": "0px",
+            "border-bottom": "0px",
+            "border-left": "0px",
+            "margin-top": "0px",
+            "margin-left": "0px",
+        });
     }
 
     get_stats_for_element(x, y, limit=1)
@@ -115,7 +164,6 @@ export class ZZT_Standard_Renderer
 
         if (output.length == 0) // This element is statless
         {
-            console.log("STATLESS ELEMENT. TODO");
             return [this.default_stat];
         }
         return output;

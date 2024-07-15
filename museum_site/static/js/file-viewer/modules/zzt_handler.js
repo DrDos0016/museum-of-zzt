@@ -20,7 +20,7 @@ export class ZZT_Handler extends Handler
         super(fvpk, filename, bytes, meta);
         this.name = "ZZT Handler";
         this.envelope_css_class = "zzt";
-        this.initial_content = `<div class="inner-envelope-wrapper"><canvas class="fv-canvas" data-foo="BAR"></canvas><div class="hover-wrapper"><div class="hover-element" style="display:none"></div></div></div>`;
+        this.initial_content = `<div class="inner-envelope-wrapper"><canvas class="fv-canvas" data-foo="BAR"></canvas><div class="hover-wrapper"><div class="hover-element" style="display:none"></div></div><div class="crosshair-wrapper"><div class="crosshair"></div></div></div>`;
         this.showing_search_results = false;
         this.query = "";
         this.world = {};
@@ -42,8 +42,8 @@ export class ZZT_Handler extends Handler
         this.cursor_tile = {"x": -1, "y": -1} // Tile the cursor was last seen over
 
         this.config = {
-            "board_list": {
-                "show_overrun": false,
+            "pstrings": {
+                "show_leftover_data": false,
             },
             "stats": {
                 "sort": "name",
@@ -110,6 +110,7 @@ export class ZZT_Handler extends Handler
             {"target": "#stat-info", "html": this.write_stat_list()},
             {"target": "#board-info", "html": this.get_board_info(),},
             //{"target": "#fv-main", "html": "<textarea style='width:700px;height:500px;'>" +this.display_json_string() + "</textarea>",},
+            {"target": "#preferences", "html": this.get_preferences(),},
         ];
 
         if (this.showing_search_results)
@@ -118,12 +119,9 @@ export class ZZT_Handler extends Handler
             $(`.board[data-board-number=${this.selected_board}]`).addClass("selected");
         }
 
-        // Erase hash?
-        //console.log("I'm gonna erase a hash", window.location.hash);
-        //window.location.hash = "";
-
         this.write_targets(targets);
-        console.log("AUTO CLICK???", this.auto_click);
+
+        console.log("AUTO CLICK COORDS:", this.auto_click);
         if (this.auto_click)
         {
             let coords = this.auto_click.replace("#", "").split(",");
@@ -134,6 +132,8 @@ export class ZZT_Handler extends Handler
         {
             this.display_tab("board-info");
         }
+
+        //$(window).scrollTop($("#fv-main").offset().top);
         return true;
     }
 
@@ -213,7 +213,7 @@ export class ZZT_Handler extends Handler
             };
             board.size = this.read_Int16();
             board.title = this.read_PString(50);
-            console.log("BOARD:", board.title, Date.now());
+            //console.log("BOARD:", board.title, Date.now());
 
             board.elements = Array(62).fill(0).map(x=> Array(27).fill(0)); // This is necessary
 
@@ -231,7 +231,7 @@ export class ZZT_Handler extends Handler
             }
 
             // RLE
-            console.log("Parsing RLE", Date.now());
+            //console.log("Parsing RLE", Date.now());
             let read_tiles = 0;
             let tile_idx = 0;
             while (read_tiles < this.tile_count)
@@ -257,7 +257,7 @@ export class ZZT_Handler extends Handler
             }
 
             // Board properties
-            console.log("Parsing Props", Date.now());
+            //console.log("Parsing Props", Date.now());
             board.max_shots = this.read_Uint8();
             board.is_dark = this.read_Uint8();
             board.neighbor_boards = [this.read_Uint8(), this.read_Uint8(), this.read_Uint8(), this.read_Uint8()];
@@ -271,7 +271,7 @@ export class ZZT_Handler extends Handler
             board.meta.stats_address += 88;
 
             // Stats
-            console.log("Parsing Stats", board.stat_count, Date.now());
+            //console.log("Parsing Stats", board.stat_count, Date.now());
             board.stats = [];
 
             let read_stats = 0;
@@ -313,7 +313,7 @@ export class ZZT_Handler extends Handler
             }
 
             boards.push(board);  // Add the finalizared parsed board to the list
-            console.log("Parsed board:", board.title, Date.now());
+            //console.log("Parsed board:", board.title, Date.now());
         }
         return boards
     }
@@ -399,7 +399,7 @@ export class ZZT_Handler extends Handler
             {"value": `${board.max_shots} shots.`, "label": "Can Fire"},
             {"value": this.yesno(board.is_dark), "label": "Board Is Dark"},
             {"value": this.yesno(board.reenter_when_zapped), "label": "Re-enter When Zapped"},
-            {"value": `(${board.start_player_x}, ${board.start_player_y})`, "label": "Re-enter X/Y"},
+            {"value": `${this.coords_span(board.start_player_x, board.start_player_y)}`, "label": "Re-enter X/Y"},
             {"value": this.val_or_none(board.time_limit), "label": "Time Limit"},
             {"value": `${board.stat_count + 1} / 151`, "label": "Stat Count"},
             {"value": `${board.size} bytes`, "label": "Board Size"},
@@ -435,11 +435,14 @@ export class ZZT_Handler extends Handler
     {
         console.log("WRITING BOARD LIST");
         let output = `${this.filename}<ol class='board-list' start='0' data-fv_func='board_change'>\n`;
-        let func = (this.config.board_list.show_overrun) ? "revealed_string" : "toString";
+        let func = (this.config.pstrings.show_leftover_data) ? "revealed_string" : "toString";
         for (var idx = 0; idx < this.boards.length; idx++)
         {
             let chk_selected = (idx == this.selected_board) ? " selected" : "";
-            output += `<li class='board${chk_selected}' data-board-number=${idx}>` + this.boards[idx].title[func]() + "</li>\n";
+            let board_title = this.boards[idx].title[func]();
+            if (board_title == "")
+                board_title = "<i>Untitled Board</i>";
+            output += `<li class='board${chk_selected}' data-board-number=${idx}>` + board_title + "</li>\n";
         }
         output += "</ol>\n";
 
@@ -495,7 +498,6 @@ export class ZZT_Handler extends Handler
         console.log("FUNC DISPLAY_BOARD_CANVAS", this.fvpk);
         let board_idx = (this.selected_board !== null) ? this.selected_board : this.world.current_board;
         let canvas = await this.renderer.render_board(this.boards[board_idx]);
-        console.log("----------------- ADDING BOARD TO HISTORY", board_idx);
         return true;
     }
 
@@ -546,8 +548,7 @@ export class ZZT_Handler extends Handler
     canvas_click(e)
     {
         const coords = this.get_tile_coordinates_from_cursor_position(e);
-        // Update URL hash
-        history.replaceState(undefined, undefined, `#${coords.x},${coords.y}`)
+        history.replaceState(undefined, undefined, `#${coords.x},${coords.y}`);
         return this.write_element_info(coords.x, coords.y);
     }
 
@@ -587,15 +588,21 @@ export class ZZT_Handler extends Handler
         }
         catch (error)
         {
-            console.log("TODO PLACEHOLDER");
-            element_id = 4;
-            color_id = 11;
-            element = ZZT_ELEMENTS[element_id];
+            // Use a fictionalized OOB elements
+            element = {
+                "id":"<i>None</i>",
+                "name":"<i>Out of Bounds Element</i>",
+                "oop_name":"",
+                "character":63
+            }
+            //element_id = 4;
+            //color_id = 11;
+            //element = ZZT_ELEMENTS[element_id];
         }
         let output = `<table>`;
 
         let rows = [
-            {"value": `(${padded(x)}, ${padded(y)})`, "label": "Position", },
+            {"value": `${this.coords_span(x, y)}`, "label": "Position", },
             {"value": element.name, "label": "Name", },
             {"value": element.id, "label": "ID", },
             {"value": this.get_color(color_id), "label": "Color", },
@@ -612,7 +619,7 @@ export class ZZT_Handler extends Handler
                 {"value": `${tile_stats[idx].cycle}`, "label": "Cycle", },
                 {"value": `${this.get_param2_value(element.id, tile_stats[idx].param2)}`, "label": `${this.get_param_name_for_element(element.id, 2)}`, },
                 {"value": `${ZZT_ELEMENTS[tile_stats[idx].under.element_id].name}`, "label": "Under Element", },
-                {"value": `${tile_stats[idx].param3}`, "label": `${this.get_param_name_for_element(element.id, 3)}`, },
+                {"value": `${this.get_param3_value(element.id, tile_stats[idx].param3)}`, "label": `${this.get_param_name_for_element(element.id, 3)}`, },
                 {"value": `${this.get_color(tile_stats[idx].under.color)}`, "label": "Under Color", },
                 {"value": `${this.get_step(tile_stats[idx])}`, "label": "Step (X, Y)", },
                 {"value": `${this.get_bound_stat(tile_stats[idx])}`, "label": "Bound to", },
@@ -676,6 +683,9 @@ export class ZZT_Handler extends Handler
     {
         let default_param = "Param" + param;
 
+        if (element_id == "<i>None</i>")
+            return default_param
+
         if (ZZT_ELEMENTS[element_id]["param" + param])
             return ZZT_ELEMENTS[element_id]["param" + param];
         return default_param
@@ -685,6 +695,14 @@ export class ZZT_Handler extends Handler
     {
         if (element_id == 39 || element_id == 42) // TODO MAGIC NUMBER
             return (raw >= 128) ? `${raw - 128} [Stars] (Raw: ${raw})` : `${raw} [Bullets]`;
+        return raw;
+    }
+
+    get_param3_value(element_id, raw)
+    {
+        console.log("P3 for element id?", element_id);
+        if (element_id == 11) // TODO MAGIC NUMBER
+            return this.board_link(raw);
         return raw;
     }
 
@@ -701,9 +719,14 @@ export class ZZT_Handler extends Handler
         {
             if (board_num < 0 || board_num >= this.boards.length)
                 return `<i>Corrupt Board Link</i>`;
-            return `<a class="jsLink board-link" data-board-number="${board_num}" data-direction="${direction}">${padded(board_num)}. ${this.boards[board_num].title}</a>`;
+            return `<a class="jsLink board-link" data-board-number="${board_num}" data-direction="${direction}">${padded(board_num)}. ${this.get_hr_title(board_num)}</a>`;
         }
         return `<i>None</i>`;
+    }
+
+    get_hr_title(board_num)
+    {
+        return (this.boards[board_num].title == "") ? "<i>Untitled Board</i>" : this.boards[board_num].title;
     }
 
     get_keys_value()
@@ -851,6 +874,8 @@ export class ZZT_Handler extends Handler
 
     get_color(color_id)
     {
+        if (color_id == undefined)
+            return `<i>None</i>`;
         let fg = color_id % 16
         let bg = parseInt(color_id / 16) % 8
         let bg_x = parseInt(fg * -8);
@@ -965,7 +990,6 @@ export class ZZT_Handler extends Handler
                 if (this.boards[board_idx].stats[stat_idx].oop.toLowerCase().indexOf(query) != -1)
                 {
                     let hash = `${board_idx}-${stat_idx}`;
-                    console.log(hash);
                     if (hashes.indexOf(hash) == -1)
                     {
                         hashes.push(hash);
@@ -997,7 +1021,7 @@ export class ZZT_Handler extends Handler
         this.showing_search_results = true;
         console.log(matches);
         let output = `${this.filename}<ol class='board-list' start='0' data-fv_func='board_change'>\n`;
-        let func = (this.config.board_list.show_overrun) ? "revealed_string" : "toString";
+        let func = (this.config.pstrings.show_leftover_data) ? "revealed_string" : "toString";
         for (var idx = 0; idx < this.boards.length; idx++)
         {
             let chk_selected = (idx == this.selected_board) ? " selected" : "";
@@ -1032,4 +1056,33 @@ export class ZZT_Handler extends Handler
         this.write_targets([{"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": output}])
     }
 
+    get_preferences()
+    {
+        let output = "";
+
+        output += `<div class="field-wrapper">
+            <label for="">Leftover Data:</label>
+            <div class="field-value"><select>
+                <option value=0${(this.config.pstrings.show_leftover_data == false) ? " selected" : ""}>Hide*</option>
+                <option value=1${(this.config.pstrings.show_leftover_data == true) ? " selected" : ""}>Show</option>
+            </select></div>
+            <p class="field-help">Show full contents of certain strings regardless of specified length.</p>
+        </div>`;
+
+        output += `<div class="field-wrapper">
+            <label for="">Limit Stat Parsing:</label>
+            <div class="field-value"><select>
+                <option value=0${(this.config.corrupt.enforce_stat_limit == true) ? " selected" : ""}>Limit*</option>
+                <option value=1${(this.config.corrupt.enforce_stat_limit == false) ? " selected" : ""}>Do Not Limit</option>
+            </select></div>
+            <p class="field-help">Speed up parsing of corrupt boards by limiting the stats parsed to the engine's stat limit. No effect on non-corrupt boards. Full parsing corrupt boards may cause file viewer to become unresponsive.</p>
+        </div>`;
+
+        return output;
+    }
+
+    coords_span(x, y)
+    {
+        return `<span class="coords" data-x="${x}" data-y="${y}">(${padded(x)}, ${padded(y)})</span>`;
+    }
 }
