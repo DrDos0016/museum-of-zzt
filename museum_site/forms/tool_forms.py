@@ -469,13 +469,11 @@ class Prep_Publication_Pack_Form(forms.Form):
         help_text="Select one or more ZFiles",
         required=False,
     )
-    prefix = Manual_Field(
-        label="Prefix(es)",
-        widget=Tagged_Text_Widget(),
+    prefix = Museum_Tagged_Text_Field(
+        label="Screenshot Prefixes",
         required=False,
         help_text="Separate with commas. Match order in associated ZFiles.",
     )
-
 
 class Publication_Pack_Select_Form(forms.Form):
     use_required_attribute = False
