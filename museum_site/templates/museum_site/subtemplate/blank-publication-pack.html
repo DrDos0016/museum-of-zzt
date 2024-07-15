@@ -2,9 +2,10 @@
 <p></p>
 
 <h2>Contents</h2>
-<div class="gallery-frame">
-{% for f in files %}{% templatetag openblock %} model_block files.{{f.id}} "gallery" {% templatetag closeblock %}{% templatetag openblock %} comment {% templatetag closeblock %}{{f.prefix}} -- {{f.title}}{% templatetag openblock %} endcomment {% templatetag closeblock %}
-{% endfor %}</div>
+<table>
+{% for f in files %}{% if forloop.first %}{% templatetag openvariable %}files.{{f.id}}.table_header{% templatetag closevariable %}
+{% endif %}{% templatetag openblock %} model_block files.{{f.id}} "list" {% templatetag closeblock %}{% templatetag openblock %} comment {% templatetag closeblock %}{{f.prefix}} -- {{f.title}}{% templatetag openblock %} endcomment {% templatetag closeblock %}
+{% endfor %}</table>
 
 {% for f in files %}
 <!--{{f.title}}-->
