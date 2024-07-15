@@ -32,7 +32,7 @@ $(document).ready(function (){
             parse_zip_file(file);
         else if (ext == ".zzt")
             set_uploaded_zzt_file(file);
-        else if (ext == ".png")
+        else if (ext == ".png" || ext == ".jpg")
             set_uploaded_image(file);
         else
             console.log("Unhandled file extension: " + ext);
