@@ -46,6 +46,14 @@ def file_download(request, key):
 @rusty_key_check
 def file_viewer(request, key, local=False):
     """ Returns page exploring a file's zip contents """
+
+
+    if request.session.get("TEMP_FILE_VIEWER_BETA"):
+        if local:
+            return redirect("zfile_view_local_beta", key=key)
+        else:
+            return redirect("file_beta", key=key)
+
     data = {
         "content_classes": ["fv-grid"],
         "details": [],
@@ -173,6 +181,18 @@ class ZFile_List_View(Model_List_View):
             if request.path == reverse("zfile_roulette"):
                 self.sorted_by = "random"
 
+        # Cheat Prompt
+        if self.request.GET.get("q"):
+            cheat = self.request.GET["q"].upper()
+            if cheat == "+DEBUG":
+                self.request.session["DEBUG"] = 1
+            elif cheat == "-DEBUG":
+                del self.request.session["DEBUG"]
+            elif cheat == "+BETA":
+                self.request.session["TEMP_FILE_VIEWER_BETA"] = 1
+            elif cheat == "-BETA":
+                del self.request.session["TEMP_FILE_VIEWER_BETA"]
+
     def get_queryset(self):
         qs = ZFile.objects.search(self.request.GET)
 
@@ -250,12 +270,6 @@ class ZFile_List_View(Model_List_View):
         if self.request.path.startswith("/file/browse/article/"):
             a = Article.objects.get(pk=self.value)
             context["prefix_text"] = "Files associated with the article {}.".format(a.get_field_view(view="list").get("value", "?"))
-
-        # Debug cheat
-        if self.request.GET.get("q") == "+DEBUG":
-            self.request.session["DEBUG"] = 1
-        elif self.request.GET.get("q") == "-DEBUG":
-            del self.request.session["DEBUG"]
 
         # Add basic search filters
         if self.search_type == "basic":
