@@ -50,6 +50,9 @@ function initialize()
     $("#world-info").on("click", "input[name=code-search-button]", (e) => { fv.code_search(e); });
     $("#world-info").on("click", "input[name=clear-search]", (e) => { fv.clear_search(e); });
 
+    /* Local Files */
+    $("#fv-main").on("click", "#file-load-submit", ingest_file);
+
 
     // Keyboard Shortcuts
     $(window).keyup(function (e){
@@ -187,7 +190,7 @@ function set_file_bytes(fvpk, data)
 function ingest_file()
 {
     // Checks that a file is ready to be manually uploaded into the file registry
-    if ($("input[name=file_load_widget]").val())
+    if ($("input[name=file-load-widget]").val())
         ingest_file_from_upload();
 }
 
@@ -196,13 +199,13 @@ function ingest_file_from_upload()
 {
     // Adds a manually uploaded file into the file registry
     console.log("UPLOADING");
-    const file = $("input[name=file_load_widget]")[0].files[0];
+    const file = $("input[name=file-load-widget]")[0].files[0];
     var reader = new FileReader();
     reader.onload = function (e) {
         var byte_array = new Uint8Array(reader.result);
         console.log(byte_array);
-        fv.add_file(file.name, byte_array, {"loaded": true, "parsed": false});
-        fv.render_file_list_item(file.name);
+        let fvpk = fv.add_file(file.name, byte_array, {"loaded": true, "parsed": false});
+        fv.render_file_list_item(fvpk);
     };
     reader.readAsArrayBuffer(file);
 }

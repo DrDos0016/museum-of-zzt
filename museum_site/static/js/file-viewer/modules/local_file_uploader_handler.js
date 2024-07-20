@@ -28,7 +28,7 @@ export class Local_File_Uploader_Handler extends Handler
     generate_local_form()
     {
         let output = `<div>
-        <input type="file" name="file_load_widget"><input id="file-load-submit" type="button" value="Load File"> - Load a zip/zzt/whatever
+        <input type="file" name="file-load-widget"><input id="file-load-submit" type="button" value="Load File"> - Load a zip/zzt/whatever
         </div>`;
         return output;
     }

@@ -43,7 +43,7 @@ export class File_Viewer
 
     render_file_list_item(fvpk)
     {
-        // Writes a list litem to the page's file list section
+        // Writes a list item to the page's file list section
         $("#file-list").append(
             `<li class="fv-content" data-fvpk="${fvpk}" data-filename="${this.files[fvpk].filename}">${this.files[fvpk].filename}</li>`
         );

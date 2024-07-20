@@ -148,8 +148,9 @@ urlpatterns = [
     path("file/download/<str:key>/", museum_site.file_views.file_download, name="zfile_download"),
     path("file/review/<str:key>/", museum_site.file_views.ZFile_Review_List_View.as_view(), name="zfile_review"),
     path("file/view-local/", museum_site.file_views.file_viewer, {"local": True, "key": ""}, name="zfile_view_local"),
-    path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),  # TODO
-    #path("file/view/<str:key>/", museum_site.debug_views.file_viewer_new, name="file"),  # TODO
+    path("file/view-local/beta", museum_site.debug_views.file_viewer_new, {"local": True, "key": ""}, name="zfile_view_local_beta"),
+    path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),
+    path("file/view/<str:key>/beta/", museum_site.debug_views.file_viewer_new, name="file_beta"),
     path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="zfile_pk"),
     path(
         "file/play/<str:key>/", museum_site.zeta_views.zeta_launcher,
