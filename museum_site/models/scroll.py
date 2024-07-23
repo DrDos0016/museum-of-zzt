@@ -30,13 +30,11 @@ class Scroll(BaseModel):
 
     # Fields
     title = models.CharField(max_length=160)
-    source = models.CharField(max_length=160)
+    source = models.CharField(max_length=160, help_text="Will truncate leading https://museumofzzt.com on save")
     content = models.TextField(
         default="",
         help_text="Lines starting with @ will be skipped. Initial whitespace is trimmed by DB, so an extra @ line is a fix."
     )
-    published = models.BooleanField(default=False)
-    suggestion = models.CharField(max_length=500, blank=True, default="")
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
