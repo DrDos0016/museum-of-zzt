@@ -1,0 +1,32 @@
+{% extends BASE_TEMPLATE %}
+{% load static %}
+
+{% block content %}
+<h1>{{title}}</h1>
+
+{{form.text_prefix|default:""|safe}}
+
+{% if output %}<p>{{output}}</p>{% endif %}
+
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+
+<h2>ZFile Downloads</h2>
+
+<table>
+<tr><th>Kind</th><th>URL</th><th>DL Text</th><th>Admin</th></tr>
+{% for dl in zfile.downloads.all %}
+<tr>
+    <td>{{dl.kind}}</td>
+    <td><a href="{{dl.url}}" target="_blank">{{dl.url}}</a></td>
+    <td>{{dl.hosted_text|default:"None"}}</td>
+    <td><a href="{{dl.admin_url}}" target="_blank">Link</a></td>
+</tr>
+{% endfor %}
+</table>
+
+
+{% endblock %}

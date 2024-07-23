@@ -25,7 +25,7 @@ from museum_site.fields import (
     Enhanced_Model_Choice_Field, Manual_Field, Museum_Drag_And_Drop_File_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Tagged_Model_Choice_Field,
     Museum_Tagged_Text_Field, Museum_Choice_Field
 )
-from museum_site.models import Article, Content, File, Series
+from museum_site.models import Article, Content, Download, File, Series
 from museum_site.widgets import (
     Ascii_Color_Widget,
     Enhanced_Date_Widget, Enhanced_Text_Widget, Ordered_Scrolling_Radio_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget
@@ -128,6 +128,15 @@ class Discord_Announcement_Form(forms.Form):
             self.process()
         else:
             print("Faux Logging to #{} -- {}".format(channel, body))
+
+class Download_Form(forms.ModelForm):
+    user_required_attribute = False
+    attrs = {"method": "POST"}
+    submit_value = "Add New Download"
+
+    class Meta:
+        model = Download
+        fields = ["url", "kind", "hosted_text"]
 
 
 class IA_Mirror_Form(forms.Form):

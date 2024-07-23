@@ -33,6 +33,7 @@ from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate
 from museum_site.forms.tool_forms import (
     Checksum_Comparison_Form,
     Discord_Announcement_Form,
+    Download_Form,
     IA_Mirror_Form,
     Livestream_Description_Form,
     Livestream_Vod_Form,
@@ -322,6 +323,29 @@ def manage_cache(request):
         data["cache_items"].append({"key": k, "value": cache.get(k, "NOT SET")})
 
     return render(request, "museum_site/tools/manage-cache.html", data)
+
+
+@staff_member_required
+def manage_downloads(request, key):
+    context = {"title": "Manage Downloads"}
+    zfile = File.objects.get(key=key)
+
+    context["zfile"] = zfile
+
+    if request.method == "POST":
+        form = Download_Form(request.POST)
+
+        if form.is_valid():
+           new_dl = form.save()
+           zfile.downloads.add(new_dl)
+           context["output"] = "Added download to {}".format(zfile.title)
+    else:
+        form = Download_Form()
+
+
+    context["form"] = form
+
+    return render(request, "museum_site/tools/manage-downloads.html", context)
 
 
 @staff_member_required

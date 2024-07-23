@@ -245,6 +245,7 @@ urlpatterns = [
     path("tools/livestream-description-generator/", museum_site.tool_views.livestream_description_generator, name="livestream_description_generator"),
     path("tools/log-viewer/", museum_site.tool_views.log_viewer, name="log_viewer"),
     path("tools/manage-cache/", museum_site.tool_views.manage_cache, name="manage_cache"),
+    path("tools/manage-downloads/<str:key>/", museum_site.tool_views.manage_downloads, name="tool_manage_downloads"),
     path("tools/manage-details/<str:key>/", museum_site.tool_views.publish, {"mode": "MANAGE"}, name="manage_details"),
     path("tools/mirror/<str:key>/", museum_site.tool_views.mirror, name="mirror"),
     path("tools/month-in-review/", museum_site.tool_views.month_in_review, name="month_in_review"),
