@@ -19,6 +19,8 @@ export class Handler
         this.envelope_id = null; // String to identify HTML for envelope
     }
 
+    static initial_config = {};
+
     async render() {
         console.log("CALLED HANDLER.RENDER()");
         this.deactivate_active_envelopes()

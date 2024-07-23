@@ -25,6 +25,12 @@ export class File_Viewer
     has_auto_load_target = false;
     auto_load_file_name = "Overview"; // Click overview by default
     scroll_y = window.scrollY;
+    configs = {
+        "global": {
+            "foo": "bar",
+            "baz": "bap",
+        }
+    }; // Configuration data for handlers
 
     add_file(filename, bytes, meta)
     {
@@ -76,6 +82,7 @@ export class File_Viewer
         $(".fv-content.selected").removeClass("selected");
 
         $(".fv-content[data-fvpk=" + fvpk + "]").addClass("selected");
+        this.push_config(fvpk);
         this.files[fvpk].render();
         this.history_add();
     }
@@ -180,6 +187,21 @@ export class File_Viewer
 
         console.log("History pushed state", state);
         return true;
+    }
+
+    push_config(fvpk)
+    {
+        // Pushing a config
+        console.log("Push config", fvpk);
+        let config_key = this.files[fvpk].name.replaceAll(" ", "_").toLowerCase();
+        if (! this.configs[config_key])  // Create config if not found
+        {
+            this.configs[config_key] = this.files[fvpk].constructor.initial_config;
+            console.log("Pushed an initial config");
+        }
+
+        this.files[fvpk].config = this.configs[config_key];
+        console.log("Set config:", this.files[fvpk].config);
     }
 
 }

@@ -41,17 +41,19 @@ export class ZZT_Handler extends Handler
 
         this.cursor_tile = {"x": -1, "y": -1} // Tile the cursor was last seen over
 
-        this.config = {
-            "pstrings": {
-                "show_leftover_data": false,
-            },
-            "stats": {
-                "sort": "name",
-                "show_codeless": true,
-            },
-            "corrupt": {
-                "enforce_stat_limit": true,
-            }
+        //this.config = {}
+    }
+
+    static initial_config = {
+        "pstrings": {
+            "show_leftover_data": false,
+        },
+        "stats": {
+            "sort": "name",
+            "show_codeless": true,
+        },
+        "corrupt": {
+            "enforce_stat_limit": true,
         }
     }
 
@@ -198,6 +200,7 @@ export class ZZT_Handler extends Handler
 
     parse_boards()
     {
+        console.log("HEY IM PARSIN HERE");
         // Parse boards
         let boards = [];
         this.pos = 512; // Start of board data in a world
