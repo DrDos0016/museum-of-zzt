@@ -15,7 +15,9 @@ from datetime import datetime, timedelta
 from discord.ext import commands
 from discord.utils import get
 
-from constants import *
+from constants import (
+    WOZZT_URL, COOLDOWN_MESSAGE, HELP, SCROLL_TOP, SCROLL_BOTTOM, PROGRAMS_TEXT, EDITORS_TEXT, RESOURCES_TEXT, WORLDS_TEXT, INVALID_LINK_TEXT, LINKS
+)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "museum.settings")
