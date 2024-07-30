@@ -132,6 +132,11 @@ export class Handler
         $(`#details #${tab}`).addClass("active");
     }
 
+    get_config_key_for_handler()
+    {
+        return this.name.replaceAll(" ", "_").toLowerCase();
+    }
+
     /*history_add()
     {
         console.log("HISTORY ADD IS BEING CALLED");

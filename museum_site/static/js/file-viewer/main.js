@@ -50,6 +50,8 @@ function initialize()
     $("#world-info").on("click", "input[name=code-search-button]", (e) => { fv.code_search(e); });
     $("#world-info").on("click", "input[name=clear-search]", (e) => { fv.clear_search(e); });
 
+    $("#preferences").on("change", ".field-value select", (e) => { fv.update_preferences(e); });
+
     /* Local Files */
     $("#fv-main").on("click", "#file-load-submit", ingest_file);
 
@@ -355,6 +357,7 @@ function canvas_click(e)
     var rect = this.getBoundingClientRect();
     var base_x = e.pageX - rect.left - document.querySelector("html").scrollLeft - border_size;
     var base_y = e.pageY - rect.top - document.querySelector("html").scrollTop - border_size;
+    console.log("RAW CANVAS CLICK", base_x, base_y);
     fv.files[fvpk].canvas_click({"base_x": base_x, "base_y": base_y});
 }
 

@@ -27,33 +27,33 @@ export class ZZT_Handler extends Handler
         this.boards = [];
         this.default_renderer = ZZT_Standard_Renderer;
         this.renderer = new this.default_renderer(this.fvpk);
-        //this.renderer = null;
         this.selected_board = null;
         this.auto_click = ""; // Coordinates to pre-click an element when loading
+
         this.color_names = [
             "Black", "Dark Blue", "Dark Green", "Dark Cyan", "Dark Red", "Dark Purple", "Dark Yellow", "Gray",
             "Dark Gray", "Blue", "Green", "Cyan", "Red", "Purple", "Yellow", "White"
         ];
-
         this.max_flags = 10;
         this.max_stats = 150;
         this.tile_count = 1500; // TODO Should we use width * height of boards?
 
         this.cursor_tile = {"x": -1, "y": -1} // Tile the cursor was last seen over
-
-        //this.config = {}
     }
 
     static initial_config = {
         "pstrings": {
-            "show_leftover_data": false,
+            "show_leftover_data": 0,
         },
         "stats": {
             "sort": "name",
-            "show_codeless": true,
+            "show_codeless": 1,
         },
         "corrupt": {
-            "enforce_stat_limit": true,
+            "enforce_stat_limit": 1,
+        },
+        "display": {
+            "zoom": 1,
         }
     }
 
@@ -122,6 +122,20 @@ export class ZZT_Handler extends Handler
         }
 
         this.write_targets(targets);
+
+        /* Manually size the canvas */
+        console.log("Does this envelope exist yet?", $(".envelope-zzt.active"));
+        if (this.config.display.zoom == 1)
+        {
+            $(".envelope-zzt").css("min-height", "");
+        }
+        else
+        {
+            let new_height = $(".fv-canvas").attr("height").slice(0, -2);
+            console.log("NEW HEIGHT", new_height);
+            console.log("CSS Val", (new_height * this.config.display.zoom) + "px");
+            $(".envelope-zzt").css("min-height",  (new_height * this.config.display.zoom + 20) + "px"); // + 20 pixels for border (as it's doubled now...) + 5 for ugh why are you still scrolling
+        }
 
         console.log("AUTO CLICK COORDS:", this.auto_click);
         if (this.auto_click)
@@ -500,7 +514,7 @@ export class ZZT_Handler extends Handler
     {
         console.log("FUNC DISPLAY_BOARD_CANVAS", this.fvpk);
         let board_idx = (this.selected_board !== null) ? this.selected_board : this.world.current_board;
-        let canvas = await this.renderer.render_board(this.boards[board_idx]);
+        let canvas = await this.renderer.render_board(this.boards[board_idx], this.config.display.zoom);
         return true;
     }
 
@@ -542,10 +556,12 @@ export class ZZT_Handler extends Handler
 
     get_tile_coordinates_from_cursor_position(e)
     {
-        return {
-            "x": Math.abs(parseInt(e.base_x / this.renderer.character_set.tile_width)) + 1,
-            "y": Math.abs(parseInt(e.base_y / this.renderer.character_set.tile_height)) + 1,
+        let scale = this.config.display.zoom;
+        let output = {
+            "x": Math.abs(parseInt(e.base_x / this.renderer.character_set.tile_width / scale)) + 1,
+            "y": Math.abs(parseInt(e.base_y / this.renderer.character_set.tile_height / scale )) + 1,
         }
+        return output;
     }
 
     canvas_click(e)
@@ -856,9 +872,9 @@ export class ZZT_Handler extends Handler
             else if (oop[idx][0] && oop[idx][0] == "!" && (oop[idx].indexOf(";") != -1))
             {
                 oop[idx] = `<span class='hyperlink'>!</span>\
-    <span class='label'>${oop[idx].slice(1, oop[idx].indexOf(";"))}</span>\
-    <span class='hyperlink'>;</span>\
-    ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
+<span class='label'>${oop[idx].slice(1, oop[idx].indexOf(";"))}</span>\
+<span class='hyperlink'>;</span>\
+${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
             }
             else if (oop[idx][0] && oop[idx][0] == "$")
             {
@@ -1062,10 +1078,11 @@ export class ZZT_Handler extends Handler
     get_preferences()
     {
         let output = "";
+        let config_key = this.get_config_key_for_handler();
 
         output += `<div class="field-wrapper">
             <label for="">Leftover Data:</label>
-            <div class="field-value"><select>
+            <div class="field-value"><select data-config-key="${config_key}" data-config-property="pstrings.show_leftover_data">
                 <option value=0${(this.config.pstrings.show_leftover_data == false) ? " selected" : ""}>Hide*</option>
                 <option value=1${(this.config.pstrings.show_leftover_data == true) ? " selected" : ""}>Show</option>
             </select></div>
@@ -1074,11 +1091,20 @@ export class ZZT_Handler extends Handler
 
         output += `<div class="field-wrapper">
             <label for="">Limit Stat Parsing:</label>
-            <div class="field-value"><select>
+            <div class="field-value"><select data-config-key="${config_key}" data-config-property="corrupt.enforce_stat_limit">
                 <option value=0${(this.config.corrupt.enforce_stat_limit == true) ? " selected" : ""}>Limit*</option>
                 <option value=1${(this.config.corrupt.enforce_stat_limit == false) ? " selected" : ""}>Do Not Limit</option>
             </select></div>
             <p class="field-help">Speed up parsing of corrupt boards by limiting the stats parsed to the engine's stat limit. No effect on non-corrupt boards. Full parsing corrupt boards may cause file viewer to become unresponsive.</p>
+        </div>`;
+
+        output += `<div class="field-wrapper">
+            <label for="">Zoom:</label>
+            <div class="field-value"><select data-config-key="${config_key}" data-config-property="display.zoom">
+                <option value=1${(this.config.display.zoom == 1) ? " selected" : ""}>1x*</option>
+                <option value=2${(this.config.display.zoom == 2) ? " selected" : ""}>2x*</option>
+            </select></div>
+            <p class="field-help">Scale rendered board to this size.</p>
         </div>`;
 
         return output;

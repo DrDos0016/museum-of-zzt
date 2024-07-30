@@ -34,7 +34,7 @@ export class ZZT_Standard_Renderer
         this.ctx = null;
     }
 
-    async render_board(board)
+    async render_board(board, zoom=1)
     {
         console.log("TOLD TO RENDER BOARD", board);
         if (! this.character_set.loaded)
@@ -46,9 +46,11 @@ export class ZZT_Standard_Renderer
         console.log("Rendering a board (this.fvpk)", this.fvpk);
         //const canvas = document.createElement("canvas");
         const canvas = document.querySelector(`#envelope-${this.fvpk} .fv-canvas`);
-        canvas.setAttribute("width", `${(this.board_width + (2 * this.show_border)) * this.character_set.tile_width}px`);
-        canvas.setAttribute("height", `${(this.board_height + (2 * this.show_border)) * this.character_set.tile_height}px`);
-        canvas.setAttribute("class", "fv-canvas");
+        let new_width = (this.board_width + (2 * this.show_border)) * this.character_set.tile_width;
+        let new_height = (this.board_height + (2 * this.show_border)) * this.character_set.tile_height;
+        canvas.setAttribute("width", new_width + "px");
+        canvas.setAttribute("height", new_height + "px");
+        canvas.setAttribute("class", `fv-canvas fv-canvas-zoom-${zoom}`);
 
         //canvas.insertAdjacentHTML("afterend", "Is this real?");
 

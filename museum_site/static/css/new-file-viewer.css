@@ -46,7 +46,7 @@
     grid-template-rows:auto min-content 1fr;
     align-content:stretch;
     font-family: mono;
-    max-height:95vh;
+    /*max-height:95vh;*/
 }
 
 @media (max-width:800px) { /* TODO: Find good values */
@@ -81,6 +81,16 @@
     display:none;
 }
 
+#file-list
+{
+    max-height:680px;
+}
+
+#details
+{
+    max-height:662px; /* - 18 for reasons */
+}
+
 #tabs
 {
     display:flex;
@@ -110,6 +120,8 @@
     margin-right:4ch;
 }
 
+.fv-canvas { image-rendering: pixelated; align-self:center; }
+
 .fv-canvas, #fv-preview
 {
     border:5px solid #000;
@@ -128,9 +140,10 @@
     font-size:larger;
 }
 
-#envelope-fvpk-overview
+.envelope
 {
-    justify-content:space-evenly;
+    /* This is a default. Use envelope layout below to override */
+    flex-direction:column;
     align-items:center;
 }
 
@@ -159,9 +172,10 @@
     padding:2ch;
 }
 
-/* Envelope positioning */
-.envelope-zzt.active {display:flex; justify-content:center; }
-
+/* Envelope layout */
+.envelope-zzt.active { }
+.envelope-overview.active { flex-direction:row; justify-content:space-evenly; align-items:center; }
+/* End Envelope layout */
 
 .hover-wrapper
 {
@@ -187,7 +201,7 @@
 
 .inner-envelope-wrapper
 {
-    height:0px;
+    /* height:0px; */
 }
 
 .crosshair-wrapper
@@ -315,20 +329,31 @@ li.empty /* Hidden entries in lists that need to keep counting */
     "error error";
 }
 
-/* EVERYTHING BELOW IS COPIED FROM ORIGINAL FILE VIEWER */
+/*
+.fv-canvas-zoom-2 { zoom: 2; }
+.fv-canvas-zoom-3 { zoom: 3; }*/
 
+.fv-canvas-zoom-2 { transform-origin: top center; transform:scale(2, 2); }
+.fv-canvas-zoom-3 { transform:scale(3, 3); }
+
+/* WAS COPIED THEN TWEAKED */
 #fv-main
 {
-    /*border:1px solid var(--border-color);*/
     padding:7px 4px 7px 4px;
     margin:auto;
-    margin-bottom:14px;
-    max-height:728px;
+    margin-bottom:7px;
+    max-height:768px;
     overflow:auto;
     resize:vertical;
+    border-top:1px dashed var(--border-color);
     border-bottom:1px dashed var(--border-color);
     width:100%;
 }
+/* END WAS COPIED THEN TWEAKED */
+
+/* EVERYTHING BELOW IS COPIED FROM ORIGINAL FILE VIEWER */
+
+
 
 #fv-main .output { display:none }
 #fv-main .output.active { display:block; }
@@ -377,7 +402,6 @@ li.empty /* Hidden entries in lists that need to keep counting */
 {
     font-family:mono;
     overflow:auto;
-    max-height:100%;
 }
 
 #file-list .selected

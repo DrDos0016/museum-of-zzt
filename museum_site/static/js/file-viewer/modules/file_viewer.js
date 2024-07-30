@@ -204,6 +204,28 @@ export class File_Viewer
         console.log("Set config:", this.files[fvpk].config);
     }
 
+    update_preferences(e)
+    {
+        console.log("UPDATING PREFERENCES");
+        let config_key = $(e.target).data("config-key");
+        let config_property = $(e.target).data("config-property")
+        let value = parseInt($(e.target).val());
+
+        // TODO: Currently assuming all options are config[<handler>][<category>][<option>]
+        let split = config_property.split(".");
+        let category = split[0];
+        let option = split[1];
+
+        console.log("CAT", category, "OPT", option, "VAL", value);
+        this.configs[config_key][category][option] = value;
+
+        // And now... idk rerender?
+        console.log(this.configs[config_key]);
+        console.log("Config change applied!");
+        this.files[this.active_fvpk].render();
+        console.log("EXITING UPDATE PREFERENCES FUNCTION");
+    }
+
 }
 
 export function create_handler_for_file(fvpk, filename, bytes, meta)
