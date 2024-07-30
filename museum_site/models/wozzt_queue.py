@@ -289,7 +289,7 @@ class WoZZT_Queue(BaseModel):
 
         # Make the post
         title = "[{}] {}".format(self.file.key, self.file.title)
-        s.post(self.render_text("cohost"), title, "#bot")
+        s.post(self.render_text("cohost"), title, "#bot, #🤖, #wozztbot")
         return True
 
     def delete_image(self):
