@@ -23,7 +23,7 @@ class Scroll_Detail_View(DetailView):
     template_name = "museum_site/scroll-detail.html"
 
     def get_queryset(self):
-        qs = Scroll.objects.filter(pk=self.kwargs["pk"], published=True)
+        qs = Scroll.objects.filter(pk=self.kwargs["pk"])
         return qs
 
     def get_context_data(self, **kwargs):
@@ -40,22 +40,22 @@ def scroll_navigation(request, navigation="random"):
     if request.GET.get("id"):
         ref = int(request.GET["id"])
         if navigation == "next":
-            scroll = Scroll.objects.filter(published=True, pk__gt=ref).order_by("id").first()
+            scroll = Scroll.objects.filter(pk__gt=ref).order_by("id").first()
         elif navigation == "prev":
-            scroll = Scroll.objects.filter(published=True, pk__lt=ref).order_by("-id").first()
+            scroll = Scroll.objects.filter( pk__lt=ref).order_by("-id").first()
     else:
         if navigation == "first":
-            scroll = Scroll.objects.filter(published=True).order_by("id").first()
+            scroll = Scroll.objects.all().order_by("id").first()
         elif navigation == "latest":
-            scroll = Scroll.objects.filter(published=True).order_by("-id").first()
+            scroll = Scroll.objects.all().order_by("-id").first()
 
     if not scroll:
         if navigation == "next":
-            scroll = Scroll.objects.filter(published=True).order_by("-id").first()
+            scroll = Scroll.objects.all().order_by("-id").first()
         elif navigation == "prev":
-            scroll = Scroll.objects.filter(published=True).order_by("id").first()
+            scroll = Scroll.objects.all().order_by("id").first()
         else:  # Random
-            scroll = Scroll.objects.filter(published=True).order_by("?").first()
+            scroll = Scroll.objects.all().order_by("?").first()
 
     slug = slugify(scroll.title) if scroll else "unlabeled-scroll"
     return redirect(scroll.get_absolute_url())
