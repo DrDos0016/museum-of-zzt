@@ -45,7 +45,7 @@ LAST_TIME = {
     "vouch": 0,
 }
 
-SCROLLS = list(Scroll.objects.filter(published=True).order_by("id"))
+SCROLLS = list(Scroll.objects.all().order_by("id"))
 
 
 intents = discord.Intents.default()
@@ -249,7 +249,6 @@ async def scroll(ctx, idx="?"):
         render = scroll.render_for_discord()
         await ctx.send(render + "*Source: <https://museumofzzt.com{}>*".format(scroll.source))
     else:
-        print(status.get("REASON"))
         if status.get("RESPONSE"):
             await ctx.send(status["RESPONSE"])
 
