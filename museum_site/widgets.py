@@ -169,6 +169,23 @@ class Enhanced_Text_Widget(forms.TextInput):
         return context
 
 
+class Requested_Key_Widget(forms.TextInput):
+    template_name = "museum_site/widgets/requested-key-widget.html"
+
+    def __init__(self, attrs=None, char_limit=None, prefix_text=""):
+        super().__init__(attrs)
+        self.char_limit = char_limit
+        self.prefix_text = prefix_text
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        if self.char_limit:
+            context["char_limit"] = self.char_limit
+            context["field_maxlength"] = self.char_limit * 3
+        context["prefix_text"] = self.prefix_text
+        return context
+
+
 class Enhanced_Text_Area_Widget(Enhanced_Text_Widget):
     template_name = "museum_site/widgets/enhanced-textarea-widget.html"
 
@@ -363,8 +380,8 @@ class Ascii_Color_Widget(forms.Select):
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         context["choices"] = self.choices
-        if self.allow_transparent:
-            context["choices"].append(("transparent", "Transparent"))
+        if not self.allow_transparent:
+            context["choices"] = context["choices"][:-1]
         return context
 
 

@@ -61,7 +61,8 @@ class Change_Ascii_Char_Form(forms.Form):
         ("darkred", "Dark Red"),
         ("darkpurple", "Dark Purple"),
         ("darkyellow", "Dark Yellow"),
-        ("gray", "Gray")
+        ("gray", "Gray"),
+        ("transparent", "Transparent"),
     )
 
     character = forms.IntegerField(
@@ -73,6 +74,11 @@ class Change_Ascii_Char_Form(forms.Form):
     foreground = Museum_Color_Choice_Field(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES))
     background = Museum_Color_Choice_Field(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES, allow_transparent=True))
     preview = Faux_Field(label="Preview", widget=Faux_Widget("museum_site/widgets/ascii-preview-widget.html"), required=False)
+
+    def clean_background(self):
+        if self.cleaned_data["background"] == "transparent" and not self.fields["background"].widget.allow_transparent:
+            self.add_error("background", "Invalid color selected.")
+        return self.cleaned_data["background"]
 
 
 class Change_Email_Form(forms.Form):
