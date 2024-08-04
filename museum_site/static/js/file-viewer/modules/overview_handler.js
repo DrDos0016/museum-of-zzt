@@ -11,6 +11,7 @@ export class Overview_Handler extends Handler
         this.preview_image_url = "";
         this.description = "";
         this.envelope_id = "#envelope-fvpk-overview";
+        this.zip_comment = "";
     }
 
     parse_bytes() {
@@ -47,7 +48,10 @@ export class Overview_Handler extends Handler
     }
 
     generate_zip_info_table() {
-        let output = `
+        let output = "";
+        if (this.zip_comment)
+            output += `<div>${this.zip_comment}</div>`;
+        output += `
             <table class="zip-info-table">
             <tr><th>Filename</th><th>Mod. Date</th><th>Dir.</th><th>CRC-32</th><th>Compressed Size</th><th>Decompressed Size</th></tr>
         `;

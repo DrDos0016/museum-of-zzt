@@ -54,7 +54,10 @@ export class ZZT_Handler extends Handler
         },
         "display": {
             "zoom": 1,
-        }
+        },
+        "oop": {
+            "style": "modern",
+        },
     }
 
     static stat_list_label(stat, board)
@@ -445,6 +448,10 @@ export class ZZT_Handler extends Handler
         }
 
         output += `</div>`;
+
+
+        output += this.get_zeta_live();
+
         return output;
     }
 
@@ -830,9 +837,24 @@ export class ZZT_Handler extends Handler
             if (! stat.oop)
                 output.push("<i>None</i>");
             else
-                output.push(`<details open><summary class="oop-summary"> ZZT-OOP</summary><code class="zzt-oop">` + this.syntax_highlight(stat.oop) + `</code></details>`);
+                output.push(`<details open><summary class="oop-summary"> ZZT-OOP</summary>
+                ${this.render_zzt_oop_style(stat.oop)}</details>`);
         }
         return output;
+    }
+
+    render_zzt_oop_style(oop)
+    {
+        console.log(oop);
+        let rendered;
+        if (this.config.oop.style == "classic")
+        {
+            rendered = `<div class="zzt-scroll"><div class="name">Edit Program</div>\n<div class="content">${oop.replaceAll("\n", "<br>")}</div></div>`;
+        }
+        else
+            rendered = `<code class="zzt-oop">` + this.syntax_highlight(oop) + `</code>`;
+
+        return rendered
     }
 
     syntax_highlight(oop)
@@ -1082,7 +1104,7 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
         output += `<div class="field-wrapper">
             <label for="">Leftover Data:</label>
-            <div class="field-value"><select data-config-key="${config_key}" data-config-property="pstrings.show_leftover_data">
+            <div class="field-value"><select data-config-key="${config_key}" data-config-property="pstrings.show_leftover_data" data-type="int">
                 <option value=0${(this.config.pstrings.show_leftover_data == false) ? " selected" : ""}>Hide*</option>
                 <option value=1${(this.config.pstrings.show_leftover_data == true) ? " selected" : ""}>Show</option>
             </select></div>
@@ -1091,20 +1113,28 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
         output += `<div class="field-wrapper">
             <label for="">Limit Stat Parsing:</label>
-            <div class="field-value"><select data-config-key="${config_key}" data-config-property="corrupt.enforce_stat_limit">
+            <div class="field-value"><select data-config-key="${config_key}" data-config-property="corrupt.enforce_stat_limit" data-type="int">
                 <option value=0${(this.config.corrupt.enforce_stat_limit == true) ? " selected" : ""}>Limit*</option>
                 <option value=1${(this.config.corrupt.enforce_stat_limit == false) ? " selected" : ""}>Do Not Limit</option>
             </select></div>
-            <p class="field-help">Speed up parsing of corrupt boards by limiting the stats parsed to the engine's stat limit. No effect on non-corrupt boards. Full parsing corrupt boards may cause file viewer to become unresponsive.</p>
+            <p class="field-help">Speed up parsing of corrupt boards by limiting the stats parsed to the engine's stat limit. No effect on non-corrupt boards. Fully parsing corrupt boards may cause file viewer to become unresponsive.</p>
         </div>`;
 
         output += `<div class="field-wrapper">
             <label for="">Zoom:</label>
-            <div class="field-value"><select data-config-key="${config_key}" data-config-property="display.zoom">
+            <div class="field-value"><select data-config-key="${config_key}" data-config-property="display.zoom" data-type="int">
                 <option value=1${(this.config.display.zoom == 1) ? " selected" : ""}>1x*</option>
-                <option value=2${(this.config.display.zoom == 2) ? " selected" : ""}>2x*</option>
+                <option value=2${(this.config.display.zoom == 2) ? " selected" : ""}>2x</option>
             </select></div>
             <p class="field-help">Scale rendered board to this size.</p>
+        </div>`;
+        output += `<div class="field-wrapper">
+            <label for="">OOP Style:</label>
+            <div class="field-value"><select data-config-key="${config_key}" data-config-property="oop.style"  data-type="str">
+                <option value="modern"${(this.config.oop.style == "modern") ? " selected" : ""}>Modern*</option>
+                <option value="classic"${(this.config.oop.style == "classic") ? " selected" : ""}>Classic</option>
+            </select></div>
+            <p class="field-help">Display ZZT-OOP as modern syntax highlighted code or classic ZZT v3.2 style.</p>
         </div>`;
 
         return output;
@@ -1113,5 +1143,13 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
     coords_span(x, y)
     {
         return `<span class="coords" data-x="${x}" data-y="${y}">(${padded(x)}, ${padded(y)})</span>`;
+    }
+
+    get_zeta_live()
+    {
+        if (zfile_info.size > 10485760) // 10MB
+            return "<p><i>Play This Board</i> functionality is not available for this zipfile.</p>";
+
+        return `<div style='margin-top:4px'><input type="button" id="play-board" value="Play This Board"> (Experimental. May not work as expected.)</div>`;
     }
 }

@@ -209,7 +209,11 @@ export class File_Viewer
         console.log("UPDATING PREFERENCES");
         let config_key = $(e.target).data("config-key");
         let config_property = $(e.target).data("config-property")
-        let value = parseInt($(e.target).val());
+        let type = $(e.target).data("type")
+        let value = $(e.target).val();
+
+        if (type == "int")
+            value = parseInt(value);
 
         // TODO: Currently assuming all options are config[<handler>][<category>][<option>]
         let split = config_property.split(".");
@@ -224,6 +228,19 @@ export class File_Viewer
         console.log("Config change applied!");
         this.files[this.active_fvpk].render();
         console.log("EXITING UPDATE PREFERENCES FUNCTION");
+    }
+
+    play_board(e)
+    {
+
+        let scale = 1;
+        let base_w = 640;
+        let base_h = 350;
+        let filename = this.files[this.active_fvpk].filename;
+        let board_number = 7;
+        let key = zfile_info.key;
+        let live_url = "/play/"+key+"?player=zeta&mode=popout&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number;
+        window.open(live_url, "popout-"+key, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
     }
 
 }

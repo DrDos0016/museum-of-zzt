@@ -50,6 +50,8 @@ function initialize()
     $("#world-info").on("click", "input[name=code-search-button]", (e) => { fv.code_search(e); });
     $("#world-info").on("click", "input[name=clear-search]", (e) => { fv.clear_search(e); });
 
+    $("#board-info").on("click", "#play-board", (e) => { fv.play_board(e); });
+
     $("#preferences").on("change", ".field-value select", (e) => { fv.update_preferences(e); });
 
     /* Local Files */
@@ -156,6 +158,7 @@ function open_zip(buffer)
     // Adds the contents of a zipfile into the file viewer, setting the bytes property for all files, then lists the files
     console.log("Opening Zip");
     zip.loadAsync(buffer).then(function (){
+        fv.files["fvpk-overview"].zip_comment = (zip.comment) ? zip.comment : ""; // Store zip file's comment if one exists
         for(let [filename, info] of Object.entries(zip.files))
         {
             //console.log(info);
