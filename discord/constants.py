@@ -18,7 +18,7 @@ List of commands:
 
 List of roles:
   ZZTer       MZXer
-  He/Him      She/Her     They/Them
+  He/Him      She/Her     They/Them     It/Its   (Others may be manually requested)
   Stream-Alerts-All       Stream-Alerts-Asie
   Stream-Alerts-Dos       Stream-Alerts-Meap
 
