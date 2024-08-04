@@ -32,6 +32,7 @@ def debug(request, filename=None):
 
     f = File.objects.get(pk=int(request.GET.get("id", 420)))
     s = Series.objects.get(pk=10)
+    data["zfile"] = f
 
     test_wozzt = WoZZT_Queue.objects.filter(
         id__in=[8317, 8318]
@@ -77,6 +78,8 @@ def debug(request, filename=None):
 
     if request.GET.get("serve"):
         return serve_file_as(request.GET.get("serve"), request.GET.get("as", ""))
+
+    print(data.get("zfile", "No zfile!"))
 
     if filename:
         return render(request, "museum_site/debug/{}.html".format(filename), data)
