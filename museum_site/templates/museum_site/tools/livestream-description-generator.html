@@ -1,11 +1,6 @@
 {% extends BASE_TEMPLATE %}
 {% load static %}
 
-{% block scripts %}
-<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
-{% for script in scripts %}<script src="{% static script %}?{{BOOT_TS}}"></script>{% endfor %}
-{% endblock %}
-
 {% block content %}
 <h1>{{form.heading}}</h1>
 
