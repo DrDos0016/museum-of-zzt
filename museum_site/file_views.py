@@ -168,6 +168,7 @@ class ZFile_List_View(Model_List_View):
         self.company = None
         self.detail = None
         self.genre = None
+        self.cheat_applied = False
 
         if request.path == "/file/search/":
             self.search_type = "basic" if request.GET.get("q") else "advanced"
@@ -185,12 +186,16 @@ class ZFile_List_View(Model_List_View):
         if self.request.GET.get("q"):
             cheat = self.request.GET["q"].upper()
             if cheat == "+DEBUG":
+                self.cheat_applied = cheat
                 self.request.session["DEBUG"] = 1
             elif cheat == "-DEBUG":
+                self.cheat_applied = cheat
                 del self.request.session["DEBUG"]
             elif cheat == "+BETA":
+                self.cheat_applied = cheat
                 self.request.session["TEMP_FILE_VIEWER_BETA"] = 1
             elif cheat == "-BETA":
+                self.cheat_applied = cheat
                 del self.request.session["TEMP_FILE_VIEWER_BETA"]
 
     def get_queryset(self):
@@ -282,6 +287,10 @@ class ZFile_List_View(Model_List_View):
         if not context.get("object_list"):
             context["sort_options"] = None
             context["available_views"] = []
+
+        # Indicate an applied cheat
+        if self.cheat_applied:
+            context["cheat_applied"] = self.cheat_applied
 
         return context
 
