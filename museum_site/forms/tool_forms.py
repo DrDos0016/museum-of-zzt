@@ -504,6 +504,8 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
         ("red", "Red"),
         ("purple", "Purple"),
         ("yellow", "Yellow"),
+        ("white", "White"),
+        ("transparent", "transparent"),
     )
 
     TEXT_SIZE_CHOICES = (
