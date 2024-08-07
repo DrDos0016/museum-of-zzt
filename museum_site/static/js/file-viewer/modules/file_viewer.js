@@ -232,14 +232,16 @@ export class File_Viewer
 
     play_board(e)
     {
-
+        console.log("Other globs?");
+        console.log(fv_default_domain, mode, user_test);
+        console.log("Argle?", argle_bargle);
         let scale = 1;
         let base_w = 640;
         let base_h = 350;
         let filename = this.files[this.active_fvpk].filename;
         let board_number = 7;
         let key = zfile_info.key;
-        let live_url = "/play/"+key+"?player=zeta&mode=popout&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number;
+        let live_url = "/file/play/"+key+"?player=zeta&mode=popout&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number;
         window.open(live_url, "popout-"+key, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
     }
 
@@ -249,8 +251,6 @@ export function create_handler_for_file(fvpk, filename, bytes, meta)
 {
     let components = filename.split(".");
     let ext = "." + components[components.length - 1].toUpperCase();
-
-    console.log("Creating handler for", filename);
 
     switch (true) {
         case EXTENSIONS_ZZT.indexOf(ext) != -1:

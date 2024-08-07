@@ -12,6 +12,7 @@ export class ZZT_Standard_Renderer
         this.show_border = false; // Render that border
         this.character_set = new Character_Set();
         this.palette = new Palette();
+        this.display_high_intensity_backgrounds = true;
         this.tick = 0;
         this.default_characters = [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63];
         this.element_func = Array(256).fill(this.basic_draw);
@@ -72,9 +73,27 @@ export class ZZT_Standard_Renderer
         const border_offset = (! this.show_border);
         let ch_x = char % 16;
         let ch_y = parseInt(char / 16);
+        console.log("OG BG IS", bg);
+
+        // High Intensity Check
+        if (! this.display_high_intensity_backgrounds)
+            bg %= 8;
+
+        let fg_hex = this.palette.hex_colors[fg];
+        let bg_hex = this.palette.hex_colors[bg];
+
         // Background
+
+            // High Intensity Check
+            /*
+            if (! display_high_intensity_backgrounds)
+                bg = colors[parseInt(color / 16) % 8];
+            else if (renderer.bg_intensity == "high")
+                bg = colors[parseInt(color / 16)];
+                */
+
             this.ctx.globalCompositeOperation = "source-over";
-            this.ctx.fillStyle = bg;
+            this.ctx.fillStyle = bg_hex;
             this.ctx.fillRect((x - border_offset) * this.character_set.tile_width, (y - border_offset) * this.character_set.tile_height, this.character_set.tile_width, this.character_set.tile_height);
 
             // Foreground transparency
@@ -93,7 +112,7 @@ export class ZZT_Standard_Renderer
 
             // Foreground
             this.ctx.globalCompositeOperation = "destination-over";
-            this.ctx.fillStyle = fg;
+            this.ctx.fillStyle = fg_hex;
             this.ctx.fillRect(
                 (x - border_offset) * this.character_set.tile_width,
                 (y - border_offset) * this.character_set.tile_height,
@@ -174,21 +193,21 @@ export class ZZT_Standard_Renderer
     basic_draw(x, y)
     {
         let element = this.rendered_board.elements[x][y];
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], this.default_characters[element.id]];
+        return [element.color % 16, parseInt(element.color / 16), this.default_characters[element.id]];
     }
 
     empty_draw(x, y)
     {
         let element = this.rendered_board.elements[x][y];
-        return [this.palette.hex_colors[0], this.palette.hex_colors[0], this.default_characters[element.id]];
+        return [0, 0, this.default_characters[element.id]];
     }
 
     text_draw(x, y)
     {
         let element = this.rendered_board.elements[x][y];
         if (element.id == 53) // White text gets black background instead of gray
-            return [this.palette.hex_colors[15], this.palette.hex_colors[0], element.color]
-        return [this.palette.hex_colors[15], this.palette.hex_colors[(element.id - 46) % 16], element.color]; // mod 16 to handle undefined elements
+            return [15, 0, element.color]
+        return [15, (element.id - 46) % 16, element.color]; // mod 16 to handle undefined elements
     }
 
     pusher_draw(x, y)
@@ -198,7 +217,7 @@ export class ZZT_Standard_Renderer
         let char;
 
         if (typeof stat == "undefined")
-            return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], 63];
+            return [element.color % 16, parseInt(element.color / 16), 63];
 
         if (stat.step_x == 1)
             char = 16;
@@ -209,7 +228,7 @@ export class ZZT_Standard_Renderer
         else
             char = 31;
 
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], char];
+        return [element.color % 16, parseInt(element.color / 16), char];
     }
 
     duplicator_draw(x, y)
@@ -219,7 +238,7 @@ export class ZZT_Standard_Renderer
         let char;
 
         if (typeof stat == "undefined")
-            return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], 63];
+            return [element.color % 16, parseInt(element.color / 16), 63];
 
         switch (stat.param1) {
             case 1: char = 250; break;
@@ -230,7 +249,7 @@ export class ZZT_Standard_Renderer
             default: char = 250;
         }
 
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], char];
+        return [element.color % 16, parseInt(element.color / 16), char];
     }
 
     bomb_draw(x, y)
@@ -240,14 +259,14 @@ export class ZZT_Standard_Renderer
         let char;
 
         if (typeof stat == "undefined")
-            return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], 63];
+            return [element.color % 16, parseInt(element.color / 16), 63];
 
         if (stat.param1 <= 1)
             char = 11
         else
             char = (48 + stat.param1) % 256;
 
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], char];
+        return [element.color % 16, parseInt(element.color / 16), char];
     }
 
     star_draw(x, y)
@@ -257,7 +276,7 @@ export class ZZT_Standard_Renderer
         let char;
 
         if (typeof stat == "undefined")
-            return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], 63];
+            return [element.color % 16, parseInt(element.color / 16), 63];
 
         let animation_characters = [179, 47, 196, 92];
         char = animation_characters[this.tick % 4];
@@ -265,7 +284,7 @@ export class ZZT_Standard_Renderer
         if (element.color > 15)
             element.color = 9;
 
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], char];
+        return [element.color % 16, parseInt(element.color / 16), char];
     }
 
     conveyor_cw_draw(x, y)
@@ -275,7 +294,7 @@ export class ZZT_Standard_Renderer
         let char;
 
         if (typeof stat == "undefined")
-            return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], 63];
+            return [element.color % 16, parseInt(element.color / 16), 63];
 
         switch (parseInt(this.tick / 3) % 4) {  // Divide by default cycle per element defintions table
             case 0: char = 179; break;
@@ -284,7 +303,7 @@ export class ZZT_Standard_Renderer
             default: char = 92;
         }
 
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], char];
+        return [element.color % 16, parseInt(element.color / 16), char];
     }
 
     conveyor_ccw_draw(x, y)
@@ -294,7 +313,7 @@ export class ZZT_Standard_Renderer
         let char;
 
         if (typeof stat == "undefined")
-            return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], 63];
+            return [element.color % 16, parseInt(element.color / 16), 63];
 
         switch (parseInt(this.tick / 2) % 4) {  // Divide by default cycle per element defintions table
             case 3: char = 179; break;
@@ -303,7 +322,7 @@ export class ZZT_Standard_Renderer
             default: char = 92;
         }
 
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], char];
+        return [element.color % 16, parseInt(element.color / 16), char];
     }
 
     transporter_draw(x, y)
@@ -314,17 +333,17 @@ export class ZZT_Standard_Renderer
         let animation_characters = {"ns": [94, 126, 94, 45, 118, 95, 118, 45], "ew": [40, 60, 40, 179, 41, 62, 41, 179]};
 
         if (typeof stat == "undefined")
-            return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], 63];
+            return [element.color % 16, parseInt(element.color / 16), 63];
 
         if (stat.cycle == 0)
-            return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], 33];
+            return [element.color % 16, parseInt(element.color / 16), 33];
 
         if (stat.step_x == 0)
             char = animation_characters.ns[stat.step_y * 2 + 2 + parseInt(this.tick / stat.cycle) % 4];
         else
             char = animation_characters.ew[stat.step_x * 2 + 2 + parseInt(this.tick / stat.cycle) % 4];
 
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], char];
+        return [element.color % 16, parseInt(element.color / 16), char];
     }
 
     line_draw(x, y)
@@ -337,7 +356,7 @@ export class ZZT_Standard_Renderer
         line_idx += (this.rendered_board.elements[x - 1][y].id == 31 || this.rendered_board.elements[x - 1][y].id == 1) ? 4 : 0;  // W
         line_idx += (this.rendered_board.elements[x + 1][y].id == 31 || this.rendered_board.elements[x + 1][y].id == 1) ? 8 : 0;  // E
 
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], line_chars[line_idx]];
+        return [element.color % 16, parseInt(element.color / 16), line_chars[line_idx]];
     }
 
     object_draw(x, y)
@@ -355,7 +374,7 @@ export class ZZT_Standard_Renderer
             char = 2; // TODO Magic Num
         }
 
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], char];
+        return [element.color % 16, parseInt(element.color / 16), char];
     }
 
     spinning_gun_draw(x, y)
@@ -373,6 +392,6 @@ export class ZZT_Standard_Renderer
             default: char = 27;
         }
 
-        return [this.palette.hex_colors[element.color % 16], this.palette.hex_colors[parseInt(element.color / 16) % 8], char];
+        return [element.color % 16, parseInt(element.color / 16), char];
     }
 }

@@ -136,36 +136,4 @@ export class Handler
     {
         return this.name.replaceAll(" ", "_").toLowerCase();
     }
-
-    /*history_add()
-    {
-        console.log("HISTORY ADD IS BEING CALLED");
-        if (this.filename == "Overview")
-        {
-            history.pushState({}, "", ("" + window.location).split("?")[0]);
-            return;
-        }
-
-        let state = {"open_file": this.filename}
-        let url = "?file=" + encodeURIComponent(this.filename);
-
-        if (this.selected_board !== undefined)
-        {
-            state["selected_board"] = this.selected_board;
-            url += "&board=" + this.selected_board;
-
-            //console.log("A:", url);
-            //console.log("B:", initial_query_string);
-            if (url == ("?" + initial_query_string))
-            {
-                initial_query_string = ""
-                return false;
-
-            }
-            //if (window.location.hash)
-                //url += window.location.hash;
-        }
-        console.log("Pushing History URL", url, "state:", state);
-        history.pushState(state, "", url);
-    }*/
 }

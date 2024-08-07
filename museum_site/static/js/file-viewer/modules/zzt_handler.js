@@ -1147,9 +1147,8 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
     get_zeta_live()
     {
-        if (zfile_info.size > 10485760) // 10MB
+        if (zfile_info.size > 10485760) // 10MB TODO
             return "<p><i>Play This Board</i> functionality is not available for this zipfile.</p>";
-
         return `<div style='margin-top:4px'><input type="button" id="play-board" value="Play This Board"> (Experimental. May not work as expected.)</div>`;
     }
 }
