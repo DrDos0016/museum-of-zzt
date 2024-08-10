@@ -303,11 +303,14 @@ def log_viewer(request):
 
 @staff_member_required
 def manage_cache(request):
-    data = {"title": "Manage Cache", "cache_items": []}
+    context = {"title": "Manage Cache", "cache_items": []}
 
     keys = (
         "UPLOAD_QUEUE_SIZE",
         "DISCORD_LAST_ANNOUNCED_FILE_NAME",
+        "ENV",
+        "CHARSETS",
+        "CUSTOM_CHARSETS",
     )
 
     # Refresh
@@ -318,11 +321,13 @@ def manage_cache(request):
             cache.set(refresh, File.objects.unpublished().count())
         elif refresh == "DISCORD_LAST_ANNOUNCED_FILE_NAME":
             cache.set(refresh, File.objects.unpublished().order_by("-id").last().title)
+        else:
+            context["fail_message"] = "No code path available to refresh key: {}".format(refresh)
 
     for k in keys:
-        data["cache_items"].append({"key": k, "value": cache.get(k, "NOT SET")})
+        context["cache_items"].append({"key": k, "value": cache.get(k, "NOT SET")})
 
-    return render(request, "museum_site/tools/manage-cache.html", data)
+    return render(request, "museum_site/tools/manage-cache.html", context)
 
 
 @staff_member_required

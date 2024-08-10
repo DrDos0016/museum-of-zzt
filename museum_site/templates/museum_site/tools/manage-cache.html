@@ -7,7 +7,7 @@
 <p>Cache keys are a manually compiled list. This page will need to be updated as new keys are used throughout the site.</p>
 
 {% if request.GET.refresh %}
-<p><b>Refreshed key {{request.GET.refresh}}</b></p>{% endif %}
+<p><b>{% if fail_message %}{{fail_message}}{% else %}Refreshed key {{request.GET.refresh}}{% endif %}</b></p>{% endif %}
 
 <table class="mono">
 <tr>
@@ -18,7 +18,7 @@
 {% for i in cache_items %}
 <tr>
     <th>{{i.key}}</th>
-    <td class="r">{{i.value}}</td>
+    <td class="r"><div style="max-height:100px;overflow:auto">{{i.value}}</div></td>
     <td class="c">
         <form>
         <input type="hidden" name="refresh" value="{{i.key}}">
