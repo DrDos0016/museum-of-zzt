@@ -197,6 +197,14 @@ export class File_Viewer
         if (! this.configs[config_key])  // Create config if not found
         {
             this.configs[config_key] = this.files[fvpk].constructor.initial_config;
+
+            // TODO This may be a mess
+            if (this.files[fvpk].renderer)
+            {
+                console.log("FVPK has renderer", fvpk);
+                this.configs[config_key]["renderer"] = this.files[fvpk].renderer.constructor.initial_config;
+                this.files[fvpk].renderer.config = this.configs[config_key].renderer;
+            }
             console.log("Pushed an initial config");
         }
 
@@ -207,24 +215,35 @@ export class File_Viewer
     update_preferences(e)
     {
         console.log("UPDATING PREFERENCES");
-        let config_key = $(e.target).data("config-key");
-        let config_property = $(e.target).data("config-property")
+        let config_string_raw = $(e.target).data("config");
         let type = $(e.target).data("type")
         let value = $(e.target).val();
 
         if (type == "int")
             value = parseInt(value);
 
-        // TODO: Currently assuming all options are config[<handler>][<category>][<option>]
-        let split = config_property.split(".");
-        let category = split[0];
-        let option = split[1];
 
-        console.log("CAT", category, "OPT", option, "VAL", value);
-        this.configs[config_key][category][option] = value;
+        let components = config_string_raw.split(".");
+        console.log("CONFIG", this.configs);
+        console.log("COMPONENTS", components);
+
+        // TODO: This seems like it's a dumb way to do this.
+        switch (components.length) {
+            case 4:
+                this.configs[components[0]][components[1]][components[2]][components[3]] = value;
+                break;
+            case 3:
+                this.configs[components[0]][components[1]][components[2]] = value;
+                break;
+            case 2:
+                this.configs[components[0]][components[1]] = value;
+                break;
+            case 1:
+                this.configs[components[0]] = value;
+                break;
+        }
 
         // And now... idk rerender?
-        console.log(this.configs[config_key]);
         console.log("Config change applied!");
         this.files[this.active_fvpk].render();
         console.log("EXITING UPDATE PREFERENCES FUNCTION");

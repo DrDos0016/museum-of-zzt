@@ -326,6 +326,9 @@ def get_stream_entries(request):
 def fetch_zip_info(request):
     """ For new file viewer"""
     path = request.GET.get("path")
+    if "?" in path:
+        path = path[:path.find("?")]
+    print("OG PATH", path)
     zf_path = os.path.join(SITE_ROOT, path)
     print("SR?", SITE_ROOT)
     print("LOOKING FOR", zf_path)

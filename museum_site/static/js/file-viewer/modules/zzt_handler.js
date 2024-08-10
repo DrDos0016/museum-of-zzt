@@ -1099,12 +1099,12 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
     get_preferences()
     {
-        let output = "";
+        let output = "<h3>General</h3>";
         let config_key = this.get_config_key_for_handler();
 
         output += `<div class="field-wrapper">
             <label for="">Leftover Data:</label>
-            <div class="field-value"><select data-config-key="${config_key}" data-config-property="pstrings.show_leftover_data" data-type="int">
+            <div class="field-value"><select data-config="${config_key}.pstrings.show_leftover_data" data-type="int">
                 <option value=0${(this.config.pstrings.show_leftover_data == false) ? " selected" : ""}>Hide*</option>
                 <option value=1${(this.config.pstrings.show_leftover_data == true) ? " selected" : ""}>Show</option>
             </select></div>
@@ -1113,7 +1113,7 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
         output += `<div class="field-wrapper">
             <label for="">Limit Stat Parsing:</label>
-            <div class="field-value"><select data-config-key="${config_key}" data-config-property="corrupt.enforce_stat_limit" data-type="int">
+            <div class="field-value"><select data-config="${config_key}.corrupt.enforce_stat_limit" data-type="int">
                 <option value=0${(this.config.corrupt.enforce_stat_limit == true) ? " selected" : ""}>Limit*</option>
                 <option value=1${(this.config.corrupt.enforce_stat_limit == false) ? " selected" : ""}>Do Not Limit</option>
             </select></div>
@@ -1122,7 +1122,7 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
         output += `<div class="field-wrapper">
             <label for="">Zoom:</label>
-            <div class="field-value"><select data-config-key="${config_key}" data-config-property="display.zoom" data-type="int">
+            <div class="field-value"><select data-config="${config_key}.display.zoom" data-type="int">
                 <option value=1${(this.config.display.zoom == 1) ? " selected" : ""}>1x*</option>
                 <option value=2${(this.config.display.zoom == 2) ? " selected" : ""}>2x</option>
             </select></div>
@@ -1130,12 +1130,14 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
         </div>`;
         output += `<div class="field-wrapper">
             <label for="">OOP Style:</label>
-            <div class="field-value"><select data-config-key="${config_key}" data-config-property="oop.style"  data-type="str">
+            <div class="field-value"><select data-config="${config_key}.oop.style"  data-type="str">
                 <option value="modern"${(this.config.oop.style == "modern") ? " selected" : ""}>Modern*</option>
                 <option value="classic"${(this.config.oop.style == "classic") ? " selected" : ""}>Classic</option>
             </select></div>
             <p class="field-help">Display ZZT-OOP as modern syntax highlighted code or classic ZZT v3.2 style.</p>
         </div>`;
+
+        output += this.renderer.get_preferences();
 
         return output;
     }

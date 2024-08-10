@@ -9,20 +9,20 @@ export class ZZT_Standard_Renderer
         this.fvpk = fvpk;
         this.board_width = 60;
         this.board_height = 25;
-        this.show_border = false; // Render that border
         this.character_set = new Character_Set();
         this.palette = new Palette();
-        this.display_high_intensity_backgrounds = true;
-        this.tick = 0;
         this.default_characters = [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63];
         this.element_func = Array(256).fill(this.basic_draw);
 
         this.element_func[0] = this.empty_draw;
+        this.element_func[1] = this.edge_draw;
+        this.element_func[3] = this.monitor_draw;
         this.element_func[12] = this.duplicator_draw;
         this.element_func[13] = this.bomb_draw;
         this.element_func[15] = this.star_draw;
         this.element_func[16] = this.conveyor_cw_draw;
         this.element_func[17] = this.conveyor_ccw_draw;
+        this.element_func[28] = this.invisible_draw;
         this.element_func[30] = this.transporter_draw;
         this.element_func[31] = this.line_draw;
         this.element_func[36] = this.object_draw;
@@ -33,6 +33,63 @@ export class ZZT_Standard_Renderer
         this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1};
 
         this.ctx = null;
+    }
+
+    static initial_config = {
+        "appearance": {
+            "show_high_intensity_backgrounds": false,
+            "invisible_wall": 0,
+            "monitor": 0,
+            "edge": 0,
+            "show_outer_border": false,
+        },
+        "game": {
+            "tick": 0,
+        },
+    }
+
+    get_preferences()
+    {
+        let output = "<h3>Renderer Options</h3>";
+        let config_key = "renderer";
+
+        output += `<div class="field-wrapper">
+            <label for="">High Intensity <u>B</u>ackgrounds:</label>
+            <div class="field-value"><select data-config="zzt_handler.${config_key}.appearance.show_high_intensity_backgrounds" data-type="int">
+                <option value=1${(this.config.appearance.show_high_intensity_backgrounds == true) ? " selected" : ""}>On</option>
+                <option value=0${(this.config.appearance.show_high_intensity_backgrounds == false) ? " selected" : ""}>Off*</option>
+            </select></div>
+            <p class="field-help">Render bright background colors. Toggle at any time with <span class="mono">Shift + B</span>.</p>
+        </div>`;
+
+        output += `<div class="field-wrapper">
+            <label for="">Invisible Wall Appearance:</label>
+            <div class="field-value"><select data-config="zzt_handler.${config_key}.appearance.invisible_wall" data-type="int">
+                <option value=0${(this.config.appearance.invisible_wall == 0) ? " selected" : ""}>Visible - Editor Style*</option>
+                <option value=1${(this.config.appearance.invisible_wall == 1) ? " selected" : ""}>Invisible - Gameplay Style</option>
+                <option value=2${(this.config.appearance.invisible_wall == 2) ? " selected" : ""}>Revealed - Gameplay Style</option>
+            </select></div>
+            <p class="field-help">Render bright background colors.</p>
+        </div>`;
+
+        output += `<div class="field-wrapper">
+            <label for="">Monitor Appearance:</label>
+            <div class="field-value"><select data-config="zzt_handler.${config_key}.appearance.monitor" data-type="int">
+                <option value=0${(this.config.appearance.monitor == 0) ? " selected" : ""}>M - KevEdit Style*</option>
+                <option value=1${(this.config.appearance.monitor == 1) ? " selected" : ""}>Hidden - ZZT Style</option>
+            </select></div>
+            <p class="field-help">Render bright background colors.</p>
+        </div>`;
+
+        output += `<div class="field-wrapper">
+            <label for="">Board Edge Appearance:</label>
+            <div class="field-value"><select data-config="zzt_handler.${config_key}.appearance.edge" data-type="int">
+                <option value=0${(this.config.appearance.edge == 0) ? " selected" : ""}>E - KevEdit Style*</option>
+                <option value=1${(this.config.appearance.edge == 1) ? " selected" : ""}>Hidden - ZZT Style</option>
+            </select></div>
+            <p class="field-help">Render bright background colors.</p>
+        </div>`;
+        return output;
     }
 
     async render_board(board, zoom=1)
@@ -47,8 +104,8 @@ export class ZZT_Standard_Renderer
         console.log("Rendering a board (this.fvpk)", this.fvpk);
         //const canvas = document.createElement("canvas");
         const canvas = document.querySelector(`#envelope-${this.fvpk} .fv-canvas`);
-        let new_width = (this.board_width + (2 * this.show_border)) * this.character_set.tile_width;
-        let new_height = (this.board_height + (2 * this.show_border)) * this.character_set.tile_height;
+        let new_width = (this.board_width + (2 * this.config.appearance.show_outer_border)) * this.character_set.tile_width;
+        let new_height = (this.board_height + (2 * this.config.appearance.show_outer_border)) * this.character_set.tile_height;
         canvas.setAttribute("width", new_width + "px");
         canvas.setAttribute("height", new_height + "px");
         canvas.setAttribute("class", `fv-canvas fv-canvas-zoom-${zoom}`);
@@ -70,54 +127,44 @@ export class ZZT_Standard_Renderer
 
     stamp(x, y, fg, bg, char)
     {
-        const border_offset = (! this.show_border);
+        const border_offset = (! this.config.appearance.show_outer_border);
         let ch_x = char % 16;
         let ch_y = parseInt(char / 16);
-        console.log("OG BG IS", bg);
 
         // High Intensity Check
-        if (! this.display_high_intensity_backgrounds)
-            bg %= 8;
+        if (! this.config.appearance.show_high_intensity_backgrounds)
+            bg %= 8; // Reduce to lower half of palette
 
         let fg_hex = this.palette.hex_colors[fg];
         let bg_hex = this.palette.hex_colors[bg];
 
         // Background
+        this.ctx.globalCompositeOperation = "source-over";
+        this.ctx.fillStyle = bg_hex;
+        this.ctx.fillRect((x - border_offset) * this.character_set.tile_width, (y - border_offset) * this.character_set.tile_height, this.character_set.tile_width, this.character_set.tile_height);
 
-            // High Intensity Check
-            /*
-            if (! display_high_intensity_backgrounds)
-                bg = colors[parseInt(color / 16) % 8];
-            else if (renderer.bg_intensity == "high")
-                bg = colors[parseInt(color / 16)];
-                */
+        // Foreground transparency
+        this.ctx.globalCompositeOperation = "xor";
+        this.ctx.drawImage(
+            this.character_set.image,
+            ch_x * this.character_set.tile_width,
+            ch_y * this.character_set.tile_height,
+            this.character_set.tile_width,
+            this.character_set.tile_height,
+            (x - border_offset) * this.character_set.tile_width,
+            (y - border_offset) * this.character_set.tile_height,
+            this.character_set.tile_width,
+            this.character_set.tile_height
+        );
 
-            this.ctx.globalCompositeOperation = "source-over";
-            this.ctx.fillStyle = bg_hex;
-            this.ctx.fillRect((x - border_offset) * this.character_set.tile_width, (y - border_offset) * this.character_set.tile_height, this.character_set.tile_width, this.character_set.tile_height);
-
-            // Foreground transparency
-            this.ctx.globalCompositeOperation = "xor";
-            this.ctx.drawImage(
-                this.character_set.image,
-                ch_x * this.character_set.tile_width,
-                ch_y * this.character_set.tile_height,
-                this.character_set.tile_width,
-                this.character_set.tile_height,
-                (x - border_offset) * this.character_set.tile_width,
-                (y - border_offset) * this.character_set.tile_height,
-                this.character_set.tile_width,
-                this.character_set.tile_height
-            );
-
-            // Foreground
-            this.ctx.globalCompositeOperation = "destination-over";
-            this.ctx.fillStyle = fg_hex;
-            this.ctx.fillRect(
-                (x - border_offset) * this.character_set.tile_width,
-                (y - border_offset) * this.character_set.tile_height,
-                this.character_set.tile_width, this.character_set.tile_height
-            ); // -1 for border compensation
+        // Foreground
+        this.ctx.globalCompositeOperation = "destination-over";
+        this.ctx.fillStyle = fg_hex;
+        this.ctx.fillRect(
+            (x - border_offset) * this.character_set.tile_width,
+            (y - border_offset) * this.character_set.tile_height,
+            this.character_set.tile_width, this.character_set.tile_height
+        ); // -1 for border compensation
     }
 
     crosshair(center_x, center_y, state="on")
@@ -131,7 +178,7 @@ export class ZZT_Standard_Renderer
             let x = center_x - 1;
             let y = center_y - 1;
 
-            if (! this.show_border)
+            if (! this.config.appearance.show_outer_border)
             {
                 x -= 1;
                 y -= 1;
@@ -279,7 +326,7 @@ export class ZZT_Standard_Renderer
             return [element.color % 16, parseInt(element.color / 16), 63];
 
         let animation_characters = [179, 47, 196, 92];
-        char = animation_characters[this.tick % 4];
+        char = animation_characters[this.config.game.tick % 4];
         element.color = element.color + 1;
         if (element.color > 15)
             element.color = 9;
@@ -296,7 +343,7 @@ export class ZZT_Standard_Renderer
         if (typeof stat == "undefined")
             return [element.color % 16, parseInt(element.color / 16), 63];
 
-        switch (parseInt(this.tick / 3) % 4) {  // Divide by default cycle per element defintions table
+        switch (parseInt(this.config.game.tick / 3) % 4) {  // Divide by default cycle per element defintions table
             case 0: char = 179; break;
             case 1: char = 247; break;
             case 2: char = 196; break;
@@ -315,7 +362,7 @@ export class ZZT_Standard_Renderer
         if (typeof stat == "undefined")
             return [element.color % 16, parseInt(element.color / 16), 63];
 
-        switch (parseInt(this.tick / 2) % 4) {  // Divide by default cycle per element defintions table
+        switch (parseInt(this.config.game.tick / 2) % 4) {  // Divide by default cycle per element defintions table
             case 3: char = 179; break;
             case 2: char = 47; break;
             case 1: char = 196; break;
@@ -339,9 +386,9 @@ export class ZZT_Standard_Renderer
             return [element.color % 16, parseInt(element.color / 16), 33];
 
         if (stat.step_x == 0)
-            char = animation_characters.ns[stat.step_y * 2 + 2 + parseInt(this.tick / stat.cycle) % 4];
+            char = animation_characters.ns[stat.step_y * 2 + 2 + parseInt(this.config.game.tick / stat.cycle) % 4];
         else
-            char = animation_characters.ew[stat.step_x * 2 + 2 + parseInt(this.tick / stat.cycle) % 4];
+            char = animation_characters.ew[stat.step_x * 2 + 2 + parseInt(this.config.game.tick / stat.cycle) % 4];
 
         return [element.color % 16, parseInt(element.color / 16), char];
     }
@@ -382,7 +429,7 @@ export class ZZT_Standard_Renderer
         let element = this.rendered_board.elements[x][y];
         let char;
 
-        switch (this.tick % 8) {
+        switch (this.config.game.tick % 8) {
             case 0:
             case 1: char = 24; break;
             case 2:
@@ -392,6 +439,41 @@ export class ZZT_Standard_Renderer
             default: char = 27;
         }
 
+        return [element.color % 16, parseInt(element.color / 16), char];
+    }
+
+    invisible_draw(x, y)
+    {
+        let element = this.rendered_board.elements[x][y];
+        let char;
+
+        switch (this.config.appearance.invisible_wall)
+        {
+            case 0:
+                char = 176;
+                break;
+            case 2:
+                char =  178;
+                break;
+            default:
+                char = this.default_characters[element.id];
+                break;
+        }
+
+        return [element.color % 16, parseInt(element.color / 16), char];
+    }
+
+    monitor_draw(x, y)
+    {
+        let element = this.rendered_board.elements[x][y];
+        let char = (this.config.appearance.monitor) ? this.default_characters[element.id] : 77;
+        return [element.color % 16, parseInt(element.color / 16), char];
+    }
+
+    edge_draw(x, y)
+    {
+        let element = this.rendered_board.elements[x][y];
+        let char = (this.config.appearance.edge) ? this.default_characters[element.id] : 69;
         return [element.color % 16, parseInt(element.color / 16), char];
     }
 }
