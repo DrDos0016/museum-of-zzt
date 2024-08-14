@@ -168,6 +168,8 @@ img:not(.screenshot-thumb).stream-thumbnail
         height:auto;
     }
 }
+
+.nonstandard { color:var(--ega-red); font-size:24pt; }
 </style>
 {% endblock %}
 
@@ -198,6 +200,9 @@ img:not(.screenshot-thumb).stream-thumbnail
             {{stream.when|date:'H:i e'}}
             </div>
         </div>
+            {% if stream.nonstandard_time %}
+                <div class="nonstandard c"><span class="ega-yellow">/!\</span> NOTICE <span class="ega-yellow">/!\</span><br>This stream is scheduled for a non-standard date/time!</div>
+            {% endif %}
         {% else %}
         <div class="time">
             <div>

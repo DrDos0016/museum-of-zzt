@@ -30,6 +30,7 @@ class Stream(BaseModel):
     visible = models.BooleanField(default=True)
     guests = models.CharField(max_length=300, help_text="Guests on stream", default=None, blank=True)
     theme = models.CharField(max_length=120, help_text="Theme for stream", default=None, blank=True)
+    nonstandard_time = models.BooleanField(default=False, help_text="Add a disclaimer for streaming at an unusual date/time")
 
     def when_in_pacific(self):
         print(self.when)

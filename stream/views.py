@@ -44,7 +44,7 @@ def overview(request):
 def scene_ad_break(request):
     context = {}
 
-    context["articles"] = Article.objects.in_early_access()
+    context["articles"] = Article.objects.published().order_by("-publish_date")[:10]
     return render(request, "stream/scene/ad-break.html", context)
 
 
