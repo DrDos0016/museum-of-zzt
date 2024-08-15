@@ -59,6 +59,7 @@ urlpatterns = [
     path("article/browse/category/", museum_site.article_views.Article_Categories_List_View.as_view(), name="article_browse_categories"),
     path("article/browse/category/<slug:category_slug>/", museum_site.article_views.Article_List_View.as_view(), name="article_browse_category"),
     path("article/search/", museum_site.article_views.Article_Search_View.as_view(), name="article_search"),
+    path("article/view/<int:pk>/", museum_site.article_views.redirect_with_slug, name="article_view_slugless"),
     path("article/view/<int:pk>/page/<int:page>/<slug:slug>/", museum_site.article_views.Article_Detail_View.as_view(), name="article_view_page"),
     path("article/view/<int:pk>/<slug:slug>/", museum_site.article_views.Article_Detail_View.as_view(), {"page": 1}, name="article_view"),
     path("article/lock/<int:article_id>/<slug:slug>/", museum_site.article_views.article_lock, name="article_lock"),

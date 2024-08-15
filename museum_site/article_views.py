@@ -198,3 +198,10 @@ class Article_Search_View(Model_Search_View):
     model_list_view_class = Article_List_View
     template_name = "museum_site/generic-form-display.html"
     title = "Article Search"
+
+
+def redirect_with_slug(request, pk):
+    a = Article.objects.filter(pk=pk).first()
+    if a:
+        return redirect(a.get_absolute_url())
+    return redirect("/")
