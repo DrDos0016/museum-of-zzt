@@ -314,6 +314,7 @@ urlpatterns = [
     path("tumblr/", RedirectView.as_view(url="http://worldsofzzt.tumblr.com"), name="tumblr"),
     path("patreon/", RedirectView.as_view(url="https://patreon.com/worldsofzzt"), name="patreon"),
     path("mastodon/", RedirectView.as_view(url="https://botsin.space/@worldsofzzt"), name="mastodon"),
+    path("strawpoll/", museum_site.views.strawpoll, name="strawpoll"),
     path("youtube/", RedirectView.as_view(url="https://www.youtube.com/@WorldsofZZT"), name="youtube"),
     path("twitch/", RedirectView.as_view(url="https://twitch.tv/worldsofzzt"), name="twitch"),
     path("github/", RedirectView.as_view(url="https://github.com/DrDos0016/museum-of-zzt"), name="git"),

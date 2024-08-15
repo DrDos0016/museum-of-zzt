@@ -37,6 +37,7 @@ from museum_site.forms.tool_forms import (
     IA_Mirror_Form,
     Livestream_Description_Form,
     Livestream_Vod_Form,
+    Manage_Cache_Form,
     Prep_Publication_Pack_Form,
     Publication_Pack_Select_Form,
     Tool_ZFile_Select_Form,
@@ -305,13 +306,13 @@ def log_viewer(request):
 def manage_cache(request):
     context = {"title": "Manage Cache", "cache_items": []}
 
-    keys = (
-        "UPLOAD_QUEUE_SIZE",
-        "DISCORD_LAST_ANNOUNCED_FILE_NAME",
-        "ENV",
-        "CHARSETS",
-        "CUSTOM_CHARSETS",
-    )
+    # Setting
+    if request.method == "POST":
+        form = Manage_Cache_Form(request.POST)
+        if form.is_valid():
+            form.process()
+    else:
+        form = Manage_Cache_Form()
 
     # Refresh
     if request.GET.get("refresh"):
@@ -324,9 +325,10 @@ def manage_cache(request):
         else:
             context["fail_message"] = "No code path available to refresh key: {}".format(refresh)
 
-    for k in keys:
-        context["cache_items"].append({"key": k, "value": cache.get(k, "NOT SET")})
+    for k in form.KNOWN_CACHE_KEYS:
+        context["cache_items"].append({"key": "[{}]<br>{}".format(k[0], k[1]), "value": cache.get(k[0], "NOT SET")})
 
+    context["form"] = form
     return render(request, "museum_site/tools/manage-cache.html", context)
 
 

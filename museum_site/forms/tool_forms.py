@@ -9,6 +9,7 @@ import zipfile
 import requests
 
 from django import forms
+from django.core.cache import cache
 from django.template.defaultfilters import linebreaks, urlize
 from django.template.loader import render_to_string
 
@@ -465,6 +466,29 @@ class Livestream_Vod_Form(forms.Form):
             a.save()
 
         return a
+
+class Manage_Cache_Form(forms.Form):
+    use_required_attribute = False
+    attrs = {"method": "POST"}
+    submit_value = "Set Cache Entry"
+
+    KNOWN_CACHE_KEYS = (
+        ("UPLOAD_QUEUE_SIZE", "Upload Queue Size"),
+        ("DISCORD_LAST_ANNOUNCED_FILE_NAME", "Discord Last Announced File Name"),
+        ("ENV", "Environment"),
+        ("CHARSETS", "Character Sets"),
+        ("CUSTOM_CHARSETS", "Custom Character Sets"),
+        ("STRAWPOLL_STREAM_VOTE", "Strawpoll Stream Vote URL"),
+    )
+
+    key = forms.ChoiceField(label="Cache Key", choices=KNOWN_CACHE_KEYS)
+    value = forms.CharField(widget=forms.Textarea())
+
+    def process(self):
+        key = self.cleaned_data["key"].upper()
+        value = self.cleaned_data["value"]
+        cache.set(key, value)
+        return True
 
 
 class Prep_Publication_Pack_Form(forms.Form):

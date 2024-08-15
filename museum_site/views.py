@@ -5,9 +5,10 @@ import re
 
 from datetime import datetime
 
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.cache import cache
 from django.db.models import Count
 from django.db.models.functions import ExtractYear
-from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
@@ -358,6 +359,9 @@ def site_credits(request):
     data["biggest_supporters"] = biggest_supporters
 
     return render(request, "museum_site/site-credits.html", data)
+
+def strawpoll(request):
+    return redirect(cache.get("STRAWPOLL_STREAM_VOTE", "/"))
 
 
 def stub(request, *args, **kwargs):
