@@ -126,7 +126,13 @@ class Review_Form(forms.ModelForm):
             feedback.tags.add(FEEDBACK_TAG_REVIEW)
 
         # Log feedback for staff
-        Discord_Announcement_Form().send_message("log", "Feedback submitted: https://museumofzzt.com{}".format(feedback.get_absolute_url()))
+        Discord_Announcement_Form().send_message("log", "Feedback submitted: FB#{}\n{}\n*{}*\<https://museumofzzt.com{}> ```{}```".format(
+            feedback.pk,
+            feedback.title.replace(".", "(dot)"),
+            feedback.zfile.title,
+            feedback.get_absolute_url(),
+            feedback.content[:140].replace(".", "(dot)")
+        ))
 
         # Update file's review count/scores if the review is approved
         if feedback.approved and zfile.can_review == ZFile.FEEDBACK_YES:

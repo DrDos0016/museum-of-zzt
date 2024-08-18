@@ -119,8 +119,13 @@ class Upload_View(TemplateView):
             if created:
                 self.zgame_form.zfile.downloads.add(zgames_download)
 
-            # Log feedback for staff
-            Discord_Announcement_Form().send_message("log", "Upload submitted: https://museumofzzt.com{}".format(self.zgame_form.zfile.get_absolute_url()))
+            # Log upload for staff
+            Discord_Announcement_Form().send_message("log", "Upload submitted: ZF#{} [{}]\n{}\n<https://museumofzzt.com{}>".format(
+                self.zgame_form.zfile.pk,
+                self.zgame_form.zfile.key,
+                self.zgame_form.zfile.title,
+                self.zgame_form.zfile.get_absolute_url(),
+            ))
             return redirect("upload_complete", token=self.upload_form.upload.edit_token)  # Redirect to success page
 
         context = self.get_context_data()
