@@ -55,7 +55,7 @@ class Museum_Site_Config(AppConfig):
         print("-------------------- Initializing Cache --------------------")
         INITIAL_CACHE = {}
         INITIAL_CACHE["ENV"] = settings.ENVIRONMENT
-        INITIAL_CACHE["STRAWPOLL_STREAM_VOTE"] = "/"
+        INITIAL_CACHE["STRAWPOLL_STREAM_VOTE"] = ""
 
 
         try:

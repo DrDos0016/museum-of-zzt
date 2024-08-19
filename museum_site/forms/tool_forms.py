@@ -482,7 +482,7 @@ class Manage_Cache_Form(forms.Form):
     )
 
     key = forms.ChoiceField(label="Cache Key", choices=KNOWN_CACHE_KEYS)
-    value = forms.CharField(widget=forms.Textarea())
+    value = forms.CharField(widget=forms.Textarea(), required=False)
 
     def process(self):
         key = self.cleaned_data["key"].upper()

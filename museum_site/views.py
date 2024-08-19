@@ -361,7 +361,11 @@ def site_credits(request):
     return render(request, "museum_site/site-credits.html", data)
 
 def strawpoll(request):
-    return redirect(cache.get("STRAWPOLL_STREAM_VOTE", "/"))
+    redir = cache.get("STRAWPOLL_STREAM_VOTE")
+    if redir:
+        return redirect(redir)
+    context = {"title": "No Stream Poll Available"}
+    return render(request, "museum_site/strawpoll-unavailable.html", context)
 
 
 def stub(request, *args, **kwargs):

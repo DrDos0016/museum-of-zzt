@@ -1,0 +1,14 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block content %}
+<h1>No Stream Poll Available</h1>
+
+<div class="cp437 c">
+    <img src={% static "chrome/error-strawpoll-not-found.png" alt="An electoral ballot with the names and circles connected by a tangle of impossible to follow scribbles" %}>
+    <div class="img-caption">"The Hairball Ballot" from {% ml "https://museumofzzt.com/file/view/esp/" "Evil Sorcerers' Party" %}</div>
+</div>
+
+<p>Sorry! No stream poll is currently available. Try again later and this URL will redirect you to Strawpoll to vote.</p>
+{% endblock %}
