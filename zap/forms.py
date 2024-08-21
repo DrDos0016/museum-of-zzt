@@ -13,12 +13,27 @@ from zap.models import Event, Post
 
 ACCOUNTS = (
     ("cohost", "Cohost"),
-    ("discord", "Discord"),
+    ("discord", "Discord (no media support)"),
     ("mastodon", "Mastodon"),
     ("patreon", "Patreon"),
     ("tumblr", "Tumblr"),
     ("twitter", "Twitter"),
 )
+
+DISCORD_CHANNELS = (
+    ("announcements", "#Announcements"),
+    ("patrons", "#Patrons"),
+    ("moz-feed", "#Museum-of-ZZT-Feed"),
+    ("test", "#Bot-Dev (Test Announcement)"),
+    ("log", "#Bot-Dev (Logging)"),
+)
+
+DISCORD_ROLES = (
+    ("838135077144625213", "Stream-Alerts-All"),
+    ("760545019273805834", "Stream-Alerts-Dos"),
+    ("1275156566643048449", "Test Role"),
+)
+#<@&165511591545143296>
 
 class ZAP_Model_Select_Form(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -32,10 +47,12 @@ class ZAP_Post_Form(forms.Form):
     processed = False
 
     post_shortcut = forms.ChoiceField(required=False, choices=[], help_text="Select to quickly set up a common post type.")
-    title = forms.CharField(help_text="Used as post title on Cohost/Tumblr.")
+    title = forms.CharField(help_text="Used as post title on Cohost/Tumblr.", required=False)
     accounts = Museum_Multiple_Choice_Field(
         required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["twitter", "tumblr", "mastodon"]
     )
+    discord_channel = forms.ChoiceField(choices=DISCORD_CHANNELS, initial="test")
+    discord_mentions = Museum_Multiple_Choice_Field(required=False, widget=forms.CheckboxSelectMultiple, choices=DISCORD_ROLES)
 
     body = forms.CharField(
         widget=Enhanced_Text_Area_Widget(char_limit=10000),
@@ -68,6 +85,11 @@ class ZAP_Post_Form(forms.Form):
             s = zap_get_social_account(account)
             reply_id = "{}_id".format(account)
 
+            # Discord needs to specify its channel and mentions
+            if account == "discord":
+                s.set_channel_key(self.cleaned_data.get("discord_channel", "test"))
+                s.set_mentions(self.cleaned_data.get("discord_mentions", []))
+
             s.login()  # Login
             s.reset_media()
             for i in range(1, 5):  # Upload all media
@@ -84,7 +106,7 @@ class ZAP_Post_Form(forms.Form):
 
         # Create the Post object
         p = Post()
-        p.title = self.cleaned_data.get("title", "")
+        p.title = self.cleaned_data.get("title", "Untitled Post")
         p.body = self.cleaned_data.get("body", "")
         p.media_1 = self.cleaned_data.get("media_1", "")
         p.media_2 = self.cleaned_data.get("media_2", "")

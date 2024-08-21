@@ -1,9 +1,11 @@
+import json
 import os
 import time
 
 from museum_site.constants import APP_ROOT, HOST, APP_ROOT
 
 import pytumblr
+import requests
 
 from cohost.models.user import User
 from cohost.models.block import MarkdownBlock
@@ -29,6 +31,8 @@ from museum_site.settings import (
     TWITTER_OAUTH_SECRET,
 
     COHOST_COOKIE,
+
+    DISCORD_WEBHOOK_ANNOUNCEMENTS_URL, DISCORD_WEBHOOK_PATRONS_URL, DISCORD_WEBHOOK_TEST_URL, DISCORD_WEBHOOK_FEED_URL,
 )
 
 
@@ -114,6 +118,53 @@ class Social_Cohost(Social):
         self.log_response(response.url)
         return response
 
+
+class Social_Discord(Social):
+    channel_key = "test"
+    mentions = []
+
+    def _init_keys(self):
+        # No keys to initialize
+        return True
+
+    def login(self):
+        # No login required
+        return True
+
+    def upload_media(self, media_path=None, media_url=None, media_bytes=None):
+        # TODO
+        return True
+
+    def post(self, body, title="", tags=""):
+        destinations = {
+            "announcements": DISCORD_WEBHOOK_ANNOUNCEMENTS_URL, "patrons": DISCORD_WEBHOOK_PATRONS_URL, "moz-feed": DISCORD_WEBHOOK_FEED_URL,
+            "test": DISCORD_WEBHOOK_TEST_URL, "log": DISCORD_WEBHOOK_TEST_URL,
+        }
+        destination_webhook = destinations.get(self.channel_key)
+
+        if self.mentions:
+            mentions = " ".join(map(lambda foo: "<@&{}>".format(foo), self.mentions))
+            body = mentions + " " + body
+
+        discord_data = {"content": body}
+
+        """
+        if self.cleaned_data["image_embeds"]:
+            embeds = []
+            for embed in self.cleaned_data["image_embeds"]:
+                embeds.append({"image": {"url": embed}})
+            discord_data["embeds"] = embeds
+        """
+
+        response = requests.post(destination_webhook, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
+        self.log_response(response)
+        return response
+
+    def set_channel_key(self, key):
+        self.channel_key = key
+
+    def set_mentions(self, roles):
+        self.mentions = roles
 
 
 class Social_Mastodon(Social):
