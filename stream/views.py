@@ -44,29 +44,9 @@ def overview(request):
 def scene_ad_break(request):
     context = {}
 
-    context["articles"] = Article.objects.published().order_by("-publish_date")[:10]
+    context["articles"] = Article.objects.published().exclude(category="Livestream").order_by("-publish_date")[:2]
     return render(request, "stream/scene/ad-break.html", context)
 
-
-@method_decorator(staff_member_required, name="dispatch")
-class Stream_Create_View(CreateView):
-    model = Stream
-    fields = ["title", "description", "when", "preview_image", "entries"]
-    template_name = "museum_site/generic-form-display-output.html"
-    success_url = reverse_lazy("stream_index")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["title"] = "Create Stream"
-        context["form"].heading = "Create Stream"
-        context["form"].submit_value = "Create"
-        context["form"].attrs = {"method": "POST", "action": self.success_url}
-        context["form"].attrs = {"method": "POST"}
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
 
 
 class Stream_Detail_View(DetailView):
@@ -100,24 +80,3 @@ class Stream_Schedule_View(ListView):
             context["sunday_time_utc"] = "20:00 UTC"
 
         return context
-
-
-@method_decorator(staff_member_required, name="dispatch")
-class Stream_Entry_Create_View(CreateView):
-    model = Stream_Entry
-    fields = ["zfile", "title_override", "author_override", "company_override", "release_date_override", "preview_image_override"]
-    template_name = "museum_site/generic-form-display-output.html"
-    success_url = reverse_lazy("stream_index")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["title"] = "Create Stream Entry"
-        context["form"].heading = "Create Stream Entry"
-        context["form"].submit_value = "Create"
-        context["form"].attrs = {"method": "POST", "action": self.success_url}
-        context["form"].attrs = {"method": "POST"}
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)

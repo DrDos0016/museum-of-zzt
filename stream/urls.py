@@ -19,8 +19,4 @@ urlpatterns = [
 
     # Scenes for Streams
     path("scene/ad-break/", stream.views.scene_ad_break, name="stream_ad_break"),
-
-    # Staff Views
-    path("create/", stream.views.Stream_Create_View.as_view(), name="stream_add"),
-    path("stream-entry/create/", stream.views.Stream_Entry_Create_View.as_view(), name="stream_entry_add"),
 ]
