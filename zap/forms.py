@@ -3,6 +3,7 @@ import os
 from datetime import datetime, timezone, timedelta
 
 from django import forms
+from django.conf import settings
 from django.template.defaultfilters import date
 
 from museum_site.constants import SITE_ROOT
@@ -49,9 +50,9 @@ class ZAP_Post_Form(forms.Form):
     post_shortcut = forms.ChoiceField(required=False, choices=[], help_text="Select to quickly set up a common post type.")
     title = forms.CharField(help_text="Used as post title on Cohost/Tumblr.", required=False)
     accounts = Museum_Multiple_Choice_Field(
-        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["twitter", "tumblr", "mastodon"]
+        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["cohost", "discord", "twitter", "tumblr", "mastodon"]
     )
-    discord_channel = forms.ChoiceField(choices=DISCORD_CHANNELS, initial="test")
+    discord_channel = forms.ChoiceField(choices=DISCORD_CHANNELS, initial=("announcements" if settings.ENVIRONMENT == "PROD" else "test"))
     discord_mentions = Museum_Multiple_Choice_Field(required=False, widget=forms.CheckboxSelectMultiple, choices=DISCORD_ROLES)
 
     body = forms.CharField(
