@@ -1,4 +1,4 @@
-import { padded } from "./core.js"; // PString needed for watermark reading directly
+import { padded, escape_html} from "./core.js"; // PString needed for watermark reading directly
 import { Handler } from "./handler.js";
 import { ZZT_Standard_Renderer } from "./renderer.js";
 import { ZZT_ELEMENTS } from "./elements.js";
@@ -74,7 +74,7 @@ export class ZZT_Handler extends Handler
         }
         if (stat.oop[0] == "@")
         {
-            name = stat.oop.slice(0, stat.oop.indexOf("\n"));
+            name = escape_html(stat.oop.slice(0, stat.oop.indexOf("\n")));
         }
         let byte_count = (stat.oop != "") ? ` ${stat.oop_length} bytes` : '';
         let output = `<a class="stat-link jsLink" data-x="${stat.x}" data-y="${stat.y}">(${padded(stat.x)}, ${padded(stat.y)}) ${name}</a>${byte_count}`;
@@ -415,7 +415,7 @@ export class ZZT_Handler extends Handler
         let board = this.boards[this.selected_board]
         let output = `<div class="flex-table">`;
         let rows = [
-            {"value": board.title, "label": "Title"},
+            {"value": escape_html(board.title.toString()), "label": "Title"}, // TODO: Should this respect show hidden data?
             {"value": `${board.max_shots} shots.`, "label": "Can Fire"},
             {"value": this.yesno(board.is_dark), "label": "Board Is Dark"},
             {"value": this.yesno(board.reenter_when_zapped), "label": "Re-enter When Zapped"},
@@ -466,7 +466,7 @@ export class ZZT_Handler extends Handler
             let board_title = this.boards[idx].title[func]();
             if (board_title == "")
                 board_title = "<i>Untitled Board</i>";
-            output += `<li class='board${chk_selected}' data-board-number=${idx}>` + board_title + "</li>\n";
+            output += `<li class='board${chk_selected}' data-board-number=${idx}>` + escape_html(board_title) + "</li>\n";
         }
         output += "</ol>\n";
 
@@ -752,7 +752,7 @@ export class ZZT_Handler extends Handler
 
     get_hr_title(board_num)
     {
-        return (this.boards[board_num].title == "") ? "<i>Untitled Board</i>" : this.boards[board_num].title;
+        return (this.boards[board_num].title == "") ? "<i>Untitled Board</i>" : escape_html(this.boards[board_num].title.toString()); // Force no errata
     }
 
     get_keys_value()
@@ -788,7 +788,7 @@ export class ZZT_Handler extends Handler
             if (this.world.flags[idx].length)
             {
                 has_flags = true;
-                output += `<li>${this.world.flags[idx]}</li>\n`;
+                output += `<li>${escape_html(this.world.flags[idx].toString())}</li>\n`; // TODO: Does not respect hidden data visibility settings
             }
         }
         if (! has_flags)
@@ -845,11 +845,14 @@ export class ZZT_Handler extends Handler
 
     render_zzt_oop_style(oop)
     {
-        console.log(oop);
         let rendered;
+        oop = escape_html(oop);
+
         if (this.config.oop.style == "classic")
         {
-            rendered = `<div class="zzt-scroll"><div class="name">Edit Program</div>\n<div class="content">${oop.replaceAll("\n", "<br>")}</div></div>`;
+            // TODO: Inline style should be moved. These classes are used in {% scroll %} though and may have an impact. */
+
+            rendered = `<div class="zzt-scroll"><div class="name">Edit Program</div>\n<div class="content" style="white-space:pre">  •    •    •    •    •    •    •    •    •\n${oop}  •    •    •    •    •    •    •    •    •\n</div></div>`;
         }
         else
             rendered = `<code class="zzt-oop">` + this.syntax_highlight(oop) + `</code>`;
@@ -859,7 +862,7 @@ export class ZZT_Handler extends Handler
 
     syntax_highlight(oop)
     {
-        oop = oop.replaceAll("<", "&lt;").replaceAll(">", "&gt;").split("\n");
+        oop = oop.split("\n");
         for (var idx in oop)
         {
             // Symbols: @, #, /, ?, :, ', !, $
@@ -1149,7 +1152,7 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
     get_zeta_live()
     {
-        if (zfile_info.size > 10485760) // 10MB TODO
+        if (zfile_info && zfile_info.size > 10485760) // 10MB TODO
             return "<p><i>Play This Board</i> functionality is not available for this zipfile.</p>";
         return `<div style='margin-top:4px'><input type="button" id="play-board" value="Play This Board"> (Experimental. May not work as expected.)</div>`;
     }

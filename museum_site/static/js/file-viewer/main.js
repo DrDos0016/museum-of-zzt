@@ -15,6 +15,7 @@ function initialize()
     {
         // Add Overview
         fv.files["fvpk-overview"] = create_handler_for_file("fvpk-overview", "Overview", [], {"loaded": true, "parsed": false});
+        fv.files["fvpk-debug"] = create_handler_for_file("fvpk-debug", "Debugging Information", [], {"loaded": true, "parsed": false});
     }
     else if (mode == "local")
     {
@@ -54,6 +55,8 @@ function initialize()
 
     $("#preferences").on("change", ".field-value select", (e) => { fv.update_preferences(e); });
 
+    $("#fv-main").on("click", "#debug-ingest-button", (e) => { fv.ingest_debug_data(e); });
+
     /* Local Files */
     $("#fv-main").on("click", "#file-load-submit", ingest_file);
 
@@ -84,6 +87,15 @@ function initialize()
         {
             if (match = $(".fv-content.selected").prevAll(".fv-content"))
                 match[0].click();
+        }
+        else if (e.shiftKey && e.keyCode == KEY.B) // Toggle blinking
+        {
+            if (match = $("select[data-config='zzt_handler.renderer.appearance.show_high_intensity_backgrounds']"))
+            {
+                let current = parseInt(match.val());
+                match.val((current == 1 ? 0 : 1));
+                match.change();
+            }
         }
         else if (e.keyCode == KEY.NP_UP) { $("a.board-link[data-direction=north]").click(); }
         else if (e.keyCode == KEY.NP_DOWN) { $("a.board-link[data-direction=south]").click(); }
@@ -130,9 +142,15 @@ function initialize()
     if (auto_load)
     {
         if (file_size < fv.auto_load_max_size)
+        {
+            console.log("Fetching Complete File");
             fetch_zip_file(auto_load);
+        }
         else
+        {
+            console.log("Fetching Only Zipinfo due to file size");
             fetch_zipinfo(auto_load);
+        }
     }
 
     if (mode == "local")
@@ -236,6 +254,10 @@ function ingest_file_list_from_zipfile(data)
         fv.add_file(data["items"][idx].filename, null, {"loaded": false, "parsed": false})
     }
     fv.display_file_list();
+    if (fv.auto_load_filename) // Auto load if needed
+        $(`.fv-content[data-filename='${fv.auto_load_filename}']`).click();
+    else
+        $(`.fv-content[data-fvpk='fvpk-overview']`).click();
 }
 
 

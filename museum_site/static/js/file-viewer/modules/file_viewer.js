@@ -1,4 +1,5 @@
-import { Handler } from "./handler.js";
+//import { Handler } from "./handler.js";
+import { Debug_Handler } from "./debug_handler.js";
 import { Image_Handler } from "./image_handler.js";
 import { Local_File_Uploader_Handler } from "./local_file_uploader_handler.js";
 import { Overview_Handler } from "./overview_handler.js";
@@ -16,7 +17,7 @@ const EXTENSIONS_ZZT = [".ZZT"];
 export class File_Viewer
 {
     auto_load_max_size = 2097152;  // Maximum size of a zip file to automatically parse its contents
-    //auto_load_max_size = 0;  // Maximum size of a zip file to automatically parse its contents
+    //auto_load_max_size = 10;  // Maximum size of a zip file to automatically parse its contents
     fvi_count = 1000;
     zip_file_path = "";
     files = {};
@@ -215,6 +216,7 @@ export class File_Viewer
     update_preferences(e)
     {
         console.log("UPDATING PREFERENCES");
+        console.log(e);
         let config_string_raw = $(e.target).data("config");
         let type = $(e.target).data("type")
         let value = $(e.target).val();
@@ -264,6 +266,11 @@ export class File_Viewer
         window.open(live_url, "popout-"+key, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
     }
 
+    ingest_debug_data(e)
+    {
+        console.log("Ingesting");
+        $("#debug-wrapper").html(`<textarea>${JSON.stringify(this.configs, null, 4)}</textarea>`);
+    }
 }
 
 export function create_handler_for_file(fvpk, filename, bytes, meta)
@@ -286,6 +293,8 @@ export function create_handler_for_file(fvpk, filename, bytes, meta)
             return new Overview_Handler(fvpk, filename, bytes, meta);
         case fvpk == "fvpk-local":
             return new Local_File_Uploader_Handler(fvpk, filename, bytes, meta);
+        case fvpk == "fvpk-debug":
+            return new Debug_Handler(fvpk, filename, bytes, meta);
         default:
             return new Unsupported_Handler(fvpk, filename, bytes, meta);
     };
