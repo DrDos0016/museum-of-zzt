@@ -343,6 +343,9 @@ def fetch_zip_info(request):
 def fetch_zip_content(request):
     """ For new file viewer"""
     path = request.GET.get("path")
+    if "?" in path:
+        path = path[:path.find("?")]
+
     zf_path = os.path.join(SITE_ROOT, path)
     content = request.GET.get("content")
 
