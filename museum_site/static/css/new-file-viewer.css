@@ -351,6 +351,14 @@ li.empty /* Hidden entries in lists that need to keep counting */
 }
 /* END WAS COPIED THEN TWEAKED */
 
+#debug-wrapper { width:95%; %}
+#debug-wrapper textarea
+{
+    width:99%;
+    margin:auto;
+    height:200px;
+}
+
 /* EVERYTHING BELOW IS COPIED FROM ORIGINAL FILE VIEWER */
 
 

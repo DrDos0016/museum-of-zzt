@@ -57,7 +57,7 @@ class Review_Form(forms.ModelForm):
         }
 
         widgets = {
-            "content": forms.Textarea(attrs={"class":"height-256"})
+            "content": forms.Textarea(attrs={"class": "height-256"})
         }
 
     def clean_author(self):
@@ -110,7 +110,7 @@ class Review_Form(forms.ModelForm):
             feedback.approved = False
         if (not request.user.is_authenticated) and feedback.content.find("http") != -1:
             feedback.approved = False
-        if (not request.user.is_authenticated): # TODO Make this a proper constant or setting
+        if (not request.user.is_authenticated):  # TODO Make this a proper constant or setting
             feedback.approved = False
 
         feedback.save()
@@ -126,12 +126,15 @@ class Review_Form(forms.ModelForm):
             feedback.tags.add(FEEDBACK_TAG_REVIEW)
 
         # Log feedback for staff
-        Discord_Announcement_Form().send_message("log", "Feedback submitted: FB#{}\n{}\n*{}*\<https://museumofzzt.com{}> ```{}```".format(
+        Discord_Announcement_Form().send_message("log", "Feedback submitted: FB#{}\n\
+            {}\n*{}*\n<https://museumofzzt.com{}> ```{}```\nThis is spam. [Delete it](https://museumofzzt.com{}?delete_pk={}).".format(
             feedback.pk,
             feedback.title.replace(".", "(dot)"),
             feedback.zfile.title,
             feedback.get_absolute_url(),
-            feedback.content[:140].replace(".", "(dot)")
+            feedback.content[:140].replace(".", "(dot)"),
+            reverse_lazy("feedback_approvals_delete"),
+            feedback.pk
         ))
 
         # Update file's review count/scores if the review is approved
@@ -143,13 +146,12 @@ class Review_Form(forms.ModelForm):
                 discord_announce_review(feedback, mode=self.mode)
             zfile.save()
 
-
         return feedback
+
 
 class Feedback_Edit_Form(Review_Form):
     mode = "Edit"
     zfile_id = forms.IntegerField(widget=forms.HiddenInput)
-
 
 
 class Review_Search_Form(forms.Form):

@@ -46,6 +46,7 @@ export class Handler
         if (! this.envelope_id)
         {
             this.envelope_id = "#envelope-" + this.fvpk;
+            console.log("CREATING ENVELOPE", this.envelope_id);
             $("#fv-main").append(`<div class="envelope envelope-${this.envelope_css_class}" id="envelope-${this.fvpk}">${this.initial_content}</div>`);
         }
     }

@@ -31,3 +31,10 @@ export function padded(val, length=2, char="0")
 {
     return ("" + val).padStart(length, char);
 }
+
+export function escape_html(text)
+{
+    console.log("ESCAPING", text);
+    text = text.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    return text;
+}

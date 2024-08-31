@@ -28,11 +28,13 @@ var initial_query_string = "{{request.META.QUERY_STRING|safe}}";
 var DEBUG_VAR = null;
 var user_test = {"bar": "baz", "yes": true}; // DEBUG
 var argle_bargle = "potato";
-console.log("Global! {{zfile.key|default:'no zfile?'}}");
 {% if zfile %}var zfile_info = {
     "key": "{{zfile.key}}",
     "size": {{zfile.size}},
-};{% endif %}
+};
+{% else %}
+var zfile_info = {};
+{% endif %}
 </script>
 {% endblock %}
 

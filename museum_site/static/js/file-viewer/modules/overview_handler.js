@@ -49,28 +49,37 @@ export class Overview_Handler extends Handler
 
     generate_zip_info_table() {
         let output = "";
+        let has_zipinfo = false;
         if (this.zip_comment)
             output += `<div>${this.zip_comment}</div>`;
-        output += `
+        let zip_info_table = `
             <table class="zip-info-table">
             <tr><th>Filename</th><th>Mod. Date</th><th>Dir.</th><th>CRC-32</th><th>Compressed Size</th><th>Decompressed Size</th></tr>
         `;
         // TODO: CRC32 is appearing as negative?
         for(let [key, file] of Object.entries(this.fv_files))
         {
-            if (file.fvpk == "fvpk-overview")
+            if (file.fvpk == "fvpk-overview" || file.fvpk == "fvpk-debug")
                 continue;
-            console.log("FILE HERE", file);
             let zi = file.meta.zipinfo
-            output += `<tr>
-                <td>${file.filename}</td>
-                <td class="c">${zi.date.toISOString().replace("T", " ").slice(0, 19)}</td>
-                <td class="c">${zi.dir ? "Y" : "N"}</td>
-                <td class="r">${zi.crc32}</td>
-                <td class="r">${zi.compressed_size}</td>
-                <td class="r">${zi.decompressed_size}</td>
-            </tr>`;
+            if (zi)
+            {
+                has_zipinfo = true;
+                zip_info_table += `<tr>
+                    <td>${file.filename}</td>
+                    <td class="c">${zi.date.toISOString().replace("T", " ").slice(0, 19)}</td>
+                    <td class="c">${zi.dir ? "Y" : "N"}</td>
+                    <td class="r">${zi.crc32}</td>
+                    <td class="r">${zi.compressed_size}</td>
+                    <td class="r">${zi.decompressed_size}</td>
+                </tr>`;
+            }
         }
+
+        if (has_zipinfo)
+            output += zip_info_table;
+        else
+            output += `<i>Zipinfo is not available for large zip files.</i>`;
 
         output += `</table>`;
         return output;
