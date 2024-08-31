@@ -17,6 +17,7 @@ from django import VERSION as DJANGO_VERSION
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.urls import reverse
 from django.template.loader import render_to_string
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify, striptags
@@ -794,6 +795,16 @@ def feedback_approvals(request):
 
 
 @staff_member_required
+def feedback_approvals_delete(request):
+    context = {"title": "Autodelete Spam Feedback"}
+    pk = request.GET.get("delete_pk")
+    qs = Review.objects.filter(pk=pk)
+    context["feedback"] = qs
+    context["url"] = reverse("feedback_approvals")
+    return render(request, "museum_site/tools/feedback-approvals-delete.html", context)
+
+
+@staff_member_required
 def scan(request):
     """ Returns page with latest Museum scan results"""
     data = {"title": "Museum Scan"}
@@ -879,7 +890,7 @@ def tool_index(request, key=None):
     """ Normalcy """
     tool_list = []
     file_tool_list = []
-    restricted_urls = ["tool_index", "tool_index_with_file", "audit"]
+    restricted_urls = ["tool_index", "tool_index_with_file", "audit", "feedback_approvals_delete"]
     for u in url_list:
         url_str = str(u.pattern)
         if url_str.startswith("tools/") and u.name not in restricted_urls:
