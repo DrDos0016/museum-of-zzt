@@ -41,7 +41,7 @@ class Scroll(BaseModel):
         ordering = ["-id"]
 
     def __str__(self):
-        return "Scroll #{} ID:{} Pub:{}".format(self.pk, self.id, self.published)
+        return "Scroll #{} ID:{}".format(self.pk, self.id)
 
     def get_absolute_url(self):
         return reverse("scroll_view", kwargs={"pk":self.pk, "slug":slugify(self.title)})
