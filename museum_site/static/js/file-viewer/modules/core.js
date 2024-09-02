@@ -11,12 +11,12 @@ export class PString
 
     toString()
     {
-        return this.value.slice(0, this.length);
+        return escape_html(this.value.slice(0, this.length));
     }
 
     revealed_string()
     {
-        return this.value.slice(0, this.length) + "<span class='string-overrun'>" + this.value.slice(this.length, this.max_length) + "</span>";
+        return escape_html(this.value.slice(0, this.length)) + "<span class='string-overrun'>" + escape_html(this.value.slice(this.length, this.max_length)) + "</span>";
     }
 }
 
