@@ -415,7 +415,7 @@ export class ZZT_Handler extends Handler
         let board = this.boards[this.selected_board]
         let output = `<div class="flex-table">`;
         let rows = [
-            {"value": escape_html(board.title.toString()), "label": "Title"}, // TODO: Should this respect show hidden data?
+            {"value": board.title.toString(), "label": "Title"}, // TODO: Should this respect show hidden data?
             {"value": `${board.max_shots} shots.`, "label": "Can Fire"},
             {"value": this.yesno(board.is_dark), "label": "Board Is Dark"},
             {"value": this.yesno(board.reenter_when_zapped), "label": "Re-enter When Zapped"},
@@ -466,7 +466,7 @@ export class ZZT_Handler extends Handler
             let board_title = this.boards[idx].title[func]();
             if (board_title == "")
                 board_title = "<i>Untitled Board</i>";
-            output += `<li class='board${chk_selected}' data-board-number=${idx}>` + escape_html(board_title) + "</li>\n";
+            output += `<li class='board${chk_selected}' data-board-number=${idx}>` + board_title + "</li>\n";
         }
         output += "</ol>\n";
 
@@ -752,7 +752,7 @@ export class ZZT_Handler extends Handler
 
     get_hr_title(board_num)
     {
-        return (this.boards[board_num].title == "") ? "<i>Untitled Board</i>" : escape_html(this.boards[board_num].title.toString()); // Force no errata
+        return (this.boards[board_num].title == "") ? "<i>Untitled Board</i>" : this.boards[board_num].title.toString(); // Force no errata
     }
 
     get_keys_value()
@@ -788,7 +788,7 @@ export class ZZT_Handler extends Handler
             if (this.world.flags[idx].length)
             {
                 has_flags = true;
-                output += `<li>${escape_html(this.world.flags[idx].toString())}</li>\n`; // TODO: Does not respect hidden data visibility settings
+                output += `<li>${this.world.flags[idx].toString()}</li>\n`; // TODO: Does not respect hidden data visibility settings
             }
         }
         if (! has_flags)

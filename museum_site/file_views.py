@@ -149,6 +149,19 @@ def file_viewer(request, key, local=False):
     return render(request, "museum_site/file.html", data)
 
 
+def file_viewer_new(request, key, local=False):
+    """ Returns page exploring a file's zip contents """
+    context = {"local": local}
+
+    if not local:
+        context["zfile"] = File.objects.get(key=key)
+        context["file"] = context["zfile"]
+        context["title"] = context["zfile"].title
+    else:
+        context["title"] = "Local File Viewer"
+    return render(request, "museum_site/file-viewer.html", context)
+
+
 def get_file_by_pk(request, pk):
     f = get_object_or_404(File, pk=pk)
     return redirect(f.attributes_url())
