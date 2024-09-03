@@ -15,7 +15,7 @@ function initialize()
     {
         // Add Overview
         fv.files["fvpk-overview"] = create_handler_for_file("fvpk-overview", "Overview", [], {"loaded": true, "parsed": false});
-        fv.files["fvpk-debug"] = create_handler_for_file("fvpk-debug", "Debugging Information", [], {"loaded": true, "parsed": false});
+        //fv.files["fvpk-debug"] = create_handler_for_file("fvpk-debug", "Debugging Information", [], {"loaded": true, "parsed": false});
     }
     else if (mode == "local")
     {
