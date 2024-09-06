@@ -38,6 +38,7 @@ def overview(request):
         today = datetime.now()
         stream = Stream.objects.filter(when__gte=today).first()
     context["stream"] = stream
+    context["entries"] = stream.entries.all()
     return render(request, "stream/overview.html", context)
 
 

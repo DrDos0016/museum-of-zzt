@@ -8,8 +8,6 @@
 </head>
 
 <script src="{% static 'js/jquery.3.1.0.min.js' %}"></script>
-<script>
-</script>
 
 <style>
 body
@@ -68,16 +66,61 @@ body
     max-width:110px;
 }
 
+#game-list
+{
+    width:1440px;
+    overflow:auto;
+    display:flex;
+    flex-direction:column;
+}
+
+#game-list.one-column
+{
+    height:100%;
+    align-items:center;
+    justify-content:center;
+}
+
+#game-list.multi-column
+{
+    margin-top:7px;
+    height:650px;
+    display:flex;
+    flex-direction:column;
+    flex-wrap:wrap;
+    gap:4px;
+    padding-left:4px;
+    padding-right:4px;
+}
+
+#game-list.multi-column .model-block.stream
+{
+    max-width:450px;
+}
+
+#game-list.multi-column .model-block.stream .model-block-title h2
+{
+    font-size:18pt;
+}
+
+#game-list.multi-column .model-block.stream .model-block-data
+{
+    font-size:18px;
+}
+
 {% if request.GET.debug %}#root { background:#333; }{% endif %}
 </style>
 
 <body>
+    <p>{{entries.length}}</p>
 <div id="root">
     <div id="world-text" class="rounded-block"><img src="{% static 'images/tour.png' %}"><br>Overview</div>
     <div id="moz-logo" class="rounded-block">Support the Stream!<br><img src="{% static 'chrome/logos/museum-tiger-by-lazymoth.png' %}"><br><span style="font-size:24px">museumofzzt.com/support/</span></div>
-    {% for entry in stream.entries.all %}
-        {% model_block entry "stream" %}
-    {% endfor %}
+    <div id="game-list" class="{% if entries|length <= 5 %}one-column{% else %}multi-column{% endif %}">
+        {% for entry in entries %}
+            {% model_block entry "stream" %}
+        {% endfor %}
+    </div>
 </div>
 </body>
 </html>
