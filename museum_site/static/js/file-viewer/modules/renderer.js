@@ -41,7 +41,7 @@ export class ZZT_Standard_Renderer
             "invisible_wall": 0,
             "monitor": 0,
             "edge": 0,
-            "show_outer_border": false,
+            "show_outer_border": false, // TODO: Is this even a feature worth supporting
         },
         "game": {
             "tick": 0,
@@ -169,6 +169,7 @@ export class ZZT_Standard_Renderer
 
     crosshair(center_x, center_y, state="on")
     {
+        let zoom = $(`#envelope-${this.fvpk} .fv-canvas`).hasClass("fv-canvas-zoom-2") ? 2 : 1; // Assume 1/2 only
         if (state == "on")
         {
 
@@ -184,8 +185,10 @@ export class ZZT_Standard_Renderer
                 y -= 1;
             }
 
-            let border_w = this.character_set.tile_width;
-            let border_h = this.character_set.tile_height;
+            let border_w = this.character_set.tile_width * zoom;
+            let border_h = this.character_set.tile_height * zoom;
+            let zoom_comp_top = (zoom == 2) ? 5 : 0; // Compensate for zoom being centered
+            let zoom_comp_left = (zoom == 2) ? -240 : 0; // Ditto
 
             $(".crosshair").css(
             {
@@ -195,8 +198,8 @@ export class ZZT_Standard_Renderer
                 "border-right": `${border_w}px solid #FFD700`,
                 "border-bottom": `${border_h}px solid #FFD700`,
                 "border-left": `${border_w}px solid #FFD700`,
-                "margin-top": `${y * this.character_set.tile_height}px`,
-                "margin-left": `${x * this.character_set.tile_width}px`,
+                "margin-top": `${y * this.character_set.tile_height * zoom + zoom_comp_top}px`,
+                "margin-left": `${x * this.character_set.tile_width * zoom + zoom_comp_left}px`,
             });
             return true;
         }
@@ -212,6 +215,7 @@ export class ZZT_Standard_Renderer
             "margin-top": "0px",
             "margin-left": "0px",
         });
+
     }
 
     get_stats_for_element(x, y, limit=1)

@@ -194,10 +194,10 @@
     padding:7px 4px 7px 4px;
 }
 
-.hover-element.bottom
-{
-    top:-54px;
-}
+.hover-element.bottom { top:-54px; }
+
+.hover-element.zoom-2 { top:-353px; left:-236px; }
+.hover-element.bottom.zoom-2 { top:301px; left:-236px; }
 
 .inner-envelope-wrapper
 {

@@ -350,7 +350,7 @@ export class ZZT_Handler extends Handler
         }
 
         // Super Lock
-        if (this.boards[this.world.total_boards].size == 4)
+        if (this.boards[this.world.total_boards] && this.boards[this.world.total_boards].size == 4)
             locks.push("Super Lock");
 
         // Save Lock
@@ -527,30 +527,42 @@ export class ZZT_Handler extends Handler
 
     mousemove(e)
     {
-        let tile_x = Math.abs(parseInt(e.base_x / this.renderer.character_set.tile_width)) + 1;
-        let tile_y = Math.abs(parseInt(e.base_y / this.renderer.character_set.tile_height)) + 1;
+        if ((e.x < 0 || e.y < 0)) // TODO: Needs to cut off lower and right borders as well
+        {
+            this.mouseout(e);
+            this.cursor_tile.x = -1;
+            this.cursor_tile.y = -1;
+            return false
+        }
+        let coords = this.get_tile_coordinates_from_cursor_position(e);
 
-        if ((tile_x == this.cursor_tile.x) && (tile_y == this.cursor_tile.y) || (tile_x > 60 || tile_y > 25)) // TODO THESE NUMBERS SHOULD BE VARS
+        if ((coords.x == this.cursor_tile.x) && (coords.y == this.cursor_tile.y) || (coords.x > 60 || coords.y > 25 || coords.x < 0 || coords.y < 0)) // TODO THESE NUMBERS SHOULD BE VARS
             return false;
 
-        this.cursor_tile.x = tile_x;
-        this.cursor_tile.y = tile_y;
+        this.cursor_tile.x = coords.x;
+        this.cursor_tile.y = coords.y;
 
-        let element_id = this.boards[this.selected_board].elements[tile_x][tile_y].id;
-        let color_id = this.boards[this.selected_board].elements[tile_x][tile_y].color;
+        let element_id = this.boards[this.selected_board].elements[coords.x][coords.y].id;
+        let color_id = this.boards[this.selected_board].elements[coords.x][coords.y].color;
         let element = ZZT_ELEMENTS[element_id];
+
+        // Sizing
+        $(".hover-element").removeClass(`zoom-2`); // TODO This assumes only 1x and 2x zooms
+        if (this.config.display.zoom != 1)
+            $(".hover-element").addClass(`zoom-${this.config.display.zoom}`);
 
         // Color
         let fg = color_id % 16;
         let bg = parseInt(color_id / 16);
         let bg_x = parseInt(fg * -8);
         let bg_y = parseInt(bg * -14);
-        $(".hover-element").html(`(${padded(tile_x)}, ${padded(tile_y)})<br><div class='color-swatch' style='background-position: ${bg_x}px ${bg_y}px'></div> ${element.name}`);
+        $(".hover-element").html(`(${padded(coords.x)}, ${padded(coords.y)})<br><div class='color-swatch' style='background-position: ${bg_x}px ${bg_y}px'></div> ${element.name}`);
+
 
         // Positioning
-        if (tile_y < 7)
+        if (coords.y < 7)
             $(".hover-element").addClass("bottom");
-        else if (tile_y > 20)
+        else if (coords.y > 20)
             $(".hover-element").removeClass("bottom");
 
         $(".hover-element").show();
@@ -559,14 +571,16 @@ export class ZZT_Handler extends Handler
     mouseout(e)
     {
         $(".hover-element").hide();
+        this.cursor_tile.x = -1;
+        this.cursor_tile.y = -1;
     }
 
     get_tile_coordinates_from_cursor_position(e)
     {
         let scale = this.config.display.zoom;
         let output = {
-            "x": Math.abs(parseInt(e.base_x / this.renderer.character_set.tile_width / scale)) + 1,
-            "y": Math.abs(parseInt(e.base_y / this.renderer.character_set.tile_height / scale )) + 1,
+            "x": Math.abs(parseInt((e.x) / (this.renderer.character_set.tile_width * scale))) + 1,
+            "y": Math.abs(parseInt((e.y) / (this.renderer.character_set.tile_height * scale))) + 1,
         }
         return output;
     }
