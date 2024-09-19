@@ -375,7 +375,7 @@ class Livestream_Vod_Form(forms.Form):
         label="Preview Image",
         widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose", allowed_preset="image"),
     )
-    crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
+    crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES, initial="NONE")
     publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
     series = forms.ModelChoiceField(queryset=Series.objects.visible(), empty_label="- NONE -", required=False)
     associated_zfile = Museum_Model_Scrolling_Multiple_Choice_Field(
@@ -405,7 +405,7 @@ class Livestream_Vod_Form(forms.Form):
         return video_urls
 
     def clean_video_description(self):
-        video_description = self.cleaned_data["video_description"]
+        video_description = self.cleaned_data["video_description"].strip()
         if "♦ Join" in video_description:
             video_description = video_description[:video_description.find("♦ Join")]
         return video_description
