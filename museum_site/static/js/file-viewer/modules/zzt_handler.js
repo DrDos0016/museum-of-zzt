@@ -299,6 +299,7 @@ export class ZZT_Handler extends Handler
             while (read_stats < stat_cutoff + 1)
             {
                 let stat = {};
+                stat.idx = read_stats;
                 stat.x = this.read_Uint8();
                 stat.y = this.read_Uint8();
                 stat.step_x = this.read_Int16();
@@ -503,7 +504,7 @@ export class ZZT_Handler extends Handler
             if (! codeless && sorted_stat_list[idx].oop == "")
                 hidden = " class='empty'";
             let stat_label = ZZT_Handler.stat_list_label(sorted_stat_list[idx], this.boards[this.selected_board]);
-            output += `<li${hidden}>${stat_label}</li>`;
+            output += `<li${hidden} value="${sorted_stat_list[idx].idx}">${stat_label}</li>`;
         }
         output += "</ol>\n";
 

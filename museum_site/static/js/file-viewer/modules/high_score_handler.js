@@ -8,9 +8,16 @@ export class ZZT_High_Score_Handler extends Handler
         this.name = "ZZT High Score Handler";
         this.envelope_css_class = "high-score-list";
         this.scores = [];
-        this.show_nameless = true; // Show scores without a name entered
         this.max_name_length = 50;
         this.dash_count = 34;
+
+        this.tabs = ["preferences", "help"];
+    }
+
+    static initial_config = {
+        "display": {
+            "show_hidden_scores": 0,
+        },
     }
 
     parse_bytes() {
@@ -31,11 +38,11 @@ export class ZZT_High_Score_Handler extends Handler
 
     write_html() {
         console.log("High score html generation");
-        let html = `<pre class="cp437" style="margin:auto">Score  Name\n`;
+        let html = `<pre class="cp437">Score  Name\n`;
         html += `-----  ${"-".repeat(this.dash_count)}\n`;
         for (var idx in this.scores)
         {
-            if ((this.scores[idx].name.length != 0 || this.show_nameless) && this.scores[idx].score != -1)
+            if ((this.scores[idx].name.length != 0 || this.config.display.show_hidden_scores) && this.scores[idx].score != -1)
             {
                 let padded = ("" + this.scores[idx].score).padStart(5, " ");
                 html += `${padded}  ${this.scores[idx].name}\n`;
@@ -43,9 +50,30 @@ export class ZZT_High_Score_Handler extends Handler
         }
         html += "</pre>";
 
-        let targets = [{"target": this.envelope_id, "html": html}];
+        let targets = [
+            {"target": this.envelope_id, "html": html},
+            {"target": "#preferences", "html": this.get_preferences(),},
+
+        ];
         this.write_targets(targets)
+        this.display_tab("preferences");
         return true;
+    }
+
+    get_preferences()
+    {
+        let output = "<h3>General</h3>";
+        let config_key = this.get_config_key_for_handler();
+
+        output += `<div class="field-wrapper">
+            <label for="">Hidden Scores:</label>
+            <div class="field-value"><select data-config="${config_key}.display.show_hidden_scores" data-type="int">
+                <option value=0${(this.config.display.show_hidden_scores == false) ? " selected" : ""}>Hide*</option>
+                <option value=1${(this.config.display.show_hidden_scores == true) ? " selected" : ""}>Show</option>
+            </select></div>
+            <p class="field-help">Show high scores stored with no name entered.</p>
+        </div>`;
+        return output;
     }
 }
 

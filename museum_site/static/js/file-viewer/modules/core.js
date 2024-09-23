@@ -25,6 +25,7 @@ export let KEY = {
     "NP_UP": 104, "NP_DOWN": 98, "NP_RIGHT": 102, "NP_LEFT": 100,
     "PLUS": 61, "MINUS": 173,
     "B": 66, "E": 69, "J": 74, "K": 75, "P": 80, "S": 83, "W": 87,
+    "C": 67,
 };
 
 export function padded(val, length=2, char="0")
@@ -34,7 +35,6 @@ export function padded(val, length=2, char="0")
 
 export function escape_html(text)
 {
-    console.log("ESCAPING", text);
     text = text.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     return text;
 }
