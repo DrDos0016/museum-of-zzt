@@ -2,10 +2,10 @@
 
 {% block overview %}♦ Livestream of the ZZT world "{{zfiles.0.title}}" by {{zfiles.0.author_list|join:", "}}{% if zfiles.0.release_year %} ({{zfiles.0.release_year}}){% endif %} [https://{{DOMAIN}}{{zfiles.0.get_absolute_url}}]. ♦{% endblock %}
 
-{% block stream_contents %}{% if ad_break_endings %}
+{% block stream_contents %}
 ♦ Stream Contents ♦
-{% for break in ad_break_endings %}&bull; ({{break}}) End of Ad Break {{forloop.counter}}
-{% endfor %}{% endif %}{% endblock %}
+{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) "{{zfile.title}}" by {{zfile.author_list|join:", "}}{% if zfile.release_year %} ({{zfile.release_year}}){% endif %} [https://{{DOMAIN}}{{zfile.get_absolute_url}}]{% endfor %}
+{% endblock %}
 
 {% block play_links %}♦ Play this world directly in your browser ♦
 {% for zfile in zfiles %}&bull; https://{{DOMAIN}}{{zfile.play_url}}
