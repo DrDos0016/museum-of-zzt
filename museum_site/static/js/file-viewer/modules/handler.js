@@ -13,12 +13,13 @@ export class Handler
         this.envelope_css_class = "base";
         this.initial_content = ""; // HTML included in envelope
         this.initial_query_string = "";
+        this.supported_file = true; // A disclaimer will be added for reparsed unsupported files
 
         this.pos = 0;
         this.data = null; // DataView for reading
         this.envelope_id = null; // String to identify HTML for envelope
 
-        this.tabs = ["world-info", "board-info", "element-info", "stat-info", "preferences", "help"];
+        this.tabs = [];
     }
 
     static initial_config = {};
@@ -40,13 +41,14 @@ export class Handler
 
     set_tabs()
     {
-        for (let idx = 0; idx < $("#tabs div").length; idx++)
+        $("#tabs").html("");
+        for (let idx = 0; idx < this.tabs.length; idx++)
         {
-            let tab = $($("#tabs div")[idx]);
-            if (this.tabs.indexOf(tab.attr("name")) != -1)
-                tab.removeClass("hidden");
+            let tab = this.tabs[idx];
+            if (tab.shortcut)
+                $("#tabs").append(`<div name="${tab.name}" data-shortcut="${tab.shortcut}">${tab.text}</div>`);
             else
-                tab.addClass("hidden");
+                $("#tabs").append(`<div name="${tab.name}">${tab.text}</div>`);
         }
     }
 

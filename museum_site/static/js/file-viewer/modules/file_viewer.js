@@ -88,20 +88,16 @@ export class File_Viewer
         this.history_add();
     }
 
-    reparse_active_file_as_text()
+    async reparse_file_as_text()
     {
-        console.log("Textifying?");
         let fvpk = this.files[this.active_fvpk].fvpk;
         let filename = this.files[this.active_fvpk].filename;
         let bytes = this.files[this.active_fvpk].bytes;
         let meta = this.files[this.active_fvpk].meta;
-
-        console.log("Filename is", filename);
-
-        console.log("Before", this.files[this.active_fvpk].name);
         this.files[fvpk] = new Text_Handler(fvpk, filename, bytes, meta);
-        console.log("After", this.files[this.active_fvpk].name);
-        this.files[fvpk].render();
+        await this.files[fvpk].render();
+        $(`#envelope-${fvpk}`).removeClass("envelope-unsupported");
+        $(`#envelope-${fvpk}`).addClass("envelope-text");
     }
 
     board_change(new_board_number)

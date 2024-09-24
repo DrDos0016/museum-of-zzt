@@ -11,7 +11,9 @@ export class ZZT_High_Score_Handler extends Handler
         this.max_name_length = 50;
         this.dash_count = 34;
 
-        this.tabs = ["preferences", "help"];
+        this.tabs = [
+            {"name": "preferences", "text": "Prefs."},
+        ];
     }
 
     static initial_config = {
@@ -62,7 +64,7 @@ export class ZZT_High_Score_Handler extends Handler
 
     get_preferences()
     {
-        let output = "<h3>General</h3>";
+        let output = "";
         let config_key = this.get_config_key_for_handler();
 
         output += `<div class="field-wrapper">

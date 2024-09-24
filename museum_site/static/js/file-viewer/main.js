@@ -57,6 +57,8 @@ function initialize()
 
     $("#fv-main").on("click", "#debug-ingest-button", (e) => { fv.ingest_debug_data(e); });
 
+    $("#details").on("click", ".reparse-file-button", (e) => {fv.reparse_file_as_text(e); });
+
     /* Local Files */
     $("#fv-main").on("click", "#file-load-submit", ingest_file);
 
@@ -102,11 +104,15 @@ function initialize()
         else if (e.keyCode == KEY.NP_RIGHT) { $("a.board-link[data-direction=east]").click(); }
         else if (e.keyCode == KEY.NP_LEFT) { $("a.board-link[data-direction=west]").click(); }
         else if (e.keyCode == KEY.NP_LEFT) { $("a.board-link[data-direction=west]").click(); }
-        else if (e.keyCode == KEY.W) {$("#tabs div[data-shortcut='W'").click();}
-        else if (e.keyCode == KEY.B) {$("#tabs div[data-shortcut='B'").click();}
-        else if (e.keyCode == KEY.E) {$("#tabs div[data-shortcut='E'").click();}
-        else if (e.keyCode == KEY.S) {$("#tabs div[data-shortcut='S'").click();}
-        else if (e.keyCode == KEY.P) {$("#tabs div[data-shortcut='P'").click();}
+        else if (e.keyCode == KEY.W) {$("#tabs div[data-shortcut='W']").click();}
+        else if (e.keyCode == KEY.B) {$("#tabs div[data-shortcut='B']").click();}
+        else if (e.keyCode == KEY.E) {$("#tabs div[data-shortcut='E']").click();}
+        else if (e.keyCode == KEY.S) {$("#tabs div[data-shortcut='S']").click();}
+        else if (e.keyCode == KEY.P) {$("#tabs div[data-shortcut='P']").click();}
+        else if (e.keyCode == KEY.Z) {shortcut_toggle_zoom();}
+
+        // DEBUG TODO
+        else if (e.keyCode == KEY.C) { console.log(fv.configs); }
     });
 
     // History
@@ -204,7 +210,6 @@ function open_zip(buffer)
 
 function set_file_bytes(fvpk, data)
 {
-    console.log("SETTING FILE BYTES FOR", fv.files[fvpk].filename);
     // Sets the bytes for a file in the file registry
     fv.files[fvpk].bytes = data;
 }
@@ -352,6 +357,9 @@ function run_fv_function(e)
 
 function display_tab()
 {
+    if ($(this).hasClass("hidden"))
+        return false;
+
     let tab_id = $(this).attr("name");
     $("#details div.active").removeClass("active");
     $("#tabs div").removeClass("active");
@@ -404,6 +412,14 @@ function initialize_autoload()
             fv.auto_load_board = params.get("board");
         }
     }
+}
+
+function shortcut_toggle_zoom()
+{
+    let current = $("select[data-config='zzt_handler.display.zoom']").val();
+    let updated = (current == "1") ? "2" : "1";
+    $("select[data-config='zzt_handler.display.zoom']").val(updated);
+    $("select[data-config='zzt_handler.display.zoom']").change();
 }
 
 let fv = new File_Viewer();

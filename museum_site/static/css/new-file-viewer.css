@@ -1,37 +1,16 @@
 .string-overrun { color:var(--ega-darkred); }
 .stat-match::marker { content: "⤷"; }
 
-.envelope { display:none; min-height:360px; }
-.envelope.active { display:flex; }
+#region-file-list { border:1px solid var(--border-color); }
 
-.envelope-image { justify-content:center; align-items:center; }
-
-#region-file-list
-{
-    border:1px solid var(--border-color);
-}
-
-#file-list
-{
-    padding:0px;
-    margin:0px;
-}
-
-#file-list > li
-{
-    list-style: none;
-    padding:0px 8px 0px 8px;
-}
+#file-list { padding:0px; margin:0px; }
+#file-list > li { list-style: none; padding:0px 8px 0px 8px; }
 
 #file-list .fv-content::before { content: "+ ";}
 #file-list .fv-content.selected::before { content: "· ";}
 #file-list .fv-content:has(ol)::before { content: "- ";}
 #file-list .fv-content.selected:has(ol)::before { content: "- ";}
-
-#file-list li.selected
-{
-    font-weight:bold;
-}
+#file-list li.selected { font-weight:bold; }
 
 #file-list li:has(ol) { padding-bottom: 14px; background-color:#AAA; }
 #file-list > li ol.board-list { margin-left:2ch; padding-left:5ch; list-style-type:decimal-leading-zero; }
@@ -47,8 +26,8 @@
     grid-template-rows:auto min-content 1fr;
     align-content:stretch;
     font-family: mono;
-    /*max-height:95vh;*/
 }
+#file-viewer > * { box-sizing: border-box; }
 
 @media (max-width:800px) { /* TODO: Find good values */
     #file-viewer
@@ -59,7 +38,6 @@
         "file-list";
         grid-template-columns:1fr;
         grid-template-rows:auto auto auto auto;
-        max-height:32767px;
     }
 }
 
@@ -67,30 +45,16 @@
 #file-viewer th, #file-viewer td { padding:0px; }
 #file-viewer td { padding-left:1ch; }
 
-#file-viewer > * { box-sizing: border-box; }
-
 /* Grid areas */
 #fv-main { grid-area: envelope; }
 #tabs { grid-area: tabs; background-color:var(--unselected-tab);}
 #region-file-list { grid-area: file-list; min-height:295px; }
 #details { grid-area: details; }
+/* End Grid Areas */
 
-#details { border-bottom:1px solid var(--border-color); border-right:1px solid var(--border-color); overflow:auto;}
+#file-list { font-family:mono; max-height:680px; overflow:auto; }
 
-#details > div:not(.active)
-{
-    display:none;
-}
-
-#file-list
-{
-    max-height:680px;
-}
-
-#details
-{
-    max-height:662px; /* - 18 for reasons */
-}
+.board-list li { margin-right:4ch; }
 
 #tabs
 {
@@ -109,24 +73,17 @@
 #tabs > div:hover { background-color: var(--hover-bg); cursor:pointer; text-decoration:underline; }
 #tabs > div + div { border-left: 1px solid var(--border-color); }
 #tabs > div[name=help] { flex: 1 }
-
 #tabs > div[data-shortcut]::first-letter { text-decoration:underline; }
 
-#details > div
-{
-    padding:4px;
+#details {
+    border-bottom:1px solid var(--border-color); border-right:1px solid var(--border-color);
+    max-height:662px; /* - 18 to compensate for tabs */
+    overflow:auto;
 }
+#details > div { padding:4px; }
+#details > div:not(.active) { display:none; }
 
-.board-list li {
-    margin-right:4ch;
-}
-
-.fv-canvas { image-rendering: pixelated; align-self:center; }
-
-.fv-canvas, #fv-preview
-{
-    border:5px solid #000;
-}
+.fv-canvas { image-rendering: pixelated; align-self:center; border:5px solid var(--border-color); }
 
 #fv-noscript-error
 {
@@ -143,47 +100,24 @@
 
 .envelope
 {
-    /* This is a default. Use envelope layout below to override */
+    display:none;
+    min-height:360px;
     flex-direction:column;
     align-items:center;
 }
 
-#envelope-fvpk-overview > div
-{
-    flex:1;
-}
+/* Envelope layouts */
+.envelope.active { display:flex; }
+.envelope-zzt { }
+.envelope-overview { flex-direction:row; justify-content:space-evenly; align-items:center; }
+.envelope-overview > div { flex: 1; border:5px solid #000; }
+.envelope-overview > .zf-preview-wrapper { text-align:center; max-width:fit-content; display:flex; }
+.envelope-overview > .zf-desc-wrapper { border:5px solid var(--border-color); min-height:120px; max-width:480px; background-color:var(--notice-bg); font-family:sans-serif; padding:2ch; }
+.envelope-image { justify-content:center; align-items:center; }
+.envelope-text { align-items:flex-start; }
+/* End Envelope layouts */
 
-#envelope-fvpk-overview > .zf-preview-wrapper
-{
-    text-align:center;
-    max-width:fit-content;
-}
-
-#envelope-fvpk-overview > .zf-desc-wrapper
-{
-    border:5px solid var(--border-color);
-    min-height:120px;
-    max-width:480px;
-    background-color:var(--notice-bg);
-    font-family:sans-serif;
-}
-
-#envelope-fvpk-overview > .zf-desc-wrapper > div
-{
-    padding:2ch;
-}
-
-/* Envelope layout */
-.envelope-zzt.active { }
-.envelope-overview.active { flex-direction:row; justify-content:space-evenly; align-items:center; }
-/* End Envelope layout */
-
-.hover-wrapper
-{
-    height:0px;
-    position:absolute;
-}
-
+.hover-wrapper { height:0px; position:absolute; }
 .hover-element
 {
     position:relative;
@@ -194,29 +128,12 @@
     background-color:rgba(204, 204, 204, 0.7);
     padding:7px 4px 7px 4px;
 }
-
 .hover-element.bottom { top:-54px; }
-
 .hover-element.zoom-2 { top:-353px; left:-236px; }
 .hover-element.bottom.zoom-2 { top:301px; left:-236px; }
 
-.inner-envelope-wrapper
-{
-    /* height:0px; */
-}
-
-.crosshair-wrapper
-{
-    height:0px;
-    position:absolute;
-}
-
-.crosshair
-{
-    position:relative;
-    top:-358px;
-    left:5px;
-}
+.crosshair-wrapper { height:0px; position:absolute; }
+.crosshair { position:relative; top:-358px; left:5px; }
 
 details .oop-summary { font-style: oblique; }
 
@@ -347,6 +264,16 @@ li.empty /* Hidden entries in lists that need to keep counting */
     border-bottom:1px dashed var(--border-color);
     width:100%;
 }
+
+.color-swatch
+{
+    height:2em;
+    background-image:url("/static/images/colors.png");
+    width:8px;
+    height:14px;
+    margin:auto;
+    display:inline-block;
+}
 /* END WAS COPIED THEN TWEAKED */
 
 #debug-wrapper { width:95%; %}
@@ -397,12 +324,6 @@ li.empty /* Hidden entries in lists that need to keep counting */
 #file-tabs div + div { border-left:1px solid var(--border-color); }
 
 #file-tabs div[name=help] { flex:1; }
-
-#file-list
-{
-    font-family:mono;
-    overflow:auto;
-}
 
 #file-list .selected
 {

@@ -26,6 +26,7 @@ export let KEY = {
     "PLUS": 61, "MINUS": 173,
     "B": 66, "E": 69, "J": 74, "K": 75, "P": 80, "S": 83, "W": 87,
     "C": 67,
+    "Z": 90,
 };
 
 export function padded(val, length=2, char="0")
@@ -60,4 +61,13 @@ export function get_mouse_coordinates(e, relative_to_element=null, zoom=1, borde
         output["y"] -= (border_h * zoom);
     }
     return output;
+}
+
+export function filesize_format(bytes)
+{
+    if (bytes > 1048576)
+        return (bytes / 1048576).toFixed(1) + "MB";
+    else if (bytes > 1024)
+        return (bytes / 1024).toFixed(1) + " KB";
+    return bytes + " bytes";
 }

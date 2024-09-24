@@ -48,12 +48,10 @@ var zfile_info = {};
 <div id="fv-main">
     {% comment %}This envelope must be manually created to display _something_ for users with JS disabled{% endcomment %}
     <noscript>
-        <div id="fv-noscript-error" class="sticky-note">Javascript must be enabled in order for The Museum of ZZT file viewer to function.</div>
+        <div id="fv-noscript-error" class="sticky-note">JavaScript must be enabled in order for The Museum of ZZT file viewer to function.</div>
     </noscript>
     <div id="envelope-fvpk-overview" class="envelope envelope-overview active">
-        <div class="zf-preview-wrapper">
-            <img id="fv-preview" class="image" src="{% static zfile.preview_url|default:'images/no_screenshot.png' %}">
-        </div>
+        <div class="zf-preview-wrapper"><img id="fv-preview" class="image" src="{% static zfile.preview_url|default:'images/no_screenshot.png' %}"></div>
         {% if zfile.description %}<div class="zf-desc-wrapper"><div><p>{{zfile.description|linebreaks}}</p></div></div>{% endif %}
     </div>
 </div>
@@ -63,12 +61,14 @@ var zfile_info = {};
 </div>
 
 <div id="tabs">
+    {% comment %}
     <div name="world-info" data-shortcut="W">World</div>
     <div name="board-info" data-shortcut="B">Board</div>
     <div name="element-info" data-shortcut="E">Element</div>
     <div name="stat-info" data-shortcut="S">Stats</div>
     <div name="preferences" data-shortcut="P">Prefs.</div>
     <div name="help">?</div>
+    {% endcomment %}
 </div>
 
 <div id="details">
@@ -78,10 +78,6 @@ var zfile_info = {};
     <div id="element-info"></div>
     <div id="stat-info"></div>
     <div id="preferences">
-        <div id="prefs-file-viewer">
-
-        </div>
-        <div id="prefs-active"></div>
     </div>
 
     <div id="help">
@@ -108,6 +104,7 @@ var zfile_info = {};
         <b>Misc</b>
         <ul>
             <li>Shift + B - Toggle high intensity backgrounds (blinking)</li>
+            <li>Z - Toggle zoom level</li>
         </ul>
         {% if request.user.is_staff %}{% include "museum_site/file_viewer_staff_module.html" %}{% endif %}
     </div>
