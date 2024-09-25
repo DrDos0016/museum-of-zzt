@@ -35,6 +35,7 @@
 
 #file-list li:has(ol) { padding-bottom: 14px; background-color:#AAA; }
 #file-list > li ol.board-list { margin-left:2ch; padding-left:5ch; list-style-type:decimal-leading-zero; }
+#file-list li[data-fvpk="fvpk-overview"] { font-style: oblique; }
 
 #file-viewer /* Main Grid */
 {
@@ -70,7 +71,7 @@
 
 /* Grid areas */
 #fv-main { grid-area: envelope; }
-#tabs { grid-area: tabs; }
+#tabs { grid-area: tabs; background-color:var(--unselected-tab);}
 #region-file-list { grid-area: file-list; min-height:295px; }
 #details { grid-area: details; }
 
@@ -194,10 +195,10 @@
     padding:7px 4px 7px 4px;
 }
 
-.hover-element.bottom
-{
-    top:-54px;
-}
+.hover-element.bottom { top:-54px; }
+
+.hover-element.zoom-2 { top:-353px; left:-236px; }
+.hover-element.bottom.zoom-2 { top:301px; left:-236px; }
 
 .inner-envelope-wrapper
 {
@@ -329,12 +330,9 @@ li.empty /* Hidden entries in lists that need to keep counting */
     "error error";
 }
 
-/*
-.fv-canvas-zoom-2 { zoom: 2; }
-.fv-canvas-zoom-3 { zoom: 3; }*/
-
 .fv-canvas-zoom-2 { transform-origin: top center; transform:scale(2, 2); }
 .fv-canvas-zoom-3 { transform:scale(3, 3); }
+
 
 /* WAS COPIED THEN TWEAKED */
 #fv-main
@@ -360,12 +358,6 @@ li.empty /* Hidden entries in lists that need to keep counting */
 }
 
 /* EVERYTHING BELOW IS COPIED FROM ORIGINAL FILE VIEWER */
-
-
-
-#fv-main .output { display:none }
-#fv-main .output.active { display:block; }
-#fv-main #canvas-envelope.output.active { display:grid; }
 
 #zip-name
 {
@@ -469,54 +461,6 @@ li.empty /* Hidden entries in lists that need to keep counting */
 
 li.board div  { display:inline-block; } /* Board numbers and names */
 
-#analysis
-{
-    grid-area: analysis;
-    border:1px solid var(--border-color);
-    border-left:0px;
-    padding:7px 4px 7px 4px;
-    font-family:mono;
-    overflow:auto;
-}
-
-#analysis table
-{
-    padding:0px;
-    margin:0;
-}
-
-#analysis table td
-{
-    background:var(--board-list-bg);
-    padding:0px 0px 0px 1ch;
-}
-
-#analysis table th
-{
-    padding:0px 1ch 0px 1ch;
-}
-
-#analysis .zip-info-table td, #analysis .zip-info-table th
-{
-    padding-left:8px;
-    padding-right:8px;
-}
-
-#analysis #zip-comment
-{
-    width:81ch;
-}
-
-#analysis .fv
-{
-    margin-bottom:7px;
-}
-
-#analysis .fv-hidden, #analysis .fv-hidden-row
-{
-    display:none;
-}
-
 #file-tabs .selected, #zip-name.selected { background:var(--header-bg); }
 #analysis .toggle { display:none; }
 #file-list ul li.code-match { padding-left:3ch; }
@@ -524,30 +468,6 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 #analysis #search-table input
 {
     margin-top:2px; /* TODO: This could be done better */
-}
-
-#preferences .field
-{
-    display:flex;
-    padding: 7px 0px 7px 0px;
-    font-size:medium;
-    font-weight:bold;
-    font-family:sans-serif;
-}
-
-#preferences .field + .field
-{
-    border-top: 1px dashed var(--border-color);
-}
-
-#preferences label
-{
-    flex:1 1 20%;
-}
-
-#preferences input, #preferences select
-{
-    flex:1 1;
 }
 
 /* File Viewer Extension Based Formatting */
@@ -571,34 +491,5 @@ li.board div  { display:inline-block; } /* Board numbers and names */
 }
 
 
-.color-swatch
-{
-    height:2em;
-    background-image:url("/static/images/colors.png");
-    width:8px;
-    height:14px;
-    margin:auto;
-    display:inline-block;
-}
-
-#world-canvas
-{
-    grid-area:canvas;
-    align-self:center;
-    z-index:2;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-}
-
-#image-envelope {
-    height:100%;
-    text-align:center;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.preview-image-link { font-style:italic; } /* Overview link in File Viewer */
 #text-body { font-family:cp437; }
-#doc-header { color:var(--ega-red); text-align:center;}
 /* End File Viewer Extension Based Formatting */

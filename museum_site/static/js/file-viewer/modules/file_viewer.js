@@ -197,6 +197,7 @@ export class File_Viewer
         let config_key = this.files[fvpk].name.replaceAll(" ", "_").toLowerCase();
         if (! this.configs[config_key])  // Create config if not found
         {
+            console.log("No config found! Creating new config.");
             this.configs[config_key] = this.files[fvpk].constructor.initial_config;
 
             // TODO This may be a mess
@@ -204,12 +205,18 @@ export class File_Viewer
             {
                 console.log("FVPK has renderer", fvpk);
                 this.configs[config_key]["renderer"] = this.files[fvpk].renderer.constructor.initial_config;
-                this.files[fvpk].renderer.config = this.configs[config_key].renderer;
             }
             console.log("Pushed an initial config");
         }
 
         this.files[fvpk].config = this.configs[config_key];
+
+
+        if (this.files[fvpk].renderer)
+        {
+            this.files[fvpk].renderer.config = this.configs[config_key].renderer;
+        }
+
         console.log("Set config:", this.files[fvpk].config);
     }
 

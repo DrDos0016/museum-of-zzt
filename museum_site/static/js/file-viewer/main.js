@@ -1,7 +1,7 @@
 "use strict";
 
 import { File_Viewer, create_handler_for_file } from "./modules/file_viewer.js";
-import { KEY } from "./modules/core.js";
+import { get_mouse_coordinates, KEY } from "./modules/core.js";
 
 
 function initialize()
@@ -362,11 +362,10 @@ function display_tab()
 function canvas_mousemove(e)
 {
     let fvpk = $(this).parent().parent().attr("id").replace("envelope-", "");
-    let border_size = parseInt($(this).css("border-left-width").replace("px", "")); // Assumes equal border sizes
-    var rect = this.getBoundingClientRect();
-    var base_x = e.pageX - rect.left - document.querySelector("html").scrollLeft - border_size;
-    var base_y = e.pageY - rect.top - document.querySelector("html").scrollTop - border_size;
-    fv.files[fvpk].mousemove({"base_x": base_x, "base_y": base_y});
+    let zoom = fv.files[fvpk].config.display.zoom;
+    let canvas_element = this;
+    let coords = get_mouse_coordinates(e, canvas_element, zoom);
+    fv.files[fvpk].mousemove(coords);
 }
 
 function canvas_mouseout(e)
@@ -378,22 +377,19 @@ function canvas_mouseout(e)
 function canvas_click(e)
 {
     let fvpk = $(this).parent().parent().attr("id").replace("envelope-", "");
-    let border_size = parseInt($(this).css("border-left-width").replace("px", "")); // Assumes equal border sizes
-    var rect = this.getBoundingClientRect();
-    var base_x = e.pageX - rect.left - document.querySelector("html").scrollLeft - border_size;
-    var base_y = e.pageY - rect.top - document.querySelector("html").scrollTop - border_size;
-    console.log("RAW CANVAS CLICK", base_x, base_y);
-    fv.files[fvpk].canvas_click({"base_x": base_x, "base_y": base_y});
+    let zoom = fv.files[fvpk].config.display.zoom;
+    let canvas_element = this;
+    let coords = get_mouse_coordinates(e, canvas_element, zoom);
+    fv.files[fvpk].canvas_click(coords);
 }
 
 function canvas_double_click(e)
 {
     let fvpk = $(this).parent().parent().attr("id").replace("envelope-", "");
-    let border_size = parseInt($(this).css("border-left-width").replace("px", "")); // Assumes equal border sizes
-    var rect = this.getBoundingClientRect();
-    var base_x = e.pageX - rect.left - document.querySelector("html").scrollLeft - border_size;
-    var base_y = e.pageY - rect.top - document.querySelector("html").scrollTop - border_size;
-    fv.files[fvpk].canvas_double_click({"base_x": base_x, "base_y": base_y});
+    let zoom = fv.files[fvpk].config.display.zoom;
+    let canvas_element = this;
+    let coords = get_mouse_coordinates(e, canvas_element, zoom);
+    fv.files[fvpk].canvas_double_click(coords);
 }
 
 function initialize_autoload()

@@ -17,13 +17,16 @@ export class Handler
         this.pos = 0;
         this.data = null; // DataView for reading
         this.envelope_id = null; // String to identify HTML for envelope
+
+        this.tabs = ["world-info", "board-info", "element-info", "stat-info", "preferences", "help"];
     }
 
     static initial_config = {};
 
     async render() {
         console.log("CALLED HANDLER.RENDER()");
-        this.deactivate_active_envelopes()
+        this.deactivate_active_envelopes();
+        this.set_tabs();
 
         this.create_envelope();
         if (! this.parsed)
@@ -33,6 +36,18 @@ export class Handler
         }
         let ready = await this.write_html();
         $(this.envelope_id).addClass("active");
+    }
+
+    set_tabs()
+    {
+        for (let idx = 0; idx < $("#tabs div").length; idx++)
+        {
+            let tab = $($("#tabs div")[idx]);
+            if (this.tabs.indexOf(tab.attr("name")) != -1)
+                tab.removeClass("hidden");
+            else
+                tab.addClass("hidden");
+        }
     }
 
     deactivate_active_envelopes()
