@@ -3,7 +3,7 @@ import os
 
 from datetime import datetime, timezone
 from museum_site.constants import STATIC_PATH
-from museum_site.core.social import Social_Mastodon, Social_Twitter, Social_Tumblr, Social_Cohost, Social_Discord
+from museum_site.core.social import Social_Mastodon, Social_Twitter, Social_Tumblr, Social_Discord
 
 ZAP_UPLOAD_PATH = os.path.join(STATIC_PATH, "zap", "media")
 ZAP_STATIC_PATH = "/static/zap/media/"
@@ -47,8 +47,6 @@ def zap_get_social_account(account):
         s = Social_Twitter()
     elif account == "tumblr":
         s = Social_Tumblr()
-    elif account == "cohost":
-        s = Social_Cohost()
     elif account == "discord":
         s = Social_Discord()
     return s

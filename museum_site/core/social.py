@@ -7,8 +7,6 @@ from museum_site.constants import APP_ROOT, HOST, APP_ROOT
 import pytumblr
 import requests
 
-from cohost.models.user import User
-from cohost.models.block import MarkdownBlock
 from mastodon import Mastodon
 from twitter import *
 
@@ -29,8 +27,6 @@ from museum_site.settings import (
     TWITTER_CONSUMER_SECRET,
     TWITTER_OAUTH_TOKEN,
     TWITTER_OAUTH_SECRET,
-
-    COHOST_COOKIE,
 
     DISCORD_WEBHOOK_ANNOUNCEMENTS_URL, DISCORD_WEBHOOK_PATRONS_URL, DISCORD_WEBHOOK_TEST_URL, DISCORD_WEBHOOK_FEED_URL,
 )
@@ -65,7 +61,7 @@ class Social():
         self.uploaded_media = []
 
     def clean_hashtags(self, tags):
-        # Default hashtag handler. Works for Cohost and Tumblr.
+        # Default hashtag handler. Works for Tumblr.
         # IN: "#zzt, #museum of zzt, #ascii" OUT: ["zzt" , "museum of zzt", "ascii"]
         hashtag_list = []
         raw_tags = tags
@@ -75,48 +71,6 @@ class Social():
             if tag.startswith("#"):
                 hashtag_list.append(tag[1:])
         return hashtag_list
-
-class Social_Cohost(Social):
-    """ https://pypi.org/project/cohost/ """
-    def _init_keys(self):
-        self.cookie = COHOST_COOKIE
-
-    def login(self):
-        self.user = User.loginWithCookie(self.cookie)
-        self.project = self.user.getProject("worldsofzzt")
-
-    def upload_media(self, media_path=None, media_url=None, media_bytes=None):
-        if media_bytes:
-            print("Bytes are currently unsupported.")
-            return False
-        if media_url:
-            print("External media is currently unsupported.")
-            return False
-        if media_path:
-            full_media_path = HOST[:-1] + media_path
-            self.media.append("<a href='{}' target='_blank'><img src='{}'></a>".format(full_media_path, full_media_path))
-
-    def post(self, body, title="", tags=""):
-        blocks = []
-        # Attach media if any has been specified
-        if self.media:
-            # ZAP Form adds full filepath, but Cohost wants the path as a URL for hotlinking hence the replace() call
-            media_string = "\n".join(self.media).replace(APP_ROOT, "")
-            body = media_string + "\n" + body
-
-        # Attach hashtags by converting to list
-        tags = self.clean_hashtags(tags) if tags else []
-
-        # Attach post
-        blocks.append(MarkdownBlock(body))
-
-        # Chost
-        response = self.project.post(title, blocks, tags=tags)
-
-        self.media = []
-        self.uploaded_media = []
-        self.log_response(response.url)
-        return response
 
 
 class Social_Discord(Social):

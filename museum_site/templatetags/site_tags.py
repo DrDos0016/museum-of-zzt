@@ -383,7 +383,6 @@ def plug(service, **kwargs):
         "twitch": {"service": "Twitch", "icon": "/static/icons/plug-twitch.png", "text": "Worlds of ZZT on Twitch"},
         "github": {"service": "GitHub", "icon": "/static/icons/GitHub-Mark-32px.png", "text": "Worlds of ZZT on GitHub"},
         "rss": {"service": "RSS", "icon": "/static/icons/rss-large.png", "text": "Worlds of ZZT RSS Feeds"},
-        "cohost": {"service": "cohost", "icon": "/static/icons/plug-cohost.png", "text": "Worlds of ZZT on cohost"},
     }
 
     context = services.get(service)

@@ -50,13 +50,4 @@
 {% endfor %}</textarea>
 </div>
 {% endif %}
-
-{% if form.responses.cohost %}
-<div>
-<h3>Cohost</h3>
-<textarea class="zap-post-response">{% for r in form.responses.cohost %}{{r}}
-==========================================
-{% endfor %}</textarea>
-</div>
-{% endif %}
 {% endblock %}
