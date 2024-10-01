@@ -462,6 +462,8 @@ class ZFile_Review_List_View(Model_List_View):
                     return context
 
             feedback = review_form.process(self.request, self.head_object)
+            if feedback is None:
+                return context
 
             # Re-get the queryset with the new review included and without including the form again
             context["object_list"] = self.get_queryset()
