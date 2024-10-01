@@ -39,6 +39,15 @@ export class ZZT_Handler extends Handler
         this.tile_count = 1500; // TODO Should we use width * height of boards?
 
         this.cursor_tile = {"x": -1, "y": -1} // Tile the cursor was last seen over
+
+        this.tabs = [
+            {"name": "world-info", "text": "World", "shortcut":"W"},
+            {"name": "board-info", "text": "Board", "shortcut":"B"},
+            {"name": "element-info", "text": "Element", "shortcut":"E"},
+            {"name": "stat-info", "text": "Stats", "shortcut":"S"},
+            {"name": "preferences", "text": "Prefs.", "shortcut":"P"},
+            {"name": "help", "text":"?"},
+        ];
     }
 
     static initial_config = {
@@ -111,7 +120,7 @@ export class ZZT_Handler extends Handler
             {"target": ".hover-element", "html": ""},
             {"target": "#world-info", "html": this.get_world_tab()},
             ((this.showing_search_results) ? BLANK_TARGET : {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.write_board_list()}),
-            {"target": "#element-info", "html": ""},
+            {"target": "#element-info", "html": "<i>No element selected. Click on a tile to view its defails.</i>"},
             {"target": "#stat-info", "html": this.write_stat_list()},
             {"target": "#board-info", "html": this.get_board_info(),},
             //{"target": "#fv-main", "html": "<textarea style='width:700px;height:500px;'>" +this.display_json_string() + "</textarea>",},
@@ -478,14 +487,14 @@ export class ZZT_Handler extends Handler
     {
         let current_sort = this.config.stats.sort;
         let codeless = this.config.stats.show_codeless;
-        //let current_sort = "index";
+        console.log("Current sort", current_sort);
+        console.log("codeless?", codeless);
         let sort_funcs = {
             "sort_stat_list_by_code": this.sort_stat_list_by_code,
             "sort_stat_list_by_coords": this.sort_stat_list_by_coords,
             "sort_stat_list_by_name": this.sort_stat_list_by_name,
             "sort_stat_list_by_index": this.sort_stat_list_by_index,
         }
-        //let sorted_stat_list = sort_funcs[`sort_stat_list_by_${current_sort}`]();
         let sorted_stat_list = this[`sort_stat_list_by_${current_sort}`]();
         let output = `<div class="controls">
             <label>Sort by: <select name="stat-sort">
@@ -501,8 +510,9 @@ export class ZZT_Handler extends Handler
         for (var idx = 0; idx < sorted_stat_list.length; idx++)
         {
             let hidden = "";
+            console.log("Stat oop is?", sorted_stat_list[idx].oop.slice(0,15));
             if (! codeless && sorted_stat_list[idx].oop == "")
-                hidden = " class='empty'";
+                hidden = " class='none'";
             let stat_label = ZZT_Handler.stat_list_label(sorted_stat_list[idx], this.boards[this.selected_board]);
             output += `<li${hidden} value="${sorted_stat_list[idx].idx}">${stat_label}</li>`;
         }

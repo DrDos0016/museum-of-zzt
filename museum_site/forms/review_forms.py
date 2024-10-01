@@ -106,12 +106,17 @@ class Review_Form(forms.ModelForm):
         feedback.zfile_id = zfile.pk
 
         # Simple spam protection
-        if zfile.can_review == ZFile.FEEDBACK_APPROVAL or (feedback.content.find("href") != -1) or (feedback.content.find("[url=") != -1):
+        if zfile.can_review == ZFile.FEEDBACK_APPROVAL:
             feedback.approved = False
         if (not request.user.is_authenticated) and feedback.content.find("http") != -1:
             feedback.approved = False
         if (not request.user.is_authenticated):  # TODO Make this a proper constant or setting
             feedback.approved = False
+
+        # Instant Rejection
+        if (feedback.content.find("<a href") != -1) or (feedback.content.find("[url=") != -1):
+            feedback.approved = False
+            return None
 
         feedback.save()
 

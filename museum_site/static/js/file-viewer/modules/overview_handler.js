@@ -1,4 +1,5 @@
 import { Handler } from "./handler.js";
+import { filesize_format } from "./core.js";
 
 export class Overview_Handler extends Handler
 {
@@ -12,6 +13,10 @@ export class Overview_Handler extends Handler
         this.description = "";
         this.envelope_id = "#envelope-fvpk-overview";
         this.zip_comment = "";
+
+        this.tabs = [
+            {"name": "zip-info", "text": "Contents"},
+        ];
     }
 
     parse_bytes() {
@@ -54,7 +59,7 @@ export class Overview_Handler extends Handler
             output += `<div>${this.zip_comment}</div>`;
         let zip_info_table = `
             <table class="zip-info-table">
-            <tr><th>Filename</th><th>Mod. Date</th><th>Dir.</th><th>CRC-32</th><th>Compressed Size</th><th>Decompressed Size</th></tr>
+            <tr><th>Filename</th><th>Mod. Date</th><th>CRC-32</th><th>Compressed Size</th><th>Decompressed Size</th></tr>
         `;
         // TODO: CRC32 is appearing as negative?
         for(let [key, file] of Object.entries(this.fv_files))
@@ -64,14 +69,17 @@ export class Overview_Handler extends Handler
             let zi = file.meta.zipinfo
             if (zi)
             {
+                console.log(zi);
                 has_zipinfo = true;
+                if (zi.dir)
+                    continue;
+                let fixed_crc = (zi.crc32 < 0) ? zi.crc32 + 4294967296 : zi.crc32; // IDK why the zip library uses a signed integer
                 zip_info_table += `<tr>
                     <td>${file.filename}</td>
                     <td class="c">${zi.date.toISOString().replace("T", " ").slice(0, 19)}</td>
-                    <td class="c">${zi.dir ? "Y" : "N"}</td>
-                    <td class="r">${zi.crc32}</td>
-                    <td class="r">${zi.compressed_size}</td>
-                    <td class="r">${zi.decompressed_size}</td>
+                    <td class="r">${fixed_crc}</td>
+                    <td class="r" title="${zi.compressed_size} bytes">${filesize_format(zi.compressed_size)}</td>
+                    <td class="r" title="${zi.decompressed_size} bytes">${filesize_format(zi.decompressed_size)}</td>
                 </tr>`;
             }
         }
