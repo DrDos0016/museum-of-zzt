@@ -1,4 +1,3 @@
-//import { Handler } from "./handler.js";
 import { Debug_Handler } from "./debug_handler.js";
 import { Image_Handler } from "./image_handler.js";
 import { Local_File_Uploader_Handler } from "./local_file_uploader_handler.js";
@@ -8,11 +7,22 @@ import { Unsupported_Handler } from "./unsupported_handler.js";
 import { ZZT_High_Score_Handler, SZZT_High_Score_Handler } from "./high_score_handler.js";
 import { ZZT_Handler } from "./zzt_handler.js";
 
-const EXTENSIONS_IMAGE = [".BMP", ".JPG", ".PNG"];
-const EXTENSIONS_HIGH_SCORE = [".HI", ".MH"];
-const EXTENSIONS_HIGH_SCORE_SZZT = [".HGS"];
-const EXTENSIONS_TEXT = [".TXT", ".NFO", ".DAT", ".OBJ", ".DOC"];
-const EXTENSIONS_ZZT = [".ZZT"];
+export const EXTENSIONS_IMAGE = [".BMP", ".GIF", ".ICO", ".JPG", ".PNG", ".SVG"];
+export const EXTENSIONS_HIGH_SCORE = [".HI", ".MH"];
+export const EXTENSIONS_HIGH_SCORE_SZZT = [".HGS"];
+export const EXTENSIONS_TEXT = [
+"", ".000", ".001", ".002", ".135", ".1ST", ".AC", ".AM", ".AMI", ".ANS", ".APPIMAGE", ".ASC", ".ASM", ".BAS", ".BAT", ".BB",
+".BI", ".BIN", ".C", ".CC", ".CD", ".CFG", ".CPP", ".CRD", ".CSS", ".DAT", ".DEF", ".DESKTOP",
+".DEU", ".DIZ", ".DOC", ".DOS", ".DOX", ".DS_STORE", ".E", ".EED", ".ENG", ".EPS", ".ERR", ".EX",
+".FAQ", ".FLG", ".FRM", ".FYI", ".GITIGNORE", ".GPL3", ".GUD", ".H", ".HLP", ".HTS", ".IN", ".INC", ".INF",
+".INI", ".INV", ".JAVA", ".JS", ".JSON", ".KB", ".LIB", ".LICENSE", ".LOG", ".LNK", ".LST", ".LUA",
+".M4", ".MAC", ".MACOS", ".MACOS_SDK_EXTRACTOR", ".MAP", ".MD",
+".ME", ".MS", ".MSG", ".MUZ", ".NEW", ".NFO", ".NOW", ".OBJ", ".OLF", ".OOP", ".OZ", ".PAR", ".PAS", ".PATCH",
+".PIF", ".PLIST", ".PS", ".PY", ".REG", ".RTF", ".ROT13", ".SDI", ".SH", ".SLV", ".SOL", ".SOURCE", ".ST", ".THEME", ".TXT",
+".URL", ".WINDOWS", ".WPS", ".WRI", ".ZLN", ".ZML", ".ZZL", ".ZZM",
+".~~~", ".---",
+]
+export const EXTENSIONS_ZZT = [".MWZ", ".SAV", ".Z_T", ".ZZT"]; // TODO Super ZZT Saves
 
 export class File_Viewer
 {
@@ -95,6 +105,8 @@ export class File_Viewer
         let bytes = this.files[this.active_fvpk].bytes;
         let meta = this.files[this.active_fvpk].meta;
         this.files[fvpk] = new Text_Handler(fvpk, filename, bytes, meta);
+        this.files[fvpk].config = null; // Clear the Unsupported Handler config
+        this.push_config(fvpk);
         await this.files[fvpk].render();
         $(`#envelope-${fvpk}`).removeClass("envelope-unsupported");
         $(`#envelope-${fvpk}`).addClass("envelope-text");
@@ -204,6 +216,8 @@ export class File_Viewer
             }
             console.log("Pushed an initial config");
         }
+
+        console.log("NAME HERE", this.files[fvpk].name);
 
         this.files[fvpk].config = this.configs[config_key];
 

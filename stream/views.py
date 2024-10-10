@@ -76,8 +76,10 @@ class Stream_Schedule_View(ListView):
         if in_dst:
             context["friday_time_utc"] = "01:00 UTC (Saturday)"
             context["sunday_time_utc"] = "19:00 UTC"
+            context["monday_time_utc"] = "01:00 UTC (Tuesday)"
         else:
             context["friday_time_utc"] = "02:00 UTC (Saturday)"
             context["sunday_time_utc"] = "20:00 UTC"
+            context["monday_time_utc"] = "02:00 UTC (Tuesday)"
 
         return context

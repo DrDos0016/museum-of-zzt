@@ -1,8 +1,0 @@
-<img src="{{cohost_image_url}}">
-<i><a href="https://museumofzzt.com{{board_url|safe}}">Source</a></i><br>
-<b>“{{zfile_title}}”</b>{% if zfile_author %} by {{zfile_author|join:"/"}}{% endif %}{% if zfile_year %} ({{zfile_year}}){% endif %}<br>{% if zfile_company %}
-Published by: {{zfile_company|join:"/"}}<br>{% endif %}
-[{{zfile_world}}] - “{{zfile_board}}” {% if zfile_board_properties %}{% templatetag openbrace %}{{zfile_board_properties|join:", "}}{% templatetag closebrace %}{% endif %}{% if zfile.supports_zeta_player %}<br>
-<a href="https://museumofzzt.com{{play_url}}">Play This World Online</a>{% endif %}
-{% if related_article_count %}<br>----<br>
-<a href="https://museumofzzt.com{{article_url}}">Discover <b>More Information About This World</b> on the Museum of ZZT</a>{% endif %}

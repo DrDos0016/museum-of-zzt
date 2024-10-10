@@ -20,6 +20,7 @@ export class Handler
         this.envelope_id = null; // String to identify HTML for envelope
 
         this.tabs = [];
+        this.default_tab = null;
     }
 
     static initial_config = {};
@@ -143,7 +144,6 @@ export class Handler
 
     display_tab(tab)
     {
-        console.log("TAB", tab);
         $(`#tabs .active`).removeClass("active");
         $(`#details .active`).removeClass("active");
         $(`#tabs div[name=${tab}]`).addClass("active");

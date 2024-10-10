@@ -383,7 +383,6 @@ def plug(service, **kwargs):
         "twitch": {"service": "Twitch", "icon": "/static/icons/plug-twitch.png", "text": "Worlds of ZZT on Twitch"},
         "github": {"service": "GitHub", "icon": "/static/icons/GitHub-Mark-32px.png", "text": "Worlds of ZZT on GitHub"},
         "rss": {"service": "RSS", "icon": "/static/icons/rss-large.png", "text": "Worlds of ZZT RSS Feeds"},
-        "cohost": {"service": "cohost", "icon": "/static/icons/plug-cohost.png", "text": "Worlds of ZZT on cohost"},
     }
 
     context = services.get(service)
@@ -544,3 +543,8 @@ def ml(url, text, target="_blank", i=True, *args, **kwargs):
     if i:
         output = "<i>{}</i>".format(output)
     return mark_safe(output)
+
+
+@register.inclusion_tag("museum_site/subtemplate/tag/youtube-embed.html")
+def youtube_embed(video_id, w=960, h=540):
+    return {"video_id": video_id, "w": w, "h": h}

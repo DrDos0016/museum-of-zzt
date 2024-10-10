@@ -630,7 +630,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def context_cl_info(self):
         """ Context to display object for a Closer Look subject (cl_info templatetag) """
         context = self.context_universal()
-        context["title"] = self.get_field_view(view="cl_info")
+        context["title"] = self.get_field_view(view="cl_info") if (self.pk != -1) else {"value": "ERROR - ZFile Not Found"}
         context["engine"] = self.cl_info["engine"]
         context["emulator"] = self.cl_info["emulator"]
 

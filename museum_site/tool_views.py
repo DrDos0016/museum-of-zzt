@@ -17,6 +17,7 @@ from django import VERSION as DJANGO_VERSION
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.db.models import Count
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.shortcuts import render, redirect
@@ -83,6 +84,7 @@ def audit(request, target, return_target_dict=False):
         "scrolls": {"title": "Audit Scrolls", "template": "museum_site/tools/audit-scrolls.html", "scrolls": Scroll.objects.all()},
         "users": {"title": "Audit Users", "template": "museum_site/tools/user-list.html", "users": User.objects.order_by("-id")},
         "zeta-config": {"title": "Audit Zeta Configs", "template": "museum_site/tools/audit_zeta_config.html", "special": File.objects.zeta_config_audit()},
+        "file-extensions": {"title": "Audit File Extensions", "template": "museum_site/tools/audit-file-extensions.html", "extensions": Content.objects.all().values("ext").annotate(total=Count("ext")).order_by("ext")},
     }
 
     if return_target_dict:

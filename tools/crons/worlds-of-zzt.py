@@ -36,11 +36,6 @@ def main():
     except:
         print("Failed to send: Twitter")
 
-    try:
-        entry.send_chost()
-    except:
-        print("Failed to send: Cohost")
-
     # Delete
     entry.delete_image()
     entry.delete()

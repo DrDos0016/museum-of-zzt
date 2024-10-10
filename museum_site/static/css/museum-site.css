@@ -273,6 +273,12 @@ pre.cp437 { line-height:14px;}
     text-decoration:underline;
 }
 
+.youtube-embed
+{
+    margin:auto;
+    text-align:center;
+}
+
 /* Plugs */
 .plug
 {

@@ -66,9 +66,11 @@ class Post(models.Model):
     tumblr_id = models.CharField(default="", blank=True, max_length=32)
     mastodon_id = models.CharField(default="", blank=True, max_length=32)
     patreon_id = models.CharField(default="", blank=True, max_length=32)
-    cohost_id = models.CharField(default="", blank=True, max_length=32)
 
     event = models.ForeignKey("Event", null=True, blank=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return "{} - {}".format(self.modified, self.title)
 
     def posted_where(self):
         where = []
@@ -80,8 +82,6 @@ class Post(models.Model):
             where.append("mastodon")
         if self.patreon_id and self.mastodon_id != "0":
             where.append("patreon")
-        if self.cohost_id and self.cohost_id != "0":
-            where.append("cohost")
         return where
 
     def get_social_id_dict(self):
@@ -94,8 +94,6 @@ class Post(models.Model):
             output["mastodon"] = self.mastodon_id
         if self.patreon_id:
             output["patreon"] = self.patreon_id
-        if self.cohost_id:
-            output["cohost"] = self.cohost_id
         return output
 
     def posted_where_links(self):
