@@ -17,6 +17,7 @@ export class Overview_Handler extends Handler
         this.tabs = [
             {"name": "zip-info", "text": "Contents"},
         ];
+        this.default_tab = "zip-info";
     }
 
     parse_bytes() {
@@ -36,7 +37,7 @@ export class Overview_Handler extends Handler
         ];
 
         this.write_targets(targets);
-        this.display_tab("zip-info");
+        this.display_tab(this.default_tab);
         return true;
     }
 

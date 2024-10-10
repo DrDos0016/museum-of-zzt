@@ -14,6 +14,7 @@ export class ZZT_High_Score_Handler extends Handler
         this.tabs = [
             {"name": "preferences", "text": "Prefs."},
         ];
+        this.default_tab = "preferences";
     }
 
     static initial_config = {
@@ -58,7 +59,7 @@ export class ZZT_High_Score_Handler extends Handler
 
         ];
         this.write_targets(targets)
-        this.display_tab("preferences");
+        this.display_tab(this.default_tab);
         return true;
     }
 

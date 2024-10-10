@@ -12,13 +12,14 @@ export class Unsupported_Handler extends Handler
         this.tabs = [
             {"name": "preferences", "text": "Preferences"},
         ];
+        this.default_tab = "preferences";
     }
 
     write_html() {
-        let output = "<div><p><b>This file does not support in-browser rendering.</b></p>";
+        let output = "<div class='fv-disclaimer'><p><b>This file does not support in-browser rendering.</b></p>";
 
         output += `<p>Files of type <span class="keyword">${this.ext}</span> do not have any defined handler to display them.</p>`;
-        output += `<p>You can use the options below to force the file to be reated as a text file, which may allow some data to be read.</p>`;
+        output += `<p>You can use the options below to force the file to be reated as a text file, which in some circumstances may allow some data to be read.</p>`;
         output += "</div>";
 
         let targets = [
@@ -26,7 +27,7 @@ export class Unsupported_Handler extends Handler
             {"target": "#preferences", "html": this.get_preferences()},
         ];
         this.write_targets(targets);
-        this.display_tab("preferences");
+        this.display_tab(this.default_tab);
         return true;
     }
 

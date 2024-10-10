@@ -129,6 +129,8 @@
 .envelope-overview > .zf-desc-wrapper { border:5px solid var(--border-color); min-height:120px; max-width:480px; background-color:var(--notice-bg); font-family:sans-serif; padding:2ch; }
 .envelope-image { justify-content:center; align-items:center; }
 .envelope-text { align-items:flex-start; }
+.envelope-unsupported { align-items:flex-start; }
+.envelope-unsupported > div { flex: 1; }
 /* End Envelope layouts */
 
 .hover-wrapper { height:0px; position:absolute; }
@@ -270,4 +272,13 @@ details[open] .oop-summary::before { content: "- Hide"; }
     padding:0px;
     background:var(--board-list-bg);
 }
-#file-list ol li { border-bottom:1pxz dotted var(--border-color); } /* (List of boards in ZZT file) */
+#file-list ol li { border-bottom:1px dotted var(--border-color); } /* (List of boards in ZZT file) */
+
+.fv-disclaimer {
+    background-color:var(--field-error-bg);
+    border:1px solid var(--ega-darkred);
+    margin:auto;
+    margin-bottom:2ch;
+    padding:0.5ch;
+    max-width:750px;
+}

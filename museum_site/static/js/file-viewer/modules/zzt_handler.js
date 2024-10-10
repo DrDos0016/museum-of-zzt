@@ -48,6 +48,7 @@ export class ZZT_Handler extends Handler
             {"name": "preferences", "text": "Prefs.", "shortcut":"P"},
             {"name": "help", "text":"?"},
         ];
+        this.default_tab = "board-info";
     }
 
     static initial_config = {
@@ -158,7 +159,7 @@ export class ZZT_Handler extends Handler
         }
         else
         {
-            this.display_tab("board-info");
+            this.display_tab(this.default_tab);
         }
 
         //$(window).scrollTop($("#fv-main").offset().top);
