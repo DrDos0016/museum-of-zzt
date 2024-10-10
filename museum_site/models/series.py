@@ -34,6 +34,7 @@ class Series(BaseModel):
     first_entry_date = models.DateField(null=True, blank=True)
     last_entry_date = models.DateField(null=True, blank=True)
     visible = models.BooleanField(default=True)
+    complete = models.BooleanField(default=False, help_text="Series is expected to have no new articles added.")
 
     class Meta:
         ordering = ["title"]
