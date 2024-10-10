@@ -82,9 +82,9 @@ export class ZZT_High_Score_Handler extends Handler
 
 export class SZZT_High_Score_Handler extends ZZT_High_Score_Handler
 {
-    constructor(fvpk)
+    constructor(fvpk, filename, bytes, meta)
     {
-        super(fvpk);
+        super(fvpk, filename, bytes, meta);
         this.name = "SZZT High Score Handler";
         this.max_name_length = 60;
         this.dash_count = 20;

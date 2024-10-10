@@ -19,7 +19,7 @@ export const EXTENSIONS_TEXT = [
 ".M4", ".MAC", ".MACOS", ".MACOS_SDK_EXTRACTOR", ".MAP", ".MD",
 ".ME", ".MS", ".MSG", ".MUZ", ".NEW", ".NFO", ".NOW", ".OBJ", ".OLF", ".OOP", ".OZ", ".PAR", ".PAS", ".PATCH",
 ".PIF", ".PLIST", ".PS", ".PY", ".REG", ".RTF", ".ROT13", ".SDI", ".SH", ".SLV", ".SOL", ".SOURCE", ".ST", ".THEME", ".TXT",
-".URL", ".WINDOWS", ".WPS", ".WRI", ".ZLN", ".ZML", ".ZZL", ".ZZM",
+".URL", ".WINDOWS", ".WPS", ".WRI", ".XML", ".ZLN", ".ZML", ".ZZL", ".ZZM",
 ".~~~", ".---",
 ]
 export const EXTENSIONS_ZZT = [".MWZ", ".SAV", ".Z_T", ".ZZT"]; // TODO Super ZZT Saves
