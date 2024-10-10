@@ -543,3 +543,8 @@ def ml(url, text, target="_blank", i=True, *args, **kwargs):
     if i:
         output = "<i>{}</i>".format(output)
     return mark_safe(output)
+
+
+@register.inclusion_tag("museum_site/subtemplate/tag/youtube-embed.html")
+def youtube_embed(video_id, w=960, h=540):
+    return {"video_id": video_id, "w": w, "h": h}
