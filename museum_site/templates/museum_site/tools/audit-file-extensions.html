@@ -1,0 +1,74 @@
+{% extends BASE_TEMPLATE %}
+{% load static %}
+
+{% block style %}
+<style>
+    .has-handler { background-color:var(--ega-green); }
+    .lacks-handler { background-color:var(--ega-red); }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script type="module">
+import {
+    EXTENSIONS_IMAGE, EXTENSIONS_HIGH_SCORE, EXTENSIONS_HIGH_SCORE_SZZT, EXTENSIONS_TEXT, EXTENSIONS_ZZT
+} from "/static/js/file-viewer/modules/file_viewer.js";
+
+let has_handler_count = 0;
+let lacks_handler_count = 0;
+
+$(document).ready(function (){
+    $(".tr-ext").each(function (){
+        let ext = $(this).find(".td-ext").text();
+        let handler = "<b>Unsupported Handler</b>";
+        if (EXTENSIONS_IMAGE.indexOf(ext) != -1) { handler = "Image Handler"; }
+        else if (EXTENSIONS_HIGH_SCORE.indexOf(ext) != -1) { handler = "ZZT High Score Handler"; }
+        else if (EXTENSIONS_HIGH_SCORE_SZZT.indexOf(ext) != -1) { handler = "Super ZZT High Score Handler"; }
+        else if (EXTENSIONS_TEXT.indexOf(ext) != -1) { handler = "Text Handler"; }
+        else if (EXTENSIONS_ZZT.indexOf(ext) != -1) { handler = "ZZT Handler"; }
+
+        $(this).find(".td-handler").html(handler);
+
+        if (handler == "<b>Unsupported Handler</b>")
+        {
+            $(this).find(".td-handler").addClass("lacks-handler");
+            lacks_handler_count++;
+        }
+        else
+        {
+            $(this).find(".td-handler").addClass("has-handler");
+            has_handler_count++;
+        }
+    });
+
+    $("#has-handler-count").html(has_handler_count);
+    $("#lacks-handler-count").html(lacks_handler_count);
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>{{title}}</h1>
+<hr>
+<div>
+    <b><span id="has-handler-count">----</span></b> file extensions have handlers.<br>
+    <b><span id="lacks-handler-count">----</span></b> file extensions lack handlers.<br>
+</div>
+<br>
+<table class="audit-table">
+    <tr>
+        <th>Extension</th>
+        <th>Total</th>
+        <th>Handler</th>
+        <th>Search</th>
+    </tr>
+    {% for e in extensions %}
+    <tr class="tr-ext">
+        <td class="r mono td-ext">{{e.ext|upper|default:"<i>None</i>"}}</td>
+        <td class="r">{{e.total}}</td>
+        <td class="td-handler">------------</td>
+        <td><a href="http://django.pi:8000/file/search/?contents={{e.ext|upper}}" target="_blank">Zipfiles w/ file extension</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
