@@ -95,41 +95,7 @@ class Commentary(template.Node):
 
 @register.inclusion_tag("museum_site/subtemplate/tag/content-warning.html")
 def content_warning(*args, **kwargs):
-    return{"kind": "content-warning", "heading":"CONTENT WARNING", "warnings": args, "skip_id":kwargs.get("key", "#end-cw"), "noskip":kwargs.get("noskip")}
-
-    output = """
-        <div class="content-warning">
-        <div class="text">
-            <b class="heading">CONTENT WARNING</b>
-            <p>The following content contains material which may be offensive
-            to some audiences. It was most likely originally created by a
-            teenager who has since grown up. This material does not necessarily
-            reflect its creator's current opinions nor behaviors.</p>
-
-            <p>Specifically, this page contains depictions of or references to:
-            <br><b>{}</b></p>
-
-            <div class="r">
-                <span class="jsLink" name="cw-hide-all">Hide all future content
-                warnings</span> |
-                <span class="jsLink" name="cw-hide-this"
-                data-content-warning-key="{}">Hide this</span>
-                {}
-
-            </div>
-        </div>
-    </div>
-    """
-    skip_link = kwargs.get("key", "#end-cw")
-
-    if not kwargs.get("noskip"):
-        skip_text = ' | <a href="{}">Jump past warned content</a>'.format(skip_link)
-    else:
-        skip_text = ""
-
-    output = output.format(", ".join(args).title(), skip_link, skip_text)
-
-    return mark_safe(output + "\n")
+    return{"kind": "content-warning", "heading": "CONTENT WARNING", "warnings": args, "skip_id": kwargs.get("key", "#end-cw"), "noskip": kwargs.get("noskip")}
 
 
 @register.simple_tag()
@@ -227,6 +193,7 @@ class IL(template.Node):
         output = "<a class='il' target='_blank' href='{url}'>{text}</a>".format(url=url, text=text)
         return output
 
+
 @register.filter(name="markdown")
 def render_markdown(raw):
     filtered = escape(raw)
@@ -243,7 +210,6 @@ def render_markdown(raw):
             marked = marked.replace("||", "<span class='spoiler'>", 1)
         else:
             marked = marked.replace("||", "</span>", 1)
-    #print(marked)
 
     return mark_safe(marked)
 
@@ -316,7 +282,6 @@ def model_block_link_tag(model_name, identifier, text=None, i=True, *args, **kwa
     available_models = {"zfile": File, "series": Series, "article": Article}
     error_message = "TODO INVALID MODEL BLOCK LINK TAG [{}][{}]".format(model_name, identifier)
 
-
     attr = "pk" if isinstance(identifier, int) else "key"
     try:
         item = available_models[model_name].objects.filter(**{attr: identifier})
@@ -387,6 +352,7 @@ def plug(service, **kwargs):
 
     context = services.get(service)
     return context
+
 
 @register.filter
 def qs_sans(raw, args):
@@ -502,7 +468,10 @@ def nav_action_list(key, condition=None):
             {"selected": True if condition.startswith("/collection/browse/") else False, "url": reverse("collection_browse"), "text": "Collection Directory"},
             {"selected": True if condition.startswith("/collection/new/") else False, "url": reverse("collection_new"), "text": "Create Collection"},
             {"selected": True if condition.startswith("/collection/user/") else False, "url": reverse("collection_user"), "text": "Manage Collections"},
-            {"selected": True if condition.startswith("/collection/on-the-fly-collections/") else False, "url": reverse("collection_on_the_fly_collections"), "text": "On The Fly Collections"},
+            {
+                "selected": True if condition.startswith("/collection/on-the-fly-collections/") else False,
+                "url": reverse("collection_on_the_fly_collections"), "text": "On The Fly Collections"
+            },
         ]
     elif key == "collection-manage":
         actions = [
@@ -538,7 +507,7 @@ def ml(url, text, target="_blank", i=True, *args, **kwargs):
     output_url = "/" + "/".join(components)
 
     output = '<a href="{}"{}>{}</a>'
-    target_string = "target=" +target if target else ""
+    target_string = "target=" + target if target else ""
     output = output.format(output_url, target_string, text)
     if i:
         output = "<i>{}</i>".format(output)
