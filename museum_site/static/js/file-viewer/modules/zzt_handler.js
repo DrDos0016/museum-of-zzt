@@ -101,7 +101,6 @@ export class ZZT_Handler extends Handler
         this.boards = this.parse_boards();
         this.locks = this.parse_locks();
 
-
         if (this.selected_board === null)
             this.selected_board = this.world.current_board;
 

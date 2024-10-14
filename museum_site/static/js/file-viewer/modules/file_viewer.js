@@ -277,7 +277,10 @@ export class File_Viewer
         let base_w = 640;
         let base_h = 350;
         let filename = this.files[this.active_fvpk].filename;
-        let board_number = 7;
+        let board_number = this.files[this.active_fvpk].selected_board;
+        if (board_number == null)
+            this.files[this.active_fvpk].world.current_board
+
         let key = zfile_info.key;
         let live_url = "/file/play/"+key+"?player=zeta&mode=popout&scale=" + scale + "&live=1&world="+filename+"&start=" +board_number;
         window.open(live_url, "popout-"+key, "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
