@@ -271,10 +271,11 @@ class Review(BaseModel):
 
 class Feedback_Tag(models.Model):
     TAGS = (
-        ("Review", "Review"),
-        ("Content Warning", "Content Warning"),
         ("Bug Report", "Bug Report"),
+        ("Changelog", "Changelog"),
+        ("Content Warning", "Content Warning"),
         ("Hints and Solutions", "Hints and Solutions"),
+        ("Review", "Review"),
         ("Table of Contents", "Table of Contents"),
     )
 
