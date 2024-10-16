@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from museum_site.core.sorters import Scroll_Sorter
 from museum_site.models.base import BaseModel
+from museum_site.models.file import File
 from museum_site.querysets.base import Base_Queryset
 
 
@@ -35,7 +36,7 @@ class Scroll(BaseModel):
         default="",
         help_text="Lines starting with @ will be skipped. Initial whitespace is trimmed by DB, so an extra @ line is a fix."
     )
-    zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True)
+    zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True, help_text="Will try to use key in source URL if blank")
 
     class Meta:
         ordering = ["-id"]
@@ -79,6 +80,10 @@ class Scroll(BaseModel):
     def save(self, *args, **kwargs):
         if self.source.startswith("https://museumofzzt.com"):
             self.source = self.source.replace("https://museumofzzt.com", "")
+        if self.source.startswith("/file/view/") and self.zfile_id == None:
+            key = self.source[11:].split("/")[0]
+            self.zfile = File.objects.filter(key=key).first()
+
         super().save(*args, **kwargs)
 
     def context_list(self):
@@ -94,7 +99,9 @@ class Scroll(BaseModel):
         return {"label": "", "value": "<a href='{}'>{}</a>".format(self.get_absolute_url(), self.title), "safe": True}
 
     def get_field_zfile(self, view="list"):
-        return {"label": "", "value": "<a href='{}'>{}</a>".format(self.zfile.get_absolute_url(), self.zfile.title), "safe": True}
+        if self.zfile:
+            return {"label": "", "value": "<a href='{}'>{}</a>".format(self.zfile.get_absolute_url(), self.zfile.title), "safe": True}
+        return {"label": "", "value": "<i>Unknown</i>", "safe": True}
 
     def get_field_source(self, view="list"):
         return {"label": "", "value": "<a href='{}'>{}</a>".format(self.source, "Source"), "safe": True}
