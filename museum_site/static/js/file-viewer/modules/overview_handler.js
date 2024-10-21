@@ -45,7 +45,7 @@ export class Overview_Handler extends Handler
     {
         let desc = "";
         if (this.description)
-            desc = `<div class="zf-desc-wrapper"><div><p>${this.description}</p></div></div>`;
+            desc = `<div class="zf-desc-wrapper">${this.description}</div>`;
         let output = `
             <div class="zf-preview-wrapper"><img src="${this.preview_image_url}" class="image" id="fv-preview"></div>
             ${desc}

@@ -888,8 +888,14 @@ export class ZZT_Handler extends Handler
     syntax_highlight(oop)
     {
         oop = oop.split("\n");
+        //console.log("SPLIT", oop);
+        let mark_pos = 26;
+        let chars_parsed = 0;
+
         for (var idx in oop)
         {
+            //console.log("CHARS PARSED", chars_parsed);
+            let og = oop[idx];
             // Symbols: @, #, /, ?, :, ', !, $
             if (idx == 0 && oop[idx][0] && oop[idx][0] == "@")
                 oop[idx] = `<span class='name'>@</span><span class='yellow'>${oop[idx].slice(1)}</span>`;
@@ -929,6 +935,12 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
             else if (oop[idx][0] && oop[idx][0] == "$")
             {
                 oop[idx] = `<span class='center'>$</span><span class=''>${oop[idx].slice(1)}</span>`;
+            }
+            chars_parsed += og.length + 1;
+            if (mark_pos && (chars_parsed >= mark_pos))
+            {
+                //console.log(`[${chars_parsed}][${mark_pos}] Is this your line?`, oop[idx]);
+                mark_pos = -1;
             }
         }
         return oop.join("\n");

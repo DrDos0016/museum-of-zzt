@@ -51,7 +51,7 @@ var zfile_info = {};
     </noscript>
     <div id="envelope-fvpk-overview" class="envelope envelope-overview active">
         <div class="zf-preview-wrapper"><img id="fv-preview" class="image" src="{% static zfile.preview_url|default:'images/no_screenshot.png' %}"></div>
-        {% if zfile.description %}<div class="zf-desc-wrapper"><div><p>{{zfile.description|linebreaks}}</p></div></div>{% endif %}
+        {% if zfile.description %}<div class="zf-desc-wrapper">{{zfile.description|linebreaks}}</div>{% endif %}
     </div>
 </div>
 

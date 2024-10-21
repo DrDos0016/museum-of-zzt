@@ -140,6 +140,7 @@ export class File_Viewer
         e.preventDefault();
         console.log("STAT CLICK START", $(e.currentTarget));
         let coords = {"x": $(e.currentTarget).data("x"), "y": $(e.currentTarget).data("y")};
+        history.replaceState(undefined, undefined, `#${coords.x},${coords.y}`);
         console.log("COORDS?", coords);
         this.files[this.active_fvpk].write_element_info(coords.x, coords.y)
     }

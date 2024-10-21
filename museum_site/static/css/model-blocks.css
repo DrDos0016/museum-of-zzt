@@ -470,6 +470,11 @@
 }
 /* End Links for File blocks */
 
+@media (max-width:800px)
+{
+    .model-block.header .model-block-title h1 { font-size:16pt; }
+}
+
 /* OLD STUFF */
 .model-block.detailed.unpublished + .model-block-links
 {
