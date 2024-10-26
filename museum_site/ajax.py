@@ -365,7 +365,7 @@ def fetch_zip_content(request):
 
 def qad_get_stream_schedule(request):
     utc_timestamp = datetime.utcnow()
-    qs = Stream.objects.filter(when__gt=utc_timestamp)
+    qs = Stream.objects.filter(when__gt=utc_timestamp).order_by("when")
     output = {"items": []}
     for s in qs:
         output["items"].append({"title": s.title, "preview_image": s.preview_image, "when": s.when, "description": s.description})
