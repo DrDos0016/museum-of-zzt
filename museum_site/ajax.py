@@ -5,6 +5,8 @@ import zipfile
 import binascii
 import os
 
+from datetime import datetime
+
 from django.http import HttpResponse, JsonResponse
 
 from museum_site.models import *
@@ -14,7 +16,7 @@ from museum_site.core.misc import extract_file_key_from_url, record, zipinfo_dat
 from museum_site.core.palette import parse_pld, parse_pal
 from museum_site.templatetags.site_tags import model_block, render_markdown
 from museum_site.forms.collection_forms import Collection_Content_Form, Collection_Form
-from stream.models import Stream_Entry
+from stream.models import Stream_Entry, Stream
 
 
 def arrange_collection(request):
@@ -361,3 +363,10 @@ def fetch_zip_content(request):
     response.write(fh.read())
     return response
 
+def qad_get_stream_schedule(request):
+    utc_timestamp = datetime.utcnow()
+    qs = Stream.objects.filter(when__gt=utc_timestamp)
+    output = {"items": []}
+    for s in qs:
+        output["items"].append({"title": s.title, "preview_image": s.preview_image, "when": s.when, "description": s.description})
+    return JsonResponse(output)

@@ -41,6 +41,7 @@ urlpatterns = [
     path("ajax/fetch-zip-info/", museum_site.ajax.fetch_zip_info, name="ajax_fetch_zip_info"),
     path("ajax/get-search-suggestions/", museum_site.ajax.get_search_suggestions, name="ajax_get_search_suggestions"),
     path("ajax/get-stream-entries/", museum_site.ajax.get_stream_entries, name="ajax_get_stream_entries"),
+    path("ajax/get-stream-schedule/", museum_site.ajax.qad_get_stream_schedule, name="ajax_get_stream_schedule"),
     path("ajax/get-<str:field>-suggestions/", museum_site.ajax.get_suggestions_for_field, name="ajax_get_suggestions_for_field"),
     path("ajax/get_zip_file/", museum_site.ajax.get_zip_file, name="ajax_get_zip_file"),
     path("ajax/get-zip-file-by-key/", museum_site.ajax.get_zip_file_by_key, name=""),
