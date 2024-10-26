@@ -12,25 +12,9 @@ export class ZZT_Standard_Renderer
         this.character_set = new Character_Set();
         this.palette = new Palette();
         this.default_characters = [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63];
-        this.element_func = Array(256).fill(this.basic_draw);
 
-        this.element_func[0] = this.empty_draw;
-        this.element_func[1] = this.edge_draw;
-        this.element_func[3] = this.monitor_draw;
-        this.element_func[12] = this.duplicator_draw;
-        this.element_func[13] = this.bomb_draw;
-        this.element_func[15] = this.star_draw;
-        this.element_func[16] = this.conveyor_cw_draw;
-        this.element_func[17] = this.conveyor_ccw_draw;
-        this.element_func[28] = this.invisible_draw;
-        this.element_func[30] = this.transporter_draw;
-        this.element_func[31] = this.line_draw;
-        this.element_func[36] = this.object_draw;
-        this.element_func[39] = this.spinning_gun_draw;
-        this.element_func[40] = this.pusher_draw;
-        this.element_func.fill(this.text_draw, 47);
-
-        this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1};
+        this.element_func = this.initialize_renderer_draw_functions();
+        this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1, "oop": ""};
 
         this.ctx = null;
     }
@@ -46,6 +30,29 @@ export class ZZT_Standard_Renderer
         "game": {
             "tick": 0,
         },
+    }
+
+    initialize_renderer_draw_functions()
+    {
+        let element_func = Array(256).fill(this.basic_draw);
+
+        element_func[0] = this.empty_draw;
+        element_func[1] = this.edge_draw;
+        element_func[3] = this.monitor_draw;
+        element_func[12] = this.duplicator_draw;
+        element_func[13] = this.bomb_draw;
+        element_func[15] = this.star_draw;
+        element_func[16] = this.conveyor_cw_draw;
+        element_func[17] = this.conveyor_ccw_draw;
+        element_func[28] = this.invisible_draw;
+        element_func[30] = this.transporter_draw;
+        element_func[31] = this.line_draw;
+        element_func[36] = this.object_draw;
+        element_func[39] = this.spinning_gun_draw;
+        element_func[40] = this.pusher_draw;
+        element_func.fill(this.text_draw, 47);
+
+        return element_func;
     }
 
     get_preferences()
@@ -102,15 +109,12 @@ export class ZZT_Standard_Renderer
         console.log("Charset loaded, back in render board");
 
         console.log("Rendering a board (this.fvpk)", this.fvpk);
-        //const canvas = document.createElement("canvas");
         const canvas = document.querySelector(`#envelope-${this.fvpk} .fv-canvas`);
         let new_width = (this.board_width + (2 * this.config.appearance.show_outer_border)) * this.character_set.tile_width;
         let new_height = (this.board_height + (2 * this.config.appearance.show_outer_border)) * this.character_set.tile_height;
         canvas.setAttribute("width", new_width + "px");
         canvas.setAttribute("height", new_height + "px");
         canvas.setAttribute("class", `fv-canvas fv-canvas-zoom-${zoom}`);
-
-        //canvas.insertAdjacentHTML("afterend", "Is this real?");
 
         this.ctx = canvas.getContext("2d");
 
@@ -119,11 +123,14 @@ export class ZZT_Standard_Renderer
             for (let x = 1; x < 61; x++)
             {
                 let [fg, bg, char] = this.element_func[this.rendered_board.elements[x][y].id].apply(this, [x, y]);
+                [fg, bg, char] = this.post_process(x, y, fg, bg, char, this.rendered_board.elements[x][y].id);
                 this.stamp(x, y, fg, bg, char);
             }
         }
         return canvas;
     }
+
+    post_process(x, y, fg, bg, char, id) { return [fg, bg, char] };
 
     stamp(x, y, fg, bg, char)
     {
@@ -479,5 +486,62 @@ export class ZZT_Standard_Renderer
         let element = this.rendered_board.elements[x][y];
         let char = (this.config.appearance.edge) ? this.default_characters[element.id] : 69;
         return [element.color % 16, parseInt(element.color / 16), char];
+    }
+}
+
+
+export class ZZT_Object_Highlight_Renderer extends ZZT_Standard_Renderer
+{
+    constructor(fvpk=null)
+    {
+        super(fvpk);
+        this.name = "ZZT Object Highlight Renderer";
+    }
+
+    post_process(x, y, fg, bg, char, id)
+    {
+        if (id == 36)
+            return [14, 4, 33];
+        else
+        {
+            return [8, 0, char];
+        }
+    }
+}
+
+
+export class ZZT_Code_Highlight_Renderer extends ZZT_Standard_Renderer
+{
+    constructor(fvpk=null)
+    {
+        super(fvpk);
+        this.name = "ZZT Code Highlight Renderer";
+    }
+
+    post_process(x, y, fg, bg, char, id)
+    {
+        let stat = this.get_stats_for_element(x, y)[0];
+        if (stat.oop)
+            return [14, 4, 33];
+        else
+            return [8, 0, char];
+    }
+}
+
+
+export class ZZT_Fake_Wall_Highlight_Renderer extends ZZT_Standard_Renderer
+{
+    constructor(fvpk=null)
+    {
+        super(fvpk);
+        this.name = "ZZT Fake Wall Highlight Renderer";
+    }
+
+    post_process(x, y, fg, bg, char, id)
+    {
+        if (id == 27)
+            return [14, 4, 178];
+        else
+            return [8, 0, char];
     }
 }

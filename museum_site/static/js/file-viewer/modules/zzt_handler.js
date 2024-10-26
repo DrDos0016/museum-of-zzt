@@ -1,6 +1,6 @@
 import { padded, escape_html} from "./core.js"; // PString needed for watermark reading directly
 import { Handler } from "./handler.js";
-import { ZZT_Standard_Renderer } from "./renderer.js";
+import { ZZT_Standard_Renderer, ZZT_Object_Highlight_Renderer, ZZT_Code_Highlight_Renderer, ZZT_Fake_Wall_Highlight_Renderer } from "./renderer.js";
 import { ZZT_ELEMENTS } from "./elements.js";
 
 while (ZZT_ELEMENTS.length < 256)
@@ -68,6 +68,9 @@ export class ZZT_Handler extends Handler
         "oop": {
             "style": "modern",
         },
+        "rendering_method": {
+            "name": "ZZT_Standard_Renderer",
+        },
     }
 
     static stat_list_label(stat, board)
@@ -111,8 +114,13 @@ export class ZZT_Handler extends Handler
     async write_html() {
         let BLANK_TARGET = {"target": null, "html": ""};
         console.log("ZZT HTML Generation");
-        if (! this.renderer)
-            this.renderer = new this.default_renderer(this.fvpk);
+        console.log(this.renderer);
+        if ((! this.renderer) || (this.renderer.name != this.config.rendering_method.name.replaceAll("_", " ")))
+        {
+            console.log("Changing Renderer!");
+            console.log("Current name:", this.renderer.name, " New:", this.config.rendering_method.name);
+            this.renderer = this.get_renderer_object_from_config();
+        }
 
         await this.display_board_canvas();
 
@@ -1177,6 +1185,17 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
             <p class="field-help">Display ZZT-OOP as modern syntax highlighted code or classic ZZT v3.2 style.</p>
         </div>`;
 
+        output += `<div class="field-wrapper">
+            <label for="">Rendering Method:</label>
+            <div class="field-value"><select data-config="${config_key}.rendering_method.name"  data-type="str">
+                <option value="ZZT Standard Renderer"${(this.config.rendering_method.name == "ZZT Standard Renderer") ? " selected" : ""}>ZZT - Standard*</option>
+                <option value="ZZT Object Highlight Renderer"${(this.config.rendering_method.name == "ZZT Object Highlight Renderer") ? " selected" : ""}>ZZT - Object Highlight</option>
+                <option value="ZZT Code Highlight Renderer"${(this.config.rendering_method.name == "ZZT Code Highlight Renderer") ? " selected" : ""}>ZZT - Code Highlight</option>
+                <option value="ZZT Fake Wall Highlight Renderer"${(this.config.rendering_method.name == "ZZT Fake Wall Highlight Renderer") ? " selected" : ""}>ZZT - Fake Wall Highlight</option>
+            </select></div>
+            <p class="field-help">Choose how to translate board data into a rendered image</p>
+        </div>`;
+
         output += this.renderer.get_preferences();
 
         return output;
@@ -1192,5 +1211,35 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
         if (zfile_info && zfile_info.size > 10485760) // 10MB TODO
             return "<p><i>Play This Board</i> functionality is not available for this zipfile.</p>";
         return `<div style='margin-top:4px'><input type="button" id="play-board" value="Play This Board"> (Experimental. May not work as expected.)</div>`;
+    }
+
+    get_renderer_object_from_config()
+    {
+        console.log("Switching to renderer:", this.config.rendering_method.name)
+        let temp_config = this.renderer.config;
+        let renderer = null;
+
+        // Create the new renderer
+        switch (this.config.rendering_method.name) {
+            case "ZZT Standard Renderer":
+                renderer = new ZZT_Standard_Renderer(this.fvpk);
+                break;
+            case "ZZT Object Highlight Renderer":
+                renderer = new ZZT_Object_Highlight_Renderer(this.fvpk);
+                break;
+            case "ZZT Code Highlight Renderer":
+                renderer = new ZZT_Code_Highlight_Renderer(this.fvpk);
+                break;
+            case "ZZT Fake Wall Highlight Renderer":
+                renderer = new ZZT_Fake_Wall_Highlight_Renderer(this.fvpk);
+                break;
+            default:
+                console.log("Switching to DEFAULT renderer");
+                renderer = new this.default_renderer(this.fvpk);
+        };
+
+        // Copy the current renderer's config to the new one
+        renderer.config = temp_config;
+        return renderer;
     }
 }
