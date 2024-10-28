@@ -44,9 +44,13 @@ export class Overview_Handler extends Handler
     generate_overview()
     {
         let desc = "";
+        let TEMP_DISCLAIMER = "";
+        if ((zfile_info.engine.indexOf("SZZT") != -1) || (zfile_info.engine.indexOf("WEAVE") != -1))
+            TEMP_DISCLAIMER = `<div style='flex:1 0 100%;font-size:larger;' class="ega-red-bg"><p class="c">This file contains Weave ZZT or Super ZZT content which is currently unsupported!</p><p class="c"><a href="?new_to_old=1">View this file in the original file viewer</a></p></div>`;
         if (this.description)
             desc = `<div class="zf-desc-wrapper">${this.description}</div>`;
         let output = `
+            ${TEMP_DISCLAIMER}
             <div class="zf-preview-wrapper"><img src="${this.preview_image_url}" class="image" id="fv-preview"></div>
             ${desc}
         `;

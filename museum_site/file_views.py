@@ -46,9 +46,7 @@ def file_download(request, key):
 @rusty_key_check
 def file_viewer(request, key, local=False):
     """ Returns page exploring a file's zip contents """
-
-
-    if request.session.get("TEMP_FILE_VIEWER_BETA"):
+    if request.session.get("TEMP_FILE_VIEWER_BETA") and not request.GET.get("force_old_viewer"):
         if local:
             return redirect("zfile_view_local_beta", key=key)
         else:
@@ -152,6 +150,10 @@ def file_viewer(request, key, local=False):
 def file_viewer_new(request, key, local=False):
     """ Returns page exploring a file's zip contents """
     context = {"local": local}
+
+    # TEMP Shortcut to old file viewer for SZZT/Weave files
+    if request.GET.get("new_to_old"):
+        return redirect_with_querystring("file", "force_old_viewer=1", key=key)
 
     if not local:
         context["zfile"] = File.objects.get(key=key)

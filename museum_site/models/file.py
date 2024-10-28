@@ -681,16 +681,16 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
                 return self.upload.date.strftime(DATE_HR)
         return "- Unknown Date -"
 
-    def engine(self):
-        """ Engine _planned_ for file viewer to know determine rules for parsing """
+    def get_engines(self):
+        """ Engine for new file viewer to know determine rules for parsing """
+        engines = []
         if self.is_detail(DETAIL_WEAVE):
-            return "WEAVE"
+            engines.append("WEAVE")
         elif self.is_detail(DETAIL_ZZT):
-            return "ZZT"
+            engines.append("ZZT")
         elif self.is_detail(DETAIL_SZZT):
-            return "SZZT"
-        else:
-            return "UNKNOWN"
+            engines.append("SZZT")
+        return engines
 
     def get_all_attributes(self, include_staff_fields=False):
         output = {
