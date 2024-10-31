@@ -23,6 +23,7 @@ export class ZZT_Standard_Renderer
         "appearance": {
             "show_high_intensity_backgrounds": false,
             "invisible_wall": 0,
+            "empty": 0,
             "monitor": 0,
             "edge": 0,
             "show_outer_border": false, // TODO: Is this even a feature worth supporting
@@ -77,6 +78,16 @@ export class ZZT_Standard_Renderer
                 <option value=2${(this.config.appearance.invisible_wall == 2) ? " selected" : ""}>Revealed - Gameplay Style</option>
             </select></div>
             <p class="field-help">Render bright background colors.</p>
+        </div>`;
+
+        output += `<div class="field-wrapper">
+            <label for="">Empty Appearance:</label>
+            <div class="field-value"><select data-config="zzt_handler.${config_key}.appearance.empty" data-type="int">
+                <option value=0${(this.config.appearance.empty == 0) ? " selected" : ""}>&nbsp; - Invisible*</option>
+                <option value=1${(this.config.appearance.empty == 1) ? " selected" : ""}>• - Visible</option>
+                <option value=2${(this.config.appearance.empty == 2) ? " selected" : ""}>A - Render As Text</option>
+            </select></div>
+            <p class="field-help">Render empties invisibly, visibly, or as text to reveal erased text in some worlds.</p>
         </div>`;
 
         output += `<div class="field-wrapper">
@@ -257,7 +268,15 @@ export class ZZT_Standard_Renderer
     empty_draw(x, y)
     {
         let element = this.rendered_board.elements[x][y];
-        return [0, 0, this.default_characters[element.id]];
+        switch (this.config.appearance.empty)
+        {
+            case 1: // Visible
+                return [element.color % 16, parseInt(element.color / 16), 7];
+            case 2: // Text
+                return [7, 0, element.color];
+            default: // Invisible
+                return [0, 0, this.default_characters[element.id]];
+        }
     }
 
     text_draw(x, y)
