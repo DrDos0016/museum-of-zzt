@@ -10,7 +10,13 @@
 <script>
 var ctx = null;
 
+
 $(document).ready(function (){
+    $("input[name=btn-clear-image]").click(function (){
+        ctx = document.getElementById("thumb-canvas").getContext("2d");
+        ctx.clearRect(0, 0, 987, 720);
+    });
+
     $("#update-thumbnail").click(function (){
         ctx = document.getElementById("thumb-canvas").getContext("2d");
         let img_src = $("#uploaded-image-preview").attr("src");
@@ -47,7 +53,26 @@ $(document).ready(function (){
             sub_shadow_str = `2px 2px 0px var(--ega-gray)`;
         }
 
-        ctx.drawImage(document.getElementById("uploaded-image-preview"), 0, 0, 480, 350, 0, 0, 987, 720);
+        let blob = null;
+        console.log("CROP", crop);
+        ctx.clearRect(0, 0, 987, 720);
+        $("#background").css("background-color", "#000");
+        if (crop == "ZZT")
+            ctx.drawImage(document.getElementById("uploaded-image-preview"), 0, 0, 480, 350, 0, 0, 987, 720);
+        else if (crop == "SZZT") //432x400
+        {
+            ctx.drawImage(document.getElementById("uploaded-image-preview"), 208, 0, 432, 400, 105, 0, 777, 720);
+            $("#background").css("background-color", "#00A");
+        }
+        else
+        {
+            let src_w = $("uploaded-image-preview").attr("width");
+            let src_h = $("uploaded-image-preview").attr("height");
+            let img = $("#uploaded-image-preview")[0];
+
+            $("#background").css("background-image", `url(${img.src})`);
+        }
+
 
         $(".stream-title").html(title);
         $(".stream-title").css({"font-size": font_size, "text-shadow": shadow_str, "color": fg});
@@ -61,6 +86,8 @@ $(document).ready(function (){
 
 {% block style %}
 <style>
+#thumb-canvas {  }
+
 .workspace
 {
     width:1280px;
@@ -83,6 +110,10 @@ $(document).ready(function (){
 #background
 {
     margin:auto;
+    max-height:720px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
 }
 
 #foreground
@@ -162,7 +193,9 @@ $(document).ready(function (){
 <form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
 {% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
 {% include "museum_site/blocks/generic-form.html" %}
-<input type="submit" value="{{form.submit_value}}"> <input type="button" value="Update" id="update-thumbnail">
+<!--<input type="submit" value="{{form.submit_value}}">-->
+<input type="button" value="Update" id="update-thumbnail">
+<input type="button" value="Clear Image" name="btn-clear-image">
 </form>
 
 <hr>
