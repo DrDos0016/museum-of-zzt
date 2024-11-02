@@ -23,6 +23,7 @@ $(document).ready(function (){
         let title = $("#id_title").val();
         let subtitle = $("#id_subtitle").val();
         let color = $("select[name=title_color]").val();
+        let wide = $("select[name=wide]").val();
         let fg = "var(--ega-" + color + ")";
         let bg = "var(--ega-dark" + color + ")";
 
@@ -57,6 +58,7 @@ $(document).ready(function (){
         console.log("CROP", crop);
         ctx.clearRect(0, 0, 987, 720);
         $("#background").css("background-color", "#000");
+        $("#background").css("background-image", "none");
         if (crop == "ZZT")
             ctx.drawImage(document.getElementById("uploaded-image-preview"), 0, 0, 480, 350, 0, 0, 987, 720);
         else if (crop == "SZZT") //432x400
@@ -72,6 +74,11 @@ $(document).ready(function (){
 
             $("#background").css("background-image", `url(${img.src})`);
         }
+
+        if (wide == "wide")
+            $("#background").css("margin", "0px");
+        else
+            $("#background").css("margin", "auto");
 
 
         $(".stream-title").html(title);

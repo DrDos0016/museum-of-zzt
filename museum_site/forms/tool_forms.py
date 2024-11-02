@@ -548,6 +548,7 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
     )
 
     crop = forms.ChoiceField(label="Background Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
+    wide = forms.ChoiceField(choices=(("wide", "16:9"), ("standard", "4:3")), initial="standard")
 
 
 class Tool_ZFile_Select_Form(forms.Form):
