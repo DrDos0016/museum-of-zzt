@@ -243,13 +243,13 @@ function iso8601_to_user_tz(selector)
     </tr>
     {% endfor %}
     <tr>
-        <form action="{% url 'action_set_theme' %}">
+        <form action="{% url 'action_set_setting' %}">
         <th>Theme</th>
         <td>
             <input type="hidden" name="redirect" value="1">
-            <select name="theme">
-                <option value="light">Light Theme</option>
-                <option value="dark"{% if request.session.theme == 'dark' %} selected{% endif %}>Dark Theme</option>
+            <select name="setting">
+                <option value="theme|light">Light Theme</option>
+                <option value="theme|dark"{% if request.session.theme == 'dark' %} selected{% endif %}>Dark Theme</option>
             </select>
         </td>
         <td class="c">

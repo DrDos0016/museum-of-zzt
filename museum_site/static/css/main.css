@@ -20,6 +20,7 @@
 .grid-root.expanded
 {
     grid-template-areas:
+    "low-res"
     "content"
     "footer";
     grid-template-columns:auto;
@@ -29,6 +30,7 @@
 .grid-root[data-active-tool=true].expanded
 {
     grid-template-areas:
+    "low-res"
     "tool"
     "content"
     "footer";
@@ -39,9 +41,53 @@
     width:98vw;
     margin-left: 1vw;
     margin-right: 1vw;
+    margin-top: 48px;
 }
 
-#low-res-shortcuts { display:none; }
+#low-res-shortcuts {
+    display:none;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    font-size:21px;
+    line-height:28px;
+    width:100vw;
+    position:fixed;
+    top:0px;
+    text-align:center;
+    column-gap:1px;
+    background-color:var(--ega-darkblue);
+    z-index:999;
+    height:48px;
+}
+
+#low-res-shortcuts img { max-height:48px; }
+#low-res-shortcuts input[type=button]
+{
+    border:0px;
+    font-size:20px;
+    background-color:var(--ega-darkblue);
+    color:var(--ega-yellow);
+    flex:1;
+    height:auto;
+}
+
+#low-res-shortcuts input[type=button]:hover
+{
+    text-decoration:none;
+}
+
+#low-res-shortcuts a
+{
+    width:64px;
+    height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+
+body.expanded #low-res-shortcuts { display:flex; }
+
 
 #active-tool {
     position:fixed;
@@ -64,6 +110,22 @@
 #sidebar-left { grid-area: left; justify-self:end; margin-left:6px; }
 #sidebar-right { grid-area: right; justify-self:start; margin-right:6px;  }
 #content { grid-area: content; margin-bottom: 0px; justify-self:center; width:100%; padding-top:0px; }
+
+body.expanded .sidebar { display:none; }
+body.expanded .sidebar {
+        position:fixed;
+        top:48px;
+        width:75vw;
+        max-width: 360px;
+        margin-left:0px;
+        margin-right:0px;
+        height: calc(100vh - 64px);
+        overflow:scroll;
+        background-color:var(--block-margin-lowlight);
+        border-bottom:2px solid var(--border-color);
+    }
+body.expanded #sidebar-left { left:-100%; }
+body.expanded #sidebar-right { right:-100%; }
 
 #content h1 { margin-bottom:0px; }
 

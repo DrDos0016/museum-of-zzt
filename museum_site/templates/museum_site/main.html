@@ -32,7 +32,7 @@
 {% block staff_style %}{% endblock %}
 </head>
 
-<body class="grid-root{% if april %} april {% endif %}{% if request.session.theme %} theme-{{request.session.theme}}{% endif %}" {% if request.session.active_tool %}data-active-tool="true"{% endif %} id="top">
+<body class="grid-root{% if april %} april{% endif %}{% if request.session.theme %} theme-{{request.session.theme}}{% endif %}{% if request.session.sidebars == 'hide' %} expanded{% endif %}" {% if request.session.active_tool %}data-active-tool="true"{% endif %} id="top">
 
 <nav id="low-res-shortcuts" class="cp437">
     <input type="button" id="left-hamburger" value="Archives" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-left">

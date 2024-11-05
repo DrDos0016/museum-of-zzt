@@ -32,7 +32,7 @@ urlpatterns = [
     path("", museum_site.views.index, name="index"),
 
     # /action/
-    path("action/set-theme/", museum_site.views.set_theme, name="action_set_theme"),
+    path("action/set-setting/", museum_site.views.set_setting, name="action_set_setting"),
     path("action/close-tool/", museum_site.views.close_tool, name="action_close_tool"),
 
     # /ajax/

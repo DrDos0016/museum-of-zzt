@@ -12,7 +12,7 @@ from django.db.models.functions import ExtractYear
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify
 from django.views.generic import TemplateView
@@ -254,12 +254,20 @@ def random(request):
         return redirect("index")
 
 
-def set_theme(request):
-    request.session["theme"] = request.GET.get("theme", "light")
+def set_setting(request):
+    key, value = request.GET.get("setting", "NONE|NONE").split("|")
+
+    if key == "sidebars":
+        request.session["sidebars"] = "hide" if value == "hide" else "show"
+    elif key == "theme":
+        request.session["theme"] = "dark" if value == "dark" else "light"
+
+    output = {"key": key, "value": request.session[key]}
+
     if request.GET.get("redirect"):
         return redirect("my_profile")
     else:
-        return HttpResponse(request.GET.get("theme", "light"))
+        return JsonResponse(output)
 
 
 def site_credits(request):
@@ -359,6 +367,7 @@ def site_credits(request):
     data["biggest_supporters"] = biggest_supporters
 
     return render(request, "museum_site/site-credits.html", data)
+
 
 def strawpoll(request):
     redir = cache.get("STRAWPOLL_STREAM_VOTE")

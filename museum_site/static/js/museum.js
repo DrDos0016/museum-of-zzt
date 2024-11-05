@@ -116,27 +116,14 @@ $(document).ready(function (){
 
     // Light/Dark Theme Toggle
     $("#toggle-light-dark-theme").click(function (){
-        if ($("body").hasClass("theme-dark"))
-            var theme = "light";
-        else
-        var theme = "dark";
-
-        $.ajax({
-            url:"/action/set-theme/",
-            data:{
-                "theme":theme,
-            }
-        }).done(function (data){
-            $("body").toggleClass("theme-dark");
-        });
+        let theme = $("body").hasClass("theme-dark") ? "light" : "dark";
+        ajax_set_setting("theme", theme, update_theme);
     });
 
     // Expand/Contract Middle Column
     $("#expand-contract").click(function (){
-        var arrows = $(this).html();
-        $(".sidebar, #top-links, #logo-area").toggle();
-        $("body").toggleClass("expanded");
-        $(this).html(arrows[2] + arrows[1] + arrows[0]);
+        let sidebars = $("body").hasClass("expanded") ? "show" : "hide";
+        ajax_set_setting("sidebars", sidebars, expand_contract_middle_column);
     });
 
     // File association selection
@@ -392,4 +379,29 @@ function init_expandable_model_block_fields()
         }
     });
     $(".field-expand-button").click(expand_field);
+}
+
+function expand_contract_middle_column(data=null)
+{
+    let arrows = $("#expand-contract").html();
+    //$(".sidebar, #top-links, #logo-area").toggle();
+    $("body").toggleClass("expanded");
+    $("#expand-contract").html(arrows[2] + arrows[1] + arrows[0]);
+}
+
+function update_theme(data=null)
+{
+    $("body").toggleClass("theme-dark");
+}
+
+function ajax_set_setting(key, value, callback)
+{
+    $.ajax({
+        url:"/action/set-setting/",
+        data:{
+            "setting": key + "|" + value,
+        }
+    }).done(function (data){
+        callback(data);
+    });
 }
