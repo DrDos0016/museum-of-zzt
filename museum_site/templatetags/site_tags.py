@@ -490,6 +490,7 @@ def nav_action_list(key, condition=None):
         # TODO: This is hardcoded and needs updating with each tag added to the database
         actions = [
             {"selected": True if condition == "" else False, "url": "?", "text": "All Feedback"},
+            {"selected": True if condition == "changelogs" else False, "url": "?filter=changelogs", "text": "Changelogs"},
             {"selected": True if condition == "bugs" else False, "url": "?filter=bugs", "text": "Bug Reports"},
             {"selected": True if condition == "cws" else False, "url": "?filter=cws", "text": "Content Warnings"},
             {"selected": True if condition == "hints" else False, "url": "?filter=hints", "text": "Hints and Solutions"},
