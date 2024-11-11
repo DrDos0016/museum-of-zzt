@@ -69,6 +69,8 @@ function initialize()
         if ($("input[name=q]").is(":focus") || $("input[name=code-search]").is(":focus")) // Disable when using search UI
             return false;
 
+        let active_info = {"handler": fv.files[fv.active_fvpk].name, "filename": fv.files[fv.active_fvpk].filename, "ext": fv.files[fv.active_fvpk].ext};
+
         if (! e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next Board
         {
             // Need to iterate over these until a non-hidden one is found.
@@ -99,6 +101,9 @@ function initialize()
                 match.change();
             }
         }
+        else if (active_info.handler == "Text Handler" && e.keyCode == KEY.E) {shortcut_toggle_encoding();}
+
+
         else if (e.keyCode == KEY.NP_UP) { $("a.board-link[data-direction=north]").click(); }
         else if (e.keyCode == KEY.NP_DOWN) { $("a.board-link[data-direction=south]").click(); }
         else if (e.keyCode == KEY.NP_RIGHT) { $("a.board-link[data-direction=east]").click(); }
@@ -112,7 +117,10 @@ function initialize()
         else if (e.keyCode == KEY.Z) {shortcut_toggle_zoom();}
 
         // DEBUG TODO
-        else if (e.keyCode == KEY.C) { console.log(fv.configs); }
+        else if (e.keyCode == KEY.C) {
+            //console.log(fv.configs);
+            console.log(fv.files[fv.active_fvpk]);
+        }
     });
 
     // History
@@ -420,6 +428,14 @@ function shortcut_toggle_zoom()
     let updated = (current == "1") ? "2" : "1";
     $("select[data-config='zzt_handler.display.zoom']").val(updated);
     $("select[data-config='zzt_handler.display.zoom']").change();
+}
+
+function shortcut_toggle_encoding()
+{
+    let current = $("select[data-config='text_handler.renderer.encoding']").val();
+    let updated = (current == "ascii-mapping") ? "utf-8" : "ascii-mapping";
+    $("select[data-config='text_handler.renderer.encoding']").val(updated);
+    $("select[data-config='text_handler.renderer.encoding']").change();
 }
 
 let fv = new File_Viewer();

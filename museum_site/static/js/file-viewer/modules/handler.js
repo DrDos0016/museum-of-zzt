@@ -21,6 +21,7 @@ export class Handler
 
         this.tabs = [];
         this.default_tab = null;
+        this.config_fields = [];
     }
 
     static initial_config = {};
@@ -154,4 +155,53 @@ export class Handler
     {
         return this.name.replaceAll(" ", "_").toLowerCase();
     }
+
+    get_config_field(field)
+    {
+        let widget = "";
+        let full_setting = this.get_config_key_for_handler() + "." + field.config_setting;
+        let current_value = this.resolve_config_path(field.config_setting);
+
+        if (field.widget == "select")
+        {
+            let options_html = "";
+            for (let idx=0; idx < field.options_data.length; idx++)
+            {
+                let option = field.options_data[idx];
+                options_html += `<option value="${option.value}"${(current_value == option.value) ? " selected" : ""}>${option.text}${option.default ? "*" : ""}</option>\n`;
+            }
+
+            widget = `<select id="${full_setting}" data-config="${full_setting}" data-type="${field.data_type}" data-reparse="${field.reparse}">
+                ${options_html}
+            </select>\n`;
+        }
+
+        let field_html = `<div class="field-wrapper">
+            <label>${field.label_text}:</label>
+            <div class="field-value">
+                ${widget}
+            </div>
+            <p class="field-help">${field.help_text}</p>
+        </div>\n`;
+
+        return field_html;
+    }
+
+    resolve_config_path(setting)
+    {
+        let components = setting.split(".");
+        // TODO: This seems like it's a dumb way to do this. -- Note this isn't identical to the other dumb time I do this in in file_viewer.js
+        switch (components.length) {
+            case 4:
+                return this.config[components[0]][components[1]][components[2]][components[3]];
+            case 3:
+                return this.config[components[0]][components[1]][components[2]];
+            case 2:
+                return this.config[components[0]][components[1]];
+            case 1:
+                return this.config[components[0]];
+        }
+        console.log("ERROR: Invalid config path");
+    }
+
 }

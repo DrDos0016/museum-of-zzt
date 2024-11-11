@@ -1,5 +1,5 @@
-import { Character_Set } from "./character_set.js";
-import { Palette } from "./palette.js";
+import { Character_Set, CHAR } from "./character_set.js";
+import { Palette, COLOR } from "./palette.js";
 
 export class ZZT_Standard_Renderer
 {
@@ -11,7 +11,7 @@ export class ZZT_Standard_Renderer
         this.board_height = 25;
         this.character_set = new Character_Set();
         this.palette = new Palette();
-        this.default_characters = [32, 32, 63, 32, 2, 132, 157, 4, 12, 10, 232, 240, 250, 11, 127, 47, 179, 92, 248, 176, 176, 219, 178, 177, 254, 18, 29, 178, 32, 206, 62, 249, 42, 205, 153, 5, 2, 42, 94, 24, 16, 234, 227, 186, 233, 79, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63];
+        this.default_characters = [CHAR.SPACE, CHAR.SPACE, CHAR.QUESTION_MARK, CHAR.SPACE, CHAR.SMILEY, CHAR.AMMO, CHAR.TORCH, CHAR.GEM, CHAR.KEY, CHAR.DOOR, CHAR.SCROLL, CHAR.PASSAGE, CHAR.DUPLICATOR, CHAR.BOMB, CHAR.ENERGIZER, CHAR.STAR, CHAR.CLOCKWISE, CHAR.COUNTER, CHAR.BULLET, CHAR.WATER, CHAR.FOREST, CHAR.SOLID, CHAR.NORMAL, CHAR.BREAKABLE, CHAR.BOULDER, CHAR.SLIDER_NS, CHAR.SLIDER_EW, CHAR.FAKE, CHAR.SPACE, CHAR.BLINKWALL, CHAR.TRANSPORTER, CHAR.LINE, CHAR.RICOCHET, CHAR.HORIZ_RAY, CHAR.BEAR, CHAR.RUFFIAN, CHAR.SMILEY, CHAR.SLIME, CHAR.SHARK, CHAR.SPINNING_GUN, CHAR.PUSHER, CHAR.LION, CHAR.TIGER, CHAR.VERT_RAY, CHAR.HEAD, CHAR.SEGMENT, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK];
 
         this.element_func = this.initialize_renderer_draw_functions();
         this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1, "oop": ""};
@@ -348,6 +348,7 @@ export class ZZT_Standard_Renderer
 
     star_draw(x, y)
     {
+        // TODO STAR CHARACTERS HAVE NOTHING TO DO WITH STATS
         let element = this.rendered_board.elements[x][y];
         let stat = this.get_stats_for_element(x, y)[0];
         let char;

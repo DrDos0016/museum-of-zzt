@@ -61,6 +61,9 @@ export class File_Viewer
     render_file_list_item(fvpk)
     {
         // Writes a list item to the page's file list section
+        if (this.files[fvpk].filename.indexOf("__MACOSX/") != -1)
+            return false;
+
         $("#file-list").append(
             `<li class="fv-content" data-fvpk="${fvpk}" data-filename="${this.files[fvpk].filename}">${this.files[fvpk].filename}</li>`
         );
@@ -238,6 +241,8 @@ export class File_Viewer
         let config_string_raw = $(e.target).data("config");
         let type = $(e.target).data("type")
         let value = $(e.target).val();
+        let reparse = $(e.target).data("reparse");
+        console.log("REPARSE IS", reparse);
 
         if (type == "int")
             value = parseInt(value);
@@ -262,6 +267,10 @@ export class File_Viewer
                 this.configs[components[0]] = value;
                 break;
         }
+
+        // Mark if reparsing is needed
+        if (reparse)
+            this.files[this.active_fvpk].parse_bytes();
 
         // And now... idk rerender?
         console.log("Config change applied!");

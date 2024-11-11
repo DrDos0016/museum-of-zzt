@@ -198,6 +198,7 @@ td
 .cp437 { font-family: "cp437"; }
 pre.cp437 { line-height:14px;}
 .mono { font-family: "monospace";}
+.col-80 { max-width:80ch; }
 /* End Fonts */
 
 /* Site specific pseudo-elements */

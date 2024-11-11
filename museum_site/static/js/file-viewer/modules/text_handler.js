@@ -14,6 +14,21 @@ export class Text_Handler extends Handler
         ];
         this.default_tab = "preferences";
 
+        this.config_fields = [
+            {"label_text": "Encoding", "widget": "select", "help_text": "Encoding used for text. Older files are more likely to use ASCII.", "config_setting": "renderer.encoding", "data_type": "str", "options_data": [
+                {"value": "ascii-mapping", "text": "ASCII (Mapping)", "default": true},
+                {"value": "utf-8", "text": "UTF-8", "default": false},
+            ]},
+            {"label_text": "Number of Columns", "widget": "select", "help_text": "Force line breaks after &lt;X&gt; characters", "config_setting": "renderer.columns", "data_type": "int", "reparse": true, "options_data": [
+                {"value": 0, "text": "Auto", "default": true},
+                {"value": 80, "text": "80 Column", "default": false},
+            ]},
+            /*{"label_text": "Markdown Display", "widget": "select", "help_text": "Display Markdown as HTML or plaintext. No effect on non-Markdown files.", "config_setting": "markdown.display", "data_type": "int", "options_data": [
+                {"value": 1, "text": "Markdown as HTML", "default": true},
+                {"value": 0, "text": "Markdown as text", "default": false},
+            ]},*/
+        ];
+
         //this.encoding = "utf-8"; // utf-8, ascii
         this.last_encoding = "utf-8"; // Used to check if a reparse is needed after changing encoding preferences. Starts at default initial config encoding.
         this.available_encodings = ["utf-8", "ascii", "ASCII (Mapping)"];
@@ -24,7 +39,17 @@ export class Text_Handler extends Handler
     static initial_config = {
         "renderer": {
             "encoding": "utf-8",
+            "columns": 0,
         },
+        "markdown": {
+            "display": 0,
+        },
+    }
+
+    has_markdown_extension() {
+        if (this.ext == ".MD" || this.ext == "MARKDOWN")
+            return true;
+        return false;
     }
 
     parse_bytes() {
@@ -53,7 +78,10 @@ export class Text_Handler extends Handler
         if (this.partially_supported_extensions.indexOf(this.ext) != -1)
             output += `<div class="fv-disclaimer">Files with the extension <span class="keyword">${this.ext}</span> may not be plaintext. You may encounter data not meant to be displayed when viewing this file.</div>`;
 
-        output += `<pre class="cp437">${escape_html(this.encoded_text)}</pre>`;
+        if (this.config.markdown.display && this.has_markdown_extension())
+            output += `It's time for markdown.`;
+        else
+            output += `<pre class="cp437 col-${this.config.renderer.columns}">${escape_html(this.encoded_text)}</pre>`;
         let targets = [
             {"target": this.envelope_id, "html": output},
             {"target": "#preferences", "html": this.get_preferences(),},
@@ -65,17 +93,13 @@ export class Text_Handler extends Handler
 
     get_preferences()
     {
-        let output = "";
+        let output = "<h3>General</h3>";
         let config_key = this.get_config_key_for_handler();
 
-        output += `<div class="field-wrapper">
-            <label for="">Encoding:</label>
-            <div class="field-value"><select data-config="${config_key}.renderer.encoding" data-type="str">
-                <option value="ascii-mapping"${(this.config.renderer.encoding == 'ascii-mapping' ) ? " selected" : ""}>ASCII (Mapping)</option>
-                <option value="utf-8"${(this.config.renderer.encoding == 'utf-8' ) ? " selected" : ""}>UTF-8</option>
-            </select></div>
-            <p class="field-help">Encoding used for text. Older files are more likely to use ASCII.</p>
-        </div>`;
+        for (let idx=0; idx < this.config_fields.length; idx++)
+        {
+            output += this.get_config_field(this.config_fields[idx]);
+        }
 
         return output;
     }

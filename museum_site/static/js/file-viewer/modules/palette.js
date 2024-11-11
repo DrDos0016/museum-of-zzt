@@ -11,3 +11,9 @@ export class Palette
         ];
     }
 }
+
+
+export const COLOR = { // IMO these are the ZZT canon color names. Don't let IBM tell you otherwise.
+        "BLACK": 0, "DARK_BLUE": 1, "DARK_GREEN": 2, "DARK_CYAN": 3, "DARK_RED": 4, "DARK_PURPLE": 5, "DARK_YELLOW": 6, "GRAY": 7,
+        "DARK_GRAY": 8, "BLUE": 9, "GREEN": 10, "CYAN": 11, "RED": 12, "PURPLE": 13, "YELLOW": 14, "WHITE": 15
+    };

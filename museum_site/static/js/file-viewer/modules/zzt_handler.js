@@ -49,6 +49,31 @@ export class ZZT_Handler extends Handler
             {"name": "help", "text":"?"},
         ];
         this.default_tab = "board-info";
+
+        this.config_fields = [
+            {"label_text": "Leftover Data", "widget": "select", "help_text": "Show full contents of certain strings regardless of specified length.", "config_setting": "pstrings.show_leftover_data", "data_type": "int", "options_data": [
+                {"value": 0, "text": "Hide", "default": true},
+                {"value": 1, "text": "Show", "default": false},
+            ]},
+            {"label_text": "Limit Stat Parsing", "widget": "select", "help_text": "Speed up parsing of corrupt boards by limiting the stats parsed to the engine's stat limit. No effect on non-corrupt boards. Fully parsing corrupt boards may cause file viewer to become unresponsive.", "config_setting": "corrupt.enforce_stat_limit", "data_type": "int", "options_data": [
+                {"value": 1, "text": "Limit", "default": true},
+                {"value": 0, "text": "Do Not Limit", "default": false},
+            ]},
+            {"label_text": "Zoom", "widget": "select", "help_text": "Scale rendered board to this size.", "config_setting": "display.zoom", "data_type": "int", "options_data": [
+                {"value": 1, "text": "1x", "default": true},
+                {"value": 2, "text": "2x", "default": false},
+            ]},
+            {"label_text": "OOP Style", "widget": "select", "help_text": "Display ZZT-OOP as modern syntax highlighted code or classic ZZT v3.2 style.", "config_setting": "oop.style", "data_type": "str", "options_data": [
+                {"value": "modern", "text": "Modern", "default": true},
+                {"value": "classic", "text": "Classic", "default": false},
+            ]},
+            {"label_text": "Rendering Method", "widget": "select", "help_text": "Choose how to translate board data into a rendered image.", "config_setting": "rendering_method.name", "data_type": "str", "options_data": [
+                {"value": "ZZT Standard Renderer", "text": "ZZT - Standard", "default": true},
+                {"value": "ZZT Object Highlight Renderer", "text": "ZZT - Object Highlight", "default": false},
+                {"value": "ZZT Code Highlight Renderer", "text": "ZZT - Code Highlight", "default": false},
+                {"value": "ZZT Fake Wall Highlight Renderer", "text": "ZZT - Fake Wall Highlight", "default": false},
+            ]},
+        ];
     }
 
     static initial_config = {
@@ -1150,51 +1175,10 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
         let output = "<h3>General</h3>";
         let config_key = this.get_config_key_for_handler();
 
-        output += `<div class="field-wrapper">
-            <label for="">Leftover Data:</label>
-            <div class="field-value"><select data-config="${config_key}.pstrings.show_leftover_data" data-type="int">
-                <option value=0${(this.config.pstrings.show_leftover_data == false) ? " selected" : ""}>Hide*</option>
-                <option value=1${(this.config.pstrings.show_leftover_data == true) ? " selected" : ""}>Show</option>
-            </select></div>
-            <p class="field-help">Show full contents of certain strings regardless of specified length.</p>
-        </div>`;
-
-        output += `<div class="field-wrapper">
-            <label for="">Limit Stat Parsing:</label>
-            <div class="field-value"><select data-config="${config_key}.corrupt.enforce_stat_limit" data-type="int">
-                <option value=0${(this.config.corrupt.enforce_stat_limit == true) ? " selected" : ""}>Limit*</option>
-                <option value=1${(this.config.corrupt.enforce_stat_limit == false) ? " selected" : ""}>Do Not Limit</option>
-            </select></div>
-            <p class="field-help">Speed up parsing of corrupt boards by limiting the stats parsed to the engine's stat limit. No effect on non-corrupt boards. Fully parsing corrupt boards may cause file viewer to become unresponsive.</p>
-        </div>`;
-
-        output += `<div class="field-wrapper">
-            <label for="">Zoom:</label>
-            <div class="field-value"><select data-config="${config_key}.display.zoom" data-type="int">
-                <option value=1${(this.config.display.zoom == 1) ? " selected" : ""}>1x*</option>
-                <option value=2${(this.config.display.zoom == 2) ? " selected" : ""}>2x</option>
-            </select></div>
-            <p class="field-help">Scale rendered board to this size.</p>
-        </div>`;
-        output += `<div class="field-wrapper">
-            <label for="">OOP Style:</label>
-            <div class="field-value"><select data-config="${config_key}.oop.style"  data-type="str">
-                <option value="modern"${(this.config.oop.style == "modern") ? " selected" : ""}>Modern*</option>
-                <option value="classic"${(this.config.oop.style == "classic") ? " selected" : ""}>Classic</option>
-            </select></div>
-            <p class="field-help">Display ZZT-OOP as modern syntax highlighted code or classic ZZT v3.2 style.</p>
-        </div>`;
-
-        output += `<div class="field-wrapper">
-            <label for="">Rendering Method:</label>
-            <div class="field-value"><select data-config="${config_key}.rendering_method.name"  data-type="str">
-                <option value="ZZT Standard Renderer"${(this.config.rendering_method.name == "ZZT Standard Renderer") ? " selected" : ""}>ZZT - Standard*</option>
-                <option value="ZZT Object Highlight Renderer"${(this.config.rendering_method.name == "ZZT Object Highlight Renderer") ? " selected" : ""}>ZZT - Object Highlight</option>
-                <option value="ZZT Code Highlight Renderer"${(this.config.rendering_method.name == "ZZT Code Highlight Renderer") ? " selected" : ""}>ZZT - Code Highlight</option>
-                <option value="ZZT Fake Wall Highlight Renderer"${(this.config.rendering_method.name == "ZZT Fake Wall Highlight Renderer") ? " selected" : ""}>ZZT - Fake Wall Highlight</option>
-            </select></div>
-            <p class="field-help">Choose how to translate board data into a rendered image</p>
-        </div>`;
+        for (let idx=0; idx < this.config_fields.length; idx++)
+        {
+            output += this.get_config_field(this.config_fields[idx]);
+        }
 
         output += this.renderer.get_preferences();
 
