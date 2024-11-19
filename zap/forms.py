@@ -13,6 +13,7 @@ from zap.core import querydict_to_json_str, zap_upload_file, zap_get_social_acco
 from zap.models import Event, Post
 
 ACCOUNTS = (
+    ("bluesky", "Bluesky"),
     ("discord", "Discord (no media support)"),
     ("mastodon", "Mastodon"),
     ("patreon", "Patreon"),
@@ -56,7 +57,7 @@ class ZAP_Post_Form(forms.Form):
 
     body = forms.CharField(
         widget=Enhanced_Text_Area_Widget(char_limit=10000),
-        help_text="Tweets are limited to 240 characters.<br>Toots are limited to 500 characters.",
+        help_text="Tweets are limited to 240 characters.<br>Bskies are limited to 300 characters.<br>Toots are limited to 500 characters.",
     )
     hashtags = forms.CharField(required=False, help_text="Separate with comma. Prefix with `#` ie: `#zzt, #stream announcement`.")
 

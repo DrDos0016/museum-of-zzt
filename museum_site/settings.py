@@ -1,5 +1,9 @@
 import os
 
+# Bluesky
+BLUESKY_USER = os.environ.get("MOZ_BLUESKY_USER", "-UNDEFINED-")
+BLUESKY_PASSWORD = os.environ.get("MOZ_BLUESKY_PASSWORD", "-UNDEFINED-")
+
 # Internet Archive
 IA_ACCESS = os.environ.get("MOZ_IA_ACCESS", "!c;LOCKED FILE")
 IA_SECRET = os.environ.get("MOZ_IA_SECRET", "-UNDEFINED-")

@@ -21,6 +21,7 @@ from twitter import *
 from museum.settings import STATIC_URL
 from museum_site.constants import STATIC_PATH, APP_ROOT
 from museum_site.core.misc import record, zookeeper_init
+from museum_site.core.social import Social_Bluesky
 from museum_site.models import BaseModel, File
 from museum_site.querysets.wozzt_queue_querysets import *
 from museum_site.settings import (
@@ -202,17 +203,23 @@ class WoZZT_Queue(BaseModel):
         resp = client.create_photo("worldsofzzt", state="published", tags=tags, caption=self.render_text("tumblr"), data=self.image_path())
         return resp
 
+    def send_bluesky(self, post_related=True):
+        s = Social_Bluesky()
+        s.upload_media(self.image_path())
+        resp = s.post(body=self.render_text("bluesky"))
+
+        if post_related:
+            related_count = self.file.articles.published().exclude(category="Publication Pack").count()
+            if related_count:
+                article_text = (f"More information on \"{self.file.title}\" is available here: https://museumofzzt.com{self.file.article_url()}")
+                s.wozzt_reply(resp, article_text)
+        return True
+
     def send_tweet(self, tweet_related=True):
         try_shorter = False  # Try a shorter variant if this one is too long
         # Tweet the image
         with open(self.image_path(), "rb") as imagefile:
             imagedata = imagefile.read()
-
-            """
-            t_up = Twitter(domain='upload.twitter.com', auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
-            img1 = t_up.media.upload(media=imagedata)["media_id_string"]
-            t = Twitter(auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
-            """
 
             auth = OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
             t = Twitter2(auth=auth)

@@ -9,8 +9,12 @@ import requests
 
 from mastodon import Mastodon
 from twitter import *
+from atproto import Client, models, client_utils
 
 from museum_site.settings import (
+    BLUESKY_USER,
+    BLUESKY_PASSWORD,
+
     MASTODON_CLIENT_KEY,
     MASTODON_CLIENT_SECRET,
     MASTODON_ACCESS_TOKEN,
@@ -61,7 +65,80 @@ class Social():
         self.uploaded_media = []
 
     def clean_hashtags(self, tags):
-        # Default hashtag handler. Works for Tumblr.
+        # IN: "#zzt, #stream schedule, #darkdigital" | OUT: " #zzt #stream schedule #darkdigital"
+        if tags:
+            tags = tags.replace(", ", " ")
+            return " " + tags
+        else:
+            return ""
+
+
+class Social_Bluesky(Social):
+    # https://github.com/MarshalX/atproto/blob/main/packages/atproto_client/client/client.py
+    def _init_keys(self):
+        self.user = BLUESKY_USER
+        self.password = BLUESKY_PASSWORD
+
+    def login(self):
+        self.client = Client()
+        response = self.client.login(self.user, self.password)
+        self.log_response(response)
+        return response
+
+    def upload_media(self, media_path=None, media_url=None, media_bytes=None):
+        if media_bytes:
+            print("Bytes are currently unsupported.")
+            return False
+        if media_url:
+            print("External media is currently unsupported.")
+            return False
+        if media_path:
+            print("MEDIA PATH IS", media_path)
+            self.media.append(media_path)
+
+    def post(self, body, title="", tags="", reply_to=None):
+        text_builder = client_utils.TextBuilder()
+
+        # Break up linebreaks and spaces
+        lines = body.split("\n")
+
+        for line in lines:
+            first_in_line = True
+            words = line.split(" ")
+            for word in words:
+                if not first_in_line:
+                    text_builder.text(" ")
+                if word.startswith("http"):
+                    text_builder.link(word, word)
+                else:
+                    text_builder.text(word)
+                first_in_line = False
+            if not first_in_line:
+                text_builder.text("\n")
+
+        # Add hashtags
+        if tags:
+            hashtag_list = self.clean_hashtags(tags)
+            for tag in hashtag_list:
+                text_builder.text(" ")
+                text_builder.tag("#" + tag, tag)
+
+        # Add media
+        images = []
+        if self.media:
+            for m in self.media:
+                with open(m, "rb") as fh:
+                    images.append(fh.read())
+            response = self.client.send_images(text=text_builder, images=images, reply_to=reply_to)  # TODO alt text would go here
+        else:
+            response = self.client.send_post(text_builder, reply_to=reply_to)
+
+        self.media = []
+        self.log_response(response)
+        return response
+
+    def clean_hashtags(self, tags):
+        # Hashtag string to array
         # IN: "#zzt, #museum of zzt, #ascii" OUT: ["zzt" , "museum of zzt", "ascii"]
         hashtag_list = []
         raw_tags = tags
@@ -71,6 +148,11 @@ class Social():
             if tag.startswith("#"):
                 hashtag_list.append(tag[1:])
         return hashtag_list
+
+    def wozzt_reply(self, response, reply_body):
+        root_post_ref = models.create_strong_ref(response)
+        reply_resp = self.post(body=reply_body, reply_to=models.AppBskyFeedPost.ReplyRef(parent=root_post_ref, root=root_post_ref))
+        return reply_resp
 
 
 class Social_Discord(Social):
@@ -130,7 +212,7 @@ class Social_Mastodon(Social):
         self.password = MASTODON_PASS
 
     def login(self):
-        self.client =  Mastodon(client_id=MASTODON_SECRETS_FILE)
+        self.client = Mastodon(client_id=MASTODON_SECRETS_FILE)
         response = self.client.log_in(MASTODON_EMAIL, MASTODON_PASS)
 
         self.log_response(response)
@@ -152,14 +234,16 @@ class Social_Mastodon(Social):
         self.log_response(response)
         return response
 
+    def post(self, body, title="", tags=""):
+        if tags:
+            body += self.clean_hashtags(tags)
 
-    def post(self, body, title="", tags=[]):
         if self.media:
             media = []
             for m in self.media:
                 media.append(m["id"])
         else:
-            media=None
+            media = None
         response = self.client.status_post(status=body, in_reply_to_id=self.reply_to, media_ids=media)
 
         self.uploaded_media = []
@@ -182,7 +266,6 @@ class Social_Tumblr(Social):
     def login(self):
         self.client = pytumblr.TumblrRestClient(self.consumer_key, self.consumer_secret, self.token, self.oauth_secret)
 
-
     def upload_media(self, media_path=None, media_url=None, media_bytes=None):
         print("Uploading media")
         if media_bytes:
@@ -195,9 +278,8 @@ class Social_Tumblr(Social):
             self.uploaded_media.append(os.path.join(APP_ROOT, media_path))
         return True
 
-    def post(self, body, title="", tags=[]):
-        # Attach hashtags
-        if tags:
+    def post(self, body, title="", tags=""):
+        if tags:  # tumblr wants hashtags as an array in the form of ["food", "pizza", "cooking"]
             tags = self.clean_hashtags(tags)
 
         if self.uploaded_media:
@@ -223,6 +305,18 @@ class Social_Tumblr(Social):
         self.uploaded_media = []
         self.log_response(response)
         return response
+
+    def clean_hashtags(self, tags):
+        # Hashtag string to array
+        # IN: "#zzt, #museum of zzt, #ascii" OUT: ["zzt" , "museum of zzt", "ascii"]
+        hashtag_list = []
+        raw_tags = tags
+        tags = raw_tags.split(",")
+        for tag in tags:
+            tag = tag.strip()
+            if tag.startswith("#"):
+                hashtag_list.append(tag[1:])
+        return hashtag_list
 
     def boost(self, post_id):
         response = self.client.posts("worldsofzzt", type=None, **{"id": post_id})
@@ -268,7 +362,10 @@ class Social_Twitter(Social):
                 self.log_response(response)
         return response
 
-    def post(self, body, title="", tags=[]):
+    def post(self, body, title="", tags=""):
+        if tags:
+            body += self.clean_hashtags(tags)
+
         json_data = {"text": body}
         if self.media:
             json_data["media"] = {

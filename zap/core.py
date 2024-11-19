@@ -3,7 +3,7 @@ import os
 
 from datetime import datetime, timezone
 from museum_site.constants import STATIC_PATH
-from museum_site.core.social import Social_Mastodon, Social_Twitter, Social_Tumblr, Social_Discord
+from museum_site.core.social import Social_Bluesky, Social_Mastodon, Social_Twitter, Social_Tumblr, Social_Discord
 
 ZAP_UPLOAD_PATH = os.path.join(STATIC_PATH, "zap", "media")
 ZAP_STATIC_PATH = "/static/zap/media/"
@@ -41,7 +41,9 @@ def zap_upload_file(uploaded_file, requested_file_name=""):
 
 
 def zap_get_social_account(account):
-    if account == "mastodon":
+    if account == "bluesky":
+        s = Social_Bluesky()
+    elif account == "mastodon":
         s = Social_Mastodon()
     elif account == "twitter":
         s = Social_Twitter()
