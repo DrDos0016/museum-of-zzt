@@ -32,6 +32,11 @@ def main():
         print("Failed to send: Mastodon and/or Discord")
 
     try:
+        entry.send_bluesky()
+    except:
+        print("Failed to send: Bluesky")
+
+    try:
         entry.send_tweet()
     except:
         print("Failed to send: Twitter")
