@@ -205,13 +205,15 @@ class ZFile_List_View(Model_List_View):
                 self.request.session["DEBUG"] = 1
             elif cheat == "-DEBUG":
                 self.cheat_applied = cheat
-                del self.request.session["DEBUG"]
+                if self.request.session.get("DEBUG"):
+                    del self.request.session["DEBUG"]
             elif cheat == "+BETA":
                 self.cheat_applied = cheat
                 self.request.session["TEMP_FILE_VIEWER_BETA"] = 1
             elif cheat == "-BETA":
                 self.cheat_applied = cheat
-                del self.request.session["TEMP_FILE_VIEWER_BETA"]
+                if self.request.session.get("TEMP_FILE_VIEWER_BETA"):
+                    del self.request.session["TEMP_FILE_VIEWER_BETA"]
 
     def get_queryset(self):
         qs = ZFile.objects.search(self.request.GET)
