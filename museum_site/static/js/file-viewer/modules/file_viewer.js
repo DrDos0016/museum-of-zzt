@@ -5,7 +5,7 @@ import { Overview_Handler } from "./overview_handler.js";
 import { Text_Handler } from "./text_handler.js";
 import { Unsupported_Handler } from "./unsupported_handler.js";
 import { ZZT_High_Score_Handler, SZZT_High_Score_Handler } from "./high_score_handler.js";
-import { ZZT_Handler } from "./zzt_handler.js";
+import { SZZT_Handler, ZZT_Handler } from "./zzt_handler.js";
 
 export const EXTENSIONS_IMAGE = [".BMP", ".GIF", ".ICO", ".JPG", ".PNG", ".SVG"];
 export const EXTENSIONS_HIGH_SCORE = [".HI", ".MH"];
@@ -23,6 +23,7 @@ export const EXTENSIONS_TEXT = [
 ".~~~", ".---",
 ]
 export const EXTENSIONS_ZZT = [".MWZ", ".SAV", ".Z_T", ".ZZT"]; // TODO Super ZZT Saves
+export const EXTENSIONS_SZZT = [".SZT"]; // TODO Super ZZT Saves
 
 export class File_Viewer
 {
@@ -311,6 +312,8 @@ export function create_handler_for_file(fvpk, filename, bytes, meta)
     switch (true) {
         case EXTENSIONS_ZZT.indexOf(ext) != -1:
             return new ZZT_Handler(fvpk, filename, bytes, meta);
+        case EXTENSIONS_SZZT.indexOf(ext) != -1:
+            return new SZZT_Handler(fvpk, filename, bytes, meta);
         case EXTENSIONS_IMAGE.indexOf(ext) != -1:
             return new Image_Handler(fvpk, filename, bytes, meta);
         case EXTENSIONS_HIGH_SCORE.indexOf(ext) != -1:

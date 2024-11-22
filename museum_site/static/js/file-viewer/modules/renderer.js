@@ -112,6 +112,15 @@ export class ZZT_Standard_Renderer
 
     async render_board(board, zoom=1)
     {
+        if (! board)
+        {
+            const canvas = document.querySelector(`#envelope-${this.fvpk} .fv-canvas`);
+            this.ctx = canvas.getContext("2d");
+            this.ctx.fillStyle = "#AA0000";
+            this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+            return canvas;
+        }
+
         console.log("TOLD TO RENDER BOARD", board);
         if (! this.character_set.loaded)
             await this.character_set.load();
@@ -129,9 +138,9 @@ export class ZZT_Standard_Renderer
 
         this.ctx = canvas.getContext("2d");
 
-        for (let y = 1; y < 26; y++)
+        for (let y = 1; y < (this.board_height + 1); y++)
         {
-            for (let x = 1; x < 61; x++)
+            for (let x = 1; x < (this.board_width + 1); x++)
             {
                 let [fg, bg, char] = this.element_func[this.rendered_board.elements[x][y].id].apply(this, [x, y]);
                 [fg, bg, char] = this.post_process(x, y, fg, bg, char, this.rendered_board.elements[x][y].id);
@@ -427,14 +436,19 @@ export class ZZT_Standard_Renderer
     line_draw(x, y)
     {
         let element = this.rendered_board.elements[x][y];
-        let line_chars = [249, 208, 210, 186, 181, 188, 187, 185, 198, 200, 201, 204, 205, 202, 203, 206];
+        let line_chars = this.get_line_chars(element.id);
         let line_idx = 0
-        line_idx += (this.rendered_board.elements[x][y - 1].id == 31 || this.rendered_board.elements[x][y - 1].id == 1) ? 1 : 0;  // N
-        line_idx += (this.rendered_board.elements[x][y + 1].id == 31 || this.rendered_board.elements[x][y + 1].id == 1) ? 2 : 0;  // S
-        line_idx += (this.rendered_board.elements[x - 1][y].id == 31 || this.rendered_board.elements[x - 1][y].id == 1) ? 4 : 0;  // W
-        line_idx += (this.rendered_board.elements[x + 1][y].id == 31 || this.rendered_board.elements[x + 1][y].id == 1) ? 8 : 0;  // E
+        line_idx += (this.rendered_board.elements[x][y - 1].id == element.id || this.rendered_board.elements[x][y - 1].id == 1) ? 1 : 0;  // N
+        line_idx += (this.rendered_board.elements[x][y + 1].id == element.id || this.rendered_board.elements[x][y + 1].id == 1) ? 2 : 0;  // S
+        line_idx += (this.rendered_board.elements[x - 1][y].id == element.id || this.rendered_board.elements[x - 1][y].id == 1) ? 4 : 0;  // W
+        line_idx += (this.rendered_board.elements[x + 1][y].id == element.id || this.rendered_board.elements[x + 1][y].id == 1) ? 8 : 0;  // E
 
         return [element.color % 16, parseInt(element.color / 16), line_chars[line_idx]];
+    }
+
+    get_line_chars(id)
+    {
+        return [249, 208, 210, 186, 181, 188, 187, 185, 198, 200, 201, 204, 205, 202, 203, 206];
     }
 
     object_draw(x, y)
@@ -564,4 +578,84 @@ export class ZZT_Fake_Wall_Highlight_Renderer extends ZZT_Standard_Renderer
         else
             return [8, 0, char];
     }
+}
+
+export class SZZT_Standard_Renderer extends ZZT_Standard_Renderer
+{
+    constructor(fvpk=null)
+    {
+        super(fvpk);
+        this.name = "Super ZZT Standard Renderer";
+        this.fvpk = fvpk;
+        this.board_width = 96;
+        this.board_height = 80;
+        this.character_set = new Character_Set();
+        this.palette = new Palette();
+        this.default_characters = [CHAR.SPACE, CHAR.SPACE, CHAR.QUESTION_MARK, CHAR.SPACE, CHAR.SMILEY, CHAR.AMMO, CHAR.QUESTION_MARK, CHAR.GEM, CHAR.KEY, CHAR.DOOR, CHAR.SCROLL, CHAR.PASSAGE, CHAR.DUPLICATOR, CHAR.BOMB, CHAR.ENERGIZER, CHAR.QUESTION_MARK, CHAR.CLOCKWISE, CHAR.COUNTER, CHAR.QUESTION_MARK, CHAR.LAVA, CHAR.FOREST, CHAR.SOLID, CHAR.NORMAL, CHAR.BREAKABLE, CHAR.BOULDER, CHAR.SLIDER_NS, CHAR.SLIDER_EW, CHAR.FAKE, CHAR.SPACE, CHAR.BLINKWALL, CHAR.TRANSPORTER, CHAR.LINE, CHAR.RICOCHET, CHAR.QUESTION_MARK, CHAR.BEAR, CHAR.RUFFIAN, CHAR.SMILEY, CHAR.SLIME, CHAR.SHARK, CHAR.SPINNING_GUN, CHAR.PUSHER, CHAR.LION, CHAR.TIGER, CHAR.QUESTION_MARK, CHAR.HEAD, CHAR.SEGMENT, CHAR.QUESTION_MARK, CHAR.FLOOR, CHAR.WATER_N, CHAR.WATER_S, CHAR.WATER_W, CHAR.WATER_E, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.ROTON, CHAR.DRAGON_PUP, CHAR.PAIRER, CHAR.SPIDER, CHAR.WEB, CHAR.STONE, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.BULLET, CHAR.HORIZ_RAY, CHAR.VERT_RAY, CHAR.STAR];
+        this.element_func = this.initialize_renderer_draw_functions();
+        this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1, "oop": ""};
+
+        this.ctx = null;
+    }
+
+    initialize_renderer_draw_functions()
+    {
+        let element_func = Array(256).fill(this.basic_draw);
+        // TODO: Add everything else that needs it
+
+        element_func[0] = this.empty_draw;
+        element_func[1] = this.edge_draw;
+        element_func[3] = this.monitor_draw;
+        element_func[12] = this.duplicator_draw;
+        element_func[13] = this.bomb_draw;
+        element_func[72] = this.star_draw;
+        element_func[16] = this.conveyor_cw_draw;
+        element_func[17] = this.conveyor_ccw_draw;
+        element_func[28] = this.invisible_draw;
+        element_func[30] = this.transporter_draw;
+        element_func[31] = this.line_draw;
+        element_func[36] = this.object_draw;
+        element_func[39] = this.spinning_gun_draw;
+        element_func[40] = this.pusher_draw;
+
+
+        element_func[60] = this.dragon_pup_draw;
+        element_func[63] = this.line_draw; // Webs use ElementConnected Draw
+        element_func[64] = this.stone_draw;
+
+        element_func.fill(this.text_draw, 73);
+
+        return element_func;
+    }
+
+    dragon_pup_draw(x, y)
+    {
+        // TODO https://github.com/asiekierka/reconstruction-of-super-zzt/blob/master/SRC/ELEMENTS.PAS
+        let element = this.rendered_board.elements[x][y];
+        return [element.color % 16, parseInt(element.color / 16), 237];
+    }
+
+    get_line_chars(id)
+    {
+        if (id == 63) // Webs
+            return [250, 179, 179, 179, 196, 217, 191, 180, 196, 192, 218, 195, 196, 193, 194, 197];
+        return [249, 208, 210, 186, 181, 188, 187, 185, 198, 200, 201, 204, 205, 202, 203, 206];
+    }
+
+    stone_draw(x, y)
+    {
+        let char = 65 + Math.floor(Math.random() * 26);
+        let fg = 9 + Math.floor(Math.random() * 7);
+        let bg = 0;
+        return [fg, bg, char];
+    }
+
+    text_draw(x, y)
+    {
+        let element = this.rendered_board.elements[x][y];
+        if (element.id == 79) // White text gets black background instead of gray
+            return [15, 0, element.color]
+        return [15, (element.id - 72) % 16, element.color]; // mod 16 to handle undefined elements
+    }
+
 }

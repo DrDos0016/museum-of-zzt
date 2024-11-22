@@ -22,15 +22,12 @@ export class Overview_Handler extends Handler
 
     parse_bytes() {
         // Overview has no bytes, but this seems like a good place to pull data from the pre-rendered HTML
-        console.log("Parsing the so called bytes");
         this.preview_image_url = $("#fv-preview").attr("src");
         this.description = $("#envelope-fvpk-overview .zf-desc-wrapper").html();
         return false;
     }
 
     write_html() {
-        console.log("Overview HTML generation");
-
         let targets = [
             {"target": "#zip-info", "html": this.generate_zip_info_table()},
             {"target": this.envelope_id, "html": this.generate_overview()},
@@ -74,7 +71,6 @@ export class Overview_Handler extends Handler
             let zi = file.meta.zipinfo
             if (zi)
             {
-                console.log(zi);
                 has_zipinfo = true;
                 if (zi.dir)
                     continue;

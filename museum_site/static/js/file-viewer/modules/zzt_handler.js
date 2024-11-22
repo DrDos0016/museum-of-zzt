@@ -1,16 +1,16 @@
 import { padded, escape_html} from "./core.js"; // PString needed for watermark reading directly
 import { Handler } from "./handler.js";
-import { ZZT_Standard_Renderer, ZZT_Object_Highlight_Renderer, ZZT_Code_Highlight_Renderer, ZZT_Fake_Wall_Highlight_Renderer } from "./renderer.js";
-import { ZZT_ELEMENTS } from "./elements.js";
+import { ZZT_Standard_Renderer, ZZT_Object_Highlight_Renderer, ZZT_Code_Highlight_Renderer, ZZT_Fake_Wall_Highlight_Renderer, SZZT_Standard_Renderer } from "./renderer.js";
+import { ZZT_ELEMENTS, SZZT_ELEMENTS } from "./elements.js";
 
 while (ZZT_ELEMENTS.length < 256)
 {
-    ZZT_ELEMENTS.push({
-        "id":ZZT_ELEMENTS.length,
-        "name":`<i>Undefined Element ${ZZT_ELEMENTS.length}</i> `,
-        "oop_name":"",
-        "character":63
-    })
+    ZZT_ELEMENTS.push({"id":ZZT_ELEMENTS.length, "name":`<i>Undefined Element ${ZZT_ELEMENTS.length}</i> `, "oop_name":"", "character":63})
+}
+
+while (SZZT_ELEMENTS.length < 256)
+{
+    SZZT_ELEMENTS.push({"id":SZZT_ELEMENTS.length, "name":`<i>Undefined Element ${SZZT_ELEMENTS.length}</i> `, "oop_name":"", "character":63})
 }
 
 export class ZZT_Handler extends Handler
@@ -34,8 +34,13 @@ export class ZZT_Handler extends Handler
             "Black", "Dark Blue", "Dark Green", "Dark Cyan", "Dark Red", "Dark Purple", "Dark Yellow", "Gray",
             "Dark Gray", "Blue", "Green", "Cyan", "Red", "Purple", "Yellow", "White"
         ];
+
+        this.first_board_start_idx = 512;
+        this.board_name_length = 50;
         this.max_flags = 10;
         this.max_stats = 150;
+        this.board_width = 60;
+        this.board_height = 25;
         this.tile_count = 1500; // TODO Should we use width * height of boards?
 
         this.cursor_tile = {"x": -1, "y": -1} // Tile the cursor was last seen over
@@ -133,13 +138,11 @@ export class ZZT_Handler extends Handler
             this.selected_board = this.world.current_board;
 
         let fin = Date.now();
-        console.log(`${this.filename} - Bytes parsed in  ${fin - start}ms`);
+        console.log(`${this.filename} - ${this.data.byteLength} bytes parsed in ${fin - start}ms`);
     }
 
     async write_html() {
         let BLANK_TARGET = {"target": null, "html": ""};
-        console.log("ZZT HTML Generation");
-        console.log(this.renderer);
         if ((! this.renderer) || (this.renderer.name != this.config.rendering_method.name.replaceAll("_", " ")))
         {
             console.log("Changing Renderer!");
@@ -233,7 +236,6 @@ export class ZZT_Handler extends Handler
 
     parse_world()
     {
-        console.log("Parsing world");
         let world = {};
         world.identifier = this.read_Int16();
         world.total_boards = this.read_Int16();
@@ -257,115 +259,127 @@ export class ZZT_Handler extends Handler
         return world;
     }
 
+    initialize_empty_board()
+    {
+        let board = {
+            "meta": {"board_address": this.pos, "element_address": this.pos + 53, "stats_address": this.pos + 53} // TODO IS THIS USED AT ALL
+        };
+        board.size = this.read_Int16();
+        board.title = this.read_PString(this.board_name_length);
+        board.elements = Array(this.board_width + 2).fill(0).map(x=> Array(this.board_height + 2).fill(0)); // Empty board with border.
+
+        // Create board border
+        const edge = {"id": 1, "color": 0};
+        for (let x = 0; x <= (this.board_width + 1); x++)
+        {
+            board.elements[x][0] = edge;
+            board.elements[x][this.board_height + 1] = edge;
+        }
+        for (let y = 0; y <= (this.board_height + 1); y++)
+        {
+            board.elements[0][y] = edge;
+            board.elements[this.board_width + 1][y] = edge;
+        }
+        return board;
+    }
+
+    read_board_rle(board)
+    {
+        let read_tiles = 0;
+        let tile_idx = 0;
+        while (read_tiles < this.tile_count)
+        {
+            let quantity = this.read_Uint8();
+            let element_id = this.read_Uint8();
+            let color = this.read_Uint8();
+
+            // RLE quantities of 0 are treated as 256. This is never relevant, but it's been documented and should be supported.
+            if (quantity == 0) { quantity = 256 };
+
+            for (let quantity_idx = 0; quantity_idx < quantity; quantity_idx++)
+            {
+                let x = tile_idx % this.board_width + 1
+                let y = parseInt(tile_idx / this.board_width) + 1;
+                board.elements[x][y] = {"id": element_id, "color": color};
+                tile_idx++;
+            }
+
+            read_tiles += quantity;
+            board.meta.stats_address += 3;
+        }
+        return board;
+    }
+
+    read_board_properties(board)
+    {
+        board.max_shots = this.read_Uint8();
+        board.is_dark = this.read_Uint8();
+        board.neighbor_boards = [this.read_Uint8(), this.read_Uint8(), this.read_Uint8(), this.read_Uint8()];
+        board.reenter_when_zapped = this.read_Uint8();
+        board.message = this.read_PString(58);
+        board.start_player_x = this.read_Uint8();
+        board.start_player_y = this.read_Uint8();
+        board.time_limit = this.read_Int16();
+        board.unused = this.read_unused(16);
+        board.stat_count = this.read_Int16();
+        board.meta.stats_address += 88;
+        return board;
+    }
+
+    read_board_stats(board)
+    {
+        board.stats = [];
+
+        let read_stats = 0;
+        let stat_cutoff = (this.config.corrupt.enforce_stat_limit) ? Math.min(board.stat_count, this.max_stats) : board.stat_count;
+        while (read_stats < stat_cutoff + 1)
+        {
+            let stat = {};
+            stat.idx = read_stats;
+            stat.x = this.read_Uint8();
+            stat.y = this.read_Uint8();
+            stat.step_x = this.read_Int16();
+            stat.step_y = this.read_Int16();
+            stat.cycle = this.read_Int16();
+            stat.param1 = this.read_Uint8();
+            stat.param2 = this.read_Uint8();
+            stat.param3 = this.read_Uint8();
+            stat.follower = this.read_Int16();
+            stat.leader = this.read_Int16();
+            stat.under = { "element_id": this.read_Uint8(), "color": this.read_Uint8() };
+            stat.pointer = this.read_unused(4);
+            stat.instruction = this.read_Int16();
+            stat.oop_length = this.read_Int16();
+            if (this.name == "ZZT Handler") // Only difference between ZZT/SZZT is this padding
+                stat.padding = this.read_unused(8);
+            stat.oop = "";
+            if (stat.oop_length > 0)
+                stat.oop = this.read_Ascii(stat.oop_length).replaceAll("♪", "\n");
+
+            read_stats++;
+            board.stats.push(stat);
+        }
+        return board;
+    }
+
     parse_boards()
     {
-        console.log("HEY IM PARSIN HERE");
         // Parse boards
         let boards = [];
-        this.pos = 512; // Start of board data in a world
+        this.pos = this.first_board_start_idx; // Start of board data in a world
 
         while (this.pos < this.bytes.length)
         {
-            if (boards.length > this.world.total_boards) // Stop parsing beyond defined board count. TODO: What if you lie about this value and have more boards?
+            let board;
+            // TODO: What if you lie about this value and have more boards?
+            if (boards.length > this.world.total_boards) // Stop parsing beyond defined board count.
             {
                 break;
             }
-            let board = {
-                "meta": {"board_address": this.pos, "element_address": this.pos + 53, "stats_address": this.pos + 53}
-            };
-            board.size = this.read_Int16();
-            board.title = this.read_PString(50);
-            //console.log("BOARD:", board.title, Date.now());
-
-            board.elements = Array(62).fill(0).map(x=> Array(27).fill(0)); // This is necessary
-
-            // Create board border
-            const edge = {"id": 1, "color": 1}; // TODO: Should be color 0
-            for (let x = 0; x <= 61; x++)
-            {
-                board.elements[x][0] = edge;
-                board.elements[x][26] = edge;
-            }
-            for (let y = 0; y <= 26; y++)
-            {
-                board.elements[0][y] = edge;
-                board.elements[61][y] = edge;
-            }
-
-            // RLE
-            //console.log("Parsing RLE", Date.now());
-            let read_tiles = 0;
-            let tile_idx = 0;
-            while (read_tiles < this.tile_count)
-            {
-                let quantity = this.read_Uint8();
-                let element_id = this.read_Uint8();
-                let color = this.read_Uint8();
-
-                // RLE quantities of 0 are treated as 256. This is never relevant, but it's been documented and should be supported.
-                if (quantity == 0)
-                    quantity = 256;
-
-                for (let quantity_idx = 0; quantity_idx < quantity; quantity_idx++)
-                {
-                    let x = tile_idx % 60 + 1
-                    let y = parseInt(tile_idx / 60) + 1;
-                    board.elements[x][y] = {"id": element_id, "color": color};
-                    tile_idx++;
-                }
-
-                read_tiles += quantity;
-                board.meta.stats_address += 3;
-            }
-
-            // Board properties
-            //console.log("Parsing Props", Date.now());
-            board.max_shots = this.read_Uint8();
-            board.is_dark = this.read_Uint8();
-            board.neighbor_boards = [this.read_Uint8(), this.read_Uint8(), this.read_Uint8(), this.read_Uint8()];
-            board.reenter_when_zapped = this.read_Uint8();
-            board.message = this.read_PString(58);
-            board.start_player_x = this.read_Uint8();
-            board.start_player_y = this.read_Uint8();
-            board.time_limit = this.read_Int16();
-            board.unused = this.read_unused(16);
-            board.stat_count = this.read_Int16();
-            board.meta.stats_address += 88;
-
-            // Stats
-            //console.log("Parsing Stats", board.stat_count, Date.now());
-            board.stats = [];
-
-            let read_stats = 0;
-            let stat_cutoff = (this.config.corrupt.enforce_stat_limit) ? Math.min(board.stat_count, this.max_stats) : board.stat_count;
-            while (read_stats < stat_cutoff + 1)
-            {
-                let stat = {};
-                stat.idx = read_stats;
-                stat.x = this.read_Uint8();
-                stat.y = this.read_Uint8();
-                stat.step_x = this.read_Int16();
-                stat.step_y = this.read_Int16();
-                stat.cycle = this.read_Int16();
-                stat.param1 = this.read_Uint8();
-                stat.param2 = this.read_Uint8();
-                stat.param3 = this.read_Uint8();
-                stat.follower = this.read_Int16();
-                stat.leader = this.read_Int16();
-                stat.under = { "element_id": this.read_Uint8(), "color": this.read_Uint8() };
-
-                // Not properly implemented yet probs:
-                stat.pointer = this.read_unused(4);
-                stat.instruction = this.read_Int16();
-                stat.oop_length = this.read_Int16();
-                stat.padding = this.read_unused(8);
-                stat.oop = "";
-                if (stat.oop_length > 0)
-                    stat.oop = this.read_Ascii(stat.oop_length).replaceAll("♪", "\n");
-
-                read_stats++;
-                board.stats.push(stat);
-            }
+            board = this.initialize_empty_board();
+            board = this.read_board_rle(board);
+            board = this.read_board_properties(board);
+            board = this.read_board_stats(board);
 
             // Jump to the start of the next board in file (for corrupt boards)
             let manual_pos = (board.meta.board_address + board.size) + 2;
@@ -376,7 +390,6 @@ export class ZZT_Handler extends Handler
             }
 
             boards.push(board);  // Add the finalizared parsed board to the list
-            //console.log("Parsed board:", board.title, Date.now());
         }
         return boards
     }
@@ -456,18 +469,12 @@ export class ZZT_Handler extends Handler
     get_board_info()
     {
         let board = this.boards[this.selected_board]
+
+        if (! board)
+            return "<i>This file could not be parsed.</i>";
+
         let output = `<div class="flex-table">`;
-        let rows = [
-            {"value": board.title.toString(), "label": "Title"}, // TODO: Should this respect show hidden data?
-            {"value": `${board.max_shots} shots.`, "label": "Can Fire"},
-            {"value": this.yesno(board.is_dark), "label": "Board Is Dark"},
-            {"value": this.yesno(board.reenter_when_zapped), "label": "Re-enter When Zapped"},
-            {"value": `${this.coords_span(board.start_player_x, board.start_player_y)}`, "label": "Re-enter X/Y"},
-            {"value": this.val_or_none(board.time_limit), "label": "Time Limit"},
-            {"value": `${board.stat_count + 1} / 151`, "label": "Stat Count"},
-            {"value": `${board.size} bytes`, "label": "Board Size"},
-            {"value": (board.message.length ? board.message : "<i>None</i>"), "label": "Message"},
-        ];
+        let rows = this.get_board_info_rows(board);
 
         for (let i=0; i<rows.length; i++)
         {
@@ -496,6 +503,22 @@ export class ZZT_Handler extends Handler
         output += this.get_zeta_live();
 
         return output;
+    }
+
+    get_board_info_rows(board)
+    {
+        let rows = [
+            {"value": board.title.toString(), "label": "Title"}, // TODO: Should this respect show hidden data?
+            {"value": `${board.max_shots} shots.`, "label": "Can Fire"},
+            {"value": this.yesno(board.is_dark), "label": "Board Is Dark"},
+            {"value": this.yesno(board.reenter_when_zapped), "label": "Re-enter When Zapped"},
+            {"value": `${this.coords_span(board.start_player_x, board.start_player_y)}`, "label": "Re-enter X/Y"},
+            {"value": this.val_or_none(board.time_limit), "label": "Time Limit"},
+            {"value": `${board.stat_count + 1} / ${this.max_stats + 1}`, "label": "Stat Count"},
+            {"value": `${board.size} bytes`, "label": "Board Size"},
+            {"value": (board.message.length ? board.message : "<i>None</i>"), "label": "Message"},
+        ];
+        return rows;
     }
 
     write_board_list()
@@ -793,7 +816,7 @@ export class ZZT_Handler extends Handler
     get_world_identifier()
     {
         let default_identifier = "<i>Unknown World Format</i>";
-        let identifiers = {"-1": "ZZT"}
+        let identifiers = {"-1": "ZZT", "-2": "Super ZZT"};
         return identifiers["" + this.world.identifier] || default_identifier;
     }
 
@@ -1033,6 +1056,8 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
     sort_stat_list_by_name()
     {
+        if (! this.boards || ! this.selected_board)
+            return [];
         let sorted = this.boards[this.selected_board].stats.slice();
         let board = this.boards[this.selected_board];
 
@@ -1225,5 +1250,153 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
         // Copy the current renderer's config to the new one
         renderer.config = temp_config;
         return renderer;
+    }
+}
+
+export class SZZT_Handler extends ZZT_Handler
+{
+    constructor(fvpk, filename, bytes, meta)
+    {
+        super(fvpk, filename, bytes, meta);
+        this.name = "Super ZZT Handler";
+        this.envelope_css_class = "szzt";
+        this.default_renderer = SZZT_Standard_Renderer;
+        this.renderer = new this.default_renderer(this.fvpk);
+
+        this.first_board_start_idx = 1024;
+        this.board_name_length = 60;
+        this.max_flags = 16;
+        this.max_stats = 128;
+        this.board_width = 96;
+        this.board_height = 80;
+        this.tile_count = 7680;
+    }
+
+    static initial_config = {
+        "pstrings": {
+            "show_leftover_data": 0,
+        },
+        "stats": {
+            "sort": "name",
+            "show_codeless": 1,
+        },
+        "corrupt": {
+            "enforce_stat_limit": 1,
+        },
+        "display": {
+            "zoom": 1,
+        },
+        "oop": {
+            "style": "modern",
+        },
+        "rendering_method": {
+            "name": "SZZT_Standard_Renderer",
+        },
+    }
+
+    parse_world()
+    {
+        console.log("Parsing world");
+        let world = {};
+        world.identifier = this.read_Int16();
+        world.total_boards = this.read_Int16();
+        world.ammo = this.read_Int16();
+        world.gems = this.read_Int16();
+        world.keys = this.read_keys();
+        world.health = this.read_Int16();
+        world.current_board = this.read_Int16();
+        world.unused_szzt_1 = this.read_Int16();
+        world.score = this.read_Int16();
+        world.unused_szzt_2 = this.read_Int16();
+        world.energizer_ticks = this.read_Int16();
+        world.world_name = this.read_PString(20);
+        world.flags = this.read_flags();
+        world.board_time_seconds = this.read_Int16();
+        world.board_time_hseconds = this.read_Int16(); // Hundredth-seconds
+        world.is_save = this.read_Uint8();
+        world.z = this.read_Int16();
+        world.unused_szzt_3 = this.read_unused(11);
+        return world;
+    }
+
+    get_world_info()
+    {
+        let output = `<div class="flex-table">`;
+        let rows = [
+            {"value": this.get_world_identifier(this.world.identifier), "label": "Format", },
+            {"value": this.world.world_name, "label": "Name"},
+            {"value": this.board_link(this.world.current_board), "label": "Starting Board", },
+            {"value": this.world.total_boards, "label": "Total Boards", },
+            {"value": this.world.health, "label": "Health", },
+            {"value": this.world.ammo, "label": "Ammo", },
+            {"value": this.world.gems, "label": "Gems", },
+            {"value": this.get_keys_value(), "label": "Keys", },
+            {"value": this.world.score, "label": "Score", },
+            {"value": this.world.z, "label": this.get_z_counter_name(), },
+            {"value": this.world.energizer_ticks, "label": "Energizer Ticks", },
+            {"value": `${this.world.board_time_seconds}.${this.world.board_time_hseconds}`, "label": "Board Time", },
+            {"value": this.yesno(this.world.is_save), "label": "Is Save", },
+            //{"value": this.world.unused, "label": "", },
+            {"value": this.get_flags_value(), "label": "Flags", },
+            {"value": this.get_locks_value(), "label": "Detected Locks", },
+        ];
+
+        if (this.world.watermark)
+        {
+            rows.push({"value": this.world.watermark, "label": "Watermark"});
+        }
+
+        for (let i=0; i<rows.length; i++)
+        {
+            output += `<div class="flex-row"><div class="label">${rows[i].label}</div><div class="value">${rows[i].value}</div></div>\n`;
+        }
+        output += `</div>`;
+
+        return output;
+    }
+
+    get_z_counter_name()
+    {
+        let counter_name = "Z";
+        if (this.world.flags.length)
+        {
+            for (let idx in this.world.flags)
+            {
+                if (this.world.flags[idx].toString().toUpperCase()[0] == "Z")
+                    counter_name = this.world.flags[idx].toString().toUpperCase().slice(1);
+            }
+        }
+        return counter_name;
+    }
+
+    read_board_properties(board)
+    {
+        board.max_shots = this.read_Uint8();
+        board.neighbor_boards = [this.read_Uint8(), this.read_Uint8(), this.read_Uint8(), this.read_Uint8()];
+        board.reenter_when_zapped = this.read_Uint8();
+        board.start_player_x = this.read_Uint8();
+        board.start_player_y = this.read_Uint8();
+        board.camera_x = this.read_Int16();
+        board.camera_y = this.read_Int16();
+        board.time_limit = this.read_Int16();
+        board.unused = this.read_unused(14);
+        board.stat_count = this.read_Int16();
+        board.meta.stats_address += 30;
+        return board;
+    }
+
+    get_board_info_rows(board)
+    {
+        let rows = [
+            {"value": board.title.toString(), "label": "Title"}, // TODO: Should this respect show hidden data?
+            {"value": `${board.max_shots} shots.`, "label": "Can Fire"},
+            {"value": this.yesno(board.reenter_when_zapped), "label": "Re-enter When Zapped"},
+            {"value": `${this.coords_span(board.start_player_x, board.start_player_y)}`, "label": "Re-enter X/Y"},
+            {"value": `${this.coords_span(board.camera_x, board.camera_y)}`, "label": "Camera X/Y"},
+            {"value": this.val_or_none(board.time_limit), "label": "Time Limit"},
+            {"value": `${board.stat_count + 1} / ${this.max_stats + 1}`, "label": "Stat Count"},
+            {"value": `${board.size} bytes`, "label": "Board Size"},
+        ];
+        return rows;
     }
 }
