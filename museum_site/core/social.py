@@ -65,12 +65,14 @@ class Social():
         self.uploaded_media = []
 
     def clean_hashtags(self, tags):
-        # IN: "#zzt, #stream schedule, #darkdigital" | OUT: " #zzt #stream schedule #darkdigital"
+        # IN: "#zzt, #stream schedule, #darkdigital" | OUT: " #zzt #stream_schedule #darkdigital"
+        post_tags = ""
         if tags:
-            tags = tags.replace(", ", " ")
-            return " " + tags
-        else:
-            return ""
+            tags = tag.split(", ")
+            for tag in tags:
+                tag = tag.replace(" ", "_")
+                post_tags += " " + tag
+        return post_tags
 
 
 class Social_Bluesky(Social):
@@ -144,7 +146,7 @@ class Social_Bluesky(Social):
         raw_tags = tags
         tags = raw_tags.split(",")
         for tag in tags:
-            tag = tag.strip()
+            tag = tag.strip().replace(" ", "_")
             if tag.startswith("#"):
                 hashtag_list.append(tag[1:])
         return hashtag_list
