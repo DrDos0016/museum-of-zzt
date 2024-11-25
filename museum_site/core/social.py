@@ -109,7 +109,7 @@ class Social_Bluesky(Social):
                 if not first_in_line:
                     text_builder.text(" ")
                 if word.startswith("http"):
-                    text_builder.link(word, word)
+                    text_builder.link(word, word.strip()) # URLs cannot contain \r\n and such
                 else:
                     text_builder.text(word)
                 first_in_line = False

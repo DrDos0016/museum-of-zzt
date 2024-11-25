@@ -10,7 +10,7 @@ from museum_site.constants import SITE_ROOT
 from museum_site.fields import Museum_Multiple_Choice_Field, Museum_Drag_And_Drop_File_Field
 from museum_site.widgets import *
 from zap.core import querydict_to_json_str, zap_upload_file, zap_get_social_account
-from zap.models import Event, Post
+from zap.models import Post
 
 ACCOUNTS = (
     ("bluesky", "Bluesky"),
@@ -35,6 +35,7 @@ DISCORD_ROLES = (
     ("1275156566643048449", "Test Role"),
 )
 #<@&165511591545143296>
+
 
 class ZAP_Model_Select_Form(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -98,10 +99,15 @@ class ZAP_Post_Form(forms.Form):
                 if response:
                     self.responses[account].append(response)
 
-            #if self.cleaned_data.get(reply_id):  # Set reply ID if one exists
-            #    s.reply_to = self.cleaned_data[reply_id]
+            if self.cleaned_data.get(reply_id, "0") and self.cleaned_data.get(reply_id, "0") != "0":  # Set reply ID if one exists
+                if account == "bluesky":
+                    fields = self.cleaned_data[reply_id].split(";")
+                    reply_dict = {"uri": fields[0].split("=", 2)[1], "cid": fields[1].split("=", 2)[1]}
+                    reply_id = {"parent": reply_dict, "root": reply_dict}
+                response = s.post(self.cleaned_data.get("body", ""), self.cleaned_data.get("title", ""), self.cleaned_data.get("hashtags", []), reply_to=reply_id)
+            else:
+                response = s.post(self.cleaned_data.get("body", ""), self.cleaned_data.get("title", ""), self.cleaned_data.get("hashtags", []))
 
-            response = s.post(self.cleaned_data.get("body", ""), self.cleaned_data.get("title", ""), self.cleaned_data.get("hashtags", []))  # Post
             post_responses[account] = response
             self.responses[account].append(response)
 
@@ -116,8 +122,11 @@ class ZAP_Post_Form(forms.Form):
         p.tweet_id = post_responses["twitter"].get("data", {}).get("id", 0) if "twitter" in accounts else 0
         p.mastodon_id = post_responses["mastodon"].get("id", 0) if "mastodon" in accounts else 0
         p.tumblr_id = post_responses["tumblr"].get("id", 0) if "tumblr" in accounts else 0
-        if request.GET.get("pk"):
-            p.event_id = request.GET.get("pk")
+
+        if "bluesky" in accounts:
+            bsky_id = "uri={};cid={};".format(post_responses["bluesky"].uri, post_responses["bluesky"].cid)
+            p.bluesky_id = bsky_id
+
         p.save()
         self.processed = True
         self.post_object = p
@@ -138,6 +147,7 @@ class ZAP_Reply_Form(ZAP_Post_Form):
     tweet_id = forms.CharField(widget=forms.HiddenInput())
     tumblr_id = forms.CharField(widget=forms.HiddenInput())
     mastodon_id = forms.CharField(widget=forms.HiddenInput())
+    bluesky_id = forms.CharField(widget=forms.HiddenInput())
 
     def smart_start(self, post=None):
         if not post:
@@ -148,11 +158,9 @@ class ZAP_Reply_Form(ZAP_Post_Form):
         self.fields["tweet_id"].initial = post.tweet_id
         self.fields["tumblr_id"].initial = post.tumblr_id
         self.fields["mastodon_id"].initial = post.mastodon_id
+        self.fields["bluesky_id"].initial = post.bluesky_id
 
         return True
-
-    def process(self, request):
-        print("Proccing form")
 
 
 class ZAP_Media_Upload_Form(forms.Form):

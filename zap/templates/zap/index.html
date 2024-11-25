@@ -1,31 +1,35 @@
 {% extends "zap/main.html" %}
 {% load static %}
 {% load site_tags %}
+{% load tz %}
 
 {% block style %}
 <style>
-    #zap-recent-uploads img
-    {
-        max-width:250px;
-        max-height:250px;
-    }
+#zap-recent-uploads img
+{
+    max-width:250px;
+    max-height:250px;
+}
+
+.post-cell
+{
+    width:50%;
+}
 </style>
 {% endblock %}
 
 {% block zap_body %}
 <h2>Posts</h2>
 <table class="mono">
-    <tr><th>PK</th><th>Title</th><th>Date</th><th>Where</th><th>Actions</th></tr>
+    <tr><th>PK</th><th>Title</th><th>Date (Pacific)</th><th>Where</th><th>Actions</th></tr>
     {% for p in posts %}<tr>
         <td>{{p.pk}}</td>
-        <td>{% if p.event_id %}<a href="/tools/zap/view/{{p.event_id}}/">{{p.event.title}}</a>{% else %}{{p.title}}{% endif %}</td>
-        <td>{{p.created}}</td>
+        <td class="post-cell"><details><summary>{{p.title|default:"Untitled Post"}}</summary>{{p.body}}</details></td>
+        <td>{% timezone "America/Los_Angeles" %}{{p.created|date:'M dS h:i:s A'}}{% endtimezone %}</td>
         <td>{% for service in p.posted_where_links %}{{service|safe}} {% endfor %}</td>
         <td>
-            <ul>
-                <li><a href="{% url 'zap_boost_post' %}?pk={{p.pk}}">Boost</a></li>
-                <li><a href="{% url 'zap_reply_post' %}?pk={{p.pk}}">Reply</a></li>
-            </ul>
+            &bull; <a href="{% url 'zap_boost_post' %}?pk={{p.pk}}">Boost</a><br>
+            &bull; <a href="{% url 'zap_reply_post' %}?pk={{p.pk}}">Reply</a><br
         </td>
     </tr>{% endfor %}
 </table>
