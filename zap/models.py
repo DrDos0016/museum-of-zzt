@@ -37,6 +37,8 @@ class Post(models.Model):
             where.append("mastodon")
         if self.patreon_id and self.mastodon_id != "0":
             where.append("patreon")
+        if self.bluesky_id and self.bluesky_id != "0":
+            where.append("bluesky")
         return where
 
     def get_social_id_dict(self):
@@ -49,6 +51,8 @@ class Post(models.Model):
             output["mastodon"] = self.mastodon_id
         if self.patreon_id:
             output["patreon"] = self.patreon_id
+        if self.patreon_id:
+            output["bluesky"] = self.bluesky_id
         return output
 
     def posted_where_links(self):
@@ -59,6 +63,7 @@ class Post(models.Model):
             "twitter": "https://twitter.com/worldofzzt/status/{}".format(self.tweet_id),
             "tumblr": "https://worldsofzzt.tumblr.com/post/{}".format(self.tumblr_id),
             "mastodon": "https://botsin.space/@worldsofzzt/{}".format(self.mastodon_id),
+            "bluesky": "https://bsky.app/profile/worldsofzzt.bsky.social/post/{}".format(self.bluesky_id.split(";")[0].split("/")[-1])
         }
 
         for service in where:

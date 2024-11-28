@@ -50,4 +50,13 @@
 {% endfor %}</textarea>
 </div>
 {% endif %}
+
+{% if form.responses.bluesky %}
+<div>
+<h3>Bluesky</h3>
+<textarea class="zap-post-response">{% for r in form.responses.bluesky %}{{r}}
+==========================================
+{% endfor %}</textarea>
+</div>
+{% endif %}
 {% endblock %}
