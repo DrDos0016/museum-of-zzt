@@ -14,7 +14,7 @@ export class ZZT_Standard_Renderer
         this.default_characters = [CHAR.SPACE, CHAR.SPACE, CHAR.QUESTION_MARK, CHAR.SPACE, CHAR.SMILEY, CHAR.AMMO, CHAR.TORCH, CHAR.GEM, CHAR.KEY, CHAR.DOOR, CHAR.SCROLL, CHAR.PASSAGE, CHAR.DUPLICATOR, CHAR.BOMB, CHAR.ENERGIZER, CHAR.STAR, CHAR.CLOCKWISE, CHAR.COUNTER, CHAR.BULLET, CHAR.WATER, CHAR.FOREST, CHAR.SOLID, CHAR.NORMAL, CHAR.BREAKABLE, CHAR.BOULDER, CHAR.SLIDER_NS, CHAR.SLIDER_EW, CHAR.FAKE, CHAR.SPACE, CHAR.BLINKWALL, CHAR.TRANSPORTER, CHAR.LINE, CHAR.RICOCHET, CHAR.HORIZ_RAY, CHAR.BEAR, CHAR.RUFFIAN, CHAR.SMILEY, CHAR.SLIME, CHAR.SHARK, CHAR.SPINNING_GUN, CHAR.PUSHER, CHAR.LION, CHAR.TIGER, CHAR.VERT_RAY, CHAR.HEAD, CHAR.SEGMENT, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK];
 
         this.element_func = this.initialize_renderer_draw_functions();
-        this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1, "oop": ""};
+        this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1, "oop": "", "under": {"element_id": 0, "color": 0}};
 
         this.ctx = null;
     }
@@ -443,6 +443,22 @@ export class ZZT_Standard_Renderer
         line_idx += (this.rendered_board.elements[x - 1][y].id == element.id || this.rendered_board.elements[x - 1][y].id == 1) ? 4 : 0;  // W
         line_idx += (this.rendered_board.elements[x + 1][y].id == element.id || this.rendered_board.elements[x + 1][y].id == 1) ? 8 : 0;  // E
 
+        if (this.name == "Super ZZT Standard Renderer" && element.id == 63) // Check under element for NSWE of element
+        {
+            // TODO this technically won't work properly if you have a statted web on top of another web
+            let stat = this.get_stats_for_element(x, y - 1)[0];
+            if (stat)
+            {
+                line_idx += (stat.under.element_id == element.id) ? 1 : 0;
+                stat = this.get_stats_for_element(x, y + 1)[0];
+                line_idx += (stat.under.element_id == element.id) ? 2 : 0;
+                stat = this.get_stats_for_element(x - 1, y)[0];
+                line_idx += (stat.under.element_id == element.id) ? 4 : 0;
+                stat = this.get_stats_for_element(x + 1, y)[0];
+                line_idx += (stat.under.element_id == element.id) ? 8 : 0;
+            }
+        }
+
         return [element.color % 16, parseInt(element.color / 16), line_chars[line_idx]];
     }
 
@@ -593,7 +609,6 @@ export class SZZT_Standard_Renderer extends ZZT_Standard_Renderer
         this.palette = new Palette();
         this.default_characters = [CHAR.SPACE, CHAR.SPACE, CHAR.QUESTION_MARK, CHAR.SPACE, CHAR.SMILEY, CHAR.AMMO, CHAR.QUESTION_MARK, CHAR.GEM, CHAR.KEY, CHAR.DOOR, CHAR.SCROLL, CHAR.PASSAGE, CHAR.DUPLICATOR, CHAR.BOMB, CHAR.ENERGIZER, CHAR.QUESTION_MARK, CHAR.CLOCKWISE, CHAR.COUNTER, CHAR.QUESTION_MARK, CHAR.LAVA, CHAR.FOREST, CHAR.SOLID, CHAR.NORMAL, CHAR.BREAKABLE, CHAR.BOULDER, CHAR.SLIDER_NS, CHAR.SLIDER_EW, CHAR.FAKE, CHAR.SPACE, CHAR.BLINKWALL, CHAR.TRANSPORTER, CHAR.LINE, CHAR.RICOCHET, CHAR.QUESTION_MARK, CHAR.BEAR, CHAR.RUFFIAN, CHAR.SMILEY, CHAR.SLIME, CHAR.SHARK, CHAR.SPINNING_GUN, CHAR.PUSHER, CHAR.LION, CHAR.TIGER, CHAR.QUESTION_MARK, CHAR.HEAD, CHAR.SEGMENT, CHAR.QUESTION_MARK, CHAR.FLOOR, CHAR.WATER_N, CHAR.WATER_S, CHAR.WATER_W, CHAR.WATER_E, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.ROTON, CHAR.DRAGON_PUP, CHAR.PAIRER, CHAR.SPIDER, CHAR.WEB, CHAR.STONE, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.BULLET, CHAR.HORIZ_RAY, CHAR.VERT_RAY, CHAR.STAR];
         this.element_func = this.initialize_renderer_draw_functions();
-        this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1, "oop": ""};
 
         this.ctx = null;
     }
