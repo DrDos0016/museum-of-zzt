@@ -2,7 +2,7 @@ import json
 import os
 import time
 
-from museum_site.constants import APP_ROOT, HOST, APP_ROOT
+from museum_site.constants import APP_ROOT, HOST, APP_ROOT, SITE_ROOT
 
 import pytumblr
 import requests
@@ -68,7 +68,7 @@ class Social():
         # IN: "#zzt, #stream schedule, #darkdigital" | OUT: " #zzt #stream_schedule #darkdigital"
         post_tags = ""
         if tags:
-            tags = tag.split(", ")
+            tags = tags.split(", ")
             for tag in tags:
                 tag = tag.replace(" ", "_")
                 post_tags += " " + tag
@@ -170,8 +170,15 @@ class Social_Discord(Social):
         return True
 
     def upload_media(self, media_path=None, media_url=None, media_bytes=None):
-        # TODO
-        return True
+        if media_bytes:
+            print("Bytes are currently unsupported.")
+            return False
+        if media_url:
+            print("External media is currently unsupported.")
+            return False
+        if media_path:
+            print("MEDIA PATH IS", media_path)
+            self.media.append(media_path)
 
     def post(self, body, title="", tags=""):
         destinations = {
@@ -186,15 +193,20 @@ class Social_Discord(Social):
 
         discord_data = {"content": body}
 
-        """
-        if self.cleaned_data["image_embeds"]:
-            embeds = []
-            for embed in self.cleaned_data["image_embeds"]:
-                embeds.append({"image": {"url": embed}})
-            discord_data["embeds"] = embeds
-        """
+        # Add media
+        images = []
+        if self.media:
+            for m in self.media:
+                if m.startswith(SITE_ROOT):  # This is from the ZAP form
+                    m = m.replace(SITE_ROOT, "").replace("/museum_site/", "")
+                images.append("https://museumofzzt.com/" + m)
+        if images:
+            discord_data["embeds"] = []
+            for i in images:
+                discord_data["embeds"].append({"image": {"url": i}})
 
         response = requests.post(destination_webhook, headers={"Content-Type": "application/json"}, data=json.dumps(discord_data))
+        self.media = []
         self.log_response(response)
         return response
 
