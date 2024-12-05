@@ -108,11 +108,11 @@ export class ZZT_Handler extends Handler
         let element, name;
         try {
             element = board.elements[stat.x][stat.y];
-            name = ZZT_ELEMENTS[element.id].name;
+            name = ZZT_Handler.element_lookup(element.id).name;
         }
         catch (error)
         {
-            //console.error(error);
+            console.log("ERROR IS", error);
             name = "<i>Out of Bounds Stat</i>";
         }
         if (stat.oop[0] == "@")
@@ -123,6 +123,9 @@ export class ZZT_Handler extends Handler
         let output = `<a class="stat-link jsLink" data-x="${stat.x}" data-y="${stat.y}">(${padded(stat.x)}, ${padded(stat.y)}) ${name}</a>${byte_count}`;
         return output;
     }
+
+    static element_lookup(idx) { return ZZT_ELEMENTS[idx]; }
+    call_element_lookup(idx) { return ZZT_Handler.element_lookup(idx); }
 
     parse_bytes() {
         let start = Date.now();
@@ -566,7 +569,7 @@ export class ZZT_Handler extends Handler
         for (var idx = 0; idx < sorted_stat_list.length; idx++)
         {
             let hidden = "";
-            console.log("Stat oop is?", sorted_stat_list[idx].oop.slice(0,15));
+            //console.log("Stat oop is?", sorted_stat_list[idx].oop.slice(0,15));
             if (! codeless && sorted_stat_list[idx].oop == "")
                 hidden = " class='none'";
             let stat_label = ZZT_Handler.stat_list_label(sorted_stat_list[idx], this.boards[this.selected_board]);
@@ -603,7 +606,7 @@ export class ZZT_Handler extends Handler
         }
         let coords = this.get_tile_coordinates_from_cursor_position(e);
 
-        if ((coords.x == this.cursor_tile.x) && (coords.y == this.cursor_tile.y) || (coords.x > 60 || coords.y > 25 || coords.x < 0 || coords.y < 0)) // TODO THESE NUMBERS SHOULD BE VARS
+        if ((coords.x == this.cursor_tile.x) && (coords.y == this.cursor_tile.y) || (coords.x > this.board_width || coords.y > this.board_height || coords.x < 0 || coords.y < 0))
             return false;
 
         this.cursor_tile.x = coords.x;
@@ -611,7 +614,7 @@ export class ZZT_Handler extends Handler
 
         let element_id = this.boards[this.selected_board].elements[coords.x][coords.y].id;
         let color_id = this.boards[this.selected_board].elements[coords.x][coords.y].color;
-        let element = ZZT_ELEMENTS[element_id];
+        let element = this.call_element_lookup(element_id);
 
         // Sizing
         $(".hover-element").removeClass(`zoom-2`); // TODO This assumes only 1x and 2x zooms
@@ -691,7 +694,7 @@ export class ZZT_Handler extends Handler
         {
             element_id = this.boards[this.selected_board].elements[x][y].id;
             color_id = this.boards[this.selected_board].elements[x][y].color;
-            element = ZZT_ELEMENTS[element_id];
+            element = this.call_element_lookup(element_id);
         }
         catch (error)
         {
@@ -702,9 +705,6 @@ export class ZZT_Handler extends Handler
                 "oop_name":"",
                 "character":63
             }
-            //element_id = 4;
-            //color_id = 11;
-            //element = ZZT_ELEMENTS[element_id];
         }
         let output = `<table>`;
 
@@ -725,7 +725,7 @@ export class ZZT_Handler extends Handler
                 {"value": `${tile_stats[idx].param1}`, "label": `${this.get_param_name_for_element(element.id, 1)}`, },
                 {"value": `${tile_stats[idx].cycle}`, "label": "Cycle", },
                 {"value": `${this.get_param2_value(element.id, tile_stats[idx].param2)}`, "label": `${this.get_param_name_for_element(element.id, 2)}`, },
-                {"value": `${ZZT_ELEMENTS[tile_stats[idx].under.element_id].name}`, "label": "Under Element", },
+                {"value": `${this.call_element_lookup(tile_stats[idx].under.element_id).name}`, "label": "Under Element", },
                 {"value": `${this.get_param3_value(element.id, tile_stats[idx].param3)}`, "label": `${this.get_param_name_for_element(element.id, 3)}`, },
                 {"value": `${this.get_color(tile_stats[idx].under.color)}`, "label": "Under Color", },
                 {"value": `${this.get_step(tile_stats[idx])}`, "label": "Step (X, Y)", },
@@ -793,8 +793,8 @@ export class ZZT_Handler extends Handler
         if (element_id == "<i>None</i>")
             return default_param
 
-        if (ZZT_ELEMENTS[element_id]["param" + param])
-            return ZZT_ELEMENTS[element_id]["param" + param];
+        if (this.call_element_lookup(element_id)["param" + param])
+            return this.call_element_lookup(element_id)["param" + param];
         return default_param
     }
 
@@ -1176,7 +1176,7 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
                     try {
                         let element = this.boards[idx].elements[stat.x][stat.y];
-                        name = ZZT_ELEMENTS[element.id].name;
+                        name = this.call_element_lookup(element.id).name;
                     }
                     catch (error)
                     {
@@ -1294,9 +1294,12 @@ export class SZZT_Handler extends ZZT_Handler
         },
     }
 
+    static element_lookup(idx) { return SZZT_ELEMENTS[idx]; }
+    call_element_lookup(idx) { return SZZT_Handler.element_lookup(idx); }
+
     parse_world()
     {
-        console.log("Parsing world");
+        console.log("Parsing world for SZZT");
         let world = {};
         world.identifier = this.read_Int16();
         world.total_boards = this.read_Int16();
