@@ -94,7 +94,7 @@ function initialize()
         }
         else if (e.shiftKey && e.keyCode == KEY.B) // Toggle blinking
         {
-            if (match = $("select[data-config='zzt_handler.renderer.appearance.show_high_intensity_backgrounds']"))
+            if (match = $("select[data-config$='renderer.appearance.show_high_intensity_backgrounds']"))
             {
                 let current = parseInt(match.val());
                 match.val((current == 1 ? 0 : 1));
@@ -118,8 +118,8 @@ function initialize()
 
         // DEBUG TODO
         else if (e.keyCode == KEY.C) {
-            //console.log(fv.configs);
-            console.log(fv.files[fv.active_fvpk]);
+            console.log(fv.configs);
+            //console.log(fv.files[fv.active_fvpk]);
         }
     });
 
