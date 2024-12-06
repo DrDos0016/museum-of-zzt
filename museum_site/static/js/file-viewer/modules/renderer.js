@@ -6,6 +6,7 @@ export class ZZT_Standard_Renderer
     constructor(fvpk=null)
     {
         this.name = "ZZT Standard Renderer";
+        this.config_key = "zzt_handler.renderer";
         this.fvpk = fvpk;
         this.board_width = 60;
         this.board_height = 25;
@@ -17,6 +18,31 @@ export class ZZT_Standard_Renderer
         this.default_stat = {"x": 0, "y": 0, "step_x": 0, "step_y": 0, "cycle": 0, "param1": 0, "param2": 0, "param3": 0, "follow": -1, "leader": -1, "oop": "", "under": {"element_id": 0, "color": 0}};
 
         this.ctx = null;
+
+        this.config_fields = [
+            {"label_text": "High Intensity <u>B</u>ackgrounds", "widget": "select", "help_text": "Render bright background colors. Toggle at any time with <span class='mono'>Shift + B</span>.", "config_setting": "appearance.show_high_intensity_backgrounds", "data_type": "int", "options_data": [
+                {"value": 1, "text": "On", "default": false},
+                {"value": 0, "text": "Off", "default": true},
+            ]},
+            {"label_text": "Invisible Wall Appearance", "widget": "select", "help_text": "Render Invisible Walls to match their appearance during gameplay/editing.", "config_setting": "appearance.invisible_wall", "data_type": "int", "options_data": [
+                {"value": 0, "text": "Visible - Editor Style", "default": true},
+                {"value": 1, "text": "Invisible - Gameplay Style", "default": false},
+                {"value": 2, "text": "Revealed - Gameplay Style", "default": false},
+            ]},
+            {"label_text": "Empty Appearance", "widget": "select", "help_text": "Render Empties invisibly, visibly, or as text to reveal erased text in some worlds.", "config_setting": "appearance.empty", "data_type": "int", "options_data": [
+                {"value": 0, "text": "&nbsp; - Invisible", "default": true},
+                {"value": 1, "text": "• - Visible", "default": false},
+                {"value": 2, "text": "A - As Text", "default": false},
+            ]},
+            {"label_text": "Monitor Appearance", "widget": "select", "help_text": "Render Monitors invisibly as ZZT does or visibly for clarity.", "config_setting": "appearance.monitor", "data_type": "int", "options_data": [
+                {"value": 0, "text": "M - Visible", "default": true},
+                {"value": 1, "text": "&nbsp - Hidden", "default": false},
+            ]},
+            {"label_text": "Board Edge Appearance", "widget": "select", "help_text": "Render Board Edges invisibly as ZZT does or visibly for clarity.", "config_setting": "appearance.edge", "data_type": "int", "options_data": [
+                {"value": 0, "text": "E - Visible", "default": true},
+                {"value": 1, "text": "&nbsp - Hidden", "default": false},
+            ]},
+        ];
     }
 
     static initial_config = {
@@ -31,6 +57,43 @@ export class ZZT_Standard_Renderer
         "game": {
             "tick": 0,
         },
+    }
+
+    get_config_key_for_handler()
+    {
+        return this.config_key;
+    }
+
+    get_config_field(field) // TODO This is currently copy/pasted from handler.js
+    {
+        let widget = "";
+        let full_setting = this.get_config_key_for_handler() + "." + field.config_setting;
+        let current_value = this.resolve_config_path(field.config_setting);
+
+        if (field.widget == "select")
+        {
+            let options_html = "";
+            for (let idx=0; idx < field.options_data.length; idx++)
+            {
+                let option = field.options_data[idx];
+                options_html += `<option value="${option.value}"${(current_value == option.value) ? " selected" : ""}>${option.text}${option.default ? "*" : ""}</option>\n`;
+            }
+
+            widget = `<select id="${full_setting}" data-config="${full_setting}" data-type="${field.data_type}" data-reparse="${field.reparse}">
+                ${options_html}
+            </select>\n`;
+            console.log("Widget for", full_setting);
+        }
+
+        let field_html = `<div class="field-wrapper">
+            <label>${field.label_text}:</label>
+            <div class="field-value">
+                ${widget}
+            </div>
+            <p class="field-help">${field.help_text}</p>
+        </div>\n`;
+
+        return field_html;
     }
 
     initialize_renderer_draw_functions()
@@ -56,57 +119,34 @@ export class ZZT_Standard_Renderer
         return element_func;
     }
 
+    resolve_config_path(setting)
+    {
+        console.log("Resolve config path:", setting);
+
+        let components = setting.split(".");
+        // TODO: This seems like it's a dumb way to do this. -- Note this isn't identical to the other dumb time I do similar in in file_viewer.js
+        switch (components.length) {
+            case 4:
+                return this.config[components[0]][components[1]][components[2]][components[3]];
+            case 3:
+                return this.config[components[0]][components[1]][components[2]];
+            case 2:
+                return this.config[components[0]][components[1]];
+            case 1:
+                return this.config[components[0]];
+        }
+        console.log("ERROR: Invalid config path");
+    }
+
     get_preferences()
     {
         let output = "<h3>Renderer Options</h3>";
         let config_key = "renderer";
 
-        output += `<div class="field-wrapper">
-            <label for="">High Intensity <u>B</u>ackgrounds:</label>
-            <div class="field-value"><select data-config="zzt_handler.${config_key}.appearance.show_high_intensity_backgrounds" data-type="int">
-                <option value=1${(this.config.appearance.show_high_intensity_backgrounds == true) ? " selected" : ""}>On</option>
-                <option value=0${(this.config.appearance.show_high_intensity_backgrounds == false) ? " selected" : ""}>Off*</option>
-            </select></div>
-            <p class="field-help">Render bright background colors. Toggle at any time with <span class="mono">Shift + B</span>.</p>
-        </div>`;
-
-        output += `<div class="field-wrapper">
-            <label for="">Invisible Wall Appearance:</label>
-            <div class="field-value"><select data-config="zzt_handler.${config_key}.appearance.invisible_wall" data-type="int">
-                <option value=0${(this.config.appearance.invisible_wall == 0) ? " selected" : ""}>Visible - Editor Style*</option>
-                <option value=1${(this.config.appearance.invisible_wall == 1) ? " selected" : ""}>Invisible - Gameplay Style</option>
-                <option value=2${(this.config.appearance.invisible_wall == 2) ? " selected" : ""}>Revealed - Gameplay Style</option>
-            </select></div>
-            <p class="field-help">Render bright background colors.</p>
-        </div>`;
-
-        output += `<div class="field-wrapper">
-            <label for="">Empty Appearance:</label>
-            <div class="field-value"><select data-config="zzt_handler.${config_key}.appearance.empty" data-type="int">
-                <option value=0${(this.config.appearance.empty == 0) ? " selected" : ""}>&nbsp; - Invisible*</option>
-                <option value=1${(this.config.appearance.empty == 1) ? " selected" : ""}>• - Visible</option>
-                <option value=2${(this.config.appearance.empty == 2) ? " selected" : ""}>A - Render As Text</option>
-            </select></div>
-            <p class="field-help">Render empties invisibly, visibly, or as text to reveal erased text in some worlds.</p>
-        </div>`;
-
-        output += `<div class="field-wrapper">
-            <label for="">Monitor Appearance:</label>
-            <div class="field-value"><select data-config="zzt_handler.${config_key}.appearance.monitor" data-type="int">
-                <option value=0${(this.config.appearance.monitor == 0) ? " selected" : ""}>M - KevEdit Style*</option>
-                <option value=1${(this.config.appearance.monitor == 1) ? " selected" : ""}>Hidden - ZZT Style</option>
-            </select></div>
-            <p class="field-help">Render bright background colors.</p>
-        </div>`;
-
-        output += `<div class="field-wrapper">
-            <label for="">Board Edge Appearance:</label>
-            <div class="field-value"><select data-config="zzt_handler.${config_key}.appearance.edge" data-type="int">
-                <option value=0${(this.config.appearance.edge == 0) ? " selected" : ""}>E - KevEdit Style*</option>
-                <option value=1${(this.config.appearance.edge == 1) ? " selected" : ""}>Hidden - ZZT Style</option>
-            </select></div>
-            <p class="field-help">Render bright background colors.</p>
-        </div>`;
+        for (let idx=0; idx < this.config_fields.length; idx++)
+        {
+            output += this.get_config_field(this.config_fields[idx]);
+        }
         return output;
     }
 
@@ -602,6 +642,7 @@ export class SZZT_Standard_Renderer extends ZZT_Standard_Renderer
     {
         super(fvpk);
         this.name = "Super ZZT Standard Renderer";
+        this.config_key = "super_zzt_handler.renderer";
         this.fvpk = fvpk;
         this.board_width = 96;
         this.board_height = 80;
@@ -611,6 +652,33 @@ export class SZZT_Standard_Renderer extends ZZT_Standard_Renderer
         this.element_func = this.initialize_renderer_draw_functions();
 
         this.ctx = null;
+
+        this.add_subclass_renderer_config_fields();
+    }
+
+    static initial_config = {
+        "appearance": {
+            "show_high_intensity_backgrounds": false,
+            "invisible_wall": 0,
+            "empty": 0,
+            "monitor": 0,
+            "edge": 0,
+            "show_outer_border": false, // TODO: Is this even a feature worth supporting
+            "stone": 0,
+        },
+        "game": {
+            "tick": 0,
+        },
+    }
+
+    add_subclass_renderer_config_fields()
+    {
+        this.config_fields = this.config_fields.concat([
+            {"label_text": "Stone of Power Appearance", "widget": "select", "help_text": "Render Stones of Power with a constant appearance or randomly", "config_setting": "appearance.stone", "data_type": "int", "options_data": [
+                {"value": 0, "text": "Constant (Green Z)", "default": true},
+                {"value": 1, "text": "Random", "default": false},
+            ]},
+        ]);
     }
 
     initialize_renderer_draw_functions()
@@ -659,8 +727,19 @@ export class SZZT_Standard_Renderer extends ZZT_Standard_Renderer
 
     stone_draw(x, y)
     {
-        let char = 65 + Math.floor(Math.random() * 26);
-        let fg = 9 + Math.floor(Math.random() * 7);
+        let char, fg;
+
+        switch (this.config.appearance.stone)
+        {
+            case 0:
+                char = 90;
+                fg = 10;
+                break;
+            default:
+                char = 65 + Math.floor(Math.random() * 26);
+                fg = 9 + Math.floor(Math.random() * 7);
+                break;
+        }
         let bg = 0;
         return [fg, bg, char];
     }
