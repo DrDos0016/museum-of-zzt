@@ -136,6 +136,9 @@
 .hover-element.zoom-2 { top:-353px; left:-236px; }
 .hover-element.bottom.zoom-2 { top:301px; left:-236px; }
 
+.envelope-szzt .hover-element { top:-1128px; }
+.envelope-szzt .hover-element.bottom { top:-435px; }
+
 .color-swatch
 {
     height:2em;
@@ -148,6 +151,8 @@
 
 .crosshair-wrapper { height:0px; position:absolute; }
 .crosshair { position:relative; top:-358px; left:5px; }
+
+.envelope-szzt .crosshair { top:-1128px; left:5px; }
 
 details .oop-summary { font-style: oblique; }
 details .oop-summary::before { content: "+ Show"; }
