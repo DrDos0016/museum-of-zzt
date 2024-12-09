@@ -256,6 +256,7 @@ export class ZZT_Standard_Renderer
             let border_h = this.character_set.tile_height * zoom;
             let zoom_comp_top = (zoom == 2) ? 5 : 0; // Compensate for zoom being centered
             let zoom_comp_left = (zoom == 2) ? -240 : 0; // Ditto
+            let scroll_top = $("#fv-main").scrollTop();
 
             $(".crosshair").css(
             {
@@ -265,7 +266,7 @@ export class ZZT_Standard_Renderer
                 "border-right": `${border_w}px solid #FFD700`,
                 "border-bottom": `${border_h}px solid #FFD700`,
                 "border-left": `${border_w}px solid #FFD700`,
-                "margin-top": `${y * this.character_set.tile_height * zoom + zoom_comp_top}px`,
+                "margin-top": `${y * this.character_set.tile_height * zoom + zoom_comp_top - scroll_top}px`,
                 "margin-left": `${x * this.character_set.tile_width * zoom + zoom_comp_left}px`,
             });
             return true;
@@ -282,7 +283,6 @@ export class ZZT_Standard_Renderer
             "margin-top": "0px",
             "margin-left": "0px",
         });
-
     }
 
     get_stats_for_element(x, y, limit=1)

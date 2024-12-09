@@ -174,6 +174,7 @@ export class Handler
             widget = `<select id="${full_setting}" data-config="${full_setting}" data-type="${field.data_type}" data-reparse="${field.reparse}">
                 ${options_html}
             </select>\n`;
+            console.log("Widget for", full_setting);
         }
 
         let field_html = `<div class="field-wrapper">
@@ -190,7 +191,7 @@ export class Handler
     resolve_config_path(setting)
     {
         let components = setting.split(".");
-        // TODO: This seems like it's a dumb way to do this. -- Note this isn't identical to the other dumb time I do this in in file_viewer.js
+        // TODO: This seems like it's a dumb way to do this. -- Note this isn't identical to the other dumb time I do similar in in file_viewer.js
         switch (components.length) {
             case 4:
                 return this.config[components[0]][components[1]][components[2]][components[3]];

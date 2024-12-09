@@ -250,7 +250,7 @@ export class File_Viewer
 
 
         let components = config_string_raw.split(".");
-        console.log("CONFIG", this.configs);
+        console.log("FV.CONFIGS", this.configs);
         console.log("COMPONENTS", components);
 
         // TODO: This seems like it's a dumb way to do this.
