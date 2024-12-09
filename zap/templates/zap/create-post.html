@@ -12,6 +12,11 @@
 </style>
 {% endblock %}
 
+{% block scripts %}
+<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
+<script src="{% static 'zap/create-post.js' %}?{{BOOT_TS}}"></script>
+{% endblock %}
+
 {% block zap_body %}
 <h1>Create Post</h1>
 

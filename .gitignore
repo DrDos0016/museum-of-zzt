@@ -41,7 +41,9 @@ museum_site/static/data/base/*
 museum_site/static/data/24hozzt-raw-scores
 museum_site/static/robots.txt
 museum_site/static/wozzt-queue/archive
-museum_site/static/zap
+museum_site/static/zap/icons
+museum_site/static/zap/media
+museum_site/static/zap/renders
 museum_site/templates/museum_site/debug.html
 .htpasswd
 DEV
