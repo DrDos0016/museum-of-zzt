@@ -193,7 +193,7 @@ class ZGame_Form(forms.ModelForm):
     )
     company = Museum_Tagged_Text_Field(
         required=False,
-        help_text="Any companies this file is!! published under. If there are none, leave this field blank. If there are multiple, separate them with a comma.",
+        help_text="Any companies this file is published under. If there are none, leave this field blank. If there are multiple, separate them with a comma.",
     )
     genre = Museum_Model_Scrolling_Multiple_Choice_Field(
         required=False,
