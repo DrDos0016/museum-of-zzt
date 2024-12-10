@@ -24,18 +24,23 @@ from museum_site.settings import NEW_UPLOAD_WEBHOOK_URL, REMOTE_ADDR_HEADER
 
 
 def upload_complete(request, token):
-    data = {"title": "Upload Complete"}
+    context = {"title": "Upload Complete"}
 
-    data["file"] = File.objects.get(upload__edit_token=token)
-    data["upload"] = data["file"].upload
+    zfile = File.objects.get(upload__edit_token=token)
 
     # Generate Content object
-    Content.generate_content_object(data["file"])
+    Content.generate_content_object(zfile)
 
     # Calculate queue size
     cache.set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count())
 
-    return render(request, "museum_site/upload-complete.html", data)
+    # Store the edit token in the current session
+    request.session["STORED_EDIT_TOKEN"] = zfile.upload.edit_token
+
+    context["zfile"] = zfile
+    context["upload"] = zfile.upload
+
+    return render(request, "museum_site/upload-complete.html", context)
 
 
 class Upload_View(TemplateView):
@@ -262,7 +267,7 @@ class Upload_Action_View(ListView):
             context["action"] = "Delete"
             context["action_verb"] = "Deleting"
 
-        context["form"] = Upload_Action_Form(initial={"action": action})
+        context["form"] = Upload_Action_Form(initial={"action": action, "token": self.request.session.get("STORED_EDIT_TOKEN", "")})
 
         if self.request.user.is_authenticated:
             context["my_uploads"] = File.objects.unpublished_user_uploads(self.request.user.id)

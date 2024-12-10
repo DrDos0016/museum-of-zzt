@@ -10,6 +10,8 @@
 
 <p>{{action_verb}} an unpublished upload requires entering the <i>Edit Token</i> that was generated when the file was first uploaded.</p>
 
+<p>Your most recently used edit token (if available) has been pre-filled.</p>
+
 <form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
 {% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
 {% include "museum_site/blocks/generic-form.html" %}
