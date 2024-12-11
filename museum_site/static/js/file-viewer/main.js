@@ -438,6 +438,13 @@ function shortcut_toggle_encoding()
     $("select[data-config='text_handler.renderer.encoding']").change();
 }
 
+function add_charset(charset)
+{
+    console.log("Adding charset", charset);
+    charsets.push(charset);
+}
+
 let fv = new File_Viewer();
 let zip = new JSZip();
+let charsets = [];
 $(document).ready(initialize);

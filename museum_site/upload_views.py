@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 from django.core.cache import cache
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, FormView, TemplateView
@@ -64,8 +65,11 @@ class Upload_View(TemplateView):
 
         if self.mode == "edit":
             self.populate_db_instance_objects()
+            if not self.zgame_obj.is_detail(DETAIL_UPLOADED):
+                raise PermissionDenied
 
         self.zgame_initial["release_date"] = str(datetime.now())[:10]  # Set to current date
+
 
         super().setup(request, *args, **kwargs)
 

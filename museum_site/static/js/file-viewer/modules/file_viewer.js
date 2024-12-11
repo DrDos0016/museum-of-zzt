@@ -1,3 +1,4 @@
+import { Charset_Handler } from "./charset_handler.js";
 import { Debug_Handler } from "./debug_handler.js";
 import { Image_Handler } from "./image_handler.js";
 import { Local_File_Uploader_Handler } from "./local_file_uploader_handler.js";
@@ -24,6 +25,7 @@ export const EXTENSIONS_TEXT = [
 ]
 export const EXTENSIONS_ZZT = [".MWZ", ".SAV", ".Z_T", ".ZZT"]; // TODO Super ZZT Saves
 export const EXTENSIONS_SZZT = [".SZT"]; // TODO Super ZZT Saves
+export const EXTENSIONS_CHARSET = [".CHR"];
 
 export class File_Viewer
 {
@@ -322,6 +324,8 @@ export function create_handler_for_file(fvpk, filename, bytes, meta)
             return new SZZT_High_Score_Handler(fvpk, filename, bytes, meta);
         case EXTENSIONS_TEXT.indexOf(ext) != -1:
             return new Text_Handler(fvpk, filename, bytes, meta);
+        case EXTENSIONS_CHARSET.indexOf(ext) != -1:
+            return new Charset_Handler(fvpk, filename, bytes, meta);
         case fvpk == "fvpk-overview":
             return new Overview_Handler(fvpk, filename, bytes, meta);
         case fvpk == "fvpk-local":

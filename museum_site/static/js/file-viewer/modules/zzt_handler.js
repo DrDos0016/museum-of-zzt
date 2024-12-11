@@ -569,10 +569,15 @@ export class ZZT_Handler extends Handler
         for (var idx = 0; idx < sorted_stat_list.length; idx++)
         {
             let hidden = "";
+            let stat_label;
             //console.log("Stat oop is?", sorted_stat_list[idx].oop.slice(0,15));
             if (! codeless && sorted_stat_list[idx].oop == "")
                 hidden = " class='none'";
-            let stat_label = ZZT_Handler.stat_list_label(sorted_stat_list[idx], this.boards[this.selected_board]);
+            if (this.name == "ZZT Handler")
+                stat_label = ZZT_Handler.stat_list_label(sorted_stat_list[idx], this.boards[this.selected_board]);
+            else if (this.name == "Super ZZT Handler")
+                stat_label = SZZT_Handler.stat_list_label(sorted_stat_list[idx], this.boards[this.selected_board]);
+
             output += `<li${hidden} value="${sorted_stat_list[idx].idx}">${stat_label}</li>`;
         }
         output += "</ol>\n";
@@ -1292,6 +1297,27 @@ export class SZZT_Handler extends ZZT_Handler
         "rendering_method": {
             "name": "SZZT_Standard_Renderer",
         },
+    }
+
+    static stat_list_label(stat, board)
+    {
+        let element, name;
+        try {
+            element = board.elements[stat.x][stat.y];
+            name = SZZT_Handler.element_lookup(element.id).name;
+        }
+        catch (error)
+        {
+            console.log("ERROR IS", error);
+            name = "<i>Out of Bounds Stat</i>";
+        }
+        if (stat.oop[0] == "@")
+        {
+            name = escape_html(stat.oop.slice(0, stat.oop.indexOf("\n")));
+        }
+        let byte_count = (stat.oop != "") ? ` ${stat.oop_length} bytes` : '';
+        let output = `<a class="stat-link jsLink" data-x="${stat.x}" data-y="${stat.y}">(${padded(stat.x)}, ${padded(stat.y)}) ${name}</a>${byte_count}`;
+        return output;
     }
 
     static element_lookup(idx) { return SZZT_ELEMENTS[idx]; }
