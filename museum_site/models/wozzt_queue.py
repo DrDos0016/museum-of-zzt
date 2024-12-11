@@ -256,8 +256,12 @@ class WoZZT_Queue(BaseModel):
 
     def send_mastodon(self):
         # Log in
-        mastodon = Mastodon(client_id=MASTODON_SECRETS_FILE)
-        mastodon.log_in(MASTODON_EMAIL, MASTODON_PASS)
+        mastodon = Mastodon(
+            client_id=MASTODON_CLIENT_KEY,
+            client_secret=MASTODON_CLIENT_SECRET,
+            access_token=MASTODON_ACCESS_TOKEN,
+            api_base_url="https://mastodon.social"
+        )
 
         # Upload the image
         media_resp = mastodon.media_post(media_file=self.image_path())

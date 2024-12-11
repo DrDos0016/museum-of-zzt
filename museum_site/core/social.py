@@ -226,10 +226,13 @@ class Social_Mastodon(Social):
         self.password = MASTODON_PASS
 
     def login(self):
-        self.client = Mastodon(client_id=MASTODON_SECRETS_FILE)
-        response = self.client.log_in(MASTODON_EMAIL, MASTODON_PASS)
-
-        self.log_response(response)
+        self.client = Mastodon(
+            client_id=self.consumer_key,
+            client_secret=self.consumer_secret,
+            access_token=self.token,
+            api_base_url="https://mastodon.social"
+        )
+        response = "Logged in"
         return response
 
     def upload_media(self, media_path=None, media_url=None, media_bytes=None):
