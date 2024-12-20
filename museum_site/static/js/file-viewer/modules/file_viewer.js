@@ -1,3 +1,5 @@
+import { CHARACTER_SETS } from "./core.js";
+
 import { Charset_Handler } from "./charset_handler.js";
 import { Debug_Handler } from "./debug_handler.js";
 import { Image_Handler } from "./image_handler.js";
@@ -48,9 +50,17 @@ export class File_Viewer
 
     add_file(filename, bytes, meta)
     {
+        console.log("ADDING FILE", filename, bytes);
         // Adds a file into the file registry
         let fvpk = "fvpk-" + this.fvi_count;
         this.files[fvpk] = create_handler_for_file(fvpk, filename, bytes, meta);
+
+        // Register charsets as detected
+        if (this.files[fvpk].name == "Charset Handler")
+        {
+            CHARACTER_SETS[fvpk] = {"name": filename, "identifier": fvpk, "bytes": bytes, "format": this.files[fvpk].ext};
+        }
+
         if (this.has_auto_load_target && (filename == this.auto_load_filename))
         {
             this.files[fvpk].selected_board = this.auto_load_board;
@@ -310,6 +320,7 @@ export function create_handler_for_file(fvpk, filename, bytes, meta)
 {
     let components = filename.split(".");
     let ext = "." + components[components.length - 1].toUpperCase();
+    console.log("Creating Handler for:", filename);
 
     switch (true) {
         case EXTENSIONS_ZZT.indexOf(ext) != -1:

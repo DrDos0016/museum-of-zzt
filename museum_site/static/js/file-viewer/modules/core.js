@@ -1,5 +1,10 @@
 export let ASCII = "\u0000☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\u00A0";
 
+export let CHARACTER_SETS = {
+    "cp437.png": {"name": "Code Page 437", "identifier": "cp437.png", "format": ".PNG"},
+    /*"ZUZATAN.CHR": {"name": "Zuzatan - Hardcoded", "identifier": "ZUZATAN.CHR", "format": ".CHR"},*/
+}
+
 export class PString
 {
     constructor(value, current_length, max_length)

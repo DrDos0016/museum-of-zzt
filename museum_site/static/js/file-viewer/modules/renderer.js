@@ -1,5 +1,6 @@
 import { Character_Set, CHAR } from "./character_set.js";
 import { Palette, COLOR } from "./palette.js";
+import { CHARACTER_SETS } from "./core.js";
 
 export class ZZT_Standard_Renderer
 {
@@ -20,6 +21,8 @@ export class ZZT_Standard_Renderer
         this.ctx = null;
 
         this.config_fields = [
+            {"label_text": "Character Set", "widget": "select", "help_text": "Character set (font) used for rendering boards.", "config_setting": "appearance.charset_name", "data_type": "str", "options_data": this.get_available_charsets()
+            },
             {"label_text": "High Intensity <u>B</u>ackgrounds", "widget": "select", "help_text": "Render bright background colors. Toggle at any time with <span class='mono'>Shift + B</span>.", "config_setting": "appearance.show_high_intensity_backgrounds", "data_type": "int", "options_data": [
                 {"value": 1, "text": "On", "default": false},
                 {"value": 0, "text": "Off", "default": true},
@@ -47,6 +50,7 @@ export class ZZT_Standard_Renderer
 
     static initial_config = {
         "appearance": {
+            "charset_name": "cp437.png",
             "show_high_intensity_backgrounds": false,
             "invisible_wall": 0,
             "empty": 0,
@@ -82,7 +86,6 @@ export class ZZT_Standard_Renderer
             widget = `<select id="${full_setting}" data-config="${full_setting}" data-type="${field.data_type}" data-reparse="${field.reparse}">
                 ${options_html}
             </select>\n`;
-            console.log("Widget for", full_setting);
         }
 
         let field_html = `<div class="field-wrapper">
@@ -121,8 +124,6 @@ export class ZZT_Standard_Renderer
 
     resolve_config_path(setting)
     {
-        console.log("Resolve config path:", setting);
-
         let components = setting.split(".");
         // TODO: This seems like it's a dumb way to do this. -- Note this isn't identical to the other dumb time I do similar in in file_viewer.js
         switch (components.length) {
@@ -162,8 +163,11 @@ export class ZZT_Standard_Renderer
         }
 
         console.log("TOLD TO RENDER BOARD", board);
-        if (! this.character_set.loaded)
-            await this.character_set.load();
+        if (! this.character_set.loaded || this.character_set.name != this.config.appearance.charset_name)
+        {
+            console.log("Freshly loading charset", this.config.appearance.charset_name);
+            await this.character_set.load(this.config.appearance.charset_name);
+        }
         this.rendered_board = board;
 
         console.log("Charset loaded, back in render board");
@@ -577,6 +581,19 @@ export class ZZT_Standard_Renderer
         let char = (this.config.appearance.edge) ? this.default_characters[element.id] : 69;
         return [element.color % 16, parseInt(element.color / 16), char];
     }
+
+    get_available_charsets()
+    {
+        let options = [];
+        console.log("--Getting charsets", CHARACTER_SETS);
+        for (let idx in CHARACTER_SETS)
+        {
+            let is_default = (false) ? true : false; // TODO This needs work
+            options.push({"value": CHARACTER_SETS[idx].identifier, "text": CHARACTER_SETS[idx].name, "default": is_default});
+            console.log("Adding option", CHARACTER_SETS[idx]);
+        }
+        return options
+    }
 }
 
 
@@ -646,8 +663,6 @@ export class SZZT_Standard_Renderer extends ZZT_Standard_Renderer
         this.fvpk = fvpk;
         this.board_width = 96;
         this.board_height = 80;
-        this.character_set = new Character_Set();
-        this.palette = new Palette();
         this.default_characters = [CHAR.SPACE, CHAR.SPACE, CHAR.QUESTION_MARK, CHAR.SPACE, CHAR.SMILEY, CHAR.AMMO, CHAR.QUESTION_MARK, CHAR.GEM, CHAR.KEY, CHAR.DOOR, CHAR.SCROLL, CHAR.PASSAGE, CHAR.DUPLICATOR, CHAR.BOMB, CHAR.ENERGIZER, CHAR.QUESTION_MARK, CHAR.CLOCKWISE, CHAR.COUNTER, CHAR.QUESTION_MARK, CHAR.LAVA, CHAR.FOREST, CHAR.SOLID, CHAR.NORMAL, CHAR.BREAKABLE, CHAR.BOULDER, CHAR.SLIDER_NS, CHAR.SLIDER_EW, CHAR.FAKE, CHAR.SPACE, CHAR.BLINKWALL, CHAR.TRANSPORTER, CHAR.LINE, CHAR.RICOCHET, CHAR.QUESTION_MARK, CHAR.BEAR, CHAR.RUFFIAN, CHAR.SMILEY, CHAR.SLIME, CHAR.SHARK, CHAR.SPINNING_GUN, CHAR.PUSHER, CHAR.LION, CHAR.TIGER, CHAR.QUESTION_MARK, CHAR.HEAD, CHAR.SEGMENT, CHAR.QUESTION_MARK, CHAR.FLOOR, CHAR.WATER_N, CHAR.WATER_S, CHAR.WATER_W, CHAR.WATER_E, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.ROTON, CHAR.DRAGON_PUP, CHAR.PAIRER, CHAR.SPIDER, CHAR.WEB, CHAR.STONE, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.QUESTION_MARK, CHAR.BULLET, CHAR.HORIZ_RAY, CHAR.VERT_RAY, CHAR.STAR];
         this.element_func = this.initialize_renderer_draw_functions();
 

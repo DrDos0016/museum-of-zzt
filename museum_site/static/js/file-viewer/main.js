@@ -1,7 +1,7 @@
 "use strict";
 
 import { File_Viewer, create_handler_for_file } from "./modules/file_viewer.js";
-import { get_mouse_coordinates, KEY } from "./modules/core.js";
+import { CHARACTER_SETS, get_mouse_coordinates, KEY } from "./modules/core.js";
 
 
 function initialize()
@@ -119,6 +119,7 @@ function initialize()
         // DEBUG TODO
         else if (e.keyCode == KEY.C) {
             console.log(fv.configs);
+            console.log(CHARACTER_SETS);
             //console.log(fv.files[fv.active_fvpk]);
         }
     });
@@ -193,7 +194,6 @@ function open_zip(buffer)
         fv.files["fvpk-overview"].zip_comment = (zip.comment) ? zip.comment : ""; // Store zip file's comment if one exists
         for(let [filename, info] of Object.entries(zip.files))
         {
-            //console.log(info);
             let fvpk = fv.add_file(filename, {}, {
                 "loaded": true,
                 "parsed": false,
@@ -220,6 +220,10 @@ function set_file_bytes(fvpk, data)
 {
     // Sets the bytes for a file in the file registry
     fv.files[fvpk].bytes = data;
+
+    // Copy them to the charset if needed? TODO: Don't like this being added here
+    if (fv.files[fvpk].name == "Charset Handler")
+        CHARACTER_SETS[fvpk].bytes = data.buffer;
 }
 
 
@@ -438,13 +442,6 @@ function shortcut_toggle_encoding()
     $("select[data-config='text_handler.renderer.encoding']").change();
 }
 
-function add_charset(charset)
-{
-    console.log("Adding charset", charset);
-    charsets.push(charset);
-}
-
 let fv = new File_Viewer();
 let zip = new JSZip();
-let charsets = [];
 $(document).ready(initialize);

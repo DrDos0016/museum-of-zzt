@@ -174,7 +174,6 @@ export class Handler
             widget = `<select id="${full_setting}" data-config="${full_setting}" data-type="${field.data_type}" data-reparse="${field.reparse}">
                 ${options_html}
             </select>\n`;
-            console.log("Widget for", full_setting);
         }
 
         let field_html = `<div class="field-wrapper">
