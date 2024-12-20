@@ -592,6 +592,7 @@ def prep_publication_pack(request):
             "publish_path": "publish-" + request.GET.get("publish_date", "")[5:],
             "file_ids_string": ",".join(request.GET.getlist("associated", [])),
             "files": qs_manual_order(File.objects.filter(pk__in=associated_list), associated_list),
+            "volume": len(Article.objects.publication_packs()) + 1
         }
         # Add prefix to File objects for easier template rendering
         idx = 0
