@@ -8,7 +8,7 @@ import museum_api.v1.endpoints
 
 
 urlpatterns = [
-    path("", RedirectView.as_view(url="/api/v2/help/"), name="api_help"),
+    path("", RedirectView.as_view(url="/api/v1/help/"), name="api_help"),
 
     # Museum API - v2 - Endpoints
     path("v2/zfile/advanced-search/", museum_api.v2.endpoints.advanced_search, name="api2_zfile_advanced_search"),
