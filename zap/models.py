@@ -62,7 +62,7 @@ class Post(models.Model):
         service_urls = {
             "twitter": "https://twitter.com/worldofzzt/status/{}".format(self.tweet_id),
             "tumblr": "https://worldsofzzt.tumblr.com/post/{}".format(self.tumblr_id),
-            "mastodon": "https://botsin.space/@worldsofzzt/{}".format(self.mastodon_id),
+            "mastodon": "https://mastodon.social/@worldsofzzt/{}".format(self.mastodon_id),
             "bluesky": "https://bsky.app/profile/worldsofzzt.bsky.social/post/{}".format(self.bluesky_id.split(";")[0].split("/")[-1])
         }
 
