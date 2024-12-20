@@ -335,7 +335,7 @@ $(document).ready(function (){
             </select>
         </label>
         {% endcomment %}
-        <label class="option">Blink Duration (-1 disables)<br><input type="number" name="blink_cycle" value="{{request.GET.blink_cycle}}" step="0.001" placeholder="0.466"></label>
+        <label class="option">Blink Duration (0 disables blinking and keeps dark colors. -1 disables blinking and uses high-intensity colors.)<br><input type="number" name="blink_cycle" value="{{request.GET.blink_cycle}}" step="0.001" placeholder="0.466"></label>
     </div>
 
     <div class="setting">
