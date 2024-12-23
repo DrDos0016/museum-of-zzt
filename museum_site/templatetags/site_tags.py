@@ -339,6 +339,7 @@ def patreon_plug(*args, **kwargs):
 @register.inclusion_tag("museum_site/subtemplate/tag/plug.html")
 def plug(service, **kwargs):
     services = {
+        "bluesky": {"service": "Bluesky", "icon": "/static/icons/bsky.svg", "text": "Worlds of ZZT on Bluesky"},
         "twitter": {"service": "Twitter", "icon": "/static/icons/plug-twitter.png", "text": "Worlds of ZZT on Twitter"},
         "mastodon": {"service": "Mastodon", "icon": "/static/icons/plug-mastodon.svg", "text": "Worlds of ZZT on Mastodon"},
         "tumblr": {"service": "Tumblr", "icon": "/static/icons/plug-tumblr.png", "text": "Worlds of ZZT on Tumblr"},
