@@ -67,6 +67,7 @@ class Article(BaseModel):
         ("Interview", "Interview"),
         ("Let's Play", "Let's Play"),
         ("Livestream", "Livestream"),
+        ("Playthrough", "Playthrough"),
         ("Postmortem", "Postmortem"),
         ("Publication Pack", "Publication Pack"),
         ("Walkthrough", "Walkthrough"),
