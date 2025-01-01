@@ -271,6 +271,8 @@ def model_block(context, item, view="detailed", template_view=None, *args, **kwa
     item.init_model_block_context(view, request=context["request"], **kwargs)
     if template_view is None:
         template_view = view
+    if kwargs.get("alt_title") and item.title.startswith("ERROR: File #"):
+        item.context["title"]["value"] = "<span class='faded'>{}</span>".format(kwargs["alt_title"])
     return render_to_string("museum_site/subtemplate/model-block-{}.html".format(template_view.replace("_", "-")), item.context)
 
 

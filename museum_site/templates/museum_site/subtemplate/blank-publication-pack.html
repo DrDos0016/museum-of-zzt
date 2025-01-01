@@ -1,4 +1,4 @@
-{% templatetag openblock %}<!--pub-pack-{{volume}}.html-->{% templatetag closeblock %}
+<!--pub-pack-{{volume}}.html-->
 {% templatetag openblock %} with "{{file_ids_string}}"|get_files_by_id as files {% templatetag closeblock %}
 <p></p>
 
@@ -13,7 +13,7 @@
 {% templatetag openblock %} with files.{{f.id}} as file {% templatetag closeblock %}
 <span class="pub-pack-entry">
 <h2>{% templatetag openblock %} zfile_citation file {% templatetag closeblock %}</h2>
-{% templatetag openblock %} model_block file {% templatetag closeblock %}
+{% templatetag openblock %} model_block file alt='{{f.title}}' {% templatetag closeblock %}
 <p></p>
 <div class="image-set">
     <img src='{% templatetag openblock %} static path|add:"{{f.prefix}}-1.png" {% templatetag closeblock %}' class="screenshot-thumb">
