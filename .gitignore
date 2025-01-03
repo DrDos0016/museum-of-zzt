@@ -45,6 +45,7 @@ museum_site/static/zap/icons
 museum_site/static/zap/media
 museum_site/static/zap/renders
 museum_site/templates/museum_site/debug.html
+.coverage
 .htpasswd
 DEV
 PROD
