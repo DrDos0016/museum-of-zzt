@@ -255,7 +255,12 @@ def random(request):
 
 
 def set_setting(request):
-    key, value = request.GET.get("setting", "NONE|NONE").split("|")
+    param = request.GET.get("setting")
+    if param is None:
+        return redirect("index")
+
+    key, value = param.split("|")
+
 
     if key == "sidebars":
         request.session["sidebars"] = "hide" if value == "hide" else "show"
@@ -296,7 +301,7 @@ def site_credits(request):
     bigger_hc_emails = []
     biggest_hc_emails = []
 
-    if unregistered_supporters_file is not None:
+    if unregistered_supporters_file is not None and os.path.isfile(unregistered_supporters_file):
         with open(unregistered_supporters_file) as fh:
             raw = json.loads(fh.read())
 

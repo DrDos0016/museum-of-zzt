@@ -328,6 +328,9 @@ def get_stream_entries(request):
 def fetch_zip_info(request):
     """ For new file viewer"""
     path = request.GET.get("path")
+    if path is None:
+        return HttpResponse("No path specified")
+
     if "?" in path:
         path = path[:path.find("?")]
     print("OG PATH", path)
@@ -345,6 +348,9 @@ def fetch_zip_info(request):
 def fetch_zip_content(request):
     """ For new file viewer"""
     path = request.GET.get("path")
+    if path is None:
+        return HttpResponse("No path specified")
+
     if "?" in path:
         path = path[:path.find("?")]
 

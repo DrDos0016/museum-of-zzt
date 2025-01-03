@@ -10,13 +10,13 @@ from museum_site.models import *
 class Article_Queryset_Test(TestCase):
     def setUp(self):
         # Create Test Articles
-        Article.objects.create(title="Test Article 1", author="Dr. Dos", published=Article.PUBLISHED, spotlight=False)
-        Article.objects.create(title="Test Article 2", author="Fishfood", published=Article.UPCOMING)
-        Article.objects.create(title="Test Article 3", author="Hercules/Hydra", published=Article.UNPUBLISHED)
-        Article.objects.create(title="Removed Article", author="Big Jerkface", published=Article.REMOVED)
-        Article.objects.create(title="Amazing Article", author="Bob", published=Article.PUBLISHED)
+        Article.objects.create(title="Test Article 1", author="Dr. Dos", published=Article.PUBLISHED, spotlight=False, category="Interview")
+        Article.objects.create(title="Test Article 2", author="Fishfood", published=Article.UPCOMING, category="Let's Play")
+        Article.objects.create(title="Test Article 3", author="Hercules/Hydra", published=Article.UNPUBLISHED, category="Help")
+        Article.objects.create(title="Removed Article", author="Big Jerkface", published=Article.REMOVED, category="Publication Pack")
+        Article.objects.create(title="Amazing Article", author="Bob", published=Article.PUBLISHED, category="Closer Look")
         Article.objects.create(title="Test Pub Pack A", author="Dr. Dos", published=Article.PUBLISHED, category="Publication Pack")
-        Article.objects.create(title="Test Article 4", author="Dr. Dos", published=Article.PUBLISHED)
+        Article.objects.create(title="Test Article 4", author="Dr. Dos", published=Article.PUBLISHED, category="Historical")
         Article.objects.create(title="Test Pub Pack B", author="Dr. Dos", published=Article.PUBLISHED, category="Publication Pack")
 
     def test_query_credited_authors(self):
@@ -108,6 +108,23 @@ class Article_Queryset_Test(TestCase):
         answer = ["Amazing Article", "Test Pub Pack A", "Test Article 4"]
         self.assertEqual(results, answer)
 
+    def test_upcoming_or_unpublished(self):
+        qs = Article.objects.upcoming_or_unpublished().order_by("id")[:5]
+
+        results = []
+        for a in qs:
+            results.append(a.title)
+        answer = ["Test Article 2", "Test Article 3"]
+        self.assertEqual(results, answer)
+
+    def test_category(self):
+        """ Published Only """
+        qs = Article.objects.category("Publication Pack")
+        results = []
+        for a in qs:
+            results.append(a.title)
+        answer = ["Test Pub Pack A", "Test Pub Pack B"]
+        self.assertEqual(results, answer)
 
     # TODO
     """def test_search(self):"""
