@@ -533,6 +533,13 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         if kwargs.get("poll_data"):  # Add poll data to display
             self.context["poll_description"] = kwargs["poll_data"].summary
             self.context["poll_patron_nominated"] = kwargs["poll_data"].backer
+            # TODO: This isn't very robust
+            if kwargs["poll_data"].title_override:
+                self.context["title"]["value"] = kwargs["poll_data"].title_override
+            if kwargs["poll_data"].author_override:
+                self.context["fields"][0]["value"] = kwargs["poll_data"].author_override
+            if kwargs["poll_data"].preview_image_override:
+                self.context["preview"]["url"] = kwargs["poll_data"].preview_image_override
         if kwargs.get("zgames"):  # Include other Zgames to toggle between displaying information on
             self.context["zgames"] = kwargs["zgames"]
             self.context["other_zgame_count"] = len(self.context["zgames"]) - 1

@@ -3,6 +3,9 @@ import random
 from datetime import datetime
 
 from django.db import models
+from django.utils import timezone
+from django.utils.functional import cached_property
+
 from museum_site.models import File
 
 
@@ -11,21 +14,12 @@ class Poll(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     secret = models.CharField(max_length=32, blank=True, default="")
-    option1 = models.ForeignKey(
-        "Option", related_name='option1', on_delete=models.SET_NULL, null=True
-    )
-    option2 = models.ForeignKey(
-        "Option", related_name='option2', on_delete=models.SET_NULL, null=True
-    )
-    option3 = models.ForeignKey(
-        "Option", related_name='option3', on_delete=models.SET_NULL, null=True
-    )
-    option4 = models.ForeignKey(
-        "Option", related_name='option4', on_delete=models.SET_NULL, null=True
-    )
-    option5 = models.ForeignKey(
-        "Option", related_name='option5', on_delete=models.SET_NULL, null=True
-    )
+    options = models.ManyToManyField("Option", default=None, blank=True)
+    option1 = models.ForeignKey("Option", related_name='option1', on_delete=models.SET_NULL, null=True)
+    option2 = models.ForeignKey("Option", related_name='option2', on_delete=models.SET_NULL, null=True)
+    option3 = models.ForeignKey("Option", related_name='option3', on_delete=models.SET_NULL, null=True)
+    option4 = models.ForeignKey("Option", related_name='option4', on_delete=models.SET_NULL, null=True)
+    option5 = models.ForeignKey("Option", related_name='option5', on_delete=models.SET_NULL, null=True)
 
     def save(self, *args, **kwargs):
         # Pre save
@@ -43,10 +37,17 @@ class Poll(models.Model):
         return ((today >= self.start_date) and (today <= self.end_date))
 
     def __str__(self):
-        output = "Poll running {} through {}".format(
-            self.start_date, self.end_date
-        )
+        output = "[{}] {}".format(self.pk, self.title)
         return output
+
+    @cached_property
+    def get_options(self, random_order=True):
+        output = []
+        qs = self.options.all()
+        if random_order:
+            qs = qs.order_by("?")
+        return qs
+
 
     def get_all_choices(self):
         choices = []
@@ -62,6 +63,35 @@ class Poll(models.Model):
             choices.append(option5)
 
         return choices
+
+    def get_results(self):
+        results = {}
+
+        # Get all options
+        options = self.get_options
+        for option in options:
+            results[option.pk] = {"option": option, "votes": 0, "winner": False}
+
+        # Get all votes
+        seen_emails = []
+        votes = Vote.objects.filter(poll_id=self.pk).order_by("-id")
+        for vote in votes:
+            if vote.email in seen_emails:
+                continue
+            seen_emails.append(vote.email)
+            results[vote.option_id]["votes"] += 1
+
+        # Determine winner(s)
+        winning_number = 0
+        key_list = list(results.keys())
+        # Determine max votes
+        for k in key_list:
+            if results[k]["votes"] > winning_number:
+                winning_number = results[k]["votes"]
+        for k in key_list:
+            if results[k]["votes"] == winning_number:
+                results[k]["winner"] = True
+        return results
 
 
 class Vote(models.Model):
@@ -83,21 +113,32 @@ class Vote(models.Model):
 
 
 class Option(models.Model):
+    title_override = models.CharField(max_length=120, default="", blank=True)
+    author_override = models.CharField(max_length=120, default="", blank=True)
+    preview_image_override = models.CharField(max_length=120, blank=True, help_text="Preview Image used instead of ZFile preview image")
     summary = models.CharField(max_length=300)
     backer = models.BooleanField(default=False)
     played = models.BooleanField(default=False)
     file = models.ForeignKey(File, on_delete=models.SET_NULL, null=True)
     requested_by = models.CharField(max_length=80, default="", blank=True)
+    date_added = models.DateTimeField(default=timezone.now)
 
     class Meta:
         ordering = ["played", "file__title"]
 
+    def save(self, *args, **kwargs):
+        if self.preview_image_override.startswith("/static/"):
+            self.preview_image_override = self.preview_image_override[8:]
+        super(Option, self).save(*args, **kwargs)
+
     def __str__(self):
         checked = "X" if self.played else " "
         requested = "(Patron)" if self.requested_by else ""
-        return '[{}] "{}" by {} {}'.format(
-            checked, self.file.title, ", ".join(self.file.related_list("authors")), requested
-        )
+        title = self.title_override if self.title_override else self.file.title
+        return '[{}] "{}" by {} {}'.format(checked, title, ", ".join(self.file.related_list("authors")), requested)
 
     def scrub(self):
         self.requested_by = ""
+
+    def get_title(self):
+        return self.title_override if self.title_override else self.file.title

@@ -217,7 +217,7 @@
     text-align:center;
 }
 
-/* Poll View (Based on Gallery) */
+/* Poll View (Based on Gallery, wouldn't hurt to redo at some point based on detailed) */
 .model-block.gallery.poll
 {
     grid-template-areas:
@@ -226,6 +226,7 @@
     "screenshot poll"
     "screenshot patron";
     column-gap:8px;
+    grid-template-columns: auto 1fr;
     font-family:"cp437";
     font-size:16pt;
     color:var(--ega-white);
@@ -238,14 +239,13 @@
 .model-block.poll-option-5 { background-color: var(--ega-darkpurple); }
 
 .model-block.gallery.poll a { color:var(--ega-yellow); }
-.model-block.gallery.poll .model-block-title { max-width:240px; }
-.model-block.gallery.poll .model-block-title h2 { font-size:16pt;  }
+.model-block.gallery.poll .model-block-title { max-width:none;  }
+.model-block.gallery.poll .model-block-title h2 { font-size:24pt;  }
 .model-block.gallery.poll .data .datum { flex:1 1 100%; text-align:center;  }
 
 .model-block.gallery.poll .poll-info
 {
     grid-area:poll;
-    max-width:240px;
     text-align:left;
     border-top:1px solid var(--border-color);
     padding-top:4px;
