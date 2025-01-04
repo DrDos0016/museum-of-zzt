@@ -6,126 +6,151 @@
 
 {% block style %}
 <style>
-main .gallery-frame
+main
 {
-    align-items:stretch;
+    --bg-color-1: #00A;
+    --bg-color-2: #0A0;
+    --bg-color-3: #0AA;
+    --bg-color-4: #A00;
+    --bg-color-5: #A0A;
 }
 
 #poll-form
 {
-    width:504px;
+    display:flex;
+    flex-wrap:wrap;
+    margin:auto;
+    max-width:750px;
     border:1px solid #000;
-    margin:inherit;
-    margin-top:0px;
-    margin-bottom:0px;
     background-color:var(--ega-gray);
+    margin-bottom:14px;
 }
 
 #poll-form label
 {
+    flex:1 1 100%;
     color:#FFF;
-    margin:auto;
     display:flex;
     justify-content:space-between;
     align-items:center;
     min-height:1em;
     padding:0.5em;
+    font-weight:normal;
+    font-size:28px;
 }
 
-/*#poll-form label + label
+#poll-form label.winner
 {
-    border-top:1px solid #000;
-}*/
-
-.winner
-{
-    font-size:32px;
+    color:var(--ega-yellow);
+    font-style:oblique;
 }
+
+.option-overview
+{
+    max-width:750px;
+    margin:14px auto 14px auto;
+    box-shadow:var(--ega-darkgray) 4px 7px;
+}
+
+.vote-count { margin-left:3ch; }
+.results-link:visited { color:var(--ega-yellow); }
+
+#history-details summary { display:flex; align-items:center; gap:10px; }
+#history-details summary h2 { margin:0px; }
+#history-details summary:before {content:"➕"}
+#history-details[open] summary:before {content: "➖";}
 </style>
 {% endblock %}
 
 {% block content %}
-<h1>{{display_poll.title}}</h1>
-<p>Poll open from <b>{{display_poll.start_date}}</b> through <b>{{display_poll.end_date}}</b></p>
-
-<div class="gallery-frame poll-gallery">
-    <span class="ega-darkblue-bg">{% model_block display_poll.option1.file view="poll" poll_data=display_poll.option1 %}</span>
-    <span class="ega-darkgreen-bg">{% model_block display_poll.option2.file view="poll" poll_data=display_poll.option2 %}</span>
-    <span class="ega-darkcyan-bg">{% model_block display_poll.option3.file view="poll" poll_data=display_poll.option3 %}</span>
-    <span class="ega-darkred-bg">{% model_block display_poll.option4.file view="poll" poll_data=display_poll.option4 %}</span>
-    <span class="ega-darkpurple-bg">{% model_block display_poll.option5.file view="poll" poll_data=display_poll.option5 %}</span>
-
-    {% if display_poll.active and not results_mode %}
-    <form method="POST" id="poll-form" class="cp437" action="/poll/results/{{display_poll.id}}/">
-        {% csrf_token %}
-        <label style="background-color:#0000AA">{{display_poll.option1.file.title}} <input name="vote" type="radio" value="{{display_poll.option1_id}}"></label>
-        <label style="background-color:#00AA00">{{display_poll.option2.file.title}} <input name="vote" type="radio" value="{{display_poll.option2_id}}"></label>
-        <label style="background-color:#00AAAA">{{display_poll.option3.file.title}} <input name="vote" type="radio" value="{{display_poll.option3_id}}"></label>
-        <label style="background-color:#AA0000">{{display_poll.option4.file.title}} <input name="vote" type="radio" value="{{display_poll.option4_id}}"></label>
-        <label style="background-color:#AA00AA">{{display_poll.option5.file.title}} <input name="vote" type="radio" value="{{display_poll.option5_id}}"></label>
-        {% if request.user.profile.patron %}
-        <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value="{{request.user.profile.patron_email}}" type="hidden" readonly><div>{{request.user.profile.patron_email}}</div></label>
-        {% else %}
-        <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value=""></label>
-        {% endif %}
-        <label style="background-color:#AAAAAA"><a href="/poll/results/{{display_poll.id}}">View Results</a><input type="submit" name="action" value="Vote"></label>
-        {% comment %}<input type="hidden" name="key" value="{{key}}">{% endcomment %}
-    </form>
-    {% elif results_mode %}
-    <form method="POST" id="poll-form" class="cp437">
-        <label style="background-color:#0000AA">{{display_poll.option1.file.title}} <div {% if winner == results.0 %}class="winner" {% endif %}name="vote">{{results.0|default:"0"}}</div></label>
-        <label style="background-color:#00AA00">{{display_poll.option2.file.title}} <div {% if winner == results.1 %}class="winner" {% endif %}name="vote">{{results.1|default:"0"}}</div></label>
-        <label style="background-color:#00AAAA">{{display_poll.option3.file.title}} <div {% if winner == results.2 %}class="winner" {% endif %}name="vote">{{results.2|default:"0"}}</div></label>
-        <label style="background-color:#AA0000">{{display_poll.option4.file.title}} <div {% if winner == results.3 %}class="winner" {% endif %}name="vote">{{results.3|default:"0"}}</div></label>
-        <label style="background-color:#AA00AA">{{display_poll.option5.file.title}} <div {% if winner == results.4 %}class="winner" {% endif %}name="vote">{{results.4|default:"0"}}</div></label>
-        <label style="background-color:#AAAAAA"></label>
-    </form>
-    {% endif %}
-</div>
-
-{% if results_mode %}
-{% if user.is_staff %}
-<h2>Vote Log -- ONLY VISIBLE TO STAFF</h2>
-<a href="https://www.patreon.com/manageRewardsList" target="_blank">Patrons</a><br>
-<table class="data-table">
-<tr><th colspan="4">Final Votes</th></tr>
-<tr><th>ID</th><th>Option</th><th>Email</th><th>Timestamp</th></tr>
-{% for v in final_votes %}
-<tr><td>{{v.id}}</td><td>{{v.option}}</td><td>{{v.email}}</td><td>{{v.timestamp}}</tr>
-{% endfor %}
-<tr><th colspan="4">All Votes</th></tr>
-<tr><th>ID</th><th>Option</th><th>Email</th><th>Timestamp</th></tr>
-{% for v in all_votes %}
-<tr><td>{{v.id}}</td><td>{{v.option}}</td><td>{{v.email}}</td><td>{{v.timestamp}}</tr>
-{% endfor %}
-</table>
+<h1>{{poll.title}}</h1>
+{% if poll.active %}
+<p>Poll open for voting from <b>{{poll.start_date}}</b> through <b>{{poll.end_date}}</b></p>
+{% else %}
+<p>This poll is <b>Closed</b>. Votes were accepted from <b>{{poll.start_date}}</b> through <b>{{poll.end_date}}</b></p>
 {% endif %}
 
-<h2>Results Info</h2>
+{% if poll.active and not show_results %}
+<form method="POST" id="poll-form" class="cp437" action="/poll/results/{{poll.id}}/">
+    {% csrf_token %}
+    {% for option in poll.get_options %}<label style="background-color:var(--bg-color-{{forloop.counter}})">{{option.get_title}}
+    <input name="vote" type="radio" value="{{option.pk}}"></label>
+    {% endfor %}
+
+    {% if request.user.profile.patron %}
+    <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value="{{request.user.profile.patron_email}}" type="hidden" readonly><div>{{request.user.profile.patron_email}}</div></label>
+    {% else %}
+    <label style="background-color:#AAAA00">Your Patron E-Mail <input name="email" value=""></label>
+    {% endif %}
+
+    <label style="background-color:var(--ega-darkgray)"><a href="/poll/results/{{poll.id}}" class="results-link ega-yellow">View Current Results</a><input type="submit" name="action" value="Vote"></label>
+</form>
+{% else %}
+    <div id="poll-form" class="cp437">
+    {% for k, container in poll.get_results.items %}
+    <label {% if container.winner %}class="winner" {% endif %}style="background-color:var(--bg-color-{{forloop.counter}})">{% if container.winner %}🥇 {% endif %}{{container.option.get_title}}
+    <div class="vote-count">{{container.votes}}</div></label>
+    {% endfor %}
+    {% if poll.active %}<label style="background-color:var(--ega-darkgray)"><a href="/poll/" class="results-link ega-yellow" style="flex:1;">Return to poll voting</a></label>{% endif %}
+    </div>
+{% endif %}
+
+{% for option in poll.get_options %}<div class="option-overview" style="background-color:var(--bg-color-{{forloop.counter}})">
+    {% model_block option.file view="poll" poll_data=option %}
+</div>
+{% endfor %}
+
+{% if show_results %}
+    {% if user.is_staff %}
+    <h2>Vote Log -- ONLY VISIBLE TO STAFF</h2>
+    <a href="https://www.patreon.com/manageRewardsList" target="_blank">Patrons</a><br>
+    <table class="data-table">
+    <tr><th colspan="4">Final Votes</th></tr>
+    <tr><th>ID</th><th>Option</th><th>Email</th><th>Timestamp</th></tr>
+    {% for v in final_votes %}
+    <tr><td>{{v.id}}</td><td>{{v.option}}</td><td>{{v.email}}</td><td>{{v.timestamp}}</tr>
+    {% endfor %}
+    <tr><th colspan="4">All Votes</th></tr>
+    <tr><th>ID</th><th>Option</th><th>Email</th><th>Timestamp</th></tr>
+    {% for v in all_votes %}
+    <tr><td>{{v.id}}</td><td>{{v.option}}</td><td>{{v.email}}</td><td>{{v.timestamp}}</tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+
+<h2>Poll Results</h2>
 <ul>
-    <li>Results shown reflect the current votes in the database prior to filtering ineligible votes.</li>
+    <li>Results shown reflect the current votes in the database prior to filtering ineligible votes when choosing a winner.</li>
     <li>Current totals may therefore differ from the final results!</li>
     <li>In the event of a tie, priority will be given to Patron selected poll options.</li>
     <li>If two Patron selected options tie, a winner will be selected randomly.</li>
 </ul>
 {% endif %}
 
+<hr>
+
 <h2>Poll Rules</h2>
 <ul>
-    <li>Only Patrons are eligible for voting. Not a Patron? <a href="{% url 'patreon' %}" target="_blank">Become one</a>!</li>
-    <li>Votes which do not provide an e-mail address associated with an active Patron will be rejected.</li>
+    <li>Only patrons are eligible for voting. If you are not an active patron, you may make a pledge on the <a href="{% url 'patreon' %}" target="_blank">Worlds of ZZT Patreon</a>!</li>
+    <li>Votes which do not provide an e-mail address associated with an active patron will be rejected during the final vote tallying process.</li>
     <li>Patrons at the $20/month level can select a game to be featured in the poll. Patrons who do so will have their chosen game
-        in all subsequent polls until it either wins or the patron opts to change it to something else.</li>
-    <li>Patrons who do not select a game will have one substituted by staff.</li>
-    <li>Only the last vote for an e-mail address will be counted, you may change your vote by simply placing a new vote.</li>
+        appear in all subsequent polls until:
+        <ul>
+            <li>The game receive the most votes in a poll</li>
+            <li>The patron decides to switch to a different game. (Starting with the next poll.)</li>
+            <li>Six months pass without the game winning a poll, in which case the game will be covered as a non-patron poll selected game as soon as possible.</li>
+        </ul>
+    <li>Only the most recent is counted, you may change your vote by simply placing a new vote.</li>
+    <li>Take descriptions with a grain of salt. They are written based on pre-existing knowledge and cursory exploration of games. I have been off base before. (But if you know I am, get in touch so I can provide a more accurate description.)</li>
 </ul>
 
-<h2>Poll History</h2>
-<div style="border:1px solid #000;max-height:10em;overflow:auto;">
-<ul>
-    {% for poll in polls %}
-    <li><a href="/poll/results/{{poll.id}}">{{poll.title}} ({{poll.start_date}} - {{poll.end_date }})</a></li>
-    {% endfor %}
-</ul>
-</div>
+<hr>
+
+<details id="history-details">
+    <summary><h2>Poll History</h2> (Click to toggle visibility)</summary>
+    <ul>{% for poll in past_polls %}
+    <li><a href="/poll/results/{{poll.id}}">{{poll.title}} ({{poll.start_date}} - {{poll.end_date}})</a></li>
+    {% endfor %}</ul>
+</details>
+
 {% endblock %}
