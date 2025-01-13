@@ -6,13 +6,8 @@ from comic.models import Comic
 
 
 class Comic_Test(TestCase):
-    test_objects_created = False
-
     @classmethod
     def setUpTestData(self):
-        if self.test_objects_created:
-            return
-
         Comic.objects.create(title="Test Comic Lemmy", comic_id=100, comic_account="lemmy", date=date.fromisoformat("2002-04-05"), commentary="Test commentary", transcript="Test")
         Comic.objects.create(title="Test Comic Bencomic", comic_id=101, comic_account="bencomic", date=date.today(), commentary="Test commentary", transcript="Test")
         Comic.objects.create(title="Test Comic Kaddar", comic_id=102, comic_account="kaddar", date=date.today(), commentary="Test commentary", transcript="Test")
@@ -36,3 +31,8 @@ class Comic_Test(TestCase):
     def test_sc_url(self):
         test_object = Comic.objects.get(title="Test Comic Bencomic")
         self.assertEqual(test_object.sc_url(), "http://www.stripcreator.com/comics/bencomic/101")
+
+
+    def test_count(self):
+        count = Comic.objects.all().count()
+        self.assertEqual(count, 6)
