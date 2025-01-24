@@ -8,7 +8,8 @@ from museum_site.models import *
 
 
 class Article_Queryset_Test(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):
         # Create Test Articles
         Article.objects.create(title="Test Article 1", author="Dr. Dos", published=Article.PUBLISHED, spotlight=False, category="Interview")
         Article.objects.create(title="Test Article 2", author="Fishfood", published=Article.UPCOMING, category="Let's Play")
