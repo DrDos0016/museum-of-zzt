@@ -9,13 +9,14 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.cache import cache
 from django.db.models import Count
 from django.db.models.functions import ExtractYear
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import DetailView
-from django.views.generic.base import TemplateView
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from django.views.generic import DetailView
+from django.views.generic.base import TemplateView
+from django.urls import reverse
 
 from museum_site.core.detail_identifiers import *
 from museum_site.constants import ZGAMES_BASE_PATH
@@ -111,11 +112,17 @@ def directory(request, category):
         data_list = Author.objects.all().order_by("title")
     elif category == "genre":
         data_list = Genre.objects.visible().order_by("title")
+    elif category == "year":
+        data_list = list(range(datetime.utcnow().year, 1990, -1))
+        data_list.append("unk")
+
+    print(data_list)
 
     data["title"] = "{} Directory".format(category.title())
 
     # Break the list of results into 4 columns
-    data_list = sorted(data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.title.lower()))
+    if category != "year":
+        data_list = sorted(data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.title.lower()))
 
     # Split the list into 4 sets
     column_length = math.ceil(len(data_list) / 4)
@@ -134,20 +141,27 @@ def directory(request, category):
         if idx != 0:
             force_header = True
 
-        for entry in wip_column:
-            first_letter = entry.title[0].upper()
-            if first_letter in "1234567890":
-                first_letter = "#"
-            elif first_letter not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-                first_letter = "*"
-            if (first_letter not in observed_letters) or force_header:
-                observed_letters.append(first_letter)
-                final_columns[idx].append({"kind": "header", "title": first_letter + (" (cntd.)" if force_header else "")})
-                force_header = False
+        if category != "year":
+            for entry in wip_column:
+                first_letter = entry.title[0].upper()
+                if first_letter in "1234567890":
+                    first_letter = "#"
+                elif first_letter not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+                    first_letter = "*"
+                if (first_letter not in observed_letters) or force_header:
+                    observed_letters.append(first_letter)
+                    final_columns[idx].append({"kind": "header", "title": first_letter + (" (cntd.)" if force_header else "")})
+                    force_header = False
 
-            final_columns[idx].append({"url": entry.get_absolute_url(), "title": entry.title, "kind": "entry"})
-        # Mark letters repeated between columns
-        last_letter = first_letter
+                final_columns[idx].append({"url": entry.get_absolute_url(), "title": entry.title, "kind": "entry"})
+            # Mark letters repeated between columns
+            last_letter = first_letter
+        else:
+            for entry in wip_column:
+                entry_name = entry
+                if entry == "unk":
+                    entry_name = "Unknown"
+                final_columns[idx].append({"url": reverse("zfile_browse_field", kwargs={"field": "year", "value": entry}), "title": entry_name, "kind": "entry"})
 
     data["columns"] = final_columns
     return render(request, "museum_site/directory.html", data)
