@@ -29,19 +29,20 @@ function apply_post_shortcut()
         return false;
 
     let date = new Date();
-        let month_name = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"][date.getMonth()];
-        let formal_month_name = month_name.slice(0, 1).toUpperCase() + month_name.slice(1);
+    let month_name = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"][date.getMonth()];
+    let formal_month_name = month_name.slice(0, 1).toUpperCase() + month_name.slice(1);
+    let month_padded = ("0" + (date.getMonth() + 1)).slice(-2);
 
     if (shortcut_key == "schedule")
     {
-        $("#id_title").val(`Stream Schedule - ${formal_month_name} ${date.getDay()}`);
+        $("#id_title").val(`Stream Schedule - ${formal_month_name} ${date.getDate()}`);
         set_accounts(["bluesky", "discord", "mastodon", "tumblr", "twitter"]);
         $("#id_discord_channel").val("announcements");
         set_discord_mentions([]);
         $("#id_hashtags").val("#stream schedule, #zzt");
 
         // Set attachment 1 to assumed schedule URL:
-        let schedule_path = `/static/zap/media/${date.getFullYear()}/${date.getMonth() + 1}/sched-${month_name}${date.getDay()}.png`;
+        let schedule_path = `/static/zap/media/${date.getFullYear()}/${month_padded}/sched-${month_name}${date.getDate()}.png`;
         $("#id_media_1").val(schedule_path);
         let offset = date.getDay() % TEMPLATES.schedule.length;
         $("#id_body").val(TEMPLATES[shortcut_key][offset]);
