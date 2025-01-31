@@ -1,3 +1,5 @@
+""" I THINK THIS IS OLD AND UNEEDED. USE THE ONE IN /TOOLS/STATS/ """
+
 import os
 import sys
 
@@ -15,8 +17,8 @@ from museum_site.models import *  # noqa: E402
 from museum_site.constants import *  # noqa: E402
 from museum_site.core.detail_identifiers import *  #noqa: E402
 
-LAST_YEAR = "2023"
-THIS_YEAR = "2024"
+LAST_YEAR = "2024"
+THIS_YEAR = "2025"
 LAST_YEAR_START = "{}-01-01".format(LAST_YEAR)
 LAST_YEAR_END = "{}-12-31".format(LAST_YEAR)
 THIS_YEAR_START = "{}-01-01".format(THIS_YEAR)
@@ -59,7 +61,10 @@ def main():
         15:"ZZT",
         13:"Super ZZT",
         16:"ZIG",
+        18:"Uploaded",
+        20:"Corrupt",
         21:"ZZT Board",
+        22:"ZZT Save",
         27:"Clone",
         28:"Source Code",
         33:"Program",
@@ -70,6 +75,7 @@ def main():
         25:"ZZT High Score",
         39:"New Find",
         34:"Compressed",
+        36:"Audio",
         30:"HTML",
     }
     details = {}
@@ -135,13 +141,12 @@ def main():
     print("ALL UPLOADS ================================")
     for a in author_stats.keys():
         if author_stats[a] > 2:
-            print(a)
-            print(a + ";" + str(author_stats[a]))
+            print(a.title + ";" + str(author_stats[a]))
     print(len(author_stats), "total authors")
 
     print("<YEAR> RELEASES ===============================")
     for a in author_stats_this_year.keys():
-        print(a + ";" + str(author_stats_this_year[a]))
+        print(a.title + ";" + str(author_stats_this_year[a]))
 
     print("UPLOAD QUEUE BY DATE")
 

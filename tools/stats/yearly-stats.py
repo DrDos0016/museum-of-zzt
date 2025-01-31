@@ -15,8 +15,8 @@ from museum_site.models import *  # noqa: E402
 from museum_site.constants import *  # noqa: E402
 from museum_site.core.detail_identifiers import *  #noqa: E402
 
-LAST_YEAR = "2023"
-THIS_YEAR = "2024"
+LAST_YEAR = "2024"
+THIS_YEAR = "2025"
 LAST_YEAR_START = "{}-01-01".format(LAST_YEAR)
 LAST_YEAR_END = "{}-12-31".format(LAST_YEAR)
 THIS_YEAR_START = "{}-01-01".format(THIS_YEAR)
@@ -147,7 +147,7 @@ def main():
 
     for k in keys:
         print(
-            str(k) + "\t" +
+            str(k) + ";" +
             str(round((data[k]["total"] / data[k]["reviews"]), 3))
         )
     return True
