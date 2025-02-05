@@ -194,6 +194,21 @@ class IL(template.Node):
         return output
 
 
+@register.simple_tag(name="image_set", takes_context=True)
+def image_set(context, *args, **kwargs):
+    path = context.get("path")
+    if path:
+        if not isinstance(path, str):
+            path = path()
+    else:
+        path = kwargs.get("path", "NO-PATH-FOUND")
+    output = "<div class='image-set'>\n"
+    for img in args:
+        output += "<img src='{}{}{}' class='zoomable thumbnail'>\n".format(STATIC_URL, path, img)
+    output += "</div>\n"
+    return mark_safe(output)
+
+
 @register.filter(name="markdown")
 def render_markdown(raw):
     filtered = escape(raw)

@@ -43,17 +43,6 @@ $(document).ready(function (){
         $(this).toggleClass("thumbnail zoomed");
     });
 
-    // Screenshot Zoom (to eventually be removed)
-    $(".screenshot-thumb").click(function (){
-        $(this).toggleClass("zoomed");
-        var parent = $(this).parent();
-
-        if (parent.hasClass("overview-block"))
-        {
-            parent.toggleClass("ob-zoomed");
-        }
-    });
-
     // Browse Letters Select-based Input
     $("#letter-button").click(function (){
         var url = $("#letter-select").val().toLowerCase();

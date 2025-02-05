@@ -31,10 +31,14 @@
 
 .image-set img
 {
-    width:240px;
-    max-width:30%;
     margin:7px 4px 7px 4px;
     border:1px solid var(--border-color);
+}
+
+.image-set img.thumbnail
+{
+    width:240px;
+    max-width:30%;
 }
 
 /* Article Formatting */
