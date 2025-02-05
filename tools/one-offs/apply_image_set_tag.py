@@ -18,6 +18,7 @@ def main():
     print("This script will find all publication packs (and articles #651/#653)")
     print("It will then replace the image set divs with a new template tag.")
     print("This WILL update live data in the database. It can be run multiple times safely.")
+    input("Press ENTER to begin.")
     qs = list(Article.objects.filter(category="Publication Pack").order_by("id")) + list(Article.objects.filter(pk__in=[651, 563]))
     for a in qs:
         print(a.title, end=" ")
