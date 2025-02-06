@@ -113,6 +113,8 @@ $(document).ready(function (){
     $("#expand-contract").click(function (){
         let sidebars = $("body").hasClass("expanded") ? "show" : "hide";
         ajax_set_setting("sidebars", sidebars, expand_contract_middle_column);
+        if (sidebars == "show")
+            $(".sidebar").css({"display": "", "left": "", "right": ""});
     });
 
     // File association selection
