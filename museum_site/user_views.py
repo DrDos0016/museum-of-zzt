@@ -37,6 +37,7 @@ from museum_site.forms.user_forms import (
     Reset_Password_Form,
     Updated_Terms_Of_Service_Form,
     User_Registration_Form,
+    User_Spotlight_Preferences_Form,
 )
 from museum_site.models import *
 from museum_site.mail import (
@@ -572,3 +573,12 @@ def user_profile(request, user_id=None, **kwargs):
     data["default_upload_cap"] = UPLOAD_CAP  # For guest users
 
     return render(request, "museum_site/user/profile.html", data)
+
+def preferences_spotlight(request):
+    context = {}
+    context["title"] = "Manage Spotlight"
+
+    form = User_Spotlight_Preferences_Form(request.POST) if request.method == "POST" else User_Spotlight_Preferences_Form()
+
+    context["form"] = form
+    return render(request, "museum_site/generic-form-display-output.html", context)

@@ -85,6 +85,10 @@ def audit(request, target, return_target_dict=False):
         "users": {"title": "Audit Users", "template": "museum_site/tools/user-list.html", "users": User.objects.order_by("-id")},
         "zeta-config": {"title": "Audit Zeta Configs", "template": "museum_site/tools/audit_zeta_config.html", "special": File.objects.zeta_config_audit()},
         "file-extensions": {"title": "Audit File Extensions", "template": "museum_site/tools/audit-file-extensions.html", "extensions": Content.objects.all().values("ext").annotate(total=Count("ext")).order_by("ext")},
+        "spotlight": {
+            "title": "Audit Spotlight", "template": "museum_site/tools/audit-spotlight.html", "nonspotlight": File.objects.filter(spotlight=False).order_by("-id"), "spotlight_new_releases": File.objects.new_releases_frontpage(spotlight_filter=True)[:12],
+            "spotlight_new_finds": File.objects.new_finds(spotlight_filter=True)[:12]
+        }
     }
 
     if return_target_dict:

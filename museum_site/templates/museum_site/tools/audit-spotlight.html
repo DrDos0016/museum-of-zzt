@@ -1,0 +1,63 @@
+{% extends BASE_TEMPLATE %}
+{% load static %}
+
+{% block style %}
+{% endblock %}
+
+
+{% block content %}
+<h1>{{title}}</h1>
+
+<h2>Front Page Spotlight</h2>
+<p>These ZFiles are currently on the front page. Adjusting their spotlight status will cause them to be fully hidden.</p>
+
+<div style="display:flex;gap:4px;">
+<table>
+<tr>
+    <th colspan="3">New Releases</th>
+<tr>
+    <th>PK</th><th>ZFile</th><th>Admin</th>
+</tr>
+{% for zf in spotlight_new_releases %}
+<tr>
+    <td class="r">{{zf.pk}}</td>
+    <td><a href="{{zf.get_absolute_url}}" target="_blank">{{zf.title}}</a></td>
+    <td><a href="{{zf.admin_url}}" target="_blank">Admin</a>
+</tr>
+{% endfor %}
+</table>
+
+<table>
+<tr>
+    <th colspan="3">New Finds</th>
+<tr>
+    <th>PK</th><th>ZFile</th><th>Admin</th>
+</tr>
+{% for zf in spotlight_new_finds %}
+<tr>
+    <td class="r">{{zf.pk}}</td>
+    <td><a href="{{zf.get_absolute_url}}" target="_blank">{{zf.title}}</a></td>
+    <td><a href="{{zf.admin_url}}" target="_blank">Admin</a>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+
+
+<h2>ZFiles Without Spotlight</h2>
+<p>These ZFiles cannot show up anywhere there is a spotlight check.</p>
+
+<table>
+<tr>
+    <th>PK</th><th>ZFile</th><th>Admin</th>
+</tr>
+{% for zf in nonspotlight %}
+<tr>
+    <td class="r">{{zf.pk}}</td>
+    <td><a href="{{zf.get_absolute_url}}" target="_blank">{{zf.title}}</a></td>
+    <td><a href="{{zf.admin_url}}" target="_blank">Admin</a>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

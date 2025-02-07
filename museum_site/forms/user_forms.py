@@ -5,8 +5,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 
 from museum_site.constants import EMAIL_ADDRESS, TERMS
-from museum_site.fields import Faux_Field, Museum_Color_Choice_Field, Museum_Choice_Field, Museum_TOS_Field
-from museum_site.widgets import Ascii_Character_Widget, Ascii_Color_Widget, Faux_Widget, Terms_Of_Service_Widget
+from museum_site.fields import (
+    Faux_Field, Museum_Color_Choice_Field, Museum_Choice_Field, Museum_Multiple_Choice_Field, Museum_TOS_Field, Museum_Model_Scrolling_Multiple_Choice_Field
+)
+from museum_site.models import File, Collection
+from museum_site.widgets import (
+    Ascii_Character_Widget, Ascii_Color_Widget, Faux_Widget, Terms_Of_Service_Widget, Scrolling_Checklist_Widget
+)
 
 PASSWORD_HELP_TEXT = "Use a unique password for your account with a minimum length of <b>8</b> characters. Passwords are hashed and cannot be viewed by staff."
 
@@ -338,3 +343,26 @@ class User_Registration_Form(forms.Form):
             self.add_error("terms", "You must agree to the terms of service in order to register an account.")
 
         return cleaned_data
+
+class User_Spotlight_Preferences_Form(forms.Form):
+    use_required_attribute = False
+    submit_value = "Save Preferences"
+    headeing = "Spotlight Preferences"
+    attrs = {"method": "POST"}
+
+    SPOTLIGHT_CHOICES = (
+        ("spotlight-new-releases", "New Releases"),
+        ("spotlight-beginner-friendly", "Beginner Friendly Worlds"),
+        ("spotlight-featured-worlds", "Featured Worlds"),
+        ("spotlight-custom", "From Collections (specify below)"),
+        ("spotlight-random", "Random"),
+    )
+
+    spotlight_pool = Museum_Multiple_Choice_Field(required=True, widget=forms.CheckboxSelectMultiple, choices=SPOTLIGHT_CHOICES)
+
+    collections = Museum_Model_Scrolling_Multiple_Choice_Field(
+        required=False,
+        queryset=Collection.objects.populated_public_collections(),
+        widget=Scrolling_Checklist_Widget(buttons=["Clear"], show_selected=True),
+        help_text=("Select one or more public collections to display items from")
+    )

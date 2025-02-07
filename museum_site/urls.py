@@ -274,6 +274,7 @@ urlpatterns = [
     # /user/
     path("user/login/", museum_site.user_views.login_user, name="login_user"),
     path("user/logout/", museum_site.user_views.logout_user, name="logout_user"),
+    path("user/preferences/spotlight/", museum_site.user_views.preferences_spotlight, name="user_preferences_spotlight"),
     path("user/profile/<int:user_id>/<str:unused_slug>/", museum_site.user_views.user_profile, name="user_profile"),
     path("user/profile/", museum_site.user_views.user_profile, name="my_profile"),
     path("user/forgot-username/", museum_site.user_views.forgot_username, name="forgot_username"),
