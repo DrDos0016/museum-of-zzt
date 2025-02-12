@@ -578,7 +578,15 @@ def preferences_spotlight(request):
     context = {}
     context["title"] = "Manage Spotlight"
 
-    form = User_Spotlight_Preferences_Form(request.POST) if request.method == "POST" else User_Spotlight_Preferences_Form()
+    current_settings = {
+        "spotlight_categories": request.session.get("spotlight_sources", ["spotlight-new-releases", "spotlight-beginner-friendly", "spotlight-featured-worlds", "spotlight-best-of-zzt", "spotlight-rotation"]),
+        "collections": request.session.get("spotlight_collection_sources", [])
+    }
+
+    form = User_Spotlight_Preferences_Form(request.POST) if request.method == "POST" else User_Spotlight_Preferences_Form(initial=current_settings)
+
+    if request.method == "POST" and form.is_valid():
+        request = form.process(request)
 
     context["form"] = form
-    return render(request, "museum_site/generic-form-display-output.html", context)
+    return render(request, "museum_site/preferences-spotlight.html", context)

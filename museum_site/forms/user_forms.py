@@ -347,22 +347,40 @@ class User_Registration_Form(forms.Form):
 class User_Spotlight_Preferences_Form(forms.Form):
     use_required_attribute = False
     submit_value = "Save Preferences"
-    headeing = "Spotlight Preferences"
+    heading = "Spotlight Preferences"
     attrs = {"method": "POST"}
 
     SPOTLIGHT_CHOICES = (
         ("spotlight-new-releases", "New Releases"),
         ("spotlight-beginner-friendly", "Beginner Friendly Worlds"),
         ("spotlight-featured-worlds", "Featured Worlds"),
+        ("spotlight-best-of-zzt", "Best of ZZT Picks"),
+        #("spotlight-rotation", "Rotation"),
         ("spotlight-custom", "From Collections (specify below)"),
         ("spotlight-random", "Random"),
     )
 
-    spotlight_pool = Museum_Multiple_Choice_Field(required=True, widget=forms.CheckboxSelectMultiple, choices=SPOTLIGHT_CHOICES)
+    spotlight_categories = Museum_Multiple_Choice_Field(
+        required=True, widget=forms.CheckboxSelectMultiple, choices=SPOTLIGHT_CHOICES,
+        initial=["spotlight-new-releases", "spotlight-beginner-friendly", "spotlight-featured-worlds", "spotlight-best-of-zzt"],
+        help_text="Check the categories you wish to have the spotlight populated from. When choosing a world to display, first one of these categories is selected, and then a world from within that category.<br><br>(For Collections, firstly the \"collections\" category is chosen, then a specific collection pull from, and lastly a world contained within that collection.)"
+    )
 
     collections = Museum_Model_Scrolling_Multiple_Choice_Field(
         required=False,
-        queryset=Collection.objects.populated_public_collections(),
+        queryset=Collection.objects.populated_public_collections().order_by("title"),
         widget=Scrolling_Checklist_Widget(buttons=["Clear"], show_selected=True),
-        help_text=("Select one or more public collections to display items from")
+        help_text=("Select one or more public collections to display items from. \"From Collections\" must be checked above or else these options will be ignored.")
     )
+
+    def clean_collections(self):
+        # Only return PK as an identifier that will persist through collection renames
+        pks = list(self.cleaned_data["collections"].values_list("pk", flat=True))
+        return pks
+
+
+    def process(self, request):
+        request.session["spotlight_sources"] = self.cleaned_data["spotlight_categories"]
+        request.session["spotlight_collection_sources"] = self.cleaned_data["collections"]
+        request.session["spotlight_preferences_saved_date"] = str(datetime.utcnow())[:10]
+        return request

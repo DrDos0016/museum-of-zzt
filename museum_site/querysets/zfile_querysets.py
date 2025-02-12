@@ -1,10 +1,12 @@
-from random import randint, seed, shuffle
+from datetime import datetime, timedelta
+from random import randint, seed, shuffle, choice
 
 from django.db.models import Q
 
 from museum_site.core.detail_identifiers import *
 from museum_site.core.zeta_identifiers import *
 from museum_site.querysets.base import Base_Queryset
+from museum_site.models import Collection_Entry
 
 
 class ZFile_Queryset(Base_Queryset):
@@ -150,7 +152,7 @@ class ZFile_Queryset(Base_Queryset):
         zgame = None
         while not zgame:
             pk = randint(1, max_pk)
-            zgame = self.filter(pk=pk, details__id=DETAIL_ZZT).exclude(details__id__in=excluded_details).exclude(explicit=True)
+            zgame = self.filter(pk=pk, details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE]).exclude(details__id__in=excluded_details).exclude(explicit=True)
             if zgame:
                 return zgame.first()
         return zgame
@@ -208,3 +210,22 @@ class ZFile_Queryset(Base_Queryset):
 
     def tool_zfile_select(self):
         return self.all().only("id", "title", "key")
+
+    def get_spotlight_world(self, source, collection_id):
+        GENRE_DEMO = 17
+        BEGINNER_FRIENDLY_COLLECTION_ID = 4
+        BEST_OF_ZZT_COLLECTION_ID = 40
+
+        if source == "spotlight-new-releases":
+            cutoff = str(datetime.utcnow() + timedelta(days=-365))[:10]
+            return self.new_releases_frontpage(spotlight_filter=True).filter(release_date__gte=cutoff).exclude(genres=GENRE_DEMO)
+        elif source == "spotlight-beginner-friendly":
+            return Collection_Entry.objects.filter(collection_id=BEGINNER_FRIENDLY_COLLECTION_ID)
+        elif source == "spotlight-featured-worlds":
+            return self.featured_worlds()
+        elif source == "spotlight-best-of-zzt":
+            return Collection_Entry.objects.filter(collection_id=BEST_OF_ZZT_COLLECTION_ID)
+        elif source == "spotlight-custom":
+            return Collection_Entry.objects.filter(collection_id=collection_id)
+        else:
+            return self.filter(details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE])

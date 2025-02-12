@@ -1,4 +1,5 @@
 from datetime import datetime
+from random import choice
 
 from django.core.cache import cache
 from django.conf import settings
@@ -50,9 +51,24 @@ def museum_global(request):
     data["CSS_INCLUDES"] = CSS_INCLUDES
 
     # Featured Worlds
-    data["fg"] = File.objects.featured_worlds().order_by("?").first()
+    DEFAULT_SPOTLIGHT_SOURCES = ["spotlight-beginner-friendly", "spotlight-new-releases", "spotlight-featured-worlds", "spotlight-best-of-zzt"]
+    spotlight_sources = request.session.get("spotlight_sources", DEFAULT_SPOTLIGHT_SOURCES)
+    spotlight_collection_sources = request.session.get("spotlight_collection_sources", [])
+    if ("spotlight-custom" in spotlight_sources) and not spotlight_collection_sources:
+        spotlight_sources.remove("spotlight-custom")
+
+    source = choice(spotlight_sources) if spotlight_sources else choice(DEFAULT_SPOTLIGHT_SOURCES)
+    spotlight_collection_source = choice(spotlight_collection_sources) if source == "spotlight-custom" else None
+    data["spotlight_source"] = source
+    data["spotlight_collection_source"] = spotlight_collection_source
+
     if request.GET.get("fgid"):
         data["fg"] = File.objects.reach(pk=int(request.GET["fgid"]))
+    else:
+        data["fg"] = File.objects.get_spotlight_world(source, spotlight_collection_source).order_by("?").first()
+
+    if not data["fg"]:
+        data["fg"] = File.objects.filter(pk=1015).first()  # ZZT v3.2
 
     # Queue size
     data["UPLOAD_QUEUE_SIZE"] = cache.get("UPLOAD_QUEUE_SIZE", "-")

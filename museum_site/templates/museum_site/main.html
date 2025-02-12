@@ -50,7 +50,8 @@
     </header>
 
     <div id="featured-block" class="block">
-        <h2>Featured World️</h2>
+        <div class="flex-container"><h2>Spotlight World️</h2><div><a href="{% url 'user_preferences_spotlight' %}" class="link-manage-spotlight" title="Manage Spotlight Worlds">⚙️</a></div></div>
+        <!--Source: {{spotlight_source}} / Collection ID: {{spotlight_collection_source}}-->
         {% model_block fg "gallery" %}
     </div>
 

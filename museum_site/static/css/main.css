@@ -154,6 +154,9 @@ body.expanded #sidebar-right { right:-100%; }
 .sidebar .block a + a { border-top:1px dashed var(--side-link-border); }
 .sidebar #featured-block.block a { display:inline; } /* Fix Multiple Authors appearing on multiple lines with doubled borders */
 .sidebar #featured-block.block a + a { border-top:0; }
+.sidebar #featured-block.block .flex-container h2 { flex:1 0 95%; }
+.sidebar #featured-block.block .link-manage-spotlight { font-size:smaller; }
+
 
 .sidebar a[target=_blank]
 {
