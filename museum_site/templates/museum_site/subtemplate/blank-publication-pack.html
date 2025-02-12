@@ -15,11 +15,7 @@
 <h2>{% templatetag openblock %} zfile_citation file {% templatetag closeblock %}</h2>
 {% templatetag openblock %} model_block file alt='{{f.title}}' {% templatetag closeblock %}
 <p></p>
-<div class="image-set">
-    <img src='{% templatetag openblock %} static path|add:"{{f.prefix}}-1.png" {% templatetag closeblock %}' class="screenshot-thumb">
-    <img src='{% templatetag openblock %} static path|add:"{{f.prefix}}-2.png" {% templatetag closeblock %}' class="screenshot-thumb">
-    <img src='{% templatetag openblock %} static path|add:"{{f.prefix}}-3.png" {% templatetag closeblock %}' class="screenshot-thumb">
-</div>
+{% templatetag openblock %} image_set '{{f.prefix}}-1.png' '{{f.prefix}}-2.png' '{{f.prefix}}-3.png' {% templatetag closeblock %}
 <hr>
 </span>
 {% templatetag openblock %} endwith {% templatetag closeblock %}
