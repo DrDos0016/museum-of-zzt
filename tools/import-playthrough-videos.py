@@ -30,12 +30,15 @@ def main():
 
             a.title = "Full Playthrough - {}".format(zf.title)
             a.category = "Playthrough"
-            a.content = "TODO"
+            a.content = "{% youtube_embed '" + video_id + "' %}\n\n"
             a.publish_date = datetime.utcnow()
             a.published = Article.PUBLISHED
-            a.description = "A complete, commentary free playthrough"
+            a.description = "A complete, commentary free playthrough of {}".format(zf.title)
             a.spotlight = False
-            a.static_directory = models.CharField("pt-{}".format(zf.key))
+            a.static_directory = "pt-{}".format(zf.key)
+            a.save()
+            zf.articles.add(a)
+            zf.save()
 
 
     return True
