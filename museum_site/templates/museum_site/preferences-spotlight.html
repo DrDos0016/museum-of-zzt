@@ -1,0 +1,51 @@
+{% extends BASE_TEMPLATE %}
+
+{% load static %}
+
+{% block scripts %}
+<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
+{% for script in scripts %}<script src="{% static script %}?{{BOOT_TS}}"></script>{% endfor %}
+{% endblock %}
+
+{% block content %}
+<h1>{{form.heading}}</h1>
+
+<p>A randomly selected world is given spotlight positioning on every page load on the Museum of ZZT. Worlds which appear in the spotlight are taken from the checked categories in the form below.</p>
+
+<p>You may customize these categories to your preferences. If you are logged in, they will be saved to your account and be used whenever you are logged in. If not, they will be tied to your browser session.</p>
+
+<h2>Spotlight Categories</h2>
+<p>The default categories are as follows:</p>
+
+<p><b>New Releases</b> - Worlds which have been released within the past year. This category shows off newer creations whose authors would surely love to hear that you played their world, and how you enjoyed it!</p>
+
+<p><b>Beginner Friendly Worlds</b> - Worlds which have been recognized as being ideal for new ZZTers. Short, friendly, and fun games to show off the appeal of ZZT.</p>
+
+<p><b>Featured Worlds</b> - Worlds which have won one of several community awards throughout history. These include Game of the Month (1998-2002), Classic Game of the Month (199-2002), MTP Awards (2002-2004), Featured Games (2003-2009), and Museum of ZZT Featured Worlds (2017-Present).</p>
+
+<p><b>Best of ZZT Picks</b> - Worlds featured in "Best of ZZT" and similar articles. These are hand picked worlds recommended by Dr. Dos covering ZZT's entire history.</p>
+
+<p>In addition, visitors may also choose to spotlight worlds from the following sources:</p>
+
+<p><b>From Collections</b> - Worlds specified in public Museum user created collections covering a variety of criteria.</p>
+
+<p><b>Random</b> - A randomly selected ZZT, Super ZZT, or Weave ZZT world hosted on the site will be displayed.</p>
+
+<h2>Customize Categories</h2>
+
+<form{% for k,v in form.attrs.items %} {{k}}="{{v}}"{% endfor %}>
+{% if form.attrs.method == "POST" %}{% csrf_token %}{% endif %}
+{% include "museum_site/blocks/generic-form.html" %}
+<input type="submit" value="{{form.submit_value}}">
+</form>
+<hr>
+
+
+<h2>Disclaimer</h2>
+
+<p>Some worlds have been marked as ineligible for a spotlight for reasons including author request, outdated contents, or focusing on inappropriate material best not pushed onto random visitors. All these categories exclude non-spotlight worlds. Museum of ZZT staff have the final say on worlds which are permitted the opportunity to be in the spotlight. Authors wishing to request their world(s) be excluded may contact <a href="mailto:{{EMAIL_ADDRESS}}">Dr. Dos</a>.</p>
+
+<p><b>Additionally, (and hopefully temporarily,) worlds which are tagged as "Demos" will be automatically excluded from the New Releases category.</b> This is to prevent potentially recommending a demo when a full release is available. This may still happen with certain revised releases. You may wish to double check newer releases to make sure you're playing the latest release.</p>
+
+{% block form_output %}{% endblock %}
+{% endblock %}
