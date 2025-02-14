@@ -219,13 +219,16 @@ class ZFile_Queryset(Base_Queryset):
         if source == "spotlight-new-releases":
             cutoff = str(datetime.utcnow() + timedelta(days=-365))[:10]
             return self.new_releases_frontpage(spotlight_filter=True).filter(release_date__gte=cutoff).exclude(genres=GENRE_DEMO)
-        elif source == "spotlight-beginner-friendly":
-            return Collection_Entry.objects.filter(collection_id=BEGINNER_FRIENDLY_COLLECTION_ID)
         elif source == "spotlight-featured-worlds":
             return self.featured_worlds()
+        elif source == "spotlight-beginner-friendly":
+            entry_pks = Collection_Entry.objects.filter(collection_id=BEGINNER_FRIENDLY_COLLECTION_ID).values_list("zfile", flat=True)
         elif source == "spotlight-best-of-zzt":
-            return Collection_Entry.objects.filter(collection_id=BEST_OF_ZZT_COLLECTION_ID)
+            entry_pks = Collection_Entry.objects.filter(collection_id=BEST_OF_ZZT_COLLECTION_ID).values_list("zfile", flat=True)
         elif source == "spotlight-custom":
-            return Collection_Entry.objects.filter(collection_id=collection_id)
+            entry_pks = Collection_Entry.objects.filter(collection_id=collection_id).values_list("zfile", flat=True)
         else:
             return self.filter(details__id__in=[DETAIL_ZZT, DETAIL_SZZT, DETAIL_WEAVE])
+
+        # Convert collection IDs to ZFiles
+        return self.filter(pk__in=entry_pks)
