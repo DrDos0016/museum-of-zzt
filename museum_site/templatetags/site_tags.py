@@ -533,6 +533,11 @@ def ml(url, text, target="_blank", i=True, *args, **kwargs):
     return mark_safe(output)
 
 
+@register.inclusion_tag("museum_site/subtemplate/tag/zfile-upload-info.html", takes_context=True)
+def zfile_upload_info(context, zfile):
+    return {"zfile": zfile, "is_staff": context["request"].user.is_staff}
+
+
 @register.inclusion_tag("museum_site/subtemplate/tag/youtube-embed.html")
 def youtube_embed(video_id, w=960, h=540):
     return {"video_id": video_id, "w": w, "h": h}

@@ -22,29 +22,7 @@
 </table>
 {% endwith %}
 
-<h2 id="heading-upload">File Upload Info</h2>
-<table class="data-table" id="tool-info">
-    <tr>
-        <th>Upload ID</th>
-        <td>{{file.upload.pk}}</a></td>
-    </tr>
-    <tr>
-        <th>User</th>
-        <td>{% if file.upload.user_id %}Registered User{% else %}Unregistered Guest{% endif %}</td>
-    </tr>
-    <tr>
-        <th>Date</th>
-        <td>{{file.upload.date}}</td>
-    </tr>
-    {% if request.user.is_staff %}
-    <tr><th colspan="2" class="staff-bg">Staff Information</th></tr>
-    <tr><th class="staff-bg">User</th><td>{{file.upload.author_link}}</td></tr>
-    <tr><th class="staff-bg">Edit Token</th><td>{{file.upload.edit_token}}</td></tr>
-    <tr><th class="staff-bg">IP</th><td>{{file.upload.ip}}</td></tr>
-    <tr><th class="staff-bg">Notes</th><td><textarea class="upload-notes">{{file.upload.notes}}</textarea></td></tr>
-    <tr><th class="staff-bg">Announced on Discord</th><td>{{file.upload.announced|yesno|title}}</td></tr>
-    {% endif %}
-</table>
+{% zfile_upload_info file %}
 
 <h2 id="heading-contents">File Contents</h2>
 <table class="data-table" id="contents-info">
