@@ -10,6 +10,21 @@
 <script>
 var ctx = null;
 
+function apply_form_shortcut(shortcut)
+{
+    if (shortcut == "vod")
+    {
+        $("#id_subtitle").val("Part ");
+    }
+    else if (shortcut == "wildcard")
+    {
+        $("#id_subtitle").val("Wildcard Stream");
+    }
+    else if (shortcut == "playthrough")
+    {
+        $("#id_subtitle").val("Commentary Free Playthrough");
+    }
+}
 
 $(document).ready(function (){
     $("input[name=btn-clear-image]").click(function (){
@@ -22,6 +37,8 @@ $(document).ready(function (){
         let img_src = $("#uploaded-image-preview").attr("src");
         let title = $("#id_title").val();
         let subtitle = $("#id_subtitle").val();
+        if (subtitle == "Part ")
+            subtitle = "";
         let color = $("select[name=title_color]").val();
         let wide = $("select[name=wide]").val();
         let fg = "var(--ega-" + color + ")";
