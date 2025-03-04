@@ -538,8 +538,16 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
         ("large", "Large"),
     )
 
+    FORM_SHORTCUTS = (
+        ("N/A", "———"),
+        ("playthrough", "Playthrough"),
+        ("vod", "Standard VOD"),
+        ("wildcard", "Wildcard Stream"),
+    )
+
+    form_shortcut = forms.ChoiceField(required=False, choices=FORM_SHORTCUTS, help_text="Select to quickly set up common form values.")
     title = forms.CharField(label="Title", required=False)
-    subtitle = forms.CharField(label="Subtitle", required=False)
+    subtitle = forms.CharField(label="Subtitle", required=False, help_text="`Part ` will be ignored.")
     title_color = forms.ChoiceField(choices=COLOR_CHOICES, widget=Ascii_Color_Widget(choices=COLOR_CHOICES))
     text_size = forms.ChoiceField(choices=TEXT_SIZE_CHOICES, initial="large")
 

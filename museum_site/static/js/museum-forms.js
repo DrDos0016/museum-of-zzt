@@ -190,6 +190,13 @@ $(document).ready(function (){
         add_tag(input_name, tag); // Can't drag/edit
     });
 
+    // Form shortcuts
+    $("#id_form_shortcut").change(function (){
+        let func = window["apply_form_shortcut"];
+        if (typeof func === "function") { func.apply(null, [$(this).val()]); }
+        else { console.log("apply_form_shortcut() is undefined"); }
+    });
+
     // Setup
     init_filters();
     $("input:checked").parent().addClass("selected");

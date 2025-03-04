@@ -22,9 +22,9 @@ var TEMPLATES = {
     ],
 }
 
-function apply_post_shortcut()
+function apply_form_shortcut()
 {
-    let shortcut_key = $("#id_post_shortcut").val();
+    let shortcut_key = $("#id_form_shortcut").val();
     if (shortcut_key == "N/A")
         return false;
 
@@ -96,8 +96,3 @@ function set_discord_mentions(role_list)
         $("input[name=discord_mentions][value=" + role + "]").click();
     }
 }
-
-
-$(document).ready(function (){
-    $("#id_post_shortcut").change(apply_post_shortcut);
-});

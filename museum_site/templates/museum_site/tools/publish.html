@@ -1,5 +1,6 @@
 {% extends "museum_site/main.html" %}
 {% load static %}
+{% load site_tags %}
 
 {% block style %}
 <style>
@@ -113,6 +114,10 @@ function convert_suggested_to_string()
 
         <div>
             <input type="submit" name="action" value="{{action_text}}" {% if published %} disabled{% endif %}>
+        </div>
+
+        <div class="field">
+            {% zfile_upload_info file %}
         </div>
     </div>
 

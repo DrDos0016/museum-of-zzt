@@ -1,0 +1,637 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+.zzmplay-widget
+{
+    background:var(--ega-darkblue);
+    margin:5px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+    align-items:center;
+    width:365px;
+    font-family:"cp437", monospace;
+    border:1px solid var(--ega-black);
+}
+
+.zzmplay-widget textarea[readonly] { display:none; }
+.zzmplay-widget textarea[readonly].show { display:block; }
+.zzmplay-widget textarea { font-size:10pt; margin-left:8px; margin-right:8px; }
+.zzmplay-widget .zzmplay-play-button { width:70px; }
+.zzmplay-widget .zzm-meta { color: var(--ega-white); flex:1 0 100%; }
+.zzmplay-widget .zzmplay-source-button { border:0px; background:initial; }
+.zzmplay-widget .zzmplay-source-button.hide { color:var(--ega-gray); }
+.zzmplay-widget .zzmplay-source-button.show { color:var(--ega-purple); }
+.zzmplay-widget .zzmplay-mute-button { border:0px; background:initial; padding:0px; }
+.zzmplay-widget .zzmplay-volume { width:100px; }
+.zzmplay-widget .volume-value { font-size:larger; color:var(--ega-yellow); width:4ch; text-align:right; margin-left:1ch; }
+
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/zzmplay/audio.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/zzmplay/zzm.js' %}"></script>
+<script>
+let ZZM_WIDGETS = [];
+
+class Museum_ZZM_Audio_Player
+{
+    constructor(raw, source_element, mutable) {
+        if (! mutable)
+            this.play_commands = this.clean_raw_data(raw);
+        else
+            this.play_commands = "x";
+        this.mutable = mutable;
+        this.volume = 1.0 * source_element.parent().find(".zzmplay-volume").val();
+        this.pre_mute_volume = this.volume;
+        this.source_element = source_element;
+        this.source = null;
+        this.playing = false;
+        this.play_button = null;
+        this.gainNode = null;
+        this.ctx = null;
+        this.data = null; // Actual audio data that gets played after parsing
+        this.parsed = false;
+    }
+
+    clean_raw_data(raw)
+    {
+        let cleaned = raw.replaceAll(/^(?!#play).*$/gm, "");
+        cleaned = cleaned.replaceAll("#play ", "");
+        cleaned = cleaned.replaceAll("\n\n", "\n");
+        return cleaned;
+    }
+
+    update_play_commands()
+    {
+        let raw = this.source_element.val();
+        this.play_commands = this.clean_raw_data(raw);
+        return true;
+    }
+
+    delay(ms) {
+        return new Promise(res => {
+            setTimeout(() => { res('') }, ms);
+        });
+    }
+
+    async play() {
+        if (this.source) {
+            this.stop();
+        }
+
+        if (this.mutable)
+            this.update_play_commands();
+
+        this.ctx = new AudioContext();
+        const sampleRate = this.ctx.sampleRate; // audio context's sample rate
+
+        // Generate the square wave data
+        if (! this.data || this.mutable)
+        {
+            this.data = new Float32Array();
+            this.play_button.html("Wait");
+            this.play_button.prop("disabled", "disabled");
+            console.log(this.play_commands);
+            await this.delay(250);
+
+            let play_command_list = this.play_commands.split("\n");
+            for (let idx in play_command_list)
+            {
+                let buffer = await parseSound(play_command_list[idx], sampleRate);
+                this.data = f32ArrayConcat(this.data, buffer)
+            }
+        }
+
+        // Create an AudioBuffer
+        const audioBuffer = this.ctx.createBuffer(1, this.data.length, sampleRate);
+
+        // Fill the buffer with the square wave data
+        const channelData = audioBuffer.getChannelData(0);
+        channelData.set(this.data);
+
+        // Create an AudioBufferSourceNode
+        this.source = this.ctx.createBufferSource();
+        this.source.buffer = audioBuffer;
+
+        // Create GainNode (Volume Control)
+        this.gainNode = this.ctx.createGain()
+        this.gainNode.gain.value = this.volume;
+        this.gainNode.connect(this.ctx.destination);
+
+        // Connect the source to the context's destination
+        this.source.connect(this.gainNode);
+
+        var scope = this;
+        this.source.addEventListener("ended", function (){
+            scope.stop();
+        });
+
+        // Start playback
+        this.play_button.html("#End");
+        this.play_button.prop("disabled", "");
+        this.source.start();
+        this.playing = true;
+    }
+
+    stop()
+    {
+        this.source.stop();
+        this.playing = false;
+        this.play_button.html("#Play");
+    }
+
+    play_pause(button)
+    {
+        if (! this.play_button)
+            this.play_button = button;
+
+        if (this.playing)
+        {
+            this.stop();
+        }
+        else
+        {
+            this.play();
+        }
+    }
+
+    toggle_mute()
+    {
+        let cur_vol = this.source_element.parent().find(".zzmplay-volume").val();
+        if (cur_vol != 0)
+        {
+            this.pre_mute_volume = cur_vol;
+            this.source_element.parent().find(".zzmplay-volume").val(0);
+            this.set_volume(0);
+        }
+        else
+        {
+            this.source_element.parent().find(".zzmplay-volume").val(this.pre_mute_volume);
+            this.set_volume(this.pre_mute_volume);
+        }
+    }
+
+    toggle_source(current)
+    {
+        this.source_element.toggleClass("show");
+    }
+
+    set_volume(volume)
+    {
+        this.volume = volume;
+        if (this.playing)
+            this.gainNode.gain.setValueAtTime(volume, this.ctx.currentTime);
+        if (volume == 0)
+            this.source_element.parent().find(".zzmplay-mute-button").html("🔇");
+        else
+            this.source_element.parent().find(".zzmplay-mute-button").html("🔊");
+    }
+}
+
+function awful_function(commands, sampleRate)
+{
+    let intermediate = function () {return window.requestAnimationFrame(parseSound)}
+    let foo = window.requestAnimationFrame(intermediate);
+    //parseSound(commands, sampleRate);
+    console.log("Foo?", foo);
+    return intermediate;
+}
+
+$(document).ready(function (){
+    $(".zzmplay-widget").each(function (){
+        let raw = $(this).find(".zzmplay-raw").val();
+        let source_element = $(this).find(".zzmplay-raw");
+        let mutable = $(this).data("mutable") ? true : false;
+        let museum_zzm_audio_player = new Museum_ZZM_Audio_Player(raw, source_element, mutable);
+        ZZM_WIDGETS.push(museum_zzm_audio_player);
+        let idx = ZZM_WIDGETS.length - 1;
+        $(this).data("zzm-idx", idx);
+    });
+
+    $(".zzmplay-play-button").click(function (){
+        let idx = $(this).parent().data("zzm-idx");
+        ZZM_WIDGETS[idx].play_pause($(this));
+    });
+
+    $(".zzmplay-mute-button").click(function (){
+        let idx = $(this).parent().data("zzm-idx");
+        ZZM_WIDGETS[idx].toggle_mute();
+    });
+
+    $(".zzmplay-source-button").click(function (){
+        let idx = $(this).parent().parent().data("zzm-idx");
+        let current = $(this).hasClass("show") ? "show" : "hide";
+        $(this).toggleClass("show", "hide");
+        ZZM_WIDGETS[idx].toggle_source(current);
+    });
+
+    $(".zzmplay-volume").on("input", function (){
+        let idx = $(this).parent().data("zzm-idx");
+        ZZM_WIDGETS[idx].set_volume($(this).val());
+        let percentage = parseInt($(this).val() * 100);
+        $(this).next(".volume-value").html(percentage + "%");
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>Museum of ZZT</h1>
+
+{% zzm artist="WiL" track="Banana Quest Title Theme" %}
+#speed 15
+#play s-cg+cegec-gcg+cegec-g
+/i
+#play s-cg+cegec-gcg+cegec-g
+/i
+#play s-cg+cegec-gcg+cegec-g
+/i
+#play s-cg+cegec-gc+c-c+c--b+b-b+b
+/i
+#play s--a+ea+cec-ae-eb+egbgeg
+/i
+#play s--f+cfacafacg+cgegc-g
+/i
+#play s--f+cfacafacg+cgegc-g
+/i
+#play s--f+f-f+f-g+g-g+g--c+ct00sct99sc6c
+/i
+#play +c--c++c--g++d-c+d-e+f-g+f-e+e-c+c
+#play -g++c--c+g-g+gcgegcgegcg-g
+/i
+#play +c--c++c--g++d-c+d-e+f-g+f-e+e-c+g
+#play -g++g--c++g--g++g-c+g-e+g-g+g-e+g-c
+#play +g--g
+/i
+#play +c--c++c--g++d-c+d-e+f-g+f-e+e-c+c
+#play -g++c--c+g-g+gcgegcgegcg-g
+/i
+#play +c--c++c--g++d-c+d-e+f-g+f-e+e-c+c
+#play +c--c++c-c+c--c++c--b++c-b+c--b++ceg
+/i
+#play ++c----a++++c---e++b--a++b-c
+#play +a-e+a-c+g--a++e--e
+#play +e---e+++g---b+++g--e++g--g++g--b
+#play +g--g++g--e++g--g
+/i
+#play +a---f+++a--c++g--f++g--a++a--c++a
+#play -a++e--f++g--a
+#play +g--c++g--g++g-c+g-g+g-e+g-g+g-c
+#play ++cd
+/i
+#play ++e----f++++e---c+++d---f+++d---a
+#play ++c---c+++c---a++b--f+++c---c
+#play ++c---c++g--g++G-c+g-g+g-e+g-g+g-c+g
+#play -g
+/i
+#play +f---f+++f--f++e---f+++e--f
+#play +d--g++d-gg-g+cg
+#play +c---c+++c---c+++c---c+++c---c
+#play +c---c+++c---c+++c---c+++c---c
+/i
+#play +c--c++c--g++d-c+d-e+f-g+f-e+e-c+c
+#play -g++c--c+g-g+gcgegcgegcg-g
+/i
+#play +c--c++c--g++d-c+d-e+f-g+f-e+e-c+g
+#play -g++g--c++g--g++g-c+g-e+g-g+g-e+g-c
+#play +g--g
+/i
+#play +c--c++c--g++d-c+d-e+f-g+f-e+e-c+c
+#play -g++c--c+g-g+gcgegcgegcg-g
+/i
+#play +c--c++c--g++d-c+d-e+f-g+f-e+e-c+c
+#play +c--c++c-c+c--c++c--b++c-b+c--b++ceg
+/i
+#play ++c----a++++c---e++b--a++b-c
+#play +a-e+a-c+g--a++e--e
+#play +e---e+++g---b+++g--e++g--g++g--b
+#play +g--g++g--e++g--g
+/i
+#play +a---f+++a--c++g--f++g--a++a--c++a
+#play -a++e--f++g--a
+#play +g--c++g--g++g-c+g-g+g-e+g-g+g-c
+#play ++cd
+/i
+#play ++e----f++++e---c+++d---f+++d---a
+#play ++c---c+++c---a++b--f+++c---c
+#play ++c---c++g--g++G-c+g-g+g-e+g-g+g-c+g
+#play -g
+/i
+#play +f---f+++f--f++e---f+++e--f
+#play +d--g++d-gg-g+cg
+#play +c---c+++c---c+++c---c+++c---c
+#play i.-ct+++cd
+/i
+#play ++e----f++++e---c+++d---f+++d---a
+#play ++c---c+++c---a++b--f+++c---c
+#play ++c---c++g--g++G-c+g-g+g-e+g-g+g-c+g
+#play -g
+/i
+#play +f---f+++f--f++a---f+++a--f
+#play +g--g++g-g+b-g+b-g
+#play ++c---c+++c---c+++c---c+++c---c
+#play q--c
+
+{% endzzm %}
+
+{% zzm vol=0.25 track="Merbotia Title Theme" %}
+#play T-XCXX++G--GXX++G--DXX++G--GXX
+#play T-++G--EXX++F--GX++EXD--DXX++E--GXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXXXGXX+G-DXXXGXX
+#play T-+F-E!XX+G-GXX+A!-DXX+B!-GXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXX++G--GXX++G--DXX++G--GXX
+#play T+G--EXX++F--GX++EXD---G+XX++E--GXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++D---A!+XXXE!XXX-B!+XXXE!XXX
+#play T-++G---A!+XX++F--E!XX
+#play T-++E!---B!+XX++D!--E!XX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXX++G--GXX++G--DXX++G--GXX
+#play T-++G--EXX++F--GX++EXD--DXX++E--GXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXXXGXX+G-DXXXGXX
+#play T-+F-E!XX+G-GXX+A!-DXX+B!-GXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXX++G--XXX++G--
+#play t--A+XX++E--XXX++E--
+#play t--F+XX++C--XXX++C--
+#play t--G+XX+A-XX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play t-XCXX+G-XXX+G-
+#play T--A+XX+E-XXX+E-
+#play T--F+XX+C-XXX+C-
+#play t--G+XXAXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-XCX+G+G--XX+G+G--
+#play T--A+X+E+E--XX+E+E--
+#play T--F+X+C+C--XX+C+C--
+#play T--G+XA+A-XX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-+C+C--CXGXXX++D--DXXGXXX
+#play T-++E--EXXGXXX++D--DXXGXXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXXGXXX++D--DXXGXXX
+#play T-++E!--E!XXGXXX++D!--D!XXGXX
+{% endzzm %}
+
+{% zzm artist="Gilbert and Sullivan" track="Modern Major General" %}
+#play S.B!S.B!+S.C-S.B!+S.C-S.B!+S.C-S.B!
+#play +S.C-S.B!+S.C-S.B!+S.C-S.B!S.GS.E!
+#play -S.B!+S.A!S.B!S.A!S.B!S.A!S.B!S.A!
+#play S.B!S.A!S.B!S.A!S.B!S.A!S.FS.D-S.B!
+#play S.B!+S.C-S.B!+S.C-S.B!+S.C-S.B!+S.C
+#play S.B!+S.C-S.B!+S.C-S.B!S.GS.E!S.GS.F
+#play S.GS.FS.GS.FS.GS.AS.B!S.B!S.AS.G
+#play S.AS.B!-S.B!S.B!
+MAJOR-GENERAL STANLEY.
+I am the very model of a modern Major-
+ General,
+I've information vegetable, animal, and
+ mineral,
+I know the kings of England, and I quote
+ the fights historical,
+From Marathon to Waterloo, in order
+ categorical;
+            -Press enter-
+/i
+#play S.B!S.B!S.BS.B!S.BS.B!S.B
+#play S.B!S.BS.B!S.BS.B!S.A!S.G!S.F
+#play S.E!+S.E!S.D!S.E!S.D!S.E!S.D!S.E!
+#play +S.D!S.E!S.D!S.E!S.D!-S.BS.B!S.A!
+#play S.G!S.BS.B!S.BS.B!S.BS.B!
+#play S.BS.B!S.BS.B!S.BS.B!S.A!
+#play S.G!S.FQ.E!Q.xS.XS.xS.DS.E!S.DS.E!
+#play S.DS.E!S.DS.E!S.DS.E!S.G!S.FS.E!S.B!
+#play -S.B!S.B!++S.B!S.B!+S.CS.DS.C-S.B!
+#play ++S.CS.DS.C-S.B!+S.CS.DS.C-S.B!-S.B!
+#play S.B!+S.B!+S.CS.DS.E!S.DS.CS.DS.E!S.D
+#play ++S.CS.DS.E!S.DS.C-S.FS.F+S.CS.DS.E!
+#play ++S.FS.E!S.DS.E!S.FS.E!S.DS.E!S.F
+#play ++S.E!S.DS.E!S.FS.E!Q.D
+I'm very well acquainted too with matters
+ mathematical,
+I understand equations, both the simple
+ and quadratical,
+About binomial theorem I'm teeming with
+ a lot o' news -
+(Mutters: Hmm... what rhymes with "lot o'
+news...?" Aha!)
+With many cheerful facts about the square
+ of the hypotenuse!
+CHORUS.
+With many cheerful facts about the square
+ of the hypotenuse!
+With many cheerful facts about the square
+ of the hypotenuse!
+With many cheerful facts about the square
+ of the hypoten-potenuse!
+            -Press enter-
+/i
+#play IB!S.B!+S.C-S.B!+S.C-S.B!+S.C-S.B!
+#play +S.C-S.B!+S.C-S.B!+S.C-S.B!S.GS.E!
+#play -S.B!+S.A!S.B!S.A!S.B!S.A!S.B!S.A!
+#play S.B!S.A!S.B!S.A!S.B!S.A!S.FS.D-S.B!
+#play S.B!+S.CS.DS.E!S.DS.C-S.B!S.AS.B!
+#play +S.CS.DS.E!S.DS.C-S.B!S.AS.B!+S.CS.D
+#play +S.E!S.DS.C-S.B!S.A!S.GS.B!S.FS.B!
+#play S.GS.E!S.E!+S.B!S.B!+S.CS.DS.E!S.D
+#play ++S.C-S.B!S.AS.B!+S.CS.DS.E!S.DS.C
+#play +S.B!S.AS.B!+S.CS.DS.E!S.DS.C-S.B!
+#play +S.A!S.GS.B!S.FS.B!S.GS.E!S.E!
+STANLEY.
+I'm very good at integral and differential
+ calculus,
+I know the scientific names of beings
+ animalculous;
+In short, in matters vegetable, animal,
+ and mineral,
+I am the very model of a modern Major-
+ General.
+CHORUS.
+In short, in matters vegetable, animal,
+ and mineral,
+He is the very model of a modern Major-
+ General!
+            -Press enter-
+/i
+#play S.B!S.B!+S.C-S.B!+S.C-S.B!+S.C-S.B!
+#play +S.C-S.B!+S.C-S.B!+S.C-S.B!S.GS.E!
+#play -S.B!+S.A!S.B!S.A!S.B!S.A!S.B!S.A!
+#play S.B!S.A!S.B!S.A!S.B!S.A!S.FS.D-S.B!
+#play S.B!+S.C-S.B!+S.C-S.B!+S.C-S.B!+S.C
+#play S.B!+S.C-S.B!+S.C-S.B!S.GS.E!S.GS.F
+#play S.GS.FS.GS.FS.GS.AS.B!S.B!S.AS.G
+#play S.AS.B!-S.B!S.B!
+STANLEY.
+I know our mythic history, King Arthur's
+ and Sir Caracoc's
+I answer hard acrostics, I've a pretty
+ taste for paradox,
+I quote in elegiacs all the crimes of
+ Heliogabalus,
+In conics I can floor peculiarities
+ parabolous.
+            -Press enter-
+/i
+#play S.B!S.B!S.BS.B!S.BS.B!S.B
+#play S.B!S.BS.B!S.BS.B!S.A!S.G!S.F
+#play S.E!+S.E!S.D!S.E!S.D!S.E!S.D!S.E!
+#play +S.D!S.E!S.D!S.E!S.D!-S.BS.B!S.A!
+#play S.G!S.BS.B!S.BS.B!S.BS.B!
+#play S.BS.B!S.BS.B!S.BS.B!S.A!
+#play S.G!S.FQ.E!Q.xS.XS.xS.DS.E!S.DS.E!
+#play S.DS.E!S.DS.E!S.DS.E!S.G!S.FS.E!S.B!
+#play -S.B!S.B!++S.B!S.B!+S.CS.DS.C-S.B!
+#play ++S.CS.DS.C-S.B!+S.CS.DS.C-S.B!-S.B!
+#play S.B!+S.B!+S.CS.DS.E!S.DS.CS.DS.E!S.D
+#play ++S.CS.DS.E!S.DS.C-S.FS.F+S.CS.DS.E!
+#play ++S.FS.E!S.DS.E!S.FS.E!S.DS.E!S.F
+#play ++S.E!S.DS.E!S.FS.E!Q.D
+I can tell undoubted Raphaels from Gerald
+ Dows and Zoffanies,
+I know the croaking chorus from the Frogs
+ of Aristophanes,
+Then I can hum a fugue of which I've heard
+ the music's din afore
+(Mutters: Dinafore, binafore, ah!)
+And whistle all the airs from that
+ infernal nonsense Pinafore!
+CHORUS.
+And whistle all the airs from that
+ infernal nonsense Pinafore,
+And whistle all the airs from that
+ infernal nonsense Pinafore,
+And whistle all the airs from that
+ infernal nonsense Pina-Pinafore!
+            -Press enter-
+/i
+STANLEY.
+#play IB!S.B!+S.C-S.B!+S.C-S.B!+S.C-S.B!
+#play +S.C-S.B!+S.C-S.B!+S.C-S.B!S.GS.E!
+#play -S.B!+S.A!S.B!S.A!S.B!S.A!S.B!S.A!
+#play S.B!S.A!S.B!S.A!S.B!S.A!S.FS.D-S.B!
+#play S.B!+S.CS.DS.E!S.DS.C-S.B!S.AS.B!
+#play +S.CS.DS.E!S.DS.C-S.B!S.AS.B!+S.CS.D
+#play +S.E!S.DS.C-S.B!S.A!S.GS.B!S.FS.B!
+#play S.GS.E!S.E!+S.B!S.B!+S.CS.DS.E!S.D
+#play ++S.C-S.B!S.AS.B!+S.CS.DS.E!S.DS.C
+#play +S.B!S.AS.B!+S.CS.DS.E!S.DS.C-S.B!
+#play +S.A!S.GS.B!S.FS.B!S.GS.E!S.E!
+Then I can write a washing bill in
+ Babylonic cuneiform,
+And tell you every detail of Caractacus's
+ uniform;
+In short, in matters vegetable, animal,
+ and mineral,
+I am the very model of a modern Major-
+ Gineral.
+CHORUS.
+In short, in matters vegetable, animal,
+ and mineral,
+He is the very model of a modern Major-
+ Gineral!
+            -Press enter-
+/i
+#play I.B!I.B!+I.C-I.B!+I.C-I.B!+I.C-I.B!
+#play +I.C-I.B!+I.C-I.B!+I.C-I.B!I.GI.E!
+#play -I.B!+I.A!I.B!I.A!I.B!I.A!I.B!I.A!
+#play I.B!I.A!I.B!I.A!I.B!I.A!I.FI.DI.B!
+#play I.B!+I.C-I.B!+I.C-I.B!+I.C-I.B!+I.C
+#play I.B!+I.C-I.B!+I.C-I.B!I.GI.E!I.GI.F
+#play I.GI.FI.GI.FI.GI.AI.B!I.B!I.AI.G
+#play I.AI.B!-I.B!I.B!
+STANLEY.
+(slowly)
+In fact, when I know what is meant by
+ "mamelon" and "ravelin,"
+When I can tell at sight a Mauser rifle
+ from a javelin,
+When such affairs as sorties and surprises
+ I'm more wary at,
+And when I know precisely what is meant by
+ "commissariat",
+            -Press enter-
+/i
+#play I.B!I.B!I.BI.B!I.BI.B!I.B
+#play I.B!I.BI.B!I.BI.B!I.A!I.G!I.FI.E!
+#play +I.E!I.D!I.E!I.D!I.E!I.D!I.E!I.D!
+#play +I.E!I.D!I.E!I.D!-I.BI.B!I.A!I.G!
+When I have learned what progress has been
+ made in modern gunnery,
+When I know more of tactics than a novice
+ in a nunnery,
+            -Press enter-
+/i
+#play I.BI.B!I.BI.B!I.BI.B!
+#play I.BI.B!I.BI.B!I.BI.B!I.A!
+#play I.G!I.FH.E!Q.xS.xS.xS.DS.E!S.DS.E!
+#play S.DS.E!S.DS.E!S.DS.E!S.G!S.FS.E!S.B!
+#play -S.B!S.B!++S.B!S.B!+S.CS.DS.C-S.B!
+#play ++S.CS.DS.C-S.B!+S.CS.DS.C-S.B!-S.B!
+#play S.B!+S.B!+S.CS.DS.E!S.DS.CS.DS.E!S.D
+#play ++S.CS.DS.E!S.DS.C-S.FS.F+S.CS.DS.E!
+#play ++S.FS.E!S.DS.E!S.FS.E!S.DS.E!S.F
+#play ++S.E!S.DS.E!S.FS.E!Q.D
+In short, when I've a smattering of
+ elementary strategy,
+(Aside: Oh, that's one's easy. Sat a gee.
+Rode a horse.)
+(Normal speed)
+You'll say a better Major-General has
+ never sat a gee -
+CHORUS.
+You'll say a better Major-General has
+ never sat a gee!
+You'll say a better Major-General has
+ never sat a gee!
+You'll say a better Major-General has
+ never sat a, sat a gee!
+            -Press enter-
+/i
+#play IB!S.B!+S.C-S.B!+S.C-S.B!+S.C-S.B!
+#play +S.C-S.B!+S.C-S.B!+S.C-S.B!S.GS.E!
+#play -S.B!+S.A!S.B!S.A!S.B!S.A!S.B!S.A!
+#play S.B!S.A!S.B!S.A!S.B!S.A!S.FS.D-S.B!
+#play S.B!+S.CS.DS.E!S.DS.C-S.B!S.AS.B!
+#play +S.CS.DS.E!S.DS.C-S.B!S.AS.B!+S.CS.D
+#play +S.E!S.DS.C-S.B!S.A!S.GS.B!S.FS.B!
+#play S.GS.E!S.E!+S.B!S.B!+S.CS.DS.E!S.D
+#play ++S.C-S.B!S.AS.B!+S.CS.DS.E!S.DS.C
+#play +S.B!S.AS.B!+S.CS.DS.E!S.DS.C-S.B!
+#play +S.A!S.GS.B!S.FS.B!S.GS.E!S.E!
+GENERAL.
+My military knowledge, though I'm plucky
+ and adventury,
+Has only been brought down to the
+ beginning of the century.
+But still in matters vegetable, animal,
+ and mineral,
+I am the very model of a modern Major-
+ Gineral.
+ALL.
+But still in matters vegetable, animal,
+ and mineral,
+He is the very model of a modern Major-
+ Gineral!
+{% endzzm %}
+
+{% zzm mutable=1 %}
+#play abcdefg+abcd
+{% endzzm %}
+
+<hr>
+<b>Audio ref:</b><br><br>
+<audio controls=1></audio>
+
+
+<hr>
+<b>A full ZZM file:</b><br><br>
+
+{% endblock %}

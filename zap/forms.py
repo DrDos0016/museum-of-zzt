@@ -56,7 +56,7 @@ class ZAP_Post_Form(forms.Form):
     )
 
 
-    post_shortcut = forms.ChoiceField(required=False, choices=ZAP_POST_SHORTCUTS, help_text="Select to quickly set up a common post type.")
+    form_shortcut = forms.ChoiceField(required=False, choices=ZAP_POST_SHORTCUTS, help_text="Select to quickly set up a common post type.")
     title = forms.CharField(help_text="Used as post title on Tumblr.", required=False)
     accounts = Museum_Multiple_Choice_Field(
         required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["discord", "twitter", "tumblr", "mastodon"]

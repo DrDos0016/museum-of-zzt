@@ -286,8 +286,8 @@ def model_block(context, item, view="detailed", template_view=None, *args, **kwa
     item.init_model_block_context(view, request=context["request"], **kwargs)
     if template_view is None:
         template_view = view
-    if kwargs.get("alt_title") and item.title.startswith("ERROR: File #"):
-        item.context["title"]["value"] = "<span class='faded'>{}</span>".format(kwargs["alt_title"])
+    if kwargs.get("alt") and item.title.startswith("ERROR: File #"):
+        item.context["title"]["value"] = "<span class='faded'>{}</span>".format(kwargs["alt"])
     return render_to_string("museum_site/subtemplate/model-block-{}.html".format(template_view.replace("_", "-")), item.context)
 
 
@@ -533,6 +533,46 @@ def ml(url, text, target="_blank", i=True, *args, **kwargs):
     return mark_safe(output)
 
 
+@register.inclusion_tag("museum_site/subtemplate/tag/zfile-upload-info.html", takes_context=True)
+def zfile_upload_info(context, zfile):
+    return {"zfile": zfile, "is_staff": context["request"].user.is_staff}
+
+
 @register.inclusion_tag("museum_site/subtemplate/tag/youtube-embed.html")
 def youtube_embed(video_id, w=960, h=540):
     return {"video_id": video_id, "w": w, "h": h}
+
+
+@register.tag(name="zzm")
+def zzm(parser, token):
+    nodelist = parser.parse(('endzzm',))
+    parser.delete_first_token()
+    kwargs = {}
+
+    str_kwargs = token.split_contents()[1:]
+    for param in str_kwargs:
+        (k, v) = param.split("=")
+        if v.startswith("'") or v.startswith('"'):
+            kwargs[k] = v[1:-1]
+        else:
+            if "." in v:
+                kwargs[k] = float(v)
+            else:
+                kwargs[k] = int(v)
+    return ZZM_Player(nodelist, **kwargs)
+
+
+class ZZM_Player(template.Node):
+    def __init__(self, nodelist, **kwargs):
+        self.default_volume = "0.5"
+        self.nodelist = nodelist
+        self.tag_params = kwargs
+
+    def render(self, context):
+        raw = self.nodelist.render(context)
+        tag_context = self.tag_params
+        tag_context["raw"] = raw
+        tag_context.setdefault("vol", self.default_volume)
+        tag_context.setdefault("vol_percent", int(float(tag_context["vol"]) * 100))
+        t = context.template.engine.get_template("museum_site/subtemplate/tag/zzm-player.html")
+        return t.render(Context(tag_context, autoescape=context.autoescape))
