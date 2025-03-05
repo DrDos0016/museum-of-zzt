@@ -1,0 +1,23 @@
+<h2 id="heading-upload">File Upload Info</h2>
+<table class="data-table" id="tool-info">
+    <tr>
+        <th>Upload ID</th>
+        <td>{{zfile.upload.pk}}</a></td>
+    </tr>
+    <tr>
+        <th>User</th>
+        <td>{% if zfile.upload.user_id %}Registered User{% else %}Unregistered Guest{% endif %}</td>
+    </tr>
+    <tr>
+        <th>Date</th>
+        <td>{{zfile.upload.date}}</td>
+    </tr>
+    {% if is_staff %}
+    <tr><th colspan="2" class="staff-bg">Staff Information</th></tr>
+    <tr><th class="staff-bg">Username</th><td>{{zfile.upload.author_link}}</td></tr>
+    <tr><th class="staff-bg">Edit Token</th><td>{{zfile.upload.edit_token}}</td></tr>
+    <tr><th class="staff-bg">IP</th><td>{{zfile.upload.ip}}</td></tr>
+    <tr><th class="staff-bg">Notes</th><td><textarea class="upload-notes">{{zfile.upload.notes}}</textarea></td></tr>
+    <tr><th class="staff-bg">Announced on Discord</th><td>{{zfile.upload.announced|yesno|title}}</td></tr>
+    {% endif %}
+</table>
