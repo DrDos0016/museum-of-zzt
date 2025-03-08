@@ -7,9 +7,10 @@ from io import BytesIO
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from museum_site.constants import ZETA_EXECUTABLES
+from museum_site.constants import STATIC_PATH, ZETA_EXECUTABLES
 from museum_site.core.decorators import rusty_key_check
 from museum_site.core.detail_identifiers import *
+from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_PRESETS, open_base64_image
 from museum_site.core.redirects import explicit_redirect_check
 from museum_site.core.zeta_identifiers import *
 from museum_site.models import File as ZFile
@@ -210,6 +211,20 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
 
     if data["local"]:
         player = "zeta_local"
+
+    # Is this lone ZFile yours and unpublished?
+    if data["file_count"] == 1 and data["file"].is_detail(DETAIL_UPLOADED) and request.user.is_authenticated:
+        if data["file"].upload.user and data["file"].upload.user.pk == request.user.pk:
+            data["your_upload"] = True
+
+            if request.method == "POST":
+                image = open_base64_image(request.POST.get("b64img"))
+                image = image.crop(IMAGE_CROP_PRESETS["ZZT"])
+                image_path = os.path.join(STATIC_PATH, "screenshots/{}/{}.png".format(data["file"].bucket(), data["file"].key))
+                image.save(image_path)
+                data["file"].has_preview_image = True
+                data["file"].save()
+                data["screenshot_updated"] = True
 
     return render(request, "museum_site/play_{}.html".format(player), data)
 
