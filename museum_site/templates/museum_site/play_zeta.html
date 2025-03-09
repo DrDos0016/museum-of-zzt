@@ -82,6 +82,7 @@ var base_h = {{zeta_config.base_height|default:350}};
 var ZETA = null;
 
 $(document).ready(function (){
+    $("#set-screenshot").click(set_screenshot);
     $("#zzt_canvas").width(base_w * scale);
     $("#zzt_canvas").height(base_h * scale);
 
@@ -195,19 +196,14 @@ $(document).ready(function (){
     });
 
 });
+
+function set_screenshot()
+{
+    data_url = document.getElementById("zzt_canvas").toDataURL();
+    $("#b64img").val(data_url);
+    $("#screenshot-submit").click();
+}
 </script>
-{% if request.user.is_staff %}
-<script>
-// Staff functions
-$(document).ready(function (){
-    $("#debug-screenshot").click(function (){
-        data_url = document.getElementById("zzt_canvas").toDataURL();
-        $("#b64img").val(data_url);
-        $("#screenshot-submit").click();
-    });
-});
-</script>
-{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -227,13 +223,14 @@ $(document).ready(function (){
     <button id="fullscreen">Fullscreen</button>
     {% if not components.advanced %}<button id="advanced-settings">Advanced Settings</button>{% endif %}
     <br><a href="{% url 'manage_saved_data' %}?pk={{file.id}}">Manage Saved Data</a>
-    {% if request.user.is_staff %}
-    <form method="POST" id="screenshot-form" action="/tools/set_screenshot/{{file.key}}/">
+    {% if your_upload  or request.user.is_staff %}
+    <form method="POST" id="screenshot-form">
         {% csrf_token %}
-        <button id="debug-screenshot">Set Screenshot</button>
+        <button id="set-screenshot">Set Screenshot{% if request.user.is_staff %}(as staff){% endif %}</button>
         <input type="hidden" name="b64img" id="b64img">
         <input type="submit" id="screenshot-submit" style="display:none">
     </form>
+    {% if screenshot_updated %}<p>Screenshot updated! You may to hard refresh the image to clear your cached version.</p>{% endif %}
     {% endif %}
 </div>{% endif %}
 
