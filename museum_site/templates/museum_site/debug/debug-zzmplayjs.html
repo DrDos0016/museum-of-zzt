@@ -21,13 +21,14 @@
 .zzmplay-widget textarea[readonly].show { display:block; }
 .zzmplay-widget textarea { font-size:10pt; margin-left:8px; margin-right:8px; }
 .zzmplay-widget .zzmplay-play-button { width:70px; }
-.zzmplay-widget .zzm-meta { color: var(--ega-white); flex:1 0 100%; }
-.zzmplay-widget .zzmplay-source-button { border:0px; background:initial; }
+.zzmplay-widget .zzm-meta { color: var(--ega-white); flex:1 0 100%; display:flex; }
+.zzmplay-widget .zzmplay-source-button { border:0px; background:initial; height:auto; margin-right:1ch; align-self:flex-start; cursor:pointer; }
 .zzmplay-widget .zzmplay-source-button.hide { color:var(--ega-gray); }
 .zzmplay-widget .zzmplay-source-button.show { color:var(--ega-purple); }
-.zzmplay-widget .zzmplay-mute-button { border:0px; background:initial; padding:0px; }
-.zzmplay-widget .zzmplay-volume { width:100px; }
-.zzmplay-widget .volume-value { font-size:larger; color:var(--ega-yellow); width:4ch; text-align:right; margin-left:1ch; }
+.zzmplay-widget .zzmplay-mute-button { border:0px; background:initial; padding:0px; font-size:smaller; }
+.zzmplay-widget .zzmplay-volume { width:50px; }
+.zzmplay-widget .zzmplay-seek { width:100px; margin-right:10px; }
+.zzmplay-widget .time { display:flex; align-items:center; color: var(--ega-white); }
 
 </style>
 {% endblock %}
@@ -56,6 +57,9 @@ class Museum_ZZM_Audio_Player
         this.ctx = null;
         this.data = null; // Actual audio data that gets played after parsing
         this.parsed = false;
+        this.timer = null;
+        this.widget_idx = null;
+        this.start_offset_ms = 0;
     }
 
     clean_raw_data(raw)
@@ -96,7 +100,6 @@ class Museum_ZZM_Audio_Player
             this.data = new Float32Array();
             this.play_button.html("Wait");
             this.play_button.prop("disabled", "disabled");
-            console.log(this.play_commands);
             await this.delay(250);
 
             let play_command_list = this.play_commands.split("\n");
@@ -126,23 +129,50 @@ class Museum_ZZM_Audio_Player
         // Connect the source to the context's destination
         this.source.connect(this.gainNode);
 
+        console.log("CTX?", this.ctx);
+
         var scope = this;
         this.source.addEventListener("ended", function (){
             scope.stop();
+            let max_pos = scope.source_element.parent().find(".zzmplay-seek").attr("max");
+            scope.seek(0);
+            scope.source_element.parent().find(".progress").html("00:00");
         });
+
+        console.log("SOURCE", this.source);
+
+        // Set duration
+        let duration_val = this.source_element.parent().find(".duration").text();
+        if (this.mutable || duration_val == "--:--")
+        {
+            this.source_element.parent().find(".duration").html(this.format_time(this.source.buffer.duration));
+            this.source_element.parent().find(".zzmplay-seek").val(0);
+        }
 
         // Start playback
         this.play_button.html("#End");
         this.play_button.prop("disabled", "");
-        this.source.start();
+        this.source.start(0, parseInt(this.start_offset_ms / 1000));
+        this.timer = setInterval(update_playback_time, 500, this.widget_idx);
+        this.playback_start_time = Date.now();
         this.playing = true;
+    }
+
+    format_time(seconds)
+    {
+        let m = ("0" + parseInt(Math.floor(seconds) / 60)).slice(-2);
+        let s = ("0" + parseInt(Math.floor(seconds) % 60)).slice(-2);
+        return `${m}:${s}`;
     }
 
     stop()
     {
+        console.log("Ended at", this.ctx.currentTime);
         this.source.stop();
+        clearInterval(this.timer);
         this.playing = false;
         this.play_button.html("#Play");
+        this.playback_start_time = null;
     }
 
     play_pause(button)
@@ -191,15 +221,28 @@ class Museum_ZZM_Audio_Player
         else
             this.source_element.parent().find(".zzmplay-mute-button").html("🔊");
     }
+
+    set_playback_time(now)
+    {
+        let s = Date.now() - this.playback_start_time + parseInt(this.start_offset_ms);
+        this.source_element.parent().find(".progress").html(this.format_time(Math.floor(s / 1000)));
+        this.source_element.parent().find(".zzmplay-seek").val(s);
+        //console.log(s);
+    }
+
+    seek(ms)
+    {
+        if (this.playing)
+            this.stop();
+        this.start_offset_ms = ms;
+        this.source_element.parent().find(".progress").html(this.format_time(ms / 1000));
+        console.log("Set offset to", ms);
+    }
 }
 
-function awful_function(commands, sampleRate)
+function update_playback_time(idx)
 {
-    let intermediate = function () {return window.requestAnimationFrame(parseSound)}
-    let foo = window.requestAnimationFrame(intermediate);
-    //parseSound(commands, sampleRate);
-    console.log("Foo?", foo);
-    return intermediate;
+    ZZM_WIDGETS[idx].set_playback_time();
 }
 
 $(document).ready(function (){
@@ -210,6 +253,7 @@ $(document).ready(function (){
         let museum_zzm_audio_player = new Museum_ZZM_Audio_Player(raw, source_element, mutable);
         ZZM_WIDGETS.push(museum_zzm_audio_player);
         let idx = ZZM_WIDGETS.length - 1;
+        ZZM_WIDGETS[idx].widget_idx = idx;
         $(this).data("zzm-idx", idx);
     });
 
@@ -233,8 +277,11 @@ $(document).ready(function (){
     $(".zzmplay-volume").on("input", function (){
         let idx = $(this).parent().data("zzm-idx");
         ZZM_WIDGETS[idx].set_volume($(this).val());
-        let percentage = parseInt($(this).val() * 100);
-        $(this).next(".volume-value").html(percentage + "%");
+    });
+
+    $(".zzmplay-seek").on("input", function (){
+        let idx = $(this).parent().parent().data("zzm-idx");
+        ZZM_WIDGETS[idx].seek($(this).val());
     });
 });
 </script>
@@ -339,7 +386,7 @@ $(document).ready(function (){
 
 {% endzzm %}
 
-{% zzm vol=0.25 track="Merbotia Title Theme" %}
+{% zzm vol=0.25 track="Merbotia Title Theme" duration="00:20" %}
 #play T-XCXX++G--GXX++G--DXX++G--GXX
 #play T-++G--EXX++F--GX++EXD--DXX++E--GXX
 /i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
@@ -381,7 +428,49 @@ $(document).ready(function (){
 #play T-++E!--E!XXGXXX++D!--D!XXGXX
 {% endzzm %}
 
-{% zzm artist="Gilbert and Sullivan" track="Modern Major General" %}
+{% zzm vol=0.25 track="Merbotia Title Theme NO PRESET DURATION" %}
+#play T-XCXX++G--GXX++G--DXX++G--GXX
+#play T-++G--EXX++F--GX++EXD--DXX++E--GXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXXXGXX+G-DXXXGXX
+#play T-+F-E!XX+G-GXX+A!-DXX+B!-GXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXX++G--GXX++G--DXX++G--GXX
+#play T+G--EXX++F--GX++EXD---G+XX++E--GXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++D---A!+XXXE!XXX-B!+XXXE!XXX
+#play T-++G---A!+XX++F--E!XX
+#play T-++E!---B!+XX++D!--E!XX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXX++G--GXX++G--DXX++G--GXX
+#play T-++G--EXX++F--GX++EXD--DXX++E--GXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXXXGXX+G-DXXXGXX
+#play T-+F-E!XX+G-GXX+A!-DXX+B!-GXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXX++G--XXX++G--
+#play t--A+XX++E--XXX++E--
+#play t--F+XX++C--XXX++C--
+#play t--G+XX+A-XX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play t-XCXX+G-XXX+G-
+#play T--A+XX+E-XXX+E-
+#play T--F+XX+C-XXX+C-
+#play t--G+XXAXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-XCX+G+G--XX+G+G--
+#play T--A+X+E+E--XX+E+E--
+#play T--F+X+C+C--XX+C+C--
+#play T--G+XA+A-XX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-+C+C--CXGXXX++D--DXXGXXX
+#play T-++E--EXXGXXX++D--DXXGXXX
+/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i/i
+#play T-++C--CXXGXXX++D--DXXGXXX
+#play T-++E!--E!XXGXXX++D!--D!XXGXX
+{% endzzm %}
+
+{% zzm artist="Gilbert and Sullivan" track="Modern Major General I am the very model you see" %}
 #play S.B!S.B!+S.C-S.B!+S.C-S.B!+S.C-S.B!
 #play +S.C-S.B!+S.C-S.B!+S.C-S.B!S.GS.E!
 #play -S.B!+S.A!S.B!S.A!S.B!S.A!S.B!S.A!

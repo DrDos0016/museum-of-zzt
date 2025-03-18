@@ -62,13 +62,18 @@ function calc_launch_command()
     $("#id_launch_command").val(launch_command);
 
     // Set ZZT.CFG config
-    cfg = $("#id_zzt_config").val();
-    if (cfg.indexOf("REGISTERED") != -1)
+    console.log("ENGINE", engine);
+    let cfg = "";
+    if (engine)
     {
-        if (world)
-            cfg = world + "\nREGISTERED";
-        else
-            cfg = "REGISTERED";
+        cfg = $("#id_zzt_config").val();
+        if (cfg.indexOf("REGISTERED") != -1)
+        {
+            if (world)
+                cfg = world + "\nREGISTERED";
+            else
+                cfg = "REGISTERED";
+        }
     }
     $("#id_zzt_config").val(cfg);
 }

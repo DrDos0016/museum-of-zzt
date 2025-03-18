@@ -572,7 +572,14 @@ class ZZM_Player(template.Node):
         raw = self.nodelist.render(context)
         tag_context = self.tag_params
         tag_context["raw"] = raw
+        if tag_context.get("duration") and tag_context["duration"] != "--:--":
+            m, s = tag_context["duration"].split(":")
+            s = int(m) * 60 + int(s)
+            tag_context["ms"] = s * 1000
+        else:
+            tag_context["ms"] = 0
         tag_context.setdefault("vol", self.default_volume)
+        tag_context.setdefault("duration", "--:--")
         tag_context.setdefault("vol_percent", int(float(tag_context["vol"]) * 100))
         t = context.template.engine.get_template("museum_site/subtemplate/tag/zzm-player.html")
         return t.render(Context(tag_context, autoescape=context.autoescape))

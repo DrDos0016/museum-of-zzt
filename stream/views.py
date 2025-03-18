@@ -72,7 +72,7 @@ class Stream_Schedule_View(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Stream Schedule"
-        in_dst = False  # False after Fall. Success after Spring.
+        in_dst = True  # False after Fall. Success after Spring.
         if in_dst:
             context["friday_time_utc"] = "01:00 UTC (Saturday)"
             context["sunday_time_utc"] = "19:00 UTC"

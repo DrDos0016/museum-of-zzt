@@ -147,6 +147,8 @@ class IA_Mirror_Form(forms.Form):
     use_required_attribute = False
     required = False
 
+    log = []
+
     IA_LANGUAGES = (
         ("dan", "Danish"),
         ("dut", "Dutch"),
@@ -212,7 +214,10 @@ class IA_Mirror_Form(forms.Form):
     )
 
     def mirror(self, zfile, files=None):
+        self.log.append("{}: Initiating mirroring process\n".format(int(time.time())))
         archive_title = self.cleaned_data["title"]
+        self.log.append("{}: Mirorring `{}`\n".format(int(time.time()), archive_title))
+        self.log.append("{}: Using Collection `{}`\n".format(int(time.time()), self.cleaned_data["collection"]))
         # Copy the file's zip into a temp directory
         if self.cleaned_data["collection"] == "test_collection":
             ts = str(int(time.time()))
@@ -222,21 +227,30 @@ class IA_Mirror_Form(forms.Form):
         else:
             wip_zf_name = self.cleaned_data["filename"]
             url = self.cleaned_data["url"]
+        self.log.append("{}: Working with WIP Zipfile `{}`\n".format(int(time.time()), wip_zf_name))
+        self.log.append("{}: URL: `{}`\n".format(int(time.time()), url))
 
         temp_dir = tempfile.TemporaryDirectory(prefix="moz-ia")
         wip_dir = temp_dir.name
         wip_zf_path = os.path.join(wip_dir, wip_zf_name)
 
+        self.log.append("{}: Created temp directory `{}`\n".format(int(time.time()), temp_dir))
+
         # Create a ZZT.CFG if parameters were specified
         if self.cleaned_data["zzt_config"]:
             with open(os.path.join(wip_dir, "ZZT.CFG"), "w") as fh:
                 fh.write(self.cleaned_data["zzt_config"])
+            self.log.append("{}: Added custom `ZZT.CFG` file to archive.\n".format(int(time.time())))
+        else:
+            self.log.append("{}: Skipped adding a `ZZT.CFG` file to archive.\n".format(int(time.time())))
 
         # Extract zfile if not using an alternate zip
         if self.cleaned_data["zfile"]:
             zf = zipfile.ZipFile(files["zfile"])
+            self.log.append("{}: Using alternate zip archive for zfile: `{}`\n".format(int(time.time()), self.cleaned_data["zfile"]))
         else:
             zf = zipfile.ZipFile(zfile.phys_path())
+            self.log.append("{}: Using zgames zip archive for zfile: `{}`\n".format(int(time.time()), zfile.phys_path()))
 
         files = zf.infolist()
         comment = zf.comment
@@ -245,8 +259,10 @@ class IA_Mirror_Form(forms.Form):
             timestamp = time.mktime(f.date_time + (0, 0, -1))
             os.utime(os.path.join(wip_dir, f.filename), (timestamp, timestamp))
         zf.close()
+        self.log.append("{}: Extracted {} files to temp directory.\n".format(int(time.time()), len(files)))
 
         # Extract any additional packages
+        self.log.append("{}: Adding additional packages to archive\n".format(int(time.time())))
         for package in self.cleaned_data["packages"]:
             package_path = os.path.join(DATA_PATH, "ia_packages", package)
             zf = zipfile.ZipFile(package_path)
@@ -258,15 +274,21 @@ class IA_Mirror_Form(forms.Form):
                     os.path.join(wip_dir, f.filename), (timestamp, timestamp)
                 )
             zf.close()
+            self.log.append("{}: -- Added package `{}`\n".format(int(time.time()), package_path))
 
         # Add to WIP archive
-        package_files = glob.glob(os.path.join(wip_dir, "*"))
+        self.log.append("{}: Adding zgame/alt archive contents to IA archive zipfile\n".format(int(time.time())))
+        package_files = glob.glob(os.path.join(wip_dir, "**"), recursive=True)
         zf = zipfile.ZipFile(wip_zf_path, "w")
         for f in package_files:
-            if os.path.basename(f) != wip_zf_name:
-                zf.write(f, arcname=os.path.basename(f))
+            base = f.replace(wip_dir, "")[1:]  # Trim trailing /
+            if base:
+                #print("Adding to wip archive:", f, "as", base)
+                zf.write(f, arcname=base)
+                self.log.append("{}: Adding `{}` to IA archive zipfile as `{}`\n".format(int(time.time()), f, base))
         if comment:
             zf.comment = comment
+            self.log.append("{}: Added zipfile comment\n".format(int(time.time())))
         zf.close()
 
         # Zip file is in its proper state, proceed to upload:
@@ -285,7 +307,11 @@ class IA_Mirror_Form(forms.Form):
         if self.cleaned_data["year"] is not None:
             meta["year"] = str(self.cleaned_data["year"])
 
+        self.log.append("{}: Finalized metadata:\n{}\n".format(int(time.time()), str(meta)))
+
         # Mirror the file
+        self.log.append("{}: Begin Upload of `{}`\n".format(int(time.time()), wip_zf_path))
+
         r = ia_upload(
             url,
             files=[wip_zf_path],
@@ -293,10 +319,13 @@ class IA_Mirror_Form(forms.Form):
             access_key=IA_ACCESS,
             secret_key=IA_SECRET,
         )
+        self.mirror_status = "SUCCESS" if (r.status_code == 200) else "FAILED"
+        self.log.append("{}: IA RESPONSE [{}] [Status Code {}][Content {}]\n".format(int(time.time()), self.mirror_status, r.status_code, r.content))
+
 
         # Remove the working files/folders
+        self.log.append("{}: Removing temp dir `{}`\n".format(int(time.time()), wip_dir))
         delete_this(wip_dir)
-        return r
 
 
 class Series_Form(forms.ModelForm):
@@ -325,10 +354,17 @@ class Series_Form(forms.ModelForm):
         fields = ["title", "description", "visible"]
 
 
-class Livestream_Description_Form(forms.Form):
-    heading = "Livestream Description Generator"
+class Video_Description_Form(forms.Form):
+    heading = "Video Description Generator"
     use_required_attribute = False
     submit_value = "Select"
+
+    VIDEO_TYPE_CHOICES = (
+        ("vod", "Livestream VOD"),
+        ("playthrough", "Playthrough - No Commentary"),
+    )
+
+    kind = forms.ChoiceField(label="Video Type", choices=VIDEO_TYPE_CHOICES)
 
     associated = Museum_Tagged_Model_Choice_Field(
         widget=Ordered_Scrolling_Radio_Widget(),
@@ -339,14 +375,14 @@ class Livestream_Description_Form(forms.Form):
     )
     stream_date = forms.CharField(
         widget=forms.DateInput(attrs={"type": "date"}),
-        help_text="Date of original livestream",
+        help_text="Date of original livestream (VOD only)",
         required=False
     )
 
     timestamp = Museum_Tagged_Text_Field(
         label="Timestamp(s)",
         required=False,
-        help_text="Separate with commas. Match order in associated ZFiles.",
+        help_text="Separate with commas. Match order in associated ZFiles. (VOD only)",
     )
 
 
@@ -356,6 +392,14 @@ class Livestream_Vod_Form(forms.Form):
     submit_value = "Add Livestream VOD"
     attrs = {"method": "POST", "enctype": "multipart/form-data"}
 
+    CATEGORY_CHOICES = (
+        ("Livestream", "Livestream"),
+        ("Let's Play", "Let's Play"),
+        ("Playthrough", "Playthrough"),
+        ("Misc", "Misc."),
+    )
+
+    category = forms.ChoiceField(label="Category", choices=CATEGORY_CHOICES)
     author = forms.CharField(initial="Dr. Dos")
     title = forms.CharField(widget=Enhanced_Text_Widget(char_limit=80), help_text="Used exactly as entered. Don't forget the 'Livestream - ' prefix!")
     date = forms.DateField(widget=Enhanced_Date_Widget(buttons=["today"]))
@@ -416,14 +460,15 @@ class Livestream_Vod_Form(forms.Form):
         # Prepare the Article
         a = Article()
         key = ("pk-" + str(self.cleaned_data["associated_zfile"][0].pk)) if self.cleaned_data["associated_zfile"] else "no-assoc"
+        prefix = {"Livestream": "ls", "Let's Play": "lp", "misc": "x", "playthrough": "pt"}.get(self.cleaned_data["category"], "ls")
         a.title = self.cleaned_data["title"]
         a.author = self.cleaned_data["author"]
-        a.category = "Livestream"
+        a.category = self.cleaned_data["category"]
         a.schema = "django"
         a.publish_date = self.cleaned_data["date"]
         a.published = self.cleaned_data["publication_status"]
         a.description = self.cleaned_data["description"]
-        a.static_directory = "ls-{}-{}".format(key, self.cleaned_data["video_url"][0])
+        a.static_directory = "{}-{}-{}".format(prefix, key, self.cleaned_data["video_url"][0])
         a.allow_comments = True
 
         # Context for subtemplate

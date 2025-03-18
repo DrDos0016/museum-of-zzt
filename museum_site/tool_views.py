@@ -37,7 +37,7 @@ from museum_site.forms.tool_forms import (
     Discord_Announcement_Form,
     Download_Form,
     IA_Mirror_Form,
-    Livestream_Description_Form,
+    Video_Description_Form,
     Livestream_Vod_Form,
     Manage_Cache_Form,
     Prep_Publication_Pack_Form,
@@ -239,11 +239,11 @@ def extract_font(request, key):
 
 
 @staff_member_required
-def livestream_description_generator(request):
-    data = {"title": "Livestream Description Generator"}
+def video_description_generator(request):
+    data = {"title": "Video Description Generator"}
 
     if request.GET:
-        data["form"] = Livestream_Description_Form(request.GET)
+        data["form"] = Video_Description_Form(request.GET)
         associated = request.GET.getlist("associated")
         unordered = list(File.objects.filter(pk__in=associated))
         data["zfiles"] = []
@@ -278,14 +278,20 @@ def livestream_description_generator(request):
 
         subtemplate_identifiers = {0: "no", 1: "one"}
         zzt_amount = subtemplate_identifiers.get(len(data["zfiles"]), "many")
-        subtemplate = "museum_site/subtemplate/livestream-description/{}-zzt.html".format(zzt_amount)
+        if request.GET.get("kind") == "vod":
+            subtemplate = "museum_site/subtemplate/video-description/{}-zzt.html".format(zzt_amount)
+        else:
+            subtemplate = "museum_site/subtemplate/video-description/commentary-free-playthrough.html"
+            if data["zfiles"]:
+                related_article = data["zfiles"][0].articles.filter(category="Closer Look").order_by("-id").first()
+                data["related_article"] = related_article
         rendered = render_to_string(subtemplate, data)
         data["subtemplate"] = rendered
 
     else:
-        data["form"] = Livestream_Description_Form()
+        data["form"] = Video_Description_Form()
 
-    return render(request, "museum_site/tools/livestream-description-generator.html", data)
+    return render(request, "museum_site/tools/video-description-generator.html", data)
 
 
 @staff_member_required
@@ -367,17 +373,16 @@ def mirror(request, key):
     context = {"title": "Internet Archive Mirroring"}
 
     zfile = File.objects.get(key=key)
-    engine = None
     description = ""
+    file_count = zfile.content.filter(directory=False).count()
     if zfile.is_detail(DETAIL_ZZT):
-        url_prefix = "zzt_"
-        engine = "ZZT"
+        (url_prefix, engine) = ("zzt_", "ZZT")
     elif zfile.is_detail(DETAIL_SZZT):
-        url_prefix = "szzt_"
-        engine = "Super ZZT"
+        (url_prefix, engine) = ("szzt_", "Super ZZT")
+    elif zfile.is_detail(DETAIL_WEAVE):
+        (url_prefix, engine) = ("wzzt_", "WeaveZZT")
     else:
-        url_prefix = "!!!UNKNOWN_ENGINE!!!"
-        engine = "!!!UNKNOWN_ENGINE!!!"
+        (url_prefix, engine) = ("!!!UNKNOWN_ENGINE!!!", "!!!UNKNOWN_ENGINE!!!")
 
     subject = ";".join(zfile.genre_list())
 
@@ -386,16 +391,21 @@ def mirror(request, key):
 
     if engine:
         subject = engine + ";" + subject
-        description = "<p>World created using the {} engine.</p>\n\n".format(engine)
+        description += "<p>World created using the {} engine.</p>\n\n".format(engine)
 
-    if engine:
+    if engine in ["ZZT" , "Super ZZT"]:
         description += (
             "<p><i>Please note that emulation via DOSBox frequently suffers "
             "from slow performance, laggy input, and audio issues, especially "
             "on more demanding {} worlds. An alternate emulator for {} such "
             "as Zeta or a modern source port like ClassicZoo may provide a "
-            "better experience.</i></p>").format(engine, engine)
+            "better experience.</i></p>\n\n").format(engine, engine)
+    elif engine == "WeaveZZT":
+        description += ("<p><i>Please note that emulation via DOSBox is not recommended for WeaveZZT worlds. Consider using the Zeta emulator for a better experience</i></p>\n\n")
 
+    description += "<p>The zipfile this item was created from contained {} files. Documentation and other helpful materials may potentially be found within the download.</p>\n\n".format(file_count)
+
+    description = description.strip()
     raw_contents = zfile.get_zip_info()
     contents = []
     for f in raw_contents:
@@ -419,27 +429,30 @@ def mirror(request, key):
 
     world_choices = [("", "None")]
     for f in zfile.get_zip_info():
-        if f.filename.upper().endswith(".ZZT") or f.filename.upper().endswith(".SZT"):
-            world_choices.append((f.filename, f.filename))
+        if engine != "WeaveZZT":
+            if f.filename.upper().endswith(".ZZT") or f.filename.upper().endswith(".SZT"):
+                world_choices.append((f.filename, f.filename))
+        else:
+            if f.filename.upper().endswith(".EXE"):
+                world_choices.append((f.filename, f.filename))
     form.fields["default_world"].choices = world_choices
     if len(world_choices) > 1:
         form.fields["default_world"].initial = world_choices[1]
 
     # Mirror the file
     if request.method == "POST" and form.is_valid():
-        ia_responses = form.mirror(zfile, request.FILES)
-        context["output_html"] = "<textarea style='width:100%;height:150px'>\n"
+        form.mirror(zfile, request.FILES)
+        context["output_html"] = "<textarea style='width:100%;height:350px'>\n"
 
-        for ia_response in ia_responses:
-            context["output_html"] += "========================================\n"
-            context["output_html"] += "Status: {}\n".format(ia_response.status_code)
-            context["output_html"] += "Content:\n{}\n".format(ia_response.content)
-            if ia_response.status_code == 200:
-                print("SUCCESS RESPONSE")
-                zfile.archive_name = request.POST.get("url")
-                if request.POST.get("collection") != "test_collection":
+        for line in self.log:
+            context["output_html"] += line
+
+        if self.mirror_status == "SUCCESS":
+            zfile.archive_name = request.POST.get("url")
+            if request.POST.get("collection") != "test_collection":
                     zfile.save()
-        context["output_html"] += "</textarea>"
+
+        context["output_html"] += "</textarea>\n<a href='{}'>IA URL</a>".format(request.POST.get("url"))
 
     context["form"] = form
     return render(request, "museum_site/tools/mirror.html", context)
