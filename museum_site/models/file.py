@@ -169,6 +169,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def zgame(self):
         return self.downloads.filter(kind="zgames").first()
 
+    def external_downloads(self):
+        return self.downloads.exclude(kind="zgames")
+
     @cached_property
     def extras(self):
         output = []

@@ -403,6 +403,10 @@ def mirror(request, key):
     elif engine == "WeaveZZT":
         description += ("<p><i>Please note that emulation via DOSBox is not recommended for WeaveZZT worlds. Consider using the Zeta emulator for a better experience</i></p>\n\n")
 
+    external_downloads = zfile.external_downloads()
+    for dl in external_downloads:
+        description += ("<p>{}</p>\n\n".format(dl.url))
+
     description += "<p>The zipfile this item was created from contained {} files. Documentation and other helpful materials may potentially be found within the download.</p>\n\n".format(file_count)
 
     description = description.strip()
@@ -444,15 +448,16 @@ def mirror(request, key):
         form.mirror(zfile, request.FILES)
         context["output_html"] = "<textarea style='width:100%;height:350px'>\n"
 
-        for line in self.log:
+        for line in form.log:
             context["output_html"] += line
 
-        if self.mirror_status == "SUCCESS":
+        if form.mirror_status == "SUCCESS":
             zfile.archive_name = request.POST.get("url")
             if request.POST.get("collection") != "test_collection":
                     zfile.save()
 
         context["output_html"] += "</textarea>\n<a href='{}'>IA URL</a>".format(request.POST.get("url"))
+        print(context["output_html"])
 
     context["form"] = form
     return render(request, "museum_site/tools/mirror.html", context)

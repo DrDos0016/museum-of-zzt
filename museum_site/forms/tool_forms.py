@@ -319,8 +319,8 @@ class IA_Mirror_Form(forms.Form):
             access_key=IA_ACCESS,
             secret_key=IA_SECRET,
         )
-        self.mirror_status = "SUCCESS" if (r.status_code == 200) else "FAILED"
-        self.log.append("{}: IA RESPONSE [{}] [Status Code {}][Content {}]\n".format(int(time.time()), self.mirror_status, r.status_code, r.content))
+        self.mirror_status = "SUCCESS" if (r[0].status_code == 200) else "FAILED"
+        self.log.append("{}: IA RESPONSE [{}] [Status Code {}][Content {}]\n".format(int(time.time()), self.mirror_status, r[0].status_code, r[0].content))
 
 
         # Remove the working files/folders
