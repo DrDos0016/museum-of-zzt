@@ -349,11 +349,16 @@ class Social_Tumblr(Social):
 
 
 class Social_Twitter(Social):
-    def _init_keys(self):
+    def _init_keys(self, debug=False):
         self.consumer_key = TWITTER_CONSUMER_KEY
         self.consumer_secret = TWITTER_CONSUMER_SECRET
         self.token = TWITTER_OAUTH_TOKEN
         self.oauth_secret = TWITTER_OAUTH_SECRET
+        if debug:
+            print("consumer_key   :", self.consumer_key)
+            print("consumer_secret:", self.consumer_secret)
+            print("token          :", self.token)
+            print("oauth_secret   :", self.oauth_secret)
 
     def login(self):
         auth = OAuth(self.token, self.oauth_secret, self.consumer_key, self.consumer_secret)
