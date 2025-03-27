@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from django.db.utils import ProgrammingError
 import os
 
 from django.apps import AppConfig
@@ -62,17 +63,25 @@ class Museum_Site_Config(AppConfig):
         except ProgrammingError:
             pass
 
+        cache_exists = True
         for (k, v) in INITIAL_CACHE.items():
-            cache.set(k, v)
-            print("{:<25}: {}".format(k, v))
+            try:
+                cache.set(k, v)
+                print("{:<25}: {}".format(k, v))
+            except ProgrammingError:
+                cache_exists = False
+                print("!!! CACHE TABLE DOES NOT EXIST !!!")
+                print("Please initialize the cache table with: ")
+                break
 
         # Initialize character sets
-        print("--------------- Initializing Character Sets ----------------")
-        (standard_charsets, custom_charsets) = init_charsets(site_root=site_root)
-        print("{} standard character sets found".format(len(standard_charsets)))
-        print("{} custom character sets found".format(len(custom_charsets)))
-        cache.set("CHARSETS", standard_charsets)
-        cache.set("CUSTOM_CHARSETS", custom_charsets)
+        if cache_exists:
+            print("--------------- Initializing Character Sets ----------------")
+            (standard_charsets, custom_charsets) = init_charsets(site_root=site_root)
+            print("{} standard character sets found".format(len(standard_charsets)))
+            print("{} custom character sets found".format(len(custom_charsets)))
+            cache.set("CHARSETS", standard_charsets)
+            cache.set("CUSTOM_CHARSETS", custom_charsets)
 
         # Initialize WoZZT Archive
         if not os.path.exists(os.path.join(site_root, "museum_site/static/wozzt-queue/archive/")):
