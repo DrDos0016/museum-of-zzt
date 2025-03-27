@@ -16,8 +16,8 @@ from museum_site.core.model_utils import get_article_word_count
 from museum_site.models import *
 from museum_site.forms.debug_forms import Debug_Form_2023
 from museum_site.settings import EXTERNAL_ARTICLE_PATH
-
 from museum_site.forms.collection_forms import Collection_Form
+from museum_site.views import error_403, error_404, error_500
 
 
 @staff_member_required
@@ -213,3 +213,11 @@ def debug_attrs(request, key):
     zf = File.objects.get(key=key)
     context["zfile"] = zf
     return render(request, "museum_site/debug/debug-attrs.html", context)
+
+def error_status_test(request, status_code):
+    if status_code == 403:
+        return error_403(request)
+    elif status_code == 500:
+        return error_500(request)
+    else:
+        return error_404(request)
