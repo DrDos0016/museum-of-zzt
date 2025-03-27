@@ -42,7 +42,7 @@
 
     #logo-area { display:none; }
     #search-form { order: -1; }
-    #featured-block { order: 2; margin-bottom:0px;}
+    #spotlight-block { order: 2; margin-bottom:0px;}
     #blue-block { order: 2; }
     #social-block { order: 3; margin-bottom:0px;}
 

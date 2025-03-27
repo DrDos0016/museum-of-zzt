@@ -152,10 +152,10 @@ body.expanded #sidebar-right { right:-100%; }
 }
 
 .sidebar .block a + a { border-top:1px dashed var(--side-link-border); }
-.sidebar #featured-block.block a { display:inline; } /* Fix Multiple Authors appearing on multiple lines with doubled borders */
-.sidebar #featured-block.block a + a { border-top:0; }
-.sidebar #featured-block.block .flex-container h2 { flex:1 0 95%; }
-.sidebar #featured-block.block .link-manage-spotlight { font-size:smaller; }
+.sidebar #spotlight-block.block a { display:inline; } /* Fix Multiple Authors appearing on multiple lines with doubled borders */
+.sidebar #spotlight-block.block a + a { border-top:0; }
+.sidebar #spotlight-block.block .flex-container h2 { flex:1 0 95%; }
+.sidebar #spotlight-block.block .link-manage-spotlight { font-size:smaller; }
 
 
 .sidebar a[target=_blank]
@@ -183,14 +183,14 @@ body.expanded #sidebar-right { right:-100%; }
 
 #logo:hover { background-color:transparent; }
 
-#featured-block a.nohover:hover { background:none; }
-#featured-block > a
+#spotlight-block a.nohover:hover { background:none; }
+#spotlight-block > a
 {
     border-top:1px dashed var(--side-link-border);
     margin:0;
     text-align:left;
 }
-#featured-block img:hover { cursor:default; }
+#spotlight-block img:hover { cursor:default; }
 
 #letters
 {

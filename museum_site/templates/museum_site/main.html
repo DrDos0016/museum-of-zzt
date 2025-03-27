@@ -49,9 +49,8 @@
         <a href="{% url 'index' %}" id="logo"><img src="{% static logo_path %}" alt="Museum of ZZT Logo by LazyMoth"></a>
     </header>
 
-    <div id="featured-block" class="block">
+    <div id="spotlight-block" class="block">
         <div class="flex-container"><h2>Spotlight World️</h2><div><a href="{% url 'user_preferences_spotlight' %}" class="link-manage-spotlight" title="Manage Spotlight Worlds">⚙️</a></div></div>
-        <!--Source: {{spotlight_source}} / Collection ID: {{spotlight_collection_source}}-->
         {% model_block fg "gallery" %}
     </div>
 
@@ -239,6 +238,8 @@ URL Name: "{{resolved_url.url_name}}" Path: {{request.path}}
 Domain: {{DOMAIN}}
 Absolute URI: {{request.build_absolute_uri}}
 HTTP_HOST: {{request.META.HTTP_HOST}} | Host: {{HOST}} | Env: {{ENV}}
+Spotlight Source: {{spotlight_source|default:'?'}}
+Spotlight Collection ID:: {{spotlight_collection_source|default:'?'}}
 </textarea><br>
 View this page on: <a href="https://beta.museumofzzt.com{{request.path}}" target="_blank">BETA</a> <a href="https://museumofzzt.com{{request.path}}" target="_blank">LIVE</a>
 <br>

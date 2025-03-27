@@ -438,8 +438,8 @@
     .gallery-frame { gap:7px 2px; }
 }
 
-/* Featued World on Front Page */
-#featured-block .model-block.gallery
+/* Spotlight World on Front Page */
+#spotlight-block .model-block.gallery
 {
     border:0;
     padding:0;
