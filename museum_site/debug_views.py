@@ -1,3 +1,4 @@
+import glob
 import os
 import urllib.parse
 import zipfile
@@ -11,6 +12,7 @@ from django.shortcuts import render, redirect
 from museum_site.constants import *
 from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import serve_file_as
+from museum_site.core.model_utils import get_article_word_count
 from museum_site.models import *
 from museum_site.forms.debug_forms import Debug_Form_2023
 from museum_site.settings import EXTERNAL_ARTICLE_PATH
@@ -89,46 +91,56 @@ def debug(request, filename=None):
 
 @staff_member_required
 def debug_article(request, fname=""):
-    data = {"id": 0}
-    data["TODO"] = "TODO"  # Expected TODO usage.
-    data["CROP"] = "CROP"
+    context = {"id": 0}
+    context["TODO"] = "TODO"  # Expected TODO usage.
+    context["CROP"] = "CROP"
+    context["available_files"] = None
 
     fname = request.GET.get("file", fname)
+    
+    if not fname:
+        context["title"] = "Select WIP Article"
+        file_list = glob.glob(os.path.join(SITE_ROOT, "wip", "*"))
+        context["available_files"] = []
+        for filename in file_list:
+            context["available_files"].append(os.path.basename(filename))
+        return render(request, "museum_site/tools/wip-article-select.html", context)
+    else:
+        try:
+            pk = int(fname)
+        except ValueError:
+            pk = 0
 
-    try:
-        pk = int(fname)
-    except ValueError:
-        pk = 0
+        if pk:  # Debug existing article
+            article = Article.objects.get(pk=pk)
+        else:  # Debug WIP article
+            if not fname or fname == "<str:fname>":  # Blank/test values
+                return redirect("index")
 
-    if pk:  # Debug existing article
-        article = Article.objects.get(pk=pk)
-    else:  # Debug WIP article
-        if not fname or fname == "<str:fname>":  # Blank/test values
-            return redirect("index")
+            filepath = os.path.join(SITE_ROOT, "wip", fname)
+            if not os.path.isfile(filepath):
+                filepath = os.path.join(EXTERNAL_ARTICLE_PATH, request.GET.get("file"))
 
-        filepath = os.path.join(SITE_ROOT, "wip", fname)
-        if not os.path.isfile(filepath):
-            filepath = os.path.join(EXTERNAL_ARTICLE_PATH, request.GET.get("file"))
+            with open(filepath) as fh:
+                article = Article.objects.get(pk=2)
+                article.title = filepath
+                article.category = "TEST"
+                article.static_directory = fname[:-5]
+                article.content = fh.read().replace(
+                    "<!--Page-->", "<hr><b>PAGE BREAK</b><hr>"
+                )
+                article.publish_date = datetime.now()
+                article.schema = request.GET.get("format", "django")
+            context["file_path"] = filepath
 
-        with open(filepath) as fh:
-            article = Article.objects.get(pk=2)
-            article.title = filepath
-            article.category = "TEST"
-            article.static_directory = fname[:-5]
-            article.content = fh.read().replace(
-                "<!--Page-->", "<hr><b>PAGE BREAK</b><hr>"
-            )
-            article.publish_date = datetime.now()
-            article.schema = request.GET.get("format", "django")
-        data["file_path"] = filepath
+        context["article"] = article
+        context["veryspecial"] = True
+        context["word_count"] = get_article_word_count(article)
+        context["title"] = "[{} words] WIP {}".format(context["word_count"], fname)
 
-    data["article"] = article
-    data["veryspecial"] = True
-    data["title"] = "WIP {} [{} words]".format(fname, article.word_count())
-
-    request.session["active_tool"] = "staff-article-wip"
-    request.session["active_tool_template"] = "museum_site/tools/staff-article-wip.html"
-    return render(request, "museum_site/tools/article-wip.html", data)
+        request.session["active_tool"] = "staff-article-wip"
+        request.session["active_tool_template"] = "museum_site/tools/staff-article-wip.html"
+    return render(request, "museum_site/tools/article-wip.html", context)
 
 
 @staff_member_required
