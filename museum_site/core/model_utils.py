@@ -1,5 +1,7 @@
 import os
 
+from bs4 import BeautifulSoup
+
 def delete_zfile(zfile):
     """ Proper deletion of a ZFile. This removed all associated database objects as well as preview images and the zipfile from disk.
         This function does not recalculate the queue size afterwards if an unpublished ZFile is deleted. """
@@ -67,3 +69,44 @@ def delete_feedback(feedback):
         output.append("Saved ZFile")
     return output
 
+
+
+def get_article_word_count(article):
+        rendered = article.render()
+
+        if article.schema == "html" or article.schema == "django":
+            soup = BeautifulSoup(rendered, "html.parser")
+            rendered = soup.get_text()
+
+        words = rendered.replace("\r\n", " ").replace("\r", " ").replace("\n", " ").split(" ")
+        count = 0
+        for word in words:
+            if word.strip() != "":
+                count += 1
+
+        return count
+
+def get_article_urls(article, domain=""):
+    output = []
+
+    raw = []
+    if article.schema in ["html", "django"]:
+        soup = BeautifulSoup(article.content, "html.parser")
+
+        for tag in soup.find_all("a"):
+            raw.append(tag.get("href"))
+
+    for r in raw:
+        if r.startswith("{%"):
+            tag = r.split(" ")
+            if len(tag) > 4:
+                # print("HEY WEIRD TAG ALERT", self.id, self.title, tag)
+                output.append("!!SKIPME!! " + r)
+        else:
+            output.append(r)
+
+    if domain:
+        output = list(map(lambda o: domain + o if (not o.startswith("http") and not o.startswith("mailto")) else o, output))
+    output.sort()
+
+    return output
