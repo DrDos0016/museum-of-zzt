@@ -16,7 +16,7 @@
 {
     border:1px solid #000;
     display:inline-block;
-    width:20ch;
+    width:24%;
     font-size:14pt;
 }
 
@@ -53,14 +53,17 @@
 <div class="swatch" style="background-color:#F0F0F0"></div> F0F0F0 - Site block background color<br>
 <div class="swatch" style="background-color:#FF5"></div> ...FF5 - RESTRICTED - ZZT scrolls, ZZT style navigation links, Patreon Plug template tag<br>
 <div class="swatch" style="background-color:#FFF"></div> ...FFF - Form element backgrounds, Patreon Plug template tag, File Viewer Board List/Tables<br>
-<div class="swatch" style="background-color:#FEA"></div> ...fea - FORBIDDEN - Bug in color detector. This is matching on "#featured"<br>
 
 {% for stylesheet, entry in variables.items %}
     {% if entry|length %}<h2>{{stylesheet}} - Variables</h2>{% endif %}
     {% for e in entry %}
     {% ifchanged %}
         {% if e not in solarized %}
-        <div class="color">{{e}} <div class="swatch fr" style="background-color:{{e}}"></div></div>
+            {% if e.special %}
+                <hr>
+            {% else %}
+                <div class="color">{{e.name}}<br>{{e.color}} <div class="swatch fr" style="background-color:{{e.color}}"></div></div>
+            {% endif %}
         {% endif %}
     {% endifchanged %}
     {% endfor %}

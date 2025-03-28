@@ -174,7 +174,7 @@
         margin-right:auto;
     }
 
-    #debug-embed-image-preview{ display:none; }
+    #meta-tags #embed-preview { display:none; }
     #fp-file-frame { display:none; }
     #mobile-fp-file-frame
     {
