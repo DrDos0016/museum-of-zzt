@@ -87,6 +87,7 @@ def get_article_word_count(article):
         return count
 
 def get_article_urls(article, domain=""):
+    # TODO: This no longer seems to be used
     output = []
 
     raw = []

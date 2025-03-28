@@ -1,0 +1,9 @@
+{% extends BASE_TEMPLATE %}
+
+{% block content %}
+<ul>
+{% for filename in available_files %}
+    <li><a href="{% url 'debug_article' filename %}">{{filename}}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
