@@ -5,7 +5,7 @@ import urllib.parse
 
 from django.conf import settings
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import get_resolver, reverse
 
 from museum_site.constants import DATA_PATH, CHARSET_PATH
 from museum_site.settings import BANNED_IPS
@@ -312,3 +312,42 @@ def zookeeper_extract_font(font_filename, font_id, charset_name):
 
     z = zookeeper.Zookeeper()
     z.export_font(os.path.join(DATA_PATH, font_filename), os.path.join(CHARSET_PATH, "{}-{}.png".format(font_id, charset_name)), 1)
+
+
+def get_all_tool_urls(zfile=None, ignored_url_names=[], audit_pages=None):
+    output = {"Auditing":[], "General Tools":[], "zfile_tools":[]}
+    print("GET ALL TOOL URLS")
+    """ Atrocious variable names """
+    url_patterns = get_resolver().url_patterns
+    for p in url_patterns:
+        if p.pattern.describe() == "''":  # Base path for urls
+            urls = p
+            break
+
+    url_list = urls.url_patterns
+
+    """ Normalcy """
+    for u in url_list:
+        url_str = str(u.pattern)
+        if ((not url_str.startswith("tools")) or (u.name in ignored_url_names)):
+            continue
+        print(url_str)
+        
+        if "audit" in url_str:
+            bucket = output["Auditing"]
+        elif "<str:key>" in url_str:
+            bucket = output["zfile_tools"]
+        else:
+            bucket = output["General Tools"]
+            
+        url_info = {"url_name": u.name, "text": u.name.replace("_", " ").replace("tool ", "").title()}
+        bucket.append(url_info)
+        
+    if audit_pages:
+        for k, v in audit_pages.items():
+            url_info = {"url": "/tools/audit/" + k + "/", "text": v["title"]}
+            output["Auditing"].append(url_info)
+
+    for k, v in output.items():
+        output[k] = sorted(output[k], key=lambda s: s["text"])
+    return output

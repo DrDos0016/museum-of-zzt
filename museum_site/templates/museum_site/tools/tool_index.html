@@ -26,11 +26,6 @@
 {% block scripts %}
 <script>
 $(document).ready(function (){
-    $("#file-select").click(function (){
-        var val = $("#file-identifier").val();
-        window.location = window.location + val;
-    });
-
     $("#recalculate-button").click(function (){
         var recalculate = $("select[name=recalculate] option:selected").val();
         var old = $("select[name=recalculate] option:selected").data("old");
@@ -44,7 +39,7 @@ $(document).ready(function (){
 {% endblock %}
 
 {% block content %}
-{% if file %}{% model_block file %}{% endif %}
+{% if zfile %}{% model_block zfile %}{% endif %}
 
 <h2>Tool Index</h2>
 <div id="tool-container">
@@ -52,35 +47,29 @@ $(document).ready(function (){
         <tr>
             <tr><th>ZAP</th><th>Etc</th></tr>
             <tr><td><a href="{% url 'zap_index' %}">ZAP</a></td><td></td></tr>
-        <tr>
-            <th>Auditing</th>
-            <th>Etc</th>
-        </tr>
-        {% for t in audit_targets.items %}
-        <tr><td><a href="{% url 'audit' t.0 %}">{{t.1.title}}</td><td></td></tr>
-        {% endfor %}
-        <tr>
-            <th>General Tools</th>
-            <th>Etc</th>
-        </tr>
-        {% for t in tool_list %}
-        <tr><td><a href="{% url t.url_name %}">{{t.text}}</a></td><td id="etc-{{t.url_name}}">{% if t.url_name == "review_approvals" %}<b>{{pending_review_count}}</b>{% endif %}</td></tr>
+        {% for category, entries in tool_list.items %}
+        {% if category != "zfile_tools" %}
+        <tr><th colspan="2">{{category}}</th></tr>
+            {% for entry in entries %}
+            <tr><td><a href="{% if entry.url_name %}{% url entry.url_name %}{% else %}{{entry.url}}{% endif %}">{{entry.text}}</a></td><td class="r">{% if entry.text == "Feedback Approvals" %}{{pending_approvals}}{% endif %}</td></tr>
+            {% endfor %}
+        {% endif %}
         {% endfor %}
     </table>
 
     <div>
-        {% if file %}
+        {% if zfile %}
         <table>
             <tr>
-                <th>File Specific Tools</th>
+                <th>ZFile Specific Tools</th>
             </tr>
-            {% for t in file_tool_list %}
-            <tr><td><a href="{{t.url}}">{{t.text}}</a></td></tr>
+            {% for entry in tool_list.zfile_tools %}
+            <tr><td><a href="{% if entry.url_name %}{% url entry.url_name zfile.key %}{% else %}{{entry.url}}{% endif %}">{{entry.text}}</a></td></tr>
             {% endfor %}
         </table>
         {% endif %}
         <div id="tool-form">
-            <form>
+            <form id="select-zfile-from-tools-form">
             {% include "museum_site/blocks/generic-form.html" %}
             <input type="submit" value="Select ZFile">
             </form>
@@ -88,7 +77,7 @@ $(document).ready(function (){
     </div>
 </div>
 
-{% if file %}
+{% if zfile %}
 {% if request.GET.recalculate %}
 <div><b>Recalculated {{request.GET.recalculate|title}}</b><br>
 <table>
@@ -109,31 +98,31 @@ $(document).ready(function (){
             </tr>
             <tr>
                 <td>Upload ID</td>
-                <td><a href="/admin/museum_site/upload/{{file.upload.id}}/change/">{{file.upload.id}}</a></td>
+                <td><a href="/admin/museum_site/upload/{{zfile.upload.id}}/change/">{{zfile.upload.id}}</a></td>
             </tr>
             <tr>
                 <td>User</td>
-                <td>{{file.upload.author_link}}</td>
+                <td>{{zfile.upload.author_link}}</td>
             </tr>
             <tr>
                 <td>Date</td>
-                <td>{{file.upload.date}}</td>
+                <td>{{zfile.upload.date}}</td>
             </tr>
             <tr>
                 <td>Edit Token</td>
-                <td><a href="/upload?token={{file.upload.edit_token}}">{{file.upload.edit_token}}</a></td>
+                <td><a href="/upload?token={{zfile.upload.edit_token}}">{{zfile.upload.edit_token}}</a></td>
             </tr>
             <tr>
                 <td>IP</td>
-                <td>{{file.upload.ip}}</td>
+                <td>{{zfile.upload.ip}}</td>
             </tr>
             <tr>
                 <td>Notes</td>
-                <td>{% if file.upload.notes %}<textarea id="upload-notes">{{file.upload.notes}}</textarea>{% else %}<i>None</i>{% endif %}</td>
+                <td>{% if zfile.upload.notes %}<textarea id="upload-notes">{{zfile.upload.notes}}</textarea>{% else %}<i>None</i>{% endif %}</td>
             </tr>
         </table>
 
-        <div><h3 class="inline">File Contents</h3> <a href="?recalculate=contents">Recalculate</a></div>
+        <div><h3 class="inline">ZFile Contents</h3> <a href="?recalculate=contents">Recalculate</a></div>
         <table>
             <tr>
                 <th>Filename</th>
@@ -162,17 +151,17 @@ $(document).ready(function (){
         <h3>File Info</h3>
         <div>
             <select name="recalculate">
-                <option value="feedback" data-old="{{file.feedback_count}}">Feedback Count</option>
-                <option value="reviews" data-old="{{file.review_count}}/{{file.rating}}">Review Count/Rating</option>
-                <option value="articles" data-old="{{file.article_count}}">Article Count</option>
-                <option value="sort-title" data-old="{{file.sort_title}}">Sort Title</option>
-                <option value="checksum" data-old="{{file.checksum}}">Checksum</option>
-                <option value="boards" data-old="{{file.playable_boards}}/{{file.total_boards}}">Playable/Total Boards</option>
-                <option value="size" data-old="{{file.size}}">Size</option>
+                <option value="feedback" data-old="{{zfile.feedback_count}}">Feedback Count</option>
+                <option value="reviews" data-old="{{zfile.review_count}}/{{file.rating}}">Review Count/Rating</option>
+                <option value="articles" data-old="{{zfile.article_count}}">Article Count</option>
+                <option value="sort-title" data-old="{{zfile.sort_title}}">Sort Title</option>
+                <option value="checksum" data-old="{{zfile.checksum}}">Checksum</option>
+                <option value="boards" data-old="{{zfile.playable_boards}}/{{zfile.total_boards}}">Playable/Total Boards</option>
+                <option value="size" data-old="{{zfile.size}}">Size</option>
             </select>
             <input type="button" value="Recalculate" id="recalculate-button">
         </div>
-        {% zfile_attrs file %}
+        {% zfile_attrs zfile %}
     </div>
 </div>
 {% endif %}

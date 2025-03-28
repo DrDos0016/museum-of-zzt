@@ -22,7 +22,6 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify, striptags
-from django.urls import get_resolver
 
 from museum_site.constants import *  # Deliberate for Audit Settings
 from museum_site.constants import DATE_NERD
@@ -31,7 +30,7 @@ from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_f
 from museum_site.core.form_utils import load_form
 from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_PRESETS
 from museum_site.core.model_utils import delete_zfile
-from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate_boards_in_zipfile, record, zookeeper_init, zookeeper_extract_font
+from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate_boards_in_zipfile, record, zookeeper_init, zookeeper_extract_font, get_all_tool_urls
 from museum_site.forms.tool_forms import (
     Checksum_Comparison_Form,
     Discord_Announcement_Form,
@@ -894,91 +893,56 @@ def series_add(request):
 
 @staff_member_required
 def tool_index(request, key=None):
-    data = {
-        "title": "Tool Index",
-        "pending_review_count": Review.objects.pending_approval().count()
-    }
-
+    context = {"title": "Tool Directory"}
     if request.GET.get("key"):
         return redirect("/tools/{}/".format(request.GET.get("key")))
+        
+    zfile = File.objects.filter(key=key).first() if key else None
+    audit_pages = audit(request, target=None, return_target_dict=True)
+    tool_list = get_all_tool_urls(zfile, ignored_url_names=["tool_index", "tool_index_with_file", "audit", "feedback_approvals_delete"], audit_pages=audit_pages)
 
-    if key:
-        data["file"] = File.objects.get(key=key)
-        data["title"] = "[{}] - {} - Tool Index".format(data["file"].key, data["file"].title)
-
-    # Targets for auditing
-    data["audit_targets"] = audit(request, target=None, return_target_dict=True)
-
-    data["form"] = Tool_ZFile_Select_Form()
-
-    """ Atrocious variable names """
-    url_patterns = get_resolver().url_patterns
-    for p in url_patterns:
-        if p.pattern.describe() == "''":  # Base path for urls
-            urls = p
-            break
-
-    url_list = urls.url_patterns
-
-    """ Normalcy """
-    tool_list = []
-    file_tool_list = []
-    restricted_urls = ["tool_index", "tool_index_with_file", "audit", "feedback_approvals_delete"]
-    for u in url_list:
-        url_str = str(u.pattern)
-        if url_str.startswith("tools/") and u.name not in restricted_urls:
-            if url_str.find("<") == -1:
-                tool_list.append({"url_name": u.name, "text": u.name.replace("_", " ").replace("tool ", "").title()})
-            elif data.get("file"):
-                formatted_pattern = "/" + str(u.pattern)
-                formatted_pattern = formatted_pattern.replace("<str:key>", data["file"].key)
-                file_tool_list.append({
-                    "url": formatted_pattern,
-                    "text": u.name.replace("_", " ").title()
-                })
-
-    tool_list = sorted(tool_list, key=lambda s: s["text"])
-
-    if data.get("file"):
-        file_tool_list = sorted(file_tool_list, key=lambda s: s["text"])
-        file_tool_list.insert(0, {"url": data["file"].admin_url(), "text": "Django Admin Page"})
-
-        data["content_info"] = data["file"].content.all()
+    if zfile:
+        context["title"] = "[{}] - {} - Tool Index".format(zfile.key, zfile.title)
+        tool_list["zfile_tools"].insert(0, {"url": zfile.admin_url(), "text": "Django Admin Page"})
+        context["content_info"] = zfile.content.all()
 
         if request.GET.get("recalculate"):
+            # TODO VERIFY THESE ALL WORK BECASUE CHECKSUM DOESN'T SEEM TO
             field = request.GET["recalculate"]
             if field == "sort-title":
-                data["file"].sort_title = calculate_sort_title(data["file"].title)
-                data["new"] = data["file"].sort_title
+                zfile.sort_title = calculate_sort_title(zfile.title)
+                context["new"] = zfile.sort_title
             elif field == "size":
-                data["file"].calculate_size()
-                data["new"] = data["file"].size
+                zfile.calculate_size()
+                context["new"] = zfile.size
             elif field == "reviews":
-                data["file"].calculate_reviews()
-                data["new"] = "{}/{}".format(data["file"].review_count, data["file"].rating)
+                zfile.calculate_reviews()
+                context["new"] = "{}/{}".format(zfile.review_count, zfile.rating)
             elif field == "feedback":
-                data["file"].calculate_feedback()
-                data["new"] = "{}".format(data["file"].feedback_count)
+                zfile.calculate_feedback()
+                context["new"] = "{}".format(zfile.feedback_count)
             elif field == "articles":
-                data["file"].calculate_article_count()
-                data["new"] = data["file"].article_count
+                zfile.calculate_article_count()
+                context["new"] = zfile.article_count
             elif field == "checksum":
-                data["file"].checksum = calculate_md5_checksum(data["file"].phys_path())
-                data["new"] = data["file"].checksum
+                zfile.checksum = calculate_md5_checksum(zfile.phys_path())
+                context["new"] = zfile.checksum
             elif field == "boards":
-                (data["file"].playable_boards, data["file"].total_boards) = calculate_boards_in_zipfile(data["file"].phys_path())
-                data["new"] = "{}/{}".format(data["file"].playable_boards, data["file"].total_boards)
+                (zfile.playable_boards, zfile.total_boards) = calculate_boards_in_zipfile(zfile.phys_path())
+                context["new"] = "{}/{}".format(zfile.playable_boards, zfile.total_boards)
             elif field == "contents":
-                Content.generate_content_object(data["file"])
+                Content.generate_content_object(zfile)
 
-        data["file"].save()
+            zfile.save()
+    else:
+        context["all_files"] = File.objects.all().values("key", "title").order_by("title")
 
-    if not data.get("file"):
-        data["all_files"] = File.objects.all().values("key", "title").order_by("title")
-
-    data["tool_list"] = tool_list
-    data["file_tool_list"] = file_tool_list
-    return render(request, "museum_site/tools/tool_index.html", data)
+    zfile_select_form = Tool_ZFile_Select_Form()
+    context["tool_list"] = tool_list
+    context["zfile"] = zfile
+    context["form"] = zfile_select_form
+    context["pending_approvals"] = Review.objects.pending_approval().count()
+    return render(request, "museum_site/tools/tool_index.html", context)
 
 
 @staff_member_required
