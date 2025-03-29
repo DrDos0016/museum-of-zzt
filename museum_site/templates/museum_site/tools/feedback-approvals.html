@@ -15,9 +15,7 @@ $("document").ready(function (){
 {% block content %}
 <h1>Feedback Approvals</h1>
 
-<p>{{output|default:"&mdash;"|safe}}</p>
-
-<input type="button" value="Select Reject On All Pending Feedback" id="autoreject">
+<p><b>{{output|default:""|safe}}</b></p>
 
 <form method="POST">
 {% csrf_token %}
@@ -50,6 +48,9 @@ $("document").ready(function (){
     <tr><td class="c b" colspan="8">There is no feedback pending approval at this time.</td></tr>
     {% endfor %}
 </table>
-<input type="submit" value="Apply Approvals/Rejections">
+<div style="display:inline-block">
+    <input type="button" value="Select Reject On All Pending Feedback" id="autoreject"> 
+    <input type="submit" value="Apply Approvals/Rejections">
+</div>
 </form>
 {% endblock %}
