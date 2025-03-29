@@ -841,28 +841,35 @@ def feedback_approvals_delete(request):
 @staff_member_required
 def scan(request):
     """ Returns page with latest Museum scan results"""
-    data = {"title": "Museum Scan"}
+    context = {"title": "Museum Scan"}
     issues = {}
+    scan_log_path = os.path.join(SITE_ROOT, "museum_site", "static", "data", "scan.json")
+    
+    if os.path.isfile(scan_log_path):
+        with open(scan_log_path) as fh:
+            raw = fh.read()
+            j = json.loads(raw)
+            context["scan_meta"] = j.get("meta", {})
+            for i in j.get("issues", {}):
+                for key in i.keys():
+                    if not issues.get(key.replace("_", " ")):
+                        issues[key.replace("_", " ")] = []
+                    zf = File.objects.filter(pk=i["pk"]).first()
+                    if zf is None:
+                        zf = File(title="FAUX-ZFILE PK#{}".format(i["pk"]), key="FAUX-ZFILE")
+                    issues[key.replace("_", " ")].append({"zf": zf, "issue": i[key]})
 
-    with open(os.path.join(SITE_ROOT, "museum_site", "static", "data", "scan.json")) as fh:
-        raw = fh.read()
-        j = json.loads(raw)
-        data["scan_meta"] = j.get("meta", {})
-        for i in j.get("issues", {}):
-            for key in i.keys():
-                if not issues.get(key.replace("_", " ")):
-                    issues[key.replace("_", " ")] = []
-                issues[key.replace("_", " ")].append({"zf": File.objects.get(pk=i["pk"]), "issue": i[key]})
+        keys = issues.keys()
+        context["issues"] = []
+        for key in keys:
+            if key == "pk":
+                continue
+            issues[key].insert(0, key)
+            context["issues"].append(issues[key])
+    else:
+        context["error"] = "Scan log not found at: {}".format(scan_log_path)
 
-    keys = issues.keys()
-    data["issues"] = []
-    for key in keys:
-        if key == "pk":
-            continue
-        issues[key].insert(0, key)
-        data["issues"].append(issues[key])
-
-    return render(request, "museum_site/tools/scan.html", data)
+    return render(request, "museum_site/tools/scan.html", context)
 
 
 @staff_member_required
