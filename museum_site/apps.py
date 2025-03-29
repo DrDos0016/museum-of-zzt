@@ -57,7 +57,6 @@ class Museum_Site_Config(AppConfig):
         INITIAL_CACHE = {}
         INITIAL_CACHE["ENV"] = settings.ENVIRONMENT
 
-
         try:
             INITIAL_CACHE["UPLOAD_QUEUE_SIZE"] = File.objects.unpublished().count()
         except ProgrammingError:

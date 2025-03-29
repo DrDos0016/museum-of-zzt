@@ -148,10 +148,12 @@ def audit_colors(request):
 def audit_settings(request):
     context = {"title": "Audit Settings"}
     context["current_settings"] = {
+        "Environment": ENV,
+        "Site Root": SITE_ROOT,
         "Uploads Enabled": UPLOADS_ENABLED,
         "Allow Account Registration": ALLOW_REGISTRATION,
         "Require Captcha (Unimplemented?)": REQUIRE_CAPTCHA,
-        "Boot Timestamp": BOOT_TS,
+        "Boot Timestamp": "{} ({})".format(BOOT_TS, START_TIME),
         "CSS Includes": CSS_INCLUDES,
         "Upload Cap (Default)": UPLOAD_CAP,
         "Upload Test Mode": UPLOAD_TEST_MODE,
@@ -907,7 +909,6 @@ def tool_index(request, key=None):
         context["content_info"] = zfile.content.all()
 
         if request.GET.get("recalculate"):
-            # TODO VERIFY THESE ALL WORK BECASUE CHECKSUM DOESN'T SEEM TO
             field = request.GET["recalculate"]
             if field == "sort-title":
                 zfile.sort_title = calculate_sort_title(zfile.title)
