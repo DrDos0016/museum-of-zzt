@@ -202,7 +202,7 @@ class ZFile_Queryset(Base_Queryset):
             Q(zeta_config_id=None) |
             Q(zeta_config_id=ZETA_ZZT32R) |
             Q(zeta_config_id=ZETA_SZZT20)
-        ).order_by("zeta_config")
+        ).order_by("zeta_config", "sort_title")
 
     def unpublished_user_uploads(self, user_id):
         """ Returns zfiles uploaded by user_id that have remain unpublished """
