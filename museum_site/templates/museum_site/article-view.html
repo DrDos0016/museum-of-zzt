@@ -105,9 +105,13 @@ function jump_to(jump)
         {% patreon_plug %}
     {% endif %}
 
-    <a href="#top">Top of Page</a><br>
-    <a href="{% url 'article_browse' %}">Article directory</a><br>
-    <a href="{% url 'index' %}">Main page</a>
+    <nav class="nav-actions">
+        <a href="#top">Top of Page</a>
+        {% if article.series.all %}<a href="{{article.series.all.first.get_absolute_url}}">Explore Series</a>{% endif %}
+        <a href="{% url 'article_browse_category' category_slug=article.category|slugify %}">{{article.category}} Directory</a>
+        <a href="{% url 'article_browse' %}">Article Directory</a>
+        <a href="{% url 'index' %}">Museum of ZZT Home</a>
+    </nav>
 
     {% if article.series.all %}
     <hr>
