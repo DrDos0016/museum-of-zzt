@@ -126,6 +126,7 @@
 }
 
 .field-expand-button { cursor:pointer; font-size:10pt; color:var(--link-color); margin-left:1.5ch;}
+.field-label-link { font-size:10pt; margin-left:1.5ch; }
 .model-block-data .datum .value.expanded { max-height:none; }
 
 .model-block-data .datum .value textarea

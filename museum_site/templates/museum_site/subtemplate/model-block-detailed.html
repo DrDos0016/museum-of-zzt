@@ -12,7 +12,8 @@
         <div class="col">
             {% for field in col %}
             <div class="datum">
-                <div class="label">{{field.label}}</div>
+                <div class="label">{{field.label}}{% if field.label_link %}<div class="field-label-link">{{field.label_link|safe}}</div>{% endif %}
+                </div>
                 <div class="value{% if field.clamped %} clamped {% endif %}"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
             </div>
             {% endfor %}

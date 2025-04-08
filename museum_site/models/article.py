@@ -74,6 +74,7 @@ class Article(BaseModel):
 
     # Fields
     title = models.CharField(help_text="Title of the the article.", max_length=100)
+    slug = models.SlugField(max_length=100, default="", blank=True)
     author = models.CharField(help_text="Author(s) of the article. Slash separated.", max_length=50, default="Dr. Dos")
     category = models.CharField(help_text="Categorization of the article.", choices=CATEGORY_CHOICES, max_length=50)
     content = models.TextField(help_text="Body of the article.", default="")
@@ -102,12 +103,16 @@ class Article(BaseModel):
     class Meta:
         ordering = ["title"]
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Article, self).save(*args, **kwargs)
+
     def __str__(self):
         output = "[{}] {} by {}".format(self.id, self.title, self.author)
         return output
 
     def get_absolute_url(self):
-        return reverse("article_view", kwargs={"pk": self.pk, "slug": slugify(self.title)})
+        return reverse("article_view", kwargs={"pk": self.pk, "slug": self.slug})
 
     def preview_url(self):
         return os.path.join(self.path(), "preview.png")
@@ -147,7 +152,7 @@ class Article(BaseModel):
     def series_range(self):
         """ Returns a list of Articles with this article in the middle """
         output = []
-        # TODO Better handling an article being in multiple series
+        # TODO Better handling an article being in multiple series.
         series = self.series.all().first()
 
         found_self = False
@@ -260,7 +265,14 @@ class Article(BaseModel):
             link_str = "<i>None</i>"
         else:
             link_str = ", ".join(links)
-        return {"label": "Associated Files", "value": link_str, "safe": True}
+
+        label_text = "Associated Files"
+
+        output = {"label": label_text, "value": link_str, "safe": True}
+
+        if len(links) >= 2:
+            output["label_link"] = "<a href='{}'>Browse</a>".format(reverse("zfile_browse_field", kwargs={"field": "article", "value": self.slug}))
+        return output
 
     def context_detailed(self):
         context = self.context_universal()

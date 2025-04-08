@@ -37,6 +37,7 @@ class Scroll(BaseModel):
         help_text="Lines starting with @ will be skipped. Initial whitespace is trimmed by DB, so an extra @ line is a fix."
     )
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True, help_text="Will try to use key in source URL if blank")
+    supports_twitch_redeem = models.BooleanField(default=True, help_text="If the scroll can be read via Twitch redeem")
 
     class Meta:
         ordering = ["-id"]

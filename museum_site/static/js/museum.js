@@ -121,8 +121,8 @@ $(document).ready(function (){
     $("#alt-file-listing").change(function (){
         if ($(this).val() == "Browse-Associated")
         {
-            var pk = $("article").data("article_id");
-            window.location = "/file/browse/article/" + pk;
+            let slug = $("article").data("article-slug");
+            window.location = "/file/browse/article/" + slug;
             return true;
         }
         window.location = "?alt_file=" + $(this).val();

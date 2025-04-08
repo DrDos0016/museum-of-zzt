@@ -249,8 +249,8 @@ class ZFile_List_View(Model_List_View):
         elif self.value and self.field == "language":
             language_code = LANGUAGES_REVERSED.get(self.value.title(), "??")
             qs = qs.filter(language__icontains=language_code)
-        elif self.field == "article":  # Browse ZFiles associated with an article's PK
-            qs = qs.filter(articles__pk=self.value)
+        elif self.field == "article":  # Browse ZFiles associated with an article's slug
+            qs = qs.filter(articles__slug=self.value)
 
         qs = self.sort_queryset(qs)
 
@@ -290,7 +290,7 @@ class ZFile_List_View(Model_List_View):
         if self.request.GET.get("err") == "404":
             context["prefix_template"] = "museum_site/prefixes/file-404.html"
         if self.request.path.startswith("/file/browse/article/"):
-            a = Article.objects.get(pk=self.value)
+            a = Article.objects.get(slug=self.value)
             context["prefix_text"] = "Files associated with the article {}.".format(a.get_field_view(view="list").get("value", "?"))
 
         # Add basic search filters
