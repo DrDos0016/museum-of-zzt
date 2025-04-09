@@ -26,8 +26,7 @@ def querydict_to_json_str(qd):
     return output
 
 
-def zap_upload_file(uploaded_file, requested_file_name=""):
-    print(uploaded_file)
+def zap_upload_file(uploaded_file, requested_file_name="", optimize_png=False):
     now = datetime.now(timezone.utc)
     year_str = str(now)[:4]
     month_str = str(now)[5:7]
@@ -37,6 +36,9 @@ def zap_upload_file(uploaded_file, requested_file_name=""):
     with open(output_path, "wb+") as fh:
         for chunk in uploaded_file.chunks():
             fh.write(chunk)
+
+    if optimize_png:
+        os.system("optipng -o7 -strip=all -fix -nc '{}'".format(output_path))
     return file_static_path
 
 

@@ -182,13 +182,13 @@ class ZAP_Media_Upload_Form(forms.Form):
     }
 
     user_upload = Museum_Drag_And_Drop_File_Field(label="Media", widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose"))
-
     uploaded_file_name = forms.CharField(required=False, help_text="Alternate name to use for upload")
+    optimize_png = forms.BooleanField(initial=True, help_text="Run optipng on upload. (.PNG only)")
 
     def process(self, request):
         self.uploaded_file_names = []
         for k in request.FILES:
-            uploaded_file_name = zap_upload_file(request.FILES[k], self.cleaned_data.get("uploaded_file_name"))
+            uploaded_file_name = zap_upload_file(request.FILES[k], self.cleaned_data.get("uploaded_file_name"), self.cleaned_data.get("optimize_png"))
             self.uploaded_file_names.append(uploaded_file_name)
 
 
