@@ -173,6 +173,8 @@ class ZFile_List_View(Model_List_View):
     model = ZFile
     letter = None
 
+    sorted_by_url_name = {"zfile_browse": "-publish_date", "zfile_roulette": "random"}
+
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         self.letter = self.kwargs.get("letter")
@@ -190,12 +192,10 @@ class ZFile_List_View(Model_List_View):
 
         # Default sort based on path
         if self.sorted_by is None:
-            if request.path == reverse("zfile_browse"):
-                self.sorted_by = "-publish_date"
-            if request.path == reverse("zfile_browse_field", kwargs={"field": "detail", "value": "uploaded"}):
+            if request.resolver_match.kwargs.get("field") == "detail" and request.resolver_match.kwargs.get("value") == "uploaded":
                 self.sorted_by = "uploaded"
-            if request.path == reverse("zfile_roulette"):
-                self.sorted_by = "random"
+            else:
+                self.sorted_by = self.sorted_by_url_name.get(request.resolver_match.url_name, "")
 
         # Cheat Prompt
         if self.request.GET.get("q"):
