@@ -11,11 +11,11 @@ from urllib.parse import quote
 
 import pytumblr
 import requests
+import tweepy
 
 from django.db import models
 from django.template.loader import render_to_string
 from mastodon import Mastodon
-from twitter import *
 
 
 from museum.settings import STATIC_URL
@@ -25,7 +25,7 @@ from museum_site.core.social import Social_Bluesky
 from museum_site.models import BaseModel, File
 from museum_site.querysets.wozzt_queue_querysets import *
 from museum_site.settings import (
-    TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_SECRET, TWITTER_OAUTH_TOKEN,
+    TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_SECRET, TWITTER_OAUTH_TOKEN, TWITTER_BEARER_TOKEN,
     WEBHOOK_URL,
     TUMBLR_OAUTH_CONSUMER, TUMBLR_OAUTH_CONSUMER_SECRET, TUMBLR_OAUTH_TOKEN, TUMBLR_OAUTH_SECRET,
     MASTODON_ACCESS_TOKEN, MASTODON_CLIENT_KEY, MASTODON_CLIENT_SECRET, MASTODON_EMAIL, MASTODON_PASS,
@@ -217,31 +217,29 @@ class WoZZT_Queue(BaseModel):
 
     def send_tweet(self, tweet_related=True):
         try_shorter = False  # Try a shorter variant if this one is too long
-        # Tweet the image
-        with open(self.image_path(), "rb") as imagefile:
-            imagedata = imagefile.read()
 
-            auth = OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
-            t = Twitter2(auth=auth)
-            t_up = Twitter(domain='upload.twitter.com', auth=auth)
-            upload_response = t_up.media.upload(media=imagedata)
-            img1 = upload_response["media_id_string"]
+        # Connect via Tweepy
+        client = tweepy.Client(
+            bearer_token=TWITTER_BEARER_TOKEN,
+            consumer_key=TWITTER_CONSUMER_KEY,
+            consumer_secret=TWITTER_CONSUMER_SECRET,
+            access_token=TWITTER_OAUTH_TOKEN,
+            access_token_secret=TWITTER_OAUTH_SECRET,
+        )
 
+        tweepy_v1_auth = tweepy.OAuth1UserHandler(
+            TWITTER_CONSUMER_KEY,
+            TWITTER_CONSUMER_SECRET,
+            TWITTER_OAUTH_TOKEN,
+            TWITTER_OAUTH_SECRET,
+        )
+        tweepy_v1 = tweepy.API(tweepy_v1_auth)
 
-            try:
-                #resp = t.statuses.update(status=self.render_text("twitter"), media_ids=img1, tweet_mode="extended")
-                json_data = {"text": self.render_text("twitter")}
-                json_data["media"] = {
-                    "media_ids": [img1]
-                }
-
-                response = t.tweets(_json=json_data)
-
-            except TwitterHTTPError as error:
-                print(error)
-                return False
-
-            twitter_id = response.get("data", {}).get("id", 0)
+        # Upload image
+        media = tweepy_v1.media_upload(self.image_path())
+        # Tweet
+        resp = client.create_tweet(media_ids=[media.media_id], in_reply_to_tweet_id=None, text=self.render_text("twitter"))
+        twitter_id = resp.data.get("id", 0)
 
         # Twitter - Related Articles
         if tweet_related and twitter_id:
@@ -249,9 +247,7 @@ class WoZZT_Queue(BaseModel):
 
             if related_count:
                 article_text = (f"More information on \"{self.file.title}\" is available here: https://museumofzzt.com{self.file.article_url()}")
-                #resp = t.statuses.update(status=article_text, in_reply_to_status_id=twitter_id)
-                json_data = {"text": article_text, "reply": {"in_reply_to_tweet_id": str(twitter_id)}}
-                resp = t.tweets(_json=json_data)
+                resp = client.create_tweet(in_reply_to_tweet_id=twitter_id, text=article_text)
         return True
 
     def send_mastodon(self):
