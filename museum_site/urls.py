@@ -81,7 +81,7 @@ urlpatterns = [
     path("getting-started/", RedirectView.as_view(pattern_name="article_view"), {"pk": 5, "slug": "getting-started-with-zzt"}, name="zzt_dosbox"),
     path("support/", RedirectView.as_view(pattern_name="article_view"), {"pk": 576, "slug": "supporting-the-worlds-of-zzt-project"}, name="support"),
     path("zeta/", RedirectView.as_view(pattern_name="article_view"), {"pk": 399, "slug": "zzting-with-zeta"}, name="zeta"),
-    path("zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 2, "slug": "zzt-versions"}, name="zzt_dl"),
+    path("zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 1176, "slug": "zzt-versions"}, name="zzt_dl"),
     path("zzt-cheats/", RedirectView.as_view(pattern_name="article_view"), {"pk": 22, "slug": "zzt-cheats"}, name="zzt_cheats"),
 
     # /collection/
