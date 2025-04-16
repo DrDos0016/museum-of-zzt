@@ -6,9 +6,9 @@ from museum_site.constants import APP_ROOT, HOST, APP_ROOT, SITE_ROOT
 
 import pytumblr
 import requests
+import tweepy
 
 from mastodon import Mastodon
-from twitter import *
 from atproto import Client, models, client_utils
 
 from museum_site.settings import (
@@ -27,6 +27,7 @@ from museum_site.settings import (
     TUMBLR_OAUTH_TOKEN,
     TUMBLR_OAUTH_SECRET,
 
+    TWITTER_BEARER_TOKEN,
     TWITTER_CONSUMER_KEY,
     TWITTER_CONSUMER_SECRET,
     TWITTER_OAUTH_TOKEN,
@@ -350,6 +351,7 @@ class Social_Tumblr(Social):
 
 class Social_Twitter(Social):
     def _init_keys(self, debug=False):
+        self.bearer_token = TWITTER_BEARER_TOKEN
         self.consumer_key = TWITTER_CONSUMER_KEY
         self.consumer_secret = TWITTER_CONSUMER_SECRET
         self.token = TWITTER_OAUTH_TOKEN
@@ -361,9 +363,11 @@ class Social_Twitter(Social):
             print("oauth_secret   :", self.oauth_secret)
 
     def login(self):
-        auth = OAuth(self.token, self.oauth_secret, self.consumer_key, self.consumer_secret)
-        self.client = Twitter2(auth=auth)
-        self.upload_client = Twitter(domain='upload.twitter.com', auth=auth)
+        client = tweepy.Client(bearer_token=self.bearer_token, consumer_key=self.consumer_key, consumer_secret=self.consumer_secret, access_token=self.token, access_token_secret=self.oauth_secret)
+        tweepy_v1_auth = tweepy.OAuth1UserHandler(self.consumer_key, self.consumer_secret, self.token, self.oauth_secret)
+        tweepy_v1 = tweepy.API(tweepy_v1_auth)
+        self.client = client
+        self.upload_client = tweepy_v1
 
     def upload_media(self, media_path=None, media_url=None, media_bytes=None):
         if media_bytes:
@@ -373,29 +377,19 @@ class Social_Twitter(Social):
             print("External media is currently unsupported.")
             return False
         if media_path:
-            with open(media_path, "rb") as imagefile:
-                imagedata = imagefile.read()
-
-                response = self.upload_client.media.upload(media=imagedata)["media_id_string"]
-
-                if response:
-                    self.media.append(response)
-
-                self.log_response(response)
-        return response
+            media = self.upload_client.media_upload(media_path)
+            if media:
+                self.media.append(media.media_id_string)
+            self.log_response(media)
+        return media
 
     def post(self, body, title="", tags=""):
         if tags:
             body += self.clean_hashtags(tags)
-
-        json_data = {"text": body}
         if self.media:
-            json_data["media"] = {
-                "media_ids": self.media
-            }
-
-        response = self.client.tweets(_json=json_data)
-
+            response = self.client.create_tweet(media_ids=self.media, in_reply_to_tweet_id=None, text=body)
+        else:
+            response = self.client.create_tweet(in_reply_to_tweet_id=None, text=body)
         self.uploaded_media = []
         self.log_response(response)
         return response

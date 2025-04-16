@@ -14,7 +14,7 @@ from zap.models import Post
 
 ACCOUNTS = (
     ("bluesky", "Bluesky"),
-    ("discord", "Discord (no media support)"),
+    ("discord", "Discord"),
     ("mastodon", "Mastodon"),
     ("patreon", "Patreon"),
     ("tumblr", "Tumblr"),
@@ -121,7 +121,7 @@ class ZAP_Post_Form(forms.Form):
                 else:
                     response = s.post(self.cleaned_data.get("body", ""), self.cleaned_data.get("title", ""), self.cleaned_data.get("hashtags", []))
             except:
-                response = ""
+                response = {"failed": "Failed {}. This is default response within an exception".format(account)}
                 self.add_error("accounts", "Failed to post to {}".format(account))
 
             post_responses[account] = response
@@ -135,7 +135,7 @@ class ZAP_Post_Form(forms.Form):
         p.media_2 = self.cleaned_data.get("media_2", "")
         p.media_3 = self.cleaned_data.get("media_3", "")
         p.media_4 = self.cleaned_data.get("media_4", "")
-        p.tweet_id = post_responses["twitter"].get("data", {}).get("id", 0) if "twitter" in accounts else 0
+        p.tweet_id = post_responses["twitter"].data.get("id", 0) if "twitter" in accounts else 0
         p.mastodon_id = post_responses["mastodon"].get("id", 0) if "mastodon" in accounts else 0
         p.tumblr_id = post_responses["tumblr"].get("id", 0) if "tumblr" in accounts else 0
 
