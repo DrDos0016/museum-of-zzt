@@ -90,31 +90,39 @@ class ZAP_Post_Form(forms.Form):
         accounts = self.cleaned_data.get("accounts", [])
         post_responses = {}
 
+        if not self.check_media_exists():
+            return False
+
+
         for account in accounts:
             self.responses[account] = []
-            s = zap_get_social_account(account)
-            reply_id = "{}_id".format(account)
+            try:
+                s = zap_get_social_account(account)
+                reply_id = "{}_id".format(account)
 
-            # Discord needs to specify its channel and mentions
-            if account == "discord":
-                s.set_channel_key(self.cleaned_data.get("discord_channel", "test"))
-                s.set_mentions(self.cleaned_data.get("discord_mentions", []))
+                # Discord needs to specify its channel and mentions
+                if account == "discord":
+                    s.set_channel_key(self.cleaned_data.get("discord_channel", "test"))
+                    s.set_mentions(self.cleaned_data.get("discord_mentions", []))
 
-            s.login()  # Login
-            s.reset_media()
-            for i in range(1, 5):  # Upload all media
-                response = self.upload_media(s, i)
-                if response:
-                    self.responses[account].append(response)
+                s.login()  # Login
+                s.reset_media()
+                for i in range(1, 5):  # Upload all media
+                    response = self.upload_media(s, i)
+                    if response:
+                        self.responses[account].append(response)
 
-            if self.cleaned_data.get(reply_id, "0") and self.cleaned_data.get(reply_id, "0") != "0":  # Set reply ID if one exists
-                if account == "bluesky":
-                    fields = self.cleaned_data[reply_id].split(";")
-                    reply_dict = {"uri": fields[0].split("=", 2)[1], "cid": fields[1].split("=", 2)[1]}
-                    reply_id = {"parent": reply_dict, "root": reply_dict}
-                response = s.post(self.cleaned_data.get("body", ""), self.cleaned_data.get("title", ""), self.cleaned_data.get("hashtags", []), reply_to=reply_id)
-            else:
-                response = s.post(self.cleaned_data.get("body", ""), self.cleaned_data.get("title", ""), self.cleaned_data.get("hashtags", []))
+                if self.cleaned_data.get(reply_id, "0") and self.cleaned_data.get(reply_id, "0") != "0":  # Set reply ID if one exists
+                    if account == "bluesky":
+                        fields = self.cleaned_data[reply_id].split(";")
+                        reply_dict = {"uri": fields[0].split("=", 2)[1], "cid": fields[1].split("=", 2)[1]}
+                        reply_id = {"parent": reply_dict, "root": reply_dict}
+                    response = s.post(self.cleaned_data.get("body", ""), self.cleaned_data.get("title", ""), self.cleaned_data.get("hashtags", []), reply_to=reply_id)
+                else:
+                    response = s.post(self.cleaned_data.get("body", ""), self.cleaned_data.get("title", ""), self.cleaned_data.get("hashtags", []))
+            except:
+                response = ""
+                self.add_error("accounts", "Failed to post to {}".format(account))
 
             post_responses[account] = response
             self.responses[account].append(response)
@@ -150,6 +158,18 @@ class ZAP_Post_Form(forms.Form):
 
         response = s.upload_media(media_path)
         return response
+
+    def check_media_exists(self):
+        success = True
+        for i in range(1, 5):  # Upload all media
+            field_value = self.cleaned_data.get("media_{}".format(i))
+            if field_value:
+                media_path = os.path.join(SITE_ROOT, "museum_site")
+                media_path += field_value
+                if not os.path.isfile(media_path):
+                    self.add_error("media_{}".format(i), "File not found")
+                    success = False
+        return success
 
 class ZAP_Reply_Form(ZAP_Post_Form):
     tweet_id = forms.CharField(widget=forms.HiddenInput())
