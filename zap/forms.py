@@ -129,7 +129,7 @@ class ZAP_Post_Form(forms.Form):
 
         # Create the Post object
         p = Post()
-        p.title = self.cleaned_data.get("title", "Untitled Post")
+        p.title = self.cleaned_data.get("title", self.cleaned_data.get("body", "Untitled Post")[:75] + "...")
         p.body = self.cleaned_data.get("body", "")
         p.media_1 = self.cleaned_data.get("media_1", "")
         p.media_2 = self.cleaned_data.get("media_2", "")
