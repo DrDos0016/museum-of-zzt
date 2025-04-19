@@ -20,6 +20,10 @@ var TEMPLATES = {
         "Stream is up now! Check out https://twitch.tv/worldsofzzt/ while we play TODO",
         "It's time to stream! We're playing TODO today. Watch along at https://twitch.tv/worldsofzzt/",
     ],
+    "early-access-article":
+    [
+        "New for $5+ Patrons! TODO",
+    ]
 }
 
 function apply_form_shortcut()
@@ -68,6 +72,15 @@ function apply_form_shortcut()
 
         let offset = date.getDay() % TEMPLATES.live.length;
         $("#id_body").val(TEMPLATES[shortcut_key][offset]);
+    }
+    else if (shortcut_key == "early-access-article")
+    {
+        $("#id_title").val(`Patron Early Access - TODO`);
+        set_accounts(["bluesky", "discord", "mastodon", "tumblr", "twitter"]);
+        $("#id_discord_channel").val("announcements");
+        let offset = date.getDay() % TEMPLATES["early-access-article"].length;
+        $("#id_body").val(TEMPLATES[shortcut_key][offset]);
+        $("#id_hashtags").val("#closer look, #early access, #zzt");
     }
 }
 
