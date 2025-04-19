@@ -4,6 +4,15 @@
 {% block scripts %}
 <script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
 {% for script in scripts %}<script src="{% static script %}?{{BOOT_TS}}"></script>{% endfor %}
+<script>
+$(document).ready(function (){
+    let raw = $("textarea[name=video_description]").val();
+    // Strip excess lines
+    let cleaned = raw.trim();
+    cleaned = cleaned.replaceAll("\n\n\n", "\n");
+    $("textarea[name=video_description]").val(cleaned);
+});
+</script>
 {% endblock %}
 
 {% block content %}

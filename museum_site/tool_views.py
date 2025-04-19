@@ -100,7 +100,7 @@ def audit(request, target, return_target_dict=False):
 @staff_member_required
 def audit_colors(request):
     data = {"title": "DEBUG COLORS", "stylesheets": {}, "variables": {}}
-    
+
     data["solarized"] = [
             "#002B36", "#073642", "#586E75", "#657B83",
             "#839496", "#93A1A1", "#EEE8D5", "#FDF6E3",
@@ -266,7 +266,7 @@ def video_description_generator(request):
         if request.GET.get("stream_date"):
             data["stream_date"] = datetime.strptime(request.GET.get("stream_date", "1970-01-01"), DATE_NERD)
         else:
-            data["stream_date"] = datetime.now()
+            data["stream_date"] = ""
         if request.GET.getlist("timestamp"):
             for idx in range(0, len(request.GET.getlist("timestamp"))):
                 if ":" not in request.GET.getlist("timestamp")[idx]:
@@ -284,6 +284,7 @@ def video_description_generator(request):
 
         data["first_key"] = data["zfiles"][0].key if data["zfiles"] else "NOZFILEASSOC"
         data["DOMAIN"] = DOMAIN
+        data["kind"] = request.GET.get("kind")
 
         subtemplate_identifiers = {0: "no", 1: "one"}
         zzt_amount = subtemplate_identifiers.get(len(data["zfiles"]), "many")
@@ -844,7 +845,7 @@ def scan(request):
     context = {"title": "Museum Scan"}
     issues = {}
     scan_log_path = os.path.join(SITE_ROOT, "museum_site", "static", "data", "scan.json")
-    
+
     if os.path.isfile(scan_log_path):
         with open(scan_log_path) as fh:
             raw = fh.read()
@@ -905,7 +906,7 @@ def tool_index(request, key=None):
     context = {"title": "Tool Directory"}
     if request.GET.get("key"):
         return redirect("/tools/{}/".format(request.GET.get("key")))
-        
+
     zfile = File.objects.filter(key=key).first() if key else None
     audit_pages = audit(request, target=None, return_target_dict=True)
     tool_list = get_all_tool_urls(zfile, ignored_url_names=["tool_index", "tool_index_with_file", "audit", "feedback_approvals_delete"], audit_pages=audit_pages)

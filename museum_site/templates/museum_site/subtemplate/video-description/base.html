@@ -1,8 +1,8 @@
 {% block overview %}{% endblock %}
 {% block stream_contents %}{% endblock %}
 {% block play_links %}{% endblock %}
-{% block stream_date %}♦ Originally streamed on {{stream_date|date:"F jS, Y"}} ♦{% endblock %}
-{% block stream_plug %}♦ Join us for future livestreams at https://twitch.tv/worldsofzzt ♦{% endblock %}
+{% block stream_date %}{% if stream_date %}♦ Originally streamed on {{stream_date|date:"F jS, Y"}} ♦{% endif %}{% endblock %}
+{% block stream_plug %}{% if kind == "vod" %}♦ Join us for future livestreams at https://twitch.tv/worldsofzzt ♦{% endif %}{% endblock %}
 {% block other_plugs %}————————————————————————————————————————————————————————————
 Support Worlds of ZZT on Patreon: https://patreon.com/worldsofzzt
 Visit the Museum of ZZT! Download, explore, and play more than 4000 worlds from your browser: https://museumofzzt.com/
