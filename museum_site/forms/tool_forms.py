@@ -399,9 +399,16 @@ class Livestream_Vod_Form(forms.Form):
         ("Misc", "Misc."),
     )
 
+    TITLE_PREFIX_REFERENCE = """
+    <div style="font-size:10pt;">
+        Let's Play - ♦ Livestream -♦
+        Wildcard Stream Vol. ### - ♦ Bonus Stream - ♦
+    </div>
+    """
+
     category = forms.ChoiceField(label="Category", choices=CATEGORY_CHOICES)
     author = forms.CharField(initial="Dr. Dos")
-    title = forms.CharField(widget=Enhanced_Text_Widget(char_limit=80), help_text="Used exactly as entered. Don't forget the 'Livestream - ' prefix!")
+    title = forms.CharField(widget=Enhanced_Text_Widget(char_limit=80), help_text="Used exactly as entered. Remember to prefix!{}".format(TITLE_PREFIX_REFERENCE))
     date = forms.DateField(widget=Enhanced_Date_Widget(buttons=["today"]))
     video_url = forms.URLField(help_text=(
             "https://youtu.be/<b>{id}</b>, <br>https://www.youtube.com/watch?v=<b>{id}</b>&feature=youtu.be, <br>"
