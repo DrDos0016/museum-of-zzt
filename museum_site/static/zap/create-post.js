@@ -22,7 +22,18 @@ var TEMPLATES = {
     ],
     "early-access-article":
     [
-        "New for $5+ Patrons! TODO",
+        "Now available for $5+ Patrons! TODO",
+        "Newly available for $5+ Patrons! TODO",
+    ],
+    "new-article":
+    [
+        "Now available for all Museum of ZZT visitors: TODO",
+        "New for all Museum of ZZT visitors: TODO",
+    ],
+    "project-update":
+    [
+        "Time for a project update! TODO",
+        "A new project update is now available at TODO",
     ]
 }
 
@@ -81,6 +92,24 @@ function apply_form_shortcut()
         let offset = date.getDay() % TEMPLATES["early-access-article"].length;
         $("#id_body").val(TEMPLATES[shortcut_key][offset]);
         $("#id_hashtags").val("#closer look, #early access, #zzt");
+    }
+    else if (shortcut_key == "new-article")
+    {
+        $("#id_title").val(`New Article - TODO`);
+        set_accounts(["bluesky", "discord", "mastodon", "tumblr", "twitter"]);
+        $("#id_discord_channel").val("announcements");
+        let offset = date.getDay() % TEMPLATES["new-article"].length;
+        $("#id_body").val(TEMPLATES[shortcut_key][offset]);
+        $("#id_hashtags").val("#closer look, #zzt");
+    }
+    else if (shortcut_key == "project-update")
+    {
+        $("#id_title").val(`Project Update - ${formal_month_name} ${date.getDate()}`);
+        set_accounts(["bluesky", "discord", "mastodon", "tumblr", "twitter"]);
+        $("#id_discord_channel").val("announcements");
+        let offset = date.getDay() % TEMPLATES["project-update"].length;
+        $("#id_body").val(TEMPLATES[shortcut_key][offset]);
+        $("#id_hashtags").val("#project update, #zzt");
     }
 }
 
