@@ -51,15 +51,18 @@ class ZAP_Post_Form(forms.Form):
     ZAP_POST_SHORTCUTS = (
         ("N/A", "———"),
         ("live", "Live Now"),
-        ("schedule", "Stream Schedule - (Check Media 1)"),
+        ("schedule", "Stream Schedule"),
         ("vod", "Stream VOD"),
+        ("early-access-article", "Early Access Article (Assumes CL!)"),
+        ("new-article", "Public Article (Assumes CL!)"),
+        ("project-update", "Project Update"),
     )
 
 
     form_shortcut = forms.ChoiceField(required=False, choices=ZAP_POST_SHORTCUTS, help_text="Select to quickly set up a common post type.")
-    title = forms.CharField(help_text="Used as post title on Tumblr.", required=False)
+    title = forms.CharField(help_text="Also used as post title on Tumblr. Uses body (75 chars) if left blank.", required=False)
     accounts = Museum_Multiple_Choice_Field(
-        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["discord", "twitter", "tumblr", "mastodon"]
+        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["bluesky", "discord", "twitter", "tumblr", "mastodon"]
     )
     discord_channel = forms.ChoiceField(choices=DISCORD_CHANNELS, initial=("announcements" if settings.ENVIRONMENT == "PROD" else "test"))
     discord_mentions = Museum_Multiple_Choice_Field(required=False, widget=forms.CheckboxSelectMultiple, choices=DISCORD_ROLES)
