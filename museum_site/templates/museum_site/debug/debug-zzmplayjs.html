@@ -27,8 +27,9 @@
 .zzmplay-widget .zzmplay-source-button.show { color:var(--ega-purple); }
 .zzmplay-widget .zzmplay-mute-button { border:0px; background:initial; padding:0px; font-size:smaller; }
 .zzmplay-widget .zzmplay-volume { width:50px; }
-.zzmplay-widget .zzmplay-seek { width:100px; margin-right:10px; }
+.zzmplay-widget .zzmplay-seek { width:100px; margin-right:10px; visibility:hidden; }
 .zzmplay-widget .time { display:flex; align-items:center; color: var(--ega-white); }
+.zzmplay-widget.playing .zzm-meta, .zzmplay-widget.playing .time { color: var(--ega-yellow); }
 
 </style>
 {% endblock %}
@@ -41,7 +42,7 @@ let ZZM_WIDGETS = [];
 
 class Museum_ZZM_Audio_Player
 {
-    constructor(raw, source_element, mutable) {
+    constructor(raw, source_element, mutable, widget) {
         if (! mutable)
             this.play_commands = this.clean_raw_data(raw);
         else
@@ -60,6 +61,7 @@ class Museum_ZZM_Audio_Player
         this.timer = null;
         this.widget_idx = null;
         this.start_offset_ms = 0;
+        this.widget = widget;
     }
 
     clean_raw_data(raw)
@@ -145,8 +147,10 @@ class Museum_ZZM_Audio_Player
         let duration_val = this.source_element.parent().find(".duration").text();
         if (this.mutable || duration_val == "--:--")
         {
+            console.log("DURACTION?", this.source.buffer.duration);
             this.source_element.parent().find(".duration").html(this.format_time(this.source.buffer.duration));
             this.source_element.parent().find(".zzmplay-seek").val(0);
+            this.source_element.parent().find(".zzmplay-seek").attr("max", Math.ceil(this.source.buffer.duration) * 1000);
         }
 
         // Start playback
@@ -156,22 +160,28 @@ class Museum_ZZM_Audio_Player
         this.timer = setInterval(update_playback_time, 500, this.widget_idx);
         this.playback_start_time = Date.now();
         this.playing = true;
+        this.widget.addClass("playing");
+
     }
 
     format_time(seconds)
     {
-        let m = ("0" + parseInt(Math.floor(seconds) / 60)).slice(-2);
-        let s = ("0" + parseInt(Math.floor(seconds) % 60)).slice(-2);
+        let m = ("0" + parseInt(Math.ceil(seconds) / 60)).slice(-2);
+        let s = ("0" + parseInt(Math.ceil(seconds) % 60)).slice(-2);
         return `${m}:${s}`;
     }
 
-    stop()
+    stop(reset_seek_bar)
     {
         console.log("Ended at", this.ctx.currentTime);
         this.source.stop();
+        this.widget.removeClass("playing");
         clearInterval(this.timer);
         this.playing = false;
         this.play_button.html("#Play");
+        console.log("SEEKING TO 0 IN STOP()");
+        if (reset_seek_bar)
+            this.source_element.parent().find(".zzmplay-seek").val(0);
         this.playback_start_time = null;
     }
 
@@ -248,9 +258,10 @@ function update_playback_time(idx)
 $(document).ready(function (){
     $(".zzmplay-widget").each(function (){
         let raw = $(this).find(".zzmplay-raw").val();
+        let widget = $(this);
         let source_element = $(this).find(".zzmplay-raw");
         let mutable = $(this).data("mutable") ? true : false;
-        let museum_zzm_audio_player = new Museum_ZZM_Audio_Player(raw, source_element, mutable);
+        let museum_zzm_audio_player = new Museum_ZZM_Audio_Player(raw, source_element, mutable, widget);
         ZZM_WIDGETS.push(museum_zzm_audio_player);
         let idx = ZZM_WIDGETS.length - 1;
         ZZM_WIDGETS[idx].widget_idx = idx;
