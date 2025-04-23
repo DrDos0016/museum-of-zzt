@@ -8,6 +8,7 @@ from museum_site.core.redirects import redirect_with_querystring
 from museum_site.forms.article_forms import Article_Search_Form
 from museum_site.generic_model_views import Model_List_View, Model_Search_View
 from museum_site.models import Article, Article_Category_Block
+from museum_site.settings import PASSWORD2DOLLARS, PASSWORD5DOLLARS
 from museum_site.text import CATEGORY_DESCRIPTIONS
 
 
