@@ -113,8 +113,12 @@ class Review_Form(forms.ModelForm):
         if (not request.user.is_authenticated):  # TODO Make this a proper constant or setting
             feedback.approved = False
 
+
         # Instant Rejection
         if (feedback.content.find("<a href") != -1) or (feedback.content.find("[url=") != -1):
+            feedback.approved = False
+            return None
+        elif feedback.content.find("Уважаемые клиенты!") != -1:
             feedback.approved = False
             return None
 
