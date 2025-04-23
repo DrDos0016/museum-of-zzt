@@ -316,7 +316,6 @@ def zookeeper_extract_font(font_filename, font_id, charset_name):
 
 def get_all_tool_urls(zfile=None, ignored_url_names=[], audit_pages=None):
     output = {"Auditing":[], "General Tools":[], "zfile_tools":[]}
-    print("GET ALL TOOL URLS")
     """ Atrocious variable names """
     url_patterns = get_resolver().url_patterns
     for p in url_patterns:
@@ -331,18 +330,17 @@ def get_all_tool_urls(zfile=None, ignored_url_names=[], audit_pages=None):
         url_str = str(u.pattern)
         if ((not url_str.startswith("tools")) or (u.name in ignored_url_names)):
             continue
-        print(url_str)
-        
+
         if "audit" in url_str:
             bucket = output["Auditing"]
         elif "<str:key>" in url_str:
             bucket = output["zfile_tools"]
         else:
             bucket = output["General Tools"]
-            
+
         url_info = {"url_name": u.name, "text": u.name.replace("_", " ").replace("tool ", "").title()}
         bucket.append(url_info)
-        
+
     if audit_pages:
         for k, v in audit_pages.items():
             url_info = {"url": "/tools/audit/" + k + "/", "text": v["title"]}

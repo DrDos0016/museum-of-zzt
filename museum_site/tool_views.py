@@ -467,7 +467,6 @@ def mirror(request, key):
                     zfile.save()
 
         context["output_html"] += "</textarea>\n<a href='{}'>IA URL</a>".format(request.POST.get("url"))
-        print(context["output_html"])
 
     context["form"] = form
     return render(request, "museum_site/tools/mirror.html", context)

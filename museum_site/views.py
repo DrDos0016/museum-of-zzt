@@ -116,8 +116,6 @@ def directory(request, category):
         data_list = list(range(datetime.utcnow().year, 1990, -1))
         data_list.append("unk")
 
-    print(data_list)
-
     data["title"] = "{} Directory".format(category.title())
 
     # Break the list of results into 4 columns

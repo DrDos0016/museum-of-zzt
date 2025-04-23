@@ -395,20 +395,4 @@ class Social_Twitter(Social):
         return response
 
     def boost(self, post_id):
-        """ IDK if this is possible on the free tier
-        print("Post ID", post_id)
-        post_id = str(post_id)
-        # Must un-retweet to prevent errors for re-retweet attempts
-        #response = self.client.statuses.unretweet(id=post_id)
-        #response = self.client.tweets(_json={"id": "4800564439", "source_tweet_id": post_id})  # TODO Unhardcode @WoZZT User ID
-        #self.log_response(response)
-        #time.sleep(0.5)  # Probably not necessary
-        #response = self.client.statuses.retweet(id=post_id)
-        json_data = {
-            "tweet_id": post_id
-        }
-        response = self.client.users._id.retweets(_id="4800564439", _json=json_data) # TODO Unhardcode @WoZZT User ID (_id param)
-        self.log_response(response)
-        return response
-        """
         return {"reminder": "Twitter Boosting is unavailable."}
