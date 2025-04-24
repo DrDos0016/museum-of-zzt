@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Binb?</title>
+<meta charset="utf-8">
+<style type="text/css">
+* { border: 0; margin: 0; padding: 0; }
+#zeta_canvas { width: 640px; height: 350px; display: block; }
+</style>
+</head>
+<body>
+<canvas id="zeta_canvas" width="640" height="350"></canvas>
+<script type="text/javascript" src="/static/hotfix/zeta86-binb/zeta_loader.js"></script>
+<script type="text/javascript">
+ZetaLoad({
+	render: {
+		canvas: document.getElementById("zeta_canvas")
+	},
+	storage: { // optional - if not present, saves to RAM (lost on page refresh)
+		type: "auto", // can also be "localstorage" or "indexeddb"; "auto" is recommended
+		database: "{{request.GET.pk}}",
+	},
+	path: "/static/hotfix/zeta86-binb/",
+	arg: "binb", // optional
+    {% if request.GET.pk == "3089" %}commands: [["WEAVE14S.EXE", "binb"]], {% endif %}
+    {% if request.GET.pk == "3527" %}commands: [["WEAVE14V.EXE", "binb"]], {% endif %}
+	files: [
+        {
+			"type": "zip",
+            {% if request.GET.pk == "3089" %}"url": "/zgames/h/BINB_EE.zip",{% endif %}
+            {% if request.GET.pk == "3527" %}"url": "/zgames/h/BINB_E12.zip",{% endif %}
+		}
+    ]
+});
+</script>
+<hr>
+<p>PK: <a href="/pk/{{request.GET.pk}}">{{request.GET.pk|default:"None!"}}</a></p>
+
+<a href="?pk=3089">BINB_EE</a> | <a href="?pk=3527">BINB_E12</a>
+</body>
+</html>
