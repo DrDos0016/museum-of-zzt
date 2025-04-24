@@ -20,12 +20,15 @@ from museum_site.forms.collection_forms import Collection_Form
 from museum_site.views import error_403, error_404, error_500
 
 
-@staff_member_required
 def debug(request, filename=None):
     data = {"title": "DEBUG PAGE"}
     data["ARTICLE_DEBUG"] = True
     data["TODO"] = "TODO"  # Expected TODO usage.
     data["CROP"] = "CROP"
+    PUBLIC_DEBUG_FILENAMES = ["debug-binb", "debug-zzmplayjs"]
+
+    if filename not in PUBLIC_DEBUG_FILENAMES and not request.user.is_staff:
+        return redirect("/")
 
     if filename == "saves.html":
         return debug_saves(request)
@@ -97,7 +100,7 @@ def debug_article(request, fname=""):
     context["available_files"] = None
 
     fname = request.GET.get("file", fname)
-    
+
     if not fname:
         context["title"] = "Select WIP Article"
         file_list = glob.glob(os.path.join(SITE_ROOT, "wip", "*"))
