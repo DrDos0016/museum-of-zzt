@@ -71,7 +71,14 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
         data["file"] = None  # This will be the "prime" file
         data["local"] = True
 
+    # Itch games get listed as an option
+    if data["file"].itch_dl:
+        PLAY_METHODS["itch"] = {"name": "Play On Itch.io - Leave Museum"}
+
     data["file_ids"] = list(map(int, request.GET.getlist("file_id")))
+
+    # HOTFIXES (BINB)
+    data["HOTFIX"] = "true" if data["file"].pk in [3089, 3527] else "false"
 
     if (data["file"] and data["file"].id not in data["file_ids"]):
         data["file_ids"] = [data["file"].id] + data["file_ids"]
@@ -113,6 +120,9 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
             if data["file"] and data["file"].archive_name:
                 compatible_players.append("archive")
 
+        if "itch" in all_play_methods:
+            compatible_players.append("itch")
+
         # Is there a manually selected preferred player?
         if (request.GET.get("player") and request.GET.get("player") in all_play_methods):
             preferred_player = request.GET.get("player")
@@ -125,6 +135,8 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
         else:  # If not, force this hierarchy
             if "zeta" in compatible_players:
                 player = "zeta"
+            elif "itch" in compatible_players:
+                player = "itch"
             elif "archive" in compatible_players:
                 player = "archive"
             else:
@@ -132,6 +144,10 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
 
         # Finalize the player
         data["player"] = player
+
+        # Leave to Itch is needed
+        if player == "itch":
+            return redirect(data["file"].itch_dl.url)
 
         # Populate options for any alternative players
         data["players"] = {}

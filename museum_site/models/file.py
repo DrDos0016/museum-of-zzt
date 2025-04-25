@@ -49,9 +49,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         "explicit": {"glyph": "🔞", "title": "This file contains explicit content.", "role": "explicit-icon"},
         "unpublished": {"glyph": "🚧", "title": "This file is unpublished. Its contents have not been fully checked by staff.", "role": "unpub-icon"},
         "featured": {"glyph": "🗝️", "title": "This file is a featured world.", "role": "fg-icon"},
-        "lost": {"glyph": "❌", "title": "This file is known to be lost. Little if any data is available.", "role": "lost-icon"},
+        "lost": {"glyph": "❌", "title": "This file is lost. Little if any data is available.", "role": "lost-icon"},
         "weave": {"glyph": "🧵", "title": "This file contains content designed for Weave ZZT.", "role": "weave-icon"},
-        "antiquated": {"glyph": "⌛", "title": "This file is known to be antiquated. Its use is not recommended today.", "role": "outdated-icon"}
+        "antiquated": {"glyph": "⌛", "title": "This file is antiquated. A newer release should be used if available.", "role": "outdated-icon"}
     }
 
     (FEEDBACK_NO, FEEDBACK_APPROVAL, FEEDBACK_YES) = (0, 1, 2)
@@ -153,7 +153,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         output = {"download": False, "view": False, "play": False, "article": False, "review": False, "attributes": False}
         output["download"] = True if self.downloads.all().count() else False
         output["view"] = True if self.can_museum_download() else False
-        output["play"] = True if self.archive_name or (output["view"] and self.supports_zeta_player()) else False
+        output["play"] = True if self.archive_name or (output["view"] and self.supports_zeta_player()) or self.itch_dl else False
         output["article"] = True if self.article_count else False
         # Review
         if (output["download"] and self.can_review) or self.feedback_count:
@@ -168,6 +168,10 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     @cached_property
     def zgame(self):
         return self.downloads.filter(kind="zgames").first()
+
+    @cached_property
+    def itch_dl(self):
+        return self.downloads.filter(kind="itch").first()
 
     def external_downloads(self):
         return self.downloads.exclude(kind="zgames")
@@ -203,6 +207,9 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             self._major_icons.append(self.ICONS["weave"])
         if self.is_detail(DETAIL_FEATURED):
             self._minor_icons.append(self.ICONS["featured"])
+        if self.is_detail(DETAIL_ANTIQUATED):
+            self._major_icons.append(self.ICONS["antiquated"])
+
 
         self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
@@ -617,7 +624,10 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         """ Context to display object as page header (such as in the file viewer) """
         context = self.context_universal()
         context["show_actions"] = True
-        context["title"] = self.get_field_view(view="header")
+        title = self.get_field_view(view="header")
+        icons = self.prepare_icons_for_field()
+        title["value"] = icons + title["value"]
+        context["title" ] = title
 
         action_list = ["download", "play", "view", "review", "article", "attributes"]
         if self.show_staff:

@@ -20,7 +20,11 @@ $(document).ready(function (){
     });
 
     $("select[name=player]").change(function (){
-        window.location = "?player=" + $(this).val();
+        let player = $(this).val();
+        if (player != "itch")
+            window.location = "?player=" + $(this).val();
+        else
+            window.location = "{{file.itch_dl.url|default:'#'}}";
     });
 });
 </script>

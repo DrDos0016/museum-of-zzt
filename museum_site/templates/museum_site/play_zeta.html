@@ -69,11 +69,15 @@
 <script>
 $(document).ready(function (){
     $("select[name=player]").change(function (){
-        window.location = "?player=" + $(this).val();
+        let player = $(this).val();
+        if (player != "itch")
+            window.location = "?player=" + $(this).val();
+        else
+            window.location = "{{file.itch_dl.url|default:'#'}}";
     });
 });
 </script>
-<script type="text/javascript" src="/static/zeta86/zeta_loader.js?{{BOOT_TS}}"></script>
+
 <script type="text/javascript">
 var url = new URL(window.location);
 var scale = {{zeta_player_scale|default:1}};
@@ -148,7 +152,6 @@ $(document).ready(function (){
 
         console.log(hex_string)
     }
-
     ZetaLoad({
         path: "/static/zeta86/",
         render: {
@@ -194,7 +197,6 @@ $(document).ready(function (){
     }, function(zeta) {
         ZETA = zeta;
     });
-
 });
 
 function set_screenshot()
@@ -207,6 +209,7 @@ function set_screenshot()
 {% endblock %}
 
 {% block content %}
+{% if 40 in file.detail_ids %}{% notice "⌛ Antiquated File ⌛" %}This file has been marked as <b>Antiquated</b>, and is not recommended for general use. Unless you have a specific need for this particular version, the latest release should be used instead.{% endnotice %}{% endif %}
 <div id="play-area">
     {% if player == "archive" %}
     <iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>

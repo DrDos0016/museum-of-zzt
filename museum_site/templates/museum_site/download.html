@@ -47,6 +47,8 @@
 {% block content %}
 <h2>Download Options</h2>
 
+{% if 40 in file.detail_ids %}{% notice "⌛ Antiquated File ⌛" %}This file has been marked as <b>Antiquated</b>, and is not recommended for general use. Unless you have a specific need for this particular version, the latest release should be used instead.{% endnotice %}{% endif %}
+
 <div class="flex-container justify-space-between">
     {% for d in downloads %}
     <a href="{{d.get_absolute_url}}"{% if d.kind != 'zgames' %} target="_blank"{% endif %} class="noext noul">
