@@ -66,6 +66,7 @@
 {% endblock %}
 
 {% block scripts %}
+
 <script>
 $(document).ready(function (){
     $("select[name=player]").change(function (){
@@ -78,6 +79,7 @@ $(document).ready(function (){
 });
 </script>
 
+<script type="text/javascript" src="{% if HOTFIX == 'false' %}/static/zeta86/zeta_loader.js{% else %}/static/hotfix/zeta86-binb/zeta_loader.js{% endif %}?{{BOOT_TS}}"></script>
 <script type="text/javascript">
 var url = new URL(window.location);
 var scale = {{zeta_player_scale|default:1}};
