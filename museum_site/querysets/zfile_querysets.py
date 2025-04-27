@@ -171,7 +171,7 @@ class ZFile_Queryset(Base_Queryset):
         return self.filter(id__in=ids[:limit]).order_by("?")
 
     def unpublished(self):
-        """ Returns zfiles with UPLOADED detail. Used for cache calculation and Pub Pack tools. Not actually used for Upload Queue page """
+        """ Returns zfiles with UPLOADED detail. Used for cache calculation and Pub Pack tools and determining oldest (by upload date) ZFile in queue. """
         return self.filter(details=DETAIL_UPLOADED)
 
     def wozzt(self):
