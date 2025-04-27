@@ -111,12 +111,12 @@ body
 #game-list.multi-column .model-block-data .datum .label { flex: 1 0 99%; }
 
 #game-list.solo .model-block.stream {
-        grid-template-areas: "screenshot"
-        "title"
-        "margin"
-        "data";
-        grid-template-columns:1fr;
-        grid-template-rows:1fr;
+        grid-template-areas: "screenshot screenshot"
+        "title title"
+        "margin margin"
+        "data data";
+        grid-template-columns:1fr 1fr;
+        grid-template-rows:auto auto auto auto;
 }
 #game-list.solo .model-block.stream .preview-image { width:480px; }
 
