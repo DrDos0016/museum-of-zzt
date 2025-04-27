@@ -39,9 +39,9 @@ def overview(request):
         stream = Stream.objects.filter(when__gte=today).first()
     context["stream"] = stream
     context["entries"] = stream.entries.all()
-    if context["entries"].length == 1:
+    if len(context["entries"]) == 1:
         display_format = "solo"
-    elif context["entries"].length <= 5:
+    elif len(context["entries"]) <= 5:
         display_format = "one-column"
     else:
         display_format = "multi-column"
