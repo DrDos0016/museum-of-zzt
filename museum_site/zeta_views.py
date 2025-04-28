@@ -229,18 +229,24 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
         player = "zeta_local"
 
     # Is this lone ZFile yours and unpublished?
+    can_change_screenshot = False
     if data["file_count"] == 1 and data["file"].is_detail(DETAIL_UPLOADED) and request.user.is_authenticated:
         if data["file"].upload.user and data["file"].upload.user.pk == request.user.pk:
             data["your_upload"] = True
+            can_change_screenshot = True
 
-            if request.method == "POST":
-                image = open_base64_image(request.POST.get("b64img"))
-                image = image.crop(IMAGE_CROP_PRESETS["ZZT"])
-                image_path = os.path.join(STATIC_PATH, "screenshots/{}/{}.png".format(data["file"].bucket(), data["file"].key))
-                image.save(image_path)
-                data["file"].has_preview_image = True
-                data["file"].save()
-                data["screenshot_updated"] = True
+    if data["file_count"] == 1 and request.user.is_staff:
+        can_change_screenshot = True
+
+    if request.method == "POST" and can_change_screenshot:
+        print("Changing screenshot")
+        image = open_base64_image(request.POST.get("b64img"))
+        image = image.crop(IMAGE_CROP_PRESETS["ZZT"])
+        image_path = os.path.join(STATIC_PATH, "screenshots/{}/{}.png".format(data["file"].bucket(), data["file"].key))
+        image.save(image_path)
+        data["file"].has_preview_image = True
+        data["file"].save()
+        data["screenshot_updated"] = True
 
     return render(request, "museum_site/play_{}.html".format(player), data)
 
