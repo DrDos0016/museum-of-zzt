@@ -349,3 +349,27 @@ def get_all_tool_urls(zfile=None, ignored_url_names=[], audit_pages=None):
     for k, v in output.items():
         output[k] = sorted(output[k], key=lambda s: s["text"])
     return output
+
+
+def cheat_prompt_check(request):
+    cheat = request.GET.get("q")
+    applied_cheat = None
+    if not cheat:
+        return None
+
+    cheat = cheat.upper()
+    if cheat == "+DEBUG":
+        applied_cheat = cheat
+        request.session["DEBUG"] = 1
+    elif cheat == "-DEBUG":
+        applied_cheat = cheat
+        if request.session.get("DEBUG"):
+            del request.session["DEBUG"]
+    elif cheat == "+BETA":
+        applied_cheat = cheat
+        request.session["TEMP_FILE_VIEWER_BETA"] = 1
+    elif cheat == "-BETA":
+        applied_cheat = cheat
+        if request.session.get("TEMP_FILE_VIEWER_BETA"):
+            del request.session["TEMP_FILE_VIEWER_BETA"]
+    return applied_cheat

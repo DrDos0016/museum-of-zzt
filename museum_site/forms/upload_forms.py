@@ -217,7 +217,7 @@ class ZGame_Form(forms.ModelForm):
         initial=0
     )
     # [Release Date]
-    language = Museum_Multiple_Choice_Field(required=False, widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_CHOICES, layout="multi-column")
+    language = Museum_Multiple_Choice_Field(required=False, widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_CHOICES, layout="multi-column", help_text='For files in languages not specified here, use "Other". The language will be added after publication.')
     # [Description]
 
     use_required_attribute = False

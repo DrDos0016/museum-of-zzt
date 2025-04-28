@@ -14,6 +14,7 @@ from museum_site.constants import LANGUAGES_REVERSED
 from museum_site.core import *
 from museum_site.core.detail_identifiers import *
 from museum_site.core.feedback_tag_identifiers import *
+from museum_site.core.misc import cheat_prompt_check
 from museum_site.core.redirects import explicit_redirect_check, redirect_with_querystring
 from museum_site.forms.review_forms import Review_Form
 from museum_site.forms.zfile_forms import Advanced_Search_Form
@@ -39,7 +40,6 @@ def file_download(request, key):
     data["file"] = get_object_or_404(File, key=key)
     data["title"] = data["file"].title + " - Downloads"
     data["downloads"] = data["file"].downloads.all()
-    data["letter"] = data["file"].letter
     return render(request, "museum_site/download.html", data)
 
 
@@ -52,12 +52,7 @@ def file_viewer(request, key, local=False):
         else:
             return redirect("file_beta", key=key)
 
-    data = {
-        "content_classes": ["fv-grid"],
-        "details": [],
-        "local": local,
-        "files": [],
-    }
+    data = {"content_classes": ["fv-grid"], "details": [], "local": local, "files": [],}
 
     if not local:
         qs = File.objects.filter(key=key)
@@ -198,22 +193,7 @@ class ZFile_List_View(Model_List_View):
                 self.sorted_by = self.sorted_by_url_name.get(request.resolver_match.url_name, "")
 
         # Cheat Prompt
-        if self.request.GET.get("q"):
-            cheat = self.request.GET["q"].upper()
-            if cheat == "+DEBUG":
-                self.cheat_applied = cheat
-                self.request.session["DEBUG"] = 1
-            elif cheat == "-DEBUG":
-                self.cheat_applied = cheat
-                if self.request.session.get("DEBUG"):
-                    del self.request.session["DEBUG"]
-            elif cheat == "+BETA":
-                self.cheat_applied = cheat
-                self.request.session["TEMP_FILE_VIEWER_BETA"] = 1
-            elif cheat == "-BETA":
-                self.cheat_applied = cheat
-                if self.request.session.get("TEMP_FILE_VIEWER_BETA"):
-                    del self.request.session["TEMP_FILE_VIEWER_BETA"]
+        self.cheat_applied = cheat_prompt_check(request)
 
     def get_queryset(self):
         qs = ZFile.objects.search(self.request.GET)

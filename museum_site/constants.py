@@ -164,6 +164,7 @@ LANGUAGES = {
     "it": "Italian",
     "no": "Norwegian",
     "pl": "Polish",
+    "pt": "Portuguese",
     "es": "Spanish",
     "xx": "Other"
 }
@@ -178,6 +179,7 @@ LANGUAGES_REVERSED = {
     "Italian": "it",
     "Norwegian": "no",
     "Polish": "pl",
+    "Portuguese": "pt",
     "Spanish": "es",
     "Other": "xx",
 }
