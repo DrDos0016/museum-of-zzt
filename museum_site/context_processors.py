@@ -9,9 +9,19 @@ from museum_site.constants import TERMS_DATE, CSS_INCLUDES, BOOT_TS, EMAIL_ADDRE
 from museum_site.core.detail_identifiers import *
 from museum_site.models.file import File
 
+from museum_site.core.character_sets import init_standard_charsets, init_custom_charsets
 
 def museum_global(request):
     data = {}
+
+    # Cache init
+    data["ENV"] = cache.get_or_set("ENV", settings.ENVIRONMENT)
+    if not cache.get("CHARSETS") or not cache.get("CUSTOM_CHARSETS"):
+        print("Caching charsets?")
+        init_standard_charsets()
+        init_custom_charsets()
+        print("SC", cache.get("CHARSETS"))
+        print("CC", cache.get("CUSTOM_CHARSETS"))
 
     # Base Template
     if request.path.startswith("/tools/"):
@@ -28,7 +38,6 @@ def museum_global(request):
 
     # Server info
     data["HOST"] = request.get_host()
-    data["ENV"] = cache.get("ENV")
     data["PROTOCOL"] = "https" if request.is_secure() else "http"
     data["DOMAIN"] = data["PROTOCOL"] + "://" + data["HOST"]
 
@@ -71,7 +80,7 @@ def museum_global(request):
         data["fg"] = File.objects.filter(pk=1015).first()  # ZZT v3.2
 
     # Queue size
-    data["UPLOAD_QUEUE_SIZE"] = cache.get("UPLOAD_QUEUE_SIZE", "-")
+    data["UPLOAD_QUEUE_SIZE"] = cache.get_or_set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count)
 
     # User TOS Date checks
     if request.user.is_authenticated:
