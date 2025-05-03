@@ -21,7 +21,8 @@ main h2 { margin:0px; }
 function set_prefab()
 {
     let output = `' ${$(this).text()}\n`;
-    output += "#play " + $(this).data("notes") + "\n";
+    let notes = $(this).data("notes").replaceAll(";", "\n#play ");
+    output += "#play " + notes + "\n";
     $("textarea.zzmplay-raw").val(output);
     if (! $("input[name=require-prefix]").is(":checked"))
     {
