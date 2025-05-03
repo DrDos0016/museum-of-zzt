@@ -61,6 +61,10 @@ class Ascii_Reference_View(Museum_Base_Template_View):
         }
         return context
 
+class Audio_Player_View(Museum_Base_Template_View):
+    title = "Audio Player"
+    template_name = "museum_site/audio-player.html"
+
 
 class Discord_Overview_View(Museum_Base_Template_View):
     title = "Joining The Worlds of ZZT Discord"

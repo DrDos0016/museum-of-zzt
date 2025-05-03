@@ -302,6 +302,7 @@ urlpatterns = [
 
     # /*/ -- Miscellaneous Pages
     path("ascii/", museum_site.views.Ascii_Reference_View.as_view(), name="ascii"),
+    path("audio-player/", museum_site.views.Audio_Player_View.as_view(), name="audio_player"),
     path("beta-unlock/", museum_site.views.beta_unlock, name="beta_unlock"),
     path("explicit-warning/", museum_site.views.explicit_warning, name="explicit_warning"),
     path("discord/", museum_site.views.Discord_Overview_View.as_view(), name="discord"),

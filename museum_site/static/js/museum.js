@@ -396,3 +396,273 @@ function ajax_set_setting(key, value, callback)
         callback(data);
     });
 }
+
+/* ZZM/#Play */
+let ZZM_WIDGETS = [];
+
+class Museum_ZZM_Audio_Player
+{
+    constructor(raw, source_element, mutable, widget) {
+        if (! mutable)
+            this.play_commands = this.clean_raw_data(raw);
+        else
+            this.play_commands = "x";
+        this.mutable = mutable;
+        this.volume = 1.0 * source_element.parent().find(".zzmplay-volume").val();
+        this.pre_mute_volume = this.volume;
+        this.source_element = source_element;
+        this.source = null;
+        this.playing = false;
+        this.play_button = null;
+        this.gainNode = null;
+        this.ctx = null;
+        this.data = null; // Actual audio data that gets played after parsing
+        this.parsed = false;
+        this.timer = null;
+        this.widget_idx = null;
+        this.start_offset_ms = 0;
+        this.widget = widget;
+        this.prefix_required = true;
+    }
+
+    clean_raw_data(raw)
+    {
+        let cleaned = raw.replaceAll(/^(?!#play).*$/gm, "");
+        cleaned = cleaned.replaceAll("#play ", "");
+        cleaned = cleaned.replaceAll("\n\n", "\n");
+        return cleaned;
+    }
+
+    update_play_commands()
+    {
+        let raw = this.source_element.val();
+        if (this.prefix_required)
+            this.play_commands = this.clean_raw_data(raw);
+        else
+            this.play_commands = raw;
+        return true;
+    }
+
+    delay(ms) {
+        return new Promise(res => {
+            setTimeout(() => { res('') }, ms);
+        });
+    }
+
+    async play() {
+        if (this.source) {
+            this.stop();
+        }
+
+        if (this.mutable)
+            this.update_play_commands();
+
+        this.ctx = new AudioContext();
+        const sampleRate = this.ctx.sampleRate; // audio context's sample rate
+
+        // Generate the square wave data
+        if (! this.data || this.mutable)
+        {
+            this.data = new Float32Array();
+            this.play_button.html("Wait");
+            this.play_button.prop("disabled", "disabled");
+            await this.delay(250);
+
+            let play_command_list = this.play_commands.split("\n");
+            for (let idx in play_command_list)
+            {
+                let buffer = await parseSound(play_command_list[idx], sampleRate);
+                this.data = f32ArrayConcat(this.data, buffer)
+            }
+        }
+
+        // Create an AudioBuffer
+        if (this.data.length == 0)
+        {
+            this.play_button.html("#Play");
+            this.play_button.prop("disabled", "");
+            return false;
+        }
+        const audioBuffer = this.ctx.createBuffer(1, this.data.length, sampleRate);
+
+        // Fill the buffer with the square wave data
+        const channelData = audioBuffer.getChannelData(0);
+        channelData.set(this.data);
+
+        // Create an AudioBufferSourceNode
+        this.source = this.ctx.createBufferSource();
+        this.source.buffer = audioBuffer;
+
+        // Create GainNode (Volume Control)
+        this.gainNode = this.ctx.createGain()
+        this.gainNode.gain.value = this.volume;
+        this.gainNode.connect(this.ctx.destination);
+
+        // Connect the source to the context's destination
+        this.source.connect(this.gainNode);
+
+        var scope = this;
+        this.source.addEventListener("ended", function (){
+            scope.stop();
+            let max_pos = scope.source_element.parent().find(".zzmplay-seek").attr("max");
+            scope.seek(0);
+            scope.source_element.parent().find(".progress").html("00:00");
+        });
+
+        // Set duration
+        let duration_val = this.source_element.parent().find(".duration").text();
+        if (this.mutable || duration_val == "--:--")
+        {
+            this.source_element.parent().find(".duration").html(this.format_time(this.source.buffer.duration));
+            this.source_element.parent().find(".zzmplay-seek").val(0);
+            this.source_element.parent().find(".zzmplay-seek").attr("max", Math.ceil(this.source.buffer.duration) * 1000);
+        }
+
+        // Start playback
+        this.play_button.html("#End");
+        this.play_button.prop("disabled", "");
+        this.source.start(0, parseInt(this.start_offset_ms / 1000));
+        this.timer = setInterval(update_playback_time, 500, this.widget_idx);
+        this.playback_start_time = Date.now();
+        this.playing = true;
+        this.widget.addClass("playing");
+
+    }
+
+    format_time(seconds)
+    {
+        let m = ("0" + parseInt(Math.ceil(seconds) / 60)).slice(-2);
+        let s = ("0" + parseInt(Math.ceil(seconds) % 60)).slice(-2);
+        return `${m}:${s}`;
+    }
+
+    stop(reset_seek_bar)
+    {
+        this.source.stop();
+        this.widget.removeClass("playing");
+        clearInterval(this.timer);
+        this.playing = false;
+        this.play_button.html("#Play");
+        if (reset_seek_bar)
+            this.source_element.parent().find(".zzmplay-seek").val(0);
+        this.playback_start_time = null;
+    }
+
+    play_pause(button)
+    {
+        if (! this.play_button)
+            this.play_button = button;
+
+        if (this.playing)
+        {
+            this.stop();
+        }
+        else
+        {
+            this.play();
+        }
+    }
+
+    toggle_mute()
+    {
+        let cur_vol = this.source_element.parent().find(".zzmplay-volume").val();
+        if (cur_vol != 0)
+        {
+            this.pre_mute_volume = cur_vol;
+            this.source_element.parent().find(".zzmplay-volume").val(0);
+            this.set_volume(0);
+        }
+        else
+        {
+            this.source_element.parent().find(".zzmplay-volume").val(this.pre_mute_volume);
+            this.set_volume(this.pre_mute_volume);
+        }
+    }
+
+    toggle_source(current)
+    {
+        this.source_element.toggleClass("show");
+    }
+
+    set_volume(volume)
+    {
+        this.volume = volume;
+        if (this.playing)
+            this.gainNode.gain.setValueAtTime(volume, this.ctx.currentTime);
+        if (volume == 0)
+            this.source_element.parent().find(".zzmplay-mute-button").html("🔇");
+        else
+            this.source_element.parent().find(".zzmplay-mute-button").html("🔊");
+    }
+
+    set_playback_time(now)
+    {
+        let s = Date.now() - this.playback_start_time + parseInt(this.start_offset_ms);
+        this.source_element.parent().find(".progress").html(this.format_time(Math.floor(s / 1000)));
+        this.source_element.parent().find(".zzmplay-seek").val(s);
+    }
+
+    seek(ms)
+    {
+        if (this.playing)
+            this.stop();
+        this.start_offset_ms = ms;
+        this.source_element.parent().find(".progress").html(this.format_time(ms / 1000));
+    }
+
+    toggle_prefix_required(value)
+    {
+        this.prefix_required = value;
+    }
+}
+
+function update_playback_time(idx)
+{
+    ZZM_WIDGETS[idx].set_playback_time();
+}
+
+$(document).ready(function (){
+    $(".zzmplay-widget").each(function (){
+        let raw = $(this).find(".zzmplay-raw").val();
+        let widget = $(this);
+        let source_element = $(this).find(".zzmplay-raw");
+        let mutable = $(this).data("mutable") ? true : false;
+        let museum_zzm_audio_player = new Museum_ZZM_Audio_Player(raw, source_element, mutable, widget);
+        ZZM_WIDGETS.push(museum_zzm_audio_player);
+        let idx = ZZM_WIDGETS.length - 1;
+        ZZM_WIDGETS[idx].widget_idx = idx;
+        $(this).data("zzm-idx", idx);
+    });
+
+    $(".zzmplay-play-button").click(function (){
+        let idx = $(this).parent().data("zzm-idx");
+        ZZM_WIDGETS[idx].play_pause($(this));
+    });
+
+    $(".zzmplay-mute-button").click(function (){
+        let idx = $(this).parent().data("zzm-idx");
+        ZZM_WIDGETS[idx].toggle_mute();
+    });
+
+    $(".zzmplay-source-button").click(function (){
+        let idx = $(this).parent().parent().data("zzm-idx");
+        let current = $(this).hasClass("show") ? "show" : "hide";
+        $(this).toggleClass("show", "hide");
+        ZZM_WIDGETS[idx].toggle_source(current);
+    });
+
+    $(".zzmplay-volume").on("input", function (){
+        let idx = $(this).parent().data("zzm-idx");
+        ZZM_WIDGETS[idx].set_volume($(this).val());
+    });
+
+    $(".zzmplay-seek").on("input", function (){
+        let idx = $(this).parent().parent().data("zzm-idx");
+        ZZM_WIDGETS[idx].seek($(this).val());
+    });
+
+    $("input[name=require-prefix]").on("change", function (){
+        let idx = $(this).parent().parent().data("zzm-idx");
+        ZZM_WIDGETS[idx].toggle_prefix_required($(this).is(":checked"));
+    });
+});

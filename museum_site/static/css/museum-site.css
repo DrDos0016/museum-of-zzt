@@ -738,3 +738,34 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
 {
     background:var(--header-bg);
 }
+
+/* ZZMPlay Widget */
+.zzmplay-widget
+{
+    background:var(--ega-darkblue);
+    margin:5px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-evenly;
+    align-items:center;
+    width:365px;
+    font-family:"cp437", monospace;
+    border:1px solid var(--ega-black);
+    color:var(--ega-white);
+}
+
+.zzmplay-widget textarea[readonly] { display:none; }
+.zzmplay-widget textarea[readonly].show { display:block; }
+.zzmplay-widget textarea { font-size:10pt; margin-left:8px; margin-right:8px; resize:vertical; min-height:32px;}
+.zzmplay-widget .zzmplay-play-button { width:70px; }
+.zzmplay-widget .zzm-meta { color: var(--ega-white); flex:1 0 100%; display:flex; }
+.zzmplay-widget .zzmplay-source-button { border:0px; background:initial; height:auto; margin-right:1ch; align-self:flex-start; cursor:pointer; }
+.zzmplay-widget .zzmplay-source-button.hide { color:var(--ega-gray); }
+.zzmplay-widget .zzmplay-source-button.show { color:var(--ega-purple); }
+.zzmplay-widget .zzmplay-mute-button { border:0px; background:initial; padding:0px; font-size:smaller; }
+.zzmplay-widget .zzmplay-volume { width:50px; }
+.zzmplay-widget .zzmplay-seek { width:100px; margin-right:10px; visibility:hidden; }
+.zzmplay-widget .time { display:flex; align-items:center; color: var(--ega-white); }
+.zzmplay-widget.playing .zzm-meta, .zzmplay-widget.playing .time { color: var(--ega-yellow); }
+.zzmplay-widget .zzm-prefix-options { display: flex; align-items:center; gap:4px;}
+/* End ZZMPlay Widget */

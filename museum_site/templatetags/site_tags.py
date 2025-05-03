@@ -565,6 +565,7 @@ def zzm(parser, token):
 class ZZM_Player(template.Node):
     def __init__(self, nodelist, **kwargs):
         self.default_volume = "0.5"
+        self.default_require_prefix = True
         self.nodelist = nodelist
         self.tag_params = kwargs
 
@@ -579,6 +580,7 @@ class ZZM_Player(template.Node):
         else:
             tag_context["ms"] = 0
         tag_context.setdefault("vol", self.default_volume)
+        tag_context.setdefault("require_prefix", self.default_require_prefix)
         tag_context.setdefault("duration", "--:--")
         tag_context.setdefault("vol_percent", int(float(tag_context["vol"]) * 100))
         t = context.template.engine.get_template("museum_site/subtemplate/tag/zzm-player.html")

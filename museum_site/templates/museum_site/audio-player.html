@@ -1,0 +1,96 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+.zzmplay-widget { align-self:start; }
+.zzm-prefab {}
+#prefab-list { max-height:300px; overflow:auto; background:var(--ega-white); border:1px solid var(--border-color); min-width:300px; }
+main h2 { margin:0px; }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/zzmplay/audio.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/zzmplay/zzm.js' %}"></script>
+<script>
+</script>
+
+<script>
+function set_prefab()
+{
+    let output = `' ${$(this).text()}\n`;
+    output += "#play " + $(this).data("notes") + "\n";
+    $("textarea.zzmplay-raw").val(output);
+    if (! $("input[name=require-prefix]").is(":checked"))
+    {
+        console.log("Checkin");
+        $("input[name=require-prefix]").prop("checked", "checked");
+        $("input[name=require-prefix]").change();
+    }
+}
+
+$(document).ready(function (){
+    $(".zzm-prefab").click(set_prefab);
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>Audio Player</h1>
+<noscript><p><b>The page requires JavaScript in order to function.</b></p></noscript>
+<div class="flex-container justify-space-between flex-wrap">
+    <div>
+        {% zzm mutable=1 require_prefix=1 %}{% endzzm %}
+    </div>
+    <div>
+        <h2>Pre-Fab Sound Effects</h2>
+        <ul id="prefab-list">
+            <li><div class="zzm-prefab jsLink" data-notes="tcc#d">Ammo</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="tcf+cf+c">Bomb Activated</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t5">Bomb Tick</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t8">Bomb Tock</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t+++c-c-c-c-c-c">Bomb Explosion</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t-c">Breakable Wall</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="s004x114x9">Cannot Edit</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="i-g">Cheat</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t--gc">Door Locked</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="tcgbcgb+ic">Door Opened</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="scdefg">Duplicator</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="--g#f#">Duplicator Blocked</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t+c---c++++c--c">Enemy Destroyed</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="s.-cd#e">Energizer Activated</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="s.-f+f-fd#c+c-d#ef+f-fd#c+c-d#e;s.-f+f-fd#c+c-d#ef+f-fd#c+c-d#e;s.-f+f-fd#c+c-d#e">Energizer Song</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="s.-c-a#gf#fd#c">Energizer End</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="ta">Forest (ZZT)</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t+c;t+g;t++c;t+f#;t+c#;t+g#;t++c#;t+f">Forest (Super ZZT)</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="s.-cd#g+c-ga#+dgfg#+cf---w3c">Game Over</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t+c-gec">Gem</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t--dc">Invisible Wall</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t+cegcegceg+sc">Key Obtained</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="sc-c">Key, Already Have</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="tc-f#">Object Shoot</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="tcegc#fg#df#ad#ga#eg#+c">Passage</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t--c+c---c+d#">Player Zapped</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t+c-c-c">Player Shoot</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t--f">Push</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t9">Ricochet</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="i.+cfc-f+cfq.c">Running Out Of Time</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="tc-c+d-d+e-e+f-f+g-g">Scroll</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="tcase">Torch Collected</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="tc-c-c">Torch Extinguished</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="tc+d-e+f#-g#+a#c+d">Transporter</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t+c+c">Water</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="++w3c">ZZT-OOP Error</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t-cd#g+c--c"><i>Unused</i> - Re-entering When Zapped</div></li>
+            <li><div class="zzm-prefab jsLink" data-notes="t-cd#"><i>Unused</i> - Slime</div></li>
+        </ul>
+    </div>
+</div>
+<hr>
+{% ml 'https://museumofzzt.com/article/view/747/zzt-oop-101/#play' "#PLAY Command Reference" %}<br><br>
+<a href="https://github.com/nicolebranagan/zzmplayjs" target="_blank">zzmplayjs</a> by Nicole Express<br>
+ZZT sound effect transcriptions imported from the <a href="https://wiki.zzt.org/wiki/Sound_effects" target="_blank">Wiki of ZZT</a>
+{% endblock %}
+
