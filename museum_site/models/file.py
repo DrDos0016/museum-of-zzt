@@ -30,6 +30,18 @@ from museum_site.querysets.zfile_querysets import *
 
 class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     """ ZFile object repesenting an a file hosted on the Museum site """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.detail_view_fields = [
+            ["authors", "companies", "zfile_date", "genres", "filename", "size"],
+            ["details", "rating", "boards", "language"],
+        ]
+        self.header_view_fields = ["authors", "companies", "zfile_date", "genres", "size", "rating", "boards"]
+        self.cl_info_view_fields = ["authors", "companies", "zfile_date"]
+        self.staff_fields = ["edit", "tools"]
+        self.action_list = ["download", "play", "view", "review", "article", "attributes"]
+        self.cl_info_action_list = ["download", "play"]
+
     model_name = "File"
     to_init = ["icons"]
     table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
@@ -562,38 +574,20 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def context_detailed(self):
         """ Context to display object as a detailed model block """
         context = self.context_universal()
+
+        dynamic_date_field = "upload_date" if self.is_detail(DETAIL_UPLOADED) else "publish_date"
+
+        column_fields = self.detail_view_fields
+        column_fields[1].append(dynamic_date_field)
+        action_list = self.action_list
+
+        if self.show_staff:
+            column_fields[1].extend(self.staff_fields)
+            action_list.extend(self.staff_fields)
+
+        context["columns"] = self.get_field_data_for_columns(column_fields)
+        context["actions"] = self.get_field_data_list(action_list)
         context["show_actions"] = True
-        context["columns"] = []
-
-        columns = [
-            ["authors", "companies", "zfile_date", "genres", "filename", "size"],
-            ["details", "rating", "boards", "language"],
-        ]
-        if self.is_detail(DETAIL_UPLOADED):
-            columns[1].append("upload_date")
-        else:
-            columns[1].append("publish_date")
-
-        if self.show_staff:
-            columns[1].append("edit")
-            columns[1].append("tools")
-
-        for col in columns:
-            column_fields = []
-            for field_name in col:
-                field_context = self.get_field(field_name)
-                column_fields.append(field_context)
-            context["columns"].append(column_fields)
-
-        action_list = ["download", "play", "view", "review", "article", "attributes"]
-        if self.show_staff:
-            action_list.append("edit")
-            action_list.append("tools")
-        actions = []
-        for action in action_list:
-            actions.append(self.get_field(action, view="detailed"))
-
-        context["actions"] = actions
         return context
 
     def context_list(self):
@@ -623,28 +617,18 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     def context_header(self):
         """ Context to display object as page header (such as in the file viewer) """
         context = self.context_universal()
-        context["show_actions"] = True
         title = self.get_field_view(view="header")
         icons = self.prepare_icons_for_field()
         title["value"] = icons + title["value"]
-        context["title" ] = title
 
-        action_list = ["download", "play", "view", "review", "article", "attributes"]
+        action_list = self.action_list
         if self.show_staff:
-            action_list.append("edit")
-            action_list.append("tools")
-        actions = []
-        for action in action_list:
-            actions.append(self.get_field(action, view="detailed"))
+            action_list.extend(self.staff_fields)
 
-        context["actions"] = actions
-
-        fields = ["authors", "companies", "zfile_date", "genres", "size", "rating", "boards"]
-        context["fields"] = []
-        for field_name in fields:
-            field_context = self.get_field(field_name, "header")
-            context["fields"].append(field_context)
-
+        context["actions"] = self.get_field_data_list(action_list)
+        context["fields"] = self.get_field_data_list(self.header_view_fields, view="header")
+        context["show_actions"] = True
+        context["title" ] = title
         return context
 
     def context_cl_info(self):
@@ -653,19 +637,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         context["title"] = self.get_field_view(view="cl_info") if (self.pk != -1) else {"value": "ERROR - ZFile Not Found"}
         context["engine"] = self.cl_info["engine"]
         context["emulator"] = self.cl_info["emulator"]
-
-        fields = ["authors", "companies", "zfile_date"]
-        context["fields"] = []
-        for field_name in fields:
-            field_context = self.get_field(field_name, "cl_info")
-            context["fields"].append(field_context)
-
-        action_list = ["download", "play"]
-        actions = []
-        for action in action_list:
-            actions.append(self.get_field(action, view="cl_info"))
-        actions.append(self.get_field_view(view="detailed"))
-        context["actions"] = actions
+        context["fields"] = self.get_field_data_list(self.cl_info_view_fields, view="cl_info")
+        context["actions"] = self.get_field_data_list(self.cl_info_action_list)
         return context
 
     # Guide Word Functions

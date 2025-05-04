@@ -185,3 +185,20 @@ class BaseModel(models.Model):
 
         context = {"label": label, "value": value, "safe": safe, "clamped": clamped}
         return context
+
+    def get_field_data_for_columns(self, columns):
+        output = []
+        for col in columns:
+            column_fields = []
+            for field_name in col:
+                field_context = self.get_field(field_name)
+                column_fields.append(field_context)
+            output.append(column_fields)
+        return output
+
+    def get_field_data_list(self, field_list, view="detailed"):
+        output = []
+        for field in field_list:
+            output.append(self.get_field(field, view=view))
+        return output
+
