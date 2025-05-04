@@ -151,6 +151,11 @@ def debug_blank(request):
     context = {"title": "Blank Test Page"}
     return render(request, "museum_site/debug/debug-blank.html", context)
 
+def debug_solo(request):
+    context = {"title": "DEBUG SOLO"}
+    context["zf"] = File.objects.get(key="jj")
+    return render(request, "museum_site/debug/debug-solo.html", context)
+
 
 @staff_member_required
 def debug_form_elements(request):

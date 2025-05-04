@@ -1,0 +1,33 @@
+{% extends "museum_site/main.html" %}
+
+{% load static %}
+{% load zzt_tags %}
+{% load site_tags %}
+{% load tz %}
+
+{% block style %}
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block sidebar_left %}
+<section id="sidebar-left" class="sidebar">
+    <header id="logo-area">
+        <a href="{% url 'index' %}" id="logo"><img src="{% static logo_path %}" alt="Museum of ZZT Logo by LazyMoth"></a>
+    </header>
+</section>
+{% endblock %}
+
+{% block sidebar_right %}
+<section id="sidebar-right" class="sidebar">
+</section>
+{% endblock %}
+
+{% block content %}
+<h1>Debug Solo</h1>
+
+{% model_block zf %}
+{% endblock %}
+
+
