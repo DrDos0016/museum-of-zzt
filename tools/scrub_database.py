@@ -46,15 +46,22 @@ def main():
 
         print("Deleting sessions...")
         Session.objects.all().delete()
+        print("Deleting inactive user accounts")
+        qs = User.objects.filter(is_active=False)
+        for u in qs:
+            u.delete()
         print("Done!")
         print("Blanking user accounts...")
         qs = User.objects.all()
         for u in qs:
+            print(".", end="")
             u.username = "USER #" + str(u.id)
             u.first_name = ""
             u.last_name = ""
             u.email = "test{}@example.com".format(u.id)
             u.set_password("password")
+            u.last_login = datetime(1970, 1, 1, 0, 0, 0)
+            u.date_joined = datetime(1970, 1, 1, 0, 0, 0)
             if u.id != 1:
                 u.is_staff = False
                 u.is_superuser = False
@@ -63,6 +70,7 @@ def main():
                 u.is_staff = True
                 u.is_superuser = True
             u.save()
+        print(" Done!")
 
         print("Blanking user profiles...")
         qs = Profile.objects.all()
