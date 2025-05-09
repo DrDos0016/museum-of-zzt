@@ -162,6 +162,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     # Cached Properties
     @cached_property
     def actions(self):
+        # TODO: This should be "available actions"
         output = {"download": False, "view": False, "play": False, "article": False, "review": False, "attributes": False}
         output["download"] = True if self.downloads.all().count() else False
         output["view"] = True if self.can_museum_download() else False
@@ -209,37 +210,23 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         self._minor_icons = []
         self._major_icons = []
 
-        if self.explicit:
-            self._major_icons.append(self.ICONS["explicit"])
-        if self.is_detail(DETAIL_UPLOADED):
-            self._major_icons.append(self.ICONS["unpublished"])
-        if self.is_detail(DETAIL_LOST):
-            self._major_icons.append(self.ICONS["lost"])
-        if self.is_detail(DETAIL_WEAVE):
-            self._major_icons.append(self.ICONS["weave"])
-        if self.is_detail(DETAIL_FEATURED):
-            self._minor_icons.append(self.ICONS["featured"])
-        if self.is_detail(DETAIL_ANTIQUATED):
-            self._major_icons.append(self.ICONS["antiquated"])
+        self._major_icons.append(self.ICONS["explicit"]) if self.explicit else None
+        self._major_icons.append(self.ICONS["unpublished"]) if self.is_detail(DETAIL_UPLOADED) else None
+        self._major_icons.append(self.ICONS["lost"]) if self.is_detail(DETAIL_LOST) else None
+        self._major_icons.append(self.ICONS["weave"]) if self.is_detail(DETAIL_WEAVE) else None
+        self._major_icons.append(self.ICONS["antiquated"]) if self.is_detail(DETAIL_ANTIQUATED) else None
 
-
+        self._minor_icons.append(self.ICONS["featured"]) if self.is_detail(DETAIL_FEATURED) else None
         self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
     def _init_roles(self, view):
         super()._init_roles(view)
         to_add = []
-
-        if self.explicit:
-            to_add.append("explicit")
-        if DETAIL_UPLOADED in self.detail_ids:
-            to_add.append("unpublished")
-        if DETAIL_FEATURED in self.detail_ids:
-            to_add.append("featured")
-        if DETAIL_LOST in self.detail_ids:
-            to_add.append("lost")
-
-        for i in to_add:
-            self.roles.append(i)
+        to_add.append("explicit") if self.explicit else None
+        to_add.append("featured") if DETAIL_FEATURED in self.detail_ids else None
+        to_add.append("lost") if DETAIL_LOST in self.detail_ids else None
+        to_add.append("unpublished") if DETAIL_UPLOADED in self.detail_ids else None
+        self.roles.extend(to_add)
 
     def init_all_downloads(self):
         if self.all_downloads is None:
