@@ -271,7 +271,7 @@ $("meta").each(function (){
     var val = $(this).attr("content");
 
     if (key == "og:image")
-        var row = `<tr><th>${key}</th><td class="l">${val}</td><td rowspan="9" id="embed-preview"><img src="${val}"></td></tr>`;
+        var row = `<tr><th>${key}</th><td class="l">${val}</td><td rowspan="9" id="embed-preview"><img src="${val}" loading="lazy"></td></tr>`;
     else
         var row = `<tr><th>${key}</th><td class="l">${val}</td></tr>`;
     $("#meta-tags").html($("#meta-tags").html() + row);

@@ -1,7 +1,7 @@
 {% load static %}
 {% load site_tags %}
 <div class="{{roles|join:' '}}" data-model="{{model}}" data-pk="{{pk}}" id="{{model_key}}">
-    <img class="preview-image {% if not preview.no_zoom %} zoomable{% endif %}{% if preview.zoomed %} zoomed{% else %} thumbnail{% endif %}" src="{% static preview.url %}" alt="{{preview.url}}">
+    <img class="preview-image {% if not preview.no_zoom %} zoomable{% endif %}{% if preview.zoomed %} zoomed{% else %} thumbnail{% endif %}" src="{% static preview.url %}" alt="{{preview.url}}" loading="lazy">
     <div class="model-block-title">
         <h2>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h2>
     </div>
