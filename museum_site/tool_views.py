@@ -274,13 +274,6 @@ def video_description_generator(request):
                 else:
                     timestamp = request.GET.getlist("timestamp")[idx]
                 data["zfiles"][idx].timestamp = timestamp
-        if request.GET.getlist("ad_break_endings"):
-            for idx in range(0, len(request.GET.getlist("ad_break_endings"))):
-                if ":" not in request.GET.getlist("ad_break_endings")[idx]:
-                    timestamp = "{}:00".format(request.GET.getlist("ad_break_endings")[idx])
-                else:
-                    timestamp = request.GET.getlist("ad_break_endings")[idx]
-                data["ad_break_endings"].append(timestamp)
 
         data["first_key"] = data["zfiles"][0].key if data["zfiles"] else "NOZFILEASSOC"
         data["DOMAIN"] = DOMAIN
