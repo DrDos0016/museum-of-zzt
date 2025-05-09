@@ -44,5 +44,4 @@ class Upload(BaseModel):
         self.edit_token = ""
         self.ip = ""
         self.notes = "Blanked notes."
-        self.contacted = False
         self.user_id = None
