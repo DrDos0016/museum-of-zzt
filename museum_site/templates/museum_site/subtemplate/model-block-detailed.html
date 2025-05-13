@@ -21,6 +21,6 @@
         {% endfor %}
     </div>
     {% if extras %}<div class="extras">{% for extra in extras %}{% include extra.template %}{% endfor %}</div>{% endif %}
-    {% if model == "File" or model == "Collection" or model == "Collection Entry" %}{% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}{% endif %}
+    {% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
     {% block collection_data %}{% if collection_description %}<div class="collection-info datum"><h3>Collection Description</h3>{{collection_description|markdown}}</div>{% endif %}{% endblock %}
 </div>
