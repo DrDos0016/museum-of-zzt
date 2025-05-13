@@ -260,13 +260,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             output.append(i.title)
         return output
 
-    def author_list(self):
-        """ STILL USED IN TEMPLATES """
-        output = []
-        for a in self.authors.all():
-            output.append(a.title)
-        return output
-
     def genre_list(self):
         output = []
         for g in self.genres.all():
@@ -333,14 +326,6 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         return zfh.infolist()
 
     def release_year(self, default=""): return default if self.release_date is None else str(self.release_date)[:4]
-
-    def language_pairs(self):
-        language_list = self.language.split("/")
-        output = []
-
-        for i in language_list:
-            output.append((LANGUAGES.get(i, i), i))
-        return output
 
     def get_can_review_string(self):
         return File.FEEDBACK_LEVELS[self.can_review][1]
