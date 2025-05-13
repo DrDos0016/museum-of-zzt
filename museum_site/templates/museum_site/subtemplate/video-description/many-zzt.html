@@ -4,7 +4,7 @@
 
 {% block stream_contents %}
 ♦ Stream Contents ♦
-{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) "{{zfile.title}}" by {{zfile.author_list|join:", "}}{% if zfile.release_year %} ({{zfile.release_year}}){% endif %} [https://{{DOMAIN}}{{zfile.get_absolute_url}}]
+{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) {% zfile_citation zfile %} [https://{{DOMAIN}}{{zfile.get_absolute_url}}]
 {% endfor %}{% for break in ad_break_endings %}&bull; ({{break}}) End of Ad Break {{forloop.counter}}
 {% endfor %}{% endblock %}
 
