@@ -35,10 +35,10 @@ def overview(request):
     elif request.GET.get("key"):
         stream = Stream.objects.filter(key=request.GET["key"]).first()
     else:
-        today = datetime.now()
+        today = str(datetime.now())[:10]
         stream = Stream.objects.filter(when__gte=today).first()
     context["stream"] = stream
-    context["entries"] = stream.entries.all()
+    context["entries"] = stream.entries.all() if stream else []
     if len(context["entries"]) == 1:
         display_format = "solo"
     elif len(context["entries"]) <= 5:

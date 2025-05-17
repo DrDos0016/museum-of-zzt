@@ -24,10 +24,6 @@ body
     background:transparent;
     color:#FFF;
     overflow:hidden;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
 }
 
 .rounded-block
@@ -81,6 +77,8 @@ body
     justify-content:center;
 }
 
+#game-list.solo { justify-content:flex-start; padding-left:160px;}
+
 #game-list.multi-column
 {
     margin-top:7px;
@@ -117,11 +115,14 @@ body
         "data data";
         grid-template-columns:1fr 1fr;
         grid-template-rows:auto auto auto auto;
-        max-width:480px;
+        max-width:1024px;
+        width:1024px;
         padding-left:20px;
         padding-right:20px;
 }
-#game-list.solo .model-block.stream .preview-image { width:480px; }
+#game-list.solo .model-block.stream .preview-image { width:960px; image-rendering:pixelated; margin:auto; }
+img:not(.screenshot-thumb) { max-width:initial; }
+#game-list.solo .model-block.stream h2 { font-size:42pt; }
 
 {% if request.GET.debug %}#root { background:#333; }{% endif %}
 </style>
