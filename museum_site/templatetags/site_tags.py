@@ -570,9 +570,8 @@ class ZZM_Player(template.Node):
         self.tag_params = kwargs
 
     def render(self, context):
-        raw = self.nodelist.render(context)
+        notes = self.nodelist.render(context)
         tag_context = self.tag_params
-        tag_context["raw"] = raw
         if tag_context.get("duration") and tag_context["duration"] != "--:--":
             m, s = tag_context["duration"].split(":")
             s = int(m) * 60 + int(s)
@@ -583,5 +582,10 @@ class ZZM_Player(template.Node):
         tag_context.setdefault("require_prefix", self.default_require_prefix)
         tag_context.setdefault("duration", "--:--")
         tag_context.setdefault("vol_percent", int(float(tag_context["vol"]) * 100))
+
+        # Prepare notes
+        tag_context["notes"] = ""
+        for line in notes.split("\n"):
+            tag_context["notes"] += "#play " + line + "\n"
         t = context.template.engine.get_template("museum_site/subtemplate/tag/zzm-player.html")
         return t.render(Context(tag_context, autoescape=context.autoescape))

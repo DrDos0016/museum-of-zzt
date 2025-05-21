@@ -8,6 +8,7 @@
 .zzm-prefab {}
 #prefab-list { max-height:300px; overflow:auto; background:var(--ega-white); border:1px solid var(--border-color); min-width:300px; }
 main h2 { margin:0px; }
+input[name=url] { width: 360px; max-width:100%; font-size:10pt;}
 </style>
 {% endblock %}
 
@@ -26,7 +27,6 @@ function set_prefab()
     $("textarea.zzmplay-raw").val(output);
     if (! $("input[name=require-prefix]").is(":checked"))
     {
-        console.log("Checkin");
         $("input[name=require-prefix]").prop("checked", "checked");
         $("input[name=require-prefix]").change();
     }
@@ -43,7 +43,10 @@ $(document).ready(function (){
 <noscript><p><b>The page requires JavaScript in order to function.</b></p></noscript>
 <div class="flex-container justify-space-between flex-wrap">
     <div>
-        {% zzm mutable=1 require_prefix=1 %}{% endzzm %}
+        {% zzm mutable=1 require_prefix=1 %}{{request.GET.play}}{% endzzm %}
+        <label>Composition URL:<br><input name="url" value="" data-base="{{DOMAIN}}{{request.path}}?play="></label>
+        <br>
+        <i>(URL updates on playback. URL is currently <span id="zzm-comp-length">0</span>/2000 characters.)</i><br>
     </div>
     <div>
         <h2>Pre-Fab Sound Effects</h2>

@@ -1,6 +1,6 @@
 <div class="zzmplay-widget" data-mutable={{mutable|default:0}}>
     {% if not mutable %}<div class="zzm-meta"><button type="button" class="zzmplay-source-button {{mutable|yesno:'show,hide'}}">♫</button><div class="zzm-track-info"><span class="zzmplay-artist">{{artist}}</span>{% if artist %} - {% endif %}<span class="zzmplay-track">{{track}}</div></div>{% endif %}
-    <textarea{% if not mutable %} readonly{% endif %} placeholder="#play ..." class="zzmplay-raw" style="width:50ch;height:100px">{{raw}}</textarea>
+    <textarea{% if not mutable %} readonly{% endif %} placeholder="#play ..." class="zzmplay-raw" style="width:50ch;height:100px">{{notes}}</textarea>
     <button type="button" class="zzmplay-play-button">#Play</button>
     <div class="time"><input type="range" min="0" max="{{ms}}" step="1" class="zzmplay-seek" value="0"> <span class="progress">00:00</span>/<span class="duration">{{duration}}</span></div>
     <button type="button" class="zzmplay-mute-button">🔊</button>

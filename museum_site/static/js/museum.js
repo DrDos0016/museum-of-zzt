@@ -427,19 +427,28 @@ class Museum_ZZM_Audio_Player
 
     clean_raw_data(raw)
     {
+        raw = raw.replaceAll("#bgplay", "#play");
+        raw = raw.replaceAll("#fgplay", "#play");
         let cleaned = raw.replaceAll(/^(?!#play).*$/gm, "");
         cleaned = cleaned.replaceAll("#play ", "");
         cleaned = cleaned.replaceAll("\n\n", "\n");
+        cleaned = cleaned.trim();
         return cleaned;
     }
 
     update_play_commands()
     {
         let raw = this.source_element.val();
+        console.log("To... " + raw);
         if (this.prefix_required)
             this.play_commands = this.clean_raw_data(raw);
         else
             this.play_commands = raw;
+
+        if (this.mutable)
+        {
+            this.update_composition_url();
+        }
         return true;
     }
 
@@ -613,6 +622,16 @@ class Museum_ZZM_Audio_Player
     toggle_prefix_required(value)
     {
         this.prefix_required = value;
+    }
+
+    update_composition_url()
+    {
+        let base = $("input[name=url]").data("base");
+        let notes = encodeURIComponent(this.play_commands);
+        let full = base + notes.replaceAll("\n", "&play="); //+ "&prefix=" + (this.prefix_required ? 1 : 0);
+        full = full.slice(0, 2000);
+        $("input[name=url]").val(full);
+        $("#zzm-comp-length").html(full.length);
     }
 }
 
