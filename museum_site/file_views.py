@@ -259,7 +259,7 @@ class ZFile_List_View(Model_List_View):
             context["sort_options"] = [{"text": "Random", "val": "random"}] + context["sort_options"]
 
         # Setup prefix text/template
-        if self.detail:
+        if self.detail and self.detail.pk == DETAIL_UPLOADED:
             most_patient_file = File.objects.unpublished().order_by("upload__date").first()
             context["oldest_date"] = most_patient_file.upload.date
             context["prefix_text"] = self.detail.description
