@@ -94,14 +94,14 @@ $(document).ready(function (){
 {% block content %}
 {% csrf_token %}
 <h1>Worlds of ZZT Queue{% if request.user.is_staff %} [STAFF MODE]{% endif %}</h1>
-
-<a href="?category=wozzt">Worlds of ZZT</a>
-| <a href="?category=tuesday">Title Screen Tuesday</a>
-{% if request.user.is_staff %}
-| <a href="?category=discord">Discord Queue</a>
-| <a href="?category=failed">Failed Tweets</a>
-{% endif %}
-<p>Current Category: <b>{{category|title|default:"Wozzt"}}</b><br>
+<nav class="nav-actions">
+    {% if category == 'wozzt' %}<div class="selected">Worlds of ZZT</div>{% else %}<a href="?category=wozzt">Worlds of ZZT</a>{% endif %}
+    {% if category == 'tuesday' %}<div class="selected">Title Screen Tuesday</div>{% else %}<a href="?category=tuesday">Title Screen Tuesday</a>{% endif %}
+    {% if request.user.is_staff %}
+        {% if category == 'discord' %}<div class="selected">Discord Queue</div>{% else %}<a href="?category=discord">Discord Queue</a>{% endif %}
+        {% if category == 'failed' %}<div class="selected">Failed Tweets</div>{% else %}<a href="?category=failed">Failed Tweets</a>{% endif %}
+    {% endif %}
+</nav>
 
 {% if request.GET.category == "tuesday" %}
 <p>The Title Screen Tuesday queue is posted from once every three hours starting at 00:45 UTC on Tuesdays. It consists of randomly selected title screen boards from (nearly) every non-explicit marked ZZT world hosted on the Museum of ZZT that can be displayed with the default character set and palette.</p>
