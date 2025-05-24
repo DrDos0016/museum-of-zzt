@@ -712,7 +712,7 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     flex-wrap:wrap;
     font-family:"cp437";
     font-size:16px;
-    justify-content:space-around;
+    justify-content:flex-start;
 }
 
 .nav-actions div
