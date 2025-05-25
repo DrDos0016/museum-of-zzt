@@ -42,6 +42,24 @@ Several older Python scripts in the tools directory have hard-coded paths to `/v
 
 These are slowly being transitioned to a more agnostic setup to allow the Museum to run fully regardless of installation directory. In the meantime, it can be helpful to set the environment variables `PYTHONPATH` and `DJANGO_SETTINGS_MODULE` in your virtual environment. Depending on how you start your development server you may want to find a place to automatically set these variables.
 
+## Requirements (short list)
+
+The file `requirements.txt` is generated with `pip freeze` which has amassed some clutter with various requirements of different social media libraries. This list covers the Python libraries used by the Museum of ZZT as one would directly install from pip.
+
+* `atproto` - Bluesky API integration
+* `beautifulsoup4` - Staff-only article functions
+* `discord.py` - Discord Bot
+* `django` - Web framework for the Museum of ZZT website
+* `gunicorn` - Webserver
+* `internetarchive` - Mirroring files to the Internet Archive
+* `markdown` - Formatting user-written data
+* `Mastodon.py` - Mastodon API integration
+* `mysqlclient` - Database connectivity
+* `pillow` - Preview image generation
+* `pytumblr` - tumblr API integration
+* `requests` - POSTs to Discord webhooks
+* `tweepy` - Twitter API integration
+
 ## Non-Repository Content
 
 I generally avoid including *binary* content in the Museum repository which isn't in some way "mine". As such, the following features are deliberately missing by default:

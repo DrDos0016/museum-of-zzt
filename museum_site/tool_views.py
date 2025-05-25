@@ -453,13 +453,14 @@ def mirror(request, key):
 
         for line in form.log:
             context["output_html"] += line
+        form.log = ""
 
         if form.mirror_status == "SUCCESS":
             zfile.archive_name = request.POST.get("url")
             if request.POST.get("collection") != "test_collection":
                     zfile.save()
 
-        context["output_html"] += "</textarea>\n<a href='{}'>IA URL</a>".format(request.POST.get("url"))
+        context["output_html"] += "</textarea>\n<a href='{}' target='_blank'>IA URL</a>".format("https://archive.org/details", request.POST.get("url"))
 
     context["form"] = form
     return render(request, "museum_site/tools/mirror.html", context)

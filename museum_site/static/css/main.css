@@ -139,7 +139,7 @@ body.expanded #sidebar-right { right:-100%; }
 }
 
 .sidebar h2, .sidebar h3 {
-    margin:0; margin-bottom:7px;
+    margin:0;
     border-bottom:1px solid var(--border-color);
 }
 .sidebar h2 { font-size:14pt; }
