@@ -295,7 +295,6 @@ export class File_Viewer
     {
         console.log("Other globs?");
         console.log(fv_default_domain, mode, user_test);
-        console.log("Argle?", argle_bargle);
         let scale = 1;
         let base_w = 640;
         let base_h = 350;
