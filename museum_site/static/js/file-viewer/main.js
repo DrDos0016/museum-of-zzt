@@ -74,22 +74,22 @@ function initialize()
         if (! e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next Board
         {
             // Need to iterate over these until a non-hidden one is found.
-            if (match = $(".board.selected").nextAll(".board"))
+            if ((match = $(".board.selected").nextAll(".board")) && match.length != 0)
                 match[0].click();
         }
         else if (! e.shiftKey && (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K)) // Previous Board
         {
-            if (match = $(".board.selected").prevAll(".board"))
+            if ((match = $(".board.selected").prevAll(".board")) && match.length != 0)
                 match[0].click();
         }
         else if (e.shiftKey && (e.keyCode == KEY.NP_PLUS || e.keyCode == KEY.PLUS || e.keyCode == KEY.J)) // Next File
         {
-            if (match = $(".fv-content.selected").nextAll(".fv-content"))
+            if ((match = $(".fv-content.selected").nextAll(".fv-content")) && match.length != 0)
                 match[0].click();
         }
         else if (e.shiftKey && (e.keyCode == KEY.NP_MINUS || e.keyCode == KEY.MINUS || e.keyCode == KEY.K)) // Previous File
         {
-            if (match = $(".fv-content.selected").prevAll(".fv-content"))
+            if ((match = $(".fv-content.selected").prevAll(".fv-content")) && match.length != 0)
                 match[0].click();
         }
         else if (e.shiftKey && e.keyCode == KEY.B) // Toggle blinking
