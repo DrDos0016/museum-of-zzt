@@ -107,6 +107,8 @@
     border-bottom:1px dotted var(--border-color);
 }
 
+.model-block-data .datum:last-child { border-bottom:0px; }
+
 @media (max-width:500px) {
     .model-block-data .datum
     {
