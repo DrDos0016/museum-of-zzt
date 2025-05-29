@@ -51,6 +51,7 @@
     border-top:1px dashed var(--border-color);
     border-bottom:1px dashed var(--border-color);
     width:100%;
+    min-height:380px;
 }
 
 #file-list { font-family:mono; max-height:680px; overflow:auto; }
