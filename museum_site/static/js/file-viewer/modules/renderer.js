@@ -143,6 +143,8 @@ export class ZZT_Standard_Renderer
     {
         let output = "<h3>Renderer Options</h3>";
         let config_key = "renderer";
+        // TODO: This needs to update in case of CHR files listed after the ZZT file in the zip (see Weaver Pixel Twenty-Eight which has two CHR files)
+        this.config_fields[0]["options_data"] = this.get_available_charsets();
 
         for (let idx=0; idx < this.config_fields.length; idx++)
         {
