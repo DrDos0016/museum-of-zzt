@@ -319,6 +319,7 @@ function output_file(e)
     {
         console.log("THIS FILE IS OPEN ALREADY!");
         e.target.classList.remove("selected");
+        fv.files[requested_fvpk].deactivate_active_envelopes();
         $(`.fv-content[data-fvpk=${requested_fvpk}] .board-list`).remove();
         return false;
     }
