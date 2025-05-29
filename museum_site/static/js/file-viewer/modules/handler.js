@@ -27,7 +27,7 @@ export class Handler
     static initial_config = {};
 
     async render() {
-        console.log("CALLED HANDLER.RENDER()");
+        console.log("CALLED HANDLER.RENDER(). MY FVPK IS " + this.fvpk);
         this.deactivate_active_envelopes();
         this.set_tabs();
 

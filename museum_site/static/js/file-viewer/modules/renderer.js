@@ -50,7 +50,7 @@ export class ZZT_Standard_Renderer
 
     static initial_config = {
         "appearance": {
-            "charset_name": "cp437.png",
+            "charset_name": "<USEDEFAULT>",
             "show_high_intensity_backgrounds": false,
             "invisible_wall": 0,
             "empty": 0,
@@ -167,6 +167,12 @@ export class ZZT_Standard_Renderer
         console.log("TOLD TO RENDER BOARD", board);
         if (! this.character_set.loaded || this.character_set.name != this.config.appearance.charset_name)
         {
+            if (this.config.appearance.charset_name == "<USEDEFAULT>")
+            {
+                console.log("Time to figure out this default charset thing");
+                this.config.appearance.charset_name = this.get_default_charset();
+            }
+            console.log("OOC", this.character_set.name);
             console.log("Freshly loading charset", this.config.appearance.charset_name);
             await this.character_set.load(this.config.appearance.charset_name);
         }
@@ -194,6 +200,22 @@ export class ZZT_Standard_Renderer
             }
         }
         return canvas;
+    }
+
+    get_default_charset()
+    {
+        console.log("=========GETTING DEFAULT CHARSET");
+        let output = "cp437.png";
+        for (let idx in CHARACTER_SETS)
+        {
+            if (idx != "cp437.png")
+            {
+                output =  CHARACTER_SETS[idx].identifier;
+                break;
+            }
+        }
+        console.log("OUTUPT", output);
+        return output
     }
 
     post_process(x, y, fg, bg, char, id) { return [fg, bg, char] };
@@ -587,12 +609,16 @@ export class ZZT_Standard_Renderer
     get_available_charsets()
     {
         let options = [];
-        console.log("--Getting charsets", CHARACTER_SETS);
         for (let idx in CHARACTER_SETS)
         {
-            let is_default = (false) ? true : false; // TODO This needs work
+            let is_default = false;
+            // If only a single custom charset, assume it's meant for this file
+            if (Object.keys(CHARACTER_SETS).length == 2) // TODO Assumes only cp437 as a global option
+            {
+                if (idx != "cp437.png")
+                    is_default = true;
+            }
             options.push({"value": CHARACTER_SETS[idx].identifier, "text": CHARACTER_SETS[idx].name, "default": is_default});
-            console.log("Adding option", CHARACTER_SETS[idx]);
         }
         return options
     }
