@@ -1,4 +1,5 @@
 "use strict";
+var DEFAULT_ACCOUNTS = ["bluesky", "discord", "mastodon", "tumblr", "twitter"];
 var TEMPLATES = {
     "schedule": [
         "Here's this week's stream schedule! Join us live at https://twitch.tv/worldsofzzt/",
@@ -34,6 +35,12 @@ var TEMPLATES = {
     [
         "Time for a project update! TODO",
         "A new project update is now available at TODO",
+    ],
+    "streaming-today":
+    [
+        "Tune in to https://twitch.tv/worldsofzzt/ today at [EASTERN]/[PACIFIC]/[UTC]! We'll be playing TODO!",
+        "We'll be streaming today at [EASTERN]/[PACIFIC]/[UTC]! Gonna play some TODO! See you there at https://twitch.tv/worldsofzzt !",
+        "Get ready for today's stream! You're invited to join us at https://twitch.tv/worldsofzzt starting at [EASTERN]/[PACIFIC]/[UTC] as we explore TODO!",
     ]
 }
 
@@ -65,7 +72,7 @@ function apply_form_shortcut()
     else if (shortcut_key == "vod")
     {
         $("#id_title").val(`VOD: TODO`);
-        set_accounts(["bluesky", "discord", "mastodon", "tumblr", "twitter"]);
+        set_accounts(DEFAULT_ACCOUNTS);
         $("#id_discord_channel").val("announcements");
         set_discord_mentions([]);
         $("#id_hashtags").val("#vod, #zzt");
@@ -76,7 +83,7 @@ function apply_form_shortcut()
     else if (shortcut_key == "live")
     {
         $("#id_title").val(`Now Streaming - TODO`);
-        set_accounts(["bluesky", "discord", "mastodon", "tumblr", "twitter"]);
+        set_accounts(DEFAULT_ACCOUNTS);
         $("#id_discord_channel").val("announcements");
         set_discord_mentions(["stream-alerts-dos", "stream-alerts-all"]);
         $("#id_hashtags").val("#streaming, #zzt");
@@ -87,7 +94,7 @@ function apply_form_shortcut()
     else if (shortcut_key == "early-access-article")
     {
         $("#id_title").val(`Patron Early Access - TODO`);
-        set_accounts(["bluesky", "discord", "mastodon", "tumblr", "twitter"]);
+        set_accounts(DEFAULT_ACCOUNTS);
         $("#id_discord_channel").val("announcements");
         let offset = date.getDay() % TEMPLATES["early-access-article"].length;
         $("#id_body").val(TEMPLATES[shortcut_key][offset]);
@@ -96,7 +103,7 @@ function apply_form_shortcut()
     else if (shortcut_key == "new-article")
     {
         $("#id_title").val(`New Article - TODO`);
-        set_accounts(["bluesky", "discord", "mastodon", "tumblr", "twitter"]);
+        set_accounts(DEFAULT_ACCOUNTS);
         $("#id_discord_channel").val("announcements");
         let offset = date.getDay() % TEMPLATES["new-article"].length;
         $("#id_body").val(TEMPLATES[shortcut_key][offset]);
@@ -105,11 +112,21 @@ function apply_form_shortcut()
     else if (shortcut_key == "project-update")
     {
         $("#id_title").val(`Project Update - ${formal_month_name} ${date.getDate()}`);
-        set_accounts(["bluesky", "discord", "mastodon", "tumblr", "twitter"]);
+        set_accounts(DEFAULT_ACCOUNTS);
         $("#id_discord_channel").val("announcements");
         let offset = date.getDay() % TEMPLATES["project-update"].length;
         $("#id_body").val(TEMPLATES[shortcut_key][offset]);
         $("#id_hashtags").val("#project update, #zzt");
+    }
+    else if (shortcut_key == "streaming-today")
+    {
+        $("#id_title").val(`Streaming Today - ${next_stream.title}`);
+        set_accounts(DEFAULT_ACCOUNTS);
+        $("#id_discord_channel").val("announcements");
+        let offset = date.getDay() % TEMPLATES["streaming-today"].length;
+        let body = TEMPLATES[shortcut_key][offset].replace("[EASTERN]", next_stream.when_eastern).replace("[PACIFIC]", next_stream.when_pacific).replace("[UTC]", next_stream.when_utc);
+        $("#id_body").val(body);
+        $("#id_media_1").val(next_stream.preview_image);
     }
 }
 

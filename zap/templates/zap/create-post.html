@@ -13,6 +13,9 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+var next_stream = {{next_stream|default:'{}'|safe}};
+</script>
 <script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
 <script src="{% static 'zap/create-post.js' %}?{{BOOT_TS}}"></script>
 {% endblock %}

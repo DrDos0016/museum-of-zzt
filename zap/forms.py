@@ -56,6 +56,7 @@ class ZAP_Post_Form(forms.Form):
         ("early-access-article", "Early Access Article (Assumes CL!)"),
         ("new-article", "Public Article (Assumes CL!)"),
         ("project-update", "Project Update"),
+        ("streaming-today", "Streaming Today"),
     )
 
 
@@ -79,6 +80,7 @@ class ZAP_Post_Form(forms.Form):
     media_4 = forms.CharField(required=False, help_text="Should begin with /static/...")
 
     def smart_start(self, event=None):
+        print("Smart start?")
         if not event:
             return False
         self.fields["body"].initial = event.prefab_post()

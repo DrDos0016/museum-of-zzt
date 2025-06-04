@@ -9,12 +9,14 @@ from datetime import datetime, timezone
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.templatetags.tz import do_timezone
 from django.urls import include
 
 from museum_site.constants import SITE_ROOT
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.core.transforms import qs_manual_order
 from museum_site.models import Article, File
+from stream.models import Stream
 from .forms import *
 from .core import ZAP_UPLOAD_PATH, ZAP_STATIC_PATH
 
@@ -98,7 +100,6 @@ def preview(request, form_key):
         raw = request.POST.copy()
         for k, v in raw.items():
             context[k] = v
-        print(context)
         return render(request, "zap/subtemplate/stream-schedule.html", context)
 
 
@@ -146,6 +147,20 @@ def save_image_render(request):
 @staff_member_required
 def post_create(request):
     context = {"title": "ZAP - Create Post"}
+    today = datetime.now()
+    stream = Stream.objects.filter(visible=True, when__gte=str(today)).first()
+    eastern = do_timezone(stream.when, "America/New_York")
+    pacific = do_timezone(stream.when, "America/Los_Angeles")
+
+    if stream:
+        context["next_stream"] = {
+            "title": stream.title,
+            "description": stream.description,
+            "preview_image": stream.preview_image,
+            "when_eastern": eastern.strftime("%I:%M") + " eastern",
+            "when_pacific": pacific.strftime("%I:%M") + " pacific",
+            "when_utc": stream.when.strftime("%H:%M") + " UTC"
+        }
     if request.GET.get("pk"):
         event = Event.objects.get(pk=request.GET.get("pk"))
     else:
@@ -157,8 +172,6 @@ def post_create(request):
             form.process(request)
     else:
         form = ZAP_Post_Form()
-        if event:
-            form.smart_start(event)
 
     context["form"] = form
     context["event"] = event
