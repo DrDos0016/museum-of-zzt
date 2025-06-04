@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ENVIRONMENT = os.environ.get("MOZ_ENVIRONMENT", "DEV")  # Valid options: DEV, BETA, PROD
 
 DEBUG = True if (ENVIRONMENT == "DEV") else False
+#DEBUG = True
 
 ALLOWED_HOSTS = [
     "museumofzzt.com",
