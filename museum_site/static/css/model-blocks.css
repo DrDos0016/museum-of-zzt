@@ -149,7 +149,6 @@
 .review-content > .model-block-actions
 {
     grid-template-columns: repeat(4, 1fr);
-    border-top:0px;
 }
 
 @media (max-width:500px) {
