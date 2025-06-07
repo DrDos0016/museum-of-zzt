@@ -50,6 +50,7 @@ function initialize()
 
     $("#world-info").on("click", "input[name=code-search-button]", (e) => { fv.code_search(e); });
     $("#world-info").on("click", "input[name=clear-search]", (e) => { fv.clear_search(e); });
+    $("#world-info").on("click", ".misc-tool-list a.jsLink", (e) => { fv.run_tool($(e.target).data("tool")); });
 
     $("#board-info").on("click", "#play-board", (e) => { fv.play_board(e); });
 

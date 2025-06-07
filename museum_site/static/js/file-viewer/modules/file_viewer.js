@@ -313,6 +313,17 @@ export class File_Viewer
         console.log("Ingesting");
         $("#debug-wrapper").html(`<textarea>${JSON.stringify(this.configs, null, 4)}</textarea>`);
     }
+
+    run_tool(tool_name)
+    {
+
+        let tool_funcs = {"disambiguate_board_titles": {"func": "tool_disambiguate_board_titles", "args": []}};
+        let func_name = tool_funcs[tool_name].func;
+        let func_args = tool_funcs[tool_name].args;
+        //console.log("Running Misc Tool:", tool_name, this.active_fvpk);
+        //console.log("Func", func_name, "args", func_args);
+        this.files[this.active_fvpk][func_name].apply(this.files[this.active_fvpk], func_args);
+    }
 }
 
 export function create_handler_for_file(fvpk, filename, bytes, meta)

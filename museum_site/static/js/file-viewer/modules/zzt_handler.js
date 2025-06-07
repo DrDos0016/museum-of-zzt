@@ -3,6 +3,9 @@ import { Handler } from "./handler.js";
 import { ZZT_Standard_Renderer, ZZT_Object_Highlight_Renderer, ZZT_Code_Highlight_Renderer, ZZT_Fake_Wall_Highlight_Renderer, SZZT_Standard_Renderer } from "./renderer.js";
 import { ZZT_ELEMENTS, SZZT_ELEMENTS } from "./elements.js";
 
+let ALT_BOARD_TITLES = ["Apple", "Bee", "Cat", "Dog", "Engine", "Fish", "Gum", "Horn", "Insect", "Jet", "King", "Lollipop", "Monkey", "Nose", "Octopus", "Pizza", "Queen", "Rocket", "Snake", "Toy", "Umbrella", "Vase", "Wagon", "X-Ray", "Yo-yo", "Zipper"];
+let ALT_BOARD_PREFIXES = ["Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Eta", "Theta", "Iota", "Kappa"];
+
 while (ZZT_ELEMENTS.length < 256)
 {
     ZZT_ELEMENTS.push({"id":ZZT_ELEMENTS.length, "name":`<i>Undefined Element ${ZZT_ELEMENTS.length}</i> `, "oop_name":"", "character":63})
@@ -463,6 +466,8 @@ export class ZZT_Handler extends Handler
         output += `<div class="flex-table">\n`;
 
         output += `<div class="flex-row"><div class="label">ZZT-OOP Search</div><div class="value code-search-form"><input name="code-search" placeholder="#set frontkey" value="${this.query}"><input type="button" value="Search" name="code-search-button"><input type="button" name="clear-search" value="Clear Search"><div class="code-search-no-results-message">&nbsp;</div></div></div>\n`;
+
+        output += `<div class="flex-row"><div class="label">Misc. Tools (Experimental)</div><div class="value"><ul class="misc-tool-list"><li><a class="jsLink" data-tool="disambiguate_board_titles">Disambiguate Board Titles</a></li></ul></div></div>\n`;
 
         output += `</div>\n`;
 
@@ -1255,6 +1260,25 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
         // Copy the current renderer's config to the new one
         renderer.config = temp_config;
         return renderer;
+    }
+
+    tool_disambiguate_board_titles(args)
+    {
+        console.log("I'M HERE");
+        console.log(this);
+        console.log(ALT_BOARD_TITLES);
+        for (let idx in this.boards)
+        {
+            if (idx == 0)
+                this.boards[idx].title.set_value(`Title Screen`);
+            else if (idx < ALT_BOARD_TITLES.length)
+                this.boards[idx].title.set_value(`${ALT_BOARD_TITLES[idx]}`);
+            else
+                this.boards[idx].title.set_value(`${ALT_BOARD_PREFIXES[parseInt(idx / 26)]} ${ALT_BOARD_TITLES[idx % 26]}`);
+        }
+
+        let target = {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.write_board_list()};
+        this.write_targets([target]);
     }
 }
 
