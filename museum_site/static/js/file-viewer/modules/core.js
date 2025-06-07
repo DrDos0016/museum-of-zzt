@@ -23,6 +23,12 @@ export class PString
     {
         return escape_html(this.value.slice(0, this.length)) + "<span class='string-overrun'>" + escape_html(this.value.slice(this.length, this.max_length)) + "</span>";
     }
+
+    set_value(value)
+    {
+        this.value = value;
+        this.length = this.value.length;
+    }
 }
 
 export let KEY = {
