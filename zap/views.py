@@ -149,10 +149,11 @@ def post_create(request):
     context = {"title": "ZAP - Create Post"}
     today = datetime.now()
     stream = Stream.objects.filter(visible=True, when__gte=str(today)).first()
-    eastern = do_timezone(stream.when, "America/New_York")
-    pacific = do_timezone(stream.when, "America/Los_Angeles")
 
     if stream:
+        eastern = do_timezone(stream.when, "America/New_York")
+        pacific = do_timezone(stream.when, "America/Los_Angeles")
+
         context["next_stream"] = {
             "title": stream.title,
             "description": stream.description,
