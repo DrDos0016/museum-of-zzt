@@ -40,7 +40,7 @@ class Museum_Base_Template_View(TemplateView):
         return context
 
     def render_to_response(self, context, **response_kwargs):
-        if hasattr(self, "redirect_to"):
+        if hasattr(self, "redirect_to") and self.redirect_to is not None:
             return redirect(self.redirect_to)
         return super().render_to_response(context, **response_kwargs)
 
