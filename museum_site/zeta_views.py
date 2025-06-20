@@ -15,48 +15,188 @@ from museum_site.core.redirects import explicit_redirect_check
 from museum_site.core.zeta_identifiers import *
 from museum_site.models import File as ZFile
 from museum_site.models import Zeta_Config
+from museum_site.views import Museum_Base_Template_View
+
+
+class Zeta_Launcher_View(Museum_Base_Template_View):
+    title = "Zeta Launcher"  # Default title
+    template_name = "museum_site/ascii-reference.html"
+
+    POSSIBLE_COMPONENTS = ["controls", "instructions", "credits", "advanced", "players"]
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        print(kwargs)
+        self.components = {"controls": True, "instructions": True, "credits": True, "advanced": False, "players": True}
+        self.key = kwargs.get("key")
+        self.mode = request.GET.get("mode") or "full"
+        self.base_template = "museum_site/play-popout.html" if (self.mode == "popout") else "museum_site/main.html"
+        self.local_file = (self.key == "LOCAL")
+        self.redirect_to = None
+
+    def get_template_names(self):
+        return "museum_site/play_zeta.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["base"] = self.base_template
+        context["ZETA_EXECUTABLES"] = ZETA_EXECUTABLES
+        context["charset_override"] = self.request.GET.get("charset_override", "")
+        context["executable"] = self.request.GET.get("executable", "AUTO")
+        context["engine"] = context["executable"]  # TODO Why is this a duplicate
+        context["components"] = self.get_visible_components()
+        if context["components"]["advanced"]:
+            context["all_files"] = ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
+
+        zfile_ids = list(map(int, self.request.GET.getlist("file_id")))
+        (context["zfile"], context["all_zfiles"], context["included_files"]) = self.get_zfiles(zfile_ids)
+        context["file_count"] = len(zfile_ids)
+
+        self.redirect_to = self.check_for_explicit_redirect(context["zfile"])
+
+        context["player_methods"] = self.get_player_methods(context["zfile"])  # TODO?
+
+        context["title"] = (context["zfile"].title + " - Play Online") if context["zfile"] else Zeta_Launcher_View.title
+        context["zeta_database"] = context["all_zfiles"][0].pk if len(context["all_zfiles"]) == 1 else "generic-zeta-save-db"
+
+        if context["components"]["players"]:
+            (context["player"], context["players"]) = self.get_play_method(context["zfile"], context["player_methods"], self.request.GET.get("player"))
+
+        if context["components"]["advanced"]:
+            context["config_list"] = Zeta_Config.objects.exclude(pk=ZETA_RESTRICTED).only("id", "name")
+
+        context["zeta_config"] = self.get_zeta_config(context["zfile"])
+        # TODO "Extra Work" stuff
+
+        # Set default scale
+        context["zeta_player_scale"] = int(self.request.COOKIES.get("zeta_player_scale", 1))
+
+        # Determine initial canvas size for ZZT/SZZT
+        (context["zeta_config"].base_width, context["zeta_config"].base_height) = (640, 350)
+        if context["zfile"] and context["zfile"].is_detail(DETAIL_SZZT):
+            context["zeta_config"].base_height = 400
+
+        #if data["local"]:  # TODO IS THIS IMPLEMENTED?
+            #player = "zeta_local"
+        context["file"] = context["zfile"]  # TODO: Hotfix for compatibility w/ current template
+        print("Players?", context["players"])
+        print("PLAYER", context["player"])
+        return context
+
+    def get_visible_components(self):
+        components = {}
+        components.update(self.components)
+        components["advanced"] = bool(self.request.GET.get("advanced"))
+        print("Vis Components", components)
+        return components
+
+    def get_zeta_compatible_zfiles(self):
+            return ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
+
+    def get_zfiles(self, zfile_ids):
+        primary_zfile = None
+        all_included_zfiles = []
+        zfile_urls = []
+
+        if self.key:
+            primary_zfile = ZFile.objects.filter(key=self.key).first()
+        if (primary_zfile and primary_zfile.id not in zfile_ids):
+            zfile_ids = [primary_zfile.id] + zfile_ids
+
+        for zf in ZFile.objects.filter(pk__in=zfile_ids):
+            all_included_zfiles.append(zf)
+            zfile_urls.append(zf.download_url())
+
+        if primary_zfile is None and all_included_zfiles:
+            primary_zfile = included_zfiles[0]
+
+        print("ZFILES ARE", primary_zfile, all_included_zfiles)
+
+        return (primary_zfile, all_included_zfiles, zfile_urls)
+
+    def get_player_methods(self, zfile):
+        play_methods = {"archive": {"name": "DosBox - Internet Archive Embed"}, "zeta": {"name": "Zeta - Museum of ZZT Hosted"}}
+        if zfile and zfile.itch_dl:
+            play_methods["itch"] = {"name": "Play On Itch.io - Leave Museum"}
+        return play_methods
+
+    def get_play_method(self, zfile, play_methods, user_requested_player):
+        # Determine play methods available and play method to use
+        all_play_methods = list(play_methods.keys())
+        print("all", all_play_methods)
+        compatible_players = []
+        unpublished = True if (zfile and zfile.is_detail(DETAIL_UPLOADED) )else False
+
+        if "zeta" in all_play_methods and zfile and zfile.supports_zeta_player():
+            compatible_players.append("zeta")
+        if "archive" in all_play_methods and zfile and zfile.archive_name:
+            compatible_players.append("archive")
+        if "itch" in all_play_methods:
+            compatible_players.append("itch")
+
+        preferred_player = user_requested_player if (user_requested_player in all_play_methods) else "zeta"
+
+        # Use the preferred player, or the earliest compatible player in this list
+        player = "none"
+        for potential_player in [preferred_player, "zeta", "itch", "archive"]:
+            if potential_player in compatible_players:
+                player = potential_player
+                break
+
+        # Populate options for any alternative players
+        #data["players"] = {}
+        #for option in compatible_players:
+        #    data["players"][option] = PLAY_METHODS[option]
+
+        if player == "itch":  # Itch needs a redirect
+            self.redirect_to = zfile.itch_dl.url
+
+        return (player, play_methods)
+
+    def check_for_explicit_redirect(self, zfile):
+        if zfile and zfile.explicit:
+            check = explicit_redirect_check(self.request, zfile.pk)
+            if check != "NO-REDIRECT":
+                return check
+        return None
+
+    def get_zeta_config(self, zfile):
+        # Get Zeta Config for file
+        if self.request.GET.get("zeta_config"):  # User specified config
+            zeta_config = Zeta_Config.objects.get(pk=int(self.request.GET["zeta_config"]))
+        else:
+            zeta_config = zfile.zeta_config if zfile else Zeta_Config.objects.get(pk=ZETA_ZZT32R)
+
+        zeta_config.user_configure(self.request.GET) #  Update config with user requested options
+        return zeta_config
 
 
 @rusty_key_check
 def zeta_launcher(request, key=None, components=["controls", "instructions", "credits", "advanced", "players"]):
     data = {"title": "Zeta Launcher"}
-
+    data["components"] = {"controls": False, "instructions": False, "credits": False, "advanced": False, "players": False}
     PLAY_METHODS = {"archive": {"name": "Archive.org - DosBox Embed"}, "zeta": {"name": "Zeta"}}
 
     # Template rendering mode
     # full - Extends "world.html", has a file header
     # popout - Extends "play-popout.html", removes all site components
     data["mode"] = request.GET.get("mode", "full")
-    data["base"] = "museum_site/main.html"
 
-    # Determine visible components
-    data["components"] = {
-        "controls": True if "controls" in components else False,
-        "instructions": True if "instructions" in components else False,
-        "credits": True if "credits" in components else False,
-        "advanced": True if "advanced" in components else False,
-        "players": True if "players" in components else False,
-    }
-
-    # Show advanced settings if requested in URL
-    if request.GET.get("advanced"):
-        data["components"]["advanced"] = True
-
-    # Hide everything in popout mode and force Zeta
     if data["mode"] == "popout":
         data["base"] = "museum_site/play-popout.html"
-        data["components"] = {
-            "controls": False,
-            "instructions": False,
-            "credits": False,
-            "advanced": False,
-            "players": False,
-        }
         player = "zeta"
-
-    if data["components"]["advanced"]:
-        # data["charsets"] = CUSTOM_CHARSET_LIST
-        data["all_files"] = ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
+    else:
+        data["base"] = "museum_site/main.html"
+        # Determine visible components
+        possible_components = ["controls", "instructions", "credits", "advanced", "players"]
+        for possible_component in possible_components:
+            data["components"][possible_component] = (possible_component in components)
+        # Show advanced settings if requested in URL
+        if request.GET.get("advanced"):
+            data["components"]["advanced"] = True
+        if data["components"]["advanced"]:
+            # data["charsets"] = CUSTOM_CHARSET_LIST
+            data["all_files"] = ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
 
     data["charset_override"] = request.GET.get("charset_override", "")
     data["executable"] = request.GET.get("executable", "AUTO")
@@ -76,9 +216,6 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
         PLAY_METHODS["itch"] = {"name": "Play On Itch.io - Leave Museum"}
 
     data["file_ids"] = list(map(int, request.GET.getlist("file_id")))
-
-    # HOTFIXES (BINB)
-    data["HOTFIX"] = "true" if data["file"].pk in [3089, 3527] else "false"
 
     if (data["file"] and data["file"].id not in data["file_ids"]):
         data["file_ids"] = [data["file"].id] + data["file_ids"]
@@ -191,7 +328,6 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
                 "charset": generic_font,
                 "lock_charset": True,
             })
-
 
     # Extra work for custom EXE
     if data["zeta_config"].name.startswith("Use Included EXE"):

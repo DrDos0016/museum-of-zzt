@@ -181,20 +181,17 @@ $(document).ready(function (){
             {
                 "type": "zip",
                 "url": "/static/data/zeta86_engines/{{zeta_config.executable}}",
-            },
-            {% endif %}
+            },{% endif %}
             {% for file in included_files %}
             {
                 "type": "zip",
                 "url": "{{file|safe}}",
-            },
-            {% endfor %}
+            },{% endfor %}
             {% if zeta_url %}
             {
                 "type": "zip",
                 "url": "{{zeta_url|safe}}",
-            },
-            {% endif %}
+            },{% endif %}
         ],
     }, function(zeta) {
         ZETA = zeta;
