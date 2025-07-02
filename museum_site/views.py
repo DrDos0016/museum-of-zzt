@@ -282,6 +282,8 @@ def set_setting(request):
         request.session["sidebars"] = "hide" if value == "hide" else "show"
     elif key == "theme":
         request.session["theme"] = "dark" if value == "dark" else "light"
+    elif key == "prezoom":
+        request.session["prezoom"] = value
 
     output = {"key": key, "value": request.session[key]}
 

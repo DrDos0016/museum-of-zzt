@@ -43,6 +43,10 @@ $(document).ready(function (){
         $(this).toggleClass("thumbnail zoomed");
     });
 
+    // Set initial zoom
+    if (global_zoomed_state)
+        $(".zoomable").click();
+
     // Browse Letters Select-based Input
     $("#letter-button").click(function (){
         var url = $("#letter-select").val().toLowerCase();
@@ -107,6 +111,18 @@ $(document).ready(function (){
     $("#toggle-light-dark-theme").click(function (){
         let theme = $("body").hasClass("theme-dark") ? "light" : "dark";
         ajax_set_setting("theme", theme, update_theme);
+    });
+
+
+    // Zoom all
+    $("#toggle-zoom").click(function (){
+        global_zoomed_state = ! global_zoomed_state;
+        let on_off = global_zoomed_state ? "on" : "off";
+        ajax_set_setting("prezoom", on_off, function (){});
+        if (global_zoomed_state)
+            $(".zoomable").not(".zoomed").click();
+        else
+            $(".zoomable.zoomed").click();
     });
 
     // Expand/Contract Middle Column

@@ -684,6 +684,7 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     background:transparent;
     height:20px;
     min-height:20px;
+    cursor:pointer;
 }
 
 #toggle-light-dark-theme
@@ -692,6 +693,8 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     font-size:20px;
     color:var(--ega-darkyellow);
 }
+
+#toggle-zoom { font-family:cp437; font-size:20px; color:var(--ega-darkpurple);
 
 .theme-dark #toggle-light-dark-theme { color:var(--lowlight-button-color); }
 

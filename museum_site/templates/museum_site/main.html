@@ -26,6 +26,9 @@
 {% endblock %}
 <script src="{% static 'js/jquery.3.1.0.min.js' %}"></script>
 <script src="{% static 'js/museum.js' %}?{{BOOT_TS}}"></script>
+<script>
+var global_zoomed_state = {% if request.session.prezoom == "on" %}1{% else %}0{% endif %};
+</script>
 {% block scripts %}{% endblock %}
 {% block staff_scripts %}{% endblock %}
 {% block style %}{% endblock %}
@@ -113,7 +116,10 @@
 
 <main id="content" class="block{% for class in content_classes %} {{class}}{% endfor %}" data-url-name="{{request.resolver_match.url_name|default:'null_url_name'}}">
 <div id="top-margin">
-    <button id="toggle-light-dark-theme" title="Toggle Light/Dark Theme">¥</button>
+    <div>
+        <button id="toggle-light-dark-theme" title="Toggle Light/Dark Theme">¥</button>
+        <button id="toggle-zoom" title="Toggle Preview Image Zoom">±</button>
+    </div>
     {% block top_margin_middle %}{% endblock %}
     <button id="expand-contract" title="Toggle sidebars">⮜ ⮞</button>
 </div>
