@@ -9,7 +9,7 @@ from museum_site.constants import LANGUAGES, LANGUAGE_CHOICES, UPLOAD_TEST_MODE,
 from museum_site.core.detail_identifiers import *
 from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.image_utils import optimize_image
-from museum_site.core.misc import calculate_boards_in_zipfile, calculate_sort_title, get_letter_from_title, generate_screenshot_from_zip, record
+from museum_site.core.misc import calculate_boards_in_zipfile, calculate_release_year, calculate_sort_title, get_letter_from_title, generate_screenshot_from_zip, record
 from museum_site.fields import (
     Choice_Field_No_Validation, Tag_List_Field, Museum_Tagged_Text_Field, Museum_Choice_Field, Museum_Model_Scrolling_Multiple_Choice_Field,
     Museum_Multiple_Choice_Field, Museum_Scrolling_Multiple_Choice_Field, Museum_Drag_And_Drop_File_Field
@@ -381,6 +381,7 @@ class ZGame_Form(forms.ModelForm):
             self.zfile.release_source = "User upload"
 
         self.zfile.sort_title = calculate_sort_title(self.zfile.title)
+        self.zfile.year = calculate_release_year(self.zfile.release_date)
         self.zfile.language = "/".join(self.cleaned_data["language"])
         self.zfile.save()
         self.zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))

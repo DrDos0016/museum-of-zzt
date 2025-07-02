@@ -15,7 +15,7 @@ from django.utils.safestring import mark_safe
 from museum_site.constants import SITE_ROOT, LANGUAGES, STATIC_PATH, DATE_NERD, DATE_FULL, DATE_HR
 from museum_site.core.detail_identifiers import *
 from museum_site.core.feedback_tag_identifiers import *
-from museum_site.core.misc import calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile, zipinfo_datetime_tuple_to_str
+from museum_site.core.misc import calculate_release_year, calculate_sort_title, get_letter_from_title, calculate_boards_in_zipfile, zipinfo_datetime_tuple_to_str
 from museum_site.core.image_utils import optimize_image
 from museum_site.core.sorters import ZFile_Sorter
 from museum_site.core.transforms import qs_to_links
@@ -85,7 +85,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     size = models.IntegerField(default=0, editable=False, help_text="Size in bytes of the zip file")
     title = models.CharField(max_length=80, help_text="Canonical name of the release")
     release_date = models.DateField(default=None, null=True, blank=True, help_text="Release date of zip file's contents.")
-    release_source = models.CharField(max_length=20, default="", blank=True, help_text="Source of release date when applicable.")
+    release_source = models.CharField(max_length=255, default="", blank=True, help_text="Source of release date when applicable.")
+    year = models.DateField(default=None, null=True, help_text="Year of release when applicable. 01-01 used for sorting purposes.")
     language = models.CharField(
         max_length=50, default="en",
         help_text="Slash-separated list of languages required to comprehend the zip file's contents. ISO 639-1 code. List defined in constants.py"
@@ -236,6 +237,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     # Database functions
     def save(self, *args, **kwargs):
         self.sort_title = calculate_sort_title(self.title)
+        self.year = calculate_release_year(self.release_date)
         if self.pk:  # Updates for already saved models
             self.calculate_article_count()
         super(File, self).save(*args, **kwargs)
@@ -325,7 +327,13 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             return []
         return zfh.infolist()
 
-    def release_year(self, default=""): return default if self.release_date is None else str(self.release_date)[:4]
+    def release_year(self, default=""):
+        if self.release_date is None:
+            if self.year is None:
+                return default
+            else:
+                return self.year.year
+        return str(self.release_date.year)
 
     def get_can_review_string(self):
         return File.FEEDBACK_LEVELS[self.can_review][1]
@@ -432,7 +440,10 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def get_field_zfile_date(self, view="detailed"):
         if self.release_date is None:
-            date_str = "<i>Unknown</i>"
+            if self.year is None:
+                date_str = "<i>Unknown</i>"
+            else:
+                date_str = "{} (<i>approx.</i>)".format(self.year.year)
         else:
             date_str = self.release_date.strftime(DATE_HR)
         url = reverse("zfile_browse_field", kwargs={"field": "year", "value": self.release_year(default="unk")})

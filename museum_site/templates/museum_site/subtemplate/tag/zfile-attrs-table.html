@@ -22,8 +22,9 @@
     <tr><th colspan="2">Dates</th></tr>
         <tr><th>Last Modified</th><td>{{zfile.last_modified}}</td></tr>
         <tr><th>Publish Date</th><td>{% if zfile.publish_date|stringformat:"s" <= '2018-11-06 00:00:00+00:00' %}<i>Not Recorded</i>{% else %}{{zfile.publish_date|default:"<i>Unknown</i>"}}{% endif %}</td></tr>
-        <tr><th>Release Date</th><td>{{zfile.release_date}}</td></tr>
-    <tr><th>Release Date Source</th><td>{{zfile.release_source}}</td></tr>
+        <tr><th>Release Date</th><td>{{zfile.release_date|default:"<i>Unknown</i>"}}</td></tr>
+        <tr><th>Release Date Source</th><td>{{zfile.release_source}}</td></tr>
+        <tr><th>Release Year</th><td>{{zfile.release_year|default:"<i>Unknown</i>"}}</td></tr>
     <tr><th colspan="2">Related Data</th></tr>
     <tr>
         <th>Aliases ({{zfile.aliases.count}})</th>

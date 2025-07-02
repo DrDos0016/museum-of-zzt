@@ -3,6 +3,8 @@ import tempfile
 import zipfile
 import urllib.parse
 
+from datetime import datetime
+
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import get_resolver, reverse
@@ -99,6 +101,13 @@ def calculate_boards_in_zipfile(zip_path):
     playable_boards = None if temp_playable == 0 else temp_playable
     total_boards = None if temp_total == 0 else temp_total
     return (playable_boards, total_boards)
+
+
+def calculate_release_year(release_date):
+    output = None
+    if release_date:
+        output = datetime(year=release_date.year, month=1, day=1)
+    return output
 
 
 def calculate_sort_title(string):
