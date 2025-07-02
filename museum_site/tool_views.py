@@ -463,6 +463,7 @@ def mirror(request, key):
         context["output_html"] += "</textarea>\n<a href='{}' target='_blank'>IA URL</a>".format("https://archive.org/details", request.POST.get("url"))
 
     context["form"] = form
+    context["file"] = zfile
     return render(request, "museum_site/tools/mirror.html", context)
 
 
