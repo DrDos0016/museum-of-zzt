@@ -277,13 +277,12 @@ def set_setting(request):
 
     key, value = param.split("|")
 
-
     if key == "sidebars":
         request.session["sidebars"] = "hide" if value == "hide" else "show"
     elif key == "theme":
         request.session["theme"] = "dark" if value == "dark" else "light"
     elif key == "prezoom":
-        request.session["prezoom"] = value
+        request.session["prezoom"] = "on" if value == "on" else "off"
 
     output = {"key": key, "value": request.session[key]}
 
