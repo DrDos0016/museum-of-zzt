@@ -21,6 +21,8 @@ class BaseModel(models.Model):
     show_staff = False
     guide_word_values = {}
 
+    DEBUG_PRINT = False
+
     class Meta:
         abstract = True
 
@@ -31,6 +33,11 @@ class BaseModel(models.Model):
     @property
     def model_key(self):
         return self.key if hasattr(self, "key") else self.pk
+
+    def dprint(self, *args, **kwargs):
+        if self.DEBUG_PRINT:
+            print(*args, **kwargs)
+        return False
 
     def _init_actions(self): self.actions = {}
     def _init_detail_ids(self): self.detail_ids = []
@@ -95,6 +102,7 @@ class BaseModel(models.Model):
     # 2023 Model Blocks
     def init_model_block_context(self, view="detailed", request=None, *args, **kwargs):
         """ Entry point for 2023 Model Blocks """
+        self.dprint("INIT MODEL BLOCK CONTEXT")
         self.request = request
         self.context = {}
         if request:
