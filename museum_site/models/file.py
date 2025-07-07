@@ -40,7 +40,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         self.cl_info_view_fields = ["authors", "companies", "zfile_date"]
         self.staff_fields = ["edit", "tools"]
         self.action_list = ["download", "play", "view", "review", "article", "attributes"]
-        self.cl_info_action_list = ["download", "play"]
+        self.cl_info_action_list = ["download", "play", "playthrough"]
 
     model_name = "File"
     to_init = ["icons"]
@@ -163,9 +163,11 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     # Cached Properties
     @cached_property
     def actions(self):
+        self.dprint("Actions")
+        self.init_all_downloads()
         # TODO: This should be "available actions"
         output = {"download": False, "view": False, "play": False, "article": False, "review": False, "attributes": False}
-        output["download"] = True if self.downloads.all().count() else False
+        output["download"] = True if self.all_downloads_count else False
         output["view"] = True if self.can_museum_download() else False
         output["play"] = True if self.archive_name or (output["view"] and self.supports_zeta_player()) or self.itch_dl else False
         output["article"] = True if self.article_count else False
@@ -207,6 +209,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     # Initalizing functions
     def _init_icons(self):
+        self.dprint("Init Icons")
         # Populates major and minor icons for file
         self._minor_icons = []
         self._major_icons = []
@@ -221,6 +224,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
         self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
     def _init_roles(self, view):
+        self.dprint("Init Roles")
         super()._init_roles(view)
         to_add = []
         to_add.append("explicit") if self.explicit else None
@@ -231,6 +235,7 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
 
     def init_all_downloads(self):
         if self.all_downloads is None:
+            self.dprint("Init All Downloads")
             self.all_downloads = self.downloads.all()
             self.all_downloads_count = len(self.all_downloads)
 
@@ -735,6 +740,14 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
             output["license_source"] = self.license_source,
             output["can_spotlight"] = self.spotlight
         return output
+
+    def get_field_playthrough(self, view="detailed"):
+        # Only intended for display in cl_info tags
+        playthrough = self.articles.filter(category="Playthrough").first()
+        if playthrough:
+            return self.field_context(label="", text="Watch Playthrough", url=playthrough.get_absolute_url(), kind="link")
+        else:
+            return False
 
 
 class ZFile_Admin(admin.ModelAdmin):
