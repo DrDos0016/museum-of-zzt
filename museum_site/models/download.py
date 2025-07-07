@@ -72,4 +72,7 @@ class Download(BaseModel):
 
     def zgame_exists(self):
         """ Return TRUE if the zipfile is physically available """
-        return True if os.path.isfile(os.path.join(SITE_ROOT, self.get_absolute_url()[1:])) else False
+        return True if os.path.isfile(self.phys_path()) else False
+
+    def phys_path(self):
+        return os.path.join(SITE_ROOT, self.get_absolute_url()[1:])
