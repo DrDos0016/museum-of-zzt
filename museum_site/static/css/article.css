@@ -66,13 +66,15 @@
     margin:0px;
 }
 
-#article-meta .preview-container
+#article-meta .preview-image
 {
     grid-area:preview;
     align-self:center;
     padding-top:4px;
     padding-bottom:4px;
 }
+
+#article-meta .preview-image.thumbnail { max-width:240px; }
 
 #article-meta .info { grid-area:info; }
 #article-meta .info > div { font-size:10pt; font-family:monospace;}

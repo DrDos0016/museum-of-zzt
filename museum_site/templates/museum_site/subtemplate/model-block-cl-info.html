@@ -5,7 +5,7 @@
 <div class="model-block-title c">
     <h2>{% if title.safe %}{{title.value|safe}}{% else %}{{title.value}}{% endif %}</h2>
 </div>
-{% if actions %}<div class="model-block-actions">{% for action in actions %}{% if not forloop.first %} | {% endif %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
+{% if actions %}<div class="model-block-actions">{% for action in actions %}{% if not forloop.first and action %} | {% endif %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
 <div class="model-block-meta">
     {% for field in fields %}
     {% if field.value %}
