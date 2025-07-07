@@ -114,7 +114,7 @@ class Upload_View(TemplateView):
             self.zgame_form.zfile.zeta_config_id = (
                 self.play_form.cleaned_data["zeta_config"].pk if self.play_form.cleaned_data["zeta_config"] else ZETA_RESTRICTED
             )
-            # Download Form
+            # Download Form (non-zgame DLs)
             if self.download_form.cleaned_data["url"]:
                 self.download_obj = self.download_form.save()
                 self.zgame_form.zfile.downloads.add(self.download_obj)
@@ -125,6 +125,7 @@ class Upload_View(TemplateView):
             self.zgame_form.zfile.save()  # Final Save FULLSAVE
             # Create ZGames Download
             zgames_download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zgame_form.zfile.filename, kind="zgames")
+
             if created:
                 self.zgame_form.zfile.downloads.add(zgames_download)
 
