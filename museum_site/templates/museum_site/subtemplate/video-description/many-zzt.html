@@ -5,10 +5,10 @@
 
 {% block stream_contents %}
 ♦ Stream Contents ♦
-{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) {% zfile_citation zfile %} [https://{{DOMAIN}}{{zfile.get_absolute_url}}]
+{% for zfile in zfiles %}&bull; ({{zfile.timestamp}}) {% zfile_citation zfile %}{% if zfile.pk %} [https://{{DOMAIN}}{{zfile.get_absolute_url}}]{% endif %}
 {% endfor %}{% for break in ad_break_endings %}&bull; ({{break}}) End of Ad Break {{forloop.counter}}
 {% endfor %}{% endblock %}
 
 {% block play_links %}♦ Play these worlds directly in your browser ♦
-{% for zfile in zfiles %}&bull; https://{{DOMAIN}}{{zfile.play_url}}
+{% for zfile in zfiles %}{% if zfile.pk %}&bull; https://{{DOMAIN}}{{zfile.play_url}}{% endif %}
 {% endfor %}{% endblock %}

@@ -268,7 +268,10 @@ def video_description_generator(request):
         else:
             data["stream_date"] = ""
         if request.GET.getlist("timestamp"):
-            for idx in range(0, len(request.GET.getlist("timestamp"))):
+            timestamp_count = len(request.GET.getlist("timestamp"))
+            while len(data["zfiles"]) < timestamp_count:
+                data["zfiles"].append(File(title="Test"))
+            for idx in range(0, timestamp_count):
                 if ":" not in request.GET.getlist("timestamp")[idx]:
                     timestamp = "{}:00".format(request.GET.getlist("timestamp")[idx])
                 else:
