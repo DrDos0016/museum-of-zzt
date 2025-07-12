@@ -2,6 +2,8 @@ import time
 import os
 import zipfile
 
+from datetime import datetime, timedelta
+
 from django import forms
 from django.utils.text import slugify
 
@@ -349,6 +351,14 @@ class ZGame_Form(forms.ModelForm):
         else:
             raise forms.ValidationError("At least one language must be specified.")
         return self.cleaned_data["language"]
+
+    def clean_release_date(self):
+        current_release_date = self.cleaned_data["release_date"]
+        cutoff = str(datetime.utcnow() + timedelta(days=1))[:10]
+        print(current_release_date, cutoff)
+        if str(current_release_date) > cutoff:
+            raise forms.ValidationError("Invalid release date. Check your calendar.")
+        return current_release_date
 
     def process(self):
         self.process_zgame_form()
