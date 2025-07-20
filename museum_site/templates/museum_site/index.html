@@ -8,21 +8,37 @@
 
 {% block content %}
 <h1>Museum of ZZT</h1>
-<p>Welcome to the Museum of ZZT, a site dedicated to the preservation and
-curation of the many games and worlds created with ZZT.</p>
+<div class="flex-container">
+    <div id="welcome-text">
+    <p>Welcome to the Museum of ZZT, a site dedicated to the preservation and
+    curation of the many games and worlds created with ZZT.</p>
 
-<p>ZZT is a text-mode game from 1991 created by Tim Sweeney of Epic Games. ZZT
-has its own editor and scripting language which offers what may still be an
-unmatched level of accessibility to beginning game developers. A significant
-number of ZZT worlds were created by authors in their early teenage years, with
-some being made by children under 10. ZZT's simple ZZT-OOP scripting language
-gave many a friendly introduction to programming.</p>
+    <p>ZZT is a text-mode game from 1991 created by Tim Sweeney of Epic Games. ZZT
+    has its own editor and scripting language which offers what may still be an
+    unmatched level of accessibility to beginning game developers. A significant
+    number of ZZT worlds were created by authors in their early teenage years, with
+    some being made by children under 10. ZZT's simple ZZT-OOP scripting language
+    gave many a friendly introduction to programming.</p>
 
-<p>The goal of the Museum of ZZT site is to collect these worlds, offer
-discussions into them and the community built around them, and keep them safely
-preserved. It is the hope of the Museum that the generally unknown works of ZZT
-community can be easily discovered and that their importance can be recognized.
-</p>
+    <p>The goal of the Museum of ZZT site is to collect these worlds, offer
+    discussions into them and the community built around them, and keep them safely
+    preserved. It is the hope of the Museum that the generally unknown works of ZZT
+    community can be easily discovered and that their importance can be recognized.
+    </p>
+    </div>
+    <div id="event-splash">
+        {% if main_event %}
+        <div class="main-event">
+            <div class="when" title="{{main_event.when_title}}">{{main_event.when}}</div>
+            <a href="{{main_event.url}}" target="_blank" class="noext">
+            <img src="{{main_event.image}}">
+            <div>{{main_event.title}}</div>
+            </a>
+        </div>
+        </a>
+        {% endif %}
+    </div>
+</div>
 
 <div id="fp-file-frame">
     <h2 id="new-releases-heading">New Releases</h2>

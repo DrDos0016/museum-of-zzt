@@ -3,7 +3,7 @@ import math
 import os
 import re
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.cache import cache
@@ -11,7 +11,7 @@ from django.db.models import Count
 from django.db.models.functions import ExtractYear
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
-from django.template.defaultfilters import slugify
+from django.template.defaultfilters import slugify, timeuntil
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from django.views.generic import DetailView
@@ -25,6 +25,7 @@ from museum_site.forms.wozzt_forms import WoZZT_Roll_Form
 from museum_site.models import Article, Author, Company, Genre, Profile, Review, WoZZT_Queue
 from museum_site.models import File as ZFile
 from museum_site.settings import DISCORD_INVITE_URL, PASSWORD5DOLLARS
+from stream.models import Stream
 
 
 class Museum_Base_Template_View(TemplateView):
@@ -201,6 +202,32 @@ def follow(request):
 def index(request):
     """ Returns front page """
     context = {}
+
+    """
+    if True:  # Manual front page event
+        main_event = {"title": "Creating/Reviewing Anything ZZT Exhibition", "image": image, "when": when, "when_title": when_title, "url": url,}
+    else:
+        # Obtain events
+        now = datetime.now()
+        cutoff = now + timedelta(hours=-1)
+        events = list(Stream.objects.filter(visible=True, when__gte=cutoff).order_by("when"))
+        if events:
+            until = timeuntil(events[0].when)
+
+        main_event = None
+        if events:
+            title = "Livestream - " + events[0].title
+            when = "In " + until.split(",")[0]
+            if str(now)[:10] >= str(events[0].when)[:10]:
+                when = "Right now!"
+            when_title = str(events[0].when)[:19] + " UTC"
+            url = "https://twitch.tv/worldsofzzt/"
+            image = events[0].preview_image
+
+            main_event = {"title": title, "image": image, "when": when, "when_title": when_title, "url": url,}
+
+    context["main_event"] = main_event
+    """
 
     # Obtain latest content
     context["articles"] = Article.objects.spotlight()[:10]

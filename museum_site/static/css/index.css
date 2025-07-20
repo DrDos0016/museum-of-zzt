@@ -1,3 +1,28 @@
+#welcome-text
+{
+    max-width:750px;
+}
+
+#event-splash h2 { margin:0px; }
+
+.main-event
+{
+    font-family:cp437;
+    max-width:250px;
+    text-align:center;
+    margin:auto;
+    font-size:28px;
+    background-color:var(--ega-darkblue);
+    color:var(--ega-cyan);
+    border:4px solid var(--ega-blue);
+    border-radius:8px;
+    padding:10px;
+}
+
+.main-event a { color: var(--ega-yellow) };
+.main-event img { border:1px solid var(--border-color); max-width:240px; }
+.main-event .when { cursor:help; }
+
 /* Frontpage Galleries */
 .gallery-list
 {
