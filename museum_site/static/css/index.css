@@ -1,6 +1,7 @@
 #welcome-text
 {
-    max-width:750px;
+    flex:1;
+    margin:auto;
 }
 
 #event-splash h2 { margin:0px; }
