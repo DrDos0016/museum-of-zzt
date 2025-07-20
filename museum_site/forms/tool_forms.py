@@ -403,6 +403,7 @@ class Livestream_Vod_Form(forms.Form):
     <div style="font-size:10pt;">
         Let's Play - ♦ Livestream -♦
         Wildcard Stream Vol. ### - ♦ Bonus Stream - ♦
+        Full Playthrough - ♦
     </div>
     """
 
