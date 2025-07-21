@@ -1,6 +1,8 @@
 import os
 import sys
 
+from datetime import date
+
 import django
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -54,7 +56,7 @@ def main():
         if not zf:
             print("ZFILE NOT FOUND", pk)
             continue
-        zf.year = "{}-01-01".format(year)
+        zf.year = date(year=year, month=1, day=1)
         zf.save()
         print(zf, "release year set to", year)
     return True

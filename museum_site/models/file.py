@@ -242,7 +242,8 @@ class File(BaseModel, ZFile_Urls, ZFile_Legacy):
     # Database functions
     def save(self, *args, **kwargs):
         self.sort_title = calculate_sort_title(self.title)
-        self.year = calculate_release_year(self.release_date)
+        if self.year is None:
+            self.year = calculate_release_year(self.release_date)
         if self.pk:  # Updates for already saved models
             self.calculate_article_count()
         super(File, self).save(*args, **kwargs)
