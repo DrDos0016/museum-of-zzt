@@ -3,12 +3,12 @@ import os
 
 from django.conf import settings
 
-from datetime import datetime
+from datetime import datetime, UTC
 
 # Times and Dates
-START_TIME = datetime.utcnow()
+START_TIME = datetime.now(UTC)
 BOOT_TS = START_TIME.strftime("%m%d%H%M%S")
-YEAR = datetime.now().year
+YEAR = START_TIME.year
 
 # Paths
 APP_NAME = "museum_site"

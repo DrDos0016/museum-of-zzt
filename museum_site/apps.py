@@ -7,7 +7,7 @@ from django.conf import settings
 from django.db.utils import ProgrammingError
 from django import VERSION as DJANGO_VERSION
 from sys import version, exit
-from datetime import datetime
+from datetime import datetime, UTC
 
 
 class Museum_Site_Config(AppConfig):
@@ -21,7 +21,7 @@ class Museum_Site_Config(AppConfig):
         print("==================== Startup Complete ======================")
 
     def museum_startup(self):
-        self.now = datetime.utcnow()
+        self.now = datetime.now(UTC)
         self.site_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         print("================== Museum of ZZT Startup ===================")
         print("Python      :", version.split(" ")[0])

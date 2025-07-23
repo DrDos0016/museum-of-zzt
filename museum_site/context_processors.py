@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from random import choice
 
 from django.core.cache import cache
@@ -46,7 +46,7 @@ def museum_global(request):
     data["logo_path"] = "chrome/logos/museum-logo-by-lazymoth{}.png".format(logo_path_mods.get(data["ENV"], ""))
 
     # Server date/time
-    data["datetime"] = datetime.utcnow()
+    data["datetime"] = datetime.now(UTC)
     if data["datetime"].day == 27:  # Drupe Day
         data["drupe"] = True
     if (data["datetime"].day == 1 and data["datetime"].month == 4) or request.GET.get("april"):  # April 1st

@@ -5,7 +5,7 @@ import zipfile
 import binascii
 import os
 
-from datetime import datetime
+from datetime import datetime, UTC
 
 from django.http import HttpResponse, JsonResponse
 
@@ -370,7 +370,7 @@ def fetch_zip_content(request):
     return response
 
 def qad_get_stream_schedule(request):
-    utc_timestamp = datetime.utcnow()
+    utc_timestamp = datetime.now(UTC)
     qs = Stream.objects.filter(when__gt=utc_timestamp).order_by("when")
     output = {"items": []}
     for s in qs:
