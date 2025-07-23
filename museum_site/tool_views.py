@@ -9,7 +9,7 @@ import shutil
 import tempfile
 import zipfile
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from io import BytesIO
 from sys import version as PYTHON_VERSION
 
@@ -473,13 +473,13 @@ def mirror(request, key):
 @staff_member_required
 def month_in_review(request):
     context = {"title": "Month In Review"}
-    now = datetime.now()
+    now = datetime.now(UTC)
     year = int(request.GET.get("year", now.year))
     month = int(request.GET.get("month", now.month))
     if month != 12:
-        next_date = datetime(year=year, month=month + 1, day=1)
+        next_date = datetime(year=year, month=month + 1, day=1, timezone=UTC)
     else:
-        next_date = datetime(year=year + 1, month=1, day=1)
+        next_date = datetime(year=year + 1, month=1, day=1, timezone=UTC)
     context["years"] = range(2015, int(now.year) + 1)
     context["months"] = range(1, 13)
     context["year"] = year
@@ -567,7 +567,7 @@ def orphaned_objects(request):
 
 @staff_member_required
 def patron_article_rotation(request):
-    data = {"title": "Patron Article Rotation", "today": datetime.now()}
+    data = {"title": "Patron Article Rotation", "today": datetime.now(UTC)}
 
     articles = Article.objects.in_early_access()
     newest = articles.last()
@@ -665,7 +665,7 @@ def publish(request, key, mode="PUBLISH"):
 
         # Save
         data["file"].spotlight = request.POST.get("spotlight", False)
-        data["file"].publish_date = datetime.now()
+        data["file"].publish_date = datetime.now(UTC)
         data["file"].save()  # FULLSAVE
 
         # Adjust the zgames download to point to the letter directory
