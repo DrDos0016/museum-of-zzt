@@ -1,7 +1,7 @@
 import os
 import sys
 
-from datetime import datetime
+from datetime import datetime, UTC
 
 import django
 
@@ -31,7 +31,7 @@ def main():
             a.title = "Full Playthrough - {}".format(zf.title)
             a.category = "Playthrough"
             a.content = "{% youtube_embed '" + video_id + "' %}\n\n"
-            a.publish_date = datetime.utcnow()
+            a.publish_date = datetime.now(UTC)
             a.published = Article.PUBLISHED
             a.description = "A complete, commentary free playthrough of {}".format(zf.title)
             a.spotlight = False

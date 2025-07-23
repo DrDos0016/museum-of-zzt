@@ -1,7 +1,7 @@
 import os
 import sys
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 
 import django
 
@@ -14,7 +14,7 @@ from django.contrib.auth.models import User  # noqa: E402
 from museum_site.models import *  # noqa: E402
 from museum_site.constants import DATA_PATH  # noqa: E402
 
-now = datetime.utcnow()
+now = datetime.now(UTC)
 year = now.year
 jan_one = str(year) + "-01-01"
 jan_one_dt = str(year) + "-01-01 00:00:00Z"
