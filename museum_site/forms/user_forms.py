@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 
 from django import forms
 from django.contrib.auth.models import User
@@ -281,7 +281,7 @@ class Reset_Password_Form(forms.Form):
             self.add_error("reset_token", "The provided reset token is either invalid or expired.")
         else:
             delta = qs[0].profile.reset_time + timedelta(minutes=10)
-            if datetime.now(timezone.utc) > delta:
+            if datetime.now(UTC) > delta:
                 self.add_error("reset_token", "The provided reset token is either invalid or expired.")
             else:
                 self.user = qs[0]
@@ -382,5 +382,5 @@ class User_Spotlight_Preferences_Form(forms.Form):
     def process(self, request):
         request.session["spotlight_sources"] = self.cleaned_data["spotlight_categories"]
         request.session["spotlight_collection_sources"] = self.cleaned_data["collections"]
-        request.session["spotlight_preferences_saved_date"] = str(datetime.utcnow())[:10]
+        request.session["spotlight_preferences_saved_date"] = str(datetime.now(UTC))[:10]
         return request

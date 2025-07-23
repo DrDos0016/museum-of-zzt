@@ -3,7 +3,7 @@ import tempfile
 import zipfile
 import urllib.parse
 
-from datetime import datetime
+from datetime import datetime, UTC
 
 from django.conf import settings
 from django.shortcuts import redirect
@@ -106,7 +106,7 @@ def calculate_boards_in_zipfile(zip_path):
 def calculate_release_year(release_date):
     output = None
     if release_date:
-        output = datetime(year=release_date.year, month=1, day=1)
+        output = datetime(year=release_date.year, month=1, day=1, tzinfo=UTC)
     return output
 
 
@@ -239,7 +239,7 @@ def env_from_host(host):
 def throttle_check(request, attempt_name, expiration_name, max_attempts, lockout_mins=5):
     """ This function was used for account resets and no longer seems to be implemented """
     # Origin time for calculating lockout
-    now = datetime.now()
+    now = datetime.now(UTC)
 
     # Increment attempts
     request.session[attempt_name] = request.session.get(attempt_name, 0) + 1

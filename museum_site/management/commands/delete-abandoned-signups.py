@@ -1,7 +1,7 @@
 import os
 import tarfile
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         count = 0
-        today = datetime.now(tz=timezone.utc)
+        today = datetime.now(UTC)
         cutoff = today - timedelta(days=30)
         qs = User.objects.filter(is_active=False)
         for u in qs:

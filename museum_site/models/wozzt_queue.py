@@ -5,7 +5,7 @@ import tempfile
 import uuid
 import zipfile
 
-from datetime import datetime
+from datetime import datetime, UTC
 from urllib.parse import quote
 
 
@@ -165,7 +165,7 @@ class WoZZT_Queue(BaseModel):
         return True
 
     def render_text(self, medium):
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         context = {
             "board_url": self.file.get_absolute_url() + "?file=" + quote(self.zzt_file) + "&board=" + str(self.board),
             "zfile_title": self.file.title,

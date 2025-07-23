@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 
 from django import forms
 from django.contrib.auth.models import User
@@ -102,7 +102,7 @@ class Review_Form(forms.ModelForm):
             feedback.spotlight = True  # Force spotlight for guests
 
         feedback.ip = request.META.get(REMOTE_ADDR_HEADER)
-        feedback.date = datetime.now(tz=timezone.utc)
+        feedback.date = datetime.now(UTC)
         feedback.zfile_id = zfile.pk
 
         # Simple spam protection

@@ -3,7 +3,7 @@ import os
 import urllib.parse
 import zipfile
 
-from datetime import datetime
+from datetime import datetime, UTC
 
 from django.core.cache import cache
 from django.contrib.admin.views.decorators import staff_member_required
@@ -132,7 +132,7 @@ def debug_article(request, fname=""):
                 article.content = fh.read().replace(
                     "<!--Page-->", "<hr><b>PAGE BREAK</b><hr>"
                 )
-                article.publish_date = datetime.now()
+                article.publish_date = datetime.now(UTC)
                 article.schema = request.GET.get("format", "django")
             context["file_path"] = filepath
 
