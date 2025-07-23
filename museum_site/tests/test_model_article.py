@@ -1,4 +1,4 @@
-from datetime import date, datetime, timezone
+from datetime import date, datetime, UTC
 
 from django.test import TestCase
 
@@ -14,7 +14,7 @@ class Article_Function_Test(TestCase):
             return
 
         Article.objects.create(
-            title="Test Article", author="Test Author", publish_date=datetime(year=2022, month=2, day=28), static_directory="test-article",
+            title="Test Article", author="Test Author", publish_date=datetime(year=2022, month=2, day=28, timezone=UTC), static_directory="test-article",
             published=Article.PUBLISHED,
             category="Closer Look",
         )
@@ -32,11 +32,11 @@ class Article_Function_Test(TestCase):
         )
         Article.objects.create(
             title="Test Removed Article 5", author="Test Author/Test Author 2", published=Article.REMOVED, description="My article's summary",
-            publish_date=datetime(year=1999, month=12, day=25), static_directory="test-removed-article-5",
+            publish_date=datetime(year=1999, month=12, day=25, timezone=UTC), static_directory="test-removed-article-5",
             category="Let's Play",
         )
         Article.objects.create(
-            title="Test Article 6", author="Test Author", publish_date=datetime(year=2004, month=5, day=2), category="Closer Look", description="My desc"
+            title="Test Article 6", author="Test Author", publish_date=datetime(year=2004, month=5, day=2, timezone=UTC), category="Closer Look", description="My desc"
         )
         self.test_objects_created = True
 

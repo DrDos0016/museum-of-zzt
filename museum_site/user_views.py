@@ -1,7 +1,7 @@
 import os
 import secrets
 
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -299,7 +299,7 @@ def forgot_password(request):
                 user = qs[0]
                 token = secrets.token_urlsafe()
                 user.profile.reset_token = token
-                user.profile.reset_time = datetime.utcnow()
+                user.profile.reset_time = datetime.now(UTC)
                 user.profile.save()
                 send_forgotten_password_email(user, request.META["HTTP_HOST"] + reverse("reset_password_with_token", args=[token]))
             return redirect("reset_password")
@@ -354,7 +354,7 @@ def login_user(request):
             token = secrets.token_urlsafe()
             user.profile.accepted_tos = TERMS_DATE
             user.profile.activation_token = token
-            user.profile.activation_time = datetime.now(timezone.utc)
+            user.profile.activation_time = datetime.now(UTC)
             user.profile.save()
 
             send_account_verification_email(user, request.META["HTTP_HOST"] + reverse("activate_account_with_token", args=[token]))
@@ -438,7 +438,7 @@ def resend_account_activation(request):
                     # Create token
                     token = secrets.token_urlsafe()
                     user.profile.activation_token = token
-                    user.profile.activation_time = datetime.now(timezone.utc)
+                    user.profile.activation_time = datetime.now(UTC)
                     user.profile.save()
                     # Resend email
                     send_account_verification_email(user, request.META["HTTP_HOST"] + reverse("activate_account_with_token", args=[token]))

@@ -3,7 +3,7 @@ import math
 import os
 import re
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.cache import cache
@@ -118,7 +118,7 @@ def directory(request, category):
     elif category == "genre":
         data_list = Genre.objects.visible().order_by("title")
     elif category == "year":
-        data_list = list(range(datetime.utcnow().year, 1990, -1))
+        data_list = list(range(datetime.now(UTC).year, 1990, -1))
         data_list.append("unk")
 
     data["title"] = "{} Directory".format(category.title())
@@ -208,7 +208,7 @@ def index(request):
         main_event = {"title": "Creating/Reviewing Anything ZZT Exhibition", "image": image, "when": when, "when_title": when_title, "url": url,}
     else:
         # Obtain events
-        now = datetime.now()
+        now = datetime.now(UTC)
         cutoff = now + timedelta(hours=-1)
         events = list(Stream.objects.filter(visible=True, when__gte=cutoff).order_by("when"))
         if events:

@@ -1,6 +1,6 @@
 import os
 
-from datetime import datetime
+from datetime import datetime, UTC
 
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
@@ -68,7 +68,7 @@ class Upload_View(TemplateView):
             if not self.zgame_obj.is_detail(DETAIL_UPLOADED):
                 raise PermissionDenied
 
-        self.zgame_initial["release_date"] = str(datetime.now())[:10]  # Set to current date
+        self.zgame_initial["release_date"] = str(datetime.now(UTC))[:10]  # Set to current date
 
 
         super().setup(request, *args, **kwargs)

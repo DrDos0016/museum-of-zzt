@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from random import randint, seed, shuffle, choice
 
 from django.db.models import Q
@@ -217,7 +217,7 @@ class ZFile_Queryset(Base_Queryset):
         BEST_OF_ZZT_COLLECTION_ID = 40
 
         if source == "spotlight-new-releases":
-            cutoff = str(datetime.utcnow() + timedelta(days=-365))[:10]
+            cutoff = str(datetime.now(UTC) + timedelta(days=-365))[:10]
             return self.new_releases_frontpage(spotlight_filter=True).filter(release_date__gte=cutoff).exclude(genres=GENRE_DEMO)
         elif source == "spotlight-featured-worlds":
             return self.featured_worlds()
