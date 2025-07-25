@@ -261,7 +261,8 @@ class ZFile_List_View(Model_List_View):
         # Setup prefix text/template
         if self.detail and self.detail.pk == DETAIL_UPLOADED:
             most_patient_file = File.objects.unpublished().order_by("upload__date").first()
-            context["oldest_date"] = most_patient_file.upload.date
+            if most_patient_file:
+                context["oldest_date"] = most_patient_file.upload.date
             context["prefix_text"] = self.detail.description
             context["prefix_template"] = "museum_site/prefixes/upload-queue.html"
         if self.genre:
