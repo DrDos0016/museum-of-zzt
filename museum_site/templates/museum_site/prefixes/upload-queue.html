@@ -1,3 +1,3 @@
 <p>{{prefix_text|safe}}</p>
 
-<p>The oldest addition to the queue was uploaded <b>{{oldest_date|timesince}}</b> ago.</p>
+{% if oldest_date %}<p>The oldest addition to the queue was uploaded <b>{{oldest_date|timesince}}</b> ago.</p>{% endif %}
