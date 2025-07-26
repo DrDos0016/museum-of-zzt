@@ -20,7 +20,6 @@ from museum_site.core.image_utils import optimize_image
 from museum_site.core.sorters import ZFile_Sorter
 from museum_site.core.transforms import qs_to_links
 from museum_site.core.zeta_identifiers import *
-from museum_site.models.zfile_legacy import ZFile_Legacy
 from museum_site.models.zfile_urls import ZFile_Urls
 from museum_site.models.review import Review
 from museum_site.models.article import Article
@@ -28,7 +27,7 @@ from museum_site.models.base import BaseModel
 from museum_site.querysets.zfile_querysets import *
 
 
-class File(BaseModel, ZFile_Urls, ZFile_Legacy):
+class File(BaseModel, ZFile_Urls):
     """ ZFile object repesenting an a file hosted on the Museum site """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
