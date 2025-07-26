@@ -22,7 +22,7 @@ from museum_site.core.detail_identifiers import *
 from museum_site.constants import ZGAMES_BASE_PATH
 from museum_site.forms.zfile_forms import View_Explicit_Content_Confirmation_Form
 from museum_site.forms.wozzt_forms import WoZZT_Roll_Form
-from museum_site.models import Article, Author, Company, Genre, Profile, Review, WoZZT_Queue
+from museum_site.models import Article, Author, Company, File, Genre, Profile, Review, WoZZT_Queue
 from museum_site.models import File as ZFile
 from museum_site.settings import DISCORD_INVITE_URL, PASSWORD5DOLLARS
 from stream.models import Stream
@@ -528,3 +528,20 @@ class Company_Overview_View(DetailView):
         context["title"] = context["company"].title
         context["releases"] = ZFile.objects.filter(companies=context["company"].pk)
         return context
+
+@staff_member_required
+def add_zfile_assocs(request):
+    a = Article.objects.get(pk=request.GET.get("article_pk"))
+    # Find ZFile PKs to add file associations
+    for line in a.content[:2048].split("\n"):
+        if line.find("|get_files_by_id") != -1:
+            start = line.find('"') + 1
+            end = line.find('"|')
+            pk_str = line[start:end]
+            pks = pk_str.split(",")
+            for pk in pks:
+                zf = File.objects.filter(pk=int(pk)).first()
+                if zf:
+                    zf.articles.add(a)
+                    zf.save()
+    return redirect(request.GET.get("path", "/"))

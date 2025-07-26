@@ -34,6 +34,7 @@ urlpatterns = [
     # /action/
     path("action/set-setting/", museum_site.views.set_setting, name="action_set_setting"),
     path("action/close-tool/", museum_site.views.close_tool, name="action_close_tool"),
+    path("action/staff/add-zfile-assocs/", museum_site.views.add_zfile_assocs, name="action_staff_add_zfile_assocs"),
 
     # /ajax/
     path("ajax/submit-form/<slug:slug>/", museum_site.ajax.submit_form, name="ajax_submit_form"),

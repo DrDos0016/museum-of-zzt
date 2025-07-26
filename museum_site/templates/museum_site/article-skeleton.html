@@ -24,7 +24,7 @@
                 <div class="revision-details">{{article.revision_details|linebreaksbr}}</div>{% endif %}
                 <div class="article-rss"><a href="{% url 'rss_articles' %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon" style="width:16px;height:16px"></a></div>
                 {% if request.user.is_staff %}
-                <div><b>Staff Functions:</b> <a href="{{article.admin_url}}">Edit Article {{article.id}}</a> | <a href="{% url 'debug_article' article.id %}">WIP Tools</a></div>
+                <div><b>Staff Functions:</b> <a href="{{article.admin_url}}">Edit Article {{article.pk}}</a> | <a href="{% url 'debug_article' article.id %}">WIP Tools</a> | <a href="{% url 'action_staff_add_zfile_assocs' %}?article_pk={{article.pk}}&path={{request.path}}">Add ZFile Assocs</a></div>
                 {% endif %}
             </div>
         </div>
