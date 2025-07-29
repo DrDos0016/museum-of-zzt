@@ -132,7 +132,7 @@ class Article(BaseModel):
         elif self.schema == "text":
             return linebreaks(mark_safe(self.content))
         elif self.schema == "80col":
-            return '<pre class="80col cp437" id="80col-content">1{}</pre>'.format(self.content)
+            return '<pre class="80col cp437" id="80col-content">{}</pre>'.format(self.content)
 
     def render_footnotes(self, context={}):
         """ Render footnotes for use in a django template -- assumes django schema """
