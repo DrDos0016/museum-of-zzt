@@ -70,6 +70,15 @@ main
 <p>This poll is <b>Closed</b>. Votes were accepted from <b>{{poll.start_date}}</b> through <b>{{poll.end_date}}</b></p>
 {% endif %}
 
+{% if request.user.is_staff %}
+<table>
+<tr><th>Option</th><th>Date Added</th><th>Waiting...</th></tr>
+{% for option in poll.get_options %}
+<tr><td>{{option}}</td><td>{{option.date_added}}</td><td>{{option.date_added|timesince}}</td></tr>
+{% endfor %}
+</table>
+{% endif %}
+
 {% if poll.active and not show_results %}
 <form method="POST" id="poll-form" class="cp437" action="/poll/results/{{poll.id}}/">
     {% csrf_token %}
