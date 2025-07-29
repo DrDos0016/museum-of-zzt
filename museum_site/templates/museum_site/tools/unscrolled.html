@@ -1,0 +1,22 @@
+{% extends BASE_TEMPLATE %}
+{% load static %}
+
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Unscrolled ZFiles</h1>
+<hr>
+<table id="scroll-table">
+    <tr>
+        <th>ZFile</th>
+    </tr>
+    {% for zf in zfiles %}
+    <tr>
+        <td><a href="{{zf.get_article_url}}" target="_blank">{{zf.title}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

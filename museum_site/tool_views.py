@@ -17,7 +17,7 @@ from django import VERSION as DJANGO_VERSION
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.shortcuts import render, redirect
@@ -246,6 +246,23 @@ def extract_font(request, key):
 
     return render(request, "museum_site/tools/extract_font.html", data)
 
+
+@staff_member_required
+def unscrolled(request):
+    context = {"title": "Unscrolled ZFiles"}
+    pks = list(File.objects.filter(Q(articles__category="Closer Look") | Q(articles__category="Livestream")).values_list("pk", flat=True))
+    unseen = []
+    qs = Scroll.objects.all()
+    print(pks)
+    for s in qs:
+        try:
+            pks.remove(s.zfile.pk)
+        except ValueError:
+            continue
+    # PKs now has a list of ZFile IDs that have Closer Looks/VOD but no Scrolls
+    qs = File.objects.filter(pk__in=pks).order_by("-id")
+    context["zfiles"] = qs
+    return render(request, "museum_site/tools/unscrolled.html", context)
 
 @staff_member_required
 def video_description_generator(request):
