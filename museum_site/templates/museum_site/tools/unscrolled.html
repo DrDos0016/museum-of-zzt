@@ -11,11 +11,13 @@
 <hr>
 <table id="scroll-table">
     <tr>
-        <th>ZFile</th>
+        <th>ZFile</th><th>Category</th><th>Date</th>
     </tr>
     {% for zf in zfiles %}
     <tr>
-        <td><a href="{{zf.article_url}}" target="_blank">{{zf.title}}</td>
+        <td><a href="{{zf.get_absolute_url}}" target="_blank">{{zf.title}}</td>
+        <td>{{zf.article.category}}</td>
+        <td>{{zf.article.date}}</td>
     </tr>
     {% endfor %}
 </table>
