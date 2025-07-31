@@ -249,19 +249,25 @@ def extract_font(request, key):
 
 @staff_member_required
 def unscrolled(request):
+    """ This is a mess now actually """
     context = {"title": "Unscrolled ZFiles"}
-    pks = list(File.objects.filter(Q(articles__category="Closer Look") | Q(articles__category="Livestream")).values_list("pk", flat=True))
-    unseen = []
-    qs = Scroll.objects.all()
-    print(pks)
-    for s in qs:
-        try:
-            pks.remove(s.zfile.pk)
-        except ValueError:
+    unscrolled = []
+
+    scrolled_zfiles = Scroll.objects.all().values_list("zfile_id", flat=True)
+
+    cls = Article.objects.filter(category="Closer Look")
+    vods = Article.objects.filter(category="Livestream")
+
+    zfs = File.objects.all().order_by("pk")
+    for zf in zfs:
+        if zf.pk in scrolled_zfiles or zf.article_count == 0:
             continue
-    # PKs now has a list of ZFile IDs that have Closer Looks/VOD but no Scrolls
-    qs = File.objects.filter(pk__in=pks).order_by("-id")
-    context["zfiles"] = qs
+        # This ZFile has articles with these categories
+        article_info = list(zf.articles.filter(Q(category="Closer Look") | Q(category="Livestream")).values_list("category", "publish_date").order_by("publish_date"))
+        if article_info and article_info[0]:
+            final_data = {"zfile": zf, "category": article_info[0][0], "date": article_info[0][1]}
+            unscrolled.append(final_data)
+    context["unscrolled"] = unscrolled
     return render(request, "museum_site/tools/unscrolled.html", context)
 
 @staff_member_required
