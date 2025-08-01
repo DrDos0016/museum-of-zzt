@@ -500,9 +500,9 @@ def month_in_review(request):
     year = int(request.GET.get("year", now.year))
     month = int(request.GET.get("month", now.month))
     if month != 12:
-        next_date = datetime(year=year, month=month + 1, day=1, timezone=UTC)
+        next_date = datetime(year=year, month=month + 1, day=1, tzinfo=UTC)
     else:
-        next_date = datetime(year=year + 1, month=1, day=1, timezone=UTC)
+        next_date = datetime(year=year + 1, month=1, day=1, tzinfo=UTC)
     context["years"] = range(2015, int(now.year) + 1)
     context["months"] = range(1, 13)
     context["year"] = year
