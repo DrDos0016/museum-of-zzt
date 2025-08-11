@@ -85,7 +85,7 @@ class File(BaseModel, ZFile_Urls):
     title = models.CharField(max_length=80, help_text="Canonical name of the release")
     release_date = models.DateField(default=None, null=True, blank=True, help_text="Release date of zip file's contents.")
     release_source = models.CharField(max_length=255, default="", blank=True, help_text="Source of release date when applicable.")
-    year = models.DateField(default=None, null=True, help_text="Year of release when applicable. 01-01 used for sorting purposes.")
+    year = models.DateField(default=None, null=True, blank=True, help_text="Year of release when applicable. 01-01 used for sorting purposes.")
     language = models.CharField(
         max_length=50, default="en",
         help_text="Slash-separated list of languages required to comprehend the zip file's contents. ISO 639-1 code. List defined in constants.py"
