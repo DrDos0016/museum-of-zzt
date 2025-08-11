@@ -70,15 +70,6 @@ main
 <p>This poll is <b>Closed</b>. Votes were accepted from <b>{{poll.start_date}}</b> through <b>{{poll.end_date}}</b></p>
 {% endif %}
 
-{% if request.user.is_staff %}
-<table>
-<tr><th>Option</th><th>Date Added</th><th>Waiting...</th></tr>
-{% for option in poll.get_options %}
-<tr><td>{{option}}</td><td>{{option.date_added}}</td><td>{{option.date_added|timesince}}</td></tr>
-{% endfor %}
-</table>
-{% endif %}
-
 {% if poll.active and not show_results %}
 <form method="POST" id="poll-form" class="cp437" action="/poll/results/{{poll.id}}/">
     {% csrf_token %}
@@ -114,15 +105,15 @@ main
     <h2>Vote Log -- ONLY VISIBLE TO STAFF</h2>
     <a href="https://www.patreon.com/manageRewardsList" target="_blank">Patrons</a><br>
     <table class="data-table">
-    <tr><th colspan="4">Final Votes</th></tr>
-    <tr><th>ID</th><th>Option</th><th>Email</th><th>Timestamp</th></tr>
+    <tr><th colspan="5">Final Votes</th></tr>
+    <tr><th>Ref</th><th>ID</th><th>Option</th><th>Email</th><th>Timestamp</th></tr>
     {% for v in final_votes %}
-    <tr><td>{{v.id}}</td><td>{{v.option}}</td><td>{{v.email}}</td><td>{{v.timestamp}}</tr>
+    <tr><td>#{{forloop.counter}}</td><td>{{v.id}}</td><td>{{v.option}}</td><td>{{v.email}}</td><td>{{v.timestamp}}</tr>
     {% endfor %}
-    <tr><th colspan="4">All Votes</th></tr>
-    <tr><th>ID</th><th>Option</th><th>Email</th><th>Timestamp</th></tr>
+    <tr><th colspan="5">All Votes</th></tr>
+    <tr><th>Ref</th><th>ID</th><th>Option</th><th>Email</th><th>Timestamp</th></tr>
     {% for v in all_votes %}
-    <tr><td>{{v.id}}</td><td>{{v.option}}</td><td>{{v.email}}</td><td>{{v.timestamp}}</tr>
+    <tr><td>#{{forloop.counter}}</td><td>{{v.id}}</td><td>{{v.option}}</td><td>{{v.email}}</td><td>{{v.timestamp}}</tr>
     {% endfor %}
     </table>
     {% endif %}
@@ -161,5 +152,15 @@ main
     <li><a href="/poll/results/{{poll.id}}">{{poll.title}} ({{poll.start_date}} - {{poll.end_date}})</a></li>
     {% endfor %}</ul>
 </details>
+
+{% if request.user.is_staff %}
+<hr>
+<table>
+<tr><th>Option</th><th>Date Added</th><th>Waiting...</th></tr>
+{% for option in poll.get_options %}
+<tr><td>{{option}}</td><td>{{option.date_added}}</td><td>{{option.date_added|timesince}}</td></tr>
+{% endfor %}
+</table>
+{% endif %}
 
 {% endblock %}

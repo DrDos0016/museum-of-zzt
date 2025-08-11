@@ -29,8 +29,17 @@ def index(request, poll_id=None):
 
     past_polls = Poll.objects.all().order_by("-id")
 
+    # Final Votes
+    final_votes = []
+    final_votes_dict = {}
+    for v in context["all_votes"]:
+        if final_votes_dict.get(v.email) is None:
+            final_votes_dict[v.email] = v
+    for email, vote in final_votes_dict.items():
+        final_votes.append(vote)
 
 
+    context["final_votes"] = final_votes
     context["poll"] = poll
     context["title"] = poll.title
     context["past_polls"] = past_polls

@@ -15,11 +15,6 @@ class Poll(models.Model):
     end_date = models.DateField()
     secret = models.CharField(max_length=32, blank=True, default="")
     options = models.ManyToManyField("Option", default=None, blank=True)
-    option1 = models.ForeignKey("Option", related_name='option1', on_delete=models.SET_NULL, null=True)
-    option2 = models.ForeignKey("Option", related_name='option2', on_delete=models.SET_NULL, null=True)
-    option3 = models.ForeignKey("Option", related_name='option3', on_delete=models.SET_NULL, null=True)
-    option4 = models.ForeignKey("Option", related_name='option4', on_delete=models.SET_NULL, null=True)
-    option5 = models.ForeignKey("Option", related_name='option5', on_delete=models.SET_NULL, null=True)
 
     def save(self, *args, **kwargs):
         # Pre save
