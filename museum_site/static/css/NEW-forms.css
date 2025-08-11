@@ -97,6 +97,7 @@ label.selected { background: var(--header-bg);}
 {
     grid-area: value;
     display:flex;
+    flex-wrap:wrap;
     align-items:flex-start;
     justify-content:flex-start;
     gap:4px;
@@ -518,3 +519,8 @@ button.color-button.selected { border:inset; }
 /* Arrangeable Lists */
 .arrangeable { cursor: grab; }
 /* End Arrangeable Lists */
+
+.full-flex
+{
+    flex:1 0 100%;
+}

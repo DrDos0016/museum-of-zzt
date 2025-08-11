@@ -174,6 +174,7 @@ class Upload_Delete_Confirmation_Form(forms.Form):
 class ZGame_Form(forms.ModelForm):
     UPLOAD_DIRECTORY = os.path.join(ZGAMES_BASE_PATH, "uploaded")
     mode = "new"
+    partial_release_date_mode = False  # Treat the release date field as year only
 
     field_order = ["zfile", "title", "author", "company", "genre", "explicit", "release_date", "language", "description"]
     zfile = Museum_Drag_And_Drop_File_Field(
@@ -243,8 +244,9 @@ class ZGame_Form(forms.ModelForm):
                 "older release being uploaded now, it should be the "
                 "modification date of the most "
                 "recent ZZT world (or executable, or other primary file). If "
-                "the release date is not known, select \"Unknown\" to leave "
-                "this field blank."
+                "a precise date is not known, but a year is, input that year "
+                "and check the 'partially known date' checkbox. If no date is "
+                "known, click \"Unknown\"."
             ),
             "release_source": (
                 "Where the data for the release date is coming from"
@@ -259,7 +261,7 @@ class ZGame_Form(forms.ModelForm):
 
         widgets = {
             "title": Enhanced_Text_Widget(char_limit=80),
-            "release_date": Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Unknown")
+            "release_date": Enhanced_Date_Widget(buttons=["today", "clear"], clear_label="Unknown", allow_only_year=True)
         }
 
     def clean_zfile(self):
@@ -354,6 +356,8 @@ class ZGame_Form(forms.ModelForm):
 
     def clean_release_date(self):
         current_release_date = self.cleaned_data["release_date"]
+        if current_release_date is None:
+            return current_release_date
         cutoff = str(datetime.now(UTC) + timedelta(days=1))[:10]
         if str(current_release_date) > cutoff:
             raise forms.ValidationError("Invalid release date. Check your calendar.")
@@ -391,6 +395,8 @@ class ZGame_Form(forms.ModelForm):
 
         self.zfile.sort_title = calculate_sort_title(self.zfile.title)
         self.zfile.year = calculate_release_year(self.zfile.release_date)
+        if self.partial_release_date_mode:  # Partial release mode should have a blank full release date
+            self.zfile.release_date = None
         self.zfile.language = "/".join(self.cleaned_data["language"])
         self.zfile.save()
         self.zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))

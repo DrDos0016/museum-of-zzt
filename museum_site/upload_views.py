@@ -179,12 +179,18 @@ class Upload_View(TemplateView):
         self.play_initial = {"zeta_config": self.zgame_obj.zeta_config_id}
 
     def modify_forms(self):
-        """ Called during (un)bound form initialization to set settings and adjust fields as needed """
+        """ Called during unbound/bound form initialization to set settings and adjust fields as needed """
         # This needs to be consolidated at some point with the form passing to the field to the widget?
         self.zgame_form.max_upload_size = self.request.user.profile.max_upload_size if self.request.user.is_authenticated else UPLOAD_CAP
         self.zgame_form.fields["zfile"].widget.max_upload_size = (
             self.request.user.profile.max_upload_size if self.request.user.is_authenticated else UPLOAD_CAP
         )
+
+        # TODO: Janky
+        # Partial release date checked?
+        if self.request.POST.get("release_date_partial"):
+            self.zgame_form.partial_release_date_mode = True
+
         if self.mode == "edit":
             # Update help for zfile when editing an upload
             self.zgame_form.fields["zfile"].help_text += (
@@ -197,6 +203,11 @@ class Upload_View(TemplateView):
             self.zgame_form.fields["zfile"].required = False
             self.zgame_form.mode = "edit"
             self.zgame_form.expected_file_id = self.zgame_obj.pk
+
+            # Detect fuzzy date and populate release date
+            if self.zgame_obj.release_date is None and self.zgame_obj.year is not None:
+                self.zgame_form.fields["release_date"].widget.check_partially_known = True
+                self.zgame_form.fields["release_date"].widget.alt_date = str(self.zgame_obj.year)[:10]
 
             # Prevent re-announcing edited uploads
             del self.upload_form.fields["announced"]

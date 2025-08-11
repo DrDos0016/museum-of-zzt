@@ -1,3 +1,6 @@
-<input type="date" name="{{widget.name}}" id="{{widget.attrs.id}}" {% if widget.value %}value="{{widget.value|stringformat:'s'}}"{% endif %}>
+<input type="date" name="{{widget.name}}" id="{{widget.attrs.id}}" {% if alt_date %}value="{{alt_date}}"{% elif widget.value %}value="{{widget.value|stringformat:'s'}}"{% endif %}>
 {% if "today" in buttons %}<input type="button" class="todays-date-widget" value="Today">{% endif %}
 {% if "clear" in buttons %}<input type="button" class="clear-date-widget" value="{{clear_label}}">{% endif %}
+{% if allow_only_year %}<div class="full-flex">
+    <input type="checkbox" name="{{widget.name}}_partial" value="partial"{% if check_partially_known %} checked{% endif %}> This release date is only partially known.
+</div>{% endif %}

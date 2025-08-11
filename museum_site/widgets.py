@@ -206,16 +206,22 @@ class Enhanced_Text_Area_Widget(Enhanced_Text_Widget):
 class Enhanced_Date_Widget(forms.TextInput):
     template_name = "museum_site/widgets/enhanced-date-widget.html"
 
-    def __init__(self, attrs=None, buttons=[], clear_label="Clear"):
+    def __init__(self, attrs=None, buttons=[], clear_label="Clear", allow_only_year=False):
         super().__init__(attrs)
         self.clear_label = clear_label
         if buttons is not None:
             self.buttons = buttons
+        self.allow_only_year = allow_only_year
+        self.check_partially_known = False
+        self.alt_date = None
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         context["buttons"] = self.buttons
         context["clear_label"] = self.clear_label
+        context["allow_only_year"] = self.allow_only_year
+        context["check_partially_known"] = self.check_partially_known
+        context["alt_date"] = self.alt_date
         return context
 
 
