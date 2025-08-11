@@ -104,6 +104,7 @@ def debug_article(request, fname=""):
     if not fname:
         context["title"] = "Select WIP Article"
         file_list = glob.glob(os.path.join(SITE_ROOT, "wip", "*"))
+        file_list = sorted(file_list)
         context["available_files"] = []
         for filename in file_list:
             context["available_files"].append(os.path.basename(filename))
