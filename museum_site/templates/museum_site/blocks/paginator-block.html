@@ -54,8 +54,9 @@
         </select>
 </div>
 {% endif %}
+{% if field == "year" %}<div class="paginator-extra"><a href="{% url 'zfile_browse_field' field prev_year %}">{{prev_year_text|default:prev_year}}</a> ♦ <a href="{% url 'zfile_browse_field' field next_year %}">{{next_year}}</a></div>{% endif %}
 {% if searching %}
-<div class="modify-query">
+<div class="paginator-extra">
     {% if search_type == "basic" and paginator.count %}
     Limit Search To: {% for field in basic_search_fields %}<a href="{% url 'zfile_search' %}?{{field.lower}}={{request.GET.q}}">{{field}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
     {% else %}

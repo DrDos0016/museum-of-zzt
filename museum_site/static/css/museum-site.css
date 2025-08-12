@@ -568,7 +568,7 @@ select[name=page-selector]
 
 .sort-methods select { font-family:cp437; font-size:larger;}
 
-.modify-query
+.paginator-extra
 {
     margin-top:4px;
     text-align:center;

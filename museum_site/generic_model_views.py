@@ -22,12 +22,15 @@ class Model_List_View(ListView):
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
+        default_sort = None
+        if kwargs.get("field") == "year":  # Sort by date by default when browsing by year
+            default_sort = "release"
         self.view = self.get_selected_view_format(self.request, self.model.supported_views)
         if self.force_view:
             self.view = self.force_view
         if self.allow_pagination:
             self.paginate_by = PAGE_SIZE if self.view != "list" else LIST_PAGE_SIZE
-        self.sorted_by = request.GET.get("sort")
+        self.sorted_by = request.GET.get("sort", default_sort)
         self.searching = self.is_searching(self.request)
 
     def get_selected_view_format(self, request, available_views=["detailed", "list", "gallery"]):
@@ -65,6 +68,19 @@ class Model_List_View(ListView):
         context["request"] = self.request
         context["debug"] = self.request.session.get("DEBUG")
         context["searching"] = self.searching
+        context["field"] = self.kwargs.get("field")
+        context["field_value"] = self.kwargs.get("value")
+        if self.kwargs.get("field") == "year":
+            if self.kwargs["value"] == "unk":
+                context["next_year"] = 1991
+                context["prev_year"] = "unk"
+                context["prev_year_text"] = "Unknown"
+            else:
+                context["next_year"] = int(self.kwargs["value"]) + 1
+                context["prev_year"] = int(self.kwargs["value"]) - 1
+                if context["prev_year"] < 1991:
+                    context["prev_year"] = "unk"
+                    context["prev_year_text"] = "Unknown"
 
         # Set title
         context["title"] = self.get_title()
