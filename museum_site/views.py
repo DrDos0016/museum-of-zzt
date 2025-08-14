@@ -261,12 +261,12 @@ def mass_downloads(request):
             item["label"] = "ZZT Worlds - Unknown"
             zzt_1990s.append(item)
         elif int(item["year"].year) < 2000:
-            item["label"] = "ZZT Worlds - {}".format(item["year"])
-            item["zip"] = "zzt_worlds_{}.zip".format(item["year"])
+            item["label"] = "ZZT Worlds - {}".format(item["year"].year)
+            item["zip"] = "zzt_worlds_{}.zip".format(item["year"].year)
             zzt_1990s.append(item)
         elif int(item["year"].year) < 2010:
-            item["label"] = "ZZT Worlds - {}".format(item["year"])
-            item["zip"] = "zzt_worlds_{}.zip".format(item["year"])
+            item["label"] = "ZZT Worlds - {}".format(item["year"].year)
+            item["zip"] = "zzt_worlds_{}.zip".format(item["year"].year)
             zzt_2000s.append(item)
         elif int(item["year"].year) < 2020:
             zzt_2010s["count"] += item["count"]
