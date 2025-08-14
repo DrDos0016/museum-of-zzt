@@ -241,7 +241,7 @@ def index(request):
 def mass_downloads(request):
     """ Returns a page for downloading files by release year """
     context = {"title": "Mass Downloads"}
-    zzt_counts = ZFile.objects.filter(details__id=DETAIL_ZZT).annotate(year=ExtractYear("release_date")).values("year").annotate(count=Count("pk"))
+    zzt_counts = ZFile.objects.filter(details__id=DETAIL_ZZT).annotate(release_year=ExtractYear("release_date")).values("year").annotate(count=Count("pk"))
     szzt_count = {"label": "Super ZZT Worlds", "count": ZFile.objects.filter(details__id=DETAIL_SZZT).count(), "zip": "szzt_worlds.zip"}
     weave_count = {"label": "Weave ZZT Worlds", "count": ZFile.objects.filter(details__id=DETAIL_WEAVE).count(), "zip": "weave_worlds.zip"}
     zig_count = {"label": "ZIG Worlds", "count": ZFile.objects.filter(details__id=DETAIL_ZIG).count(), "zip": "zig_worlds.zip"}
@@ -254,22 +254,23 @@ def mass_downloads(request):
     zzt_2010s = {"label": "ZZT Worlds - 2010-2019", "count": 0, "zip": "zzt_worlds_2010-2019.zip"}
     zzt_2020s = {"label": "ZZT Worlds - 2020-2029", "count": 0, "zip": "zzt_worlds_2020-2029.zip"}
     for item in zzt_counts:
+        print(item)
         if item["year"] is None:
             item["year"] = "Unknown"
             item["zip"] = "zzt_worlds_UNKNOWN.zip"
             item["label"] = "ZZT Worlds - Unknown"
             zzt_1990s.append(item)
-        elif int(item["year"]) < 2000:
+        elif int(item["year"].year) < 2000:
             item["label"] = "ZZT Worlds - {}".format(item["year"])
             item["zip"] = "zzt_worlds_{}.zip".format(item["year"])
             zzt_1990s.append(item)
-        elif int(item["year"]) < 2010:
+        elif int(item["year"].year) < 2010:
             item["label"] = "ZZT Worlds - {}".format(item["year"])
             item["zip"] = "zzt_worlds_{}.zip".format(item["year"])
             zzt_2000s.append(item)
-        elif int(item["year"]) < 2020:
+        elif int(item["year"].year) < 2020:
             zzt_2010s["count"] += item["count"]
-        elif int(item["year"]) < 2030:
+        elif int(item["year"].year) < 2030:
             zzt_2020s["count"] += item["count"]
 
     columns = [
