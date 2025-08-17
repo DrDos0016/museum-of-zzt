@@ -35,3 +35,7 @@ class Author(models.Model):
         if not self.slug:
             self.slug = "ERROR"
         return reverse("zfile_browse_field", kwargs={"field":"author", "value": self.slug})
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Author, self).save(*args, **kwargs)
