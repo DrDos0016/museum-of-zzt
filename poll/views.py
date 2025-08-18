@@ -14,7 +14,7 @@ def index(request, poll_id=None):
     else:
         poll = Poll.objects.get(pk=poll_id)
         context["show_results"] = True
-        context["all_votes"] = Vote.objects.filter(poll_id=poll_id).order_by("-id")
+    context["all_votes"] = Vote.objects.filter(poll_id=poll_id).order_by("-id")
 
     # Add vote if necessary
     if request.POST.get("action") == "Vote" and poll.active and request.POST.get("vote") and request.POST.get("email"):
