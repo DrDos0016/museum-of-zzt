@@ -161,20 +161,23 @@ def get_recently_featured_zfiles():
     article_pks = list(Article.objects.filter(category="Featured World").order_by("-publish_date").values_list("pk", flat=True))
     temp_dict = {}
     for article_pk in article_pks:
-        if article_pk == 44 or article_pk == 262: # MRWAIF Featued Game/MTP
+        if article_pk in [44, 262, 134]: # MRWAIF Featued Game/MTP, Fool's Quest CGotM
             continue
         temp_dict[article_pk] = None
 
     unordered_zfiles = ZFile.objects.filter(articles__in=article_pks)
 
     for zfile in unordered_zfiles:
-        if zfile.pk == 1852:  # MRWAIF
+        if zfile.pk == 1852 or zfile.pk == 1334:  # MRWAIF / Warlord's Temple Beta
             continue
         zfile_article_pks = zfile.articles.filter(pk__in=article_pks).values_list("pk", flat=True)
         for article_pk in zfile_article_pks:
             temp_dict[article_pk] = zfile
 
     queryset = []
+    seen = []
     for (k, v) in temp_dict.items():
-        queryset.append(v)
+        if v.pk not in seen:
+            queryset.append(v)
+            seen.append(v.pk)
     return queryset
