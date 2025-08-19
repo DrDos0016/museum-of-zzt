@@ -15,7 +15,7 @@
 {% if show_actions and actions %}<div class="model-block-actions">{% for action in actions %}{% if action.safe %}{{action.value|safe}}{% else %}{{action.value}}{% endif %}{% endfor %}</div>{% endif %}
 <div class="model-block-meta">
     {% for field in fields %}
-    <div class="datum">
+    <div class="datum {{field.field_name}}">
         <div class="label">{{field.label}}</div>
         <div class="value"{% if field.title %}title="{{field.title}}"{% endif %}>{% if field.safe %}{{field.value|safe}}{% else %}{{field.value}}{% endif %}</div>
     </div>

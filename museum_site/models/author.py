@@ -10,8 +10,9 @@ class Author(models.Model):
     objects = Author_Queryset.as_manager()
     model_name = "Author"
 
-    title = models.CharField(max_length=120, db_index=True, editable=True, help_text="Author Name")
-    slug = models.SlugField(max_length=120, db_index=True, editable=False)
+    title = models.CharField(max_length=120, db_index=True, help_text="Author Name")
+    slug = models.SlugField(max_length=120, db_index=True, help_text="Automatically updated on save unless locked.")
+    lock_slug = models.BooleanField(default=False, help_text="Check to disable recalculating slug on save.")
 
     class Meta:
         ordering = ["title"]
@@ -37,5 +38,6 @@ class Author(models.Model):
         return reverse("zfile_browse_field", kwargs={"field":"author", "value": self.slug})
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        if not self.lock_slug:
+            self.slug = slugify(self.title)
         super(Author, self).save(*args, **kwargs)
