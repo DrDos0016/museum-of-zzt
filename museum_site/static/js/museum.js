@@ -377,7 +377,7 @@ function expand_field()
 
 function init_expandable_model_block_fields()
 {
-    $(".model-block-data .datum .value").each(function (){
+    $(".model-block-data .datum .value, .model-block-meta .datum .value").each(function (){
         if ($(this)[0].scrollHeight > $(this)[0].clientHeight && $(this).prev(".label").length)
         {
             let original = $(this).prev(".label").html();

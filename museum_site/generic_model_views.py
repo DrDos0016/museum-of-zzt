@@ -8,7 +8,7 @@ from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE
 from museum_site.core.detail_identifiers import DETAIL_UPLOADED, DETAIL_LOST
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.form_utils import clean_params
-from museum_site.core.misc import banned_ip
+from museum_site.models import Article, File as ZFile
 from museum_site.templatetags.site_tags import render_markdown
 
 
@@ -25,6 +25,8 @@ class Model_List_View(ListView):
         default_sort = None
         if kwargs.get("field") == "year":  # Sort by date by default when browsing by year
             default_sort = "release"
+        if kwargs.get("value") == "featured-world":
+            default_sort = "recent"
         self.view = self.get_selected_view_format(self.request, self.model.supported_views)
         if self.force_view:
             self.view = self.force_view
@@ -47,6 +49,7 @@ class Model_List_View(ListView):
         return view
 
     def get_sort_options(self, options, debug=False):
+        ## TODO: IS THIS USED
         output = options.copy()
         if debug:
             output += [{"text": "!ID New", "val": "-id"}, {"text": "!ID Old", "val": "id"}]
@@ -61,7 +64,7 @@ class Model_List_View(ListView):
         context = super().get_context_data(**kwargs)
         context["available_views"] = self.model.supported_views
         context["view"] = self.view
-        context["sort_options"] = self.model.sorter().get_sort_options(include_tags=["basic", "debug" if self.request.session.get("DEBUG") else None])
+        context["sort_options"] = self.model.sorter().get_sort_options(include_tags=["basic", "debug" if self.request.session.get("DEBUG") else None, "featured" if self.kwargs.get("value") == "featured-world" else None])
         context["sort"] = self.sorted_by
         context["model_name"] = self.model.model_name
         context["page_range"] = self.get_nearby_page_range(context["page_obj"].number, context["paginator"].num_pages)
@@ -94,6 +97,8 @@ class Model_List_View(ListView):
         return "{} Directory".format(self.model.model_name)
 
     def sort_queryset(self, qs):
+        if self.sorted_by == "recent":  # Recently Featured Worlds. Weird spot for this but welp
+            return get_recently_featured_zfiles()
         db_ordering = self.model.sorter().get_db_ordering_for_value(self.sorted_by)
         if db_ordering is not None:
             qs = qs.order_by(*db_ordering)
@@ -147,3 +152,29 @@ class Model_Search_View(FormView):
 
 class Generic_Error_View(TemplateView):
     template_name = "museum_site/error.html"
+
+
+# TODO should this live elsewhere probably
+def get_recently_featured_zfiles():
+    # Used for sorting by recently featured worlds when browsing featured worlds
+
+    article_pks = list(Article.objects.filter(category="Featured World").order_by("-publish_date").values_list("pk", flat=True))
+    temp_dict = {}
+    for article_pk in article_pks:
+        if article_pk == 44 or article_pk == 262: # MRWAIF Featued Game/MTP
+            continue
+        temp_dict[article_pk] = None
+
+    unordered_zfiles = ZFile.objects.filter(articles__in=article_pks)
+
+    for zfile in unordered_zfiles:
+        if zfile.pk == 1852:  # MRWAIF
+            continue
+        zfile_article_pks = zfile.articles.filter(pk__in=article_pks).values_list("pk", flat=True)
+        for article_pk in zfile_article_pks:
+            temp_dict[article_pk] = zfile
+
+    queryset = []
+    for (k, v) in temp_dict.items():
+        queryset.append(v)
+    return queryset

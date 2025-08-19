@@ -235,7 +235,8 @@ class ZFile_List_View(Model_List_View):
         qs = self.sort_queryset(qs)
 
         # Get related
-        qs = qs.prefetch_related("authors", "companies", "details", "downloads", "genres")
+        if self.value != "featured-world":
+            qs = qs.prefetch_related("authors", "companies", "details", "downloads", "genres")
         return qs
 
     def get_context_data(self, **kwargs):

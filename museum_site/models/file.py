@@ -35,7 +35,10 @@ class File(BaseModel, ZFile_Urls):
             ["authors", "companies", "zfile_date", "genres", "filename", "size"],
             ["details", "rating", "boards", "language"],
         ]
-        self.header_view_fields = ["authors", "companies", "zfile_date", "genres", "size", "rating", "boards"]
+        #self.header_view_fields = ["authors", "companies", "zfile_date", "genres", "size", "rating", "boards"]
+        self.header_view_fields = ["authors", "zfile_date", "boards", "size",
+        "companies", "genres", "rating",
+        ]
         self.cl_info_view_fields = ["authors", "companies", "zfile_date"]
         self.staff_fields = ["edit", "tools"]
         self.action_list = ["download", "play", "view", "review", "article", "attributes"]
@@ -482,8 +485,8 @@ class File(BaseModel, ZFile_Urls):
                 output = self.field_context(label="Rating", text="{}<br>({})".format(rating.split(" ")[0], self.review_count), kind="text")
             else:
                 output = self.field_context(label="Rating", text="{}".format(rating), kind="text")
-        if view == "header":
-            output["value"] = output["value"].replace(" (", "<br>(")
+        #if view == "header":
+        #    output["value"] = output["value"].replace(" (", "<br>(")
         return output
 
     def get_field_boards(self, view="detailed"):
