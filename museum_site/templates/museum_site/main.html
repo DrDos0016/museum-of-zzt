@@ -142,7 +142,7 @@ var global_zoomed_state = {% if request.session.prezoom == "on" %}1{% else %}0{%
         <a href="{% url 'upload' %}" class="nohover"><div class="key">U</div><div class="text">Upload</div></a>
         <a href="{% url 'support' %}" class="nohover"><div class="key">S</div><div class="text">Support</div></a>
         <a href="{% url 'discord' %}" class="nohover"><div class="key">D</div><div class="text">Discord</div></a>
-        <a href="http://zzt.org/fora" class="nohover"><div class="key">Z</div><div class="text">z2 Forums</div></a>
+        <a href="https://wiki.zzt.org/wiki/Main_Page" target="blank" class="nohover"><div class="key">W</div><div class="text">Wiki of ZZT</div></a>
         {% if user.is_authenticated and not forced_logout %}<a href="{% url 'my_profile' %}" class="nohover" title="Logged in as: {{user.username}}"><div class="key">{% char user.profile.char user.profile.fg user.profile.bg scale=2 %}</div><div class="text">Profile</div></a>{% else %}
         <a href="{% url 'login_user' %}" class="nohover"><div class="key">{% char 1 "black" "transparent" %}</div><div class="text">Account</div></a>{% endif %}
         {% if user.is_staff %}
