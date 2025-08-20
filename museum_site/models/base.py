@@ -126,7 +126,9 @@ class BaseModel(models.Model):
             field_context = getattr(self, "get_field_{}".format(field_name))(view)
         else:
             field_context = {"label": field_name, "value": "placeholder"}
-        field_context["field_name"] = field_name
+
+        if field_context:
+            field_context["field_name"] = field_name
         return field_context
 
     def get_field_edit(self, view="detailed"):
