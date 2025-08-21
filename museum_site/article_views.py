@@ -157,7 +157,7 @@ class Article_Categories_List_View(Model_List_View):
         # Find the latest article of each category
         seen_categories = []
         cats = {}
-        cats_qs = Article.objects.published().defer("content").order_by("-id")
+        cats_qs = Article.objects.accessible().defer("content").order_by("-id")
         for a in cats_qs:
             if a.category not in seen_categories:
                 seen_categories.append(a.category)
@@ -177,6 +177,7 @@ class Article_Categories_List_View(Model_List_View):
                     "preview": {"url": "/pages/article-categories/{}.png".format(key), "alt": cats[key].title},
                     "article_count": counts[key],
                     "latest": {"url": cats[key].get_absolute_url(), "value": cats[key].title},
+                    "article_date": cats[key].publish_date,
                     "description": CATEGORY_DESCRIPTIONS.get(key, "<i>No description available</i>")
                 }
             )

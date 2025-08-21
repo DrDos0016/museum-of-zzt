@@ -34,6 +34,9 @@ class Article_Category_Block(Custom_Block):
     def get_field_article_count(self, view="detailed"):
         return {"label": "Number of Articles", "value": self.custom_context["article_count"]}
 
+    def get_field_article_date(self, view="detailed"):
+        return {"label": "Published", "value": self.custom_context["article_date"]}
+
     def get_field_latest(self, view="detailed"):
         return {
             "label": "Latest", "value": "<a href='{}'>{}</a>".format(self.custom_context["latest"]["url"], self.custom_context["latest"]["value"]), "safe": True
@@ -51,7 +54,7 @@ class Article_Category_Block(Custom_Block):
         context["columns"] = []
 
         columns = [
-            ["article_count", "latest", "description"],
+            ["article_count", "latest", "article_date", "description"],
         ]
 
         for col in columns:
