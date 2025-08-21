@@ -28,18 +28,12 @@
 
 #join-box
 {
-    background:#DEF;
+    background:var(--ega-darkcyan);
+    color:var(--ega-white);
     max-width:350px;
     margin:auto;
     border:4px double #000;
     padding:20px;
-}
-
-#join-box label
-{
-    margin:auto;
-    display:block;
-    text-align:center;
 }
 
 #emoji-table
@@ -57,6 +51,15 @@
 {
     max-width:32px;
 }
+
+label[for=agreed]
+{
+    display:flex;
+    gap:16px;
+    margin-bottom:7px;
+}
+label[for=agreed] input { flex: 0 0 auto; }
+label[for=agreed] div { flex: 5; }
 </style>
 {% endblock %}
 
@@ -79,8 +82,8 @@
 
 <form method="POST" id="join-box">
     {% csrf_token %}
-    <label><input type="checkbox" value="agreed" name="agreed"> I have read the above rules and agree to abide by them.<br><br></label>
-    <label><input type="submit" value="Join The Worlds of ZZT Discord"></label>
+    <label for="agreed"><input type="checkbox" value="agreed" id="agreed" name="agreed"><div>I have read the above rules and agree to abide by them.</div></label>
+    <label style="display:flex;justify-content:center;"><input type="submit" value="Join The Worlds of ZZT Discord"></label>
     {% if error %}<p><b>You must read and agree to abide by the rules before joining!</b></p>{% endif %}
 </form>
 
@@ -131,7 +134,6 @@
     <li><div class="role patron"hidden>⬤</div> <b>Patron</b> - For <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT patrons</a>. Requires your Patreon and Discord accounts to be linked (or to just ask Dr. Dos for the role. The bot that assigns this role is notoriously flakey.)</li>
     <li><div class="role zzter"hidden>⬤</div> <b>ZZTer</b> - For those who consider themselves ZZTers.</li>
     <li><div class="role mzxer"hidden>⬤</div> <b>MZXer</b> - For those who consider themselves MegaZeuxers.</li>
-    <li><b>+Veryspecial</b> - The role provided to all members that officially join the server. Required to speak outside of #welcome in some circumstances.</li>
     <li><b>Pronoun Roles</b> - Pronoun roles are available so members can know how to properly refer to one another. Other pronoun roles will be added if needed.</li>
     <ul>
         <li><b>He/Him</b></li>
