@@ -28,6 +28,11 @@
         {% endfor %}
     </div>
 </nav>
+{% elif roulette %}
+    <div class="roulette-links">
+        Seed <a href="{% url 'zfile_roulette' %}?seed={{request.GET.seed}}">{{request.GET.seed}}</a> ♦
+        <a href="{% url 'zfile_roulette' %}">Spin Again</a>
+    </div>
 {% endif %}
 {% if available_views|length > 1 %}
 <div class="view-links">

@@ -272,6 +272,7 @@ class ZFile_List_View(Model_List_View):
             context["prefix_template"] = "museum_site/prefixes/new-finds.html"
         if self.request.path == "/file/roulette/":
             context["prefix_template"] = "museum_site/prefixes/roulette.html"
+            context["roulette"] = True
         if self.request.GET.get("err") == "404":
             context["prefix_template"] = "museum_site/prefixes/file-404.html"
         if self.request.path.startswith("/file/browse/article/"):
