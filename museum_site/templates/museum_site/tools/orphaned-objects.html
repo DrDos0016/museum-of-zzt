@@ -29,6 +29,13 @@
 </table>
 
 <table>
+    <tr><th colspan="2">Orphaned Authors (no ZFile assocs.)</th></tr>
+    {% for i in authors %}
+    <tr><td>{{i}}</td><td><a href="{{i.admin_url}}" target="_blank">Admin</a></td></tr>
+    {% empty %}<tr><td><i>NONE</i></td></tr>{% endfor %}
+</table>
+
+<table>
     <tr><th colspan="2">Orphaned Articles (no Zfile assocs.)</th></tr>
     {% for i in articles %}
     <tr><td>{{i}}</td><td><a href="{{i.admin_url}}" target="_blank">Admin</a></td></tr>

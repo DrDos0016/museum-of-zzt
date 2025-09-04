@@ -527,10 +527,11 @@ def month_in_review(request):
 @staff_member_required
 def orphaned_objects(request):
     """ Returns page listing objects that aren't properly associated with any others """
-    data = {
+    context = {
         "title": "Orphaned Objects",
         "aliases": [],
         "articles": [],
+        "authors": [],
         "collection_entries": [],
         "companies": [],
         "details": [],
@@ -543,62 +544,67 @@ def orphaned_objects(request):
     qs = Alias.objects.all().order_by("-id")
     for i in qs:
         if i.file_set.count() == 0:
-            data["aliases"].append(i)
+            context["aliases"].append(i)
 
     qs = Article.objects.all().defer("content").order_by("-id")
     for i in qs:
         if i.file_set.count() == 0:
-            data["articles"].append(i)
+            context["articles"].append(i)
+
+    qs = Author.objects.all().order_by("-id")
+    for i in qs:
+        if i.file_set.count() == 0:
+            context["authors"].append(i)
 
     qs = Collection_Entry.objects.all().order_by("-id")
     for i in qs:
         if i.collection is None:
-            data["collection_entries"].append(i)
+            context["collection_entries"].append(i)
 
     qs = Company.objects.all().order_by("-id")
     for i in qs:
         if i.file_set.count() == 0:
-            data["companies"].append(i)
+            context["companies"].append(i)
 
     qs = Detail.objects.all().order_by("-id")
     for i in qs:
         if i.file_set.count() == 0:
-            data["details"].append(i)
+            context["details"].append(i)
 
     qs = Download.objects.all().order_by("-id")
     for i in qs:
         if i.file_set.count() == 0:
-            data["downloads"].append(i)
+            context["downloads"].append(i)
 
     qs = Genre.objects.all().order_by("-id")
     for i in qs:
         if i.file_set.count() == 0:
-            data["genres"].append(i)
+            context["genres"].append(i)
 
     qs = Review.objects.all().defer("content").order_by("-id")
     for i in qs:
         if i.zfile is None:
-            data["reviews"].append(i)
+            context["reviews"].append(i)
 
     qs = Zeta_Config.objects.all().order_by("-id")
     for i in qs:
         if i.file_set.count() == 0:
-            data["zeta_configs"].append(i)
+            context["zeta_configs"].append(i)
 
-    return render(request, "museum_site/tools/orphaned-objects.html", data)
+    return render(request, "museum_site/tools/orphaned-objects.html", context)
 
 
 @staff_member_required
 def patron_article_rotation(request):
-    data = {"title": "Patron Article Rotation", "today": datetime.now(UTC)}
+    context = {"title": "Patron Article Rotation", "today": datetime.now(UTC)}
 
     articles = Article.objects.in_early_access()
     newest = articles.last()
     rest = list(articles)[:-1]
 
-    data["articles"] = [newest] + rest
+    context["articles"] = [newest] + rest
 
-    return render(request, "museum_site/tools/patron-article-rotation.html", data)
+    return render(request, "museum_site/tools/patron-article-rotation.html", context)
 
 
 @staff_member_required
