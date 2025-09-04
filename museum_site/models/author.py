@@ -20,6 +20,10 @@ class Author(models.Model):
     def __str__(self):
         return self.title
 
+    def admin_url(self):
+        name = self.model_name.replace("-", "_").lower()
+        return "/admin/museum_site/{}/{}/change/".format(name, self.id)
+
     def generate_automatic_slug(self, save=True):
         self.slug = slugify(self.title, allow_unicode=True)
         if self.slug == "":
