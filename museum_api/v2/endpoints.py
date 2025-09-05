@@ -122,6 +122,7 @@ def model_action(request, model_name, action):
         "scroll": ("get", "random", "list"),
     }
 
+
     if action not in allowed_actions[model_name]:
         return api_failure("'{}' is not a valid action for model '{}'".format(action, model_name), resp)
 
@@ -133,7 +134,11 @@ def model_action(request, model_name, action):
         qs = model.objects.filter(**{identifier: request.GET[identifier]})[:10]
         model_data = json.loads(serializers.serialize("json", qs))
     elif action == "random":
-        qs = model.objects.api_all().order_by("?")[:1]
+        # For scrolls only
+        if model_name == "scroll" and request.GET.get("twitch_support"):
+            qs = model.objects.filter(supports_twitch_redeem=True).order_by("?")[:1]
+        else:
+            qs = model.objects.api_all().order_by("?")[:1]
         model_data = json.loads(serializers.serialize("json", qs))
     elif action == "list":
         qs = model.objects.api_all()[:10]
