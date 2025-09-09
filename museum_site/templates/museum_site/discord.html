@@ -45,6 +45,7 @@
 #emoji-table tr td:first-child
 {
     background-color:#36393F;
+    color:#FFF;
 }
 
 #emoji-table img
@@ -65,7 +66,7 @@ label[for=agreed] div { flex: 5; }
 
 {% block content %}
 <h1>Joining The Worlds of ZZT Discord</h1>
-<p><i>Last updated: May 15, 2022</i></p>
+<p><i>Last updated: Sep 8, 2025</i></p>
 <h2>Server Rules</h2>
 
 <ul>
@@ -92,32 +93,33 @@ label[for=agreed] div { flex: 5; }
 <ul>
     <li><b>Information</b></li>
     <ul>
+        <li><span class="mono i">#announcements</span> - For announcements of streams starting, new articles, site features, polls, or whatever! Feel free to announce your own ZZT and related streams here!</li>
+        <li><span class="mono i">#museum-of-zzt-feed</span> - Automatic announcements made when new files are uploaded or new feedback is provided on a file</li>
         <li><span class="mono i">#rules</span> - A list of server rules for reference.</li>
-        <li><span class="mono i">#announcements</span> - For announcing new releases, reviews, and upcoming events.</li>
         <li><span class="mono i">#welcome</span> - A landing channel where new members arrive. You may or may not have to introduce yourself here before being able to talk in other channels depending on current server settings.</li>
     </ul>
     <li><b>Text</b></li>
     <ul>
         <li><span class="mono i">#zzt</span> - For discussion of ZZT and ZZT related things.</li>
         <li><span class="mono i">#etc</span> - For discussion of that which is not ZZT or ZZT related.</li>
-        <li><span class="mono i">#patrons</span> - A private channel for <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT patrons</a>.</li>
-        <li><span class="mono i">#museum-bug-fixes</span> - For reporting issues with the Museum of ZZT website. Not for feature requests, and not intended for discussions.</li>
+        <li><span class="mono i">#patrons</span> - A private channel for <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT patrons</a>. Includes behind the scenes previews of new features, noteworthy archival finds before they're revealed to the public, and so forth.</li>
+        <li><span class="mono i">#museum-bug-fixes</span> - For reporting issues with the Museum of ZZT website. Not for feature requests, and not intended for discussions. Miscredited author? Broken links? Report them here!</li>
     </ul>
     <li><b>Development</b></li>
     <ul>
-        <li><span class="mono i">#zzt-worlds</span> - For discussion of ZZT worlds that are currently being developed.</li>
-        <li><span class="mono i">#zzt-programs</span> - For discussion covering programs related to ZZT such as editors and source ports that are currently being developed.</li>
-        <li><span class="mono i">#zzt-bugs</span> - Bug reports for ZZT worlds.</li>
+        <li><span class="mono i">#worlds</span> - For discussion of ZZT (and related) worlds that are currently being developed.</li>
+        <li><span class="mono i">#tools</span> - For discussion covering programs related to ZZT such as editors, source ports, and other utilities.</li>
+        <li><span class="mono i">#creations</span> - For art, music, games, and any other creative works you've made.</li>
+    </ul>
+    <li><b>Robots</b></li>
+    <ul>
+        <li><span class="mono i">#worlds-of-zzt-feed</span> - A live feed of the bot posts to <span class="keyword">@WorldsOfZZT</span> on <a href="{% url 'follow' %}">social media</a>.</li>
+        <li><span class="mono i">#bots</span> - Dedicated room for interacting with the Worlds of ZZT Discord bot. All bot commands work in this channel. Assign roles, read scrolls, and pull some random ZZT board screenshots for yourself!</li>
     </ul>
     <li><b>Events</b> - Channels in this category are (generally) for limited time events. Upon reaching the end of discussion they are archived in the LOCKED FILE category.</li>
     <ul>
         <li><span class="mono i">#fest-of-zzt</span> - At the time of writing, a project channel for a remix of Caves of ZZT.</li>
-        <li><span class="mono i">#jams-and-competitions</span> - Used for discussion of any ongoing gamejams and other competitions where ZZT worlds are being created.</li>
-    </ul>
-    <li><b>Robots</b></li>
-    <ul>
-        <li><span class="mono i">#worlds-of-zzt-feed</span> - A live feed of the bot posts to <a href="https://twitter.com/worldsofzzt" target="_blank">@WorldsOfZZT</a> on Twitter.</li>
-        <li><span class="mono i">#bots</span> - Dedicated room for interacting with the Worlds of ZZT Discord bot. All bot commands work in this channel.</li>
+        <li><span class="mono i">#jams-and-competitions</span> - Used for discussion of any on going game jams and other competitions where ZZT worlds are being created.</li>
     </ul>
     <li><b>► LOCKED FILE</b> - Channels in this category are for archived events that are kept for a historical record.</li>
 </ul>
@@ -134,7 +136,7 @@ label[for=agreed] div { flex: 5; }
     <li><div class="role patron"hidden>⬤</div> <b>Patron</b> - For <a href="https://patreon.com/worldsofzzt" target="_blank">Worlds of ZZT patrons</a>. Requires your Patreon and Discord accounts to be linked (or to just ask Dr. Dos for the role. The bot that assigns this role is notoriously flakey.)</li>
     <li><div class="role zzter"hidden>⬤</div> <b>ZZTer</b> - For those who consider themselves ZZTers.</li>
     <li><div class="role mzxer"hidden>⬤</div> <b>MZXer</b> - For those who consider themselves MegaZeuxers.</li>
-    <li><b>Pronoun Roles</b> - Pronoun roles are available so members can know how to properly refer to one another. Other pronoun roles will be added if needed.</li>
+    <li><b>Pronoun Roles</b> - Pronoun roles are available so members can know how to properly refer to one another. Other pronoun roles will be added manually if needed.</li>
     <ul>
         <li><b>He/Him</b></li>
         <li><b>She/Her</b></li>
@@ -187,7 +189,7 @@ here.</p>
 
 <h2 id="emoji">Emoji</h2>
 
-<i>Last updated Aug. 3rd, 2022</i>
+<i>Last updated Sep. 8, 2025</i>
 
 <table id="emoji-table">
     <th>Emoji</th><th>Name</th><th>Description</th>
@@ -219,6 +221,11 @@ here.</p>
         <td class="c"><img src="{% static 'emoji/discord/blackkey.png' %}" alt="black key"></td>
         <td class="mono b c">:blackkey:</td>
         <td><div class="cp437">You now have the .-♣....\♦Blue    ♣Green   ♦Cyan    ♥Red</div><br>A black key from Super Tool Kit.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/blobfish.png' %}" alt="Blobfish"></td>
+        <td class="mono b c">:blobfish:</td>
+        <td><div class="cp437">Official cognitohazard</div><br>Portrait of the Blobfish enemy from {% ml "https://museumofzzt.com/file/view/zoz_museum/" "ZOZ" %}.</td>
     </tr>
     <tr>
         <td class="c"><img src="{% static 'emoji/discord/bomb.png' %}" alt="bomb"></td>
@@ -256,13 +263,18 @@ here.</p>
         <td>Candle from Code Red.</td>
     </tr>
     <tr>
+        <td class="c"><img src="{% static 'emoji/discord/dance.gif' %}" alt="Dance"></td>
+        <td class="mono b c">:dance:</td>
+        <td>Twitch's dinodance emoji as an ASCII dragon.</td>
+    </tr>
+    <tr>
         <td class="c"><img src="{% static 'emoji/discord/darkness.png' %}" alt="darkness"></td>
         <td class="mono b c">:darkness:</td>
         <td><div class="cp437">Room is dark - you need to light a torch!</div><br>Darkness from ZZT.</td>
     </tr>
     <tr>
         <td class="c"><img src="{% static 'emoji/discord/dragon.png' %}" alt="dragon"></td>
-        <td class="mono b c">:dragon-1:</td>
+        <td class="mono b c">:dragon~1:</td>
         <td><div class="cp437">The dragon is vaporized!</div><br>Dragon enemy from Town of ZZT.</td>
     </tr>
     <tr>
@@ -376,11 +388,6 @@ here.</p>
         <td>A scroll from ZZT.</td>
     </tr>
     <tr>
-        <td class="c"><img src="{% static 'emoji/discord/segment-blue.png' %}" alt="blue segment"></td>
-        <td class="mono b c">:segmentblue:</td>
-        <td>A blue centipede segment from ZZT.</td>
-    </tr>
-    <tr>
         <td class="c"><img src="{% static 'emoji/discord/segment-cyan.png' %}" alt="cyan segment"></td>
         <td class="mono b c">:segmentcyan:</td>
         <td>A cyan centipede segment from ZZT.</td>
@@ -389,21 +396,6 @@ here.</p>
         <td class="c"><img src="{% static 'emoji/discord/segment-purple.png' %}" alt="purple segment"></td>
         <td class="mono b c">:segmentpurple:</td>
         <td>A purple centipede segment from ZZT.</td>
-    </tr>
-    <tr>
-        <td class="c"><img src="{% static 'emoji/discord/segment-red.png' %}" alt="red segment"></td>
-        <td class="mono b c">:segmentred:</td>
-        <td>A red centipede segment from ZZT.</td>
-    </tr>
-    <tr>
-        <td class="c"><img src="{% static 'emoji/discord/segment-white.png' %}" alt="white segment"></td>
-        <td class="mono b c">:segmentwhite:</td>
-        <td>A white centipede segment from ZZT.</td>
-    </tr>
-    <tr>
-        <td class="c"><img src="{% static 'emoji/discord/segment-yellow.png' %}" alt="yellow segment"></td>
-        <td class="mono b c">:segmentyellow:</td>
-        <td>A yellow centipede segment from ZZT.</td>
     </tr>
     <tr>
         <td class="c"><img src="{% static 'emoji/discord/shark.png' %}" alt="shark"></td>
@@ -417,7 +409,7 @@ here.</p>
     </tr>
     <tr>
         <td class="c"><img src="{% static 'emoji/discord/spider.png' %}" alt="spider"></td>
-        <td class="mono b c">:spider-1:</td>
+        <td class="mono b c">:spider~1:</td>
         <td>A cyan spider from Super ZZT.</td>
     </tr>
     <tr>
@@ -451,6 +443,11 @@ here.</p>
         <td><div class="cp437">"I have this recurring nightmare...<br><br>I'm in this huge empty room with yellow walls...<br>No matter where I go... those same horrible<br>yellow walls..."</div><br>An empty yellow bordered room.</td>
     </tr>
     <tr>
+        <td class="c"><img src="{% static 'emoji/discord/yoshi-outlined.png' %}" alt="Yoshi"></td>
+        <td class="mono b c">:yoshi:</td>
+        <td><div class="cp437">Me is stupid!</div><br>Portrait of Yoshi from {% ml "https://museumofzzt.com/file/view/yoshi2/?file=YOSHI2.ZZT&board=60" "Yoshi 2" %}.</td>
+    </tr>
+    <tr>
         <td class="c"><img src="{% static 'emoji/discord/zzthink-by-archenoth-2x.png' %}" alt="zzthink"></td>
         <td class="mono b c">:zzthink:</td>
         <td><i>Created by Archenoth. Used with permission.</i></td>
@@ -459,6 +456,29 @@ here.</p>
         <td class="c"><img src="{% static 'emoji/discord/zztwakka_by_zin.png' %}" alt="zztwakka"></td>
         <td class="mono b c">:zztwakka:</td>
         <td><i>Created by Zinfandel. Used with permission.</i></td>
+    </tr>
+    <tr>
+        <th colspan="3">Retired Emoji</th>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/segment-blue.png' %}" alt="blue segment"></td>
+        <td class="mono b c">:segmentblue:</td>
+        <td>A blue centipede segment from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/segment-red.png' %}" alt="red segment"></td>
+        <td class="mono b c">:segmentred:</td>
+        <td>A red centipede segment from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/segment-white.png' %}" alt="white segment"></td>
+        <td class="mono b c">:segmentwhite:</td>
+        <td>A white centipede segment from ZZT.</td>
+    </tr>
+    <tr>
+        <td class="c"><img src="{% static 'emoji/discord/segment-yellow.png' %}" alt="yellow segment"></td>
+        <td class="mono b c">:segmentyellow:</td>
+        <td>A yellow centipede segment from ZZT.</td>
     </tr>
 </table>
 {% endblock %}
