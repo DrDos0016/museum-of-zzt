@@ -496,18 +496,20 @@ export class ZZT_Handler extends Handler
             {"value": this.board_link(board.neighbor_boards[2], "west"), "label": "←"},
             {"value": this.board_link(board.neighbor_boards[3], "east"), "label": "→"},
         ]
+        rows = this.get_all_passages(rows);
+        if (rows.length % 2 != 0)
+            rows.push({"value": "", "label": ""})
 
         for (let i=0; i<rows.length; i+=2)
         {
+            let is_tiny = (i < 4) ? " tiny" : "";
             output += `<div class="flex-row">
-                <div class="label c tiny">${rows[i].label}</div><div class="value">${rows[i].value}</div>
-                <div class="label c tiny">${rows[i+1].label}</div><div class="value">${rows[i+1].value}</div>
+                <div class="label c${is_tiny}">${rows[i].label}</div><div class="value">${rows[i].value}</div>
+                <div class="label c${is_tiny}">${rows[i+1].label}</div><div class="value">${rows[i+1].value}</div>
             </div>\n`;
         }
 
         output += `</div>`;
-
-
         output += this.get_zeta_live();
 
         return output;
@@ -817,7 +819,6 @@ export class ZZT_Handler extends Handler
 
     get_param3_value(element_id, raw)
     {
-        console.log("P3 for element id?", element_id);
         if (element_id == 11) // TODO MAGIC NUMBER
             return this.board_link(raw);
         return raw;
@@ -1264,9 +1265,6 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
     tool_disambiguate_board_titles(args)
     {
-        console.log("I'M HERE");
-        console.log(this);
-        console.log(ALT_BOARD_TITLES);
         for (let idx in this.boards)
         {
             if (idx == 0)
@@ -1279,6 +1277,19 @@ ${oop[idx].slice(oop[idx].indexOf(";")+1)}`;
 
         let target = {"target": `.fv-content[data-fvpk="${this.fvpk}"]`, "html": this.write_board_list()};
         this.write_targets([target]);
+    }
+
+    get_all_passages(rows)
+    {
+        // Takes list of current board-edge exits and appends any passages
+        for (let idx in this.boards[this.selected_board].stats)
+        {
+            let stat = this.boards[this.selected_board].stats[idx]
+            let element = this.boards[this.selected_board].elements[stat.x][stat.y];
+            if (element.id == 11) // TODO MAGIC NUMBER
+                rows.push({"value": this.board_link(stat.param3), "label": `${this.coords_span(stat.x, stat.y)}`})
+        }
+        return rows;
     }
 }
 
