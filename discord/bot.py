@@ -254,7 +254,7 @@ async def scroll(ctx, idx="?"):
             scroll = SCROLLS[str(idx)]
 
         render = scroll.render_for_discord()
-        await ctx.send(render + "LOCALBOT *Source: <https://museumofzzt.com{}>*".format(scroll.source))
+        await ctx.send(render + "*Source: <https://museumofzzt.com{}>*".format(scroll.source))
     else:
         if status.get("RESPONSE"):
             await ctx.send(status["RESPONSE"])
