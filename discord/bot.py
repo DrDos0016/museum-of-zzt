@@ -45,7 +45,14 @@ LAST_TIME = {
     "vouch": 0,
 }
 
-SCROLLS = list(Scroll.objects.all().order_by("id"))
+def get_available_scrolls():
+    qs = Scroll.objects.all().order_by("id")
+    output = {}
+    for s in qs:
+        output[str(s.pk)] = s
+    return output
+
+SCROLLS = get_available_scrolls()
 
 
 intents = discord.Intents.default()
@@ -239,15 +246,15 @@ async def scroll(ctx, idx="?"):
     status = check_permissions(ctx, VALID_ROOMS, VALID_USERS, COOLDOWN)
     if status["SUCCESS"]:
         scroll = None
-        if request and idx <= len(SCROLLS):
-            scroll = SCROLLS[idx - 1]
+        if request and str(idx) in SCROLLS.keys():
+            scroll = SCROLLS[str(idx)]
 
         if not scroll:
             idx = random.choice(range(0, len(SCROLLS)))
-            scroll = SCROLLS[idx]
+            scroll = SCROLLS[str(idx)]
 
         render = scroll.render_for_discord()
-        await ctx.send(render + "*Source: <https://museumofzzt.com{}>*".format(scroll.source))
+        await ctx.send(render + "LOCALBOT *Source: <https://museumofzzt.com{}>*".format(scroll.source))
     else:
         if status.get("RESPONSE"):
             await ctx.send(status["RESPONSE"])
