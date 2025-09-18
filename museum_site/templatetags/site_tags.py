@@ -231,6 +231,7 @@ def render_markdown(raw):
 
 @register.simple_tag()
 def meta_tags(*args, **kwargs):
+    print("META TAG TIME")
     # Default values
     base_url = "{}://{}{}".format(PROTOCOL, DOMAIN, STATIC_URL[:-1])
 
@@ -240,7 +241,7 @@ def meta_tags(*args, **kwargs):
         path = kwargs.get("path", "").split("?")[0]  # Sans QS
 
     url = base_url + path
-    og_default = "pages/og_default.jpg"
+    og_default = "pages/og_default.png"
     tags = {
         "author": ["name", ADMIN_NAME],
         "description": [
