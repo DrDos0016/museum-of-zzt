@@ -12,7 +12,7 @@ class Author(models.Model):
 
     title = models.CharField(max_length=120, db_index=True, help_text="Author Name")
     slug = models.SlugField(max_length=120, db_index=True, help_text="Automatically updated on save unless locked.")
-    lock_slug = models.BooleanField(default=False, help_text="Check to disable recalculating slug on save.")
+    lock_slug = models.BooleanField(default="-", help_text="Check to disable recalculating slug on save.")
 
     class Meta:
         ordering = ["title"]
