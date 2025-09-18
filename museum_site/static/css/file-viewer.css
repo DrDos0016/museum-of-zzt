@@ -12,7 +12,7 @@
     grid-template-columns:1.5fr 2fr auto;
     grid-template-rows:repeat(5, auto) 1fr;
     min-height:858px; /* With padding this is 900px of space */
-    height:calc(100vh - 42px);
+    height:fit-content;
 }
 
 .fv-grid .file-meta { grid-area: header; }
