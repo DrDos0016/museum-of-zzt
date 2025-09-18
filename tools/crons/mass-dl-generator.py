@@ -101,7 +101,7 @@ A compiliation of all utilities hosted on the Museum of ZZT.
 ZZM_HEADER = """
 T H E   M U S E U M   O F   Z Z T   P R E S E N T S
 
-A compiliation of all ZZT Audio Files hosted on the Museum of ZZT.
+A compiliation of all ZZM Audio Files hosted on the Museum of ZZT.
 
 {} files are included in this compilation:
 
@@ -261,6 +261,14 @@ def main():
             else:
                 year = str(f.release_date.year)
 
+            if year == "UNKNOWN" and f.year:
+                if f.year.year >= 2020:
+                    year = "2020-2029"
+                elif f.year.year >= 2010:
+                    year = "2010-2019"
+                else:
+                    year = str(f.year.year)
+
             # Add file to the ZZT year list
             file_list["zzt_worlds_" + year].append(f)
             id_list["zzt_worlds_" + year] += str(f.id)
@@ -298,7 +306,12 @@ def main():
         for f in file_list[zip_name]:
             try:
                 zf.write(f.phys_path(), arcname=os.path.basename(f.phys_path()))
-                f_rd = str(f.release_date) if f.release_date is not None else ""
+                if f.release_date is not None:
+                    f_rd = str(f.release_date)
+                elif f.year:
+                    f_rd = "{} (approx.)".format(f.year.year)
+                else:
+                    f_rd = ""
                 file_listing += '{} "{}" by {} [{}]'.format(f_rd, f.title, ", ".join(f.related_list("authors")), f.filename).strip() + "\n"
                 pass
             except FileNotFoundError:
