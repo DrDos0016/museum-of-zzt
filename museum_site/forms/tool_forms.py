@@ -589,6 +589,7 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
         ("small", "Small"),
         ("medium", "Medium"),
         ("large", "Large"),
+        ("xl", "XL"),
     )
 
     FORM_SHORTCUTS = (

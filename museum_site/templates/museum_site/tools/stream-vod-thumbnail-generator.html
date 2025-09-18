@@ -33,8 +33,10 @@ $(document).ready(function (){
     });
 
     $("#update-thumbnail").click(function (){
+
         ctx = document.getElementById("thumb-canvas").getContext("2d");
         let img_src = $("#uploaded-image-preview").attr("src");
+
         let title = $("#id_title").val();
         let subtitle = $("#id_subtitle").val();
         if (subtitle == "Part ")
@@ -45,34 +47,23 @@ $(document).ready(function (){
         let bg = "var(--ega-dark" + color + ")";
 
         let crop = $("#id_crop").val();
-
         let size = $("#id_text_size").val();
         let shadow_str = "";
         let font_size = "";
-        if (size == "large")
-        {
-            shadow_str = `7px 7px 0px var(--ega-dark${color})`;
-            font_size = "140px";
-            sub_font_size = "105px";
-            sub_shadow_str = `3px 3px 0px var(--ega-gray)`;
-        }
-        else if (size == "medium")
-        {
-            shadow_str = `3px 3px 0px var(--ega-dark${color})`;
-            font_size = "70px";
-            sub_font_size = "49px";
-            sub_shadow_str = `2px 2px 0px var(--ega-gray)`;
-        }
-        else if (size == "small")
-        {
-            shadow_str = `2px 2px 0px var(--ega-dark${color})`;
-            font_size = "35px";
-            sub_font_size = "35px";
-            sub_shadow_str = `2px 2px 0px var(--ega-gray)`;
-        }
+
+        let SIZES = {
+            "xl": {shadow_str: `7px 7px 0px var(--ega-dark${color})`, font_size: "210px", sub_font_size: "105px", sub_shadow_str: `3px 3px 0px var(--ega-gray)`},
+            "large": {shadow_str: `7px 7px 0px var(--ega-dark${color})`, font_size: "140px", sub_font_size: "105px", sub_shadow_str: `3px 3px 0px var(--ega-gray)`},
+            "medium": {shadow_str: `3px 3px 0px var(--ega-dark${color})`, font_size: "70px", sub_font_size: "49px", sub_shadow_str: `2px 2px 0px var(--ega-gray)`},
+            "small": {shadow_str: `2px 2px 0px var(--ega-dark${color})`, font_size: "35px", sub_font_size: "35px", sub_shadow_str: `2px 2px 0px var(--ega-gray)`},
+        };
+
+        shadow_str = SIZES[size].shadow_str;
+        font_size = SIZES[size].font_size;
+        sub_font_size = SIZES[size].sub_font_size;
+        sub_shadow_str = SIZES[size].sub_shadow_str;
 
         let blob = null;
-        console.log("CROP", crop);
         ctx.clearRect(0, 0, 987, 720);
         $("#background").css("background-color", "#000");
         $("#background").css("background-image", "none");
@@ -145,6 +136,9 @@ $(document).ready(function (){
     position:absolute;
     width:1280px;
     height:720px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
 }
 
 #foreground .corner
@@ -162,13 +156,12 @@ $(document).ready(function (){
 .title-wrapper
 {
     width:1280px;
-    height:720px;
     text-align:center;
     z-index:10;
     display:flex;
     flex-direction:column;
     justify-content:center;
-
+    flex:0;
 }
 
 .stream-title
