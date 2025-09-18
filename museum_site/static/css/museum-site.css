@@ -11,6 +11,7 @@
     --text-color: #000;
     --side-link-border: #AAA;
     --th-background: #619F9F;
+    --td-background: #FFF;
     --lowlight-button-color: #666;
     --border-color: #000;
     --board-list-bg: #FFF;
@@ -36,6 +37,7 @@ body.theme-dark
     --text-color: #DADAF0;
     --side-link-border: #3A4648;
     --th-background: #353B53;
+    --td-background: #13141A;
     --lowlight-button-color: #666;
     --border-color: #3B4355;
     --board-list-bg: #16182B;
@@ -172,6 +174,7 @@ td
     box-sizing:border-box;
     border:1px solid var(--border-color);
     padding:7px 4px 7px 4px;
+    background-color:var(--td-background);
 }
 
 /* End Basic Elements */
