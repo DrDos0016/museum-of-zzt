@@ -442,7 +442,7 @@ def zfile_citation(zfile, **kwargs):
 
     title = '“{}”'.format(zfile.title)
     author = "by {}".format(", ".join(authors_list)) if authors_list != ["Unknown"] else ""
-    year = "({})".format(zfile.release_date.year) if zfile.release_date else ""
+    year = "({})".format(zfile.release_year()) if (zfile.release_date or zfile.year) else ""
     return " ".join([title, author, year])
 
 
