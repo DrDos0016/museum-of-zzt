@@ -360,8 +360,8 @@ class Video_Description_Form(forms.Form):
     submit_value = "Select"
 
     VIDEO_TYPE_CHOICES = (
-        ("vod", "Livestream VOD"),
-        ("playthrough", "Playthrough - No Commentary"),
+        ("Livestream", "Livestream VOD"),
+        ("Playthrough", "Playthrough - No Commentary"),
     )
 
     kind = forms.ChoiceField(label="Video Type", choices=VIDEO_TYPE_CHOICES)
@@ -407,7 +407,7 @@ class Livestream_Vod_Form(forms.Form):
     </div>
     """
 
-    category = forms.ChoiceField(label="Category", choices=CATEGORY_CHOICES)
+    category = forms.ChoiceField(label="Category", choices=CATEGORY_CHOICES, help_text="Article model category")
     author = forms.CharField(initial="Dr. Dos")
     title = forms.CharField(widget=Enhanced_Text_Widget(char_limit=80), help_text="Used exactly as entered. Remember to prefix!{}".format(TITLE_PREFIX_REFERENCE))
     date = forms.DateField(widget=Enhanced_Date_Widget(buttons=["today"]))

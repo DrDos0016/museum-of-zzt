@@ -29,7 +29,7 @@ from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum, place_uploaded_file
 from museum_site.core.form_utils import load_form
 from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_PRESETS
-from museum_site.core.model_utils import delete_zfile
+from museum_site.core.model_utils import delete_zfile, get_article_word_count
 from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate_boards_in_zipfile, record, zookeeper_init, zookeeper_extract_font, get_all_tool_urls
 from museum_site.forms.tool_forms import (
     Checksum_Comparison_Form,
@@ -51,7 +51,16 @@ from museum_site.models import *
 @staff_member_required
 def add_livestream(request, key):
     data = {"title": "Add Livestream VOD"}
-    zfile_pk = File.objects.get(key=key).pk if key != "NOZFILEASSOC" else ""
+    if key != "NOZFILEASSOC":
+        zfile = File.objects.get(key=key)
+        zfile_pk = zfile.pk
+    else:
+        zfile = None
+        zfile_pk = ""
+    preset_title_prefixes = {
+        # Other potential shortcuts are too likely to need editing. (A "Livestream" category may be Wildcard, Bonus, or Livestream)
+        "Playthrough": "Full Playthrough - {}",
+    }
 
     if request.method == "POST":
         if not request.POST.get("transferred"):
@@ -61,7 +70,9 @@ def add_livestream(request, key):
                 return redirect(a.get_absolute_url())
         else:  # Transferred from description generator tool
             form = Livestream_Vod_Form(initial={
-                "associated_zfile": request.POST.getlist("associated"), "video_description": request.POST.get("video_description")
+                "associated_zfile": request.POST.getlist("associated"), "video_description": request.POST.get("video_description"),
+                "category": request.GET.get("kind", "Livestream"),
+                "title": preset_title_prefixes.get(request.GET.get("kind"), "").format(zfile.title)
             })
     else:
         form = Livestream_Vod_Form(initial={"associated_zfile": zfile_pk})
@@ -930,12 +941,13 @@ def series_add(request):
 @staff_member_required
 def tool_index(request, key=None):
     context = {"title": "Tool Directory"}
+    IGNORED_URL_NAMES = ["tool_index", "tool_index_with_file", "audit", "feedback_approvals_delete", "debug_article"]
     if request.GET.get("key"):
         return redirect("/tools/{}/".format(request.GET.get("key")))
 
     zfile = File.objects.filter(key=key).first() if key else None
     audit_pages = audit(request, target=None, return_target_dict=True)
-    tool_list = get_all_tool_urls(zfile, ignored_url_names=["tool_index", "tool_index_with_file", "audit", "feedback_approvals_delete"], audit_pages=audit_pages)
+    tool_list = get_all_tool_urls(zfile, ignored_url_names=IGNORED_URL_NAMES, audit_pages=audit_pages)
 
     if zfile:
         context["title"] = "[{}] - {} - Tool Index".format(zfile.key, zfile.title)
@@ -1077,6 +1089,60 @@ def stream_vod_thumbnail_generator(request):
 
     return render(request, "museum_site/tools/stream-vod-thumbnail-generator.html", context)
 
+
+@staff_member_required
+def wip_article(request, fname=""):
+    context = {"id": 0}
+    context["TODO"] = "TODO"  # Expected TODO usage.
+    context["CROP"] = "CROP"
+    context["available_files"] = None
+
+    fname = request.GET.get("file", fname)
+
+    if not fname:
+        context["title"] = "Select WIP Article"
+        file_list = glob.glob(os.path.join(SITE_ROOT, "wip", "*"))
+        file_list = sorted(file_list)
+        context["available_files"] = []
+        for filename in file_list:
+            context["available_files"].append(os.path.basename(filename))
+        return render(request, "museum_site/tools/wip-article-select.html", context)
+    else:
+        try:
+            pk = int(fname)
+        except ValueError:
+            pk = 0
+
+        if pk:  # Debug existing article
+            article = Article.objects.get(pk=pk)
+        else:  # Debug WIP article
+            if not fname or fname == "<str:fname>":  # Blank/test values
+                return redirect("index")
+
+            filepath = os.path.join(SITE_ROOT, "wip", fname)
+            if not os.path.isfile(filepath):
+                filepath = os.path.join(EXTERNAL_ARTICLE_PATH, request.GET.get("file"))
+
+            with open(filepath) as fh:
+                article = Article.objects.get(pk=2)
+                article.title = filepath
+                article.category = "TEST"
+                article.static_directory = fname[:-5]
+                article.content = fh.read().replace(
+                    "<!--Page-->", "<hr><b>PAGE BREAK</b><hr>"
+                )
+                article.publish_date = datetime.now(UTC)
+                article.schema = request.GET.get("format", "django")
+            context["file_path"] = filepath
+
+        context["article"] = article
+        context["veryspecial"] = True
+        context["word_count"] = get_article_word_count(article)
+        context["title"] = "[{} words] WIP {}".format(context["word_count"], fname)
+
+        request.session["active_tool"] = "staff-article-wip"
+        request.session["active_tool_template"] = "museum_site/tools/staff-article-wip.html"
+    return render(request, "museum_site/tools/article-wip.html", context)
 
 """
         PUBLIC TOOLS BELOW

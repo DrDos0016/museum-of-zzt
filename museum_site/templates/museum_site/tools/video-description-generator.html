@@ -33,7 +33,7 @@ $(document).ready(function (){
 
     <p>Edit the description as needed. Copy/Paste into YouTube video description, then proceed to Add Livestream VOD tool.</p>
 
-    <form method="POST" action="{% url 'add_livestream' first_key %}">
+    <form method="POST" action="{% url 'add_livestream' first_key %}?kind={{request.GET.kind}}">
     {% csrf_token %}
     <textarea style="width:120ch;height:40ch;" name="video_description">{{subtemplate}}</textarea>
     {% for assoc in form.associated.value %}<input name="associated" value="{{assoc}}" type="hidden">{% endfor %}

@@ -8,7 +8,7 @@
 
 {% block content %}
 <h1>Museum of ZZT</h1>
-<div class="flex-container">
+<div class="flex-container" id="intro-event-wrapper">
     <div id="welcome-text">
     <p>Welcome to the Museum of ZZT, a site dedicated to the preservation and
     curation of the many games and worlds created with ZZT.</p>
@@ -29,10 +29,11 @@
     <div id="event-splash">
         {% if main_event %}
         <div class="main-event">
-            <div class="when" title="{{main_event.when_title}}">{{main_event.when}}</div>
+            <div class="event-heading">Community Event!</div>
             <a href="{{main_event.url}}" target="_blank" class="noext">
-            <img src="{{main_event.image}}">
             <div>{{main_event.title}}</div>
+            <img src="{{main_event.image}}">
+            <div class="when" title="{{main_event.when_title}}">{{main_event.when}}</div>
             </a>
         </div>
         </a>

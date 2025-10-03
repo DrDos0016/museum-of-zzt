@@ -6,12 +6,22 @@
 
 #event-splash h2 { margin:0px; }
 
+
+@media (max-width: 1023px)
+{
+    #intro-event-wrapper {
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+    }
+}
 .main-event
 {
     font-family:cp437;
     max-width:250px;
     text-align:center;
     margin:auto;
+    margin-left:8px;
     font-size:28px;
     background-color:var(--ega-darkblue);
     color:var(--ega-cyan);
@@ -22,7 +32,7 @@
 
 .main-event a { color: var(--ega-yellow) };
 .main-event img { border:1px solid var(--border-color); max-width:240px; }
-.main-event .when { cursor:help; }
+.main-event .when { cursor:help; font-size:smaller; }
 
 /* Frontpage Galleries */
 .gallery-list

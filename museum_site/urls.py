@@ -107,8 +107,6 @@ urlpatterns = [
     path("debug/error/<int:status_code>/", museum_site.debug_views.error_status_test),
     path("debug/blank/", museum_site.debug_views.debug_blank),
     path("debug/<str:filename>.html", museum_site.debug_views.debug),
-    path("debug/article/<str:fname>/", museum_site.debug_views.debug_article, name="debug_article"),
-    path("debug/article/", museum_site.debug_views.debug_article),
     path("debug/form-elements/", museum_site.debug_views.debug_form_elements),
     path("debug/play/", museum_site.debug_views.debug_play),
     path("debug/solo/", museum_site.debug_views.debug_solo),
@@ -262,6 +260,8 @@ urlpatterns = [
     path("tools/set_screenshot/<str:key>/", museum_site.tool_views.set_screenshot, name="set_screenshot"),
     path("tools/stream-vod-thumbnail-generator/", museum_site.tool_views.stream_vod_thumbnail_generator, name="tool_stream_vod_thumbnail_generator"),
     path("tools/unscrolled/", museum_site.tool_views.unscrolled, name="tool_unscrolled"),
+    path("tools/wip-article/<str:fname>/", museum_site.tool_views.wip_article, name="debug_article"),
+    path("tools/wip-article/", museum_site.tool_views.wip_article, name="wip_article_select"),
     path("tools/<str:key>/", museum_site.tool_views.tool_index, name="tool_index_with_file"),
 
     # /upload/

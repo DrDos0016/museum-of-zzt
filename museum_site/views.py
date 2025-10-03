@@ -203,9 +203,8 @@ def index(request):
     """ Returns front page """
     context = {}
 
-    """
     if True:  # Manual front page event
-        main_event = {"title": "Creating/Reviewing Anything ZZT Exhibition", "image": image, "when": when, "when_title": when_title, "url": url,}
+        main_event = {"title": "Oktrollberfest 2025", "image": "/static/images/oktroll-2025-goose.png", "when": "Through Oct. 31st", "when_title": "", "url": "https://itch.io/jam/oktrollberfest-2025",}
     else:
         # Obtain events
         now = datetime.now(UTC)
@@ -227,7 +226,6 @@ def index(request):
             main_event = {"title": title, "image": image, "when": when, "when_title": when_title, "url": url,}
 
     context["main_event"] = main_event
-    """
 
     # Obtain latest content
     context["articles"] = Article.objects.spotlight()[:10]
