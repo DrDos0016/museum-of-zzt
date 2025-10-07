@@ -318,7 +318,7 @@ def video_description_generator(request):
 
         subtemplate_identifiers = {0: "no", 1: "one"}
         zzt_amount = subtemplate_identifiers.get(len(data["zfiles"]), "many")
-        if request.GET.get("kind") == "vod":
+        if request.GET.get("kind") == "Livestream":
             subtemplate = "museum_site/subtemplate/video-description/{}-zzt.html".format(zzt_amount)
         else:
             subtemplate = "museum_site/subtemplate/video-description/commentary-free-playthrough.html"
