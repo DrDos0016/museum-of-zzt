@@ -203,6 +203,11 @@ def image_set(context, *args, **kwargs):
     else:
         path = kwargs.get("path", "NO-PATH-FOUND")
     output = "<div class='image-set'>\n"
+    if kwargs.get("range") and kwargs.get("prefix"):
+        (start, end) = kwargs["range"].split("-")
+        args = []
+        for x in range(int(start), int(end) + 1):
+            args.append("{}-{}.png".format(kwargs["prefix"], x))
     for img in args:
         output += "<img src='{}{}{}' class='zoomable thumbnail'>\n".format(STATIC_URL, path, img)
     output += "</div>\n"
