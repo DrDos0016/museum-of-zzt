@@ -531,8 +531,13 @@ def nav_action_list(key, condition=None):
 def ml(url, text, target="_blank", i=True, *args, **kwargs):
     """ Museum Link - Takes a full URL, strips the domain, adds italicized text and opens in a new tab """
     """ {% ml "http://django.pi:8000/article/view/963/featured-world-the-2021-make-a-neat-zzt-board-contest-jam-type-thing-compilation/" "FW: Neat" %}"""
-    components = url.replace("http://", "").replace("https://", "").split("/")[1:]
-    output_url = "/" + "/".join(components)
+
+    if "/" not in url:
+        # Treat URL as just a ZFile key
+        output_url = "/file/view/{}/".format(url)
+    else:
+        components = url.replace("http://", "").replace("https://", "").split("/")[1:]
+        output_url = "/" + "/".join(components)
 
     output = '<a href="{}"{}>{}</a>'
     target_string = "target=" + target if target else ""
