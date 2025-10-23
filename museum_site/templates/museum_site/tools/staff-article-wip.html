@@ -101,7 +101,7 @@
     </div>
     <a href="?spellcheck=1&page=all">Spellcheck</a> |
     <a href="?finalize=1#finalization">Finalize</a> |
-    <a href="/debug/article/">WIP Articles</a> |
+    <a href="{% url 'wip_article_select' %}">WIP Articles</a> |
     <a href="{% url 'action_close_tool' %}?next={{request.path|urlize}}">Quit</a>
 </div>
 {% csrf_token %}
