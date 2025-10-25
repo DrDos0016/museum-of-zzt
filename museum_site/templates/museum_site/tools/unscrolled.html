@@ -16,7 +16,7 @@
     {% for info in unscrolled %}
     <tr>
         <td>{{info.zfile.pk}}</td>
-        <td><a href="{{ingo.zfile.get_absolute_url}}" target="_blank">{{info.zfile.title}}</td>
+        <td><a href="{{info.zfile.get_absolute_url}}" target="_blank">{{info.zfile.title}}</td>
         <td>{{info.category}}</td>
         <td>{{info.date}}</td>
     </tr>
