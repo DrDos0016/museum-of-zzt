@@ -94,6 +94,25 @@ $(document).ready(function (){
         $(".stream-subtitle").html(subtitle);
         $(".stream-subtitle").css({"font-size": sub_font_size, "text-shadow": sub_shadow_str});
         $("#thumb-image").attr("src", img_src);
+
+        // Critters
+        let critters = $("#id_critters").val();
+        if (critters == "ZZT")
+        {
+            $(".lion").show();
+            $(".bear").show();
+            $(".ruffian").show();
+            $(".snake").hide();
+            $(".roton").hide();
+        }
+        if (critters == "SZZT")
+        {
+            $(".lion").show();
+            $(".bear").hide();
+            $(".ruffian").hide();
+            $(".snake").show();
+            $(".roton").show();
+        }
     });
 });
 </script>
@@ -176,21 +195,21 @@ $(document).ready(function (){
     background-color:rgba(0, 0, 0, 0.40);
 }
 
-.tiger-wrapper
+.bl
 {
     left:0px;
     bottom: -20px;
 }
 
-.tiger-wrapper img
+.bl img
 {
     height:120px;
 }
 
 .bigchar { text-align:center; width:160px; }
-.lion { top:0px; left:0px; transform:rotate(-20deg); }
-.bear { top:0px; right:0px; transform:rotate(20deg); }
-.ruffian { right:0px; bottom: 0px; transform:rotate(-20deg); }
+.tl { top:0px; left:0px; transform:rotate(-20deg); }
+.tr { top:0px; right:0px; transform:rotate(20deg); }
+.br { right:0px; bottom: 0px; transform:rotate(-20deg); }
 
 .stream-title.large { font-size:140px; text-shadow: 7px 7px 0px var(--ega-{{shadow_color|default:'darkcyan'}}); }
 .stream-title.medium { font-size:70px; text-shadow: 3px 3px 0px var(--ega-{{shadow_color|default:'darkcyan'}}); }
@@ -221,12 +240,14 @@ $(document).ready(function (){
         <canvas id="thumb-canvas" width="987px" height="720px"></canvas>
     </div>
     <div id="foreground">
-        <div class="corner bigchar lion">{% char 234 "red" "transparent" scale=14 %}</div>
-        <div class="corner tiger-wrapper">
+        <div class="corner tl bigchar lion">{% char 234 "red" "transparent" scale=14 %}</div>
+        <div class="corner bl">
             <img src="{% static 'chrome/logos/museum-tiger-by-lazymoth.png' %}" class="">
         </div>
-        <div class="corner bigchar bear">{% char 153 "darkyellow" "transparent" scale=14 %}</div>
-        <div class="corner bigchar ruffian">{% char 5 "purple" "transparent" scale=14 %}</div>
+        <div class="corner bigchar tr bear">{% char 153 "darkyellow" "transparent" scale=14 %}</div>
+        <div class="corner bigchar tr snake">{% char 235 "darkgreen" "transparent" scale=14 %}</div>
+        <div class="corner bigchar br ruffian">{% char 5 "purple" "transparent" scale=14 %}</div>
+        <div class="corner bigchar br roton">{% char 148 "purple" "transparent" scale=14 %}</div>
         <div class="cp437 title-wrapper">
             <div class="stream-title {{request.POST.text_size|default:'large'}}">{{request.POST.title}}</div>
             <div class="stream-subtitle {{request.POST.text_size|default:'large'}}">{{request.POST.subtitle}}</div>

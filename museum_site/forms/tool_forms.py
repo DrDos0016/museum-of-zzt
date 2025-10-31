@@ -592,6 +592,12 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
         ("xl", "XL"),
     )
 
+    CRITTER_CHOICES = (
+        ("ZZT", "ZZT"),
+        ("SZZT", "Super ZZT"),
+        ("MZX", "MegaZeux"),
+    )
+
     FORM_SHORTCUTS = (
         ("N/A", "———"),
         ("playthrough", "Playthrough"),
@@ -608,6 +614,8 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
     background_image = Museum_Drag_And_Drop_File_Field(
         widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose", allowed_preset="image"),
     )
+
+    critters = forms.ChoiceField(choices=CRITTER_CHOICES, initial="ZZT")
 
     crop = forms.ChoiceField(label="Background Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES)
     wide = forms.ChoiceField(choices=(("wide", "16:9"), ("standard", "4:3")), initial="standard")
