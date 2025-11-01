@@ -159,6 +159,7 @@ table
     width:100%;
     max-width:100%;
     overflow-x:auto;
+    background-color: var(--td-background);
 }
 
 th
@@ -174,7 +175,6 @@ td
     box-sizing:border-box;
     border:1px solid var(--border-color);
     padding:7px 4px 7px 4px;
-    background-color:var(--td-background);
 }
 
 /* End Basic Elements */
