@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 from django.db import models
 
@@ -24,7 +25,7 @@ class Stream(BaseModel):
     key = models.CharField(max_length=30, help_text="Key to identify stream with", blank=True, default="")
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=50, default="none")
     description = models.CharField(max_length=300)
-    when = models.DateTimeField(help_text="6pm PST = 2:00 UTC next day. 12pm PST = 20:00 UTC")
+    when = models.DateTimeField(help_text="Enter in Pacific time when creating. Value is converted and stored as UTC.")
     preview_image = models.CharField(max_length=120, help_text="Preview Image used on stream schedule", default="/static/screenshots/no_screenshot.png")
     entries = models.ManyToManyField("Stream_Entry", default=None, blank=True, help_text="Stream Entries to be played during this stream")
     visible = models.BooleanField(default=True)
@@ -43,6 +44,13 @@ class Stream(BaseModel):
         else:
             stream_date = "No Date Set"
         return "[{}] {} ({}) [#{}]".format(self.key, self.title, stream_date, self.pk)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Change input timezone from Pacific to UTC
+            pacific = datetime(year=self.when.year, month=self.when.month, day=self.when.day, hour=self.when.hour, minute=self.when.minute, second=self.when.second, tzinfo=ZoneInfo("America/Los_Angeles"))
+            utc = pacific.astimezone(timezone.utc)
+            self.when = utc
+        super(Stream, self).save(*args, **kwargs)
 
 
 class Stream_Entry(BaseModel):
