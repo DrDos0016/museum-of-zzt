@@ -82,6 +82,10 @@ def museum_global(request):
     # Queue size
     data["UPLOAD_QUEUE_SIZE"] = cache.get_or_set("UPLOAD_QUEUE_SIZE", File.objects.unpublished().count)
 
+    # Active Tool
+    data["active_tool"] = request.session.get("active_tool")
+    data["active_tool_template"] = request.session.get("active_tool_template")
+
     # User TOS Date checks
     if request.user.is_authenticated:
         if (TERMS_DATE > request.user.profile.accepted_tos and request.method == "GET" and request.path != reverse("update_tos")):

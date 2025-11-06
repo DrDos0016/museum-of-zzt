@@ -7,15 +7,6 @@
 {% if request.GET.tweet %}<script src="/static/js/debug-pub-pack-tweet-mode.js"></script>{% endif %}
 {% endblock staff_scripts %}
 
-{% block wip_links %}
-<div class="article-staff-controls">
-<a href="/admin/museum_site/article/{{article.id}}/change/">Edit Article {{article.id}}</a>
-<a href="?spellcheck=1&page=all">Spellcheck Article</a>
-<a href="?finalize=1#finalization">Finalize Article</a>
-<a href="?tweet=1">Tweet Mode (for Publication Packs)</a>
-</div>
-{% endblock wip_links %}
-
 {% block wip_finalize %}
 {% if request.GET.finalize %}
 <h2 id="finalization">Finalization</h2>

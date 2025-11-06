@@ -1140,8 +1140,8 @@ def wip_article(request, fname=""):
         context["word_count"] = get_article_word_count(article)
         context["title"] = "[{} words] WIP {}".format(context["word_count"], fname)
 
-        request.session["active_tool"] = "staff-article-wip"
-        request.session["active_tool_template"] = "museum_site/tools/staff-article-wip.html"
+        context["active_tool"] = "staff-article-wip"
+        context["active_tool_template"] = "museum_site/tools/staff-article-wip.html"
     return render(request, "museum_site/tools/article-wip.html", context)
 
 """

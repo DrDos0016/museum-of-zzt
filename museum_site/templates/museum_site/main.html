@@ -35,7 +35,7 @@ var global_zoomed_state = {% if request.session.prezoom == "on" %}1{% else %}0{%
 {% block staff_style %}{% endblock %}
 </head>
 
-<body class="grid-root{% if april %} april{% endif %}{% if request.session.theme %} theme-{{request.session.theme}}{% endif %}{% if request.session.sidebars == 'hide' %} expanded{% endif %}" {% if request.session.active_tool %}data-active-tool="true"{% endif %} id="top">
+<body class="grid-root{% if april %} april{% endif %}{% if request.session.theme %} theme-{{request.session.theme}}{% endif %}{% if request.session.sidebars == 'hide' %} expanded{% endif %}" {% if active_tool %}data-active-tool="true"{% endif %} id="top">
 
 <nav id="low-res-shortcuts" class="cp437">
     <input type="button" id="left-hamburger" value="Archives" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-left">
@@ -44,7 +44,7 @@ var global_zoomed_state = {% if request.session.prezoom == "on" %}1{% else %}0{%
     <input type="button" id="right-hamburger" value="Exhibits" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-right">
 </nav>
 
-{% block active_tool %}{% if request.session.active_tool %}<section id="active-tool">{% include request.session.active_tool_template %}</section>{% endif %}{% endblock %}
+{% block active_tool %}{% if active_tool %}<section id="active-tool">{% include active_tool_template %}</section>{% endif %}{% endblock %}
 
 {% block sidebar_left %}
 <section id="sidebar-left" class="sidebar">
