@@ -13,6 +13,7 @@
     margin-right: auto;
     justify-items:center;
     justify-content:space-around;
+    width:round(100%, 2px);
 }
 
 .grid-root[data-active-tool=true] { margin-top:70px; }
