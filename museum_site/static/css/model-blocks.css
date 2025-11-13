@@ -83,6 +83,11 @@
 
 .model-block.detailed .preview-image { margin:14px auto 14px auto; }
 
+.model-block.detailed[data-model="WoZZT-Queue"] img.zoomed  /* WoZZT Queue can assume 350px height when zoomed */
+{
+    min-height:350px;
+}
+
 .model-block-title h2
 {
     margin:0;

@@ -94,7 +94,7 @@ function otf_bind_controls()
         $("#otf-clear-desc-button").click(otf_clear_desc);
         $(".model-block").click($(this), otf_select_zfile);
         $("#otf-quit").click(function (){
-            window.location = "/collection/on-the-fly-collections/";
+            window.location = "/collection/on-the-fly-collections/?quit";
         });
         $("#otf-add-zfile").click(otf_add_selected_zfile);
         $("#otf-create-collection").click(otf_create_collection);

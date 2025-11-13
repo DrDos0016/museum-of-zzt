@@ -154,6 +154,8 @@ class On_The_Fly_Collections_View(FormView):
 
         if self.request.session.get("active_tool") == "on-the-fly-collections":
             context["form"].fields["otf_status"].initial = "enable"
+        if "quit" in self.request.GET:
+            context["form"].fields["otf_status"].initial = "disable"
         return context
 
     def form_valid(self, form):

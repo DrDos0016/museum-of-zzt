@@ -30,16 +30,5 @@
     <input type="submit" value="Apply" name="action">
 </form>
 
-{% comment %}
-<form method="POST">
-    {% csrf_token %}
-    <label><input type="radio" name="on_the_fly" value="enable"{% if active_tool == 'on-the-fly-collections' %} checked {% endif %}> Enable On The Fly Collections</label>
-    <br>
-    <label><input type="radio" name="on_the_fly" value="disable"{% if active_tool != 'on-the-fly-collections' %} checked {% endif %}> Disable On The Fly Collections</label>
-    <br><br>
-    <input type="submit" value="Apply" name="action">
-</form>
-{% endcomment %}
-
 <p><b>{{output}}</b></p>
 {% endblock %}
