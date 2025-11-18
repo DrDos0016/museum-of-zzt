@@ -75,6 +75,8 @@ class File(BaseModel, ZFile_Urls):
         (FEEDBACK_YES, "Can Give Feedback"),
     )
 
+    OFFSITE_FILE_STRING = "OFFSITE-FILE"
+
     # Database
     objects = ZFile_Queryset.as_manager()
 
@@ -331,7 +333,7 @@ class File(BaseModel, ZFile_Urls):
     def get_zip_info(self):
         try:
             zfh = zipfile.ZipFile(self.phys_path())
-        except FileNotFoundError:
+        except (FileNotFoundError, IsADirectoryError):
             return []
         return zfh.infolist()
 
@@ -383,12 +385,16 @@ class File(BaseModel, ZFile_Urls):
             return restricted
 
         self.init_all_downloads()
-        text = "Download" + ("s ({})".format(self.all_downloads_count) if self.all_downloads_count >= 2 else "")
-
+        
         if self.all_downloads_count == 0:
             return restricted
 
         url = self.all_downloads.first().get_absolute_url() if self.all_downloads_count == 1 else reverse("zfile_download", kwargs={"key": self.key})
+
+        if self.all_downloads_count == 1 and self.all_downloads.first().kind != "zgames":
+            text = "<i>Visit External Page</i>"
+        else:
+            text = "Download" + ("s ({})".format(self.all_downloads_count) if self.all_downloads_count >= 2 else "")
 
         # Change text for list view
         if view == "list":
@@ -397,9 +403,14 @@ class File(BaseModel, ZFile_Urls):
         return self.field_context(label="Download", url=url, icons="all", text=text)
 
     def get_field_play(self, view="detailed"):
+        text = "Play Online"
         if not self.actions["play"]:
-            return self.field_context(text="Play Online", icons="major", kind="faded")
-        return self.field_context(url=reverse("zfile_play", kwargs={"key": self.key}), text="Play Online", icons="major")
+            return self.field_context(text=text, icons="major", kind="faded")
+        self.init_all_downloads()
+        if self.all_downloads_count == 1 and self.all_downloads.first().kind != "zgames":
+            return self.field_context(text="", kind="faded")
+        
+        return self.field_context(url=reverse("zfile_play", kwargs={"key": self.key}), text=text, icons="major")
 
     def get_field_view(self, view="detailed"):
         if view == "header":
@@ -462,10 +473,16 @@ class File(BaseModel, ZFile_Urls):
         return self.field_context(label="Genre{}".format("s" if qs.count() > 1 else ""), text=qs_to_links(qs), kind="link", clamped=True)
 
     def get_field_filename(self, view="detailed"):
-        return self.field_context(label="Filename", text=self.filename, kind="text")
+        if self.filename != self.OFFSITE_FILE_STRING:
+            return self.field_context(label="Filename", text=self.filename, kind="text")
+        else:
+            return self.field_context(label="Filename", text="<i>Unavailable</i>", kind="text")
 
     def get_field_size(self, view="detailed"):
-        return self.field_context(label="Size", text=filesizeformat(self.size), title="{} bytes".format(self.size), kind="text")
+        if self.size > 0:
+            return self.field_context(label="Size", text=filesizeformat(self.size), title="{} bytes".format(self.size), kind="text")
+        else:
+            return self.field_context(label="Size", text="<i>Unavailable</i>", title="", kind="text")
 
     def get_field_details(self, view="detailed"):
         qs = self.details.visible()

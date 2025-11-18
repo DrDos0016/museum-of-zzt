@@ -110,10 +110,15 @@ class Upload_View(TemplateView):
             user_id = self.request.user.id if self.request.user.is_authenticated else None
             self.upload_form.process(ip=self.request.META[REMOTE_ADDR_HEADER], user_id=user_id)
             self.zgame_form.zfile.upload_id = self.upload_form.upload.pk
-            # Play Form
-            self.zgame_form.zfile.zeta_config_id = (
-                self.play_form.cleaned_data["zeta_config"].pk if self.play_form.cleaned_data["zeta_config"] else ZETA_RESTRICTED
-            )
+
+            if not self.zgame_form.empty_upload:
+                # Play Form
+                self.zgame_form.zfile.zeta_config_id = (
+                    self.play_form.cleaned_data["zeta_config"].pk if self.play_form.cleaned_data["zeta_config"] else ZETA_RESTRICTED
+                )
+            else:
+                self.zgame_form.zfile.zeta_config_id = ZETA_RESTRICTED
+                
             # Download Form (non-zgame DLs)
             if self.download_form.cleaned_data["url"]:
                 self.download_obj = self.download_form.save()
@@ -123,11 +128,12 @@ class Upload_View(TemplateView):
             discord_announce_upload(self.upload_form.upload, self.zgame_form.zfile)  # Announce to Discord (if needed)
 
             self.zgame_form.zfile.save()  # Final Save FULLSAVE
-            # Create ZGames Download
-            zgames_download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zgame_form.zfile.filename, kind="zgames")
 
-            if created:
-                self.zgame_form.zfile.downloads.add(zgames_download)
+            if not self.zgame_form.empty_upload:
+                # Create ZGames Download
+                zgames_download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zgame_form.zfile.filename, kind="zgames")
+                if created:
+                    self.zgame_form.zfile.downloads.add(zgames_download)
 
             # Log upload for staff
             Discord_Announcement_Form().send_message("log", "Upload submitted: ZF#{} [{}]\n{}\n<https://museumofzzt.com{}>".format(
