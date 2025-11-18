@@ -107,10 +107,9 @@ class BaseModel(models.Model):
         self.context = {}
         if request:
             self.show_staff = request.user.is_staff
+        self._init_roles(view)  # Every model has roles (also used as CSS classes)
         for init_func in self.to_init:  # Initialize the object
             getattr(self, "_init_{}".format(init_func))()
-        # Every model has roles (CSS classes )
-        self._init_roles(view)
         self.context.update(self.context_universal())
         # Update with view-specific context
         self.context.update(getattr(self, "context_{}".format(view))())
@@ -122,6 +121,7 @@ class BaseModel(models.Model):
             self.process_kwargs(kwargs)
 
     def get_field(self, field_name, view="detailed"):
+        print("Getting field", field_name, view, "::::", self.title)
         if hasattr(self, "get_field_{}".format(field_name)):
             field_context = getattr(self, "get_field_{}".format(field_name))(view)
         else:
@@ -185,10 +185,12 @@ class BaseModel(models.Model):
         # Return a string representation of the object meant for user facing widgets
         return self.__str__()
 
-    def field_context(self, label="", text="", icons=None, url="#", title="", safe=True, kind="link", clamped=False):
+    def field_context(self, label="", text="", icons=None, url="#", title="", safe=True, kind="link", clamped=False, target=""):
         icons_str = self.prepare_icons_for_field(kind=icons) if icons else ""
         if kind == "link":
-            value = "<a href='{}'>{}{}</a>".format(url, icons_str, text)
+            if target:
+                target = " class='noext' target='{}'".format(target)
+            value = "<a href='{}'{}>{}{}</a>".format(url, target, icons_str, text)
         elif kind == "faded":
             value = "<span class='faded'>{}<i>{}</i></span>".format(icons_str, text)
         elif kind == "text":
