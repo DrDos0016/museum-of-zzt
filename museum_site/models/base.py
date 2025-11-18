@@ -121,7 +121,6 @@ class BaseModel(models.Model):
             self.process_kwargs(kwargs)
 
     def get_field(self, field_name, view="detailed"):
-        print("Getting field", field_name, view, "::::", self.title)
         if hasattr(self, "get_field_{}".format(field_name)):
             field_context = getattr(self, "get_field_{}".format(field_name))(view)
         else:

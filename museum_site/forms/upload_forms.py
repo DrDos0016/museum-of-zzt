@@ -363,34 +363,41 @@ class ZGame_Form(forms.ModelForm):
             raise forms.ValidationError("Invalid release date. Check your calendar.")
         return current_release_date
 
-    def process(self):
-        self.process_zgame_form()
+    def process(self, is_staff=False):
+        self.process_zgame_form(is_staff)
         # Final save
         self.zfile.save()
 
-        # Create a Download for zgames
-        download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zfile.filename, kind="zgames")
-        if created:
-            self.zfile.downloads.add(download)
+        # Create a Download for zgames on file upload
+        if not self.empty_upload:
+            download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zfile.filename, kind="zgames")
+            if created:
+                self.zfile.downloads.add(download)
 
-    def process_zgame_form(self):
+    def process_zgame_form(self, is_staff=False):
         # Create the ZFile object intended to be saved to the database
         self.zfile = self.save(commit=False)  # FULLSAVE
+        self.empty_upload = False
 
-        # If a zipfile was uploaded...
+        # Is this a blank upload:
         if self.cleaned_data["zfile"]:
-            if self.mode == "new":  # Set filename to the uploaded zipfile's if this is a new upload
-                self.zfile.filename = self.cleaned_data["zfile"].name
-            zfile_path = os.path.join(self.UPLOAD_DIRECTORY, self.zfile.filename)
-            self.upload_submitted_zipfile(zfile_path)
-            self.zfile.size = self.cleaned_data["zfile"].size
-            self.zfile.checksum = calculate_md5_checksum(zfile_path)
-            (self.zfile.playable_boards, self.zfile.total_boards) = calculate_boards_in_zipfile(zfile_path)
+            if is_staff and self.cleaned_data["zfile"].name == "moz-empty-upload.zip":
+                self.empty_upload = True
+                self.zfile.key = slugify(self.zfile.title.lower())
+            else:  # Or Has a zipfile been uploaded:
+                if self.mode == "new":  # Set filename to the uploaded zipfile's if this is a new upload
+                    self.zfile.filename = self.cleaned_data["zfile"].name
+                zfile_path = os.path.join(self.UPLOAD_DIRECTORY, self.zfile.filename)
+                self.upload_submitted_zipfile(zfile_path)
+                self.zfile.size = self.cleaned_data["zfile"].size
+                self.zfile.checksum = calculate_md5_checksum(zfile_path)
+                (self.zfile.playable_boards, self.zfile.total_boards) = calculate_boards_in_zipfile(zfile_path)
 
         self.zfile.letter = get_letter_from_title(self.zfile.title)
 
         if self.mode == "new":
-            self.zfile.key = self.zfile.filename.lower()[:-4]
+            if not self.empty_upload:
+                self.zfile.key = self.zfile.filename.lower()[:-4]
             self.zfile.release_source = "User upload"
 
         self.zfile.sort_title = calculate_sort_title(self.zfile.title)
@@ -400,6 +407,10 @@ class ZGame_Form(forms.ModelForm):
         self.zfile.language = "/".join(self.cleaned_data["language"])
         self.zfile.save()
         self.zfile.details.add(Detail.objects.get(pk=DETAIL_UPLOADED))
+
+        if self.empty_upload:
+            self.zfile.filename = File.OFFSITE_FILE_STRING
+            self.zfile.details.add(Detail.objects.get(pk=DETAIL_OFFSITE))
 
         # Clear old many-to-many associations
         if self.mode == "edit":

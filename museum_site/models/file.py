@@ -65,7 +65,8 @@ class File(BaseModel, ZFile_Urls):
         "featured": {"glyph": "🗝️", "title": "This file is a featured world.", "role": "fg-icon"},
         "lost": {"glyph": "❌", "title": "This file is lost. Little if any data is available.", "role": "lost-icon"},
         "weave": {"glyph": "🧵", "title": "This file contains content designed for Weave ZZT.", "role": "weave-icon"},
-        "antiquated": {"glyph": "⌛", "title": "This file is antiquated. A newer release should be used if available.", "role": "outdated-icon"}
+        "antiquated": {"glyph": "⌛", "title": "This file is antiquated. A newer release should be used if available.", "role": "outdated-icon"},
+        "offsite": {"glyph": "👋", "title": "This file is unable to be presented locally on the Museum of ZZT.", "role": "offsite-icon"}
     }
 
     (FEEDBACK_NO, FEEDBACK_APPROVAL, FEEDBACK_YES) = (0, 1, 2)
@@ -223,6 +224,7 @@ class File(BaseModel, ZFile_Urls):
         self._major_icons.append(self.ICONS["lost"]) if self.is_detail(DETAIL_LOST) else None
         self._major_icons.append(self.ICONS["weave"]) if self.is_detail(DETAIL_WEAVE) else None
         self._major_icons.append(self.ICONS["antiquated"]) if self.is_detail(DETAIL_ANTIQUATED) else None
+        self._major_icons.append(self.ICONS["offsite"]) if self.is_detail(DETAIL_OFFSITE) else None
 
         self._minor_icons.append(self.ICONS["featured"]) if self.is_detail(DETAIL_FEATURED) else None
         self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
@@ -235,6 +237,7 @@ class File(BaseModel, ZFile_Urls):
         to_add.append("featured") if DETAIL_FEATURED in self.detail_ids else None
         to_add.append("lost") if DETAIL_LOST in self.detail_ids else None
         to_add.append("unpublished") if DETAIL_UPLOADED in self.detail_ids else None
+        to_add.append("offsite") if DETAIL_OFFSITE in self.detail_ids else None
         self.roles.extend(to_add)
 
     def init_all_downloads(self):
@@ -390,24 +393,27 @@ class File(BaseModel, ZFile_Urls):
             return restricted
 
         url = self.all_downloads.first().get_absolute_url() if self.all_downloads_count == 1 else reverse("zfile_download", kwargs={"key": self.key})
+        target = ""
 
-        if self.all_downloads_count == 1 and self.all_downloads.first().kind != "zgames":
+        if "offsite" in self.roles:
             text = "<i>Visit External Page</i>"
+            target = "_blank"
         else:
             text = "Download" + ("s ({})".format(self.all_downloads_count) if self.all_downloads_count >= 2 else "")
+            
 
         # Change text for list view
         if view == "list":
             text = "DLs…" if text.startswith("Downloads") else "DL"
 
-        return self.field_context(label="Download", url=url, icons="all", text=text)
+        return self.field_context(label="Download", url=url, icons="all", text=text, target=target)
 
     def get_field_play(self, view="detailed"):
         text = "Play Online"
         if not self.actions["play"]:
             return self.field_context(text=text, icons="major", kind="faded")
         self.init_all_downloads()
-        if self.all_downloads_count == 1 and self.all_downloads.first().kind != "zgames":
+        if "offsite" in self.roles:
             return self.field_context(text="", kind="faded")
         
         return self.field_context(url=reverse("zfile_play", kwargs={"key": self.key}), text=text, icons="major")
@@ -418,9 +424,18 @@ class File(BaseModel, ZFile_Urls):
             context["value"] = self.title  # Text only, no link
             return context
         if not self.actions["view"]:
-            if view == "list" or view == "title":
+            if view == "title":
+                if "offsite" in self.roles:
+                    url = self.all_downloads.first().get_absolute_url()
+                    return self.field_context(text=escape(self.title), url=url, icons="all", target="_blank")
+                else:
+                    return self.field_context(text=escape(self.title), icons="all", kind="faded")
+            elif view == "list":
                 return self.field_context(text=escape(self.title), icons="all", kind="faded")
-            return self.field_context(text="View Contents", icons="all", kind="faded")
+            if "offsite" in self.roles:
+                return self.field_context(text="", kind="faded")
+            else:
+                return self.field_context(text="View Contents", icons="all", kind="faded")
 
         url = reverse("file", kwargs={"key": self.key}) if self.can_museum_download() else ""
         texts = {"detailed": "View Contents"}
