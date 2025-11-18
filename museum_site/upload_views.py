@@ -106,8 +106,9 @@ class Upload_View(TemplateView):
         if self.validate_all_forms(log_failures=True):
             # Success
             # ZGame and Upload
-            self.zgame_form.process()
             user_id = self.request.user.id if self.request.user.is_authenticated else None
+            is_staff = True if user_id and self.request.user.is_staff else False
+            self.zgame_form.process(is_staff)
             self.upload_form.process(ip=self.request.META[REMOTE_ADDR_HEADER], user_id=user_id)
             self.zgame_form.zfile.upload_id = self.upload_form.upload.pk
 
