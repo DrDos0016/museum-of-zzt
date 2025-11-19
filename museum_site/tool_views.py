@@ -424,7 +424,7 @@ def mirror(request, key):
     else:
         (url_prefix, engine) = ("!!!UNKNOWN_ENGINE!!!", "!!!UNKNOWN_ENGINE!!!")
 
-    subject = ";".join(zfile.genre_list())
+    subject = ";".join(zfile.get_related_list("genres", "title"))
 
     if zfile.description:
         description += "<p>{}</p>\n\n<hr>\n".format(zfile.description)

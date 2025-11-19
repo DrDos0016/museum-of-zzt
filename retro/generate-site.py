@@ -50,7 +50,7 @@ def main():
             f.title,
             ", ".join(f.related_list("authors")),
             round(f.size / 1024, 2),
-            ", ".join(f.genre_list())
+            ", ".join(f.get_related_list("genres", "title"))
         )
 
         with open(os.path.join(component_path, "block-file-list.html")) as fh:
@@ -80,7 +80,7 @@ def main():
         f.title,
         ", ".join(f.related_list("authors")),
         round(f.size / 1024, 2),
-        ", ".join(f.genre_list())
+        ", ".join(f.get_related_list("genres", "title"))
     )
 
     with open(os.path.join(component_path, "block-file-list.html")) as fh:

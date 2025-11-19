@@ -275,12 +275,6 @@ class File(BaseModel, ZFile_Urls):
             output.append(i.title)
         return output
 
-    def genre_list(self):
-        output = []
-        for g in self.genres.all():
-            output.append(g.title)
-        return output
-
     def language_list(self):
         short = self.language.split("/")
         return ", ".join(map(LANGUAGES.get, short))
