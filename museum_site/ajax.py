@@ -181,7 +181,7 @@ def otf_get_available_collections(request):
     if request.user and not request.user.id:
         return JsonResponse(output)
 
-    qs = Collection.objects.filter(user_id=request.user.id).only("pk", "title", "visibility").order_by("title")
+    qs = Collection.objects.filter(user_id=request.user.id).exclude(otf_support=False).only("pk", "title", "visibility").order_by("title")
     for c in qs:
         output["collections"].append({"pk": c.pk, "title": c.title, "visibility": c.visibility_str[:3]})
 

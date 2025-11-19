@@ -38,6 +38,7 @@ class Scroll(BaseModel):
     )
     zfile = models.ForeignKey("File", on_delete=models.SET_NULL, blank=True, null=True, help_text="Will try to use key in source URL if blank")
     supports_twitch_redeem = models.BooleanField(default=True, help_text="If the scroll can be read via Twitch redeem")
+    credit = models.CharField(max_length=128, blank=True, default="")
 
     class Meta:
         ordering = ["-id"]

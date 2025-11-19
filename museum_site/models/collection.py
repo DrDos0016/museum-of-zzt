@@ -70,6 +70,7 @@ class Collection(BaseModel):
             'Set to "Manual Order" to display contents in an arbitrary order of your choosing.'
         ),
     )
+    otf_support = models.BooleanField(default=True, help_text="Show in On The Fly Collection tool. This can be disabled to avoid showing a completed collection in the OTF list.")
 
     # Associations
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)

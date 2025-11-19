@@ -58,7 +58,7 @@ class Collection_Create_View(CreateView):
 class Collection_Update_View(UpdateView):
     model = Collection
     template_name_suffix = "-form"
-    fields = ["title", "short_description", "description", "visibility", "default_sort"]
+    fields = ["title", "short_description", "description", "visibility", "default_sort", "otf_support"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
