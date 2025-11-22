@@ -45,6 +45,7 @@ class File(BaseModel, ZFile_Urls):
         self.cl_info_action_list = ["download", "play", "playthrough"]
 
     model_name = "File"
+    model_name_short = "ZF"
     to_init = ["icons"]
     table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
     cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
@@ -168,13 +169,13 @@ class File(BaseModel, ZFile_Urls):
     # Cached Properties
     @cached_property
     def actions(self):
-        self.dprint("Actions")
+        self.dprint("Init Actions")
         self.init_all_downloads()
         # TODO: This should be "available actions"
         output = {"download": False, "view": False, "play": False, "article": False, "review": False, "attributes": False}
         output["download"] = True if self.all_downloads_count else False
-        output["view"] = True if self.can_museum_download() else False
-        output["play"] = True if self.archive_name or (output["view"] and self.supports_zeta_player()) or self.itch_dl else False
+        output["view"] = True if self.can_museum_download else False
+        output["play"] = True if self.can_play_online else False
         output["article"] = True if self.article_count else False
         # Review
         if (output["download"] and self.can_review) or self.feedback_count:
@@ -230,7 +231,7 @@ class File(BaseModel, ZFile_Urls):
         self.has_icons = True if len(self._minor_icons) or len(self._major_icons) else False
 
     def _init_roles(self, view):
-        self.dprint("Init Roles")
+        self.dprint("Init Roles - ", view)
         super()._init_roles(view)
         to_add = []
         to_add.append("explicit") if self.explicit else None
@@ -275,11 +276,11 @@ class File(BaseModel, ZFile_Urls):
             output.append(i.title)
         return output
 
-    def language_list(self):
+    def get_language_string(self):
         short = self.language.split("/")
         return ", ".join(map(LANGUAGES.get, short))
 
-    def ssv_list(self, attr, lookup=None):
+    def ssv_list(self, attr, lookup=None):  # TODO: appears unused
         if lookup is None:
             return getattr(self, attr).split("/")
         else:
@@ -288,6 +289,7 @@ class File(BaseModel, ZFile_Urls):
     def is_detail(self, detail_id):
         return True if detail_id in self.detail_ids else False
 
+    @cached_property
     def supports_zeta_player(self):
         output = False
 
@@ -366,10 +368,19 @@ class File(BaseModel, ZFile_Urls):
         tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
         return tags
 
+    # Capabilities / Actions / So Forth
+    @cached_property
     def can_museum_download(self):
         """ Return TRUE if a zfiles Download object is associated with this file and the file exists """
-        dl = self.downloads.filter(kind="zgames").first()
+        self.init_all_downloads()
+        dl = self.all_downloads.filter(kind="zgames").first()
         if dl and dl.zgame_exists():
+            return True
+        return False
+
+    @cached_property
+    def can_play_online(self):
+        if ((self.can_museum_download and self.supports_zeta_player) or self.archive_name or self.itch_dl):
             return True
         return False
 
@@ -431,7 +442,7 @@ class File(BaseModel, ZFile_Urls):
             else:
                 return self.field_context(text="View Contents", icons="all", kind="faded")
 
-        url = reverse("file", kwargs={"key": self.key}) if self.can_museum_download() else ""
+        url = reverse("file", kwargs={"key": self.key}) if self.can_museum_download else ""
         texts = {"detailed": "View Contents"}
         text = escape(texts.get(view, self.title))
         icon_kind = "major" if view == "detailed" else "all"
