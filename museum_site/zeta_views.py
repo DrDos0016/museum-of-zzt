@@ -127,7 +127,7 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         compatible_players = []
         unpublished = True if (zfile and zfile.is_detail(DETAIL_UPLOADED) )else False
 
-        if "zeta" in all_play_methods and zfile and zfile.supports_zeta_player():
+        if "zeta" in all_play_methods and zfile and zfile.supports_zeta_player:
             compatible_players.append("zeta")
         if "archive" in all_play_methods and zfile and zfile.archive_name:
             compatible_players.append("archive")
@@ -246,7 +246,7 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
         compatible_players = []
 
         if "zeta" in all_play_methods:
-            if data["file"] and data["file"].supports_zeta_player():
+            if data["file"] and data["file"].supports_zeta_player:
                 compatible_players.append("zeta")
 
                 # For unpublished worlds, assume yes but add a disclaimer
