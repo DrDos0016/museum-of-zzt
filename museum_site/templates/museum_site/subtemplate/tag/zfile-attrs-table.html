@@ -7,7 +7,7 @@
     <tr><th>Filename</th><td>{{zfile.filename}}</td></tr>
     <tr><th>Internet Archive Identifier</th><td>{{zfile.archive_name}}</td></tr>
     <tr><th>Key</th><td>{{zfile.key}}</td></tr>
-    <tr><th>Languages</th><td>{{zfile.language_list}}</td></tr>
+    <tr><th>Languages</th><td>{{zfile.get_language_string}}</td></tr>
     <tr><th>Letter</th><td>{{zfile.letter|upper}}</td></tr>
     <tr><th>Museum ID</th><td>{{zfile.pk}}</td></tr>
     <tr><th>Preview Image</th><td>{% if zfile.has_preview_image %}<a href="/static/{{zfile.preview_url}}">{{zfile.preview_url}}</a>{% else %}<i>No preview image</i>{% endif %}</td></tr>
