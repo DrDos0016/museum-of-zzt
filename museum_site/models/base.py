@@ -1,11 +1,14 @@
 from django.db import models
 from django.utils.safestring import mark_safe
 
+from datetime import datetime
+
 from museum_site.templatetags.zzt_tags import char
 
 
 class BaseModel(models.Model):
     model_name = None
+    model_name_short = ""
     to_init = []
     table_fields = []
     cell_list = []
@@ -22,6 +25,7 @@ class BaseModel(models.Model):
     guide_word_values = {}
 
     DEBUG_PRINT = False
+    DEBUG_PRINT_TIMESTAMPS = False
 
     class Meta:
         abstract = True
@@ -36,6 +40,9 @@ class BaseModel(models.Model):
 
     def dprint(self, *args, **kwargs):
         if self.DEBUG_PRINT:
+            pk = self.pk if self.pk else "--"
+            timestamp = str(datetime.now())[:22] if self.DEBUG_PRINT_TIMESTAMPS else ""
+            print(f"{timestamp}[{self.model_name_short}#{pk}]", end="-")
             print(*args, **kwargs)
         return False
 
