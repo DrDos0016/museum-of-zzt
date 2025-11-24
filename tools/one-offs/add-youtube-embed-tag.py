@@ -80,7 +80,11 @@ def main():
     #qs = Article.objects.filter(pk=1086)
     to_update = []
     successes = 0
+    EXCLUDED = [1087, 1011, 907, 886, 837, 833, 709, 566, 533, 518, 511, 508, 504, 479, 468, 467, 432, 359, 357, 319, 314, 291, 276, 227, 225, 215, 202, 188, 181]
+    
     for a in qs:
+        if a.pk in EXCLUDED:
+            continue
         has_yt_url = " "
         has_yt_embed = " "
         if "youtube.com" in a.content:
