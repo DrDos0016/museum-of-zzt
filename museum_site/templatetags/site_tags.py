@@ -236,7 +236,6 @@ def render_markdown(raw):
 
 @register.simple_tag()
 def meta_tags(*args, **kwargs):
-    print("META TAG TIME")
     # Default values
     base_url = "{}://{}{}".format(PROTOCOL, DOMAIN, STATIC_URL[:-1])
 
@@ -445,10 +444,16 @@ def zfile_citation(zfile, **kwargs):
     else:
         authors_list = zfile.related_list("authors")
 
+    # TODO Don't enable this just yet (all fields need to be safe to render as HTML. Check function isn't used anywhere where "and more" would be a problem)
+    if len(authors_list) > 500000:  
+        authors_string = ", ".join(authors_list[:5]).replace("<", "&lt;") + ", <i>...and {} more</i>".format(len(authors_list) - 5)
+    else:
+        authors_string = ", ".join(authors_list)
+
     title = '“{}”'.format(zfile.title)
-    author = "by {}".format(", ".join(authors_list)) if authors_list != ["Unknown"] else ""
+    author = "by {}".format(authors_string) if authors_list != ["Unknown"] else ""
     year = "({})".format(zfile.release_year()) if (zfile.release_date or zfile.year) else ""
-    return " ".join([title, author, year])
+    return mark_safe(" ".join([title, author, year]))
 
 
 @register.simple_tag()
@@ -553,8 +558,8 @@ def zfile_upload_info(context, zfile):
 
 
 @register.inclusion_tag("museum_site/subtemplate/tag/youtube-embed.html")
-def youtube_embed(video_id, w=960, h=540):
-    return {"video_id": video_id, "w": w, "h": h}
+def youtube_embed(video_id="", playlist_id="", w=960, h=540):
+    return {"video_id": video_id, "w": w, "h": h, "playlist_id": playlist_id}
 
 
 @register.tag(name="zzm")
