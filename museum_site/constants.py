@@ -28,7 +28,7 @@ EMAIL_ADDRESS = "doctordos@gmail.com"
 CSS_INCLUDES = ["museum-site.css", "main.css", "zzt.css", "low-res.css", "NEW-forms.css", "model-blocks.css"]
 
 # Pagination
-PAGE_SIZE = 25  # Default items per page
+PAGE_SIZE = 24  # Default items per page
 LIST_PAGE_SIZE = 250  # Default items per page in LIST view
 NO_PAGINATION = 9999  # Actual limit with "Unlimited" items per page
 PAGE_LINKS_DISPLAYED = 30  # Number of links to other pages displayed
