@@ -12,7 +12,7 @@
     font-style: normal;
 }
 
-#schedule { max-width:1024px; margin:auto; }
+#schedule { max-width:1024px; margin:auto; background-color:var(--ega-darkblue); font-family:"cp437";}
 
 .stream
 {
@@ -21,21 +21,21 @@
     "screen title"
     "screen category"
     "screen time"
+    "screen nonstandard"
     "screen guests"
     "screen description";
-    padding:14px 8px 28px 8px;
+    padding:14px 0px 28px 8px;
     box-sizing:border-box;
-    column-gap:32px;
+    column-gap:16px;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows:repeat(4, auto) 1fr;
-    background-color:var(--ega-darkblue);
+    grid-template-rows:repeat(5, auto) 1fr;
     color:var(--ega-white);
-    font-family:"cp437";
+    
 }
 
-.stream div
-{
-    margin-bottom:1.0ch;
+.time, .description {
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 img:not(.screenshot-thumb).stream-thumbnail
@@ -48,6 +48,13 @@ img:not(.screenshot-thumb).stream-thumbnail
     box-shadow: 16px 14px var(--ega-gray);
     max-width:480px;
 
+}
+
+.upper
+{
+    background-color:var(--ega-darkpurple);
+    margin-top:14px;
+    margin-bottom:14px;
 }
 
 .stream h2
@@ -78,13 +85,14 @@ img:not(.screenshot-thumb).stream-thumbnail
     font-size:28px;
 }
 
+.stream .description::first-letter { padding-left:2ch; }
+
 .post-header
 {
     display:flex;
     align-items:center;
     height:80px;
     color:var(--ega-yellow);
-    background-color:var(--ega-darkblue);
     font-family:cp437;
     font-weight:normal;
     font-size:20pt;
@@ -123,7 +131,8 @@ img:not(.screenshot-thumb).stream-thumbnail
 
 .divider
 {
-    height:28px;
+    height:auto;
+    max-height:32px;
     background:var(--ega-black);
 }
 
@@ -157,9 +166,10 @@ img:not(.screenshot-thumb).stream-thumbnail
 @media (max-width:1024px) {
     .stream
     {
-        grid-template-areas:"screen"
-        "title"
+        grid-template-areas:"title"
+        "screen"
         "time"
+        "nonstandard"
         "description";
         grid-template-columns:1fr;
     }
@@ -169,7 +179,18 @@ img:not(.screenshot-thumb).stream-thumbnail
     }
 }
 
-.nonstandard { color:var(--ega-red); font-size:24pt; }
+.nonstandard { color:var(--ega-yellow); font-size:24pt; background-color:var(--ega-darkred); padding-left: 16px; padding-right: 16px; }
+
+.schedule-header
+{
+    display:flex;
+    background-color:var(--ega-darkred);
+    background-image:url('/static/chrome/dosember-2025/lights.gif');
+    background-repeat:repeat-x;
+    align-items:center;
+    justify-content:space-evenly;
+    padding-top:25px;
+}
 </style>
 {% endblock %}
 
@@ -184,10 +205,18 @@ img:not(.screenshot-thumb).stream-thumbnail
     <div class="post-twitch">
         <h2><a href="https://twitch.tv/worldsofzzt" target="_blank" class="noext">https://twitch.tv/worldsofzzt</a></h2>
     </div>
+    <div class="schedule-header">
+        <img src="{% static 'chrome/dosember-2025/2025_DOSember_Banner.png' %}" style="height:128px">
+        <div style="font-size:20pt;color:var(--ega-white);background-color:rgba(55, 55, 55, 0.4); max-width:360px; padding:4px;">
+            <p class="c"><a href="https://dosember.com/" target="_blank" class="noext" style="color:var(--ega-yellow)">#DOSember</a> Bonus Streams!<br> Keep an eye out for surprise streams of DOS games all month long!</p>
+        </div>
+    </div>
     {% for stream in streams %}
     <div class="stream" data-idx="{{forloop.counter}}">
-        <h2>{{stream.title}}</h2>
-        {% if stream.category != "none" %}<div class="stream-category">{{stream.get_category_display}} {% if stream.theme %} - {{stream.theme}}{% endif %}</div>{% endif %}
+        <div class="upper">
+            <h2>{{stream.title}}</h2>
+            {% if stream.category != "none" %}<div class="stream-category">{{stream.get_category_display}} {% if stream.theme %} - {{stream.theme}}{% endif %}</div>{% endif %}
+        </div>
         {% if stream.theme != "NOSTREAM" %}
         <div class="time">
             <div>
@@ -201,7 +230,7 @@ img:not(.screenshot-thumb).stream-thumbnail
             </div>
         </div>
             {% if stream.nonstandard_time %}
-                <div class="nonstandard c"><span class="ega-yellow">/!\</span> NOTICE <span class="ega-yellow">/!\</span><br>This stream is scheduled for a non-standard date/time!</div>
+                <div class="nonstandard c"><span class="ega-yellow">/!\</span> Alternate Timing <span class="ega-yellow">/!\</span></div>
             {% endif %}
         {% else %}
         <div class="time">
@@ -218,13 +247,18 @@ img:not(.screenshot-thumb).stream-thumbnail
         <div class="description">{{stream.description|safe}}
         </div>
     </div>
+    {% if not foorloop.last %}
+    <div class="divider"></div>
+    {% endif %}
     {% empty %}
     <div class="stream">
         <h2>No streams have been scheduled!</h2>
         <img src="{% static 'screenshots/no_screenshot.png' %}" class="stream-thumbnail">
-        <div class="description">Check back again soon.</div>
+        <div class="description">Check back again soon for more details!</div>
     </div>
     {% endfor %}
+    <div class="schedule-footer">
+    </div>
 </div>
 
 <h2>Standard Schedule</h2>
