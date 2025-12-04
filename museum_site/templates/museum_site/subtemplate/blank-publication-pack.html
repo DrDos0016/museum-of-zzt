@@ -13,9 +13,9 @@
 {% templatetag openblock %} with files.{{f.id}} as file {% templatetag closeblock %}
 <span class="pub-pack-entry">
 <h2>{% templatetag openblock %} zfile_citation file {% templatetag closeblock %}</h2>
-{% templatetag openblock %} model_block file alt='{{f.title}}' {% templatetag closeblock %}
+{% templatetag openblock %} model_block file alt='{{f.title|addslashes}}' {% templatetag closeblock %}
 <p></p>
-{% templatetag openblock %} image_set '{{f.prefix}}-1.png' '{{f.prefix}}-2.png' '{{f.prefix}}-3.png' {% templatetag closeblock %}
+{% templatetag openblock %} image_set prefix='{{f.prefix}}' range='1-3' {% templatetag closeblock %}
 <hr>
 </span>
 {% templatetag openblock %} endwith {% templatetag closeblock %}
