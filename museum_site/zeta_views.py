@@ -173,7 +173,7 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
 
 @rusty_key_check
 def zeta_launcher(request, key=None, components=["controls", "instructions", "credits", "advanced", "players"]):
-    data = {"title": "Zeta Launcher"}
+    data = {"title": "Zeta Launcher", "DETAIL_ANTIQUATED": DETAIL_ANTIQUATED}
     data["components"] = {"controls": False, "instructions": False, "credits": False, "advanced": False, "players": False}
     PLAY_METHODS = {"archive": {"name": "Archive.org - DosBox Embed"}, "zeta": {"name": "Zeta"}}
 
@@ -375,7 +375,6 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
         can_change_screenshot = True
 
     if request.method == "POST" and can_change_screenshot:
-        print("Changing screenshot")
         image = open_base64_image(request.POST.get("b64img"))
         image = image.crop(IMAGE_CROP_PRESETS["ZZT"])
         image_path = os.path.join(STATIC_PATH, "screenshots/{}/{}.png".format(data["file"].bucket(), data["file"].key))
