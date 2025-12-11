@@ -195,8 +195,7 @@ def explicit_warning(request):
 
 
 def follow(request):
-    context = {"title": "Follow Worlds of ZZT"}
-    return render(request, "museum_site/follow.html", context)
+    return render(request, "museum_site/follow.html", {"title": "Follow Worlds of ZZT"})
 
 
 def index(request):
@@ -290,10 +289,8 @@ def mass_downloads(request):
 def random(request):
     """ Returns a random ZZT file page """
     selection = ZFile.objects.random_zzt_world()
-    if selection is not None:
-        return redirect(selection.get_absolute_url())
-    else:
-        return redirect("index")
+    url = selection.get_absolute_url() if selection is not None else "index"
+    return redirect(url)
 
 
 def set_setting(request):
