@@ -66,6 +66,15 @@ class Audio_Player_View(Museum_Base_Template_View):
     title = "Audio Player"
     template_name = "museum_site/audio-player.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["meta_context"] = {
+            "description": ["name", "Listen to ZZT transcriptions of ZZT audio and create your own compositions."],
+            "og:title": ["property", context["title"] + " - Museum of ZZT"],
+            "og:image": ["property", "pages/audio-player.png"]
+        }
+        return context
+
 
 class Discord_Overview_View(Museum_Base_Template_View):
     title = "Joining The Worlds of ZZT Discord"
