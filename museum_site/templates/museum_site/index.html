@@ -8,6 +8,16 @@
 
 {% block content %}
 <h1>Museum of ZZT</h1>
+
+{% comment %}
+<div class="flex-container justify-center">
+    {% shadowed_block text="About ZZT" url="about_zzt" icon="emoji/discord/player.png" bg='var(--ega-darkblue)' border_color='var(--ega-blue)' %}
+    {% shadowed_block text="Download ZZT" url="zzt_dl" icon="💾" bg='var(--ega-darkcyan)' border_color='var(--ega-cyan)'%}
+    {% shadowed_block text="Play ZZT Online" url="play_zzt_online" icon="🕹️" bg='var(--ega-darkgreen)' border_color='var(--ega-green)'%}
+    {% shadowed_block text="Make Your Own ZZT Worlds" url="make_your_own_zzt_worlds" icon="emoji/discord/zzthink-by-archenoth-2x.png" bg='var(--ega-darkyellow)' border_color='var(--ega-yellow)'%}
+</div>
+{% endcomment %}
+
 <div class="flex-container" id="intro-event-wrapper">
     <div id="welcome-text">
     <p>Welcome to the Museum of ZZT, a site dedicated to the preservation and
@@ -52,12 +62,10 @@
         {% queryset_to_model_blocks files view="gallery" %}
         </div>
     </div>
-    <div class="view-more l">
-        <a href="{% url 'zfile_browse_new_releases' %}">View All New Releases</a>
-    </div>
-    <div class="view-more r">
-        <a href="{% url 'zfile_browse_new_finds' %}">View All New Finds</a>
-    </div>
+    <nav class="nav-actions">
+        <a href="{% url 'zfile_browse_new_releases' %}">Browse All New Releases</a>
+        <a href="{% url 'zfile_browse_new_finds' %}">Browse All New Finds</a>
+    </nav>
 </div>
 
 <div id="mobile-fp-file-frame">
@@ -76,13 +84,13 @@
 {% with articles|slice:"3:" as spotlight_articles %}
     {% queryset_to_model_blocks spotlight_articles view="list" %}
 {% endwith %}
-<div class="view-more">
-    <a href="{% url 'article_browse' %}">View All Articles</a>
-</div>
+<nav class="nav-actions">
+    <a href="{% url 'article_browse' %}">Browse All Articles</a>
+</nav>
 
 <h2>Latest Feedback</h2>
 {% queryset_to_model_blocks feedback view="list" %}
-<div class="view-more">
-    <a href="{% url 'review_browse' %}">View All Feedback</a>
-</div>
+<nav class="nav-actions">
+    <a href="{% url 'review_browse' %}">Browse All Feedback</a>
+</nav>
 {% endblock %}
