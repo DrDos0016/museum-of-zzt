@@ -45,7 +45,7 @@ urlpatterns = [
     path("ajax/get-stream-schedule/", museum_site.ajax.qad_get_stream_schedule, name="ajax_get_stream_schedule"),
     path("ajax/get-<str:field>-suggestions/", museum_site.ajax.get_suggestions_for_field, name="ajax_get_suggestions_for_field"),
     path("ajax/get_zip_file/", museum_site.ajax.get_zip_file, name="ajax_get_zip_file"),
-    path("ajax/get-zip-file-by-key/", museum_site.ajax.get_zip_file_by_key, name=""),
+    path("ajax/get-zip-file-by-key/", museum_site.ajax.get_zip_file_by_key, name="ajax_get_zip_file_by_key"),
     path("ajax/render-review-text/", museum_site.ajax.render_review_text, name="ajax_render_review_text"),
     path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add, name="ajax_wozzt_queue_add"),
 
@@ -80,6 +80,7 @@ urlpatterns = [
     path("about-zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 534, "slug": "about-zzt"}, name="about_zzt"),
     path("clones/", RedirectView.as_view(pattern_name="article_view"), {"pk": 6, "slug": "zzt-clones"}, name="clones"),
     path("getting-started/", RedirectView.as_view(pattern_name="article_view"), {"pk": 5, "slug": "getting-started-with-zzt"}, name="zzt_dosbox"),
+    path("make-your-own-zzt-worlds/", RedirectView.as_view(pattern_name="article_view"), {"pk": 1298, "slug": "make-your-own-zzt-worlds"}, name="make_your_own_zzt_worlds"),
     path("support/", RedirectView.as_view(pattern_name="article_view"), {"pk": 576, "slug": "supporting-the-worlds-of-zzt-project"}, name="support"),
     path("zeta/", RedirectView.as_view(pattern_name="article_view"), {"pk": 399, "slug": "zzting-with-zeta"}, name="zeta"),
     path("zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 1176, "slug": "zzt-versions"}, name="zzt_dl"),
@@ -309,6 +310,7 @@ urlpatterns = [
     path("discord/", museum_site.views.Discord_Overview_View.as_view(), name="discord"),
     path("credits/", museum_site.views.site_credits, name="credits"),
     path("patron-articles/", museum_site.article_views.patron_articles, name="patron_articles"),
+    path("play-zzt-online/", museum_site.zeta_views.play_zzt_online, name="play_zzt_online"),
     path("worlds-of-zzt/", museum_site.views.worlds_of_zzt_queue, name="worlds_of_zzt"),
     path("zeta-live/", museum_site.zeta_views.zeta_live),
     # Non-Museum Websites
