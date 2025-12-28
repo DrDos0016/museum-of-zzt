@@ -14,7 +14,7 @@ from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_P
 from museum_site.core.redirects import explicit_redirect_check
 from museum_site.core.zeta_identifiers import *
 from museum_site.models import File as ZFile
-from museum_site.models import Zeta_Config
+from museum_site.models import Collection, Article, Zeta_Config
 from museum_site.views import Museum_Base_Template_View
 
 
@@ -170,6 +170,50 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         zeta_config.user_configure(self.request.GET) #  Update config with user requested options
         return zeta_config
 
+
+def play_zzt_online(request):
+    context = {}
+    context["title"] = "Play ZZT Online"    
+    context["components"] = {"controls": True, "instructions": False, "credits": True, "advanced": False, "players": False}
+    context["header_text"] = "Play ZZT Online"
+    context["local"] = False
+    # Worlds to include
+    world_pack_key = request.GET.get("world_pack", "official-worlds")
+    world_packs = {
+        "official-worlds": [1015, 106, 107, 1592, 1593, 1594, 1595, 703, 2145,],
+    }
+    launch_worlds = {
+        "official-worlds": "TOWN",
+    }
+    context["world_pack_key" ] = world_pack_key
+    context["file_ids"] = world_packs.get(world_pack_key)
+    context["file_count"] = len(context["file_ids"])
+    context["included_files"] = []
+    qs = ZFile.objects.filter(pk__in=context["file_ids"]).order_by("release_date")
+    for f in qs:
+        context["included_files"].append(f.download_url())
+    context["file"] = qs.filter(pk=context["file_ids"][0]).first()  # "Prime" zfile
+    context["mode"] = request.GET.get("mode", "full")
+    context["base"] = "museum_site/play-popout.html" if context["mode"] == "popout" else "museum_site/main.html"
+    context["executable"] = "AUTO"
+    context["player"] = "zeta"
+    context["engine"] = context["executable"]
+    context["ZETA_EXECUTABLES"] = ZETA_EXECUTABLES
+    context["zeta_config"] = Zeta_Config.objects.get(pk=1)  # TODO Magic Number: ZZT v3.2
+    context["zeta_config"].arguments = launch_worlds.get(world_pack_key)
+    context["zeta_config"].executable = "zzt32kc-moz.zip"
+    context["zeta_database"] = "generic-play-zzt-online-{}".format(world_pack_key)
+    context["hide_advanced_settings"] = True
+    context["hide_managed_saved_data"] = True
+    context["hide_current_zeta_config"] = True
+    context["zeta_player_scale"] = int(request.COOKIES.get("zeta_player_scale", 1))
+
+    # Other includes
+    context["beginner_friendly_worlds"] = Collection.objects.filter(slug="beginner-friendly-worlds").first()
+    context["best1"] = Article.objects.filter(pk=295).first()
+    context["best2"] = Article.objects.filter(pk=563).first()
+    return render(request, "museum_site/play-zzt-online.html", context)
+    
 
 @rusty_key_check
 def zeta_launcher(request, key=None, components=["controls", "instructions", "credits", "advanced", "players"]):
