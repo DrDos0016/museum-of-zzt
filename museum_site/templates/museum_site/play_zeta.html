@@ -79,7 +79,7 @@ $(document).ready(function (){
 });
 </script>
 
-<script type="text/javascript" src="{% if HOTFIX == 'false' %}/static/zeta86/zeta_loader.js{% else %}/static/hotfix/zeta86-binb/zeta_loader.js{% endif %}?{{BOOT_TS}}"></script>
+<script type="text/javascript" src="/static/zeta86/zeta_loader.js?{{BOOT_TS}}"></script>
 <script type="text/javascript">
 var url = new URL(window.location);
 var scale = {{zeta_player_scale|default:1}};
@@ -208,7 +208,7 @@ function set_screenshot()
 {% endblock %}
 
 {% block content %}
-{% if 40 in file.detail_ids %}{% notice "⌛ Antiquated File ⌛" %}This file has been marked as <b>Antiquated</b>, and is not recommended for general use. Unless you have a specific need for this particular version, the latest release should be used instead.{% endnotice %}{% endif %}
+{% if DETAIL_ANTIQUATED in file.detail_ids %}{% notice "⌛ Antiquated File ⌛" %}This file has been marked as <b>Antiquated</b>, and is not recommended for general use. Unless you have a specific need for this particular version, the latest release should be used instead.{% endnotice %}{% endif %}
 <div id="play-area">
     {% if player == "archive" %}
     <iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>

@@ -292,13 +292,8 @@ class File(BaseModel, ZFile_Urls):
     @cached_property
     def supports_zeta_player(self):
         output = False
-
-        # Normally only ZZT/SZZT/Weave files should work
-        if self.is_detail(DETAIL_ZZT) or self.is_detail(DETAIL_SZZT) or self.is_detail(DETAIL_WEAVE):
-            output = True
-
-        # Incorrectly assume uploaded files will work
-        if self.is_detail(DETAIL_UPLOADED):
+        # Assume ZZT/SZZT/Weave files should work. Also UPLOADED, though it's a riskier assumption
+        if self.is_detail(DETAIL_ZZT) or self.is_detail(DETAIL_SZZT) or self.is_detail(DETAIL_WEAVE) or self.is_detail(DETAIL_UPLOADED):
             output = True
 
         # Forcibly Restrict Zeta via a specific config (applies to uploads as well)
