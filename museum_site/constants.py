@@ -124,6 +124,7 @@ exe_names = {
     "zzt32sw.zip": "ZZT v3.2 (Shareware)",
     "classiczoo.zip": "ClassicZoo v4.39",
     "cleenzzt-moz.zip": "CleenZZT",
+    "zzt32kc-moz.zip": "ZZT32KC (v3.2 + skips config)",
 }
 ZETA_EXECUTABLES = []
 exes = sorted(glob.glob(os.path.join(DATA_PATH, "zeta86_engines", "*.[zZ][iI][pP]")))
