@@ -283,7 +283,7 @@ pre.cp437 { line-height:14px;}
     text-align:center;
 }
 
-/* Plugs */
+/* Plugs -- Double duty currently as shadowed-blocks */
 .plug
 {
     width:210px;
@@ -317,11 +317,16 @@ pre.cp437 { line-height:14px;}
     align-items:center;
 }
 
+.plug .logo .text-icon
+{
+    font-size:20pt;
+}
+
 .plug .logo img
 {
     background-color:var(--ega-white);
     padding:10px;
-    max-width:30px;
+    max-width:32px;
 }
 .plug .text
 {
