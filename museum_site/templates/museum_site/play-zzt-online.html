@@ -1,0 +1,40 @@
+{% extends "museum_site/play_zeta.html" %}
+{% load site_tags %}
+
+{% block pre_zeta_embed %}<h1>Play ZZT Online</h1>{% endblock %}
+
+{% block post_zeta_embed %}
+<p>This page serves as a quick way to jump into ZZT for the curious! Above you'll find an embed of ZZT running via the excellent emulator Zeta.  Press <span class="keyword">ENTER</span> to dismiss the "About ZZT" message window and then you'll find yourself at the title screen for <i>Town of ZZT</i>, the first ZZT game. Press <span class="keyword">P</span> to play and you're good to go! Be aware that leaving this page will cause you to lose your progress in any running game. Be sure to save with <span class="keyword">S</span> before exploring other links!</p>
+
+<p>Game controls can be found on the sidebar. If you get stuck, pressing <span class="keyword">?</span> will open a cheat prompt. A number of <a href="{% url 'zzt_cheats' %}" target="_blank">cheats</a> may help you out of some tricky situations, and can be especially useful when playing worlds with bugs. Pressing <span class="keyword">F11</span> will open Zeta's options screen where you may adjust the game volume, whether a play step sound effect is played, and how to handle blinking colors.</p>
+
+<p>You can play several other worlds besides <i>Town of ZZT</i> while on this page as well! Pressing <span class="keyword">W</span> while on <i>Town's</i> title screen will bring up a list of all available worlds.</p>
+
+{% if world_pack_key == "official-worlds" %}
+<p>Currently, this embed of ZZT has all of the official ZZT worlds included. This consists of the original ZZT saga: <i>Town</i>, <i>Caves</i>, <i>Dungeons</i>, and <i>City</i> of ZZT, and two reference worlds: <i>Tour</i>, showcasing boards from the non-shareware games of the series as well as <i>Demo</i>, intended to introduce players to ZZT's various elements and scripting language ZZT-OOP. You'll also find the winning entries of the original ZZT Game Design Contest where ZZTers submitted individual boards and short games to be released as official expansions. This includes both parts one and two of the <i>Best of ZZT</i> plus six full worlds released in the <i>ZZT's Revenge</i> compilation.</p>
+
+<p>Maps and hint sheets for these worlds (and more) are available in the Museum's {% ml "https://museumofzzt.com/article/browse/category/walkthrough/?page=1&sort=title" "Walkthrough" %} directory.</p>
+
+<p>These worlds are straightforward adventures that represent the kinds of gameplay seen in early ZZT worlds. ZZT has a rich history, with games being made for the platform for 35 years and counting. Over the course of that history, countless more kinds of games have been created with the program. There are shooters, platformers, RPGs, comics, puzzles, and <a href="{% url 'genre_browse' %}" target="_blank">more</a> waiting to be discovered! These games are just a small slice of what ZZT has to offer.</p>
+
+<p>The vast majority of worlds available on the Museum of ZZT can be played directly in your browser. Explore the file archives and see what catches your eye! If you see a <i>Play Online</i> link, that world has some support to be played in the browser. Should you decide you'd prefer to download ZZT and play games locally (which is much easier for managing saved games and for creating worlds of your own), check out the TODO page for instructions!</p>
+{% endif %}
+
+<p>Detailed instructions on playing ZZT worlds can be found in {% ml "http://django.pi:8000/article/view/737/the-unofficial-zzt-players-manual/" "The Unofficial ZZT Player's Manual" %}, though experimenting a bit in <i>Town</i> or <i>Demo</i> will very quickly get you accustomed to basic gameplay without needing to read supplementary material.</p>
+
+<h2>Other Recommendations</h2>
+
+<p>When you're ready for more ZZT games, these three sections of the site are are a good next step for finding well-received and notable ZZT worlds. <i>Beginner Friendly Worlds</i> is a Collection of quality worlds with few roadblocks. The two <i>Best of ZZT</i> articles named after the ZZT games are focused on more general purpose recommendations. The first article was created early in the Museum of ZZT's history and recommends mostly worlds which were popular in the late 90s/early 2000s. The second article focuses more on ZZT worlds created after the Worlds of ZZT project helped renew interest in ZZT and features some expertly crafted worlds designed by returning experienced ZZTers and newcomers with a better sense of design than the teenage creators commonly found in ZZT's earlier days.</p>
+
+{% model_block beginner_friendly_worlds %}
+{% model_block best1 %}
+{% model_block best2 %}
+
+<p>For some last minute recommendations, be sure to take a look at the {% ml "/file/browse/detail/featured-world/" "Featured World" %} list. The "Featured World" status is given out to worlds of excellent quality and historical importance. It continues a lineage of earlier ZZT community awards which showcased monthly picks of the best new releases and other worlds of note.</p>
+
+<p>And if you're really indecisive, the <a href="{% url 'zfile_roulette' %}">Random ZZT World</a> and <a href="{% url 'zfile_random' %}">Roulette</a> pages will present a randomized world or list of worlds!</p>
+
+
+
+<hr>
+{% endblock %}

@@ -413,6 +413,10 @@ def queryset_to_model_blocks(context, items, view="detailed", auto_wrap=True, *a
 
     return mark_safe(output + "\n")
 
+@register.inclusion_tag("museum_site/subtemplate/tag/shadowed-block.html")
+def shadowed_block(**kwargs):
+    return kwargs
+
 
 @register.tag(name="spoiler")
 def spoiler(parser, token):

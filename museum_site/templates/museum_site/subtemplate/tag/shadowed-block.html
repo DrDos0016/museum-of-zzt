@@ -1,0 +1,5 @@
+{% load static %}
+<div class="plug" style="background:{{bg|default:'inherit'}};border-color:{{border_color|default:'inherit'}}"><a href="{% url url %}" class="noul">
+    <div class="logo">{% if "." in icon %}<img src="{% static icon %}">{% else %}<span class="text-icon">{{icon}}</span>{% endif %}</div>
+    <div class="text">{{text}}</div>
+</a></div>
