@@ -125,7 +125,7 @@ var global_zoomed_state = {% if request.session.prezoom == "on" %}1{% else %}0{%
 </div>
 {% block zfile_header %}
 {% if file %}
-    {% if not local %}{% model_block file "header" zgames=zgames %}
+    {% if not local %}{% if request.path != "/play-zzt-online/" %}{% model_block file "header" zgames=zgames %}{% endif %}
     {% else %}<h1>Local File Viewer - <input type="file" id="local-file-path"> <button id="local-load">Load File</button></h1>
     {% endif %}
 
