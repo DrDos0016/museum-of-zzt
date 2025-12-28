@@ -62,6 +62,10 @@
     width:100%;
     margin-top:10px;
 }
+
+main p { max-width:750px; }
+main h2 { max-width:750px; margin:auto; }
+main ul  { max-width:750px; margin:auto; }
 </style>
 {% endblock %}
 
@@ -209,6 +213,9 @@ function set_screenshot()
 
 {% block content %}
 {% if DETAIL_ANTIQUATED in file.detail_ids %}{% notice "⌛ Antiquated File ⌛" %}This file has been marked as <b>Antiquated</b>, and is not recommended for general use. Unless you have a specific need for this particular version, the latest release should be used instead.{% endnotice %}{% endif %}
+
+{% block pre_zeta_embed %}{% endblock %}
+
 <div id="play-area">
     {% if player == "archive" %}
     <iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
@@ -223,8 +230,8 @@ function set_screenshot()
     <button id="zoom-out" class="zoom" value="-"{% if zeta_player_scale == 1 %} disabled{% endif %}>-</button>
     <button id="zoom-in" class="zoom" value="+"{% if zeta_player_scale == 2 %} disabled{% endif %}>+</button>
     <button id="fullscreen">Fullscreen</button>
-    {% if not components.advanced %}<button id="advanced-settings">Advanced Settings</button>{% endif %}
-    <br><a href="{% url 'manage_saved_data' %}?pk={{file.id}}">Manage Saved Data</a>
+    {% if not components.advanced and not hide_advanced_settings %}<button id="advanced-settings">Advanced Settings</button>{% endif %}
+    {% if not hide_managed_saved_data %}<br><a href="{% url 'manage_saved_data' %}?pk={{file.id}}">Manage Saved Data</a>{% endif %}
     {% if your_upload  or request.user.is_staff %}
     <form method="POST" id="screenshot-form">
         {% csrf_token %}
@@ -247,6 +254,8 @@ function set_screenshot()
 </div>
 {% endif %}
 
+{% block post_zeta_embed %}{% endblock %}
+
 {% if components.credits %}<div class="zeta-credits">
     <p><b><a href="https://zeta.asie.pl" target="_blank">Zeta</a></b> created and maintained by asie. Press <span class="keyword">F11</span> while the emulator is focused to access an options menu.</p>
 </div>{% endif %}
@@ -258,27 +267,28 @@ function set_screenshot()
     <p>Depending on how you're stuck, you may want to try the following:
 
         <ul>
-            <li>A lack of health or other resources: Press "?" to open the cheat prompt and use the appropriate cheat listed on the <a href="{% url 'zzt_cheats' %}" target="_blank">ZZT Cheats</a> page.</li>
-            <li>The player is surrounded and unable to move: Press "?" to open the cheat prompt and type "ZAP" to erase the four tiles surrounding the player</li>
-            <li>The player has been destroyed: Oops. Hope you saved. This happens due to a bug with how conveyors work and your game has been soft locked.</li>
-            <li>I paused with "P" and can't unpause: The only way to unpause is to move. If you pause while the player is surrounded, the game becomes soft locked. It's best to use "Escape" as a pause method instead. Keep in mind that the game starts paused as well, so saving while surrounded (something easy to do with engine based games like ZZT platformers) will result in a save that can't be played when restored.</li>
+            <li>A lack of health or other resources: Press <span class="keyword">?</span> to open the cheat prompt and use the appropriate cheat listed on the <a href="{% url 'zzt_cheats' %}" target="_blank">ZZT Cheats</a> page.</li>
+            <li>The player is surrounded and unable to move: Press <span class="keyword">?</span> to open the cheat prompt and enter <span class="keyword">ZAP</span> to erase the four tiles surrounding the player.</li>
+            <li>The player has been destroyed: Oops. Hope you saved. This happens due to a bug with how conveyors work and your game has been soft locked. You'll have to restart ZZT! (Refresh the page if you are playing in your browser).</li>
+            <li>I paused with <span class="keyword">P</span> and can't unpause: The only way to unpause is to move. If you pause while the player is surrounded, the game becomes soft locked. It's best to use <span class="keyword">ESCAPE</span> as a pause method instead. Keep in mind that the game starts paused as well, so saving while surrounded (something easy to do with engine based games like ZZT platformers) will result in a save that can't be played when restored.</li>
             <li>I don't know where to go next: Try looking for some information in the file's <a href="{{file.review_url}}" target="_blank">reviews</a> or associated <a href="{{file.article_url}}" target="_blank">articles</a>. A small number of files have full walkthroughs. You can also use the <a href="{{file.get_absolute_url}}" target="_blank">file viewer</a> to explore the world freely.</li>
-            <li>I need some item, but don't know where to find it: Use the <a href="{{file.get_absolute_url}}" target="_blank">file viewer</a>! Click on objects to view their code and look for things like <code class="inline zzt-oop">#if crowbar escape</code>. Then use the ZZT-OOP Search in the World tab to look for <code class="inline zzt-oop">#set crowbar</code> to find where the item is acquired.</li>
+            <li>I need some item, but don't know where to find it: Use the <a href="{{file.get_absolute_url}}" target="_blank">file viewer</a>! Click on objects to view their code and look for things like <span class="keyword">?#if crowbar escape</span>. Then use the ZZT-OOP Search in the World tab to look for <span class="keyword">#set crowbar</span> to find where the item is acquired.</li>
             <li>I'm in a twisty maze of passages, all alike or dealing with some other maze-like situation. The <a href="{{file.get_absolute_url}}" target="_blank">file viewer</a> can help reveal some hidden tiles more easily. Under the preferences tab try out other board rendering methods to reveal fake walls or empties.</li>
         </ul>
     </p>
 
-    <p><b>I hit "P" to play and got a <i>DOS Error</i>!</b></p>
-    <p>This is caused either by ZZT or Zeta not correctly pointing to the proper world. This most frequently happens with games that require non-default Zeta configurations or worlds whose filename doesn't match the one stored within the file itself by ZZT. Try pressing "Enter" to close the message, pressing "W" to open the world menu, and selecting the world from this menu to reload the world.</p>
+    <p><b>I pressed <span class="keyword">P</span> to play and got a <i>DOS Error</i>!</b></p>
+    <p>This is caused either by ZZT or Zeta not correctly pointing to the proper world. This most frequently happens with games that require non-default Zeta configurations or worlds whose filename doesn't match the one stored within the file itself by ZZT. Try pressing <span class="keyword">ENTER</span> to close the message, pressing <span class="keyword">W</span> to open the world menu, and selecting the world from this menu to reload the world properly.</p>
 
-    <p><b>I hit "E" to edit a world and got a red flash and a <i>Can not edit &lt;WORLD&gt;!</i>/<i>Can not edit a saved game!</i> message!</b></p>
-    <p>The world you tried to edit is locked. From within the editor hit "?" to open the cheat prompt and enter "+DEBUG". Reload the world with "L" and the world should open just fine. <a href="/article/323/a-guide-to-zzt-lock-picking" target="_blank"><i>More about Locks</i></a></p>
+    <p><b>I pressed <span class="keyword">E</span> to edit a world and got a red flash and a <i>Can not edit &lt;WORLD&gt;!</i>/<i>Can not edit a saved game!</i> message!</b></p>
+    <p>The world you tried to edit is locked, a technique used to prevent players from editing games. These locks can all be circumvented easily. From within the editor hit <span class="keyword">?</span> to open the cheat prompt and enter <span class="keyword">+DEBUG</span>. Reload the world with <span class="keyword">L</span> and the world should open just fine. Enter <span class="keyword">-DEBUG</span> at the cheat prompt to unset the debug flag, which can cause issues if left set during gameplay. <a href="/article/323/a-guide-to-zzt-lock-picking" target="_blank"><i>More about Locks</i></a></p>
 
-    <p><b>All these boards are named <i><span class="cp437">►</span> LOCKED FILE</i> and refuse to open except for one named <i>:c</i> that stops emulation when I open it!</b></p>
+    <p><b>All these boards are named <span class="keyword">►LOCKED FILE</span> and refuse to open except for one named <span class="keyword">:c</span> that stops emulation when I open it!</b></p>
     <p>The world you're editing is (also) Super Locked. You can open the locked boards by hitting "Escape" instead of "Enter". The <i>:c</i> board is purposely corrupt and can't be opened from ZZT's editor. <a href="/article/323/a-guide-to-zzt-lock-picking" target="_blank"><i>More about Locks</i></a></p>
 </div>{% endif %}
 
-<p><b>Current Zeta configuration:</b> <span class="cp437">{% if request.GET.zeta_config %}Custom Configuration{% else %}{{file.zeta_config}}{% endif %}</span></p>
+{% if not hide_current_zeta_config %}
+<p><b>Current Zeta configuration:</b> <span class="cp437">{% if request.GET.zeta_config %}Custom Configuration{% else %}{{file.zeta_config}}{% endif %}</span></p>{% endif %}
 
 {% if components.advanced %}<form id="zeta-config">
     <div class="setting">
