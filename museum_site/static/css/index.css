@@ -1,3 +1,8 @@
+#quick-links
+{
+    flex-wrap:wrap;
+}
+
 #welcome-text
 {
     flex:1;
@@ -59,7 +64,7 @@
     grid-template-areas:
     "left-heading right-heading"
     "content content"
-    "left-link right-link";
+    "links links";
 }
 
 #fp-file-frame > h2 + h2 { grid-area:right-heading; text-align:right; }
@@ -68,6 +73,15 @@
     grid-area:content;
     margin:0;
     padding:0;
+}
+
+#fp-file-frame .nav-actions
+{
+    grid-area:links;
+    justify-content:space-between;
+    margin-top:7px;
+    margin-left:20px;
+    margin-right:20px;
 }
 
 #fp-file-frame .gallery-list > .col
@@ -83,8 +97,10 @@
     border-left:1px dashed var(--border-color);
 }
 
-#fp-file-frame .view-more { grid-area:left-link; }
-#fp-file-frame .view-more + .view-more { grid-area:right-link }
+@media (max-width: 1680px)
+{
+    #quick-links .plug { width:180px; }
+}
 
 @media (max-width: 1610px)
 {
