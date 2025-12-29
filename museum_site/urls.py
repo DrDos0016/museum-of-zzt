@@ -80,7 +80,7 @@ urlpatterns = [
     path("about-zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 534, "slug": "about-zzt"}, name="about_zzt"),
     path("clones/", RedirectView.as_view(pattern_name="article_view"), {"pk": 6, "slug": "zzt-clones"}, name="clones"),
     path("getting-started/", RedirectView.as_view(pattern_name="article_view"), {"pk": 5, "slug": "getting-started-with-zzt"}, name="zzt_dosbox"),
-    path("make-your-own-zzt-worlds/", RedirectView.as_view(pattern_name="article_view"), {"pk": 1298, "slug": "make-your-own-zzt-worlds"}, name="make_your_own_zzt_worlds"),
+    path("make-your-own-zzt-worlds/", RedirectView.as_view(pattern_name="article_view"), {"pk": 1303, "slug": "make-your-own-zzt-worlds"}, name="make_your_own_zzt_worlds"),
     path("support/", RedirectView.as_view(pattern_name="article_view"), {"pk": 576, "slug": "supporting-the-worlds-of-zzt-project"}, name="support"),
     path("zeta/", RedirectView.as_view(pattern_name="article_view"), {"pk": 399, "slug": "zzting-with-zeta"}, name="zeta"),
     path("zzt/", RedirectView.as_view(pattern_name="article_view"), {"pk": 1176, "slug": "zzt-versions"}, name="zzt_dl"),
