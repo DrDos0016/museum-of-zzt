@@ -212,12 +212,14 @@ img:not(.screenshot-thumb).stream-thumbnail
     <div class="post-twitch">
         <h2><a href="https://twitch.tv/worldsofzzt" target="_blank" class="noext">https://twitch.tv/worldsofzzt</a></h2>
     </div>
-    <div class="schedule-header">
+    {% comment %}
+    <div class="schedule-header" style>
         <img src="{% static 'chrome/dosember-2025/2025_DOSember_Banner.png' %}" style="height:128px">
         <div style="font-size:20pt;color:var(--ega-white);background-color:rgba(55, 55, 55, 0.4); max-width:360px; padding:4px;">
             <p class="c"><a href="https://dosember.com/" target="_blank" class="noext" style="color:var(--ega-yellow)">#DOSember</a> Bonus Streams!<br> Keep an eye out for surprise streams of DOS games all month long!</p>
         </div>
     </div>
+    {% endcomment %}
     {% for stream in streams %}
     <div class="stream" data-idx="{{forloop.counter}}">
         <div class="upper">
