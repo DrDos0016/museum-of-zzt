@@ -382,3 +382,8 @@ def cheat_prompt_check(request):
         if request.session.get("TEMP_FILE_VIEWER_BETA"):
             del request.session["TEMP_FILE_VIEWER_BETA"]
     return applied_cheat
+
+
+MUSEUM_BOOKMARKS = {
+    "weave": "https://meangirls.itch.io/weave-4",
+}
