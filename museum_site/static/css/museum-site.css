@@ -2,7 +2,8 @@
     --site-bg: #CCC;
     --block-bg: #F0F0F0;
     --header-bg: #619F9F;
-    --hover-bg: #98C9C9;
+    --hover-bg: #DFD;
+    --selected-bg: #8F8;
     --link-color: #00F;
     --notice-bg: #DEF;
     --error-bg: #FDE;
@@ -29,7 +30,8 @@ body.theme-dark
     --site-bg: #080917;
     --block-bg: #171B22;
     --header-bg: #3A55BF;
-    --hover-bg: #3A55BF;
+    --selected-bg: #484;
+    --hover-bg: #787;
     --link-color: #64BEEE;
     --notice-bg: #224166;
     --restricted: #A00;

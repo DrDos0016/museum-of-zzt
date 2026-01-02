@@ -42,8 +42,8 @@ label
 /* End Hover */
 
 /* Selected (Standard) */
-label.selected { background: var(--header-bg);}
-.field-value.field-layout-list > div div label.selected { background: var(--header-bg);}
+label.selected { background: var(--selected-bg);}
+.field-value.field-layout-list > div div label.selected { background: var(--selected-bg);}
 
 /* Hover (Selected) */
 /* label.selected:hover { background: var(--ega-gray);} */
@@ -183,7 +183,7 @@ textarea.height-256 { height:256px; }
     flex-wrap:wrap;
 }
 
-.field-value.field-layout-board-count .board-count-radio-wrapper
+.field-value.field-layout-board-count .board-count-radio-wrapper, .radio-wrapper
 {
     flex:1 0 100%;
     flex-wrap:wrap;
