@@ -82,6 +82,10 @@ class Scroll(BaseModel):
     def save(self, *args, **kwargs):
         if self.source.startswith("https://museumofzzt.com"):
             self.source = self.source.replace("https://museumofzzt.com", "")
+        if "#" in self.source:
+            (src, coords) = self.source.split("#", maxsplit=1)
+            raw_coords = coords.split(",")
+            self.source = src + "#" + raw_coords[0] + "," + raw_coords[1]
         if self.source.startswith("/file/view/") and self.zfile_id == None:
             key = self.source[11:].split("/")[0]
             self.zfile = File.objects.filter(key=key).first()
