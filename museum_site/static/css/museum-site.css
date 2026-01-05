@@ -261,6 +261,7 @@ pre.cp437 { line-height:14px;}
     background:var(--ega-black);
     padding:14px 8px;
     width:320px;
+    height:fit-content;
     margin:7px auto 7px auto;
     border:2px solid var(--ega-darkblue);
 }
