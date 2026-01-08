@@ -6,7 +6,7 @@
     td textarea
     {
         width:50ch;
-        height:30ch;
+        height:5ch;
     }
 
     #scroll-table
@@ -23,20 +23,21 @@
 <table id="scroll-table">
     <tr>
         <th>PK</th>
-        <th>Identifier</th>
+        <th>Title</th>
         <th>Content</th>
         <th>Source</th>
-        <th>Pub.</th>
-        <th>Original<br>Suggestion</th>
+        <th>Twitch</th>
+        <th>Credit</th>
     </tr>
     {% for s in scrolls %}
+    {% ifchanged %}<tr><th colspan="6">{{s.zfile.title}}</th></tr>{% endifchanged %}
     <tr>
         <td class="r"><a href="{{s.admin_url}}" target="_blank">{{s.pk}}</a></td>
-        <td class="c">{{s.identifier}}</td>
+        <td>{{s.title}}</td>
         <td><textarea>{{s.content}}</textarea></td>
         <td><a href="{{s.source}}" target="_blank">Source</a></td>
-        <td class="c">{{s.published|yesno:"✅,❌"}}</td>
-        <td>{{s.suggestion}}</td>
+        <td class="c">{{s.supports_twitch_redeem|yesno:"✅,❌"}}</td>
+        <td>{{s.credit}}</td>
     </tr>
     {% endfor %}
 </table>
