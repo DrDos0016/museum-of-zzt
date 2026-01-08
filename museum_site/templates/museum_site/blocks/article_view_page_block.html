@@ -1,10 +1,21 @@
 {% if page_count > 1 %}
-<div class="article-pages cp437 {{location}}">
-    Page #{{page}}/{{page_count}}<br>
-    {% if page > 1 %}<a href="{% url 'article_view_page' object.pk prev slug %}{% if private_disclaimer%}?secret={{request.GET.secret}}{% endif %}">&lt;</a>{% endif %}
-    {% for p in page_range %}
-    <a href="{% url 'article_view_page' object.pk p slug %}{% if private_disclaimer%}?secret={{request.GET.secret}}{% endif %}">{{p}}</a>
+<nav class="nav-actions paginator-block">
+    {% if page != 1  %}
+        <a href="{% url 'article_view_page' article.pk 1 article.slug %}{% if request.GET.secret %}?secret={{request.GET.secret}}{% endif %}" class="page-first" title="First Page">◄◄</a>
+        <a class="page-prev" href="{% url 'article_view_page' article.pk prev article.slug %}{% if request.GET.secret %}?secret={{request.GET.secret}}{% endif %}" title="Previous Page">◄</a>
+    {% else %}
+        <div class="page-first ega-gray-bg">◄◄</div>
+        <div class="page-prev ega-gray-bg">◄</div>
+    {% endif %}
+    {% for p in page_range %}{% if p == page %}<div class="page-number-link selected">{{p}}</div>{% else %}<a class="page-number-link" href="{% url 'article_view_page' article.pk p article.slug %}{% if request.GET.secret %}?secret={{request.GET.secret}}{% endif %}">{{p}}</a>{% endif %}
     {% endfor %}
-    {% if next %}<a href="{% url 'article_view_page' object.pk next slug %}{% if private_disclaimer%}?secret={{request.GET.secret}}{% endif %}">&gt;</a>{% endif %}
-</div>
+    {% if page < page_count %}
+        <a class="page-next" href="{% url 'article_view_page' article.pk next article.slug %}{% if request.GET.secret %}?secret={{request.GET.secret}}{% endif %}" title="Next Page">►</a>
+        <a href="{% url 'article_view_page' article.pk page_count article.slug %}{% if request.GET.secret %}?secret={{request.GET.secret}}{% endif %}" class="page-last" title="Last Page">►►</a>
+    {% else %}
+        <div class="page-next ega-gray-bg">►</div>
+        <div class="page-last ega-gray-bg">►►</div>
+    {% endif %}
+</nav>
 {% endif %}
+

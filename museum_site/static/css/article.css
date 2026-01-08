@@ -1,5 +1,7 @@
 .nav-actions-article-view { justify-content:center; }
 
+.nav-actions.paginator-block { margin-bottom:7px; }
+
 .article-staff-controls
 {
     display:flex;
