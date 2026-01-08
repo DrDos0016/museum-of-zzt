@@ -419,7 +419,7 @@ class Livestream_Vod_Form(forms.Form):
     )
     video_description = forms.CharField(
         widget=forms.Textarea(),
-        help_text="Copy/Paste from YouTube video details editor. Everything from '♦ Join...' will be truncated"
+        help_text="Copy/Paste from YouTube video details editor. Everything below the '=====' will be truncated"
     )
     description = forms.CharField(widget=Enhanced_Text_Widget(char_limit=250), label="Article Summary")
     preview_image = Museum_Drag_And_Drop_File_Field(
@@ -458,8 +458,8 @@ class Livestream_Vod_Form(forms.Form):
 
     def clean_video_description(self):
         video_description = self.cleaned_data["video_description"].strip()
-        if "♦ Join" in video_description:
-            video_description = video_description[:video_description.find("♦ Join")]
+        if "====================" in video_description:
+            video_description = video_description[:video_description.find("====================")]
         return video_description
 
     def create_article(self):
