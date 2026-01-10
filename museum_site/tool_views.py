@@ -310,7 +310,7 @@ def video_description_generator(request):
                 if idx < len(context["stream_entries"]):
                     context["stream_entries"][idx]["timestamp"] = timestamp
                 else:
-                    context["stream_entries"].append(move_me(ts=timestamp))
+                    context["stream_entries"].append(create_vod_stream_entry_context(ts=timestamp))
                 idx += 1
 
         context["first_key"] = context["stream_entries"][0]["zfile"].key if context["stream_entries"][0]["zfile"] else "NOZFILEASSOC"
