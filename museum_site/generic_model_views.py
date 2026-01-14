@@ -41,11 +41,11 @@ class Model_List_View(ListView):
         view = None
         if request.GET.get("view"):
             view = request.GET["view"]
+            request.session["view"] = view
         elif request.session.get("view"):
             view = request.session["view"]
         if view not in available_views:  # Default
             view = "detailed"
-        request.session["view"] = view
         return view
 
     def get_sort_options(self, options, debug=False):
