@@ -27,6 +27,7 @@ class Article(BaseModel):
     to_init = ["access_level", "icons"]
     model_name = "Article"
     table_fields = ["Title", "Author", "Date", "Category", "Description"]
+    table_widths = ["30%", "10%", "10%", "10%", "40%"]
 
     SCHEMAS = (
         ("text", "Plaintext"),

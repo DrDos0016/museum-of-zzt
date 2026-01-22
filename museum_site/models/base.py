@@ -11,6 +11,7 @@ class BaseModel(models.Model):
     model_name_short = ""
     to_init = []
     table_fields = []
+    table_widths = []
     cell_list = []
     supported_views = ["detailed", "list", "gallery"]
     has_icons = False  # Updated from class specific obj._init_icons()
@@ -87,8 +88,17 @@ class BaseModel(models.Model):
     @mark_safe
     def table_header(self):
         row = ""
-        for i in getattr(self, "table_fields"):
-            row += "<th>{}</th>".format(i)
+        idx = 0
+        widths = getattr(self, "table_widths")
+        for idx in range(0, len(getattr(self, "table_fields"))):
+            table_field = getattr(self, "table_fields")[idx]
+
+            if idx < len(widths):
+                style = " style='width:{}'".format(widths[idx])
+            else:
+                style = ""
+
+            row += "<th{}>{}</th>".format(style, table_field)
         return "<tr>" + row + "</tr>"
 
     @mark_safe

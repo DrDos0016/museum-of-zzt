@@ -48,6 +48,7 @@ class File(BaseModel, ZFile_Urls):
     model_name_short = "ZF"
     to_init = ["icons"]
     table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
+    table_widths = ["5%", "25%", "15%", "15%", "20%", "10%", "10%"]
     cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
     guide_word_values = {
         "id": "pk", "title": "title", "author": "author", "company": "company", "rating": "rating", "release": "release_date",
@@ -514,7 +515,8 @@ class File(BaseModel, ZFile_Urls):
         output = self.field_context(label="Rating", text="{} ({} Review{})".format(rating, self.review_count, plural), kind="text")
         if view == "list":
             if self.review_count:
-                output = self.field_context(label="Rating", text="{}<br>({})".format(rating.split(" ")[0], self.review_count), kind="text")
+                text = rating.split(" ")[0] if self.rating is not None else rating
+                output = self.field_context(label="Rating", text="{}<br>({})".format(text, self.review_count), kind="text")
             else:
                 output = self.field_context(label="Rating", text="{}".format(rating), kind="text")
         #if view == "header":

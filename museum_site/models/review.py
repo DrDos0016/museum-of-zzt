@@ -22,6 +22,7 @@ class Review(BaseModel):
     model_name = "Review"
     to_init = ["yours"]
     table_fields = ["Title", "File", "Author", "Date", "Rating"]
+    table_widths = ["30%", "30%", "15%", "12%", "13%"]
     cell_list = ["view", "zfile", "author", "review_date", "rating"]
     guide_word_values = {"id": "pk", "reviewer": "reviewer", "date": "date", "file": "zfile", "rating": "rating"}
     sorter = Feedback_Sorter
