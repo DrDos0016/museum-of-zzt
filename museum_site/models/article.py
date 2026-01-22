@@ -60,6 +60,7 @@ class Article(BaseModel):
         ("Closer Look", "Closer Look"),
         ("Contest", "Contest"),
         ("Featured World", "Featured World"),
+        ("Gamedev", "Gamedev"),
         ("Help", "Help"),
         ("Historical", "Historical"),
         ("Interview", "Interview"),
