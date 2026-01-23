@@ -429,7 +429,7 @@ class Livestream_Vod_Form(forms.Form):
     )
     crop = forms.ChoiceField(label="Preview Image Crop", choices=PREVIEW_IMAGE_CROP_CHOICES, initial="NONE")
     publication_status = forms.ChoiceField(choices=Article.PUBLICATION_STATES)
-    series = forms.ModelChoiceField(queryset=Series.objects.visible_incomplete_priority(), empty_label="- NONE -", required=False)
+    series = forms.ModelChoiceField(queryset=Series.objects.visible_incomplete_priority(), empty_label="- NONE -", required=False, help_text="Create a <a href='/tools/series/add/' target='_blank'>new series</a>")
     associated_zfile = Museum_Model_Scrolling_Multiple_Choice_Field(
         label="Associated ZFiles",
         required=False,
