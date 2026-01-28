@@ -1,0 +1,13 @@
+T H E   M U S E U M   O F   Z Z T   P R E S E N T S
+
+{% block what %}{% endblock %}
+
+{% block instructions %}{% endblock %}
+
+{{zfiles|length}} files are included in this compilation:
+
+{% for zf in zfiles %}{{zf.zfile_date}} "{{zf.title|safe}}" by {{zf.author_str|safe}} [{{zf.filename|safe}}]
+{% endfor %}
+This text file was automatically generated on {{readme_timestamp}}
+
+- https://museumofzzt.com -

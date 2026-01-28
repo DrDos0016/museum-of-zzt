@@ -1,0 +1,18 @@
+{% extends "museum_site/subtemplate/mass-dl/mass-dl-base.html" %}
+
+{% block what %}A compiliation of all ZIG worlds hosted on the Museum of ZZT.{% endblock %}
+
+{% block instructions %}To run:
+- Download ZIG v2.1a from https://museumofzzt.com/file/z/zig21a.zip
+- Or, download ZIG v2.0.3 from https://museumofzzt.com/file/view/zig203/
+    this older version has better audio support in DOSBox.
+- Download DOSBox from http://www.dosbox.com
+- Extract ZIG and any worlds you wish you play into a directory
+- Mount the directory in DOSBox with the command:
+  mount c C:\path\to\your\ZIG\directory
+- Run ZIG.EXE
+- Press W to bring up the world list and ENTER to select a world
+- Press P to play!
+
+ZIG was not a finished project and as such can be rather buggy. This includes
+harsh sound glitches on occasion.{% endblock %}
