@@ -2,31 +2,43 @@
 
 {% block style %}
 <style>
+p
+{
+    max-width:750px;
+}
+
 .mass-dl-table
 {
-    width:auto;
-    margin:auto;
+    width:400px;
     border:0;
 }
 
 .table-wrapper
 {
     margin:0.5em;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:flex-start;
+    gap:10px;
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <h1>Mass Downloads</h1>
-<p>By today's standards, ZZT's worlds are incredibly small downloads. A complete collection of all files hosted on the Museum of ZZT is in the 300 MB range when compressed.</p>
+<p>By today's standards, ZZT's worlds are incredibly small downloads. A complete collection of all files hosted on the Museum of ZZT is less than 500 MB when compressed.</p>
 
 <p>Because of their small size, automatically updated bulk downloads are made available to download. Due to potential collisions with file names (as well as issues with ZZT only being capable of listing 1024 worlds), they have been split up by release year for ZZT worlds and by file type for non-ZZT files.</p>
 
-<p>Note that since these downloads consist of nothing more than a zip file filled with dozens of zip files you may wind up downloading plenty of duplicate copies of executables, fonts, or other content.</p>
+<p>Since these downloads consist of nothing more than a zip file filled with dozens of zip files you may wind up downloading plenty of duplicate copies of executables, fonts, or other content. These downloads are designed to allow visitors to quickly obtain a complete archive of ZZT (and related) files without requiring bulk downloaders or scripts to automatically download each file one at a time.</p>
 
-<div class="flex-container flex-wrap" style="justify-content:center;">
-{% for col in columns %}
+<p>These zip do not include any files currently in the <a href="{% url 'uploaded_worlds' %}" target="_blank">Upload Queue</a> as they may be actively updated prior to publication.</p>
+
 <div class="table-wrapper">
+{% for row in mass_dl_info %}
+    {% if row.start_table %}
+    {% if not forloop.first %}</table>{% endif %}
     <table class="mass-dl-table">
     <tr>
         <th>Files</th>
@@ -34,16 +46,14 @@
         <th>Size</th>
         <th>Updated</th>
     </tr>
-    {% for row in col %}
+    {% endif %}
     <tr>
-        <td><a href="/zgames/mass/{{row.zip}}">{{row.label}}</a></td>
+        <td><a href="/zgames/mass/{{row.zip_name}}.zip">{{row.title}}</a></td>
         <td>{{row.count}}</td>
         <td>{{row.size|filesizeformat}}</td>
-        <td>{{row.updated}}</td>
+        <td>{{row.generated}}</td>
     </tr>
-    {% endfor %}
-    </table>
-</div>
 {% endfor %}
+    </table>
 </div>
 {% endblock %}

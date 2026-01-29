@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import tempfile
@@ -5,6 +6,7 @@ import zipfile
 
 from datetime import datetime
 
+from django.core.cache import cache
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.template.loader import render_to_string
@@ -27,6 +29,7 @@ class Command(BaseCommand):
     missing = []  # List of ZFile objects which do not have a zipfile available
     to_move = []  # File paths of zipfiles to be placed into /zgames/
     excluded = []  # List of ZFile objects that have zipfiles but were not put in a bucket
+    cache_info = {}
 
     def handle(self, *args, **options):
         print("===== Mass DL Zip File Generator =====")
@@ -37,6 +40,7 @@ class Command(BaseCommand):
         self.fill_buckets()
         self.buckets_to_zips()
         self.move_zips_to_zgames()
+        self.update_cache()
         print("DONE.")
 
     def add_to_bucket(self, key, zf, prefix=True):
@@ -119,7 +123,11 @@ class Command(BaseCommand):
 
     def buckets_to_zips(self):
         for zip_name, contents in self.buckets.items():
-            print("Processing files for {}. {} files to process.".format(zip_name, len(contents)))
+            count = len(contents)
+            year = zip_name.replace("zzt_worlds_", "")
+            title = "ZZT Worlds - {}".format(year) if ("zzt_worlds_" in zip_name) else year.replace("_", " ").title()
+            title = title.replace("Szzt", "Super ZZT").replace("Zig", "ZIG").replace("Zzm", "ZZM")
+            print("Processing files for {}. {} files to process.".format(zip_name, count))
 
             print("Creating {}.zip".format(zip_name))
             zip_path = os.path.join(self.TEMP_DIR_PATH, zip_name + ".zip")
@@ -144,9 +152,14 @@ class Command(BaseCommand):
                 processed_zfiles.append(zf)
 
             readme_context = {
-                "year": zip_name.replace("zzt_worlds_", ""),
+                "year": year,
                 "zfiles": processed_zfiles,
                 "readme_timestamp": datetime.now()
+            }
+
+            self.cache_info[year] = {
+                "year": year, "count": count, "generated": str(readme_context["readme_timestamp"])[:10], "zip_name": zip_name,
+                "title": title, "size": "?",
             }
 
             readme_template = "museum_site/subtemplate/mass-dl/mass-dl-{}.html".format(self.template_names.get(zip_name, "zzt"))
@@ -162,6 +175,9 @@ class Command(BaseCommand):
                 fh.write(readme_body)
             mass_zip.write(readme_path, arcname=os.path.basename(readme_path))
 
+            stat = os.stat(zip_path)
+            self.cache_info[year]["size"] = stat.st_size
+
     def move_zips_to_zgames(self):
         print("Moving zips to permanent directory")
         for path in self.to_move:
@@ -170,3 +186,8 @@ class Command(BaseCommand):
                 shutil.move(path, dst)
             except Exception:
                 print("Failed to move", src, "to", dst)
+
+    def update_cache(self):
+        print("Updating cache")
+        cache.set("MOZ_MASS_DL_INFO", json.dumps(self.cache_info))
+        print("Cache set.")
