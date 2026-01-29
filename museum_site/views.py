@@ -247,51 +247,15 @@ def index(request):
 def mass_downloads(request):
     """ Returns a page for downloading files by release year """
     context = {"title": "Mass Downloads"}
-    zzt_counts = ZFile.objects.filter(details__id=DETAIL_ZZT).annotate(release_year=ExtractYear("release_date")).values("year").annotate(count=Count("pk"))
-    szzt_count = {"label": "Super ZZT Worlds", "count": ZFile.objects.filter(details__id=DETAIL_SZZT).count(), "zip": "szzt_worlds.zip"}
-    weave_count = {"label": "Weave ZZT Worlds", "count": ZFile.objects.filter(details__id=DETAIL_WEAVE).count(), "zip": "weave_worlds.zip"}
-    zig_count = {"label": "ZIG Worlds", "count": ZFile.objects.filter(details__id=DETAIL_ZIG).count(), "zip": "zig_worlds.zip"}
-    utilities_count = {"label": "Utilities", "count": ZFile.objects.filter(details__id=DETAIL_UTILITY).count(), "zip": "utilities.zip"}
-    zzm_audio_count = {"label": "ZZM Audio Files", "count": ZFile.objects.filter(details__id=DETAIL_ZZM).count(), "zip": "zzm_audio.zip"}
-    featured_world_count = {"label": "Featured Worlds", "count": ZFile.objects.filter(details__id=DETAIL_FEATURED).count(), "zip": "featured_worlds.zip"}
+    context["mass_dl_info"] = []
 
-    zzt_1990s = []
-    zzt_2000s = []
-    zzt_2010s = {"label": "ZZT Worlds - 2010-2019", "count": 0, "zip": "zzt_worlds_2010-2019.zip"}
-    zzt_2020s = {"label": "ZZT Worlds - 2020-2029", "count": 0, "zip": "zzt_worlds_2020-2029.zip"}
-    for item in zzt_counts:
-        print(item)
-        if item["year"] is None:
-            item["year"] = "Unknown"
-            item["zip"] = "zzt_worlds_UNKNOWN.zip"
-            item["label"] = "ZZT Worlds - Unknown"
-            zzt_1990s.append(item)
-        elif int(item["year"].year) < 2000:
-            item["label"] = "ZZT Worlds - {}".format(item["year"].year)
-            item["zip"] = "zzt_worlds_{}.zip".format(item["year"].year)
-            zzt_1990s.append(item)
-        elif int(item["year"].year) < 2010:
-            item["label"] = "ZZT Worlds - {}".format(item["year"].year)
-            item["zip"] = "zzt_worlds_{}.zip".format(item["year"].year)
-            zzt_2000s.append(item)
-        elif int(item["year"].year) < 2020:
-            zzt_2010s["count"] += item["count"]
-        elif int(item["year"].year) < 2030:
-            zzt_2020s["count"] += item["count"]
+    cached_data = json.loads(cache.get("MOZ_MASS_DL_INFO", "{}"))
+    for k, v in cached_data.items():
+        entry = {"key": v["year"], "count": v["count"], "generated": v["generated"], "zip_name": v["zip_name"], "title": v["title"], "size": v["size"]}
+        if k in ["UNKNOWN", "2000", "2010-2019", "szzt_worlds"]:
+            entry["start_table"] = True
+        context["mass_dl_info"].append(entry)
 
-    columns = [
-        zzt_1990s, zzt_2000s, [zzt_2010s, zzt_2020s], [szzt_count, weave_count, zig_count, utilities_count, zzm_audio_count, featured_world_count]
-    ]
-
-    for column in columns:
-        for row in column:
-            path = os.path.join(ZGAMES_BASE_PATH, "mass", row["zip"])
-            if os.path.isfile(path):
-                stat = os.stat(path)
-                row["size"] = stat.st_size
-                row["updated"] = datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d")
-
-    context["columns"] = columns
     return render(request, "museum_site/mass-downloads.html", context)
 
 
