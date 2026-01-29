@@ -18,7 +18,7 @@ class Command(BaseCommand):
     help = "Creates a set of Zip files for the Mass Download page"
     bucket_labels_year = ["UNKNOWN"] + list(range(1991, 2010)) + ["2010-2019"] + ["2020-2024"] + ["2025-2029"]
     bucket_labels_special = ["szzt_worlds", "weave_worlds", "zig_worlds", "utilities", "zzm_audio", "featured_worlds", "misc"]
-    template_names = {"szzt_worlds": "szzt", "weave_worlds": "weave", "zig_worlds": "zig", "utilities": "utilities", "zzm_audio": "zzm", "featured_worlds": "featured"}  # years use 'zzt'
+    template_names = {"szzt_worlds": "szzt", "weave_worlds": "weave", "zig_worlds": "zig", "utilities": "utilities", "zzm_audio": "zzm", "featured_worlds": "featured", "misc": "misc"}  # years as keys use 'zzt'
 
     buckets = {}
     all_zfiles = None
