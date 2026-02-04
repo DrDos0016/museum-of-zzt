@@ -176,8 +176,44 @@ td
     border:1px solid var(--border-color);
     padding:7px 4px 7px 4px;
 }
-
 /* End Basic Elements */
+
+/* Flexbox Tables */
+.flex-table
+{
+    display:flex;
+    flex-wrap:wrap;
+}
+
+.flex-table .flex-row
+{
+    flex:1 0 100%;
+    display:flex;
+    align-content:center;
+}
+
+.flex-table .label
+{
+    background-color:var(--th-background);
+    border-style: solid;
+    border-width:1px 1px 1px 1px;
+    border-color:var(--border-color);
+    padding-left:1ch;
+    font-weight:bold;
+}
+
+.flex-table .value
+{
+    background-color:var(--board-list-bg);
+    border-style: solid;
+    border-color:var(--border-color);
+    border-width:1px 1px 1px 1px;
+    padding-left:1ch;
+}
+
+.flex-table .label + .value { border-left:0px; }
+.flex-table .value + .label { border-left:0px; } /* For multicolumn */
+.flex-table .value + .value { border-left:0px; }
 
 /* Fonts */
 @font-face
