@@ -60,6 +60,15 @@ class Ascii_Reference_View(Museum_Base_Template_View):
             "og:title": ["property", context["title"] + " - Museum of ZZT"],
             "og:image": ["property", "pages/ascii-reference.png"]
         }
+
+        table_data = []
+        characters = " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ "
+        for idx in range(0, 256):
+            x_offset = 32
+            y_offset = 28
+            table_data.append({"idx": idx, "number": str(idx).zfill(3), "char": characters[idx], "name": "Foob", "x_offset": x_offset, "y_offset": y_offset})
+
+        context["ascii_table"] = table_data
         return context
 
 class Audio_Player_View(Museum_Base_Template_View):
