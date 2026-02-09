@@ -532,6 +532,7 @@ class Manage_Cache_Form(forms.Form):
         ("CHARSETS", "Character Sets"),
         ("CUSTOM_CHARSETS", "Custom Character Sets"),
         ("STRAWPOLL_STREAM_VOTE", "Strawpoll Stream Vote URL"),
+        ("MOZ_MASS_DL_INFO", "Mass Download Entry Information"),
     )
 
     key = forms.ChoiceField(label="Cache Key", choices=KNOWN_CACHE_KEYS)
