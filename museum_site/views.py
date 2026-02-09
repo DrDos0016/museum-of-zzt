@@ -62,7 +62,7 @@ class Ascii_Reference_View(Museum_Base_Template_View):
         }
 
         table_data = []
-        characters = " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ "
+        characters = " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ "
         for idx in range(0, 256):
             x_offset = 32
             y_offset = 28
@@ -96,6 +96,7 @@ class Discord_Overview_View(Museum_Base_Template_View):
             "og:title": ["property", context["title"] + " - Museum of ZZT"],
             "og:image": ["property", "pages/discord.png"]
         }
+
 
         if self.request.POST and self.request.POST.get("agreed") != "agreed":
             context["error"] = True
@@ -249,7 +250,6 @@ def index(request):
     context["new_releases"] = ZFile.objects.new_releases_frontpage(spotlight_filter=True)[:12]
     context["files"] = ZFile.objects.new_finds(spotlight_filter=True)[:12]
     context["feedback"] = Review.objects.latest_approved_reviews().filter(spotlight=True)[:10]
-
     return render(request, "museum_site/index.html", context)
 
 
