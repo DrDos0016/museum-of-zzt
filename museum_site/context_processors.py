@@ -17,11 +17,8 @@ def museum_global(request):
     # Cache init
     data["ENV"] = cache.get_or_set("ENV", settings.ENVIRONMENT)
     if not cache.get("CHARSETS") or not cache.get("CUSTOM_CHARSETS"):
-        print("Caching charsets?")
         init_standard_charsets()
         init_custom_charsets()
-        print("SC", cache.get("CHARSETS"))
-        print("CC", cache.get("CUSTOM_CHARSETS"))
 
     # Base Template
     if request.path.startswith("/tools/"):
