@@ -4,8 +4,6 @@
 {% load zzt_tags %}
 {% load zfile_attrs %}
 
-{% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}{% endblock %}
-
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/new-file-viewer.css' %}?{{BOOT_TS}}">
 {% endblock %}

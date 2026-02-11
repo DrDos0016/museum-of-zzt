@@ -2,12 +2,6 @@
 {% load static %}
 {% load site_tags %}
 
-{% block meta %}
-{% if head_object %}{% meta_tags path=request.get_full_path context=head_object.get_meta_tag_context %}
-{% elif file %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}
-{% elif series %}{% meta_tags path=request.get_full_path context=series.get_meta_tag_context %}{% endif %}
-{% endblock %}
-
 {% block content %}
 <!--generic-directory.html-->
 <div id="heading-wrapper"><h{{header_idx|default:"1"}}>{{title}}</h{{header_idx|default:"1"}}>{% if rss_info %}<a href="{% url rss_info.url_name %}"><img src="{% static 'icons/rss-large.png' %}" alt="RSS icon"></a>{% endif %}</div>

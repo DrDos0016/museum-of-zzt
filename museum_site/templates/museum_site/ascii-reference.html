@@ -3,8 +3,6 @@
 {% load site_tags %}
 {% load zzt_tags %}
 
-{% block meta %}{% meta_tags path=request.get_full_path context=meta_context %}{% endblock %}
-
 {% block scripts %}
 <script src="{% static 'js/change-ascii-char.js' %}"></script>
 {% endblock %}
@@ -122,7 +120,7 @@
     {% for row in ascii_table %}
     <div class="flex-row">
         <div class="ascii-number label">{{row.number}}</div>
-        <div class="ascii-char value">{{row.char}}</div>
+        <div class="ascii-char value" data-idx="{{row.idx}}">{{row.char}}</div>
         <div class="ascii-graphic value">{% char row.idx 'white' %}</div>
     </div>
     {% endfor %}
