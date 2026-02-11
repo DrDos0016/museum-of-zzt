@@ -9,7 +9,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import get_resolver, reverse
 
-from museum_site.constants import DATA_PATH, CHARSET_PATH
+from museum_site.constants import DATA_PATH, CHARSET_PATH, HOST
 from museum_site.settings import BANNED_IPS
 
 try:
@@ -387,3 +387,69 @@ def cheat_prompt_check(request):
 MUSEUM_BOOKMARKS = {
     "weave": "https://meangirls.itch.io/weave-4",
 }
+
+class Meta_Tag_Block():
+    tags = {
+        "url": "<meta property='og:url' content='{}'>\n",
+        "title": "<meta property='og:title' content='{}'>\n",
+        "image": "<meta property='og:image' content='{}'>\n",
+        "description": "<meta name='description' content='{}'>\n",
+        "author": "<meta name='author' content='{}'>\n",
+        "og:type": "<meta property='og:type' content='{}'>\n",
+    }
+
+    def __init__(self, url="", title="", image="", description="", author="Dr. Dos", og_type="website"):
+        self.set_url(url)
+        self.set_title(title)
+        self.set_image(image)
+        self.set_description(description)
+        self.set_author(author)
+        self.set_og_type(og_type)
+
+    def set_url(self, url):
+        if url.startswith("/"):
+            url = url[1:]
+        self.url = (HOST + url) if url else HOST
+
+    def set_title(self, title):
+        self.title = (title + " - Museum of ZZT") if title else "Museum of ZZT"
+
+    def set_image(self, image):
+        if not image:
+            self.image = ""
+            return False
+        if not image.startswith("/static/"):
+            if image.startswith("/"):
+                image = image[1:]
+            image = "static/" + image
+        self.image =  (HOST + image) if image else ""
+
+    def set_description(self, description):
+        self.description = description
+
+    def set_author(self, author):
+        self.author = author
+
+    def set_og_type(self, og_type):
+        self.og_type = og_type
+
+    def __str__(self):
+        return self.render()
+
+    def render(self):
+        # TODO: ESCAPE THESE (see CL: Welcome to Hell which has an apostrophe in the description)
+        output = ""
+        output += self.tags["url"].format(self.url) if self.author else ""
+        output += self.tags["title"].format(self.title) if self.title else ""
+        output += self.tags["image"].format(self.image) if self.image else ""
+        output += self.tags["description"].format(self.description) if self.description else ""
+        output += self.tags["author"].format(self.author) if self.author else ""
+        output += self.tags["og:type"].format(self.og_type) if self.og_type else ""
+        return output
+
+    def ingest_model(self, model=None):
+        if model is None:
+            return self
+        if model == "Series":
+            self.title = "Series!!!"
+        return self
