@@ -104,16 +104,24 @@ class Model_List_View(ListView):
 
         key = resolve(self.request.path) if self.request.resolver_match else None
         path_specific_meta_tags = {
+            # TODO these should have dedicated descriptions
             "zfile_browse_letter": {"title": title},
             "zfile_browse": {"title": title},
             "collection_browse": {"title": title},
+            "collection_view": {"title": title},  # This should use the model's short description
             "zfile_browse_field": {"title": title}, # This hits a lot of things
             "zfile_browse_new_finds": {"title": title},
             "zfile_browse_new_releases": {"title": title},
             "zfile_roulette": {"title": title},
+            "series_browse": {"title": title},
             "series_view": {"title": title},
+            "article_browse": {"title": title},
+            "article_browse_category": {"title": title},
+            "article_browse_categories": {"title": title},
+            "review_browse": {"title": title},
+            "scroll_browse": {"title": title},
         }
-        kwargs = path_specific_meta_tags.get(key.url_name, {"title":"PLACEHOLDER TITLE", "author":"PLACEHOLDER AUTHOR"})
+        kwargs = path_specific_meta_tags.get(key.url_name, {"title":"PLACEHOLDER TITLE"})
         meta_tags = Meta_Tag_Block(url=url, **kwargs)
         return meta_tags
 
