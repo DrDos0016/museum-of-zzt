@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.db.models import Count
 from django.db.models.functions import ExtractYear
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.template.defaultfilters import slugify, timeuntil
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
@@ -19,6 +19,7 @@ from django.views.generic.base import TemplateView
 from django.urls import reverse
 
 from museum_site.core.detail_identifiers import *
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.constants import ZGAMES_BASE_PATH
 from museum_site.forms.zfile_forms import View_Explicit_Content_Confirmation_Form
 from museum_site.forms.wozzt_forms import WoZZT_Roll_Form
@@ -49,6 +50,8 @@ class Museum_Base_Template_View(TemplateView):
 class Ascii_Reference_View(Museum_Base_Template_View):
     title = "Ascii Character Reference"
     template_name = "museum_site/ascii-reference.html"
+    preview_image = "pages/ascii-reference.png"
+    description = "A reference page for the ASCII characters used by ZZT"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -69,37 +72,34 @@ class Ascii_Reference_View(Museum_Base_Template_View):
             table_data.append({"idx": idx, "number": str(idx).zfill(3), "char": characters[idx], "name": "Foob", "x_offset": x_offset, "y_offset": y_offset})
 
         context["ascii_table"] = table_data
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.title, image=self.preview_image, description=self.description)
         return context
 
 class Audio_Player_View(Museum_Base_Template_View):
     title = "Audio Player"
     template_name = "museum_site/audio-player.html"
+    preview_image = "pages/audio-player.png"
+    description = "Listen to transcriptions of ZZT audio and create your own compositions."
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["meta_context"] = {
-            "description": ["name", "Listen to ZZT transcriptions of ZZT audio and create your own compositions."],
-            "og:title": ["property", context["title"] + " - Museum of ZZT"],
-            "og:image": ["property", "pages/audio-player.png"]
-        }
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.title, image=self.preview_image, description=self.description)
         return context
 
 
 class Discord_Overview_View(Museum_Base_Template_View):
     title = "Joining The Worlds of ZZT Discord"
     template_name = "museum_site/discord.html"
+    description = "Rules, information, and an invite link to the Worlds of ZZT Discord server"
+    preview_image = "pages/discord.png"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["meta_context"] = {
-            "description": ["name", "Rules, information, and an invite link to the Worlds of ZZT Discord server"],
-            "og:title": ["property", context["title"] + " - Museum of ZZT"],
-            "og:image": ["property", "pages/discord.png"]
-        }
-
 
         if self.request.POST and self.request.POST.get("agreed") != "agreed":
             context["error"] = True
+
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.title, image=self.preview_image, description=self.description)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -191,11 +191,9 @@ def directory(request, category):
 
 def explicit_warning(request):
     """ Returns an in-between page asking users to confirm they wish to continue to explicit content and if they wish to disable being asked in the future """
-    context = {"title": "Explicit Content Ahead!"}
+    context = {"title": "Explicit Content Ahead!", "file": None}
     form = View_Explicit_Content_Confirmation_Form(request.POST) if request.method == "POST" else View_Explicit_Content_Confirmation_Form()
-
-    if request.GET.get("pk"):
-        context["file"] = ZFile.objects.get(pk=request.GET.get("pk"))
+    context["file"] = get_object_or_404(ZFile, pk=request.GET.get("pk"))
 
     if request.method == "POST":
         # Go back from explicit content
@@ -209,7 +207,9 @@ def explicit_warning(request):
         request.session["show_explicit_for"] = int(request.GET.get("pk", 0))
         return redirect(request.GET.get("next", "/"))
 
+
     context["form"] = form
+    context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=context["title"], author=", ".join(context["file"].related_list("authors")), image=context["file"].preview_url(), description="Explicit content warning for {}".format(context["file"].title))
     return render(request, "museum_site/explicit-warning.html", context)
 
 
@@ -250,6 +250,7 @@ def index(request):
     context["new_releases"] = ZFile.objects.new_releases_frontpage(spotlight_filter=True)[:12]
     context["files"] = ZFile.objects.new_finds(spotlight_filter=True)[:12]
     context["feedback"] = Review.objects.latest_approved_reviews().filter(spotlight=True)[:10]
+    context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), image="pages/og_default.png", description="The Museum of ZZT is an online archive dedicated to the preservation and curation of ZZT worlds. Explore more than 4000 indie-made ZZT worlds spanning its 35+ year history")
     return render(request, "museum_site/index.html", context)
 
 
@@ -265,6 +266,7 @@ def mass_downloads(request):
             entry["start_table"] = True
         context["mass_dl_info"].append(entry)
 
+    context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), description="Mass downloads of all files hosted on the Museum of ZZT grouped by year and category.")
     return render(request, "museum_site/mass-downloads.html", context)
 
 

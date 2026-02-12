@@ -32,4 +32,7 @@ class Series_Contents_View(Model_List_View):
         context = super().get_context_data(**kwargs)
         context["title"] = "Series Overview - {}".format(self.head_object.title)
         context["prefix_text"] = "<h2>Articles in Series</h2>"
+        context["meta_tags"].set_title(context["title"])
+        context["meta_tags"].set_image(self.head_object.preview_url())
+        context["meta_tags"].set_description(self.head_object.description)
         return context

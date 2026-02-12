@@ -283,6 +283,9 @@ def meta_tags(*args, **kwargs):
 
     return mark_safe(meta_tag_html[:-1])
 
+def shadowed_block(**kwargs):
+    return kwargs
+
 
 @register.simple_tag(takes_context=True)
 def model_block(context, item, view="detailed", template_view=None, *args, **kwargs):
@@ -449,7 +452,7 @@ def zfile_citation(zfile, **kwargs):
         authors_list = zfile.related_list("authors")
 
     # TODO Don't enable this just yet (all fields need to be safe to render as HTML. Check function isn't used anywhere where "and more" would be a problem)
-    if len(authors_list) > 500000:  
+    if len(authors_list) > 500000:
         authors_string = ", ".join(authors_list[:5]).replace("<", "&lt;") + ", <i>...and {} more</i>".format(len(authors_list) - 5)
     else:
         authors_string = ", ".join(authors_list)

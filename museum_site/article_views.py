@@ -5,6 +5,7 @@ from django.template.defaultfilters import slugify
 from django.views.generic import DetailView, FormView
 
 from museum_site.core.redirects import redirect_with_querystring
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.forms.article_forms import Article_Search_Form
 from museum_site.generic_model_views import Model_List_View, Model_Search_View
 from museum_site.models import Article, Article_Category_Block
@@ -48,6 +49,7 @@ class Article_Detail_View(DetailView):
         elif context["page"] > 1:  # Otherwise hide the footnotes on all but the first page
             context["article"].footnotes = ""
 
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.object.title, image=self.object.preview_url(), description=self.object.description)
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -61,16 +63,7 @@ class Article_Detail_View(DetailView):
 def patron_articles(request):
     data = {"title": "Early Article Access", "upcoming": Article.objects.upcoming(), "unpublished": Article.objects.unpublished()}
     data["wrong_password"] = True if request.POST.get("secret") and request.POST["secret"] not in [PASSWORD2DOLLARS, PASSWORD5DOLLARS] else False
-    data["meta_context"] = {
-        "description": [
-            "name",
-            "Take a look at these {} unpublished articles currently available to Worlds of ZZT patrons!".format(
-                len(data["upcoming"]) + len(data["unpublished"])
-            )
-        ],
-        "og:title": ["property", data["title"] + " - Museum of ZZT"],
-        "og:image": ["property", "pages/early-access-preview.png"]
-    }
+    data["meta_tags" ] = Meta_Tag_Block(url=request.get_full_path(), image="pages/early-access-preview.png", description="Take a look at these {} unpublished articles currently available to Worlds of ZZT patrons!".format(len(data["upcoming"]) + len(data["unpublished"])))
     return render(request, "museum_site/patreon_articles.html", data)
 
 
@@ -84,9 +77,9 @@ def article_lock(request, article_id, slug=""):
     article.init_model_block_context("detailed", request=request)
     article.allow_comments = False
     data = {"title": "Restricted Article", "article": article, "cost": article.early_access_price, "release": article.publish_date}
+
+    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=article.title, image=article.preview_url(), description=article.description)
     return render(request, "museum_site/article-lock.html", data)
-
-
 
 
 class Article_List_View(Model_List_View):
@@ -200,6 +193,7 @@ class Article_Search_View(Model_Search_View):
     model_list_view_class = Article_List_View
     template_name = "museum_site/generic-form-display.html"
     title = "Article Search"
+    description = "Search the Museum of ZZT's collection of articles"
 
 
 def redirect_with_slug(request, pk):

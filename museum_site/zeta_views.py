@@ -11,6 +11,7 @@ from museum_site.constants import STATIC_PATH, ZETA_EXECUTABLES
 from museum_site.core.decorators import rusty_key_check
 from museum_site.core.detail_identifiers import *
 from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_PRESETS, open_base64_image
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.core.redirects import explicit_redirect_check
 from museum_site.core.zeta_identifiers import *
 from museum_site.models import File as ZFile
@@ -173,7 +174,7 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
 
 def play_zzt_online(request):
     context = {}
-    context["title"] = "Play ZZT Online"    
+    context["title"] = "Play ZZT Online"
     context["components"] = {"controls": True, "instructions": False, "credits": True, "advanced": False, "players": False}
     context["header_text"] = "Play ZZT Online"
     context["local"] = False
@@ -212,8 +213,10 @@ def play_zzt_online(request):
     context["beginner_friendly_worlds"] = Collection.objects.filter(slug="beginner-friendly-worlds").first()
     context["best1"] = Article.objects.filter(pk=295).first()
     context["best2"] = Article.objects.filter(pk=563).first()
+
+    context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=context["title"], image="pages/play-zzt-online.png", description="Play ZZT in your browser! Includes the original ZZT saga, The Best of ZZT, and ZZT's Revenge ready to play, along with links to other recommended worlds.")
     return render(request, "museum_site/play-zzt-online.html", context)
-    
+
 
 @rusty_key_check
 def zeta_launcher(request, key=None, components=["controls", "instructions", "credits", "advanced", "players"]):
@@ -427,6 +430,7 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
         data["file"].save()
         data["screenshot_updated"] = True
 
+    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], image=data["file"].preview_url(), description="Play {} in your web browser.".format(data["file"].title))
     return render(request, "museum_site/play_{}.html".format(player), data)
 
 

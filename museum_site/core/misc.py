@@ -7,6 +7,7 @@ from datetime import datetime, UTC
 
 from django.conf import settings
 from django.shortcuts import redirect
+from django.template.defaultfilters import escape
 from django.urls import get_resolver, reverse
 
 from museum_site.constants import DATA_PATH, CHARSET_PATH, HOST
@@ -437,19 +438,11 @@ class Meta_Tag_Block():
         return self.render()
 
     def render(self):
-        # TODO: ESCAPE THESE (see CL: Welcome to Hell which has an apostrophe in the description)
         output = ""
         output += self.tags["url"].format(self.url) if self.author else ""
-        output += self.tags["title"].format(self.title) if self.title else ""
-        output += self.tags["image"].format(self.image) if self.image else ""
-        output += self.tags["description"].format(self.description) if self.description else ""
-        output += self.tags["author"].format(self.author) if self.author else ""
+        output += self.tags["title"].format(escape(self.title)) if self.title else ""
+        output += self.tags["image"].format(escape(self.image)) if self.image else ""
+        output += self.tags["description"].format(escape(self.description)) if self.description else ""
+        output += self.tags["author"].format(escape(self.author)) if self.author else ""
         output += self.tags["og:type"].format(self.og_type) if self.og_type else ""
         return output
-
-    def ingest_model(self, model=None):
-        if model is None:
-            return self
-        if model == "Series":
-            self.title = "Series!!!"
-        return self
