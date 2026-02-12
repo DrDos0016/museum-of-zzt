@@ -1,5 +1,5 @@
 aiohappyeyeballs==2.6.1
-aiohttp==3.13.2
+aiohttp==3.13.3
 aiosignal==1.4.0
 annotated-types==0.7.0
 anyio==4.9.0
@@ -17,7 +17,7 @@ contextlib2==21.6.0
 cryptography==45.0.2
 decorator==5.2.1
 discord.py==2.5.2
-Django==5.2.9
+Django==5.2.11
 dnspython==2.7.0
 docopt==0.6.2
 exceptiongroup==1.2.2
