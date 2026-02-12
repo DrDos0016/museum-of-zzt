@@ -79,6 +79,23 @@ class Scroll(BaseModel):
             output.append(line)
         return "\n".join(output)
 
+    def content_as_meta_desc(self):
+        raw = self.content
+        lines = raw.split("\n")
+        output = []
+        for line in lines:
+            if line.startswith("@"):
+                continue
+            if line.strip():
+                output.append(line + " | ")
+        if output[-1].endswith(" | "):
+            output[-1] = output[-1][:-3]
+        output = "".join(output)
+        if len(output) > 200:
+            output = output[:197] + "..."
+        return output
+
+
     def save(self, *args, **kwargs):
         if self.source.startswith("https://museumofzzt.com"):
             self.source = self.source.replace("https://museumofzzt.com", "")
