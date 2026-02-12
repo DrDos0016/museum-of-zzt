@@ -7,6 +7,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.core.transforms import qs_manual_order
 from museum_site.models import File, Article
 from stream.models import Stream, Stream_Entry
@@ -89,4 +90,5 @@ class Stream_Schedule_View(ListView):
             context["sunday_time_utc"] = "20:00 UTC"
             context["monday_time_utc"] = "02:00 UTC (Tuesday)"
 
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="Stream schedule for Worlds of ZZT on Twitch. Watch live at https://twitch.tv/worldsofzzt")
         return context

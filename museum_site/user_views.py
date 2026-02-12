@@ -12,6 +12,7 @@ from django.utils.safestring import mark_safe
 
 from museum_site.constants import *
 from museum_site.core import redirect_with_querystring
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.forms.patron_forms import (
     Change_Patron_Crediting_Preferences_Form,
     Change_Patron_Bkzzt_Topics_Form,
@@ -572,6 +573,7 @@ def user_profile(request, user_id=None, **kwargs):
         }
     data["default_upload_cap"] = UPLOAD_CAP  # For guest users
 
+    data["meta_tags"] = Meta_Tag_Block(url=data["user_obj"].profile.get_absolute_url(), title=data["title"], author="", og_type="profile")
     return render(request, "museum_site/user/profile.html", data)
 
 def preferences_spotlight(request):

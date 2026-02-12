@@ -101,6 +101,7 @@ class Feedback_Search_View(Model_Search_View):
     model_list_view_class = Review_List_View
     template_name = "museum_site/generic-form-display.html"
     title = "Feedback Search"
+    description = "Search the Museum of ZZT's collection of reviews and other feedback"
 
 
 class Feedback_Delete_Confirmation_View(FormView):

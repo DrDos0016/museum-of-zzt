@@ -2,6 +2,7 @@ from django.shortcuts import redirect
 from django.template.defaultfilters import slugify
 from django.views.generic import DetailView
 
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.generic_model_views import Model_List_View
 from museum_site.models import Scroll
 
@@ -29,6 +30,7 @@ class Scroll_Detail_View(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Scroll #{}".format(context["scroll"].pk)
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description=context["scroll"].content_as_meta_desc())
         return context
 
 

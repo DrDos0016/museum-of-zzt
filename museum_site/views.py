@@ -132,13 +132,17 @@ def directory(request, category):
 
     if category == "company":
         data_list = Company.objects.all().order_by("title")
+        cat_desc = "companies known to the Museum of ZZT"
     elif category == "author":
         data_list = Author.objects.all().order_by("title")
+        cat_desc = "authors known to the Museum of ZZT"
     elif category == "genre":
         data_list = Genre.objects.visible().order_by("title")
+        cat_desc = "genres available on the Museum of ZZT"
     elif category == "year":
         data_list = list(range(datetime.now(UTC).year, 1990, -1))
         data_list.append("unk")
+        cat_desc = "years"  # TODO IDK this could be better
 
     data["title"] = "{} Directory".format(category.title())
 
@@ -186,6 +190,7 @@ def directory(request, category):
                 final_columns[idx].append({"url": reverse("zfile_browse_field", kwargs={"field": "year", "value": entry}), "title": entry_name, "kind": "entry"})
 
     data["columns"] = final_columns
+    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], description="Directory of all {}".format(cat_desc))
     return render(request, "museum_site/directory.html", data)
 
 
@@ -394,7 +399,7 @@ def site_credits(request):
     data["supporters"] = supporters
     data["bigger_supporters"] = bigger_supporters
     data["biggest_supporters"] = biggest_supporters
-
+    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], description="Museum of ZZT Site Credits")
     return render(request, "museum_site/site-credits.html", data)
 
 
@@ -484,6 +489,7 @@ class Policy_View(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = self.kwargs["slug"].replace("-", " ").title() + " Policy"
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"])
         return context
 
 
