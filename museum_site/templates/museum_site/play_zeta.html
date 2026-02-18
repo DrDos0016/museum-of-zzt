@@ -100,9 +100,9 @@ $(document).ready(function (){
         popout_url.searchParams.set("player", "zeta");
         popout_url.searchParams.set("mode", "popout");
         popout_url.searchParams.set("scale", scale);
-        window.open(popout_url, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+        let window_properties = "width="+(base_w * scale + 8)+",height="+(base_h * scale + 14)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0";
+        window.open(popout_url, "popout-{{file.filename}}", window_properties);
     });
-
 
     $(".zoom").click(function (){
         if ($(this).val() == "+")

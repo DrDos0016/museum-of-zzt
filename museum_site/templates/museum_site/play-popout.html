@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
+<!--play-popout.html-->
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -34,21 +35,38 @@
 <script>
 $(document).ready(function (){
     $(window).resize(resize_canvas_display);
+    $("#ignore").click(dismiss_warning);
     resize_canvas_display();
 });
 
+function dismiss_warning()
+{
+    $("#window-overlay").remove();
+}
+
 function resize_canvas_display()
 {
+    console.log("Scale is a thing?", scale);
     var base_w = {{zeta_config.base_width|default:640}};
     var base_h = {{zeta_config.base_height|default:350}};
 
-    var w = $("body").width()
-    var h = $("body").height()
-
+    var w = $("body").width();
+    var h = $("body").height();
     var x_scale = parseInt(w / base_w);
     var y_scale = parseInt(h / base_h);
 
     var new_scale = Math.min(x_scale, y_scale);
+    if (new_scale == 0)
+        $("#window-overlay").css("display", "flex");
+    else
+        $("#window-overlay").css("display", "none");
+
+    new_scale = Math.max(1, new_scale);
+
+    $("#cur_w").text(w);
+    $("#cur_h").text(h);
+    $("#min_w").text(base_w);
+    $("#min_h").text(base_h);
 
     if (new_scale == scale)
         return false;
@@ -73,8 +91,48 @@ body
     justify-content:center;
     align-items:center;
 }
+
+#window-overlay
+{
+    display:none;
+    flex:1;
+    width:100vw;
+    height:100vh;
+    position:absolute;
+    top:0px;
+    left:0px;
+    justify-content:center;
+    align-items:center;
+}
+
+.sticky-note
+{
+    width:50vw;
+    min-width:200px;
+    min-height:150px;
+    background: #DEF;
+    padding:1ch;
+    margin:20px;
+    border:1px dashed #000;
+    font-family:sans-serif;
+}
+
+#window-overlay .heading { text-align:center; display:block; width:100%; }
+#window-overlay .text { font-size:smaller; }
 </style>
 
-<body><canvas id="zzt_canvas" width="{{zeta_config.base_width|default:640}}" height="{{zeta_config.base_height|default:350}}"></canvas></body>
+<body>
+    <div id="window-overlay">
+        <div class="sticky-note">
+            <div class="text">
+                <b class="heading">Undersized Window</b>
+                <p>This window is currently too small to display ZZT without cutting off the image.</p>
+                <p>Current size: <span id="cur_w"></span>x<span id="cur_h"></span>.<br>Minimum size: <span id="min_w"></span>x<span id="min_h"></span></p>
+                <p><button type="button" id="ignore">Ignore</button> <button type="button" id="resize">Resize Window</button></p>
+            </div>
+        </div>
+    </div>
+    <canvas id="zzt_canvas" width="{{zeta_config.base_width|default:640}}" height="{{zeta_config.base_height|default:350}}"></canvas>
+</body>
 
 </html>
