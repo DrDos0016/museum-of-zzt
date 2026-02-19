@@ -16,6 +16,7 @@ from sys import version as PYTHON_VERSION
 from django import VERSION as DJANGO_VERSION
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 from django.core.cache import cache
 from django.db.models import Count, Q
 from django.urls import reverse
@@ -692,9 +693,10 @@ def publish(request, key, mode="PUBLISH"):
 
     if request.POST.get("action") and mode == "PUBLISH":
         # Move the file
-        src = SITE_ROOT + data["file"].download_url()
-        dst = "{}/{}/{}".format(ZGAMES_BASE_PATH, data["file"].letter, data["file"].filename)
-        shutil.move(src, dst)
+        if data["file"].filename != "OFFSITE-FILE":
+            src = SITE_ROOT + data["file"].download_url()
+            dst = "{}/{}/{}".format(ZGAMES_BASE_PATH, data["file"].letter, data["file"].filename)
+            shutil.move(src, dst)
 
         # Adjust the details
         data["file"].details.remove(Detail.objects.get(pk=DETAIL_UPLOADED))
@@ -728,20 +730,26 @@ def publish(request, key, mode="PUBLISH"):
         for detail in request.POST.getlist("details"):
             data["file"].details.add(Detail.objects.get(pk=detail))
 
-    with zipfile.ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
-        data["file_list"] = zf.namelist()
-    data["file_list"].sort()
+    print(data["file"].filename, "FILE")
+    if data["file"].filename == "OFFSITE-FILE":  # Handle publishing offsite files
+        data["file_list"] = []
+    else:
+        with zipfile.ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
+            data["file_list"] = zf.namelist()
+        data["file_list"].sort()
 
     # Get suggested details based on the file list
     data["suggestions"] = get_detail_suggestions(data["file_list"], Detail.objects.all().values("pk", "title"))
 
     if mode == "PUBLISH":
-        # Get suggest details based on file metadata
+        # Get suggested details based on file metadata
         # If the file isn't from the current year, assume it's a New Find
         if data["file"].release_date and data["file"].release_date.year != YEAR:
             data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
         elif data["file"].release_date is None:
             data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
+        if data["file"].filename == "OFFSITE-FILE":
+            data["suggestions"]["hint_ids"].add(DETAIL_OFFSITE)
     else:
         data["details_list"] = data["file"].details.all().values_list("pk", flat=True)
 
@@ -987,6 +995,7 @@ def tool_index(request, key=None):
     context["zfile"] = zfile
     context["form"] = zfile_select_form
     context["pending_approvals"] = Review.objects.pending_approval().count()
+    context["session_count"] = Session.objects.count()
     return render(request, "museum_site/tools/tool_index.html", context)
 
 
