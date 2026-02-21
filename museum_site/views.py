@@ -279,7 +279,7 @@ def random(request):
     """ Returns a random ZZT file page """
     selection = ZFile.objects.random_zzt_world()
     url = selection.get_absolute_url() if selection is not None else "index"
-    return redirect(url)
+    return redirect(url + "?rnd=1")
 
 
 def set_setting(request):

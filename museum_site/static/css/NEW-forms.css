@@ -524,3 +524,14 @@ button.color-button.selected { border:inset; }
 {
     flex:1 0 100%;
 }
+
+/* Badge form for small mid-page forms (/discord/, /patron-articles/) */
+.badge-form
+{
+    background:var(--ega-darkcyan);
+    color:var(--ega-white);
+    max-width:350px;
+    margin:auto;
+    border:4px double #000;
+    padding:20px;
+}

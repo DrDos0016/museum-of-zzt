@@ -16,15 +16,29 @@
 
 .ascii-selected-highlight
 {
-    justify-content:center;
-    margin-top:14px;
-    margin-bottom:14px;
+    margin:14px auto 14px auto;
+    background-color:var(--ega-darkgray);
+    width:fit-content;
+    height:28px;
+    padding:2px;
+    font-family:cp437;
+    font-size:32px;
+    font-weight:bold;
+}
+
+.ascii-selected-label
+{
+    background-color:var(--ega-black);
+    color:var(--ega-darkcyan);
+    padding-right:1ch;
 }
 
 .ascii-selected-number
 {
     width:5ch;
 }
+
+.ascii-selected-glyph { font-weight:normal; color:var(--ega-yellow); width:3ch; text-align:center;}
 
 .char
 {
@@ -105,9 +119,9 @@
     <form>
     <div class="ascii-table scale-{{scale}} {{orientation}}">{% for i in range %}{% char i "white" "black" scale=scale %}{% endfor %}</div>
     <div class="ascii-selected-highlight b mono">
-        Character:
+        <div class="ascii-selected-label">Character <span class="ascii-selected-number">#2</span>:</div>
+        <div class="ascii-selected-glyph">☻</div>
         <div class="ascii-selected-char">{% char 2 scale=2 %}</div>
-        <div class="ascii-selected-number">#{{2}}</div>
     </div>
     </form>
 

@@ -54,7 +54,7 @@ def file_viewer(request, key, local=False):
         else:
             return redirect("file_beta", key=key)
 
-    data = {"content_classes": ["fv-grid"], "details": [], "local": local, "files": [],}
+    data = {"content_classes": ["fv-grid"], "details": [], "local": local, "files": []}
 
     if not local:
         qs = File.objects.filter(key=key)
@@ -138,12 +138,20 @@ def file_viewer(request, key, local=False):
             data["charsets"] = cache.get("CHARSETS", [])
             data["custom_charsets"] = cache.get("CUSTOM_CHARSETS", [])
 
-        data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], author=", ".join(data["file"].related_list("authors")), image=data["file"].preview_url(), description="{} - File Viewer".format(data["file"].title))
+        if request.GET.get("rnd"):
+            data["meta_tags"] = Meta_Tag_Block(url="/random/", title="Random ZZT World", author="", image="")
+        else:
+            data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], author=", ".join(data["file"].related_list("authors")), image=data["file"].preview_url(), description="{} - File Viewer".format(data["file"].title))
     # TODO LOCAL FILES SHOW ZZT AND SUPER ZZT CHARSETS
     else:
         data["charsets"] = cache.get("CHARSETS", [])
         data["custom_charsets"] = cache.get("CUSTOM_CHARSETS", [])
         data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], description="Museum of ZZT local file viewer")
+
+    # Don't embed an image of the title screen when linking a specific board
+    comp = request.GET.get("file", "").upper()
+    if (comp.endswith(".ZZT") or comp.endswith(".SZT")) and int(request.GET.get("board", 0)) > 0:
+        data["meta_tags"].set_image("")
 
     return render(request, "museum_site/file.html", data)
 
@@ -160,7 +168,12 @@ def file_viewer_new(request, key, local=False):
         context["zfile"] = File.objects.get(key=key)
         context["file"] = context["zfile"]
         context["title"] = context["zfile"].title
-        context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), author=", ".join(context["zfile"].related_list("authors")), title=context["title"], image="/static/" + context["zfile"].preview_url(), description="Beta File viewer for {}".format(context["zfile"].title))
+        context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), author=", ".join(context["zfile"].related_list("authors")), title=context["title"], image=context["zfile"].preview_url(), description="Beta File viewer for {}".format(context["zfile"].title))
+
+        # Don't embed an image of the title screen when linking a specific board
+        comp = request.GET.get("file", "").upper()
+        if (comp.endswith(".ZZT") or comp.endswith(".SZT")) and int(request.GET.get("board", 0)) > 0:
+            context["meta_tags"].set_image("")
     else:
         context["title"] = "Local File Viewer"
         context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=context["title"], description="Museum of ZZT local file viewer BETA")
@@ -461,7 +474,7 @@ class ZFile_Review_List_View(Model_List_View):
         if self.request.POST and review_form.is_valid() and not recent:
             # Check for spam trap
             if (review_form.cleaned_data["experiment"] != ""):
-                    return context
+                return context
 
             feedback = review_form.process(self.request, self.head_object)
             if feedback is None:

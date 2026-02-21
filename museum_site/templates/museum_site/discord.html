@@ -24,16 +24,6 @@
 .role.zzter { color:#5555ff; }
 .role.mzxer { color:#55ffff; }
 
-#join-box
-{
-    background:var(--ega-darkcyan);
-    color:var(--ega-white);
-    max-width:350px;
-    margin:auto;
-    border:4px double #000;
-    padding:20px;
-}
-
 #emoji-table
 {
     max-width:50%;
@@ -80,7 +70,7 @@ label[for=agreed] div { flex: 5; }
 
 <h2>Join The Discord</h2>
 
-<form method="POST" id="join-box">
+<form method="POST" id="join-box" class="badge-form">
     {% csrf_token %}
     <label for="agreed"><input type="checkbox" value="agreed" id="agreed" name="agreed"><div>I have read the above rules and agree to abide by them.</div></label>
     <label style="display:flex;justify-content:center;"><input type="submit" value="Join The Worlds of ZZT Discord"></label>

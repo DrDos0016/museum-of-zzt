@@ -101,7 +101,6 @@ class Model_List_View(ListView):
         url = self.request.get_full_path()
         title = self.get_title()
         author = "Dr. Dos"  # Default
-
         key = resolve(self.request.path) if self.request.resolver_match else None
         path_specific_meta_tags = {
             # TODO these should have dedicated descriptions
