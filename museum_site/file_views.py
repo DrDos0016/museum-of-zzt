@@ -393,6 +393,7 @@ class ZFile_Article_List_View(Model_List_View):
         context["head_object"] = None
         context["title"] = "{} - Articles".format(self.head_object.title)
         context["header_idx"] = 2
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], author=", ".join(context["file"].related_list("authors")), image=context["file"].preview_url(), description="Articles for {}".format(context["file"].title))
         return context
 
 
@@ -494,6 +495,7 @@ class ZFile_Review_List_View(Model_List_View):
             return context
 
         context["form"] = review_form
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], author=", ".join(context["file"].related_list("authors")), image=context["file"].preview_url(), description="Feedback for {}".format(context["file"].title))
         return context
 
     def post(self, request, *args, **kwargs):
