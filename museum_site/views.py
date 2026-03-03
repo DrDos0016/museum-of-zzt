@@ -219,7 +219,9 @@ def explicit_warning(request):
 
 
 def follow(request):
-    return render(request, "museum_site/follow.html", {"title": "Follow Worlds of ZZT"})
+    context = {"title": "Follow Worlds of ZZT"}
+    context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=context["title"], description="Links to every social media and other external site with a Worlds of ZZT account you can follow including Bluesky, Mastodon, Twitch, RSS feeds, Patreon, and more")
+    return render(request, "museum_site/follow.html", context)
 
 
 def index(request):
@@ -271,7 +273,7 @@ def mass_downloads(request):
             entry["start_table"] = True
         context["mass_dl_info"].append(entry)
 
-    context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), description="Mass downloads of all files hosted on the Museum of ZZT grouped by year and category.")
+    context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=context["title"],  description="Mass downloads of all files hosted on the Museum of ZZT grouped by year and category. Quickly obtain a complete archive of ZZT worlds!")
     return render(request, "museum_site/mass-downloads.html", context)
 
 
@@ -452,6 +454,7 @@ def worlds_of_zzt_queue(request):
     size = 999 if (request.user.is_authenticated and request.user.profile.patron) or request.user.is_staff else 16
     context["queue"] = context["queue"][:size]
     context["category"] = category
+    context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=context["title"], image="pages/worlds-of-zzt.png", description="Upcoming posts of randomly selected ZZT boards to be posted to the Worlds of ZZT bot feed.")
     return render(request, "museum_site/wozzt-queue.html", context)
 
 
@@ -499,6 +502,7 @@ class RSS_View(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "RSS Feeds"
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="RSS feeds available from the Museum of ZZT. Keep up to date on new articles, reviews, and uploaded files!")
         return context
 
 

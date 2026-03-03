@@ -63,7 +63,7 @@ class Article_Detail_View(DetailView):
 def patron_articles(request):
     data = {"title": "Early Article Access", "upcoming": Article.objects.upcoming(), "unpublished": Article.objects.unpublished()}
     data["wrong_password"] = True if request.POST.get("secret") and request.POST["secret"] not in [PASSWORD2DOLLARS, PASSWORD5DOLLARS] else False
-    data["meta_tags" ] = Meta_Tag_Block(url=request.get_full_path(), image="pages/early-access-preview.png", description="Take a look at these {} unpublished articles currently available to Worlds of ZZT patrons!".format(len(data["upcoming"]) + len(data["unpublished"])))
+    data["meta_tags" ] = Meta_Tag_Block(url=request.get_full_path(), image="pages/early-access-preview.png", description="A directory of articles in early access currently available to Worlds of ZZT patrons")
     return render(request, "museum_site/patreon_articles.html", data)
 
 

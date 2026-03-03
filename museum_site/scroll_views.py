@@ -29,8 +29,8 @@ class Scroll_Detail_View(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Scroll #{}".format(context["scroll"].pk)
-        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description=context["scroll"].content_as_meta_desc())
+        context["title"] = "Scroll #{} - {}".format(context["scroll"].pk, context["scroll"].title)
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description=context["scroll"].content_as_meta_desc(), author=", ".join(context["scroll"].zfile.related_list("authors")))
         return context
 
 

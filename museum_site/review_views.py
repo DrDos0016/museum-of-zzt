@@ -7,6 +7,7 @@ from django.views.generic import ListView
 
 from museum_site.constants import *
 from museum_site.core.model_utils import delete_feedback
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.forms.review_forms import Review_Search_Form, Feedback_Delete_Confirmation_Form, Review_Form, Feedback_Edit_Form
 from museum_site.generic_model_views import Model_Search_View, Model_List_View
 from museum_site.models import *
@@ -46,6 +47,8 @@ class Reviewer_Directory_View(ListView):
             context["items"].append(item)
 
         context["split"] = math.ceil(len(context["items"]) / 4.0)
+
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.title, description="A directory of all users who have provided feedback on the Museum of ZZT")
         return context
 
 
@@ -92,6 +95,9 @@ class Review_List_View(Model_List_View):
 
         if self.request.path == "/review/browse/":
             context["rss_info"] = {"url_name": "rss_reviews"}
+
+        if self.author:
+            context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="A directory of all feedback on the Museum of ZZT given by {}".format(self.author), author=self.author)
         return context
 
 

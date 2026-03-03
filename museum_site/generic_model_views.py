@@ -102,6 +102,7 @@ class Model_List_View(ListView):
         title = self.get_title()
         author = "Dr. Dos"  # Default
         key = resolve(self.request.path) if self.request.resolver_match else None
+        print("PATH", key)
         path_specific_meta_tags = {
             # TODO these should have dedicated descriptions
             "zfile_browse_letter": {"title": title},
@@ -114,9 +115,9 @@ class Model_List_View(ListView):
             "zfile_roulette": {"title": title},
             "series_browse": {"title": title},
             "series_view": {"title": title},
-            "article_browse": {"title": title},
-            "article_browse_category": {"title": title},
-            "article_browse_categories": {"title": title},
+            "article_browse": {"title": title, "description": "A directory of all articles hosted on the Museum of ZZT"},
+            "article_browse_category": {"title": title, "description": "A directory of all articles on the Museum of ZZT"},
+            "article_browse_categories": {"title": title, "description": "A directory of all categories used to classify articles on the Museum of ZZT"},
             "review_browse": {"title": title},
             "scroll_browse": {"title": title},
         }

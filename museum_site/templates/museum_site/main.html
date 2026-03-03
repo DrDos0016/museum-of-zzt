@@ -238,7 +238,7 @@ Server Time: {{datetime}}<br>
 <a href="{% url 'my_profile' %}">View my data</a><br>
 {% if debug %}
 <div id="debug-block" class="debug block" style="font-size:10pt;background:var(--ega-red);">
-Device Resolution: <span id="debug-res"></span><br>
+Device Resolution: <span id="debug-res"></span> |
 Page Dimensions: <span id="debug-view"></span><br>
 <textarea style="width:95%;margin:auto;">
 URL Name: "{{resolved_url.url_name}}" Path: {{request.path}}
@@ -260,11 +260,14 @@ $("#debug-res").text($(window).width() + "x" + $(window).height());
 $("#debug-view").text($("body").width() + "x" + $("body").height());
 </script>
 {% endif %}
-{% if user.is_staff %}
-<a id="showdebug" class="jsLink">TOGGLE DEBUG CLASS</a><br>
+<a id="showdebug" class="jsLink b">HIDE DEBUGGING INFORMATION</a><br>
 <script>
 $("#showdebug").click(function (){
     $(".debug").toggle();
+    if ($("#showdebug").text() == "HIDE DEBUGGING INFORMATION")
+        $("#showdebug").text("SHOW DEBUGGING INFORMATION");
+    else
+        $("#showdebug").text("HIDE DEBUGGING INFORMATION");
 });
 
 $("meta").each(function (){
@@ -283,7 +286,6 @@ $("meta").each(function (){
     $("#meta-tags").html($("#meta-tags").html() + row);
 });
 </script>
-{% endif %}
 </footer>
 {% endblock %}
 
