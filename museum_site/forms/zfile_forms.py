@@ -5,7 +5,7 @@ from museum_site.core.detail_identifiers import *
 from museum_site.core.sorters import ZFile_Sorter
 from museum_site.core.transforms import language_select_choices, range_select_choices
 from museum_site.constants import LANGUAGES, YEAR, FORM_ANY, FORM_NONE
-from museum_site.fields import Manual_Field, Museum_Related_Content_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Rating_Field, Museum_Board_Count_Field, Museum_Select_Field, Museum_Choice_Field
+from museum_site.fields import Manual_Field, Museum_Related_Content_Field, Museum_Model_Scrolling_Multiple_Choice_Field, Museum_Rating_Field, Museum_Board_Count_Field, Museum_Select_Field, Museum_Choice_Field, Museum_Release_Date_Filter_Field
 from museum_site.models import Detail, Genre
 from museum_site.widgets import Associated_Content_Widget, Board_Range_Widget, Range_Widget, Scrolling_Checklist_Widget
 
@@ -52,6 +52,18 @@ class Advanced_Search_Form(forms.Form):
         full_choices=ZFile_Sorter().get_sort_options_as_django_choices(include_all=True),
         required=False,
     )
+
+    limit_release_date = Museum_Release_Date_Filter_Field(
+        label="Limit results to release date (inclusive)",
+        required=False,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(forms.Form, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            if hasattr(self.fields[field], "ingest_parameters"):
+                self.fields[field].widget.manual_data = self.data
+
 
     def clean_board(self):
         return self.clean_range("board", 0, 999, "Minimum board count is larger than maximum board count")

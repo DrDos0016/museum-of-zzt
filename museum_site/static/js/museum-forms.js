@@ -92,12 +92,10 @@ $(document).ready(function (){
     })
 
     $(".widget-control-button").click(function (){
-        var name = $(this).data("input-name");
+        let names_str = $(this).data("input-name");
         if ($(this).val() == "Clear")
         {
-            $("input[name="+name+"]:checked").click(); // Checkbox
-            $("input[name="+name+"]:checked").prop("checked", false); // Radio
-            $("input[name="+name+"]").parent().parent().children().removeClass("selected");
+            clear_widgets(names_str);
         }
         else if ($(this).val() == "All")
             $("input[name="+name+"]").not(":checked").click();
@@ -262,6 +260,8 @@ function apply_filter(e)
 
 function write_selected(name)
 {
+    if (! name)
+        return false;
     // Write out a list of all ticked inputs with a given name
     var output = "";
 
@@ -451,4 +451,16 @@ function convert_text_to_tags()
             $(this).trigger("input");
         }
     });
+}
+
+function clear_widgets(names_str)
+{
+    let names = names_str.split(",");
+    for (let idx in names)
+    {
+        let name = names[idx];
+        $("input[name="+name+"]:checked").click(); // Checkbox
+        $("input[name="+name+"]:checked").prop("checked", false); // Radio
+        $("input[name="+name+"]").parent().parent().children().removeClass("selected");
+    }
 }
