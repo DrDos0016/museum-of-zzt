@@ -410,9 +410,7 @@ class Meta_Tag_Block():
     def set_url(self, url):
         if url.startswith("/"):
             url = url[1:]
-        print("URL NOW", url)
         self.url = (HOST + url) if url else HOST
-        print(self.url)
 
     def set_title(self, title):
         self.title = (title + " - Museum of ZZT") if title else "Museum of ZZT"
