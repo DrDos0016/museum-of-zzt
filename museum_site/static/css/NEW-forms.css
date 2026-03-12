@@ -535,3 +535,14 @@ button.color-button.selected { border:inset; }
     border:4px double #000;
     padding:20px;
 }
+
+/* Inline form for profile page one-liner forms */
+.inline-form
+{
+    display:flex;
+}
+
+.inline-form select
+{
+    flex:1;
+}

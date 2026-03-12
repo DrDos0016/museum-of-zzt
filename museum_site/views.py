@@ -290,18 +290,28 @@ def set_setting(request):
         return redirect("index")
 
     key, value = param.split("|")
+    # First valid setting is treated as default
+    USER_SETTING_CHOICES = {
+        "sidebars": ["show", "hide"],
+        "theme": ["light", "dark"],
+        "prezoom": ["off", "on"],
+        "TEMP_FILE_VIEWER_BETA": ["v1", "v2"],
+        "view": ["detailed", "list", "gallery"],
+        "DEBUG": ["off", "on"],
+    }
 
-    if key == "sidebars":
-        request.session["sidebars"] = "hide" if value == "hide" else "show"
-    elif key == "theme":
-        request.session["theme"] = "dark" if value == "dark" else "light"
-    elif key == "prezoom":
-        request.session["prezoom"] = "on" if value == "on" else "off"
-
-    output = {"key": key, "value": request.session[key]}
+    if key in USER_SETTING_CHOICES.keys():
+        request.session[key] = value if value in USER_SETTING_CHOICES[key] else USER_SETTING_CHOICES[key][0]
+        if value == USER_SETTING_CHOICES[key][0]:  # Don't bother storing defaults
+            del request.session[key]
+            output = {"key": key, "value": value}
+        else:
+            output = {"key": key, "value": request.session[key]}
+    else:
+        return redirect("index")
 
     if request.GET.get("redirect"):
-        return redirect("my_profile")
+        return redirect(request.GET["redirect"])
     else:
         return JsonResponse(output)
 

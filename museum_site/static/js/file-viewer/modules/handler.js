@@ -39,6 +39,14 @@ export class Handler
         }
         let ready = await this.write_html();
         $(this.envelope_id).addClass("active");
+
+        //TODO THIS IS FOR TEMPORARILY DISPLAYING THE "YOU ARE USING V2 FILE VIEWER" MESSAGE
+        if (this.fvpk == "fvpk-overview")
+        {
+            $("#fv-beta-info").show();
+        }
+        else
+            $("#fv-beta-info").hide();
     }
 
     set_tabs()

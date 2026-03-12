@@ -85,6 +85,7 @@
 }
 #details > div { padding:4px; }
 #details > div:not(.active) { display:none; }
+#details > div#fv-beta-info:not(.active) { display:block; }
 
 .fv-canvas { image-rendering: pixelated; align-self:center; border:5px solid var(--border-color); }
 

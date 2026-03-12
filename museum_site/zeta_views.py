@@ -430,7 +430,7 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
         data["file"].save()
         data["screenshot_updated"] = True
 
-    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], image=data["file"].preview_url(), description="Play {} in your web browser.".format(data["file"].title))
+    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], author=", ".join(data["file"].related_list("authors")), image=data["file"].preview_url(), description="Play {} in your web browser.".format(data["file"].title))
     return render(request, "museum_site/play_{}.html".format(player), data)
 
 

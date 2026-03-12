@@ -231,35 +231,109 @@ function iso8601_to_user_tz(selector)
 <h2>Session Data</h2>
 
 <table>
-    {% for k,v,hr in user_data %}
+    {% if debug %}
     <tr>
-        <th>{{hr}}</th>
-        <td>{{v}}</td>
-        <td class="c"><a href="?delete={{k}}">Delete</a></td>
+        <th class="debug">All Data</th>
+        <td colspan="2" class="debug"><textarea style="width:90%;height:100px;">
+{% for k,v,hr in user_data %}[{{k}}] {{hr}} = {{v}}
+{% empty %}No customized user data found.
+{% endfor %}
+        </textarea></td>
     </tr>
-    {% endfor %}
+    {% endif %}
+
     <tr>
-        <form action="{% url 'action_set_setting' %}">
-        <th>Theme</th>
+        <th>Debug Mode</th>
+        <td>Enables the display of technical data. You probably shouldn't enable this unless asked to by staff for troubleshooting.</td>
         <td>
-            <input type="hidden" name="redirect" value="1">
+            <form action="{% url 'action_set_setting' %}" class="inline-form">
+            <input type="hidden" name="redirect" value="my_profile">
             <select name="setting">
-                <option value="theme|light">Light Theme</option>
+                <option value="DEBUG|off"}>Off - DEFAULT</option>
+                <option value="DEBUG|on" {% if request.session.DEBUG == 'on' %} selected{% endif %}>On</option>
+            </select>
+            <input type="submit" value="Apply">
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <th>File Viewer</th>
+        <td>Access an in-development alternate File Viewer. Some features are currently better than v1. Some features are currently worse or missing outright in v2.</td>
+        <td>
+            <form action="{% url 'action_set_setting' %}" class="inline-form">
+            <input type="hidden" name="redirect" value="my_profile">
+            <select name="setting">
+                <option value="TEMP_FILE_VIEWER_BETA|v1">File Viewer v1 - DEFAULT</option>
+                <option value="TEMP_FILE_VIEWER_BETA|v2"{% if request.session.TEMP_FILE_VIEWER_BETA == "v2" %} selected{% endif %}>File Viewer v2 BETA</option>
+            </select>
+            <input type="submit" value="Apply">
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <th>Theme</th>
+        <td>Adjust site colors to your liking. Can be changed on any page by clicking the torch icon ({% char 157 'darkyellow' 'transparent' scale=1 %}).</td>
+        <td colspan="2">
+            <form action="{% url 'action_set_setting' %}" class="inline-form">
+            <input type="hidden" name="redirect" value="my_profile">
+            <select name="setting">
+                <option value="theme|light">Light Theme - DEFAULT</option>
                 <option value="theme|dark"{% if request.session.theme == 'dark' %} selected{% endif %}>Dark Theme</option>
             </select>
+            <input type="submit" value="Apply" name="first">
+            </form>
         </td>
-        <td class="c">
-            <input type="submit" value="Apply Theme">
+    </tr>
+    <tr>
+        <th>Thumbnail Zoom</th>
+        <td>Automatically expand thumbnails for preview images to full size. Can be changed on any page by clicking the plus-minus icon ({% char 241 'darkpurple' 'transparent' scale=1 %}).</td>
+        <td colspan="2">
+            <form action="{% url 'action_set_setting' %}" class="inline-form">
+            <input type="hidden" name="redirect" value="my_profile">
+            <select name="setting">
+                <option value="prezoom|off">Off - DEFAULT</option>
+                <option value="prezoom|on"{% if request.session.prezoom == 'on' %} selected{% endif %}>On</option>
+            </select>
+            <input type="submit" value="Apply" name="first">
+            </form>
         </td>
-        </form>
+    </tr>
+    <tr>
+        <th>Sidebars</th>
+        <td>Adjust whether the Museum's sidebars are visible or not. On lower resolution displays, they will be hidden regardless of this setting. Can be changed on any page by clicking the pair of arrows (⮜ ⮞)</td>
+        <td colspan="2">
+            <form action="{% url 'action_set_setting' %}" class="inline-form">
+            <input type="hidden" name="redirect" value="my_profile">
+            <select name="setting">
+                <option value="sidebars|show">Show - DEFAULT</option>
+                <option value="sidebars|hide"{% if request.session.sidebars == 'hide' %} selected{% endif %}>Hide</option>
+            </select>
+            <input type="submit" value="Apply" name="first">
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <th>View</th>
+        <td>Adjust the presentation of files, articles, collections, and other data. Some pages force a specific presentation.</td>
+        <td colspan="2">
+            <form action="{% url 'action_set_setting' %}" class="inline-form">
+            <input type="hidden" name="redirect" value="my_profile">
+            <select name="setting">
+                <option value="view|detailed"{% if request.session.view == 'detailed' %} selected{% endif %}>Detailed View - DEFAULT</option>
+                <option value="view|list"{% if request.session.view == 'list' %} selected{% endif %}>List View</option>
+                <option value="view|gallery"{% if request.session.view == 'gallery' %} selected{% endif %}>Gallery View</option>
+            </select>
+            <input type="submit" value="Apply" name="first">
+            </form>
+        </td>
     </tr>
 </table>
 {% endif %}
 
 {% if user.is_authenticated and private %}
 <h2>Account Actions</h2>
-<ul>
-    <li><a href="{% url 'logout_user' %}">Log out</a></li>
-</ul>
+<nav class="nav-actions">
+    <a href="{% url 'logout_user' %}">Log out</a>
+</nav>
 {% endif %}
 {% endblock %}

@@ -70,6 +70,16 @@ var zfile_info = {};
 </div>
 
 <div id="details">
+    <div id="fv-beta-info">
+        <p>You are currently using the Beta File Viewer. It is a work in progress!</p>
+
+        <ul>
+            <li><a href="{% url 'file' file.key %}?force_old_viewer=1">View this file in the v1 File Viewer</a></li>
+            <li><a href="/action/set-setting/?redirect={% url 'file' file.key %}&setting=TEMP_FILE_VIEWER_BETA%7Cv1">Always view files with the v1 File Viewer</a></li>
+        </ul>
+
+        <p>File Viewer preferences may also be adjusted on your <a href="{% url 'my_profile' %}">profile page</a>.</p>
+    </div>
     <div id="zip-info"></div>
     <div id="world-info"></div>
     <div id="board-info"></div>

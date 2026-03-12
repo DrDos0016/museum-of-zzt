@@ -246,11 +246,11 @@ Domain: {{DOMAIN}}
 Absolute URI: {{request.build_absolute_uri}}
 HTTP_HOST: {{request.META.HTTP_HOST}} | Host: {{HOST}} | Env: {{ENV}}
 Spotlight Source: {{spotlight_source|default:'?'}}
-Spotlight Collection ID:: {{spotlight_collection_source|default:'?'}}
+Spotlight Collection ID: {{spotlight_collection_source|default:'?'}}
 </textarea><br>
 View this page on: <a href="https://beta.museumofzzt.com{{request.path}}" target="_blank">BETA</a> <a href="https://museumofzzt.com{{request.path}}" target="_blank">LIVE</a>
 <br>
-
+Debug mode resolved to true. {% if ENV == 'DEV' %}This is always the case on DEV.{% endif %} [Session debug = {{request.session.DEBUG|yesno:'True,False'}}][URL debug = {{request.GET.DEBUG|yesno:'True,False'}}]
 <table id="meta-tags" class="data-table" style="max-width:800px;margin:auto;background:#FFF;font-size:10pt;">
 </table>
 </div>
@@ -259,7 +259,6 @@ View this page on: <a href="https://beta.museumofzzt.com{{request.path}}" target
 $("#debug-res").text($(window).width() + "x" + $(window).height());
 $("#debug-view").text($("body").width() + "x" + $("body").height());
 </script>
-{% endif %}
 <a id="showdebug" class="jsLink b">HIDE DEBUGGING INFORMATION</a><br>
 <script>
 $("#showdebug").click(function (){
@@ -286,6 +285,7 @@ $("meta").each(function (){
     $("#meta-tags").html($("#meta-tags").html() + row);
 });
 </script>
+{% endif %}
 </footer>
 {% endblock %}
 
