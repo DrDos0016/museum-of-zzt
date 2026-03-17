@@ -208,7 +208,7 @@ function iso8601_to_user_tz(selector)
         {% endif %}
     </tr>
 </table>
-<p>Patronage information is updated nightly. If information is inaccurate and you are unable to access functionality you should be able to access, contact <a href="mailto:{{EMAIL_ADDRESS}}">Dr. Dos</a>.
+<p>Patronage information is updated nightly. If information is inaccurate and you are unable to access functionality you should be able to access, contact <a href="mailto:{{EMAIL_ADDRESS}}">Dr. Dos</a>.</p>
 <p class="r"><i>* This information is not displayed on your public profile, but is publicly displayed elsewhere.</i></p>
 {% endif %}
 {% endif %}{% comment %}End private check{% endcomment %}
@@ -322,6 +322,21 @@ function iso8601_to_user_tz(selector)
                 <option value="view|detailed"{% if request.session.view == 'detailed' %} selected{% endif %}>Detailed View - DEFAULT</option>
                 <option value="view|list"{% if request.session.view == 'list' %} selected{% endif %}>List View</option>
                 <option value="view|gallery"{% if request.session.view == 'gallery' %} selected{% endif %}>Gallery View</option>
+            </select>
+            <input type="submit" value="Apply" name="first">
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <th>ZZT v3.2 Compatible Executable</th>
+        <td>Choose the executable to use when playing files originally designed for ZZT v3.2.</td>
+        <td colspan="2">
+            <form action="{% url 'action_set_setting' %}" class="inline-form">
+            <input type="hidden" name="redirect" value="my_profile">
+            <select name="setting">
+                <option value="zzt32_exe|zzt"{% if request.session.zzt32_exe == 'zzt32' %} selected{% endif %}>ZZT v3.2 - DEFAULT</option>
+                <option value="zzt32_exe|czoo"{% if request.session.zzt32_exe == 'czoo' %} selected{% endif %}>ClassicZoo v4.40</option>
+                <option value="zzt32_exe|solidhud"{% if request.session.zzt32_exe == 'solidhud' %} selected{% endif %}>SolidHUD v8</option>
             </select>
             <input type="submit" value="Apply" name="first">
             </form>

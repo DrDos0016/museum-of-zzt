@@ -185,7 +185,7 @@ $(document).ready(function (){
             {% if zeta_config.executable %}
             {
                 "type": "zip",
-                "url": "/static/data/zeta86_engines/{{zeta_config.executable}}",
+                "url": "/static/data/zeta86_engines/{% if request.session.zzt32_exe and zeta_config.executable == 'zzt.zip' %}{{request.session.zzt32_exe}}.zip{% else %}{{zeta_config.executable}}{% endif %}",
             },{% endif %}
             {% for file in included_files %}
             {
