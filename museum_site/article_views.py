@@ -78,7 +78,7 @@ def article_lock(request, article_id, slug=""):
     article.allow_comments = False
     data = {"title": "Restricted Article", "article": article, "cost": article.early_access_price, "release": article.publish_date}
 
-    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=article.title, image=article.preview_url(), description=article.description)
+    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title="Restricted Article", image=article.preview_url(), description="Restricted article. Login with your Patron account or enter your early access password to read this unreleased article.")
     return render(request, "museum_site/article-lock.html", data)
 
 

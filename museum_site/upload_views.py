@@ -13,7 +13,7 @@ from museum_site.constants import PREVIEW_IMAGE_BASE_PATH, UPLOAD_CAP
 from museum_site.core import *
 from museum_site.core.file_utils import calculate_md5_checksum
 from museum_site.core.image_utils import optimize_image
-from museum_site.core.misc import banned_ip, calculate_boards_in_zipfile, calculate_sort_title, get_letter_from_title, generate_screenshot_from_zip, record
+from museum_site.core.misc import banned_ip, calculate_boards_in_zipfile, calculate_sort_title, get_letter_from_title, generate_screenshot_from_zip, record, Meta_Tag_Block
 from museum_site.core.redirects import redirect_with_querystring
 from museum_site.core.zeta_identifiers import *
 from museum_site.core.model_utils import delete_zfile
@@ -84,15 +84,18 @@ class Upload_View(TemplateView):
         if self.mode == "new":
             context["title"] = "Upload File"
             context["submit_text"] = context["title"]
+            meta_description = "Upload a file to the Museum of ZZT's archives for publication"
         else:
             context["title"] = "Edit Unpublished Upload"
             context["submit_text"] = "Edit Upload"
+            meta_description = "Edit an unpublished upload in the Museum of ZZT's upload queue"
 
         context["zgame_form"] = self.zgame_form
         context["play_form"] = self.play_form
         context["upload_form"] = self.upload_form
         context["download_form"] = self.download_form
         context["your_max_upload_size"] = self.request.user.profile.max_upload_size if self.request.user.is_authenticated else UPLOAD_CAP
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description=meta_description)
         return context
 
     def get(self, *args, **kwargs):
@@ -119,7 +122,7 @@ class Upload_View(TemplateView):
                 )
             else:
                 self.zgame_form.zfile.zeta_config_id = ZETA_RESTRICTED
-                
+
             # Download Form (non-zgame DLs)
             if self.download_form.cleaned_data["url"]:
                 self.download_obj = self.download_form.save()
@@ -286,15 +289,20 @@ class Upload_Action_View(ListView):
         if action == "edit":
             context["action"] = "Edit"
             context["action_verb"] = "Editing"
+            context["title"] = "Edit An Existing Upload"
+            meta_description = "Choose one of your uploads in the upload queue to edit"
         elif action == "delete":
             context["action"] = "Delete"
             context["action_verb"] = "Deleting"
+            context["title"] = "Delete An Existing Upload"
+            meta_description = "Choose one of your uploads to delete from the upload queue"
 
         context["form"] = Upload_Action_Form(initial={"action": action, "token": self.request.session.get("STORED_EDIT_TOKEN", "")})
 
         if self.request.user.is_authenticated:
             context["my_uploads"] = File.objects.unpublished_user_uploads(self.request.user.id)
 
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description=meta_description)
         return context
 
     def render_to_response(self, context):

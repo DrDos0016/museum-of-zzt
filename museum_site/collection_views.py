@@ -1,11 +1,12 @@
 from django.template.defaultfilters import slugify
-from django.urls import reverse
+from django.urls import resolve, reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.shortcuts import render
 
 from museum_site.constants import *
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.forms.collection_forms import (
     Collection_Form, Collection_Content_Form, Collection_Content_Removal_Form, Collection_Content_Arrange_Form, On_The_Fly_Collections_Toggle_Form
 )
@@ -67,6 +68,8 @@ class Collection_Update_View(UpdateView):
 
         # Remove "Removed" from the visbility options
         context["form"].fields["visibility"].choices = context["form"].fields["visibility"].choices[1:]
+
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="Edit the collection: {}".format(context["object"].title))
         return context
 
     def form_valid(self, form):
@@ -91,6 +94,7 @@ class Collection_Delete_View(DeleteView):
 
         context["action"] = "Delete"
         context["title"] = "Delete Collection"
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="Delete the collection: {}".format(context["object"].title))
         return context
 
     def get_success_url(self):
@@ -135,6 +139,8 @@ class Collection_Manage_Contents_View(FormView):
         context["form"].fields["collection_id"].initial = self.collection.id
         context["collection"] = self.collection
         context["contents"] = Collection_Entry.objects.get_items_in_collection(context["collection"])
+
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="Add/Remove/Arrange/Edit the entries in the collection: {}".format(context["collection"].title))
         return context
 
     def form_valid(self, form):
@@ -156,6 +162,8 @@ class On_The_Fly_Collections_View(FormView):
             context["form"].fields["otf_status"].initial = "enable"
         if "quit" in self.request.GET:
             context["form"].fields["otf_status"].initial = "disable"
+
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="Enable/Disable On The Fly Collections, a tool to allow adding files to collections from most Museum pages.")
         return context
 
     def form_valid(self, form):
@@ -190,6 +198,12 @@ class Collection_List_View(Model_List_View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["prefix_template"] = "museum_site/prefixes/collection.html"
+        key = self.request.resolver_match.url_name
+        print("KEY", key)
+        print(key)
+        if key == "collection_user":
+            context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="A directory of your collections of files")
+
         return context
 
     def get_title(self):
@@ -239,6 +253,8 @@ class Collection_Contents_View(Model_List_View):
                     continue
                 new_sort_options.append(sort)
             context["sort_options"] = new_sort_options
+
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["head_object"].title, image=context["head_object"].preview_url(), description=context["head_object"].short_description)
         return context
 
     def render_to_response(self, context, **kwargs):
