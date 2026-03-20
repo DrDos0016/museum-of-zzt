@@ -73,6 +73,27 @@ class Ascii_Reference_View(Museum_Base_Template_View):
 
         context["ascii_table"] = table_data
         context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.title, image=self.preview_image, description=self.description)
+
+        palette_lo = []
+        palette_hi = []
+        color_css_names = ["black", "darkblue", "darkgreen", "darkcyan", "darkred", "darkpurple", "darkyellow", "gray", "darkgray", "blue", "green", "cyan", "red", "purple", "yellow", "white", "???"]
+
+        for idx in range(0, 128):
+            color = {
+                "idx": idx,
+                "fg": color_css_names[idx % 16],
+                "bg": color_css_names[idx // 16],
+            }
+            palette_lo.append(color)
+            color = {
+                "idx": idx + 128,
+                "fg": color_css_names[(idx + 128) % 16],
+                "bg": color_css_names[(idx + 128) // 16],
+            }
+            palette_hi.append(color)
+
+        context["palette_lo"] = palette_lo
+        context["palette_hi"] = palette_hi
         return context
 
 class Audio_Player_View(Museum_Base_Template_View):
