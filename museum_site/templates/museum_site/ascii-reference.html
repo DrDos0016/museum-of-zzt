@@ -5,6 +5,30 @@
 
 {% block scripts %}
 <script src="{% static 'js/change-ascii-char.js' %}"></script>
+<script>
+let color_names = [
+        "Black", "DkBlue", "DkGreen", "DkCyan", "DkRed", "DkPurple", "Brown", "Gray",
+        "DkGray", "Blue", "Green", "Cyan", "Red", "Purple", "Yellow", "White"
+    ];
+$(document).ready(function(){
+    $("#palette-wrapper .color").click(function (){
+        console.log($(this));
+        let color_id = parseInt($(this).attr("title"));
+        let oop_name = "<i>None</i>";
+        let fg = color_id % 16;
+        let bg = parseInt(color_id / 16);
+        console.log("BG ", bg);
+        let weave_name = color_names[fg];
+        if (bg != 0)
+            weave_name += " " + color_names[bg];
+        if (color_id >= 9 && color_id <= 15)
+            oop_name = color_names[color_id];
+        $("#oop-name").html(oop_name);
+        $("#weave-name").html(weave_name);
+        $("#color-number").html(color_id);
+    });
+});
+</script>
 {% endblock %}
 
 {% block style %}
@@ -87,6 +111,26 @@
 .flex-table .value { background-color:var(--ega-darkgray); color:var(--ega-yellow); }
 .flex-table .label { background-color:var(--ega-black); color:var(--ega-darkcyan);}
 
+#palette-wrapper
+{
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+}
+
+#palette-wrapper .color:hover
+{
+    outline: 4px solid #FC2;
+    z-index:2;
+    cursor:pointer;
+}
+
+#color-data
+{
+    margin:auto;
+    width:320px;
+}
+
 @media (max-width:1919px) {
     #ascii-flex-table
     {
@@ -95,7 +139,15 @@
     }
 }
 
-@media (max-width:500px) {
+@media (max-width:530px)
+{
+    #palette-wrapper
+    {
+        flex-direction:column;
+    }
+}
+
+@media (max-width:1024px) {
     #ascii-flex-table
     {
         width:310px;
@@ -138,5 +190,23 @@
         <div class="ascii-graphic value">{% char row.idx 'white' %}</div>
     </div>
     {% endfor %}
+</div>
+
+<h2>Color Reference</h2>
+<div id="palette-wrapper">
+    <div class="lo-intensity" style="border:5px solid #D4G">
+        <div class="ascii-table scale-{{scale}} vert">{% for c in palette_lo %}<span class="color ega-{{c.fg}} ega-{{c.bg}}-bg" title="{{c.idx}}">■</span>{% endfor %}</div>
+    </div>
+    <div class="hi-intensity" style="border:5px solid #D4G">
+        <div class="ascii-table scale-{{scale}} vert">{% for c in palette_hi %}<span class="color ega-{{c.fg}} ega-{{c.bg}}-bg" title="{{c.idx}}">■</span>{% endfor %}</div>
+    </div>
+</div>
+<br>
+<div id="color-data" class="b mono">
+    <div>
+    Color #: <span id="color-number"></span><br>
+    ZZT-OOP Name: <span id="oop-name"></span><br>
+    Weave Name: <span id="weave-name"></span>
+    </div>
 </div>
 {% endblock %}
