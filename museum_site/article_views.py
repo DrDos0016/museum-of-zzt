@@ -43,7 +43,8 @@ class Article_Detail_View(DetailView):
         context["page_range"] = list(range(1, context["page_count"] + 1))
         context["next"] = None if context["page"] + 1 > context["page_count"] else context["page"] + 1
         context["prev"] = context["page"] - 1
-        context["article"].content = self.object.content.split("<!--Page-->")[context["page"]-1]
+        if "unpaged" not in self.request.GET and not self.request.GET.get("raw"):
+            context["article"].content = self.object.content.split("<!--Page-->")[context["page"]-1]
         if "<!--Page-->" in context["article"].footnotes:  # Only split if there are mutiple pages that need footnotes
             context["article"].footnotes = self.object.footnotes.split("<!--Page-->")[context["page"]-1]
         elif context["page"] > 1:  # Otherwise hide the footnotes on all but the first page
@@ -53,6 +54,8 @@ class Article_Detail_View(DetailView):
         return context
 
     def render_to_response(self, context, **response_kwargs):
+        if self.request.resolver_match.kwargs.get("slug") != self.object.slug:
+            return redirect_with_querystring("article_view", self.request.META["QUERY_STRING"], permanent=True, pk=self.object.pk, slug=self.object.slug)
         if self.object.published > self.object.user_access_level:  # Access level too low for article
             return redirect_with_querystring("article_lock", self.request.META["QUERY_STRING"], article_id=self.object.pk, slug=self.slug)
         if self.object.published in [Article.IN_PROGRESS, Article.REMOVED]:  # Block requests for IN_PROGRESS/REMOVED articles
