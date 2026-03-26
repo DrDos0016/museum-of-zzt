@@ -10,7 +10,7 @@ def explicit_redirect_check(request, pk):
     return "NO-REDIRECT"
 
 
-def redirect_with_querystring(name, qs, *args, **kwargs):
+def redirect_with_querystring(name, qs, permanent=False, *args, **kwargs):
     url = reverse(name, args=args, kwargs=kwargs)
     if qs:
         url += "?" + qs
