@@ -390,6 +390,18 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
                 break
         data["zeta_config"].commands = data["zeta_config"].commands.replace("{executable_file}", generic_exe)
 
+    # Extra work for SZZT to prevent DOS errors
+    if data["zeta_config"].name.startswith("Super ZZT v2.0"):
+        szzt_world = ""
+        zip_file = zipfile.ZipFile(os.path.join(data["file"].phys_path()))
+        files = zip_file.namelist()
+        for f in files:
+            basename = os.path.basename(f)
+            if f.lower().endswith(".szt") and basename == f:
+                szzt_world = f
+                break
+        data["zeta_config"].arguments = data["zeta_config"].arguments.replace("{SZZT_WORLD}", szzt_world)
+
     # Override for "Live" Zeta edits
     if request.GET.get("live"):
         data["zeta_live"] = True
