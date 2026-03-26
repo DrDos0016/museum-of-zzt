@@ -202,6 +202,12 @@ class File(BaseModel, ZFile_Urls):
     @cached_property
     def extras(self):
         output = []
+        if self.description and self.show_zfile_description != "hide":
+            output.append({"kind": "zfile-description", "template": "museum_site/subtemplate/extra-description.html"})
+        if DETAIL_FEATURED in self.detail_ids:
+            output.append({"kind": "featured-world", "template": "museum_site/subtemplate/extra-featured-world.html"})
+
+        """
         if DETAIL_FEATURED in self.detail_ids:
             output.append({"kind": "featured-world", "template": "museum_site/subtemplate/extra-featured-world.html"})
         if DETAIL_LOST in self.detail_ids and self.description:
@@ -212,6 +218,9 @@ class File(BaseModel, ZFile_Urls):
                 output.append({"kind": "program-description", "template": "museum_site/subtemplate/extra-utility.html"})
         elif DETAIL_UTILITY in self.detail_ids and self.description:
             output.append({"kind": "utility-description", "template": "museum_site/subtemplate/extra-utility.html"})
+        elif self.description:  # Place at front of list
+            output.insert(0, {"kind": "zfile-description", "template": "museum_site/subtemplate/extra-description.html"})
+        """
         return output
 
     # Initalizing functions
@@ -389,7 +398,7 @@ class File(BaseModel, ZFile_Urls):
             return restricted
 
         self.init_all_downloads()
-        
+
         if self.all_downloads_count == 0:
             return restricted
 
@@ -401,7 +410,7 @@ class File(BaseModel, ZFile_Urls):
             target = "_blank"
         else:
             text = "Download" + ("s ({})".format(self.all_downloads_count) if self.all_downloads_count >= 2 else "")
-            
+
 
         # Change text for list view
         if view == "list":
@@ -416,7 +425,7 @@ class File(BaseModel, ZFile_Urls):
         self.init_all_downloads()
         if "offsite" in self.roles:
             return self.field_context(text="", kind="faded")
-        
+
         return self.field_context(url=reverse("zfile_play", kwargs={"key": self.key}), text=text, icons="major")
 
     def get_field_view(self, view="detailed"):
@@ -574,6 +583,8 @@ class File(BaseModel, ZFile_Urls):
             elif kind == "utility-description":
                 context["detail_name"] = "Utility"
                 context["utility_description"] = self.description
+            elif kind == "zfile-description":
+                context["description"] = self.description
         return context
 
     def process_kwargs(self, kwargs):

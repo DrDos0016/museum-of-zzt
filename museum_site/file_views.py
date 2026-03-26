@@ -228,6 +228,8 @@ class ZFile_List_View(Model_List_View):
             qs = ZFile.objects.new_releases()
         elif self.request.path == reverse("zfile_roulette"):
             qs = ZFile.objects.roulette(self.request.GET["seed"], PAGE_SIZE)  # Cap results for list view
+        elif self.search_type == "basic" and self.request.GET.get("q").startswith("pks="):
+            qs = ZFile.objects.filter(pk__in=self.request.GET["q"][4:].split(","))
         elif self.search_type == "advanced":
             cleaned_params = clean_params(self.request.GET.copy(), list_items=["details"])
             qs = ZFile.objects.advanced_search(cleaned_params)
@@ -254,11 +256,16 @@ class ZFile_List_View(Model_List_View):
         elif self.field == "article":  # Browse ZFiles associated with an article's slug
             qs = qs.filter(articles__slug=self.value)
 
+        # Exclude descriptions unless asked for them
+        if self.request.session.get("zfile_descriptions", "hide") == "hide":
+            qs = qs.defer("description")
+
         qs = self.sort_queryset(qs)
 
         # Get related
         if self.value != "featured-world":
             qs = qs.prefetch_related("authors", "companies", "details", "downloads", "genres")
+
         return qs
 
     def get_context_data(self, **kwargs):

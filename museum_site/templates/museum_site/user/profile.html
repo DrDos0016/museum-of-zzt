@@ -257,6 +257,20 @@ function iso8601_to_user_tz(selector)
         </td>
     </tr>
     <tr>
+        <th>File Descriptions</th>
+        <td>Show file descriptions when browsing files (detailed view only). These descriptions can otherwise be viewed by viewing a file's contents in the file viewer or on the file's attributes page.</td>
+        <td>
+            <form action="{% url 'action_set_setting' %}" class="inline-form">
+            <input type="hidden" name="redirect" value="my_profile">
+            <select name="setting">
+                <option value="zfile_descriptions|hide">Hide - DEFAULT</option>
+                <option value="zfile_descriptions|show"{% if request.session.zfile_descriptions == "show" %} selected{% endif %}>Show</option>
+            </select>
+            <input type="submit" value="Apply">
+            </form>
+        </td>
+    </tr>
+    <tr>
         <th>File Viewer</th>
         <td>Access an in-development alternate File Viewer. Some features are currently better than v1. Some features are currently worse or missing outright in v2.</td>
         <td>
