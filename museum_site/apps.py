@@ -33,7 +33,16 @@ class Museum_Site_Config(AppConfig):
 
     def has_zeta_install(self):
         zeta_path = os.path.join(settings.BASE_DIR, "museum_site", "static", "zeta86")
-        return "Found" if os.path.exists(zeta_path) else "Missing"
+        if not os.path.exists(zeta_path):
+            return "Missing"
+        with open(os.path.join(zeta_path, "zeta.min.js")) as fh:
+            zeta_version = "???"
+            raw = fh.read()
+            start = raw.find('"1.')
+            if start != -1:
+                zeta_version = raw[start + 1:start + 10].split('"')[0]
+
+        return "Found Zeta86 v{}".format(zeta_version)
 
     def has_zookeeper_install(self):
         try:
