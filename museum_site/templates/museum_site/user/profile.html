@@ -258,13 +258,13 @@ function iso8601_to_user_tz(selector)
     </tr>
     <tr>
         <th>File Descriptions</th>
-        <td>Show file descriptions when browsing files (detailed view only). These descriptions can otherwise be viewed by viewing a file's contents in the file viewer or on the file's attributes page.</td>
+        <td>Show file descriptions when browsing files (detailed view only). When hidden, these descriptions can still be viewed by viewing a file's contents in the file viewer or on the file's attributes page.</td>
         <td>
             <form action="{% url 'action_set_setting' %}" class="inline-form">
             <input type="hidden" name="redirect" value="my_profile">
             <select name="setting">
-                <option value="zfile_descriptions|hide">Hide - DEFAULT</option>
-                <option value="zfile_descriptions|show"{% if request.session.zfile_descriptions == "show" %} selected{% endif %}>Show</option>
+                <option value="zfile_descriptions|show">Show - DEFAULT</option>
+                <option value="zfile_descriptions|hide"{% if request.session.zfile_descriptions == "hide" %} selected{% endif %}>Hide</option>
             </select>
             <input type="submit" value="Apply">
             </form>

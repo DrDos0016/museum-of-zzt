@@ -320,7 +320,7 @@ def set_setting(request):
         "view": ["detailed", "list", "gallery"],
         "DEBUG": ["off", "on"],
         "zzt32_exe": ["zzt", "czoo", "solidhud"],
-        "zfile_descriptions": ["hide", "show"],
+        "zfile_descriptions": ["show", "hide"],
     }
 
     if key in USER_SETTING_CHOICES.keys():

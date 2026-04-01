@@ -256,8 +256,8 @@ class ZFile_List_View(Model_List_View):
         elif self.field == "article":  # Browse ZFiles associated with an article's slug
             qs = qs.filter(articles__slug=self.value)
 
-        # Exclude descriptions unless asked for them
-        if self.request.session.get("zfile_descriptions", "hide") == "hide":
+        # Exclude descriptions if requested to hide them
+        if self.request.session.get("zfile_descriptions", "show") == "hide":
             qs = qs.defer("description")
 
         qs = self.sort_queryset(qs)

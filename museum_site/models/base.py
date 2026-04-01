@@ -122,10 +122,10 @@ class BaseModel(models.Model):
         self.dprint("INIT MODEL BLOCK CONTEXT")
         self.request = request
         self.context = {}
-        self.show_zfile_description = False
+        self.show_zfile_description = "show"
         if request:
             self.show_staff = request.user.is_staff
-            self.show_zfile_description = request.session.get("zfile_descriptions", "hide")
+            self.show_zfile_description = request.session.get("zfile_descriptions", "show")
         self._init_roles(view)  # Every model has roles (also used as CSS classes)
         for init_func in self.to_init:  # Initialize the object
             getattr(self, "_init_{}".format(init_func))()
