@@ -515,8 +515,10 @@ class Livestream_Vod_Form(forms.Form):
 
         # Associate the article with the selected series (if any)
         if self.cleaned_data["series"]:
-            a.series.add(self.cleaned_data["series"])
+            a.series.add()
             a.save()
+            # Save the series to update the "latest entry" date
+            self.cleaned_data["series"].save()
 
         return a
 
