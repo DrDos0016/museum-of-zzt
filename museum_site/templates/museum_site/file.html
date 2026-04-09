@@ -82,6 +82,7 @@ var details = [{% for d in file.details.all %}{{d.id}}, {% endfor %}];
 <div id="analysis">
     <div id="file-data">
         <div class="toggle" style="display:block;">
+            {% if not local %}
             <p>A work in progress new file viewer is available. You may:</p>
 
             <ul>
@@ -90,6 +91,7 @@ var details = [{% for d in file.details.all %}{{d.id}}, {% endfor %}];
             </ul>
 
             <p>File Viewer preferences may also be adjusted on your <a href="{% url 'my_profile' %}">profile page</a>.</p>
+            {% endif %}
         </div>
         <div id="zip-info" class="toggle">
             <table class="zip-info-table">

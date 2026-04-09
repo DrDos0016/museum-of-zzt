@@ -3,6 +3,29 @@
 
 {% block form_output %}
 <hr>
+
+<table>
+{% for entry in matches %}
+<tr><th colspan="5">{{entry.checksum}} / {{entry.filename}}</th></tr>
+{% for c in entry.content_matches %}
+    {% if forloop.first %}
+    <tr><th>Matched File</th><th>In</th><th>PK</th><th>Title</th><th>Attrs</th>
+    {% endif %}
+    <tr>
+        <td>{{c}}</td>
+        <td>{{c.zfile.filename}}</td>
+        <td><a href="{{c.zfile.admin_url}}">{{c.zfile.pk}}</a></td>
+        <td><a href="{{c.zfile.get_absolute_url}}">{{c.zfile.title}}</a></td>
+        <td><a href="{{c.zfile.attributes_url}}">Attributes</a></td>
+    </tr>
+{% empty %}
+    <tr><th colspan="5" style="background-color:var(--ega-red);">No Records Found</th></tr>
+{% endfor %}
+<tr class="spacer"><td colspan="5" style="border:0px;height:12px;background:var(--block-bg);"></td></tr>
+{% endfor %}
+</table>
+
+{% comment %}
 <table>
 <tr><th>PK</th><th>md5</th><th>Filename</th><th>Title</th><th>Attrs.</th></tr>
 {% for zf in matches %}
@@ -10,7 +33,8 @@
     <td class="mono">{{zf.checksum}}</td>
     <td>{{zf.filename}}</td>
     <td><a href="{{zf.get_absolute_url}}">{{zf.title}}</a></td>
-    <td><a href="{{zf.attribue_url}}">Attributes</a></td>
+    <td><a href="{{zf.attributes_url}}">Attributes</a></td>
 {% endfor %}
 </table>
+{% endcomment %}
 {% endblock %}

@@ -257,6 +257,20 @@ function iso8601_to_user_tz(selector)
         </td>
     </tr>
     <tr>
+        <th>Explicit Content Warnings</th>
+        <td>Show warnings before viewing/playing files that contain explicit content.</td>
+        <td>
+            <form action="{% url 'action_set_setting' %}" class="inline-form">
+            <input type="hidden" name="redirect" value="my_profile">
+            <select name="setting">
+                <option value="explicit_content_warnings|show">Show - DEFAULT</option>
+                <option value="explicit_content_warnings|hide"{% if request.session.explicit_content_warnings == "hide" %} selected{% endif %}>Hide</option>
+            </select>
+            <input type="submit" value="Apply">
+            </form>
+        </td>
+    </tr>
+    <tr>
         <th>File Descriptions</th>
         <td>Show file descriptions when browsing files (detailed view only). When hidden, these descriptions can still be viewed by viewing a file's contents in the file viewer or on the file's attributes page.</td>
         <td>

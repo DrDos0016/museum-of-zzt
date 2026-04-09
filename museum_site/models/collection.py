@@ -102,16 +102,6 @@ class Collection(BaseModel):
     def visibility_str(self):
         return self.VISIBILITY_CHOICES[self.visibility][1]
 
-    def get_meta_tag_context(self):
-        """ Returns a dict of keys and values for <meta> tags  """
-        tags = {}
-        tags["author"] = ["name", self.user.username]
-        tags["description"] = ["name", '"{}" a collection by {}.'.format(self.title, self.user.username)]
-
-        tags["og:title"] = ["property", self.title + " - Museum of ZZT"]
-        tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
-        return tags
-
     def get_field_view(self, view="detailed"):
         return {"value": "<a href='{}'>{}</a>".format(self.get_absolute_url(), self.title), "safe": True}
 

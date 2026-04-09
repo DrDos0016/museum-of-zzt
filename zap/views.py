@@ -52,6 +52,37 @@ def index(request):
 
 
 @staff_member_required
+def media_browse(request):
+    context = {"title": "Browse ZAP Media"}
+
+    raw_dirs = glob.glob(os.path.join(ZAP_UPLOAD_PATH, "*"))
+    directories = []
+    target = ""
+    for d in raw_dirs:
+        entry = {"path": d, "base": os.path.basename(d)}
+        directories.append(entry)
+        if request.GET.get("dir", "???") == entry["base"]:
+            target = entry["path"]
+
+    if target:
+        context["entries"] = []
+        raw_entries = glob.glob(os.path.join(target, "**"), recursive=True)
+        context["entry_count"] = len(raw_entries)
+        raw_entries = list(raw_entries)
+        raw_entries.sort()
+        for e in raw_entries[::-1]:
+            if os.path.isdir(e):
+                continue
+            entry = {"path": e, "url_path": e[e.find("/static/"):], "base": os.path.basename(e)}
+            context["entries"].append(entry)
+
+
+
+    context["directories"] = directories
+    return render(request, "zap/media-browse.html", context)
+
+
+@staff_member_required
 def media_upload(request):
     return prefab_form(request, ZAP_Media_Upload_Form)
 

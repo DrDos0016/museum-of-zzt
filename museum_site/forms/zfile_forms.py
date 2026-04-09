@@ -115,8 +115,9 @@ class View_Explicit_Content_Confirmation_Form(forms.Form):
         self.fields["explicit_warning"].help_text = self.fields["explicit_warning"].help_text.format(reverse("my_profile"))
 
     def process(self, request):
+        # TODO: This is handled with set_action in views.py and duplicated here
         if request.POST.get("explicit_warning") == "off":
-            request.session["bypass_explicit_content_warnings"] = True
+            request.session["explicit_content_warnings"] = "hide"
         else:
-            if request.session.get("bypass_explicit_content_warnings"):
-                del request.session["bypass_explicit_content_warnings"]
+            if request.session.get("explicit_content_warnings") == "hide":
+                del request.session["explicit_content_warnings"]

@@ -1,0 +1,30 @@
+{% extends "zap/main.html" %}
+{% load static %}
+{% load site_tags %}
+{% load tz %}
+
+{% block style %}
+<style>
+
+</style>
+{% endblock %}
+
+{% block zap_body %}
+<h2>Uploaded Media</h2>
+
+<ul>
+{% for dir in directories %}
+<li><a href="?dir={{dir.base}}">/{{dir.base}}/</a></li>
+{% endfor %}
+</ul>
+
+<hr>
+
+<ol>
+{% for entry in entries %}
+<li><a href="{{entry.url_path}}">{{entry.base}}</a></li>
+{% endfor %}
+</ol>
+
+
+{% endblock %}

@@ -39,13 +39,14 @@ PREVIEW_IMAGE_CROP_CHOICES = (
     ("NONE", "Do Not Crop Image"),
 )
 
+
 class Checksum_Comparison_Form(forms.Form):
     use_required_attribute = False
     heading = "Checksum Comparison"
     attrs = {"method": "POST"}
     submit_value = "Compare"
+    filenames = {}
 
-    checksums = forms.CharField(label="Checksums", widget=forms.Textarea(), help_text="One checksum per line. Chars past the md5 are truncated so you can copy/paste md5sum's results directly.")
     checksum_type = Museum_Choice_Field(
         label="Checksum Type",
         widget=forms.RadioSelect(),
@@ -55,23 +56,44 @@ class Checksum_Comparison_Form(forms.Form):
         ),
         initial="md5"
     )
+    checksums = forms.CharField(label="Checksums", widget=forms.Textarea(), help_text="One checksum per line. Chars past the md5 are truncated so you can copy/paste md5sum's results directly.")
 
     def clean_checksums(self):
         raw_checksums = self.cleaned_data["checksums"].split("\r\n")
         checksums = []
         for c in raw_checksums:
-            checksums.append(c[:32])
+            if self.cleaned_data["checksum_type"] == "md5":
+                checksums.append(c[:32])
+            else:
+                halves = c.split(";") + ["", "", ""]
+                checksums.append(halves[0])
+                self.filenames[str(halves[0])] = halves[1]
         return checksums
 
     def process(self):
         checksums = self.cleaned_data["checksums"]
-        if self.cleaned_data["checksum_type"] == "md5":
-            qs = File.objects.filter(checksum__in=checksums).order_by("sort_title")
-        else:
-            qs = Content.objects.filter(crc32__in=checksums).values_list("pk", flat=True)
-            pks = list(qs)
-            qs = File.objects.filter(content__id__in=pks).order_by("sort_title")
-        return {"matches": qs}
+        output = []
+
+        if self.cleaned_data["checksum_type"] == "crc32":
+            for c in checksums:
+                record = {"checksum": c, "content_matches": [], "count": 0, "filename": self.filenames.get(str(c), "?")}
+                qs = Content.objects.filter(crc32=c)
+                for content in qs:
+                    content.zfile = File.objects.filter(content=content).first()
+                    record["content_matches"].append(content)
+                output.append(record)
+        elif self.cleaned_data["checksum_type"] == "md5":
+            for c in checksums:
+                record = {"checksum": c, "content_matches": []}
+                zfile = File.objects.filter(checksum=c).first()
+                if zfile:
+                    record["content_matches"].append({"zfile": zfile})
+                    output.append(record)
+                else:
+                    record["content_matches"].append("No Match")
+                    output.append(record)
+        return {"matches": output, "checksum_type": self.cleaned_data["checksum_type"]}
+
 
 class Discord_Announcement_Form(forms.Form):
     use_required_attribute = False
@@ -129,6 +151,7 @@ class Discord_Announcement_Form(forms.Form):
             self.process()
         else:
             print("Faux Logging to #{} -- {}".format(channel, body))
+
 
 class Download_Form(forms.ModelForm):
     user_required_attribute = False
@@ -283,7 +306,7 @@ class IA_Mirror_Form(forms.Form):
         for f in package_files:
             base = f.replace(wip_dir, "")[1:]  # Trim trailing /
             if base:
-                #print("Adding to wip archive:", f, "as", base)
+                # print("Adding to wip archive:", f, "as", base)
                 zf.write(f, arcname=base)
                 self.log.append("{}: Adding `{}` to IA archive zipfile as `{}`\n".format(int(time.time()), f, base))
         if comment:
@@ -321,7 +344,6 @@ class IA_Mirror_Form(forms.Form):
         )
         self.mirror_status = "SUCCESS" if (r[0].status_code == 200) else "FAILED"
         self.log.append("{}: IA RESPONSE [{}] [Status Code {}][Content {}]\n".format(int(time.time()), self.mirror_status, r[0].status_code, r[0].content))
-
 
         # Remove the working files/folders
         self.log.append("{}: Removing temp dir `{}`\n".format(int(time.time()), wip_dir))
@@ -412,9 +434,9 @@ class Livestream_Vod_Form(forms.Form):
     title = forms.CharField(widget=Enhanced_Text_Widget(char_limit=80), help_text="Used exactly as entered. Remember to prefix!{}".format(TITLE_PREFIX_REFERENCE))
     date = forms.DateField(widget=Enhanced_Date_Widget(buttons=["today"]))
     video_url = forms.URLField(help_text=(
-            "https://youtu.be/<b>{id}</b>, <br>https://www.youtube.com/watch?v=<b>{id}</b>&feature=youtu.be, <br>"
-            "or https://studio.youtube.com/video/<b>{id}</b>/edit format. Add multiplate with commas (no space)."
-        ),
+        "https://youtu.be/<b>{id}</b>, <br>https://www.youtube.com/watch?v=<b>{id}</b>&feature=youtu.be, <br>"
+        "or https://studio.youtube.com/video/<b>{id}</b>/edit format. Add multiplate with commas (no space)."
+    ),
         label="Video URL"
     )
     video_description = forms.CharField(
@@ -522,6 +544,7 @@ class Livestream_Vod_Form(forms.Form):
 
         return a
 
+
 class Manage_Cache_Form(forms.Form):
     use_required_attribute = False
     attrs = {"method": "POST"}
@@ -563,6 +586,7 @@ class Prep_Publication_Pack_Form(forms.Form):
         required=False,
         help_text="Separate with commas. Match order in associated ZFiles.",
     )
+
 
 class Publication_Pack_Select_Form(forms.Form):
     use_required_attribute = False

@@ -221,15 +221,6 @@ class Article(BaseModel):
     def comments_permitted(self):
         return True if self.allow_comments and self.published == self.PUBLISHED else False
 
-    def get_meta_tag_context(self):
-        """ Returns a dict of keys and values for <meta> tags  """
-        tags = {}
-        tags["author"] = ["name", self.author.replace("/", ", ")]
-        tags["description"] = ["name", self.description]
-        tags["og:title"] = ["property", self.title + " - Museum of ZZT"]
-        tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
-        return tags
-
     def get_field_view(self, view="detailed", text_override=""):
         url = self.get_absolute_url()
         if self.request and self.request.POST.get("secret"):

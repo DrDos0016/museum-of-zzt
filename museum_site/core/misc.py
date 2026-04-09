@@ -1,9 +1,11 @@
+import math
 import os
+import re
 import tempfile
 import zipfile
 import urllib.parse
 
-from datetime import datetime, UTC
+from datetime import datetime, UTC, timedelta
 
 from django.conf import settings
 from django.shortcuts import redirect
@@ -446,3 +448,171 @@ class Meta_Tag_Block():
         output += self.tags["author"].format(escape(self.author)) if self.author else ""
         output += self.tags["og:type"].format(self.og_type) if self.og_type else ""
         return output
+
+
+def get_frontpage_events(qs):
+    if False:  # Manual front page event
+        main_event = {"title": "Oktrollberfest 2025", "image": "/static/images/oktroll-2025-goose.png", "when": "Through Oct. 31st", "when_title": "", "url": "https://itch.io/jam/oktrollberfest-2025"}
+    else:
+        # Obtain events
+        now = datetime.now(UTC)
+        cutoff = now + timedelta(hours=-1)
+        events = list(qs.filter(visible=True, when__gte=cutoff).order_by("when"))
+        if events:
+            until = timeuntil(events[0].when)
+
+        main_event = None
+        if events:
+            title = "Livestream - " + events[0].title
+            when = "In " + until.split(",")[0]
+            if str(now)[:10] >= str(events[0].when)[:10]:
+                when = "Right now!"
+            when_title = str(events[0].when)[:19] + " UTC"
+            url = "https://twitch.tv/worldsofzzt/"
+            image = events[0].preview_image
+
+            main_event = {"title": title, "image": image, "when": when, "when_title": when_title, "url": url}
+    return main_event
+
+def get_ascii_table_data():
+    table_data = []
+    characters = " ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ "
+    for idx in range(0, 256):
+        x_offset = 32
+        y_offset = 28
+        table_data.append({"idx": idx, "number": str(idx).zfill(3), "char": characters[idx], "name": "Foob", "x_offset": x_offset, "y_offset": y_offset})
+    return table_data
+
+def get_color_table_data():
+    palette_lo = []
+    palette_hi = []
+    color_css_names = ["black", "darkblue", "darkgreen", "darkcyan", "darkred", "darkpurple", "darkyellow", "gray", "darkgray", "blue", "green", "cyan", "red", "purple", "yellow", "white", "???"]
+
+    for idx in range(0, 128):
+        color = {"idx": idx, "fg": color_css_names[idx % 16], "bg": color_css_names[idx // 16]}
+        palette_lo.append(color)
+        color = {"idx": idx + 128, "fg": color_css_names[(idx + 128) % 16], "bg": color_css_names[(idx + 128) // 16]}
+        palette_hi.append(color)
+
+    return (palette_lo, palette_hi)
+
+def list_to_columns(category, data_list):
+    # Break the list of results into 4 columns
+    if category != "year":
+        data_list = sorted(data_list, key=lambda s: re.sub(r'(\W|_)', "é", s.title.lower()))
+
+    # Split the list into 4 sets
+    column_length = math.ceil(len(data_list) / 4)
+    wip_columns = []
+    for idx in range(0, 4):
+        wip_columns.append(data_list[:column_length])
+        data_list = data_list[column_length:]
+
+    # Add headings to create final columns
+    final_columns = [[], [], [], []]
+    observed_letters = []
+    last_letter = ""
+    force_header = False
+    for idx in range(0, 4):
+        wip_column = wip_columns[idx]
+        if idx != 0:
+            force_header = True
+
+        if category != "year":
+            for entry in wip_column:
+                first_letter = entry.title[0].upper()
+                if first_letter in "1234567890":
+                    first_letter = "#"
+                elif first_letter not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+                    first_letter = "*"
+                if (first_letter not in observed_letters) or force_header:
+                    observed_letters.append(first_letter)
+                    final_columns[idx].append({"kind": "header", "title": first_letter + (" (cntd.)" if force_header else "")})
+                    force_header = False
+
+                final_columns[idx].append({"url": entry.get_absolute_url(), "title": entry.title, "kind": "entry"})
+            # Mark letters repeated between columns
+            last_letter = first_letter
+        else:
+            for entry in wip_column:
+                entry_name = entry
+                if entry == "unk":
+                    entry_name = "Unknown"
+                final_columns[idx].append({"url": reverse("zfile_browse_field", kwargs={"field": "year", "value": entry}), "title": entry_name, "kind": "entry"})
+    return final_columns
+
+def get_patron_supporters(patrons):
+    # Hardcoded credits
+    unregistered_supporters_file = os.environ.get("MOZ_UNREGISTERED_SUPPORTERS_FILE", None)
+    supporters = []
+    bigger_supporters = []
+    biggest_supporters = []
+    hc_emails = []
+    bigger_hc_emails = []
+    biggest_hc_emails = []
+
+    if unregistered_supporters_file is not None and os.path.isfile(unregistered_supporters_file):
+        with open(unregistered_supporters_file) as fh:
+            raw = json.loads(fh.read())
+
+        for row in raw:
+            if row.get("pledge") == "biggest":
+                biggest_supporters.append(row)
+            elif row.get("pledge") == "bigger":
+                bigger_supporters.append(row)
+            else:
+                supporters.append(row)
+
+        # Emails to reference
+        for row in supporters:
+            hc_emails.append(row["email"])
+        for row in bigger_supporters:
+            bigger_hc_emails.append(row["email"])
+        for row in biggest_supporters:
+            biggest_hc_emails.append(row["email"])
+    else:
+        supporters = []
+        bigger_supporters = []
+        biggest_supporters = []
+
+    # Get users known to be patrons
+    no_longer_hardcoded = []
+    for p in patrons:
+        if p.site_credits_name:
+            info = {"name": p.site_credits_name, "char": p.char, "fg": p.fg, "bg": p.bg, "img": "blank-portrait.png", "email": p.patron_email}
+
+            if p.patron_email in hc_emails:
+                idx = hc_emails.index(p.patron_email)
+                hc_emails[idx] = info
+                no_longer_hardcoded.append(p.patron_email)
+                continue
+            elif p.patron_email in bigger_hc_emails:
+                idx = bigger_hc_emails.index(p.patron_email)
+                bigger_hc_emails[idx] = info
+                no_longer_hardcoded.append(p.patron_email)
+                continue
+            elif p.patron_email in biggest_hc_emails:
+                idx = biggest_hc_emails.index(p.patron_email)
+                biggest_hc_emails[idx] = info
+                no_longer_hardcoded.append(p.patron_email)
+                continue
+
+            if p.patronage >= 10000:
+                biggest_supporters.append(info)
+            elif p.patronage >= 2000:
+                bigger_supporters.append(info)
+            else:
+                supporters.append(info)
+
+    supporters.sort(key=lambda k: k["name"].lower())
+    bigger_supporters.sort(key=lambda k: k["name"].lower())
+    biggest_supporters.sort(key=lambda k: k["name"].lower())
+
+    # Pad out entries to look cleaner
+    while len(bigger_supporters) % 3 != 0:
+        bigger_supporters.append({"name": "ZZZZZZZZZZSTUB", "email": "STUB"})
+    while len(biggest_supporters) % 2 != 0:
+        biggest_supporters.append({"name": "ZZZZZZZZZZSTUB", "email": "STUB"})
+    while len(supporters) % 3 != 0:
+        supporters.append({"name": "ZZZZZZZZZZSTUB", "email": "STUB"})
+    return (supporters, bigger_supporters, biggest_supporters)
