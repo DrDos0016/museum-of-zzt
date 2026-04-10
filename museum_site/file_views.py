@@ -49,10 +49,11 @@ def file_download(request, key):
 def file_viewer(request, key, local=False):
     """ Returns page exploring a file's zip contents """
     if request.session.get("TEMP_FILE_VIEWER_BETA") and not request.GET.get("force_old_viewer"):
+        print("Yeah we redirecting")
         if local:
             return redirect("zfile_view_local_beta", key=key)
         else:
-            return redirect("file_beta", key=key)
+            return redirect_with_querystring("file_beta", request.META["QUERY_STRING"], key=key)
 
     data = {"content_classes": ["fv-grid"], "details": [], "local": local, "files": []}
 
