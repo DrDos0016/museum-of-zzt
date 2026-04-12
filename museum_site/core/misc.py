@@ -9,7 +9,7 @@ from datetime import datetime, UTC, timedelta
 
 from django.conf import settings
 from django.shortcuts import redirect
-from django.template.defaultfilters import escape
+from django.template.defaultfilters import escape, timeuntil
 from django.urls import get_resolver, reverse
 
 from museum_site.constants import DATA_PATH, CHARSET_PATH, HOST
