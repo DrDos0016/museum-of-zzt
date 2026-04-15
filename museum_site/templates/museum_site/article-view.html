@@ -2,8 +2,6 @@
 {% load static %}
 {% load site_tags %}
 
-{% block meta %}{% meta_tags path=request.get_full_path context=article.get_meta_tag_context %}{% endblock %}
-
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/article.css' %}?{{BOOT_TS}}">
 {{article.css|safe}}
@@ -78,7 +76,6 @@ function jump_to(jump)
 {% endif %}
 {% endblock %}
 
-
 {% block article_body %}{% include article %}{% endblock %}
 
 {% block article_footnotes %}
@@ -87,6 +84,16 @@ function jump_to(jump)
 {{article.render_footnotes}}
 </ul>
 {% endif %}
+{% endblock %}
+
+{% block article_nav_links %}
+<nav class="nav-actions nav-actions-article-view">
+    <a href="#top">Top of Page</a>
+    {% if article.series.all %}<a href="{{article.series.all.first.get_absolute_url}}">Explore This Series</a>{% endif %}
+    <a href="{% url 'article_browse_category' category_slug=article.category|slugify %}">{{article.category}} Directory</a>
+    <a href="{% url 'article_browse' %}">Article Directory</a>
+    <a href="{% url 'index' %}">Museum of ZZT Home</a>
+</nav>
 {% endblock %}
 
 {% block article_footer %}
@@ -105,14 +112,6 @@ function jump_to(jump)
         {% patreon_plug %}
     {% endif %}
 
-    <nav class="nav-actions">
-        <a href="#top">Top of Page</a>
-        {% if article.series.all %}<a href="{{article.series.all.first.get_absolute_url}}">Explore This Series</a>{% endif %}
-        <a href="{% url 'article_browse_category' category_slug=article.category|slugify %}">{{article.category}} Directory</a>
-        <a href="{% url 'article_browse' %}">Article Directory</a>
-        <a href="{% url 'index' %}">Museum of ZZT Home</a>
-    </nav>
-
     {% if article.series.all %}
     <hr>
     <h3>More In This Series</h3>
@@ -121,9 +120,9 @@ function jump_to(jump)
         {% model_block article "gallery" %}
         {% endfor %}
     </div>
-    <div class="c">
-    <a href="{{article.series.all.first.get_absolute_url}}">View All</a>
-    </div>
+    <nav class="nav-actions nav-actions-article-view">
+        <a href="{{article.series.all.first.get_absolute_url}}">Explore This Series</a>
+    </nav>
 {% endif %}
 </div>
 {% endblock %}

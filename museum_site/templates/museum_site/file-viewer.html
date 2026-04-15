@@ -4,8 +4,6 @@
 {% load zzt_tags %}
 {% load zfile_attrs %}
 
-{% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}{% endblock %}
-
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/new-file-viewer.css' %}?{{BOOT_TS}}">
 {% endblock %}
@@ -72,6 +70,18 @@ var zfile_info = {};
 </div>
 
 <div id="details">
+    <div id="fv-beta-info">
+        {% if not local %}
+        <p>You are currently using the Beta File Viewer. It is a work in progress!</p>
+
+        <ul>
+            <li><a href="{% url 'file' file.key %}?force_old_viewer=1">View this file in the v1 File Viewer</a></li>
+            <li><a href="/action/set-setting/?redirect={% url 'file' file.key %}&setting=TEMP_FILE_VIEWER_BETA%7Cv1">Always view files with the v1 File Viewer</a></li>
+        </ul>
+        {% endif %}
+
+        <p>File Viewer preferences may also be adjusted on your <a href="{% url 'my_profile' %}">profile page</a>.</p>
+    </div>
     <div id="zip-info"></div>
     <div id="world-info"></div>
     <div id="board-info"></div>

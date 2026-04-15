@@ -3,6 +3,19 @@
     flex-wrap:wrap;
 }
 
+@media (max-width: 880px)
+{
+    #quick-links
+    {
+        overflow:auto;
+        flex-wrap:nowrap;
+        padding-left:50px;
+        padding-bottom:25px;
+    }
+
+    #quick-links .plug { min-width:170px; }
+}
+
 #welcome-text
 {
     flex:1;

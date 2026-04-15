@@ -2,8 +2,6 @@
 {% load static %}
 {% load site_tags %}
 
-{% block meta %}{% meta_tags path=request.get_full_path context=meta_context %}{% endblock %}
-
 {% block style %}
 <style>
 .role
@@ -25,16 +23,6 @@
 .role.patron { color:#ff55ff; }
 .role.zzter { color:#5555ff; }
 .role.mzxer { color:#55ffff; }
-
-#join-box
-{
-    background:var(--ega-darkcyan);
-    color:var(--ega-white);
-    max-width:350px;
-    margin:auto;
-    border:4px double #000;
-    padding:20px;
-}
 
 #emoji-table
 {
@@ -66,13 +54,14 @@ label[for=agreed] div { flex: 5; }
 
 {% block content %}
 <h1>Joining The Worlds of ZZT Discord</h1>
-<p><i>Last updated: Sep 8, 2025</i></p>
+<i>Last updated: February 13th, 2026</i><br>
 <h2>Server Rules</h2>
 
 <ul>
     <li><b> Be respectful of others</b> - This server's goal is to be first and foremost a welcoming place. Avoid bringing in hostility, or inciting other members.
     <li><b>Keep it PG-13</b> - Do not post anything NSFW. The Worlds of ZZT bot is set to not post anything from files marked as explicit, but the list of explicit files is not flawless, and so the bot may sometimes post something inappropriate. Such files will then be marked and the message removed.</li>
     <li><b>Slurs, racism, sexism, ableism, transphobia, etc. are not welcome</b> - If you are here to instigate you will be promptly removed.</li>
+    <li><b>No AI Generated Content</b> - It does not belong on this server.</li>
     <li><b>ZZTers today are not the same people they were in the past</b> - Some returning ZZTers have histories of hostility from their earlier years in the ZZT community. Do not try to bring up decades old behavior to discredit people today. Assume that the person has grown until shown otherwise.</li>
     <li><b>Avoid Discussion In #announcements</b> - Please try to keep this room free of clutter and discuss announcements in the channel most relevant to the announcement.</li>
     <li><b>Membership may require approval</b> - Depending on current server settings, new members may or may not be unable to speak outside of the #welcome channel prior to approval by a staff member or vouched for by another member.</b></li>
@@ -81,7 +70,7 @@ label[for=agreed] div { flex: 5; }
 
 <h2>Join The Discord</h2>
 
-<form method="POST" id="join-box">
+<form method="POST" id="join-box" class="badge-form">
     {% csrf_token %}
     <label for="agreed"><input type="checkbox" value="agreed" id="agreed" name="agreed"><div>I have read the above rules and agree to abide by them.</div></label>
     <label style="display:flex;justify-content:center;"><input type="submit" value="Join The Worlds of ZZT Discord"></label>

@@ -44,3 +44,7 @@ class Company(models.Model):
         if not self.slug:
             self.slug = "ERROR"
         return reverse("zfile_browse_field", kwargs={"field":"company", "value": self.slug})
+
+    def admin_url(self):
+        name = self.model_name.replace("-", "_").lower()
+        return "/admin/museum_site/{}/{}/change/".format(name, self.id)

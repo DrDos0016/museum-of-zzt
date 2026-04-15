@@ -17,19 +17,40 @@ class Museum_Site_Config(AppConfig):
     def ready(self):
         self.museum_startup()
         self.check_secret_key()
-        self.check_non_repo_content()
         print("==================== Startup Complete ======================")
 
     def museum_startup(self):
         self.now = datetime.now(UTC)
-        self.site_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         print("================== Museum of ZZT Startup ===================")
         print("Python      :", version.split(" ")[0])
         print("Django      :", ".".join(map(str, DJANGO_VERSION)))
         print("Server Time :", self.now)
-        print("Site Root   :", self.site_root)
+        print("Site Root   :", settings.BASE_DIR)
         print("Environment :", settings.ENVIRONMENT)
-        print("============================================================")
+        print("==================== Optional Libraries ====================")
+        print("Zeta        :", self.has_zeta_install())
+        print("Zookeeper   :", self.has_zookeeper_install())
+
+    def has_zeta_install(self):
+        zeta_path = os.path.join(settings.BASE_DIR, "museum_site", "static", "zeta86")
+        if not os.path.exists(zeta_path):
+            return "Missing"
+        with open(os.path.join(zeta_path, "zeta.min.js")) as fh:
+            zeta_version = "???"
+            raw = fh.read()
+            start = raw.find('"1.')
+            if start != -1:
+                zeta_version = raw[start + 1:start + 10].split('"')[0]
+
+        return "Found Zeta86 v{}".format(zeta_version)
+
+    def has_zookeeper_install(self):
+        try:
+            from zookeeper.constants import ZZT_IDENTIFIER
+            return "Found"
+        except ImportError:
+            return "Missing"
+        return "Missing"
 
     def check_secret_key(self):
         if settings.SECRET_KEY == "!c;LOCKED FILE":
@@ -37,13 +58,3 @@ class Museum_Site_Config(AppConfig):
             print("Please set the environment variable MOZ_SECRET_KEY")
             if settings.ENVIRONMENT != "DEV":
                 exit()
-
-    def check_non_repo_content(self):
-        NONREPO_CONTENT = ["backups/", "zookeeper/", "museum_site/static/data/mass_dl.json"]
-        missing = []
-        for name in NONREPO_CONTENT:
-            if not os.path.exists(name):
-                missing.append(name)
-                if len(missing) == 1:
-                    print("------------ Missing Non-Repository Content -----------")
-                print(name)

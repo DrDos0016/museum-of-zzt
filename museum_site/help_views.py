@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.views import View
 
 from museum_site.constants import *
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.models import *
 
 
@@ -33,6 +34,7 @@ class Genre_Overview_View(View):
             "title": self.title,
             "genres": Genre.objects.filter(visible=True).order_by("title"),
         }
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="A directory of all genres and their descriptions cataloged on the Museum of ZZT")
 
         return render(request, self.template_name, context)
 

@@ -80,6 +80,13 @@ class ZFile_Queryset(Base_Queryset):
         if p.get("details"):
             qs = qs.filter(details__id__in=p.getlist("details"))
 
+        if p.get("limit_release_date") and p.get("limit_release_date_cutoff") in ["before", "after"]:
+            cutoff_kind = p.get("limit_release_date_cutoff")
+            if cutoff_kind == "before":
+                qs = qs.filter(release_date__lte=p.get("limit_release_date"))
+            else:
+                qs = qs.filter(release_date__gte=p.get("limit_release_date"))
+
         qs = qs.distinct()
         return qs
 

@@ -11,6 +11,7 @@ $(document).ready(function (){
         var css = $(this).attr("style");
         $("select[name=character]").val(num);
         $(".ascii-selected-number").html("#" + num);
+        $(".ascii-selected-glyph").html($(".ascii-char.value[data-idx=" +  num + "]").text());
         $(".ascii-selected-char .ascii-char-image").attr("style", css);
         update_preview();
     });

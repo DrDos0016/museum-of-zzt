@@ -48,6 +48,7 @@ class File(BaseModel, ZFile_Urls):
     model_name_short = "ZF"
     to_init = ["icons"]
     table_fields = ["DL", "Title", "Author", "Company", "Genre", "Date", "Review"]
+    table_widths = ["5%", "25%", "15%", "15%", "20%", "10%", "10%"]
     cell_list = ["download", "view", "authors", "companies", "genres", "zfile_date", "rating"]
     guide_word_values = {
         "id": "pk", "title": "title", "author": "author", "company": "company", "rating": "rating", "release": "release_date",
@@ -201,6 +202,12 @@ class File(BaseModel, ZFile_Urls):
     @cached_property
     def extras(self):
         output = []
+        if self.description and self.show_zfile_description != "hide":
+            output.append({"kind": "zfile-description", "template": "museum_site/subtemplate/extra-description.html"})
+        if DETAIL_FEATURED in self.detail_ids:
+            output.append({"kind": "featured-world", "template": "museum_site/subtemplate/extra-featured-world.html"})
+
+        """
         if DETAIL_FEATURED in self.detail_ids:
             output.append({"kind": "featured-world", "template": "museum_site/subtemplate/extra-featured-world.html"})
         if DETAIL_LOST in self.detail_ids and self.description:
@@ -211,6 +218,9 @@ class File(BaseModel, ZFile_Urls):
                 output.append({"kind": "program-description", "template": "museum_site/subtemplate/extra-utility.html"})
         elif DETAIL_UTILITY in self.detail_ids and self.description:
             output.append({"kind": "utility-description", "template": "museum_site/subtemplate/extra-utility.html"})
+        elif self.description:  # Place at front of list
+            output.insert(0, {"kind": "zfile-description", "template": "museum_site/subtemplate/extra-description.html"})
+        """
         return output
 
     # Initalizing functions
@@ -349,20 +359,6 @@ class File(BaseModel, ZFile_Urls):
         output = output[:-2]
         return output
 
-    def get_meta_tag_context(self):
-        """ Returns a dict of keys and values for <meta> tags  """
-        tags = {}
-        tags["author"] = ["name", ", ".join(self.related_list("authors"))]
-        tags["description"] = ["name", '"{}" by {}.'.format(self.title, ", ".join(self.related_list("authors")))]
-        if self.companies.count():
-            tags["description"][1] += " Published by {}.".format(self.get_all_company_names())
-        if self.release_date:
-            tags["description"][1] += " ({})".format(self.release_date.year)
-
-        tags["og:title"] = ["property", self.title + " - Museum of ZZT"]
-        tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
-        return tags
-
     # Capabilities / Actions / So Forth
     @cached_property
     def can_museum_download(self):
@@ -388,7 +384,7 @@ class File(BaseModel, ZFile_Urls):
             return restricted
 
         self.init_all_downloads()
-        
+
         if self.all_downloads_count == 0:
             return restricted
 
@@ -400,7 +396,7 @@ class File(BaseModel, ZFile_Urls):
             target = "_blank"
         else:
             text = "Download" + ("s ({})".format(self.all_downloads_count) if self.all_downloads_count >= 2 else "")
-            
+
 
         # Change text for list view
         if view == "list":
@@ -415,7 +411,7 @@ class File(BaseModel, ZFile_Urls):
         self.init_all_downloads()
         if "offsite" in self.roles:
             return self.field_context(text="", kind="faded")
-        
+
         return self.field_context(url=reverse("zfile_play", kwargs={"key": self.key}), text=text, icons="major")
 
     def get_field_view(self, view="detailed"):
@@ -514,7 +510,8 @@ class File(BaseModel, ZFile_Urls):
         output = self.field_context(label="Rating", text="{} ({} Review{})".format(rating, self.review_count, plural), kind="text")
         if view == "list":
             if self.review_count:
-                output = self.field_context(label="Rating", text="{}<br>({})".format(rating.split(" ")[0], self.review_count), kind="text")
+                text = rating.split(" ")[0] if self.rating is not None else rating
+                output = self.field_context(label="Rating", text="{}<br>({})".format(text, self.review_count), kind="text")
             else:
                 output = self.field_context(label="Rating", text="{}".format(rating), kind="text")
         #if view == "header":
@@ -572,6 +569,8 @@ class File(BaseModel, ZFile_Urls):
             elif kind == "utility-description":
                 context["detail_name"] = "Utility"
                 context["utility_description"] = self.description
+            elif kind == "zfile-description":
+                context["description"] = self.description
         return context
 
     def process_kwargs(self, kwargs):

@@ -16,6 +16,7 @@ from sys import version as PYTHON_VERSION
 from django import VERSION as DJANGO_VERSION
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 from django.core.cache import cache
 from django.db.models import Count, Q
 from django.urls import reverse
@@ -31,6 +32,7 @@ from museum_site.core.form_utils import load_form
 from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_PRESETS
 from museum_site.core.model_utils import delete_zfile, get_article_word_count
 from museum_site.core.misc import HAS_ZOOKEEPER, calculate_sort_title, calculate_boards_in_zipfile, record, zookeeper_init, zookeeper_extract_font, get_all_tool_urls
+
 from museum_site.forms.tool_forms import (
     Checksum_Comparison_Form,
     Discord_Announcement_Form,
@@ -46,6 +48,7 @@ from museum_site.forms.tool_forms import (
     Stream_VOD_Thumbnail_Generator_Form
 )
 from museum_site.models import *
+from museum_site.templatetags.site_tags import zfile_citation
 
 
 @staff_member_required
@@ -54,9 +57,11 @@ def add_livestream(request, key):
     if key != "NOZFILEASSOC":
         zfile = File.objects.get(key=key)
         zfile_pk = zfile.pk
+        zfile_title = zfile.title
     else:
         zfile = None
         zfile_pk = ""
+        zfile_title = "?"
     preset_title_prefixes = {
         # Other potential shortcuts are too likely to need editing. (A "Livestream" category may be Wildcard, Bonus, or Livestream)
         "Playthrough": "Full Playthrough - {}",
@@ -72,7 +77,7 @@ def add_livestream(request, key):
             form = Livestream_Vod_Form(initial={
                 "associated_zfile": request.POST.getlist("associated"), "video_description": request.POST.get("video_description"),
                 "category": request.GET.get("kind", "Livestream"),
-                "title": preset_title_prefixes.get(request.GET.get("kind"), "").format(zfile.title)
+                "title": preset_title_prefixes.get(request.GET.get("kind"), "").format(zfile_title)
             })
     else:
         form = Livestream_Vod_Form(initial={"associated_zfile": zfile_pk})
@@ -91,7 +96,7 @@ def audit(request, target, return_target_dict=False):
             "title": "Audit Restrictions", "template": "museum_site/tools/audit-restrictions.html",
             "zfile_qs": File.objects.removed(), "review_qs": File.objects.exclude(can_review=File.FEEDBACK_YES)
         },
-        "scrolls": {"title": "Audit Scrolls", "template": "museum_site/tools/audit-scrolls.html", "scrolls": Scroll.objects.all()},
+        "scrolls": {"title": "Audit Scrolls", "template": "museum_site/tools/audit-scrolls.html", "scrolls": Scroll.objects.all().order_by("zfile__sort_title")},
         "users": {"title": "Audit Users", "template": "museum_site/tools/user-list.html", "users": User.objects.order_by("-id")},
         "zeta-config": {"title": "Audit Zeta Configs", "template": "museum_site/tools/audit_zeta_config.html", "special": File.objects.zeta_config_audit()},
         "file-extensions": {"title": "Audit File Extensions", "template": "museum_site/tools/audit-file-extensions.html", "extensions": Content.objects.all().values("ext").annotate(total=Count("ext")).order_by("ext")},
@@ -281,57 +286,51 @@ def unscrolled(request):
     context["unscrolled"] = unscrolled
     return render(request, "museum_site/tools/unscrolled.html", context)
 
+
 @staff_member_required
 def video_description_generator(request):
-    data = {"title": "Video Description Generator"}
+    context = {"title": "Video Description Generator"}
+    subtemplate = "museum_site/subtemplate/video-description/base.html"
 
     if request.GET:
-        data["form"] = Video_Description_Form(request.GET)
+        context["form"] = Video_Description_Form(request.GET)
+        kind = request.GET.get("kind")
+        stream_date = datetime.strptime(request.GET.get("stream_date"), DATE_NERD) if request.GET.get("stream_date") else ""
         associated = request.GET.getlist("associated")
         unordered = list(File.objects.filter(pk__in=associated))
-        data["zfiles"] = []
-        data["ad_break_endings"] = []
+        context["stream_entries"] = []
         for pk in associated:
             for zf in unordered:
                 if zf.pk == int(pk):
-                    data["zfiles"].append(zf)
+                    context["stream_entries"].append(create_vod_stream_entry_context(zf))
                     break
 
-        if request.GET.get("stream_date"):
-            data["stream_date"] = datetime.strptime(request.GET.get("stream_date", "1970-01-01"), DATE_NERD)
-        else:
-            data["stream_date"] = ""
         if request.GET.getlist("timestamp"):
-            timestamp_count = len(request.GET.getlist("timestamp"))
-            while len(data["zfiles"]) < timestamp_count:
-                data["zfiles"].append(File(title="Test"))
-            for idx in range(0, timestamp_count):
-                if ":" not in request.GET.getlist("timestamp")[idx]:
-                    timestamp = "{}:00".format(request.GET.getlist("timestamp")[idx])
+            idx = 0
+            for timestamp in request.GET.getlist("timestamp"):
+                if idx < len(context["stream_entries"]):
+                    context["stream_entries"][idx]["timestamp"] = timestamp
                 else:
-                    timestamp = request.GET.getlist("timestamp")[idx]
-                data["zfiles"][idx].timestamp = timestamp
+                    context["stream_entries"].append(create_vod_stream_entry_context(ts=timestamp))
+                idx += 1
 
-        data["first_key"] = data["zfiles"][0].key if data["zfiles"] else "NOZFILEASSOC"
-        data["DOMAIN"] = DOMAIN
-        data["kind"] = request.GET.get("kind")
-
-        subtemplate_identifiers = {0: "no", 1: "one"}
-        zzt_amount = subtemplate_identifiers.get(len(data["zfiles"]), "many")
-        if request.GET.get("kind") == "Livestream":
-            subtemplate = "museum_site/subtemplate/video-description/{}-zzt.html".format(zzt_amount)
-        else:
-            subtemplate = "museum_site/subtemplate/video-description/commentary-free-playthrough.html"
-            if data["zfiles"]:
-                related_article = data["zfiles"][0].articles.filter(category="Closer Look").order_by("-id").first()
-                data["related_article"] = related_article
-        rendered = render_to_string(subtemplate, data)
-        data["subtemplate"] = rendered
+        context["first_key"] = context["stream_entries"][0]["zfile"].key if context["stream_entries"][0]["zfile"] else "NOZFILEASSOC"
+        context["DOMAIN"] = DOMAIN
+        context["kind"] = kind
+        context["stream_date"] = stream_date
+        if kind == "Playthrough":
+            if context["stream_entries"] and context["stream_entries"][0].get("zfile"):
+                related_article = context["stream_entries"][0]["zfile"].articles.filter(category="Closer Look").order_by("-publish_date").first()
+                context["related_article"] = related_article
+                if related_article:
+                    context["prerelease"] = True if str(related_article.publish_date)[:10] > str(datetime.now())[:10] else False
+        rendered = render_to_string(subtemplate, context)
+        context["subtemplate"] = rendered
 
     else:
-        data["form"] = Video_Description_Form()
+        context["form"] = Video_Description_Form()
 
-    return render(request, "museum_site/tools/video-description-generator.html", data)
+    return render(request, "museum_site/tools/video-description-generator.html", context)
 
 
 @staff_member_required
@@ -694,9 +693,10 @@ def publish(request, key, mode="PUBLISH"):
 
     if request.POST.get("action") and mode == "PUBLISH":
         # Move the file
-        src = SITE_ROOT + data["file"].download_url()
-        dst = "{}/{}/{}".format(ZGAMES_BASE_PATH, data["file"].letter, data["file"].filename)
-        shutil.move(src, dst)
+        if data["file"].filename != "OFFSITE-FILE":
+            src = SITE_ROOT + data["file"].download_url()
+            dst = "{}/{}/{}".format(ZGAMES_BASE_PATH, data["file"].letter, data["file"].filename)
+            shutil.move(src, dst)
 
         # Adjust the details
         data["file"].details.remove(Detail.objects.get(pk=DETAIL_UPLOADED))
@@ -730,20 +730,26 @@ def publish(request, key, mode="PUBLISH"):
         for detail in request.POST.getlist("details"):
             data["file"].details.add(Detail.objects.get(pk=detail))
 
-    with zipfile.ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
-        data["file_list"] = zf.namelist()
-    data["file_list"].sort()
+    print(data["file"].filename, "FILE")
+    if data["file"].filename == "OFFSITE-FILE":  # Handle publishing offsite files
+        data["file_list"] = []
+    else:
+        with zipfile.ZipFile(SITE_ROOT + data["file"].download_url(), "r") as zf:
+            data["file_list"] = zf.namelist()
+        data["file_list"].sort()
 
     # Get suggested details based on the file list
     data["suggestions"] = get_detail_suggestions(data["file_list"], Detail.objects.all().values("pk", "title"))
 
     if mode == "PUBLISH":
-        # Get suggest details based on file metadata
+        # Get suggested details based on file metadata
         # If the file isn't from the current year, assume it's a New Find
         if data["file"].release_date and data["file"].release_date.year != YEAR:
             data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
         elif data["file"].release_date is None:
             data["suggestions"]["hint_ids"].add(DETAIL_NEW_FIND)
+        if data["file"].filename == "OFFSITE-FILE":
+            data["suggestions"]["hint_ids"].add(DETAIL_OFFSITE)
     else:
         data["details_list"] = data["file"].details.all().values_list("pk", flat=True)
 
@@ -989,6 +995,7 @@ def tool_index(request, key=None):
     context["zfile"] = zfile
     context["form"] = zfile_select_form
     context["pending_approvals"] = Review.objects.pending_approval().count()
+    context["session_count"] = Session.objects.count()
     return render(request, "museum_site/tools/tool_index.html", context)
 
 
@@ -1143,6 +1150,14 @@ def wip_article(request, fname=""):
         context["active_tool"] = "staff-article-wip"
         context["active_tool_template"] = "museum_site/tools/staff-article-wip.html"
     return render(request, "museum_site/tools/article-wip.html", context)
+
+# TODO: This may need to be moved, but use of zfile_citation templatetag makes that difficult
+def create_vod_stream_entry_context(zf=None, ts=None):
+    if zf:
+        output = {"timestamp": "", "citation": zfile_citation(zf), "url": "https://museumofzzt.com" + zf.get_absolute_url(), "play_url": "https://museumofzzt.com" + zf.play_url(), "zfile": zf}
+    else:
+        output = {"timestamp": ts, "citation": zfile_citation(File(title="?")), "zfile": None}
+    return output
 
 """
         PUBLIC TOOLS BELOW

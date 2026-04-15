@@ -18,4 +18,5 @@ urlpatterns = [
     path("publication-pack/share/", zap.views.share_publication_pack, name="zap_share_publication_pack"),
     path("view/<int:pk>/", zap.views.view_event, name="zap_view_event"),
     path("preview/<slug:form_key>/", zap.views.preview, name="zap_preview"),
+    path("media/browse/", zap.views.media_browse, name="zap_media_browse"),
 ]

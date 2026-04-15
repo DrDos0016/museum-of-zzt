@@ -5,6 +5,7 @@ from django.template.defaultfilters import slugify
 from django.views.generic import DetailView, FormView
 
 from museum_site.core.redirects import redirect_with_querystring
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.forms.article_forms import Article_Search_Form
 from museum_site.generic_model_views import Model_List_View, Model_Search_View
 from museum_site.models import Article, Article_Category_Block
@@ -42,15 +43,19 @@ class Article_Detail_View(DetailView):
         context["page_range"] = list(range(1, context["page_count"] + 1))
         context["next"] = None if context["page"] + 1 > context["page_count"] else context["page"] + 1
         context["prev"] = context["page"] - 1
-        context["article"].content = self.object.content.split("<!--Page-->")[context["page"]-1]
+        if "unpaged" not in self.request.GET and not self.request.GET.get("raw"):
+            context["article"].content = self.object.content.split("<!--Page-->")[context["page"]-1]
         if "<!--Page-->" in context["article"].footnotes:  # Only split if there are mutiple pages that need footnotes
             context["article"].footnotes = self.object.footnotes.split("<!--Page-->")[context["page"]-1]
         elif context["page"] > 1:  # Otherwise hide the footnotes on all but the first page
             context["article"].footnotes = ""
 
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.object.title, image=self.object.preview_url(), description=self.object.description)
         return context
 
     def render_to_response(self, context, **response_kwargs):
+        if self.request.resolver_match.kwargs.get("slug") != self.object.slug:
+            return redirect_with_querystring("article_view", self.request.META["QUERY_STRING"], permanent=True, pk=self.object.pk, slug=self.object.slug)
         if self.object.published > self.object.user_access_level:  # Access level too low for article
             return redirect_with_querystring("article_lock", self.request.META["QUERY_STRING"], article_id=self.object.pk, slug=self.slug)
         if self.object.published in [Article.IN_PROGRESS, Article.REMOVED]:  # Block requests for IN_PROGRESS/REMOVED articles
@@ -61,16 +66,7 @@ class Article_Detail_View(DetailView):
 def patron_articles(request):
     data = {"title": "Early Article Access", "upcoming": Article.objects.upcoming(), "unpublished": Article.objects.unpublished()}
     data["wrong_password"] = True if request.POST.get("secret") and request.POST["secret"] not in [PASSWORD2DOLLARS, PASSWORD5DOLLARS] else False
-    data["meta_context"] = {
-        "description": [
-            "name",
-            "Take a look at these {} unpublished articles currently available to Worlds of ZZT patrons!".format(
-                len(data["upcoming"]) + len(data["unpublished"])
-            )
-        ],
-        "og:title": ["property", data["title"] + " - Museum of ZZT"],
-        "og:image": ["property", "pages/early-access-preview.png"]
-    }
+    data["meta_tags" ] = Meta_Tag_Block(url=request.get_full_path(), image="pages/early-access-preview.png", description="A directory of articles in early access currently available to Worlds of ZZT patrons")
     return render(request, "museum_site/patreon_articles.html", data)
 
 
@@ -84,9 +80,9 @@ def article_lock(request, article_id, slug=""):
     article.init_model_block_context("detailed", request=request)
     article.allow_comments = False
     data = {"title": "Restricted Article", "article": article, "cost": article.early_access_price, "release": article.publish_date}
+
+    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title="Restricted Article", image=article.preview_url(), description="Restricted article. Login with your Patron account or enter your early access password to read this unreleased article.")
     return render(request, "museum_site/article-lock.html", data)
-
-
 
 
 class Article_List_View(Model_List_View):
@@ -200,6 +196,7 @@ class Article_Search_View(Model_Search_View):
     model_list_view_class = Article_List_View
     template_name = "museum_site/generic-form-display.html"
     title = "Article Search"
+    description = "Search the Museum of ZZT's collection of articles"
 
 
 def redirect_with_slug(request, pk):

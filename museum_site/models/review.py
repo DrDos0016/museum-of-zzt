@@ -22,11 +22,12 @@ class Review(BaseModel):
     model_name = "Review"
     to_init = ["yours"]
     table_fields = ["Title", "File", "Author", "Date", "Rating"]
+    table_widths = ["30%", "30%", "15%", "12%", "13%"]
     cell_list = ["view", "zfile", "author", "review_date", "rating"]
     guide_word_values = {"id": "pk", "reviewer": "reviewer", "date": "date", "file": "zfile", "rating": "rating"}
     sorter = Feedback_Sorter
 
-    zfile = models.ForeignKey("File", on_delete=models.SET_NULL, null=True)
+    zfile = models.ForeignKey("File", on_delete=models.SET_NULL, null=True, blank=True)
     user = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -94,7 +95,10 @@ class Review(BaseModel):
         return self.zfile.review_url() + "#rev-{}".format(self.pk)
 
     def preview_url(self):
+        if self.zfile is None:
+            return ""
         return self.zfile.preview_url()
+
 
     def save(self, *args, **kwargs):
         if self.author == "":
@@ -108,7 +112,10 @@ class Review(BaseModel):
         return {"value": "<a href='{}'>{}</a>".format(self.get_absolute_url(), self.title or "<i>Untitled Review</i>"), "safe": True}
 
     def get_field_zfile(self, view="detailed"):
-        return {"label": "File", "value": self.zfile.get_field_view("title")["value"], "safe": True}
+        if self.zfile:
+            return {"label": "File", "value": self.zfile.get_field_view("title")["value"], "safe": True}
+        else:
+            return {"label": "File", "value": "N/A", "safe": True}
 
     def get_field_author(self, view="detailed"):
         return {"label": "Submitted By", "value": self.author_link(), "safe": True}

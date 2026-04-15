@@ -2,12 +2,14 @@ from datetime import datetime, timezone, timedelta
 
 from django.shortcuts import redirect
 from django.template.defaultfilters import slugify
+from django.urls import resolve
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 
 from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED, MODEL_BLOCK_VERSION
 from museum_site.core.detail_identifiers import DETAIL_UPLOADED, DETAIL_LOST
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.form_utils import clean_params
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.models import Article, File as ZFile
 from museum_site.templatetags.site_tags import render_markdown
 
@@ -19,6 +21,7 @@ class Model_List_View(ListView):
     has_local_context = True
     force_view = None
     non_search_params = {"sort", "view", "page"}  # Set of GET params that do not indicate a search is being performed
+    head_object = None
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -41,11 +44,11 @@ class Model_List_View(ListView):
         view = None
         if request.GET.get("view"):
             view = request.GET["view"]
+            request.session["view"] = view
         elif request.session.get("view"):
             view = request.session["view"]
         if view not in available_views:  # Default
             view = "detailed"
-        request.session["view"] = view
         return view
 
     def get_sort_options(self, options, debug=False):
@@ -91,7 +94,36 @@ class Model_List_View(ListView):
         # Set head object if one is used
         context["head_object"] = self.head_object if hasattr(self, "head_object") else None
 
+        context["meta_tags"] = self.get_meta_tags()
         return context
+
+    def get_meta_tags(self):
+        url = self.request.get_full_path()
+        title = self.get_title()
+        author = "Dr. Dos"  # Default
+        key = resolve(self.request.path) if self.request.resolver_match else None
+        print("PATH", key)
+        path_specific_meta_tags = {
+            # TODO these should have dedicated descriptions
+            "zfile_browse_letter": {"title": title},
+            "zfile_browse": {"title": title},
+            "collection_browse": {"title": title},
+            "collection_view": {"title": title},  # This should use the model's short description
+            "zfile_browse_field": {"title": title}, # This hits a lot of things
+            "zfile_browse_new_finds": {"title": title},
+            "zfile_browse_new_releases": {"title": title},
+            "zfile_roulette": {"title": title},
+            "series_browse": {"title": title},
+            "series_view": {"title": title},
+            "article_browse": {"title": title, "description": "A directory of all articles hosted on the Museum of ZZT"},
+            "article_browse_category": {"title": title, "description": "A directory of all articles on the Museum of ZZT"},
+            "article_browse_categories": {"title": title, "description": "A directory of all categories used to classify articles on the Museum of ZZT"},
+            "review_browse": {"title": title},
+            "scroll_browse": {"title": title},
+        }
+        kwargs = path_specific_meta_tags.get(key.url_name, {"title":"PLACEHOLDER TITLE"})
+        meta_tags = Meta_Tag_Block(url=url, **kwargs)
+        return meta_tags
 
     def get_title(self):
         return "{} Directory".format(self.model.model_name)
@@ -147,6 +179,7 @@ class Model_Search_View(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = self.title
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.title, description=self.description)
         return context
 
 

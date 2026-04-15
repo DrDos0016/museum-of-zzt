@@ -3,6 +3,7 @@ from datetime import datetime
 from django.shortcuts import render
 
 from museum_site.settings import REMOTE_ADDR_HEADER
+from museum_site.core.misc import Meta_Tag_Block
 from .models import Poll, Option, Vote
 
 
@@ -43,9 +44,5 @@ def index(request, poll_id=None):
     context["poll"] = poll
     context["title"] = poll.title
     context["past_polls"] = past_polls
-    context["meta_context"] = {
-    "description": ["name", "A patron exclusive poll for which ZZT world should receive a Closer Look article"],
-    "og:title": ["property", context["title"] + " - Museum of ZZT"],
-    "og:image": ["property", "pages/poll.png"]
-    }
+    context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=context["title"], image="pages/poll.png", description="A patron exclusive poll for which ZZT world should receive a Closer Look article")
     return render(request, "poll/index.html", context)

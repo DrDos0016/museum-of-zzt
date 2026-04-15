@@ -1,6 +1,5 @@
 {% extends base %}
 {% load site_tags %}
-{% block meta %}{% meta_tags path=request.get_full_path context=file.get_meta_tag_context %}{% endblock %}
 
 {% block style %}
 <style>
@@ -14,6 +13,7 @@
 #zzt_canvas
 {
     image-rendering:crisp-edges;
+    background-color:var(--ega-gray);
 }
 
 #zeta-controls
@@ -101,32 +101,24 @@ $(document).ready(function (){
         popout_url.searchParams.set("player", "zeta");
         popout_url.searchParams.set("mode", "popout");
         popout_url.searchParams.set("scale", scale);
-        window.open(popout_url, "popout-{{file.filename}}", "width="+(base_w * scale)+",height="+(base_h * scale)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0");
+        let popout_padding_w = 4;
+        let popout_padding_h = 4;
+        let window_properties = "width="+(base_w * scale + popout_padding_w)+",height="+(base_h * scale + popout_padding_h)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0";
+        window.open(popout_url, "popout-{{file.filename}}", window_properties);
     });
 
-
     $(".zoom").click(function (){
-        if ($(this).val() == "+")
-        {
-            scale++;
-        }
-        else
-        {
-            scale--;
-        }
-
+        scale += ($(this).val() == "+") - ($(this).val() == "-")
         $(".zoom").attr("disabled", false);
         $(this).attr("disabled", true);
 
-        $("#zzt_canvas").width(base_w * scale);
-        $("#zzt_canvas").height(base_h * scale);
+        set_zeta_canvas_size(base_w, base_h, scale);
 
         var now = new Date();
         var time = now.getTime();
         var expireTime = time + (1000 * 31536000); // 1yr
         now.setTime(expireTime);
         document.cookie = "zeta_player_scale=" + scale + ";expires=" + now.toGMTString() + ";path=/";
-        console.log("Set scale cookie to " + scale);
     });
 
     $("#fullscreen").click(function (){
@@ -155,9 +147,8 @@ $(document).ready(function (){
         {
             hex_string = "ffff000000000000000000000000006400000000000000000000000000084155544f47454e57" + "0".repeat(948) + hex_string;
         }
-
-        console.log(hex_string)
     }
+
     ZetaLoad({
         path: "/static/zeta86/",
         render: {
@@ -184,7 +175,7 @@ $(document).ready(function (){
             {% if zeta_config.executable %}
             {
                 "type": "zip",
-                "url": "/static/data/zeta86_engines/{{zeta_config.executable}}",
+                "url": "/static/data/zeta86_engines/{% if request.session.zzt32_exe and zeta_config.executable == 'zzt.zip' %}{{request.session.zzt32_exe}}.zip{% else %}{{zeta_config.executable}}{% endif %}",
             },{% endif %}
             {% for file in included_files %}
             {
@@ -199,8 +190,23 @@ $(document).ready(function (){
         ],
     }, function(zeta) {
         ZETA = zeta;
+        ZETA.render.canvas.addEventListener("zetaResolutionChanged", e => {
+            base_w = e.detail.width;
+            base_h = e.detail.height;
+            set_zeta_canvas_size(base_w, base_h, scale);
+        });
     });
 });
+
+function set_zeta_canvas_size(w, h, scale)
+{
+    //console.log(w, h, scale);
+    $("#zzt_canvas").width(w * scale);
+    $("#zzt_canvas").height(h * scale);
+    // Always Force disable image smoothing (it seems to like to re-enable at times?)
+    let ctx = ZETA.render.canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+}
 
 function set_screenshot()
 {
@@ -220,7 +226,7 @@ function set_screenshot()
     {% if player == "archive" %}
     <iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
     {% elif player == "zeta" %}
-    <canvas id="zzt_canvas" width="{{zeta_config.base_width|default:640}}" height="{{zeta_config.base_height|default:350}}"></canvas>
+    <canvas id="zzt_canvas" width="{{zeta_config.base_width|default:640}}" height="{{zeta_config.base_height|default:350}}" contenteditable=false></canvas>
     {% if unpublished %}<p>This file is currently UNPUBLISHED. Support for Zeta has been assumed, but the file may not be compatible.</p>{% endif %}
     {% endif %}
 </div>

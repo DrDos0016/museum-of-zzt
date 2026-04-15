@@ -14,7 +14,7 @@ from museum_site.constants import LANGUAGES_REVERSED
 from museum_site.core import *
 from museum_site.core.detail_identifiers import *
 from museum_site.core.feedback_tag_identifiers import *
-from museum_site.core.misc import cheat_prompt_check
+from museum_site.core.misc import cheat_prompt_check, Meta_Tag_Block
 from museum_site.core.redirects import explicit_redirect_check, redirect_with_querystring
 from museum_site.forms.review_forms import Review_Form
 from museum_site.forms.zfile_forms import Advanced_Search_Form
@@ -30,6 +30,7 @@ def file_attributes(request, key):
     data["file"] = get_object_or_404(File, key=key)
     data["reviews"] = Review.objects.for_zfile(data["file"].pk).defer("content")
     data["title"] = data["file"].title + " - Attributes"
+    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], author=", ".join(data["file"].related_list("authors")), image=data["file"].preview_url(), description="File attributes for {}".format(data["file"].title))
     return render(request, "museum_site/attributes.html", data)
 
 
@@ -40,6 +41,7 @@ def file_download(request, key):
     data["file"] = get_object_or_404(File, key=key)
     data["title"] = data["file"].title + " - Downloads"
     data["downloads"] = data["file"].downloads.all()
+    data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], author=", ".join(data["file"].related_list("authors")), image="/static/" + data["file"].preview_url(), description="Download sources for {}".format(data["file"].title))
     return render(request, "museum_site/download.html", data)
 
 
@@ -47,12 +49,13 @@ def file_download(request, key):
 def file_viewer(request, key, local=False):
     """ Returns page exploring a file's zip contents """
     if request.session.get("TEMP_FILE_VIEWER_BETA") and not request.GET.get("force_old_viewer"):
+        print("Yeah we redirecting")
         if local:
             return redirect("zfile_view_local_beta", key=key)
         else:
-            return redirect("file_beta", key=key)
+            return redirect_with_querystring("file_beta", request.META["QUERY_STRING"], key=key)
 
-    data = {"content_classes": ["fv-grid"], "details": [], "local": local, "files": [],}
+    data = {"content_classes": ["fv-grid"], "details": [], "local": local, "files": []}
 
     if not local:
         qs = File.objects.filter(key=key)
@@ -98,6 +101,7 @@ def file_viewer(request, key, local=False):
     else:  # Local files
         data["file"] = "Local File Viewer"
         data["letter"] = ""
+        data["title"] = "Local File Viewer"
 
     # Sort files into ZZT, Super ZZT, SAV, BRD, and non-ZZT extensions
     all_files = {"zzt": [], "szzt": [], "sav": [], "brd": [], "misc": []}
@@ -134,10 +138,21 @@ def file_viewer(request, key, local=False):
         else:
             data["charsets"] = cache.get("CHARSETS", [])
             data["custom_charsets"] = cache.get("CUSTOM_CHARSETS", [])
+
+        if request.GET.get("rnd"):
+            data["meta_tags"] = Meta_Tag_Block(url="/random/", title="Random ZZT World", author="", image="")
+        else:
+            data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], author=", ".join(data["file"].related_list("authors")), image=data["file"].preview_url(), description="{} - File Viewer".format(data["file"].title))
     # TODO LOCAL FILES SHOW ZZT AND SUPER ZZT CHARSETS
     else:
         data["charsets"] = cache.get("CHARSETS", [])
         data["custom_charsets"] = cache.get("CUSTOM_CHARSETS", [])
+        data["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=data["title"], description="Museum of ZZT local file viewer")
+
+    # Don't embed an image of the title screen when linking a specific board
+    comp = request.GET.get("file", "").upper()
+    if (comp.endswith(".ZZT") or comp.endswith(".SZT")) and int(request.GET.get("board", 0)) > 0:
+        data["meta_tags"].set_image("")
 
     return render(request, "museum_site/file.html", data)
 
@@ -154,8 +169,16 @@ def file_viewer_new(request, key, local=False):
         context["zfile"] = File.objects.get(key=key)
         context["file"] = context["zfile"]
         context["title"] = context["zfile"].title
+        context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), author=", ".join(context["zfile"].related_list("authors")), title=context["title"], image=context["zfile"].preview_url(), description="Beta File viewer for {}".format(context["zfile"].title))
+
+        # Don't embed an image of the title screen when linking a specific board
+        comp = request.GET.get("file", "").upper()
+        if (comp.endswith(".ZZT") or comp.endswith(".SZT")) and int(request.GET.get("board", 0)) > 0:
+            context["meta_tags"].set_image("")
     else:
         context["title"] = "Local File Viewer"
+        context["meta_tags"] = Meta_Tag_Block(url=request.get_full_path(), title=context["title"], description="Museum of ZZT local file viewer BETA")
+
     return render(request, "museum_site/file-viewer.html", context)
 
 
@@ -206,6 +229,8 @@ class ZFile_List_View(Model_List_View):
             qs = ZFile.objects.new_releases()
         elif self.request.path == reverse("zfile_roulette"):
             qs = ZFile.objects.roulette(self.request.GET["seed"], PAGE_SIZE)  # Cap results for list view
+        elif self.search_type == "basic" and self.request.GET.get("q").startswith("pks="):
+            qs = ZFile.objects.filter(pk__in=self.request.GET["q"][4:].split(","))
         elif self.search_type == "advanced":
             cleaned_params = clean_params(self.request.GET.copy(), list_items=["details"])
             qs = ZFile.objects.advanced_search(cleaned_params)
@@ -232,11 +257,16 @@ class ZFile_List_View(Model_List_View):
         elif self.field == "article":  # Browse ZFiles associated with an article's slug
             qs = qs.filter(articles__slug=self.value)
 
+        # Exclude descriptions if requested to hide them
+        if self.request.session.get("zfile_descriptions", "show") == "hide":
+            qs = qs.defer("description")
+
         qs = self.sort_queryset(qs)
 
         # Get related
         if self.value != "featured-world":
             qs = qs.prefetch_related("authors", "companies", "details", "downloads", "genres")
+
         return qs
 
     def get_context_data(self, **kwargs):
@@ -313,6 +343,8 @@ class ZFile_List_View(Model_List_View):
         elif self.request.path == "/file/browse/new-releases/":
             return "New Releases"
         elif self.request.path == "/file/roulette/":
+            if self.request.GET.get("seed"):
+                return "Roulette Seed {}".format(self.request.GET["seed"])
             return "Roulette"
         elif self.request.path == "/file/search/":
             title = 'Search Results - "{}"' .format(self.request.GET.get("q", ""))
@@ -345,6 +377,7 @@ class ZFile_Search_View(Model_Search_View):
     model_list_view_class = ZFile_List_View
     template_name = "museum_site/generic-form-display.html"
     title = "File Search"
+    description = "Search the Museum of ZZT's collection of files"
 
 
 class ZFile_Article_List_View(Model_List_View):
@@ -368,6 +401,7 @@ class ZFile_Article_List_View(Model_List_View):
         context["head_object"] = None
         context["title"] = "{} - Articles".format(self.head_object.title)
         context["header_idx"] = 2
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], author=", ".join(context["file"].related_list("authors")), image=context["file"].preview_url(), description="Articles for {}".format(context["file"].title))
         return context
 
 
@@ -449,7 +483,7 @@ class ZFile_Review_List_View(Model_List_View):
         if self.request.POST and review_form.is_valid() and not recent:
             # Check for spam trap
             if (review_form.cleaned_data["experiment"] != ""):
-                    return context
+                return context
 
             feedback = review_form.process(self.request, self.head_object)
             if feedback is None:
@@ -469,6 +503,7 @@ class ZFile_Review_List_View(Model_List_View):
             return context
 
         context["form"] = review_form
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], author=", ".join(context["file"].related_list("authors")), image=context["file"].preview_url(), description="Feedback for {}".format(context["file"].title))
         return context
 
     def post(self, request, *args, **kwargs):

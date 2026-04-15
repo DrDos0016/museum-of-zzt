@@ -32,6 +32,23 @@
 }
 
 .model-block .extras { grid-area:extras; }
+.model-block .extras .extra
+{
+    /*background:var(--notice-bg);*/
+    border:1px dashed #000;
+    overflow:auto;
+    max-height:120px;
+    padding:4px 8px 4px 8px;
+    margin-bottom:2px;
+    font-size:smaller;
+    display:flex;
+    justify-content:flex-start;
+    gap:2ch;
+}
+
+.model-block .extras .extra p { margin:0px; }
+.model-block .extras .extra ul { margin:0px; }
+
 /* Detailed View */
 .model-block.detailed
 {

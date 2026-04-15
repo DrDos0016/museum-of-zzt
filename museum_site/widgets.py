@@ -398,6 +398,12 @@ class Faux_Widget(forms.Widget):
         super().__init__(attrs)
         self.template_name = template_name
 
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        if hasattr(self, "manual_data"):
+            context["manual_data"] = self.manual_data
+        return context
+
 
 class Terms_Of_Service_Widget(forms.CheckboxInput):
     template_name = "museum_site/widgets/terms-of-service-widget.html"

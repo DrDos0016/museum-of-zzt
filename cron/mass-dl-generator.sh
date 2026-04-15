@@ -5,7 +5,7 @@ set +a
 echo "CRON START: Mass Download Generator";
 date;
 echo "------------------------------------------------------------";
-$HOME/projects/museum-of-zzt/venv/bin/python3 $HOME/projects/museum-of-zzt/tools/crons/mass-dl-generator.py 2>&1
+$HOME/projects/museum-of-zzt/venv/bin/python3 $HOME/projects/museum-of-zzt/manage.py generate-mass-dl-zips 2>&1
 echo "CRON END: Mass Download Generator";
 date;
 echo "============================================================";

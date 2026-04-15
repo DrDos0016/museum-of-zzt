@@ -79,9 +79,30 @@ class Scroll(BaseModel):
             output.append(line)
         return "\n".join(output)
 
+    def content_as_meta_desc(self):
+        raw = self.content
+        lines = raw.split("\n")
+        output = []
+        for line in lines:
+            if line.startswith("@"):
+                continue
+            if line.strip():
+                output.append(line + " | ")
+        if output[-1].endswith(" | "):
+            output[-1] = output[-1][:-3]
+        output = "".join(output)
+        if len(output) > 200:
+            output = output[:197] + "..."
+        return output
+
+
     def save(self, *args, **kwargs):
         if self.source.startswith("https://museumofzzt.com"):
             self.source = self.source.replace("https://museumofzzt.com", "")
+        if "#" in self.source:
+            (src, coords) = self.source.split("#", maxsplit=1)
+            raw_coords = coords.split(",")
+            self.source = src + "#" + raw_coords[0] + "," + raw_coords[1]
         if self.source.startswith("/file/view/") and self.zfile_id == None:
             key = self.source[11:].split("/")[0]
             self.zfile = File.objects.filter(key=key).first()

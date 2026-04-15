@@ -181,3 +181,8 @@ class Museum_Select_Field(forms.ChoiceField):
 
 class Museum_Tagged_Model_Choice_Field(forms.ModelMultipleChoiceField):
     layout = "field-layout-scrolling-list"
+
+class Museum_Release_Date_Filter_Field(forms.Field):
+    layout = "field-layout-list field-layout-horizontal"
+    widget = Faux_Widget("museum_site/widgets/release-date-filter-widget.html")
+    ingest_parameters = True

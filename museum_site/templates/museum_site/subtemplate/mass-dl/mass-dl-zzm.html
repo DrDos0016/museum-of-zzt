@@ -1,0 +1,20 @@
+{% extends "museum_site/subtemplate/mass-dl/mass-dl-base.html" %}
+
+{% block what %}A compiliation of all ZZM audio files hosted on the Museum of ZZT.{% endblock %}
+
+{% block instructions %}To run:
+- Download a program capable of playing ZZM files.
+  - ZZM Player https://museumofzzt.com/file/view/mplayer/
+  - ZZM Studio https://museumofzzt.com/file/view/zzmstud/
+  - ZZT Music Player v2.0 https://museumofzzt.com/file/view/zztmplay20/
+  - ZZT Music Player v2.2 https://museumofzzt.com/file/view/zztmplay/
+  - ZZT Music Player v2.15 https://museumofzzt.com/file/view/zztmplay215/
+- Download DOSBox from http://www.dosbox.com
+- Extract your player and any ZZM files you wish you listen to into a directory
+- Mount the directory in DOSBox with the command:
+  mount c C:\path\to\your\ZZM\directory
+- Run the ZZM program
+
+All ZZM audio players listed here are designed for MS-DOS. Many struggle to
+function under DOSBox so experimentation may be needed. As of writing, ZZT
+Music Player v2.0 is most likely to function appropriately in DOSBox.{% endblock %}

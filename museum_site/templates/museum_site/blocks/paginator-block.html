@@ -40,7 +40,7 @@
         <a href="{% url 'zfile_roulette' %}">Spin Again</a>
     </div>
 {% endif %}
-{% if available_views|length > 1 %}
+{% if available_views|length > 1 and object_list %}
 <div class="view-links">
     {% for v in available_views %}
     {% if view == "list" %}
@@ -56,7 +56,7 @@
     {% endfor %}
 </div>
 {% endif %}
-{% if sort_options %}
+{% if sort_options and object_list %}
 <div class="sort-methods">
     Sort by: <select name="sort">
             {% for option in sort_options %}

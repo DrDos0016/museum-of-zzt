@@ -1,0 +1,14 @@
+<div style="flex:1 0 100%">
+    <input name="{{widget.name}}" type="date" value="{{widget.value}}">
+</div>
+<div class="radio-list">
+    <div>
+        <label><input type="radio" name="{{widget.name}}_cutoff" value="before"{% if manual_data.limit_release_date_cutoff == "before" %} checked{% endif %}> Before Date</label>
+    </div>
+    <div>
+        <label><input type="radio" name="{{widget.name}}_cutoff" value="after"{% if manual_data.limit_release_date_cutoff == "after" %} checked{% endif %}> After  Date</label>
+    </div>
+    <div>
+        <input class="widget-control-button" type="button" value="Clear" data-input-name="{{widget.name}},{{widget.name}}_cutoff">
+    </div>
+</div>

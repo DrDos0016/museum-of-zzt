@@ -27,6 +27,7 @@ class Article(BaseModel):
     to_init = ["access_level", "icons"]
     model_name = "Article"
     table_fields = ["Title", "Author", "Date", "Category", "Description"]
+    table_widths = ["30%", "10%", "10%", "10%", "40%"]
 
     SCHEMAS = (
         ("text", "Plaintext"),
@@ -60,6 +61,7 @@ class Article(BaseModel):
         ("Closer Look", "Closer Look"),
         ("Contest", "Contest"),
         ("Featured World", "Featured World"),
+        ("Gamedev", "Gamedev"),
         ("Help", "Help"),
         ("Historical", "Historical"),
         ("Interview", "Interview"),
@@ -121,8 +123,10 @@ class Article(BaseModel):
         year = self.publish_date.year if self.publish_date else "unk"
         return ("articles/{}/{}/".format(year, self.static_directory))
 
-    def render(self, context={}):
+    def render(self, context={}, *args, **kwargs):
         """ Render article content for use in a django template """
+        if (context.get("request") and context["request"].GET.get("raw")) or kwargs.get("raw"):
+            return "<textarea style='width:82ch;height:800px;margin:auto;margin-bottom:7px;'>{}</textarea>".format(self.content)
         if self.schema == "django":
             context_data = {"TODO": "TODO", "CROP": "CROP", "path": self.path, "request": context.get("request")}  # Expected TODO usage.
             head = "{% load static %}\n{% load site_tags %}\n{% load zzt_tags %}"
@@ -216,15 +220,6 @@ class Article(BaseModel):
 
     def comments_permitted(self):
         return True if self.allow_comments and self.published == self.PUBLISHED else False
-
-    def get_meta_tag_context(self):
-        """ Returns a dict of keys and values for <meta> tags  """
-        tags = {}
-        tags["author"] = ["name", self.author.replace("/", ", ")]
-        tags["description"] = ["name", self.description]
-        tags["og:title"] = ["property", self.title + " - Museum of ZZT"]
-        tags["og:image"] = ["property", self.preview_url()]  # Domain and static path to be added elsewhere
-        return tags
 
     def get_field_view(self, view="detailed", text_override=""):
         url = self.get_absolute_url()

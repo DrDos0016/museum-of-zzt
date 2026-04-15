@@ -12,6 +12,7 @@ from django.utils.safestring import mark_safe
 
 from museum_site.constants import *
 from museum_site.core import redirect_with_querystring
+from museum_site.core.misc import Meta_Tag_Block
 from museum_site.forms.patron_forms import (
     Change_Patron_Crediting_Preferences_Form,
     Change_Patron_Bkzzt_Topics_Form,
@@ -559,18 +560,12 @@ def user_profile(request, user_id=None, **kwargs):
 
     if data["user_obj"].username:
         data["title"] = "Profile for " + data["user_obj"].username
-        data["meta_context"] = {
-            "author": ["name", data["user_obj"].username],
-            "description": ["name", "User profile for {}".format(data["user_obj"].username)],
-            "og:url": ["property", "https://museumofzzt.com" + data["user_obj"].profile.get_absolute_url()],
-        }
+        data["meta_tags"] = Meta_Tag_Block(url=data["user_obj"].profile.get_absolute_url(), title=data["title"], author="", og_type="profile")
     else:
         data["title"] = "Profile for Guest Visitor"
-        data["meta_context"] = {
-            "author": ["name", "Anonymous"],
-            "description": ["name", "An overview of your Museum of ZZT data"]
-        }
+        data["meta_tags"] = Meta_Tag_Block(url=request.path, title=data["title"], author="", og_type="profile")
     data["default_upload_cap"] = UPLOAD_CAP  # For guest users
+
 
     return render(request, "museum_site/user/profile.html", data)
 
