@@ -31,6 +31,8 @@
     flex-wrap:wrap;
     align-items:flex-start;
     justify-content:space-evenly;
+    max-width:1024px;
+    margin:auto;
 }
 
 .image-set img
