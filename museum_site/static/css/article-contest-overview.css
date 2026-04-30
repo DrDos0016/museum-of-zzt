@@ -1,7 +1,6 @@
-<style>
 /*
 Contest overview CSS - Intended to be used across all contest overview articles.
-Requires manual inclusion via article.css.
+Requires manual inclusion via Article.css field.
 */
 .rank { text-align:center; }
 .rank-1.rank { background-color:gold}
@@ -82,4 +81,3 @@ h3.entry-title
 {
     margin-bottom:0px;
 }
-</style>
