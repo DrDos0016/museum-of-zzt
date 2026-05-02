@@ -1,3 +1,4 @@
+{% load static %}
 <div class="zzmplay-widget" data-mutable={{mutable|default:0}}>
     {% if not mutable %}<div class="zzm-meta"><button type="button" class="zzmplay-source-button {{mutable|yesno:'show,hide'}}">♫</button><div class="zzm-track-info"><span class="zzmplay-artist">{{artist}}</span>{% if artist %} - {% endif %}<span class="zzmplay-track">{{track}}</div></div>{% endif %}
     <textarea{% if not mutable %} readonly{% endif %} placeholder="#play ..." class="zzmplay-raw" style="width:50ch;height:100px">{{notes}}</textarea>
@@ -6,4 +7,8 @@
     <button type="button" class="zzmplay-mute-button">🔊</button>
     <input type="range" min="0.0" max="1.0" step="0.01" class="zzmplay-volume" value="{{vol}}">
     {% if mutable %}<label class="zzm-prefix-options"><input type="checkbox" name="require-prefix"{% if require_prefix %} checked{% endif %}> Require #PLAY prefix</label>{% endif %}
+    {% if include_script %}
+    <script type="text/javascript" src="{% static 'js/zzmplay/audio.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/zzmplay/zzm.js' %}"></script>
+    {% endif %}
 </div>
