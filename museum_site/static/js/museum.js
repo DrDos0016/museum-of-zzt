@@ -35,8 +35,6 @@ var CP437_TO_UNICODE = {
     248:176, 249:8729, 250:183, 251:8730, 252:8319, 253:178, 254:9632, 255:160,
 }
 
-var IS_SEARCHING = false;
-
 $(document).ready(function (){
     // New Screenshot Zoom
     $(".zoomable").click(function (){
