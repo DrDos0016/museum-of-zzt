@@ -722,25 +722,23 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
 
 #top-margin
 {
-    display:flex;
-    justify-content:space-between;
+    display:grid;
+    grid-template-columns: 2ch 2ch auto 1fr auto;
+    gap:1ch;
     align-items:center;
-    min-height:20px;
-}
-
-.fv-grid #top-margin
-{
-    grid-area:expand;
 }
 
 #top-margin button
 {
     padding:0px;
+    padding-left:0.5ch;
+    padding-right:0.5ch;
     border:0;
     background:transparent;
     height:20px;
     min-height:20px;
     cursor:pointer;
+    text-align:center;
 }
 
 #toggle-light-dark-theme
@@ -759,9 +757,10 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     font-family:sans-serif;
     background:var(--block-bg);
     color:var(--lowlight-button-color);
+    align-self:flex-end;
 }
 
-#top-margin button:hover { color:var(--text-color); }
+#top-margin button:hover { color:var(--text-color); background-color:var(--hover-bg); }
 
 /* Nav Action Lists */
 .nav-actions
