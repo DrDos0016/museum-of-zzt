@@ -2,6 +2,7 @@ import base64
 import glob
 import json
 import os
+import shutil
 import time
 import tempfile
 import zipfile
@@ -197,6 +198,10 @@ class IA_Mirror_Form(forms.Form):
         ("sczo404.zip", "Super ClassicZoo v4.04::SUPERZ.EXE"),
     )
 
+    TSR_PATHS = {
+        "NOBLINK.COM": os.path.join(STATIC_PATH, "tsr", "NOBLINK.COM"),
+    }
+
     title = forms.CharField(label="Title")
     url = forms.CharField(
         label="URL", help_text="File will being uploaded to /details/[url]"
@@ -227,7 +232,13 @@ class IA_Mirror_Form(forms.Form):
         help_text="Additional zipfiles whose contents are to be included"
     )
     default_world = forms.ChoiceField(required=False, choices=[])
-    launch_command = forms.CharField(required=False)
+    tsr = forms.ChoiceField(
+        required=False,
+        label="TSR",
+        help_text="TSR to run via DOSBOX before launching ZZT.",
+        choices=[("", "None"), ("NOBLINK.COM", "NOBLINK.COM - Font: cp437 | Blinking: Disabled")]
+    )
+    launch_command = forms.CharField(required=False, widget=forms.Textarea(), label="Launch command(s)")
     zzt_config = forms.CharField(
         required=False,
         label="ZZT.CFG Contents",
@@ -257,7 +268,7 @@ class IA_Mirror_Form(forms.Form):
         wip_dir = temp_dir.name
         wip_zf_path = os.path.join(wip_dir, wip_zf_name)
 
-        self.log.append("{}: Created temp directory `{}`\n".format(int(time.time()), temp_dir))
+        self.log.append("{}: Created temp directory `{}`\n".format(int(time.time()), wip_dir))
 
         # Create a ZZT.CFG if parameters were specified
         if self.cleaned_data["zzt_config"]:
@@ -298,6 +309,15 @@ class IA_Mirror_Form(forms.Form):
                 )
             zf.close()
             self.log.append("{}: -- Added package `{}`\n".format(int(time.time()), package_path))
+
+        # Add TSR if needed (noblink, font, palette)
+        self.log.append("{}: Adding requested TSR to archive (if any)\n".format(int(time.time())))
+        if self.cleaned_data.get("tsr") and self.TSR_PATHS.get(self.cleaned_data["tsr"]):
+            tsr_path = self.TSR_PATHS.get(self.cleaned_data["tsr"])
+            filename = os.path.basename(tsr_path)
+            shutil.copyfile(tsr_path, os.path.join(wip_dir, filename))
+            self.log.append("{}: Added {}\n".format(int(time.time()), filename))
+
 
         # Add to WIP archive
         self.log.append("{}: Adding zgame/alt archive contents to IA archive zipfile\n".format(int(time.time())))
