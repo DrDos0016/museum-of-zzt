@@ -9,7 +9,7 @@ register = Library()
 
 
 @register.simple_tag()
-def char(num=2, fg="white", bg="black", scale=2, mode="image"):
+def char(num=2, fg="white", bg="black", scale=2, mode="image", charset="cp437"):
     colors = [
         "black", "darkblue", "darkgreen", "darkcyan", "darkred", "darkpurple", "darkyellow", "gray",
         "darkgray", "blue", "green", "cyan", "red", "purple", "yellow", "white", "transparent"
@@ -70,7 +70,7 @@ def char(num=2, fg="white", bg="black", scale=2, mode="image"):
         return mark_safe(output.format(fg, bg, scale, CP437_TO_UNICODE[num]))
     else:  # image
         output = (
-            "<span class='ascii-char-image ega-{}-bg' title='&#{};' style='width:{}px;height:{}px;background-position:{}px {}px;"
+            "<span class='ascii-char-image charset-{} ega-{}-bg' title='&#{};' style='width:{}px;height:{}px;background-position:{}px {}px;"
             "background-size:{}px {}px;image-rendering: pixelated;'></span>"
         )
 
@@ -94,7 +94,7 @@ def char(num=2, fg="white", bg="black", scale=2, mode="image"):
         size_x = CHARSET_WIDTH * scale
         size_y = CHARSET_HEIGHT * scale
 
-        output = output.format(bg, CP437_TO_UNICODE[num], 8 * scale, 14 * scale, pos_x, pos_y, size_x, size_y)
+        output = output.format(charset, bg, CP437_TO_UNICODE[num], 8 * scale, 14 * scale, pos_x, pos_y, size_x, size_y)
         return mark_safe(output)
 
 

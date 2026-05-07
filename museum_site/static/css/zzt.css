@@ -279,4 +279,6 @@ img.zzt-szzt-message
     background-image:url("/static/images/cp437-transparent.png");
     vertical-align:bottom;
 }
+
+.ascii-char-image.charset-mzx { background-image: url("/static/images/mzx-transparent.png"); }
 /* End Individual Characters */
