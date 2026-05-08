@@ -726,6 +726,7 @@ img.zoomable.zoomed:hover { cursor:zoom-out; }
     grid-template-columns: 2ch 2ch auto 1fr auto;
     gap:1ch;
     align-items:center;
+    grid-area:expand;
 }
 
 #top-margin button
