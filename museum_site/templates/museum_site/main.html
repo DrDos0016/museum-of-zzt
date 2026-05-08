@@ -118,8 +118,7 @@ var global_zoomed_state = {% if request.session.prezoom == "on" %}1{% else %}0{%
     <button id="toggle-light-dark-theme" title="Toggle Light/Dark Theme">¥</button>
     <button id="toggle-zoom" title="Toggle Preview Image Zoom">±</button>
     <div id="toggle-response" class="cp437"></div>
-    <div></div>
-    {% block top_margin_middle %}{% endblock %}
+    {% block top_margin_middle %}<div></div>{% endblock %}
     <button id="expand-contract" title="Toggle sidebars">⮜ ⮞</button>
 </div>
 {% block zfile_header %}
