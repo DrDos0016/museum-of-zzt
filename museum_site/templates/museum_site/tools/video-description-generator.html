@@ -36,8 +36,8 @@ $(document).ready(function (){
     <form method="POST" action="{% url 'add_livestream' first_key %}?kind={{request.GET.kind}}">
     {% csrf_token %}
     <textarea style="width:120ch;height:40ch;" name="video_description">{{subtemplate}}</textarea>
+    <div class="chars-remaining" data-field-name="video_description" data-max-chars="5000"><span class="chars-remaining-value">4492</span> characters remaining</div>
     {% for assoc in form.associated.value %}<input name="associated" value="{{assoc}}" type="hidden">{% endfor %}
-    <br><br>
     <input type="hidden" name="transferred" value="1">
     <input type="submit" value="Proceed to Add Livestream VOD tool">
 {% endif %}

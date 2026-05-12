@@ -18,7 +18,7 @@ from museum_site.fields import (
 )
 from museum_site.models import Author, Company, Detail, Download, File, Genre, Upload, Zeta_Config
 from museum_site.widgets import (
-    Enhanced_Date_Widget, Enhanced_Text_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget, Language_Checklist_Widget
+    Enhanced_Date_Widget, Enhanced_Text_Widget, Enhanced_Text_Area_Widget, Scrolling_Checklist_Widget, Tagged_Text_Widget, UploadFileWidget, Language_Checklist_Widget
 )
 
 
@@ -134,7 +134,14 @@ class Upload_Form(forms.ModelForm):
                     (1, "Do not announce this upload")
                 ),
             ),
+            "notes": Enhanced_Text_Area_Widget(char_limit=500)
         }
+
+    def clean_notes(self):
+        max_chars = self.fields["notes"].widget.char_limit
+        cur_chars = len(self.cleaned_data.get("notes", ""))
+        if cur_chars > max_chars:
+            self.add_error("notes", "Ensure this value has at most {} characters (it has {})".format(max_chars, cur_chars))
 
     def process(self, ip, user_id=None):
         self.upload = self.save(commit=False)

@@ -92,6 +92,7 @@ label.selected { background: var(--header-bg);}
 
 .vcentered-form-text { align-self:center; };
 .errorlist { font-weight:bold; }
+.red-text { color: red; }
 
 .field-value
 {
