@@ -9,10 +9,8 @@
 <title>{% if title %}{{title}} - {% endif %}Museum of ZZT</title>
 {% for file in CSS_INCLUDES %}<link rel="stylesheet" type="text/css" href="{% static 'css/'|add:file %}?{{BOOT_TS}}">
 {% endfor %}<link rel="shortcut icon" href="{% static 'chrome/favicon.png' %}">
-{% block meta %}{{meta_tags|safe}}{% endblock %}
-{% block analytics %}
-{% if request.get_host == "museumofzzt.com" %}
-<script>
+{% block meta %}{{meta_tags|default:'<!--No Meta Tags Defined For Page-->'|safe}}{% endblock %}
+{% block analytics %}{% if ENV == "PROD" %}<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -20,11 +18,10 @@
 
   ga('create', 'UA-45185267-6', 'auto');
   ga('send', 'pageview');
-</script>
-{% else %}<!--N/A-->{% endif %}
-{% endblock %}
+</script>{% else %}<!--Analytics Disabled on {{ENV}}-->{% endif %}{% endblock %}
 <script src="{% static 'js/jquery.3.1.0.min.js' %}"></script>
 <script src="{% static 'js/museum.js' %}?{{BOOT_TS}}"></script>
+{% if debug %}<script defer src="{% static 'js/debug-moz.js' %}?{{BOOT_TS}}"></script>{% endif %}
 <script>
 var global_zoomed_state = {% if request.session.prezoom == "on" %}1{% else %}0{% endif %};
 </script>
@@ -234,56 +231,7 @@ var global_zoomed_state = {% if request.session.prezoom == "on" %}1{% else %}0{%
 Additional content copyright its  <a href="{% url 'credits' %}">respective owners</a><br>
 Server Time: {{datetime}}<br>
 <a href="{% url 'my_profile' %}">View my data</a><br>
-{% if debug %}
-<div id="debug-block" class="debug block" style="font-size:10pt;background:var(--ega-red);">
-Device Resolution: <span id="debug-res"></span> |
-Page Dimensions: <span id="debug-view"></span><br>
-<textarea style="width:95%;margin:auto;">
-URL Name: "{{resolved_url.url_name}}" Path: {{request.path}}
-Domain: {{DOMAIN}}
-Absolute URI: {{request.build_absolute_uri}}
-HTTP_HOST: {{request.META.HTTP_HOST}} | Host: {{HOST}} | Env: {{ENV}}
-Spotlight Source: {{spotlight_source|default:'?'}}
-Spotlight Collection ID: {{spotlight_collection_source|default:'?'}}
-</textarea><br>
-View this page on: <a href="https://beta.museumofzzt.com{{request.path}}" target="_blank">BETA</a> <a href="https://museumofzzt.com{{request.path}}" target="_blank">LIVE</a>
-<br>
-Debug mode resolved to true. {% if ENV == 'DEV' %}This is always the case on DEV.{% endif %} [Session debug = {{request.session.DEBUG|yesno:'True,False'}}][URL debug = {{request.GET.DEBUG|yesno:'True,False'}}]
-<table id="meta-tags" class="data-table" style="max-width:800px;margin:auto;background:#FFF;font-size:10pt;">
-</table>
-</div>
-
-<script>
-$("#debug-res").text($(window).width() + "x" + $(window).height());
-$("#debug-view").text($("body").width() + "x" + $("body").height());
-</script>
-<a id="showdebug" class="jsLink b">HIDE DEBUGGING INFORMATION</a><br>
-<script>
-$("#showdebug").click(function (){
-    $(".debug").toggle();
-    if ($("#showdebug").text() == "HIDE DEBUGGING INFORMATION")
-        $("#showdebug").text("SHOW DEBUGGING INFORMATION");
-    else
-        $("#showdebug").text("HIDE DEBUGGING INFORMATION");
-});
-
-$("meta").each(function (){
-    var key = $(this).attr("name");
-    if (! key)
-        key = $(this).attr("property");
-    else if (key.indexOf("twitter") == 0)
-        key = "t:" + key.split(":")[1];
-
-    var val = $(this).attr("content");
-
-    if (key == "og:image")
-        var row = `<tr><th>${key}</th><td class="l">${val}</td><td rowspan="9" id="embed-preview"><img src="${val}" loading="lazy"></td></tr>`;
-    else
-        var row = `<tr><th>${key}</th><td class="l">${val}</td></tr>`;
-    $("#meta-tags").html($("#meta-tags").html() + row);
-});
-</script>
-{% endif %}
+{% if debug %}{% include "museum_site/subtemplate/footer-debugging.html" %}{% endif %}
 </footer>
 {% endblock %}
 
