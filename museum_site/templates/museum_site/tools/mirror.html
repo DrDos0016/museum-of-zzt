@@ -4,6 +4,7 @@
 {% block scripts %}
 <script src="{% static 'js/jszip.min.js' %}?{{BOOT_TS}}"></script>
 <script>
+const TSR_LAUNCH_COMMANDS = {"NOBLINK.COM": {"prefix": "NOBLINK.COM i", "suffix": "NOBLINK.COM u"}};
 $(document).ready(function (){
     // Drag and Drop Uploading
     $(".upload-area").click(function (){
@@ -43,12 +44,22 @@ $(document).ready(function (){
     // Adjust launch command on package/world change
     $("#id_default_world").change(calc_launch_command);
     $("input[name=packages]").change(calc_launch_command);
+    $("select[name=tsr]").change(calc_launch_command);
 
     calc_launch_command();
 });
 
 function calc_launch_command()
 {
+    let output = "";
+    let requested_tsr = $("select[name='tsr']").val();
+
+    // Determine TSR prefix
+    if (requested_tsr)
+    {
+        output += TSR_LAUNCH_COMMANDS[requested_tsr].prefix + "\n";
+    }
+
     var engine = "";
     $("input[name=packages]").each(function (){
         if ($(this).prop("checked"))
@@ -58,8 +69,15 @@ function calc_launch_command()
     });
 
     var world = $("#id_default_world").val().split(".")[0];
-    var launch_command = (engine + " " + world).trim()
-    $("#id_launch_command").val(launch_command);
+    output += (engine + " " + world).trim() + "\n";
+
+    // Determine TSR suffix
+    if (requested_tsr)
+    {
+        output += TSR_LAUNCH_COMMANDS[requested_tsr].suffix + "\n";
+    }
+
+    $("#id_launch_command").val(output);
 
     // Set ZZT.CFG config
     console.log("ENGINE", engine);

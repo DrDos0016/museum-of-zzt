@@ -24,7 +24,6 @@ CHARSET_PATH = os.path.join(STATIC_PATH, "images", "charsets")  # /museum-of-zzt
 EMAIL_ADDRESS = "doctordos@gmail.com"
 
 # Global CSS Files
-#CSS_INCLUDES = ["museum-site.css", "main.css", "zzt.css", "low-res.css", "forms.css", "model-blocks.css"]
 CSS_INCLUDES = ["museum-site.css", "main.css", "zzt.css", "low-res.css", "NEW-forms.css", "model-blocks.css"]
 
 # Pagination
@@ -94,21 +93,28 @@ TOKEN_EXPIRATION_SECS = 600
 ADMIN_NAME = "Dr. Dos"
 
 # Host/Environment information
+PROD_PROTOCOL = "https"
+PROD_DOMAIN = os.environ.get("MOZ_PROD_DOMAIN", "museumofzzt.com")
+PROD_HOST = "{}://{}/".format(PROD_PROTOCOL, PROD_DOMAIN)
+PROD_ENV = "PROD"
+
+BETA_PROTOCOL = "https"
+BETA_DOMAIN = os.environ.get("MOZ_BETA_DOMAIN", "beta.museumofzzt.com")
+BETA_HOST = "{}://{}/".format(BETA_PROTOCOL, BETA_DOMAIN)
+BETA_ENV = "BETA"
+
+DEV_PROTOCOL = "http"
+DEV_DOMAIN = os.environ.get("MOZ_DEV_DOMAIN", "django.pi:8000")
+DEV_HOST = "{}://{}/".format(DEV_PROTOCOL, DEV_DOMAIN)
+DEV_ENV = "DEV"
+
+
 if settings.ENVIRONMENT == "PROD":
-    HOST = "https://museumofzzt.com/"
-    PROTOCOL = "https"
-    DOMAIN = "museumofzzt.com"
-    ENV = "PROD"
+    (PROTOCOL, DOMAIN, HOST, ENV) = (PROD_PROTOCOL, PROD_DOMAIN, PROD_HOST, PROD_ENV)
 elif settings.ENVIRONMENT == "BETA":
-    HOST = "https://beta.museumofzzt.com/"
-    PROTOCOL = "https"
-    DOMAIN = "beta.museumofzzt.com"
-    ENV = "BETA"
+    (PROTOCOL, DOMAIN, HOST, ENV) = (BETA_PROTOCOL, BETA_DOMAIN, BETA_HOST, BETA_ENV)
 else:  # DEV
-    HOST = "http://django.pi:8000/"
-    PROTOCOL = "http"
-    DOMAIN = "django.pi:8000"
-    ENV = "DEV"
+    (PROTOCOL, DOMAIN, HOST, ENV) = (DEV_PROTOCOL, DEV_DOMAIN, DEV_HOST, DEV_ENV)
 
 # Magic Numbers
 UPCOMING_ARTICLE_MINIMUM_PATRONAGE = 200
@@ -225,6 +231,6 @@ FORM_ANY = "- Any -"
 FORM_NONE = "- None -"
 
 # Date/Time Formats
-DATE_HR = "%b %d, %Y" # ex: "Mar 05, 2023"
+DATE_HR = "%b %d, %Y"  # ex: "Mar 05, 2023"
 DATE_NERD = "%Y-%m-%d"  # ex: "2010-02-06"
 DATE_FULL = "%b %d, %Y, %I:%M:%S %p"  # ex: "Nov 06, 2022, 08:06:03 PM"

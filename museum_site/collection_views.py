@@ -199,8 +199,6 @@ class Collection_List_View(Model_List_View):
         context = super().get_context_data(**kwargs)
         context["prefix_template"] = "museum_site/prefixes/collection.html"
         key = self.request.resolver_match.url_name
-        print("KEY", key)
-        print(key)
         if key == "collection_user":
             context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="A directory of your collections of files")
 

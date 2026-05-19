@@ -69,19 +69,6 @@ $(document).ready(function (){
         write_selected($(this).attr("name"));
     });
 
-    $(".char-limited-widget").each(function (){
-        $(this).on("input", function (){
-            var len = $(this).val().length;
-            var max_chars = $(this).data("charlimit");
-            var remaining = max_chars - len;
-            $(this).prev(".chars-remaining").find("span").html(remaining);
-            if (remaining < 0)
-                $(this).prev(".chars-remaining").css("color", "red");
-            else
-                $(this).prev(".chars-remaining").css("color", "");
-        });
-    });
-
     $(".clear-date-widget").click(function (){
         $(this).prevAll("input[type=date]").val("");
     });
@@ -193,6 +180,21 @@ $(document).ready(function (){
         let func = window["apply_form_shortcut"];
         if (typeof func === "function") { func.apply(null, [$(this).val()]); }
         else { console.log("apply_form_shortcut() is undefined"); }
+    });
+
+    // Chars remaining (modern)
+    $(".chars-remaining").each(function (){
+        let field_name = $(this).data("field-name");
+        let max_chars = $(this).data("max-chars");
+        $(`input[name=${field_name}], textarea[name=${field_name}]`).keyup(function (){
+            let remaining = max_chars - $(this).val().length;
+            $(`.chars-remaining[data-field-name=${field_name}] .chars-remaining-value`).html(remaining);
+            if (remaining < 0)
+                $(`.chars-remaining[data-field-name=${field_name}]`).addClass("red-text");
+            else
+                $(`.chars-remaining[data-field-name=${field_name}]`).removeClass("red-text");
+        });
+        $(`input[name=${field_name}], textarea[name=${field_name}]`).keyup();
     });
 
     // Setup

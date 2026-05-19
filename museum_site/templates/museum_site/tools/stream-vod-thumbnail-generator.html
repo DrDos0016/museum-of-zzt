@@ -96,24 +96,37 @@ $(document).ready(function (){
         $("#thumb-image").attr("src", img_src);
 
         // Critters
+        update_critters();
+    });
+
+    function update_critters()
+    {
+        let critter_names = ["lion", "bear", "ruffian", "snake", "roton", "mzx-bear", "mzx-thief", "mzx-ghost"];
         let critters = $("#id_critters").val();
+
+        for (let idx = 0; idx < critter_names.length; idx++)
+            $("." + critter_names[idx]).hide();
         if (critters == "ZZT")
         {
             $(".lion").show();
             $(".bear").show();
             $(".ruffian").show();
-            $(".snake").hide();
-            $(".roton").hide();
         }
         if (critters == "SZZT")
         {
             $(".lion").show();
-            $(".bear").hide();
-            $(".ruffian").hide();
             $(".snake").show();
             $(".roton").show();
         }
-    });
+        if (critters == "MZX")
+        {
+            $(".mzx-ghost").show();
+            $(".mzx-bear").show();
+            $(".mzx-thief").show();
+        }
+    }
+
+    update_critters();
 });
 </script>
 {% endblock %}
@@ -240,14 +253,18 @@ $(document).ready(function (){
         <canvas id="thumb-canvas" width="987px" height="720px"></canvas>
     </div>
     <div id="foreground">
-        <div class="corner tl bigchar lion">{% char 234 "red" "transparent" scale=14 %}</div>
+        <div class="corner bigchar tl lion">{% char 234 "red" "transparent" scale=14 %}</div>
+        <div class="corner bigchar tl mzx-ghost">{% char 234 "gray" "transparent" scale=14 charset='mzx' %}</div>
         <div class="corner bl">
             <img src="{% static 'chrome/logos/museum-tiger-by-lazymoth.png' %}" class="">
         </div>
         <div class="corner bigchar tr bear">{% char 153 "darkyellow" "transparent" scale=14 %}</div>
         <div class="corner bigchar tr snake">{% char 235 "darkgreen" "transparent" scale=14 %}</div>
+        <div class="corner bigchar tr mzx-bear">{% char 153 "darkyellow" "transparent" scale=14 charset='mzx' %}</div>
         <div class="corner bigchar br ruffian">{% char 5 "purple" "transparent" scale=14 %}</div>
         <div class="corner bigchar br roton">{% char 148 "purple" "transparent" scale=14 %}</div>
+        <div class="corner bigchar br mzx-thief">{% char 184 "purple" "transparent" scale=14 charset='mzx' %}</div>
+
         <div class="cp437 title-wrapper">
             <div class="stream-title {{request.POST.text_size|default:'large'}}">{{request.POST.title}}</div>
             <div class="stream-subtitle {{request.POST.text_size|default:'large'}}">{{request.POST.subtitle}}</div>

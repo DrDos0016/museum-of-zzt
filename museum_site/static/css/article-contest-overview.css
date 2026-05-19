@@ -1,0 +1,83 @@
+/*
+Contest overview CSS - Intended to be used across all contest overview articles.
+Requires manual inclusion via Article.css field.
+*/
+.rank { text-align:center; }
+.rank-1.rank { background-color:gold}
+.rank-2.rank { background-color:silver}
+.rank-3.rank { background-color:var(--ega-darkyellow)}
+.tier-s { background-color: #80ff80 }
+.tier-a { background-color: #bcff77 }
+.tier-b { background-color: #ebff7a }
+.tier-c { background-color: #ffe472 }
+.tier-d { background-color: #ffb278 }
+.score-10 { background-color: #80ff80}
+.score-9 { background-color: #a0ff7a}
+.score-8 { background-color: #bcff77}
+.score-7 { background-color: #d4ff77}
+.score-6 { background-color: #ebff7a}
+.score-5 { background-color: #ffff80}
+.score-4 { background-color: #ffe472}
+.score-3 { background-color: #ffcb77}
+.score-2 { background-color: #ffb278}
+.score-1 { background-color: #ff9777}
+.score-0, .score--1 { background-color: #ff8080}
+.score- { background-color: #fff}
+.theme-dark td.score- { background-color: initial; }
+
+.theme-dark .rank-1.rank, .theme-dark .rank-2.rank, .theme-dark .rank-3.rank { color: #000; }
+.theme-dark .tier-a, .theme-dark .tier-b, .theme-dark .tier-c, .theme-dark .tier-d, .theme-dark .tier-s { color: #000; }
+.theme-dark .score-10, .theme-dark .score-9, .theme-dark .score-8, .theme-dark .score-7, .theme-dark .score-6, .theme-dark .score-5, .theme-dark .score-4, .theme-dark .score-3, .theme-dark .score-2, .theme-dark .score-1, .theme-dark .score-0, .theme-dark .score-, .theme-dark .score--1 { color: #000; }
+
+.table-wrapper { max-width: 90%; overflow:auto; margin:auto; }
+
+.entry-table
+{
+    overflow:auto;
+    margin:auto;
+    background:var(--board-list-bg);
+}
+
+.entry-table th { cursor:pointer; }
+
+.judge-commentary
+{
+    max-width:500px;
+    margin:auto;
+    padding:5px;
+    border:1px solid var(--border-color);
+    display:grid;
+    grid-template-areas: "name rating" "comment comment";
+    grid-template-columns:1fr auto;
+}
+
+.judge-name { grid-area: name; font-weight:bold; }
+.judge-rating { grid-area: rating; font-weight:bold; }
+.judge-comment { grid-area: comment; }
+
+.judge-commentary + .judge-commentary { margin-top:4px; }
+
+.judge-commentary p
+{
+    text-align:left;
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+.judge-commentary p + p
+{
+    margin-top:14px;
+    margin-bottom:14px;
+}
+
+.entry-placement
+{
+    font-style:oblique;
+    max-width:750px;
+    margin:auto;
+}
+
+h3.entry-title
+{
+    margin-bottom:0px;
+}

@@ -35,8 +35,6 @@ var CP437_TO_UNICODE = {
     248:176, 249:8729, 250:183, 251:8730, 252:8319, 253:178, 254:9632, 255:160,
 }
 
-var IS_SEARCHING = false;
-
 $(document).ready(function (){
     // New Screenshot Zoom
     $(".zoomable").click(function (){
@@ -123,6 +121,8 @@ $(document).ready(function (){
             $(".zoomable").not(".zoomed").click();
         else
             $(".zoomable.zoomed").click();
+        let resp = (on_off == "on") ? 'Images expanded' : 'Thumbnails restored';
+        toggle_response(resp);
     });
 
     // Expand/Contract Middle Column
@@ -410,6 +410,15 @@ function ajax_set_setting(key, value, callback)
         }
     }).done(function (data){
         callback(data);
+    });
+}
+
+function toggle_response(resp)
+{
+    $("#toggle-response").html(resp);
+    $("#toggle-response").fadeOut(2000, function(){
+        $(this).html("");
+        $(this).show();
     });
 }
 
