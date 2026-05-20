@@ -214,6 +214,12 @@ article aside
 {
     margin-top:7px;
 }
+
+article .zzmplay-widget
+{
+    margin:auto;
+    background:var(--ega-darkpurple);
+}
 /* End article formatting */
 
 @media (max-width:1529px) { article.livestream iframe[src^="https://www.youtube.com"] { width:480px; height:270px; } }
