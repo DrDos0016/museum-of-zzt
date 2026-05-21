@@ -362,16 +362,11 @@ function resize_yt_embed()
 
 function expand_field()
 {
-    if ($(this).data("expanded") == "1")
-    {
-        $(this).data("expanded", "0");
-        $(this).html("Show All");
-    }
-    else
-    {
-        $(this).data("expanded", "1");
-        $(this).html("Show Some");
-    }
+    let cur = $(this).data("expanded");
+    let after = (cur == "1") ? "0": "1";
+    let text = "Shower " + {"0": "All", "1": "Some"}[after];
+    $(this).data("expanded", after);
+    $(this).html(text);
     $(this).parent().next(".value").toggleClass("expanded");
 }
 
@@ -452,6 +447,7 @@ class Museum_ZZM_Audio_Player
 
     clean_raw_data(raw)
     {
+        raw = raw.toLowerCase();
         raw = raw.replaceAll("#bgplay", "#play");
         raw = raw.replaceAll("#fgplay", "#play");
         let cleaned = raw.replaceAll(/^(?!#play).*$/gm, "");
@@ -464,7 +460,6 @@ class Museum_ZZM_Audio_Player
     update_play_commands()
     {
         let raw = this.source_element.val();
-        console.log("To... " + raw);
         if (this.prefix_required)
             this.play_commands = this.clean_raw_data(raw);
         else
