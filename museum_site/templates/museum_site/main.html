@@ -23,7 +23,10 @@
 <script src="{% static 'js/museum.js' %}?{{BOOT_TS}}"></script>
 {% if debug %}<script defer src="{% static 'js/debug-moz.js' %}?{{BOOT_TS}}"></script>{% endif %}
 <script>
-var global_zoomed_state = {% if request.session.prezoom == "on" %}1{% else %}0{% endif %};
+var page_info = {
+    "prezoom": {% if request.session.prezoom == "on" %}true{% else %}false{% endif %},
+    "theme": "{{request.session.theme|default:'light'}}",
+}
 </script>
 {% block scripts %}{% endblock %}
 {% block staff_scripts %}{% endblock %}
@@ -31,7 +34,7 @@ var global_zoomed_state = {% if request.session.prezoom == "on" %}1{% else %}0{%
 {% block staff_style %}{% endblock %}
 </head>
 
-<body class="grid-root{% if april %} april{% endif %}{% if request.session.theme %} theme-{{request.session.theme}}{% endif %}{% if request.session.sidebars == 'hide' %} expanded{% endif %}" {% if active_tool %}data-active-tool="true"{% endif %} id="top">
+<body class="grid-root{% if april %} april{% endif %} theme-{{request.session.theme|default:'light'}}{% if request.session.sidebars == 'hide' %} expanded{% endif %}" {% if active_tool %}data-active-tool="true"{% endif %} id="top">
 
 <nav id="low-res-shortcuts" class="cp437">
     <input type="button" id="left-hamburger" value="Archives" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-left">

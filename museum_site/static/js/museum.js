@@ -26,7 +26,7 @@ $(document).ready(function (){
     });
 
     // Set initial zoom
-    if (global_zoomed_state && (window.location.pathname != "/worlds-of-zzt/"))
+    if (page_info.prezoom && (window.location.pathname != "/worlds-of-zzt/"))
         $(".zoomable").click();
 
     // Browse Letters Select-based Input
@@ -180,7 +180,6 @@ $(document).ready(function (){
 
     // WIP
     init_expandable_model_block_fields();
-
 });
 
 function toggle_burger(e)
