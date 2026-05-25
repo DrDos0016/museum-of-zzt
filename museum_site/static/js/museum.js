@@ -97,10 +97,10 @@ $(document).ready(function (){
 
     // Zoom all
     $("#toggle-zoom").click(function (){
-        global_zoomed_state = ! global_zoomed_state;
-        let on_off = global_zoomed_state ? "on" : "off";
+        page_info.prezoom = ! page_info.prezoom;
+        let on_off = page_info.prezoom ? "on" : "off";
         ajax_set_setting("prezoom", on_off, function (){});
-        if (global_zoomed_state)
+        if (page_info.prezoom)
             $(".zoomable").not(".zoomed").click();
         else
             $(".zoomable.zoomed").click();
