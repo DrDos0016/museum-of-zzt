@@ -123,21 +123,20 @@ class Upload_View(TemplateView):
             else:
                 self.zgame_form.zfile.zeta_config_id = ZETA_RESTRICTED
 
+            # Create ZGames Download
+            if not self.zgame_form.empty_upload:
+                zgames_download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zgame_form.zfile.filename, kind="zgames")
+                if created:
+                    self.zgame_form.zfile.downloads.add(zgames_download)
+                    self.zgame_form.generate_preview_image(self.upload_form.cleaned_data["generate_preview_image"])  # Generate Preview Image
+
             # Download Form (non-zgame DLs)
             if self.download_form.cleaned_data["url"]:
                 self.download_obj = self.download_form.save()
                 self.zgame_form.zfile.downloads.add(self.download_obj)
 
-            self.zgame_form.generate_preview_image(self.upload_form.cleaned_data["generate_preview_image"])  # Generate Preview Image
-            discord_announce_upload(self.upload_form.upload, self.zgame_form.zfile)  # Announce to Discord (if needed)
-
+            #discord_announce_upload(self.upload_form.upload, self.zgame_form.zfile)  # Announce to Discord (if needed)
             self.zgame_form.zfile.save()  # Final Save FULLSAVE
-
-            if not self.zgame_form.empty_upload:
-                # Create ZGames Download
-                zgames_download, created = Download.objects.get_or_create(url="/zgames/uploaded/" + self.zgame_form.zfile.filename, kind="zgames")
-                if created:
-                    self.zgame_form.zfile.downloads.add(zgames_download)
 
             # Log upload for staff
             Discord_Announcement_Form().send_message("log", "Upload submitted: ZF#{} [{}]\n{}\n<https://museumofzzt.com{}>".format(

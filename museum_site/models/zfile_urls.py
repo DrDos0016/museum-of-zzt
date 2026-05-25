@@ -20,7 +20,7 @@ class ZFile_Urls:
                 return zgame.get_absolute_url()
         except ValueError:
             return "X"
-        return "#"
+        return "#NODOWNLOADFOUND"
 
     def get_absolute_url(self):
         return reverse("file", kwargs={"key": self.key})
