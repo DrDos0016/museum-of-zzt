@@ -142,6 +142,7 @@ class Upload_Form(forms.ModelForm):
         cur_chars = len(self.cleaned_data.get("notes", ""))
         if cur_chars > max_chars:
             self.add_error("notes", "Ensure this value has at most {} characters (it has {})".format(max_chars, cur_chars))
+        return self.cleaned_data.get("notes", "")
 
     def process(self, ip, user_id=None):
         self.upload = self.save(commit=False)

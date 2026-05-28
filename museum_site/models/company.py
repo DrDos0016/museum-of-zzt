@@ -12,6 +12,7 @@ class Company(models.Model):
 
     title = models.CharField(max_length=120, db_index=True, editable=True, help_text="Company Name")
     slug = models.SlugField(max_length=120, db_index=True, editable=False)
+    lock_slug = models.BooleanField(default=False, help_text="Check to disable recalculating slug on save.")
 
     class Meta:
         ordering = ["title"]
@@ -20,7 +21,8 @@ class Company(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        # Save
+        if not self.lock_slug:
+            self.slug = slugify(self.title)
         super(Company, self).save(*args, **kwargs)
 
     def generate_automatic_slug(self, save=True):
