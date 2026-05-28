@@ -36,20 +36,22 @@ var page_info = {
 
 <body class="grid-root{% if april %} april{% endif %} theme-{{request.session.theme|default:'light'}}{% if request.session.sidebars == 'hide' %} expanded{% endif %}" {% if active_tool %}data-active-tool="true"{% endif %} id="top">
 
-<nav id="low-res-shortcuts" class="cp437">
-    <input type="button" id="left-hamburger" value="Archives" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-left">
-    <a href="{% url 'index' %}"><img src="{% static 'chrome/logos/museum-tiger-by-lazymoth-48px.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
-    {% if user.is_authenticated and not forced_logout %}<a href="{% url 'my_profile' %}" title="Logged in as: {{user.username}}"><div class="key">{% char user.profile.char user.profile.fg user.profile.bg scale=3 %}</div></a>{% endif %}
-    <input type="button" id="right-hamburger" value="Exhibits" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-right">
-</nav>
+<header>
+    <nav id="low-res-shortcuts" class="cp437">
+        <input type="button" id="left-hamburger" value="Archives" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-left">
+        <a href="{% url 'index' %}"><img src="{% static 'chrome/logos/museum-tiger-by-lazymoth-48px.png' %}" alt="Museum of ZZT Logo by LazyMoth"></a>
+        {% if user.is_authenticated and not forced_logout %}<a href="{% url 'my_profile' %}" title="Logged in as: {{user.username}}"><div class="key">{% char user.profile.char user.profile.fg user.profile.bg scale=3 %}</div></a>{% endif %}
+        <input type="button" id="right-hamburger" value="Exhibits" class="hamburger-menu-button ega-white" data-state="closed" data-target="#sidebar-right">
+    </nav>
+    {% block active_tool %}{% if active_tool %}<section id="active-tool">{% include active_tool_template %}</section>{% endif %}{% endblock %}
+</header>
 
-{% block active_tool %}{% if active_tool %}<section id="active-tool">{% include active_tool_template %}</section>{% endif %}{% endblock %}
 
 {% block sidebar_left %}
 <section id="sidebar-left" class="sidebar">
-    <header id="logo-area">
+    <section id="logo-area">
         <a href="{% url 'index' %}" id="logo"><img src="{% static logo_path %}" alt="Museum of ZZT Logo by LazyMoth"></a>
-    </header>
+    </section>
 
     <div id="spotlight-block" class="block">
         <div class="flex-container"><h2>Spotlight World️</h2><div><a href="{% url 'user_preferences_spotlight' %}" class="link-manage-spotlight" title="Manage Spotlight Worlds">⚙️</a></div></div>

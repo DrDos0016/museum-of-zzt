@@ -2,62 +2,59 @@
 .grid-root
 {
     display:grid;
-    grid-template-areas:
-    "left content right"
-    "footer footer footer";
-    grid-template-columns:1fr minmax(auto, 1300px) 1fr;
-    grid-template-rows:auto auto;
-    grid-gap:7px 6px;
     max-width:1920px;
     margin-left: auto;
     margin-right: auto;
     justify-items:center;
     justify-content:space-around;
     width:round(100%, 2px);
-}
-
-.grid-root[data-active-tool=true] { margin-top:70px; }
-
-.grid-root.expanded
-{
     grid-template-areas:
-    "low-res"
-    "content"
-    "footer";
-    grid-template-columns:auto;
-    max-width:100vw;
+    "header header header"
+    "left content right"
+    "footer footer footer";
+    grid-template-columns:1fr minmax(auto, 1300px) 1fr;
+    grid-template-rows:auto auto auto;
+    grid-gap:7px 6px;
+
+    &[data-active-tool=true]
+    {
+        .sidebar, #content
+        {
+            margin-top:60px;
+        }
+    }
+
+    &.expanded
+    {
+        grid-template-areas:
+        "header"
+        "content"
+        "footer";
+        grid-template-columns:auto;
+        max-width:100vw;
+
+        & #content /* No tool */
+        {
+            width:98vw;
+            margin-left: 1vw;
+            margin-right: 1vw;
+            margin-top: 48px;
+        }
+
+        &[data-active-tool=true] #content /* Yes tool */
+        {
+            margin-top:108px;
+        }
+    }
 }
 
-.grid-root[data-active-tool=true].expanded
-{
-    grid-template-areas:
-    "low-res"
-    "tool"
-    "content"
-    "footer";
-}
-
-.grid-root.expanded #content
-{
-    width:98vw;
-    margin-left: 1vw;
-    margin-right: 1vw;
-    margin-top: 48px;
-}
+header { grid-area:header; width:100vw; position:fixed; top: 0px; background:rgba(32, 32, 32, 0.25); z-index:999;}
 
 #low-res-shortcuts {
     display:none;
     flex-wrap:wrap;
     justify-content:space-between;
-    font-size:21px;
-    line-height:28px;
-    width:100vw;
-    position:fixed;
-    top:0px;
-    text-align:center;
-    column-gap:1px;
     background-color:var(--ega-darkblue);
-    z-index:999;
     height:48px;
 }
 
@@ -74,7 +71,7 @@
 
 #low-res-shortcuts input[type=button]:hover
 {
-    text-decoration:none;
+    cursor:pointer;
 }
 
 #low-res-shortcuts a
@@ -88,14 +85,6 @@
 
 
 body.expanded #low-res-shortcuts { display:flex; }
-
-
-#active-tool {
-    position:fixed;
-    top:0px;
-    max-width:750px;
-    z-index:4;
-}
 
 #active-tool > div {
     box-sizing:border-box;
