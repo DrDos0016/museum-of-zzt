@@ -33,18 +33,10 @@ $(document).ready(function (){
 </div>
 
 <div class="directory">
-    {% for column in columns %}
-    <div class="column">
-        {% for entry in column %}
-            {% if entry.kind == "header" %}
-            <div class="header">{{entry.title}}</div>
-            {% else %}
-            <div class="row">
-                <a href="{{entry.url}}">{{entry.title}}</a>
-            </div>
-            {% endif %}
-        {% endfor %}
-    </div>
+    {% for column in columns %}<div class="column">
+        {% for entry in column %}{% if entry.kind == "header" %}<div class="header">{{entry.title}}</div>{% else %}
+            <div class="row"><a href="{{entry.url}}">{{entry.title}}</a></div>{% endif %}
+        {% endfor %}</div>
     {% endfor %}
 </div>
 {% endblock %}
