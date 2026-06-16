@@ -17,6 +17,7 @@ from museum.settings import STATIC_URL
 from museum_site.constants import (
     ADMIN_NAME, PROTOCOL, DOMAIN, LANGUAGES
 )
+from museum_site.core.misc import zeta_get_szzt_world, zeta_get_font_file
 from museum_site.core.transforms import qs_manual_order
 from museum_site.models import File, Article, Series
 from museum_site.templatetags.zzt_tags import char
@@ -621,3 +622,83 @@ class ZZM_Player(template.Node):
 
         t = context.template.engine.get_template("museum_site/subtemplate/tag/zzm-player.html")
         return t.render(Context(tag_context, autoescape=context.autoescape))
+
+
+@register.simple_tag(takes_context=True)
+#@register.inclusion_tag("museum_site/subtemplate/tag/zeta-load.js", takes_context=True)
+def zeta_load(context):
+    #zeta_config.zeta_load|safe
+    #print("ZETA CONTEXT", context["zeta_context"])
+    canvas_id = context["zeta_context"]["canvas_id"]
+    dimensions = context["zeta_context"]["dimensions"]
+    scale = context["zeta_context"]["initial_scale"]
+    save_storage = context["zeta_context"]["save_storage"]
+    zeta_config = context["zeta_context"]["zeta_config"]
+
+    zfiles = context["zfiles"]
+    zfiles_list = []
+    #print("FILES ARE", zfiles)
+    for zfile in zfiles:
+        zfiles_list.append({"type": "zip", "url": zfile.download_url()})
+    #print(zfiles_list)
+
+
+
+    comments = [
+        "Base Zeta Config: [{}] {}".format(zeta_config.pk, zeta_config.name)
+    ]
+
+    # Load default values
+    output = {
+        "path": "/static/zeta86/",
+        "commands": "",
+        "storage": {
+            "type": "auto",
+            "database": "generic-zeta-save-db",
+        },
+        "engine": {},
+        "render": {
+            "canvas": "#zzt_canvas",  # document.querySelector(<foo>)
+        },
+        "audio": {},
+        "files": zfiles_list,
+    }
+
+    # [{"type": "zip", "url": "/static/data/zeta86_engines/zzt.zip"}] +
+
+    # Update save database
+    output["storage"]["database"] = save_storage["id"]
+
+    # Handle config variable substitutions
+    required_substitutions = zeta_config.get_required_substitutions()
+    print("REQUIRED SUBS", required_substitutions)
+
+    if "{SZZT_WORLD}" in required_substitutions:
+        zeta_config.arguments = zeta_get_szzt_world(zeta_config, zfiles[0])
+
+    if "{32COMPAT}" in required_substitutions:
+        zzt32_exe = context["request"].session.get("zzt32_exe", "zzt") + ".zip"
+        zeta_config.executable = zeta_config.executable.replace("{32COMPAT}", zzt32_exe)
+        print("NEW ZZT32", zzt32_exe)
+
+    if "{FONT_FILE}" in required_substitutions:
+        font_file = "FOOBAR"
+        zeta_config.commands = zeta_config.commands.replace("{FONT_FILE}", font_file)
+
+
+    # Load zeta config
+    output = zeta_config.apply_configuration(output)
+
+    # Load user config
+
+    # Add metadata
+    output["meta"] = {
+        "comments": comments,
+        "zeta_config": zeta_config,
+        "save_storage_key": save_storage.get("key", "?")
+    }
+
+    # Render
+    config_js = render_to_string("museum_site/subtemplate/tag/zeta-load.js", output)
+    config_js = config_js.replace("        \n", "").replace("    \n", "")  # Strip empty lines
+    return mark_safe(config_js)

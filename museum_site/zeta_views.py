@@ -21,68 +21,119 @@ from museum_site.views import Museum_Base_Template_View
 
 class Zeta_Launcher_View(Museum_Base_Template_View):
     title = "Zeta Launcher"  # Default title
-    template_name = "museum_site/ascii-reference.html"
+    template_name = "museum_site/play-zeta.html"
 
-    POSSIBLE_COMPONENTS = ["controls", "instructions", "credits", "advanced", "players"]
+    PLAY_METHODS = {
+        "archive": {"name": "DosBox - Internet Archive Embed", "available": False},
+        "zeta": {"name": "Zeta - Museum of ZZT Hosted Embed", "available": False},
+        "itch": {"name": "Play On Itch.io - Leave Museum", "available": False},
+    }
+    COMPONENTS = {
+        "controls": True,
+        "instructions": True,
+        "credits": True,
+        "advanced": True,
+        "players": True
+    }
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        print(kwargs)
-        self.components = {"controls": True, "instructions": True, "credits": True, "advanced": False, "players": True}
+        self.get_included_components()
         self.key = kwargs.get("key")
-        self.mode = request.GET.get("mode") or "full"
-        self.base_template = "museum_site/play-popout.html" if (self.mode == "popout") else "museum_site/main.html"
-        self.local_file = (self.key == "LOCAL")
+        self.mode = request.GET.get("mode", "full")
+        self.base_template = "museum_site/main.html" if (self.mode == "full") else "museum_site/play-popout.html"
+        self.is_local_zfile = (self.key == "LOCAL")
         self.redirect_to = None
 
-    def get_template_names(self):
-        return "museum_site/play_zeta.html"
+    def get_included_components(self):
+        self.components = Zeta_Launcher_View.COMPONENTS
+        self.components["advanced"] = bool(self.request.GET.get("advanced"))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # Get additionally included ZFiles
+        zfile_keys = [self.key] + self.request.GET.getlist("inc")
+        zfiles = self.get_zfiles(zfile_keys)
+
+        if not zfiles:
+            print("TODO: NO ZFILES FOUND. ABORT")
+
+        self.redirect_to = self.check_for_explicit_redirect(zfiles[0])  # Check for explicit redir (TODO: Primary ZFile only for now)
+        self.available_players = self.get_available_players(zfiles[0])  # Get available players
+        title = self.get_page_title(zfiles)  # Get page title
+
+        use_player = self.get_player(zfiles[0])  # Get player to actually use
+
+        # Get Zeta attributes if using Zeta player
+        if use_player == "zeta":
+            context["zeta_context"] = {
+                "canvas_id": "zzt_canvas",
+                "dimensions": self.get_zeta_dimensions(zfiles[0]),  # Resolution of canvas
+                "initial_scale": int(self.request.COOKIES.get("zeta_player_scale", 1)),  # Initial scale of canvas
+                "save_storage": self.get_save_storage_identifiers(zfiles),  # Get identifiers for saves/data
+                "zeta_config": self.get_zeta_config(zfiles[0]),  # Zeta Config to initiate
+            }
+
+        # Get configs/zfiles if showing advanced settings
+        if self.components["advanced"]:
+            context["all_zfiles"] = ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
+            context["available_zeta_configs"] = Zeta_Config.objects.exclude(pk=ZETA_RESTRICTED).only("id", "name")
+
+        # Load em up!
         context["base"] = self.base_template
+        context["components"] = self.components
         context["ZETA_EXECUTABLES"] = ZETA_EXECUTABLES
-        context["charset_override"] = self.request.GET.get("charset_override", "")
-        context["executable"] = self.request.GET.get("executable", "AUTO")
-        context["engine"] = context["executable"]  # TODO Why is this a duplicate
-        context["components"] = self.get_visible_components()
-        if context["components"]["advanced"]:
-            context["all_files"] = ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
-
-        zfile_ids = list(map(int, self.request.GET.getlist("file_id")))
-        (context["zfile"], context["all_zfiles"], context["included_files"]) = self.get_zfiles(zfile_ids)
-        context["file_count"] = len(zfile_ids)
-
-        self.redirect_to = self.check_for_explicit_redirect(context["zfile"])
-
-        context["player_methods"] = self.get_player_methods(context["zfile"])  # TODO?
-
-        context["title"] = (context["zfile"].title + " - Play Online") if context["zfile"] else Zeta_Launcher_View.title
-        context["zeta_database"] = context["all_zfiles"][0].pk if len(context["all_zfiles"]) == 1 else "generic-zeta-save-db"
-
-        if context["components"]["players"]:
-            (context["player"], context["players"]) = self.get_play_method(context["zfile"], context["player_methods"], self.request.GET.get("player"))
-
-        if context["components"]["advanced"]:
-            context["config_list"] = Zeta_Config.objects.exclude(pk=ZETA_RESTRICTED).only("id", "name")
-
-        context["zeta_config"] = self.get_zeta_config(context["zfile"])
-        # TODO "Extra Work" stuff
-
-        # Set default scale
-        context["zeta_player_scale"] = int(self.request.COOKIES.get("zeta_player_scale", 1))
-
-        # Determine initial canvas size for ZZT/SZZT
-        (context["zeta_config"].base_width, context["zeta_config"].base_height) = (640, 350)
-        if context["zfile"] and context["zfile"].is_detail(DETAIL_SZZT):
-            context["zeta_config"].base_height = 400
-
-        #if data["local"]:  # TODO IS THIS IMPLEMENTED?
-            #player = "zeta_local"
-        context["file"] = context["zfile"]  # TODO: Hotfix for compatibility w/ current template
-        print("Players?", context["players"])
-        print("PLAYER", context["player"])
+        context["zfiles"] = zfiles
+        context["included_zfile_count"] = len(zfiles)
+        context["title"] = title
+        context["player"] = use_player
         return context
+
+    def get_zeta_dimensions(self, zfile):
+        if zfile.is_detail(DETAIL_SZZT):
+            return (640, 400)
+        return (640, 350)
+
+    def get_save_storage_identifiers(self, zfiles):
+        if self.is_local_zfile:
+            return {"id": "localfile-zeta-save-db", "key": "LOCALFILE"}
+        if len(zfiles) == 1 and zfiles[0].title:
+            return {"id": str(zfiles[0].pk), "key": zfiles[0].key}
+        if len(zfiles) > 1:
+            return {"id": "generic-zeta-save-db", "key": "MULTIPLE-ZFILES"}
+        return {"id": "error-zeta-save-db", "key": "ERROR"}
+
+    def get_page_title(self, zfiles):
+        if self.is_local_zfile:
+            return "Local File - Play Online"
+        if zfiles and zfiles[0].title:
+            return zfiles[0].title + " - Play Online"
+        return "Play Online"
+
+    def get_available_players(self, zfile):
+        output = Zeta_Launcher_View.PLAY_METHODS
+        if zfile.archive_name:
+            output["archive"]["available"] = True
+        if zfile.itch_dl:
+            output["itch"]["available"] = True
+        if zfile.supports_zeta_player:
+            output["zeta"]["available"] = True
+        return output
+
+    def get_player(self, zfile):
+        priority = ["zeta", "archive", "itch"]
+        requested_player = self.request.GET.get("player", "zeta")
+        if requested_player not in list(self.available_players.keys()):
+            requested_player = "zeta"
+        # Place user requested player at start of priority list
+        priority = [requested_player] + priority
+
+        # Find first available player by priorty
+        for p in priority:
+            if self.available_players[p]["available"]:
+                return p
+        return "unavailable"
 
     def get_visible_components(self):
         components = {}
@@ -92,30 +143,25 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         return components
 
     def get_zeta_compatible_zfiles(self):
-            return ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
+        return ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
 
-    def get_zfiles(self, zfile_ids):
-        primary_zfile = None
-        all_included_zfiles = []
-        zfile_urls = []
+    def get_zfiles(self, zfile_keys):
+        output = []
+        qs = ZFile.objects.filter(key__in=zfile_keys)
+        for zf in qs:
+            output.append(zf)
 
-        if self.key:
-            primary_zfile = ZFile.objects.filter(key=self.key).first()
-        if (primary_zfile and primary_zfile.id not in zfile_ids):
-            zfile_ids = [primary_zfile.id] + zfile_ids
-
-        for zf in ZFile.objects.filter(pk__in=zfile_ids):
-            all_included_zfiles.append(zf)
-            zfile_urls.append(zf.download_url())
-
-        if primary_zfile is None and all_included_zfiles:
-            primary_zfile = included_zfiles[0]
-
-        print("ZFILES ARE", primary_zfile, all_included_zfiles)
-
-        return (primary_zfile, all_included_zfiles, zfile_urls)
+        # Move primary zfile to first slot
+        if len(output) > 1:
+            for n in range(0, len(output)):
+                if output[n].key == zfile_keys[0]:
+                    primary_zfile = output.pop(n)
+                    output = [primary_zfile] + output
+                    break
+        return output
 
     def get_player_methods(self, zfile):
+        print("GETTING AVAILABLE PLAYERS")
         play_methods = {"archive": {"name": "DosBox - Internet Archive Embed"}, "zeta": {"name": "Zeta - Museum of ZZT Hosted"}}
         if zfile and zfile.itch_dl:
             play_methods["itch"] = {"name": "Play On Itch.io - Leave Museum"}
@@ -124,7 +170,6 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
     def get_play_method(self, zfile, play_methods, user_requested_player):
         # Determine play methods available and play method to use
         all_play_methods = list(play_methods.keys())
-        print("all", all_play_methods)
         compatible_players = []
         unpublished = True if (zfile and zfile.is_detail(DETAIL_UPLOADED) )else False
 
@@ -166,9 +211,15 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         if self.request.GET.get("zeta_config"):  # User specified config
             zeta_config = Zeta_Config.objects.get(pk=int(self.request.GET["zeta_config"]))
         else:
-            zeta_config = zfile.zeta_config if zfile else Zeta_Config.objects.get(pk=ZETA_ZZT32R)
+            if zfile:
+                zeta_config = zfile.zeta_config
+                zeta_config.fallback = False
+            else:
+                zeta_config = Zeta_Config.objects.get(pk=ZETA_ZZT32R)
+                zeta_config.fallback = True
 
-        zeta_config.user_configure(self.request.GET) #  Update config with user requested options
+        #zeta_config.user_configure(self.request.GET) #  Update config with user requested options
+        #zeta_config.ingest_user_configuration(self.request.GET)
         return zeta_config
 
 
@@ -186,7 +237,7 @@ def play_zzt_online(request):
     launch_worlds = {
         "official-worlds": "TOWN",
     }
-    context["world_pack_key" ] = world_pack_key
+    context["world_pack_key"] = world_pack_key
     context["file_ids"] = world_packs.get(world_pack_key)
     context["file_count"] = len(context["file_ids"])
     context["included_files"] = []

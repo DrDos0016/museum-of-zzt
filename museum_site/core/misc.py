@@ -616,3 +616,17 @@ def get_patron_supporters(patrons):
     while len(supporters) % 3 != 0:
         supporters.append({"name": "ZZZZZZZZZZSTUB", "email": "STUB"})
     return (supporters, bigger_supporters, biggest_supporters)
+
+def zeta_get_szzt_world(zeta_config, zfile):
+    szzt_world = ""
+    zip_file = zipfile.ZipFile(os.path.join(zfile.phys_path()))
+    files = zip_file.namelist()
+    for f in files:
+        basename = os.path.basename(f)
+        if f.lower().endswith(".szt") and basename == f:
+            szzt_world = f
+            break
+    return zeta_config.arguments.replace("{SZZT_WORLD}", szzt_world)
+
+def zeta_get_font_file():
+    return True
