@@ -166,10 +166,13 @@ class WoZZT_Queue(BaseModel):
 
     def render_text(self, medium):
         now = datetime.now(UTC)
+        author_list = self.file.related_list("authors")
+        if len(author_list) > 8:
+            author_list = ["Various (see site for list)"]
         context = {
             "board_url": self.file.get_absolute_url() + "?file=" + quote(self.zzt_file) + "&board=" + str(self.board),
             "zfile_title": self.file.title,
-            "zfile_author": self.file.related_list("authors"),
+            "zfile_author": author_list,
             "zfile_year": self.file.release_year(),
             "zfile_company": self.file.related_list("companies"),
             "zfile_world": self.zzt_file,
