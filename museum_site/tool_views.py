@@ -1072,28 +1072,14 @@ def set_screenshot(request, key):
 @staff_member_required
 def stream_vod_thumbnail_generator(request):
     context = {"title": "Stream VOD Thumbnail Generator"}
-    if request.POST:
-        context["form"] = Stream_VOD_Thumbnail_Generator_Form(request.POST, request.FILES)
-        context["text_color"] = request.POST.get("title_color", "cyan")
-        context["shadow_color"] = "dark" + request.POST.get("title_color", "cyan")
 
-        raw = BytesIO(request.FILES["background_image"].read())
-        image = Image.open(raw)
-        preset = request.POST.get("crop")
-        if preset != "NONE":
-            tl = (IMAGE_CROP_PRESETS[preset][0], IMAGE_CROP_PRESETS[preset][1])
-            br = (IMAGE_CROP_PRESETS[preset][2], IMAGE_CROP_PRESETS[preset][3])
-            image = image.crop((tl[0], tl[1], br[0], br[1]))
+    # Get latest 24HTG Volume for shortcut
+    htg_title = Article.objects.filter(title__contains="24 Hours To Go").order_by("-pk").first()
+    if htg_title:
+        volume = int(htg_title.title.split("Vol. ")[-1])
+        context["24htg_vol"] = volume + 1
 
-        with BytesIO() as output:
-            image.save(output, format="PNG")
-            contents = output.getvalue()
-
-            b64_bytes = base64.b64encode(contents)
-            context["b64_image"] = "data:image/png;base64," + str(b64_bytes)[2:-1]
-    else:
-        context["form"] = Stream_VOD_Thumbnail_Generator_Form()
-
+    context["form"] = Stream_VOD_Thumbnail_Generator_Form()
     return render(request, "museum_site/tools/stream-vod-thumbnail-generator.html", context)
 
 

@@ -649,6 +649,7 @@ class Stream_VOD_Thumbnail_Generator_Form(forms.Form):
         ("N/A", "———"),
         ("playthrough", "Playthrough"),
         ("vod", "Standard VOD"),
+        ("24htg", "24 Hours To Go"),
         ("wildcard", "Wildcard Stream"),
     )
 

@@ -9,6 +9,7 @@
 {% for script in scripts %}<script src="{% static script %}?{{BOOT_TS}}"></script>{% endfor %}
 <script>
 var ctx = null;
+var volumes = {"24htg": "{{24htg_vol|default:'???'}}",}
 
 function apply_form_shortcut(shortcut)
 {
@@ -23,6 +24,10 @@ function apply_form_shortcut(shortcut)
     else if (shortcut == "playthrough")
     {
         $("#id_subtitle").val("Commentary Free Playthrough");
+    }
+    else if (shortcut == "24htg")
+    {
+        $("#id_subtitle").val(" - 24 Hours To Go Vol. " + volumes["24htg"]);
     }
 }
 
