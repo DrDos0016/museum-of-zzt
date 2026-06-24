@@ -67,6 +67,31 @@ class Zeta_Config(models.Model):
             required_substitutions.append("{32COMPAT}")
         return required_substitutions
 
+    def user_configure(self, params):
+        """ Modify configuration based on request.GET values """
+        self.client_config = True
+        if params.get("zeta_config"):  # This is for display purposes
+            self.id = int(params["zeta_config"])
+        if params.get("blink_cycle"):
+            self.blink_duration = float(params["blink_cycle"])
+        if params.get("charset_override"):
+            self.charset = params["charset_override"]
+        if params.get("no_args"):
+            self.arguments = ""
+        if params.get("no_commands"):
+            self.commands = ""
+        if params.get("bufferSize"):
+            self.audio_buffer = int(params["bufferSize"])
+        if params.get("sampleRate"):
+            self.sample_rate = int(params["sampleRate"])
+        if params.get("noteDelay"):
+            self.note_delay = int(params["noteDelay"])
+        if params.get("volume"):
+            self.volume = float(params["volume"])
+        if params.get("executable") and params["executable"] != "AUTO":
+            self.executable = params["executable"]
+        if self.executable == "NONE":
+            self.executable = None
 
     def apply_configuration(self, settings, replacements={}):
         print("APPLYING", self.name, self.arguments)
