@@ -591,7 +591,7 @@ def zzm(parser, token):
 
 class ZZM_Player(template.Node):
     def __init__(self, nodelist, **kwargs):
-        self.default_volume = "0.5"
+        self.default_volume = "0.25"
         self.default_require_prefix = True
         self.nodelist = nodelist
         self.tag_params = kwargs
@@ -616,7 +616,8 @@ class ZZM_Player(template.Node):
             prepend = "#play "
             if line and line.lower().startswith("#play"):
                 prepend = ""
-            tag_context["notes"] += prepend + line + "\n"
+            elif line:
+                tag_context["notes"] += prepend + line + "\n"
 
         t = context.template.engine.get_template("museum_site/subtemplate/tag/zzm-player.html")
         return t.render(Context(tag_context, autoescape=context.autoescape))
