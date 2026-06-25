@@ -611,14 +611,12 @@ class ZZM_Player(template.Node):
         tag_context.setdefault("vol_percent", int(float(tag_context["vol"]) * 100))
 
         # Prepare notes
-        tag_context["notes"] = notes
-        """
+        tag_context["notes"] = ""
         for line in notes.split("\n"):
             prepend = "#play "
             if line and line.lower().startswith("#play"):
                 prepend = ""
             tag_context["notes"] += prepend + line + "\n"
-        """
 
         t = context.template.engine.get_template("museum_site/subtemplate/tag/zzm-player.html")
         return t.render(Context(tag_context, autoescape=context.autoescape))
