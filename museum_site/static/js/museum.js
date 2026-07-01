@@ -76,6 +76,7 @@ $(document).ready(function (){
 
     // Zoom all
     $("#toggle-zoom").click(function (){
+        console.log("ZOOM ALL TIME");
         page_info.prezoom = ! page_info.prezoom;
         let on_off = page_info.prezoom ? "on" : "off";
         ajax_set_setting("prezoom", on_off, function (){});
@@ -396,6 +397,7 @@ function ajax_set_setting(key, value, callback)
 
 function toggle_response(resp)
 {
+    $("#toggle-response").css("opacity", 1);
     $("#toggle-response").html(resp);
     $("#toggle-response").fadeOut(2000, function(){
         $(this).html("");
