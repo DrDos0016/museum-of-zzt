@@ -236,6 +236,7 @@ var page_info = {
 Additional content copyright its  <a href="{% url 'credits' %}">respective owners</a><br>
 Server Time: {{datetime}}<br>
 <a href="{% url 'my_profile' %}">View my data</a><br>
+<a href="{% url 'index' %}"><img src="{% static 'chrome/logos/88x31.png' %}" alt="Musuem of ZZT 88x31 button" style="border:1px solid var(--border-color);margin-top:4px;"></a>
 {% if debug %}{% include "museum_site/subtemplate/footer-debugging.html" %}{% endif %}
 </footer>
 {% endblock %}
