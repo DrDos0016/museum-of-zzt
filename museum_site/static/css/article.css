@@ -215,6 +215,18 @@ article aside
     margin-top:7px;
 }
 
+.fn-inline
+{
+    width:280px;
+    max-width:50%;
+    margin:10px;
+    padding:10px;
+    border:3px solid var(--border-color);
+    border-radius:12px;
+    background:var(--notice-bg);
+    position:absolute;
+}
+
 article .zzmplay-widget
 {
     margin:auto;

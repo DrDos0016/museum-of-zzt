@@ -38,36 +38,15 @@ $(document).ready(function (){
 
     // Reload on sort change
     $(".sort-methods select[name='sort']").change(function (){
-        var qs = window.location.search; // Query string
-        if (qs == "")
-            window.location = "?sort="+$(this).val();
-        else
-        {
-            qs = "&" + qs.slice(1);
-            var params = qs.split("&").slice(1);
-            var new_qs = "?";
-
-            for (var idx in params)
-            {
-                var key = params[idx].split("=")[0];
-                var val = params[idx].split("=")[1];
-
-                if (key == "sort")
-                    new_qs += key + "=" + $(this).val();
-                else if (key == "page")
-                    new_qs += "page=1";
-                else
-                    new_qs += key + "=" + val;
-                new_qs += "&";
-            }
-            new_qs = new_qs.slice(0, -1);
-
-            // Make sure there's a sort param
-            if (new_qs.indexOf("sort=") == -1)
-                new_qs += "&sort="+$(this).val();
-
-            window.location = window.location.pathname + new_qs;
+        const params = new URLSearchParams(window.location.search);
+        params.set("sort", $(this).val());
+        if (parseInt(params.get("page")) > 1)
+            params.set("page", 1);
+        for (const [k, v] of Array.from(params.entries())){
+            if (v == "")
+                params.delete(k);
         }
+        window.location = window.location.pathname + "?" + params.toString();
     });
 
     // Content warnings
@@ -178,9 +157,34 @@ $(document).ready(function (){
     // Burger
     $(".hamburger-menu-button").click($(this), toggle_burger);
 
+    // Footnotes
+    $(".fn-link").hover(function (e){
+        page_info.footnote_timeout = null;
+        clear_visible_footnote();
+        let num = $(this).text().slice(1, -1);
+        let raw = $("#fn-" + num).parents("li")[0].innerHTML;
+        let output = raw.split("</sup>")[1].trim();
+        $(this).parent().append("<div class='fn-inline'>" + output + "</div>");
+        $(".fn-inline").css({"left": e.pageX + 5 , "top": e.pageY + 5});
+    }, function (e){
+        page_info.footnote_timeout = setTimeout(clear_visible_footnote, 200);
+    });
+
+    $("body").on("mouseover", ".fn-inline", function (){
+        clearTimeout(page_info.footnote_timeout);
+    });
+    $("body").on("mouseout", ".fn-inline", function (){
+        page_info.footnote_timeout = setTimeout(clear_visible_footnote, 200);
+    });
+
     // WIP
     init_expandable_model_block_fields();
 });
+
+function clear_visible_footnote()
+{
+    $(".fn-inline").remove();
+}
 
 function toggle_burger(e)
 {
