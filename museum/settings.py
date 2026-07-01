@@ -28,7 +28,7 @@ ALLOWED_HOSTS = [
     "www.museumofzzt.com",
     "beta.museumofzzt.com",
     "django.pi",
-    "192.168.254.15",
+    "192.168.254.27",
     "127.0.0.1",
     "testserver",
 ]
