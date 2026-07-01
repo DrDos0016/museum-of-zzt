@@ -80,5 +80,7 @@ export function filesize_format(bytes)
         return (bytes / 1048576).toFixed(1) + "MB";
     else if (bytes > 1024)
         return (bytes / 1024).toFixed(1) + " KB";
+    else if (bytes == undefined) // Blame the zipinfo
+        return "0 bytes";
     return bytes + " bytes";
 }
