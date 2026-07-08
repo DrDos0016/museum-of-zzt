@@ -33,7 +33,7 @@ class Museum_Site_Config(AppConfig):
 
     def has_zeta_install(self):
         zeta_path = os.path.join(settings.BASE_DIR, "museum_site", "static", "zeta86")
-        if not os.path.exists(zeta_path):
+        if not os.path.exists(zeta_path) or not os.path.exists(os.path.join(zeta_path, "zeta.min.js")):
             return "Missing"
         with open(os.path.join(zeta_path, "zeta.min.js")) as fh:
             zeta_version = "???"
