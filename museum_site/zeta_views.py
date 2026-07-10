@@ -4,7 +4,7 @@ import zipfile
 
 from io import BytesIO
 
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 
 from museum_site.constants import STATIC_PATH, ZETA_EXECUTABLES
@@ -45,6 +45,9 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         self.is_local_zfile = (self.key == "LOCAL")
         self.redirect_to = None
 
+        self.additional_zfiles = request.GET.getlist("inc")
+        self.requested_player = request.GET.get("player", "zeta")
+
     def get_included_components(self):
         self.components = Zeta_Launcher_View.COMPONENTS
         self.components["advanced"] = bool(self.request.GET.get("advanced"))
@@ -52,18 +55,21 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get additionally included ZFiles
-        zfile_keys = [self.key] + self.request.GET.getlist("inc")
+        # Get all included ZFiles
+        zfile_keys = [self.key] + self.additional_zfiles
         zfiles = self.get_zfiles(zfile_keys)
 
         if not zfiles:
-            print("TODO: NO ZFILES FOUND. ABORT")
+            raise Http404("No ZFiles Found!")
 
         self.redirect_to = self.check_for_explicit_redirect(zfiles[0])  # Check for explicit redir (TODO: Primary ZFile only for now)
         self.available_players = self.get_available_players(zfiles[0])  # Get available players
         title = self.get_page_title(zfiles)  # Get page title
 
         use_player = self.get_player(zfiles[0])  # Get player to actually use
+        self.template_name = "museum_site/play-" + use_player + ".html"
+        print("AVAILABLE PLAYERS", self.available_players)
+        print("USE PLAYER", use_player)
 
         # Get Zeta attributes if using Zeta player
         if use_player == "zeta":
@@ -123,11 +129,10 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
 
     def get_player(self, zfile):
         priority = ["zeta", "archive", "itch"]
-        requested_player = self.request.GET.get("player", "zeta")
-        if requested_player not in list(self.available_players.keys()):
-            requested_player = "zeta"
+        if self.requested_player not in list(self.available_players.keys()):
+            self.requested_player = "zeta"
         # Place user requested player at start of priority list
-        priority = [requested_player] + priority
+        priority = [self.requested_player] + priority
 
         # Find first available player by priorty
         for p in priority:
@@ -419,7 +424,8 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
                 font_type = ".CHR"
 
         if font_type == ".COM":
-            data["zeta_config"].commands = (data["zeta_config"].commands.replace("{font_file}", generic_font))
+            data["zeta_config"].commands = (data["zeta_config"].commands.replace("{font_file}", generic_font))  # Old config
+            data["zeta_config"].commands = (data["zeta_config"].commands.replace("{FONT_FILE}", generic_font))  # New config
         elif font_type == ".CHR":
             data["zeta_config"].commands = []
             data["zeta_config"].engine = json.dumps({
@@ -439,7 +445,8 @@ def zeta_launcher(request, key=None, components=["controls", "instructions", "cr
             # Prioritize these two
             if f.lower() in ["zzt.exe", "superz.exe"] or (f.lower().startswith("weave") and f.lower().endswith("exe")):
                 break
-        data["zeta_config"].commands = data["zeta_config"].commands.replace("{executable_file}", generic_exe)
+        data["zeta_config"].commands = data["zeta_config"].commands.replace("{executable_file}", generic_exe) # Old config
+        data["zeta_config"].commands = data["zeta_config"].commands.replace("{EXECUTABLE}", generic_exe) # New config
 
     # Extra work for SZZT to prevent DOS errors
     if data["zeta_config"].name.startswith("Super ZZT v2.0"):
