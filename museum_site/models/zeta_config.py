@@ -27,13 +27,14 @@ class Zeta_Config(models.Model):
 
     # Constants
     model_name = "Zeta-Config"
+    DEFAULT_BLINK_DURATION = 0.534
 
     # Fields
     name = models.CharField(max_length=64)
     executable = models.CharField(max_length=128, default="zzt.zip", blank=True)
     arguments = models.CharField(max_length=128, default="", blank=True)
     commands = models.CharField(max_length=256, default="", blank=True)
-    blink_duration = models.DecimalField(max_digits=6, decimal_places=3, default=0.466, help_text="0 = Force low colors. -1 = Enable high colors (aka NOBLINK)")
+    blink_duration = models.DecimalField(max_digits=6, decimal_places=3, default=DEFAULT_BLINK_DURATION, help_text="0 = Force low colors. -1 = Enable high colors (aka NOBLINK)")
     charset = models.CharField(max_length=64, default="cp437")
     audio_buffer = models.IntegerField(default=2048)
     sample_rate = models.IntegerField(default=48000)
@@ -44,6 +45,7 @@ class Zeta_Config(models.Model):
 
     # Non-DB attributes
     client_config = False
+
 
     class Meta:
         ordering = ("category", "name")
@@ -95,13 +97,12 @@ class Zeta_Config(models.Model):
 
     def apply_configuration(self, settings, replacements={}):
         print("APPLYING", self.name, self.arguments)
-        #[{"type": "zip", "url": "/static/data/zeta86_engines/zzt.zip"}]
         if self.executable:
             settings["files"] = [{"type": "zip", "url": "/static/data/zeta86_engines/{}".format(self.executable)}]  + settings["files"]
         if self.arguments:
             settings["arg"] = self.arguments
         if self.commands:
             settings["commands"] = self.commands
-        if self.blink_duration:
-            None
+        if float(self.blink_duration) != Zeta_Config.DEFAULT_BLINK_DURATION:
+            settings["render"]["blink_cycle_duration"] = str(self.blink_duration)
         return settings
