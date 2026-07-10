@@ -617,16 +617,40 @@ def get_patron_supporters(patrons):
         supporters.append({"name": "ZZZZZZZZZZSTUB", "email": "STUB"})
     return (supporters, bigger_supporters, biggest_supporters)
 
-def zeta_get_szzt_world(zeta_config, zfile):
+def zeta_get_szzt_world(zfile):
     szzt_world = ""
     zip_file = zipfile.ZipFile(os.path.join(zfile.phys_path()))
     files = zip_file.namelist()
     for f in files:
         basename = os.path.basename(f)
-        if f.lower().endswith(".szt") and basename == f:
+        if f.upper().endswith(".SZT") and basename == f:
             szzt_world = f
             break
-    return zeta_config.arguments.replace("{SZZT_WORLD}", szzt_world)
+    return szzt_world
 
-def zeta_get_font_file():
-    return True
+def zeta_get_font_file(zfile):
+    zip_file = zipfile.ZipFile(os.path.join(zfile.phys_path()))
+    files = zip_file.namelist()
+    to_load = None
+    for f in files:
+        basename = os.path.basename(f)
+        if f.upper().endswith(".CHR") and basename == f:
+            to_load = {"format": "CHR", "filename": f}
+            break
+        if f.upper().endswith(".COM") and basename == f:
+            to_load = {"format": "COM", "filename": f}
+    return to_load
+
+def zeta_get_executable(zfile):
+    zip_file = zipfile.ZipFile(os.path.join(zfile.phys_path()))
+    files = zip_file.namelist()
+    executable = None
+    for f in files:
+        f_up = f.upper()
+        basename = os.path.basename(f)
+        if executable is None and f_up.endswith(".EXE") and basename == f:
+            executable = f
+        if (f_up in ["ZZT.EXE", "SUPERZ.EXE"] or (f_up.startswith("WEAVE") and f_up.endswith(".EXE"))) and basename == f:
+            executable = f
+            break
+    return executable
