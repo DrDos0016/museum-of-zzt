@@ -17,7 +17,7 @@ from museum.settings import STATIC_URL
 from museum_site.constants import (
     ADMIN_NAME, PROTOCOL, DOMAIN, LANGUAGES
 )
-from museum_site.core.misc import zeta_get_szzt_world, zeta_get_font_file
+from museum_site.core.misc import zeta_get_szzt_world, zeta_get_font_file, zeta_get_executable
 from museum_site.core.transforms import qs_manual_order
 from museum_site.models import File, Article, Series
 from museum_site.templatetags.zzt_tags import char
@@ -673,7 +673,7 @@ def zeta_load(context):
     print("REQUIRED SUBS", required_substitutions)
 
     if "{SZZT_WORLD}" in required_substitutions:
-        zeta_config.arguments = zeta_get_szzt_world(zeta_config, zfiles[0])
+        zeta_config.arguments = zeta_config.arguments.replace("{SZZT_WORLD}", zeta_get_szzt_world(zfiles[0]))
 
     if "{32COMPAT}" in required_substitutions:
         zzt32_exe = context["request"].session.get("zzt32_exe", "zzt") + ".zip"
@@ -681,9 +681,18 @@ def zeta_load(context):
         print("NEW ZZT32", zzt32_exe)
 
     if "{FONT_FILE}" in required_substitutions:
-        font_file = "FOOBAR"
-        zeta_config.commands = zeta_config.commands.replace("{FONT_FILE}", font_file)
+        to_load = zeta_get_font_file(zfiles[0])
+        if to_load:
+            if to_load["format"] == "COM":
+                zeta_config.commands = zeta_config.commands.replace("{FONT_FILE}", to_load["filename"])
+            if to_load["format"] == "CHR":
+                zeta_config.commands = ""
+                output["engine"]["charset"] = '"' + to_load["filename"] + '"'
 
+    if "{EXECUTABLE}" in required_substitutions:
+        executable = zeta_get_executable(zfiles[0])
+        if executable:
+            zeta_config.commands = zeta_config.commands.replace("{EXECUTABLE}", executable)
 
     # Load zeta config
     output = zeta_config.apply_configuration(output)
