@@ -364,6 +364,7 @@ function iso8601_to_user_tz(selector)
             <select name="setting">
                 <option value="zzt32_exe|zzt"{% if request.session.zzt32_exe == 'zzt32' %} selected{% endif %}>ZZT v3.2 - DEFAULT</option>
                 <option value="zzt32_exe|czoo"{% if request.session.zzt32_exe == 'czoo' %} selected{% endif %}>ClassicZoo v4.40</option>
+                <option value="zzt32_exe|cleenzzt-moz"{% if request.session.zzt32_exe == 'cleenzzt-moz' %} selected{% endif %}>CleenZZT</option>
                 <option value="zzt32_exe|solidhud"{% if request.session.zzt32_exe == 'solidhud' %} selected{% endif %}>SolidHUD v8</option>
             </select>
             <input type="submit" value="Apply" name="first">

@@ -216,7 +216,7 @@ def set_setting(request):
         "TEMP_FILE_VIEWER_BETA": ["v1", "v2"],
         "view": ["detailed", "list", "gallery"],
         "DEBUG": ["off", "on"],
-        "zzt32_exe": ["zzt", "czoo", "solidhud"],
+        "zzt32_exe": ["zzt", "czoo", "cleenzzt-moz", "solidhud"],
         "zfile_descriptions": ["show", "hide"],
         "explicit_content_warnings": ["show", "hide"],
     }
