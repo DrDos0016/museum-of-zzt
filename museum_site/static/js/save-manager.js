@@ -28,7 +28,7 @@ $(document).ready(function (){
         if (val == "1")
         {
             $(".db-delete-stub").hide();
-            $(".db-delete-button").show();
+            $(".db-delete-button").show().css("display", "inline");
         }
         else
         {
@@ -46,10 +46,10 @@ function list_files(database_name)
     {
         $("#save-db-table").append(
             `<tr>
-                <td class="mono">${data[i].filename}</td>
-                <td class="r"><span title="${data[i].value.length} bytes">${filesize_format(data[i].value.length)}</span></td>
-                <td class="c"><a class="db-download-button jsLink"data-idx="${i}">Download</a></td>
-                <td class="c">
+                <td class="mono td-filename">${data[i].filename}</td>
+                <td class="r td-size"><span title="${data[i].value.length} bytes">${filesize_format(data[i].value.length)}</span></td>
+                <td class="c td-savedl"><a class="db-download-button jsLink"data-idx="${i}">Download</a></td>
+                <td class="c td-saveldel">
                     <a class="db-delete-button jsLink" data-idx="${i}" data-size="${data[i].value.length}">Delete</a>
                     <span class="db-delete-stub">Delete</span>
                 </td></tr>`

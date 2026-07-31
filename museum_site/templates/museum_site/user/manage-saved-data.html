@@ -3,12 +3,18 @@
 
 {% block style %}
 <style>
-#total-bytes-hr { font-weight: bold; }
 .db-delete-button { display:none; }
 .db-delete-stub {
     color:#AAA;
     font-style:italic;
 }
+
+#save-db-table { margin-bottom: 7px; }
+
+.td-filename { width:60%; }
+.td-size { width:10%; }
+.td-savedl { width:15%; }
+.td-savedel { width:15%; }
 </style>
 {% endblock %}
 
@@ -25,8 +31,15 @@ var database_name = "zeta_{{pk}}";
 <table id="save-db-table">
 <tr><th>Filename</th><th>Size</th><th colspan="2">Actions</th></tr>
 </table>
-<div class="flex-container justify-space-between">
-<div><label>Enable File Deletion:</label><label><input type="radio" name="allow-delete" value="1"> Yes </label><label><input type="radio" name="allow-delete" value="0" checked> No</label></div>
-<div><i>These files are using <span id="total-bytes-hr">0 bytes</span> of storage on this device.</i></div>
+<div><i>These files are using <span id="total-bytes-hr" class="b">0 bytes</span> of storage on this device.</i></div>
+<form>
+<div class="field-wrapper">
+    <label>Enable File Deletion:</label>
+    <div class="field-value">
+        <input type="radio" name="allow-delete" value="1"> Yes
+        <input type="radio" name="allow-delete" value="0" checked> No
+    </div>
+</div>
+</form>
 </div>
 {% endblock %}
