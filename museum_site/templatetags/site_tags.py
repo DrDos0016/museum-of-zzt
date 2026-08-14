@@ -19,7 +19,7 @@ from museum_site.constants import (
 )
 from museum_site.core.misc import zeta_get_szzt_world, zeta_get_font_file, zeta_get_executable
 from museum_site.core.transforms import qs_manual_order
-from museum_site.models import File, Article, Series
+from museum_site.models import File, Article, Series, Zeta_Config
 from museum_site.templatetags.zzt_tags import char
 
 register = Library()
@@ -626,47 +626,31 @@ class ZZM_Player(template.Node):
 @register.simple_tag(takes_context=True)
 #@register.inclusion_tag("museum_site/subtemplate/tag/zeta-load.js", takes_context=True)
 def zeta_load(context):
-    #zeta_config.zeta_load|safe
-    #print("ZETA CONTEXT", context["zeta_context"])
-    canvas_id = context["zeta_context"]["canvas_id"]
-    dimensions = context["zeta_context"]["dimensions"]
-    scale = context["zeta_context"]["initial_scale"]
-    save_storage = context["zeta_context"]["save_storage"]
-    zeta_config = context["zeta_context"]["zeta_config"]
-
+    zeta_config = context.get("zeta_config")
+    if zeta_config is None:
+        return "{/* ERROR: Zeta Config is NONE */}"
     zfiles = context["zfiles"]
-    zfiles_list = []
-    #print("FILES ARE", zfiles)
+    request = context["request"]
+
+    zeta_config.included_zfiles = []
     for zfile in zfiles:
-        zfiles_list.append({"type": "zip", "url": zfile.download_url()})
-    #print(zfiles_list)
+        zeta_config.included_zfiles.append({"type": "zip", "url": zfile.download_url()})
 
-
-
-    comments = [
-        "Base Zeta Config: [{}] {}".format(zeta_config.pk, zeta_config.name)
-    ]
-
-    # Load default values
+    # Load starting values
     output = {
         "path": "/static/zeta86/",
         "commands": "",
         "storage": {
             "type": "auto",
-            "database": "generic-zeta-save-db",
+            "database": zeta_config.save_storage["id"],
         },
         "engine": {},
         "render": {
-            "canvas": "#zzt_canvas",  # document.querySelector(<foo>)
+            "canvas": "#" + zeta_config.canvas_id,  # document.querySelector(<foo>)
         },
         "audio": {},
-        "files": zfiles_list,
+        "files": zeta_config.included_zfiles,
     }
-
-    # [{"type": "zip", "url": "/static/data/zeta86_engines/zzt.zip"}] +
-
-    # Update save database
-    output["storage"]["database"] = save_storage["id"]
 
     # Handle config variable substitutions
     required_substitutions = zeta_config.get_required_substitutions()
@@ -674,11 +658,14 @@ def zeta_load(context):
 
     if "{SZZT_WORLD}" in required_substitutions:
         zeta_config.arguments = zeta_config.arguments.replace("{SZZT_WORLD}", zeta_get_szzt_world(zfiles[0]))
+        zeta_config.commands = zeta_config.commands.replace("{SZZT_WORLD}", zeta_get_szzt_world(zfiles[0]))
 
     if "{32COMPAT}" in required_substitutions:
-        zzt32_exe = context["request"].session.get("zzt32_exe", "zzt") + ".zip"
+        zzt32_exe = request.GET.get("executable") or request.session.get("zzt32_exe") or "zzt"
+        if zzt32_exe == "32compat":  # User requested the use of a 3.2 Compatible
+            zzt32_exe = request.session.get("zzt32_exe") or "zzt"
         zeta_config.executable = zeta_config.executable.replace("{32COMPAT}", zzt32_exe)
-        print("NEW ZZT32", zzt32_exe)
+        print("SET 32COMPAT TO", zzt32_exe)
 
     if "{FONT_FILE}" in required_substitutions:
         to_load = zeta_get_font_file(zfiles[0])
@@ -694,19 +681,33 @@ def zeta_load(context):
         if executable:
             zeta_config.commands = zeta_config.commands.replace("{EXECUTABLE}", executable)
 
-    # Load zeta config
-    output = zeta_config.apply_configuration(output)
+    # Set custom blinking?
+    if request.GET.get("blink") == "noblink":
+        zeta_config.blink_duration = -1
+    elif request.GET.get("blink") == "loblink":
+        zeta_config.blink_duration = 0
+    elif request.GET.get("blink") == "on":
+        zeta_config.blink_duration = float(request.GET.get("blink_duration"))
 
-    # Load user config
+    # Pull zeta config into tag output
+    print("APPLYING TO OUTPUT", output)
+    if zeta_config.executable:
+        output["files"] = [{"type": "zip", "url": "/static/data/zeta86_engines/{}".format(zeta_config.executable)}]  + output["files"]
+    if zeta_config.arguments:
+        output["arg"] = zeta_config.arguments
+    if zeta_config.commands:
+        output["commands"] = zeta_config.commands
+    if float(zeta_config.blink_duration) != Zeta_Config.DEFAULT_BLINK_DURATION:
+        output["render"]["blink_cycle_duration"] = str(zeta_config.blink_duration)
 
     # Add metadata
     output["meta"] = {
-        "comments": comments,
         "zeta_config": zeta_config,
-        "save_storage_key": save_storage.get("key", "?")
+        "save_storage_key": zeta_config.save_storage.get("key", "?")
     }
 
     # Render
     config_js = render_to_string("museum_site/subtemplate/tag/zeta-load.js", output)
     config_js = config_js.replace("        \n", "").replace("    \n", "")  # Strip empty lines
+    print("SITE_TAGS: FINAL BLINK DURATION", zeta_config.blink_duration, "(default: 0.534)")
     return mark_safe(config_js)
