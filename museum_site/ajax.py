@@ -11,7 +11,7 @@ from django.http import HttpResponse, JsonResponse
 
 from museum_site.models import *
 from museum_site.constants import *
-from museum_site.core.image_utils import open_base64_image
+from museum_site.core.image_utils import crop_file, IMAGE_CROP_PRESETS, open_base64_image, optimize_image
 from museum_site.core.misc import extract_file_key_from_url, record, zipinfo_datetime_tuple_to_str
 from museum_site.core.palette import parse_pld, parse_pal
 from museum_site.templatetags.site_tags import model_block, render_markdown
@@ -373,3 +373,19 @@ def qad_get_stream_schedule(request):
     for s in qs:
         output["items"].append({"title": s.title, "preview_image": s.preview_image, "when": s.when, "description": s.description})
     return JsonResponse(output)
+
+def set_zeta_screenshot(request):
+    output = {}
+
+    zfile = File.objects.filter(key=request.POST.get("key")).first()
+    if not zfile:
+        return HttpResponse("ERR: ZFile not found")
+
+    image = open_base64_image(request.POST.get("b64img"))
+    image = image.crop(IMAGE_CROP_PRESETS["ZZT"])
+    image_path = os.path.join(STATIC_PATH, "screenshots/{}/{}.png".format(zfile.bucket(), zfile.key))
+    image.save(image_path)
+    optimize_image(image_path)
+    zfile.has_preview_image = True
+    zfile.save()
+    return HttpResponse("Screenshot Updated")
