@@ -44,7 +44,14 @@ class Zeta_Config(models.Model):
     category = models.IntegerField(choices=ZETA_CONFIG_CATEGORIES)
 
     # Non-DB attributes
-    client_config = False
+    client_config = False  # Prob deletable
+    has_overrides = True
+    fallback = False
+    canvas_id = "zzt_canvas"
+    canvas_dimensions = (480, 350)
+    initial_scale = 1
+    save_storage = "PLACEHOLDER"
+    included_zfiles = []
 
 
     class Meta:
@@ -61,10 +68,14 @@ class Zeta_Config(models.Model):
         required_substitutions = []
         if "{SZZT_WORLD}" in self.arguments:
             required_substitutions.append("{SZZT_WORLD}")
+        if "{SZZT_WORLD}" in self.commands:
+            required_substitutions.append("{SZZT_WORLD}")
         if "{FONT_FILE}" in self.commands:
             required_substitutions.append("{FONT_FILE}")
         if "{EXECUTABLE}" in self.commands:
             required_substitutions.append("{EXECUTABLE}")
+        if "{LAUNCH_WORLD}" in self.commands:
+            required_substitutions.append("{LAUNCH_WORLD}")
         if "{32COMPAT}" in self.executable:
             required_substitutions.append("{32COMPAT}")
         return required_substitutions

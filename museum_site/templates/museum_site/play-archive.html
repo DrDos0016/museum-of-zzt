@@ -1,0 +1,30 @@
+{% extends "museum_site/play-base.html" %}
+{% load site_tags %}
+{% block player_css %}
+.archive-credits .plug { width:300px; }
+
+iframe { border:5px solid var(--border-color); }
+{% endblock player_css %}
+
+{% block play_area %}<iframe src="https://archive.org/embed/{{file.archive_name}}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>{% endblock play_area %}
+
+{% block post_embed %}
+<div style="max-width:640px;margin:auto;">
+    <p>If the world appears to be running slowly, pressing <span class="keyword">Control+F12</span> will increase the emulated CPU instructions.
+    Similarly, <span class="keyword">Control+F11</span> will decrease emulated CPU instructions.</p>
+
+    <ul>
+        <li><a href="https://archive.org/details/{{file.archive_name}}" target="_blank">Open this file on archive.org</a></li>
+        <li><a href="https://archive.org/about/faqs.php#MS-DOS_Emulation" target="_blank">Internet Archive MS-DOS Emulation Help</a></li>
+    </ul>
+</div>
+{% endblock post_embed %}
+
+{% block credits %}
+{% if components.credits %}
+    <div class="archive-credits">
+        <div style="margin:auto;width:auto;max-width:300px;">{% shadowed_block text="Visit the Internet Archive's ZZT Software Library" url="https://archive.org/details/softwarelibrary_msdos_zzt" icon="📔" bg='var(--ega-darkred)' border_color='var(--ega-red)' %}</div>
+    </div>
+{% endif %}
+<!---->
+{% endblock credits %}

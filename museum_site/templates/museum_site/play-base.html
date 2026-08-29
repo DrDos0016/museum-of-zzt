@@ -1,0 +1,155 @@
+{% extends base %}{% comment %}main for embedded or popout for discrete window{% endcomment %}
+{% load site_tags %}
+
+{% block style %}
+<style>
+#play-area
+{
+    text-align:center;
+    margin:auto;
+    margin-top:7px;
+}
+
+#zzt_canvas
+{
+    image-rendering:crisp-edges;
+    background-color:var(--ega-gray);
+}
+
+#zeta-config
+{
+    max-width:750px;
+    margin:auto;
+    .field-help { font-size:smaller; }
+}
+
+#controls
+{
+    margin:auto;
+    margin-bottom:1em;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    max-width:640px;
+    gap:0px 8px;
+    flex-wrap:wrap;
+}
+
+#zoom-wrapper { font-family:cp437; font-size:21px; }
+#player-list .label { font-family:cp437; font-size:21px; }
+#player-list { flex:1; }
+
+#screenshot-form { margin-left:auto; }
+#screenshot-update-text { display: none; margin: auto;}
+#apply-config { width:100%; margin-top:10px; }
+
+main p { max-width:750px; }
+main h2 { max-width:750px; margin:auto; }
+main ul  { max-width:750px; margin:auto; }
+
+.zzt-faq { max-width:720px; margin:auto; }
+
+.zzt-faq summary { font-weight:bold; margin-left:2ch; padding-left:2ch; }
+.zzt-faq summary::marker { content: "➕"; font-style:initial; }
+.zzt-faq[open] summary::marker { content: "➖"; font-style:initial; }
+.zzt-faq summary:hover { color:var(--link-color); }
+
+{% block player_css %}{% endblock player_css %}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("select[name=player]").change(function (){
+        let player = $(this).val();
+        if (player != "itch")
+            window.location = "?player=" + $(this).val();
+        else
+            window.location = "{{file.itch_dl.url|default:'#'}}";
+    });
+});
+</script>
+
+    {% block player_scripts %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+{% if DETAIL_ANTIQUATED in file.detail_ids %}{% notice "⌛ Antiquated File ⌛" %}This file has been marked as <b>Antiquated</b>, and is not recommended for general use. Unless you have a specific need for this particular version, the latest release should be used instead.{% endnotice %}{% endif %}
+
+{% block pre_embed %}{% endblock %}
+<div id="play-area">{% block play_area %}
+ERROR: Unspecified Play Area{% endblock %}
+</div>
+
+{% if unpublished and player == 'zeta' %}<p><b>This file is currently UNPUBLISHED. Support for Zeta has been assumed, but the file may not be compatible.</b></p>{% endif %}
+
+{% block controls %}
+{% if components.controls %}<div id="controls" class="c">
+    {% block zeta_controls %}{% endblock zeta_controls %}
+
+    {% if components.players %}
+    <div id="player-list" class="c">
+        <span class="label">Play Method:</span>
+        <select name="player">
+            {% for k, info in available_players.items %}
+            {% if info.available %}<option value="{{k}}"{% if k == player %} selected{% endif %}>{{info.name}}</option>{% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
+</div>{% endif %}
+{% endblock controls %}
+
+{% block post_embed %}{% endblock %}
+
+{% block help %}
+{% if components.instructions %}<div class="instructions">
+    <h2>Common Problems and Solutions</h2>
+    {% if player == 'archive' %}<p><i>You are currently using the Internet Archive's web player. Solutions involving altering the player configuration may not be applicable.</i></p>{% endif %}
+
+    <details class="zzt-faq">
+        <summary>I'm stuck in the world I'm playing!</summary>
+        <p>Depending on how you're stuck, you may want to try the following:
+            <ul>
+                <li><b>A lack of health or other resources:</b> Press <span class="keyword">?</span> to open the cheat prompt and use the appropriate cheat listed on the <a href="{% url 'zzt_cheats' %}" target="_blank">ZZT Cheats</a> page.</li>
+                <li><b>The player is surrounded and unable to move:</b> Press <span class="keyword">?</span> to open the cheat prompt and enter <span class="keyword">ZAP</span> to erase the four tiles surrounding the player.</li>
+                <li><b>The player has been destroyed:</b> Oops. Hope you saved. This typically happens due to a bug with how conveyors work.
+                <li><b>The game is paused and the player can't move to unpause:</b> Moving is the only way for ZZT to unpause your game.It's best to use <span class="keyword">ESCAPE</span> as a pause method instead. Keep in mind that the game starts paused as well, so saving while surrounded (something easy to do with engine based games like ZZT platformers) will result in a save that can't be played when restored. For a broken save, changing the configuration to use SolidHUD may allow you recover by pressing <span class="keyword">P</span> to unpause.</li>
+                <li><b>It's unclear where to go next:</b> Try looking for some information in the file's <a href="{{file.review_url}}" target="_blank">feedback</a> or associated <a href="{{file.article_url}}" target="_blank">articles</a>. A small number of files have had full walkthroughs written for them or author created guidance included in the world's documentation. You can also use the <a href="{{file.get_absolute_url}}" target="_blank">file viewer</a> to explore the world freely.</li>
+                <li><b>I need some item, but don't know where to find it:</b> Use the <a href="{{file.get_absolute_url}}" target="_blank">file viewer</a>! Click on objects to view their code and look for things like <span class="keyword">#IF CROWBAR ESCAPE</span>. Then use the ZZT-OOP Search in the World tab to look for <span class="keyword">#SET CROWBAR</span> to find where the item is acquired. If the item is one of ZZT's built-in keys, search for <span class="keyword">&lt;COLOR&gt; KEY</span> to find objects that place keys on the board or transform into one.</li>
+                <li><b>An Impromptu Quiz™ has me stumped:</b> Use the editor or <a href="{{file.get_absolute_url}}" target="_blank">file viewer</a> to look up the answers in the object's code. You'll find code simliar to <span class="keyword">!w;Wrong Answer</span> and <span class="keyword">!r;Right Answer</span>. The text before the semicolon indicates which label (<span class="keyword">:w</span> or <span class="keyword">:r</span>) the object will jump to after selecting a choice. Use these labels to identify correct answers.</li>
+                <li><b>A maze in hindering my progress:</b> The <a href="{{file.get_absolute_url}}" target="_blank">file viewer</a> can help reveal some hidden tiles more easily. Under the preferences tab try out other board rendering methods to reveal fake walls or empties.</li>
+            </ul>
+        </p>
+    </details>
+    <details class="zzt-faq">
+        <summary>Pressing <span class="keyword">P</span> to play results in a <span class="keyword">DOS Error</span> message!</summary>
+        <p>This is caused either by ZZT or Zeta not correctly pointing to the proper world. This most frequently happens with games that require non-default Zeta configurations or worlds whose filenames doen't match the names stored within the file itself used by ZZT. Try pressing <span class="keyword">ENTER</span> to close the message. Then press <span class="keyword">W</span> to open the world menu, and manually select the proper world.</p>
+    </details>
+    <details class="zzt-faq">
+        <summary>Pressing <span class="keyword">E</span> to edit a world results in a red flash and a <span class="keyword">can not edit world/save</span> message!</summary>
+
+        <p>The world you tried to edit has been <span class="keyword">LOCKED</span> which prevent players from easily editing a world. These locks can all be circumvented easily.</p>
+
+        <p>From within the editor hit <span class="keyword">?</span> to open the cheat prompt and enter <span class="keyword">+DEBUG</span>. Reload the world with <span class="keyword">L</span> and the world should open just fine. Enter <span class="keyword">-DEBUG</span> at the cheat prompt to unset the debug flag, which can cause issues if left set during gameplay. <a href="/article/323/a-guide-to-zzt-lock-picking" target="_blank"><i>More about Locks</i></a></p>
+    </details>
+    <details class="zzt-faq">
+        <summary>The editor's board list is showing boards named <span class="keyword">►LOCKED FILE</span> or similar which do not open properly!</summary>
+        <p>The world you're editing is (also) Super Locked. You can open the locked boards by hitting <span class="keyword">Escape</span> instead of <span class="keyword">Enter</span>. The <span class="keyword">:c</span> board is a deliberately corrupt board which designed to crash ZZT's editor. <a href="/article/323/a-guide-to-zzt-lock-picking" target="_blank"><i>More about Locks</i></a></p>
+    </details>
+</div>{% endif %}
+{% endblock help %}
+
+{% block configuration %}{% endblock %}
+
+{% if debug and false %}
+<h2>Debug Info</h2>
+<div style="margin:auto;width:750px;">
+    <textarea style="width:725px;height:360px;">{% zeta_load %}</textarea>
+</div>
+{% endif %}
+
+{% block credits %}{% endblock %}
+
+{% endblock %}

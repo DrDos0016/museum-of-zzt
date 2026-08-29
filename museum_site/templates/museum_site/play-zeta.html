@@ -1,0 +1,169 @@
+{% extends "museum_site/play-base.html" %}
+{% load site_tags %}
+{% block player_css %}{% endblock player_css %}
+
+{% block player_scripts %}
+<script type="text/javascript" src="/static/zeta86/zeta_loader.js?{{BOOT_TS}}"></script>
+<script type="text/javascript" id="zeta-script">
+var url = new URL(window.location);
+var scale = {{zeta_config.initial_scale|default:1}};
+var base_w = {{zeta_config.base_width|default:640}};
+var base_h = {{zeta_config.base_height|default:350}};
+var ZETA = null;
+
+$(document).ready(function (){
+    $("#set-screenshot").click(set_screenshot);
+    $("#zzt_canvas").width(base_w * scale);
+    $("#zzt_canvas").height(base_h * scale);
+
+    $("#popout").click(function (e){
+        var popout_url = new URL(url);
+        popout_url.searchParams.set("player", "zeta");
+        popout_url.searchParams.set("mode", "popout");
+        popout_url.searchParams.set("scale", scale);
+        let popout_padding_w = 10;
+        let popout_padding_h = 10;
+        let window_properties = "width="+(base_w * scale + popout_padding_w)+",height="+(base_h * scale + popout_padding_h)+",toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0";
+        window.open(popout_url, "popout-{{file.key}}", window_properties);
+    });
+
+    $(".zoom").click(function (){
+        scale += ($(this).val() == "+") - ($(this).val() == "-");
+        scale = Math.max(1, scale);
+        scale = Math.min(2, scale);
+        console.log("SCALE IS NOW", scale);
+        $("#zoom-out").attr("disabled", (scale <= 1))
+        $("#zoom-in").attr("disabled", (scale >= 2))
+        $("#zoom-value").html(scale);
+        set_zeta_canvas_size(base_w, base_h, scale);
+
+        var now = new Date();
+        var time = now.getTime();
+        var expireTime = time + (1000 * 31536000); // 1yr
+        now.setTime(expireTime);
+        document.cookie = "zeta_player_scale=" + scale + ";expires=" + now.toGMTString() + ";path=/";
+    });
+
+    $("#fullscreen").click(function (){
+        $("#zzt_canvas")[0].requestFullscreen();
+    });
+
+
+    // FONT STUFF
+    var file_reader = new FileReader();
+    file_reader.onload = function (e) {
+        var byte_array = new Uint8Array(file_reader.result);
+        var hex_string = "";
+
+        for (var idx in byte_array)
+        {
+            hex_string += ("0" + byte_array[idx].toString(16)).slice(-2);
+        }
+
+        // Create world info for BRD files
+        if (ext == "brd")
+        {
+            hex_string = "ffff000000000000000000000000006400000000000000000000000000084155544f47454e57" + "0".repeat(948) + hex_string;
+        }
+    }
+
+    /* Start Zeta Config */
+    let zeta_config = {% zeta_load %};
+    /* End Zeta Config */
+
+    ZetaLoad(zeta_config, function(zeta) {
+        ZETA = zeta;
+        ZETA.render.canvas.addEventListener("zetaResolutionChanged", e => {
+            base_w = e.detail.width;
+            base_h = e.detail.height;
+            set_zeta_canvas_size(base_w, base_h, scale);
+        });
+    });
+
+    $("#raw-config").text(debug_get_zeta_config);
+});
+
+function set_zeta_canvas_size(w, h, scale)
+{
+    //console.log(w, h, scale);
+    $("#zzt_canvas").width(w * scale);
+    $("#zzt_canvas").height(h * scale);
+    // Always Force disable image smoothing (it seems to like to re-enable at times?)
+    let ctx = ZETA.render.canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+}
+
+function set_screenshot()
+{
+    $("#screenshot-update-text").hide();
+    data_url = document.getElementById("zzt_canvas").toDataURL();
+    $("#b64img").val(data_url);
+    let form_data = $("#screenshot-form").serializeArray();
+    let old_text = $("#set-screenshot").html();
+    $("#set-screenshot").attr("disabled", "disabled");
+    $("#set-screenshot").html("Working...");
+
+    $.ajax({
+        url:"/ajax/set-zeta-screenshot/",
+        method:"POST",
+        data:form_data
+    }).done(function (response){
+        if (response == "Screenshot Updated")
+        {
+            $("#set-screenshot").html(old_text);
+            $("#screenshot-update-text").show();
+            $("#set-screenshot").prop("disabled", "");
+        }
+    });
+}
+
+function debug_get_zeta_config()
+{
+    let raw = $("#zeta-script").html();
+    start = raw.indexOf("/* Start Zeta Config */") + 46;
+    end = raw.indexOf("/* End Zeta Config */") - 7;
+    return raw.slice(start, end);
+}
+</script>
+{% endblock %}
+
+{% block play_area %}<canvas id="zzt_canvas" width="{{zeta_config.base_width|default:640}}" height="{{zeta_config.base_height|default:350}}" contenteditable=false></canvas>{% endblock play_area %}
+
+{% block zeta_controls %}
+<div>
+    <span id="zoom-wrapper">Zoom: <span id="zoom-value">{{zeta_config.initial_scale|default:1}}</span>x</span>
+    <button id="zoom-out" class="zoom" value="-"{% if zeta_config.initial_scale == 1 %} disabled{% endif %}>-</button>
+    <button id="zoom-in" class="zoom" value="+"{% if zeta_config.initial_scale == 2 %} disabled{% endif %}>+</button>
+    </div>
+    <button id="popout">Popout</button>
+    <button id="fullscreen">Fullscreen</button>
+    {% if can_update_screenshot %}
+    <form method="POST" id="screenshot-form" action="{% url 'ajax_set_zeta_screenshot' %}">
+        {% csrf_token %}
+        <button id="set-screenshot" type="button">Set Screenshot{% if not your_upload %}(as staff){% endif %}</button>
+        <input type="hidden" name="key" value="{{zfiles.0.key}}">
+        <input type="hidden" name="b64img" id="b64img">
+    </form>
+    <div id="screenshot-update-text" class="c"><b>Screenshot updated!</b><br>You may need to hard refresh the image to clear your cached version.</div>
+    {% endif %}
+
+    {% if not hide_managed_saved_data %}<div class="manage-save-wrapper"><a href="{% url 'manage_saved_data' %}?pk={{zeta_config.save_storage.id}}">Manage Saved Data</a></div>{% endif %}
+    <div>Press <span class="keyword">F11</span> while the emulator is focused to access an options menu.</div>
+</div>
+{% endblock zeta_controls %}
+
+{% block configuration %}<h2>Zeta Configuration</h2>
+<form id="zeta-config">
+{% include "museum_site/blocks/generic-form.html" %}
+<p><b>Warning!</b> Page will refresh after applying a new configuration. Unsaved progress will be lost!</p>
+<input type="submit" value="{{form.submit_value}}">
+</form><br>{% endblock configuration %}
+
+{% block credits %}{% if components.credits %}<div class="zeta-credits">
+<div style="margin:auto;width:auto;max-width:225px;">{% shadowed_block text="Zeta created and maintained by asie." url="https://zeta.asie.pl" icon="🧰" bg='var(--ega-darkcyan)' border_color='var(--ega-cyan)' %}</div>
+<hr>
+
+<textarea style="width:1000px;height:500px;" id="raw-config">
+</textarea>
+{% endif %}
+{% endblock credits %}

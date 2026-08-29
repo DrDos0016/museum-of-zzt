@@ -1,3 +1,5 @@
+from random import randint  # DEBUG
+
 import pprint
 import re
 import time
@@ -17,7 +19,7 @@ from museum.settings import STATIC_URL
 from museum_site.constants import (
     ADMIN_NAME, PROTOCOL, DOMAIN, LANGUAGES
 )
-from museum_site.core.misc import zeta_get_szzt_world, zeta_get_font_file, zeta_get_executable
+from museum_site.core.misc import zeta_get_szzt_world, zeta_get_font_file, zeta_get_executable, zeta_get_launch_world
 from museum_site.core.transforms import qs_manual_order
 from museum_site.models import File, Article, Series, Zeta_Config
 from museum_site.templatetags.zzt_tags import char
@@ -624,7 +626,6 @@ class ZZM_Player(template.Node):
 
 
 @register.simple_tag(takes_context=True)
-#@register.inclusion_tag("museum_site/subtemplate/tag/zeta-load.js", takes_context=True)
 def zeta_load(context):
     zeta_config = context.get("zeta_config")
     if zeta_config is None:
@@ -654,7 +655,6 @@ def zeta_load(context):
 
     # Handle config variable substitutions
     required_substitutions = zeta_config.get_required_substitutions()
-    print("REQUIRED SUBS", required_substitutions)
 
     if "{SZZT_WORLD}" in required_substitutions:
         zeta_config.arguments = zeta_config.arguments.replace("{SZZT_WORLD}", zeta_get_szzt_world(zfiles[0]))
@@ -665,21 +665,32 @@ def zeta_load(context):
         if zzt32_exe == "32compat":  # User requested the use of a 3.2 Compatible
             zzt32_exe = request.session.get("zzt32_exe") or "zzt"
         zeta_config.executable = zeta_config.executable.replace("{32COMPAT}", zzt32_exe)
-        print("SET 32COMPAT TO", zzt32_exe)
 
+    meta_charset_str = "Default Charset"
     if "{FONT_FILE}" in required_substitutions:
         to_load = zeta_get_font_file(zfiles[0])
         if to_load:
             if to_load["format"] == "COM":
                 zeta_config.commands = zeta_config.commands.replace("{FONT_FILE}", to_load["filename"])
+                meta_charset_str = to_load["filename"]
             if to_load["format"] == "CHR":
                 zeta_config.commands = ""
-                output["engine"]["charset"] = '"' + to_load["filename"] + '"'
+                output["engine"]["charset"] = to_load["filename"]
+                meta_charset_str = to_load["filename"]
 
     if "{EXECUTABLE}" in required_substitutions:
         executable = zeta_get_executable(zfiles[0])
         if executable:
             zeta_config.commands = zeta_config.commands.replace("{EXECUTABLE}", executable)
+
+    if "{LAUNCH_WORLD}" in required_substitutions:
+        launch_world = zeta_get_launch_world(zfiles[0])
+        zeta_config.commands = zeta_config.commands.replace("{LAUNCH_WORLD}", launch_world)
+
+    # Set charset override
+    if request.GET.get("charset"):
+        output["engine"]["external_charset"] = True
+        output["engine"]["charset"] = request.GET.get("charset") + ".chr"
 
     # Set custom blinking?
     if request.GET.get("blink") == "noblink":
@@ -687,10 +698,9 @@ def zeta_load(context):
     elif request.GET.get("blink") == "loblink":
         zeta_config.blink_duration = 0
     elif request.GET.get("blink") == "on":
-        zeta_config.blink_duration = float(request.GET.get("blink_duration"))
+        zeta_config.blink_duration = float(request.GET.get("blink_duration") or Zeta_Config.DEFAULT_BLINK_DURATION)
 
     # Pull zeta config into tag output
-    print("APPLYING TO OUTPUT", output)
     if zeta_config.executable:
         output["files"] = [{"type": "zip", "url": "/static/data/zeta86_engines/{}".format(zeta_config.executable)}]  + output["files"]
     if zeta_config.arguments:
@@ -699,15 +709,23 @@ def zeta_load(context):
         output["commands"] = zeta_config.commands
     if float(zeta_config.blink_duration) != Zeta_Config.DEFAULT_BLINK_DURATION:
         output["render"]["blink_cycle_duration"] = str(zeta_config.blink_duration)
+        meta_blink_str = "Custom"
+    else:
+        meta_blink_str = "Default"
+
 
     # Add metadata
     output["meta"] = {
         "zeta_config": zeta_config,
-        "save_storage_key": zeta_config.save_storage.get("key", "?")
+        "save_storage_key": zeta_config.save_storage.get("key", "?"),
+        "executable": (zeta_config.executable or "Use Included"),
+        "charset": meta_charset_str,
+        "blinking": {-1: "Force High Intensity", 0: "Force Low Intensity"}.get(zeta_config.blink_duration, "{} ({}ms)".format(meta_blink_str, zeta_config.blink_duration))
     }
 
     # Render
     config_js = render_to_string("museum_site/subtemplate/tag/zeta-load.js", output)
     config_js = config_js.replace("        \n", "").replace("    \n", "")  # Strip empty lines
-    print("SITE_TAGS: FINAL BLINK DURATION", zeta_config.blink_duration, "(default: 0.534)")
-    return mark_safe(config_js)
+    rendered = mark_safe(config_js)
+    #print(rendered)
+    return rendered

@@ -624,7 +624,7 @@ def zeta_get_szzt_world(zfile):
     for f in files:
         basename = os.path.basename(f)
         if f.upper().endswith(".SZT") and basename == f:
-            szzt_world = f
+            szzt_world = f[:-4]
             break
     return szzt_world
 
@@ -654,3 +654,15 @@ def zeta_get_executable(zfile):
             executable = f
             break
     return executable
+
+def zeta_get_launch_world(zfile):
+    zip_file = zipfile.ZipFile(os.path.join(zfile.phys_path()))
+    files = zip_file.namelist()
+    launch = ""
+    for f in files:
+        f_up = f.upper()
+        basename = os.path.basename(f)
+        if (f_up.endswith(".ZZT") or f_up.endswith(".SZT")) and basename == f:
+            launch = f
+            break
+    return launch

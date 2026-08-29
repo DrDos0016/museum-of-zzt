@@ -47,6 +47,7 @@ urlpatterns = [
     path("ajax/get_zip_file/", museum_site.ajax.get_zip_file, name="ajax_get_zip_file"),
     path("ajax/get-zip-file-by-key/", museum_site.ajax.get_zip_file_by_key, name="ajax_get_zip_file_by_key"),
     path("ajax/render-review-text/", museum_site.ajax.render_review_text, name="ajax_render_review_text"),
+    path("ajax/set-zeta-screenshot/", museum_site.ajax.set_zeta_screenshot, name="ajax_set_zeta_screenshot"),
     path("ajax/wozzt_queue_add/", museum_site.ajax.wozzt_queue_add, name="ajax_wozzt_queue_add"),
 
     path("ajax/collection/arrange-collection/", museum_site.ajax.arrange_collection, name="ajax_collection_arrange"),
@@ -153,8 +154,8 @@ urlpatterns = [
     path("file/view/<str:key>/", museum_site.file_views.file_viewer, name="file"),
     path("file/view/<str:key>/beta/", museum_site.file_views.file_viewer_new, name="file_beta"),
     path("file/pk/<int:pk>/", museum_site.file_views.get_file_by_pk, name="zfile_pk"),
-    path("file/play/<str:key>/", museum_site.zeta_views.zeta_launcher, {"components": ["credits", "controls", "instructions", "players"]}, name="zfile_play"),
-    #path("file/play/<str:key>/", museum_site.zeta_views.Zeta_Launcher_View.as_view(), name="zfile_play"),
+    #path("file/play/<str:key>/", museum_site.zeta_views.zeta_launcher, {"components": ["credits", "controls", "instructions", "players"]}, name="zfile_play"),
+    path("file/play/<str:key>/", museum_site.zeta_views.Zeta_Launcher_View.as_view(), name="zfile_play"),
     # /file/ -- Legacy Redirects
     path("random/", legacy_redirect, {"name": "zfile_random"}),
     path("roulette/", legacy_redirect, {"name": "zfile_roulette"}),

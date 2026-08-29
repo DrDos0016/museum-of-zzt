@@ -14,6 +14,7 @@ from museum_site.core.image_utils import crop_file, optimize_image, IMAGE_CROP_P
 from museum_site.core.misc import Meta_Tag_Block
 from museum_site.core.redirects import explicit_redirect_check
 from museum_site.core.zeta_identifiers import *
+from museum_site.forms.zeta_forms import Zeta_Configuration_Form
 from museum_site.models import File as ZFile
 from museum_site.models import Collection, Article, Zeta_Config
 from museum_site.views import Museum_Base_Template_View
@@ -67,33 +68,48 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         title = self.get_page_title(zfiles)  # Get page title
 
         use_player = self.get_player(zfiles[0])  # Get player to actually use
+        if use_player == "itch":
+            self.redirect_to = zfiles[0].itch_dl
+            return {} # No context to display for redirect
         self.template_name = "museum_site/play-" + use_player + ".html"
-        print("AVAILABLE PLAYERS", self.available_players)
-        print("USE PLAYER", use_player)
 
+        zeta_config = None
+        your_upload = False
+        can_update_screenshot = False
         # Get Zeta attributes if using Zeta player
         if use_player == "zeta":
-            context["zeta_context"] = {
-                "canvas_id": "zzt_canvas",
-                "dimensions": self.get_zeta_dimensions(zfiles[0]),  # Resolution of canvas
-                "initial_scale": int(self.request.COOKIES.get("zeta_player_scale", 1)),  # Initial scale of canvas
-                "save_storage": self.get_save_storage_identifiers(zfiles),  # Get identifiers for saves/data
-                "zeta_config": self.get_zeta_config(zfiles[0]),  # Zeta Config to initiate
-            }
+            zeta_config = self.get_zeta_config(zfiles[0])
+            zeta_config.base_width, zeta_config.base_height = self.get_zeta_dimensions(zfiles[0])  # Resolution of canvas
+            zeta_config.initial_scale = int(self.request.COOKIES.get("zeta_player_scale", 1))
+            zeta_config.save_storage = self.get_save_storage_identifiers(zfiles)
 
-        # Get configs/zfiles if showing advanced settings
-        if self.components["advanced"]:
-            context["all_zfiles"] = ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
-            context["available_zeta_configs"] = Zeta_Config.objects.exclude(pk=ZETA_RESTRICTED).only("id", "name")
+            # Get configs + zeta compatible zfiles if showing advanced settings
+            if self.components["advanced"]:
+                context["all_zfiles"] = ZFile.objects.zeta_compatible().order_by("sort_title", "id").only("id", "title")
+                context["available_zeta_configs"] = Zeta_Config.objects.exclude(pk=ZETA_RESTRICTED).only("id", "name")
+
+            # Can user update a screenshot from here?
+            your_upload = True if zfiles[0].upload.user and zfiles[0].upload.user.pk == self.request.user.pk else False
+            if (len(zfiles) == 1) and (self.request.user.is_staff or your_upload):
+                can_update_screenshot = True
 
         # Load em up!
         context["base"] = self.base_template
         context["components"] = self.components
         context["ZETA_EXECUTABLES"] = ZETA_EXECUTABLES
         context["zfiles"] = zfiles
+        context["file"] = zfiles[0]
         context["included_zfile_count"] = len(zfiles)
         context["title"] = title
         context["player"] = use_player
+        context["available_players"] = self.available_players
+        context["can_update_screenshot"] = can_update_screenshot
+        context["your_upload"] = your_upload
+        context["zeta_config"] = zeta_config
+        context["unpublished"] = True if zfiles[0].is_detail(DETAIL_UPLOADED) else False
+
+        context["form"] = Zeta_Configuration_Form(self.request.GET) if self.request.GET else Zeta_Configuration_Form()
+
         return context
 
     def get_zeta_dimensions(self, zfile):
@@ -118,13 +134,20 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         return "Play Online"
 
     def get_available_players(self, zfile):
-        output = Zeta_Launcher_View.PLAY_METHODS
+        # Something is making it required to explicitly set false
+        output = Zeta_Launcher_View.PLAY_METHODS.copy()
         if zfile.archive_name:
             output["archive"]["available"] = True
+        else:
+            output["archive"]["available"] = False
         if zfile.itch_dl:
             output["itch"]["available"] = True
+        else:
+            output["itch"]["available"] = False
         if zfile.supports_zeta_player:
             output["zeta"]["available"] = True
+        else:
+            output["zeta"]["available"] = False
         return output
 
     def get_player(self, zfile):
@@ -144,7 +167,6 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         components = {}
         components.update(self.components)
         components["advanced"] = bool(self.request.GET.get("advanced"))
-        print("Vis Components", components)
         return components
 
     def get_zeta_compatible_zfiles(self):
@@ -166,7 +188,6 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         return output
 
     def get_player_methods(self, zfile):
-        print("GETTING AVAILABLE PLAYERS")
         play_methods = {"archive": {"name": "DosBox - Internet Archive Embed"}, "zeta": {"name": "Zeta - Museum of ZZT Hosted"}}
         if zfile and zfile.itch_dl:
             play_methods["itch"] = {"name": "Play On Itch.io - Leave Museum"}
@@ -208,7 +229,7 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         if zfile and zfile.explicit:
             check = explicit_redirect_check(self.request, zfile.pk)
             if check != "NO-REDIRECT":
-                return check
+                return check.url
         return None
 
     def get_zeta_config(self, zfile):
@@ -216,7 +237,7 @@ class Zeta_Launcher_View(Museum_Base_Template_View):
         if self.request.GET.get("zeta_config"):  # User specified config
             zeta_config = Zeta_Config.objects.get(pk=int(self.request.GET["zeta_config"]))
         else:
-            if zfile:
+            if zfile.zeta_config:
                 zeta_config = zfile.zeta_config
                 zeta_config.fallback = False
             else:
