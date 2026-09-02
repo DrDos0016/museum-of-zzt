@@ -24,18 +24,37 @@ $(document).ready(function (){
 
         const dt = e.originalEvent.dataTransfer;
         const file = dt.files[0];
-        var ext = file.name.toLowerCase().slice(-4);
+
+        let dot = file.name.lastIndexOf(".");
+        let head = file.name;
+        let tail = '';
+
+        if (dot != -1)
+        {
+            tail = file.name.slice(dot);
+            head = file.name.slice(0, dot);
+        }
+
+        var ext = tail.toLowerCase();
         var target = $(this).data("file-widget");
         $("#" + target)[0].files = dt.files;
 
-        if (ext == ".zip")
-            parse_zip_file(file);
-        else if (ext == ".zzt")
-            set_uploaded_zzt_file(file);
-        else if (ext == ".png" || ext == ".jpg")
-            set_uploaded_image(file);
+        // TODO: None of this should live in the drop function
+        if (typeof handle_uploaded_file == "undefined")
+        {
+            if (ext == ".zip")
+                parse_zip_file(file);
+            else if (ext == ".zzt")
+                set_uploaded_zzt_file(file);
+            else if (ext == ".png" || ext == ".jpg")
+                set_uploaded_image(file);
+            else
+                console.log("Unhandled file extension: " + ext);
+        }
         else
-            console.log("Unhandled file extension: " + ext);
+        {
+            handle_uploaded_file();
+        }
     });
 
     $(".drag-and-drop-file-widget").change(function (e){
