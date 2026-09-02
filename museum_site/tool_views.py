@@ -187,6 +187,27 @@ def audit_settings(request):
 
 
 @staff_member_required
+def clean_wozzt_queue(request):
+    context = {"title": "Clean WoZZT Queue", "message": ""}
+    context["unpublished"] = File.objects.unpublished().order_by("-pk")
+
+    if request.GET.get("clean"):
+        qs = WoZZT_Queue.objects.all().order_by("id")
+        cleaning_log = "Checking {} WoZZT queue entries.\n".format(len(qs))
+
+        for wz in qs:
+            if not os.path.isfile(wz.image_path()):
+                cleaning_log += "Removed invalid WoZZT Queue Entry #" + str(wz.pk) + "\n"
+                wz.delete()
+
+        count = WoZZT_Queue.objects.count()
+        cleaning_log += "Complete. WoZZT queue entries remaining: {}.".format(count)
+        context["cleaning_log"] = cleaning_log
+
+    return render(request, "museum_site/tools/clean-wozzt-queue.html", context)
+
+
+@staff_member_required
 def compare_checksums(request):
     context = {"title": "Compare Checksums"}
     if request.method == "POST":

@@ -1,0 +1,18 @@
+{% extends BASE_TEMPLATE %}
+{% load static %}
+
+{% block content %}
+<h1>{{title}}</h1>
+<hr>
+<form>
+    <label>Clean WoZZT Queue:</label>
+    <input type="hidden" name="clean" value="1">
+    <input type="submit" value="Clean WoZZT Queue!">
+</form>
+<hr>
+<p>This will remove all entries from the WoZZT queue which do not have an image file available. This allows the DEV site to erase a queue and work with a fresh one when needed.</p>
+
+{% if request.GET.clean %}
+<textarea style="width:800px;height:300px;">{{cleaning_log}}</textarea>
+{% endif %}
+{% endblock %}
