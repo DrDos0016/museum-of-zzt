@@ -38,4 +38,4 @@ class Zeta_Configuration_Form(forms.Form):
     executable = forms.ChoiceField(label="Executable", choices=EXECUTABLES, required=False)
     charset = forms.ChoiceField(label="Charset", choices=CHARSETS, required=False)
     blink = forms.ChoiceField(label="Blinking", choices=BLINKS, required=False)
-    blink_duration = forms.FloatField(label="Blink Duration", initial=0.534, help_text="Length of each phase of the blink cycle in ms. Default is 0.534ms.", required=False)
+    blink_duration = forms.FloatField(label="Blink Duration", initial=0.534, help_text="Length of each phase of the blink cycle in seconds. Default is 0.534s.", required=False)
