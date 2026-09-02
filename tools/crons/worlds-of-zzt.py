@@ -1,5 +1,4 @@
 import os
-
 import django
 
 from datetime import datetime
@@ -10,38 +9,19 @@ from museum_site.models.wozzt_queue import WoZZT_Queue  # noqa: E402
 
 
 def main():
+    SERVICES = ["tumblr", "mastodon", "discord", "bluesky"]
     now = datetime.now()
-
-    if now.weekday() == 1:  # Tuesday
-        entry = WoZZT_Queue.objects.filter(category="tuesday")
-    else:
-        entry = WoZZT_Queue.objects.filter(category="wozzt")
-
-    entry = entry.order_by("-priority", "id")[0]
+    category = "tuesday" if now.weekday() == 1 else "wozzt"
+    entry = WoZZT_Queue.objects.filter(category=category).order_by("-priority", "id")[0]
 
     # Send everywhere
-    try:
-        entry.send_tumblr()
-    except:
-        print("Failed to send: Tumblr")
+    for s_name in SERVICES:
+        try:
+            getattr(entry, "send_{}".format(s_name))()
+        except:
+            print("Failed to send: " + s_name)
 
-    try:
-        entry.send_mastodon()
-        entry.send_discord()
-    except:
-        print("Failed to send: Mastodon and/or Discord")
-
-    try:
-        entry.send_bluesky()
-    except:
-        print("Failed to send: Bluesky")
-
-    try:
-        entry.send_tweet()
-    except:
-        print("Failed to send: Twitter")
-
-    # Delete
+    # Delete when done
     entry.delete_image()
     entry.delete()
     print("Done.")
