@@ -5,7 +5,7 @@ from django.template.defaultfilters import slugify
 from django.urls import resolve
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 
-from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED, MODEL_BLOCK_VERSION
+from museum_site.constants import PAGE_SIZE, LIST_PAGE_SIZE, NO_PAGINATION, PAGE_LINKS_DISPLAYED, MODEL_BLOCK_VERSION, ENV
 from museum_site.core.detail_identifiers import DETAIL_UPLOADED, DETAIL_LOST
 from museum_site.core.discord import discord_announce_review
 from museum_site.core.form_utils import clean_params
@@ -107,6 +107,7 @@ class Model_List_View(ListView):
             # TODO these should have dedicated descriptions
             "zfile_browse_letter": {"title": title},
             "zfile_browse": {"title": title},
+            "zfile_search": {"title": title},
             "collection_browse": {"title": title},
             "collection_view": {"title": title},  # This should use the model's short description
             "zfile_browse_field": {"title": title}, # This hits a lot of things
@@ -118,10 +119,11 @@ class Model_List_View(ListView):
             "article_browse": {"title": title, "description": "A directory of all articles hosted on the Museum of ZZT"},
             "article_browse_category": {"title": title, "description": "A directory of all articles on the Museum of ZZT"},
             "article_browse_categories": {"title": title, "description": "A directory of all categories used to classify articles on the Museum of ZZT"},
+            "article_search": {"title": title},
             "review_browse": {"title": title},
             "scroll_browse": {"title": title},
         }
-        kwargs = path_specific_meta_tags.get(key.url_name, {"title":"PLACEHOLDER TITLE"})
+        kwargs = path_specific_meta_tags.get(key.url_name, {"title":"PLACEHOLDER TITLE" + ("[{}]".format(key.url_name) if ENV != "PROD" else "" )})
         meta_tags = Meta_Tag_Block(url=url, **kwargs)
         return meta_tags
 
