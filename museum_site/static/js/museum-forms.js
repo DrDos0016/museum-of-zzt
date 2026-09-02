@@ -53,7 +53,7 @@ $(document).ready(function (){
         }
         else
         {
-            handle_uploaded_file();
+            handle_uploaded_file(file, ext);
         }
     });
 
