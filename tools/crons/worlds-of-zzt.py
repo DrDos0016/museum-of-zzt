@@ -37,7 +37,8 @@ def main():
         print("Failed to send: Bluesky")
 
     try:
-        entry.send_tweet()
+        #entry.send_tweet()
+        print("Skipping Twitter")
     except:
         print("Failed to send: Twitter")
 
