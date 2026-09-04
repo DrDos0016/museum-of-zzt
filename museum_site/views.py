@@ -394,3 +394,15 @@ def add_zfile_assocs(request):
                     zf.articles.add(a)
                     zf.save()
     return redirect(request.GET.get("path", "/"))
+
+
+class High_Score_Editor_View(Museum_Base_Template_View):
+    title = "High Score Editor"
+    template_name = "museum_site/high-score-editor.html"
+    preview_image = "pages/high-score-editor.png"
+    description = "An online tool to create and modify ZZT high score files"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.title, image=self.preview_image, description=self.description)
+        return context

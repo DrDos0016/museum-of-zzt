@@ -93,6 +93,8 @@ a[href^="https://wiki.zzt.org"]
     background-repeat:no-repeat;
 }
 
+#blue-block a[href^="https://wiki.zzt.org"] { padding-left:0px; padding-right:0px; background:none; }
+
 a.noext[target=_blank]
 {
     padding-right:0;

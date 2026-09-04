@@ -1,0 +1,212 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+
+{% block style %}<style>
+#workspace
+{
+    display:none;
+}
+
+#high-score-table-wrapper
+{
+    max-height:550px;
+    overflow:auto;
+    padding:4px;
+    border-top:1px dotted var(--border-color);
+    border-bottom:1px dotted var(--border-color);
+}
+
+#high-score-table { max-width:750px; text-align:center; margin:auto;}
+#high-score-table td {margin:auto; }
+#high-score-table .num { width: 4ch; font-family:"cp437", monospace; font-size:14pt; }
+#high-score-table input { font-family:"cp437", monospace; font-size:14pt; }
+#high-score-table input[name=score] { text-align:right; }
+#high-score-table input[name=name] { width:50ch;  }
+
+#workspace input[type=button] { height:30px; }
+#workspace input[name=filename] { height:26px; width: 12ch; font-family:"cp437", monospace; font-size:14pt;}
+
+#high-score-editor-controls
+{
+    display:flex;
+    flex-wrap:wrap;
+    max-width:650px;
+    gap:5px;
+    margin:auto;
+    justify-content:space-evenly;
+    padding:5px;
+}
+
+#high-score-editor-controls label { flex:1 0 100%; text-align:center; display:flex; gap:5px; align-items:center; justify-content:center; }
+</style>{% endblock %}
+
+{% block scripts %}
+<script>
+var zzt_hs_handler = null;
+var szzt_hs_handler = null;
+var handler = null;
+var max_name_length = 50;
+var score_filename = "BLANK.HI"
+var blank = {"score": -1, "name": ""}
+function handle_uploaded_file(file, ext)
+{
+    score_filename = file.name;
+
+    if (ext == ".hgs")
+        handler = szzt_hs_handler;
+    else
+        handler = zzt_hs_handler;
+
+    let reader = new FileReader();
+    reader.onload = function (){
+        var arrayBuffer = this.result,
+        array = new Uint8Array(arrayBuffer),
+        binaryString = String.fromCharCode.apply(null, array);
+        handler.scores = [];
+        handler.bytes = array;
+        handler.parse_bytes();
+        load_score_table(handler.scores);
+    }
+    let bytes = reader.readAsArrayBuffer(file);
+}
+
+function load_score_table(scores)
+{
+    $("#high-score-table-workspace").hide();
+    $("#high-score-table").empty();
+    let output = "<tr><th>#</th><th>Score</th><th>Name</th></tr>\n";
+    for (let i = 0; i < scores.length; i++)
+    {
+        let score = scores[i];
+        output += '<tr><td class="num">' + (i + 1) + '</td><td class="score"><input id="" name="score" value="' + score.score + '" type="number" min="-1" max="32767"></td><td><input name="name" value="' + score.name + '" maxlength="' + max_name_length + '"></td></tr>\n';
+    }
+    $("#high-score-table").html(output);
+    $("#workspace").show();
+}
+
+function download_score_table()
+{
+    let new_scores = []
+    for (let idx = 0; idx < $("input[name=name]").length; idx++)
+    {
+        new_scores.push({"name_len": $("input[name=name]")[idx].value.length, "name": $("input[name=name]")[idx].value, "score": $("input[name=score]")[idx].value});
+    }
+
+    let buffer = new ArrayBuffer(1590);
+    let view = new Uint8Array(buffer);
+    let pos = 0;
+
+    for (let idx = 0; idx < new_scores.length; idx++)
+    {
+        view[pos] = new_scores[idx].name_len;
+        pos++;
+        for (let i = 0; i < 50; i++)
+        {
+            let name_char = new_scores[idx].name[i];
+            if (! name_char)
+                view[pos] = 0;
+            else
+                view[pos] = name_char.charCodeAt(0);
+            pos++;
+        }
+        view[pos] = new_scores[idx].score % 256;
+        pos++;
+        view[pos] = Math.floor(new_scores[idx].score / 256);
+        pos++;
+    }
+
+    let dl = new Blob([buffer]);
+    let url = URL.createObjectURL(dl)
+    let dl_link = document.createElement("a");
+    dl_link.href = url
+    dl_link.download = $("input[name=filename]").val() || "BLANK.HI";
+    dl_link.click();
+}
+
+function erase_names() { $("input[name=name]").val(""); };
+function erase_scores() { $("input[name=score]").val("-1"); };
+function max_scores() { $("input[name=score]").val("32767"); };
+function max_named_scores() {
+    for (let i=0; i < $("input[name=name]").length; i++)
+    {
+        if ($("input[name=name]")[i].value != "")
+            $("input[name=score]")[i].value = "32767";
+    }
+};
+
+$(document).ready(function (){
+    let scores = []; // Start blank
+    while (scores.length < 30)
+    {
+        scores.push(blank)
+    }
+    load_score_table(scores);
+
+    $("input[name=button-high-score-download]").click(function (){
+        download_score_table();
+    });
+
+    $("input[name=button-erase-names]").click(function (){
+        erase_names();
+    });
+
+    $("input[name=button-erase-scores]").click(function (){
+        erase_scores();
+    });
+
+    $("input[name=button-max-scores]").click(function (){
+        max_scores();
+    });
+
+    $("input[name=button-max-named-scores]").click(function (){
+        max_named_scores();
+    });
+});
+</script>
+<script src="{% static 'js/file-viewer/high-score-editor.js' %}?{{BOOT_TS}}" type="module"></script>
+<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
+{% endblock %}
+
+{% block content %}
+<h1>High Score Editor</h1>
+
+<div class="field-wrapper" data-field="user_upload">
+    <label for="id_user_upload">Load High Score File:</label>
+    <div class="field-value field-layout-file-uploader">
+        <div class="upload-area" data-file-widget="id_user_upload">
+            <div class="text">Drag &amp; Drop A File Here or Click to Choose</div>
+        </div>
+        <div class="upload-info"></div>
+        <input id="id_user_upload" class="drag-and-drop-file-widget" type="file" name="user_upload" accept=".hi">
+    </div>
+</div>
+<hr>
+
+<div id="workspace">
+    <div id="high-score-table-wrapper">
+        <table id="high-score-table">
+        </table>
+    </div>
+    <form id="high-score-editor-controls">
+    <input type="button" value="Erase Names" name="button-erase-names">
+    <input type="button" value="Erase Scores" name="button-erase-scores">
+    <input type="button" value="Max All Scores" name="button-max-scores">
+    <input type="button" value="Max Scores With Names" name="button-max-named-scores">
+    <label for="filename">Filename: <input id="filename" name='filename' value='BLANK.HI' maxlength='12'> <input type="button" value="Download High Score File" name="button-high-score-download"></label>
+    </form>
+
+    <h2>Useful Information</h2>
+    <ul>
+        <li>ZZT's high score input only allows names to be 34 characters in length.</li>
+        <li>Names up to 43 characters in length will be displayed, though they will leak outside of the message window.</li>
+        <li>Characters after the 43rd are not written, though the high score file format reserves 50 characters for each name.</li>
+        <li>Scores with blank names do not display, but are considered when adding new high scores.</li>
+        <li>Scores don't have to be in descending order! New high scores are placed above the first score they equal or surpass.</li>
+        <li><b>Special characters are not supported by this editor, and may not import/export properly.</b></li>
+        <li>Consult the Wiki of ZZT page on <a href="https://wiki.zzt.org/wiki/High_scores" target="_blank">High scores</a> for more information.</li>
+    </ul>
+</div>
+
+
+{% endblock %}

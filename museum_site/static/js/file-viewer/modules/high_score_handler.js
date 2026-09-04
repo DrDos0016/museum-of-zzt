@@ -24,7 +24,6 @@ export class ZZT_High_Score_Handler extends Handler
     }
 
     parse_bytes() {
-        console.log("high score parse bytes");
         this.pos = 0;
         this.data = new DataView(this.bytes.buffer);
 

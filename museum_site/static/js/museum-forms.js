@@ -61,14 +61,23 @@ $(document).ready(function (){
         const image_extensions = [".png", ".jpg", ".gif"]
         const file = $(this)[0].files[0];
         var ext = file.name.toLowerCase().slice(-4);
-        if (ext == ".zip")
-            parse_zip_file(file);
-        else if (ext == ".zzt")
-            set_uploaded_zzt_file(file);
-        else if (image_extensions.indexOf(ext) != -1)
-            set_uploaded_image(file);
+
+        // TODO: None of this should live in the drop function
+        if (typeof handle_uploaded_file == "undefined")
+        {
+            if (ext == ".zip")
+                parse_zip_file(file);
+            else if (ext == ".zzt")
+                set_uploaded_zzt_file(file);
+            else if (image_extensions.indexOf(ext) != -1)
+                set_uploaded_image(file);
+            else
+                console.log("Unhandled file extension: " + ext);
+        }
         else
-            console.log("Unhandled file extension: " + ext);
+        {
+            handle_uploaded_file(file, ext);
+        }
     });
 
     $("input[type=checkbox]").click(function (){

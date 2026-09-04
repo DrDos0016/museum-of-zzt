@@ -331,6 +331,9 @@ urlpatterns = [
     # Directories
     path("directory/<slug:category>/", museum_site.views.directory, name="directory"),
 
+    # /util/ -- Utilities
+    path("util/high-score-editor/", museum_site.views.High_Score_Editor_View.as_view(), name="high_score_editor"),
+
     # Legacy Redirects -- URLs which have changed but should still work to prevent link-rot
     path("review/<str:letter>/<str:key>/", legacy_redirect, {"name": "zfile_review", "strip": ["letter"]}),
     path("browse/", legacy_redirect, {"name": "zfile_browse"}),
