@@ -66,6 +66,7 @@ function handle_uploaded_file(file, ext)
         handler.scores = [];
         handler.bytes = array;
         handler.parse_bytes();
+        $("input[name=filename]").val(score_filename)
         load_score_table(handler.scores);
     }
     let bytes = reader.readAsArrayBuffer(file);
