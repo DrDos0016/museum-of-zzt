@@ -84,6 +84,15 @@ a[href^="https://www.digitalmzx.com"]
     background-repeat:no-repeat;
 }
 
+a[href^="https://wiki.zzt.org"]
+{
+    padding-left:16px;
+    padding-right:16px;
+    background:url("/static/chrome/zztwiki.png"), url("/static/chrome/external_link.png");
+    background-position:center left, top right;
+    background-repeat:no-repeat;
+}
+
 a.noext[target=_blank]
 {
     padding-right:0;
