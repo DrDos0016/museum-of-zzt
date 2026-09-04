@@ -332,7 +332,7 @@ urlpatterns = [
     path("directory/<slug:category>/", museum_site.views.directory, name="directory"),
 
     # /util/ -- Utilities
-    path("util/high-score-editor/", museum_site.views.High_Score_Editor_View.as_view(), name="high_score_editor"),
+    path("util/high-score-editor/", museum_site.views.High_Score_Editor_View.as_view(), name="util_high_score_editor"),
 
     # Legacy Redirects -- URLs which have changed but should still work to prevent link-rot
     path("review/<str:letter>/<str:key>/", legacy_redirect, {"name": "zfile_review", "strip": ["letter"]}),
