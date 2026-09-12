@@ -3,6 +3,7 @@ import os
 
 from datetime import datetime, timezone
 from museum_site.constants import STATIC_PATH
+from museum_site.core.image_utils import crop_file, IMAGE_CROP_PRESETS
 from museum_site.core.social import Social_Bluesky, Social_Mastodon, Social_Twitter, Social_Tumblr, Social_Discord
 
 ZAP_UPLOAD_PATH = os.path.join(STATIC_PATH, "zap", "media")
@@ -26,7 +27,7 @@ def querydict_to_json_str(qd):
     return output
 
 
-def zap_upload_file(uploaded_file, requested_file_name="", optimize_png=False):
+def zap_upload_file(uploaded_file, requested_file_name="", optimize_png=False, crop_zzt=False):
     now = datetime.now(timezone.utc)
     year_str = str(now)[:4]
     month_str = str(now)[5:7]
@@ -36,6 +37,9 @@ def zap_upload_file(uploaded_file, requested_file_name="", optimize_png=False):
     with open(output_path, "wb+") as fh:
         for chunk in uploaded_file.chunks():
             fh.write(chunk)
+
+    if crop_zzt:
+        crop_file(output_path, IMAGE_CROP_PRESETS["ZZT"])
 
     if optimize_png:
         os.system("optipng -o7 -strip=all -fix -nc '{}'".format(output_path))

@@ -75,6 +75,7 @@ function apply_form_shortcut()
         set_accounts(DEFAULT_ACCOUNTS);
         $("#id_discord_channel").val("announcements");
         set_discord_mentions([]);
+        $("#id_discord_media").prop("checked", "");
         $("#id_hashtags").val("#vod, #zzt");
 
         let offset = date.getDay() % TEMPLATES.vod.length;

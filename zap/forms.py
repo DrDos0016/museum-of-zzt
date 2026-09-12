@@ -63,10 +63,11 @@ class ZAP_Post_Form(forms.Form):
     form_shortcut = forms.ChoiceField(required=False, choices=ZAP_POST_SHORTCUTS, help_text="Select to quickly set up a common post type.")
     title = forms.CharField(help_text="Also used as post title on Tumblr. Uses body (75 chars) if left blank.", required=False)
     accounts = Museum_Multiple_Choice_Field(
-        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["bluesky", "discord", "twitter", "tumblr", "mastodon"]
+        required=False, widget=forms.CheckboxSelectMultiple, choices=ACCOUNTS, initial=["bluesky", "discord", "tumblr", "mastodon"]
     )
     discord_channel = forms.ChoiceField(choices=DISCORD_CHANNELS, initial=("announcements" if settings.ENVIRONMENT == "PROD" else "test"))
     discord_mentions = Museum_Multiple_Choice_Field(required=False, widget=forms.CheckboxSelectMultiple, choices=DISCORD_ROLES)
+    discord_media = forms.BooleanField(required=False, initial=True, help_text="Include media with Discord announcements", label="Enable Discord media")
 
     body = forms.CharField(
         widget=Enhanced_Text_Area_Widget(char_limit=10000),
@@ -113,6 +114,8 @@ class ZAP_Post_Form(forms.Form):
                 s.login()  # Login
                 s.reset_media()
                 for i in range(1, 5):  # Upload all media
+                    if account == "discord" and not self.cleaned_data.get("discord_media"): # Bypass media for Discord (VOD announcements)
+                        break
                     response = self.upload_media(s, i)
                     if response:
                         self.responses[account].append(response)
@@ -208,12 +211,13 @@ class ZAP_Media_Upload_Form(forms.Form):
 
     user_upload = Museum_Drag_And_Drop_File_Field(label="Media", widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose"))
     uploaded_file_name = forms.CharField(required=False, help_text="Alternate name to use for upload")
-    optimize_png = forms.BooleanField(initial=True, help_text="Run optipng on upload. (.PNG only)")
+    optimize_png = forms.BooleanField(required=False, initial=True, help_text="Run optipng on upload. (.PNG only)")
+    crop_zzt = forms.BooleanField(required=False, initial=False, help_text="Crop image to 480x350 (for ZZT board screenshots)")
 
     def process(self, request):
         self.uploaded_file_names = []
         for k in request.FILES:
-            uploaded_file_name = zap_upload_file(request.FILES[k], self.cleaned_data.get("uploaded_file_name"), self.cleaned_data.get("optimize_png"))
+            uploaded_file_name = zap_upload_file(request.FILES[k], self.cleaned_data.get("uploaded_file_name"), self.cleaned_data.get("optimize_png"), self.cleaned_data.get("crop_zzt"))
             self.uploaded_file_names.append(uploaded_file_name)
 
 
