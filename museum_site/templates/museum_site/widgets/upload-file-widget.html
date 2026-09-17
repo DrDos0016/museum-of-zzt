@@ -17,5 +17,5 @@
     </div>
     {% endif %}
 </div>
-{% for i in max_file_range %}<input type="file" style="display:block" name="{{widget.name}}{% if i > 0 %}_{{i}}{% endif %}" id="id_{{widget.name}}{% if i > 0 %}_{{i}}{% endif %}" class="drag-and-drop-file-widget"{%if allowed_filetypes %} accept="{{allowed_filetypes}}"{% endif %}>
+{% for i in max_file_range %}<input type="file" name="{{widget.name}}{% if i > 0 %}_{{i}}{% endif %}" id="id_{{widget.name}}{% if i > 0 %}_{{i}}{% endif %}" class="drag-and-drop-file-widget"{%if allowed_filetypes %} accept="{{allowed_filetypes}}"{% endif %}>
 {% endfor %}
