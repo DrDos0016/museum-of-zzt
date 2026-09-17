@@ -1,5 +1,5 @@
 "use strict";
-var DEFAULT_ACCOUNTS = ["bluesky", "discord", "mastodon", "tumblr", "twitter"];
+var DEFAULT_ACCOUNTS = ["bluesky", "discord", "mastodon", "tumblr"];
 var TEMPLATES = {
     "schedule": [
         "Here's this week's stream schedule! Join us live at https://twitch.tv/worldsofzzt/",
@@ -58,7 +58,7 @@ function apply_form_shortcut()
     if (shortcut_key == "schedule")
     {
         $("#id_title").val(`Stream Schedule - ${formal_month_name} ${date.getDate()}`);
-        set_accounts(["bluesky", "discord", "mastodon", "tumblr", "twitter"]);
+        set_accounts(["bluesky", "discord", "mastodon", "tumblr"]);
         $("#id_discord_channel").val("announcements");
         set_discord_mentions([]);
         $("#id_hashtags").val("#stream schedule, #zzt");
