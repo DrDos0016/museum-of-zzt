@@ -24,7 +24,7 @@
         <td><ul>
             <li>{{ufn}}</li>
             <li>{% static '/zap/media/'|add:ufn %}</li>
-            <li><a href="https://museumofzzt.com{% static '/zap/media/'|add:ufn %}">https://museumofzzt.com{% static '/zap/media/'|add:ufn %}</a></li>
+            <li><a href="{{DOMAIN}}{% static '/zap/media/'|add:ufn %}">{{DOMAIN}}{% static '/zap/media/'|add:ufn %}</a></li>
         </ul></td>
     </tr>
     {% endfor %}
