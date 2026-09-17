@@ -62,6 +62,8 @@ class Review_List_View(Model_List_View):
         self.author = self.kwargs.get("author")
 
     def get_title(self):
+        if self.request.resolver_match.kwargs.get("author"):
+            return "Browse Feedback - " + self.request.resolver_match.kwargs.get("author", "?")
         if self.request.GET:
             difference = 0
             difference = difference - 1 if self.request.GET.get("page") else difference
@@ -97,7 +99,7 @@ class Review_List_View(Model_List_View):
             context["rss_info"] = {"url_name": "rss_reviews"}
 
         if self.author:
-            context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="A directory of all feedback on the Museum of ZZT given by {}".format(self.author), author=self.author)
+            context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=context["title"], description="A directory of all feedback on the Museum of ZZT posted by {}".format(self.author), author=self.author)
         return context
 
 

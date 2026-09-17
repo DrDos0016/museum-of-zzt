@@ -102,7 +102,6 @@ class Model_List_View(ListView):
         title = self.get_title()
         author = "Dr. Dos"  # Default
         key = resolve(self.request.path) if self.request.resolver_match else None
-        print("PATH", key)
         path_specific_meta_tags = {
             # TODO these should have dedicated descriptions
             "zfile_browse_letter": {"title": title},
@@ -128,6 +127,8 @@ class Model_List_View(ListView):
         return meta_tags
 
     def get_title(self):
+        if self.model.model_name == "Review":
+            return "Feedback Directory"
         return "{} Directory".format(self.model.model_name)
 
     def sort_queryset(self, qs):
