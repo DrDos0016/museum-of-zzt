@@ -1,5 +1,5 @@
 {% if show_size_limit %}<div class="size-limit">Your maximum upload size: <b title="{{your_max_upload_size}} bytes">{{max_upload_size|filesizeformat}}</b></div>{% endif %}
-<div class="upload-area" data-file-widget="id_{{widget.name}}"><div class="text">{{target_text|safe}}</div></div>
+<div class="upload-area" data-file-widget="id_{{widget.name}}" data-slots="{{max_files}}"><div class="text">{{target_text|safe}}</div></div>
 <div class="upload-info">
     {% if allowed_preset == "zip" %}
     <div class="file-list-header">
@@ -13,8 +13,9 @@
     </ul>
     {% else %}
     <div>
-        <img id="uploaded-image-preview">
+        {% for i in max_file_range %}<img id="uploaded-image-preview{% if i > 0 %}-{{i}}{% endif %}">{% endfor %}
     </div>
     {% endif %}
 </div>
-<input type="file" name="{{widget.name}}" id="id_{{widget.name}}" class="drag-and-drop-file-widget"{%if allowed_filetypes %} accept="{{allowed_filetypes}}"{% endif %}>
+{% for i in max_file_range %}<input type="file" style="display:block" name="{{widget.name}}{% if i > 0 %}_{{i}}{% endif %}" id="id_{{widget.name}}{% if i > 0 %}_{{i}}{% endif %}" class="drag-and-drop-file-widget"{%if allowed_filetypes %} accept="{{allowed_filetypes}}"{% endif %}>
+{% endfor %}

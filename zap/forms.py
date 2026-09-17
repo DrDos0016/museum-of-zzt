@@ -209,10 +209,10 @@ class ZAP_Media_Upload_Form(forms.Form):
         "enctype": "multipart/form-data",
     }
 
-    user_upload = Museum_Drag_And_Drop_File_Field(label="Media", widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose"))
-    uploaded_file_name = forms.CharField(required=False, help_text="Alternate name to use for upload")
-    optimize_png = forms.BooleanField(required=False, initial=True, help_text="Run optipng on upload. (.PNG only)")
-    crop_zzt = forms.BooleanField(required=False, initial=False, help_text="Crop image to 480x350 (for ZZT board screenshots)")
+    user_upload = Museum_Drag_And_Drop_File_Field(label="Media", widget=UploadFileWidget(target_text="Drag & Drop A File Here or Click to Choose",  max_files=4), help_text="WIP. Can handle multiple images if using drag and drop and dropping one file at a time. No rename. Yes optipng. Yes crop zzt.")
+    uploaded_file_name = forms.CharField(required=False, help_text="Alternate name to use for upload.")
+    optimize_png = forms.BooleanField(required=False, initial=True, help_text="Run optipng on uploads. (.PNG only)")
+    crop_zzt = forms.BooleanField(required=False, initial=False, help_text="Crop images to 480x350 (for ZZT board screenshots)")
 
     def process(self, request):
         self.uploaded_file_names = []

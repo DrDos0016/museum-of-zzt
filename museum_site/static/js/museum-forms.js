@@ -36,7 +36,22 @@ $(document).ready(function (){
         }
 
         var ext = tail.toLowerCase();
-        var target = $(this).data("file-widget");
+
+        // Find an empty slot for <input>
+        let max_files = parseInt($(".upload-area").data("slots"));
+        let target;
+        for (let i=0; i < max_files; i++)
+        {
+            let suffix = ""
+            if (i > 0)
+             suffix = "_" + i;
+            target = $(this).data("file-widget") + suffix;
+
+            let occupied = ($("#" + target).val() ? true : false);
+
+            if (! occupied)
+                break;
+        }
         $("#" + target)[0].files = dt.files;
 
         // TODO: None of this should live in the drop function
@@ -457,7 +472,23 @@ function set_uploaded_zzt_file(file)
 function set_uploaded_image(file)
 {
     $(".upload-area").css("height", "20px");
-    var preview = $("#uploaded-image-preview")[0];
+
+    let max_files = parseInt($(".upload-area").data("slots"));
+
+    // Find an empty slot
+    let preview;
+    for (let i=0; i < max_files; i++)
+    {
+        let suffix = ""
+        if (i > 0)
+         suffix = "-" + i;
+        preview = $("#uploaded-image-preview" + suffix)[0];
+        let occupied = (preview.src ? true : false);
+
+        if (! occupied)
+            break;
+    }
+
     preview.src = URL.createObjectURL(file);
 }
 

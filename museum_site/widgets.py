@@ -13,15 +13,19 @@ class UploadFileWidget(forms.FileInput):
         "image": "image/*",
     }
 
-    def __init__(self, attrs=None, target_text="TARGET TEXT", allowed_preset="", show_size_limit=False):
+    def __init__(self, attrs=None, target_text="TARGET TEXT", allowed_preset="", show_size_limit=False, max_files=1):
         super().__init__(attrs)
         self.target_text = target_text
         self.allowed_preset = allowed_preset
         self.max_upload_size = UPLOAD_CAP
+        self.max_files = max_files
+        self.max_file_range = range(0, self.max_files)
         self.show_size_limit = show_size_limit
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
+        context["max_files"] = self.max_files
+        context["max_file_range"] = self.max_file_range
         context["zfi"] = self.zfi
         context["filename"] = self.filename
         context["size"] = self.size
