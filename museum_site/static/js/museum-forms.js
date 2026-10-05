@@ -38,7 +38,7 @@ $(document).ready(function (){
         var ext = tail.toLowerCase();
 
         // Find an empty slot for <input>
-        let max_files = parseInt($(".upload-area").data("slots"));
+        let max_files = (parseInt($(".upload-area").data("slots")) || 1);
         let target;
         for (let i=0; i < max_files; i++)
         {
