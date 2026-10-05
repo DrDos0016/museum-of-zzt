@@ -334,6 +334,7 @@ urlpatterns = [
     # /util/ -- Utilities
     path("util/high-score-editor/", museum_site.views.High_Score_Editor_View.as_view(), name="util_high_score_editor"),
 
+
     # Legacy Redirects -- URLs which have changed but should still work to prevent link-rot
     path("review/<str:letter>/<str:key>/", legacy_redirect, {"name": "zfile_review", "strip": ["letter"]}),
     path("browse/", legacy_redirect, {"name": "zfile_browse"}),
@@ -345,3 +346,6 @@ urlpatterns = [
 # Serve static files on DEV
 if DEBUG:
     urlpatterns += static("/zgames", document_root=os.path.join(BASE_DIR, "zgames"))
+    urlpatterns += [
+        path("util/weave-cfg-editor/", museum_site.views.Weave_CFG_Editor_View.as_view(), name="util_weave_cfg_editor"),
+    ]
