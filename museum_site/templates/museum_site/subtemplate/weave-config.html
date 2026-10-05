@@ -1,0 +1,69 @@
+{% load site_tags %}
+{% load zzt_tags %}
+<table id="weave-config-table">
+    <tr><th>Element</th><th>Appearance</th><th>Properties</th><th>Messages</th><th>Sounds</th></tr>
+    {% for element_name, element in weave_config.get_all_elements %}
+    <tr class="weave-element" data-element-name="{{element_name}}">
+        <th class="c">{{element_name|title}}</th>
+        <td class="weave-appearance">
+            <label><div style="border:1px solid var(--border-color)">{% char element.char.value|default:65 %}</div><button type="button" class="button-appearance">Pick</button></label>
+            <label>FG <input name="fg" value="{% if element.fg.value == None %}-{% else %}{{element.fg.value}}{% endif %}"></label>
+            <label>BG <input name="bg" value="{% if element.bg.value == None %}-{% else %}{{element.bg.value}}{% endif %}"></label>
+            <label>Char <input name="char" value="{% if element.char.value == None %}-{% else %}{{element.char.value}}{% endif %}"></label>
+        </td>
+        <td>
+            <div class="flex-container flex-wrap justify-space-between" style="align-items:flex-start; gap:4px 20px;">
+                <label>Cycle <input type="number" name="cycle" value="{{element.cycle.value|default:-1}}"></label>
+                <label>Can Shoot
+                    <select name="canshoot">
+                        <option>-</option>
+                        <option>Yes</option>
+                        <option>No</option>
+                    </select>
+                </label>
+                <label>Can Put
+                    <select name="canput">
+                        <option>-</option>
+                        <option>Yes</option>
+                        <option>No</option>
+                    </select>
+                </label>
+                <label>Walkable
+                    <select name="walkable">
+                        <option>-</option>
+                        <option>Yes</option>
+                        <option>No</option>
+                    </select>
+                </label>
+                <label>Pushable
+                    <select name="pushable">
+                        <option>-</option>
+                        <option>Yes</option>
+                        <option>No</option>
+                    </select>
+                </label>
+                <label>See Dark
+                    <select name="seedark">
+                        <option>-</option>
+                        <option>Yes</option>
+                        <option>No</option>
+                    </select>
+                </label>
+            </div>
+        </td>
+        <td>{% for msg in element.msg %}
+            <label>{{msg.label}} <input value="{{msg.value}}" name="{{msg.path}}"></label>
+        {% empty %}
+            <i>N/A</i>
+        {% endfor %}</td>
+        <td>{% for snd in element.snd %}
+            <!--snd.full_path, snd.path, snd.label, snd.value-->
+            <label>{{snd.label}} <input value="{{snd.value}}" name="{{snd.path}}"></label>
+        {% empty %}
+            <i>N/A</i>
+        {% endfor %}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{{initial_config}}

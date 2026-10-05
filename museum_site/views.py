@@ -1,6 +1,7 @@
 import json
 import math
 import os
+import time
 
 from datetime import datetime, UTC
 
@@ -19,6 +20,7 @@ from django.urls import reverse
 
 from museum_site.core.detail_identifiers import *
 from museum_site.core.misc import get_ascii_table_data, get_color_table_data, get_frontpage_events, get_patron_supporters, list_to_columns, Meta_Tag_Block
+from museum_site.core.weave_cfg import Weave_Config, weave_get_initial_config, ELEMENT_NAMES, COLORS
 from museum_site.constants import ZGAMES_BASE_PATH
 from museum_site.forms.zfile_forms import View_Explicit_Content_Confirmation_Form
 from museum_site.forms.wozzt_forms import WoZZT_Roll_Form
@@ -405,4 +407,53 @@ class High_Score_Editor_View(Museum_Base_Template_View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.title, image=self.preview_image, description=self.description)
+        return context
+
+
+class Weave_CFG_Editor_View(Museum_Base_Template_View):
+    title = "Weave Config Editor"
+    template_name = "museum_site/weave-config-editor.html"
+    preview_image = "pages/high-score-editor.png"
+    description = "An online tool to create and modify Weave config files"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.title, image=self.preview_image, description=self.description)
+
+        print(time.time())
+        initial_config = weave_get_initial_config()
+        weave_config = Weave_Config(initial_config)
+        context["weave_config"] = weave_config
+        print(time.time())
+
+        print("GEM", weave_config.config.get("gem"))
+
+        # For appearance widget
+        context["scale"] = 2
+        context["range"] = range(0,256)
+        context["orientation"] = "horiz"
+
+        context["choices"] = (
+            ("black", "Black"),
+            ("darkblue", "DkBlue"),
+            ("darkgreen", "DkGreen"),
+            ("darkcyan", "DkCyan"),
+            ("darkred", "DkRed"),
+            ("darkpurple", "DkPurple"),
+            ("darkyellow", "Brown"),
+            ("gray", "Gray"),
+            ("darkgray", "DkGray"),
+            ("blue", "Blue"),
+            ("green", "Green"),
+            ("cyan", "Cyan"),
+            ("red", "Red"),
+            ("purple", "Purple"),
+            ("yellow", "Yellow"),
+            ("white", "White"),
+            ("transparent", "Default"),
+        )
+
+        context["appearance_widget"] = {"value": "15", "name": "character", }  # These are pretty rigid values
+        context["fg_widget"] = {"value": "white", "name": "foreground", }  # These are pretty rigid values
+        context["bg_widget"] = {"value": "black", "name": "background", }  # These are pretty rigid values
         return context

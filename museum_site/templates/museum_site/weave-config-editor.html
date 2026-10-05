@@ -1,0 +1,405 @@
+{% extends "museum_site/main.html" %}
+{% load static %}
+{% load site_tags %}
+{% load zzt_tags %}
+
+{% block style %}<style>
+
+#workspace input[type=button] { height:30px; }
+#workspace input[name=filename] { height:26px; width: 12ch; font-family:"cp437", monospace; font-size:14pt;}
+
+.subheading
+{
+    background-color:var(--notice-bg);
+}
+
+#weave-config-table label
+{
+    flex:1 0 30%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    height:40px;
+}
+
+#weave-config-table input[type=number] { width:8ch; }
+#weave-config-table input[name=fg], #weave-config-table input[name=bg], #weave-config-table input[name=char] { width:6ch; }
+
+.ascii-selected-highlight { margin-bottom:4px; }
+
+.color-button {
+  min-width: 24px;
+  min-height: 24px;
+  max-width: 24px;
+  max-height: 24px;
+  cursor: pointer;
+}
+</style>{% endblock %}
+
+{% block scripts %}
+<script>
+STANDARD_PROPERTIES = {"test": 13};
+
+var PROPERTIES = {
+    "empty": [],
+    "edge": [],
+    "darkness": ["fg", "bg", "char"],
+    "monitor": ["fg", "bg", "char", "cycle"],
+    "player": ["fg", "bg", "char"],
+    "ammo": ["fg", "bg", "char", "p1", "p3"],
+}
+console.log("P", PROPERTIES);
+</script>
+
+<script>
+var WORKING_APPEARANCE = {"fg": "White", "bg": "Black", "char": "0"};
+
+// This is easier than modifying the widgets
+let museum_color_to_weave_color = {
+    "blue": "Blue", "green": "Green", "cyan": "Cyan", "red": "Red", "purple": "Purple", "yellow": "Yellow", "white": "White", "darkgray": "DkGray", "black": "Black", "darkblue": "DkBlue", "darkgreen": "DkGreen", "darkcyan": "DkCyan", "darkred": "DkRed", "darkpurple": "DkPurple", "darkyellow": "Brown", "gray": "Gray",
+};
+
+let weave_color_to_museum_color = {
+    "blue": "Blue", "green": "Green", "cyan": "Cyan", "red": "Red", "purple": "Purple", "yellow": "Yellow", "white": "White", "DkGray": "darkgray", "black": "Black", "dkBlue": "darkblue", "DkGreen": "darkgreen", "DkCyan": "darkcyan", "DkRed": "darkred", "DkPurple": "darkpurple", "Brown": "darkyellow", "Gray": "gray"
+};
+
+var weave_cfg_handler = null;
+var w_cfg = {};
+var handler = null;
+var working_filename = "TEMPLATE.CFG"
+function handle_uploaded_file(file, ext)
+{
+    working_filename = file.name;
+    handler = weave_cfg_handler;
+
+    let reader = new FileReader();
+    reader.onload = function (){
+        var arrayBuffer = this.result,
+        array = new Uint8Array(arrayBuffer),
+        binaryString = String.fromCharCode.apply(null, array);
+        handler.scores = [];
+        handler.bytes = array;
+        handler.parse_bytes();
+        $("input[name=filename]").val(working_filename)
+        initialize_editor(handler.encoded_text);
+    }
+    let bytes = reader.readAsArrayBuffer(file);
+}
+
+function initialize_editor(encoded_text)
+{
+    $("#workspace").hide();
+    //$("#high-score-table").empty();
+    //$("#high-score-table").html(output);
+    text_to_interface(encoded_text);
+    //w_cfg_to_list();
+    //load_form();
+    $("#weave-cfg-raw").val(encoded_text);
+    $("#workspace").show();
+}
+
+function text_to_interface(text)
+{
+    let lines = text.split("\n");
+    for (let idx=0; idx < lines.length; idx++)
+    {
+        let line = lines[idx];
+
+        if (line == "")
+            continue;
+
+        // For now, we discard comments
+        if (line.startsWith("#"))
+            continue;
+
+
+        let foo = line.indexOf("=")
+        if (foo == -1)
+        {
+            console.log("INVALID LINE?", line);
+            break;
+        }
+
+        let scope = line.slice(0, foo).trim();
+        let value = line.slice(foo + 2).trim();
+
+        // Convert scope to config key
+        let breadcrumbs = [];
+        let components = scope.split(".");
+        for (let idx in components)
+        {
+            let piece = components[idx];
+            if (breadcrumbs.length == 0)
+                w_cfg[piece] = {}
+            if (breadcrumbs.length == 1)
+                w_cfg[breadcrumbs[0]][piece] = {}
+
+            breadcrumbs.push(piece)
+        }
+
+        // Set value -- TODO: Requires additional processing in some situations
+        if (breadcrumbs.length == 1)
+            w_cfg[breadcrumbs[0]] = value;
+        else if (breadcrumbs.length == 2)
+            w_cfg[breadcrumbs[0]][breadcrumbs[1]] = value;
+        else if (breadcrumbs.length == 3)
+            w_cfg[breadcrumbs[0]][breadcrumbs[1]][breadcrumbs[2]] = value;
+    }
+    //console.log("WCFG", w_cfg);
+}
+
+function w_cfg_to_list()
+{
+    let output = "";
+
+    for (key in w_cfg)
+    {
+        let depth = 0;
+        console.log(w_cfg[key]);
+        output += "<li>" + key;
+
+        if (typeof w_cfg[key] === 'object' && w_cfg[key] !== null)
+        {
+            output += "\n<ul><li>" + w_cfg[key] + "</li></ul>";
+            depth++;
+        }
+
+        output += "\n</li>\n";
+    }
+
+    $("#weave-cfg-list").html(output);
+}
+
+function download_score_table()
+{
+    let new_scores = []
+    for (let idx = 0; idx < $("input[name=name]").length; idx++)
+    {
+        new_scores.push({"name_len": $("input[name=name]")[idx].value.length, "name": $("input[name=name]")[idx].value, "score": $("input[name=score]")[idx].value});
+    }
+
+    let buffer = new ArrayBuffer(1590);
+    let view = new Uint8Array(buffer);
+    let pos = 0;
+
+    for (let idx = 0; idx < new_scores.length; idx++)
+    {
+        view[pos] = new_scores[idx].name_len;
+        pos++;
+        for (let i = 0; i < 50; i++)
+        {
+            let name_char = new_scores[idx].name[i];
+            if (! name_char)
+                view[pos] = 0;
+            else
+                view[pos] = name_char.charCodeAt(0);
+            pos++;
+        }
+        view[pos] = new_scores[idx].score % 256;
+        pos++;
+        view[pos] = Math.floor(new_scores[idx].score / 256);
+        pos++;
+    }
+
+    let dl = new Blob([buffer]);
+    let url = URL.createObjectURL(dl)
+    let dl_link = document.createElement("a");
+    dl_link.href = url
+    dl_link.download = $("input[name=filename]").val() || "BLANK.HI";
+    dl_link.click();
+}
+
+function load_form()
+{
+    let output = "";
+
+
+    for (p in PROPERTIES)
+    {
+        let row = "<b>" + p + "</b>";
+        for (a in PROPERTIES[p])
+        {
+            let attr = PROPERTIES[p][a];
+            row += "<label>" + attr + "<input value='" + w_cfg[p][attr] + "'" + "</label>";
+        }
+        output += "<div>" + row + "</div>\n";
+    }
+
+    $("#weave-cfg-form").html(output);
+}
+
+function dump_config()
+{
+    console.log("Dumping config");
+    let output_config = get_config_header();
+
+    // Get elements
+    for (let idx = 0; idx < $("tr.weave-element").length; idx++)
+    {
+        let row = $("tr.weave-element")[idx];
+        let name = $(row).data("element-name");
+
+        let val;
+        output_config += "# " + name.toUpperCase() + "\n";
+        output_config += make_config_line(row, "input[name=cycle]");
+        output_config += make_config_line(row, "select[name=canshoot]");
+        output_config += make_config_line(row, "select[name=canput]");
+        output_config += make_config_line(row, "select[name=walkable]");
+        output_config += make_config_line(row, "select[name=pushable]");
+        output_config += make_config_line(row, "select[name=seedark]");
+
+        // Messages
+        let messages = $(row).find("input[name^=msg]");
+        for (let m_idx = 0; m_idx < messages.length; m_idx++)
+        {
+            let msg = $(messages[m_idx]).attr("name").replaceAll(".", "\\.");
+            output_config += make_config_line(row, "input[name=" + msg + "]", true);
+        }
+
+        // Sounds
+        let sounds = $(row).find("input[name^=snd]");
+        for (let s_idx = 0; s_idx < sounds.length; s_idx++)
+        {
+            let snd = $(sounds[s_idx]).attr("name").replaceAll(".", "\\.");
+            output_config += make_config_line(row, "input[name=" + snd + "]", true);
+        }
+    }
+
+    $("#weave-cfg-raw").val(output_config);
+}
+
+function make_config_line(row, selector, quoted)
+{
+    console.log("SEL", selector);
+    let val = $(row).find(selector).val();
+    if (val == undefined)
+        return "";
+    let prop = $(row).find(selector).attr("name");
+    console.log("VAL IS GONNA BE", val);
+    if (val && (val == "-1" || val == "-"))
+        return "";
+    let path = $(row).data("element-name") + "." + prop;
+
+    if (quoted)
+        val = '"' + val + '"';
+
+    let output = path + " = " + val + "\n";
+    return output;
+}
+
+function get_config_header()
+{
+    let out = "# Foobar.CFG\n";
+    out += "# Generated at []\n";
+    out += "# Created with the Museum of ZZT Weave CFG Editor v0\n";
+    out += "########################################\n";
+    return out;
+}
+
+function open_appearance_modal()
+{
+    let td = $(this).parents("td");
+    WORKING_APPEARANCE.fg = $(td).find("input[name=fg]").val();
+    WORKING_APPEARANCE.bg = $(td).find("input[name=bg]").val();
+    WORKING_APPEARANCE.char = $(td).find("input[name=char]").val();
+    WORKING_APPEARANCE.td = td;
+
+    let fg_moz_color = weave_color_to_museum_color[WORKING_APPEARANCE.fg];
+    let bg_moz_color = weave_color_to_museum_color[WORKING_APPEARANCE.bg];
+
+    $("button[data-target=foreground][value=" + fg_moz_color + "]").click();
+    $("button[data-target=background][value=" + bg_moz_color + "]").click();
+    $(".ascii-table .ascii-char-image")[WORKING_APPEARANCE.char].click();
+
+    $("#modal-appearance")[0].showModal();
+}
+
+function close_appearance_modal()
+{
+    $(this).parent().parent()[0].close();
+}
+
+function apply_appearance_modal()
+{
+    WORKING_APPEARANCE.fg = $("select[name=foreground]").val();
+    WORKING_APPEARANCE.bg = $("select[name=background]").val();
+    WORKING_APPEARANCE.char = $("select[name=character]").val();
+
+    WORKING_APPEARANCE.fg = museum_color_to_weave_color[WORKING_APPEARANCE.fg];
+    WORKING_APPEARANCE.bg = museum_color_to_weave_color[WORKING_APPEARANCE.bg];
+
+    console.log("SAVING", WORKING_APPEARANCE);
+    $(WORKING_APPEARANCE.td).find("input[name=fg]").val(WORKING_APPEARANCE.fg);
+    $(WORKING_APPEARANCE.td).find("input[name=bg]").val(WORKING_APPEARANCE.bg);
+    $(WORKING_APPEARANCE.td).find("input[name=char]").val(WORKING_APPEARANCE.char);
+    $(this).parent().parent()[0].close();
+}
+
+function update_appearances()
+{
+    for (let i = 0; i < $("td.weave-appearance").length; i++)
+    {
+        //let target = $("td.weave-appearance")[i].next(".ascii-char-image");
+        0;
+    }
+}
+
+$(document).ready(function (){
+    $("input[name=button-dump-config]").click(dump_config);
+    $(".button-appearance").click(open_appearance_modal);
+    $(".appearance-modal-close").click(close_appearance_modal);
+    $(".appearance-modal-apply").click(apply_appearance_modal);
+
+    update_appearances();
+});
+</script>
+<script src="{% static 'js/file-viewer/weave-cfg-editor.js' %}?{{BOOT_TS}}" type="module"></script>
+<script src="{% static 'js/museum-forms.js' %}?{{BOOT_TS}}"></script>
+<script src="{% static 'js/change-ascii-char.js' %}?{{BOOT_TS}}"></script>
+{% endblock %}
+
+{% block content %}
+<h1>Weave CFG Editor</h1>
+
+<div class="field-wrapper" data-field="user_upload">
+    <label for="id_user_upload">Load Weave <span class="keyword">.CFG</span> File:</label>
+    <div class="field-value field-layout-file-uploader">
+        <div class="upload-area" data-file-widget="id_user_upload">
+            <div class="text">Drag &amp; Drop A File Here or Click to Choose</div>
+        </div>
+        <div class="upload-info"></div>
+        <input id="id_user_upload" class="drag-and-drop-file-widget" type="file" name="user_upload" accept=".cfg">
+    </div>
+</div>
+<hr>
+
+{% include 'museum_site/subtemplate/weave-config.html' %}
+
+<hr>
+<div id="workspace">
+    <div id="weave-cfg-wrapper">
+        <form id="weave-cfg-form">
+        </form>
+        <textarea id="weave-cfg-raw" style="width:95%; height:25ch;"></textarea>
+        <ul id="weave-cfg-list"></ul>
+    </div>
+    <form id="high-score-editor-controls">
+    <input type="button" value="Dump Config" name="button-dump-config">
+    <label for="filename">Filename: <input id="filename" name='filename' value='BLANK.HI' maxlength='12'> <input type="button" value="Download High Score File" name="button-high-score-download"></label>
+    </form>
+</div>
+
+<dialog id="modal-appearance" closedby="any">
+    <form>
+    {% include 'museum_site/widgets/ascii-character-widget.html' with widget=appearance_widget %}
+    <label>Foreground:</label>
+    <div>{% include 'museum_site/widgets/ascii-color-widget.html' with widget=fg_widget %}</div>
+    <label>Background:</label>
+    <div>{% include 'museum_site/widgets/ascii-color-widget.html' with widget=bg_widget %}</div>
+    <label>Preview:</label>
+    <div id="ascii-preview-wrapper">{% char 32 scale=3 %}</div>
+    <button class="appearance-modal-close" type="button">Cancel</button>
+    <button class="appearance-modal-apply" type="button">Apply</button>
+    </form>
+</dialog>
+{% endblock %}
