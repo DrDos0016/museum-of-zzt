@@ -4,7 +4,7 @@
     <br>
     <div class="ascii-selected-highlight b mono">
         Selected Character:
-        <div class="ascii-selected-char">{% char widget.value scale=2 %}</div>
+        <div class="ascii-selected-char">{% char widget.value|default:2 scale=2 %}</div>
         <div class="ascii-selected-number">#{{widget.value}}</div>
     </div>
 
