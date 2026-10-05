@@ -555,7 +555,7 @@ def ml(url, text, target="_blank", i=True, *args, **kwargs):
         output_url = "/" + "/".join(components)
 
     output = '<a href="{}"{}>{}</a>'
-    target_string = "target=" + target if target else ""
+    target_string = " target=" + target if target else ""
     output = output.format(output_url, target_string, text)
     if i:
         output = "<i>{}</i>".format(output)
