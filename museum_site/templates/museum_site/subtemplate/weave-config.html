@@ -115,7 +115,20 @@ input.1.sidebar.row = "0"
 </table>
 
 <h2>Sidebar</h2>
+
+<table>
+    <tr><th>Health</th><td><input name="counter.health" value="" placeholder=" Health:" maxlength="8"></td></tr>
+    <tr><th>Ammo</th><td><input name="counter.ammo" value="" placeholder="   Ammo:" maxlength="8"></td></tr>
+    <tr><th>Torches</th><td><input name="counter.torches" value="" placeholder="Torches:" maxlength="8"></td></tr>
+    <tr><th>Gems</th><td><input name="counter.health" value="" placeholder="   Gems:" maxlength="8"></td></tr>
+    <tr><th>Score</th><td><input name="counter.health" value="" placeholder="  Score:" maxlength="8"></td></tr>
+    <tr><th>Keys</th><td><input name="counter.health" value="" placeholder="   Keys:" maxlength="8"></td></tr>
+    <tr><th>Time</th><td><input name="counter.time" value="" placeholder="   Time:" maxlength="8"></td></tr>
+</table>
+
+
 <input type="button" id="sidebar-update-preview-button" value="Update Preview">
+<p>Sidebar preview does not reflect theme changes. It's currently intended to help with placement of custom entries more than their display.</p>
 <div class="flex-container" style="gap:10px">
     <div>
         <h3>Preview</h3>
@@ -212,6 +225,8 @@ input.1.sidebar.row = "0"
 <h2>Palette</h2>
 <p><i>Coming Soon...</i></p>
 
+<h2>Theme</h2>
+
 <h2>Other Settings</h2>
 <table id="cfg-other">
     <tr><th>Player Damage</th><td><input name="ouchdamage" value="-" class="nulldash"></td></tr>
@@ -225,4 +240,7 @@ input.1.sidebar.row = "0"
     <tr><th>Endgame Grace Period</th><td><input name="startboard" type="number" value="-1" min="-1" max="100"></td></tr>
     <tr><th>Footstep Sounds</th><td><select name="footsteps"><option value="-1">-</option><option value="">On</option><option value="">Off</option></select></td></tr>
     <tr><th>High Scores</th><td><input name="startboard" type="number" value="-1" min="-1" max="30"></td></tr>
+    <tr><th>Default Object Name</th><td><input name="default.object.name" value=""></td></tr>
+    <tr><th>Default Scroll Name</th><td><input name="default.scroll.name" value=""></td></tr>
+    <tr><th>Starting Board</th><td><input name="other.startboard" value=""></td></tr>
 </table>
