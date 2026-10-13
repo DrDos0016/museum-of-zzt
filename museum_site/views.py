@@ -420,13 +420,8 @@ class Weave_CFG_Editor_View(Museum_Base_Template_View):
         context = super().get_context_data(**kwargs)
         context["meta_tags"] = Meta_Tag_Block(url=self.request.get_full_path(), title=self.title, image=self.preview_image, description=self.description)
 
-        print(time.time())
-        initial_config = weave_get_initial_config()
-        weave_config = Weave_Config(initial_config)
+        weave_config = Weave_Config()
         context["weave_config"] = weave_config
-        print(time.time())
-
-        print("GEM", weave_config.config.get("gem"))
 
         # For appearance widget
         context["scale"] = 2

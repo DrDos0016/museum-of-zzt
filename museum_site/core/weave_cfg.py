@@ -1,38 +1,208 @@
-ELEMENT_NAMES = ["ammo", "bear", "blinkew", "blinkns", "blinkwall", "bluetext", "bomb", "boulder", "breakable", "bullet", "customtext", "cyantext", "darkness", "door", "duplicator", "edge", "empty", "energizer", "fake", "forest", "gem", "greentext", "head", "invisible", "key", "lion", "monitor", "normal", "passage", "player", "purpletext", "redtext", "ricochet", "ruffian", "scroll", "segment", "shark", "sliderew", "sliderns", "slime", "solid", "spinninggun", "star", "tiger", "torch", "transporter", "water", "whitetext", "yellowtext", ]
+ELEMENT_NAMES = ["ammo", "bear", "blinkew", "blinkns", "blinkwall", "bluetext", "bomb", "boulder", "breakable", "bullet", "customtext", "cyantext", "darkness", "door", "duplicator", "edge", "empty", "energizer", "fake", "forest", "gem", "greentext", "head", "invisible", "key", "lion", "monitor", "normal", "passage", "player", "purpletext", "pusher", "redtext", "ricochet", "ruffian", "scroll", "segment", "shark", "sliderew", "sliderns", "slime", "solid", "spinninggun", "star", "tiger", "torch", "transporter", "water", "whitetext", "yellowtext", ]
 
 COLORS = ["black", "dkblue", "dkgreen", "dkcyan", "dkred", "dkpurple", "brown", "gray", "dkgray", "blue", "green", "cyan", "red", "purple", "yellow", "white"]
 
+ELEMENT_IDS = {
+"ammo": 5, "bear": 34, "blinkew": 33, "blinkns": 43, "blinkwall": 29, "bluetext": 47, "bomb": 13, "boulder": 24, "breakable": 23, "bullet": 18, "customtext": 0, "cyantext": 49, "darkness": 0, "door": 9, "duplicator": 12, "edge": 1, "empty": 0, "energizer": 14, "fake": 27, "forest": 20, "gem": 7, "greentext": 48, "head": 44, "invisible": 28, "key": 8, "lion": 41, "monitor": 3, "normal": 22, "passage": 11, "player": 4, "purpletext": 51, "pusher": 40, "redtext": 50, "ricochet": 32, "ruffian": 35, "scroll": 10, "segment": 45, "shark": 38, "sliderew": 26, "sliderns": 25, "slime": 37, "solid": 21, "spinninggun": 39, "star": 15, "tiger": 42, "torch": 6, "transporter": 30, "water": 19, "whitetext": 53, "yellowtext": 52
+}
+
 class Weave_Config():
-    def __init__(self, config):
-        self.config = config
-        print("////////////////////// WC Init")
-        print(list(self.config["ammo"].keys()))
-        #self.foobar()
-        self.process_section("msg")
-        self.process_section("snd")
+    MAX_COUNTERS = 114
+    MAX_COUNTER_LENGTH = 20
+    MAX_FLAGS = 99
+    MAX_FLAG_LENGTH = 20
+    INITIAL_COUNTERS = 16
+    INITIAL_FLAGS = 16
+    MAX_KEYBINDS = 8
+
+    DEFAULT_MESSAGES = {
+        "bomb": {"touch": "Bomb activated!"},
+        "energizer": {"touch": "Energizer - You are invincible"},
+        "key": {"touch1": "You now have the ", "touch2": " key.", "fail1": "You already have a ", "fail2": " key!"},
+        "door": {"touch1": "The ", "touch2": " door is now open.", "fail1": "The ", "fail2": " door is locked!"},
+        "ammo": {"touch": "Ammunition - 5 shots per container."},
+        "gem": {"touch": "Gems give you Health!"},
+        "torch": {"touch": "Torch - used for lighting in the underground."},
+        "invisible": {"touch": "You are blocked by an invisible wall."},
+        "forest": {"touch": "A path is cleared through the forest."},
+        "fake": {"touch": "A fake wall - secret passage!"},
+        "water": {"touch": "Your way is blocked by water."},
+        "gameover": {"touch": " Game over  -  Press ESCAPE"},
+    }
+
+    DEFAULT_SOUNDS = {
+        "bomb": {"touch": "tcf+cf+c", "tick": "t5", "tock": "t8", "explode": "t+++c-c-c-c-c-c"},
+        "energizer": {"start": "s.-cd#e", "song": "s.-f+f-fd#c+c-d#e", "end": "s.-c-a#gf#fd#c"},
+        "key": {"touch": "t+cegcegceg+sc", "fail": "sc-c"},
+        "door": {"touch": "tcgbcgb+ic", "fail": "t--gc"},
+        "ammo": {"touch": "tcc#d"},
+        "gems": {"touch": "t+c-gec"},
+        "torch": {"touch": "tcase", "end": "tc-c-c"},
+        "invisible": {"touch": "t--dc"},
+        "forest": {"touch": "ta"},
+        "water": {"touch": "t+c+c"},
+        "gameover": {"touch": "s.-cd#g+c-ga#+dgfg#+cf---w3c"},
+    }
+
+    ELEMENT_SPECIFIC_PROPERTIES = {
+        "ammo": [
+            {"cfg_prop": "p1", "text": "Ammo given"},
+            {"cfg_prop": "p3", "text": "Element Below"},
+        ],
+        "torch": [
+            {"cfg_prop": "p1", "text": "Torches Given"},
+            {"cfg_prop": "p2", "text": "Wick Given"},
+            {"cfg_prop": "p3", "text": "Element Below"},
+        ],
+        "gem": [
+            {"cfg_prop": "p1", "text": "Gems Given"},
+            {"cfg_prop": "p2", "text": "Health Given"},
+            {"cfg_prop": "scorevalue", "text": "Score Value"},
+            {"cfg_prop": "p3", "text": "Element Below"},
+        ],
+        "key": [
+            {"cfg_prop": "p1", "text": "Max Held (Per Color)"},
+            {"cfg_prop": "p2", "text": "Character Shift"},
+            {"cfg_prop": "p3", "text": "Element Below"},
+        ],
+        "door": [
+            {"cfg_prop": "p2", "text": "Character Shift"},
+            {"cfg_prop": "p3", "text": "Element Below"},
+        ],
+        "passage": [
+            {"cfg_prop": "p3", "text": "Default Destination"},
+        ],
+        "energizer": [
+            {"cfg_prop": "p1", "text": "Energized Given"},
+            {"cfg_prop": "p3", "text": "Element Below"},
+        ],
+        "star": [
+            {"cfg_prop": "p1", "text": "!!Limited/Eternal"},
+            {"cfg_prop": "p2", "text": "Duration"},
+        ],
+        "bullet": [
+            {"cfg_prop": "p1", "text": "!!Limited/Normal"},
+            {"cfg_prop": "p2", "text": "Duration"},
+            {"cfg_prop": "p3", "text": "Objects Fire Enemy/Player"},
+        ],
+        "forest": [
+            {"cfg_prop": "p3", "text": "Element Below"},
+        ],
+        "invisible": [
+            {"cfg_prop": "p1", "text": "Becomes Element"},
+        ],
+        "bear": [
+            {"cfg_prop": "p1", "text": "Sensitivity"},
+            {"cfg_prop": "scorevalue", "text": "Score Value"},
+        ],
+        "ruffian": [
+            {"cfg_prop": "scorevalue", "text": "Score Value"},
+            {"cfg_prop": "p1", "text": "Intelligence"},
+            {"cfg_prop": "p2", "text": "Resting Time"},
+        ],
+        "slime": [
+            {"cfg_prop": "p2", "text": "Speed"},
+        ],
+        "shark": [
+            {"cfg_prop": "p1", "text": "Intelligence"},
+        ],
+        "spinninggun": [
+            {"cfg_prop": "p1", "text": "Intelligence"},
+            {"cfg_prop": "rate", "text": "Firing Rate"},
+            {"cfg_prop": "projectile", "text": "Projectile"},
+        ],
+        "lion": [
+            {"cfg_prop": "scorevalue", "text": "Score Value"},
+            {"cfg_prop": "p1", "text": "Intelligence"},
+        ],
+        "tiger": [
+            {"cfg_prop": "scorevalue", "text": "Score Value"},
+            {"cfg_prop": "p1", "text": "Intelligence"},
+            {"cfg_prop": "rate", "text": "Firing Rate"},
+            {"cfg_prop": "projectile", "text": "Projectile"},
+        ],
+        "head": [
+            {"cfg_prop": "scorevalue", "text": "Score Value"},
+            {"cfg_prop": "p1", "text": "Intelligence"},
+            {"cfg_prop": "p2", "text": "Deviance"},
+        ],
+        "segment": [
+            {"cfg_prop": "scorevalue", "text": "Score Value"},
+        ],
+        "empty": [
+            {"cfg_prop": "p1", "text": ""},
+            {"cfg_prop": "p3", "text": "Element Below"},
+        ],
+        "duplicator": [
+            {"cfg_prop": "p1", "text": "Speed"},
+            {"cfg_prop": "p2", "text": "Starting Phase (0-5)"},
+        ],
+        "": [
+            {"cfg_prop": "p1", "text": ""},
+            {"cfg_prop": "p3", "text": "Element Below"},
+        ],
+    }
+
+
+
+    def __init__(self, config=None):
+        self.elements = {}
+        self.counters = ["X", "Y", "Z",]
+        self.flags = []
+        self.keybinds = []
+        self.initialize_elements()
+        self.initialize_messages()
+        self.initialize_sounds()
+        self.initialize_counters()
+        self.initialize_flags()
+        self.initialize_keybinds()
+
+    def initialize_elements(self):
+        self.elements = {}
+        for name in ELEMENT_NAMES:
+            self.elements[name] = {
+                "fg": None, "bg": None, "char": None, "cycle": None, "canput": None, "pushable": None, "canshoot": None, "walkable": None, "seedark": None, "messages": {}, "sounds": {}
+            }
+            if Weave_Config.ELEMENT_SPECIFIC_PROPERTIES.get(name):
+                self.elements[name]["specific_properties"] = Weave_Config.ELEMENT_SPECIFIC_PROPERTIES[name]
+
+        return True
+
+    def initialize_messages(self):
+        print(self.elements)
+        for name in ELEMENT_NAMES:
+            print("ELEMENT", name)
+            to_add = Weave_Config.DEFAULT_MESSAGES.get(name, {})
+            for k, v in to_add.items():
+                print(name, k, v)
+                self.elements[name]["messages"][k] = v
+        return True
+
+    def initialize_sounds(self):
+        for name in ELEMENT_NAMES:
+            to_add = Weave_Config.DEFAULT_SOUNDS.get(name, {})
+            for k, v in to_add.items():
+                self.elements[name]["sounds"][k] = v
+        return True
+
+    def initialize_counters(self):
+        while len(self.counters) < Weave_Config.INITIAL_COUNTERS:
+            self.counters.append("")
+        return True
+
+    def initialize_flags(self):
+        while len(self.flags) < Weave_Config.INITIAL_FLAGS:
+            self.flags.append("")
+        return True
+
+    def initialize_keybinds(self):
+        while len(self.keybinds) < Weave_Config.MAX_KEYBINDS:
+            self.keybinds.append({"key": "", "text": "", "label": "", "row": 0 })
 
     def get_all_elements(self):
         for name in ELEMENT_NAMES:
-            yield (name, self.config[name])
+            yield (name, self.elements[name])
 
-    def process_section(self, to_process):
-        print("PROCESSING SECTION", to_process)
-        for name in ELEMENT_NAMES:
-            self.config[name][to_process] = []
-            for k in self.config[name].keys():
-                if k == to_process:  # This prevents keys being added for "msg" and "snd". IDK why they're being added!
-                    continue
-                if name == "ammo":
-                    print("\tSCANNING NAME/KEY", name, k, "TOPROC", to_process)
-                if k.startswith(to_process):
-                    element = self.config[name][k]
-                    if element:
-                        print("ADDING FULL PATH", name + "." + k, "WITH VALUE", getattr(element, "value", ""))
-                        self.config[name][to_process].append({"full_path": name + "." + k, "path": k, "label": k.split(".")[-1], "value": getattr(element, "value", "")})
-
-    def foobar(self):
-        for name in ELEMENT_NAMES:
-            self.config[name]
 
 class Weave_Setting():
     def __init__(self, **kwargs):
@@ -60,6 +230,7 @@ class Weave_Setting():
         return output
 
 def weave_process_setting(name, path, raw_value):
+    #print("PROCESSING", name, path)
     if raw_value is not None:
         raw_value = raw_value.strip()
     #print(name, ":", path, "RAW_VALUE:", raw_value)
@@ -98,7 +269,7 @@ def weave_get_initial_config():
     print("This is called right")
     all_settings = {}
     processed_elements = []
-    config_file_path = "/home/drdos/projects/museum-of-zzt/tools/TEMPLATE.CFG"  # TODO
+    config_file_path = "/home/drdos/projects/museum-of-zzt/museum_site/static/data/TEMPLATE.CFG"  # TODO
     with open(config_file_path) as fh:
         lines = fh.readlines()
 
@@ -118,12 +289,11 @@ def weave_get_initial_config():
             all_settings[name] = {}
             processed_elements.append(name)
 
-        #print("Logging setting", name, path)
+        print("Logging setting", name, path)
         all_settings[name][path] = weave_process_setting(name, path, raw_value)
 
     # Custom text is commented out by default. Probably because it's weird.
     all_settings["customtext"] = {}
-
 
     # Add missing universal keys
     for element_name in ELEMENT_NAMES:

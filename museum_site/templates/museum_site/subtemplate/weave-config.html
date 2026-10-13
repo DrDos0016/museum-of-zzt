@@ -1,19 +1,21 @@
 {% load site_tags %}
 {% load zzt_tags %}
-<table id="weave-config-table">
+
+<h2 id="elements">Element Properties</h2>
+<table id="weave-element-table">
     <tr><th>Element</th><th>Appearance</th><th>Properties</th><th>Messages</th><th>Sounds</th></tr>
     {% for element_name, element in weave_config.get_all_elements %}
-    <tr class="weave-element" data-element-name="{{element_name}}">
+    <tr class="weave-element" data-element-name="{{element_name}}" id="{{element_name}}">
         <th class="c">{{element_name|title}}</th>
         <td class="weave-appearance">
             <label><div style="border:1px solid var(--border-color)">{% char element.char.value|default:65 %}</div><button type="button" class="button-appearance">Pick</button></label>
-            <label>FG <input name="fg" value="{% if element.fg.value == None %}-{% else %}{{element.fg.value}}{% endif %}"></label>
-            <label>BG <input name="bg" value="{% if element.bg.value == None %}-{% else %}{{element.bg.value}}{% endif %}"></label>
-            <label>Char <input name="char" value="{% if element.char.value == None %}-{% else %}{{element.char.value}}{% endif %}"></label>
+            <label>FG <input name="fg" value="{% if element.fg == None %}-{% else %}{{element.fg}}{% endif %}"></label>
+            <label>BG <input name="bg" value="{% if element.bg == None %}-{% else %}{{element.bg}}{% endif %}"></label>
+            <label>Char <input name="char" value="{% if element.char == None %}-{% else %}{{element.char}}{% endif %}"></label>
         </td>
         <td>
             <div class="flex-container flex-wrap justify-space-between" style="align-items:flex-start; gap:4px 20px;">
-                <label>Cycle <input type="number" name="cycle" value="{{element.cycle.value|default:-1}}"></label>
+                <label>Cycle <input type="number" name="cycle" value="{{element.cycle|default:-1}}"></label>
                 <label>Can Shoot
                     <select name="canshoot">
                         <option>-</option>
@@ -49,16 +51,18 @@
                         <option>No</option>
                     </select>
                 </label>
+                {% for p in element.specific_properties %}
+                <label>{{p.text}} <input name="{{p.cfg_prop}}" value="-"></label>
+                {% endfor %}
             </div>
         </td>
-        <td>{% for msg in element.msg %}
-            <label>{{msg.label}} <input value="{{msg.value}}" name="{{msg.path}}"></label>
+        <td>{% for k, v in element.messages.items %}
+            <label>{{k}} <input value="{{v}}" name="msg.{{k}}"></label>
         {% empty %}
             <i>N/A</i>
         {% endfor %}</td>
-        <td>{% for snd in element.snd %}
-            <!--snd.full_path, snd.path, snd.label, snd.value-->
-            <label>{{snd.label}} <input value="{{snd.value}}" name="{{snd.path}}"></label>
+        <td>{% for k, v in element.sounds.items %}
+            <label>{{k}} <input value="{{v}}" name="snd.{{k}}"></label>
         {% empty %}
             <i>N/A</i>
         {% endfor %}</td>
@@ -66,4 +70,159 @@
     {% endfor %}
 </table>
 
-{{initial_config}}
+<h2 id="counters">World Counters</h2>
+<div style="margin-bottom:4px;"><input type="button" name="button-counter-add" value="Add Counter"> <span id="world-counter-count">{{weave_config.INITIAL_COUNTERS}}</span>/{{weave_config.MAX_COUNTERS}} displayed</div>
+<div id="weave-counter-table" class="wrapping-columns">
+    {% for counter in weave_config.counters %}
+    <div class="weave-string-wrapper"><div class="label">{{forloop.counter}}</div><input class="value" name="counter" value="{{counter}}"maxlength="20"></div>{% endfor %}
+</div>
+
+<h2 id="flags">World Flags</h2>
+<div style="margin-bottom:4px;"><input type="button" name="button-flag-add" value="Add Flag"> <span id="world-flag-count">{{weave_config.INITIAL_FLAGS}}</span>/{{weave_config.MAX_FLAGS}} displayed</div>
+<div id="weave-flag-table" class="wrapping-columns">
+    {% for flag in weave_config.flags %}
+    <div class="weave-string-wrapper"><div class="label">{{forloop.counter}}</div><input class="value" name="flag" value="{{counter}}"maxlength="20"></div>{% endfor %}
+</div>
+
+<h2 id="keys">Key Binds</h2>
+
+#  This can be a single character:
+#        input.1.keybind = "A"
+#  Or a single character followed by a display string encased in single quotes:
+#        input.1.keybind = " ,'SPACE'"
+input.1.keybind = ""
+#  The message to send. This is the label sent to
+#    your Input Terminal (above) upon pressing the
+#    key. Maximum length: 12 characters.)
+input.1.label = ""
+#  The row to populate in the sidebar. (Set
+#  to 0 to not show the keybind in the sidebar.
+#  This is a string value, so keep the quotes.)
+input.1.sidebar.row = "0"
+
+<p><b>Key</b> is the character pressed. <b>Name</b> is an alternate string to display in the sidebar. <b>Label</b> is the label @INPUT is sent to upon pressing the key. Sidebar row is the position in the sidebar to inform users of the key. Set to 0 to not display. Only key and label need to be specified for a key bind to work.</p>
+
+<table id="keybind-table">
+    <tr><th style="width:3ch;">#</th><th>Key</th><th>Text</th><th>Label</th><th>Sidebar Row</th></tr>
+    {% for k in weave_config.keybinds %}<tr>
+        <th>{{forloop.counter}}</th>
+        <td><input name="keybind-key" maxlength="1" value="{{k.key}}"></td>
+        <td><input name="keybind-text" maxlength="12" value="{{k.text}}"></td>
+        <td><input name="keybind-label" maxlength="" value="{{k.label}}"></td>
+        <td><input name="keybind-row" type="number" min="0" max="25" value="{{k.row}}"></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Sidebar</h2>
+<input type="button" id="sidebar-update-preview-button" value="Update Preview">
+<div class="flex-container" style="gap:10px">
+    <div>
+        <h3>Preview</h3>
+        <div id="weave-sidebar-preview" class="weave-sidebar">
+            <div class="line">     - - - - -      </div>
+            <div class="line">  <span class="ega-gray-bg"> WeaveZZT X.Y.Z</span>   </div>
+            <div class="line">     - - - - -      </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line">bottom text</div>
+        </div>
+    </div>
+    <div>
+        <h3>#</h3>
+        <div class="weave-sidebar" style="width:3ch;text-align:center;background-color:var(--ega-darkgray);">
+            <div class="line">1</div>
+            <div class="line">2</div>
+            <div class="line">3</div>
+            <div class="line">4</div>
+            <div class="line">5</div>
+            <div class="line">6</div>
+            <div class="line">7</div>
+            <div class="line">8</div>
+            <div class="line">9</div>
+            <div class="line">10</div>
+            <div class="line">11</div>
+            <div class="line">12</div>
+            <div class="line">13</div>
+            <div class="line">14</div>
+            <div class="line">15</div>
+            <div class="line">16</div>
+            <div class="line">17</div>
+            <div class="line">18</div>
+            <div class="line">19</div>
+            <div class="line">20</div>
+            <div class="line">21</div>
+            <div class="line">22</div>
+            <div class="line">23</div>
+            <div class="line">24</div>
+            <div class="line">25</div>
+        </div>
+    </div>
+    <div>
+        <h3>Reference</h3>
+        <div id="weave-sidebar-reference" class="weave-sidebar">
+            <div class="line">     - - - - -      </div>
+            <div class="line">  <span class="ega-gray-bg"> WeaveZZT X.Y.Z</span>   </div>
+            <div class="line">     - - - - -      </div>
+            <div class="line"> </div>
+            <div class="line"> </div>
+            <div class="line">End this game? _</div>
+            <div class="line"> </div>
+            <div class="line">Health:</div>
+            <div class="line">Ammo:</div>
+            <div class="line">Torches:</div>
+            <div class="line">Gems:</div>
+            <div class="line">Score:</div>
+            <div class="line">Keys: </div>
+            <div class="line"> </div>
+            <div class="line">T Torch </div>
+            <div class="line">B Be quiet </div>
+            <div class="line">H Help</div>
+            <div class="line"> </div>
+            <div class="line">AROW Move</div>
+            <div class="line">Shift AROW Shoot </div>
+            <div class="line"> </div>
+            <div class="line">S Save game </div>
+            <div class="line">P Pause </div>
+            <div class="line">Q Quit</div>
+            <div class="line">bottom text</div>
+        </div>
+    </div>
+</div>
+
+<h2>Palette</h2>
+<p><i>Coming Soon...</i></p>
+
+<h2>Other Settings</h2>
+<table id="cfg-other">
+    <tr><th>Player Damage</th><td><input name="ouchdamage" value="-" class="nulldash"></td></tr>
+    <tr><th>Torch Radius</th><td><input name="torchratiox" value=""><input name="torchratioy" value=""></td></tr>
+    <tr><th>Torch Size</th><td><input name="torchsize" value=""></td></tr>
+    <tr><th>Bomb Radius</th><td><input name="bombratiox" value=""><input name="bombratioy" value=""></td></tr>
+    <tr><th>Bomb Size</th><td><input name="bombsize" value=""></td></tr>
+    <tr><th>Max OOP Executed</th><td><input name="maxoop" value=""></td></tr>
+    <tr><th>Endgame Grace Period</th><td><input name="graceperiod" type="number" value=""></td></tr>
+    <tr><th>Friendly Fire</th><td><select name="friendlyfire"><option value="-1">-</option><option value="">Yes</option><option value="">No</option></select></td></tr>
+    <tr><th>Endgame Grace Period</th><td><input name="startboard" type="number" value="-1" min="-1" max="100"></td></tr>
+    <tr><th>Footstep Sounds</th><td><select name="footsteps"><option value="-1">-</option><option value="">On</option><option value="">Off</option></select></td></tr>
+    <tr><th>High Scores</th><td><input name="startboard" type="number" value="-1" min="-1" max="30"></td></tr>
+</table>

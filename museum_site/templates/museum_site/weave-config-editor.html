@@ -13,7 +13,7 @@
     background-color:var(--notice-bg);
 }
 
-#weave-config-table label
+#weave-element-table label
 {
     flex:1 0 30%;
     display:flex;
@@ -22,8 +22,8 @@
     height:40px;
 }
 
-#weave-config-table input[type=number] { width:8ch; }
-#weave-config-table input[name=fg], #weave-config-table input[name=bg], #weave-config-table input[name=char] { width:6ch; }
+#weave-element-table input[type=number] { width:8ch; }
+#weave-element-table input[name=fg], #weave-element-table input[name=bg], #weave-element-table input[name=char] { width:6ch; }
 
 .ascii-selected-highlight { margin-bottom:4px; }
 
@@ -34,6 +34,87 @@
   max-height: 24px;
   cursor: pointer;
 }
+
+.weave-config-element-nav {
+    display:flex;
+    flex-wrap:wrap;
+    flex-direction:column;
+    max-height: 150px;
+    border:1px solid red;
+    a { width:12ch; }
+}
+
+.wrapping-columns
+{
+    height:160px;
+    display:flex;
+    flex-direction:column;
+    flex-wrap:wrap;
+    justify-content: flex-start;
+    align-content:flex-start;
+    gap:2px;
+}
+
+.weave-string-wrapper
+{
+    flex:0;
+    display:flex;
+    max-width:25%;
+    align-items:center;
+}
+
+.weave-string-wrapper .label
+{
+    background-color:var(--th-background);
+    width:3ch;
+    height:32px;
+    line-height:32px;
+    text-align:center;
+    font-weight:bold;
+    border:1px solid var(--border-color);
+    border-right:0px;
+}
+
+.weave-sidebar
+{
+    font-family:"cp437", monospace;
+    font-size:28px;
+    background-color:var(--ega-darkblue);
+    width:20ch;
+    line-height:28px;
+}
+
+.weave-sidebar .line
+{
+    white-space-collapse:preserve;
+    color:var(--ega-white);
+}
+
+#cfg-other label
+{
+    display:block;
+}
+
+#cfg-sticky-nav
+{
+    width:90%;
+    max-width:125ch;
+    position:sticky;
+    margin:auto;
+    top:4px;
+    background:var(--hover-bg);
+    border:1px solid var(--border-color);
+    padding:7px 16px 7px 16px;
+}
+
+#keybind-table
+{
+    width:auto;
+    text-align:center;
+}
+
+input[name=keybind-key] { width:5ch; text-align:center; margin:auto; }
+input[name=keybind-row] { width:6ch; margin:auto; }
 </style>{% endblock %}
 
 {% block scripts %}
@@ -248,21 +329,22 @@ function dump_config()
         output_config += make_config_line(row, "select[name=pushable]");
         output_config += make_config_line(row, "select[name=seedark]");
 
-        // Messages
-        let messages = $(row).find("input[name^=msg]");
-        for (let m_idx = 0; m_idx < messages.length; m_idx++)
+        output_config += make_config_line(row, "input[name=p1]");
+        output_config += make_config_line(row, "input[name=p2]");
+        output_config += make_config_line(row, "input[name=p3]");
+
+        let message_keys = ["touch", "touch1", "touch2", "fail1", "fail2", "fail", true];
+        for (let i = 0; idx < message_keys.length; i++)
         {
-            let msg = $(messages[m_idx]).attr("name").replaceAll(".", "\\.");
-            output_config += make_config_line(row, "input[name=" + msg + "]", true);
+            output_config += make_config_line(row, "input[name=msg\\." + message_keys[i] + "]", true);
         }
 
-        // Sounds
-        let sounds = $(row).find("input[name^=snd]");
-        for (let s_idx = 0; s_idx < sounds.length; s_idx++)
+        let sound_keys = ["touch", "tick", "tock", "explode", "fail", "start", "song", "end"];
+        for (let i = 0; idx < sound_keys.length; i++)
         {
-            let snd = $(sounds[s_idx]).attr("name").replaceAll(".", "\\.");
-            output_config += make_config_line(row, "input[name=" + snd + "]", true);
+            output_config += make_config_line(row, "input[name=snd\\." + sound_keys[i] + "]", true);
         }
+
     }
 
     $("#weave-cfg-raw").val(output_config);
@@ -289,9 +371,11 @@ function make_config_line(row, selector, quoted)
 
 function get_config_header()
 {
+    let now = new Date();
     let out = "# Foobar.CFG\n";
-    out += "# Generated at []\n";
+    out += "# Generated at [" + now.toUTCString() + "]\n";
     out += "# Created with the Museum of ZZT Weave CFG Editor v0\n";
+    out += "# Designed for Weave version\n";
     out += "########################################\n";
     return out;
 }
@@ -303,6 +387,10 @@ function open_appearance_modal()
     WORKING_APPEARANCE.bg = $(td).find("input[name=bg]").val();
     WORKING_APPEARANCE.char = $(td).find("input[name=char]").val();
     WORKING_APPEARANCE.td = td;
+
+    // This gets used as an index and needs some sensible default
+    if (WORKING_APPEARANCE.char == "-")
+        WORKING_APPEARANCE.char = 2
 
     let fg_moz_color = weave_color_to_museum_color[WORKING_APPEARANCE.fg];
     let bg_moz_color = weave_color_to_museum_color[WORKING_APPEARANCE.bg];
@@ -344,13 +432,112 @@ function update_appearances()
     }
 }
 
+function counter_add()
+{
+    let count = parseInt($("#world-counter-count").text());
+    if (count == 114)
+        return false;
+    let base = $("#weave-counter-table > .weave-string-wrapper").last().html();
+    $("#weave-counter-table").append('<div class="weave-string-wrapper">' + base + '</div>');
+    //console.log(base);
+
+    count++;
+    $("#weave-counter-table > div").last().find(".label").text(count);
+    $("#world-counter-count").text(count);
+    set_table_height("counter");
+
+    if (count == 114)
+        $("#button-counter-add").prop("disabled");
+}
+
+function flag_add()
+{
+    let count = parseInt($("#world-flag-count").text());
+    if (count == 99)
+        return false;
+    let base = $("#weave-flag-table > .weave-string-wrapper").last().html();
+    $("#weave-flag-table").append('<div class="weave-string-wrapper">' + base + '</div>');
+    //console.log(base);
+
+    count++;
+    $("#weave-flag-table > div").last().find(".label").text(count);
+    $("#world-flag-count").text(count);
+    set_table_height("flag");
+
+    if (count == 99)
+        $("#button-flag-add").prop("disabled");
+}
+
+function set_table_height(identifier)
+{
+    let counters = $("#weave-" + identifier + "-table .weave-string-wrapper").length;
+    let h = parseInt($("#weave-" + identifier + "-table").css("height").replace("px", ""));
+    let counter_height = parseInt($("#weave-" + identifier + "-table .weave-string-wrapper").css("height").replace("px", ""));
+
+    let cpc = Math.ceil(counters / 4);
+    console.log("COUNTERS", counters, "CPC", cpc);
+
+    $("#weave-" + identifier + "-table").css("height", ((counter_height + 2) * cpc) + "px");
+}
+
+function nulldash_focus()
+{
+    if ($(this).val() == "-")
+        $(this).val("");
+}
+
+function nulldash_blur()
+{
+    if ($(this).val() == "")
+        $(this).val("-");
+}
+
+function update_sidebar_preview()
+{
+    let sidebar_rows = []
+    // Get key binds
+    for (let idx = 1; idx < $("#keybind-table tr").length; idx++)
+    {
+        let row = $("#keybind-table tr")[idx];
+        let key_idx = idx;
+        let key = $(row).find("input[name=keybind-key]").val();
+        let text = $(row).find("input[name=keybind-text]").val();
+        let label = $(row).find("input[name=keybind-label]").val();
+        let row_num = $(row).find("input[name=keybind-row]").val();
+        let keybind = {"kind": "keybind", "idx": key_idx, "key": key, "text": text, "label": label, "row": parseInt(row_num)}
+        if (keybind.row)
+            sidebar_rows.push(keybind);
+    }
+
+    let preview_rows = $("#weave-sidebar-preview .line")
+    for (let idx = 0; idx < sidebar_rows.length; idx++)
+    {
+
+        let row = sidebar_rows[idx];
+        let html = "";
+        if (row.kind == "keybind")
+        {
+            let k = (row.text || row.key);
+            html = "<span class='ega-black ega-gray-bg'>" + k + "</span> " + row.label;
+        }
+        $(preview_rows[row.row]).html(html);
+    }
+}
+
 $(document).ready(function (){
     $("input[name=button-dump-config]").click(dump_config);
     $(".button-appearance").click(open_appearance_modal);
     $(".appearance-modal-close").click(close_appearance_modal);
     $(".appearance-modal-apply").click(apply_appearance_modal);
-
+    $("input[name=button-counter-add]").click(counter_add)
+    $("input[name=button-flag-add]").click(flag_add)
+    $(".nulldash").focus(nulldash_focus);
+    $(".nulldash").blur(nulldash_blur);
+    $("#sidebar-update-preview-button").click(update_sidebar_preview);
     update_appearances();
+
+    set_table_height("counter");
+    set_table_height("flag");
 });
 </script>
 <script src="{% static 'js/file-viewer/weave-cfg-editor.js' %}?{{BOOT_TS}}" type="module"></script>
@@ -361,6 +548,25 @@ $(document).ready(function (){
 {% block content %}
 <h1>Weave CFG Editor</h1>
 
+<div id="cfg-sticky-nav" class="cp437">
+    <div class="flex-container" style="justify-content:space-around;margin-bottom:1ch;border-bottom:1px solid var(--border-color);">
+    <a href="#load">LOAD</a>
+    <a href="#elements">ELEMENTS</a>
+    <a href="#counters">COUNTERS</a>
+    <a href="#flags">FLAGS</a>
+    <a href="#keys">KEY BINDS</a>
+    <a href="#sidebar">SIDEBAR</a>
+    <a href="#palette">PALETTE</a>
+    <a href="#other">OTHER</a>
+    <a href="#other">SAVE</a>
+    </div>
+    <div class="flex-container flex-wrap" style="justify-content:flex-start; gap:2px 15px;">
+    {% for element_name, _ in weave_config.get_all_elements %}<div><a href="#{{element_name}}">{{element_name}}</a></div>
+    {% endfor %}</div>
+</div>
+
+
+<h2 id="load">Load Existing Config</h2>
 <div class="field-wrapper" data-field="user_upload">
     <label for="id_user_upload">Load Weave <span class="keyword">.CFG</span> File:</label>
     <div class="field-value field-layout-file-uploader">
@@ -402,4 +608,7 @@ $(document).ready(function (){
     <button class="appearance-modal-apply" type="button">Apply</button>
     </form>
 </dialog>
+
+<h2>DEBUG</h2>
+<textarea style="width:95%;height:25ch">{{weave_config.elements}}</textarea>
 {% endblock %}
