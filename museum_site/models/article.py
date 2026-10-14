@@ -241,7 +241,7 @@ class Article(BaseModel):
         return {"label": "Publish Date", "value": self.publish_date.strftime(DATE_HR) if self.publish_date else "<i>- Unknown Date - </i>", "safe": True}
 
     def get_field_category(self, view="detailed"):
-        return {"label": "Category", "value": self.category}
+        return {"label": "Category", "value": '<a href="{}">{}</a>'.format(reverse("article_browse_category", kwargs={"category_slug": self.category_slug()}), self.category), "safe": True}
 
     def get_field_series(self, view="detailed"):
         output = ""
