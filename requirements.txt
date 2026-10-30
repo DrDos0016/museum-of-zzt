@@ -39,7 +39,7 @@ multidict==6.4.4
 mysqlclient==2.2.7
 oauthlib==3.2.2
 packaging==25.0
-pillow==12.3.0
+pillow==13.0.0
 propcache==0.3.1
 pycparser==2.22
 pydantic==2.11.5
@@ -59,7 +59,7 @@ tweepy==4.15.0
 twitter==1.19.6
 typing-inspection==0.4.1
 typing_extensions==4.13.2
-urllib3==2.7.0
+urllib3==2.8.0
 websockets==15.0.1
 yarl==1.20.0
 zipp==3.19.2
